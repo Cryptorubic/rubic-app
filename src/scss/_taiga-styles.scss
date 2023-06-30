@@ -12,14 +12,14 @@ html.iframe-horizontal {
 body.hide-unused-ui {
   tui-dialog {
     &[data-size='l'] {
-      > .content {
+      > .t-content {
         border-radius: 20px;
       }
     }
   }
 }
 
-tui-dropdown-box {
+tui-dropdown {
   --tui-elevation-01: rgba(255, 255, 255, 0.03);
   --tui-radius-3: 19px;
   --tui-base-03: rgba(255, 255, 255, 0.1);
@@ -31,7 +31,7 @@ tui-dropdown-box {
 body.hide-unused-ui {
   tui-dialog {
     &[data-size='l'] {
-      > .content {
+      > .t-content {
         border-radius: 20px;
       }
     }
@@ -43,13 +43,13 @@ tui-dialog {
   overflow: hidden;
 
   @include b($mobile-sm-plus) {
-    .header {
+    .t-header {
       flex: auto !important;
       overflow: auto !important;
     }
   }
 
-  > .content {
+  > .t-content {
     background-color: var(--form-background-transparent) !important;
     border: 1px solid var(--transparent-line);
   }
@@ -59,7 +59,7 @@ tui-dialog {
   }
 
   &[data-size='page'] {
-    > .content {
+    > .t-content {
       height: 100%;
       padding: 2rem 1.5rem !important;
     }
@@ -71,7 +71,7 @@ tui-dialog {
 
     border: 7px solid transparent !important;
 
-    > .content {
+    > .t-content {
       height: 100%;
       padding: 1.5em 1.5em 0 !important;
 
@@ -89,7 +89,7 @@ tui-dialog {
     width: 100% !important;
     max-width: 910px !important;
 
-    > .content {
+    > .t-content {
       padding: 32px !important;
     }
   }
@@ -97,7 +97,7 @@ tui-dialog {
   &[data-size='m'] {
     margin-bottom: auto !important;
 
-    > .content {
+    > .t-content {
       height: 100%;
       padding: 1.5em 1.5em 0 !important;
 
@@ -108,7 +108,7 @@ tui-dialog {
   }
 
   &[data-size='s'] {
-    .content {
+    .t-content {
       .heading {
         margin-right: 40px;
 
@@ -117,15 +117,15 @@ tui-dialog {
     }
   }
 
-  .wrapper {
+  .t-wrapper {
     z-index: 1;
   }
 
-  .header {
+  .t-header {
     background: var(--tui-base-01);
   }
 
-  .close {
+  .t-close {
     position: absolute !important;
     top: 18px !important;
     right: 18px !important;
@@ -143,7 +143,7 @@ tui-dialog {
 
 ::ng-deep tui-dialog {
   @include iframe-vertical {
-    .close {
+    .t-close {
       top: 5px !important;
       right: 5px !important;
     }
@@ -180,7 +180,7 @@ tui-dialog-host {
 }
 
 tui-notification {
-  .close {
+  .t-close {
     top: 10px !important;
   }
 }
@@ -201,13 +201,12 @@ tui-notification-alert {
     &[data-size='l'] {
       min-width: calc(100vw + 14px) !important;
       height: 74%;
-      margin-bottom: 0 !important;
       margin-bottom: -7px !important;
       margin-left: -7px !important;
 
       border-radius: 16px 16px 0 0;
 
-      > .content {
+      > .t-content {
         border-radius: 20px 20px 0 0 !important;
       }
     }
@@ -234,7 +233,7 @@ tui-notification-alert {
   }
 }
 
-::ng-deep tui-dialog .content {
+::ng-deep tui-dialog .t-content {
   @include iframe {
     padding: 0 !important;
   }
@@ -244,7 +243,7 @@ tui-notification-alert {
   @include iframe {
     margin-top: 0 !important;
 
-    > div.wrapper {
+    > div.t-wrapper {
       padding-top: 15px;
     }
   }
@@ -260,7 +259,7 @@ tui-value-decoration {
   right: 11px;
 }
 
-html.iframe-horizontal tui-dialog > div.content {
+html.iframe-horizontal tui-dialog > div.t-content {
   padding: 0.5rem 2rem !important;
 }
 
@@ -272,14 +271,14 @@ html.iframe-horizontal tui-dialog {
   }
 }
 
-html.iframe-vertical tui-dialog > div.content {
+html.iframe-vertical tui-dialog > div.t-content {
   height: 100%;
   padding: 0 !important;
 
   border-radius: 20px;
 }
 
-html.iframe-vertical tui-dialog > div.content > h2 {
+html.iframe-vertical tui-dialog > div.t-content > h2 {
   padding: 2rem 0.5rem 0 1rem;
 }
 
@@ -292,19 +291,19 @@ html.iframe-horizontal tui-hint-box {
 }
 
 
-tui-wrapper[data-appearance='textfield'] {
+.t-wrapper[data-appearance='textfield'] {
   --tui-base-03: rgba(255, 255, 255, 0.1);
   background: transparent !important;
 }
 
-tui-wrapper[data-appearance='secondary'] {
+.t-wrapper[data-appearance='secondary'] {
   &:hover,
   &:active {
     background-color: var(--tui-secondary-hover);
   }
 }
 
-tui-wrapper[data-appearance='outline'] {
+.t-wrapper[data-appearance='outline'] {
   color: var(--primary-color);
 
   &::after {
@@ -313,13 +312,13 @@ tui-wrapper[data-appearance='outline'] {
 }
 
 :not(app-swap-button-container) {
-  app-rubic-button tui-wrapper[data-appearance='secondary'] {
+  app-rubic-button .t-wrapper[data-appearance='secondary'] {
     border: 1px solid var(--transparent-line);
   }
 }
 
 .light tui-toggle {
-  tui-wrapper[data-appearance='secondary'] {
+  .t-wrapper[data-appearance='secondary'] {
     &::after,
     .circle {
       border: 1px solid var(--transparent-line);
@@ -331,6 +330,6 @@ tui-wrapper[data-appearance='outline'] {
   }
 }
 
-.light tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+.light .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
   border: 1px solid var(--transparent-line);
 }

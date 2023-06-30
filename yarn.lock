@@ -2196,10 +2196,24 @@
   dependencies:
     tslib "^2.2.0"
 
+"@ng-web-apis/mutation-observer@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-web-apis/mutation-observer/-/mutation-observer-3.0.1.tgz#61586fa0766d1645a88a83aacedb76d1b1953410"
+  integrity sha512-ChzNd/Q4R+wZEHBIqnffX9BsWlHgLxhA0BtJ5OLLnBeUQ/A1O+6v20qfrVmjMzgFqB8SpF+0c9j6SpWpsZHjWw==
+  dependencies:
+    tslib "^2.2.0"
+
 "@ng-web-apis/resize-observer@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@ng-web-apis/resize-observer/-/resize-observer-2.0.0.tgz#e78e208ef33f69322ad67848bb3b3ea182b0e6dc"
   integrity sha512-umuXJepTYBCI3ZcW9873fozO0qt1PeHLBNM+wXA+7Wphy35+RQcPNmkwfgkKqWceIjlYAvyuPTNWa5TM1OEeqg==
+  dependencies:
+    tslib "^2.2.0"
+
+"@ng-web-apis/resize-observer@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@ng-web-apis/resize-observer/-/resize-observer-3.0.1.tgz#a27b09089956527691ba832745be1018bca19e98"
+  integrity sha512-2rtkX3EeS0Qk6s1lzI5PaLYvDPuC4FT4WBS0yhmI6e8ipoJttNNB+sCLgd5aWarcMXMFWIcWqpmcJxzFFF73Fg==
   dependencies:
     tslib "^2.2.0"
 
@@ -13240,6 +13254,11 @@ query-string@^5.0.1:
     decode-uri-component "^0.2.0"
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
+
+querystring-es3@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/querystring-es3/-/querystring-es3-0.2.1.tgz#9ec61f79049875707d69414596fd907a4d711e73"
+  integrity sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==
 
 queue-microtask@^1.2.2:
   version "1.2.3"

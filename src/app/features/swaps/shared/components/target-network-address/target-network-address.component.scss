@@ -42,7 +42,7 @@
       width: 182px;
     }
 
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
       --tui-base-01: transparent;
       border-radius: 50px;
       box-shadow: none;
@@ -85,7 +85,7 @@
         }
       }
 
-      .content {
+      .t-content {
         padding-left: 33px !important;
 
         @include iframe {

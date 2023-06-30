@@ -1,21 +1,19 @@
 import {
   Component,
   ChangeDetectionStrategy,
-  Input,
   ViewChild,
   TemplateRef,
-  Inject,
-  Injector,
   OnInit,
-  Self
+  Self,
+  Output,
+  EventEmitter
 } from '@angular/core';
 import { TuiHostedDropdownComponent } from '@taiga-ui/core';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SettingsListComponent } from 'src/app/core/header/components/header/components/settings-list/settings-list.component';
-import { SettingsComponentData } from 'src/app/core/header/models/settings-component';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
@@ -26,50 +24,37 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   providers: [TuiDestroyService]
 })
 export class SettingsComponent implements OnInit {
-  @Input() displaySettings = false;
+  @ViewChild(TuiHostedDropdownComponent) component?: TuiHostedDropdownComponent;
 
-  @ViewChild(TuiHostedDropdownComponent)
-  component?: TuiHostedDropdownComponent;
-
-  public isSettingsOpened = false;
+  @Output() handleClose = new EventEmitter<void>();
 
   public isDefaultComponent: boolean = true;
 
-  public readonly isMobile$: Observable<boolean>;
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public template: TemplateRef<unknown>;
 
+  public defaultComponent = {
+    titleKey: 'Settings',
+    component: new PolymorpheusComponent(SettingsListComponent)
+  };
+
   // eslint-disable-next-line rxjs/no-exposed-subjects
-  public currentComponent$: BehaviorSubject<SettingsComponentData>;
-
-  public defaultComponent: SettingsComponentData;
-
-  /**
-   * Gets current visible component.
-   * @return currentComponent$
-   */
-  public get dynamicComponent$(): Observable<SettingsComponentData> {
-    return this.currentComponent$.asObservable();
-  }
+  public readonly _currentComponent$ = new BehaviorSubject(this.defaultComponent);
 
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
-    @Self() private readonly destroy$: TuiDestroyService,
-    @Inject(Injector) public readonly injector: Injector
-  ) {
-    this.defaultComponent = {
-      titleKey: 'Settings',
-      component: new PolymorpheusComponent(SettingsListComponent)
-    };
-    this.currentComponent$ = new BehaviorSubject(this.defaultComponent);
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
-  }
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {}
 
   public ngOnInit(): void {
-    this.currentComponent$.pipe(takeUntil(this.destroy$)).subscribe(({ titleKey }) => {
-      this.isDefaultComponent = titleKey === this.defaultComponent.titleKey;
-    });
+    this._currentComponent$
+      .asObservable()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ titleKey }) => {
+        this.isDefaultComponent = titleKey === this.defaultComponent.titleKey;
+      });
   }
 
   /**
@@ -83,13 +68,13 @@ export class SettingsComponent implements OnInit {
    * Switches to default component.
    */
   public backToSettings(): void {
-    this.currentComponent$.next(this.defaultComponent);
+    this._currentComponent$.next(this.defaultComponent);
   }
 
   /**
    * Close dropdown with settings.
    */
   public closeSettings(): void {
-    this.isSettingsOpened = false;
+    this.handleClose.emit();
   }
 }

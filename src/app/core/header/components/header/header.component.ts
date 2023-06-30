@@ -57,6 +57,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
+  public settingsOpened = false;
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
@@ -116,6 +118,9 @@ export class HeaderComponent implements AfterViewInit {
       });
     }
     this.swapType$ = this.swapTypeService.swapMode$;
+    setInterval(() => {
+      console.log(this.settingsOpened);
+    }, 500);
   }
 
   public ngAfterViewInit(): void {

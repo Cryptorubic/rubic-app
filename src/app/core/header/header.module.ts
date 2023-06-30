@@ -13,7 +13,8 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiDropdownModule
+  TuiDropdownModule,
+  TuiDialogModule
 } from '@taiga-ui/core';
 import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
@@ -94,7 +95,8 @@ import { PointsButtonComponent } from './components/header/components/points-but
     ClipboardModule,
     HistoryModule,
     InstantTradeModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiDialogModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

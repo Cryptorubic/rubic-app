@@ -1,5 +1,5 @@
 @use 'src/scss/core' as *;
 
-::ng-deep app-rubic-button tui-wrapper[data-appearance='primary'] {
+::ng-deep app-rubic-button .t-wrapper[data-appearance='primary'] {
   color: black;
 }

@@ -74,13 +74,13 @@ html.dark {
     }
   }
 
-  app-rubic-button tui-wrapper[data-appearance='secondary'] {
+  app-rubic-button .t-wrapper[data-appearance='secondary'] {
     border: 1px solid transparent;
   }
 
   @media (max-width: 651px) {
-    app-swap-button-container tui-wrapper[data-appearance='secondary'],
-    app-swap-button-container tui-wrapper[data-appearance='primary'] {
+    app-swap-button-container .t-wrapper[data-appearance='secondary'],
+    app-swap-button-container .t-wrapper[data-appearance='primary'] {
       border: 1px solid var(--transparent-line);
     }
   }

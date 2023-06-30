@@ -138,7 +138,7 @@
   }
 
   ::ng-deep {
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
 
       padding-right: 5px;
 
@@ -157,11 +157,11 @@
       }
     }
 
-    input + .content .placeholder {
+    input + .t-content .placeholder {
       text-align: right;
     }
 
-    .wrapper {
+    .t-wrapper {
       display: flex;
     }
 
@@ -191,7 +191,7 @@
 
     &.ng-invalid {
       ::ng-deep {
-        tui-wrapper[data-appearance='textfield'] {
+        .t-wrapper[data-appearance='textfield'] {
           &::after {
             color: transparent;
 
@@ -204,7 +204,7 @@
   }
 
   ::ng-deep {
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
       width: 256px;
       padding: 10px;
 

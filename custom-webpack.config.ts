@@ -8,6 +8,11 @@ export default (
   _: CustomWebpackBrowserSchema,
   targetOptions: TargetOptions
 ) => {
+  config.resolve.fallback = {
+    ...config.resolve.fallback,
+    querystring: require.resolve('querystring-es3')
+  };
+
   if (targetOptions.configuration === 'sdk') {
     const sdkDirectory = '../rubic-sdk/';
     const sdkDirectoryExists = fs.existsSync(sdkDirectory);

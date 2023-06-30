@@ -44,11 +44,11 @@
       border-radius: $border-radius-2;
     }
 
-    .content {
+    .t-content {
       padding: 0 24px 24px;
     }
 
-    > .wrapper {
+    > .t-wrapper {
       background: transparent !important;
       border-color: unset;
       border-radius: $border-radius-2;
@@ -61,7 +61,7 @@
 
   &__opened {
     ::ng-deep {
-      > .wrapper {
+      > .t-wrapper {
         background: var(--form-background) !important;
         border: 1px solid var(--transparent-line);
       }

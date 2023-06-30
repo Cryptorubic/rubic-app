@@ -5,7 +5,7 @@
     [class.settings-list__item_pointer]="!!item.action"
     [title]="item.title"
     [desc]="item.description"
-    (click)="item.action && item.action()"
+    (click)="item?.action()"
     [component]="item.component"
     [withAction]="item.arrow"
   >

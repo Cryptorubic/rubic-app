@@ -36,7 +36,7 @@
         }
       }
 
-      .wrapper {
+      .t-wrapper {
         padding: 0 14px !important;
 
         @include b($tablet) {
@@ -121,7 +121,7 @@
       }
     }
 
-    ::ng-deep tui-wrapper[data-appearance='primary'] {
+    ::ng-deep .t-wrapper[data-appearance='primary'] {
       color: black;
     }
 

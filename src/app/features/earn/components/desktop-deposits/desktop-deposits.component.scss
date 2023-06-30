@@ -56,7 +56,7 @@
           height: 27px;
         }
 
-        tui-wrapper[data-appearance='secondary'] {
+        .t-wrapper[data-appearance='secondary'] {
           background: var(--tui-secondary);
         }
 
@@ -64,7 +64,7 @@
           font-size: unset;
         }
 
-        .wrapper {
+        .t-wrapper {
           padding: 0 10px;
         }
       }

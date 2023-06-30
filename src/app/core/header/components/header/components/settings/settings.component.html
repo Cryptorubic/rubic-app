@@ -1,4 +1,4 @@
-<ng-container *ngLet="dynamicComponent$ | async as currentComponentData">
+<ng-container *ngLet="_currentComponent$ | async as currentComponentData">
   <aside class="header-settings">
     <app-header-settings
       [title]="currentComponentData.titleKey"
@@ -7,6 +7,6 @@
       (backClick)="backToSettings()"
     ></app-header-settings>
 
-    <div *polymorpheusOutlet="currentComponentData.component; context: currentComponent$"></div>
+    <div *polymorpheusOutlet="currentComponentData.component; context: _currentComponent$"></div>
   </aside>
 </ng-container>

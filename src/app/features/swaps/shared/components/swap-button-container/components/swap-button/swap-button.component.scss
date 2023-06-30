@@ -9,7 +9,7 @@
         }
       }
 
-      tui-wrapper[data-appearance='secondary'] {
+      .t-wrapper[data-appearance='secondary'] {
         background-color: #d6bd27;
 
         &[data-state='pressed'] {
@@ -27,7 +27,7 @@
         }
 
         &._disabled {
-          tui-wrapper {
+          .t-wrapper {
             color: white;
 
             background-color: #f5474a;
@@ -36,7 +36,7 @@
         }
       }
 
-      tui-wrapper[data-appearance='secondary'] {
+      .t-wrapper[data-appearance='secondary'] {
         background-color: #f5474a;
 
         &[data-state='pressed'] {

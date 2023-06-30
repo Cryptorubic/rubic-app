@@ -28,7 +28,7 @@ tui-input {
       }
     }
 
-    .wrapper {
+    .t-wrapper {
       z-index: auto;
     }
   }
@@ -42,11 +42,11 @@ tui-input {
   tui-input ::ng-deep {
     --tui-height-l: 54px;
 
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
       background: #282828;
     }
 
-    tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+    .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
       border: 0;
     }
   }
