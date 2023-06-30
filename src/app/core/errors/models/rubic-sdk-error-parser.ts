@@ -150,7 +150,7 @@ export class RubicSdkErrorParser {
   public static parseError(
     err: RubicError<ERROR_TYPE> | RubicSdkError | Error
   ): RubicError<ERROR_TYPE> {
-    if (err instanceof RubicError<ERROR_TYPE>) {
+    if (err instanceof RubicError) {
       return err;
     }
 

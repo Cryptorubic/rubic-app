@@ -4,7 +4,7 @@ import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiDialogModule, TuiNotificationsModule, TuiRootModule } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
-import { Event, Router, Scroll } from '@angular/router';
+import { NavigationEnd, Router, Scroll } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { filter, pairwise } from 'rxjs/operators';
 import { CoreModule } from '@core/core.module';
@@ -51,10 +51,10 @@ export class AppModule {
   private setScrollStrategy(): void {
     this.router.events
       .pipe(
-        filter((e: Event): e is Scroll => e instanceof Scroll),
+        filter((e): e is Scroll => e instanceof Scroll),
         pairwise()
       )
-      .subscribe(([prevEvent, event]) => {
+      .subscribe(([prevEvent, event]: [Scroll, Scroll]) => {
         if (event.position) {
           // backward navigation
           this.viewportScroller.scrollToPosition(event.position);
@@ -62,8 +62,10 @@ export class AppModule {
           // anchor navigation
           this.viewportScroller.scrollToAnchor(event.anchor);
         } else if (
+          prevEvent.routerEvent instanceof NavigationEnd &&
+          event.routerEvent instanceof NavigationEnd &&
           prevEvent.routerEvent.urlAfterRedirects.split('?')[0] !==
-          event.routerEvent.urlAfterRedirects.split('?')[0]
+            event.routerEvent.urlAfterRedirects.split('?')[0]
         ) {
           // forward navigation
           this.viewportScroller.scrollToPosition([0, 0]);
