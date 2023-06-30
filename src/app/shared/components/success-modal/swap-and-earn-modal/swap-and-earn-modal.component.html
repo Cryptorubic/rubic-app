@@ -27,7 +27,8 @@
             *noFrame
             class="modal__footer-text"
             [innerHTML]="
-              (type === 'cross-chain-routing' && ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER
+              (type === 'cross-chain-routing' &&
+              ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER_BRIDGE
                 ? 'modals.successTxModal.seeDetailsCCR'
                 : 'modals.successTxModal.seeDetailsItBridge'
               )
