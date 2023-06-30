@@ -13883,34 +13883,10 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.1.0-beta.0:
-  version "4.1.0-beta.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.1.0-beta.0.tgz#81dd834b4ea1ac1300eca98f1607b5d6b7e12b91"
-  integrity sha512-+/gCFIepD5lhumVBA6I9DM5gxkzxeNuc8tyrOfurFh0yPAK+vpF5Fh0UGiQWqKCWTLMfoAOnlQq2ZNJSm++bsg==
-  dependencies:
-    "@1inch/limit-order-protocol-utils" "^3.0.0"
-    "@layerzerolabs/scan-client" "^0.0.0-beta.6"
-    "@lifi/sdk" "^1.6.3"
-    "@viaprotocol/router-sdk" "^1.0.7"
-    assert "^2.0.0"
-    axios "^0.26.1"
-    bignumber.js "9.1.0"
-    bitcoin-address-validation "2.2.1"
-    cbridge-revert-manager "1.1.0"
-    crc32 "^0.2.2"
-    ethers "^5.6.8"
-    grpc-web "^1.4.2"
-    lodash.clonedeep "^4.5.0"
-    rango-sdk-basic "^0.0.7"
-    rxjs "^7.8.0"
-    symbiosis-js-sdk "2.9.40"
-    tronweb "^4.3.0"
-    web3 "^1.8.1"
-
-rubic-sdk@4.5.3-alpha-dln.4:
-  version "4.5.3-alpha-dln.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.5.3-alpha-dln.4.tgz#e03a8379a2c339fef9b4fad714e9aadaa553ca3f"
-  integrity sha512-mcduHgfMWEHt+Te2zkwo28qLMaTRy7ZcbnG2TdZn24R7AzTk0N70uUMfg4cwJiEvRRwhhwUE966/7uYeKcRzcA==
+rubic-sdk@4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.5.3.tgz#a62bad734e2d6ab94362f09a1bf221a7b0aa91b5"
+  integrity sha512-LuB9lWJhoSiMo9ImArytTeXbXbt9xf9p+6JvCy1UW4uCoLpHWmOpwiQKBZR5bgQi4KeNJxkj4OHWvNgYH2G5Mg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "^3.0.0"
     "@arbitrum/sdk" "^3.1.3"

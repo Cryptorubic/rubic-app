@@ -58,14 +58,12 @@ export class AuthService {
    */
   public async loadStorageUser(): Promise<void> {
     const success = await this.walletConnectorService.setupProvider();
+    this._currentUser$.next(null);
     if (!success) {
-      this._currentUser$.next(null);
       return;
     }
 
-    await this.connectWallet({
-      hideError: true
-    });
+    this.connectWallet({ hideError: true });
   }
 
   public async connectWallet(options: {
