@@ -66,6 +66,7 @@ import {
 import { ModalService } from '@app/core/modals/services/modal.service';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
+import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 
 @Injectable()
 export class CrossChainFormService {
@@ -905,6 +906,23 @@ export class CrossChainFormService {
         this.isSwapStarted === SWAP_PROCESS.SWAP_STARTED
       ) {
         this.isSwapStarted = SWAP_PROCESS.NONE;
+      }
+
+      if (parsedError instanceof CrossChainAmountChangeWarning) {
+        const currentTrade = this.taggedTrades.find(
+          trade => trade.tradeType === parsedError.trade.type
+        );
+        if (!currentTrade) {
+          return;
+        }
+        const newTrade = {
+          ...currentTrade,
+          trade: parsedError.trade
+        };
+        this.updateTradesList(newTrade);
+        if (this.selectedTrade.tradeType === parsedError.trade.type) {
+          this.updateSelectedTrade(newTrade);
+        }
       }
 
       this.errorsService.catch(parsedError);
