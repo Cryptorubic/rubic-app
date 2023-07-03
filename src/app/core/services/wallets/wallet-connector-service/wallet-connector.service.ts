@@ -33,6 +33,7 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
+import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.BITKEEP) {
+      return new BitkeepWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_LINK) {

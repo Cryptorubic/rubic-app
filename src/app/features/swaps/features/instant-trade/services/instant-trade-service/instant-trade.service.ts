@@ -46,7 +46,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
 export class InstantTradeService extends TradeCalculationService {
@@ -97,10 +96,21 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly tokensService: TokensService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly tokensService: TokensService
   ) {
     super('on-chain');
+  }
+
+  private static isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
+    if (trade instanceof EvmOnChainTrade) {
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
+        return false;
+      }
+
+      return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
+    }
+
+    return false;
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
@@ -256,14 +266,11 @@ export class InstantTradeService extends TradeCalculationService {
 
     const receiverAddress = this.receiverAddress;
 
-    const isSwapAndEarnSwap =
-      trade instanceof EvmOnChainTrade && trade.from.blockchain !== BLOCKCHAIN_NAME.ZK_SYNC
-        ? trade.feeInfo.rubicProxy.fixedFee.amount.gt(0)
-        : false;
-
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
     );
+
+    const isSwapAndEarnTrade = InstantTradeService.isSwapAndEarnSwap(trade);
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
@@ -283,17 +290,13 @@ export class InstantTradeService extends TradeCalculationService {
           fromAmount.multipliedBy(fromPrice)
         );
 
-        subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnSwap);
+        subscription$ = this.notifyTradeInProgress(hash, blockchain, isSwapAndEarnTrade);
 
-        this.postTrade(hash, providerName, trade, isSwapAndEarnSwap);
+        this.postTrade(hash, providerName, trade, isSwapAndEarnTrade);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress })
-      // ...(trade instanceof EvmOnChainTrade &&
-      //   trade.gasFeeInfo.gasLimit && {
-      //     gasLimit: trade.gasFeeInfo.gasLimit.toFixed()
-      //   })
     };
 
     try {
