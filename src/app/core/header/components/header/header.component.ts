@@ -118,9 +118,6 @@ export class HeaderComponent implements AfterViewInit {
       });
     }
     this.swapType$ = this.swapTypeService.swapMode$;
-    setInterval(() => {
-      console.log(this.settingsOpened);
-    }, 500);
   }
 
   public ngAfterViewInit(): void {
