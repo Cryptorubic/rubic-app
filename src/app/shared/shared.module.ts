@@ -78,6 +78,7 @@ import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/t
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
+import { LiveChatComponent } from './components/live-chat/live-chat.component';
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridg
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    CommaToPeriodDirective
+    CommaToPeriodDirective,
+    LiveChatComponent
   ],
   imports: [
     CommonModule,
@@ -212,7 +214,8 @@ import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridg
     TradeRowComponent,
     CommaToPeriodDirective,
     SwapAndEarnModalComponent,
-    SuccessWithdrawModalComponent
+    SuccessWithdrawModalComponent,
+    LiveChatComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

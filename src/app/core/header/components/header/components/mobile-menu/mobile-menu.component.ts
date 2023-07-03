@@ -4,11 +4,8 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { Observable } from 'rxjs';
-import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DOCUMENT } from '@angular/common';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
-
-declare var LiveChatWidget: RubicAny;
 
 @Component({
   selector: 'app-mobile-menu',
@@ -34,16 +31,18 @@ export class MobileMenuComponent {
   ) {}
 
   private toggleLiveChatContainerHeight(action: string): void {
-    const liveChat = this.document.getElementById('chat-widget-container') as HTMLDivElement;
+    const iframe = this.document.getElementById('live-chat-iframe') as HTMLIFrameElement;
 
     if (action === 'hide') {
-      LiveChatWidget.call('minimize');
-      liveChat.classList.remove('visible');
+      iframe.contentWindow.postMessage({ type: 'lc_visibility', value: 'minimize' }, '*');
+      iframe.width = '';
+      iframe.height = '';
     }
 
     if (action === 'show') {
-      LiveChatWidget.call('maximize');
-      liveChat.classList.add('visible');
+      iframe.contentWindow.postMessage({ type: 'lc_visibility', value: 'maximize' }, '*');
+      iframe.height = '560px';
+      iframe.width = '375px';
     }
   }
 
