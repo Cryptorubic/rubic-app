@@ -38,5 +38,13 @@ export default (
     }
   }
 
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    '@walletconnect/ethereum-provider': path.resolve(
+      __dirname,
+      'node_modules/@walletconnect/ethereum-provider/dist/index.umd.js'
+    )
+  };
+
   return config;
 };
