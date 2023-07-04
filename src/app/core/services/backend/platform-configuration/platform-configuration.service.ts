@@ -11,7 +11,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   LifiBridgeTypes,
-  RangoBridgeTypes,
   BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
@@ -20,7 +19,6 @@ import { CrossChainProviderStatus } from '@core/services/backend/platform-config
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 
 interface DisabledBridgeTypes {
-  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoBridgeTypes[];
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
 }
 
@@ -151,10 +149,6 @@ export class PlatformConfigurationService {
     const disabledBridgeTypes = crossChainProvidersEntries
       .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
-        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
-          acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = disabledProviders as RangoBridgeTypes[];
-        }
-
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
           acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiBridgeTypes[];
         }

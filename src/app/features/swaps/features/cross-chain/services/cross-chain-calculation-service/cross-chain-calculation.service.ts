@@ -7,10 +7,8 @@ import {
   CrossChainTradeType,
   LifiCrossChainTrade,
   NotWhitelistedProviderError,
-  RangoCrossChainTrade,
   SwapTransactionOptions,
   UnnecessaryApproveError,
-  ViaCrossChainTrade,
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
@@ -153,7 +151,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
       ],
-      rangoDisabledBridgeTypes: disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       useProxy: this.platformConfigurationService.useCrossChainChainProxy
@@ -237,12 +234,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       return smartRouting;
     }
 
-    if (
-      (wrappedTrade.trade instanceof LifiCrossChainTrade ||
-        wrappedTrade.trade instanceof ViaCrossChainTrade ||
-        wrappedTrade.trade instanceof RangoCrossChainTrade) &&
-      wrappedTrade.trade.bridgeType
-    ) {
+    if (wrappedTrade.trade instanceof LifiCrossChainTrade && wrappedTrade.trade.bridgeType) {
       return {
         ...smartRouting,
         bridgeProvider: wrappedTrade.trade.bridgeType
@@ -314,10 +306,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       }
 
       const timestamp = Date.now();
-      const viaUuid =
-        calculatedTrade.trade instanceof ViaCrossChainTrade && calculatedTrade.trade.uuid;
-      const rangoRequestId =
-        calculatedTrade.trade instanceof RangoCrossChainTrade && calculatedTrade.trade.requestId;
+
       const changenowId =
         calculatedTrade.trade instanceof ChangenowCrossChainTrade && calculatedTrade.trade.id;
 
@@ -333,8 +322,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
 
-        ...(viaUuid && { viaUuid }),
-        ...(rangoRequestId && { rangoRequestId }),
         ...(changenowId && { changenowId })
       };
 
@@ -464,12 +451,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       };
     }
 
-    const viaUuid =
-      calculatedTrade.trade instanceof ViaCrossChainTrade ? calculatedTrade.trade.uuid : undefined;
-    const rangoRequestId =
-      calculatedTrade.trade instanceof RangoCrossChainTrade
-        ? calculatedTrade.trade.requestId
-        : undefined;
     const amountOutMin = calculatedTrade.trade.toTokenAmountMin.toFixed();
     const changenowId =
       calculatedTrade.trade instanceof ChangenowCrossChainTrade
@@ -484,8 +465,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       crossChainProvider: calculatedTrade.tradeType,
       srcTxHash: txHash,
       bridgeType: bridgeProvider,
-      viaUuid,
-      rangoRequestId,
       timestamp,
       amountOutMin,
       changenowId,
