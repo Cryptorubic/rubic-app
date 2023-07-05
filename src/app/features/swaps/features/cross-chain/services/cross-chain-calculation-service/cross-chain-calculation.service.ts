@@ -147,7 +147,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      // @TODO CCR
       disabledProviders: disabledProviders,
       lifiDisabledBridgeTypes: [
         ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
