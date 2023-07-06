@@ -19,8 +19,14 @@
 
   tui-input {
     ::ng-deep {
+      background: transparent;
+
       input {
         padding: 0;
+      }
+
+      .t-placeholder {
+        font-size: 14px;
       }
     }
   }
