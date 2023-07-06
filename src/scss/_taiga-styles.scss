@@ -28,10 +28,6 @@ tui-dropdown {
   backdrop-filter: blur(50px);
 }
 
-.t-circle {
-  background: var(--transparent-line) !important;
-}
-
 body.hide-unused-ui {
   tui-dialog {
     &[data-size='l'] {
@@ -174,10 +170,10 @@ tui-dialog-host {
   overflow-y: auto;
 
   > div {
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px) !important;
   }
 
-  .overlay {
+  .t-overlay {
     overflow: inherit !important;
 
     background: rgb(0 0 0 / 0%) !important;
@@ -340,11 +336,11 @@ html.iframe-horizontal tui-hint-box {
 .light tui-toggle {
   .t-wrapper[data-appearance='secondary'] {
     &::after,
-    .circle {
+    .t-circle {
       border: 1px solid var(--transparent-line);
     }
 
-    .circle {
+    .t-circle {
       background: var(--transparent-line);
     }
   }
