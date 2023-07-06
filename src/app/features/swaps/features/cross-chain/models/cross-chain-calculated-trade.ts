@@ -9,6 +9,7 @@ export type CrossChainCalculatedTrade = WrappedCrossChainTrade & {
 export interface CrossChainCalculatedTradeData {
   total: number;
   calculated: number;
+  calculationTime: number;
 
   lastCalculatedTrade: CrossChainCalculatedTrade | null;
 }
