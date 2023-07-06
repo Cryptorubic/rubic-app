@@ -696,7 +696,7 @@
       "claimed": "Claimed",
       "wrongAddressError": "Enter another address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Ethereum",
+      "changeNetwork": "Change Network to Arbitrum",
       "incorrectAddressError": "Entered address is incorrect"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
