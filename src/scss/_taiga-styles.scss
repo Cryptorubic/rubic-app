@@ -82,7 +82,7 @@ tui-dialog {
   }
 
   &[data-size='l'] {
-    width: 51em !important;
+    width: 47em !important;
     margin-bottom: auto !important;
 
     border: 7px solid transparent !important;
@@ -205,7 +205,7 @@ tui-notification {
   font-size: $rubic-font-size-01;
 }
 
-tui-notification-alert {
+tui-alert {
   position: relative;
   top: var(--scroll-size);
 
@@ -243,7 +243,7 @@ tui-notification-alert {
       backdrop-filter: unset;
     }
 
-    .overlay {
+    .t-overlay {
       background-color: rgba(0, 0, 0, 0.4) !important;
     }
   }
@@ -310,6 +310,23 @@ html.iframe-horizontal tui-hint-box {
 .t-wrapper[data-appearance='textfield'] {
   --tui-base-03: rgba(255, 255, 255, 0.1);
   background: transparent !important;
+}
+
+tui-input div[data-appearance='textfield']::after {
+  border: 1px solid var(--transparent-line);
+}
+
+[tuiWrapper]._focused._focused::after {
+  border: 2px solid var(--tui-primary);
+}
+
+[tuiWrapper][data-appearance='textfield'] {
+  background: transparent;
+  box-shadow: none;
+}
+
+[tuiWrapper][data-appearance='textfield'][data-appearance='textfield']::after {
+  border: 1px solid var(--transparent-line);
 }
 
 .t-wrapper[data-appearance='secondary'] {
