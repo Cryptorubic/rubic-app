@@ -199,12 +199,15 @@ export class LimitOrdersService {
       prices = { ...prices, ...additionalTokenPrice };
     }
 
-    let fromTokenPrice = Object.entries(prices).find(([address]) =>
+    const fromTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, fromToken.address)
     )?.[1];
-    let toTokenPrice = Object.entries(prices).find(([address]) =>
+    const toTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, toToken.address)
     )?.[1];
+
+    console.log('fromTokenPrice: ', fromTokenPrice);
+    console.log('toTokenPrice: ', toTokenPrice);
     return { fromTokenPrice, toTokenPrice };
   }
 

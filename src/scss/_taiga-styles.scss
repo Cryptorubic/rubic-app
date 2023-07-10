@@ -351,15 +351,12 @@ tui-input div[data-appearance='textfield']::after {
 }
 
 .light tui-toggle {
-  .t-wrapper[data-appearance='secondary'] {
-    &::after,
-    .t-circle {
-      border: 1px solid var(--transparent-line);
-    }
+  .t-circle {
+    border: 1px solid var(--transparent-line);
+  }
 
-    .t-circle {
-      background: var(--transparent-line);
-    }
+  .t-circle {
+    background: var(--transparent-line);
   }
 }
 
