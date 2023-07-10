@@ -206,8 +206,6 @@ export class LimitOrdersService {
       compareAddresses(address, toToken.address)
     )?.[1];
 
-    console.log('fromTokenPrice: ', fromTokenPrice);
-    console.log('toTokenPrice: ', toTokenPrice);
     return { fromTokenPrice, toTokenPrice };
   }
 
