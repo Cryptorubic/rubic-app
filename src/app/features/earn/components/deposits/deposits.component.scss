@@ -31,6 +31,8 @@
       button {
         height: 27px;
 
+        font-size: 15px;
+
         @include b($tablet) {
           font-size: 14px;
         }

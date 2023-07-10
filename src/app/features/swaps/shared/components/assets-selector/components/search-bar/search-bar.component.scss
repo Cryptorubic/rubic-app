@@ -4,7 +4,7 @@
   --tui-font-text-s: normal 16px/20px var(--tui-font-text);
 }
 
-.placeholder {
+.t-placeholder {
   color: var(--secondary-text);
 
   font-size: 16px;
@@ -18,7 +18,7 @@ tui-input {
       }
     }
 
-    .placeholder {
+    .t-placeholder {
       color: var(--secondary-text);
 
       font-size: 16px;

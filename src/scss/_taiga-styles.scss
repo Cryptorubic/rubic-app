@@ -46,12 +46,12 @@ tui-hint {
     background: var(--tui-base-01) !important;
     border: 1px solid var(--tui-base-03) !important;
 
-    &::before {
-      top: -0.1px;
-
-      border-top: 1px solid white;
-      border-left: 1px solid white;
-    }
+    //&::before {
+    //  top: -0.1px;
+    //
+    //  border-top: 1px solid white;
+    //  border-left: 1px solid white;
+    //}
   }
 }
 
@@ -82,7 +82,7 @@ tui-dialog {
   }
 
   &[data-size='l'] {
-    width: 47em !important;
+    width: 47.85em !important;
     margin-bottom: auto !important;
 
     border: 7px solid transparent !important;
@@ -228,7 +228,7 @@ tui-alert {
     }
   }
 
-  tui-hint-box {
+  tui-hint {
     max-width: 160px !important;
   }
 
@@ -298,11 +298,11 @@ html.iframe-vertical tui-dialog > div.t-content > h2 {
   padding: 2rem 0.5rem 0 1rem;
 }
 
-html.iframe-vertical tui-hint-box {
+html.iframe-vertical tui-hint {
   max-width: 18rem !important;
 }
 
-html.iframe-horizontal tui-hint-box {
+html.iframe-horizontal tui-hint {
   max-width: 36rem !important;
 }
 
