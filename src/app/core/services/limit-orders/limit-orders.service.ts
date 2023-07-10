@@ -185,7 +185,20 @@ export class LimitOrdersService {
    * Gets tokens' prices from 1inch api.
    */
   private async getInchPrices(fromToken: Token, toToken: Token): Promise<RatePrices> {
-    const prices = await firstValueFrom(this.getInchAllPrices(blockchainId[fromToken.blockchain]));
+    const currentBlockchainId = blockchainId[fromToken.blockchain];
+    let prices = await firstValueFrom(this.getInchAllPrices(currentBlockchainId));
+
+    if (
+      currentBlockchainId === blockchainId.ETH ||
+      currentBlockchainId === blockchainId.ARBITRUM ||
+      currentBlockchainId === blockchainId.POLYGON
+    ) {
+      const additionalTokenPrice = await firstValueFrom(
+        this.getInchRBCOrALBGPrices(currentBlockchainId)
+      );
+      prices = { ...prices, ...additionalTokenPrice };
+    }
+
     let fromTokenPrice = Object.entries(prices).find(([address]) =>
       compareAddresses(address, fromToken.address)
     )?.[1];
@@ -202,6 +215,29 @@ export class LimitOrdersService {
     return this.httpClient.get<Record<string, string>>(
       `https://token-prices.1inch.io/v1.1/${chainId}`
     );
+  }
+
+  @Cacheable({
+    maxAge: 15_000
+  })
+  private getInchRBCOrALBGPrices(chainId: number): Observable<Record<string, string>> {
+    if (chainId === blockchainId.ETH) {
+      return this.httpClient.get<Record<string, string>>(
+        `https://token-prices.1inch.io/v1.1/${chainId}/0x3330BFb7332cA23cd071631837dC289B09C33333`
+      );
+    }
+
+    if (chainId === blockchainId.ARBITRUM) {
+      return this.httpClient.get<Record<string, string>>(
+        `https://token-prices.1inch.io/v1.1/${chainId}/0x10aaed289a7b1b0155bf4b86c862f297e84465e0`
+      );
+    }
+
+    if (chainId === blockchainId.POLYGON) {
+      return this.httpClient.get<Record<string, string>>(
+        `https://token-prices.1inch.io/v1.1/${chainId}/0x0169ec1f8f639b32eec6d923e24c2a2ff45b9dd6`
+      );
+    }
   }
 
   /**
