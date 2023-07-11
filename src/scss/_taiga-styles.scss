@@ -46,12 +46,9 @@ tui-hint {
     background: var(--tui-base-01) !important;
     border: 1px solid var(--tui-base-03) !important;
 
-    //&::before {
-    //  top: -0.1px;
-    //
-    //  border-top: 1px solid white;
-    //  border-left: 1px solid white;
-    //}
+    &::before {
+      display: none;
+    }
   }
 }
 
@@ -321,10 +318,6 @@ tui-input div[data-appearance='textfield']::after {
   box-shadow: none;
 }
 
-[tuiWrapper][data-appearance='textfield'][data-appearance='textfield']::after {
-  border: 1px solid var(--transparent-line);
-}
-
 .t-wrapper[data-appearance='secondary'] {
   &:hover,
   &:active {
@@ -356,6 +349,6 @@ tui-input div[data-appearance='textfield']::after {
   }
 }
 
-.light .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+.light [tuiWrapper][data-appearance='textfield'][data-appearance='textfield']::after {
   border: 1px solid var(--transparent-line);
 }

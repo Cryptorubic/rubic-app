@@ -13,6 +13,8 @@
 tui-input {
   ::ng-deep {
     input {
+      padding: 0 5px 0 40px !important;
+
       @include b($mobile-sm-middle) {
         font-size: 16px !important;
       }
@@ -30,6 +32,16 @@ tui-input {
 
     .t-wrapper {
       z-index: auto;
+
+      order: 1;
+    }
+
+    .t-icon {
+      margin-right: 10px !important;
+
+      use {
+        font-size: 0.7rem;
+      }
     }
   }
 }

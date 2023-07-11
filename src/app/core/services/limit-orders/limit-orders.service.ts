@@ -194,7 +194,7 @@ export class LimitOrdersService {
       currentBlockchainId === blockchainId.POLYGON
     ) {
       const additionalTokenPrice = await firstValueFrom(
-        this.getInchRBCOrALBGPrices(currentBlockchainId)
+        this.getProjectTokenPrices(currentBlockchainId)
       );
       prices = { ...prices, ...additionalTokenPrice };
     }
@@ -221,7 +221,7 @@ export class LimitOrdersService {
   @Cacheable({
     maxAge: 15_000
   })
-  private getInchRBCOrALBGPrices(chainId: number): Observable<Record<string, string>> {
+  private getProjectTokenPrices(chainId: number): Observable<Record<string, string>> {
     if (chainId === blockchainId.ETH) {
       return this.httpClient.get<Record<string, string>>(
         `https://token-prices.1inch.io/v1.1/${chainId}/0x3330BFb7332cA23cd071631837dC289B09C33333`
