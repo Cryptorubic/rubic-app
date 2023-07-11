@@ -110,7 +110,7 @@ export class LimitOrdersService {
         hash,
         blockchain,
         'on-chain',
-        CROSS_CHAIN_TRADE_TYPE.CELER,
+        CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE,
         () =>
           this.notificationsService.showWithoutSubscribe(
             new PolymorpheusComponent(ProgressTrxNotificationComponent),
