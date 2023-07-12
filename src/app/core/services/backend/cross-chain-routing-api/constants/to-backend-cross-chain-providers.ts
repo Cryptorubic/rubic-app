@@ -1,6 +1,6 @@
 import { CrossChainTradeType, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
-export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
+const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]: 'symbiosis',
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
@@ -12,4 +12,10 @@ export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, strin
   [CROSS_CHAIN_TRADE_TYPE.STARGATE]: 'stargate',
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: 'rbc_arbitrum_bridge',
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter'
+} as const;
+
+export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
+  ...toProviders
 };
+
+export type ToBackendCrossChainProviders = typeof toProviders[keyof typeof toProviders];

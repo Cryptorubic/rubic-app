@@ -17,6 +17,7 @@ import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/c
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
+import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
@@ -117,9 +118,12 @@ export class PlatformConfigurationService {
   }
 
   private handleCrossChainProxyProviders(crossChainProviders: {
-    [key: string]: CrossChainProviderStatus;
+    [k in string]: CrossChainProviderStatus;
   }): void {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders);
+    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+      ToBackendCrossChainProviders,
+      CrossChainProviderStatus
+    ][];
     if (!crossChainProvidersEntries.length) {
       return;
     }
@@ -133,9 +137,12 @@ export class PlatformConfigurationService {
   }
 
   private mapDisabledProviders(crossChainProviders: {
-    [key: string]: CrossChainProviderStatus;
+    [k in string]: CrossChainProviderStatus;
   }): ProvidersConfiguration {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders);
+    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+      ToBackendCrossChainProviders,
+      CrossChainProviderStatus
+    ][];
 
     if (!crossChainProvidersEntries.length) {
       return { disabledBridgeTypes: undefined, disabledCrossChainTradeTypes: undefined };
