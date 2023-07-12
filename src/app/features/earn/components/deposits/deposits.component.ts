@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { Deposit } from '../../models/deposit.inteface';
 import { StakingService } from '../../services/staking.service';
 import { filter, map, take, switchMap, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { StakingModalService } from '../../services/staking-modal.service';
@@ -58,7 +58,10 @@ export class DepositsComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.stakingService.loadDeposits().pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
+    this.stakingService
+      .loadDeposits()
+      .pipe(tuiWatch(this.cdr), takeUntil(this.destroy$))
+      .subscribe();
   }
 
   public async startClaim(deposit: Deposit): Promise<void> {

@@ -138,14 +138,14 @@
     }
 
     &_small-input {
-      ::ng-deep tui-wrapper[data-appearance='textfield'] {
+      ::ng-deep .t-wrapper[data-appearance='textfield'] {
         width: 80px;
       }
     }
   }
 
   ::ng-deep {
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
       color: var(--primary-text);
 
       border-radius: 100px;
@@ -161,11 +161,11 @@
       }
     }
 
-    input + .content .placeholder {
+    input + .t-content .t-placeholder {
       text-align: right;
     }
 
-    .wrapper {
+    .t-wrapper {
       display: flex;
     }
 

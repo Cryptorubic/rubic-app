@@ -2,10 +2,10 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { IWalletConnectProviderOptions } from '@walletconnect/types';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
+import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.TRUST_WALLET;
@@ -18,11 +18,18 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     window: RubicWindow,
     private readonly isIos: boolean
   ) {
-    const providerConfig: IWalletConnectProviderOptions = {
-      bridge: 'https://bridge.walletconnect.org',
-      qrcode: false
-    };
-    super(providerConfig, accountChange$, chainChange$, errorsService, zone, window);
+    super(
+      {
+        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
+        chains: WALLET_CONNECT_SUPPORTED_CHAINS,
+        showQrModal: false
+      },
+      accountChange$,
+      chainChange$,
+      errorsService,
+      zone,
+      window
+    );
 
     this.initDisplaySubscription();
   }
@@ -31,7 +38,8 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
    * Subscribes to wallet connect deep link url and redirects after getting.
    */
   private initDisplaySubscription(): void {
-    this.wallet.connector.on('display_uri', (err: unknown, payload: { params: string[] }) => {
+    //@ts-ignore
+    this.wallet.on('display_uri', (err: unknown, payload: { params: string[] }) => {
       if (err) {
         console.debug(err);
         return;

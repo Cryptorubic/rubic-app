@@ -91,8 +91,13 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-settings-toggler *noFrame class="rubic-header__settings">
-      <app-settings></app-settings>
+    <app-settings-toggler
+      *noFrame
+      [settingsOpened]="settingsOpened"
+      (changeSettingsVisibility)="settingsOpened = $event"
+      class="rubic-header__settings"
+    >
+      <app-settings (handleClose)="settingsOpened = false"></app-settings>
     </app-settings-toggler>
   </div>
 

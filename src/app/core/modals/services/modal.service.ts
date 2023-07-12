@@ -69,11 +69,15 @@ export class ModalService {
   /**
    * Show Settings dialog.
    */
-  public openSettings(): Observable<void> {
-    return this.showDialog<SettingsComponent, void>(SettingsComponent, {
-      title: 'Settings',
-      fitContent: true
-    });
+  public openSettings(injector: Injector): Observable<void> {
+    return this.showDialog<SettingsComponent, void>(
+      SettingsComponent,
+      {
+        title: 'Settings',
+        fitContent: true
+      },
+      injector
+    );
   }
 
   /**
@@ -258,11 +262,11 @@ export class ModalService {
    * @param options Modal options
    * @param injector Injector
    */
-  public showDialog<Component, Resolver>(
+  public showDialog<Component, Output>(
     component: Type<Component & object>,
     options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
     injector?: Injector
-  ): Observable<Resolver> {
+  ): Observable<Output> {
     return this.modalService.open(new PolymorpheusComponent(component, injector || this.injector), {
       currentComponent: component,
       ...options

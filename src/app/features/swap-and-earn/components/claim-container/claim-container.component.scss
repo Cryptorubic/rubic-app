@@ -6,7 +6,7 @@
 
   @include b(900) {
     ::ng-deep {
-      tui-scrollbar .content {
+      tui-scrollbar .t-content {
         margin-top: 0;
         margin-right: 0;
       }
@@ -14,13 +14,7 @@
   }
 
   ::ng-deep {
-    tui-hints-host {
-      .t-tooltip {
-        font-size: 16px !important;
-      }
-    }
-
-    tui-scrollbar .content {
+    tui-scrollbar .t-content {
       display: flex;
       flex-direction: column;
       gap: 30px;

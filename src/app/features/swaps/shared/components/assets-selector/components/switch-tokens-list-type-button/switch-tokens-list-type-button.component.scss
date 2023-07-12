@@ -3,7 +3,7 @@ app-icon-button {
   width: 32px;
   height: 32px;
 
-  ::ng-deep tui-wrapper {
+  ::ng-deep .t-wrapper {
     border-radius: 0;
   }
 }

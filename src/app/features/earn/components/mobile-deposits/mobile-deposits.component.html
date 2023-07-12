@@ -12,7 +12,7 @@
       class="mobile-table__cell"
       [tuiHint]="total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }"
       [tuiHintDirection]="'top-right'"
-      tuiHintMode="onDark"
+      tuiHintAppearance="onDark"
     >
       {{ 'staking.deposits.totalRewards' | translate }}
       {{
@@ -53,17 +53,17 @@
               | withRound : 'fixedValue' : { decimals: 4 })
             : '< 0.0001'
         "
-        [tuiManualHint]="
+        [tuiHint]="
           deposit.totalNftRewards.eq(0) || deposit.totalNftRewards.gt(0.0001)
             ? (deposit.totalNftRewards
               | bigNumberFormat
               | withRound : 'fixedValue' : { decimals: 4 })
             : '< 0.0001'
         "
-        [tuiManualHintShow]="false"
+        [tuiHintManual]="false"
         [tuiHintDirection]="'top-left'"
         [tuiHintShowDelay]="50"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       >
         {{
           !deposit.totalNftRewards.isZero()
@@ -83,7 +83,7 @@
             : '-'
         "
         [tuiHintDirection]="'top-right'"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       >
         <span class="mobile-table__cell-apr">{{
           deposit.tokenApr && deposit.tokenApr.gte(0)

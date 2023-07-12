@@ -1,9 +1,9 @@
+import { TuiHintModule } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
-import { TuiManualHintModule } from '@taiga-ui/core';
 import { SharedModule } from '@shared/shared.module';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { NotSupportedNetworkErrorComponent } from './components/not-supported-network-error/not-supported-network-error.component';
@@ -40,6 +40,6 @@ import { BitKeepErrorComponent } from '@core/errors/components/bitkeep-error/bit
     RpcErrorComponent,
     TransactionFailedErrorComponent
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule]
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
 })
 export class ErrorsModule {}

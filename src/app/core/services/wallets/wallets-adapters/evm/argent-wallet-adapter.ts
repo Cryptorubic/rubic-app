@@ -6,6 +6,9 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
+import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;
@@ -17,15 +20,40 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
     zone: NgZone,
     window: RubicWindow
   ) {
-    const providerConfig = {
-      bridge: 'https://bridge.walletconnect.org',
-      qrCode: true,
-      qrcodeModalOptions: {
-        desktopLinks: ['argent'],
-        mobileLinks: ['argent']
-      }
-    };
-    super(providerConfig, onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
+    super(
+      {
+        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
+        chains: WALLET_CONNECT_SUPPORTED_CHAINS,
+        showQrModal: true,
+        qrModalOptions: {
+          desktopWallets: [
+            {
+              id: 'argent',
+              name: 'argent',
+              links: {
+                native: '',
+                universal: ''
+              }
+            }
+          ],
+          mobileWallets: [
+            {
+              id: 'argent',
+              name: 'argent',
+              links: {
+                native: '',
+                universal: ''
+              }
+            }
+          ]
+        }
+      } as EthereumProviderOptions,
+      onAddressChanges$,
+      onNetworkChanges$,
+      errorsService,
+      zone,
+      window
+    );
   }
 
   public async activate(): Promise<void> {
@@ -34,17 +62,22 @@ export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
     this.setArgentStyle(1000);
 
     try {
+      this.wallet = await EthereumProvider.init({
+        ...this.providerConfig
+      });
+
       const result = await Promise.race([
         this.wallet.enable(),
         new Promise<void>(resolve => setTimeout(() => resolve(null), 10_000))
       ]);
       if (result !== null) {
         const [address] = await this.wallet.enable();
+        const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
 
         this.isEnabled = true;
         this.selectedAddress = address;
         this.selectedChain =
-          (BlockchainsInfo.getBlockchainNameById(this.wallet.chainId) as EvmBlockchainName) ?? null;
+          (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
         this.onAddressChanges$.next(address);
         this.onNetworkChanges$.next(this.selectedChain);
 

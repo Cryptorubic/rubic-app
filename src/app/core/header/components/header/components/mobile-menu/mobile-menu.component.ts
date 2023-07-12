@@ -67,7 +67,7 @@ export class MobileMenuComponent {
 
   public openSettings(): void {
     this.toggleLiveChatContainerHeight('hide');
-    this.modalService.openSettings().subscribe();
+    this.modalService.openSettings(this.injector).subscribe();
   }
 
   public openLiveChat(): void {

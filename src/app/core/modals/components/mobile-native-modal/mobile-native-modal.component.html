@@ -31,6 +31,6 @@
     </div>
   </ng-container>
   <div class="mobile-native-content__inner">
-    <div polymorpheus-outlet [content]="context.content" [context]="context"></div>
+    <div *polymorpheusOutlet="context.content; context: context"></div>
   </div>
 </div>
