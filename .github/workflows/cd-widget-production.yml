@@ -23,12 +23,12 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
       - name: Set up packages
-        run: yarn
+        run: yarn --frozen-lockfile
 
       - name: Set up sshpass and yarn
         run: |
           sudo apt-get install sshpass
-          yarn --prefer-offline
+          yarn --prefer-offline --frozen-lockfile
 
       - name: Run build prod
         run: yarn run build

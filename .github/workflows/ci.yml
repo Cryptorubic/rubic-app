@@ -24,7 +24,7 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
       - name: Set up packages
-        run: yarn
+        run: yarn --frozen-lockfile
 
       - name: Run lint
         run: yarn run lint
