@@ -5,10 +5,12 @@
 
   display: flex;
   justify-content: center;
+  max-height: 57px;
 
   text-decoration: none;
 
-  background: linear-gradient(55.97deg, #00e28d -11.1%, #9618d1 122.36%);
+  background: linear-gradient(89.85deg, #0ac780 -3.28%, #5be3e3 14.13%, #adfefe 23.62%, #deebff 69.88%, #78a7ef 88.46%, #8547d3 106.29%);
+
 
   @include hide-unused-ui {
     display: none;
@@ -28,7 +30,7 @@
   }
 
   &__text {
-    @include font(24px, 1, 300, white);
+    @include font(24px, 1, 400, #504E4E);
     margin: 0;
 
     letter-spacing: 1px;
@@ -40,17 +42,17 @@
   }
 
   &__link {
-    @include font(24px, 1, 400, white);
+    @include font(24px, 1, 400, #504E4E);
     display: flex;
 
     gap: 12px;
     align-items: center;
-    padding: 10px 22px;
+    padding: 5px 22px;
 
     white-space: nowrap;
     text-decoration: none;
 
-    border: 1px solid white;
+    border: 2px solid #504e4e;
     border-radius: 50px;
 
     &:hover {
@@ -66,41 +68,22 @@
       transition: 100ms ease-in;
     }
   }
-
-  &__background-img_left {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-
-    height: 100%;
-  }
-
-  &__background-img_right {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 100%;
-  }
 }
 
 @include b($laptop-xl) {
   .banner {
     &__text {
-      @include font(20px, 1, 300, white);
+      @include font(20px, 1, 400, #504E4E);
     }
 
     &__link {
-      @include font(20px, 1, 300, white);
+      @include font(20px, 1, 400, #504E4E);
     }
   }
 }
 
 @include b(1000) {
   .banner {
-    &__background-img_left,
     &__background-img_right {
       display: none;
     }
@@ -110,11 +93,11 @@
 @include b($tablet) {
   .banner {
     &__text {
-      @include font(18px, 1, 300, white);
+      @include font(18px, 1, 400, #504E4E);
     }
 
     &__link {
-      @include font(18px, 1, 300, white);
+      @include font(18px, 1, 400, #504E4E);
       padding: 5px 15px;
     }
   }
@@ -134,12 +117,12 @@
 @include b($mobile-sm-middle) {
   .banner {
     &__text {
-      @include font(12px, 1, 300, white);
+      @include font(12px, 1, 400, #504E4E);
       text-align: left;
     }
 
     &__link {
-      @include font(12px, 1, 300, white);
+      @include font(12px, 1, 400, #504E4E);
       gap: 5px;
 
       img {
@@ -148,6 +131,18 @@
 
         transition: 100ms ease-in;
       }
+    }
+  }
+}
+
+@include b(490) {
+  .banner {
+    &__text {
+      white-space: initial;
+    }
+
+    &__link {
+      border: 1px solid #504e4e;
     }
   }
 }
