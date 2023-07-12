@@ -129,10 +129,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
-    let sdkFromToken: PriceToken;
-    let sdkToToken: PriceToken;
-    PriceToken.createToken(fromToken).then(token => (sdkFromToken = token));
-    PriceToken.createToken(toToken).then(token => (sdkToToken = token));
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
@@ -167,9 +163,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true),
+      PriceToken.createToken(fromToken),
+      PriceToken.createToken(toToken)
     ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice]) => {
+      switchMap(([tokenState, fromPrice, toPrice, sdkFromToken, sdkToToken]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;

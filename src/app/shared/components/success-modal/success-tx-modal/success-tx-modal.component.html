@@ -53,19 +53,17 @@
                 >here</span
               >
             </div>
-            <div
-              *noFrame
-              class="modal__footer-text"
-              [innerHTML]="
-                (type === 'cross-chain-routing' &&
-                ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER_BRIDGE
-                  ? 'modals.successTxModal.seeDetailsCCR'
-                  : 'modals.successTxModal.seeDetailsItBridge'
-                )
-                  | translate
-                    : { explorerLink: txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION }
-              "
-            ></div>
+            <ng-container class="modal__footer-text" *ngIf="type === 'cross-chain-routing'">
+              <div *noFrame>
+                {{
+                  'modals.successTxModal.seeDetailsCCR'
+                    | translate
+                      : {
+                          explorerLink: txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION
+                        }
+                }}
+              </div>
+            </ng-container>
           </ng-container>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
             <div *noFrame class="modal__footer-text && modal__footer-text_warning">
