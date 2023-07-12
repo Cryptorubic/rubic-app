@@ -10,4 +10,4 @@ export const supportedBlockchains = [
   BLOCKCHAIN_NAME.FANTOM
 ] as const;
 
-export type SupportedBlockchain = typeof supportedBlockchains[number];
+export type SupportedBlockchain = (typeof supportedBlockchains)[number];

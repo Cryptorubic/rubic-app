@@ -142,4 +142,4 @@ export const topRankedBlockchains = blockchainsList.map(blockchain => {
 });
 
 export type NotEvmChangeNowBlockchainsList =
-  typeof notEvmChangeNowBlockchainsList[keyof typeof notEvmChangeNowBlockchainsList];
+  (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];

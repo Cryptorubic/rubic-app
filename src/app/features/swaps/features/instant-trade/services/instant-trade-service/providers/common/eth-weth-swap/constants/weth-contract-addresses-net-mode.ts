@@ -22,7 +22,7 @@ export const SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS = [
   BLOCKCHAIN_NAME.PULSECHAIN
 ] as const;
 
-export type SupportedEthWethSwapBlockchain = typeof SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS[number];
+export type SupportedEthWethSwapBlockchain = (typeof SUPPORTED_ETH_WETH_SWAP_BLOCKCHAINS)[number];
 
 export const WETH_CONTRACT_ADDRESS: Record<SupportedEthWethSwapBlockchain, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',

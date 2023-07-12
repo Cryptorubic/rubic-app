@@ -120,7 +120,7 @@ export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> =
   ...BLOCKCHAINS_MAPPING
 };
 
-export type BackendBlockchain = typeof BLOCKCHAINS_MAPPING[keyof typeof BLOCKCHAINS_MAPPING];
+export type BackendBlockchain = (typeof BLOCKCHAINS_MAPPING)[keyof typeof BLOCKCHAINS_MAPPING];
 
 export const FROM_BACKEND_BLOCKCHAINS: Record<BackendBlockchain, BlockchainName> = (
   Object.keys(BLOCKCHAINS_MAPPING) as BlockchainName[]
