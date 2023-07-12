@@ -36,11 +36,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celer.svg`,
     color: '#008aff'
   },
-  [BRIDGE_TYPE.CELER_BRIDGE]: {
-    name: 'cBridge',
-    image: `${imageBasePath}celer.svg`,
-    color: '#008aff'
-  },
   [BRIDGE_TYPE.CONNEXT]: {
     name: 'Connext',
     image: `${imageBasePath}connext.svg`,

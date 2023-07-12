@@ -5,7 +5,6 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
@@ -19,12 +18,18 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     window: RubicWindow,
     private readonly isIos: boolean
   ) {
-    const providerConfig: EthereumProviderOptions = {
-      projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-      chains: WALLET_CONNECT_SUPPORTED_CHAINS,
-      showQrModal: false
-    };
-    super(providerConfig, accountChange$, chainChange$, errorsService, zone, window);
+    super(
+      {
+        projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
+        chains: WALLET_CONNECT_SUPPORTED_CHAINS,
+        showQrModal: false
+      },
+      accountChange$,
+      chainChange$,
+      errorsService,
+      zone,
+      window
+    );
 
     this.initDisplaySubscription();
   }

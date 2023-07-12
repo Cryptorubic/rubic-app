@@ -15,9 +15,10 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/types';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
   protected constructor(
-    private providerConfig: EthereumProviderOptions,
+    protected providerConfig: EthereumProviderOptions,
     accountChange$: BehaviorSubject<string>,
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
@@ -62,7 +63,6 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
   }
 
   public async deactivate(): Promise<void> {
-    // await this.wallet.close();
     super.deactivate();
   }
 }

@@ -63,7 +63,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: yarn
+        run: yarn --frozen-lockfile
 
       - name: Run build
         run: yarn run build:${{ inputs.env_id }}
@@ -73,14 +73,6 @@ jobs:
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
           sshpass -p ${{ env.PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ env.USER }}@${{ env.HOST }}:${{ env.TARGET_PATH }}
           sshpass -p "${{ env.PASS }}" ssh -o StrictHostKeyChecking=no -tt "${{ env.USER }}@${{ env.HOST }}" "sudo chmod 777 -R ${{ env.TARGET_PATH }}"
-          
-      - name: Purge cloudflare cache
-        uses: fjogeleit/http-request-action@v1
-        with:
-          url: 'https://api.cloudflare.com/client/v4/zones/${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache'
-          method: 'POST'
-          customHeaders: '{"Content-Type": "application/json", "X-Auth-Email": "${{ secrets.CLOUDFLARE_AUTH_EMAIL }}", "X-Auth-Key": "${{ secrets.CLOUDFLARE_AUTH_KEY}}"}'
-          data: '{"purge_everything": true}'
           
       - name: Get branch names
         id: branch-names
