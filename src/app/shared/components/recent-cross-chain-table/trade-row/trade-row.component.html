@@ -46,8 +46,8 @@
         src="assets/images/icons/copy.svg"
         alt="Copy"
         (click)="copyToClipboard()"
-        [tuiManualHint]="template"
-        [tuiManualHintShow]="hintShown"
+        [tuiHint]="template"
+        [tuiHintManual]="hintShown"
       />
     </div>
   </td>
@@ -137,8 +137,8 @@
             src="assets/images/icons/copy.svg"
             alt="Copy"
             (click)="copyToClipboard()"
-            [tuiManualHint]="template"
-            [tuiManualHintShow]="hintShown"
+            [tuiHint]="template"
+            [tuiHintManual]="hintShown"
           />
         </div>
         <ng-template #toContinue>

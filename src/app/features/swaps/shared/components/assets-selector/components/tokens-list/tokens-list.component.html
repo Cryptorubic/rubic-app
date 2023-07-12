@@ -27,7 +27,7 @@
                   class="tokens-list__item"
                   [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
                   [tuiHint]="!token.available ? disabledTokenHint : null"
-                  tuiHintMode="error"
+                  tuiHintAppearance="error"
                   tuiHintDirection="bottom-right"
                   (click)="onTokenSelect(token)"
                 >
@@ -51,7 +51,7 @@
               'tokens-list-horizontal-iframe__item_disabled': !token.available
             }"
             [tuiHint]="!token.available ? disabledTokenHint : null"
-            tuiHintMode="error"
+            tuiHintAppearance="error"
             tuiHintDirection="bottom-right"
             (click)="onTokenSelect(token)"
           >
@@ -81,8 +81,8 @@
             *ngFor="let token of tokensToShow; let i = index"
             class="tokens-list__item"
             [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
-            [tuiManualHint]="disabledTokenHint"
-            tuiHintMode="error"
+            [tuiHint]="disabledTokenHint"
+            tuiHintAppearance="error"
             tuiHintDirection="bottom-right"
             (click)="onTokenSelect(token)"
           >

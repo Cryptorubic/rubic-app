@@ -23,11 +23,11 @@ import { TargetNetworkAddressService } from '@features/swaps/core/services/targe
   providers: [TuiDestroyService, TargetNetworkAddressService]
 })
 export class IframeSettingsComponent {
-  private readonly settingsService = this.context.content.injector.get(SettingsService);
+  private readonly settingsService = this.context.content.i.get(SettingsService);
 
-  private readonly swapService = this.context.content.injector.get(SwapTypeService);
+  private readonly swapService = this.context.content.i.get(SwapTypeService);
 
-  private readonly cdr = this.context.content.injector.get(ChangeDetectorRef);
+  private readonly cdr = this.context.content.i.get(ChangeDetectorRef);
 
   private get form(): FormGroup {
     return this.swapService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -45,7 +45,7 @@ export class IframeSettingsComponent {
   public autoSlippageTolerance = this.form.controls.autoSlippageTolerance.value;
 
   constructor(
-    @Inject(POLYMORPHEUS_CONTEXT) readonly context: { content: { injector: Injector } },
+    @Inject(POLYMORPHEUS_CONTEXT) readonly context: { content: { i: Injector } },
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {

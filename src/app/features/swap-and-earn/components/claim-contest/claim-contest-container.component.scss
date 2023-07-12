@@ -5,12 +5,6 @@
   justify-content: center;
 }
 
-::ng-deep tui-hints-host {
-  .t-tooltip {
-    font-size: 16px !important;
-  }
-}
-
 .contest {
   &_mobile {
     width: 100%;

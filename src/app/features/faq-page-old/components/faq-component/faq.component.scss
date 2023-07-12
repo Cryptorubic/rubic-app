@@ -17,8 +17,14 @@
 
     border-radius: 14px;
 
-    ::ng-deep .wrapper {
-      background: var(--form-background) !important;
+    ::ng-deep {
+      .t-wrapper {
+        background: var(--form-background) !important;
+      }
+
+      .t-content {
+        font-size: 15px;
+      }
     }
   }
 }

@@ -282,7 +282,8 @@ export class RecentTradesService {
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -296,7 +297,8 @@ export class RecentTradesService {
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({
@@ -329,7 +331,8 @@ export class RecentTradesService {
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -343,7 +346,8 @@ export class RecentTradesService {
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({
@@ -379,7 +383,8 @@ export class RecentTradesService {
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -395,7 +400,8 @@ export class RecentTradesService {
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({
@@ -431,7 +437,8 @@ export class RecentTradesService {
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -444,7 +451,8 @@ export class RecentTradesService {
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({

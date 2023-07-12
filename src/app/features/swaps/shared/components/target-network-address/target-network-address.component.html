@@ -7,7 +7,7 @@
       [tuiHint]="
         'crossChainPage.targetAddress.hint' | translate : { network: (toBlockchain$ | async) }
       "
-      tuiHintMode="onDark"
+      tuiHintAppearance="onDark"
     ></div>
   </div>
 
@@ -17,7 +17,7 @@
     tuiTextfieldSize="m"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="address.invalid"
+    [pseudoFocus]="address.invalid"
     [pseudoInvalid]="address.invalid"
     [tuiTextfieldCleaner]="!!address.value"
   >
@@ -31,7 +31,7 @@
     tuiTextfieldSize="s"
     [formControl]="address"
     [tuiTextfieldLabelOutside]="true"
-    [pseudoFocused]="address.invalid"
+    [pseudoFocus]="address.invalid"
     [pseudoInvalid]="address.invalid"
     [tuiTextfieldCleaner]="!!address.value"
     >{{ 'crossChainPage.targetAddress.placeholder' | translate }}</tui-input

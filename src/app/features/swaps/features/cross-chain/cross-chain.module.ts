@@ -4,13 +4,13 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   TuiButtonModule,
   TuiDataListModule,
-  TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiScrollbarModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiDropdownModule
 } from '@taiga-ui/core';
 import { TuiAccordionModule, TuiBadgeModule, TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -47,7 +47,7 @@ import { ModalsModule } from '@app/core/modals/modals.module';
     TuiDataListModule,
     TuiHostedDropdownModule,
     TuiButtonModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     TuiLoaderModule,
     TuiAccordionModule,
     TuiScrollbarModule,

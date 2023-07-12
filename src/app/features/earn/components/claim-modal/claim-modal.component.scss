@@ -7,7 +7,7 @@
   padding: 40px 0 10px;
 }
 
-.close {
+.t-close {
   position: absolute;
   top: 0 !important;
   right: 5px !important;
@@ -58,4 +58,10 @@
   display: block;
   max-width: 275px;
   margin: 0 auto;
+
+  ::ng-deep {
+    button {
+      font-size: 15px !important;
+    }
+  }
 }

@@ -1,7 +1,7 @@
 <div class="title">{{ 'recentTrades.title' | translate }}</div>
 <div class="description">{{ 'recentTrades.description' | translate }}</div>
 
-<ng-container *ngIf="recentTrades?.length > 0; else noTransactions">
+<ng-container *ngIf="recentTrades?.length > 10; else noTransactions">
   <ng-container *ngIf="!isMobile; else mobileRecentTrades">
     <table class="table">
       <tbody>
