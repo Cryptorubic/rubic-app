@@ -1,7 +1,7 @@
 import { CrossChainTradeType, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<string, CrossChainTradeType> = {
-  celer: CROSS_CHAIN_TRADE_TYPE.CELER,
+  celer: CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE,
   rango: CROSS_CHAIN_TRADE_TYPE.RANGO,
   symbiosis: CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS,
   lifi: CROSS_CHAIN_TRADE_TYPE.LIFI,

@@ -3,7 +3,7 @@
     *ngIf="!expandableField; else expandableInputTpl"
     [ngModel]="searchQuery"
     (ngModelChange)="onQueryChanges($event)"
-    [tuiTextfieldIconLeft]="searchIcon"
+    [tuiTextfieldIcon]="'tuiIconSearchLarge'"
     [tuiTextfieldSize]="searchBarSize"
   >
     {{ searchBarText$ | async | translate }}
@@ -14,7 +14,7 @@
       <tui-input
         [ngModel]="searchQuery"
         (ngModelChange)="onQueryChanges($event)"
-        [tuiTextfieldIconLeft]="searchIcon"
+        [tuiTextfieldIcon]="'tuiIconSearchLarge'"
         tuiTextfieldSize="l"
         [tuiTextfieldCleaner]="true"
       >

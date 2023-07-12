@@ -58,4 +58,10 @@
   display: block;
   max-width: 275px;
   margin: 0 auto;
+
+  ::ng-deep {
+    button {
+      font-size: 15px !important;
+    }
+  }
 }

@@ -45,7 +45,7 @@
     }
 
     .t-content {
-      padding: 0 24px 24px;
+      padding: 0;
     }
 
     > .t-wrapper {
@@ -70,6 +70,8 @@
 }
 
 .swaps-info {
+  padding: 0 24px 24px;
+
   color: var(--primary-text);
 
   @include b($mobile-md) {

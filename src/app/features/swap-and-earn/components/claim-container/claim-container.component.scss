@@ -14,12 +14,6 @@
   }
 
   ::ng-deep {
-    tui-hints-host {
-      .t-tooltip {
-        font-size: 16px !important;
-      }
-    }
-
     tui-scrollbar .t-content {
       display: flex;
       flex-direction: column;

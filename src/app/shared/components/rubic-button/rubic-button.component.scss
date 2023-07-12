@@ -6,7 +6,7 @@
   --tui-focus: transparent;
 
   [tuiButton] {
-    font-weight: 400;
+    font-weight: 400 !important;
     font-size: $rubic-font-size-01;
 
     border: none;

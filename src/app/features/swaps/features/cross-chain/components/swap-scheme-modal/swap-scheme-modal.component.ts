@@ -161,14 +161,14 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private static toggleConfettiBackground(action: 'show' | 'remove'): void {
-    const overlay = document.querySelector('.overlay');
+    const overlay = document.querySelector('.t-overlay');
 
     if (action === 'show') {
-      overlay.classList.add('overlay-ccr-confetti');
+      overlay.classList.add('t-overlay-ccr-confetti');
     }
 
     if (action === 'remove') {
-      overlay.classList.remove('overlay-ccr-confetti');
+      overlay.classList.remove('t-overlay-ccr-confetti');
     }
   }
 

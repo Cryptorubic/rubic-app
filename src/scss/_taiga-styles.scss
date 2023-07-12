@@ -39,6 +39,19 @@ body.hide-unused-ui {
 
 }
 
+tui-hint {
+  &[data-appearance=onDark] {
+    font-size: 16px !important;
+
+    background: var(--tui-base-01) !important;
+    border: 1px solid var(--tui-base-03) !important;
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
 tui-dialog {
   overflow: hidden;
 
@@ -66,7 +79,7 @@ tui-dialog {
   }
 
   &[data-size='l'] {
-    width: 51em !important;
+    width: 47.85em !important;
     margin-bottom: auto !important;
 
     border: 7px solid transparent !important;
@@ -154,10 +167,10 @@ tui-dialog-host {
   overflow-y: auto;
 
   > div {
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px) !important;
   }
 
-  .overlay {
+  .t-overlay {
     overflow: inherit !important;
 
     background: rgb(0 0 0 / 0%) !important;
@@ -185,11 +198,7 @@ tui-notification {
   }
 }
 
-.t-text {
-  font-size: $rubic-font-size-01;
-}
-
-tui-notification-alert {
+tui-alert {
   position: relative;
   top: var(--scroll-size);
 
@@ -212,7 +221,7 @@ tui-notification-alert {
     }
   }
 
-  tui-hint-box {
+  tui-hint {
     max-width: 160px !important;
   }
 
@@ -227,7 +236,7 @@ tui-notification-alert {
       backdrop-filter: unset;
     }
 
-    .overlay {
+    .t-overlay {
       background-color: rgba(0, 0, 0, 0.4) !important;
     }
   }
@@ -282,11 +291,11 @@ html.iframe-vertical tui-dialog > div.t-content > h2 {
   padding: 2rem 0.5rem 0 1rem;
 }
 
-html.iframe-vertical tui-hint-box {
+html.iframe-vertical tui-hint {
   max-width: 18rem !important;
 }
 
-html.iframe-horizontal tui-hint-box {
+html.iframe-horizontal tui-hint {
   max-width: 36rem !important;
 }
 
@@ -294,6 +303,19 @@ html.iframe-horizontal tui-hint-box {
 .t-wrapper[data-appearance='textfield'] {
   --tui-base-03: rgba(255, 255, 255, 0.1);
   background: transparent !important;
+}
+
+tui-input div[data-appearance='textfield']::after {
+  border: 1px solid var(--transparent-line);
+}
+
+[tuiWrapper]._focused._focused::after {
+  border: 2px solid var(--tui-primary);
+}
+
+[tuiWrapper][data-appearance='textfield'] {
+  background: transparent;
+  box-shadow: none;
 }
 
 .t-wrapper[data-appearance='secondary'] {
@@ -318,18 +340,15 @@ html.iframe-horizontal tui-hint-box {
 }
 
 .light tui-toggle {
-  .t-wrapper[data-appearance='secondary'] {
-    &::after,
-    .circle {
-      border: 1px solid var(--transparent-line);
-    }
+  .t-circle {
+    border: 1px solid var(--transparent-line);
+  }
 
-    .circle {
-      background: var(--transparent-line);
-    }
+  .t-circle {
+    background: var(--transparent-line);
   }
 }
 
-.light .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+.light [tuiWrapper][data-appearance='textfield'][data-appearance='textfield']::after {
   border: 1px solid var(--transparent-line);
 }

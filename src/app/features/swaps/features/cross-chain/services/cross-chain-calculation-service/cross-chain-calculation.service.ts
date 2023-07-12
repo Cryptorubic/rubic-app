@@ -19,7 +19,9 @@ import {
   BLOCKCHAIN_NAME,
   UserRejectError,
   EvmWeb3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  EvmCrossChainTrade,
+  EvmBasicTransactionOptions
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -51,7 +53,6 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
@@ -162,19 +163,22 @@ export class CrossChainCalculationService extends TradeCalculationService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true),
+      PriceToken.createToken(fromToken),
+      PriceToken.createToken(toToken)
     ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice]) => {
+      switchMap(([tokenState, fromPrice, toPrice, sdkFromToken, sdkToToken]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;
+
         const fromSdkCompatibleToken = new PriceToken({
-          ...new Token(fromToken),
-          price: new BigNumber(fromPrice)
+          ...sdkFromToken.asStruct,
+          price: new BigNumber(fromPrice as number | null)
         });
         const toSdkCompatibleToken = new PriceToken({
-          ...new Token(toToken),
-          price: new BigNumber(toPrice)
+          ...sdkToToken.asStruct,
+          price: new BigNumber(toPrice as number | null)
         });
         return this.sdkService.crossChain
           .calculateTradesReactively(
@@ -262,14 +266,16 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
 
     let approveInProgressSubscription$: Subscription;
-    const swapOptions: BasicTransactionOptions = {
+    let swapOptions: EvmBasicTransactionOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
-      },
-      ...(shouldCalculateGasPrice && { gasPriceOptions })
+      }
     };
 
     try {
+      if (wrappedTrade.trade instanceof EvmCrossChainTrade) {
+        swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
+      }
       await wrappedTrade.trade.approve(swapOptions);
 
       this.notificationsService.showApproveSuccessful();
@@ -364,11 +370,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
-      ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(this.platformConfigurationService.useCrossChainChainProxy && {
-        useProxy:
-          this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
-      })
+      ...(this.queryParamsService.testMode && { testMode: true })
     };
 
     try {

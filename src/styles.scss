@@ -134,7 +134,7 @@ a {
   }
 }
 
-tui-dropdown-box {
+tui-dropdown {
   min-width: 185px;
   max-height: 560px !important;
 
@@ -223,7 +223,7 @@ body.default-iframe-background {
 }
 
 @include b($mobile-md) {
-  tui-dropdown-box {
+  tui-dropdown {
     min-width: 155px;
   }
 }
