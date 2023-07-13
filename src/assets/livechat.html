@@ -16,7 +16,7 @@
         function onVisibilityChanged(data) {
             switch (data.visibility) {
                 case 'maximized':
-                    window.postMessage({ type: 'lc_visibility', value: 'maximized' }, '*');
+                    window.parent.postMessage({ type: 'lc_visibility', value: 'maximized' }, '*');
                     break;
                 case 'minimized':
                     window.parent.postMessage({ type: 'lc_visibility', value: 'minimized' }, '*');
@@ -30,7 +30,6 @@
         window.addEventListener(
             'message',
             event => {
-                console.log(event);
                 if (event.data?.type === 'lc_visibility') {
                     const liveChat = this.document.getElementById('chat-widget-container');
                     const value = event.data?.value;
