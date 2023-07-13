@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@1inch/limit-order-protocol-utils@^3.0.0":
+"@1inch/limit-order-protocol-utils@3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@1inch/limit-order-protocol-utils/-/limit-order-protocol-utils-3.0.1.tgz#0f7437ec7c2eb1162e4a1f0738df771d30c122d4"
   integrity sha512-HpZ1ZRP0PKNOuma1zvffdEfXl64CH/9oajug9Q26HPgyf0Ot+epiArI6rzqKRFvALOHp5Kl6kixiA2qFmGDQzA==
@@ -13883,12 +13883,12 @@ rpc-websockets@^7.5.0:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.8.0-alpha-polygon-zkevm.0:
-  version "4.8.0-alpha-polygon-zkevm.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.8.0-alpha-polygon-zkevm.0.tgz#7abdc278635ab4d70cff5e632cb0c18441bd0a31"
-  integrity sha512-kcKQm96xOvyRQFyr9QLKiuE9IMdLqy8CF0Cnn8rU0F/epUl/5h4j+yUidPWQEDzkJ/F5zBZOR3cqi+tBfvFD5Q==
+rubic-sdk@4.8.0-alpha-polygon-zkevm.1:
+  version "4.8.0-alpha-polygon-zkevm.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.8.0-alpha-polygon-zkevm.1.tgz#b5f67cc69da6097d0d1406773d52a663f368f0fe"
+  integrity sha512-QV7xRkYwEtU7MhUDUghl85wbEtqAXi2otfARR1SJuDesXXhp8opjMHDyUgyy8daiOjsWX+Yn5HQXeP9P1LVqRA==
   dependencies:
-    "@1inch/limit-order-protocol-utils" "^3.0.0"
+    "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
     "@lifi/sdk" "^1.7.2"
@@ -13903,8 +13903,8 @@ rubic-sdk@4.8.0-alpha-polygon-zkevm.0:
     grpc-web "^1.4.2"
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
-    rxjs "^7.8.0"
-    symbiosis-js-sdk "2.9.57"
+    rxjs "7.8.1"
+    symbiosis-js-sdk "^2.9.57"
     tronweb "^4.3.0"
     web3 "^1.8.1"
 
@@ -13950,7 +13950,14 @@ rxjs@6.6.7, rxjs@^6.5.3, rxjs@^6.5.4, rxjs@^6.6.3:
   dependencies:
     tslib "^1.9.0"
 
-rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.8.0:
+rxjs@7.8.1:
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.1.tgz#6f6f3d99ea8044291efd92e7c7fcf562c4057543"
+  integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
+  dependencies:
+    tslib "^2.1.0"
+
+rxjs@^7.5.1, rxjs@^7.5.5:
   version "7.8.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.0.tgz#90a938862a82888ff4c7359811a595e14e1e09a4"
   integrity sha512-F2+gxDshqmIub1KdvZkaEfGDwLNpPvk9Fs6LD/MyQxNgMds/WH9OdDDXOmxUZpME+iSK3rQCctkL0DYyytUqMg==
@@ -15143,10 +15150,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@2.9.57:
-  version "2.9.57"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.9.57.tgz#1b9058a1328f8a2449a743190af3186bc538662a"
-  integrity sha512-HaB/4TzZX3m1++B5FmmbW6jP3zH2Zk9e9WbICPvt5crdMFrm5lwk3DhOpz1bGIOq/3zMyhVd30YI1T2rRENuUQ==
+symbiosis-js-sdk@^2.9.57:
+  version "2.10.5"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.10.5.tgz#bca3f5ffd03f8957d7ae8fee4374428eeecbda7f"
+  integrity sha512-3GS6b0q3eIuCI8Nyrm+O+ue82JedA+RutIWVl88cuTYdytb7emukQy4tp1Q5L7Oz256bxW3znCbJ3cfaEWWLng==
   dependencies:
     "@renproject/chains-bitcoin" "^3.4.2"
     "@renproject/chains-ethereum" "^3.4.3"
