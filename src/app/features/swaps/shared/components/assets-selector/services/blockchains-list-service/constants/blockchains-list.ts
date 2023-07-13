@@ -98,11 +98,11 @@ const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlo
 export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.ETHEREUM, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 1, tags: [] },
-  { name: BLOCKCHAIN_NAME.POLYGON, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.POLYGON, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.POLYGON_ZKEVM, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1, tags: [] },
-  { name: BLOCKCHAIN_NAME.POLYGON_ZKEVM, rank: 0.5, tags: [] },
   // { name: BLOCKCHAIN_NAME.PULSECHAIN, rank: 0.5, tags: [] },
   { name: BLOCKCHAIN_NAME.FANTOM, rank: 0, tags: [] },
   { name: BLOCKCHAIN_NAME.BOBA, rank: 0, tags: [] },
@@ -143,4 +143,4 @@ export const topRankedBlockchains = blockchainsList.map(blockchain => {
 });
 
 export type NotEvmChangeNowBlockchainsList =
-  typeof notEvmChangeNowBlockchainsList[keyof typeof notEvmChangeNowBlockchainsList];
+  (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];
