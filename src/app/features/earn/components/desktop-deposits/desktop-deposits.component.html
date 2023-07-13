@@ -24,7 +24,7 @@
               deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }
             "
             [tuiHintDirection]="'top-right'"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
           >
             {{
               deposit.amount | bigNumberFormat | withRound : 'toClosestValue' : { decimals: 0 }
@@ -38,15 +38,15 @@
                 | bigNumberFormat
                 | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
-            [tuiManualHint]="
+            [tuiHint]="
               (deposit.totalNftRewards
                 | bigNumberFormat
                 | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
             "
-            [tuiManualHintShow]="false"
+            [tuiHintManual]="false"
             [tuiHintDirection]="'top-left'"
             [tuiHintShowDelay]="50"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
           >
             {{ id | functionCall : getTotalNftRewards : this }}
           </span>
@@ -74,7 +74,7 @@
               [loading]="withdrawingId === deposit.id"
               [tuiHint]="'Withdraw'"
               [tuiHintDirection]="'top-right'"
-              tuiHintMode="onDark"
+              tuiHintAppearance="onDark"
             >
               <img
                 [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
@@ -102,7 +102,7 @@
           (total.rewards | bigNumberFormat | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
         "
         [tuiHintDirection]="'top-right'"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       >
         {{
           !total.rewards.isZero()

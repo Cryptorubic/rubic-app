@@ -69,8 +69,8 @@
             class="copy-icon copy-icon_green"
             inlineSVG="assets/images/icons/copy.svg"
             (click)="copyToClipboard()"
-            [tuiManualHint]="template"
-            [tuiManualHintShow]="hintShown"
+            [tuiHint]="template"
+            [tuiHintManual]="hintShown"
           ></button>
         </div>
       </div>
@@ -222,7 +222,7 @@
           alt="info"
           [tuiHint]="contactSupportHint"
           [tuiHintShowDelay]="0"
-          [tuiHintMode]="'onDark'"
+          [tuiHintAppearance]="'onDark'"
         />
         Estimated Arrival <span class="primary-text">~10 minutes</span>
       </div>

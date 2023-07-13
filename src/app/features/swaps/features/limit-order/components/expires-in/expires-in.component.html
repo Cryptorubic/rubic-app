@@ -25,7 +25,7 @@
         src="assets/images/icons/exclamation-grey.svg"
         alt="info"
         tuiHint="Please note: When a limit order expires, no cancellation fee is charged. If a limit order is canceled manually, a gas fee is charged at the time of signing the transaction."
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       />
     </div>
 
@@ -33,7 +33,7 @@
       <div
         class="dropdown__value"
         [tuiHint]="value.shortValue !== value.fullValue ? value.fullValue : null"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
       >
         {{ value.shortValue }}
         <img

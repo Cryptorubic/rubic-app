@@ -8,10 +8,10 @@ import { OrderRateService } from '@features/swaps/features/limit-order/services/
 import { ExpiresInComponent } from './components/expires-in/expires-in.component';
 import { TuiInputNumberModule } from '@taiga-ui/kit';
 import {
-  TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiDropdownModule
 } from '@taiga-ui/core';
 import { OrderExpirationService } from '@features/swaps/features/limit-order/services/order-expiration.service';
 import { ExpirationCustomComponent } from '@features/swaps/features/limit-order/components/expiration-custom/expiration-custom.component';
@@ -34,7 +34,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     TuiInputNumberModule,
     TuiTextfieldControllerModule,
     TuiHostedDropdownModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     TuiHintModule,
     InlineSVGModule
   ]

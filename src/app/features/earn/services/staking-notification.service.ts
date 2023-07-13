@@ -4,7 +4,8 @@ import { TuiNotification } from '@taiga-ui/core';
 
 const SUCCESS_NOTIFICATION_OPTIONS = {
   status: TuiNotification.Success,
-  autoClose: 5000
+  autoClose: 5000,
+  data: null as unknown
 };
 
 @Injectable()
@@ -30,14 +31,16 @@ export class StakingNotificationService {
   public showStakingIsStoppedNotification(): void {
     this.notificationsService.show('Staking is stopped', {
       status: TuiNotification.Error,
-      autoClose: 5000
+      autoClose: 5000,
+      data: null
     });
   }
 
   public showNftLockedError(lockedUntil: string): void {
     this.notificationsService.show(`Nft is locked until ${lockedUntil}`, {
       autoClose: 5000,
-      status: TuiNotification.Error
+      status: TuiNotification.Error,
+      data: null
     });
   }
 }

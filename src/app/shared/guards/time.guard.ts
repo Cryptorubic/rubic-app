@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, CanLoad } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -8,7 +8,7 @@ import { LoadResult } from '@shared/guards/models/types';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
-export class TimeGuard implements CanActivate, CanLoad {
+export class TimeGuard {
   private readonly isMobile = this.headerStore.isMobile;
 
   constructor(

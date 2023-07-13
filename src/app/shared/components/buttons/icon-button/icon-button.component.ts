@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, Output, EventEmitter } from '@angular/core';
-import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core/types/size';
+import { TuiSizeXL, TuiSizeXS } from '@taiga-ui/core';
 import { TuiAppearance } from '@taiga-ui/core';
 
 @Component({

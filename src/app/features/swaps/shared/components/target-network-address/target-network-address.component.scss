@@ -19,33 +19,8 @@
 
   tui-input {
     ::ng-deep {
-      input {
-        padding: 0;
-      }
-    }
-  }
-
-  ::ng-deep .network-container {
-    &__input-status-icon,
-    &__input-clipboard-icon {
-      width: 26px;
-      height: 26px;
-    }
-
-    &__input-clipboard-icon {
-      cursor: pointer;
-
-      pointer-events: all;
-    }
-
-    &__iframe-input {
-      width: 182px;
-    }
-
-    tui-wrapper[data-appearance='textfield'] {
       --tui-base-01: transparent;
-      border-radius: 50px;
-      box-shadow: none;
+      background: transparent;
 
       @include iframe {
         --tui-base-01: var(--primary-background);
@@ -57,15 +32,10 @@
         }
       }
 
-      &::after {
-        border: 1px solid var(--transparent-line);
-      }
-
       input {
         font-size: 12.5px;
 
         border-right-width: 74px !important;
-
         border-left-width: 15px !important;
 
         @include iframe {
@@ -85,21 +55,45 @@
         }
       }
 
-      .content {
+      .t-content {
         padding-left: 33px !important;
 
         @include iframe {
           padding: 0 0 0 var(--tui-padding-s) !important;
         }
+
+        .t-custom-content {
+          margin-right: -0.25rem;
+        }
       }
 
-      .custom-content {
-        margin-right: -0.25rem;
-      }
-
-      .placeholder {
+      .t-placeholder {
         font-size: 14px;
       }
+
+      div[data-appearance='textfield'] {
+        border-radius: 25px;
+      }
+    }
+  }
+
+  ::ng-deep .network-container {
+    &__input-status-icon,
+    &__input-clipboard-icon {
+      display: flex;
+      align-items: center;
+      width: 26px;
+      height: 26px;
+    }
+
+    &__input-clipboard-icon {
+      cursor: pointer;
+
+      pointer-events: all;
+    }
+
+    &__iframe-input {
+      width: 182px;
     }
 
     &__row {

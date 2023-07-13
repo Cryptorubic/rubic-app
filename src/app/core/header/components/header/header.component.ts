@@ -57,6 +57,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
+  public settingsOpened = false;
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }

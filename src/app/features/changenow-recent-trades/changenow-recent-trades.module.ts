@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ChangenowRecentTradesRoutingModule } from '@features/changenow-recent-trades/changenow-recent-trades-routing.module';
 import { ChangenowRecentTradesComponent } from '@features/changenow-recent-trades/components/changenow-recent-trades/changenow-recent-trades.component';
 import { SharedModule } from '@shared/shared.module';
-import { TuiHintModule, TuiLoaderModule, TuiManualHintModule } from '@taiga-ui/core';
+import { TuiHintModule, TuiLoaderModule } from '@taiga-ui/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { RecentTradesService } from '@core/recent-trades/services/recent-trades.service';
 
@@ -15,7 +15,7 @@ import { RecentTradesService } from '@core/recent-trades/services/recent-trades.
     SharedModule,
     TranslateModule,
     TuiLoaderModule,
-    TuiManualHintModule,
+    TuiHintModule,
     TuiHintModule
   ],
   providers: [RecentTradesService]
