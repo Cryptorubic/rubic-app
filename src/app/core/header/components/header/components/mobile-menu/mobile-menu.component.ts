@@ -4,8 +4,8 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { Observable } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 
 @Component({
   selector: 'app-mobile-menu',
@@ -22,26 +22,13 @@ export class MobileMenuComponent {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
-  private isIframeOpened = false;
-
   constructor(
     private readonly authService: AuthService,
     private readonly swapTypeService: SwapTypeService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    @Inject(DOCUMENT) private readonly document: Document
+    private readonly liveChatService: LiveChatService
   ) {}
-
-  private toggleLiveChatContainerHeight(action: 'hide' | 'show'): void {
-    const livechat = this.document.getElementById('live-chat-iframe') as HTMLIFrameElement;
-
-    if (action === 'hide') {
-      this.closeLiveChat(livechat);
-    }
-    if (action === 'show') {
-      this.openLiveChat(livechat);
-    }
-  }
 
   public async navigateToSwaps(): Promise<void> {
     await this.swapTypeService.navigateToSwaps();
@@ -52,59 +39,36 @@ export class MobileMenuComponent {
   }
 
   public openNavigationMenu(): void {
-    this.toggleLiveChatContainerHeight('hide');
+    this.hideLiveChat();
     this.modalService.openMobileNavigationMenu().subscribe();
   }
 
   public openRubicMenu(): void {
-    this.toggleLiveChatContainerHeight('hide');
+    this.hideLiveChat();
     this.modalService.openRubicMenu().subscribe();
   }
 
   public openSettings(): void {
-    this.toggleLiveChatContainerHeight('hide');
+    this.hideLiveChat();
     this.modalService.openSettings().subscribe();
   }
 
   public toggleLiveChat(): void {
-    const action = this.isIframeOpened ? 'hide' : 'show';
-    this.toggleLiveChatContainerHeight(action);
+    const action = this.liveChatService.isIframeOpened ? 'hide' : 'show';
+    this.liveChatService.toggleLiveChatContainerHeight(action);
   }
 
   public openProfile(): void {
-    this.toggleLiveChatContainerHeight('hide');
+    this.hideLiveChat();
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
   }
 
   public openWallet(): void {
-    this.toggleLiveChatContainerHeight('hide');
+    this.hideLiveChat();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 
-  private closeLiveChat(liveChat: HTMLIFrameElement): void {
-    liveChat.style.opacity = '0';
-    this.isIframeOpened = false;
-    setTimeout(() => {
-      liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'minimize' }, '*');
-      liveChat.width = '0';
-      liveChat.height = '0';
-      liveChat.style.top = 'inherit';
-    }, 200);
-    this.isIframeOpened = false;
-  }
-
-  private openLiveChat(liveChat: HTMLIFrameElement): void {
-    liveChat.style.opacity = '1';
-    const windowHeight = this.document.body.scrollHeight;
-    liveChat.height = `${windowHeight - 76}px`;
-    liveChat.width = '100%';
-    liveChat.style.top = '0';
-    liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'maximize' }, '*');
-    setTimeout(() => {
-      liveChat.height = `${windowHeight - 76}px`;
-      liveChat.width = '100%';
-      liveChat.style.top = '0';
-    }, 100);
-    this.isIframeOpened = true;
+  private hideLiveChat(): void {
+    this.liveChatService.toggleLiveChatContainerHeight('hide');
   }
 }
