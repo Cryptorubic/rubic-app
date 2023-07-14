@@ -358,39 +358,9 @@ export class CrossChainFormService {
       )
       .subscribe(trade => {
         if (trade) {
-          if (trade.calculated === 0) {
-            providers = [];
-          } else {
-            providers = [...providers, trade];
-          }
-
+          providers = trade.calculated === 0 ? [] : [...providers, trade];
           if (trade.calculated === trade.total) {
-            this.crossChainApiService
-              .saveProvidersStatistics({
-                user: this.walletConnectorService.address,
-                from_token: this.selectedTrade.trade?.from?.address,
-                from_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.from?.blockchain],
-                from_amount: this.selectedTrade.trade?.from?.stringWeiAmount,
-                to_token: this.selectedTrade.trade?.to?.address,
-                to_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.to?.blockchain],
-                providers_statistics: providers.map(providerTrade => {
-                  const { calculationTime, lastCalculatedTrade } = providerTrade;
-                  return {
-                    provider_title: lastCalculatedTrade?.tradeType,
-                    calculation_time_in_seconds: String(calculationTime / 1000),
-                    to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
-                    status: lastCalculatedTrade?.trade ? 'success' : 'error',
-                    has_swap_in_source_network:
-                      lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
-                    proxy_used:
-                      lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
-                    ...(lastCalculatedTrade?.error && {
-                      additional_info: lastCalculatedTrade.error.message
-                    })
-                  };
-                })
-              })
-              .subscribe();
+            this.saveTrade(providers);
           }
         }
       });
@@ -1012,5 +982,33 @@ export class CrossChainFormService {
     if (updateBestTrade) {
       this.updateSelectedTrade(this.taggedTrades[0]);
     }
+  }
+
+  private saveTrade(providers: CrossChainCalculatedTradeData[]): void {
+    this.crossChainApiService
+      .saveProvidersStatistics({
+        user: this.walletConnectorService.address,
+        from_token: this.selectedTrade.trade?.from?.address,
+        from_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.from?.blockchain],
+        from_amount: this.selectedTrade.trade?.from?.stringWeiAmount,
+        to_token: this.selectedTrade.trade?.to?.address,
+        to_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.to?.blockchain],
+        providers_statistics: providers.map(providerTrade => {
+          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          return {
+            provider_title: lastCalculatedTrade?.tradeType,
+            calculation_time_in_seconds: String(calculationTime / 1000),
+            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
+            status: lastCalculatedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network:
+              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
+            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(lastCalculatedTrade?.error && {
+              additional_info: lastCalculatedTrade.error.message
+            })
+          };
+        })
+      })
+      .subscribe();
   }
 }
