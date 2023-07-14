@@ -3,4 +3,8 @@ iframe {
   right: 0;
   bottom: 0;
   z-index: 999999999;
+
+  opacity: 0;
+
+  transition: 0.2s ease-in-out;
 }

@@ -82,20 +82,19 @@ export class MobileMenuComponent {
   }
 
   private closeLiveChat(liveChat: HTMLIFrameElement): void {
-    liveChat.width = '0';
-    liveChat.height = '0';
-    liveChat.style.top = 'inherit';
+    liveChat.style.opacity = '0';
     this.isIframeOpened = false;
-    liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'minimize' }, '*');
     setTimeout(() => {
+      liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'minimize' }, '*');
       liveChat.width = '0';
       liveChat.height = '0';
       liveChat.style.top = 'inherit';
-    });
+    }, 200);
     this.isIframeOpened = false;
   }
 
   private openLiveChat(liveChat: HTMLIFrameElement): void {
+    liveChat.style.opacity = '1';
     const windowHeight = this.document.body.scrollHeight;
     liveChat.height = `${windowHeight - 76}px`;
     liveChat.width = '100%';

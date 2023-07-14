@@ -27,11 +27,13 @@ export class LiveChatComponent {
             if (value === 'minimized' || value === 'hidden') {
               iframe.height = '84px';
               iframe.width = '84px';
+              iframe.style.opacity = '1';
             }
 
             if (value === 'maximized') {
               iframe.width = '352px';
               iframe.height = '652px';
+              iframe.style.opacity = '1';
             }
           }
         }
