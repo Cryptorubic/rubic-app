@@ -180,6 +180,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
           ...sdkToToken.asStruct,
           price: new BigNumber(toPrice as number | null)
         });
+        const calculationStartTime = Date.now();
         return this.sdkService.crossChain
           .calculateTradesReactively(
             fromSdkCompatibleToken,
@@ -209,6 +210,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
               return {
                 total: total,
                 calculated: calculated,
+                calculationTime: Date.now() - calculationStartTime,
                 lastCalculatedTrade: wrappedTrade
                   ? {
                       ...wrappedTrade,
