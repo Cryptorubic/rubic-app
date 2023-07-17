@@ -11,4 +11,4 @@ export const onramperSupportedBlockchains = [
   BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
 
-export type OnramperSupportedBlockchain = typeof onramperSupportedBlockchains[number];
+export type OnramperSupportedBlockchain = (typeof onramperSupportedBlockchains)[number];
