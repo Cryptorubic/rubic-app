@@ -19,6 +19,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
+import { ProviderStatisctic } from '@core/services/backend/cross-chain-routing-api/models/providers-statistics';
+import { getSignature } from '@shared/utils/get-signature';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +46,12 @@ export class CrossChainApiService {
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
       cause: error.cause
+    });
+  }
+
+  public saveProvidersStatistics(data: ProviderStatisctic): Observable<void> {
+    return this.httpService.post('route_calculation_statistic/save', data, null, {
+      headers: { Signature: getSignature(data.to_token, data.from_token) }
     });
   }
 
