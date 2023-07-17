@@ -4,12 +4,10 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { copyObject } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
-import { PriceImpactService } from '@app/core/services/price-impact/price-impact.service';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import {
   CcrSettingsForm,
@@ -155,9 +153,16 @@ export class SettingsService {
       .pipe(
         filter(user => Boolean(user?.address)),
         tap(() => {
-          const localData = this.storeService.getItem('settings') as string;
-          if (localData && !this.iframeService.isIframe) {
-            this.settingsForm.patchValue({ ...JSON.parse(localData) });
+          if (!this.iframeService.isIframe) {
+            const itData = this.storeService.getItem('RUBIC_SETTINGS_INSTANT_TRADE');
+            if (itData) {
+              this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: itData });
+            }
+
+            const ccrData = this.storeService.getItem('RUBIC_SETTINGS_CROSS_CHAIN_ROUTING');
+            if (ccrData) {
+              this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: ccrData });
+            }
           }
         }),
         switchMap(() => this.settingsForm.valueChanges)
@@ -181,15 +186,6 @@ export class SettingsService {
     });
   }
 
-  /**
-   * Deletes some form properties and serialize it to JSON string.
-   * @param form form to serialize
-   */
-  private serializeForm(form: SettingsForm): string {
-    const formClone = copyObject(form);
-    return JSON.stringify(formClone);
-  }
-
   public async checkSlippageAndPriceImpact(
     swapProviderType: SWAP_PROVIDER_TYPE,
     trade: CrossChainTrade | OnChainTrade
@@ -204,12 +200,7 @@ export class SettingsService {
       await trade.to.getAndUpdateTokenPrice();
     }
 
-    const priceImpact = PriceImpactService.calculatePriceImpact(
-      trade.from.price.toNumber(),
-      trade.to.price.toNumber(),
-      trade.from.tokenAmount,
-      trade.to.tokenAmount
-    );
+    const priceImpact = trade.getTradeInfo().priceImpact;
 
     const settingsChecks = {
       highSlippage: slippage > 5 && slippage,
@@ -233,6 +224,13 @@ export class SettingsService {
   }
 
   public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {
-    this.storeService.setItem('settings', this.serializeForm(form));
+    this.storeService.setItem(
+      'RUBIC_SETTINGS_INSTANT_TRADE',
+      JSON.parse(JSON.stringify(form[SWAP_PROVIDER_TYPE.INSTANT_TRADE]))
+    );
+    this.storeService.setItem(
+      'RUBIC_SETTINGS_CROSS_CHAIN_ROUTING',
+      JSON.parse(JSON.stringify(form[SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]))
+    );
   }
 }

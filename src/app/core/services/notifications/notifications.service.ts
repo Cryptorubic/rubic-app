@@ -1,14 +1,12 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import {
-  TuiNotification,
-  TuiNotificationContentContext,
-  TuiNotificationOptions,
-  TuiNotificationOptionsWithData,
-  TuiNotificationsService
-} from '@taiga-ui/core';
+import { TuiNotification, TuiAlertOptions, TuiAlertService } from '@taiga-ui/core';
 import { Observable, Subscription } from 'rxjs';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
+import { TuiBaseDialogContext } from '@taiga-ui/cdk/interfaces';
+
+type DialogOptions<I> = Omit<TuiAlertOptions<I>, 'label' | 'hasCloseButton' | 'hasIcon'> &
+  Partial<TuiAlertOptions<I>>;
 
 @Injectable({
   providedIn: 'root'
@@ -19,46 +17,49 @@ export class NotificationsService {
   private readonly SHORT_DELAY = 5000;
 
   constructor(
-    @Inject(TuiNotificationsService)
-    private readonly tuiNotificationsService: TuiNotificationsService,
+    // eslint-disable-next-line rxjs/finnish
+    @Inject(TuiAlertService) private readonly tuiNotificationsService: TuiAlertService,
     private readonly ngZone: NgZone,
     private readonly translateService: TranslateService
   ) {}
 
-  public show<T = undefined>(
-    content: PolymorpheusContent<TuiNotificationContentContext>,
-    options: TuiNotificationOptions | TuiNotificationOptionsWithData<T>
+  public show<I = unknown, O = undefined>(
+    content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
+    options: DialogOptions<I>
   ): Subscription {
     return this.ngZone.run(() =>
-      this.tuiNotificationsService.show(content, { ...options }).subscribe()
+      this.tuiNotificationsService.open(content, { ...options }).subscribe()
     );
   }
 
-  public showWithoutSubscribe<T = undefined>(
-    content: PolymorpheusContent<TuiNotificationContentContext>,
-    options: TuiNotificationOptions | TuiNotificationOptionsWithData<T>
-  ): Observable<void> {
-    return this.ngZone.run(() => this.tuiNotificationsService.show(content, { ...options }));
+  public showWithoutSubscribe<I = unknown, O = undefined>(
+    content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
+    options: DialogOptions<I>
+  ): Observable<O> {
+    return this.ngZone.run(() => this.tuiNotificationsService.open(content, { ...options }));
   }
 
-  public showApproveInProgress(options?: TuiNotificationOptions): Subscription {
+  public showApproveInProgress<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.approveInProgress'), {
       status: options?.status ?? TuiNotification.Info,
-      autoClose: options?.autoClose ?? false
+      autoClose: options?.autoClose ?? false,
+      data: null
     });
   }
 
-  public showApproveSuccessful(options?: TuiNotificationOptions): Subscription {
+  public showApproveSuccessful<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.successApprove'), {
       status: options?.status ?? TuiNotification.Success,
-      autoClose: options?.autoClose ?? this.LONG_DELAY
+      autoClose: options?.autoClose ?? this.LONG_DELAY,
+      data: null
     });
   }
 
-  public showOpenMobileWallet(options?: TuiNotificationOptions): Subscription {
+  public showOpenMobileWallet<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.openMobileWallet'), {
       status: options?.status ?? TuiNotification.Info,
-      autoClose: options?.autoClose ?? this.SHORT_DELAY
+      autoClose: options?.autoClose ?? this.SHORT_DELAY,
+      data: null
     });
   }
 }

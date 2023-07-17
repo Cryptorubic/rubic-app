@@ -936,6 +936,9 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.ICP]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ICP], ...defaultTokenParams } as Token
   ],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.PULSECHAIN], ...defaultTokenParams } as Token
+  ],
   [BLOCKCHAIN_NAME.GOERLI]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.GOERLI],

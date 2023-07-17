@@ -9,11 +9,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiDataListModule,
-  TuiDropdownControllerModule,
   TuiGroupModule,
   TuiHintModule,
   TuiHostedDropdownModule,
-  TuiLoaderModule
+  TuiLoaderModule,
+  TuiDropdownModule,
+  TuiDialogModule
 } from '@taiga-ui/core';
 import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
@@ -32,7 +33,7 @@ import { ThemeSwitcherComponent } from './components/header/components/theme-swi
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
-import { AppReferralBannerComponent } from './components/header/components/referral-banner/app-referral-banner.component';
+import { BannerComponent } from './components/header/components/banner/app-banner.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
@@ -63,7 +64,7 @@ import { TestnetSwitcherComponent } from '@core/header/components/header/compone
     TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    AppReferralBannerComponent,
+    BannerComponent,
     MobileMenuComponent,
     RubicMenuTogglerComponent,
     SettingsTogglerComponent,
@@ -87,7 +88,7 @@ import { TestnetSwitcherComponent } from '@core/header/components/header/compone
     TuiGroupModule,
     TuiBadgeModule,
     PolymorpheusModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     TuiToggleModule,
     FormsModule,
     TuiLoaderModule,
@@ -96,7 +97,8 @@ import { TestnetSwitcherComponent } from '@core/header/components/header/compone
     ClipboardModule,
     HistoryModule,
     InstantTradeModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiDialogModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

@@ -29,6 +29,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
+    'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
   ],
@@ -120,6 +121,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://smartbch.fountainhead.cash/mainnet'
   ],
   [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
   [BLOCKCHAIN_NAME.FUJI]: [
     'https://endpoints.omniatech.io/v1/avax/fuji/public',
     'https://rpc.ankr.com/avalanche_fuji',
@@ -141,5 +143,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://data-seed-prebsc-1-s3.binance.org:8545',
     'https://endpoints.omniatech.io/v1/bsc/testnet/public',
     'https://bsc-testnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: [
+    'https://alpha-rpc.scroll.io/l2'
   ]
 };

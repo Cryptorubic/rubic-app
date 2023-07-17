@@ -1,4 +1,4 @@
-<div class="modal" [id]="idPrefix + 'gtm-transaction-modal'">
+<div class="modal" [id]="idPrefix + 'gtm-transaction-modal'" *ngLet="points$ | async as points">
   <div class="modal__content">
     <main class="modal__body">
       <img
@@ -32,7 +32,8 @@
         <h3 *noFrame="'horizontal'" class="modal__title-points">Yahoo!</h3>
       </ng-container>
       <span class="modal__point-subtitle" *ngIf="isSwapAndEarnSwap"
-        >You will be credited with 50 points when the transaction is successful</span
+        >You will be credited with {{ points.participant ? '25' : '50' }} points when the
+        transaction is successful</span
       >
     </main>
     <footer class="modal__footer">
@@ -52,18 +53,17 @@
                 >here</span
               >
             </div>
-            <div
-              *noFrame
-              class="modal__footer-text"
-              [innerHTML]="
-                (type === 'cross-chain-routing' && ccrProviderType !== CROSS_CHAIN_PROVIDER.CELER
-                  ? 'modals.successTxModal.seeDetailsCCR'
-                  : 'modals.successTxModal.seeDetailsItBridge'
-                )
-                  | translate
-                    : { explorerLink: txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION }
-              "
-            ></div>
+            <ng-container class="modal__footer-text" *ngIf="type === 'cross-chain-routing'">
+              <div *noFrame>
+                {{
+                  'modals.successTxModal.seeDetailsCCR'
+                    | translate
+                      : {
+                          explorerLink: txHash | scannerLink : blockchain : ADDRESS_TYPE.TRANSACTION
+                        }
+                }}
+              </div>
+            </ng-container>
           </ng-container>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
             <div *noFrame class="modal__footer-text && modal__footer-text_warning">

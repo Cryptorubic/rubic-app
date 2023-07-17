@@ -1,73 +1,75 @@
 <div class="instant-trade-bottom-form" *ngLet="isIframe !== true as standardMode">
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
-      <div class="instant-trade-bottom-form__left-part">
-        <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
-      </div>
-
-      <div
-        class="instant-trade-bottom-form__amount"
-        [ngClass]="{
-          'instant-trade-bottom-form__amount__output_error': errorText && !isIframe
-        }"
-        *ngLet="allowTrade && ethWethTrade as wrapProvider"
-      >
-        <ng-container *ngIf="errorText && !isIframe && fromAmount">
-          {{ 'errors.tradingIsNotAvailable' | translate }}
-
-          <div
-            tuiHintMode="error"
-            class="instant-trade-bottom-form__hint_error"
-            [inlineSVG]="'/assets/images/icons/hint.svg'"
-            [tuiHint]="errorText | translate"
-          ></div>
-        </ng-container>
-
-        <ng-container *onlyFrame="'vertical'">
-          <app-iframe-asset-type-indicator
-            *ngIf="toToken?.blockchain as blockchain"
-            [assetType]="blockchain"
-          ></app-iframe-asset-type-indicator>
-        </ng-container>
-
-        <div
-          *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
-          class="instant-trade-bottom-form__token-amount"
-          [ngClass]="{
-            'instant-trade-bottom-form__token-amount_loading':
-              standardMode && tradeStatus === TRADE_STATUS.LOADING,
-            'instant-trade-bottom-form__token-amount_placeholder': !(
-              selectedProvider || wrapProvider
-            )
-          }"
-        >
-          <ng-container *ngIf="(selectedProvider && toAmount) || (wrapProvider && fromAmount)">
-            {{
-              wrapProvider
-                ? (fromAmount | bigNumberFormat)
-                : (toAmount
-                  | bigNumberFormat
-                  | withRound : 'toClosestValue' : { decimals: toToken?.decimals })
-            }}
-            <app-tokens-rate *noFrame></app-tokens-rate>
-          </ng-container>
+      <div class="instant-trade-bottom-form__body-top-wrapper">
+        <div class="instant-trade-bottom-form__left-part">
+          <app-select-asset-button-tokens formType="to"></app-select-asset-button-tokens>
         </div>
 
-        <ng-template #iframeSkeleton>
-          <div class="instant-trade-bottom-form__amount_skeleton-container">
-            <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
+        <div
+          class="instant-trade-bottom-form__amount"
+          [ngClass]="{
+            'instant-trade-bottom-form__amount__output_error': errorText && !isIframe
+          }"
+          *ngLet="allowTrade && ethWethTrade as wrapProvider"
+        >
+          <ng-container *ngIf="errorText && !isIframe && fromAmount">
+            {{ 'errors.tradingIsNotAvailable' | translate }}
+
+            <div
+              tuiHintAppearance="error"
+              class="instant-trade-bottom-form__hint_error"
+              [inlineSVG]="'/assets/images/icons/hint.svg'"
+              [tuiHint]="errorText | translate"
+            ></div>
+          </ng-container>
+
+          <ng-container *onlyFrame="'vertical'">
+            <app-iframe-asset-type-indicator
+              *ngIf="toToken?.blockchain as blockchain"
+              [assetType]="blockchain"
+            ></app-iframe-asset-type-indicator>
+          </ng-container>
+
+          <div
+            *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
+            class="instant-trade-bottom-form__token-amount"
+            [ngClass]="{
+              'instant-trade-bottom-form__token-amount_loading':
+                standardMode && tradeStatus === TRADE_STATUS.LOADING,
+              'instant-trade-bottom-form__token-amount_placeholder': !(
+                selectedProvider || wrapProvider
+              )
+            }"
+          >
+            <ng-container *ngIf="(selectedProvider && toAmount) || (wrapProvider && fromAmount)">
+              {{
+                wrapProvider
+                  ? (fromAmount | bigNumberFormat)
+                  : (toAmount
+                    | bigNumberFormat
+                    | withRound : 'toClosestValue' : { decimals: toToken?.decimals })
+              }}
+              <app-tokens-rate *noFrame></app-tokens-rate>
+            </ng-container>
           </div>
-        </ng-template>
 
-        <ng-container *ngIf="selectedProvider || wrapProvider">
-          <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
-            <app-tokens-rate></app-tokens-rate>
-
-            <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
-              Est. fee ${{ getGas(selectedProvider)?.toFixed(2) }}
+          <ng-template #iframeSkeleton>
+            <div class="instant-trade-bottom-form__amount_skeleton-container">
+              <div class="tui-skeleton instant-trade-bottom-form__amount_skeleton"></div>
             </div>
-          </div>
-        </ng-container>
+          </ng-template>
+
+          <ng-container *ngIf="selectedProvider || wrapProvider">
+            <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
+              <app-tokens-rate></app-tokens-rate>
+
+              <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
+                Est. fee ${{ getGas(selectedProvider)?.toFixed(2) }}
+              </div>
+            </div>
+          </ng-container>
+        </div>
       </div>
     </div>
     <ng-container *noFrame>
@@ -91,7 +93,6 @@
     [withApproveButton]="withApproveButton"
     [status]="tradeStatus"
     [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
-    [isOnramper]="isOnramper$ | async"
     (onSwapClick)="createTrade()"
     (onApproveClick)="approveTrade()"
     (onUpdateRateClick)="onSetHiddenData()"

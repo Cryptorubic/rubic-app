@@ -48,7 +48,7 @@
     width: $iframe-vertical-width;
     height: $iframe-vertical-height;
     margin-bottom: 0;
-    padding: 80px 10px 15px;
+    padding: 80px 25px 26px;
   }
 
   @include light-iframe {
@@ -258,14 +258,14 @@ app-analytics-link {
   }
 }
 
-.close-widget-button {
+.t-close-widget-button {
   display: none;
 
   width: 42px;
   margin-bottom: 13px;
 
   ::ng-deep app-rubic-button {
-    tui-wrapper {
+    .t-wrapper {
       background: var(--form-background);
     }
   }
@@ -276,7 +276,7 @@ app-analytics-link {
     display: none;
   }
 
-  .close-widget-button {
+  .t-close-widget-button {
     display: block;
   }
 

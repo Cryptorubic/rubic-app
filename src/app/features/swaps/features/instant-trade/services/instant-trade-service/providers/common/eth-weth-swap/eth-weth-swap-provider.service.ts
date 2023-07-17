@@ -20,7 +20,6 @@ import { compareAddresses } from '@shared/utils/utils';
 import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { ItOptions } from '@features/swaps/features/instant-trade/services/instant-trade-service/models/it-options';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable({
@@ -85,9 +84,9 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -99,7 +98,7 @@ export class EthWethSwapProviderService {
         {
           value: fromAmountAbsolute,
           onTransactionHash: options.onConfirm,
-          gasPrice
+          ...(shouldCalculateGasPrice && { gasPriceOptions })
         }
       );
   }
@@ -109,9 +108,9 @@ export class EthWethSwapProviderService {
     fromAmountAbsolute: string,
     options: ItOptions
   ): Promise<TransactionReceipt> {
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     return Injector.web3PrivateService
       .getWeb3Private(CHAIN_TYPE.EVM)
@@ -122,7 +121,7 @@ export class EthWethSwapProviderService {
         [fromAmountAbsolute],
         {
           onTransactionHash: options.onConfirm,
-          gasPrice
+          ...(shouldCalculateGasPrice && { gasPriceOptions })
         }
       );
   }

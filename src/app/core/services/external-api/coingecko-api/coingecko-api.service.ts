@@ -23,10 +23,13 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.DFK,
   BLOCKCHAIN_NAME.KLAYTN,
   BLOCKCHAIN_NAME.VELAS,
-  BLOCKCHAIN_NAME.SYSCOIN
+  BLOCKCHAIN_NAME.SYSCOIN,
+  BLOCKCHAIN_NAME.ZK_SYNC,
+  BLOCKCHAIN_NAME.OPTIMISM,
+  BLOCKCHAIN_NAME.PULSECHAIN
 ] as const;
 
-type SupportedBlockchain = typeof supportedBlockchains[number];
+type SupportedBlockchain = (typeof supportedBlockchains)[number];
 
 const API_BASE_URL = 'https://api.coingecko.com/api/v3/';
 
@@ -57,7 +60,10 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
-      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+      [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
+      [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
+      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain'
     };
 
     this.tokenBlockchainId = {
@@ -78,7 +84,10 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
-      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+      [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+      [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
+      [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
+      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain'
     };
   }
 

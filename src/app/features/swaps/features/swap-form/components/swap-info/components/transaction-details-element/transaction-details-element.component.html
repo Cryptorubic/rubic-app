@@ -1,12 +1,15 @@
 <div class="details-element">
-  <span class="details-element__title">{{ title }}</span>
+  <div class="details-element__text">
+    <span class="details-element__text-title">{{ title }}</span>
 
-  <img
-    class="details-element__icon"
-    src="assets/images/swaps/swaps-info/question-icon.svg"
-    [alt]="title"
-    [tuiHint]="description"
-  />
+    <img
+      *ngIf="description"
+      class="details-element__text-icon"
+      src="assets/images/swaps/swaps-info/question-icon.svg"
+      [alt]="title"
+      [tuiHint]="description"
+    />
+  </div>
 
   <div class="details-element__value">
     <ng-content></ng-content>

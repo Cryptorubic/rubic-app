@@ -5,6 +5,8 @@ import { AvailableBlockchain } from '@features/swaps/shared/components/assets-se
 import {
   blockchainsList,
   notEvmChangeNowBlockchainsList,
+  RankedBlockchain,
+  topRankedBlockchains,
   testnetBlockchainsList
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -13,7 +15,6 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation-service/onramper-calculation.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -22,6 +23,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 import { TestnetService } from '@core/services/testnet/testnet.service';
 
 @Injectable()
@@ -64,18 +66,32 @@ export class BlockchainsListService {
 
   private setAvailableBlockchains(): void {
     const isLimitOrder = this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
-    let blockchains: readonly BlockchainName[] = isLimitOrder
-      ? limitOrderSupportedBlockchains
+    const formattedLimitOrderSupportedBlockchains: RankedBlockchain[] =
+      limitOrderSupportedBlockchains.map(blockchain => ({
+        name: blockchain,
+        rank: topRankedBlockchains.includes(blockchain) ? 1 : 0,
+        tags: []
+      }));
+
+    let blockchains: readonly RankedBlockchain[] = isLimitOrder
+      ? formattedLimitOrderSupportedBlockchains
       : blockchainsList;
 
     if (this.queryParamsService.enabledBlockchains) {
       blockchains = blockchains.filter(blockchain =>
-        this.queryParamsService.enabledBlockchains.includes(blockchain)
+        this.queryParamsService.enabledBlockchains.includes(blockchain.name)
       );
     }
 
     if (this.testnetService.enableTestnets) {
-      blockchains = [...blockchains, ...testnetBlockchainsList];
+      blockchains = [
+        ...blockchains,
+        ...testnetBlockchainsList.map(el => ({
+          name: el,
+          rank: 1,
+          tags: []
+        }))
+      ];
     }
 
     const { formType } = this.assetsSelectorService;
@@ -83,25 +99,30 @@ export class BlockchainsListService {
     const selectedBlockchain =
       isLimitOrder && formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
 
-    this._availableBlockchains = blockchains.map(blockchainName => {
-      const disabledConfiguration =
-        !this.platformConfigurationService.isAvailableBlockchain(blockchainName);
-      const disabledFrom = !this.iframeService.isIframe
-        ? disabledFromBlockchains.includes(blockchainName)
-        : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
-            blockchainName
-          );
-      const disabledLimitOrder = selectedBlockchain && blockchainName !== selectedBlockchain;
+    this._availableBlockchains = blockchains
+      .map(blockchain => {
+        const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
+          blockchain.name
+        );
+        const disabledFrom = !this.iframeService.isIframe
+          ? disabledFromBlockchains.includes(blockchain.name)
+          : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
+              blockchain.name
+            );
+        const disabledLimitOrder = selectedBlockchain && blockchain.name !== selectedBlockchain;
 
-      return {
-        name: blockchainName,
-        icon: blockchainIcon[blockchainName],
-        label: blockchainLabel[blockchainName],
-        disabledConfiguration,
-        disabledFrom,
-        disabledLimitOrder
-      };
-    });
+        return {
+          name: blockchain.name,
+          rank: blockchain.rank,
+          icon: blockchainIcon[blockchain.name],
+          label: blockchainLabel[blockchain.name],
+          tags: blockchain.tags,
+          disabledConfiguration,
+          disabledFrom,
+          disabledLimitOrder
+        };
+      })
+      .sort((a, b) => b.rank - a.rank);
   }
 
   private subscribeOnSearchQuery(): void {
@@ -112,9 +133,13 @@ export class BlockchainsListService {
         takeUntil(this.destroy$)
       )
       .subscribe(query => {
-        this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>
-          blockchain.name.toLowerCase().includes(query.toLowerCase())
-        );
+        this.blockchainsToShow = this.availableBlockchains.filter(blockchain => {
+          return (
+            blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
+            (blockchain.tags.length &&
+              blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
+          );
+        });
       });
   }
 

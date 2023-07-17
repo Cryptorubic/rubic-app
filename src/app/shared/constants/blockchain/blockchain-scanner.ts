@@ -906,6 +906,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.PULSECHAIN]: {
+    baseUrl: 'https://otter.pulsechain.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.GOERLI]: {
     baseUrl: 'https://goerli.etherscan.io//',
     nativeCoinUrl: 'stat/supply/',
@@ -932,6 +940,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   },
   [BLOCKCHAIN_NAME.FUJI]: {
     baseUrl: 'https://testnet.snowtrace.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: {
+    baseUrl: 'https://blockscout.scroll.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',

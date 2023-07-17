@@ -1,4 +1,7 @@
-<app-referral-banner href="https://rubic.exchange/zkSync_Era" *noFrame></app-referral-banner>
+<app-banner
+  href="https://cryptorubic.medium.com/rubic-integrates-pulsechain-and-runs-a-dedicated-promotion-with-powercity-portalx-b1996c0279fa"
+  *noFrame
+></app-banner>
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
   <a
     *noFrame
@@ -47,6 +50,9 @@
       "
       >Swaps</a
     >
+    <div class="button-link" routerLink="/staking" [class.button-link_active]="isStakingPage">
+      Staking
+    </div>
     <a
       class="button-link"
       (click)="navigateToLimitOrder()"
@@ -85,8 +91,13 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-settings-toggler *noFrame class="rubic-header__settings">
-      <app-settings></app-settings>
+    <app-settings-toggler
+      *noFrame
+      [settingsOpened]="settingsOpened"
+      (changeSettingsVisibility)="settingsOpened = $event"
+      class="rubic-header__settings"
+    >
+      <app-settings (handleClose)="settingsOpened = false"></app-settings>
     </app-settings-toggler>
   </div>
 

@@ -3,13 +3,12 @@ import { SwapsRoutingModule } from 'src/app/features/swaps/swaps-routing.module'
 import { InstantTradeModule } from 'src/app/features/swaps/features/instant-trade/instant-trade.module';
 import {
   TuiDataListModule,
-  TuiDropdownControllerModule,
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiDropdownModule
 } from '@taiga-ui/core';
 import { SettingsItComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
 import { SettingsContainerComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-container/settings-container.component';
@@ -49,6 +48,7 @@ import { ProviderFeeValueComponent } from '@features/swaps/features/swap-form/co
 import { PriceImpactValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/price-impact-value/price-impact-value.component';
 import { RateValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/rate-value/rate-value.component';
 import { ReceiverValueComponent } from '@features/swaps/features/swap-form/components/swap-info/components/info-elements/receiver-value/receiver-value.component';
+import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 
 @NgModule({
   declarations: [
@@ -83,7 +83,7 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     ReactiveFormsModule,
     TuiInputModule,
     TuiSliderModule,
@@ -97,8 +97,14 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     TuiLoaderModule,
     ClipboardModule,
     TuiAccordionModule,
-    TuiManualHintModule
+    TuiHintModule
   ],
-  providers: [SettingsService, RefreshService, TradeService, TargetNetworkAddressService]
+  providers: [
+    SettingsService,
+    RefreshService,
+    TradeService,
+    TargetNetworkAddressService,
+    TonPromoService
+  ]
 })
 export class SwapsModule {}

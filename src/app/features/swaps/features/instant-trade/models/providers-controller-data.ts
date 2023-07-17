@@ -13,4 +13,5 @@ export interface InstantTradeProviderData {
   // UI data
   readonly label: string;
   isSelected: boolean;
+  fullSize?: boolean;
 }

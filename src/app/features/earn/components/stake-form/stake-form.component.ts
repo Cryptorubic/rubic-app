@@ -4,8 +4,8 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
-import { MILLISECONDS_IN_MONTH, MILLISECONDS_IN_WEEK } from '@app/shared/constants/time/time';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
   tap,
@@ -25,6 +25,8 @@ import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { StakingService } from '../../services/staking.service';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '@core/services/auth/auth.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-stake-form',
@@ -35,9 +37,10 @@ import { FormControl } from '@angular/forms';
 })
 export class StakeFormComponent implements OnInit {
   public readonly DURATIONS = [
-    { value: 1, label: '1M' },
-    { value: 6, label: '6M' },
-    { value: 12, label: '12M' }
+    { value: 3, label: '3', rewardRate: '1.0' },
+    { value: 6, label: '6', rewardRate: '1.2' },
+    { value: 9, label: '9', rewardRate: '1.5' },
+    { value: 12, label: '12', rewardRate: '2.0' }
   ];
 
   public readonly MAX_LOCK_TIME = this.stakingService.MAX_LOCK_TIME;
@@ -46,7 +49,7 @@ export class StakeFormComponent implements OnInit {
 
   public readonly rbcTokenBalance$ = this.stakingService.rbcTokenBalance$;
 
-  public readonly durationSliderCtrl = new FormControl(this.MAX_LOCK_TIME);
+  public readonly durationCtrl = new FormControl(this.MAX_LOCK_TIME);
 
   public readonly rbcAmountCtrl = new FormControl(null);
 
@@ -73,8 +76,6 @@ export class StakeFormComponent implements OnInit {
 
   public unlockDate: number;
 
-  public selectedDuration: number = 6;
-
   public selectedAmount: string;
 
   public rbcUsdPrice: number;
@@ -83,23 +84,31 @@ export class StakeFormComponent implements OnInit {
 
   public lockTimeExceededError = false;
 
+  public stakingIsClosed = false;
+
   public readonly errors = StakeButtonError;
+
+  public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
     private readonly stakingService: StakingService,
     private readonly router: Router,
     private readonly walletsModalService: WalletsModalService,
+    private readonly headerStore: HeaderStore,
     private readonly errorsService: ErrorsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
+    private readonly authService: AuthService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.stakingService.getRbcAmountPrice().subscribe(price => (this.rbcUsdPrice = price));
+    this.authService.currentUser$.subscribe(() => this.rbcAmountCtrl.patchValue(''));
   }
 
   public ngOnInit(): void {
     this.handleStakeDurationChange();
+    this.handleDurationError();
     this.stakingService.pollRbcTokens().pipe(takeUntil(this.destroy$)).subscribe();
   }
 
@@ -109,8 +118,24 @@ export class StakeFormComponent implements OnInit {
       : this.stakingService.parseAmountToBn(amount).multipliedBy(this.rbcUsdPrice).toFixed(2);
   }
 
-  public handleErrors(rbcAmount: string): void {
+  public async handleErrors(rbcAmount: string): Promise<void> {
+    await this.setErrors(rbcAmount);
+    this.cdr.detectChanges();
+  }
+
+  public async setErrors(rbcAmount: string): Promise<void> {
     this.selectedAmount = rbcAmount;
+    try {
+      const isStakingStopped = await this.stakingService.isEmergencyStopped();
+
+      if (isStakingStopped) {
+        this.amountError = StakeButtonError.STAKING_CLOSED;
+        this.stakingIsClosed = true;
+        return;
+      }
+    } catch (error) {
+      return;
+    }
 
     if (rbcAmount === '') {
       this.amountError = StakeButtonError.EMPTY_AMOUNT;
@@ -129,7 +154,7 @@ export class StakeFormComponent implements OnInit {
 
     if (
       this.stakingService.rbcAllowance.isFinite() &&
-      this.stakingService.rbcAllowance.lt(10000000)
+      this.stakingService.rbcAllowance.lt(this.rbcAmountCtrl.value)
     ) {
       this.amountError = StakeButtonError.NEED_APPROVE;
       return;
@@ -138,8 +163,8 @@ export class StakeFormComponent implements OnInit {
     this.amountError = StakeButtonError.NULL;
   }
 
-  public handleDurationError(duration: number): void {
-    this.lockTimeExceededError = duration > this.MAX_LOCK_TIME;
+  public handleDurationError(): void {
+    this.lockTimeExceededError = this.MAX_LOCK_TIME < 3;
   }
 
   public setMaxAmount(amount: BigNumber): void {
@@ -147,7 +172,11 @@ export class StakeFormComponent implements OnInit {
   }
 
   public setDuration(duration: number): void {
-    this.durationSliderCtrl.patchValue(duration);
+    this.durationCtrl.patchValue(duration);
+  }
+
+  public handleSelectedDuration(durationValue: number): boolean {
+    return this.durationCtrl.value === durationValue;
   }
 
   public login(): void {
@@ -155,7 +184,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public async switchNetwork(): Promise<void> {
-    this.stakingService.switchNetwork();
+    await this.stakingService.switchNetwork();
   }
 
   public approve(): void {
@@ -173,7 +202,7 @@ export class StakeFormComponent implements OnInit {
       typeof this.rbcAmountCtrl.value !== 'string'
         ? this.rbcAmountCtrl.value
         : new BigNumber(this.rbcAmountCtrl.value.replaceAll(',', ''));
-    const duration = this.durationSliderCtrl.value;
+    const duration = this.durationCtrl.value;
 
     this.stakingModalService
       .showDepositModal(amount, duration, this.unlockDate)
@@ -189,7 +218,7 @@ export class StakeFormComponent implements OnInit {
               this.errorsService.catch(error as RubicError<ERROR_TYPE.TEXT>);
               return of(null);
             }),
-            watch(this.cdr)
+            tuiWatch(this.cdr)
           );
         })
       )
@@ -204,17 +233,16 @@ export class StakeFormComponent implements OnInit {
   }
 
   private handleStakeDurationChange(): void {
-    this.durationSliderCtrl.valueChanges
+    this.durationCtrl.valueChanges
       .pipe(
-        startWith(this.durationSliderCtrl.value),
+        startWith(this.durationCtrl.value),
         switchMap(duration => {
           return zip(of(duration), this.stakingService.getCurrentTimeInSeconds());
         }),
         tap(([duration, blockTimestamp]) => {
-          this.selectedDuration = duration;
           this.unlockDate = this.calculateUnlockDateTimestamp(blockTimestamp, duration);
         }),
-        watch(this.cdr),
+        tuiWatch(this.cdr),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -225,10 +253,6 @@ export class StakeFormComponent implements OnInit {
   }
 
   private calculateUnlockDateTimestamp(blockTimestamp: number, duration: number): number {
-    return (
-      Math.trunc(
-        (blockTimestamp * 1000 + duration * MILLISECONDS_IN_MONTH) / MILLISECONDS_IN_WEEK
-      ) * MILLISECONDS_IN_WEEK
-    );
+    return Math.trunc(blockTimestamp * 1000 + duration * MILLISECONDS_IN_MONTH);
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, first, map, pairwise, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of, skip } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -12,7 +12,7 @@ import {
 } from '@core/services/swaps/constants/default-form-parameters';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { compareAddresses, switchIif } from '@shared/utils/utils';
+import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -22,6 +22,7 @@ import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -50,16 +51,56 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValue$.pipe(skip(2)).subscribe(value => {
-      this.queryParamsService.patchQueryParams({
-        ...(value.fromAsset?.symbol && { from: value.fromAsset.symbol }),
-        ...(value.toToken?.symbol && { to: value.toToken.symbol }),
-        ...(value.fromAssetType && { fromChain: value.fromAssetType }),
-        ...(value.toBlockchain && { toChain: value.toBlockchain }),
-        ...(value.fromAmount?.gt(0) && { amount: value.fromAmount.toFixed() }),
-        onramperTxId: null
+    this.swapFormService.inputValue$
+      .pipe(
+        skip(1),
+        distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
+        pairwise()
+      )
+      .subscribe(([prev, curr]) => {
+        let isEqual = compareObjects(prev, curr);
+        if (
+          prev?.fromAsset &&
+          'price' in prev?.fromAsset &&
+          curr?.fromAsset &&
+          'price' in curr?.fromAsset
+        ) {
+          const pricelessPrev = {
+            ...prev,
+            fromAsset: {
+              ...(prev.fromAsset as AvailableTokenAmount),
+              price: 0
+            },
+            toToken: {
+              ...prev.toToken,
+              price: 0
+            }
+          };
+
+          const pricelessCurr = {
+            ...curr,
+            fromAsset: {
+              ...(curr.fromAsset as AvailableTokenAmount),
+              price: 0
+            },
+            toToken: {
+              ...curr.toToken,
+              price: 0
+            }
+          };
+
+          isEqual = compareObjects(pricelessPrev, pricelessCurr);
+        }
+
+        this.queryParamsService.patchQueryParams({
+          ...(curr.fromAsset?.symbol && { from: curr.fromAsset.symbol }),
+          ...(curr.toToken?.symbol && { to: curr.toToken.symbol }),
+          ...(curr.fromAssetType && { fromChain: curr.fromAssetType }),
+          ...(curr.toBlockchain && { toChain: curr.toBlockchain }),
+          ...(curr.fromAmount?.gt(0) && { amount: curr.fromAmount.toFixed() }),
+          ...(!isEqual && { onramperTxId: null })
+        });
       });
-    });
 
     this.swapFormService.outputValue$.pipe(skip(1)).subscribe(value => {
       if (

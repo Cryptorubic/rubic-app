@@ -7,43 +7,16 @@
 <div class="rules">
   <a
     class="rules__link"
-    href="https://cryptorubic.medium.com/brbc-staking-third-round-309df3529412"
+    href="https://cryptorubic.medium.com/dear-rubicans-ffcf7b611b42"
     target="_blank"
   >
-    {{ 'staking.stake.rules' | translate }}
+    {{ 'staking.common.rules' | translate }}
     <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
   </a>
 </div>
 
-<div class="past-campaings">
-  <tui-accordion class="accordion">
-    <tui-accordion-item [borders]="null" [showArrow]="true" (click)="toggleAccordion()">
-      {{ 'staking.stake.pastStaking' | translate }}
-      <ng-template tuiAccordionItemContent>
-        <app-lp-card
-          class="past-campaings__card"
-          [round]="1"
-          [statuses]="[RoundStatus.CLOSED]"
-        ></app-lp-card>
-        <app-staking-card
-          class="past-campaings__card"
-          [round]="1"
-          [statuses]="[RoundStatus.CLOSED]"
-        >
-        </app-staking-card>
-        <app-staking-card
-          class="past-campaings__card"
-          [round]="2"
-          [statuses]="[RoundStatus.CLOSED]"
-        >
-        </app-staking-card>
-      </ng-template>
-    </tui-accordion-item>
-  </tui-accordion>
-</div>
-
 <ng-template #connectWallet>
-  <app-rubic-button class="connect-wallet" appearance="secondary" (onClick)="login()"
-    >Connect Wallet
+  <app-rubic-button class="connect-wallet" appearance="primary" (onClick)="login()"
+    >{{ 'staking.common.connectWallet' | translate }}
   </app-rubic-button>
 </ng-template>

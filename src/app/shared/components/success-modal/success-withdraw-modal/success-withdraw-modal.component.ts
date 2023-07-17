@@ -33,14 +33,14 @@ export class SuccessWithdrawModalComponent implements AfterViewInit, OnDestroy {
   }
 
   private static toggleConfettiBackground(action: 'show' | 'remove'): void {
-    const overlay = document.querySelector('.overlay');
+    const overlay = document.querySelector('.t-overlay');
 
     if (action === 'show') {
-      overlay.classList.add('overlay-it-confetti');
+      overlay.classList.add('t-overlay-it-confetti');
     }
 
     if (action === 'remove') {
-      overlay.classList.remove('overlay-it-confetti');
+      overlay.classList.remove('t-overlay-it-confetti');
     }
   }
 

@@ -1,0 +1,23 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__success-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Moving funds to Ethereum</h3>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text">
+        The bridge will take ~8 days before you can claim funds on Ethereum Mainnet. After funds
+        claiming, you will have to send another transaction on L1 and pay another L1 fee. You can do
+        it on a <a class="notification__link" (click)="openRecentTrades()">Recent Trades</a> page
+      </div>
+
+      <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+    </footer>
+  </div>
+</div>

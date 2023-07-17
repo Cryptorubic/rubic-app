@@ -1,6 +1,6 @@
 <div class="option" *ngIf="!isMobile">
   <div class="option__function">
-    <div class="option__component" polymorpheus-outlet [content]="component"></div>
+    <div *polymorpheusOutlet="component" class="option__component"></div>
     <img
       *ngIf="withAction"
       class="option__arrow-right"
@@ -24,23 +24,17 @@
         class="image"
         [inlineSVG]="isDark ? '/assets/images/icons/night.svg' : '/assets/images/icons/day.svg'"
       ></div>
-      <div
-        *ngIf="withAction"
-        class="option__component"
-        polymorpheus-outlet
-        [content]="component"
-      ></div>
+      <div *ngIf="withAction" class="option__component">
+        <ng-container *polymorpheusOutlet="component"></ng-container>
+      </div>
       <div class="option__info">
         <h3 class="option__title">{{ title | translate }}</h3>
         <div class="option__desc">{{ desc | translate }}</div>
       </div>
     </div>
-    <div
-      *ngIf="!withAction"
-      class="option__component"
-      polymorpheus-outlet
-      [content]="component"
-    ></div>
+    <div *ngIf="!withAction" class="option__component">
+      <ng-container *polymorpheusOutlet="component"></ng-container>
+    </div>
     <img
       *ngIf="withAction"
       class="option__arrow-right"

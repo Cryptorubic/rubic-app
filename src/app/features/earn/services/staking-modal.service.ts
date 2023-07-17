@@ -25,6 +25,7 @@ export class StakingModalService {
       NewPositionModalComponent,
       {
         ...STAKING_MODAL_OPTIONS,
+        title: 'New Position',
         data: {
           amount,
           duration,
@@ -37,13 +38,16 @@ export class StakingModalService {
 
   public showWithdrawModal(
     amount: BigNumber,
-    needSwitchNetwork$: Observable<boolean>
+    needSwitchNetwork$: Observable<boolean>,
+    totalNftRewards?: BigNumber
   ): Observable<boolean> {
     return this.dialogService.showDialog<WithdrawModalComponent, boolean>(WithdrawModalComponent, {
       ...STAKING_MODAL_OPTIONS,
+      title: 'Withdraw',
       data: {
         amount,
-        needSwitchNetwork$
+        needSwitchNetwork$,
+        totalNftRewards
       },
       fitContent: true
     });
@@ -51,12 +55,12 @@ export class StakingModalService {
 
   public showClaimModal(
     rewards: BigNumber,
-    needSwitchNetwork$: Observable<boolean>,
-    beforeWithdraw = false
+    needSwitchNetwork$: Observable<boolean>
   ): Observable<boolean> {
     return this.dialogService.showDialog<ClaimModalComponent, boolean>(ClaimModalComponent, {
       ...STAKING_MODAL_OPTIONS,
-      data: { rewards, needSwitchNetwork$, beforeWithdraw },
+      title: 'Claim',
+      data: { rewards, needSwitchNetwork$ },
       fitContent: true
     });
   }

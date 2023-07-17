@@ -11,12 +11,17 @@ import {
   SwapTransactionOptions,
   UnnecessaryApproveError,
   ViaCrossChainTrade,
-  Web3Pure,
   WrappedCrossChainTrade,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   Token,
-  PriceToken
+  PriceToken,
+  BLOCKCHAIN_NAME,
+  UserRejectError,
+  EvmWeb3Pure,
+  UnapprovedContractError,
+  EvmCrossChainTrade,
+  EvmBasicTransactionOptions
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -24,7 +29,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
-import { forkJoin, from, Observable, of, Subscription } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
@@ -32,10 +37,9 @@ import { RecentTradesStoreService } from '@app/core/services/recent-trades/recen
 import { SwapSchemeModalComponent } from '../../components/swap-scheme-modal/swap-scheme-modal.component';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { shouldCalculateGas } from '@shared/models/blockchain/should-calculate-gas';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import {
   CrossChainCalculatedTrade,
@@ -49,10 +53,12 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-private-service/web3-private/models/basic-transaction-options';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
+import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
+import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -81,13 +87,17 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
+    private readonly tonPromoService: TonPromoService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
   }
 
   private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
-    if (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) {
+    if (
+      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW ||
+      calculatedTrade.trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC
+    ) {
       return false;
     }
 
@@ -153,20 +163,24 @@ export class CrossChainCalculationService extends TradeCalculationService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true),
+      PriceToken.createToken(fromToken),
+      PriceToken.createToken(toToken)
     ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice]) => {
+      switchMap(([tokenState, fromPrice, toPrice, sdkFromToken, sdkToToken]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;
+
         const fromSdkCompatibleToken = new PriceToken({
-          ...new Token(fromToken),
-          price: new BigNumber(fromPrice)
+          ...sdkFromToken.asStruct,
+          price: new BigNumber(fromPrice as number | null)
         });
         const toSdkCompatibleToken = new PriceToken({
-          ...new Token(toToken),
-          price: new BigNumber(toPrice)
+          ...sdkToToken.asStruct,
+          price: new BigNumber(toPrice as number | null)
         });
+        const calculationStartTime = Date.now();
         return this.sdkService.crossChain
           .calculateTradesReactively(
             fromSdkCompatibleToken,
@@ -175,7 +189,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
             tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
           )
           .pipe(
-            switchMap(reactivelyCalculatedTradeData => {
+            mergeMap(data => {
+              const approve$ =
+                calculateNeedApprove && data?.wrappedTrade?.trade
+                  ? data.wrappedTrade.trade.needApprove()
+                  : of(false);
+              return forkJoin([of(data), approve$]);
+            }),
+            map(([reactivelyCalculatedTradeData, needApprove]) => {
               const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
               if (wrappedTrade?.error instanceof NotWhitelistedProviderError) {
@@ -186,34 +207,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
                 );
               }
 
-              const trade = wrappedTrade?.trade;
-
-              const needApprove$ = from(
-                calculateNeedApprove && trade ? from(trade.needApprove()) : of(false)
-              );
-
-              return needApprove$.pipe(
-                map((needApprove): CrossChainCalculatedTradeData => {
-                  return {
-                    total: total,
-                    calculated: calculated,
-                    lastCalculatedTrade: wrappedTrade
-                      ? {
-                          ...wrappedTrade,
-                          needApprove,
-                          route: this.parseRoute(wrappedTrade)
-                        }
-                      : null
-                  };
-                }),
-                catchError(() => {
-                  return of({
-                    total,
-                    calculated,
-                    lastCalculatedTrade: null
-                  });
-                })
-              );
+              return {
+                total: total,
+                calculated: calculated,
+                calculationTime: Date.now() - calculationStartTime,
+                lastCalculatedTrade: wrappedTrade
+                  ? {
+                      ...wrappedTrade,
+                      needApprove,
+                      route: this.parseRoute(wrappedTrade)
+                    }
+                  : null
+              };
             })
           );
       })
@@ -257,19 +262,22 @@ export class CrossChainCalculationService extends TradeCalculationService {
     this.checkDeviceAndShowNotification();
 
     const blockchain = wrappedTrade.trade.from.blockchain;
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     let approveInProgressSubscription$: Subscription;
-    const swapOptions: BasicTransactionOptions = {
+    let swapOptions: EvmBasicTransactionOptions = {
       onTransactionHash: () => {
         approveInProgressSubscription$ = this.notificationsService.showApproveInProgress();
-      },
-      ...(gasPrice && { gasPrice })
+      }
     };
 
     try {
+      if (wrappedTrade.trade instanceof EvmCrossChainTrade) {
+        swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
+      }
       await wrappedTrade.trade.approve(swapOptions);
 
       this.notificationsService.showApproveSuccessful();
@@ -287,7 +295,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     calculatedTrade: CrossChainCalculatedTrade,
     confirmCallback?: () => void
   ): Promise<void> {
+    const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
+    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(calculatedTrade, fromAddress);
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
@@ -295,16 +305,21 @@ export class CrossChainCalculationService extends TradeCalculationService {
       this.tokensService.findToken(calculatedTrade.trade.from),
       this.tokensService.findToken(calculatedTrade.trade.to)
     ]);
-
-    const fromAddress = this.authService.userAddress;
+    await this.handlePreSwapModal(calculatedTrade);
     let transactionHash: string;
 
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       confirmCallback?.();
-      this.crossChainApiService
-        .createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade)
-        .then(() => this.swapAndEarnStateService.updatePoints());
+      this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
+
+      if (tonPromoInfo.isTonPromoTrade) {
+        this.tonPromoService.postTonPromoTradeInfo(
+          calculatedTrade.trade as ChangenowCrossChainTrade,
+          fromAddress,
+          transactionHash
+        );
+      }
 
       const timestamp = Date.now();
       const viaUuid =
@@ -324,40 +339,45 @@ export class CrossChainCalculationService extends TradeCalculationService {
         amountOutMin: calculatedTrade.trade.toTokenAmountMin.toFixed(),
         fromAmount: calculatedTrade.trade.from.stringWeiAmount,
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
+        rubicId: EvmWeb3Pure.randomHex(16),
 
         ...(viaUuid && { viaUuid }),
         ...(rangoRequestId && { rangoRequestId }),
         ...(changenowId && { changenowId })
       };
 
-      this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
+      this.openSwapSchemeModal(
+        calculatedTrade,
+        txHash,
+        timestamp,
+        fromToken,
+        toToken,
+        tonPromoInfo
+      );
       try {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
 
-      this.swapAndEarnStateService.fetchPoints();
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, calculatedTrade.trade.from.tokenAmount);
     };
 
     const blockchain = calculatedTrade.trade.from.blockchain;
-    const gasPrice = shouldCalculateGas[blockchain]
-      ? Web3Pure.toWei(await this.gasService.getGasPriceInEthUnits(blockchain))
-      : null;
+
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+      blockchain
+    );
 
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
-      ...(gasPrice && { gasPrice }),
-      ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(this.platformConfigurationService.useCrossChainChainProxy && {
-        useProxy:
-          this.platformConfigurationService.useCrossChainChainProxy[calculatedTrade.tradeType]
-      })
+      ...(shouldCalculateGasPrice && { gasPriceOptions }),
+      ...(this.queryParamsService.testMode && { testMode: true })
     };
 
     try {
       await calculatedTrade.trade.swap(swapOptions);
+
       this.showSuccessTrxNotification();
       await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (err) {
@@ -369,7 +389,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         await this.crossChainApiService.patchTrade(transactionHash, false);
       }
 
-      if (err instanceof NotWhitelistedProviderError) {
+      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
         this.saveNotWhitelistedProvider(
           err,
           calculatedTrade.trade.from.blockchain,
@@ -416,13 +436,14 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
   }
 
-  public openSwapSchemeModal(
+  public async openSwapSchemeModal(
     calculatedTrade: CrossChainCalculatedTrade,
     txHash: string,
     timestamp: number,
     fromToken: TokenAmount,
-    toToken: TokenAmount
-  ): void {
+    toToken: TokenAmount,
+    tonPromoTrade: ShortTonPromoInfo
+  ): Promise<void> {
     const { trade, route } = calculatedTrade;
 
     const bridgeType = trade.bridgeType;
@@ -459,7 +480,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
-    const defaultData = {
+    const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
       srcProvider: fromTradeProvider,
@@ -471,29 +492,38 @@ export class CrossChainCalculationService extends TradeCalculationService {
       rangoRequestId,
       timestamp,
       amountOutMin,
-      changenowId
-    };
-
-    const swapAndEarnData = {
-      ...defaultData,
-      isSwapAndEarnData: true
+      changenowId,
+      ...(tonPromoTrade.isTonPromoTrade && {
+        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
+      }),
+      ...(this.isSwapAndEarnSwap(calculatedTrade) && {
+        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+      })
     };
 
     this.dialogService
       .showDialog(SwapSchemeModalComponent, {
         size: this.headerStore.isMobile ? 'page' : 'l',
-        data: this.isSwapAndEarnSwap(calculatedTrade) ? swapAndEarnData : defaultData,
+        data: defaultData,
         fitContent: true
       })
       .subscribe();
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
+    error: NotWhitelistedProviderError | UnapprovedContractError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
-    this.crossChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    if (error instanceof NotWhitelistedProviderError) {
+      this.crossChainApiService
+        .saveNotWhitelistedProvider(error, blockchain, tradeType)
+        .subscribe();
+    } else {
+      this.crossChainApiService
+        .saveNotWhitelistedCcrProvider(error, blockchain, tradeType)
+        .subscribe();
+    }
   }
 
   public async getChangenowPaymentInfo(
@@ -505,5 +535,18 @@ export class CrossChainCalculationService extends TradeCalculationService {
       paymentInfo,
       receiverAddress
     };
+  }
+
+  private async handlePreSwapModal(trade: CrossChainCalculatedTrade): Promise<void> {
+    if (
+      trade.tradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
+      trade.trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
+    ) {
+      try {
+        await firstValueFrom(this.dialogService.openArbitrumWarningModal());
+      } catch {
+        throw new UserRejectError();
+      }
+    }
   }
 }

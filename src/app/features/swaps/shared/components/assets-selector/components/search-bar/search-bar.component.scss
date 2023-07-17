@@ -4,7 +4,7 @@
   --tui-font-text-s: normal 16px/20px var(--tui-font-text);
 }
 
-.placeholder {
+.t-placeholder {
   color: var(--secondary-text);
 
   font-size: 16px;
@@ -13,12 +13,14 @@
 tui-input {
   ::ng-deep {
     input {
+      padding: 0 5px 0 40px !important;
+
       @include b($mobile-sm-middle) {
         font-size: 16px !important;
       }
     }
 
-    .placeholder {
+    .t-placeholder {
       color: var(--secondary-text);
 
       font-size: 16px;
@@ -28,8 +30,18 @@ tui-input {
       }
     }
 
-    .wrapper {
+    .t-wrapper {
       z-index: auto;
+
+      order: 1;
+    }
+
+    .t-icon {
+      margin-right: 10px !important;
+
+      use {
+        font-size: 0.7rem;
+      }
     }
   }
 }
@@ -42,11 +54,11 @@ tui-input {
   tui-input ::ng-deep {
     --tui-height-l: 54px;
 
-    tui-wrapper[data-appearance='textfield'] {
+    .t-wrapper[data-appearance='textfield'] {
       background: #282828;
     }
 
-    tui-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
+    .t-wrapper[data-appearance='textfield'][data-appearance='textfield']::after {
       border: 0;
     }
   }

@@ -7,7 +7,7 @@ import { StoreService } from 'src/app/core/services/store/store.service';
 })
 export class TestnetService {
   private readonly _enableTestnets$ = new BehaviorSubject<boolean>(
-    this.store.getItem('enableTestnet') || false
+    this.store.getItem('RUBIC_ENABLE_TESTNET') || false
   );
 
   public readonly enableTestnets$ = this._enableTestnets$.asObservable();
@@ -21,6 +21,6 @@ export class TestnetService {
   public switchTestnetState(): void {
     const newState = !this.enableTestnets;
     this._enableTestnets$.next(newState);
-    this.store.setItem('enableTestnet', newState);
+    this.store.setItem('RUBIC_ENABLE_TESTNET', newState);
   }
 }

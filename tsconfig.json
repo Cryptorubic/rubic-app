@@ -25,6 +25,7 @@
       "os": ["./node_modules/os-browserify"],
       "http": ["./node_modules/stream-http"],
       "crypto": ["./node_modules/crypto-browserify"],
+      "querystring": ["./node_modules/querystring-es3"],
       "url": ["./node_modules/url"],
       "@app/*": ["./src/app/*"],
       "@core/*": ["./src/app/core/*"],

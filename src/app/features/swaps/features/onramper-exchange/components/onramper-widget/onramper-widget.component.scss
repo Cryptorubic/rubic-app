@@ -9,7 +9,7 @@
   border-radius: 19px;
 
   @include iframe-vertical {
-    height: 500px;
+    height: 530px;
   }
 
   iframe {
@@ -21,8 +21,13 @@
     top: 0;
     left: -55px;
 
+    @include iframe-vertical {
+      top: 19px;
+      left: 60px;
+    }
+
     ::ng-deep app-rubic-button {
-      tui-wrapper {
+      .t-wrapper {
         background: var(--form-background);
       }
     }

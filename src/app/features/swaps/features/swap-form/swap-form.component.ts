@@ -28,13 +28,13 @@ import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form-service/onramper-form.service';
 import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
 
 @Component({
   selector: 'app-swap-form',
@@ -182,7 +182,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     const message = this.translateService.instant('notifications.solanaBeta');
     this.notificationsService.show(message, {
       status: TuiNotification.Warning,
-      autoClose: 10000
+      autoClose: 10000,
+      data: null
     });
   }
 

@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -370,12 +370,32 @@ export class TokensListStoreService {
    */
   private sortTokensByComparator(tokens: AvailableTokenAmount[]): AvailableTokenAmount[] {
     const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
-      const aAmount = a.amount.isFinite() ? a.amount : new BigNumber(0);
-      const bAmount = b.amount.isFinite() ? b.amount : new BigNumber(0);
-      const amountsDelta = bAmount.minus(aAmount).toNumber();
+      const aAmountInDollars = a.amount.isFinite()
+        ? a.amount.multipliedBy(a.price === null ? 0 : a.price)
+        : new BigNumber(0);
+      const bAmountInDollars = b.amount.isFinite()
+        ? b.amount.multipliedBy(b.price === null ? 0 : b.price)
+        : new BigNumber(0);
+
+      const amountsDelta = bAmountInDollars.minus(aAmountInDollars).toNumber();
       return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
     };
-    return tokens.sort(comparator);
+
+    const nativeTokenIndex = tokens.findIndex(token => {
+      const chainType = BlockchainsInfo.getChainType(token.blockchain);
+      return Web3Pure[chainType].isNativeAddress(token.address);
+    });
+
+    if (nativeTokenIndex < 0) {
+      return tokens.sort(comparator);
+    } else {
+      const slicedTokensArray = [
+        ...tokens.slice(0, nativeTokenIndex),
+        ...tokens.slice(nativeTokenIndex + 1, tokens.length)
+      ];
+
+      return [tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)];
+    }
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
