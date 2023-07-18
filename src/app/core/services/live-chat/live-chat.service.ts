@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk/tokens';
+import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
+import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 
 @Injectable({ providedIn: 'root' })
 export class LiveChatService {
@@ -11,9 +12,13 @@ export class LiveChatService {
     return this._isIframeOpened;
   }
 
+  private get isMobile(): boolean {
+    return this.windowWidth.windowSize <= WindowSize.MOBILE_MD;
+  }
+
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
+    private readonly windowWidth: WindowWidthService
   ) {}
 
   public initMessageListener(): void {
