@@ -17,7 +17,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { BLOCKCHAIN_NAME, BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
+import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { IframeService } from '@core/services/iframe/iframe.service';
@@ -86,10 +86,9 @@ export class BlockchainsListService {
 
     this._availableBlockchains = blockchains
       .map(blockchain => {
-        const disabledConfiguration =
-          blockchain.name === BLOCKCHAIN_NAME.POLYGON_ZKEVM
-            ? false
-            : !this.platformConfigurationService.isAvailableBlockchain(blockchain.name);
+        const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
+          blockchain.name
+        );
         const disabledFrom = !this.iframeService.isIframe
           ? disabledFromBlockchains.includes(blockchain.name)
           : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
