@@ -4,6 +4,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'Ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB Chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'Polygon',
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: 'zkEVM',
   [BLOCKCHAIN_NAME.HARMONY]: 'Harmony',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'Avalanche',
   [BLOCKCHAIN_NAME.MOONRIVER]: 'Moonriver',

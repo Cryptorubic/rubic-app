@@ -879,7 +879,7 @@ export class CrossChainFormService {
   private isSlippageCorrect(): boolean {
     if (
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      [CROSS_CHAIN_TRADE_TYPE.VIA, CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
+      [CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
         crossChainType => crossChainType !== this.selectedTrade.trade.type
       )
     ) {
