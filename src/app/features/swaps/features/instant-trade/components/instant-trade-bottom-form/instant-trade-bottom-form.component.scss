@@ -136,7 +136,6 @@ $green: rgb(74, 169, 86);
     }
 
     @include iframe-vertical {
-      flex-direction: column;
       padding: 0;
       overflow: visible;
 
@@ -159,6 +158,16 @@ $green: rgb(74, 169, 86);
 
       background: transparent;
       border: none;
+
+      @include iframe-vertical {
+        flex-direction: column;
+        grid-gap: 0;
+      }
+
+      @include iframe-horizontal {
+        align-items: center;
+        min-height: 100%;
+      }
     }
   }
 

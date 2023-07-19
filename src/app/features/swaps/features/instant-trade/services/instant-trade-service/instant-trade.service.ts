@@ -101,7 +101,7 @@ export class InstantTradeService extends TradeCalculationService {
     super('on-chain');
   }
 
-  private static isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
+  private isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
     if (this.iframeService.isIframe) {
       return false;
     }
@@ -274,7 +274,7 @@ export class InstantTradeService extends TradeCalculationService {
       blockchain
     );
 
-    const isSwapAndEarnTrade = InstantTradeService.isSwapAndEarnSwap(trade);
+    const isSwapAndEarnTrade = this.isSwapAndEarnSwap(trade);
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
