@@ -25,6 +25,12 @@
 
 tui-island {
   height: calc(100% - 2rem);
+
+  border-radius: var(--tui-radius-l);
+}
+
+.tui-island__paragraph {
+  font-size: 15px;
 }
 
 h1 {

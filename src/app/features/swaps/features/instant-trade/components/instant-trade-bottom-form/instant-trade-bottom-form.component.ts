@@ -44,7 +44,7 @@ import {
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import NoSelectedProviderError from '@core/errors/models/instant-trade/no-selected-provider-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -139,10 +139,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
   private hiddenCalculateTradeSubscription$: Subscription;
 
   public toBlockchain: BlockchainName;
-
-  public readonly isOnramper$ = this.queryParamsService.queryParams$.pipe(
-    map(queryParams => Boolean(queryParams.onramperTxId))
-  );
 
   public get selectedProvider(): InstantTradeProviderData {
     return this._selectedProvider;
@@ -583,7 +579,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
               this.refreshService.setStopped();
             }),
-            watch(this.cdr)
+            tuiWatch(this.cdr)
           );
         }),
         takeUntil(this.destroy$)

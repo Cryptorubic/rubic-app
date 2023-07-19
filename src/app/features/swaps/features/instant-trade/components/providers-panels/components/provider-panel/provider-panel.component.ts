@@ -65,7 +65,7 @@ export class ProviderPanelComponent implements OnInit, OnChanges {
       loading:
         data.tradeStatus === INSTANT_TRADE_STATUS.CALCULATION ||
         data.tradeStatus === INSTANT_TRADE_STATUS.TX_IN_PROGRESS,
-      appearance: this.isBestProvider ? 'normal' : 'small',
+      appearance: this.isBestProvider || data?.fullSize ? 'normal' : 'small',
       image: TRADES_PROVIDERS[data.name].image
     };
 

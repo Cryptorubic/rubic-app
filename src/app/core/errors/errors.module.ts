@@ -1,9 +1,9 @@
+import { TuiHintModule } from '@taiga-ui/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { UndefinedErrorComponent } from 'src/app/core/errors/components/undefined-error/undefined-error.component';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
-import { TuiManualHintModule } from '@taiga-ui/core';
 import { SharedModule } from '@shared/shared.module';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { NotSupportedNetworkErrorComponent } from './components/not-supported-network-error/not-supported-network-error.component';
@@ -19,6 +19,7 @@ import { TokenWithFeeErrorComponent } from './components/token-with-fee-error/to
 import { UnsupportedTokenCCRComponent } from 'src/app/core/errors/components/unsupported-token-ccr/unsupported-token-ccr.component';
 import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
 import { TransactionFailedErrorComponent } from '@core/errors/components/transaction-failed-error/transaction-failed-error.component';
+import { BitKeepErrorComponent } from '@core/errors/components/bitkeep-error/bitkeep-error.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { TransactionFailedErrorComponent } from '@core/errors/components/transac
     NotSupportedNetworkErrorComponent,
     InsufficientFundsErrorComponent,
     MetamaskErrorComponent,
+    BitKeepErrorComponent,
     NetworkErrorComponent,
     TotalSupplyOverflowErrorComponent,
     OverQueryLimitErrorComponent,
@@ -38,6 +40,6 @@ import { TransactionFailedErrorComponent } from '@core/errors/components/transac
     RpcErrorComponent,
     TransactionFailedErrorComponent
   ],
-  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiManualHintModule]
+  imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
 })
 export class ErrorsModule {}

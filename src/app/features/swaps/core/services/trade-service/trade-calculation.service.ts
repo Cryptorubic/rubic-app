@@ -27,7 +27,8 @@ export abstract class TradeCalculationService {
       new PolymorpheusComponent(ProgressTrxNotificationComponent),
       {
         status: TuiNotification.Info,
-        autoClose: false
+        autoClose: false,
+        data: null
       }
     );
   };
@@ -44,7 +45,7 @@ export abstract class TradeCalculationService {
     transactionHash: string,
     blockchain: BlockchainName,
     isSwapAndEarnSwap: boolean,
-    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER
+    ccrProviderType: CrossChainTradeType = CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
   ): Subscription {
     return this.successTxModalService.open(
       transactionHash,

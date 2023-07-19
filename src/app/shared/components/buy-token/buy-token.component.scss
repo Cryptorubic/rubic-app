@@ -4,7 +4,7 @@
   @include b($mobile-sm-plus) {
     color: red;
 
-    ::ng-deep app-rubic-button .wrapper {
+    ::ng-deep app-rubic-button .t-wrapper {
       padding: 5px 10px !important;
     }
   }

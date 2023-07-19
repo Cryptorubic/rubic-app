@@ -1,24 +1,57 @@
 import { Inject, Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { EXTERNAL_LINKS } from '@shared/constants/common/links';
-import { Observable, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
+import { HttpService } from '@core/services/http/http.service';
+import { LoadResult } from '@shared/guards/models/types';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
-export class TimeGuard implements CanActivate {
-  private readonly redirectUrl = EXTERNAL_LINKS.LANDING_STAKING;
+export class TimeGuard {
+  private readonly isMobile = this.headerStore.isMobile;
 
-  private readonly expiredDateUTC = Date.UTC(2022, 7, 5, 14, 0);
+  constructor(
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly headerStore: HeaderStore,
+    private readonly httpService: HttpService
+  ) {}
 
-  constructor(@Inject(WINDOW) private readonly window: RubicWindow) {}
+  public canLoad(route: ActivatedRouteSnapshot): LoadResult {
+    return this.canActivate(route);
+  }
 
-  public canActivate(): Observable<boolean> {
-    if (Date.now() < this.expiredDateUTC) {
-      this.window.location.href = this.redirectUrl;
+  private defaultTimeGuard(
+    redirectPath: string,
+    expiredDateInSeconds: number
+  ): Observable<boolean> {
+    const currentDate = Date.now();
+
+    if (currentDate < expiredDateInSeconds * 1000) {
+      this.window.location.href = redirectPath;
       return of(false);
     } else {
       return of(true);
     }
+  }
+
+  public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
+    const { redirectPath, expiredDateInSeconds } = route.data;
+
+    if (this.isMobile) {
+      return this.defaultTimeGuard(redirectPath, expiredDateInSeconds);
+    }
+
+    return this.httpService.get<{ current_timestamp: number }>('current_timestamp').pipe(
+      map(response => {
+        if (response.current_timestamp < expiredDateInSeconds) {
+          this.window.location.href = redirectPath;
+          return false;
+        } else {
+          return true;
+        }
+      }),
+      catchError(() => this.defaultTimeGuard(redirectPath, expiredDateInSeconds))
+    );
   }
 }

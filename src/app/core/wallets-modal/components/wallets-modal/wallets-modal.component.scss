@@ -70,6 +70,10 @@
     font-weight: 300;
     font-size: 24px;
     line-height: 29px;
+
+    @include b($mobile-md) {
+      display: none;
+    }
   }
 
   &__header {
@@ -92,6 +96,7 @@
   }
 
   &__footer {
+    font-size: 15px;
     text-align: center;
   }
 

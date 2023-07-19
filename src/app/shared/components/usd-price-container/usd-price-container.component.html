@@ -3,7 +3,7 @@
     *ngIf="usdPrice?.isFinite() && usdPrice.gt(0)"
     class="usd-price-container__price"
     [tuiHint]="usdPriceTooltip"
-    tuiHintMode="onDark"
+    tuiHintAppearance="onDark"
   >
     ${{ usdPrice | bigNumberFormat | withRound : 'toClosestValue' : { minRound: 2, maxRound: 2 } }}
   </div>

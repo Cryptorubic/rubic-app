@@ -9,7 +9,7 @@ export type Theme = 'dark' | 'light';
   providedIn: 'root'
 })
 export class ThemeService {
-  private _theme$ = new BehaviorSubject<Theme>(this.store.getItem('theme') || 'dark');
+  private _theme$ = new BehaviorSubject<Theme>(this.store.getItem('RUBIC_THEME') || 'dark');
 
   get theme(): Theme {
     return this._theme$.getValue();
@@ -49,7 +49,7 @@ export class ThemeService {
   private processSwitch(isCurrentThemeDark: boolean): void {
     const nextTheme = isCurrentThemeDark ? 'light' : 'dark';
     this._theme$.next(nextTheme);
-    this.store.setItem('theme', nextTheme);
+    this.store.setItem('RUBIC_THEME', nextTheme);
     this.switchDomClass();
   }
 

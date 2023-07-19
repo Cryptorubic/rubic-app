@@ -31,18 +31,21 @@ jobs:
           restore-keys: npm-
 
       - name: Set up packages
-        run: yarn
+        run: yarn --frozen-lockfile
 
       - name: Set up sshpass and npm
         run: |
           sudo apt-get install sshpass
-          yarn
+          yarn --frozen-lockfile
 
       - name: Run build prod
         run: yarn run build
-
-      - name: Deploy on prod server
-        run: sshpass -p ${{ secrets.PROD_SERVER_PASS }} rsync -e "ssh -o StrictHostKeyChecking=no" -rltzh -O --delete dist/rubic/ ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/frontend
+        
+      - name: Upload to storage
+        uses: actions/upload-artifact@v3
+        with:
+          name: Build
+          path: dist/
         
       - name: Get branch names.
         id: branch-names

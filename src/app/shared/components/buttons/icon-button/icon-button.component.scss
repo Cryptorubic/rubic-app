@@ -18,8 +18,8 @@
     }
   }
 
-  ::ng-deep tui-wrapper {
-    .content {
+  ::ng-deep .t-wrapper {
+    .t-content {
       flex-direction: column;
 
       padding: 4px;
@@ -71,8 +71,8 @@
 .bordered {
   border: 2px solid var(--primary-color);
 
-  ::ng-deep tui-wrapper {
-    .content {
+  ::ng-deep .t-wrapper {
+    .t-content {
       padding: 2px;
     }
   }

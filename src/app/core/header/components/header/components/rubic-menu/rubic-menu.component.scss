@@ -25,12 +25,12 @@
     height: 45px;
     min-height: initial !important;
     margin: 0;
-    padding: 17px 28px;
+    padding: 17px 28px !important;
 
     color: var(--primary-text);
-    font-weight: 400;
+    font-weight: 400 !important;
 
-    font-size: 18px;
+    font-size: 18px !important;
 
     border: none;
     border-radius: 156px;
@@ -279,7 +279,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   ::ng-deep tui-accordion {
     tui-accordion-item {
       &:first-of-type {
-        .wrapper {
+        .t-wrapper {
           &::after {
             border-top: none !important;
           }
@@ -292,7 +292,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
     --tui-base-01: var(--form-background);
     --tui-base-04: var(--transparent-line);
 
-    .wrapper {
+    .t-wrapper {
       &::after {
         border-right: none !important;
         border-left: none !important;
@@ -305,8 +305,8 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
   }
 
   ::ng-deep tui-expand {
-    .wrapper {
-      .content {
+    .t-wrapper {
+      .t-content {
         padding: 0;
       }
     }
@@ -341,7 +341,7 @@ tui-opt-group:not(:empty) ~ tui-opt-group {
         background: transparent !important;
         box-shadow: none;
 
-        .wrapper {
+        .t-wrapper {
           background: transparent;
         }
       }

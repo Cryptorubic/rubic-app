@@ -15,7 +15,7 @@
   &__head {
     position: relative;
 
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 
     @include b($mobile-sm-plus) {
       margin-bottom: 30px;
@@ -51,7 +51,6 @@
   &__col {
     display: flex;
     flex-direction: column;
-    gap: 20px;
     padding: 0 45px;
 
     @include b($tablet) {
@@ -61,6 +60,7 @@
     }
 
     @include b($mobile-sm-plus) {
+      gap: 20px;
       padding: 0;
     }
 
@@ -95,6 +95,13 @@
         line-height: 17px;
       }
 
+      &-hint {
+        width: 18px;
+        height: 18px;
+        margin-top: -1px;
+        margin-left: 5px;
+      }
+
       &_btn {
 
         cursor: pointer;
@@ -117,11 +124,20 @@
       }
 
       @include b($mobile-sm-plus) {
+        max-width: 150px;
+        overflow: hidden;
+
         font-size: 18px;
+        text-overflow: ellipsis;
       }
 
       &_loading {
         opacity: 0.4;
+      }
+
+      span {
+        font-weight: 400;
+        letter-spacing: 1px;
       }
     }
   }

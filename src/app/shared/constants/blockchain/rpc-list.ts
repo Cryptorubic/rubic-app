@@ -14,6 +14,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
+    'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://zkevm-rpc.com',
+    'https://rpc.polygon-zkevm.gateway.fm',
+    'https://1rpc.io/zkevm'
+  ],
   [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -29,6 +35,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
+    'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
   ],
@@ -119,5 +126,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://smartbch.greyh.at',
     'https://smartbch.fountainhead.cash/mainnet'
   ],
-  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io']
+  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com']
 };

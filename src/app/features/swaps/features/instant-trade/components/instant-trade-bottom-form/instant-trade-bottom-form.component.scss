@@ -107,12 +107,6 @@ $green: rgb(74, 169, 86);
   }
 
   &__body-top {
-    display: flex;
-    grid-gap: 10px;
-    justify-content: space-between;
-
-    min-height: 60px;
-    overflow: hidden;
 
     @include iframe {
       grid-gap: 0;
@@ -149,6 +143,22 @@ $green: rgb(74, 169, 86);
       background-color: transparent;
       border: 0;
       border-radius: 0;
+    }
+
+    &-wrapper {
+      position: relative;
+
+      display: flex;
+      grid-gap: 10px;
+      justify-content: space-between;
+
+      min-height: 60px;
+      padding: 0;
+
+      overflow: hidden;
+
+      background: transparent;
+      border: none;
     }
   }
 
@@ -360,8 +370,8 @@ $green: rgb(74, 169, 86);
 
     app-tokens-rate {
       position: absolute;
-      right: 20px;
-      bottom: 17px;
+      right: 0;
+      bottom: 0;
 
       @include iframe-vertical {
         position: static;

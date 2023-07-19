@@ -16,5 +16,15 @@
     margin-bottom: 15px !important;
 
     border-radius: 14px;
+
+    ::ng-deep {
+      .t-wrapper {
+        background: var(--form-background) !important;
+      }
+
+      .t-content {
+        font-size: 15px;
+      }
+    }
   }
 }

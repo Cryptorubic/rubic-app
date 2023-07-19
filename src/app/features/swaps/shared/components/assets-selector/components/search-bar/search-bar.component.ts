@@ -24,7 +24,7 @@ export class SearchBarComponent {
     )
   );
 
-  public searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
+  public readonly searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
 
   constructor(
     private readonly searchQueryService: SearchQueryService,

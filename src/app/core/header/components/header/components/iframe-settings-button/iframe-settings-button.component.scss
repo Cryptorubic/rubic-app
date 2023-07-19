@@ -2,8 +2,8 @@
 
 :host {
   position: absolute;
-  top: 15px;
-  right: 10px;
+  top: 26px;
+  right: 25px;
   z-index: 999;
 
   display: block;
@@ -23,7 +23,7 @@ app-icon-button ::ng-deep button {
     }
   }
 
-  tui-wrapper {
+  .t-wrapper {
     background: var(--primary-background);
   }
 

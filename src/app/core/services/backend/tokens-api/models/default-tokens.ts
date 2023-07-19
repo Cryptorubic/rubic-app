@@ -133,6 +133,34 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.POLYGON_ZKEVM],
+      ...defaultTokenParams
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.POLYGON_ZKEVM],
+      ...defaultTokenParams
+    } as Token,
+    {
+      blockchain: BLOCKCHAIN_NAME.POLYGON,
+      address: '0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
+      ...defaultTokenParams
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+      address: '0x1e4a5963abfd975d8c9021ce480b42188849d41d',
+      name: 'Tether USD',
+      symbol: 'USDT',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
+      ...defaultTokenParams
+    }
+  ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.AVALANCHE],
@@ -935,5 +963,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ICP]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ICP], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.PULSECHAIN], ...defaultTokenParams } as Token
   ]
 };

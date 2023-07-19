@@ -33,6 +33,7 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
+import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +80,7 @@ export class WalletConnectorService {
    * Setups provider based on local storage.
    */
   public async setupProvider(): Promise<boolean> {
-    const provider = this.storeService.getItem('provider');
+    const provider = this.storeService.getItem('RUBIC_PROVIDER');
     if (!provider) {
       return false;
     }
@@ -116,6 +117,10 @@ export class WalletConnectorService {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
+    if (walletName === WALLET_NAME.BITKEEP) {
+      return new BitkeepWalletAdapter(...defaultConstructorParameters);
+    }
+
     if (walletName === WALLET_NAME.WALLET_LINK) {
       return new WalletLinkWalletAdapter(
         ...defaultConstructorParameters,
@@ -130,12 +135,12 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    this.storeService.setItem('provider', this.provider.walletName);
+    this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
   }
 
   public deactivate(): void {
-    this.storeService.deleteItem('provider');
-    this.storeService.deleteItem('chainId');
+    this.storeService.deleteItem('RUBIC_PROVIDER');
+    this.storeService.deleteItem('RUBIC_CHAIN_ID');
     return this.provider?.deactivate();
   }
 

@@ -17,7 +17,7 @@ export class StatisticsComponent implements OnInit {
 
   public readonly circRBCLocked$ = this.statisticsService.circRBCLocked$;
 
-  public readonly rewardPerSecond$ = this.statisticsService.rewardPerSecond$;
+  public readonly rewardPerWeek$ = this.statisticsService.rewardPerWeek$;
 
   public readonly apr$ = this.statisticsService.apr$;
 
@@ -46,6 +46,7 @@ export class StatisticsComponent implements OnInit {
     this.loading = true;
     this._currentTimestamp$.next(Date.now());
     this.statisticsService.updateStatistics();
+    this.getStatisticsData();
     setTimeout(() => {
       this.loading = false;
       this.cdr.detectChanges();
@@ -54,5 +55,7 @@ export class StatisticsComponent implements OnInit {
 
   private getStatisticsData(): void {
     this.statisticsService.getLockedRBC();
+    this.statisticsService.getRewardPerWeek();
+    this.statisticsService.getTotalSupply();
   }
 }

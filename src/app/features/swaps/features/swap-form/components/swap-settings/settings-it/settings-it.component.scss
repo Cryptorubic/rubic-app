@@ -37,7 +37,7 @@
       right: 0;
       z-index: -1;
 
-      width: 100px;
+      width: 88px;
       height: 100%;
 
       border: 1px solid var(--tui-base-03);
@@ -142,18 +142,18 @@
     }
 
     &_small-input {
-      ::ng-deep tui-wrapper[data-appearance='textfield'] {
+      ::ng-deep [tuiWrapper][data-appearance=textfield] {
         width: 60px;
       }
     }
   }
 
   ::ng-deep {
-    tui-wrapper[data-appearance='textfield'] {
-      color: var(--primary-text);
+    [tuiWrapper][data-appearance=textfield] {
+      color: var(--primary-text) !important;
 
-      border-radius: 100px;
-      box-shadow: none;
+      border-radius: 100px !important;
+      box-shadow: none !important;
 
       input {
         padding-right: 22px !important;
@@ -165,11 +165,11 @@
       }
     }
 
-    input + .content .placeholder {
+    input + .t-content .t-placeholder {
       text-align: right;
     }
 
-    .wrapper {
+    .t-wrapper {
       display: flex;
     }
 

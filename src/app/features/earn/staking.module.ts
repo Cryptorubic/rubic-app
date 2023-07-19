@@ -3,15 +3,8 @@ import { CommonModule } from '@angular/common';
 import { StakingRoutingModule } from './staking-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { StatisticsComponent } from './components/statistics/statistics.component';
-import { StakingCardComponent } from './components/staking-card/staking-card.component';
-import { LpCardComponent } from './components/lp-card/lp-card.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import {
-  TuiHintModule,
-  TuiLoaderModule,
-  TuiManualHintModule,
-  TuiTextfieldControllerModule
-} from '@taiga-ui/core';
+import { TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
 import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -32,8 +25,6 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
   declarations: [
     StakingPageComponent,
     StatisticsComponent,
-    StakingCardComponent,
-    LpCardComponent,
     DepositsComponent,
     StakeFormComponent,
     StakeButtonComponent,
@@ -54,7 +45,7 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     TuiTextfieldControllerModule,
     TuiSliderModule,
     TuiHintModule,
-    TuiManualHintModule
+    TuiHintModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })
