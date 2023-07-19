@@ -31,7 +31,10 @@ import { RefreshService } from '@features/swaps/core/services/refresh-service/re
 import { AuthService } from '@core/services/auth/auth.service';
 import { CrossChainCalculationService } from '@features/swaps/features/cross-chain/services/cross-chain-calculation-service/cross-chain-calculation.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
+import {
+  CrossChainCalculatedTrade,
+  CrossChainCalculatedTradeData
+} from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
@@ -67,6 +70,9 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
+import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
 @Injectable()
 export class CrossChainFormService {
@@ -242,6 +248,8 @@ export class CrossChainFormService {
     private readonly tradeService: TradeService,
     private readonly changenowPostTradeService: ChangenowPostTradeService,
     private readonly router: Router,
+    private readonly crossChainApiService: CrossChainApiService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.subscribeOnCalculation();
@@ -261,6 +269,7 @@ export class CrossChainFormService {
    * Can be called only once in constructor.
    */
   private subscribeOnCalculation(): void {
+    let providers: CrossChainCalculatedTradeData[] = [];
     this._calculateTrade$
       .pipe(
         debounceTime(200),
@@ -347,7 +356,14 @@ export class CrossChainFormService {
           );
         })
       )
-      .subscribe();
+      .subscribe(trade => {
+        if (trade) {
+          providers = trade.calculated === 0 ? [] : [...providers, trade];
+          if (trade.calculated === trade.total) {
+            this.saveTrade(providers);
+          }
+        }
+      });
   }
 
   /**
@@ -863,7 +879,7 @@ export class CrossChainFormService {
   private isSlippageCorrect(): boolean {
     if (
       this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      [CROSS_CHAIN_TRADE_TYPE.VIA, CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
+      [CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
         crossChainType => crossChainType !== this.selectedTrade.trade.type
       )
     ) {
@@ -966,5 +982,33 @@ export class CrossChainFormService {
     if (updateBestTrade) {
       this.updateSelectedTrade(this.taggedTrades[0]);
     }
+  }
+
+  private saveTrade(providers: CrossChainCalculatedTradeData[]): void {
+    this.crossChainApiService
+      .saveProvidersStatistics({
+        user: this.walletConnectorService.address,
+        from_token: this.selectedTrade.trade?.from?.address,
+        from_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.from?.blockchain],
+        from_amount: this.selectedTrade.trade?.from?.stringWeiAmount,
+        to_token: this.selectedTrade.trade?.to?.address,
+        to_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.to?.blockchain],
+        providers_statistics: providers.map(providerTrade => {
+          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          return {
+            provider_title: lastCalculatedTrade?.tradeType,
+            calculation_time_in_seconds: String(calculationTime / 1000),
+            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
+            status: lastCalculatedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network:
+              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
+            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(lastCalculatedTrade?.error && {
+              additional_info: lastCalculatedTrade.error.message
+            })
+          };
+        })
+      })
+      .subscribe();
   }
 }

@@ -11,7 +11,7 @@
       height: 100%;
       margin: 0;
 
-      .wrapper {
+      .t-wrapper {
         min-width: 150px;
         height: 100%;
         margin: 0 !important;
@@ -22,12 +22,12 @@
         @include b($mobile-md-minus) {
           min-width: 120px;
 
-          .content {
+          .t-content {
             font-size: 12px !important;
           }
         }
 
-        .content {
+        .t-content {
           font-size: 16px;
         }
       }

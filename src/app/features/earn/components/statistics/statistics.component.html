@@ -16,7 +16,7 @@
             [class.tui-skeleton]="!lockedRBC"
             [tuiHint]="lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 6 : true) : '--.--'"
             [tuiHintDirection]="'top-right'"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
           >
             {{ lockedRBC?.isFinite() ? (lockedRBC | bigNumberFormat : 0 : true) : '--.--' }}
           </span>
@@ -67,7 +67,7 @@
             [class.tui-skeleton]="!rewardPerWeek"
             [tuiHint]="rewardPerWeek?.isFinite() ? (rewardPerWeek | bigNumberFormat : 6) : '--.--'"
             [tuiHintDirection]="'top-right'"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
           >
             {{
               rewardPerWeek?.isFinite()
@@ -103,7 +103,7 @@
                 : '--.--'
             "
             [tuiHintDirection]="'top-left'"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
             >{{
               circRBCLocked?.isFinite() ? (circRBCLocked | bigNumberFormat : 2 : true) : '--.--'
             }}
@@ -128,7 +128,7 @@
               : '--.--'
           "
           [tuiHintDirection]="'top-right'"
-          tuiHintMode="onDark"
+          tuiHintAppearance="onDark"
         >
           {{
             circRBCLocked?.isFinite()

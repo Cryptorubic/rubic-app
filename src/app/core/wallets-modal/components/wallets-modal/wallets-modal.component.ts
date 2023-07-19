@@ -29,7 +29,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { firstValueFrom, from, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
-import { isEdge, isEdgeOlderThan, isFirefox, isIE } from '@taiga-ui/cdk';
+import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -45,11 +45,11 @@ export class WalletsModalComponent implements OnInit {
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
 
   public get isChromium(): boolean {
-    if (isEdge(this.userAgent) || isEdgeOlderThan(13, this.userAgent) || isIE(this.userAgent)) {
+    if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
       return false;
     }
 
-    return !isFirefox(this.userAgent);
+    return !tuiIsFirefox(this.userAgent);
   }
 
   public get providers(): ReadonlyArray<WalletProvider> {

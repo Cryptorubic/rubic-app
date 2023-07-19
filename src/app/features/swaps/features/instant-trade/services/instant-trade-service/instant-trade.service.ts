@@ -103,10 +103,7 @@ export class InstantTradeService extends TradeCalculationService {
 
   private static isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
     if (trade instanceof EvmOnChainTrade) {
-      if (
-        trade.from.blockchain === BLOCKCHAIN_NAME.PULSECHAIN ||
-        trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC
-      ) {
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
         return false;
       }
 
@@ -202,22 +199,22 @@ export class InstantTradeService extends TradeCalculationService {
       this.authService.userAddress &&
       isAddressCorrectValue;
 
-    const sdkFromToken = await Token.createToken(fromToken);
+    const sdkFromToken = await PriceToken.createToken(fromToken);
     const deflationFromStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
       sdkFromToken
     );
 
-    const sdkToToken = await Token.createToken(toToken);
+    const sdkToToken = await PriceToken.createToken(toToken);
     const deflationToStatus = await this.sdkService.deflationTokenManager.isDeflationToken(
       sdkToToken
     );
 
     const fromSdkCompatibleToken = new PriceToken({
-      ...sdkFromToken,
+      ...sdkFromToken.asStruct,
       price: new BigNumber(fromTokenPrice)
     });
     const toSdkCompatibleToken = new PriceToken({
-      ...sdkToToken,
+      ...sdkToToken.asStruct,
       price: new BigNumber(toTokenPrice)
     });
 

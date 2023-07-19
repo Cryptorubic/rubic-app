@@ -12,7 +12,7 @@
   @include iframe-horizontal {
     ::ng-deep app-rubic-button {
       button,
-      tui-wrapper {
+      .t-wrapper {
         box-shadow: none !important;
       }
     }

@@ -23,11 +23,10 @@ import {
   TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule,
   TuiTextfieldControllerModule,
   TuiScrollbarModule
 } from '@taiga-ui/core';
-import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
@@ -165,10 +164,11 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     TuiDataListWrapperModule,
     TuiLoaderModule,
     TuiBadgeModule,
-    TuiManualHintModule,
+    TuiHintModule,
     TuiTagModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiHoveredModule
   ],
   exports: [
     BigNumberFormatPipe,

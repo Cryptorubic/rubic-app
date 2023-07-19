@@ -9,11 +9,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
   TuiDataListModule,
-  TuiDropdownControllerModule,
   TuiGroupModule,
   TuiHintModule,
   TuiHostedDropdownModule,
-  TuiLoaderModule
+  TuiLoaderModule,
+  TuiDropdownModule,
+  TuiDialogModule
 } from '@taiga-ui/core';
 import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
@@ -85,7 +86,7 @@ import { PointsButtonComponent } from './components/header/components/points-but
     TuiGroupModule,
     TuiBadgeModule,
     PolymorpheusModule,
-    TuiDropdownControllerModule,
+    TuiDropdownModule,
     TuiToggleModule,
     FormsModule,
     TuiLoaderModule,
@@ -94,7 +95,8 @@ import { PointsButtonComponent } from './components/header/components/points-but
     ClipboardModule,
     HistoryModule,
     InstantTradeModule,
-    TuiAccordionModule
+    TuiAccordionModule,
+    TuiDialogModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

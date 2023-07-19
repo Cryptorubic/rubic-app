@@ -50,7 +50,7 @@ export class MobileMenuComponent {
 
   public openSettings(): void {
     this.hideLiveChat();
-    this.modalService.openSettings().subscribe();
+    this.modalService.openSettings(this.injector).subscribe();
   }
 
   public toggleLiveChat(): void {
