@@ -168,5 +168,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'cBridge',
     image: `${imageBasePath}cbridge.svg`,
     color: '#008aff'
+  },
+  // @TODO
+  [BRIDGE_TYPE.SCROLL_BRIDGE]: {
+    name: 'Scroll bridge',
+    image: `${imageBasePath}scroll.svg`,
+    color: '#fff0de'
   }
 };
