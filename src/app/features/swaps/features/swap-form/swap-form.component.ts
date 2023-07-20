@@ -64,6 +64,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
 
+  public readonly hideTokenSwitcher = this.queryParamsService.hideTokenSwitcher;
+
   public readonly isFormFilled$ = this.swapFormService.isFilled$;
 
   public readonly getCurrentUser$ = this.authService.currentUser$;

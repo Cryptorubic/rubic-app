@@ -69,10 +69,12 @@
 
         <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
           <ng-container *ngIf="!isOnramper">
-            <app-form-switcher
-              *ngIf="!isIframeDstChainNotEvm"
-              (switcherClick)="revert()"
-            ></app-form-switcher>
+            <ng-container *ngIf="!hideTokenSwitcher">
+              <app-form-switcher
+                *ngIf="!isIframeDstChainNotEvm"
+                (switcherClick)="revert()"
+              ></app-form-switcher>
+            </ng-container>
           </ng-container>
         </div>
 
