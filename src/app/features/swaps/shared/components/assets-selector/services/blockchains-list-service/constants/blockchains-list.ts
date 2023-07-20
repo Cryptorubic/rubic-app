@@ -100,6 +100,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.POLYGON, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.LINEA, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.POLYGON_ZKEVM, rank: 0.5, tags: [] },
   { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1, tags: [] },
