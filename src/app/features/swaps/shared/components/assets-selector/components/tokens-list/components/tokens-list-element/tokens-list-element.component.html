@@ -22,7 +22,7 @@
             [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
             (click)="copyToClipboard($event)"
             [tuiHint]="tokenAddressHint"
-            tuiHintMode="onDark"
+            tuiHintAppearance="onDark"
             [tuiHintShowDelay]="50"
             tuiHintDirection="top-right"
             [tuiHintHideDelay]="100"
@@ -46,9 +46,12 @@
 
     <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
       <div class="token-card__amount" *ngIf="token.amount.gt(0)">
-        <span [tuiHint]="tokenAmountTooltip" tuiHintDirection="top-left" tuiHintMode="onDark">{{
-          token.amount | bigNumberFormat | shortenAmount : 6 : 4
-        }}</span>
+        <span
+          [tuiHint]="tokenAmountTooltip"
+          tuiHintDirection="top-left"
+          tuiHintAppearance="onDark"
+          >{{ token.amount | bigNumberFormat | shortenAmount : 6 : 4 }}</span
+        >
         <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
       </div>
     </div>
@@ -62,7 +65,7 @@
           'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
         "
         [tuiHint]="tokenSecurityHint"
-        tuiHintMode="onDark"
+        tuiHintAppearance="onDark"
         [tuiHintShowDelay]="50"
         tuiHintDirection="top-right"
         [tuiHintHideDelay]="100"

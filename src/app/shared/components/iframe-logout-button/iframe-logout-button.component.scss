@@ -9,7 +9,7 @@
     margin-left: 15px;
   }
 
-  ::ng-deep tui-wrapper {
+  ::ng-deep .t-wrapper {
     .image {
       width: 18px !important;
       height: 18px !important;
@@ -27,7 +27,7 @@ app-icon-button ::ng-deep button {
     }
   }
 
-  tui-wrapper {
+  .t-wrapper {
     background: var(--primary-background);
   }
 

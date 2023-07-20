@@ -15,7 +15,7 @@
             <div
               class="list__item item"
               [ngClass]="{ item_disabled: disabled }"
-              tuiHintMode="error"
+              tuiHintAppearance="error"
               tuiHintDirection="right"
               [tuiHint]="blockchain | functionCall : getHintText : this"
               (click)="!disabled && onBlockchainSelect(blockchain.name)"

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-settings-toggler',
@@ -6,7 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./settings-toggler.component.scss']
 })
 export class SettingsTogglerComponent {
-  public isSettingsOpened = false;
+  @Input() public settingsOpened = false;
+
+  @Output() public readonly changeSettingsVisibility = new EventEmitter<boolean>();
 
   constructor() {}
 }

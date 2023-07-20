@@ -9,6 +9,7 @@ html.dark {
   --form-background-transparent: rgba(38, 40, 42, 0.9);
   --solid-background: rgb(0, 0, 0);
   --secondary-background: rgba(255, 255, 255, 0.1);
+  --secondary-background-deposits: rgba(255, 255, 255, 0.05);
   --iframe-primary-background: rgb(44, 44, 44);
 
   --mobile-user-profile-background: rgb(23, 25, 25);
@@ -74,13 +75,13 @@ html.dark {
     }
   }
 
-  app-rubic-button tui-wrapper[data-appearance='secondary'] {
+  app-rubic-button .t-wrapper[data-appearance='secondary'] {
     border: 1px solid transparent;
   }
 
   @media (max-width: 651px) {
-    app-swap-button-container tui-wrapper[data-appearance='secondary'],
-    app-swap-button-container tui-wrapper[data-appearance='primary'] {
+    app-swap-button-container .t-wrapper[data-appearance='secondary'],
+    app-swap-button-container .t-wrapper[data-appearance='primary'] {
       border: 1px solid var(--transparent-line);
     }
   }

@@ -56,7 +56,7 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
       - name: Install dependencies
-        run: yarn --prefer-offline
+        run: yarn --prefer-offline --frozen-lockfile
 
       - name: Run build
         run: yarn run build:${{ inputs.env_id }}

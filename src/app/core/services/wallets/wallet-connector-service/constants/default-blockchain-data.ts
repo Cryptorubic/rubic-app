@@ -15,6 +15,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Polygon Mainnet',
     rpc: 'https://rpc-mainnet.maticvigil.com'
   },
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
+    name: 'Polygon zkEVM',
+    rpc: 'https://zkevm-rpc.com'
+  },
   [BLOCKCHAIN_NAME.HARMONY]: {
     name: 'Harmony Mainnet Shard 0',
     rpc: 'https://api.harmony.one'

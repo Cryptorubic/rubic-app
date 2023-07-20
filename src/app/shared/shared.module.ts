@@ -23,11 +23,10 @@ import {
   TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiManualHintModule,
   TuiTextfieldControllerModule,
   TuiScrollbarModule
 } from '@taiga-ui/core';
-import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
@@ -78,6 +77,7 @@ import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/t
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
+import { LiveChatComponent } from './components/live-chat/live-chat.component';
 
 @NgModule({
   declarations: [
@@ -135,7 +135,8 @@ import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridg
     LetDirective,
     NoFrameDirective,
     OnlyFrameDirective,
-    CommaToPeriodDirective
+    CommaToPeriodDirective,
+    LiveChatComponent
   ],
   imports: [
     CommonModule,
@@ -163,10 +164,11 @@ import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridg
     TuiDataListWrapperModule,
     TuiLoaderModule,
     TuiBadgeModule,
-    TuiManualHintModule,
+    TuiHintModule,
     TuiTagModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiHoveredModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -212,7 +214,8 @@ import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridg
     TradeRowComponent,
     CommaToPeriodDirective,
     SwapAndEarnModalComponent,
-    SuccessWithdrawModalComponent
+    SuccessWithdrawModalComponent,
+    LiveChatComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

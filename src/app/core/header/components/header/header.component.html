@@ -1,5 +1,5 @@
 <app-banner
-  href="https://cryptorubic.medium.com/rubic-integrates-pulsechain-and-runs-a-dedicated-promotion-with-powercity-portalx-b1996c0279fa"
+  href="https://cryptorubic.medium.com/polygon-zkevm-defi-explorer-campaign-unlocking-a-potential-airdrop-24e373654064"
   *noFrame
 ></app-banner>
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
@@ -91,8 +91,13 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
 
-    <app-settings-toggler *noFrame class="rubic-header__settings">
-      <app-settings></app-settings>
+    <app-settings-toggler
+      *noFrame
+      [settingsOpened]="settingsOpened"
+      (changeSettingsVisibility)="settingsOpened = $event"
+      class="rubic-header__settings"
+    >
+      <app-settings (handleClose)="settingsOpened = false"></app-settings>
     </app-settings-toggler>
   </div>
 

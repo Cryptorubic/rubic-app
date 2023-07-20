@@ -17,7 +17,7 @@
   }
 
   .tui-table__tr.data-row {
-    background: var(--secondary-background);
+    background: var(--secondary-background-deposits);
     border-bottom: none;
 
     .tui-table__td:first-child {
@@ -56,7 +56,7 @@
           height: 27px;
         }
 
-        tui-wrapper[data-appearance='secondary'] {
+        .t-wrapper[data-appearance='secondary'] {
           background: var(--tui-secondary);
         }
 
@@ -64,14 +64,26 @@
           font-size: unset;
         }
 
-        .wrapper {
+        .t-wrapper {
           padding: 0 10px;
         }
       }
     }
   }
+
+  tbody {
+    td {
+      font-size: 15px;
+    }
+
+    ::ng-deep app-rubic-button button {
+      font-size: 15px !important;
+    }
+  }
 }
 
-::ng-deep app-rubic-button .leave-btn_disabled {
-  opacity: 0.4;
+::ng-deep app-rubic-button {
+  .leave-btn_disabled {
+    opacity: 0.4;
+  }
 }

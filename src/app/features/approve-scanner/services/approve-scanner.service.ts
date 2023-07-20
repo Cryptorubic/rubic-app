@@ -265,14 +265,16 @@ export class ApproveScannerService {
   public showProgressNotification(): Subscription {
     return this.notificationsService.show(this.translateService.instant('Revoke in progress'), {
       status: TuiNotification.Info,
-      autoClose: false
+      autoClose: false,
+      data: null
     });
   }
 
   public showSuccessNotification(): Subscription {
     return this.notificationsService.show('Successful revoke', {
       status: TuiNotification.Success,
-      autoClose: 10000
+      autoClose: 10000,
+      data: null
     });
   }
 
@@ -289,7 +291,7 @@ export class ApproveScannerService {
         status = TuiNotification.Error;
       }
 
-      this.notificationsService.show(label, { autoClose: 10000, status });
+      this.notificationsService.show(label, { autoClose: 10000, status, data: null });
     }
   }
 

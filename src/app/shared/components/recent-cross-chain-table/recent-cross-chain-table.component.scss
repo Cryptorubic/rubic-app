@@ -126,6 +126,10 @@
     @include b($mobile-md) {
       max-width: unset;
     }
+
+    ::ng-deep button {
+      font-size: 15px;
+    }
   }
 }
 

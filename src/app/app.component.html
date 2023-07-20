@@ -7,6 +7,7 @@
       </main>
       <app-rubic-footer class="footer"></app-rubic-footer>
     </div>
+    <app-live-chat></app-live-chat>
 
     <div class="iframe-wrapper" *onlyFrame>
       <div class="iframe-content">
@@ -22,7 +23,7 @@
     <app-maintenance *ngIf="isBackendAvailable === false"></app-maintenance>
   </ng-container>
 
-  <ng-container ngProjectAs="tuiOverNotifications">
+  <ng-container ngProjectAs="tuiOverAlerts">
     <!-- Content over notifications -->
   </ng-container>
 

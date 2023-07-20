@@ -26,7 +26,7 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
 
-type SupportedBlockchain = typeof supportedBlockchains[number];
+type SupportedBlockchain = (typeof supportedBlockchains)[number];
 
 type NetworksGasPrice<T> = Record<SupportedBlockchain, T>;
 
