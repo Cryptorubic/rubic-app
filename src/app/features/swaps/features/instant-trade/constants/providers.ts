@@ -58,6 +58,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ZRX,
       ON_CHAIN_TRADE_TYPE.CURVE
     ]),
+    [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3
+    ]),
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.VIPER_SWAP
@@ -179,6 +182,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
     ]),
+    [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]),
     [BLOCKCHAIN_NAME.FUJI]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.JOE,
       ON_CHAIN_TRADE_TYPE.PANGOLIN

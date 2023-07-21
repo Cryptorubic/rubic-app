@@ -51,7 +51,9 @@ export class CrossChainApiService {
 
   public saveProvidersStatistics(data: ProviderStatisctic): Observable<void> {
     return this.httpService.post('route_calculation_statistic/save', data, null, {
-      headers: { Signature: getSignature(data.to_token, data.from_token) }
+      headers: {
+        Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
+      }
     });
   }
 

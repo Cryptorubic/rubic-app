@@ -9,8 +9,7 @@
 
   text-decoration: none;
 
-  background: linear-gradient(89.85deg, #0ac780 -3.28%, #5be3e3 14.13%, #adfefe 23.62%, #deebff 69.88%, #78a7ef 88.46%, #8547d3 106.29%);
-
+  background: linear-gradient(90deg, #0ac780 0%, #5be3e3 9.66%, #e3ffff 24.85%, #f9ecff 74.28%, #c978ef 87.32%, #5d11be 95.52%);
 
   @include hide-unused-ui {
     display: none;
@@ -65,6 +64,8 @@
       width: 10px;
       height: 15px;
 
+      margin-top: 3px;
+
       transition: 100ms ease-in;
     }
   }
@@ -84,7 +85,8 @@
 
 @include b(1000) {
   .banner {
-    &__background-img_right {
+    &__background-img_right,
+    &__background-img_left {
       display: none;
     }
   }
@@ -111,11 +113,7 @@
       gap: 10px;
       width: 100%;
     }
-  }
-}
 
-@include b($mobile-sm-middle) {
-  .banner {
     &__text {
       @include font(12px, 1, 400, #504E4E);
       text-align: left;

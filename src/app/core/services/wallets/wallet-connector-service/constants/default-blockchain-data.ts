@@ -15,6 +15,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Polygon Mainnet',
     rpc: 'https://rpc-mainnet.maticvigil.com'
   },
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
+    name: 'Polygon zkEVM',
+    rpc: 'https://zkevm-rpc.com'
+  },
   [BLOCKCHAIN_NAME.HARMONY]: {
     name: 'Harmony Mainnet Shard 0',
     rpc: 'https://api.harmony.one'
@@ -110,5 +114,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.PULSECHAIN]: {
     name: 'Pulsechain',
     rpc: 'https://rpc.pulsechain.com'
+  },
+  [BLOCKCHAIN_NAME.LINEA]: {
+    name: 'Linea',
+    rpc: 'https://linea-mainnet.infura.io/v3'
   }
 };

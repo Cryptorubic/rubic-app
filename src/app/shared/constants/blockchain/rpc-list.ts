@@ -14,6 +14,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
+    'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://zkevm-rpc.com',
+    'https://rpc.polygon-zkevm.gateway.fm',
+    'https://1rpc.io/zkevm'
+  ],
   [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -122,6 +128,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
+  [BLOCKCHAIN_NAME.LINEA]: ['https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71'],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
   [BLOCKCHAIN_NAME.FUJI]: [
     'https://endpoints.omniatech.io/v1/avax/fuji/public',
     'https://rpc.ankr.com/avalanche_fuji',
@@ -144,7 +152,5 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://endpoints.omniatech.io/v1/bsc/testnet/public',
     'https://bsc-testnet.public.blastapi.io'
   ],
-  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: [
-    'https://alpha-rpc.scroll.io/l2'
-  ]
+  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: ['https://alpha-rpc.scroll.io/l2']
 };
