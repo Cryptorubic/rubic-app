@@ -114,5 +114,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.PULSECHAIN]: {
     name: 'Pulsechain',
     rpc: 'https://rpc.pulsechain.com'
+  },
+  [BLOCKCHAIN_NAME.LINEA]: {
+    name: 'Linea',
+    rpc: 'https://linea-mainnet.infura.io/v3'
   }
 };
