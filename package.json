@@ -57,7 +57,7 @@
     "@taiga-ui/styles": "^3.34.0",
     "@tinkoff/ng-event-plugins": "3.1.0",
     "@tinkoff/ng-polymorpheus": "4.1.0",
-    "@walletconnect/ethereum-provider": "^2.8.6",
+    "@walletconnect/ethereum-provider": "^2.9.1",
     "@walletconnect/modal": "^2.5.9",
     "angular-google-tag-manager": "^1.6.1",
     "bignumber.js": "9.1.0",

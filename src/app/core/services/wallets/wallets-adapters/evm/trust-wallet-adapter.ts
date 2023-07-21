@@ -22,6 +22,7 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     const providerConfig: EthereumProviderOptions = {
       projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
       chains: WALLET_CONNECT_SUPPORTED_CHAINS,
+      optionalChains: [1, ...WALLET_CONNECT_SUPPORTED_CHAINS],
       showQrModal: false
     };
     super(providerConfig, accountChange$, chainChange$, errorsService, zone, window);

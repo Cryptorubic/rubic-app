@@ -55,6 +55,13 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
       this.onAddressChanges$.next(address);
       this.onNetworkChanges$.next(this.selectedChain);
 
+      console.log('HEREEREREER');
+
+      this.wallet.on('disconnect', () => {
+        console.log('DISCONNECTED');
+        this.deactivate();
+      });
+
       this.initSubscriptionsOnChanges();
     } catch (error) {
       throw new WalletlinkError();
