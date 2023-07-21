@@ -114,11 +114,11 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: 'kava_cosmos',
   [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-  [BLOCKCHAIN_NAME.MUMBAI]: 'mumbai',
+  [BLOCKCHAIN_NAME.MUMBAI]: 'polygon-mumbai',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'binance-smart-chain-testnet',
   [BLOCKCHAIN_NAME.GOERLI]: 'goerli',
-  [BLOCKCHAIN_NAME.FUJI]: 'fuji',
-  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: 'scroll-testnet'
+  [BLOCKCHAIN_NAME.FUJI]: 'avalanche-fuji',
+  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: 'scroll-alpha-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

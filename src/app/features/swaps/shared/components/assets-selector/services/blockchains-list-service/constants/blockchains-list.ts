@@ -12,7 +12,7 @@ export const testnetBlockchainsList = [
   BLOCKCHAIN_NAME.MUMBAI,
   BLOCKCHAIN_NAME.GOERLI,
   BLOCKCHAIN_NAME.SCROLL_TESTNET
-];
+] as const;
 
 export const notEvmChangeNowBlockchainsList = {
   [BLOCKCHAIN_NAME.ICP]: BLOCKCHAIN_NAME.ICP,

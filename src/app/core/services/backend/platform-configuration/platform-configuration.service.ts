@@ -5,7 +5,7 @@ import {
   BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS
 } from '@app/shared/constants/blockchain/backend-blockchains';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of, tap } from 'rxjs';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
@@ -94,7 +94,25 @@ export class PlatformConfigurationService {
   }
 
   public loadPlatformConfig(): Observable<boolean> {
-    return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
+    const responses = [
+      this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`),
+      this.httpClient
+        .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`)
+        .pipe(catchError(() => of(defaultConfig)))
+    ];
+    return forkJoin(responses).pipe(
+      map(([mainResponse, testnetResponse]) => ({
+        server_is_active: mainResponse.server_is_active,
+        cross_chain_providers: {
+          ...testnetResponse.cross_chain_providers,
+          ...mainResponse.cross_chain_providers
+        },
+        on_chain_providers: { ...mainResponse.on_chain_providers },
+        networks: {
+          ...testnetResponse.networks,
+          ...mainResponse.networks
+        }
+      })),
       catchError(() => of(defaultConfig)),
       tap(response => {
         if (response.server_is_active === true) {
