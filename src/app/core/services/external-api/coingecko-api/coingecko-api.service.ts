@@ -26,7 +26,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SYSCOIN,
   BLOCKCHAIN_NAME.ZK_SYNC,
   BLOCKCHAIN_NAME.OPTIMISM,
-  BLOCKCHAIN_NAME.PULSECHAIN
+  BLOCKCHAIN_NAME.PULSECHAIN,
+  BLOCKCHAIN_NAME.LINEA
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -63,7 +64,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
       [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
-      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain'
+      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
+      [BLOCKCHAIN_NAME.LINEA]: 'linea'
     };
 
     this.tokenBlockchainId = {
@@ -87,7 +89,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
       [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
-      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain'
+      [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
+      [BLOCKCHAIN_NAME.LINEA]: 'linea'
     };
   }
 
