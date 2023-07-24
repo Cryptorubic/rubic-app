@@ -18,15 +18,13 @@ import {
   BlockchainsInfo,
   Web3PublicService,
   isAddressCorrect,
-  BLOCKCHAIN_NAME,
-  wrappedNativeTokensList
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -287,19 +285,10 @@ export class TokensService {
             )
           );
         } else {
-          // @TODO Delete (291-297) when Coingecko will return the correct price for Linea WETH
-          let address = query;
-          if (
-            isAddress &&
-            compareAddresses(query, wrappedNativeTokensList[BLOCKCHAIN_NAME.LINEA].address)
-          ) {
-            address = EMPTY_ADDRESS;
-          }
-
           const params: TokensRequestQueryOptions = {
             network: blockchain,
             ...(!isAddress && { symbol: query }),
-            ...(isAddress && { address })
+            ...(isAddress && { address: query })
           };
 
           return this.tokensApiService.fetchQueryTokens(params).pipe(
