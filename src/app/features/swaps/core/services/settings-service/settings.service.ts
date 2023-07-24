@@ -5,7 +5,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
@@ -78,8 +78,9 @@ export class SettingsService {
   }
 
   public subscribeOnQueryParams(): void {
-    this.queryParamsService.queryParams$.subscribe(queryParams => {
-      if (queryParams.iframe) {
+    this.queryParamsService.queryParams$
+      .pipe(first(value => value.iframe === 'vertical' || value.iframe === 'horizontal'))
+      .subscribe(queryParams => {
         const slippage = {
           slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
           slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
@@ -94,8 +95,7 @@ export class SettingsService {
         this.crossChainRouting.patchValue({
           slippageTolerance: this.defaultCcrSettings.slippageTolerance
         });
-      }
-    });
+      });
   }
 
   private getDefaultITSettings(slippageIt?: number): ItSettingsForm {
