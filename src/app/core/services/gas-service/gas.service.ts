@@ -315,16 +315,18 @@ export class GasService {
   }
 
   /**
-   * Gets Optimism gas.
+   * Gets Optimism gas from blockchain.
    * @return Observable<number> Average gas price in Gwei.
    */
   @Cacheable({
     maxAge: GasService.requestInterval
   })
   private fetchOptimismGas(): Observable<GasPrice> {
-    return of({
-      gasPrice: new BigNumber(500).dividedBy(10 ** 9).toFixed()
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.OPTIMISM);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
   }
 
   /**
