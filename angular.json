@@ -43,7 +43,7 @@
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
               "src/styles.scss"
             ],
-            "scripts": ["src/assets/analytics/live-chat.js"],
+            "scripts": [],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -93,7 +93,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/live-chat.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

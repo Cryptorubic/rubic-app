@@ -6,6 +6,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: `${basePath}eth-contrast.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `${basePath}bnb.svg`,
   [BLOCKCHAIN_NAME.POLYGON]: `${basePath}polygon.svg`,
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: `${basePath}polygon.svg`,
   [BLOCKCHAIN_NAME.HARMONY]: `${basePath}harmony.svg`,
   [BLOCKCHAIN_NAME.AVALANCHE]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.MOONRIVER]: `${basePath}moonriver.webp`,
@@ -115,5 +116,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.png`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
-  [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`
+  [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`,
+  [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.png`
 };
