@@ -328,7 +328,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         fromAmount: calculatedTrade.trade.from.stringWeiAmount,
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
-
         ...(changenowId && { changenowId })
       };
 

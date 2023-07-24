@@ -77,9 +77,9 @@ export class TransactionDetailsComponent {
       trade instanceof OnChainTrade
         ? trade.path.map(token => token.symbol)
         : [
-            CrossChainRouteComponent.getRoute(trade.onChainSubtype.from, trade.bridgeType),
-            CrossChainRouteComponent.getRoute(trade.bridgeType, trade.bridgeType),
-            CrossChainRouteComponent.getRoute(trade.onChainSubtype.to, trade.bridgeType)
+            CrossChainRouteComponent.getRoute(trade.onChainSubtype.from, trade.bridgeType, true),
+            CrossChainRouteComponent.getRoute(trade.bridgeType, trade.bridgeType, true),
+            CrossChainRouteComponent.getRoute(trade.onChainSubtype.to, trade.bridgeType, true)
           ].map(route => route.name);
     const receiverAddress =
       this.targetNetworkAddressService.address || this.walletConnectorService.address;
