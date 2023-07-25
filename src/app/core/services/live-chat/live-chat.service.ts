@@ -3,6 +3,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable({ providedIn: 'root' })
 export class LiveChatService {
@@ -16,9 +17,14 @@ export class LiveChatService {
     return this.windowWidth.windowSize <= WindowSize.MOBILE_MD;
   }
 
+  private get isIframe(): boolean {
+    return this.iframeService.isIframe;
+  }
+
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly windowWidth: WindowWidthService
+    private readonly windowWidth: WindowWidthService,
+    private readonly iframeService: IframeService
   ) {}
 
   public initMessageListener(): void {
@@ -32,7 +38,7 @@ export class LiveChatService {
         if (event.data?.type === 'lc_visibility') {
           const value = event.data?.value;
 
-          if (!this.isMobile) {
+          if (!this.isIframe && !this.isMobile) {
             if (value === 'minimized' || value === 'hidden') {
               liveChat.height = '84px';
               liveChat.width = '84px';
@@ -47,6 +53,7 @@ export class LiveChatService {
               this._isIframeOpened = true;
             }
           } else {
+            console.log('Opacity 0');
             if (value === 'minimized' || value === 'hidden') {
               liveChat.height = '0';
               liveChat.width = '0';

@@ -1,11 +1,3 @@
-@use 'src/scss/core' as *;
-
-:host {
-  @include iframe-horizontal {
-    display: none;
-  }
-}
-
 iframe {
   position: fixed;
   right: 0;
