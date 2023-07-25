@@ -13,5 +13,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.TELOS]: true,
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: true,
   [BLOCKCHAIN_NAME.ARBITRUM]: true,
-  [BLOCKCHAIN_NAME.ZK_SYNC]: true
+  [BLOCKCHAIN_NAME.ZK_SYNC]: true,
+  [BLOCKCHAIN_NAME.OPTIMISM]: true
 };

@@ -25,12 +25,10 @@ import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-token
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
-import { BLOCKCHAIN_NAME, BlockchainName, wrappedNativeTokensList } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
-import { compareAddresses } from '@shared/utils/utils';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -58,20 +56,6 @@ export class TokensApiService {
     return List(
       tokens
         .map(({ token_security, ...token }: BackendToken) => {
-          // @TODO Delete (62-73) when Coingecko will return the correct price for Linea WETH
-          let price = null;
-          if (
-            compareAddresses(token.address, wrappedNativeTokensList[BLOCKCHAIN_NAME.LINEA].address)
-          ) {
-            const foundToken = tokens.find(
-              fetchedToken =>
-                fetchedToken.blockchainNetwork.toLowerCase() === 'linea' &&
-                fetchedToken.address === EMPTY_ADDRESS
-            );
-
-            price = foundToken?.usdPrice;
-          }
-
           return {
             blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
             address: token.address,
@@ -80,7 +64,7 @@ export class TokensApiService {
             decimals: token.decimals,
             image: token.image,
             rank: token.rank,
-            price: price || token.usdPrice,
+            price: token.usdPrice,
             tokenSecurity: token_security
           };
         })

@@ -45,8 +45,6 @@
     "@ng-web-apis/resize-observer": "^3.0.1",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
-    "@sentry/angular": "^7.20.0",
-    "@sentry/tracing": "^7.20.0",
     "@solana/web3.js": "^1.36.0",
     "@taiga-ui/addon-mobile": "^3.34.0",
     "@taiga-ui/addon-table": "~3.34.0",
