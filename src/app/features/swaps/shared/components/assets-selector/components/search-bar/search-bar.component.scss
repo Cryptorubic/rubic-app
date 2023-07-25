@@ -4,19 +4,28 @@
   --tui-font-text-s: normal 16px/20px var(--tui-font-text);
 }
 
-.t-placeholder {
-  color: var(--secondary-text);
-
-  font-size: 16px;
-}
-
 tui-input {
   ::ng-deep {
+
+    @include iframe-horizontal {
+      .t-content {
+        padding: 0 13px;
+      }
+
+      .t-cleaner {
+        order: 1;
+      }
+    }
+
     input {
       padding: 0 5px 0 40px !important;
 
+      @include iframe {
+        padding-top: 5px !important;
+      }
+
       @include b($mobile-sm-middle) {
-        font-size: 16px !important;
+        font-size: 14px !important;
       }
     }
 
@@ -25,8 +34,16 @@ tui-input {
 
       font-size: 16px;
 
+      @include iframe-horizontal {
+        transform: translateY(-0.8rem) !important;
+      }
+
       @include b($mobile-sm-middle) {
         font-size: 14px;
+      }
+
+      &_raised {
+        transform: translate(-6px, -0.7rem) !important;
       }
     }
 
@@ -38,6 +55,10 @@ tui-input {
 
     .t-icon {
       margin-right: 10px !important;
+
+      @include iframe-horizontal {
+        margin: 0;
+      }
 
       use {
         font-size: 0.7rem;
