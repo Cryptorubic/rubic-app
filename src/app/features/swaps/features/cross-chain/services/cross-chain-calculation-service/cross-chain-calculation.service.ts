@@ -159,21 +159,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true),
-      PriceToken.createToken(fromToken),
-      PriceToken.createToken(toToken)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true)
     ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice, sdkFromToken, sdkToToken]) => {
+      switchMap(([tokenState, fromPrice, toPrice]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;
 
         const fromSdkCompatibleToken = new PriceToken({
-          ...sdkFromToken.asStruct,
+          ...fromToken,
           price: new BigNumber(fromPrice as number | null)
         });
         const toSdkCompatibleToken = new PriceToken({
-          ...sdkToToken.asStruct,
+          ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
         const calculationStartTime = Date.now();
