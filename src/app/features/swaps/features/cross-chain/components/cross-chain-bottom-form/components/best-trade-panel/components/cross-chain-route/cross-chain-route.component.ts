@@ -32,12 +32,12 @@ export class CrossChainRouteComponent {
     this.fromProvider = CrossChainRouteComponent.getRoute(
       routing?.fromProvider,
       routing.bridgeProvider,
-      Boolean(routing?.fromProvider)
+      !Boolean(routing?.fromProvider)
     );
     this.toProvider = CrossChainRouteComponent.getRoute(
       routing?.toProvider,
       routing.bridgeProvider,
-      Boolean(routing?.toProvider)
+      !Boolean(routing?.toProvider)
     );
   }
 
