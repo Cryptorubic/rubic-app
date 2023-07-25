@@ -28,7 +28,12 @@ $token-card-height: 55px;
 
   @include iframe-vertical {
     height: 230px;
+
+    &_small {
+      height: 170px;
+    }
   }
+
 
   @include iframe-horizontal {
     height: $token-card-height + 20px;

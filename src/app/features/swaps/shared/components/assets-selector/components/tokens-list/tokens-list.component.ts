@@ -44,6 +44,8 @@ export class TokensListComponent {
 
   public readonly iframeRubicLink = this.iframeService.rubicLink;
 
+  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly iframeService: IframeService,
