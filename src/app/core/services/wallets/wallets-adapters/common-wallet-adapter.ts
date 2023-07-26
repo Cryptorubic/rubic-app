@@ -1,4 +1,4 @@
-import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, ChainType } from 'rubic-sdk';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
-  public abstract readonly chainType: CHAIN_TYPE;
+  public abstract readonly chainType: ChainType;
 
   public abstract readonly walletName: WALLET_NAME;
 

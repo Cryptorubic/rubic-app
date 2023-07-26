@@ -20,11 +20,11 @@ import {
   Web3Pure,
   OnChainTrade,
   OnChainTradeError,
-  TxStatus,
   BlockchainsInfo,
   NotWhitelistedProviderError,
   PriceToken,
-  EvmOnChainTrade
+  EvmOnChainTrade,
+  TX_STATUS
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -318,12 +318,12 @@ export class InstantTradeService extends TradeCalculationService {
             ),
             filter(
               statusData =>
-                statusData.status === TxStatus.SUCCESS || statusData.status === TxStatus.FAIL
+                statusData.status === TX_STATUS.SUCCESS || statusData.status === TX_STATUS.FAIL
             )
           )
         );
         subscription$.unsubscribe();
-        if (txStatusData.status === TxStatus.SUCCESS) {
+        if (txStatusData.status === TX_STATUS.SUCCESS) {
           this.showSuccessTrxNotification();
         } else {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txStatusData.hash);

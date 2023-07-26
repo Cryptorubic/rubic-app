@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, LIFI_BRIDGE_TYPES } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
@@ -113,7 +113,7 @@ export class QueryParamsService {
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
-    const bridges = Object.values(LifiBridgeTypes) || [];
+    const bridges = Object.values(LIFI_BRIDGE_TYPES) || [];
     this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
