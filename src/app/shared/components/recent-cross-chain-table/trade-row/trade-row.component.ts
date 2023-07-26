@@ -34,8 +34,10 @@ import {
   ArbitrumRbcBridgeSupportedBlockchain,
   BlockchainsInfo,
   CbridgeCrossChainSupportedBlockchain,
+  CHANGENOW_API_STATUS,
   ChangenowApiStatus,
   CROSS_CHAIN_TRADE_TYPE,
+  TX_STATUS,
   TxStatus
 } from 'rubic-sdk';
 import { TransactionReceipt } from 'web3-eth';
@@ -63,7 +65,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public initialLoading = true;
 
-  public readonly CrossChainTxStatus = TxStatus;
+  public readonly CrossChainTxStatus: TxStatus;
 
   public readonly getStatusBadgeType: (status: TxStatus | ChangenowApiStatus) => string =
     getStatusBadgeType;
@@ -98,16 +100,15 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public get showAction(): boolean {
     return (
       ((this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
-        this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT) ||
-      (this.isArbitrumBridgeTrade &&
-        this.uiTrade?.statusTo === this.CrossChainTxStatus.READY_TO_CLAIM)
+        this.uiTrade?.statusTo === TX_STATUS.REVERT) ||
+      (this.isArbitrumBridgeTrade && this.uiTrade?.statusTo === TX_STATUS.READY_TO_CLAIM)
     );
   }
 
   public get showRevert(): boolean {
     return (
       (this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&
-      this.uiTrade?.statusTo === this.CrossChainTxStatus.REVERT
+      this.uiTrade?.statusTo === TX_STATUS.REVERT
     );
   }
 
@@ -134,13 +135,13 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public get showToContinue(): boolean {
     if (this.isChangenowTrade(this.trade)) {
-      return !this.uiTrade?.statusTo && this.uiTrade?.statusFrom === TxStatus.SUCCESS;
+      return !this.uiTrade?.statusTo && this.uiTrade?.statusFrom === TX_STATUS.SUCCESS;
     }
 
     return (
       isOnramperRecentTrade(this.trade) &&
       !this.uiTrade?.statusTo &&
-      this.uiTrade?.statusFrom === TxStatus.SUCCESS
+      this.uiTrade?.statusFrom === TX_STATUS.SUCCESS
     );
   }
 
@@ -204,8 +205,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
         tuiWatch(this.cdr),
         takeWhile(
           uiTrade =>
-            uiTrade?.statusTo === TxStatus.PENDING ||
-            uiTrade?.statusTo !== ChangenowApiStatus.FINISHED
+            uiTrade?.statusTo === TX_STATUS.PENDING ||
+            uiTrade?.statusTo !== CHANGENOW_API_STATUS.FINISHED
         ),
         takeUntil(this.destroy$)
       )
@@ -232,11 +233,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     }
 
     if (isOnramperRecentTrade(this.trade)) {
-      if (this.uiTrade?.statusFrom === TxStatus.PENDING) {
+      if (this.uiTrade?.statusFrom === TX_STATUS.PENDING) {
         return 'Waiting';
       }
-      if (this.uiTrade?.statusFrom === TxStatus.FAIL) {
-        return STATUS_BADGE_TEXT[TxStatus.FAIL];
+      if (this.uiTrade?.statusFrom === TX_STATUS.FAIL) {
+        return STATUS_BADGE_TEXT[TX_STATUS.FAIL];
       }
       if (this.uiTrade) {
         return getStatusBadgeText(status);
@@ -248,7 +249,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   private saveTrades(): void {
     if (!this.isChangenowTrade(this.trade)) {
-      const isCrossChainFinished = this.uiTrade.statusTo !== TxStatus.PENDING;
+      const isCrossChainFinished = this.uiTrade.statusTo !== TX_STATUS.PENDING;
 
       this.recentTradesStoreService.updateTrade({
         ...this.trade,
@@ -295,7 +296,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     }
 
     if (revertTxReceipt.status) {
-      this.uiTrade.statusTo = TxStatus.FALLBACK;
+      this.uiTrade.statusTo = TX_STATUS.FALLBACK;
       this.revertBtnLoading = false;
       this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
       this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
@@ -361,7 +362,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
           this.trade.srcTxHash
         );
         if (revertTxReceipt.status) {
-          this.uiTrade.statusTo = TxStatus.SUCCESS;
+          this.uiTrade.statusTo = TX_STATUS.SUCCESS;
           this.revertBtnLoading = false;
           this.uiTrade.dstTxHash = revertTxReceipt.transactionHash;
           this.uiTrade.dstTxLink = new ScannerLinkPipe().transform(
@@ -369,8 +370,8 @@ export class TradeRowComponent implements OnInit, OnDestroy {
             this.trade.toToken.blockchain,
             ADDRESS_TYPE.TRANSACTION
           );
-          this.trade.calculatedStatusFrom = TxStatus.SUCCESS;
-          this.trade.calculatedStatusTo = TxStatus.SUCCESS;
+          this.trade.calculatedStatusFrom = TX_STATUS.SUCCESS;
+          this.trade.calculatedStatusTo = TX_STATUS.SUCCESS;
           this.cdr.detectChanges();
         }
       } catch (err) {

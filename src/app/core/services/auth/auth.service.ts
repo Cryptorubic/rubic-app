@@ -7,7 +7,7 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { ChainType } from 'rubic-sdk';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -28,7 +28,7 @@ export class AuthService {
     return this.user?.address;
   }
 
-  get userChainType(): CHAIN_TYPE {
+  get userChainType(): ChainType {
     return this.user?.chainType;
   }
 
@@ -47,7 +47,7 @@ export class AuthService {
     });
   }
 
-  private setCurrentUser(address: string, chainType: CHAIN_TYPE): void {
+  private setCurrentUser(address: string, chainType: ChainType): void {
     if (!compareAddresses(address, this.userAddress)) {
       this._currentUser$.next({ address, chainType });
     }

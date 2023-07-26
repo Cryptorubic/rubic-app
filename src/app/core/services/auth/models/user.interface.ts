@@ -1,4 +1,4 @@
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { ChainType } from 'rubic-sdk';
 
 export interface WalletLoginInterface {
   code: string;
@@ -12,7 +12,7 @@ export interface WalletLoginInterface {
 
 export interface UserInterface {
   address: string;
-  chainType: CHAIN_TYPE;
+  chainType: ChainType;
 }
 
 export interface AuthUserInterface {

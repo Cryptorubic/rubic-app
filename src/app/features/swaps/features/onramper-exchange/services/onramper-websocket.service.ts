@@ -7,7 +7,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { TuiNotification } from '@taiga-ui/core';
 import { SuccessTrxNotificationComponent } from '@shared/components/success-trx-notification/success-trx-notification.component';
-import { EvmWeb3Pure, TxStatus } from 'rubic-sdk';
+import { EvmWeb3Pure, TX_STATUS } from 'rubic-sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { OnramperService } from '@core/services/onramper/onramper.service';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
@@ -66,7 +66,7 @@ export class OnramperWebsocketService {
     }
 
     const pendingTrades = this.recentTradesStoreService.currentUserRecentTrades.filter(
-      trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TxStatus.PENDING
+      trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TX_STATUS.PENDING
     ) as OnramperRecentTrade[];
 
     const promises = pendingTrades.map(trade => {
@@ -81,8 +81,8 @@ export class OnramperWebsocketService {
               ...trade,
               calculatedStatusFrom:
                 tradeApiData.status === OnramperTransactionStatus.COMPLETED
-                  ? TxStatus.SUCCESS
-                  : TxStatus.FAIL,
+                  ? TX_STATUS.SUCCESS
+                  : TX_STATUS.FAIL,
               nativeAmount: tradeApiData.out_amount
             });
           }
@@ -141,16 +141,16 @@ export class OnramperWebsocketService {
     if (
       !recentTrade ||
       recentTrade.rubicId !== id ||
-      recentTrade.calculatedStatusFrom === TxStatus.SUCCESS
+      recentTrade.calculatedStatusFrom === TX_STATUS.SUCCESS
     ) {
       return;
     }
 
     const updatedRecentTrade: OnramperRecentTrade = {
       ...recentTrade,
-      calculatedStatusFrom: TxStatus.SUCCESS,
+      calculatedStatusFrom: TX_STATUS.SUCCESS,
       nativeAmount: nativeAmount,
-      ...(isDirect && { calculatedStatusTo: TxStatus.SUCCESS })
+      ...(isDirect && { calculatedStatusTo: TX_STATUS.SUCCESS })
     };
 
     if (!this.iframeService.isIframe) {
@@ -225,7 +225,7 @@ export class OnramperWebsocketService {
         txId: txInfo.transaction_id,
 
         timestamp: Date.now(),
-        calculatedStatusFrom: TxStatus.PENDING,
+        calculatedStatusFrom: TX_STATUS.PENDING,
         isDirect
       };
       if (!this.iframeService.isIframe) {
