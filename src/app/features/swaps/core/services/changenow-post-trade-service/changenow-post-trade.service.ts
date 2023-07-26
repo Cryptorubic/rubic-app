@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { StoreService } from '@core/services/store/store.service';
 import {
+  CHANGENOW_API_STATUS,
   changenowApiKey,
   ChangenowApiResponse,
   ChangenowApiStatus,
@@ -21,7 +22,7 @@ import { ChangenowRecentTradesStoreService } from '@core/services/recent-trades/
 export class ChangenowPostTradeService {
   public trade: ChangenowPostTrade | undefined;
 
-  private readonly _status$ = new BehaviorSubject<ChangenowApiStatus>(ChangenowApiStatus.WAITING);
+  private readonly _status$ = new BehaviorSubject<ChangenowApiStatus>(CHANGENOW_API_STATUS.WAITING);
 
   public readonly status$ = this._status$.asObservable();
 
@@ -68,7 +69,7 @@ export class ChangenowPostTradeService {
 
       return response.status;
     } catch {
-      return ChangenowApiStatus.WAITING;
+      return CHANGENOW_API_STATUS.WAITING;
     }
   }
 
@@ -78,7 +79,7 @@ export class ChangenowPostTradeService {
         startWith(-1),
         switchMap(() => this.getChangenowSwapStatus(this.trade.id)),
         tap(status => this._status$.next(status)),
-        takeWhile(status => status !== ChangenowApiStatus.FINISHED)
+        takeWhile(status => status !== CHANGENOW_API_STATUS.FINISHED)
       )
       .subscribe();
   }

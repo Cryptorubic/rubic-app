@@ -8,7 +8,14 @@ import { BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscrip
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { map, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, CHAIN_TYPE, compareAddresses, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  ChainType,
+  compareAddresses,
+  EvmWeb3Pure,
+  Web3Pure
+} from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
@@ -196,7 +203,7 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    const chainType: CHAIN_TYPE = BlockchainsInfo.getChainType(fromAsset.blockchain);
+    const chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
     const isAddressCorrectValue = Web3Pure[chainType].isAddressCorrect(
       this.authService.userAddress
     );
@@ -223,7 +230,7 @@ export class SwapButtonContainerErrorsService {
       return;
     }
 
-    let fromChainType: CHAIN_TYPE | undefined;
+    let fromChainType: ChainType | undefined;
     try {
       fromChainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
     } catch {}
@@ -258,7 +265,7 @@ export class SwapButtonContainerErrorsService {
     const { fromAsset } = this.swapFormService.inputValue;
     const userBlockchain = this.walletConnectorService.network;
     if (userBlockchain && isMinimalToken(fromAsset)) {
-      let chainType: CHAIN_TYPE | undefined;
+      let chainType: ChainType | undefined;
       try {
         chainType = BlockchainsInfo.getChainType(fromAsset.blockchain);
       } catch {}

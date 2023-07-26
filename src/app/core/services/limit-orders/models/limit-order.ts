@@ -1,6 +1,6 @@
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { LIMIT_ORDER_STATUS } from 'rubic-sdk';
+import { LimitOrderStatus } from 'rubic-sdk';
 
 export interface LimitOrder {
   hash: string;
@@ -14,7 +14,7 @@ export interface LimitOrder {
   toAmount: BigNumber;
   fromBalance: BigNumber;
 
-  status: LIMIT_ORDER_STATUS;
+  status: LimitOrderStatus;
   filledPercent: number;
 
   orderRate: BigNumber;

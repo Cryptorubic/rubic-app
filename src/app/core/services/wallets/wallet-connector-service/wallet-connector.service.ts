@@ -19,6 +19,7 @@ import {
   blockchainId,
   BlockchainName,
   CHAIN_TYPE,
+  ChainType,
   EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName,
   nativeTokensList
@@ -49,7 +50,7 @@ export class WalletConnectorService {
     return this.provider?.address;
   }
 
-  public get chainType(): CHAIN_TYPE {
+  public get chainType(): ChainType {
     return this.provider?.chainType;
   }
 
