@@ -21,7 +21,7 @@ import {
   EvmBlockchainName,
   EvmWeb3Pure,
   Injector,
-  TxStatus,
+  TX_STATUS,
   Web3PublicSupportedBlockchain,
   Web3Pure
 } from 'rubic-sdk';
@@ -173,7 +173,7 @@ export class RecentTradesService {
       );
 
     uiTrade.statusFrom =
-      storageData?.calculatedStatusFrom === TxStatus.SUCCESS ? TxStatus.SUCCESS : srcTxStatus;
+      storageData?.calculatedStatusFrom === TX_STATUS.SUCCESS ? TX_STATUS.SUCCESS : srcTxStatus;
     uiTrade.statusTo = dstTxStatus;
     uiTrade.dstTxHash = dstTxHash;
     uiTrade.dstTxLink = dstTxHash
@@ -201,15 +201,15 @@ export class RecentTradesService {
         trade.txId
       );
 
-      if (trade.calculatedStatusFrom !== TxStatus.PENDING) {
+      if (trade.calculatedStatusFrom !== TX_STATUS.PENDING) {
         uiTrade.statusFrom = trade.calculatedStatusFrom;
       } else {
         if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
-          uiTrade.statusFrom = TxStatus.SUCCESS;
+          uiTrade.statusFrom = TX_STATUS.SUCCESS;
         } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
-          uiTrade.statusFrom = TxStatus.FAIL;
+          uiTrade.statusFrom = TX_STATUS.FAIL;
         } else {
-          uiTrade.statusFrom = TxStatus.PENDING;
+          uiTrade.statusFrom = TX_STATUS.PENDING;
         }
       }
 
@@ -229,17 +229,17 @@ export class RecentTradesService {
       }
     }
 
-    if (uiTrade.statusFrom === TxStatus.FAIL) {
+    if (uiTrade.statusFrom === TX_STATUS.FAIL) {
       this.recentTradesStoreService.updateTrade({
         ...trade,
-        calculatedStatusTo: TxStatus.FAIL
+        calculatedStatusTo: TX_STATUS.FAIL
       });
-      uiTrade.statusTo = TxStatus.FAIL;
+      uiTrade.statusTo = TX_STATUS.FAIL;
       return uiTrade;
     }
     if (EvmWeb3Pure.isNativeAddress(uiTrade.toToken.address)) {
       uiTrade.statusTo = uiTrade.statusFrom;
-      if (uiTrade.statusTo === TxStatus.SUCCESS) {
+      if (uiTrade.statusTo === TX_STATUS.SUCCESS) {
         this.recentTradesStoreService.updateTrade({
           ...trade,
           calculatedStatusTo: uiTrade.statusTo
@@ -306,8 +306,8 @@ export class RecentTradesService {
           srcTxHash,
           BLOCKCHAIN_NAME.ETHEREUM
         ),
-        calculatedStatusFrom: TxStatus.SUCCESS,
-        calculatedStatusTo: TxStatus.FALLBACK
+        calculatedStatusFrom: TX_STATUS.SUCCESS,
+        calculatedStatusTo: TX_STATUS.FALLBACK
       });
     } catch (error) {
       console.debug('[ArbitrumBridge] Transaction claim error: ', error);
@@ -352,8 +352,8 @@ export class RecentTradesService {
 
       this.recentTradesStoreService.updateTrade({
         ...this.recentTradesStoreService.getSpecificCrossChainTrade(srcTxHash, fromBlockchain),
-        calculatedStatusFrom: TxStatus.SUCCESS,
-        calculatedStatusTo: TxStatus.FALLBACK
+        calculatedStatusFrom: TX_STATUS.SUCCESS,
+        calculatedStatusTo: TX_STATUS.FALLBACK
       });
     } catch (error) {
       console.debug('[Symbiosis] Transaction revert error: ', error);
@@ -406,8 +406,8 @@ export class RecentTradesService {
 
       this.recentTradesStoreService.updateTrade({
         ...trade,
-        calculatedStatusFrom: TxStatus.SUCCESS,
-        calculatedStatusTo: TxStatus.FALLBACK
+        calculatedStatusFrom: TX_STATUS.SUCCESS,
+        calculatedStatusTo: TX_STATUS.FALLBACK
       });
     } catch (error) {
       console.debug('[Cbridge] Transaction revert error: ', error);
@@ -457,8 +457,8 @@ export class RecentTradesService {
 
       this.recentTradesStoreService.updateTrade({
         ...trade,
-        calculatedStatusFrom: TxStatus.SUCCESS,
-        calculatedStatusTo: TxStatus.FALLBACK
+        calculatedStatusFrom: TX_STATUS.SUCCESS,
+        calculatedStatusTo: TX_STATUS.FALLBACK
       });
     } catch (error) {
       console.debug('[Cbridge] Transaction revert error: ', error);

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
-import { BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainsInfo, ChainType } from 'rubic-sdk';
 
 @Injectable()
 export class TargetNetworkAddressService {
@@ -31,11 +30,11 @@ export class TargetNetworkAddressService {
       this.swapFormService.fromBlockchain$,
       this.swapFormService.toBlockchain$
     ]).subscribe(([from, to]) => {
-      let fromChainType: CHAIN_TYPE | undefined;
+      let fromChainType: ChainType | undefined;
       try {
         fromChainType = BlockchainsInfo.getChainType(from);
       } catch {}
-      let toChainType: CHAIN_TYPE | undefined;
+      let toChainType: ChainType | undefined;
       try {
         toChainType = BlockchainsInfo.getChainType(to);
       } catch {}
