@@ -1,19 +1,19 @@
-import { ChangenowApiStatus, TxStatus } from 'rubic-sdk';
+import { CHANGENOW_API_STATUS, ChangenowApiStatus, TX_STATUS, TxStatus } from 'rubic-sdk';
 
 export const STATUS_BADGE_TEXT: Partial<Record<TxStatus | ChangenowApiStatus, string>> = {
-  [TxStatus.FAIL]: 'recentTrades.fail',
-  [TxStatus.PENDING]: 'recentTrades.pending',
-  [TxStatus.SUCCESS]: 'recentTrades.success',
-  [TxStatus.FALLBACK]: 'recentTrades.fallback',
-  [TxStatus.UNKNOWN]: 'recentTrades.unknown',
+  [TX_STATUS.FAIL]: 'recentTrades.fail',
+  [TX_STATUS.PENDING]: 'recentTrades.pending',
+  [TX_STATUS.SUCCESS]: 'recentTrades.success',
+  [TX_STATUS.FALLBACK]: 'recentTrades.fallback',
+  [TX_STATUS.UNKNOWN]: 'recentTrades.unknown',
 
-  [ChangenowApiStatus.NEW]: 'recentTrades.waiting',
-  [ChangenowApiStatus.WAITING]: 'recentTrades.waiting',
-  [ChangenowApiStatus.CONFIRMING]: 'recentTrades.confirming',
-  [ChangenowApiStatus.EXCHANGING]: 'recentTrades.exchanging',
-  [ChangenowApiStatus.SENDING]: 'recentTrades.success',
-  [ChangenowApiStatus.FINISHED]: 'recentTrades.success',
-  [ChangenowApiStatus.FAILED]: 'recentTrades.fail',
-  [ChangenowApiStatus.REFUNDED]: 'recentTrades.fallback',
-  [ChangenowApiStatus.VERIFYING]: 'recentTrades.success'
+  [CHANGENOW_API_STATUS.NEW]: 'recentTrades.waiting',
+  [CHANGENOW_API_STATUS.WAITING]: 'recentTrades.waiting',
+  [CHANGENOW_API_STATUS.CONFIRMING]: 'recentTrades.confirming',
+  [CHANGENOW_API_STATUS.EXCHANGING]: 'recentTrades.exchanging',
+  [CHANGENOW_API_STATUS.SENDING]: 'recentTrades.success',
+  [CHANGENOW_API_STATUS.FINISHED]: 'recentTrades.success',
+  [CHANGENOW_API_STATUS.FAILED]: 'recentTrades.fail',
+  [CHANGENOW_API_STATUS.REFUNDED]: 'recentTrades.fallback',
+  [CHANGENOW_API_STATUS.VERIFYING]: 'recentTrades.success'
 };

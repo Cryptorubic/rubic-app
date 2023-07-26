@@ -55,17 +55,19 @@ export class TokensApiService {
   public static prepareTokens(tokens: BackendToken[]): List<Token> {
     return List(
       tokens
-        .map(({ token_security, ...token }: BackendToken) => ({
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
-          address: token.address,
-          name: token.name,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image,
-          rank: token.rank,
-          price: token.usdPrice,
-          tokenSecurity: token_security
-        }))
+        .map(({ token_security, ...token }: BackendToken) => {
+          return {
+            blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork],
+            address: token.address,
+            name: token.name,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            image: token.image,
+            rank: token.rank,
+            price: token.usdPrice,
+            tokenSecurity: token_security
+          };
+        })
         .filter(token => token.address && token.blockchain)
     );
   }
