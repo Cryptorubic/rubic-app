@@ -11,7 +11,13 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { BitKeepError } from '@core/errors/models/provider/bitkeep-error';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  ChainType,
+  EvmBlockchainName
+} from 'rubic-sdk';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { NgZone } from '@angular/core';
 
@@ -20,7 +26,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
     return false;
   }
 
-  get walletType(): CHAIN_TYPE {
+  get walletType(): ChainType {
     return CHAIN_TYPE.EVM;
   }
 
