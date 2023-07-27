@@ -85,7 +85,7 @@ export class BlockchainsListService {
 
     if (this.testnetService.enableTestnets) {
       blockchains = [
-        ...blockchains,
+        // ...blockchains,
         ...testnetBlockchainsList.map(el => ({
           name: el,
           rank: 1,
