@@ -359,7 +359,7 @@ export class CrossChainFormService {
       .subscribe(trade => {
         if (trade) {
           providers = trade.calculated === 0 ? [] : [...providers, trade];
-          if (trade.calculated === trade.total) {
+          if (trade.calculated === trade.total && this.selectedTrade && trade?.calculated !== 0) {
             this.saveTrade(providers);
           }
         }
