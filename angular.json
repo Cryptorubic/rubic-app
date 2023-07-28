@@ -167,7 +167,7 @@
             "dev2": {
               "browserTarget": "rubic:build:dev2"
             },
-            "dev2": {
+            "dev3": {
               "browserTarget": "rubic:build:dev3"
             },
             "prod-api": {
