@@ -184,5 +184,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
     ]),
-    [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.OPEN_OCEAN])
+    [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
+      ON_CHAIN_TRADE_TYPE.HORIZONDEX
+    ])
   };
