@@ -19,7 +19,7 @@ function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTrade
     label: instantTradesLabels[provider]
   }));
 }
-
+// Curve commented because hack
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
   {
     [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
