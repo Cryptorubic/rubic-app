@@ -6,7 +6,6 @@ import { InstantTradesApiService } from '@core/services/backend/instant-trades-a
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { IframeService } from '@core/services/iframe/iframe.service';
-import { EthWethSwapProviderService } from '@features/swaps/features/instant-trade/services/instant-trade-service/providers/common/eth-weth-swap/eth-weth-swap-provider.service';
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BLOCKCHAIN_NAME,
@@ -28,7 +27,6 @@ import {
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -84,7 +82,6 @@ export class InstantTradeService extends TradeCalculationService {
 
   constructor(
     private readonly instantTradesApiService: InstantTradesApiService,
-    private readonly ethWethSwapProvider: EthWethSwapProviderService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
@@ -101,7 +98,7 @@ export class InstantTradeService extends TradeCalculationService {
     super('on-chain');
   }
 
-  private static isSwapAndEarnSwap(trade: OnChainTrade | WrapTrade): boolean {
+  private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
     if (trade instanceof EvmOnChainTrade) {
       if (trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
         return false;
@@ -151,30 +148,6 @@ export class InstantTradeService extends TradeCalculationService {
     } finally {
       subscription$?.unsubscribe();
     }
-  }
-
-  public getEthWethTrade(): WrapTrade | null {
-    const { fromAmount, fromToken, toToken, fromBlockchain } = this.inputValue;
-
-    if (
-      !fromToken ||
-      !toToken ||
-      !this.ethWethSwapProvider.isEthAndWethSwap(fromBlockchain, fromToken.address, toToken.address)
-    ) {
-      return null;
-    }
-
-    return {
-      blockchain: fromBlockchain,
-      from: {
-        token: fromToken,
-        amount: fromAmount
-      },
-      to: {
-        token: toToken,
-        amount: fromAmount
-      }
-    };
   }
 
   public async calculateTrades(
@@ -241,7 +214,7 @@ export class InstantTradeService extends TradeCalculationService {
 
   public async createTrade(
     providerName: OnChainTradeType,
-    trade: OnChainTrade | WrapTrade,
+    trade: OnChainTrade,
     confirmCallback?: () => void
   ): Promise<void> {
     const { fromBlockchain } = this.inputValue;
@@ -300,11 +273,7 @@ export class InstantTradeService extends TradeCalculationService {
     };
 
     try {
-      if (trade instanceof OnChainTrade) {
-        await trade.swap(options);
-      } else {
-        await this.ethWethSwapProvider.createTrade(trade, options);
-      }
+      await trade.swap(options);
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(
@@ -348,7 +317,7 @@ export class InstantTradeService extends TradeCalculationService {
   private async postTrade(
     transactionHash: string,
     providerName: OnChainTradeType,
-    trade: OnChainTrade | WrapTrade,
+    trade: OnChainTrade,
     isSwapAndEarnSwap: boolean
   ): Promise<void> {
     let fee: number;
