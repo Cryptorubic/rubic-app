@@ -11,6 +11,7 @@ on:
         options:
         - dev
         - dev2
+        - dev3
         - stage
 
 jobs:
@@ -36,6 +37,11 @@ jobs:
         if: ${{ inputs.env_id == 'dev2' }}
         run: |
           echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
+
+      - name: Set dev3 target path
+        if: ${{ inputs.env_id == 'dev3' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.DEV3_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Set stage target path
         if: ${{ inputs.env_id == 'stage' }}

@@ -26,7 +26,7 @@ function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTrade
     }
   ];
 }
-
+// Curve commented because hack
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
   {
     [BLOCKCHAIN_NAME.ETHEREUM]: getDefaultStateByProviders([
@@ -38,7 +38,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       // ON_CHAIN_TRADE_TYPE.DODO,
       // ON_CHAIN_TRADE_TYPE.ZRX,
-      ON_CHAIN_TRADE_TYPE.CURVE,
+      // ON_CHAIN_TRADE_TYPE.CURVE,
       ON_CHAIN_TRADE_TYPE.VERSE,
       ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP
     ]),
@@ -62,9 +62,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       // ON_CHAIN_TRADE_TYPE.DODO,
-      ON_CHAIN_TRADE_TYPE.HONEY_SWAP,
+      ON_CHAIN_TRADE_TYPE.HONEY_SWAP
       // ON_CHAIN_TRADE_TYPE.ZRX,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3,
@@ -80,9 +80,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.JOE,
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.PARA_SWAP,
-      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.ZRX,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
@@ -97,16 +97,16 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       // ON_CHAIN_TRADE_TYPE.ZRX,
-      ON_CHAIN_TRADE_TYPE.SOUL_SWAP,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      ON_CHAIN_TRADE_TYPE.SOUL_SWAP
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.ARBITRUM]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
-      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.DODO,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.AURORA]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.TRISOLARIS,
@@ -121,7 +121,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.OPTIMISM]: getDefaultStateByProviders([
       // ON_CHAIN_TRADE_TYPE.ZRX,
-      ON_CHAIN_TRADE_TYPE.CURVE,
+      // ON_CHAIN_TRADE_TYPE.CURVE,
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.DODO
@@ -141,8 +141,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
-      ON_CHAIN_TRADE_TYPE.HONEY_SWAP,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      ON_CHAIN_TRADE_TYPE.HONEY_SWAP
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.FUSE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]),
     [BLOCKCHAIN_NAME.MOONBEAM]: getDefaultStateByProviders([
@@ -151,8 +151,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.CELO]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
-      ON_CHAIN_TRADE_TYPE.UBE_SWAP,
-      ON_CHAIN_TRADE_TYPE.CURVE
+      ON_CHAIN_TRADE_TYPE.UBE_SWAP
+      // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.BOBA]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.OOLONG_SWAP,
