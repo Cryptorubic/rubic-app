@@ -211,7 +211,9 @@ export class TokensApiService {
       BLOCKCHAIN_NAME.ZK_SYNC,
       BLOCKCHAIN_NAME.ONTOLOGY,
       BLOCKCHAIN_NAME.APTOS,
-      BLOCKCHAIN_NAME.PULSECHAIN
+      BLOCKCHAIN_NAME.PULSECHAIN,
+      BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+      BLOCKCHAIN_NAME.LINEA
     ];
     return this.httpService
       .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
