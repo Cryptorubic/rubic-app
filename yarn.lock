@@ -13595,10 +13595,8 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.14.0-alpha-horizondex.1:
-  version "4.14.0-alpha-horizondex.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.14.0-alpha-horizondex.1.tgz#84765e2ce66107bb5b184f2b92c97fdee99705ce"
-  integrity sha512-qyA6YKQJen4ETVR5yispCYNoCDcAZKGuuT+3I0wfPaP7MyoCKghVtHaBtMafdQw3FXm0rXfu5WmB4RgNHsW9iQ==
+"rubic-sdk@file:../rubic-sdk":
+  version "4.14.0-alpha-horizondex.2"
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
