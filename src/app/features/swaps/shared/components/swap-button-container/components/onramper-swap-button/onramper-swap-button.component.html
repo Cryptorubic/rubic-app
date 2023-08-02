@@ -1,8 +1,8 @@
 <div class="buttons">
-  <app-buy-native-button (onClick)="onBuyNativeClick.emit()"></app-buy-native-button>
+  <app-direct-buy-button (onClick)="handleDirectBuy.emit()"></app-direct-buy-button>
 
   <app-swap-button
-    *ngIf="(isToTokenNative$ | async) === false"
+    *ngIf="(isDirectBuy$ | async) === false"
     [buttonText]="buttonText"
     (onClick)="onSwapClick.emit()"
   ></app-swap-button>

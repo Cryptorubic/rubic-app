@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, LIFI_BRIDGE_TYPES } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
@@ -62,6 +62,8 @@ export class QueryParamsService {
 
   public backgroundColor: string;
 
+  public hideTokenSwitcher: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensStoreService: TokensStoreService,
@@ -111,7 +113,7 @@ export class QueryParamsService {
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
-    const bridges = Object.values(LifiBridgeTypes) || [];
+    const bridges = Object.values(LIFI_BRIDGE_TYPES) || [];
     this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
@@ -156,6 +158,7 @@ export class QueryParamsService {
 
     this.setBackgroundStatus(queryParams);
     this.setHideSelectionStatus(queryParams);
+    this.setHideTokenSwitcher(queryParams);
     this.setAdditionalIframeTokens(queryParams);
     this.setThemeStatus(queryParams);
     this.setLanguage(queryParams);
@@ -189,6 +192,14 @@ export class QueryParamsService {
     }
   }
 
+  private setHideTokenSwitcher(queryParams: QueryParams): void {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    this.hideTokenSwitcher = queryParams.hideTokenSwitcher === 'true';
+  }
+
   private setAdditionalIframeTokens(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
@@ -204,8 +215,8 @@ export class QueryParamsService {
       'moonriver_tokens'
     ] as const;
     const tokensQueryParams = Object.fromEntries(
-      Object.entries(queryParams).filter(([key]) =>
-        tokensFilterKeys.includes(key as AdditionalTokens)
+      Object.entries(queryParams).filter(token =>
+        tokensFilterKeys.includes(token[0] as AdditionalTokens)
       )
     );
 

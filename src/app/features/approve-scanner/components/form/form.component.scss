@@ -14,8 +14,14 @@ form {
     width: 100%;
   }
 
-  ::ng-deep tui-primitive-textfield {
-    font-size: 16px !important;
+  ::ng-deep {
+    tui-primitive-textfield {
+      font-size: 16px !important;
+    }
+
+    tui-select-option {
+      font-size: 18px;
+    }
   }
 }
 

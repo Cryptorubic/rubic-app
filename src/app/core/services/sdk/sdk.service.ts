@@ -80,12 +80,16 @@ export class SdkService {
     crossChainIntegratorAddress?: string;
     onChainIntegratorAddress?: string;
   }): Promise<void> {
+    const defaultProvidersAddresses = {
+      crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
+      onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
+    };
     this.currentConfig = {
       ...this.defaultConfig,
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
-          crossChain: params?.crossChainIntegratorAddress,
-          onChain: params?.onChainIntegratorAddress
+          crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
+          onChain: params?.onChainIntegratorAddress || defaultProvidersAddresses.onChain
         }
       }
     };

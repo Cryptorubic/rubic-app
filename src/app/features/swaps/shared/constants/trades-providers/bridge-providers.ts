@@ -31,15 +31,10 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#E6F3FF'
   },
 
-  [BRIDGE_TYPE.CELER]: {
-    name: 'cBridge',
-    image: `${imageBasePath}celer.svg`,
-    color: '#FFFFFF'
-  },
   [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}celer.svg`,
-    color: '#FFFFFF'
+    color: '#008aff'
   },
   [BRIDGE_TYPE.CONNEXT]: {
     name: 'Connext',
@@ -104,11 +99,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#5d25ba'
   },
 
-  [BRIDGE_TYPE.RANGO]: {
-    name: 'Rango',
-    image: `${imageBasePath}rango.svg`,
-    color: '#128535'
-  },
   [BRIDGE_TYPE.REFUEL]: {
     name: 'Refuel',
     image: `${imageBasePath}refuel.png`,
@@ -142,12 +132,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#33FF99'
   },
 
-  [BRIDGE_TYPE.VIA]: {
-    name: 'Via',
-    image: `${imageBasePath}via.ico`,
-    color: '#008141'
-  },
-
   [BRIDGE_TYPE.WORMHOLE]: {
     name: 'Wormhole',
     image: `${imageBasePath}wormhole.svg`,
@@ -172,6 +156,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}cbridge.svg`,
-    color: '#FFFFFF'
+    color: '#008aff'
+  },
+  [BRIDGE_TYPE.SQUIDROUTER]: {
+    name: 'Squid Router',
+    image: `${imageBasePath}squidrouter.svg`,
+    color: '#e6f936'
   }
 };

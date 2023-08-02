@@ -18,6 +18,10 @@
     @include iframe-vertical {
       padding-top: 52px;
     }
+
+    @include iframe-horizontal {
+      padding: 0 20px;
+    }
   }
 
   &__title {

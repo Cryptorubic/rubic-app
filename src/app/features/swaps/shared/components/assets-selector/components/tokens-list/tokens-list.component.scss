@@ -27,8 +27,13 @@ $token-card-height: 55px;
   }
 
   @include iframe-vertical {
-    height: 210px;
+    height: 230px;
+
+    &_small {
+      height: 170px;
+    }
   }
+
 
   @include iframe-horizontal {
     height: $token-card-height + 20px;
@@ -40,7 +45,7 @@ $token-card-height: 55px;
     margin-top: 20px;
   }
 
-  ::ng-deep .content {
+  ::ng-deep .t-content {
     height: 100%;
 
     @include b($mobile-md-minus) {

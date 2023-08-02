@@ -14,13 +14,13 @@ import { ThemeService } from '@app/core/services/theme/theme.service';
 import { catchError, filter, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import {
   BehaviorSubject,
+  delay,
+  forkJoin,
   from,
   interval,
-  delay,
-  Subscription,
   of,
-  takeUntil,
-  forkJoin
+  Subscription,
+  takeUntil
 } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,6 +38,7 @@ import {
   EvmWeb3Public,
   Injector,
   TronWeb3Public,
+  TX_STATUS,
   TxStatus,
   Web3Public,
   Web3PublicSupportedBlockchain
@@ -80,19 +81,19 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   private srcWeb3Public: Web3Public;
 
-  private readonly _srcTxStatus$ = new BehaviorSubject<TxStatus>(TxStatus.PENDING);
+  private readonly _srcTxStatus$ = new BehaviorSubject<TxStatus>(TX_STATUS.PENDING);
 
   public readonly srcTxStatus$ = this._srcTxStatus$.asObservable();
 
-  private readonly _dstTxStatus$ = new BehaviorSubject<TxStatus>(TxStatus.UNKNOWN);
+  private readonly _dstTxStatus$ = new BehaviorSubject<TxStatus>(TX_STATUS.UNKNOWN);
 
   public readonly dstTxStatus$ = this._dstTxStatus$.asObservable();
 
-  private readonly _tradeProcessingStatus$ = new BehaviorSubject<TxStatus>(TxStatus.UNKNOWN);
+  private readonly _tradeProcessingStatus$ = new BehaviorSubject<TxStatus>(TX_STATUS.UNKNOWN);
 
   public readonly tradeProcessingStatus$ = this._tradeProcessingStatus$.asObservable();
 
-  public readonly CrossChainTxStatus = TxStatus;
+  public readonly CrossChainTxStatus = TX_STATUS;
 
   private readonly _revertBtnLoading$ = new BehaviorSubject<boolean>(false);
 
@@ -112,11 +113,17 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   private changenowId: string;
 
-  public isSwapAndEarnSwap: boolean;
+  public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public hideUnusedUI = this.queryParamsService.hideUnusedUI;
+  public points: number = 0;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
+  public get isArbitrumBridge(): boolean {
+    return (
+      this.fromBlockchain.key === BLOCKCHAIN_NAME.ARBITRUM &&
+      this.toBlockchain.key === BLOCKCHAIN_NAME.ETHEREUM &&
+      this.crossChainProvider === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
+  }
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -144,7 +151,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngAfterViewInit(): void {
-    if (this.isSwapAndEarnSwap) {
+    if (this.points && this.points > 0) {
       SwapSchemeModalComponent.toggleConfettiBackground('show');
     }
   }
@@ -155,14 +162,14 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private static toggleConfettiBackground(action: 'show' | 'remove'): void {
-    const overlay = document.querySelector('.overlay');
+    const overlay = document.querySelector('.t-overlay');
 
     if (action === 'show') {
-      overlay.classList.add('overlay-ccr-confetti');
+      overlay.classList.add('t-overlay-ccr-confetti');
     }
 
     if (action === 'remove') {
-      overlay.classList.remove('overlay-ccr-confetti');
+      overlay.classList.remove('t-overlay-ccr-confetti');
     }
   }
 
@@ -190,10 +197,21 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
           );
         }),
         catchError(() =>
-          of({ srcTxStatus: TxStatus.PENDING, dstTxStatus: TxStatus.PENDING, dstTxHash: null })
+          of({ srcTxStatus: TX_STATUS.PENDING, dstTxStatus: TX_STATUS.PENDING, dstTxHash: null })
         ),
-        tap(crossChainStatus => this._srcTxStatus$.next(crossChainStatus.srcTxStatus)),
-        takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === TxStatus.PENDING),
+        tap(crossChainStatus => {
+          const storageData = this.recentTradesStoreService.getSpecificCrossChainTrade(
+            this.srcTxHash,
+            this.fromBlockchain.key
+          );
+          const status =
+            storageData?.calculatedStatusFrom === TX_STATUS.SUCCESS
+              ? TX_STATUS.SUCCESS
+              : crossChainStatus.srcTxStatus;
+
+          this._srcTxStatus$.next(status);
+        }),
+        takeWhile(crossChainStatus => crossChainStatus.srcTxStatus === TX_STATUS.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -202,8 +220,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   public initTradeProcessingStatusPolling(): void {
     this.srcTxStatus$
       .pipe(
-        filter(srcTxStatus => srcTxStatus === TxStatus.SUCCESS),
-        tap(() => this._tradeProcessingStatus$.next(TxStatus.PENDING)),
+        filter(srcTxStatus => srcTxStatus === TX_STATUS.SUCCESS),
+        tap(() => this._tradeProcessingStatus$.next(TX_STATUS.PENDING)),
         switchMap(() => {
           return interval(7000).pipe(
             startWith(-1),
@@ -227,19 +245,19 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
                       : 10;
 
                   return currentBlockNumber - srcTxReceipt.blockNumber > diff
-                    ? TxStatus.SUCCESS
-                    : TxStatus.PENDING;
+                    ? TX_STATUS.SUCCESS
+                    : TX_STATUS.PENDING;
                 }),
                 catchError((error: unknown) => {
                   console.debug('[General] error getting current block number', error);
-                  return of(TxStatus.PENDING);
+                  return of(TX_STATUS.PENDING);
                 })
               );
             }),
             tap(tradeProcessingStatus => this._tradeProcessingStatus$.next(tradeProcessingStatus))
           );
         }),
-        takeWhile(tradeProcessingStatus => tradeProcessingStatus === TxStatus.PENDING),
+        takeWhile(tradeProcessingStatus => tradeProcessingStatus === TX_STATUS.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -248,10 +266,10 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   public initDstTxStatusPolling(): void {
     this.tradeProcessingStatus$
       .pipe(
-        filter(tradeProcessingStatus => tradeProcessingStatus === TxStatus.SUCCESS),
-        tap(() => this._dstTxStatus$.next(TxStatus.PENDING)),
+        filter(tradeProcessingStatus => tradeProcessingStatus === TX_STATUS.SUCCESS),
+        tap(() => this._dstTxStatus$.next(TX_STATUS.PENDING)),
         switchMap(() => {
-          return interval(10000).pipe(
+          return interval(30_000).pipe(
             startWith(-1),
             switchMap(() =>
               from(
@@ -276,7 +294,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
         tap(crossChainStatus => {
           this._dstTxStatus$.next(crossChainStatus.dstTxStatus);
         }),
-        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TxStatus.PENDING),
+        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING),
         takeUntil(this.destroy$)
       )
       .subscribe();
@@ -290,7 +308,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
         {
           label: this.translateService.instant('notifications.tradeInProgress'),
           status: TuiNotification.Info,
-          autoClose: false
+          autoClose: false,
+          data: null
         }
       );
     };
@@ -316,7 +335,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
       this.notificationService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,
-        autoClose: 15000
+        autoClose: 15000,
+        data: null
       });
 
       this.recentTradesStoreService.updateTrade({
@@ -324,8 +344,8 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
           this.srcTxHash,
           this.fromToken.blockchain
         ),
-        calculatedStatusFrom: TxStatus.SUCCESS,
-        calculatedStatusTo: TxStatus.FALLBACK
+        calculatedStatusFrom: TX_STATUS.SUCCESS,
+        calculatedStatusTo: TX_STATUS.FALLBACK
       });
 
       this.context.completeWith(true);
@@ -352,7 +372,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.isSwapAndEarnSwap = data.isSwapAndEarnData;
+    this.points = data.points;
 
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;

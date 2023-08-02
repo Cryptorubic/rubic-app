@@ -26,33 +26,42 @@ export class CrossChainRouteComponent {
   @Input() set route(routing: CrossChainRoute) {
     this.bridgeProvider = CrossChainRouteComponent.getRoute(
       routing.bridgeProvider,
-      routing.bridgeProvider
+      routing.bridgeProvider,
+      true
     );
     this.fromProvider = CrossChainRouteComponent.getRoute(
       routing?.fromProvider,
-      routing.bridgeProvider
+      routing.bridgeProvider,
+      !Boolean(routing?.fromProvider)
     );
     this.toProvider = CrossChainRouteComponent.getRoute(
       routing?.toProvider,
-      routing.bridgeProvider
+      routing.bridgeProvider,
+      !Boolean(routing?.toProvider)
     );
   }
 
-  public static getRoute(provider: TradeProvider, bridgeProvider: TradeProvider): ProviderInfo {
+  public static getRoute(
+    provider: TradeProvider,
+    bridgeProvider: TradeProvider,
+    allowCentralized: boolean
+  ): ProviderInfo {
     const isCentralizedBridge = centralizedBridges.some(
       centralizedBridge => centralizedBridge === bridgeProvider
     );
 
-    return provider
+    return !provider
       ? {
-          ...TRADES_PROVIDERS[provider],
-          ...(isCentralizedBridge && { name: `${TRADES_PROVIDERS[provider].name} (Centralized)` })
-        }
-      : {
           ...TRADES_PROVIDERS[bridgeProvider],
           name: isCentralizedBridge
             ? TRADES_PROVIDERS[bridgeProvider].name
-            : `${TRADES_PROVIDERS[bridgeProvider].name} Pool`
+            : `${TRADES_PROVIDERS[bridgeProvider].name}`
+        }
+      : {
+          ...TRADES_PROVIDERS[provider],
+          ...(isCentralizedBridge && {
+            name: `${TRADES_PROVIDERS[provider].name}${allowCentralized ? ' (Centralized)' : ''}`
+          })
         };
   }
 

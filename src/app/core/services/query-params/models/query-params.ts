@@ -27,6 +27,7 @@ interface AllQueryParams {
   domain: string;
   hideSelectionFrom: string;
   hideSelectionTo: string;
+  hideTokenSwitcher: string;
   slippageIt: string;
   slippageCcr: string;
   background: string;

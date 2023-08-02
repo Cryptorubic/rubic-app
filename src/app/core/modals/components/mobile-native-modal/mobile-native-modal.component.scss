@@ -34,6 +34,10 @@
           max-height: inherit;
           padding-bottom: 40%;
           overflow: auto;
+
+          @include iframe-vertical {
+            padding-bottom: 10%;
+          }
         }
       }
     }

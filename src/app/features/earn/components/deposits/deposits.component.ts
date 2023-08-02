@@ -10,13 +10,13 @@ import { Router } from '@angular/router';
 import { Deposit } from '../../models/deposit.inteface';
 import { StakingService } from '../../services/staking.service';
 import { filter, map, take, switchMap, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService, watch } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { ThemeService } from '@app/core/services/theme/theme.service';
 import { StakingModalService } from '../../services/staking-modal.service';
 import { StakingNotificationService } from '../../services/staking-notification.service';
 import { DatePipe } from '@angular/common';
-import { BehaviorSubject, EMPTY } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 
 @Component({
@@ -58,7 +58,10 @@ export class DepositsComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    this.stakingService.loadDeposits().pipe(watch(this.cdr), takeUntil(this.destroy$)).subscribe();
+    this.stakingService
+      .loadDeposits()
+      .pipe(tuiWatch(this.cdr), takeUntil(this.destroy$))
+      .subscribe();
   }
 
   public async startClaim(deposit: Deposit): Promise<void> {
@@ -77,58 +80,22 @@ export class DepositsComponent implements OnInit {
   }
 
   public async startWithdraw(deposit: Deposit): Promise<void> {
-    const isStakingFinished = await this.stakingService.getIsStakingFinished();
-    if (Date.now() < deposit.endTimestamp && !isStakingFinished) {
+    if (Date.now() > deposit.endTimestamp || (await this.stakingService.isEmergencyStopped())) {
+      this.withdraw(deposit);
+    } else {
       this.stakingNotificationService.showNftLockedError(
         new DatePipe('en-US').transform(deposit.endTimestamp, 'mediumDate')
       );
-    } else {
-      if (deposit.totalNftRewards.isZero()) {
-        this.withdraw(deposit);
-      } else {
-        this.claimAndWithdraw(deposit);
-      }
     }
-  }
-
-  private claimAndWithdraw(deposit: Deposit): void {
-    this.stakingModalService
-      .showClaimModal(deposit.totalNftRewards, this.stakingService.needSwitchNetwork$, true)
-      .pipe(
-        switchMap(claimModalResult => {
-          if (claimModalResult) {
-            this._withdrawingId$.next(deposit.id);
-            return this.stakingService.claim(deposit);
-          } else {
-            return EMPTY;
-          }
-        }),
-        switchMap(claiModalResult => {
-          if (claiModalResult) {
-            return this.stakingModalService
-              .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
-              .pipe(
-                switchMap(withdrawModalResult => {
-                  if (withdrawModalResult) {
-                    return this.stakingService.withdraw(deposit);
-                  } else {
-                    this._withdrawingId$.next('');
-                    return EMPTY;
-                  }
-                })
-              );
-          } else {
-            this._withdrawingId$.next('');
-            return EMPTY;
-          }
-        })
-      )
-      .subscribe(() => this._withdrawingId$.next(''));
   }
 
   private withdraw(deposit: Deposit): void {
     this.stakingModalService
-      .showWithdrawModal(deposit.amount, this.stakingService.needSwitchNetwork$)
+      .showWithdrawModal(
+        deposit.amount,
+        this.stakingService.needSwitchNetwork$,
+        deposit?.totalNftRewards
+      )
       .pipe(
         filter(Boolean),
         switchMap(() => {
@@ -147,11 +114,11 @@ export class DepositsComponent implements OnInit {
     const url = this.router.serializeUrl(
       this.router.createUrlTree(['/'], {
         queryParams: {
-          from: 'BNB',
-          to: 'BRBC',
-          fromChain: 'BSC',
-          toChain: 'BSC',
-          amount: 1
+          from: 'RBC',
+          to: 'RBC',
+          fromChain: 'ETH',
+          toChain: 'ARBITRUM',
+          amount: 50000
         }
       })
     );

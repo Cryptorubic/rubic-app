@@ -46,8 +46,8 @@
         src="assets/images/icons/copy.svg"
         alt="Copy"
         (click)="copyToClipboard()"
-        [tuiManualHint]="template"
-        [tuiManualHintShow]="hintShown"
+        [tuiHint]="template"
+        [tuiHintManual]="hintShown"
       />
     </div>
   </td>
@@ -73,7 +73,7 @@
   <!-- Status of dst transaction -->
   <td class="status-to">
     <div [class.tui-skeleton]="initialLoading">
-      <ng-container *ngIf="!showRevert; else revert">
+      <ng-container *ngIf="!showAction; else action">
         <a
           *ngIf="!showToContinue; else toContinue"
           [href]="uiTrade?.dstTxLink"
@@ -137,8 +137,8 @@
             src="assets/images/icons/copy.svg"
             alt="Copy"
             (click)="copyToClipboard()"
-            [tuiManualHint]="template"
-            [tuiManualHintShow]="hintShown"
+            [tuiHint]="template"
+            [tuiHintManual]="hintShown"
           />
         </div>
         <ng-template #toContinue>
@@ -182,8 +182,9 @@
   </div>
 </ng-template>
 
-<ng-template #revert>
+<ng-template #action>
   <app-rubic-button
+    *ngIf="showRevert"
     appearance="primary"
     class="revert"
     (onClick)="revertTrade()"
@@ -191,6 +192,17 @@
     [loading]="revertBtnLoading"
   >
     {{ 'common.revert' | translate }}
+  </app-rubic-button>
+
+  <app-rubic-button
+    *ngIf="!showRevert && isArbitrumBridgeTrade"
+    appearance="primary"
+    class="revert"
+    (onClick)="claimTokens()"
+    size="s"
+    [loading]="revertBtnLoading"
+  >
+    {{ 'Claim' }}
   </app-rubic-button>
 </ng-template>
 

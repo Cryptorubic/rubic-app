@@ -15,7 +15,7 @@ const nonOnChainNetworks = [
   BLOCKCHAIN_NAME.XDC,
   BLOCKCHAIN_NAME.BITCOIN_CASH
 ] as const;
-type NonOnChainNetworks = typeof nonOnChainNetworks[number];
+type NonOnChainNetworks = (typeof nonOnChainNetworks)[number];
 
 export type SupportedOnChainNetworks = Exclude<
   EvmBlockchainName | TronBlockchainName,

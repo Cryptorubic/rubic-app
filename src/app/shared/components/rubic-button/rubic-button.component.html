@@ -1,6 +1,6 @@
 <tui-loader [showLoader]="loading" [overlay]="true">
   <button
-    [pseudoHovered]="pseudoHovered"
+    [pseudoHover]="pseudoHovered"
     tuiButton
     [shape]="'rounded'"
     type="button"
@@ -10,7 +10,7 @@
     [disabled]="_disabled"
     [attr.bordered]="_border"
     (click)="buttonClick($event)"
-    (hoveredChange)="onHoveredChange.emit($event)"
+    (tuiHoveredChange)="onHoveredChange.emit($event)"
   >
     <ng-content></ng-content>
   </button>

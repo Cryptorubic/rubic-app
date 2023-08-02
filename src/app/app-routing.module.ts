@@ -13,13 +13,12 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
-    path: ROUTE_PATH.HISTORY,
-    loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
+    path: ROUTE_PATH.STAKING,
+    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
   },
   {
-    path: ROUTE_PATH.BYT_CRYPTO,
-    loadChildren: () =>
-      import('./features/buy-crypto/buy-crypto.module').then(m => m.BuyCryptoModule)
+    path: ROUTE_PATH.HISTORY,
+    loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },
   {
     path: ROUTE_PATH.REVOKE_APPROVAL,

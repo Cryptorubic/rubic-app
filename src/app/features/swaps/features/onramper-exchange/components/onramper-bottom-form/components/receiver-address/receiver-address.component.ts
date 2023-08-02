@@ -7,6 +7,7 @@ import { WindowWidthService } from '@core/services/widnow-width-service/window-w
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { combineLatest, of } from 'rxjs';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
 
 @Component({
   selector: 'app-receiver-address',
@@ -15,8 +16,12 @@ import { IframeService } from '@core/services/iframe/iframe.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiverAddressComponent {
-  public readonly nativeTokenSymbol$ = this.swapFormService.toToken$.pipe(
-    map(toToken => (toToken ? nativeTokensList[toToken.blockchain].symbol : null))
+  public readonly buyingTokenSymbol$ = this.onramperFormCalculationService.isDirectSwap$.pipe(
+    map(isDirectSwap =>
+      isDirectSwap
+        ? this.swapFormService.inputValue.toToken.symbol
+        : nativeTokensList[this.swapFormService.inputValue.toBlockchain].symbol
+    )
   );
 
   public readonly walletAddressText$ = combineLatest([
@@ -40,6 +45,7 @@ export class ReceiverAddressComponent {
     private readonly authService: AuthService,
     private readonly swapFormService: SwapFormService,
     private readonly windowWidthService: WindowWidthService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly onramperFormCalculationService: OnramperFormCalculationService
   ) {}
 }

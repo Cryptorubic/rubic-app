@@ -8,6 +8,7 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'smartchain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: 'polygon',
   [BLOCKCHAIN_NAME.AVALANCHE]: 'avalanche',
   [BLOCKCHAIN_NAME.MOONRIVER]: 'moonriver',
   [BLOCKCHAIN_NAME.FANTOM]: 'fantom',
@@ -34,5 +35,7 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
   [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
   [BLOCKCHAIN_NAME.VELAS]: 'velas',
-  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin'
+  [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
+  [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
+  [BLOCKCHAIN_NAME.LINEA]: 'linea'
 };

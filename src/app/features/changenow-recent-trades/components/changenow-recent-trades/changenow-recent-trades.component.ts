@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ChangenowResentTradesStoreService } from '@core/services/recent-trades/changenow-resent-trades-store.service';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ChangenowApiStatus } from 'rubic-sdk';
+import { CHANGENOW_API_STATUS } from 'rubic-sdk';
 import { Router } from '@angular/router';
+import { ChangenowRecentTradesStoreService } from '@core/services/recent-trades/changenow-recent-trades-store.service';
 
 @Component({
   selector: 'app-changenow-recent-trades-crypto',
@@ -22,7 +22,7 @@ export class ChangenowRecentTradesComponent {
   public readonly changenowRecentTrades$ = this._changenowRecentTrades$.asObservable();
 
   constructor(
-    private readonly changenowResentTradesStoreService: ChangenowResentTradesStoreService,
+    private readonly changenowResentTradesStoreService: ChangenowRecentTradesStoreService,
     private readonly changenowPostTradeService: ChangenowPostTradeService,
     private readonly router: Router
   ) {
@@ -42,7 +42,7 @@ export class ChangenowRecentTradesComponent {
               trade: this.allChangenowRecentTrades[index],
               status
             }))
-            .filter(tradeInfo => tradeInfo.status !== ChangenowApiStatus.WAITING)
+            .filter(tradeInfo => tradeInfo.status !== CHANGENOW_API_STATUS.WAITING)
             .map(tradeInfo => tradeInfo.trade)
         )
       )

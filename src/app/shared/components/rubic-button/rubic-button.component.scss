@@ -6,7 +6,7 @@
   --tui-focus: transparent;
 
   [tuiButton] {
-    font-weight: 400;
+    font-weight: 400 !important;
     font-size: $rubic-font-size-01;
 
     border: none;
@@ -32,7 +32,7 @@
     &._disabled {
       border: 0;
 
-      ::ng-deep tui-wrapper {
+      ::ng-deep .t-wrapper {
         color: rgba($rubic-text-disable, 0.7);
 
         background-color: var(--primary-background);
@@ -45,13 +45,13 @@
     }
 
     &[data-tui-host-size='l'] {
-      ::ng-deep .wrapper {
+      ::ng-deep .t-wrapper {
         padding: 0 29px;
       }
     }
 
     &[data-tui-host-size='s'] {
-      ::ng-deep .wrapper {
+      ::ng-deep .t-wrapper {
         padding: 0 15px;
       }
     }
@@ -75,7 +75,7 @@
     }
 
     &[data-appearance='primary'] {
-      ::ng-deep .wrapper {
+      ::ng-deep .t-wrapper {
         transition: none;
       }
     }

@@ -1,16 +1,12 @@
 export const STAKING_CONFIG_DEVELOP = {
-  // nftContractAddress: '0xbf67332666743965091f67A845960976e9DdB634',
-  // rewardsContractAddress: '0xbf97a2542Da23749E7e0446fC3E862154653a44D',
-  // // rbcToken: '0xd452d01C6348D3d5B35FA1d5500d23F8Ae65D6eA' //fake rbc
-  // rbcToken: '0x8e3bcc334657560253b83f08331d85267316e08a' // real rbc
+  // nftContractAddress: '0xeF1dB8c05589CACb58148f13845B8695D7DEaD9B', // минутные периоды ARB
+  // nftContractAddress: '0xD7e630E9c60585e606c3d196D01193B606D883D2', // дефолтные периоды ARB
 
-  nftContractAddress: '0x3333B155fa21A972D179921718792f1036370333',
-  rewardsContractAddress: '0x333C28fca941b5B229fbAEC7D1385Ae7139da333',
-  rbcToken: '0x8e3bcc334657560253b83f08331d85267316e08a'
+  nftContractAddress: '0x333ce751b413cA71725D7CDEf3cf50C8351E3333',
+  rbcToken: '0x10aaed289a7b1b0155bf4b86c862f297e84465e0'
 };
 
 export const STAKING_CONFIG_PROD = {
-  nftContractAddress: '0x3333B155fa21A972D179921718792f1036370333',
-  rewardsContractAddress: '0x333C28fca941b5B229fbAEC7D1385Ae7139da333',
-  rbcToken: '0x8e3bcc334657560253b83f08331d85267316e08a'
+  nftContractAddress: '0x333ce751b413cA71725D7CDEf3cf50C8351E3333',
+  rbcToken: '0x10aaed289a7b1b0155bf4b86c862f297e84465e0'
 };

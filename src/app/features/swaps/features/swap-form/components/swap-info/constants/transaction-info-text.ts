@@ -19,15 +19,15 @@ export const transactionInfoText = {
   },
   rate: {
     label: 'Rate',
-    description: 'Rubic protocol commission fee'
+    description: ''
   },
   route: {
     label: 'Route',
-    description: 'Rubic protocol commission fee'
+    description: ''
   },
   receiver: {
     label: 'Receiver address',
-    description: 'Rubic protocol commission fee'
+    description: ''
   },
   minReceived: {
     label: 'Minimum Received',

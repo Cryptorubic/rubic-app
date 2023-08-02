@@ -129,6 +129,18 @@
         "answer": "Rubic is a multichain DeFi ecosystem, which features multi-chain swaps, on-chain swaps and much more. Our aim is to deliver a complete ONE-STOP decentralized trading platform. The Rubic platform is a place where users can complete multi-chain swaps utilizing different solutions, where users will get the best rates from all the leading swap protocols (thanks to a DEX aggregator implementation), as well as our unique multi-chain feature which gives the opportunity to swap all supported tokens on 1 click!"
       },
       {
+        "title": "What is the Rubic Cross-Chain Tools?",
+        "answer": "Rubic’s Cross-Chain Tools enable your platform to act as a gateway to buy your project’s token. An easy-to-install Widget and a battle-tested SDK let your users swap from any of 15,500+ tokens across 60+ blockchains to your custom token!<br/><br/>Explore more: <a href='https://tools.rubic.exchange/' target='_blank' rel='noopener noreferrer'>https://tools.rubic.exchange/</a>"
+      },
+      {
+        "title": "What is BTCB?",
+        "answer": "BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC) that represents Bitcoin (BTC) in a 1:1 ratio. It is a wrapped version of BTC that allows users to access BTC's value and features on the Binance Smart Chain network. BTCB provides liquidity and interoperability between the BSC and BTC, enabling users to trade or use BTC in decentralized applications on BSC."
+      },
+      {
+        "title": "Can I send BTCB to a BTC wallet address?",
+        "answer": "No, BTCB (Bitcoin BEP2) is a token on the Binance Smart Chain (BSC), and it cannot be sent directly to a BTC (Bitcoin) wallet address. BTCB operates on a different blockchain and requires a compatible BSC wallet for sending and receiving transactions."
+      },
+      {
         "title": "Who can use our service?",
         "answer": "Our service can be used in any part of the world by crypto users who would like to complete trades on different networks and complete multi-chain swaps between them. Our features also include services for other projects: creation of the custom bridges and integration of Rubic Relay widget, which allows users to complete trades directly at service website using Rubic. \tKYC is not required for any operations at app.rubic.exchange"
       },
@@ -394,57 +406,76 @@
     "depositLimitMin": "Current min limit is {{min}} BRBC"
   },
   "staking": {
-    "lockedRBC": "Locked BRBC",
-    "$lockedRBC": "$ Locked BRBC",
-    "circRBCLocked": "Circ. BRBC Locked",
-    "estYieldPerWeek": "Est. Yield Per Week",
-    "avgLockTime": "Avg. Lock Time (month)",
-    "apr": "APR",
-    "stake": {
-      "stake": "Stake",
-      "withdraw": "Withdraw",
-      "balance": "You have {{amount}}",
-      "unstakeBalance": "Available to unstake {{amount}}",
-      "confirmStake": "Confirm stake",
-      "confirmStakeViaWhitelist": "Confirm stake with Whitelist",
-      "unstake": "Unstake",
-      "overLimit": "One stake limits {{min}} - {{max}} BRBC",
-      "globalUpdate": "Global Update",
-      "globalUpdateHint": "about global update",
-      "getBrbc": "Get BRBC",
-      "calculateProfitability": "Calculate profitability",
-      "refillTime": "{{hours}} hours {{minutes}} minutes",
-      "addXbrbc": "Add xBRBC",
-      "canUnstake": "Can unstake {{amount}}",
-      "buyBRBC": "BUY BRBC",
-      "stakeBRBC": "STAKE BRBC",
+    "common": {
+      "months": "months",
       "rules": "Complete Staking Rules",
-      "pastStaking": "Past Staking Campaigns"
+      "connectWallet": "Connect Wallet",
+      "switchNetworkToArbitrum": "Switch to ARBITRUM network"
     },
-    "stats": {
-      "profitTime": "Yesterday's APY",
-      "calc": "Calculate",
-      "balance": "Balance",
-      "canReceive": "Amount with Rewards",
-      "rewards": "Earned Rewards",
-      "apr": "APR",
-      "usersTotal": "You Total Staked",
-      "total": "Total Staked",
-      "connectWallet": "Connect Wallet to Receive Info"
+    "overview": {
+      "title": "Overview",
+      "lockedRBC": "Locked RBC",
+      "$lockedRBC": "Locked RBC in $",
+      "circRBCLocked": "Percent of Locked RBC",
+      "avgLockTime": "Avg. Lock Time",
+      "estYieldPerWeek": "Est. Yield Per Week",
+      "apr": "AVERAGE APR"
     },
-    "features": {
-      "highApr": "High APR",
-      "minimumApr": "Minimum APR ~ 80%.",
-      "brbcRewards": "BRBC rewards",
-      "stakeTokens": "Stake RBC/BRBC/wRBC to get a rewards in BRBC.",
-      "teamBuybacks": "Team Buybacks",
-      "chainFeeUsage": "0.5% of our 0.6% Multi-Chain fee will be used to buyback and distribute RBC to the reward pool."
+    "withdrawModal": {
+      "title": "WITHDRAWAL",
+      "text_1": "Please proceed to close your position.",
+      "text_1-1": " You will receive",
+      "text_2": "back",
+      "text_3": "and",
+      "text_4": "in rewards.",
+      "fullText": "Please proceed to close your position. You will receive 10 RBC back and 0.1 ETH in rewards.",
+      "withdraw": "Withdraw"
+    },
+    "newPositionModal": {
+      "title": "NEW POSITION",
+      "buttonText": "Ok, I agree"
+    },
+    "claimRewardsModal": {
+      "title": "CLAIM REWARDS",
+      "claim": "Claim"
+    },
+    "stakeForm": {
+      "title": "New Position",
+      "youHave": "You have",
+      "max": "MAX",
+      "duration": {
+        "title": "Choose the Duration",
+        "rewards": "Rewards",
+        "for": "for",
+        "months": "months",
+        "fullText": "Rewards x1.0 for 12 months",
+        "durationEndData": "Offer valid until"
+      },
+      "hint": {
+        "lockedRBCExpiresIn": "locked RBC expires in",
+        "lockedUntil": "Locked until",
+        "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
+      },
+      "button": {
+        "entryIsClosed": "Entry is Closed",
+        "stakingStopped": "Staking has Stopped",
+        "approve": "Approve",
+        "insufficientBalance": "Insufficient balance",
+        "enterAnAmount": "Enter an Amount",
+        "minAmount": "Minimum amount is",
+        "stake": "Stake"
+      }
     },
     "deposits": {
-      "yourDeposits": "Your Deposits",
+      "title": "Your Deposits",
       "newPosition": "+ New Position",
+      "rewards": "Rewards",
+      "endDate": "End Date",
       "claimRewards": "Claim Rewards",
-      "manage": "Manage"
+      "total": "TOTAL",
+      "totalRBC": "TOTAL RBC:",
+      "totalRewards": "TOTAL REWARDS:",
+      "withdraw": "Withdraw"
     }
   },
   "maintenance": {
@@ -639,7 +670,7 @@
       "claimed": "Claimed",
       "wrongAddressError": "Enter another address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Ethereum",
+      "changeNetwork": "Change Network to Arbitrum",
       "incorrectAddressError": "Entered address is incorrect"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",

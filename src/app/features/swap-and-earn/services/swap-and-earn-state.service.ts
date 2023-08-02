@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -43,6 +43,18 @@ export class SwapAndEarnStateService {
     await this.fetchPoints().subscribe(points => {
       this._points$.next(points);
     });
+  }
+
+  public getSwapAndEarnPointsAmount(): Observable<number> {
+    return this.points$.pipe(
+      map(points => {
+        if (points.participant) {
+          return 50;
+        }
+
+        return 100;
+      })
+    );
   }
 
   public async claimPoints(points: number): Promise<void> {

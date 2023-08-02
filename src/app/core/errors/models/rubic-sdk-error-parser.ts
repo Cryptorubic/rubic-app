@@ -16,7 +16,8 @@ import {
   MaxAmountError as SdkMaxAmountError,
   TooLowAmountError as SdkTooLowAmountError,
   UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
-  InsufficientFundsGasPriceValueError
+  InsufficientFundsGasPriceValueError,
+  UpdatedRatesError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -37,11 +38,15 @@ import { ExecutionRevertedError } from '@core/errors/models/common/execution-rev
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
+import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof UpdatedRatesError) {
+      return new CrossChainAmountChangeWarning(err.trade);
+    }
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
     }
@@ -131,7 +136,7 @@ export class RubicSdkErrorParser {
       err.message.includes('execution reverted: MetaRouter: second swap failed') ||
       err.message.includes('execution reverted: MetaRouter: other side call failed') ||
       err.message.includes('1inch sets increased costs on gas fee') ||
-      err.message.includes('err: insufficient funds for gas * price + value') ||
+      err.message.includes('insufficient funds for gas * price + value') ||
       err.message.includes('insufficient balance for transfer') ||
       err.message.includes('Sender balance too low for value specified')
     ) {
@@ -145,7 +150,7 @@ export class RubicSdkErrorParser {
   public static parseError(
     err: RubicError<ERROR_TYPE> | RubicSdkError | Error
   ): RubicError<ERROR_TYPE> {
-    if (err instanceof RubicError<ERROR_TYPE>) {
+    if (err instanceof RubicError) {
       return err;
     }
 

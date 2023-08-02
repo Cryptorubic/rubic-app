@@ -30,8 +30,8 @@ export class OnramperService {
     private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
-  public async updateSwapFormByRecentTrade(txId: string): Promise<void> {
-    const trade = this.recentTradesStoreService.getSpecificOnramperTrade(txId);
+  public async updateSwapFormByRecentTrade(rubicId: string): Promise<void> {
+    const trade = this.recentTradesStoreService.getSpecificOnramperTrade(rubicId);
     if (!trade) {
       return;
     }
@@ -55,12 +55,12 @@ export class OnramperService {
       fromAmount
     });
 
-    this.queryParamsService.patchQueryParams({ onramperTxId: txId });
+    this.queryParamsService.patchQueryParams({ onramperTxId: rubicId });
   }
 
   public async getFromFees(blockchain: EvmBlockchainName): Promise<BigNumber> {
     const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
-    const gasFee = gasPrice.multipliedBy(onChainProxyMaxGasLimit);
+    const gasFee = new BigNumber(gasPrice.gasPrice).multipliedBy(onChainProxyMaxGasLimit);
 
     if (this.platformConfigurationService.useOnChainProxy === false) {
       return gasFee;

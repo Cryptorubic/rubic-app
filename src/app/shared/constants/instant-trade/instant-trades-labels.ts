@@ -91,6 +91,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SUSHI_SWAP]: 'SushiSwap',
   [ON_CHAIN_TRADE_TYPE.SOUL_SWAP]: 'SoulSwap',
   [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: 'Symbiosis DEX',
+  [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: 'Sync Swap',
 
   [ON_CHAIN_TRADE_TYPE.TRADER]: 'TheTrader',
   [ON_CHAIN_TRADE_TYPE.TRISOLARIS]: 'Trisolaris',
@@ -114,5 +115,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'ZipSwap',
   [ON_CHAIN_TRADE_TYPE.ZRX]: '0x',
 
-  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap'
+  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap',
+
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'PulseX V1',
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2'
 };

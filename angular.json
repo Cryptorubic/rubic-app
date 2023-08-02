@@ -38,11 +38,12 @@
               }
             ],
             "styles": [
-              "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
+              "node_modules/@taiga-ui/core/styles/taiga-ui-fonts.less",
+              "node_modules/@taiga-ui/styles/taiga-ui-global.less",
               "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less",
               "src/styles.scss"
             ],
-            "scripts": ["src/assets/analytics/live-chat.js"],
+            "scripts": [],
             "allowedCommonJsDependencies": [
               "bignumber.js",
               "decimal.js-light",
@@ -77,6 +78,14 @@
                 }
               ]
             },
+            "dev3": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev3.ts"
+                }
+              ]
+            },
             "prod-api": {
               "fileReplacements": [
                 {
@@ -92,7 +101,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js", "src/assets/analytics/yandex-metric.js", "src/assets/analytics/live-chat.js"],
+              "scripts": ["src/assets/analytics/google-analytics.js"],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -157,6 +166,9 @@
             },
             "dev2": {
               "browserTarget": "rubic:build:dev2"
+            },
+            "dev3": {
+              "browserTarget": "rubic:build:dev3"
             },
             "prod-api": {
               "browserTarget": "rubic:build:prod-api"

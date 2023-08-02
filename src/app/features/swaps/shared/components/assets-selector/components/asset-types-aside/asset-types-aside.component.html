@@ -12,7 +12,7 @@
           *ngIf="showFiats"
           class="asset-types-aside__fiats"
           [ngClass]="{ disabled: fiatsDisabled }"
-          tuiHintMode="error"
+          tuiHintAppearance="error"
           [tuiHint]="fiatsDisabled ? 'Cannot trade with selected blockchain' : null"
         >
           <app-icon-button
@@ -42,7 +42,7 @@
               <li
                 [id]="idPrefix + 'Network_' + blockchainItem.name"
                 [ngClass]="{ disabled: disabled }"
-                tuiHintMode="error"
+                tuiHintAppearance="error"
                 [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
               >
                 <app-icon-button

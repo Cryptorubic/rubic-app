@@ -7,15 +7,15 @@
   border-radius: 25px;
 
   ::ng-deep app-rubic-button {
-    tui-wrapper {
+    .t-wrapper {
       padding: 0 1.4rem !important;
 
-      .content {
+      .t-content {
         font-size: 16px !important;
       }
     }
 
-    tui-wrapper[data-appearance='secondary'] {
+    .t-wrapper[data-appearance='secondary'] {
       background-color: var(--primary-color) !important;
     }
   }

@@ -31,12 +31,14 @@
       button {
         height: 27px;
 
+        font-size: 15px;
+
         @include b($tablet) {
-          font-size: 12px;
+          font-size: 14px;
         }
       }
 
-      .wrapper {
+      .t-wrapper {
         padding: 0 14px !important;
 
         @include b($tablet) {
@@ -101,8 +103,8 @@
   gap: 12px;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
-  padding: 0 25px;
+
+  color: black;
 
   @include b($tablet) {
     flex-direction: column;
@@ -121,8 +123,20 @@
       }
     }
 
+    ::ng-deep .t-wrapper[data-appearance='primary'] {
+      color: black;
+    }
+
     svg {
       margin-right: 8px;
+
+      rect {
+        stroke: black;
+      }
+
+      path {
+        fill: black;
+      }
     }
   }
 }
@@ -142,5 +156,26 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@include b($mobile-md) {
+  .deposits {
+    &__wrapper {
+      position: relative;
+
+      padding: 26px 0;
+
+      background: transparent;
+      border-radius: 0;
+    }
+
+    &__head {
+      margin-bottom: 0;
+      padding: 10px 14px 0;
+
+      background: var(--form-background);
+      border-radius: 10px 10px 0 0;
+    }
   }
 }
