@@ -13595,10 +13595,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.13.4-alpha-stargate-config.0:
-  version "4.13.4-alpha-stargate-config.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.13.4-alpha-stargate-config.0.tgz#e30b867be83a12730d7848b13555aaccb5d461d7"
-  integrity sha512-GnEtPGiyc/cs+5Tc4gVmY4vbkPj+vmHblbzeHooyTe7K90hi9yMV5MI66thD3RRheD7X30da5kAhqq0ouiGKug==
+rubic-sdk@4.13.4-alpha-stargate-config.2:
+  version "4.13.4-alpha-stargate-config.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.13.4-alpha-stargate-config.2.tgz#d831896e4e4ddd96404a9d4ab71436fd63e4ec2a"
+  integrity sha512-FduoiaZdvlqllHDM2sgUlgmVmjxb3evTTD2vhegkyV/Yn7tGNb8k+F2sd2HLAZAgi/ewcC7KLX03O/3ksI6PRg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
