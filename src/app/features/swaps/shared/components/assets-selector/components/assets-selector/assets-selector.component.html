@@ -25,10 +25,6 @@
           ></app-search-bar>
         </ng-container>
 
-        <div class="fiats-list-container" *ngIf="selectorListType === 'fiats'">
-          <app-fiats-list></app-fiats-list>
-        </div>
-
         <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
           <ng-container *onlyFrame="'horizontal'">
             <app-search-bar

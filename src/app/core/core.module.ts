@@ -18,7 +18,6 @@ import { ErrorsModule } from './errors/errors.module';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
@@ -61,7 +60,6 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
     SwapFormService,
     SwapFormQueryService,
     SwapTokensUpdaterService,
-    FiatsService,
     LimitOrdersService,
     SuccessTxModalService
   ],

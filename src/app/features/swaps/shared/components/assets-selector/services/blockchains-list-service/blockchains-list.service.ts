@@ -6,8 +6,7 @@ import {
   blockchainsList,
   notEvmChangeNowBlockchainsList,
   RankedBlockchain,
-  topRankedBlockchains,
-  testnetBlockchainsList
+  topRankedBlockchains
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -24,7 +23,6 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
-import { TestnetService } from '@core/services/testnet/testnet.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -55,8 +53,7 @@ export class BlockchainsListService {
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly iframeService: IframeService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly testnetService: TestnetService
+    private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
@@ -81,17 +78,6 @@ export class BlockchainsListService {
       blockchains = blockchains.filter(blockchain =>
         this.queryParamsService.enabledBlockchains.includes(blockchain.name)
       );
-    }
-
-    if (this.testnetService.enableTestnets) {
-      blockchains = [
-        // ...blockchains,
-        ...testnetBlockchainsList.map(el => ({
-          name: el,
-          rank: 1,
-          tags: []
-        }))
-      ];
     }
 
     const { formType } = this.assetsSelectorService;

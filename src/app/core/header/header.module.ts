@@ -44,7 +44,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
-import { TestnetSwitcherComponent } from '@core/header/components/header/components/testnet-switcher/testnet-switcher.component';
 
 @NgModule({
   declarations: [
@@ -67,8 +66,7 @@ import { TestnetSwitcherComponent } from '@core/header/components/header/compone
     RubicMenuTogglerComponent,
     SettingsTogglerComponent,
     MobileUserProfileComponent,
-    MobileNavigationMenuComponent,
-    TestnetSwitcherComponent
+    MobileNavigationMenuComponent
   ],
   imports: [
     CommonModule,

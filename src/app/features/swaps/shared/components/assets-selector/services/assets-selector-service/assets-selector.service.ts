@@ -96,7 +96,7 @@ export class AssetsSelectorService {
       this.assetType = fromBlockchain;
     }
 
-    this.selectorListType = assetType === 'fiat' ? 'fiats' : 'tokens';
+    this.selectorListType = 'tokens';
   }
 
   private subscribeOnAssetChange(): void {

@@ -2,23 +2,13 @@ import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const defaultFormParameters = {
   swap: {
-    fromChain: BLOCKCHAIN_NAME.ETHEREUM,
-    toChain: BLOCKCHAIN_NAME.ETHEREUM,
+    fromChain: BLOCKCHAIN_NAME.GOERLI,
+    toChain: BLOCKCHAIN_NAME.GOERLI,
     from: {
-      [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BNB',
-      [BLOCKCHAIN_NAME.POLYGON]: 'MATIC',
-      [BLOCKCHAIN_NAME.HARMONY]: 'ONE',
-      [BLOCKCHAIN_NAME.AVALANCHE]: 'AVAX',
-      [BLOCKCHAIN_NAME.MOONRIVER]: 'MOVR',
-      [BLOCKCHAIN_NAME.ARBITRUM]: 'AETH',
-      [BLOCKCHAIN_NAME.AURORA]: 'aETH',
-      [BLOCKCHAIN_NAME.TELOS]: 'TLOS'
+      [BLOCKCHAIN_NAME.GOERLI]: 'ETH',
+      [BLOCKCHAIN_NAME.SCROLL_TESTNET]: 'ETH'
     },
-    to: {
-      [BLOCKCHAIN_NAME.ETHEREUM]: 'RBC',
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BRBC'
-    },
+    to: {},
     amount: '1'
   }
 };

@@ -32,8 +32,6 @@ import {
   blockchainsWithOnePage,
   iframeBlockchainsToFetch
 } from './constants/fetch-blockchains';
-import { TestnetService } from '@core/services/testnet/testnet.service';
-import { TEST_EVM_BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -46,13 +44,10 @@ export class TokensApiService {
 
   private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
 
-  private readonly testTokensApiUrl = `${ENVIRONMENT.testTokenUrl}/`;
-
   constructor(
     private readonly httpService: HttpService,
     private readonly iframeService: IframeService,
-    private readonly authService: AuthService,
-    private readonly testnetService: TestnetService
+    private readonly authService: AuthService
   ) {}
 
   /**
@@ -198,16 +193,9 @@ export class TokensApiService {
         )
     );
     requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
-    requests$.push(this.fetchTestTokenBlockchains(tokensNetworkState$));
 
     return forkJoin(requests$).pipe(
       map(results => {
-        // @TODO Tesntes
-        // const blockchain = blockchains[index];
-        // const patchedToken = results.map(blockchainTokens => {
-        //     return blockchainTokens.count === 0 ? defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]] : blockchainTokens.results;
-        // });
-
         if (results.every(el => el === null)) {
           this.needRefetchTokens = true;
           return List(
@@ -220,11 +208,7 @@ export class TokensApiService {
 
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
-        // // @TODO
-        // const goerli = defaultTokens.GOERLI;
-        // const scroll = defaultTokens.SCROLL_TESTNET;
         return TokensApiService.prepareTokens(backendTokens);
-        // .concat(goerli).concat(scroll);
       })
     );
   }
@@ -331,43 +315,6 @@ export class TokensApiService {
             result: TokensApiService.prepareTokens(tokensResponse.results),
             next: tokensResponse.next
           };
-        })
-      );
-  }
-
-  private fetchTestTokenBlockchains(
-    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
-  ): Observable<TokensBackendResponse> {
-    const blockchains = Object.values(TEST_EVM_BLOCKCHAIN_NAME)
-      .map(blockchain => TO_BACKEND_BLOCKCHAINS[blockchain])
-      .reduce((acc, blockchain) => {
-        if (acc.length) {
-          return acc + ',' + blockchain;
-        }
-        return blockchain;
-      }, '');
-    return this.httpService
-      .get<TokensBackendResponse>(
-        ENDPOINTS.TOKENS,
-        { networks: blockchains },
-        this.testTokensApiUrl
-      )
-      .pipe(
-        tap(networkTokens => {
-          if (networkTokens?.results) {
-            blockchainsWithOnePage.forEach(blockchain => {
-              tokensNetworkState$.next({
-                ...tokensNetworkState$.value,
-                [blockchain]: {
-                  page: 1,
-                  maxPage: 1
-                }
-              });
-            });
-          }
-        }),
-        catchError(() => {
-          return of(null);
         })
       );
   }

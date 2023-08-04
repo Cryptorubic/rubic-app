@@ -7,28 +7,6 @@
   </div>
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
-      <ng-container *noFrame="'horizontal'">
-        <li
-          *ngIf="showFiats"
-          class="asset-types-aside__fiats"
-          [ngClass]="{ disabled: fiatsDisabled }"
-          tuiHintAppearance="error"
-          [tuiHint]="fiatsDisabled ? 'Cannot trade with selected blockchain' : null"
-        >
-          <app-icon-button
-            appearance="secondary"
-            icon="assets/images/icons/fiat-selector.svg"
-            [inlineSvg]="true"
-            [disabled]="selectedAssetType === 'fiat' || fiatsDisabled"
-            [border]="selectedAssetType === 'fiat'"
-            [borderRadiusPercent]="50"
-            label="Fiat"
-            (iconButtonClick)="openFiatsList()"
-          >
-          </app-icon-button>
-        </li>
-      </ng-container>
-
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
         <ng-container
           *ngLet="

@@ -1,10 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Inject,
-  inject
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
@@ -17,8 +11,6 @@ import { CurrentLanguageComponent } from 'src/app/core/header/components/header/
 import { SettingsListItem } from 'src/app/core/header/models/settings-list-item';
 import { ThemeSwitcherComponent } from 'src/app/core/header/components/header/components/theme-switcher/theme-switcher.component';
 import { LANGUAGES_LIST } from '@core/header/models/languages-list';
-import { TestnetSwitcherComponent } from '@core/header/components/header/components/testnet-switcher/testnet-switcher.component';
-import { TestnetService } from '@core/services/testnet/testnet.service';
 
 @Component({
   selector: 'app-settings-list',
@@ -37,8 +29,6 @@ export class SettingsListComponent {
     return LANGUAGES_LIST.find(lang => lang.lng === this.translateService.currentLang);
   }
 
-  private readonly testnetService = inject(TestnetService);
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly themeService: ThemeService,
@@ -55,12 +45,6 @@ export class SettingsListComponent {
         action: this.switchTheme.bind(this)
       },
       {
-        title: 'Enable testnet',
-        description: 'Enable testnet',
-        component: new PolymorpheusComponent(TestnetSwitcherComponent),
-        action: this.switchTestnetState.bind(this)
-      },
-      {
         title: 'settings.header.language.title',
         description: 'settings.header.language.desc',
         component: new PolymorpheusComponent(CurrentLanguageComponent),
@@ -75,13 +59,6 @@ export class SettingsListComponent {
    */
   public switchTheme(): void {
     this.themeService.switchTheme();
-  }
-
-  /**
-   * Toggle dark or light site theme.
-   */
-  public switchTestnetState(): void {
-    this.testnetService.switchTestnetState();
   }
 
   /**

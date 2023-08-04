@@ -13,7 +13,6 @@ import {
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
-import { FiatsService } from '@core/services/fiats/fiats.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -40,7 +39,6 @@ export class SwapFormQueryService {
     private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly fiatsService: FiatsService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
@@ -129,12 +127,10 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnQueryParams(): void {
-    forkJoin([
-      this.tokensStoreService.tokens$.pipe(first(Boolean)),
-      this.fiatsService.fiats$.pipe(first(Boolean))
-    ])
+    this.tokensStoreService.tokens$
       .pipe(
-        switchMap(([tokens, fiats]) => {
+        first(Boolean),
+        switchMap(tokens => {
           const queryParams = this.queryParamsService.queryParams;
           const protectedParams = this.getProtectedSwapParams(queryParams);
 
@@ -143,7 +139,7 @@ export class SwapFormQueryService {
 
           const findFromAsset$ = BlockchainsInfo.isBlockchainName(fromAssetType)
             ? this.getTokenBySymbolOrAddress(tokens, protectedParams.from, fromAssetType)
-            : of(fiats.find(fiat => fiat.symbol === protectedParams.from));
+            : of(null);
           const findToToken$ = this.getTokenBySymbolOrAddress(
             tokens,
             protectedParams.to,
