@@ -52,20 +52,6 @@
     >
   </nav>
 
-  <ng-container *noFrame>
-    <app-points-button
-      class="rubic-header__point-button"
-      *ngIf="currentUser$ | async"
-    ></app-points-button>
-  </ng-container>
-
-  <!--  Old button, return when earn and swap company will be over -->
-  <!--  <app-buy-token-->
-  <!--    *noFrame-->
-  <!--    class="rubic-header__buy-token"-->
-  <!--    [tokensType]="advertisementType"-->
-  <!--  ></app-buy-token>-->
-
   <div class="rubic-header__profile">
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
       <app-login-button class="rubic-header__login" *noFrame></app-login-button>

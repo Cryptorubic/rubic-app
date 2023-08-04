@@ -8,11 +8,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
-    path: ROUTE_PATH.SWAP_AND_EARN,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
-  },
-  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }
