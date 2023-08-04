@@ -50,22 +50,6 @@
       "
       >Swaps</a
     >
-    <div class="button-link" routerLink="/staking" [class.button-link_active]="isStakingPage">
-      Staking
-    </div>
-    <a
-      class="button-link"
-      (click)="navigateToLimitOrder()"
-      [class.button-link_active]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"
-      >Limit Order</a
-    >
-    <div
-      class="button-link"
-      routerLink="/revoke-approval"
-      [class.button-link_active]="isRevokePage"
-    >
-      Revoke Approval
-    </div>
   </nav>
 
   <ng-container *noFrame>

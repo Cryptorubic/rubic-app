@@ -59,17 +59,6 @@
 </ng-template>
 
 <ng-template #dropdownOptionTemplate>
-  <div
-    *noFrame
-    class="user-profile__dropdown-item button-link"
-    routerLink="history/limit-orders"
-    queryParamsHandling="merge"
-  >
-    Limit Orders
-  </div>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate>
   <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
     {{ 'navigation.logout' | translate }}
   </button>

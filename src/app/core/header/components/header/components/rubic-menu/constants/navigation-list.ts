@@ -32,12 +32,6 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}widget.svg`
   },
   {
-    translateKey: 'navigation.faq',
-    type: 'internal',
-    link: 'faq',
-    imagePath: `${defaultSrc}faq.svg`
-  },
-  {
     translateKey: 'navigation.about',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
@@ -54,33 +48,9 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       active: false
     },
     {
-      translateKey: 'Staking',
-      type: 'internal',
-      link: ROUTE_PATH.STAKING,
-      active: false
-    },
-    {
-      translateKey: 'Limit Order',
-      type: 'internal',
-      link: ROUTE_PATH.LIMIT_ORDER,
-      active: false
-    },
-    {
       translateKey: 'Swap to Earn',
       type: 'internal',
       link: ROUTE_PATH.SWAP_AND_EARN,
-      active: false
-    },
-    {
-      translateKey: 'Revoke Approval',
-      type: 'internal',
-      link: ROUTE_PATH.REVOKE_APPROVAL,
-      active: false
-    },
-    {
-      translateKey: 'ChangeNow Tx',
-      type: 'internal',
-      link: ROUTE_PATH.CHANGENOW_RECENT_TRADES,
       active: false
     }
   ],
@@ -104,11 +74,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'About',
       type: 'external',
       link: EXTERNAL_LINKS.LANDING
-    },
-    {
-      translateKey: 'FAQ',
-      type: 'external',
-      link: ROUTE_PATH.FAQ
     }
   ],
   ['Social']: [

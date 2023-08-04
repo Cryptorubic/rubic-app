@@ -42,7 +42,6 @@ import { MobileUserProfileComponent } from './components/header/components/mobil
 import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { HistoryModule } from '@app/features/history/history.module';
 import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { PointsButtonComponent } from './components/header/components/points-button/points-button.component';
@@ -95,7 +94,6 @@ import { TestnetSwitcherComponent } from '@core/header/components/header/compone
     ModalsModule,
     RecentTradesModule,
     ClipboardModule,
-    HistoryModule,
     InstantTradeModule,
     TuiAccordionModule,
     TuiDialogModule
