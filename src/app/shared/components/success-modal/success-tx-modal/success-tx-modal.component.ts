@@ -15,7 +15,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from 'rubic-sdk';
-import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
@@ -93,12 +92,6 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
-    this.context.completeWith(null);
-  }
-
-  public async navigateToSwapAndEarn(): Promise<void> {
-    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
-
     this.context.completeWith(null);
   }
 }

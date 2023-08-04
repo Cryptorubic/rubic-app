@@ -46,27 +46,7 @@
       </div>
     </div>
 
-    <ng-container *ngIf="points > 0">
-      <div class="point">
-        <span class="point__amount">{{ points }} RBC</span>
-      </div>
-
-      <div class="description_promo">
-        <span>You will receive for this transaction. It can be seen</span>{{ ' ' }}
-        <a
-          href="https://app.rubic.exchange/swap-and-earn"
-          target="_blank"
-          rel="noreferrer"
-          *ngIf="hideUnusedUI"
-          >here</a
-        >
-        <span class="highlight_green" *ngIf="!hideUnusedUI" (click)="navigateToSwapAndEarn()"
-          >here</span
-        >
-      </div>
-    </ng-container>
-
-    <div class="pair" [ngClass]="{ pair__isSwapAndEarnSwap: points > 0 }">
+    <div class="pair">
       <div class="pair__from">
         <img
           [src]="fromToken.image || 'assets/images/icons/coins/default-token-ico.svg'"

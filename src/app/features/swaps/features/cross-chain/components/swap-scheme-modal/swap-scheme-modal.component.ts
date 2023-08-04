@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  OnDestroy,
-  OnInit,
-  Self
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit, Self } from '@angular/core';
 import { TuiDialogContext, TuiNotification } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
@@ -47,7 +39,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
-import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -59,7 +50,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestroy {
+export class SwapSchemeModalComponent implements OnInit, OnDestroy {
   public trade: SwapSchemeModalData;
 
   public srcProvider: ProviderInfo;
@@ -114,8 +105,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public points: number = 0;
-
   public get isArbitrumBridge(): boolean {
     return (
       this.fromBlockchain.key === BLOCKCHAIN_NAME.ARBITRUM &&
@@ -146,12 +135,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     this.initSrcTxStatusPolling();
     this.initTradeProcessingStatusPolling();
     this.initDstTxStatusPolling();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.points && this.points > 0) {
-      SwapSchemeModalComponent.toggleConfettiBackground('show');
-    }
   }
 
   ngOnDestroy(): void {
@@ -369,8 +352,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private setTradeData(data: SwapSchemeModalData): void {
-    this.points = data.points;
-
     this.srcProvider = data.srcProvider;
     this.dstProvider = data.dstProvider;
 
@@ -395,11 +376,5 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
 
     this.amountOutMin = data.amountOutMin;
     this.changenowId = data.changenowId;
-  }
-
-  public async navigateToSwapAndEarn(): Promise<void> {
-    this.context.completeWith(false);
-
-    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
   }
 }

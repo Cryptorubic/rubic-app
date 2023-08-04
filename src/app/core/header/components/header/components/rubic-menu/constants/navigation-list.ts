@@ -36,6 +36,12 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
     imagePath: `${defaultSrc}team.svg`
+  },
+  {
+    translateKey: 'Mainnet App',
+    type: 'external',
+    link: EXTERNAL_LINKS.MAINNET_APP,
+    imagePath: `${defaultSrc}testnet.svg`
   }
 ] as NavigationItem[];
 
@@ -45,12 +51,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Swap',
       type: 'internal',
       link: ROUTE_PATH.NONE,
-      active: false
-    },
-    {
-      translateKey: 'Swap to Earn',
-      type: 'internal',
-      link: ROUTE_PATH.SWAP_AND_EARN,
       active: false
     }
   ],

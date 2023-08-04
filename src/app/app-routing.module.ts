@@ -8,6 +8,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
+    path: ROUTE_PATH.FACETS,
+    loadComponent: () =>
+      import('./features/facets/facets-page.component').then(m => m.FacetsPageComponent)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }
