@@ -35,6 +35,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: 'HoneySwap',
 
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: 'Izumi',
+
   [ON_CHAIN_TRADE_TYPE.JET_SWAP]: 'JetSwap',
   [ON_CHAIN_TRADE_TYPE.JOE]: 'Joe',
   [ON_CHAIN_TRADE_TYPE.JUPITER]: 'Jupiter',

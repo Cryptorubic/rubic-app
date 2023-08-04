@@ -505,5 +505,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'PulseX V2',
     image: `${imageBasePath}pulsex.png`,
     color: '#ff0006'
+  },
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: {
+    name: 'Izumi',
+    image: `${imageBasePath}izumi.svg`,
+    color: '#7E49FC'
   }
 };
