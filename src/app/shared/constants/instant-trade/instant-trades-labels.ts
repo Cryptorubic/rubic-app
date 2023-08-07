@@ -65,7 +65,6 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'PancakeSwap',
   [ON_CHAIN_TRADE_TYPE.PANGOLIN]: 'Pangolin',
-  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'ParaSwap',
   [ON_CHAIN_TRADE_TYPE.PEGASYS]: 'Pegasys',
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'PhotonSwap',
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: 'Polydex',
