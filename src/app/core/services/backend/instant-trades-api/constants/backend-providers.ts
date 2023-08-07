@@ -98,7 +98,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.J_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'lifi',
 
