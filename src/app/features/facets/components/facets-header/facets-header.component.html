@@ -1,0 +1,14 @@
+<header>Available blockchains</header>
+<ul>
+  <li *ngFor="let chain of shownBlockchains">
+    <app-icon-button
+      appearance="secondary"
+      [icon]="chain.icon"
+      [border]="selectedBlockchain === chain.name"
+      [borderRadiusPercent]="50"
+      [label]="chain.label"
+      (iconButtonClick)="handleBlockhainSelection.emit(chain.name)"
+    >
+    </app-icon-button>
+  </li>
+</ul>

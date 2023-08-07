@@ -1,0 +1,22 @@
+@use 'src/scss/core' as *;
+
+.form {
+  display: block;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+
+  background: var(--tui-secondary);
+  border: 1px solid var(--transparent-line);
+  border-radius: $border-radius-2;
+}
+
+app-facets-header {
+  display: block;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+
+  border-bottom: 1px solid var(--transparent-line);
+}
+
+

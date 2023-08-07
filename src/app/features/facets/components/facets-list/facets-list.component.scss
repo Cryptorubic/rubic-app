@@ -1,0 +1,31 @@
+.facet {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+
+  color: var(--primary-text);
+
+  border-radius: 20px;
+
+  &__token-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+  }
+
+  &__token-symbol {
+    display: flex;
+    width: 100px;
+
+    font-weight: 500;
+    font-size: 12px;
+  }
+  
+  &:hover {
+    background: var(--tui-secondary);
+  }
+}
+
+a:hover {
+  text-decoration: none;
+}

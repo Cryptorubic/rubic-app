@@ -12,8 +12,8 @@
     <img
       [src]="
         (isDarkTheme$ | async)
-          ? 'assets/images/rubic-logo.png'
-          : 'assets/images/rubic-logo-dark.png'
+          ? 'assets/images/rubic-logo.svg'
+          : 'assets/images/rubic-logo-dark.svg'
       "
       alt="Rubic logotype"
       width="122"
@@ -50,6 +50,9 @@
       "
       >Swaps</a
     >
+    <div class="button-link" routerLink="/facets" [class.button-link_active]="isFacetsPage">
+      Facets
+    </div>
   </nav>
 
   <div class="rubic-header__profile">

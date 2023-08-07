@@ -7,19 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.changeNowRecentTrades',
-    type: 'internal',
-    link: 'changenow-recent-trades',
-    imagePath: `${defaultSrc}history.svg`,
-    target: '_self'
-  },
-  {
-    translateKey: 'Token Claim',
-    type: 'external',
-    link: EXTERNAL_LINKS.AIRDROP,
-    imagePath: `assets/images/rbc.svg`
-  },
-  {
     translateKey: 'navigation.sdk',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING_SDK,
@@ -55,6 +42,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     }
   ],
   ['More']: [
+    {
+      translateKey: 'Mainnet App',
+      type: 'external',
+      link: EXTERNAL_LINKS.MAINNET_APP,
+      active: false
+    },
     {
       translateKey: 'Documentation',
       type: 'external',

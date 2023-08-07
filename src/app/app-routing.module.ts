@@ -9,8 +9,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.FACETS,
-    loadComponent: () =>
-      import('./features/facets/facets-page.component').then(m => m.FacetsPageComponent)
+    loadChildren: () => import('./features/facets/facets.module').then(m => m.FacetsModule)
   },
   {
     path: ROUTE_PATH.REST,

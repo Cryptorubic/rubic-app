@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GoogleTagManagerModule } from 'angular-google-tag-manager';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
-import { FacetsPageComponent } from '@features/facets/facets-page.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,8 +31,7 @@ import { FacetsPageComponent } from '@features/facets/facets-page.component';
     HttpClientModule,
     GoogleTagManagerModule.forRoot({
       id: 'GTM-PZ8NH4J'
-    }),
-    FacetsPageComponent
+    })
   ],
   providers: [MOBILE_NATIVE_MODAL_PROVIDER],
   bootstrap: [AppComponent]

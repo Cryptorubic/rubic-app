@@ -1,0 +1,13 @@
+<tui-scrollbar class="scrollbar">
+  <tui-loader [showLoader]="!facets" [overlay]="true">
+    <ul>
+      <a *ngFor="let facet of facets" [href]="facet.url">
+        <li class="facet">
+          <img [src]="facet.token.image" [alt]="facet.token.name" class="facet__token-image" />
+          <div class="facet__token-symbol">{{ facet.token.symbol }}</div>
+          <div class="facet__token-name">{{ facet.name }}</div>
+        </li>
+      </a>
+    </ul>
+  </tui-loader>
+</tui-scrollbar>
