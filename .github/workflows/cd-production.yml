@@ -39,8 +39,34 @@ jobs:
           yarn --frozen-lockfile
 
       - name: Run build prod
-        run: yarn run build
-        
+        run: yarn run build | tee log.txt
+
+      - name: Create changes file
+        run: node scripts/extracts-chages.js
+
+      - name: Get all changed assets
+        id: changed-files-yaml
+        uses: tj-actions/changed-files@v37
+        with:
+          files_yaml: |
+            src:
+              - assets/**
+              - favicon.ico
+              - index.html
+              - manifest.json
+
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file" >> files.txt
+          done
+
+      - name: Show changes
+        uses: actions/upload-artifact@v3
+        with:
+          name: Changes
+          path: files.txt
+
       - name: Upload to storage
         uses: actions/upload-artifact@v3
         with:
