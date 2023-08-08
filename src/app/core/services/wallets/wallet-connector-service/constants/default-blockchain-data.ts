@@ -118,5 +118,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.LINEA]: {
     name: 'Linea',
     rpc: 'https://linea-mainnet.infura.io/v3'
+  },
+  [BLOCKCHAIN_NAME.BASE]: {
+    name: 'Base',
+    rpc: 'https://mainnet.base.org'
   }
 };
