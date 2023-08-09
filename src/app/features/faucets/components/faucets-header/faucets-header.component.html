@@ -1,14 +1,21 @@
 <header>Available blockchains</header>
 <ul>
-  <li *ngFor="let chain of shownBlockchains" [class.tui-skeleton]="loading">
-    <app-icon-button
-      appearance="secondary"
-      [icon]="chain.icon"
-      [border]="selectedBlockchain === chain.name"
-      [borderRadiusPercent]="50"
-      [label]="chain.label"
-      (iconButtonClick)="handleBlockhainSelection.emit(chain.name)"
-    >
-    </app-icon-button>
-  </li>
+  <ng-container *ngIf="loading; else icon">
+    <li *ngFor="let el of [1, 2, 3]" class="tui-skeleton">
+      <div class="skeleton-item">1</div>
+    </li>
+  </ng-container>
+  <ng-template #icon>
+    <li *ngFor="let chain of shownBlockchains" [class.tui-skeleton]="loading">
+      <app-icon-button
+        appearance="secondary"
+        [icon]="chain.icon"
+        [border]="selectedBlockchain === chain.name"
+        [borderRadiusPercent]="50"
+        [label]="chain.label"
+        (iconButtonClick)="handleBlockhainSelection.emit(chain.name)"
+      >
+      </app-icon-button>
+    </li>
+  </ng-template>
 </ul>

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
-import { Observable, of } from 'rxjs';
-import { catchError, first, map, tap, timeout } from 'rxjs/operators';
+import { Observable, of, retry } from 'rxjs';
+import { catchError, first, map, startWith, tap, timeout } from 'rxjs/operators';
 import { defaultFaucets } from '@features/faucets/constants/default-faucets';
 import { FaucetsApiService } from '@features/faucets/services/faucets-api.service';
 import { Faucet } from '@features/faucets/models/faucet';
@@ -24,7 +24,10 @@ export class FaucetsPageComponent {
   );
 
   public readonly blockchainsList$ = this.faucetsData$.pipe(
-    map(faucets => Object.keys(faucets) as BlockchainName[])
+    startWith([]),
+    map(faucets => {
+      return (Object.keys(faucets) as BlockchainName[]) || [];
+    })
   );
 
   public loading: boolean = true;
@@ -33,7 +36,9 @@ export class FaucetsPageComponent {
 
   private getData(): Observable<Partial<Record<BlockchainName, Faucet[]>>> {
     return this.faucetsApiService.fetchFaucets().pipe(
-      timeout(3_000),
+      timeout(2_000),
+      retry({ count: 1, delay: 2_000 }),
+      timeout(2_000),
       catchError(() => of(defaultFaucets))
     );
   }

@@ -8,9 +8,17 @@ import { Faucet } from '@features/faucets/models/faucet';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaucetsListComponent {
+  private readonly fakeFaucet = {
+    token: { address: '', symbol: 'ETH', icon_url: '' },
+    url: '',
+    name: 'Binance Smart Chain'
+  };
+
+  public fakeFaucets = new Array(3).fill(this.fakeFaucet);
+
   @Input() loading: boolean = true;
 
-  @Input() faucets: Faucet[] | null;
+  @Input() faucets: Faucet[] = [];
 
   constructor() {}
 }
