@@ -1,6 +1,6 @@
 <header>Available blockchains</header>
 <ul>
-  <li *ngFor="let chain of shownBlockchains">
+  <li *ngFor="let chain of shownBlockchains" [class.tui-skeleton]="loading">
     <app-icon-button
       appearance="secondary"
       [icon]="chain.icon"

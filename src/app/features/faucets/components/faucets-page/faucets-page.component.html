@@ -1,0 +1,12 @@
+<div class="form">
+  <app-faucets-header
+    [selectedBlockchain]="selectedBlockchain"
+    (handleBlockhainSelection)="selectedBlockchain = $event"
+    [loading]="loading"
+    [blockchainsList]="blockchainsList$ | async"
+  ></app-faucets-header>
+  <app-faucets-list
+    [loading]="loading"
+    [faucets]="(faucetsData$ | async)?.[selectedBlockchain]"
+  ></app-faucets-list>
+</div>

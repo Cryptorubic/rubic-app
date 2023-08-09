@@ -3,6 +3,12 @@ ul {
   gap: 20px;
 }
 
+li.tui-skeleton {
+  overflow: hidden;
+
+  border-radius: 10px;
+}
+
 header {
   margin-bottom: 20px;
 

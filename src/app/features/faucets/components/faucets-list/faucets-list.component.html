@@ -1,0 +1,29 @@
+<tui-scrollbar class="scrollbar">
+  <ul>
+    <a *ngFor="let faucet of faucets" [href]="faucet.url">
+      <li class="faucet">
+        <ng-container *ngIf="loading; else image">
+          <div
+            class="faucet__token-image faucet__token-image_loading"
+            [class.tui-skeleton]="loading"
+          ></div>
+        </ng-container>
+        <ng-template #image>
+          <img
+            [class.tui-skeleton]="loading"
+            [src]="faucet.token.icon_url"
+            [alt]="faucet.token.symbol"
+            class="faucet__token-image"
+          />
+        </ng-template>
+
+        <div [class.tui-skeleton]="loading" class="faucet__token-symbol">
+          <span [class.tui-skeleton]="loading">{{ faucet.token.symbol }}</span>
+        </div>
+        <div [class.tui-skeleton]="loading" class="faucet__token-name">
+          <span [class.tui-skeleton]="loading">{{ faucet.name }}</span>
+        </div>
+      </li>
+    </a>
+  </ul>
+</tui-scrollbar>

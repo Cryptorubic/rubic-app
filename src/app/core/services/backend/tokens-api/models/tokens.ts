@@ -3,6 +3,7 @@ import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
 import { BlockchainName } from 'rubic-sdk';
+import { BackendPagination } from '@shared/models/backend/backend-pagination';
 
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',
@@ -30,12 +31,7 @@ export interface BackendToken {
   token_security: TokenSecurity | null;
 }
 
-export interface TokensBackendResponse {
-  readonly count: number;
-  readonly next: string;
-  readonly previous: string;
-  readonly results: BackendToken[];
-}
+export type TokensBackendResponse = BackendPagination<BackendToken>;
 
 export interface TokenSecurityBackendResponse {
   readonly token_security: TokenSecurity;

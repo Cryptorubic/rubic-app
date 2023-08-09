@@ -82,7 +82,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public get isFacetsPage(): boolean {
-    return this.window.location.pathname === '/facets';
+    return this.window.location.pathname === '/faucets';
   }
 
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(

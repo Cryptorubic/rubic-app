@@ -1,4 +1,4 @@
-.facet {
+.faucet {
   display: flex;
   align-items: center;
   padding: 10px 20px;
@@ -11,6 +11,12 @@
     width: 30px;
     height: 30px;
     margin-right: 15px;
+
+    &_loading {
+      overflow: hidden;
+
+      border-radius: 100%;
+    }
   }
 
   &__token-symbol {

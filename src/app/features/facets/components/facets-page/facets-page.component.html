@@ -1,7 +1,0 @@
-<div class="form">
-  <app-facets-header
-    [selectedBlockchain]="selectedBlockchain"
-    (handleBlockhainSelection)="selectedBlockchain = $event"
-  ></app-facets-header>
-  <app-facets-list [facets]="(facetsData$ | async)?.[selectedBlockchain]"></app-facets-list>
-</div>
