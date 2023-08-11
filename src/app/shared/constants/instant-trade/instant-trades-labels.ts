@@ -65,7 +65,6 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: 'PancakeSwap',
   [ON_CHAIN_TRADE_TYPE.PANGOLIN]: 'Pangolin',
-  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'ParaSwap',
   [ON_CHAIN_TRADE_TYPE.PEGASYS]: 'Pegasys',
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'PhotonSwap',
   [ON_CHAIN_TRADE_TYPE.POLYDEX]: 'Polydex',
@@ -118,5 +117,6 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'YuzuSwap',
 
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'PulseX V1',
-  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2'
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2',
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'HorizonDEX'
 };

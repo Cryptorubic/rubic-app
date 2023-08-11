@@ -276,11 +276,6 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}pangolin.svg`,
     color: '#FC5408'
   },
-  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: {
-    name: 'ParaSwap',
-    image: `${imageBasePath}paraswap.svg`,
-    color: '#2e58b0'
-  },
   [ON_CHAIN_TRADE_TYPE.PEGASYS]: {
     name: 'Pegasys',
     image: `${imageBasePath}pegasys.png`,
@@ -505,5 +500,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'PulseX V2',
     image: `${imageBasePath}pulsex.png`,
     color: '#ff0006'
+  },
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: {
+    name: 'HorizonDEX',
+    image: `${imageBasePath}horixondex.png`,
+    color: '#444391'
   }
 };
