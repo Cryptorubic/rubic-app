@@ -17,7 +17,6 @@ import {
   OnChainTradeType,
   Web3Pure
 } from 'rubic-sdk';
-import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
 import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
@@ -42,7 +41,7 @@ export class InstantTradesApiService {
     provider: OnChainTradeType;
     blockchain: BlockchainName;
     walletAddress: string;
-    trade: OnChainTrade | WrapTrade;
+    trade: OnChainTrade;
     txHash: string;
   }): Promise<void> {
     const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
@@ -70,7 +69,7 @@ export class InstantTradesApiService {
   public createTrade(
     hash: string,
     provider: OnChainTradeType,
-    trade: OnChainTrade | WrapTrade,
+    trade: OnChainTrade,
     isSwapAndEarnSwap: boolean,
     fee?: number,
     promoCode?: string
