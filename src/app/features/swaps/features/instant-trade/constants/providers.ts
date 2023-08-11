@@ -13,11 +13,18 @@ const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
 };
 
 function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTradeProviderData[] {
-  return providers.map(provider => ({
-    ...defaultState,
-    name: provider,
-    label: instantTradesLabels[provider]
-  }));
+  return [
+    ...providers.map(provider => ({
+      ...defaultState,
+      name: provider,
+      label: instantTradesLabels[provider]
+    })),
+    {
+      ...defaultState,
+      name: ON_CHAIN_TRADE_TYPE.WRAPPED,
+      label: instantTradesLabels[ON_CHAIN_TRADE_TYPE.WRAPPED]
+    }
+  ];
 }
 // Curve commented because hack
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
