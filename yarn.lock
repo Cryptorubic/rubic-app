@@ -13595,10 +13595,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.15.2-alpha-horizondex-proxy.0:
-  version "4.15.2-alpha-horizondex-proxy.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.15.2-alpha-horizondex-proxy.0.tgz#d64480a3899614dbb4fd94fcc46e5b8e1022c38f"
-  integrity sha512-V25KUfuX7bpoL9zqMuAsQz0R0hnVA2JFFD/W4L2tlReSgRh66Su00Byeh95ngcFrR9LGHz47W8Sx5rhTlczn9w==
+rubic-sdk@4.15.2-alpha-horizondex-proxy.1:
+  version "4.15.2-alpha-horizondex-proxy.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.15.2-alpha-horizondex-proxy.1.tgz#7d7ff1b2819d9f880281f75eb11a1003dccf6df6"
+  integrity sha512-dbshmFrfUKnA9vZTHZRi+sBd3Kjea8zlesQDReRJ/tU8N3os9H21jh/S8LJUnRZgrLDD/g0Bh2aA0AjFTjR65Q==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
