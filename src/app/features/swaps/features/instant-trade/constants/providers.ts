@@ -13,11 +13,18 @@ const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
 };
 
 function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTradeProviderData[] {
-  return providers.map(provider => ({
-    ...defaultState,
-    name: provider,
-    label: instantTradesLabels[provider]
-  }));
+  return [
+    ...providers.map(provider => ({
+      ...defaultState,
+      name: provider,
+      label: instantTradesLabels[provider]
+    })),
+    {
+      ...defaultState,
+      name: ON_CHAIN_TRADE_TYPE.WRAPPED,
+      label: instantTradesLabels[ON_CHAIN_TRADE_TYPE.WRAPPED]
+    }
+  ];
 }
 // Curve commented because hack
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
@@ -27,7 +34,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.UNISWAP_V2,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
-      ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       // ON_CHAIN_TRADE_TYPE.DODO,
       // ON_CHAIN_TRADE_TYPE.ZRX,
@@ -39,7 +45,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
-      ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.DODO,
       // ON_CHAIN_TRADE_TYPE.CURVE,
@@ -52,7 +57,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.QUICK_SWAP,
       ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
-      ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       // ON_CHAIN_TRADE_TYPE.DODO,
       ON_CHAIN_TRADE_TYPE.HONEY_SWAP
@@ -61,7 +65,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.QUICK_SWAP_V3,
-      ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP
+      ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
     ]),
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
@@ -72,7 +77,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.PANGOLIN,
       ON_CHAIN_TRADE_TYPE.JOE,
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
-      ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
       // ON_CHAIN_TRADE_TYPE.ZRX,
       // ON_CHAIN_TRADE_TYPE.CURVE
@@ -88,7 +92,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
-      ON_CHAIN_TRADE_TYPE.PARA_SWAP,
       // ON_CHAIN_TRADE_TYPE.ZRX,
       ON_CHAIN_TRADE_TYPE.SOUL_SWAP
       // ON_CHAIN_TRADE_TYPE.CURVE
@@ -184,5 +187,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
     ]),
-    [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.OPEN_OCEAN])
+    [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
+      ON_CHAIN_TRADE_TYPE.HORIZONDEX
+    ])
   };

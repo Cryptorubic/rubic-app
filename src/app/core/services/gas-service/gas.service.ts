@@ -23,7 +23,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.OPTIMISM,
   BLOCKCHAIN_NAME.ARBITRUM,
-  BLOCKCHAIN_NAME.ZK_SYNC
+  BLOCKCHAIN_NAME.ZK_SYNC,
+  BLOCKCHAIN_NAME.LINEA
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -73,7 +74,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.LINEA]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -85,7 +87,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
       [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
       [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
-      [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this)
+      [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
+      [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -355,6 +358,25 @@ export class GasService {
     return of({
       gasPrice: new BigNumber(0.25).dividedBy(10 ** 9).toFixed()
     });
+  }
+
+  /**
+   * Gets Linea gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchLineaGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.LINEA);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      map(gasOptions => ({
+        ...gasOptions,
+        maxFeePerGas: new BigNumber(gasOptions.maxFeePerGas).multipliedBy(1.3).toFixed()
+      })),
+      catchError(() => of(null))
+    );
   }
 
   /**

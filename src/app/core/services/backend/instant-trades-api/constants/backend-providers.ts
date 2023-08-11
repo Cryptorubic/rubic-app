@@ -88,6 +88,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: 'syncswap',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'pulsex_v1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'horizondex',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
@@ -97,7 +98,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.J_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'lifi',
 
