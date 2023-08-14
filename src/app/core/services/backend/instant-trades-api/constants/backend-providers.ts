@@ -88,6 +88,8 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: 'syncswap',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'pulsex_v1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'horizondex',
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'baseswap',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',

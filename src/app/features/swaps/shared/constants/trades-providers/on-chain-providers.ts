@@ -500,5 +500,15 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'PulseX V2',
     image: `${imageBasePath}pulsex.png`,
     color: '#ff0006'
+  },
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: {
+    name: 'HorizonDEX',
+    image: `${imageBasePath}horixondex.png`,
+    color: '#444391'
+  },
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
+    name: 'BaseSwap',
+    image: `${imageBasePath}baseswap.webp`,
+    color: '#000DBF'
   }
 };
