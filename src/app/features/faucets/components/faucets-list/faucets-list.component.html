@@ -1,6 +1,6 @@
 <tui-scrollbar class="scrollbar">
   <ul *ngLet="faucets?.length ? faucets : fakeFaucets as faucetsData">
-    <a *ngFor="let faucet of faucetsData" [href]="faucet.url">
+    <a *ngFor="let faucet of faucetsData" [href]="faucet.url" target="_blank">
       <li class="faucet">
         <ng-container *ngIf="loading; else image">
           <div
@@ -22,6 +22,11 @@
         </div>
         <div class="faucet__token-name">
           <span [class.tui-skeleton]="loading">{{ faucet.name }}</span>
+          <img
+            class="faucet__token-name-link"
+            src="assets/images/icons/arrow/link-arrow.svg"
+            alt=""
+          />
         </div>
       </li>
     </a>

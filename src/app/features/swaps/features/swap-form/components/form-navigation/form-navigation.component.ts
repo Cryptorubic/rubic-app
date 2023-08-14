@@ -19,7 +19,7 @@ export class FormNavigationComponent {
     await this.swapTypeService.navigateToSwaps();
   }
 
-  public async navigateToLimitOrder(): Promise<void> {
-    await this.swapTypeService.navigateToLimitOrder();
+  public async navigateToFaucets(): Promise<void> {
+    await this.swapTypeService.navigateToFaucets();
   }
 }

@@ -26,6 +26,10 @@
     font-weight: 500;
     font-size: 12px;
   }
+
+  &__token-name-link {
+    margin-left: 3px;
+  }
   
   &:hover {
     background: var(--tui-secondary);
