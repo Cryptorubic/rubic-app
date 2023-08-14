@@ -15,6 +15,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
+    'https://polygonzkevm-mainnet.g.alchemy.com/v2/V_k_uJTiOSSLxom7KrLrPMdqKi3CiuMQ',
     'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://zkevm-rpc.com',
     'https://rpc.polygon-zkevm.gateway.fm',

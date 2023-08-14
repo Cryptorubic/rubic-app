@@ -11,7 +11,7 @@ export class FaucetsListComponent {
   private readonly fakeFaucet = {
     token: { address: '', symbol: 'ETH', icon_url: '' },
     url: '',
-    name: 'Binance Smart Chain'
+    name: 'Binance Smart Chaind'
   };
 
   public fakeFaucets = new Array(3).fill(this.fakeFaucet);

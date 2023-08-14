@@ -19,7 +19,8 @@ import {
   EvmWeb3Pure,
   UnapprovedContractError,
   EvmCrossChainTrade,
-  EvmBasicTransactionOptions
+  EvmBasicTransactionOptions,
+  CrossChainReactivelyCalculatedTradeData
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -141,7 +142,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
       timeout: this.defaultTimeout,
-      // @TODO CCR
       disabledProviders: disabledProviders,
       lifiDisabledBridgeTypes: [
         ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
@@ -155,21 +155,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true),
-      PriceToken.createToken(fromToken),
-      PriceToken.createToken(toToken)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true)
     ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice, sdkFromToken, sdkToToken]) => {
+      switchMap(([tokenState, fromPrice, toPrice]) => {
         const disableProxyConfig = Object.fromEntries(
           Object.values(CROSS_CHAIN_TRADE_TYPE).map(tradeType => [tradeType, false])
         ) as Record<CrossChainTradeType, boolean>;
 
         const fromSdkCompatibleToken = new PriceToken({
-          ...sdkFromToken.asStruct,
+          ...fromToken,
           price: new BigNumber(fromPrice as number | null)
         });
         const toSdkCompatibleToken = new PriceToken({
-          ...sdkToToken.asStruct,
+          ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
         const calculationStartTime = Date.now();
@@ -181,13 +179,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
             tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
           )
           .pipe(
-            mergeMap(data => {
-              const approve$ =
-                calculateNeedApprove && data?.wrappedTrade?.trade
-                  ? data.wrappedTrade.trade.needApprove()
-                  : of(false);
-              return forkJoin([of(data), approve$]);
-            }),
+            map(el => ({
+              ...el,
+              calculationTime: Date.now() - calculationStartTime
+            })),
+            mergeMap(
+              (data: CrossChainReactivelyCalculatedTradeData & { calculationTime: number }) => {
+                const approve$ =
+                  calculateNeedApprove && data?.wrappedTrade?.trade
+                    ? data.wrappedTrade.trade.needApprove()
+                    : of(false);
+                return forkJoin([of(data), approve$]);
+              }
+            ),
             map(([reactivelyCalculatedTradeData, needApprove]) => {
               const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
@@ -202,7 +206,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
               return {
                 total: total,
                 calculated: calculated,
-                calculationTime: Date.now() - calculationStartTime,
+                calculationTime: reactivelyCalculatedTradeData.calculationTime,
                 lastCalculatedTrade: wrappedTrade
                   ? {
                       ...wrappedTrade,
@@ -315,7 +319,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         fromAmount: calculatedTrade.trade.from.stringWeiAmount,
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
-
         ...(changenowId && { changenowId })
       };
 
