@@ -61,6 +61,13 @@ export class SwapTypeService {
     await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
+  public async navigateToFaucets(): Promise<void> {
+    this.swapFormService.outputControl.patchValue({
+      toAmount: null
+    });
+    await this.router.navigate(['faucets'], { queryParamsHandling: 'merge' });
+  }
+
   public async navigateToLimitOrder(): Promise<void> {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
