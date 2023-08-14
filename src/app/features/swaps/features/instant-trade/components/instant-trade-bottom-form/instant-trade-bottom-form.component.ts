@@ -288,11 +288,15 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    this.isWrappingTrade = EvmWrapTrade.isSupportedTrade(
-      this.fromToken.blockchain as EvmBlockchainName,
-      this.fromToken.address,
-      this.toToken.address
-    );
+    const haveTrade = Boolean(this.fromToken && this.toToken);
+
+    this.isWrappingTrade = haveTrade
+      ? EvmWrapTrade.isSupportedTrade(
+          this.fromToken.blockchain as EvmBlockchainName,
+          this.fromToken.address,
+          this.toToken.address
+        )
+      : false;
     this.allowRefreshChange.emit(this.isWrappingTrade);
 
     if (

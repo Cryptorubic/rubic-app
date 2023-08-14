@@ -1,6 +1,6 @@
 export enum ROUTE_PATH {
   NONE = '',
-  FACETS = 'faucets',
+  FAUCETS = 'faucets',
   REST = '**'
 }
 

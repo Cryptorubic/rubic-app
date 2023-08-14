@@ -8,7 +8,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
-    path: ROUTE_PATH.FACETS,
+    path: ROUTE_PATH.FAUCETS,
     loadChildren: () => import('@features/faucets/faucets.module').then(m => m.FaucetsModule)
   },
   {

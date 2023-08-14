@@ -81,7 +81,7 @@ export class HeaderComponent implements AfterViewInit {
     );
   }
 
-  public get isFacetsPage(): boolean {
+  public get isFaucetsPage(): boolean {
     return this.window.location.pathname === '/faucets';
   }
 
