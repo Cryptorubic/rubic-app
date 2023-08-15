@@ -11,7 +11,7 @@
           [ngClass]="{
             'instant-trade-bottom-form__amount__output_error': errorText && !isIframe
           }"
-          *ngLet="allowTrade && ethWethTrade as wrapProvider"
+          *ngLet="allowTrade && isWrappingTrade as wrapProvider"
         >
           <ng-container *ngIf="errorText && !isIframe && fromAmount">
             {{ 'errors.tradingIsNotAvailable' | translate }}
@@ -74,7 +74,7 @@
     </div>
     <ng-container *noFrame>
       <app-providers-panels-container
-        *ngIf="allowTrade && !ethWethTrade"
+        *ngIf="allowTrade && !isWrappingTrade"
         class="instant-trade-bottom-form__providers"
         [providersData]="providersData"
         (onSelectProvider)="onSelectProvider($event)"
@@ -92,7 +92,7 @@
     [needApprove]="needApprove"
     [withApproveButton]="withApproveButton"
     [status]="tradeStatus"
-    [buttonText]="!ethWethTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
+    [buttonText]="!isWrappingTrade ? 'Swap' : isFromNative ? 'Wrap' : 'Unwrap'"
     (onSwapClick)="createTrade()"
     (onApproveClick)="approveTrade()"
     (onUpdateRateClick)="onSetHiddenData()"
