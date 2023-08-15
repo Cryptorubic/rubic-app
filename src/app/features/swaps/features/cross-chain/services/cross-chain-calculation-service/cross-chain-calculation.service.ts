@@ -19,7 +19,8 @@ import {
   EvmWeb3Pure,
   UnapprovedContractError,
   EvmCrossChainTrade,
-  EvmBasicTransactionOptions
+  EvmBasicTransactionOptions,
+  CrossChainReactivelyCalculatedTradeData
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -183,13 +184,19 @@ export class CrossChainCalculationService extends TradeCalculationService {
             tokenState.isDeflation ? { ...options, useProxy: disableProxyConfig } : options
           )
           .pipe(
-            mergeMap(data => {
-              const approve$ =
-                calculateNeedApprove && data?.wrappedTrade?.trade
-                  ? data.wrappedTrade.trade.needApprove()
-                  : of(false);
-              return forkJoin([of(data), approve$]);
-            }),
+            map(el => ({
+              ...el,
+              calculationTime: Date.now() - calculationStartTime
+            })),
+            mergeMap(
+              (data: CrossChainReactivelyCalculatedTradeData & { calculationTime: number }) => {
+                const approve$ =
+                  calculateNeedApprove && data?.wrappedTrade?.trade
+                    ? data.wrappedTrade.trade.needApprove()
+                    : of(false);
+                return forkJoin([of(data), approve$]);
+              }
+            ),
             map(([reactivelyCalculatedTradeData, needApprove]) => {
               const { total, calculated, wrappedTrade } = reactivelyCalculatedTradeData;
 
@@ -204,7 +211,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
               return {
                 total: total,
                 calculated: calculated,
-                calculationTime: Date.now() - calculationStartTime,
+                calculationTime: reactivelyCalculatedTradeData.calculationTime,
                 lastCalculatedTrade: wrappedTrade
                   ? {
                       ...wrappedTrade,
