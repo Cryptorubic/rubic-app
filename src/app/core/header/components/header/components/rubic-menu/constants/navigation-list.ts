@@ -42,6 +42,12 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
     imagePath: `${defaultSrc}team.svg`
+  },
+  {
+    translateKey: 'Testnet App',
+    type: 'external',
+    link: EXTERNAL_LINKS.TESTNET_APP,
+    imagePath: `${defaultSrc}testnet.svg`
   }
 ] as NavigationItem[];
 
@@ -109,6 +115,11 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'FAQ',
       type: 'external',
       link: ROUTE_PATH.FAQ
+    },
+    {
+      translateKey: 'Testnet App',
+      type: 'external',
+      link: EXTERNAL_LINKS.TESTNET_APP
     }
   ],
   ['Social']: [
