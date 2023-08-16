@@ -89,6 +89,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'pulsex_v1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
   [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'horizondex',
+  [ON_CHAIN_TRADE_TYPE.LIFI_DEFAULT]: 'lifi',
 
   // Li-fi dexes
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
