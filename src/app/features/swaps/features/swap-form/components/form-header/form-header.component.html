@@ -26,7 +26,15 @@
         </ng-container>
       </div>
 
-      <div class="swaps-header__icon-wrapper" *ngIf="!options.isLimitOrder">
+      <div
+        class="swaps-header__icon-wrapper"
+        [ngClass]="{
+          'swaps-header__icon-wrapper_non-background':
+            options.fromBlockchainItem.label === 'Scroll' &&
+            options.toBlockchainItem.label === 'Scroll'
+        }"
+        *ngIf="!options.isLimitOrder"
+      >
         <img
           class="swaps-header__blockchain-to"
           [src]="options.toBlockchainItem.icon"
