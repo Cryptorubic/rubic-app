@@ -15,5 +15,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.ARBITRUM]: true,
   [BLOCKCHAIN_NAME.ZK_SYNC]: true,
   [BLOCKCHAIN_NAME.OPTIMISM]: true,
-  [BLOCKCHAIN_NAME.LINEA]: true
+  [BLOCKCHAIN_NAME.LINEA]: true,
+  [BLOCKCHAIN_NAME.BASE]: true
 };
