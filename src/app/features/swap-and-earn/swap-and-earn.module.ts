@@ -17,17 +17,19 @@ import { AirdropPopupService } from '@features/swap-and-earn/services/airdrop/ai
 import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
 import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
 import { ClaimContainerComponent } from '@features/swap-and-earn/components/claim-container/claim-container.component';
-import { ClaimContestContainerComponent } from '@features/swap-and-earn/components/claim-contest/claim-contest-container.component';
+import { RetrodropContainerComponent } from './components/retrodrop-container/retrodrop-container/retrodrop-container.component';
+import { RoundRowContainerComponent } from '@features/swap-and-earn/components/round-row/round-row-container.component';
 
 @NgModule({
   declarations: [
     SwapAndEarnPageComponent,
     SwapAndEarnFaqComponent,
     PointsContainerComponent,
-    ClaimContestContainerComponent,
+    RoundRowContainerComponent,
     ClaimContainerComponent,
     DifferentAddressesModalComponent,
-    SuccessClaimModalComponent
+    SuccessClaimModalComponent,
+    RetrodropContainerComponent
   ],
   imports: [
     CommonModule,

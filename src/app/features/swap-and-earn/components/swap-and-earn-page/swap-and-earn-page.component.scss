@@ -19,3 +19,61 @@
     font-size: 16px;
   }
 }
+
+.tabs-container {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 826px;
+  max-height: 280px;
+  margin: 0 auto 40px;
+  padding: 13px;
+
+  font-weight: 700;
+  font-size: 16px;
+
+  background: var(--form-background);
+  border: 1px solid var(--transparent-line);
+  border-radius: 0 $border-radius-2 $border-radius-2 $border-radius-2;
+
+  &__switcher-container {
+    position: absolute;
+    top: -63px;
+    left: 0;
+
+    display: flex;
+    gap: 20px;
+  }
+
+  &__tab {
+    position: relative;
+
+    display: block;
+    padding: 20px 50px;
+
+    border: 1px solid var(--transparent-line);
+    border-bottom: 0;
+    border-radius: 15px 15px 0 0;
+    cursor: pointer;
+
+    &.active {
+      background: var(--form-background);
+      border-bottom: 2px solid var(--form-background);
+
+      //&::before {
+      //  position: absolute;
+      //  content: '';
+      //  bottom: 0;
+      //  left: -15px;
+      //  width: 15px;
+      //  height: 15px;
+      //  background: red;
+      //  border-bottom-right-radius: 50%;
+      //  border-right: 1px solid var(--transparent-line);
+      //  border-bottom: 1px solid var(--transparent-line);
+      //}
+    }
+  }
+}

@@ -28,12 +28,12 @@ interface ButtonState {
 }
 
 @Component({
-  selector: 'app-claim-contest-container',
-  templateUrl: './claim-contest-container.component.html',
-  styleUrls: ['./claim-contest-container.component.scss'],
+  selector: 'app-round-row-container',
+  templateUrl: './round-row-container.component.html',
+  styleUrls: ['./round-row-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ClaimContestContainerComponent {
+export class RoundRowContainerComponent {
   @Input() public readonly claimData: string = '';
 
   @Input() public readonly round: string = '1';

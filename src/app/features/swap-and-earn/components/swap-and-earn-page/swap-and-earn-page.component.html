@@ -7,7 +7,18 @@
     <p *ngIf="!points.participant && (currentUser$ | async)" class="not-member">
       You are not a member of Swap to Earn program:(
     </p>
-    <app-claim-container *ngIf="isValid$ | async"></app-claim-container>
+
+    <div class="tabs-container">
+      <div class="tabs-container__switcher-container">
+        <span class="tabs-container__tab sen">Swap&Earn</span>
+        <span class="tabs-container__tab retro active">Retrodrop</span>
+      </div>
+      <tui-scrollbar>
+        <!--    <app-claim-container *ngIf="isValid$ | async"></app-claim-container>-->
+        <!--      <app-claim-container></app-claim-container>-->
+        <app-retrodrop-container></app-retrodrop-container>
+      </tui-scrollbar>
+    </div>
     <app-swap-and-earn-faq></app-swap-and-earn-faq>
   </ng-container>
   <ng-template #noCompany></ng-template>
