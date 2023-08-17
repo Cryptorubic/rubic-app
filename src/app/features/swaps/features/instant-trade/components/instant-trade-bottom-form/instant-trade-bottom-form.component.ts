@@ -15,7 +15,9 @@ import { InstantTradeService } from '@features/swaps/features/instant-trade/serv
 import {
   BlockchainName,
   BlockchainsInfo,
+  EvmBlockchainName,
   EvmOnChainTrade,
+  EvmWrapTrade,
   ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   OnChainTradeError,
@@ -51,7 +53,6 @@ import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import WrapTrade from '@features/swaps/features/instant-trade/models/wrap-trade';
 import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -107,7 +108,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   private _selectedProvider: InstantTradeProviderData;
 
-  public ethWethTrade: WrapTrade | null;
+  public isWrappingTrade = false;
 
   public needApprove: boolean;
 
@@ -148,7 +149,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     this._selectedProvider = selectedProvider;
     this.instantTradeInfoChange.emit({
       trade: selectedProvider?.trade,
-      isWrappedType: !!this.ethWethTrade
+      isWrappedType: this.isWrappingTrade
     });
   }
 
@@ -287,8 +288,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.errorText = '';
     }
 
-    this.ethWethTrade = this.instantTradeService.getEthWethTrade();
-    this.allowRefreshChange.emit(!this.ethWethTrade);
+    this.isWrappingTrade = EvmWrapTrade.isSupportedTrade(
+      this.fromToken.blockchain as EvmBlockchainName,
+      this.fromToken.address,
+      this.toToken.address
+    );
+    this.allowRefreshChange.emit(!this.isWrappingTrade);
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
@@ -348,9 +353,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
             return of(null);
           }
 
-          if (this.ethWethTrade) {
+          if (this.isWrappingTrade) {
             this.setTradeStateIsEthWethSwap();
-            return of(null);
           }
 
           this.setProvidersStateCalculating();
@@ -729,7 +733,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     }
 
     if (
-      !this.ethWethTrade &&
+      !this.isWrappingTrade &&
       !(await this.settingsService.checkSlippageAndPriceImpact(
         SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         this.selectedProvider.trade
@@ -738,19 +742,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return;
     }
 
-    let providerName: OnChainTradeType;
-    let providerTrade: OnChainTrade | WrapTrade;
-    if (!this.ethWethTrade) {
-      if (!this.selectedProvider) {
-        this.errorService.catch(new NoSelectedProviderError());
-      }
-
-      providerName = this.selectedProvider.name;
-      providerTrade = this.selectedProvider.trade;
-    } else {
-      providerName = ON_CHAIN_TRADE_TYPE.WRAPPED;
-      providerTrade = this.ethWethTrade;
+    if (!this.selectedProvider) {
+      this.errorService.catch(new NoSelectedProviderError());
     }
+
+    const providerName = this.selectedProvider.name;
+    const providerTrade = this.selectedProvider.trade;
 
     this.setProviderState(
       providerName,

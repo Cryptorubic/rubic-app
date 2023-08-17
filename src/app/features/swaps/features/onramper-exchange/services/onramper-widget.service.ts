@@ -48,6 +48,7 @@ export class OnramperWidgetService {
           wallets,
           partnerContext: {
             isDirect,
+            walletAddress,
             id: EvmWeb3Pure.randomHex(16)
           }
         });
