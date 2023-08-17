@@ -1,39 +1,63 @@
 <ng-container *ngLet="points$ | async as points">
-  <ng-container *ngIf="workingStatus$ | async; else noCompany">
-    <app-points-container
-      (handleClick)="handleWithdraw($event)"
-      [points]="points"
-    ></app-points-container>
-    <p *ngIf="!points.participant && (currentUser$ | async)" class="not-member">
-      You are not a member of Swap to Earn program:(
-    </p>
+  <ng-container *ngLet="isAirdropAddressValid$ | async as isAirdropAddressValid">
+    <ng-container *ngLet="isRetrodropAddressValid$ | async as isRetrodropAddressValid">
+      <ng-container *ngLet="currentTab$ | async as currentTab">
+        <ng-container *ngIf="workingStatus$ | async; else noCompany">
+          <app-points-container
+            (handleClick)="handleWithdraw($event)"
+            [points]="points"
+          ></app-points-container>
+          <p *ngIf="!points.participant && (currentUser$ | async)" class="not-member">
+            You are not a member of Swap to Earn program:(
+          </p>
 
-    <div class="tabs-container">
-      <div class="tabs-container__switcher-container">
-        <span
-          class="tabs-container__tab sen"
-          [ngClass]="{ active: (currentTab$ | async) === 'airdrop' }"
-          (click)="switchTab('airdrop')"
-          >Swap&Earn</span
-        >
-        <span
-          class="tabs-container__tab retro"
-          [ngClass]="{ active: (currentTab$ | async) === 'retrodrop' }"
-          (click)="switchTab('retrodrop')"
-          >Retrodrop</span
-        >
-      </div>
-      <tui-scrollbar>
-        <ng-container *ngIf="(currentTab$ | async) === 'airdrop'">
-          <app-claim-container *ngIf="isValid$ | async"></app-claim-container>
+          <div class="tabs-container">
+            <div class="tabs-container__switcher-container">
+              <div
+                class="tabs-container__tab sen"
+                [ngClass]="{
+                  active: currentTab === 'airdrop',
+                  disabled: !isAirdropAddressValid
+                }"
+                (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
+                [tuiHint]="
+                  isAirdropAddressValid ? null : 'You are not a participant in the Swap to Earn.'
+                "
+                tuiHintAppearance="onDark"
+              >
+                Swap&Earn
+                <span class="tab-decorator tab-decorator_right"></span>
+              </div>
+              <div
+                class="tabs-container__tab retro"
+                [ngClass]="{
+                  active: currentTab === 'retrodrop',
+                  disabled: !isRetrodropAddressValid
+                }"
+                (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
+                [tuiHint]="
+                  isRetrodropAddressValid ? null : 'You are not a participant in the retrodrop.'
+                "
+                tuiHintAppearance="onDark"
+              >
+                <span class="tab-decorator tab-decorator_left"></span>
+                Retrodrop
+                <span class="tab-decorator tab-decorator_right"></span>
+              </div>
+            </div>
+            <tui-scrollbar>
+              <ng-container *ngIf="currentTab === 'airdrop'">
+                <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
+              </ng-container>
+              <ng-container *ngIf="currentTab === 'retrodrop'">
+                <app-retrodrop-container *ngIf="isRetrodropAddressValid"></app-retrodrop-container>
+              </ng-container>
+            </tui-scrollbar>
+          </div>
+          <app-swap-and-earn-faq></app-swap-and-earn-faq>
         </ng-container>
-
-        <app-retrodrop-container
-          *ngIf="(currentTab$ | async) === 'retrodrop'"
-        ></app-retrodrop-container>
-      </tui-scrollbar>
-    </div>
-    <app-swap-and-earn-faq></app-swap-and-earn-faq>
+        <ng-template #noCompany></ng-template>
+      </ng-container>
+    </ng-container>
   </ng-container>
-  <ng-template #noCompany></ng-template>
 </ng-container>

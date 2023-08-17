@@ -16,14 +16,16 @@ export class SwapAndEarnPageComponent {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
-  public readonly isValid$ = this.airdropFacadeService.isValid$;
+  public readonly isAirdropAddressValid$ = this.swapAndEarnFacadeService.isAirdropAddressValid$;
+
+  public readonly isRetrodropAddressValid$ = this.swapAndEarnFacadeService.isRetrodropAddressValid$;
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
 
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService,
-    private readonly airdropFacadeService: SwapAndEarnFacadeService
+    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService
   ) {}
 
   public async handleWithdraw(points: number): Promise<void> {

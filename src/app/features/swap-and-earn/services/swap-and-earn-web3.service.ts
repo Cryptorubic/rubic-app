@@ -10,10 +10,11 @@ import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-a
 
 @Injectable()
 export class SwapAndEarnWeb3Service {
-  private readonly contractAddress =
-    this.swapAndEarnStateService.currentTab === 'airdrop'
+  private get contractAddress(): string {
+    return this.swapAndEarnStateService.currentTab === 'airdrop'
       ? airdropContractAddress
       : retrodropContractAddress;
+  }
 
   constructor(
     private readonly gasService: GasService,

@@ -11,6 +11,7 @@ import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 type ButtonLabel =
   | 'login'
@@ -18,7 +19,9 @@ type ButtonLabel =
   | 'wrongAddressError'
   | 'changeNetwork'
   | 'claim'
+  | 'stake'
   | 'claimed'
+  | 'staked'
   | 'incorrectAddressError';
 
 interface ButtonState {
@@ -44,12 +47,20 @@ export class RoundRowContainerComponent {
 
   @Input() public readonly isClosed: boolean;
 
-  public readonly claimAmount$ = this.airdropService.claimedTokens$;
+  public readonly claimAmount$ = this.swapAndEarnFacadeService.claimedTokens$;
+
+  public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
+
+  public readonly isAirdropAddressValid$ = this.swapAndEarnFacadeService.isAirdropAddressValid$;
+
+  public readonly isRetrodropAddressValid$ = this.swapAndEarnFacadeService.isRetrodropAddressValid$;
 
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
     claim: 'airdrop.button.claim',
+    stake: 'airdrop.button.stake',
     claimed: 'airdrop.button.claimed',
+    staked: 'airdrop.button.staked',
     wrongAddressError: 'airdrop.button.wrongAddressError',
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
@@ -58,21 +69,39 @@ export class RoundRowContainerComponent {
 
   public isMobile = false;
 
-  public buttonState$: Observable<ButtonState> = this.airdropService.isValid$.pipe(
+  public buttonState$: Observable<ButtonState> = this.swapAndEarnStateService.currentTab$.pipe(
     combineLatestWith(
+      this.swapAndEarnFacadeService.isRetrodropAddressValid$,
+      this.swapAndEarnFacadeService.isAirdropAddressValid$,
       this.authService.currentUser$,
       this.walletConnectorService.networkChange$,
-      this.airdropService.isAlreadyClaimed$
+      this.swapAndEarnFacadeService.isAlreadyClaimed$
     ),
-    map(([isValid, user, network, isAlreadyClaimed]) => {
-      const buttonLabel = this.getButtonKey([isValid, user, network, isAlreadyClaimed]);
+    map(
+      ([
+        currentTab,
+        isRetrodropAddressValid,
+        isAirdropAddressValid,
+        user,
+        network,
+        isAlreadyClaimed
+      ]) => {
+        const isValid = currentTab === 'airdrop' ? isAirdropAddressValid : isRetrodropAddressValid;
+        const buttonLabel = this.getButtonKey([
+          currentTab,
+          isValid,
+          user,
+          network,
+          isAlreadyClaimed
+        ]);
 
-      return {
-        label: buttonLabel,
-        translation: this.buttonStateNameMap[buttonLabel],
-        isError: this.getErrorState(buttonLabel)
-      };
-    }),
+        return {
+          label: buttonLabel,
+          translation: this.buttonStateNameMap[buttonLabel],
+          isError: this.getErrorState(buttonLabel)
+        };
+      }
+    ),
     startWith({
       label: 'emptyError' as ButtonLabel,
       translation: this.buttonStateNameMap['emptyError'],
@@ -80,10 +109,11 @@ export class RoundRowContainerComponent {
     })
   );
 
-  public readonly loading$ = this.airdropService.claimLoading$;
+  public readonly loading$ = this.swapAndEarnFacadeService.claimLoading$;
 
   constructor(
-    private readonly airdropService: SwapAndEarnFacadeService,
+    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly web3Service: SwapAndEarnWeb3Service,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -97,25 +127,27 @@ export class RoundRowContainerComponent {
   }
 
   public async handleClaim(): Promise<void> {
-    await this.airdropService.claimTokens();
+    await this.swapAndEarnFacadeService.claimTokens();
   }
 
   public async handleClick(state: ButtonLabel): Promise<void> {
     switch (state) {
       case 'changeNetwork':
-        await this.airdropService.changeNetwork();
+        await this.swapAndEarnFacadeService.changeNetwork();
         break;
       case 'login':
         this.walletModalService.open$();
         break;
       case 'claim':
-        await this.airdropService.claimTokens();
+      case 'stake':
+        await this.swapAndEarnFacadeService.claimTokens();
         break;
       default:
     }
   }
 
-  private getButtonKey([isValid, user, network, isAlreadyClaimed]: [
+  private getButtonKey([tab, isValid, user, network, isAlreadyClaimed]: [
+    'airdrop' | 'retrodrop',
     boolean,
     UserInterface,
     BlockchainName,
@@ -128,10 +160,18 @@ export class RoundRowContainerComponent {
       return 'changeNetwork';
     }
     if (isAlreadyClaimed) {
-      return 'claimed';
+      if (tab === 'airdrop') {
+        return 'claimed';
+      } else {
+        return 'staked';
+      }
     }
     if (isValid) {
-      return 'claim';
+      if (tab === 'airdrop') {
+        return 'claim';
+      } else {
+        return 'stake';
+      }
     }
 
     const address = this.walletConnectorService.address;

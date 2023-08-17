@@ -41,7 +41,7 @@
   &__switcher-container {
     position: absolute;
     top: -63px;
-    left: 0;
+    left: -1px;
 
     display: flex;
     gap: 20px;
@@ -50,7 +50,6 @@
   &__tab {
     position: relative;
 
-    display: block;
     padding: 20px 50px;
 
     border: 1px solid var(--transparent-line);
@@ -58,22 +57,57 @@
     border-radius: 15px 15px 0 0;
     cursor: pointer;
 
+    &.disabled {
+      cursor: default;
+    }
+
     &.active {
       background: var(--form-background);
       border-bottom: 2px solid var(--form-background);
 
-      //&::before {
+      //&::after {
       //  position: absolute;
-      //  content: '';
-      //  bottom: 0;
-      //  left: -15px;
+      //  content: "";
+      //  bottom: -2px;
+      //  right: -16px;
       //  width: 15px;
       //  height: 15px;
-      //  background: red;
-      //  border-bottom-right-radius: 50%;
-      //  border-right: 1px solid var(--transparent-line);
+      //  border-bottom-left-radius: 50%;
+      //  border-left: 1px solid var(--transparent-line);
       //  border-bottom: 1px solid var(--transparent-line);
+      //  background: #181A1B;
       //}
     }
+
+    //&:last-child {
+    //  &::before {
+    //    z-index: 1;
+    //    position: absolute;
+    //    content: "";
+    //    bottom: 0;
+    //    left: -16px;
+    //    width: 15px;
+    //    height: 15px;
+    //    border-bottom-right-radius: 50%;
+    //    border-right: 1px solid var(--transparent-line);
+    //    border-bottom: 1px solid var(--transparent-line);
+    //    background: #181A1B;
+    //  }
+    //}
   }
 }
+
+//.tab-decorator {
+//  position: absolute;
+//  width: 15px;
+//  height: 15px;
+//  bottom: -2px;
+//  right: -15px;
+//  background: var(--form-background);
+//
+//  &_left {
+//    right: initial;
+//    left: -15px;
+//    background: #181A1B;
+//  }
+//}

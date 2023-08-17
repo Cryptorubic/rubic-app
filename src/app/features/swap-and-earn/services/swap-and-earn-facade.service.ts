@@ -23,9 +23,13 @@ export class SwapAndEarnFacadeService {
 
   public readonly claimLoading$ = this._claimLoading$.asObservable();
 
-  private readonly _isValid$ = new BehaviorSubject(false);
+  private readonly _isAirdropAddressValid$ = new BehaviorSubject(false);
 
-  public readonly isValid$ = this._isValid$.asObservable();
+  public readonly isAirdropAddressValid$ = this._isAirdropAddressValid$.asObservable();
+
+  private readonly _isRetrodropAddressValid$ = new BehaviorSubject(false);
+
+  public readonly isRetrodropAddressValid$ = this._isRetrodropAddressValid$.asObservable();
 
   private readonly _isAlreadyClaimed$ = new BehaviorSubject(false);
 
@@ -34,17 +38,6 @@ export class SwapAndEarnFacadeService {
   private readonly _claimedTokens$ = new BehaviorSubject(new BigNumber(0));
 
   public readonly claimedTokens$ = this._claimedTokens$.asObservable();
-
-  protected readonly claims: {
-    [Key: string]: {
-      index: number;
-      amount: string;
-      proof: string[];
-    };
-  } =
-    this.swapAndEarnStateService.currentTab === 'airdrop'
-      ? sourceAirdropMerkle.claims
-      : sourceRetrodropMerkle.claims;
 
   constructor(
     private readonly authService: AuthService,
@@ -58,6 +51,7 @@ export class SwapAndEarnFacadeService {
     private readonly retrodropMerkleService: RetrodropMerkleService
   ) {
     this.subscribeOnWalletChange();
+    this.subscribeOnTabChange();
   }
 
   public get merkleService(): SwapAndEarnMerkleService {
@@ -70,7 +64,8 @@ export class SwapAndEarnFacadeService {
     this.authService.currentUser$?.subscribe(user => {
       if (!user || !user.address) {
         this._isAlreadyClaimed$.next(false);
-        this._isValid$.next(false);
+        this._isAirdropAddressValid$.next(false);
+        this._isRetrodropAddressValid$.next(false);
         return null;
       }
 
@@ -80,14 +75,39 @@ export class SwapAndEarnFacadeService {
         Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
       );
 
-      this.isValidAddress(userAddress);
+      this.isAirdropValidAddress(userAddress);
+      this.isRetrodropValidAddress(userAddress);
+
       this.isAlreadyClaimed(userAddress);
     });
   }
 
-  private isValidAddress(userAddress: string): void {
-    this._isValid$.next(
-      Object.keys(this.claims).some(address => userAddress === address.toLowerCase())
+  private subscribeOnTabChange(): void {
+    this.swapAndEarnStateService.currentTab$.subscribe(() => {
+      const userAddress = this.authService.userAddress;
+
+      this._claimedTokens$.next(
+        Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
+      );
+
+      this.isAirdropValidAddress(userAddress);
+      this.isRetrodropValidAddress(userAddress);
+
+      this.isAlreadyClaimed(userAddress);
+    });
+  }
+
+  private isAirdropValidAddress(userAddress: string): void {
+    this._isAirdropAddressValid$.next(
+      Object.keys(sourceAirdropMerkle.claims).some(address => userAddress === address.toLowerCase())
+    );
+  }
+
+  private isRetrodropValidAddress(userAddress: string): void {
+    this._isRetrodropAddressValid$.next(
+      Object.keys(sourceRetrodropMerkle.claims).some(
+        address => userAddress === address.toLowerCase()
+      )
     );
   }
 
