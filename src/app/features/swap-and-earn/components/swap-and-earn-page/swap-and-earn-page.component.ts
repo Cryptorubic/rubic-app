@@ -18,6 +18,8 @@ export class SwapAndEarnPageComponent {
 
   public readonly isValid$ = this.airdropFacadeService.isValid$;
 
+  public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
+
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService,
@@ -26,5 +28,9 @@ export class SwapAndEarnPageComponent {
 
   public async handleWithdraw(points: number): Promise<void> {
     await this.swapAndEarnStateService.claimPoints(points);
+  }
+
+  public switchTab(tab: 'airdrop' | 'retrodrop'): void {
+    this.swapAndEarnStateService.currentTab = tab;
   }
 }

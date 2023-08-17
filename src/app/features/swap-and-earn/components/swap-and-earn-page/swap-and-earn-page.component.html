@@ -10,13 +10,27 @@
 
     <div class="tabs-container">
       <div class="tabs-container__switcher-container">
-        <span class="tabs-container__tab sen">Swap&Earn</span>
-        <span class="tabs-container__tab retro active">Retrodrop</span>
+        <span
+          class="tabs-container__tab sen"
+          [ngClass]="{ active: (currentTab$ | async) === 'airdrop' }"
+          (click)="switchTab('airdrop')"
+          >Swap&Earn</span
+        >
+        <span
+          class="tabs-container__tab retro"
+          [ngClass]="{ active: (currentTab$ | async) === 'retrodrop' }"
+          (click)="switchTab('retrodrop')"
+          >Retrodrop</span
+        >
       </div>
       <tui-scrollbar>
-        <!--    <app-claim-container *ngIf="isValid$ | async"></app-claim-container>-->
-        <!--      <app-claim-container></app-claim-container>-->
-        <app-retrodrop-container></app-retrodrop-container>
+        <ng-container *ngIf="(currentTab$ | async) === 'airdrop'">
+          <app-claim-container *ngIf="isValid$ | async"></app-claim-container>
+        </ng-container>
+
+        <app-retrodrop-container
+          *ngIf="(currentTab$ | async) === 'retrodrop'"
+        ></app-retrodrop-container>
       </tui-scrollbar>
     </div>
     <app-swap-and-earn-faq></app-swap-and-earn-faq>
