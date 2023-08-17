@@ -9,7 +9,7 @@ import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/s
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 
 @Injectable()
-export class AirdropPopupService {
+export class SwapAndEarnPopupService {
   constructor(
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,

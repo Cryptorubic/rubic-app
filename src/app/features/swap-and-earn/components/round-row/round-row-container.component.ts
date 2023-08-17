@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
-import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
-import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
+import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
+import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
@@ -83,8 +83,8 @@ export class RoundRowContainerComponent {
   public readonly loading$ = this.airdropService.claimLoading$;
 
   constructor(
-    private readonly airdropService: AirdropFacadeService,
-    private readonly web3Service: AirdropWeb3Service,
+    private readonly airdropService: SwapAndEarnFacadeService,
+    private readonly web3Service: SwapAndEarnWeb3Service,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly walletModalService: WalletsModalService,

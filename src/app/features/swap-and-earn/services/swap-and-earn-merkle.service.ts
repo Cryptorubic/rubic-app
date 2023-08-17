@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
 import { tuiPure } from '@taiga-ui/cdk';
 import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import BigNumber from 'bignumber.js';
-import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdrop-merkle-tree.json';
 import BalanceTree from '@features/swap-and-earn/utils/balance-tree';
 
 interface SourceNode {
@@ -11,28 +9,10 @@ interface SourceNode {
   balance: string;
 }
 
-@Injectable()
-export class AirdropMerkleService {
-  private readonly merkleTreeSource: { [Key: string]: SourceNode } = Object.entries(
-    sourceAirdropMerkle.claims
-  ).reduce((acc, node) => {
-    return {
-      ...acc,
-      [node[0].toLowerCase()]: {
-        index: node[1].index,
-        balance: node[1].amount
-      }
-    };
-  }, {});
+export abstract class SwapAndEarnMerkleService {
+  protected readonly merkleTreeSource: { [Key: string]: SourceNode };
 
-  private readonly merkleTree = new BalanceTree(
-    Object.entries(this.merkleTreeSource).map(([address, { balance }]) => ({
-      account: address,
-      amount: EthersBigNumber.from(balance)
-    }))
-  );
-
-  constructor() {}
+  protected readonly merkleTree: BalanceTree;
 
   @tuiPure
   public getProofByAddress(address: string): string[] | null {

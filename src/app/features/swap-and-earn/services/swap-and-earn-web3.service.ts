@@ -5,12 +5,20 @@ import { airdropContractAddress } from '@features/swap-and-earn/constants/airdro
 import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
 import { GasService } from '@core/services/gas-service/gas.service';
+import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
-export class AirdropWeb3Service {
-  private readonly airDropContractAddress = airdropContractAddress;
+export class SwapAndEarnWeb3Service {
+  private readonly contractAddress =
+    this.swapAndEarnStateService.currentTab === 'airdrop'
+      ? airdropContractAddress
+      : retrodropContractAddress;
 
-  constructor(private readonly gasService: GasService) {}
+  constructor(
+    private readonly gasService: GasService,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService
+  ) {}
 
   public async executeClaim(
     node: AirdropNode,
@@ -23,7 +31,7 @@ export class AirdropWeb3Service {
     );
 
     await web3.tryExecuteContractMethod(
-      this.airDropContractAddress,
+      this.contractAddress,
       airdropContractAbi,
       'claim',
       [node.index, node.account, node.amount, proof],
@@ -37,7 +45,7 @@ export class AirdropWeb3Service {
   public async checkPause(): Promise<void> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
-      .callContractMethod(this.airDropContractAddress, airdropContractAbi, 'paused', []);
+      .callContractMethod(this.contractAddress, airdropContractAbi, 'paused', []);
     if (isPaused) {
       throw new Error('paused');
     }
@@ -46,7 +54,7 @@ export class AirdropWeb3Service {
   public async checkClaimed(index: number): Promise<void> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
-      .callContractMethod(this.airDropContractAddress, airdropContractAbi, 'isClaimed', [index]);
+      .callContractMethod(this.contractAddress, airdropContractAbi, 'isClaimed', [index]);
     if (isPaused) {
       throw new Error('claimed');
     }

@@ -1,8 +1,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-pure/evm-web3-pure/evm-web3-pure';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
+import { SwapAndEarnMerkleService } from '@features/swap-and-earn/services/swap-and-earn-merkle.service';
 
-export function checkAddressValidity(merkleService: AirdropMerkleService): ValidatorFn {
+export function checkAddressValidity(merkleService: SwapAndEarnMerkleService): ValidatorFn {
   return (control: AbstractControl<string | null>): ValidationErrors | null => {
     const address: string | null = control.value;
     if (!address) {

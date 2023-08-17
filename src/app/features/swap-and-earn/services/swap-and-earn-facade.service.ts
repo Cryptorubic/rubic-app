@@ -1,20 +1,24 @@
-import { Injectable } from '@angular/core';
 import { first } from 'rxjs/operators';
 import { BehaviorSubject, lastValueFrom, Subscription } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
-import { AirdropPopupService } from '@features/swap-and-earn/services/airdrop/airdrop-popup.service';
-import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
+import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-and-earn-popup.service';
+import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
+import { SwapAndEarnMerkleService } from '@features/swap-and-earn/services/swap-and-earn-merkle.service';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
-import { SdkService } from '@app/core/services/sdk/sdk.service';
-import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdrop-merkle-tree.json';
+import { SdkService } from '@core/services/sdk/sdk.service';
 import { Web3Pure } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
+import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
+import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
+import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdrop-merkle-tree.json';
+import sourceRetrodropMerkle from '@features/swap-and-earn/constants/retrodrop/retrodrop-merkle-tree.json';
+import { Injectable } from '@angular/core';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable()
-export class AirdropFacadeService {
+export class SwapAndEarnFacadeService {
   private readonly _claimLoading$ = new BehaviorSubject(false);
 
   public readonly claimLoading$ = this._claimLoading$.asObservable();
@@ -31,24 +35,35 @@ export class AirdropFacadeService {
 
   public readonly claimedTokens$ = this._claimedTokens$.asObservable();
 
-  private readonly claims: {
+  protected readonly claims: {
     [Key: string]: {
       index: number;
       amount: string;
       proof: string[];
     };
-  } = sourceAirdropMerkle.claims;
+  } =
+    this.swapAndEarnStateService.currentTab === 'airdrop'
+      ? sourceAirdropMerkle.claims
+      : sourceRetrodropMerkle.claims;
 
   constructor(
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly notificationsService: NotificationsService,
     private readonly sdkService: SdkService,
-    private readonly popupService: AirdropPopupService,
-    private readonly web3Service: AirdropWeb3Service,
-    private readonly merkleService: AirdropMerkleService
+    private readonly popupService: SwapAndEarnPopupService,
+    private readonly web3Service: SwapAndEarnWeb3Service,
+    private readonly swapAndEarnStateService: SwapAndEarnStateService,
+    private readonly airdropMerkleService: AirdropMerkleService,
+    private readonly retrodropMerkleService: RetrodropMerkleService
   ) {
     this.subscribeOnWalletChange();
+  }
+
+  public get merkleService(): SwapAndEarnMerkleService {
+    return this.swapAndEarnStateService.currentTab === 'airdrop'
+      ? this.airdropMerkleService
+      : this.retrodropMerkleService;
   }
 
   private subscribeOnWalletChange(): void {

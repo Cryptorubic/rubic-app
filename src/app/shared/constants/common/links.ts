@@ -7,7 +7,7 @@ export enum ROUTE_PATH {
   FAQ = 'faq',
   REVOKE_APPROVAL = 'revoke-approval',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
-  SWAP_AND_EARN = 'swap-and-earn',
+  SWAP_AND_EARN = 'swap-to-earn',
   STAKING = 'staking',
   REST = '**'
 }

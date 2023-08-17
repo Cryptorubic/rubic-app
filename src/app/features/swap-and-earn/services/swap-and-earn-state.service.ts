@@ -17,6 +17,10 @@ export class SwapAndEarnStateService {
 
   public readonly points$ = this._points$.asObservable();
 
+  private readonly _currentTab$ = new BehaviorSubject<'airdrop' | 'retrodrop'>('retrodrop');
+
+  public readonly currentTab$ = this._currentTab$.asObservable();
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpService,
@@ -25,6 +29,10 @@ export class SwapAndEarnStateService {
   ) {
     this.handleAddressChange();
     this.fetchWorkingStatus();
+  }
+
+  public get currentTab(): 'airdrop' | 'retrodrop' {
+    return this._currentTab$.getValue();
   }
 
   private fetchWorkingStatus(): void {

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
+import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 
 @Component({
   selector: 'app-swap-and-earn-page',
@@ -21,7 +21,7 @@ export class SwapAndEarnPageComponent {
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService,
-    private readonly airdropFacadeService: AirdropFacadeService
+    private readonly airdropFacadeService: SwapAndEarnFacadeService
   ) {}
 
   public async handleWithdraw(points: number): Promise<void> {

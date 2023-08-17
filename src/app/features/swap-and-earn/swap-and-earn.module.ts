@@ -12,13 +12,14 @@ import { DifferentAddressesModalComponent } from '@features/swap-and-earn/compon
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
-import { AirdropPopupService } from '@features/swap-and-earn/services/airdrop/airdrop-popup.service';
-import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
+import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-and-earn-popup.service';
+import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
 import { ClaimContainerComponent } from '@features/swap-and-earn/components/claim-container/claim-container.component';
-import { RetrodropContainerComponent } from './components/retrodrop-container/retrodrop-container/retrodrop-container.component';
+import { RetrodropContainerComponent } from 'src/app/features/swap-and-earn/components/retrodrop-container/retrodrop-container.component';
 import { RoundRowContainerComponent } from '@features/swap-and-earn/components/round-row/round-row-container.component';
+import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
+import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
+import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 
 @NgModule({
   declarations: [
@@ -44,10 +45,11 @@ import { RoundRowContainerComponent } from '@features/swap-and-earn/components/r
   ],
   providers: [
     ApproveScannerService,
-    AirdropFacadeService,
-    AirdropPopupService,
-    AirdropWeb3Service,
-    AirdropMerkleService
+    SwapAndEarnPopupService,
+    SwapAndEarnWeb3Service,
+    SwapAndEarnFacadeService,
+    AirdropMerkleService,
+    RetrodropMerkleService
   ]
 })
 export class SwapAndEarnModule {}
