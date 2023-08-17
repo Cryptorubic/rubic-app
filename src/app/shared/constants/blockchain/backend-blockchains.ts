@@ -115,7 +115,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: 'kava-cosmos',
   [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-  [BLOCKCHAIN_NAME.LINEA]: 'linea'
+  [BLOCKCHAIN_NAME.LINEA]: 'linea',
+  [BLOCKCHAIN_NAME.BASE]: 'base'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
