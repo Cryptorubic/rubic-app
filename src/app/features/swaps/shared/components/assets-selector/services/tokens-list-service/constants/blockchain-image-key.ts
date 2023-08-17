@@ -37,5 +37,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.VELAS]: 'velas',
   [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-  [BLOCKCHAIN_NAME.LINEA]: 'linea'
+  [BLOCKCHAIN_NAME.LINEA]: 'linea',
+  [BLOCKCHAIN_NAME.BASE]: 'base'
 };
