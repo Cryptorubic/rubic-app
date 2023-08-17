@@ -390,7 +390,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBaseGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.LINEA);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BASE);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
