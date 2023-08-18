@@ -7,77 +7,82 @@
             (handleClick)="handleWithdraw($event)"
             [points]="points"
           ></app-points-container>
-          <div
-            class="tabs-container"
-            [ngClass]="{
+          <ng-container *ngIf="currentUser$ | async">
+            <div
+              class="tabs-container"
+              [ngClass]="{
                   'full-rounded': currentTab === 'retrodrop',
                 }"
-          >
-            <div class="tabs-container__switcher-container">
-              <div
-                class="tabs-container__tab sen"
-                [ngClass]="{
-                  active: currentTab === 'airdrop',
-                  disabled: !isAirdropAddressValid
-                }"
-                (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
-                [tuiHint]="
-                  isAirdropAddressValid ? null : 'You are not a member of Swap to Earn program.'
-                "
-                tuiHintAppearance="onDark"
-              >
-                <span class="tabs-container__tab-text">Swap&Earn</span>
-              </div>
-              <span class="tab-delimiter"></span>
-              <span
-                class="tab-delimiter_right"
-                [ngClass]="{
+              *ngIf="(!points.participant && !isRetrodropAddressValid) || isRetrodropAddressValid"
+            >
+              <div class="tabs-container__switcher-container">
+                <div
+                  class="tabs-container__tab sen"
+                  [ngClass]="{
+                    active: currentTab === 'airdrop',
+                    disabled: !isAirdropAddressValid
+                  }"
+                  (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
+                  [tuiHint]="
+                    isAirdropAddressValid ? null : 'You are not a member of Swap to Earn program.'
+                  "
+                  tuiHintAppearance="onDark"
+                >
+                  <span class="tabs-container__tab-text">Swap&Earn</span>
+                </div>
+                <span class="tab-delimiter"></span>
+                <span
+                  class="tab-delimiter_right"
+                  [ngClass]="{
                   'active': currentTab === 'airdrop',
                 }"
-              ></span>
-              <span
-                class="tab-delimiter_left"
-                [ngClass]="{
+                ></span>
+                <span
+                  class="tab-delimiter_left"
+                  [ngClass]="{
                   'active': currentTab === 'retrodrop',
                 }"
-              ></span>
-              <div
-                class="tabs-container__tab retro"
-                [ngClass]="{
-                  active: currentTab === 'retrodrop',
-                  disabled: !isRetrodropAddressValid
+                ></span>
+                <div
+                  class="tabs-container__tab retro"
+                  [ngClass]="{
+                    active: currentTab === 'retrodrop',
+                    disabled: !isRetrodropAddressValid
+                  }"
+                  (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
+                  [tuiHint]="
+                    isRetrodropAddressValid ? null : 'You are not a participant in the retrodrop.'
+                  "
+                  tuiHintAppearance="onDark"
+                >
+                  <span class="tabs-container__tab-text">Retrodrop</span>
+                </div>
+                <span class="tab-delimiter tab-delimiter_second"></span>
+                <span
+                  class="tab-delimiter_right tab-delimiter_right-second"
+                  [ngClass]="{
+                  'active': currentTab === 'retrodrop',
                 }"
-                (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
-                [tuiHint]="
-                  isRetrodropAddressValid ? null : 'You are not a participant in the retrodrop.'
-                "
-                tuiHintAppearance="onDark"
-              >
-                <span class="tabs-container__tab-text">Retrodrop</span>
+                ></span>
               </div>
-              <span class="tab-delimiter tab-delimiter_second"></span>
-              <span
-                class="tab-delimiter_right tab-delimiter_right-second"
-                [ngClass]="{
-                  'active': currentTab === 'retrodrop',
-                }"
-              ></span>
+              <tui-scrollbar>
+                <ng-container *ngIf="currentTab === 'airdrop'">
+                  <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
+                </ng-container>
+                <ng-container *ngIf="currentTab === 'retrodrop'">
+                  <app-retrodrop-container
+                    *ngIf="isRetrodropAddressValid"
+                  ></app-retrodrop-container>
+                </ng-container>
+              </tui-scrollbar>
+              <p
+                *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
+                class="not-member"
+              >
+                You are not a member of Swap to Earn program:(
+              </p>
             </div>
-            <tui-scrollbar>
-              <ng-container *ngIf="currentTab === 'airdrop'">
-                <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
-              </ng-container>
-              <ng-container *ngIf="currentTab === 'retrodrop'">
-                <app-retrodrop-container *ngIf="isRetrodropAddressValid"></app-retrodrop-container>
-              </ng-container>
-            </tui-scrollbar>
-            <p
-              *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
-              class="not-member"
-            >
-              You are not a member of Swap to Earn program:(
-            </p>
-          </div>
+          </ng-container>
           <app-swap-and-earn-faq></app-swap-and-earn-faq>
         </ng-container>
         <ng-template #noCompany></ng-template>
