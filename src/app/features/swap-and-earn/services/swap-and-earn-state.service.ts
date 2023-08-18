@@ -17,7 +17,9 @@ export class SwapAndEarnStateService {
 
   public readonly points$ = this._points$.asObservable();
 
-  private readonly _currentTab$ = new BehaviorSubject<'airdrop' | 'retrodrop'>('airdrop');
+  private readonly _currentTab$ = new BehaviorSubject<'airdrop' | 'retrodrop'>(
+    SwapAndEarnStateService.setDefaultTab()
+  );
 
   public readonly currentTab$ = this._currentTab$.asObservable();
 
@@ -37,6 +39,10 @@ export class SwapAndEarnStateService {
 
   public set currentTab(tab: 'airdrop' | 'retrodrop') {
     this._currentTab$.next(tab);
+  }
+
+  private static setDefaultTab(): 'airdrop' | 'retrodrop' {
+    return window.location.pathname.includes('retrodrop') ? 'retrodrop' : 'airdrop';
   }
 
   private fetchWorkingStatus(): void {
