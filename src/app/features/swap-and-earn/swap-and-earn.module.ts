@@ -20,6 +20,7 @@ import { RoundRowContainerComponent } from '@features/swap-and-earn/components/r
 import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
 import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
 import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
+import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,9 @@ import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-
     ClaimContainerComponent,
     DifferentAddressesModalComponent,
     SuccessClaimModalComponent,
-    RetrodropContainerComponent
+    RetrodropStakeModalComponent,
+    RetrodropContainerComponent,
+    RetrodropStakeModalComponent
   ],
   imports: [
     CommonModule,

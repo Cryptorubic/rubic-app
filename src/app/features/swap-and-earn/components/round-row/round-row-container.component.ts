@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
 import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
@@ -12,6 +12,10 @@ import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop
 import { HeaderStore } from '@core/header/services/header.store';
 import { WINDOW } from '@ng-web-apis/common';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-and-earn-popup.service';
+import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
+import { RetrodropStakeModalComponent } from '@features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
+import { TuiDialogService } from '@taiga-ui/core';
 
 type ButtonLabel =
   | 'login'
@@ -114,11 +118,13 @@ export class RoundRowContainerComponent {
   constructor(
     private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
+    private readonly popupService: SwapAndEarnPopupService,
     private readonly web3Service: SwapAndEarnWeb3Service,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly walletModalService: WalletsModalService,
     private readonly headerService: HeaderStore,
+    private readonly dialogService: TuiDialogService,
     @Inject(WINDOW) private readonly window: Window
   ) {
     if (this.window.innerWidth <= 900) {
@@ -139,8 +145,10 @@ export class RoundRowContainerComponent {
         this.walletModalService.open$();
         break;
       case 'claim':
-      case 'stake':
         await this.swapAndEarnFacadeService.claimTokens();
+        break;
+      case 'stake':
+        this.showStakeConfirmModal();
         break;
       default:
     }
@@ -185,5 +193,15 @@ export class RoundRowContainerComponent {
 
   private getErrorState(buttonLabel: ButtonLabel): boolean {
     return buttonLabel === 'wrongAddressError' || buttonLabel === 'incorrectAddressError';
+  }
+
+  public showStakeConfirmModal(): Subscription {
+    return this.dialogService
+      .open(new PolymorpheusComponent(RetrodropStakeModalComponent), {
+        size: 's'
+      })
+      .subscribe(() => {
+        this.swapAndEarnFacadeService.claimTokens(false, true);
+      });
   }
 }

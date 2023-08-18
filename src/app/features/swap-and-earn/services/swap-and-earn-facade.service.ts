@@ -16,6 +16,8 @@ import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdr
 import sourceRetrodropMerkle from '@features/swap-and-earn/constants/retrodrop/retrodrop-merkle-tree.json';
 import { Injectable } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { ROUTE_PATH } from '@shared/constants/common/links';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SwapAndEarnFacadeService {
@@ -48,7 +50,8 @@ export class SwapAndEarnFacadeService {
     private readonly web3Service: SwapAndEarnWeb3Service,
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly airdropMerkleService: AirdropMerkleService,
-    private readonly retrodropMerkleService: RetrodropMerkleService
+    private readonly retrodropMerkleService: RetrodropMerkleService,
+    private readonly router: Router
   ) {
     this.subscribeOnWalletChange();
     this.subscribeOnTabChange();
@@ -121,7 +124,10 @@ export class SwapAndEarnFacadeService {
     }
   }
 
-  public async claimTokens(): Promise<void> {
+  public async claimTokens(
+    showSuccessModal: boolean = true,
+    navigateToStaking: boolean = false
+  ): Promise<void> {
     this._claimLoading$.next(true);
     let claimInProgressNotification: Subscription;
 
@@ -135,7 +141,12 @@ export class SwapAndEarnFacadeService {
       await this.web3Service.checkClaimed(node.index);
 
       await this.web3Service.executeClaim(node, proof, hash => {
-        this.popupService.showSuccessModal(hash);
+        if (showSuccessModal) {
+          this.popupService.showSuccessModal(hash);
+        }
+        if (navigateToStaking) {
+          this.router.navigateByUrl(ROUTE_PATH.STAKING);
+        }
         claimInProgressNotification = this.popupService.showProgressNotification();
       });
       this.popupService.showSuccessNotification();
