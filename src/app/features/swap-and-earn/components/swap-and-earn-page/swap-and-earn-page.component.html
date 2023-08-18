@@ -7,11 +7,12 @@
             (handleClick)="handleWithdraw($event)"
             [points]="points"
           ></app-points-container>
-          <p *ngIf="!points.participant && (currentUser$ | async)" class="not-member">
-            You are not a member of Swap to Earn program:(
-          </p>
-
-          <div class="tabs-container">
+          <div
+            class="tabs-container"
+            [ngClass]="{
+                  'full-rounded': currentTab === 'retrodrop',
+                }"
+          >
             <div class="tabs-container__switcher-container">
               <div
                 class="tabs-container__tab sen"
@@ -21,13 +22,25 @@
                 }"
                 (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
                 [tuiHint]="
-                  isAirdropAddressValid ? null : 'You are not a participant in the Swap to Earn.'
+                  isAirdropAddressValid ? null : 'You are not a member of Swap to Earn program.'
                 "
                 tuiHintAppearance="onDark"
               >
-                Swap&Earn
-                <span class="tab-decorator tab-decorator_right"></span>
+                <span class="tabs-container__tab-text">Swap&Earn</span>
               </div>
+              <span class="tab-delimiter"></span>
+              <span
+                class="tab-delimiter_right"
+                [ngClass]="{
+                  'active': currentTab === 'airdrop',
+                }"
+              ></span>
+              <span
+                class="tab-delimiter_left"
+                [ngClass]="{
+                  'active': currentTab === 'retrodrop',
+                }"
+              ></span>
               <div
                 class="tabs-container__tab retro"
                 [ngClass]="{
@@ -40,10 +53,15 @@
                 "
                 tuiHintAppearance="onDark"
               >
-                <span class="tab-decorator tab-decorator_left"></span>
-                Retrodrop
-                <span class="tab-decorator tab-decorator_right"></span>
+                <span class="tabs-container__tab-text">Retrodrop</span>
               </div>
+              <span class="tab-delimiter tab-delimiter_second"></span>
+              <span
+                class="tab-delimiter_right tab-delimiter_right-second"
+                [ngClass]="{
+                  'active': currentTab === 'retrodrop',
+                }"
+              ></span>
             </div>
             <tui-scrollbar>
               <ng-container *ngIf="currentTab === 'airdrop'">
@@ -53,6 +71,12 @@
                 <app-retrodrop-container *ngIf="isRetrodropAddressValid"></app-retrodrop-container>
               </ng-container>
             </tui-scrollbar>
+            <p
+              *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
+              class="not-member"
+            >
+              You are not a member of Swap to Earn program:(
+            </p>
           </div>
           <app-swap-and-earn-faq></app-swap-and-earn-faq>
         </ng-container>
