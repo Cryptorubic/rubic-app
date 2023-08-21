@@ -9,11 +9,8 @@
           ></app-points-container>
           <ng-container *ngIf="currentUser$ | async">
             <div
-              class="tabs-container"
-              [ngClass]="{
-                  'full-rounded': currentTab === 'retrodrop',
-                }"
-              *ngIf="points.participant || isRetrodropAddressValid"
+              class="tabs"
+              *ngIf="(points.participant && isAirdropAddressValid) || isRetrodropAddressValid"
             >
               <div class="tabs-container__switcher-container">
                 <div
@@ -30,19 +27,6 @@
                 >
                   <span class="tabs-container__tab-text">Swap&Earn</span>
                 </div>
-                <span class="tab-delimiter"></span>
-                <span
-                  class="tab-delimiter_right"
-                  [ngClass]="{
-                  'active': currentTab === 'airdrop',
-                }"
-                ></span>
-                <span
-                  class="tab-delimiter_left"
-                  [ngClass]="{
-                  'active': currentTab === 'retrodrop',
-                }"
-                ></span>
                 <div
                   class="tabs-container__tab retro"
                   [ngClass]="{
@@ -57,30 +41,30 @@
                 >
                   <span class="tabs-container__tab-text">Retrodrop</span>
                 </div>
-                <span class="tab-delimiter tab-delimiter_second"></span>
-                <span
-                  class="tab-delimiter_right tab-delimiter_right-second"
-                  [ngClass]="{
-                  'active': currentTab === 'retrodrop',
-                }"
-                ></span>
               </div>
-              <tui-scrollbar>
-                <ng-container *ngIf="currentTab === 'airdrop'">
-                  <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
-                </ng-container>
-                <ng-container *ngIf="currentTab === 'retrodrop'">
-                  <app-retrodrop-container
-                    *ngIf="isRetrodropAddressValid"
-                  ></app-retrodrop-container>
-                </ng-container>
-              </tui-scrollbar>
-              <p
-                *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
-                class="not-member"
+              <div
+                class="tabs-container"
+                [ngClass]="{
+                  'full-rounded': currentTab === 'retrodrop',
+                }"
               >
-                You are not a member of Swap to Earn program:(
-              </p>
+                <tui-scrollbar>
+                  <ng-container *ngIf="currentTab === 'airdrop'">
+                    <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
+                  </ng-container>
+                  <ng-container *ngIf="currentTab === 'retrodrop'">
+                    <app-retrodrop-container
+                      *ngIf="isRetrodropAddressValid"
+                    ></app-retrodrop-container>
+                  </ng-container>
+                </tui-scrollbar>
+                <p
+                  *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
+                  class="not-member"
+                >
+                  You are not a member of Swap to Earn program:(
+                </p>
+              </div>
             </div>
           </ng-container>
           <app-swap-and-earn-faq></app-swap-and-earn-faq>
