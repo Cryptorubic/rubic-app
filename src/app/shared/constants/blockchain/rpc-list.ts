@@ -135,5 +135,16 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/base',
     'https://base.blockpi.network/v1/rpc/public',
     'https://base-mainnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.BASE]: [
+    'https://mainnet.base.org',
+    'https://1rpc.io/base',
+    'https://base.blockpi.network/v1/rpc/public',
+    'https://base-mainnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.MANTLE]: [
+    'https://mantle-mainnet.public.blastapi.io',
+    'https://rpc.mantle.xyz',
+    'https://mantle.publicnode.com'
   ]
 };
