@@ -20,9 +20,7 @@
                     disabled: !isAirdropAddressValid
                   }"
                   (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
-                  [tuiHint]="
-                    isAirdropAddressValid ? null : 'You are not a member of Swap to Earn program.'
-                  "
+                  [tuiHint]="isAirdropAddressValid ? null : SwapToEarnHint"
                   tuiHintAppearance="onDark"
                   tuiHintDirection="top-right"
                 >
@@ -75,3 +73,16 @@
     </ng-container>
   </ng-container>
 </ng-container>
+
+<ng-template #SwapToEarnHint>
+  <div>
+    You are not currently a member of the SwapToEarn program. You can read more about the program
+    here:
+    <a
+      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
+      target="_blank"
+      rel="noreferrer"
+      >Link</a
+    >
+  </div>
+</ng-template>
