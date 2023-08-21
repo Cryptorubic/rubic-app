@@ -34,5 +34,6 @@ export class SwapAndEarnPageComponent {
 
   public switchTab(tab: 'airdrop' | 'retrodrop'): void {
     this.swapAndEarnStateService.currentTab = tab;
+    window.history.pushState(null, null, `/${tab === 'retrodrop' ? 'retrodrop' : 'swap-to-earn'}`);
   }
 }

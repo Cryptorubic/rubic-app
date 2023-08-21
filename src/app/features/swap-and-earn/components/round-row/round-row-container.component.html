@@ -17,22 +17,24 @@
           </span>
         </div>
 
-        <div
-          class="contest__claim-button"
-          *ngLet="buttonState$ | async as state"
-          (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
-          [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
-        >
-          <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
-          <img
-            *ngIf="isAlreadyClaimed && !isClosed"
-            class="contest__claim-button-icon"
-            src="assets/images/icons/exclamation-grey.svg"
-            alt="Hint"
-            [tuiHint]="hintTemplate"
-            tuiHintAppearance="onDark"
-          />
-        </div>
+        <tui-loader [showLoader]="(loading$ | async) && !isClosed" [overlay]="true">
+          <div
+            class="contest__claim-button"
+            *ngLet="buttonState$ | async as state"
+            (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
+            [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
+          >
+            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            <img
+              *ngIf="isAlreadyClaimed && !isClosed"
+              class="contest__claim-button-icon"
+              src="assets/images/icons/exclamation-grey.svg"
+              alt="Hint"
+              [tuiHint]="hintTemplate"
+              tuiHintAppearance="onDark"
+            />
+          </div>
+        </tui-loader>
       </div>
     </div>
 
@@ -74,6 +76,7 @@
                 tuiHintAppearance="onDark"
               ></div>
             </div>
+
             <div
               class="contest__claim-button contest__claim-button_mobile"
               *ngLet="buttonState$ | async as state"

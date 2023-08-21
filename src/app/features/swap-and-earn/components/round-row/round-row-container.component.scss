@@ -16,6 +16,7 @@
 
   &__container {
     display: flex;
+    gap: 10px;
   }
 
   &__info {
@@ -181,7 +182,7 @@
     align-items: center;
     justify-content: center;
     width: 155px;
-    margin-left: 10px;
+    height: 100%;
     padding: 0 6px;
 
     text-align: center;
@@ -205,6 +206,7 @@
 
     &_mobile {
       width: 100%;
+      height: 100%;
       margin: 0;
       padding: 18px 0;
 

@@ -7,7 +7,12 @@ import { SwapAndEarnPageComponent } from './components/swap-and-earn-page/swap-a
 import { SwapAndEarnRoutingModule } from '@features/swap-and-earn/swap-and-earn-routing.module';
 import { SwapAndEarnFaqComponent } from './components/swap-and-earn-faq/swap-and-earn-faq.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
-import { TuiHintModule, TuiScrollbarModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
 import { TuiInputModule } from '@taiga-ui/kit';
@@ -44,7 +49,8 @@ import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/com
     TuiInputModule,
     InlineSVGModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiLoaderModule
   ],
   providers: [
     ApproveScannerService,
