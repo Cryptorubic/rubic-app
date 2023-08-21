@@ -506,6 +506,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
   },
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
+    name: 'BaseSwap',
+    image: `${imageBasePath}baseswap.webp`,
+    color: '#000DBF'
+  },
   [ON_CHAIN_TRADE_TYPE.IZUMI]: {
     name: 'Izumi',
     image: `${imageBasePath}izumi.svg`,

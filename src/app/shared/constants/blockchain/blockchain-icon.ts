@@ -117,5 +117,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.png`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
   [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`,
-  [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.png`
+  [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.png`,
+  [BLOCKCHAIN_NAME.BASE]: `${basePath}base.png`
 };
