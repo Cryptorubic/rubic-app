@@ -54,7 +54,7 @@
     left: 0;
 
     display: flex;
-    gap: 20px;
+    gap: 0;
     width: 100%;
   }
 
@@ -70,21 +70,20 @@
     border-radius: 20px 20px 0 0;
     cursor: pointer;
 
-    //&.sen::before {
-    //  position: absolute;
-    //  bottom: -18px;
-    //  left: -1px;
-    //
-    //  width: 0;
-    //  height: 18px;
-    //
-    //  border-left: 1px solid var(--swap-and-earn-tabs-border);
-    //
-    //  content: '';
-    //}
-
     &.disabled {
       cursor: default;
+    }
+
+    &.retro.active::before {
+      left: -6px;
+
+      background: linear-gradient(90deg, var(--primary-background) 50%, var(--form-background) 50%);
+    }
+
+    &.sen.active::before {
+      right: -6px;
+
+      background: linear-gradient(-90deg, var(--primary-background) 50%, var(--form-background) 50%);
     }
 
     &.active {
@@ -92,6 +91,17 @@
       border-bottom: 2px solid var(--form-background);
 
       &::before {
+        position: absolute;
+        bottom: 20px;
+        z-index: 1;
+
+        width: 10px;
+        height: 22px;
+
+        content: '';
+      }
+
+      &::after {
         position: absolute;
         right: 0;
         bottom: 17px;
