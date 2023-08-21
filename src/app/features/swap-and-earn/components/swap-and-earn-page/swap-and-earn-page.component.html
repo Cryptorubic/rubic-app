@@ -13,7 +13,7 @@
               [ngClass]="{
                   'full-rounded': currentTab === 'retrodrop',
                 }"
-              *ngIf="(!points.participant && !isRetrodropAddressValid) || isRetrodropAddressValid"
+              *ngIf="points.participant || isRetrodropAddressValid"
             >
               <div class="tabs-container__switcher-container">
                 <div
