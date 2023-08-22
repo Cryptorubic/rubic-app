@@ -7,13 +7,6 @@
             (handleClick)="handleWithdraw($event)"
             [points]="points"
           ></app-points-container>
-          <ng-container *ngLet="debug$ | async as debug">
-            <div>address {{ debug.address }}</div>
-            <div>value {{ debug.value }}</div>
-            <div>index {{ debug.claims.index }}</div>
-            <div>amount {{ debug.claims.amount }}</div>
-            <div>root {{ debug.root }}</div>
-          </ng-container>
           <ng-container *ngIf="currentUser$ | async">
             <div
               class="drops"

@@ -24,26 +24,14 @@
   max-width: 826px;
   margin: 0 auto;
 
-  &__container {
-    position: relative;
+  &__tabs-container {
+    position: absolute;
+    top: -39px;
+    left: 0;
 
     display: flex;
-    flex-direction: column;
+    gap: 0;
     width: 100%;
-    height: 280px;
-    margin: 0 auto 40px;
-    padding: 13px;
-
-    font-weight: 700;
-    font-size: 16px;
-
-    background: var(--form-background);
-    border: 1px solid var(--transparent-line);
-    border-radius: 0 $border-radius-2 $border-radius-2 $border-radius-2;
-
-    &.full-rounded {
-      border-radius: $border-radius-2;
-    }
   }
 
   &__tab {
@@ -106,20 +94,32 @@
     }
   }
 
-  &__tabs-container {
-    position: absolute;
-    top: -39px;
-    left: 0;
+  &__container {
+    position: relative;
 
     display: flex;
-    gap: 0;
+    flex-direction: column;
     width: 100%;
+    height: 280px;
+    margin: 0 auto 40px;
+    padding: 13px;
+
+    font-weight: 700;
+    font-size: 16px;
+
+    background: var(--form-background);
+    border: 1px solid var(--transparent-line);
+    border-radius: 0 $border-radius-2 $border-radius-2 $border-radius-2;
+
+    &.full-rounded {
+      border-radius: $border-radius-2;
+    }
   }
 }
 
 @include b($mobile-md) {
-  .tabs-container {
-    &.full-rounded {
+  .drops {
+    &__container.full-rounded {
       border-radius: $border-radius-2 0 $border-radius-2 $border-radius-2;
     }
 
