@@ -13,7 +13,7 @@
           </div>
           <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
             <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-            {{ currentTab === 'retrodrop' ? '10' : isClosed ? '0' : (claimAmount$ | async) }} RBC
+            {{ claimAmount$ | async }} RBC
           </span>
         </div>
 
@@ -30,7 +30,7 @@
               class="contest__claim-button-icon"
               src="assets/images/icons/exclamation-grey.svg"
               alt="Hint"
-              [tuiHint]="hintTemplate"
+              [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
               tuiHintAppearance="onDark"
             />
           </div>
@@ -64,7 +64,7 @@
                 [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
               >
                 <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-                {{ currentTab === 'retrodrop' ? '10' : isClosed ? '0' : (claimAmount$ | async) }}
+                {{ claimAmount$ | async }}
                 RBC
               </span>
               <div
@@ -72,7 +72,7 @@
                 class="contest__claim-button-icon_mobile"
                 [ngClass]="{ 'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed }"
                 [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
-                [tuiHint]="hintTemplate"
+                [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
                 tuiHintAppearance="onDark"
               ></div>
             </div>
@@ -93,13 +93,11 @@
 </ng-container>
 
 <ng-template #hintTemplate>
-  <ng-container *ngIf="isAlreadyClaimed">
-    <ng-container *ngIf="isAirdropAddressValid$ | async">
-      Your tokens have been already claimed, please check your wallet.
-    </ng-container>
-    <ng-container *ngIf="isRetrodropAddressValid$ | async">
-      Your tokens have already been successfully staked. Please review the Staking tab for further
-      details.
-    </ng-container>
+  <ng-container *ngIf="isAirdropAddressValid$ | async">
+    Your tokens have been already claimed, please check your wallet.
+  </ng-container>
+  <ng-container *ngIf="isRetrodropAddressValid$ | async">
+    Your tokens have already been successfully staked. Please review the Staking tab for further
+    details.
   </ng-container>
 </ng-template>

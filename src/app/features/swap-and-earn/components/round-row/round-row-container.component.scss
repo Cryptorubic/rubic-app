@@ -244,6 +244,8 @@
         &_disabled {
           background: #484848;
 
+          pointer-events: none;
+
           ::ng-deep svg path {
             fill: #909090;
           }
