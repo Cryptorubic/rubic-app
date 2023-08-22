@@ -7,6 +7,12 @@
             (handleClick)="handleWithdraw($event)"
             [points]="points"
           ></app-points-container>
+          <div>
+            Общий {{ (points.participant && isAirdropAddressValid) || isRetrodropAddressValid }}
+          </div>
+          <div>participant {{ points.participant }}</div>
+          <div>isAirdropAddressValid {{ isAirdropAddressValid }}</div>
+          <div>isRetrodropAddressValid {{ isRetrodropAddressValid }}</div>
           <ng-container *ngIf="currentUser$ | async">
             <div
               class="tabs"
@@ -33,10 +39,9 @@
                     disabled: !isRetrodropAddressValid
                   }"
                   (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
-                  [tuiHint]="
-                    isRetrodropAddressValid ? null : 'You are not a participant in the retrodrop.'
-                  "
+                  [tuiHint]="isRetrodropAddressValid ? null : RetrodropHint"
                   tuiHintAppearance="onDark"
+                  tuiHintDirection="top-right"
                 >
                   <span class="tabs-container__tab-text">Retrodrop</span>
                 </div>
@@ -86,3 +91,4 @@
     >
   </div>
 </ng-template>
+<ng-template #RetrodropHint>You are not a participant in the retrodrop.</ng-template>
