@@ -137,8 +137,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://base-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.BASE]: [
-    'https://mainnet.base.org',
     'https://1rpc.io/base',
+    'https://mainnet.base.org',
     'https://base.blockpi.network/v1/rpc/public',
     'https://base-mainnet.public.blastapi.io'
   ],
