@@ -18,6 +18,8 @@ export class SwapAndEarnPageComponent {
 
   public readonly isAirdropAddressValid$ = this.swapAndEarnFacadeService.isAirdropAddressValid$;
 
+  public readonly debug$ = this.swapAndEarnFacadeService.debug$;
+
   public readonly isRetrodropAddressValid$ = this.swapAndEarnFacadeService.isRetrodropAddressValid$;
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;

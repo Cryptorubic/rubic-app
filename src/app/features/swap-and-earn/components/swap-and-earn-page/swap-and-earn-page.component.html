@@ -7,20 +7,21 @@
             (handleClick)="handleWithdraw($event)"
             [points]="points"
           ></app-points-container>
-          <div>
-            Общий {{ (points.participant && isAirdropAddressValid) || isRetrodropAddressValid }}
-          </div>
-          <div>participant {{ points.participant }}</div>
-          <div>isAirdropAddressValid {{ isAirdropAddressValid }}</div>
-          <div>isRetrodropAddressValid {{ isRetrodropAddressValid }}</div>
+          <ng-container *ngLet="debug$ | async as debug">
+            <div>address {{ debug.address }}</div>
+            <div>value {{ debug.value }}</div>
+            <div>index {{ debug.claims.index }}</div>
+            <div>amount {{ debug.claims.amount }}</div>
+            <div>root {{ debug.root }}</div>
+          </ng-container>
           <ng-container *ngIf="currentUser$ | async">
             <div
-              class="tabs"
+              class="drops"
               *ngIf="(points.participant && isAirdropAddressValid) || isRetrodropAddressValid"
             >
-              <div class="tabs-container__switcher-container">
+              <div class="drops__tabs-container">
                 <div
-                  class="tabs-container__tab sen"
+                  class="drops__tab swap-to-earn-tab"
                   [ngClass]="{
                     active: currentTab === 'airdrop',
                     disabled: !isAirdropAddressValid
@@ -30,10 +31,10 @@
                   tuiHintAppearance="onDark"
                   tuiHintDirection="top-right"
                 >
-                  <span class="tabs-container__tab-text">Swap&Earn</span>
+                  <span class="drops__tab-text">Swap&Earn</span>
                 </div>
                 <div
-                  class="tabs-container__tab retro"
+                  class="drops__tab retrodrop-tab"
                   [ngClass]="{
                     active: currentTab === 'retrodrop',
                     disabled: !isRetrodropAddressValid
@@ -43,11 +44,11 @@
                   tuiHintAppearance="onDark"
                   tuiHintDirection="top-right"
                 >
-                  <span class="tabs-container__tab-text">Retrodrop</span>
+                  <span class="drops__tab-text">Retrodrop</span>
                 </div>
               </div>
               <div
-                class="tabs-container"
+                class="drops__container"
                 [ngClass]="{
                   'full-rounded': currentTab === 'retrodrop',
                 }"

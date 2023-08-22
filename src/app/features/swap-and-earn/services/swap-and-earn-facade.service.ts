@@ -41,6 +41,19 @@ export class SwapAndEarnFacadeService {
 
   public readonly claimedTokens$ = this._claimedTokens$.asObservable();
 
+  private readonly _debug$ = new BehaviorSubject({
+    address: '',
+    value: false,
+    claims: {
+      index: 0,
+      amount: '',
+      proof: []
+    },
+    root: ''
+  });
+
+  public readonly debug$ = this._debug$.asObservable();
+
   constructor(
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -107,6 +120,15 @@ export class SwapAndEarnFacadeService {
   }
 
   private isRetrodropValidAddress(userAddress: string): void {
+    const xxx = Object.keys(sourceRetrodropMerkle.claims).some(
+      address => userAddress === address.toLowerCase()
+    );
+    this._debug$.next({
+      address: userAddress,
+      value: xxx,
+      claims: sourceRetrodropMerkle.claims['0xB4f8806D5Fe0d1e3c36d277DA823A729090dFB66'],
+      root: sourceRetrodropMerkle.merkleRoot
+    });
     this._isRetrodropAddressValid$.next(
       Object.keys(sourceRetrodropMerkle.claims).some(
         address => userAddress === address.toLowerCase()
