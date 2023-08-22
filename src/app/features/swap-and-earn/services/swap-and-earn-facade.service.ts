@@ -121,7 +121,7 @@ export class SwapAndEarnFacadeService {
 
   private isRetrodropValidAddress(userAddress: string): void {
     const xxx = Object.keys(sourceRetrodropMerkle.claims).some(
-      address => userAddress === address.toLowerCase()
+      address => userAddress.toLowerCase() === address.toLowerCase()
     );
     this._debug$.next({
       address: userAddress,
@@ -131,7 +131,7 @@ export class SwapAndEarnFacadeService {
     });
     this._isRetrodropAddressValid$.next(
       Object.keys(sourceRetrodropMerkle.claims).some(
-        address => userAddress === address.toLowerCase()
+        address => userAddress.toLowerCase() === address.toLowerCase()
       )
     );
   }
