@@ -1,0 +1,103 @@
+<ng-container *ngLet="isAlreadyClaimed as isAlreadyClaimed">
+  <ng-container *ngLet="currentTab$ | async as currentTab">
+    <div class="contest contest_desktop" *ngIf="!isMobile">
+      <div class="contest__container">
+        <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
+          <div class="contest__left">
+            <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
+              >Round #{{ round }}</span
+            >
+            <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
+              {{ claimData }}
+            </div>
+          </div>
+          <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
+            <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
+            {{ claimAmount$ | async }} RBC
+          </span>
+        </div>
+
+        <tui-loader [showLoader]="(loading$ | async) && !isClosed" [overlay]="true">
+          <div
+            class="contest__claim-button"
+            *ngLet="buttonState$ | async as state"
+            (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
+            [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
+          >
+            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            <img
+              *ngIf="isAlreadyClaimed && !isClosed"
+              class="contest__claim-button-icon"
+              src="assets/images/icons/exclamation-grey.svg"
+              alt="Hint"
+              [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
+              tuiHintAppearance="onDark"
+            />
+          </div>
+        </tui-loader>
+      </div>
+    </div>
+
+    <div class="contest contest_mobile" *ngIf="isMobile">
+      <div class="contest__container contest__container_mobile">
+        <div
+          class="contest__info contest__info_mobile"
+          [ngClass]="{ contest__info_mobile_disabled: isAlreadyClaimed }"
+        >
+          <div class="contest__left contest__left_mobile">
+            <span
+              class="contest__round contest__round_mobile"
+              [ngClass]="{ contest__round_mobile_disabled: isAlreadyClaimed }"
+              >Round #{{ round }}</span
+            >
+            <div
+              class="contest__date contest__date_mobile"
+              [ngClass]="{ contest__date_mobile_disabled: isAlreadyClaimed }"
+            >
+              {{ claimData }}
+            </div>
+          </div>
+          <div style="width: 100%">
+            <div class="contest__amount-wrapper contest__amount-wrapper_mobile">
+              <span
+                class="contest__amount contest__amount_mobile"
+                [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
+              >
+                <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
+                {{ claimAmount$ | async }}
+                RBC
+              </span>
+              <div
+                *ngIf="!isClosed"
+                class="contest__claim-button-icon_mobile"
+                [ngClass]="{ 'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed }"
+                [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
+                [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
+                tuiHintAppearance="onDark"
+              ></div>
+            </div>
+
+            <div
+              class="contest__claim-button contest__claim-button_mobile"
+              *ngLet="buttonState$ | async as state"
+              (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
+              [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
+            >
+              <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<ng-template #hintTemplate>
+  <ng-container *ngIf="isAirdropAddressValid$ | async">
+    Your tokens have been already claimed, please check your wallet.
+  </ng-container>
+  <ng-container *ngIf="isRetrodropAddressValid$ | async">
+    Your tokens have already been successfully staked. Please review the Staking tab for further
+    details.
+  </ng-container>
+</ng-template>
