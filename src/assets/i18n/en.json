@@ -693,8 +693,10 @@
     "button": {
       "login": "Connect Wallet",
       "claim": "Claim",
+      "stake": "Stake",
       "claimed": "Claimed",
-      "wrongAddressError": "Enter another address",
+      "staked": "Staked",
+      "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
       "changeNetwork": "Change Network to Arbitrum",
       "incorrectAddressError": "Entered address is incorrect"

@@ -32,11 +32,11 @@ export class PointsContainerComponent {
 
   public getButtonHint(): string {
     if (this.points.requested_to_withdraw > 0 && !(this.points.confirmed >= 300)) {
-      return 'The withdrawal is already in progress. The minimum amount to withdraw is 300 RBC.';
+      return 'The withdrawal is already in progress. Minimum withdrawal: 300 RBC.';
     }
 
     if (this.points.requested_to_withdraw === 0 && !(this.points.confirmed >= 300)) {
-      return 'The minimum amount to withdraw is 300 RBC.';
+      return 'Minimum withdrawal: 300 RBC.';
     }
 
     return null;

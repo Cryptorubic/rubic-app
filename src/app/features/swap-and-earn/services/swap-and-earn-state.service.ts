@@ -6,6 +6,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { Points } from '@features/swap-and-earn/models/points';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';
+import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -17,6 +18,12 @@ export class SwapAndEarnStateService {
 
   public readonly points$ = this._points$.asObservable();
 
+  private readonly _currentTab$ = new BehaviorSubject<SenTab>(
+    SwapAndEarnStateService.setDefaultTab()
+  );
+
+  public readonly currentTab$ = this._currentTab$.asObservable();
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpService,
@@ -25,6 +32,18 @@ export class SwapAndEarnStateService {
   ) {
     this.handleAddressChange();
     this.fetchWorkingStatus();
+  }
+
+  public get currentTab(): SenTab {
+    return this._currentTab$.getValue();
+  }
+
+  public set currentTab(tab: SenTab) {
+    this._currentTab$.next(tab);
+  }
+
+  private static setDefaultTab(): SenTab {
+    return window.location.pathname.includes('retrodrop') ? 'retrodrop' : 'airdrop';
   }
 
   private fetchWorkingStatus(): void {

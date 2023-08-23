@@ -7,27 +7,38 @@ import { SwapAndEarnPageComponent } from './components/swap-and-earn-page/swap-a
 import { SwapAndEarnRoutingModule } from '@features/swap-and-earn/swap-and-earn-routing.module';
 import { SwapAndEarnFaqComponent } from './components/swap-and-earn-faq/swap-and-earn-faq.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
-import { TuiHintModule, TuiScrollbarModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { AirdropFacadeService } from '@features/swap-and-earn/services/airdrop/airdrop-facade.service';
-import { AirdropPopupService } from '@features/swap-and-earn/services/airdrop/airdrop-popup.service';
-import { AirdropWeb3Service } from '@features/swap-and-earn/services/airdrop/airdrop-web3.service';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop/airdrop-merkle.service';
+import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-and-earn-popup.service';
+import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
 import { ClaimContainerComponent } from '@features/swap-and-earn/components/claim-container/claim-container.component';
-import { ClaimContestContainerComponent } from '@features/swap-and-earn/components/claim-contest/claim-contest-container.component';
+import { RetrodropContainerComponent } from 'src/app/features/swap-and-earn/components/retrodrop-container/retrodrop-container.component';
+import { RoundRowContainerComponent } from '@features/swap-and-earn/components/round-row/round-row-container.component';
+import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
+import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
+import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
+import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 
 @NgModule({
   declarations: [
     SwapAndEarnPageComponent,
     SwapAndEarnFaqComponent,
     PointsContainerComponent,
-    ClaimContestContainerComponent,
+    RoundRowContainerComponent,
     ClaimContainerComponent,
     DifferentAddressesModalComponent,
-    SuccessClaimModalComponent
+    SuccessClaimModalComponent,
+    RetrodropStakeModalComponent,
+    RetrodropContainerComponent,
+    RetrodropStakeModalComponent
   ],
   imports: [
     CommonModule,
@@ -38,14 +49,16 @@ import { ClaimContestContainerComponent } from '@features/swap-and-earn/componen
     TuiInputModule,
     InlineSVGModule,
     TuiTextfieldControllerModule,
-    TuiScrollbarModule
+    TuiScrollbarModule,
+    TuiLoaderModule
   ],
   providers: [
     ApproveScannerService,
-    AirdropFacadeService,
-    AirdropPopupService,
-    AirdropWeb3Service,
-    AirdropMerkleService
+    SwapAndEarnPopupService,
+    SwapAndEarnWeb3Service,
+    SwapAndEarnFacadeService,
+    AirdropMerkleService,
+    RetrodropMerkleService
   ]
 })
 export class SwapAndEarnModule {}
