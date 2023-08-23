@@ -16,6 +16,7 @@ import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-a
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RetrodropStakeModalComponent } from '@features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
+import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
 
 type ButtonLabel =
   | 'login'
@@ -155,7 +156,7 @@ export class RoundRowContainerComponent {
   }
 
   private getButtonKey([tab, isValid, user, network, isAlreadyClaimed]: [
-    'airdrop' | 'retrodrop',
+    SenTab,
     boolean,
     UserInterface,
     BlockchainName,

@@ -9,10 +9,35 @@ interface SourceNode {
   balance: string;
 }
 
-export abstract class SwapAndEarnMerkleService {
-  protected readonly merkleTreeSource: { [Key: string]: SourceNode };
+interface Claim {
+  [key: string]: {
+    index: number;
+    amount: string;
+    proof: string[];
+  };
+}
 
-  protected readonly merkleTree: BalanceTree;
+export abstract class SwapAndEarnMerkleService {
+  protected constructor(protected readonly claims: Claim) {}
+
+  private readonly merkleTreeSource: { [Key: string]: SourceNode } = Object.entries(
+    this.claims
+  ).reduce((acc, node) => {
+    return {
+      ...acc,
+      [node[0].toLowerCase()]: {
+        index: node[1].index,
+        balance: node[1].amount
+      }
+    };
+  }, {});
+
+  private readonly merkleTree = new BalanceTree(
+    Object.entries(this.merkleTreeSource).map(([address, { balance }]) => ({
+      account: address,
+      amount: EthersBigNumber.from(balance)
+    }))
+  );
 
   @tuiPure
   public getProofByAddress(address: string): string[] | null {

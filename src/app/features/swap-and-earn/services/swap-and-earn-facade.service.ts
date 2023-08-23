@@ -78,10 +78,10 @@ export class SwapAndEarnFacadeService {
         Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
       );
 
-      this.isAirdropValidAddress(userAddress);
-      this.isRetrodropValidAddress(userAddress);
+      this.setAirdropValidAddress(userAddress);
+      this.setRetrodropValidAddress(userAddress);
 
-      this.isAlreadyClaimed(userAddress);
+      this.setAlreadyClaimed(userAddress);
     });
   }
 
@@ -93,20 +93,20 @@ export class SwapAndEarnFacadeService {
         Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
       );
 
-      this.isAirdropValidAddress(userAddress);
-      this.isRetrodropValidAddress(userAddress);
+      this.setAirdropValidAddress(userAddress);
+      this.setRetrodropValidAddress(userAddress);
 
-      this.isAlreadyClaimed(userAddress);
+      this.setAlreadyClaimed(userAddress);
     });
   }
 
-  private isAirdropValidAddress(userAddress: string): void {
+  private setAirdropValidAddress(userAddress: string): void {
     this._isAirdropAddressValid$.next(
       Object.keys(sourceAirdropMerkle.claims).some(address => userAddress === address.toLowerCase())
     );
   }
 
-  private isRetrodropValidAddress(userAddress: string): void {
+  private setRetrodropValidAddress(userAddress: string): void {
     this._isRetrodropAddressValid$.next(
       Object.keys(sourceRetrodropMerkle.claims).some(
         address => userAddress === address.toLowerCase()
@@ -114,7 +114,7 @@ export class SwapAndEarnFacadeService {
     );
   }
 
-  private async isAlreadyClaimed(userAddress: string): Promise<void> {
+  private async setAlreadyClaimed(userAddress: string): Promise<void> {
     const node = this.merkleService.getNodeByAddress(userAddress);
     try {
       await this.web3Service.checkClaimed(node.index);
@@ -150,7 +150,7 @@ export class SwapAndEarnFacadeService {
         claimInProgressNotification = this.popupService.showProgressNotification();
       });
       this.popupService.showSuccessNotification();
-      this.isAlreadyClaimed(address);
+      this.setAlreadyClaimed(address);
     } catch (err) {
       this.popupService.handleError(err);
     } finally {

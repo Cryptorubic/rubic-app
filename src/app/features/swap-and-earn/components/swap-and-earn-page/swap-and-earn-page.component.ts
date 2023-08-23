@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
+import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
 
 @Component({
   selector: 'app-swap-and-earn-page',
@@ -32,7 +33,7 @@ export class SwapAndEarnPageComponent {
     await this.swapAndEarnStateService.claimPoints(points);
   }
 
-  public switchTab(tab: 'airdrop' | 'retrodrop'): void {
+  public switchTab(tab: SenTab): void {
     this.swapAndEarnStateService.currentTab = tab;
     window.history.pushState(null, null, `/${tab === 'retrodrop' ? 'retrodrop' : 'swap-to-earn'}`);
   }
