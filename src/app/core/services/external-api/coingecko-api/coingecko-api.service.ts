@@ -27,8 +27,7 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ZK_SYNC,
   BLOCKCHAIN_NAME.OPTIMISM,
   BLOCKCHAIN_NAME.PULSECHAIN,
-  BLOCKCHAIN_NAME.LINEA,
-  BLOCKCHAIN_NAME.BASE
+  BLOCKCHAIN_NAME.LINEA
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -66,8 +65,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-      [BLOCKCHAIN_NAME.LINEA]: 'linea',
-      [BLOCKCHAIN_NAME.BASE]: 'base'
+      [BLOCKCHAIN_NAME.LINEA]: 'linea'
     };
 
     this.tokenBlockchainId = {
@@ -92,8 +90,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-      [BLOCKCHAIN_NAME.LINEA]: 'linea',
-      [BLOCKCHAIN_NAME.BASE]: 'base'
+      [BLOCKCHAIN_NAME.LINEA]: 'linea'
     };
   }
 
