@@ -18,7 +18,7 @@ interface Claim {
 }
 
 export abstract class SwapAndEarnMerkleService {
-  protected constructor(protected readonly claims: Claim) {}
+  protected constructor(private readonly claims: Claim) {}
 
   private readonly merkleTreeSource: { [Key: string]: SourceNode } = Object.entries(
     this.claims
