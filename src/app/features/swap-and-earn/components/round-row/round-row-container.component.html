@@ -13,7 +13,14 @@
           </div>
           <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
             <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-            {{ claimAmount$ | async }} RBC
+            {{
+              currentTab === 'retrodrop' && isClosed
+                ? '-.-'
+                : isClosed
+                ? '0'
+                : (claimAmount$ | async)
+            }}
+            RBC
           </span>
         </div>
 
@@ -24,7 +31,13 @@
             (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
             [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
           >
-            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            <span>{{
+              currentTab === 'retrodrop' && isClosed
+                ? 'Soon'
+                : isClosed
+                ? 'Closed'
+                : (state.translation | translate)
+            }}</span>
             <img
               *ngIf="isAlreadyClaimed && !isClosed"
               class="contest__claim-button-icon"
@@ -64,7 +77,13 @@
                 [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
               >
                 <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-                {{ claimAmount$ | async }}
+                {{
+                  currentTab === 'retrodrop' && isClosed
+                    ? '-.-'
+                    : isClosed
+                    ? '0'
+                    : (claimAmount$ | async)
+                }}
                 RBC
               </span>
               <div
@@ -83,7 +102,13 @@
               (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
               [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
             >
-              <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+              <span>{{
+                currentTab === 'retrodrop' && isClosed
+                  ? 'Soon'
+                  : isClosed
+                  ? 'Closed'
+                  : (state.translation | translate)
+              }}</span>
             </div>
           </div>
         </div>
