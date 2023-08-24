@@ -38,5 +38,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
   [BLOCKCHAIN_NAME.LINEA]: 'linea',
-  [BLOCKCHAIN_NAME.BASE]: 'base'
+  [BLOCKCHAIN_NAME.BASE]: 'base',
+  [BLOCKCHAIN_NAME.MANTLE]: 'mantle'
 };

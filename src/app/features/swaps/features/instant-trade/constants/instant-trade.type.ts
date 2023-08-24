@@ -13,7 +13,8 @@ const nonOnChainNetworks = [
   BLOCKCHAIN_NAME.ONTOLOGY,
   BLOCKCHAIN_NAME.THETA,
   BLOCKCHAIN_NAME.XDC,
-  BLOCKCHAIN_NAME.BITCOIN_CASH
+  BLOCKCHAIN_NAME.BITCOIN_CASH,
+  BLOCKCHAIN_NAME.MANTLE
 ] as const;
 type NonOnChainNetworks = (typeof nonOnChainNetworks)[number];
 

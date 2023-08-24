@@ -13,6 +13,7 @@ import {
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { InstantTradeService } from '@features/swaps/features/instant-trade/services/instant-trade-service/instant-trade.service';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName,
@@ -281,7 +282,8 @@ export class InstantTradeBottomFormComponent implements OnInit {
     if (
       !this.isSupportedOnChainNetwork(form.fromBlockchain) &&
       this.fromAmount &&
-      this.fromAmount.gt(0)
+      this.fromAmount.gt(0) &&
+      form.fromBlockchain !== BLOCKCHAIN_NAME.MANTLE
     ) {
       this.errorText = 'Chosen network is not supported for instant trades';
     } else {
