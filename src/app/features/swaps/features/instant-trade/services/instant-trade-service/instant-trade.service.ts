@@ -196,6 +196,24 @@ export class InstantTradeService extends TradeCalculationService {
         ? false
         : this.platformConfigurationService.useOnChainProxy;
 
+    const calculationStartTime = Date.now();
+    this.sdkService.instantTrade
+      .calculateTradeReactively(fromSdkCompatibleToken, fromAmount, toSdkCompatibleToken, {
+        timeout: 10000,
+        gasCalculation: calculateGas ? 'calculate' : 'disabled',
+        zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
+        slippageTolerance,
+        disableMultihops,
+        deadlineMinutes,
+        useProxy
+      })
+      .subscribe(trade =>
+        console.log({
+          ...trade,
+          calculationTime: Date.now() - calculationStartTime
+        })
+      );
+
     return this.sdkService.instantTrade.calculateTrade(
       fromSdkCompatibleToken,
       fromAmount,
