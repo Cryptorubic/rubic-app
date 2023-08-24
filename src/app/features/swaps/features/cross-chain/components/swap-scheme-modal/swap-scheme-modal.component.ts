@@ -403,6 +403,6 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   public async navigateToSwapAndEarn(): Promise<void> {
     this.context.completeWith(false);
 
-    await this.router.navigateByUrl(ROUTE_PATH.SWAP_AND_EARN);
+    await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
   }
 }
