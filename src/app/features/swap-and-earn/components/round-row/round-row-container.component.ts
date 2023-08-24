@@ -52,8 +52,6 @@ export class RoundRowContainerComponent {
 
   @Input() public readonly isClosed: boolean;
 
-  @Input() public readonly isSoon: boolean;
-
   public readonly claimAmount$ = this.swapAndEarnFacadeService.claimedTokens$;
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
