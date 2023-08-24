@@ -3,7 +3,7 @@ import { EvmWeb3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/typed-web3-
 import { SwapAndEarnMerkleService } from '@features/swap-and-earn/services/swap-and-earn-merkle.service';
 
 export function checkAddressValidity(merkleService: SwapAndEarnMerkleService): ValidatorFn {
-  return (control: AbstractControl<string | null>): ValidationErrors | null => {
+  return async (control: AbstractControl<string | null>): Promise<ValidationErrors | null> => {
     const address: string | null = control.value;
     if (!address) {
       return { emptyAddressError: true };
@@ -14,7 +14,7 @@ export function checkAddressValidity(merkleService: SwapAndEarnMerkleService): V
       return { incorrectAddressError: true };
     }
 
-    const proof = merkleService.getProofByAddress(EvmWeb3Pure.toChecksumAddress(address));
+    const proof = await merkleService.getProofByAddress(EvmWeb3Pure.toChecksumAddress(address));
 
     return proof ? null : { wrongAddressError: true };
   };

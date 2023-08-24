@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Component({
   selector: 'app-swap-and-earn-page',
@@ -26,7 +28,8 @@ export class SwapAndEarnPageComponent {
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService,
-    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService
+    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService,
+    @Inject(WINDOW) private window: RubicWindow
   ) {}
 
   public async handleWithdraw(points: number): Promise<void> {
@@ -35,6 +38,10 @@ export class SwapAndEarnPageComponent {
 
   public switchTab(tab: SenTab): void {
     this.swapAndEarnStateService.currentTab = tab;
-    window.history.pushState(null, null, `/${tab === 'retrodrop' ? 'retrodrop' : 'swap-to-earn'}`);
+    this.window.history.pushState(
+      null,
+      null,
+      `/${tab === 'retrodrop' ? 'retrodrop' : 'swap-to-earn'}`
+    );
   }
 }
