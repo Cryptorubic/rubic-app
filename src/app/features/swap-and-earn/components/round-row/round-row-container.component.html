@@ -2,18 +2,29 @@
   <ng-container *ngLet="currentTab$ | async as currentTab">
     <div class="contest contest_desktop" *ngIf="!isMobile">
       <div class="contest__container">
-        <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
+        <div
+          class="contest__info"
+          [ngClass]="{ contest__info_disabled: isAlreadyClaimed || isSoon }"
+        >
           <div class="contest__left">
-            <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
+            <span
+              class="contest__round"
+              [ngClass]="{ contest__round_disabled: isAlreadyClaimed || isSoon }"
               >Round #{{ round }}</span
             >
-            <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
+            <div
+              class="contest__date"
+              [ngClass]="{ contest__date_disabled: isAlreadyClaimed || isSoon }"
+            >
               {{ claimData }}
             </div>
           </div>
-          <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
+          <span
+            class="contest__amount"
+            [ngClass]="{ contest__amount_disabled: isAlreadyClaimed || isSoon }"
+          >
             <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-            {{ claimAmount$ | async }} RBC
+            {{ isClosed || isSoon ? '-.-' : (claimAmount$ | async) }} RBC
           </span>
         </div>
 
@@ -21,16 +32,18 @@
           <div
             class="contest__claim-button"
             *ngLet="buttonState$ | async as state"
-            (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
-            [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
+            (click)="!isAlreadyClaimed || !isSoon ? handleClick(state.label) : null"
+            [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed || isSoon }"
           >
-            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            <span>{{
+              isSoon ? 'Soon' : isClosed ? 'Closed' : (state.translation | translate)
+            }}</span>
             <img
               *ngIf="isAlreadyClaimed && !isClosed"
               class="contest__claim-button-icon"
               src="assets/images/icons/exclamation-grey.svg"
               alt="Hint"
-              [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
+              [tuiHint]="isAlreadyClaimed || isSoon ? hintTemplate : null"
               tuiHintAppearance="onDark"
             />
           </div>
@@ -42,17 +55,17 @@
       <div class="contest__container contest__container_mobile">
         <div
           class="contest__info contest__info_mobile"
-          [ngClass]="{ contest__info_mobile_disabled: isAlreadyClaimed }"
+          [ngClass]="{ contest__info_mobile_disabled: isAlreadyClaimed || isSoon }"
         >
           <div class="contest__left contest__left_mobile">
             <span
               class="contest__round contest__round_mobile"
-              [ngClass]="{ contest__round_mobile_disabled: isAlreadyClaimed }"
+              [ngClass]="{ contest__round_mobile_disabled: isAlreadyClaimed || isSoon }"
               >Round #{{ round }}</span
             >
             <div
               class="contest__date contest__date_mobile"
-              [ngClass]="{ contest__date_mobile_disabled: isAlreadyClaimed }"
+              [ngClass]="{ contest__date_mobile_disabled: isAlreadyClaimed || isSoon }"
             >
               {{ claimData }}
             </div>
@@ -61,18 +74,20 @@
             <div class="contest__amount-wrapper contest__amount-wrapper_mobile">
               <span
                 class="contest__amount contest__amount_mobile"
-                [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
+                [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed || isSoon }"
               >
                 <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-                {{ claimAmount$ | async }}
+                {{ isClosed || isSoon ? '-.-' : (claimAmount$ | async) }}
                 RBC
               </span>
               <div
-                *ngIf="!isClosed"
+                *ngIf="!isClosed || !isSoon"
                 class="contest__claim-button-icon_mobile"
-                [ngClass]="{ 'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed }"
+                [ngClass]="{
+                  'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed || !isSoon
+                }"
                 [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
-                [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
+                [tuiHint]="isAlreadyClaimed || isSoon ? hintTemplate : null"
                 tuiHintAppearance="onDark"
               ></div>
             </div>
@@ -80,10 +95,12 @@
             <div
               class="contest__claim-button contest__claim-button_mobile"
               *ngLet="buttonState$ | async as state"
-              (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
+              (click)="!isAlreadyClaimed || !isSoon ? handleClick(state.label) : null"
               [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
             >
-              <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+              <span>{{
+                isSoon ? 'Soon' : isClosed ? 'Closed' : (state.translation | translate)
+              }}</span>
             </div>
           </div>
         </div>
