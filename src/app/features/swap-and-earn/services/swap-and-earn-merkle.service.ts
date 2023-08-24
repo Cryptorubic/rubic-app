@@ -13,7 +13,6 @@ interface Claim {
   [key: string]: {
     index: number;
     amount: string;
-    proof: string[];
   };
 }
 
