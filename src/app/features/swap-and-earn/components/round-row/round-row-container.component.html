@@ -43,7 +43,7 @@
               class="contest__claim-button-icon"
               src="assets/images/icons/exclamation-grey.svg"
               alt="Hint"
-              [tuiHint]="isAlreadyClaimed || isSoon ? hintTemplate : null"
+              [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
               tuiHintAppearance="onDark"
             />
           </div>
@@ -87,7 +87,7 @@
                   'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed || !isSoon
                 }"
                 [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
-                [tuiHint]="isAlreadyClaimed || isSoon ? hintTemplate : null"
+                [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
                 tuiHintAppearance="onDark"
               ></div>
             </div>
