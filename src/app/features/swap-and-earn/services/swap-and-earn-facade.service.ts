@@ -62,15 +62,17 @@ export class SwapAndEarnFacadeService {
     private readonly apiService: SwapAndEarnApiService
   ) {
     this.fetchTrees();
-    this.subscribeOnWalletChange();
-    this.subscribeOnTabChange();
+    this.subscribeOnChange();
   }
 
-  private subscribeOnWalletChange(): void {
+  private subscribeOnChange(): void {
     this.authService.currentUser$
       .pipe(
-        combineLatestWith(this.treesLoading$.pipe(first(loading => loading === false))),
-        switchMap(([user]) => {
+        combineLatestWith(
+          this.treesLoading$.pipe(first(loading => loading === false)),
+          this.stateService.currentTab$
+        ),
+        switchMap(([user, _loading, tab]) => {
           const userAddress = user?.address?.toLowerCase();
 
           if (!user || !userAddress) {
@@ -78,31 +80,15 @@ export class SwapAndEarnFacadeService {
             return;
           }
 
-          const tree =
-            this.stateService.currentTab === 'retrodrop' ? this.retrodropTree : this.airdropTree;
-          const userClaimAmount = this.merkleService.getAmountByAddress(userAddress, tree);
-
-          this._claimedTokens$.next(Web3Pure.fromWei(userClaimAmount.toString()));
-
-          this.setAirdropValidAddress(userAddress, tree);
-          this.setRetrodropValidAddress(userAddress, tree);
-
-          return this.setAlreadyClaimed(userAddress, tree);
-        })
-      )
-      .subscribe();
-  }
-
-  private subscribeOnTabChange(): void {
-    this.stateService.currentTab$
-      .pipe(
-        combineLatestWith(this.treesLoading$.pipe(first(loading => loading === false))),
-        switchMap(([tab]) => {
-          const userAddress = this.authService.userAddress.toLowerCase();
           const tree = tab === 'retrodrop' ? this.retrodropTree : this.airdropTree;
 
           const userClaimAmount = this.merkleService.getAmountByAddress(userAddress, tree);
-          this._claimedTokens$.next(Web3Pure.fromWei(userClaimAmount.toString()));
+
+          const claimedAmount = Web3Pure.fromWei(userClaimAmount.toString());
+          this._claimedTokens$.next(claimedAmount);
+
+          this.setAirdropValidAddress(userAddress, this.airdropTree);
+          this.setRetrodropValidAddress(userAddress, this.retrodropTree);
 
           return this.setAlreadyClaimed(userAddress, tree);
         })
