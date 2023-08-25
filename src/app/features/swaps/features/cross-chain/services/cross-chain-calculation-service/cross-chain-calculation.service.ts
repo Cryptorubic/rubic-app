@@ -93,9 +93,11 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
+    const swapWithProxy = !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
+
     return (
-      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-      !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)
+      (calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW && swapWithProxy) ||
+      swapWithProxy
     );
   }
 
