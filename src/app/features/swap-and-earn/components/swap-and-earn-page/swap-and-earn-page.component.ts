@@ -25,6 +25,8 @@ export class SwapAndEarnPageComponent {
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
 
+  public readonly treesLoading$ = this.swapAndEarnFacadeService.treesLoading$;
+
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
     private readonly authService: AuthService,

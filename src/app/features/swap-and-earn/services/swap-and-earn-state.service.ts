@@ -7,6 +7,8 @@ import { Points } from '@features/swap-and-earn/models/points';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -18,21 +20,9 @@ export class SwapAndEarnStateService {
 
   public readonly points$ = this._points$.asObservable();
 
-  private readonly _currentTab$ = new BehaviorSubject<SenTab>(
-    SwapAndEarnStateService.setDefaultTab()
-  );
+  private readonly _currentTab$ = new BehaviorSubject<SenTab>(this.getDefaultTab());
 
   public readonly currentTab$ = this._currentTab$.asObservable();
-
-  constructor(
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly httpService: HttpService,
-    private readonly dialogService: ModalService,
-    @Inject(INJECTOR) private readonly injector: Injector
-  ) {
-    this.handleAddressChange();
-    this.fetchWorkingStatus();
-  }
 
   public get currentTab(): SenTab {
     return this._currentTab$.getValue();
@@ -42,8 +32,19 @@ export class SwapAndEarnStateService {
     this._currentTab$.next(tab);
   }
 
-  private static setDefaultTab(): SenTab {
-    return window.location.pathname.includes('retrodrop') ? 'retrodrop' : 'airdrop';
+  constructor(
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly httpService: HttpService,
+    private readonly dialogService: ModalService,
+    @Inject(INJECTOR) private readonly injector: Injector,
+    @Inject(WINDOW) private readonly window: RubicWindow
+  ) {
+    this.handleAddressChange();
+    this.fetchWorkingStatus();
+  }
+
+  private getDefaultTab(): SenTab {
+    return this.window.location.pathname.includes('retrodrop') ? 'retrodrop' : 'airdrop';
   }
 
   private fetchWorkingStatus(): void {

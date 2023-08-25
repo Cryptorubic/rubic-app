@@ -1,76 +1,79 @@
-<ng-container *ngLet="points$ | async as points">
-  <ng-container *ngLet="isAirdropAddressValid$ | async as isAirdropAddressValid">
-    <ng-container *ngLet="isRetrodropAddressValid$ | async as isRetrodropAddressValid">
-      <ng-container *ngLet="currentTab$ | async as currentTab">
-        <ng-container *ngIf="workingStatus$ | async; else noCompany">
-          <app-points-container
-            (handleClick)="handleWithdraw($event)"
-            [points]="points"
-          ></app-points-container>
-          <ng-container *ngIf="currentUser$ | async">
-            <div
-              class="drops"
-              *ngIf="(points.participant && isAirdropAddressValid) || isRetrodropAddressValid"
-            >
-              <div class="drops__tabs-container">
-                <div
-                  class="drops__tab swap-to-earn-tab"
-                  [ngClass]="{
-                    active: currentTab === 'airdrop',
-                    disabled: !isAirdropAddressValid
-                  }"
-                  (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
-                  [tuiHint]="isAirdropAddressValid ? null : SwapToEarnHint"
-                  tuiHintAppearance="onDark"
-                  tuiHintDirection="top-right"
-                >
-                  <span class="drops__tab-text">Swap&Earn</span>
-                </div>
-                <div
-                  class="drops__tab retrodrop-tab"
-                  [ngClass]="{
-                    active: currentTab === 'retrodrop',
-                    disabled: !isRetrodropAddressValid
-                  }"
-                  (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
-                  [tuiHint]="isRetrodropAddressValid ? null : RetrodropHint"
-                  tuiHintAppearance="onDark"
-                  tuiHintDirection="top-right"
-                >
-                  <span class="drops__tab-text">Retrodrop</span>
-                </div>
-              </div>
-              <div
-                class="drops__container"
-                [ngClass]="{
-                  'full-rounded': currentTab === 'retrodrop',
+<ng-container
+  *ngLet="{
+    points: points$ | async,
+    isAirdropAddressValid: isAirdropAddressValid$ | async,
+    isRetrodropAddressValid: isRetrodropAddressValid$ | async,
+    currentTab: currentTab$ | async,
+    workingStatus: workingStatus$ | async,
+    treesLoading: treesLoading$ | async
+  } as sen"
+>
+  <app-points-container
+    (handleClick)="handleWithdraw($event)"
+    [points]="sen.points"
+  ></app-points-container>
+
+  <ng-container *ngIf="currentUser$ | async">
+    <div
+      class="drops"
+      *ngIf="
+        !sen.treesLoading &&
+        ((sen.points.participant && sen.isAirdropAddressValid) || sen.isRetrodropAddressValid)
+      "
+    >
+      <div class="drops__tabs-container">
+        <div
+          class="drops__tab swap-to-earn-tab"
+          [ngClass]="{
+            active: sen.currentTab === 'airdrop',
+            disabled: !sen.isAirdropAddressValid
+          }"
+          (click)="sen.isAirdropAddressValid ? switchTab('airdrop') : null"
+          [tuiHint]="sen.isAirdropAddressValid ? null : SwapToEarnHint"
+          tuiHintAppearance="onDark"
+          tuiHintDirection="top-right"
+        >
+          <span class="drops__tab-text">Swap&Earn</span>
+        </div>
+        <div
+          class="drops__tab retrodrop-tab"
+          [ngClass]="{
+            active: sen.currentTab === 'retrodrop',
+            disabled: !sen.isRetrodropAddressValid
+          }"
+          (click)="sen.isRetrodropAddressValid ? switchTab('retrodrop') : null"
+          [tuiHint]="sen.isRetrodropAddressValid ? null : RetrodropHint"
+          tuiHintAppearance="onDark"
+          tuiHintDirection="top-right"
+        >
+          <span class="drops__tab-text">Retrodrop</span>
+        </div>
+      </div>
+      <div
+        class="drops__container"
+        [ngClass]="{
+                  'full-rounded': sen.currentTab === 'retrodrop',
                 }"
-              >
-                <tui-scrollbar>
-                  <ng-container *ngIf="currentTab === 'airdrop'">
-                    <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
-                  </ng-container>
-                  <ng-container *ngIf="currentTab === 'retrodrop'">
-                    <app-retrodrop-container
-                      *ngIf="isRetrodropAddressValid"
-                    ></app-retrodrop-container>
-                  </ng-container>
-                </tui-scrollbar>
-                <p
-                  *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
-                  class="not-member"
-                >
-                  You are not a member of Swap to Earn program:(
-                </p>
-              </div>
-            </div>
+      >
+        <tui-scrollbar>
+          <ng-container *ngIf="sen.currentTab === 'airdrop'">
+            <app-claim-container *ngIf="sen.isAirdropAddressValid"></app-claim-container>
           </ng-container>
-          <app-swap-and-earn-faq></app-swap-and-earn-faq>
-        </ng-container>
-        <ng-template #noCompany></ng-template>
-      </ng-container>
-    </ng-container>
+          <ng-container *ngIf="sen.currentTab === 'retrodrop'">
+            <app-retrodrop-container *ngIf="sen.isRetrodropAddressValid"></app-retrodrop-container>
+          </ng-container>
+        </tui-scrollbar>
+        <p
+          *ngIf="!sen.points.participant && (currentUser$ | async) && sen.currentTab === 'airdrop'"
+          class="not-member"
+        >
+          You are not a member of Swap to Earn program:(
+        </p>
+      </div>
+    </div>
   </ng-container>
+  <app-swap-and-earn-faq></app-swap-and-earn-faq>
+  <ng-template #noCompany></ng-template>
 </ng-container>
 
 <ng-template #SwapToEarnHint>

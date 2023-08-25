@@ -2,7 +2,6 @@ import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import BigNumber from 'bignumber.js';
 import BalanceTree from '@features/swap-and-earn/utils/balance-tree';
-import { firstValueFrom, Observable } from 'rxjs';
 import { MerkleTree } from '@features/swap-and-earn/models/merkle-tree';
 
 interface SourceNode {
@@ -10,16 +9,8 @@ interface SourceNode {
   balance: string;
 }
 
-export abstract class SwapAndEarnMerkleService {
-  protected abstract fetchMerkleTree(): Observable<MerkleTree>;
-
-  public async getMerkleTree(): Promise<MerkleTree> {
-    return firstValueFrom(this.fetchMerkleTree());
-  }
-
-  private async getMerkleTreeSource(): Promise<{ [Key: string]: SourceNode }> {
-    const merkleTree = await this.getMerkleTree();
-
+export class SwapAndEarnMerkleService {
+  private getMerkleTreeSource(merkleTree: MerkleTree): { [Key: string]: SourceNode } {
     return Object.entries(merkleTree.claims).reduce((acc, node) => {
       return {
         ...acc,
@@ -31,8 +22,8 @@ export abstract class SwapAndEarnMerkleService {
     }, {});
   }
 
-  private async getBalanceTree(): Promise<BalanceTree> {
-    const merkleTreeSource = await this.getMerkleTreeSource();
+  private getBalanceTree(merkleTree: MerkleTree): BalanceTree {
+    const merkleTreeSource = this.getMerkleTreeSource(merkleTree);
 
     return new BalanceTree(
       Object.entries(merkleTreeSource).map(([address, { balance }]) => ({
@@ -42,27 +33,27 @@ export abstract class SwapAndEarnMerkleService {
     );
   }
 
-  public async getProofByAddress(address: string): Promise<string[] | null> {
+  public getProofByAddress(address: string, merkleTree: MerkleTree): string[] | null {
     if (!address) {
       return null;
     }
 
-    const desiredNode = await this.getNodeByAddress(address);
+    const desiredNode = this.getNodeByAddress(address, merkleTree);
     if (!desiredNode) {
       return null;
     }
 
-    const balanceTree = await this.getBalanceTree();
+    const balanceTree = this.getBalanceTree(merkleTree);
 
     return balanceTree.getProof(desiredNode.index, address, desiredNode.amount);
   }
 
-  public async getNodeByAddress(address: string | null): Promise<AirdropNode | null> {
+  public getNodeByAddress(address: string | null, merkleTree: MerkleTree): AirdropNode | null {
     if (!address) {
       return null;
     }
 
-    const merkleTreeSource = await this.getMerkleTreeSource();
+    const merkleTreeSource = this.getMerkleTreeSource(merkleTree);
     const node = merkleTreeSource[address.toLowerCase()];
     if (!node) {
       return null;
@@ -75,8 +66,8 @@ export abstract class SwapAndEarnMerkleService {
     };
   }
 
-  public async getAmountByAddress(address: string | null): Promise<BigNumber> {
-    const node = await this.getNodeByAddress(address);
+  public getAmountByAddress(address: string | null, merkleTree: MerkleTree): BigNumber {
+    const node = this.getNodeByAddress(address, merkleTree);
     return node ? new BigNumber(node.amount.toString()) : new BigNumber(0);
   }
 }

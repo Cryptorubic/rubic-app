@@ -22,10 +22,10 @@ import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-an
 import { ClaimContainerComponent } from '@features/swap-and-earn/components/claim-container/claim-container.component';
 import { RetrodropContainerComponent } from 'src/app/features/swap-and-earn/components/retrodrop-container/retrodrop-container.component';
 import { RoundRowContainerComponent } from '@features/swap-and-earn/components/round-row/round-row-container.component';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
-import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
 import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
+import { SwapAndEarnMerkleService } from '@features/swap-and-earn/services/swap-and-earn-merkle.service';
+import { SwapAndEarnApiService } from '@features/swap-and-earn/services/swap-and-earn-api.service';
 
 @NgModule({
   declarations: [
@@ -57,8 +57,8 @@ import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/com
     SwapAndEarnPopupService,
     SwapAndEarnWeb3Service,
     SwapAndEarnFacadeService,
-    AirdropMerkleService,
-    RetrodropMerkleService
+    SwapAndEarnMerkleService,
+    SwapAndEarnApiService
   ]
 })
 export class SwapAndEarnModule {}
