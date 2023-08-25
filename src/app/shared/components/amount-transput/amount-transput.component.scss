@@ -1,0 +1,46 @@
+@use 'src/scss/core' as *;
+
+.amount-transput {
+  width: 100%;
+  height: 35px;
+
+  @include iframe-horizontal {
+    margin-bottom: 0;
+  }
+
+  ::placeholder {
+    letter-spacing: 0.6px;
+  }
+
+  &__input {
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    color: var(--primary-text);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.1em;
+    text-align: right;
+
+    background-color: transparent;
+
+    border: none;
+
+    @include iframe-horizontal {
+      padding-left: 0;
+
+      font-size: 20px;
+      text-align: left;
+    }
+
+    @include b($mobile-md) {
+      font-size: 25px;
+
+      &::placeholder {
+        font-size: 20px;
+      }
+    }
+  }
+}

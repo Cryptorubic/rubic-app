@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -78,6 +78,10 @@ import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { LiveChatComponent } from './components/live-chat/live-chat.component';
+import { AssetSelectorComponent } from '@shared/components/asset-selector/asset-selector.component';
+import { WindowContainerComponent } from './components/window-container/window-container.component';
+import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
+import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 
 @NgModule({
   declarations: [
@@ -136,7 +140,11 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     NoFrameDirective,
     OnlyFrameDirective,
     CommaToPeriodDirective,
-    LiveChatComponent
+    LiveChatComponent,
+    AssetSelectorComponent,
+    WindowContainerComponent,
+    InputOutputContainerComponent,
+    AmountTransputComponent
   ],
   imports: [
     CommonModule,
@@ -168,7 +176,8 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     TuiTagModule,
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
-    TuiHoveredModule
+    TuiHoveredModule,
+    NgOptimizedImage
   ],
   exports: [
     BigNumberFormatPipe,
@@ -215,7 +224,11 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     CommaToPeriodDirective,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
-    LiveChatComponent
+    LiveChatComponent,
+    AssetSelectorComponent,
+    WindowContainerComponent,
+    InputOutputContainerComponent,
+    AmountTransputComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

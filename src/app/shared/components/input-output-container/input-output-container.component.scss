@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  padding: 5px;
+
+  background: #1f202a;
+  border-radius: 17px;
+}
+
+.left,
+.right {
+  display: flex;
+  flex: 1;
+}
