@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { MerkleTree } from '@features/swap-and-earn/models/merkle-tree';
 import { HttpClient } from '@angular/common/http';
 
-Injectable();
+@Injectable()
 export class SwapAndEarnApiService {
   constructor(private readonly httpClient: HttpClient) {}
 
