@@ -90,17 +90,15 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
   [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'horizondex',
   [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'baseswap',
-
-  // Li-fi dexes
-  [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.DODO]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.J_SWAP]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'lifi',
+  [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'cronaswap',
+  [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: 'beamswap',
+  [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: 'honeyswap',
+  [ON_CHAIN_TRADE_TYPE.DODO]: 'dodo',
+  [ON_CHAIN_TRADE_TYPE.J_SWAP]: 'jswap',
+  [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: 'openocean',
+  [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'reffinance',
+  [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'stellaswap',
+  [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'ubeswap',
 
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
 
