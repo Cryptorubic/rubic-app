@@ -98,7 +98,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return !!trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
+    return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
