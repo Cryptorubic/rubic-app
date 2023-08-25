@@ -93,14 +93,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
   }
 
   private isSwapAndEarnSwap(calculatedTrade: CrossChainCalculatedTrade): boolean {
-    if (
-      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW ||
-      calculatedTrade.trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC
-    ) {
-      return false;
-    }
-
-    return !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
+    return (
+      calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+      !!calculatedTrade.trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)
+    );
   }
 
   public isSupportedBlockchain(blockchain: BlockchainName): boolean {
