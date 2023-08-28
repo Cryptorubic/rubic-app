@@ -20,9 +20,9 @@ export const defaultFaucets: Partial<Record<BlockchainName, Faucet[]>> = {
         address: '0x0000000000000000000000000000000000000000',
         symbol: 'ETH',
         icon_url:
-          'https://assets.rubic.exchange/assets/scroll-alpha-testnet/0x0000000000000000000000000000000000000000/logo.png'
+          'https://assets.rubic.exchange/assets/scroll-sepolia-testnet/0x0000000000000000000000000000000000000000/logo.png'
       },
-      url: 'https://scroll.l2scan.co/faucet',
+      url: 'https://sepolia-faucet.pk910.de/',
       name: 'Ether'
     }
   ]

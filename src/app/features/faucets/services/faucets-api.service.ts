@@ -42,7 +42,7 @@ export class FaucetsApiService {
           icon_url: faucet.icon_url
         },
         url: faucet.url,
-        name: faucet.title
+        name: faucet.faucet_title
       };
       const network = FROM_BACKEND_BLOCKCHAINS[faucet.network];
 
