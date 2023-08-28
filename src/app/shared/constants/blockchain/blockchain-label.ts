@@ -120,5 +120,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'BNB',
   [BLOCKCHAIN_NAME.MUMBAI]: 'Mumbai',
   [BLOCKCHAIN_NAME.FUJI]: 'Fuji',
-  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'Scroll'
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'Scroll',
+  [BLOCKCHAIN_NAME.BASE]: 'Base',
+  [BLOCKCHAIN_NAME.MANTLE]: 'Mantle'
 };

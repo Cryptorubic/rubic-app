@@ -963,10 +963,26 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: {
-    baseUrl: 'https://sepolia-blockscout.scroll.io',
+    baseUrl: 'https://blockscout.scroll.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.BASE]: {
+    baseUrl: 'https://basescan.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.MANTLE]: {
+    baseUrl: 'https://explorer.mantle.xyz/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   }

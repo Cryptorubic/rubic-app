@@ -201,5 +201,10 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.JOE
     ]),
     [BLOCKCHAIN_NAME.MUMBAI]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.QUICK_SWAP]),
-    [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3])
+    [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
+      ON_CHAIN_TRADE_TYPE.UNISWAP_V2
+    ]),
+    [BLOCKCHAIN_NAME.BASE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BASE_SWAP]),
+    [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([])
   };
