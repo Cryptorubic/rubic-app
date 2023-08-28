@@ -963,7 +963,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: {
-    baseUrl: 'https://blockscout.scroll.io/',
+    baseUrl: 'https://sepolia-blockscout.scroll.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
