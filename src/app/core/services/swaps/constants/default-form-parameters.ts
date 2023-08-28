@@ -6,7 +6,7 @@ export const defaultFormParameters = {
     toChain: BLOCKCHAIN_NAME.GOERLI,
     from: {
       [BLOCKCHAIN_NAME.GOERLI]: 'ETH',
-      [BLOCKCHAIN_NAME.SCROLL_TESTNET]: 'ETH'
+      [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'ETH'
     },
     to: {},
     amount: '1'

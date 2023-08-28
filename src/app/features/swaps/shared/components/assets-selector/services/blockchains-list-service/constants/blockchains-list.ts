@@ -9,7 +9,7 @@ export interface RankedBlockchain {
 export const notEvmChangeNowBlockchainsList = {};
 
 export const blockchainsList: RankedBlockchain[] = [
-  { name: BLOCKCHAIN_NAME.SCROLL_TESTNET, rank: 1, tags: [] },
+  { name: BLOCKCHAIN_NAME.SCROLL_SEPOLIA, rank: 1, tags: [] },
   { name: BLOCKCHAIN_NAME.GOERLI, rank: 1, tags: [] }
   // { name: BLOCKCHAIN_NAME.FUJI, rank: 1, tags: [] },
   // { name: BLOCKCHAIN_NAME.MUMBAI, rank: 1, tags: [] },

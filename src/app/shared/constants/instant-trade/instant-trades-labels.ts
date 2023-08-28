@@ -11,6 +11,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'AuroraSwap',
 
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: 'BabySwap',
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'BaseSwap',
   [ON_CHAIN_TRADE_TYPE.BALANCER]: 'Balancer',
   [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: 'BeamSwap',
   [ON_CHAIN_TRADE_TYPE.BI_SWAP]: 'BiSwap',

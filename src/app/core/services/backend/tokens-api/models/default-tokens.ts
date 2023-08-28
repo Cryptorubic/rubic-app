@@ -991,19 +991,19 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
-  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: [
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: [
     {
-      ...nativeTokensList[BLOCKCHAIN_NAME.SCROLL_TESTNET],
+      ...nativeTokensList[BLOCKCHAIN_NAME.SCROLL_SEPOLIA],
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/eth.png'
     } as Token,
     {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SCROLL_TESTNET],
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SCROLL_SEPOLIA],
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/weth.png'
     } as Token,
     {
-      blockchain: BLOCKCHAIN_NAME.SCROLL_TESTNET,
+      blockchain: BLOCKCHAIN_NAME.SCROLL_SEPOLIA,
       address: '0x67aE69Fd63b4fc8809ADc224A9b82Be976039509',
       name: 'USDC',
       symbol: 'USDC',
@@ -1012,7 +1012,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     },
     {
-      blockchain: BLOCKCHAIN_NAME.SCROLL_TESTNET,
+      blockchain: BLOCKCHAIN_NAME.SCROLL_SEPOLIA,
       address: '0x4702E5AEb70BdC05B11F8d8E701ad000dc85bD44',
       name: 'DAI',
       symbol: 'DAI',
@@ -1021,7 +1021,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     },
     {
-      blockchain: BLOCKCHAIN_NAME.SCROLL_TESTNET,
+      blockchain: BLOCKCHAIN_NAME.SCROLL_SEPOLIA,
       address: '0x0CDEA04b370C1FA4bC2032b4ef23dB3EBCbA258a',
       name: 'UNI',
       symbol: 'UNI',

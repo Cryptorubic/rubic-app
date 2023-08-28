@@ -14,7 +14,7 @@ export const defaultFaucets: Partial<Record<BlockchainName, Faucet[]>> = {
       name: 'Ether'
     }
   ],
-  [BLOCKCHAIN_NAME.SCROLL_TESTNET]: [
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: [
     {
       token: {
         address: '0x0000000000000000000000000000000000000000',
