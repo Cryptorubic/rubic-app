@@ -189,7 +189,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
-      ON_CHAIN_TRADE_TYPE.HORIZONDEX
+      ON_CHAIN_TRADE_TYPE.HORIZONDEX,
+      ON_CHAIN_TRADE_TYPE.VOOI
     ]),
     [BLOCKCHAIN_NAME.BASE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BASE_SWAP]),
     [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([]),
