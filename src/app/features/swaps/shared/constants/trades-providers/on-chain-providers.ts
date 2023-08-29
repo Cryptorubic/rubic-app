@@ -510,5 +510,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'BaseSwap',
     image: `${imageBasePath}baseswap.webp`,
     color: '#000DBF'
+  },
+  [ON_CHAIN_TRADE_TYPE.VOOI]: {
+    name: 'Vooi',
+    // @TODO
+    image: `${imageBasePath}vooi.png`,
+    color: '#000DBF'
   }
 };

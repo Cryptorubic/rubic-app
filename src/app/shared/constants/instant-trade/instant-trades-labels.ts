@@ -119,5 +119,6 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'PulseX V1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2',
   [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'HorizonDEX',
-  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'BaseSwap'
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'BaseSwap',
+  [ON_CHAIN_TRADE_TYPE.VOOI]: 'Vooi'
 };
