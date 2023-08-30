@@ -162,5 +162,10 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Squid Router',
     image: `${imageBasePath}squidrouter.svg`,
     color: '#e6f936'
+  },
+  [BRIDGE_TYPE.SCROLL_BRIDGE]: {
+    name: 'Scroll bridge',
+    image: `${imageBasePath}scroll.svg`,
+    color: '#fff0de'
   }
 };

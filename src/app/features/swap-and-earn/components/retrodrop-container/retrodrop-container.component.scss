@@ -1,0 +1,41 @@
+@use '../../../../../scss/core' as *;
+
+:host {
+  display: flex;
+  justify-content: center;
+
+  @include b(900) {
+    ::ng-deep {
+      tui-scrollbar .t-content {
+        margin-top: 0;
+        margin-right: 0;
+      }
+    }
+  }
+
+  ::ng-deep {
+    tui-scrollbar .t-content {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      //margin-top: 5px;
+      //margin-right: 18px;
+    }
+  }
+}
+
+.retrodrop {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  @include b(900) {
+    width: 100%;
+    max-height: 450px;
+    padding: 0;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+  }
+}

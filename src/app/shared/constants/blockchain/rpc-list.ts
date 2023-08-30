@@ -129,5 +129,37 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
-  [BLOCKCHAIN_NAME.LINEA]: ['https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71']
+  [BLOCKCHAIN_NAME.LINEA]: ['https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71'],
+  [BLOCKCHAIN_NAME.BASE]: [
+    'https://mainnet.base.org',
+    'https://1rpc.io/base',
+    'https://base.blockpi.network/v1/rpc/public',
+    'https://base-mainnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.MANTLE]: [
+    'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+  ],
+  [BLOCKCHAIN_NAME.FUJI]: [
+    'https://endpoints.omniatech.io/v1/avax/fuji/public',
+    'https://rpc.ankr.com/avalanche_fuji',
+    'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc'
+  ],
+  [BLOCKCHAIN_NAME.MUMBAI]: [
+    'https://rpc-mumbai.maticvigil.com',
+    'https://rpc.ankr.com/polygon_mumbai',
+    'https://polygon-testnet.public.blastapi.io',
+    'https://endpoints.omniatech.io/v1/matic/mumbai/public'
+  ],
+  [BLOCKCHAIN_NAME.GOERLI]: [
+    'https://goerli.blockpi.network/v1/rpc/public',
+    'https://rpc.ankr.com/eth_goerli',
+    'https://eth-goerli.public.blastapi.io',
+    'https://endpoints.omniatech.io/v1/eth/goerli/public'
+  ],
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: [
+    'https://data-seed-prebsc-1-s3.binance.org:8545',
+    'https://endpoints.omniatech.io/v1/bsc/testnet/public',
+    'https://bsc-testnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/']
 };

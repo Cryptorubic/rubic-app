@@ -969,5 +969,11 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.LINEA]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.LINEA], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.BASE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BASE], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MANTLE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MANTLE], ...defaultTokenParams } as Token
   ]
 };

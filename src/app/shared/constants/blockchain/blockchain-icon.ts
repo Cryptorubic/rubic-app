@@ -5,8 +5,8 @@ const basePath = 'assets/images/icons/coins/';
 export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: `${basePath}eth-contrast.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `${basePath}bnb.svg`,
-  [BLOCKCHAIN_NAME.POLYGON]: `${basePath}polygon.svg`,
-  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: `${basePath}polygon.svg`,
+  [BLOCKCHAIN_NAME.POLYGON]: `${basePath}polygon.png`,
+  [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: `${basePath}polygon-zkevm.png`,
   [BLOCKCHAIN_NAME.HARMONY]: `${basePath}harmony.svg`,
   [BLOCKCHAIN_NAME.AVALANCHE]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.MOONRIVER]: `${basePath}moonriver.webp`,
@@ -117,5 +117,12 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.png`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
   [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`,
-  [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.png`
+  [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.png`,
+  [BLOCKCHAIN_NAME.BASE]: `${basePath}base.png`,
+  [BLOCKCHAIN_NAME.MANTLE]: `${basePath}mantle.png`,
+  [BLOCKCHAIN_NAME.GOERLI]: `${basePath}eth-contrast.svg`,
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: `${basePath}bnb.svg`,
+  [BLOCKCHAIN_NAME.MUMBAI]: `${basePath}polygon.svg`,
+  [BLOCKCHAIN_NAME.FUJI]: `${basePath}avalanche.svg`,
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: `${basePath}scroll.svg`
 };

@@ -16,7 +16,7 @@
     background-color: var(--form-background);
 
     @include b($mobile-md) {
-      padding: 16px 28px;
+      padding: 0;
     }
   }
 

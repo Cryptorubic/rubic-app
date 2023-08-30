@@ -293,7 +293,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       this.fromToken.address,
       this.toToken.address
     );
-    this.allowRefreshChange.emit(this.isWrappingTrade);
+    this.allowRefreshChange.emit(!this.isWrappingTrade);
 
     if (
       this.currentBlockchain !== form.fromBlockchain &&
