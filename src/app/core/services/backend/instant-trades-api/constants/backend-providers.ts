@@ -102,5 +102,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
 
-  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers'
+  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
+  [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi'
 };
