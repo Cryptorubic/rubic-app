@@ -117,7 +117,12 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
   [BLOCKCHAIN_NAME.LINEA]: 'linea',
   [BLOCKCHAIN_NAME.BASE]: 'base',
-  [BLOCKCHAIN_NAME.MANTLE]: 'mantle'
+  [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
+  [BLOCKCHAIN_NAME.MUMBAI]: 'polygon-mumbai',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'binance-smart-chain-testnet',
+  [BLOCKCHAIN_NAME.GOERLI]: 'goerli',
+  [BLOCKCHAIN_NAME.FUJI]: 'avalanche-fuji',
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
