@@ -53,6 +53,11 @@ const routes: Routes = [
       import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
   },
   {
+    path: ROUTE_PATH.RETRODROP,
+    loadChildren: () =>
+      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+  },
+  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

@@ -25,22 +25,9 @@
 }
 
 .claim {
-  position: relative;
-
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 826px;
-  max-height: 280px;
-  margin-bottom: 40px;
-  padding: 13px;
-
-  font-weight: 700;
-  font-size: 16px;
-
-  background: var(--form-background);
-  border: 1px solid var(--transparent-line);
-  border-radius: $border-radius-2;
+  gap: 15px;
 
   @include b(900) {
     width: 100%;

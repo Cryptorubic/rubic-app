@@ -23,7 +23,11 @@
             />
           </div>
           <div class="tokens__symbol">
-            {{ selectedAsset.symbol }}
+            {{
+              selectedAsset.symbol.length > 10
+                ? selectedAsset.symbol.slice(0, 10) + '...'
+                : selectedAsset.symbol
+            }}
           </div>
           <div
             *noFrame="'vertical'"

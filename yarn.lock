@@ -13648,7 +13648,7 @@ rubic-sdk@4.17.0-alpha-izumi.5:
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "7.8.1"
-    symbiosis-js-sdk "^2.10.24"
+    symbiosis-js-sdk "2.10.34"
     tronweb "^4.3.0"
     viem "^1.3.1"
     web3 "^1.8.1"
@@ -14935,10 +14935,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@^2.10.24:
-  version "2.10.24"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.10.24.tgz#94e367096329ad6b9056f1f94f7c7d793bca840f"
-  integrity sha512-J6uk3yy+ggV3Hfi/xBjMfTWAztN/lQwX/+iKOi7AK7K0+UZ5Eu3D0ZHPQjLVsbAsivChA95ePrUnK7PY5IO30g==
+symbiosis-js-sdk@2.10.34:
+  version "2.10.34"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.10.34.tgz#97a4d3503ac2090c3025a76481cb37fa1567a9d3"
+  integrity sha512-8ajvzGdl0UL3uqlTVFBgqgKv+BnVK4Io3EzXzc9o4q8RUyY3chVuP1hiswAXdFAgmj2ySBnfjfJZqMLictDTNQ==
   dependencies:
     big.js "^5.2.2"
     bignumber.js "^9.0.1"
