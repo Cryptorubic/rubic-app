@@ -513,8 +513,7 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.VOOI]: {
     name: 'Vooi',
-    // @TODO
-    image: `${imageBasePath}vooi.png`,
-    color: '#000DBF'
+    image: `${imageBasePath}vooi.svg`,
+    color: '#084b69'
   }
 };
