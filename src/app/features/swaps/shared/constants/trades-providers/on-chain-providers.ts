@@ -515,5 +515,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Vooi',
     image: `${imageBasePath}vooi.svg`,
     color: '#084b69'
+  },
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: {
+    name: 'Izumi',
+    image: `${imageBasePath}izumi.svg`,
+    color: '#7E49FC'
   }
 };
