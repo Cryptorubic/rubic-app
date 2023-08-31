@@ -13621,10 +13621,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.17.0-alpha-izumi.7:
-  version "4.17.0-alpha-izumi.7"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.17.0-alpha-izumi.7.tgz#775512750a10722b483ce755cc016b0fe88c8aab"
-  integrity sha512-rOg2OAYQaiEMHDHgDFgsRY2kP9uE4tu4Bi1WPpYTXOs4xydIrVuRTvH0W3A9Rg4R6nMxcEuVagGSBa0R0Eb+0A==
+rubic-sdk@4.21.0:
+  version "4.21.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.21.0.tgz#6adef78152b1448e236a4a05bbee5ffb510b2b0e"
+  integrity sha512-7jLq5btp6A+MZyI+0ALGyBFKDjFqnhZfSxk3G+i4BUPi6O96DTHrT9p5muzM7otT3cGD/BlqQeeBspDz+X9zlQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
