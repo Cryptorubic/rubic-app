@@ -521,6 +521,11 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}izumi.svg`,
     color: '#7E49FC'
   },
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: {
+    name: 'Algebra',
+    image: `${imageBasePath}algebra.svg`,
+    color: '#00CAB2'
+  },
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: {
     name: 'XY',
     image: 'assets/images/icons/providers/bridge/xy.svg',
