@@ -25,5 +25,17 @@ export const defaultFaucets: Partial<Record<BlockchainName, Faucet[]>> = {
       url: 'https://sepolia-faucet.pk910.de/',
       name: 'Ether'
     }
+  ],
+  [BLOCKCHAIN_NAME.ARTHERA]: [
+    {
+      token: {
+        address: '0x0000000000000000000000000000000000000000',
+        symbol: 'AA',
+        icon_url:
+          'https://assets.rubic.exchange/assets/scroll-sepolia-testnet/0x0000000000000000000000000000000000000000/logo.png'
+      },
+      url: 'https://sepolia-faucet.pk910.de/',
+      name: 'Arthera'
+    }
   ]
 };

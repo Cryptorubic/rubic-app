@@ -123,6 +123,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MUMBAI]: `${basePath}polygon.svg`,
   [BLOCKCHAIN_NAME.FUJI]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: `${basePath}scroll.svg`,
+  [BLOCKCHAIN_NAME.ARTHERA]: `${basePath}arthera.png`,
   [BLOCKCHAIN_NAME.BASE]: `${basePath}base.png`,
   [BLOCKCHAIN_NAME.MANTLE]: `${basePath}mantle.png`
 };

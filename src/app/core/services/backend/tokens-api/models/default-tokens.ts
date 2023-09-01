@@ -1011,5 +1011,17 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       image: 'assets/images/icons/default-tokens/usdc.png',
       ...defaultTokenParams
     }
+  ],
+  [BLOCKCHAIN_NAME.ARTHERA]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/arthera.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/waa.png'
+    } as Token
   ]
 };

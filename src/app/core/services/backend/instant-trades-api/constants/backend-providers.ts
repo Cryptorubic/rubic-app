@@ -45,6 +45,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.WAULT_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.WOO_FI]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown',
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
@@ -104,5 +105,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
 
-  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers'
+  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
+  [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi',
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: 'izumi'
 };

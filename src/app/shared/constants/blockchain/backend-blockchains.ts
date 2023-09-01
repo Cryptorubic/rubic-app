@@ -121,6 +121,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.GOERLI]: 'goerli',
   [BLOCKCHAIN_NAME.FUJI]: 'avalanche-fuji',
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet',
+  [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
   [BLOCKCHAIN_NAME.BASE]: 'base',
   [BLOCKCHAIN_NAME.MANTLE]: 'mantle'
 } as const;
