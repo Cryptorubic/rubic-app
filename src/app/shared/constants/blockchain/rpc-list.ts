@@ -164,5 +164,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://endpoints.omniatech.io/v1/bsc/testnet/public',
     'https://bsc-testnet.public.blastapi.io'
   ],
-  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/']
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
+  [BLOCKCHAIN_NAME.ARTHERA]: []
 };

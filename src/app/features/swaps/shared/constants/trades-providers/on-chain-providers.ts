@@ -520,5 +520,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Izumi',
     image: `${imageBasePath}izumi.svg`,
     color: '#7E49FC'
+  },
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: {
+    name: 'Algebra',
+    image: `${imageBasePath}algebra.svg`,
+    color: '#00CAB2'
   }
 };
