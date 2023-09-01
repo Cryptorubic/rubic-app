@@ -205,6 +205,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.UNISWAP_V2
     ]),
+    [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]),
     [BLOCKCHAIN_NAME.BASE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BASE_SWAP]),
     [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([])
   };

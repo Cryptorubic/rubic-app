@@ -4,6 +4,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: 'Acryptos',
   [ON_CHAIN_TRADE_TYPE.ALDRIN_EXCHANGE]: 'AldrinExchange',
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'Algebra',
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'Algebra Integral',
   [ON_CHAIN_TRADE_TYPE.ANNEX]: 'Annex',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'ApeSwap',
   [ON_CHAIN_TRADE_TYPE.ARTH_SWAP]: 'ArthSwap',
@@ -35,6 +36,8 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.DYSTOPIA]: 'Dystopia',
 
   [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: 'HoneySwap',
+
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: 'Izumi',
 
   [ON_CHAIN_TRADE_TYPE.JET_SWAP]: 'JetSwap',
   [ON_CHAIN_TRADE_TYPE.JOE]: 'Joe',
@@ -119,5 +122,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'PulseX V1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'PulseX V2',
-  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'HorizonDEX'
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'HorizonDEX',
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'BaseSwap',
+  [ON_CHAIN_TRADE_TYPE.VOOI]: 'Vooi'
 };

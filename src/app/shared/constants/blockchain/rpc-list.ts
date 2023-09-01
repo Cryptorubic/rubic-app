@@ -154,6 +154,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://bsc-testnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
+  [BLOCKCHAIN_NAME.ARTHERA]: ['https://rpc-test.arthera.net'],
   [BLOCKCHAIN_NAME.BASE]: [
     'https://mainnet.base.org',
     'https://1rpc.io/base',
