@@ -25,7 +25,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
     instantTrades: 1,
-    crossChain: 4
+    crossChain: 3
   };
 
   public defaultItSettings: ItSettingsForm;
