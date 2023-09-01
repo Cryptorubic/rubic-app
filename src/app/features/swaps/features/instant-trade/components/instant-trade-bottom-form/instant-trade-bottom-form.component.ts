@@ -437,8 +437,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
       Boolean(this.authService.userAddress) &&
       this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
 
-    console.log('QQx', this.providersData, trades);
-
     const providersPromises = this.providersData.map(async provider => {
       const settledTrade = trades.find(trade => trade?.type === provider.name);
 
@@ -476,7 +474,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     });
 
     this.providersData = await Promise.all(providersPromises);
-    console.log('providersData', this.providersData);
     this.chooseBestProvider();
   }
 
