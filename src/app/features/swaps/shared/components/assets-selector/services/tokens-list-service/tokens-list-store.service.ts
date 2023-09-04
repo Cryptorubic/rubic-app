@@ -377,8 +377,15 @@ export class TokensListStoreService {
         ? b.amount.multipliedBy(b.price === null ? 0 : b.price)
         : new BigNumber(0);
 
-      const amountsDelta = bAmountInDollars.minus(aAmountInDollars).toNumber();
-      return Number(b.available) - Number(a.available) || amountsDelta || b.rank - a.rank;
+      const aBalaceAvailability = a.amount?.gt(0);
+      const bBalaceAvailability = b.amount?.gt(0);
+
+      const availabilityComparison = Number(b.available) - Number(a.available);
+      const amountsComparison = bAmountInDollars.minus(aAmountInDollars).toNumber();
+      const balanceComparison = Number(bBalaceAvailability) - Number(aBalaceAvailability);
+      const rankComparison = b.rank - a.rank;
+
+      return availabilityComparison || amountsComparison || balanceComparison || rankComparison;
     };
 
     const nativeTokenIndex = tokens.findIndex(token => {
