@@ -15,7 +15,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://polygonzkevm-mainnet.g.alchemy.com/v2/V_k_uJTiOSSLxom7KrLrPMdqKi3CiuMQ',
     'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://zkevm-rpc.com',
     'https://rpc.polygon-zkevm.gateway.fm',
@@ -72,7 +71,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: ['https://avax.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
-    'https://astar-mainnet.g.alchemy.com/v2/gt3UANW8GWpUzyVztq5bEkjyrT5onv8Q',
     'https://astar.public.blastapi.io',
     'https://rpc.astar.network:8545'
   ],
@@ -137,6 +135,33 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://base-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
-    'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
-  ]
+    'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://mantle-mainnet.public.blastapi.io',
+    'https://rpc.mantle.xyz',
+    'https://mantle.publicnode.com'
+  ],
+  [BLOCKCHAIN_NAME.FUJI]: [
+    'https://endpoints.omniatech.io/v1/avax/fuji/public',
+    'https://rpc.ankr.com/avalanche_fuji',
+    'https://ava-testnet.public.blastapi.io/ext/bc/C/rpc'
+  ],
+  [BLOCKCHAIN_NAME.MUMBAI]: [
+    'https://rpc-mumbai.maticvigil.com',
+    'https://rpc.ankr.com/polygon_mumbai',
+    'https://polygon-testnet.public.blastapi.io',
+    'https://endpoints.omniatech.io/v1/matic/mumbai/public'
+  ],
+  [BLOCKCHAIN_NAME.GOERLI]: [
+    'https://goerli.blockpi.network/v1/rpc/public',
+    'https://rpc.ankr.com/eth_goerli',
+    'https://eth-goerli.public.blastapi.io',
+    'https://endpoints.omniatech.io/v1/eth/goerli/public'
+  ],
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: [
+    'https://data-seed-prebsc-1-s3.binance.org:8545',
+    'https://endpoints.omniatech.io/v1/bsc/testnet/public',
+    'https://bsc-testnet.public.blastapi.io'
+  ],
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
+  [BLOCKCHAIN_NAME.ARTHERA]: []
 };

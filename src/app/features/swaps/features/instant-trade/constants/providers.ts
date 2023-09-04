@@ -45,7 +45,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ONE_INCH,
       ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
-      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
+      ON_CHAIN_TRADE_TYPE.IZUMI
       // ON_CHAIN_TRADE_TYPE.DODO,
       // ON_CHAIN_TRADE_TYPE.CURVE,
       // ON_CHAIN_TRADE_TYPE.ZRX
@@ -178,7 +179,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.ZK_SYNC]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.MUTE_SWAP,
       ON_CHAIN_TRADE_TYPE.SYNC_SWAP,
-      ON_CHAIN_TRADE_TYPE.ONE_INCH
+      ON_CHAIN_TRADE_TYPE.ONE_INCH,
+      ON_CHAIN_TRADE_TYPE.IZUMI,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
     ]),
     [BLOCKCHAIN_NAME.PULSECHAIN]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.PULSEX_V1,
@@ -189,8 +192,21 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     ]),
     [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
-      ON_CHAIN_TRADE_TYPE.HORIZONDEX
+      ON_CHAIN_TRADE_TYPE.HORIZONDEX,
+      ON_CHAIN_TRADE_TYPE.VOOI,
+      ON_CHAIN_TRADE_TYPE.IZUMI
     ]),
-    [BLOCKCHAIN_NAME.BASE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BASE_SWAP]),
-    [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([])
+    [BLOCKCHAIN_NAME.BASE]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.BASE_SWAP,
+      ON_CHAIN_TRADE_TYPE.IZUMI,
+      ON_CHAIN_TRADE_TYPE.ONE_INCH,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
+    ]),
+    [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.IZUMI]),
+    [BLOCKCHAIN_NAME.FUJI]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.GOERLI]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.MUMBAI]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([])
   };

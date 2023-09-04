@@ -99,8 +99,10 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.REF_FINANCE]: 'reffinance',
   [ON_CHAIN_TRADE_TYPE.STELLA_SWAP]: 'stellaswap',
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: 'ubeswap',
-
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: 'izumi',
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
 
-  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers'
+  [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
+  [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi',
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown'
 };

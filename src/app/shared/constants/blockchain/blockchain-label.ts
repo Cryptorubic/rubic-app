@@ -117,5 +117,11 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'Pulsechain',
   [BLOCKCHAIN_NAME.LINEA]: 'Linea',
   [BLOCKCHAIN_NAME.BASE]: 'Base',
-  [BLOCKCHAIN_NAME.MANTLE]: 'Mantle'
+  [BLOCKCHAIN_NAME.MANTLE]: 'Mantle',
+  [BLOCKCHAIN_NAME.GOERLI]: 'Goerli',
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'BNB',
+  [BLOCKCHAIN_NAME.MUMBAI]: 'Mumbai',
+  [BLOCKCHAIN_NAME.FUJI]: 'Fuji',
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'Scroll',
+  [BLOCKCHAIN_NAME.ARTHERA]: 'Arthera'
 };
