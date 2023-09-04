@@ -23,7 +23,8 @@ import {
   NotSupportedTokensError,
   RubicSdkError,
   UnsupportedReceiverAddressError,
-  ChangenowCrossChainTrade
+  ChangenowCrossChainTrade,
+  Web3Pure
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
@@ -361,6 +362,8 @@ export class CrossChainFormService {
           providers = trade.calculated === 0 ? [] : [...providers, trade];
           if (trade.calculated === trade.total && this.selectedTrade && trade?.calculated !== 0) {
             this.saveTrade(providers);
+          } else if (trade.calculated === trade.total && trade?.calculated !== 0) {
+            this.saveUnknownTrade(providers);
           }
         }
       });
@@ -993,6 +996,40 @@ export class CrossChainFormService {
         from_amount: this.selectedTrade.trade?.from?.stringWeiAmount,
         to_token: this.selectedTrade.trade?.to?.address,
         to_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.to?.blockchain],
+        providers_statistics: providers.map(providerTrade => {
+          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          return {
+            provider_title: lastCalculatedTrade?.tradeType,
+            calculation_time_in_seconds: String(calculationTime / 1000),
+            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
+            status: lastCalculatedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network:
+              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
+            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(lastCalculatedTrade?.error && {
+              additional_info: lastCalculatedTrade.error.message
+            })
+          };
+        })
+      })
+      .subscribe();
+  }
+
+  private saveUnknownTrade(providers: CrossChainCalculatedTradeData[]): void {
+    const { fromAssetType, fromAmount, toBlockchain, toToken, fromAsset } =
+      this.swapFormService.inputValue;
+
+    this.crossChainApiService
+      .saveProvidersStatistics({
+        user: this.walletConnectorService.address,
+        from_token: 'address' in fromAsset ? fromAsset.address : fromAsset.symbol,
+        from_network: fromAssetType === 'fiat' ? 'fiat' : TO_BACKEND_BLOCKCHAINS[fromAssetType],
+        from_amount:
+          'address' in fromAsset
+            ? Web3Pure.toWei(fromAmount, fromAsset.decimals)
+            : fromAmount.toFixed(),
+        to_token: toToken.address,
+        to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
         providers_statistics: providers.map(providerTrade => {
           const { calculationTime, lastCalculatedTrade } = providerTrade;
           return {
