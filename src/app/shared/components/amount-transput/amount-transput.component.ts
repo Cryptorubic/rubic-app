@@ -29,7 +29,8 @@ export class AmountTransputComponent {
 
   @Input() set amountValue(value: BigNumber) {
     if (this.inputMode !== 'input' && value?.isFinite()) {
-      this.handleAmountChange(value.toFixed());
+      this.amount.setValue(value.toFixed(), { emitViewToModelChange: false });
+      this.updateInputValue();
     }
   }
 

@@ -1,44 +1,48 @@
-<div class="form">
-  <app-window-container>
-    <ng-container header>
-      <span>Swap Gas Fiat</span>
-    </ng-container>
+<div class="swap-container">
+  <div class="form">
+    <app-window-container>
+      <ng-container header>
+        <span>Swap Gas Fiat</span>
+      </ng-container>
 
-    <div class="form__container">
-      <app-input-output-container>
-        <app-asset-selector
-          left
-          (handleAssetSelection)="openTokensSelect('from')"
-          [asset]="fromAsset$ | async"
-        ></app-asset-selector>
-        <div right class="input-container">
-          <app-amount-transput
-            formType="from"
-            [selectedToken]="fromAsset$ | async"
-            inputMode="input"
-          ></app-amount-transput>
-        </div>
-      </app-input-output-container>
+      <div class="form__container">
+        <app-input-output-container>
+          <app-asset-selector
+            left
+            (handleAssetSelection)="openTokensSelect('from')"
+            [asset]="fromAsset$ | async"
+          ></app-asset-selector>
+          <div right class="input-container">
+            <app-amount-transput
+              formType="from"
+              [selectedToken]="fromAsset$ | async"
+              inputMode="input"
+            ></app-amount-transput>
+          </div>
+        </app-input-output-container>
 
-      <app-input-output-container>
-        <app-asset-selector
-          left
-          (handleAssetSelection)="openTokensSelect('to')"
-          [asset]="toAsset$ | async"
-        ></app-asset-selector>
-        <div right class="input-container">
-          <app-amount-transput
-            formType="to"
-            [selectedToken]="toAsset$ | async"
-            inputMode="output"
-            [amountValue]="toAmount$ | async"
-          ></app-amount-transput>
-        </div>
-      </app-input-output-container>
-    </div>
+        <app-input-output-container>
+          <app-asset-selector
+            left
+            (handleAssetSelection)="openTokensSelect('to')"
+            [asset]="toAsset$ | async"
+          ></app-asset-selector>
+          <div right class="input-container">
+            <app-amount-transput
+              formType="to"
+              [selectedToken]="toAsset$ | async"
+              inputMode="output"
+              [amountValue]="toAmount$ | async"
+            ></app-amount-transput>
+          </div>
+        </app-input-output-container>
+      </div>
 
-    <ng-container footer>
-      <button>Swap Button</button>
-    </ng-container>
-  </app-window-container>
+      <ng-container footer>
+        <button (click)="expand()">Swap Button</button>
+      </ng-container>
+    </app-window-container>
+  </div>
+
+  <div *ngIf="isExpanded" [@inOutAnimation] class="priv"></div>
 </div>

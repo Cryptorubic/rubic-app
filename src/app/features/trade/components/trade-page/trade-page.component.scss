@@ -1,9 +1,28 @@
-.form {
-  max-width: 526px;
-  margin: 0 auto;
+:host {
+  display: flex;
 }
 
-app-input-output-container:first-child {
-  display: block;
-  margin-bottom: 5px;
+.swap-container {
+  display: flex;
+  margin: 0 auto;
+
+  .form {
+    width: 526px;
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+
+  app-input-output-container:first-child {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .priv {
+    width: 400px;
+    height: 600px;
+
+    background: #3c3d44;
+    border-radius: 17px;
+  }
 }
+

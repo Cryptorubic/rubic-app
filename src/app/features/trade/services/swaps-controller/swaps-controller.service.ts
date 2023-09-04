@@ -3,6 +3,7 @@ import { of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -10,7 +11,8 @@ export class SwapsControllerService {
 
   constructor(
     private readonly swapFormService: SwapsFormService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly swapsState: SwapsStateService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -76,7 +78,9 @@ export class SwapsControllerService {
         tap(() => {})
       )
       .subscribe(trade => {
-        console.log(trade);
+        this.swapsState.updateTrade(trade);
+        this.swapsState.pickProvider();
+        this.setTradeAmount();
         // if (trade) {
         //   providers = trade.calculated === 0 ? [] : [...providers, trade];
         //   if (trade.calculated === trade.total && this.selectedTrade && trade?.calculated !== 0) {
@@ -84,5 +88,14 @@ export class SwapsControllerService {
         //   }
         // }
       });
+  }
+
+  private setTradeAmount(): void {
+    const trade = this.swapsState.tradeState?.trade;
+    if (trade) {
+      this.swapFormService.outputControl.patchValue({
+        toAmount: trade.trade.to.tokenAmount
+      });
+    }
   }
 }

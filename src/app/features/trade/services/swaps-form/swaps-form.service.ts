@@ -116,7 +116,7 @@ export class SwapsFormService {
   );
 
   public readonly toAmount$: Observable<BigNumber> = this.outputValue$.pipe(
-    map(inputValue => inputValue.toAmount),
+    map(value => value.toAmount),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)
   );
