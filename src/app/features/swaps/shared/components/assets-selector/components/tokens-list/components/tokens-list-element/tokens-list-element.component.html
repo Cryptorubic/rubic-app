@@ -12,7 +12,7 @@
     <div class="token-card__name-container">
       <div class="token-card__name-container-symbol">
         {{
-          token.symbol.length > 10 && isMobile ? token.symbol.slice(0, 10) + '...' : token.symbol
+          token.symbol.length > 10 || isMobile ? token.symbol.slice(0, 10) + '...' : token.symbol
         }}
 
         <ng-container *ngIf="allowCopy">

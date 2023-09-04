@@ -22,7 +22,6 @@ import {
   BlockchainsInfo,
   NotWhitelistedProviderError,
   PriceToken,
-  EvmOnChainTrade,
   TX_STATUS
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -99,15 +98,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    if (trade instanceof EvmOnChainTrade) {
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.ZK_SYNC) {
-        return false;
-      }
-
-      return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
-    }
-
-    return false;
+    return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
