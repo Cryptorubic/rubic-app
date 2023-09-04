@@ -167,5 +167,10 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Scroll bridge',
     image: `${imageBasePath}scroll.svg`,
     color: '#fff0de'
+  },
+  [BRIDGE_TYPE.CELERIM]: {
+    name: 'Celerim',
+    image: `${imageBasePath}celerim.png`,
+    color: '#1682dc'
   }
 };

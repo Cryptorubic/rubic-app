@@ -137,7 +137,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://base-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
-    'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://mantle-mainnet.public.blastapi.io',
+    'https://rpc.mantle.xyz',
+    'https://mantle.publicnode.com'
   ],
   [BLOCKCHAIN_NAME.FUJI]: [
     'https://endpoints.omniatech.io/v1/avax/fuji/public',
@@ -161,5 +164,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://endpoints.omniatech.io/v1/bsc/testnet/public',
     'https://bsc-testnet.public.blastapi.io'
   ],
-  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/']
+  [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
+  [BLOCKCHAIN_NAME.ARTHERA]: []
 };
