@@ -1,4 +1,4 @@
-export interface Points {
+export interface SwapToEarnUserInfo {
   confirmed: number;
   pending: number;
   requested_to_withdraw?: number;

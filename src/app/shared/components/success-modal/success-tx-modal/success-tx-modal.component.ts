@@ -81,7 +81,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.swapAndEarnStateService.updatePoints();
+    this.swapAndEarnStateService.updateSwapToEarnUserInfo();
     SuccessTxModalComponent.toggleConfettiBackground('remove');
   }
 
@@ -98,7 +98,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
-    this.swapAndEarnStateService.updatePoints();
+    this.swapAndEarnStateService.updateSwapToEarnUserInfo();
     this.context.completeWith(null);
   }
 

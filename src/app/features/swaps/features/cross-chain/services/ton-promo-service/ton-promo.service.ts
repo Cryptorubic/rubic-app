@@ -103,7 +103,7 @@ export class TonPromoService {
         )
       );
 
-      await this.swapAndEarnStateService.updatePoints();
+      await this.swapAndEarnStateService.updateSwapToEarnUserInfo();
     } catch (error) {
       console.log(error);
     }

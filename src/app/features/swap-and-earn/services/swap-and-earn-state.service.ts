@@ -3,7 +3,7 @@ import { BehaviorSubject, firstValueFrom, map, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
-import { Points } from '@features/swap-and-earn/models/points';
+import { SwapToEarnUserInfo } from '@features/swap-and-earn/models/swap-to-earn-user-info';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
@@ -14,7 +14,7 @@ export class SwapAndEarnStateService {
 
   public readonly workingStatus$ = this._workingStatus$.asObservable();
 
-  private readonly _points$ = new BehaviorSubject<Points>({ confirmed: 0, pending: 0 });
+  private readonly _points$ = new BehaviorSubject<SwapToEarnUserInfo>({ confirmed: 0, pending: 0 });
 
   public readonly points$ = this._points$.asObservable();
 
@@ -50,16 +50,16 @@ export class SwapAndEarnStateService {
     this._workingStatus$.next(true);
   }
 
-  public fetchPoints(): Observable<Points> {
+  public fetchSwapToEarnUserInfo(): Observable<SwapToEarnUserInfo> {
     const address = this.walletConnectorService.address;
     if (!address) {
       return of({ confirmed: 0, pending: 0 });
     }
-    return this.httpService.get<Points>(`rewards/?address=${address}`);
+    return this.httpService.get<SwapToEarnUserInfo>(`rewards/?address=${address}`);
   }
 
-  public async updatePoints(): Promise<void> {
-    await this.fetchPoints().subscribe(points => {
+  public async updateSwapToEarnUserInfo(): Promise<void> {
+    await this.fetchSwapToEarnUserInfo().subscribe(points => {
       this._points$.next(points);
     });
   }
@@ -90,7 +90,7 @@ export class SwapAndEarnStateService {
         })
         .subscribe();
 
-      await this.updatePoints();
+      await this.updateSwapToEarnUserInfo();
     }
   }
 
@@ -99,7 +99,7 @@ export class SwapAndEarnStateService {
       .pipe(
         switchIif(
           Boolean,
-          () => this.fetchPoints(),
+          () => this.fetchSwapToEarnUserInfo(),
           () => of({ confirmed: 0, pending: 0 })
         )
       )
