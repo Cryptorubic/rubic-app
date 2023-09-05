@@ -15,29 +15,32 @@ export class SwapAndEarnApiService {
     private readonly httpService: HttpService
   ) {}
 
+  private get address(): string {
+    return this.walletConnectorService.address;
+  }
+
   public fetchSwapToEarnUserPointsInfo(): Observable<SwapToEarnUserPointsInfo> {
-    const address = this.walletConnectorService.address;
-    if (!address) {
+    if (!this.address) {
       return of({ confirmed: 0, pending: 0 });
     }
-    return this.httpService.get<SwapToEarnUserPointsInfo>(`rewards/?address=${address}`);
+    return this.httpService.get<SwapToEarnUserPointsInfo>(`rewards/?address=${this.address}`);
   }
 
   public fetchRetrodropUserInfo(): Observable<RetrodropUserInfo> {
-    const address = this.walletConnectorService.address;
-    if (!address) {
+    if (!this.address) {
       return of([]);
     }
     try {
-      return this.httpService.get<RetrodropUserInfo>(`v2/merkle_proofs/retrodrop`, { address });
+      return this.httpService.get<RetrodropUserInfo>(`v2/merkle_proofs/retrodrop`, {
+        address: this.address
+      });
     } catch (error) {
       return of([]);
     }
   }
 
   public fetchSwapToEarnUserClaimInfo(): Observable<SwapToEarnUserClaimInfo> {
-    const address = this.walletConnectorService.address;
-    if (!address) {
+    if (!this.address) {
       return of({
         round: null,
         is_participant: false,
@@ -48,7 +51,9 @@ export class SwapAndEarnApiService {
       });
     }
     try {
-      return this.httpService.get<SwapToEarnUserClaimInfo>(`v2/merkle_proofs/claim`, { address });
+      return this.httpService.get<SwapToEarnUserClaimInfo>(`v2/merkle_proofs/claim`, {
+        address: this.address
+      });
     } catch (error) {
       return of({
         round: null,

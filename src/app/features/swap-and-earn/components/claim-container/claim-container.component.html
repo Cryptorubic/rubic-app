@@ -1,59 +1,13 @@
 <div class="claim">
   <tui-scrollbar>
-    <app-round-row-container
-      [round]="9"
-      claimData="05.04.2023 - 24.08.2023"
-      [isAlreadyClaimed]="isAlreadyClaimed$ | async"
-      [claimAmount]="claimedAmount$ | async"
-      [isClosed]="false"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="8"
-      claimData="05.04.2023 - 03.08.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="7"
-      claimData="05.04.2023 - 20.07.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="6"
-      claimData="05.04.2023 - 06.07.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="5"
-      claimData="05.04.2023 - 09.06.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="4"
-      claimData="05.04.2023 - 31.05.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="3"
-      claimData="05.04.2023 - 17.05.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="2"
-      claimData="05.04.2023 - 02.05.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
-    <app-round-row-container
-      [round]="1"
-      claimData="05.04.2023 - 19.04.2023"
-      [isAlreadyClaimed]="true"
-      [isClosed]="true"
-    ></app-round-row-container>
+    <ng-container *ngFor="let round of rounds.slice().reverse()">
+      <app-round-row-container
+        [round]="round.roundNumber"
+        [claimData]="round.claimData"
+        [isAlreadyClaimed]="isAlreadyClaimed$ | async"
+        [claimAmount]="claimedAmount$ | async"
+        [isClosed]="round.isClosed"
+      ></app-round-row-container>
+    </ng-container>
   </tui-scrollbar>
 </div>
