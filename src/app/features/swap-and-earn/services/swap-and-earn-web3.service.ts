@@ -1,25 +1,13 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from 'rubic-sdk';
 import { airdropContractAbi } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-abi';
-import { airdropContractAddress } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-address';
 import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnWeb3Service {
-  private get contractAddress(): string {
-    return this.swapAndEarnStateService.currentTab === 'airdrop'
-      ? airdropContractAddress
-      : retrodropContractAddress;
-  }
-
-  constructor(
-    private readonly gasService: GasService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
-  ) {}
+  constructor(private readonly gasService: GasService) {}
 
   public async executeClaim(
     contractAddress: string,

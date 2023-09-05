@@ -54,37 +54,6 @@ export class SwapAndEarnFacadeService {
     });
   }
 
-  public async setAlreadyAirdropClaimed(): Promise<void> {
-    try {
-      await this.web3Service.checkClaimed(
-        airdropContractAddress,
-        this.swapAndEarnStateService.airdropUserClaimInfo.index
-      );
-      this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed = false;
-    } catch (err) {
-      this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed = true;
-    }
-  }
-
-  public async setAlreadyRetrodropClaimed(): Promise<void> {
-    const alreadyClaimedRounds = this.swapAndEarnStateService.retrodropUserInfo.map(userInfo =>
-      this.web3Service
-        .checkClaimed(retrodropContractAddress, userInfo.index)
-        .then(() => ({
-          round: userInfo.round,
-          isClaimed: false
-        }))
-        .catch(() => ({
-          round: userInfo.round,
-          isClaimed: true
-        }))
-    );
-
-    this.swapAndEarnStateService.isRetrodropRoundsAlreadyClaimed = await Promise.all(
-      alreadyClaimedRounds
-    );
-  }
-
   private setRetrodropAndSwapToEarnUserInfo(): void {
     this._airdropAndRetrodropFetchLoading$.next(true);
     forkJoin([
@@ -98,12 +67,15 @@ export class SwapAndEarnFacadeService {
         })
       )
       .subscribe(() => {
-        this.setAlreadyAirdropClaimed();
-        this.setAlreadyRetrodropClaimed();
+        this.swapAndEarnStateService.setAlreadyAirdropClaimed();
+        this.swapAndEarnStateService.setAlreadyRetrodropClaimed();
+
         this.swapAndEarnStateService.setClaimedTokens();
+
         this.swapAndEarnStateService.setRetrodropRoundsAddressValid();
         this.swapAndEarnStateService.isUserParticipantOfSwapAndEarn =
           this.swapAndEarnStateService.airdropUserClaimInfo.is_participant;
+
         this._airdropAndRetrodropFetchLoading$.next(false);
       });
   }
@@ -116,36 +88,32 @@ export class SwapAndEarnFacadeService {
     this._claimLoading$.next(true);
     let claimInProgressNotification: Subscription;
     let contractAddress: string;
+    let node: AirdropNode;
+    let proof: string[];
 
     if (this.swapAndEarnStateService.currentTab === 'airdrop') {
       contractAddress = airdropContractAddress;
+      node = {
+        index: this.swapAndEarnStateService.airdropUserClaimInfo.index,
+        account: this.swapAndEarnStateService.airdropUserClaimInfo.address,
+        amount: EthersBigNumber.from(this.swapAndEarnStateService.airdropUserClaimInfo.amount)
+      };
+      proof = this.swapAndEarnStateService.airdropUserClaimInfo.proof;
     } else {
       contractAddress = retrodropContractAddress;
+      node = {
+        index: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].index,
+        account: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].address,
+        amount: EthersBigNumber.from(
+          this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].amount
+        )
+      };
+      proof = this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].proof;
     }
 
     try {
       await this.web3Service.checkPause(contractAddress);
-      let node: AirdropNode;
-      let proof: string[];
-
-      if (this.swapAndEarnStateService.currentTab === 'airdrop') {
-        node = {
-          index: this.swapAndEarnStateService.airdropUserClaimInfo.index,
-          account: this.swapAndEarnStateService.airdropUserClaimInfo.address,
-          amount: EthersBigNumber.from(this.swapAndEarnStateService.airdropUserClaimInfo.amount)
-        };
-        proof = this.swapAndEarnStateService.airdropUserClaimInfo.proof;
-      } else {
-        node = {
-          index: this.swapAndEarnStateService.retrodropUserInfo[0].index,
-          account: this.swapAndEarnStateService.retrodropUserInfo[0].address,
-          amount: EthersBigNumber.from(this.swapAndEarnStateService.retrodropUserInfo[0].amount)
-        };
-        proof = this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound].proof;
-      }
-
       await this.web3Service.checkClaimed(contractAddress, node.index);
-
       await this.web3Service.executeClaim(contractAddress, node, proof, hash => {
         if (showSuccessModal) {
           this.popupService.showSuccessModal(hash);
@@ -160,8 +128,8 @@ export class SwapAndEarnFacadeService {
 
       this.popupService.showSuccessNotification();
 
-      await this.setAlreadyAirdropClaimed();
-      await this.setAlreadyRetrodropClaimed();
+      await this.swapAndEarnStateService.setAlreadyAirdropClaimed();
+      await this.swapAndEarnStateService.setAlreadyRetrodropClaimed();
     } catch (err) {
       this.popupService.handleError(err);
     } finally {

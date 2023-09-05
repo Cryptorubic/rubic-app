@@ -19,6 +19,9 @@ import {
 import { Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { SwapAndEarnApiService } from '@features/swap-and-earn/services/swap-and-earn-api.service';
+import { airdropContractAddress } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-address';
+import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
+import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnStateService {
@@ -104,6 +107,7 @@ export class SwapAndEarnStateService {
     private readonly httpService: HttpService,
     private readonly dialogService: ModalService,
     private readonly swapAndEarnApiService: SwapAndEarnApiService,
+    private readonly web3Service: SwapAndEarnWeb3Service,
     @Inject(INJECTOR) private readonly injector: Injector
   ) {
     this.handleAddressChange();
@@ -187,6 +191,32 @@ export class SwapAndEarnStateService {
     );
 
     this._isRetrodropRoundsAddressValid$.next(isRetrodropRoundsAddressValid);
+  }
+
+  public async setAlreadyAirdropClaimed(): Promise<void> {
+    try {
+      await this.web3Service.checkClaimed(airdropContractAddress, this.airdropUserClaimInfo.index);
+      this.isAirdropRoundAlreadyClaimed = false;
+    } catch (err) {
+      this.isAirdropRoundAlreadyClaimed = true;
+    }
+  }
+
+  public async setAlreadyRetrodropClaimed(): Promise<void> {
+    const alreadyClaimedRounds = this.retrodropUserInfo.map(userInfo =>
+      this.web3Service
+        .checkClaimed(retrodropContractAddress, userInfo.index)
+        .then(() => ({
+          round: userInfo.round,
+          isClaimed: false
+        }))
+        .catch(() => ({
+          round: userInfo.round,
+          isClaimed: true
+        }))
+    );
+
+    this.isRetrodropRoundsAlreadyClaimed = await Promise.all(alreadyClaimedRounds);
   }
 
   public getSwapAndEarnPointsAmount(): Observable<number> {
