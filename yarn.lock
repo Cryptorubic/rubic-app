@@ -13621,8 +13621,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-"rubic-sdk@file:../rubic-sdk":
+rubic-sdk@4.23.0-alpha-mantle-squid.0:
   version "4.23.0-alpha-mantle-squid.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.23.0-alpha-mantle-squid.0.tgz#5f4770a8eca5f5e0755f43f674382381f4c22110"
+  integrity sha512-UX8aFgUBHBYae2RvVVAFQ1mi0SFBQcUdNSwneMoKeb1bl0Fv8IHkMWxy6XKZUEHe5lb14RWyDjjkhuD3kQzCYw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
