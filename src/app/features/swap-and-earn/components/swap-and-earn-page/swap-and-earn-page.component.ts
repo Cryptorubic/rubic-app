@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
+import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
 
 @Component({
   selector: 'app-swap-and-earn-page',
@@ -17,16 +17,20 @@ export class SwapAndEarnPageComponent {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
-  public readonly isAirdropAddressValid$ = this.swapAndEarnFacadeService.isAirdropAddressValid$;
+  public readonly isAirdropAddressValid$ =
+    this.swapAndEarnStateService.isUserParticipantOfSwapAndEarn$;
 
-  public readonly isRetrodropAddressValid$ = this.swapAndEarnFacadeService.isRetrodropAddressValid$;
+  public readonly isRetrodropAddressValid$ =
+    this.swapAndEarnStateService.isUserParticipantOfRetrodrop$;
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
 
+  public readonly loading$ = this.swapAndEarnFacadeService.airdropAndRetrodropFetchLoading$;
+
   constructor(
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
-    private readonly authService: AuthService,
-    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService
+    private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService,
+    private readonly authService: AuthService
   ) {}
 
   public async handleWithdraw(points: number): Promise<void> {
