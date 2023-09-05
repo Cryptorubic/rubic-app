@@ -1,74 +1,86 @@
 <div class="retrodrop">
   <app-round-row-container
-    round="1"
+    [round]="1"
     claimData="24.08.2023 - 24.02.2024"
-    [isAlreadyClaimed]="isAlreadyClaimed$ | async"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(1) | async"
+    [claimAmount]="getClaimAmount(1)"
     [isClosed]="false"
   ></app-round-row-container>
   <app-round-row-container
-    round="2"
+    [round]="2"
     claimData="24.09.2023 - 24.03.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(2) | async"
+    [claimAmount]="getClaimAmount(2)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="3"
+    [round]="3"
     claimData="24.10.2023 - 24.04.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(3) | async"
+    [claimAmount]="getClaimAmount(3)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="4"
+    [round]="4"
     claimData="24.11.2023 - 24.05.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(4) | async"
+    [claimAmount]="getClaimAmount(4)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="5"
+    [round]="5"
     claimData="24.12.2023 - 24.06.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(5) | async"
+    [claimAmount]="getClaimAmount(5)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="6"
+    [round]="6"
     claimData="24.01.2024 - 24.07.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(6) | async"
+    [claimAmount]="getClaimAmount(6)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="7"
+    [round]="7"
     claimData="24.02.2024 - 24.08.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(7) | async"
+    [claimAmount]="getClaimAmount(7)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="8"
+    [round]="8"
     claimData="24.03.2024 - 24.09.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(8) | async"
+    [claimAmount]="getClaimAmount(8)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="9"
+    [round]="9"
     claimData="24.04.2024 - 24.10.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(9) | async"
+    [claimAmount]="getClaimAmount(9)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="10"
+    [round]="10"
     claimData="24.05.2024 - 24.11.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(10) | async"
+    [claimAmount]="getClaimAmount(10)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="11"
+    [round]="11"
     claimData="24.06.2024 - 24.12.2024"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(11) | async"
+    [claimAmount]="getClaimAmount(11)"
     [isClosed]="true"
   ></app-round-row-container>
   <app-round-row-container
-    round="12"
+    [round]="12"
     claimData="24.07.2024 - 24.01.2025"
-    [isAlreadyClaimed]="true"
+    [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(12) | async"
+    [claimAmount]="getClaimAmount(12)"
     [isClosed]="true"
   ></app-round-row-container>
 </div>

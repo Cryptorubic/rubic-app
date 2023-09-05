@@ -8,7 +8,7 @@ import { GasService } from '@core/services/gas-service/gas.service';
 import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SwapAndEarnWeb3Service {
   private get contractAddress(): string {
     return this.swapAndEarnStateService.currentTab === 'airdrop'

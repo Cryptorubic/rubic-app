@@ -3,7 +3,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { map } from 'rxjs/operators';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { SwapToEarnUserInfo } from '@features/swap-and-earn/models/swap-to-earn-user-info';
+import { SwapToEarnUserPointsInfo } from '@features/swap-and-earn/models/swap-to-earn-user-info';
 
 @Component({
   selector: 'app-points-container',
@@ -12,7 +12,7 @@ import { SwapToEarnUserInfo } from '@features/swap-and-earn/models/swap-to-earn-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PointsContainerComponent {
-  @Input() public readonly points: SwapToEarnUserInfo;
+  @Input() public readonly points: SwapToEarnUserPointsInfo;
 
   @Output() public readonly handleClick = new EventEmitter<number>();
 

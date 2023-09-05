@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-and-earn-facade.service';
+import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 
 @Component({
   selector: 'app-claim-container',
@@ -8,7 +8,9 @@ import { SwapAndEarnFacadeService } from '@features/swap-and-earn/services/swap-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimContainerComponent {
-  public readonly isAlreadyClaimed$ = this.swapAndEarnFacadeService.isAlreadyClaimed$;
+  public readonly isAlreadyClaimed$ = this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed$;
 
-  constructor(private readonly swapAndEarnFacadeService: SwapAndEarnFacadeService) {}
+  public readonly claimedAmount$ = this.swapAndEarnStateService.airdropClaimedTokens$;
+
+  constructor(private readonly swapAndEarnStateService: SwapAndEarnStateService) {}
 }
