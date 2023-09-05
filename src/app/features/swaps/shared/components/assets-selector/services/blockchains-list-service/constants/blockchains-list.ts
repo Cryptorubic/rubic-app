@@ -6,6 +6,44 @@ export interface RankedBlockchain {
   tags: string[];
 }
 
+const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList, string[]> = {
+  [BLOCKCHAIN_NAME.ICP]: ['ICP'],
+  [BLOCKCHAIN_NAME.CARDANO]: ['ADA'],
+  [BLOCKCHAIN_NAME.ALGORAND]: ['ALGO'],
+  [BLOCKCHAIN_NAME.DOGECOIN]: ['DOGE'],
+  [BLOCKCHAIN_NAME.POLKADOT]: ['DOT'],
+  [BLOCKCHAIN_NAME.LITECOIN]: ['LTC'],
+  [BLOCKCHAIN_NAME.MONERO]: ['XMR'],
+  [BLOCKCHAIN_NAME.RIPPLE]: ['XRP'],
+  [BLOCKCHAIN_NAME.ZILLIQA]: ['ZIL'],
+  [BLOCKCHAIN_NAME.DASH]: ['DASH'],
+  [BLOCKCHAIN_NAME.TEZOS]: ['XTZ'],
+  [BLOCKCHAIN_NAME.ASTAR]: ['ASTR'],
+  [BLOCKCHAIN_NAME.STELLAR]: ['XLM'],
+  [BLOCKCHAIN_NAME.NEO]: ['NEO'],
+  [BLOCKCHAIN_NAME.NEAR]: ['NEAR'],
+  [BLOCKCHAIN_NAME.SOLANA]: ['SOL'],
+  [BLOCKCHAIN_NAME.BITCOIN]: ['BTC'],
+  [BLOCKCHAIN_NAME.KAVA_COSMOS]: ['KAVA'],
+  [BLOCKCHAIN_NAME.APTOS]: ['APT'],
+  [BLOCKCHAIN_NAME.COSMOS]: ['ATOM'],
+  [BLOCKCHAIN_NAME.FLOW]: ['FLOW'],
+  [BLOCKCHAIN_NAME.HEDERA]: ['HBAR'],
+  [BLOCKCHAIN_NAME.IOTA]: ['IOTA'],
+  [BLOCKCHAIN_NAME.KUSAMA]: ['KSM'],
+  [BLOCKCHAIN_NAME.MINA_PROTOCOL]: ['MINA'],
+  [BLOCKCHAIN_NAME.OSMOSIS]: ['OSMO'],
+  [BLOCKCHAIN_NAME.SIA]: ['SC'],
+  [BLOCKCHAIN_NAME.SECRET]: ['SCRT'],
+  [BLOCKCHAIN_NAME.TON]: ['TON'],
+  [BLOCKCHAIN_NAME.WAVES]: ['WAVES'],
+  [BLOCKCHAIN_NAME.WAX]: ['WAXP'],
+  [BLOCKCHAIN_NAME.EOS]: ['EOS'],
+  [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
+  [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
+  [BLOCKCHAIN_NAME.XDC]: ['XDC']
+};
+
 export const notEvmChangeNowBlockchainsList = {
   [BLOCKCHAIN_NAME.ICP]: BLOCKCHAIN_NAME.ICP,
   [BLOCKCHAIN_NAME.CARDANO]: BLOCKCHAIN_NAME.CARDANO,
@@ -91,7 +129,7 @@ const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlo
   blockchain => ({
     name: blockchain,
     rank: 0,
-    tags: blockchain === BLOCKCHAIN_NAME.LITECOIN ? ['LTC'] : []
+    tags: notEvmChangeNowBlockchainsTagsList[blockchain]
   })
 );
 
