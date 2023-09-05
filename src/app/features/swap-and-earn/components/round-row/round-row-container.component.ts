@@ -17,6 +17,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RetrodropStakeModalComponent } from '@features/swap-and-earn/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
 import { SenTab } from '@features/swap-and-earn/models/swap-to-earn-tabs';
+import BigNumber from 'bignumber.js';
 
 type ButtonLabel =
   | 'login'
@@ -44,7 +45,7 @@ interface ButtonState {
 export class RoundRowContainerComponent {
   @Input() public readonly claimData: string = '';
 
-  @Input() public readonly round: string = '1';
+  @Input() public readonly round: number = 1;
 
   @Input() public readonly disabled: boolean = false;
 
@@ -52,13 +53,15 @@ export class RoundRowContainerComponent {
 
   @Input() public readonly isClosed: boolean;
 
-  public readonly claimAmount$ = this.swapAndEarnFacadeService.claimedTokens$;
+  @Input() public readonly claimAmount: BigNumber = new BigNumber(0);
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
 
-  public readonly isAirdropAddressValid$ = this.swapAndEarnFacadeService.isAirdropAddressValid$;
+  public readonly isAirdropAddressValid =
+    this.swapAndEarnStateService.airdropUserClaimInfo.is_participant;
 
-  public readonly isRetrodropAddressValid$ = this.swapAndEarnFacadeService.isRetrodropAddressValid$;
+  public readonly isRetrodropAddressValid$ =
+    this.swapAndEarnStateService.isUserParticipantOfRetrodrop$;
 
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
@@ -76,22 +79,37 @@ export class RoundRowContainerComponent {
 
   public buttonState$: Observable<ButtonState> = this.swapAndEarnStateService.currentTab$.pipe(
     combineLatestWith(
-      this.swapAndEarnFacadeService.isRetrodropAddressValid$,
-      this.swapAndEarnFacadeService.isAirdropAddressValid$,
+      this.swapAndEarnStateService.isUserParticipantOfRetrodrop$,
       this.authService.currentUser$,
       this.walletConnectorService.networkChange$,
-      this.swapAndEarnFacadeService.isAlreadyClaimed$
+      this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed$,
+      this.swapAndEarnStateService.isRetrodropRoundsAlreadyClaimed$
     ),
     map(
       ([
         currentTab,
         isRetrodropAddressValid,
-        isAirdropAddressValid,
         user,
         network,
-        isAlreadyClaimed
+        isAlreadyAirdropClaimed,
+        isRetrodropRoundsAlreadyClaimed
       ]) => {
-        const isValid = currentTab === 'airdrop' ? isAirdropAddressValid : isRetrodropAddressValid;
+        const isValid =
+          currentTab === 'airdrop'
+            ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
+            : isRetrodropAddressValid;
+        let isAlreadyClaimed;
+        if (currentTab === 'airdrop') {
+          isAlreadyClaimed = isAlreadyAirdropClaimed;
+        } else if (currentTab === 'retrodrop' && isRetrodropRoundsAlreadyClaimed.length > 0) {
+          isAlreadyClaimed = isRetrodropRoundsAlreadyClaimed[this.round - 1].isClaimed;
+        } else {
+          isAlreadyClaimed = true;
+        }
+        // currentTab === 'airdrop'
+        //   ? isAlreadyAirdropClaimed
+        //   : this.swapAndEarnStateService.isAlreadyRetrodropClaimedRounds[this.round - 1].isClaimed;
+
         const buttonLabel = this.getButtonKey([
           currentTab,
           isValid,
@@ -133,10 +151,6 @@ export class RoundRowContainerComponent {
     }
   }
 
-  public async handleClaim(): Promise<void> {
-    await this.swapAndEarnFacadeService.claimTokens();
-  }
-
   public async handleClick(state: ButtonLabel): Promise<void> {
     switch (state) {
       case 'changeNetwork':
@@ -149,7 +163,7 @@ export class RoundRowContainerComponent {
         await this.swapAndEarnFacadeService.claimTokens();
         break;
       case 'stake':
-        this.showStakeConfirmModal();
+        this.showStakeConfirmModal(this.round);
         break;
       default:
     }
@@ -196,13 +210,13 @@ export class RoundRowContainerComponent {
     return buttonLabel === 'wrongAddressError' || buttonLabel === 'incorrectAddressError';
   }
 
-  public showStakeConfirmModal(): Subscription {
+  public showStakeConfirmModal(round: number): Subscription {
     return this.dialogService
       .open(new PolymorpheusComponent(RetrodropStakeModalComponent), {
         size: 's'
       })
       .subscribe(() => {
-        this.swapAndEarnFacadeService.claimTokens(false, true);
+        this.swapAndEarnFacadeService.claimTokens(round, false, true);
       });
   }
 }
