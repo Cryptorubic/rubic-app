@@ -22,6 +22,7 @@ export class SwapAndEarnWeb3Service {
   ) {}
 
   public async executeClaim(
+    contractAddress: string,
     node: AirdropNode,
     proof: string[],
     onTransactionHash: (hash: string) => void
@@ -32,7 +33,7 @@ export class SwapAndEarnWeb3Service {
     );
 
     await web3.tryExecuteContractMethod(
-      this.contractAddress,
+      contractAddress,
       airdropContractAbi,
       'claim',
       [node.index, node.account, node.amount, proof],
@@ -43,19 +44,19 @@ export class SwapAndEarnWeb3Service {
     );
   }
 
-  public async checkPause(): Promise<void> {
+  public async checkPause(contractAddress: string): Promise<void> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
-      .callContractMethod(this.contractAddress, airdropContractAbi, 'paused', []);
+      .callContractMethod(contractAddress, airdropContractAbi, 'paused', []);
     if (isPaused) {
       throw new Error('paused');
     }
   }
 
-  public async checkClaimed(index: number): Promise<void> {
+  public async checkClaimed(contractAddress: string, index: number): Promise<void> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
-      .callContractMethod(this.contractAddress, airdropContractAbi, 'isClaimed', [index]);
+      .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
     if (isPaused) {
       throw new Error('claimed');
     }

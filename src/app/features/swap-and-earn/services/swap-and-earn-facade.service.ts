@@ -14,6 +14,8 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
 import { SwapAndEarnApiService } from '@features/swap-and-earn/services/swap-and-earn-api.service';
+import { airdropContractAddress } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-address';
+import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
 
 @Injectable({ providedIn: 'root' })
 export class SwapAndEarnFacadeService {
@@ -54,7 +56,10 @@ export class SwapAndEarnFacadeService {
 
   public async setAlreadyAirdropClaimed(): Promise<void> {
     try {
-      await this.web3Service.checkClaimed(this.swapAndEarnStateService.airdropUserClaimInfo.index);
+      await this.web3Service.checkClaimed(
+        airdropContractAddress,
+        this.swapAndEarnStateService.airdropUserClaimInfo.index
+      );
       this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed = false;
     } catch (err) {
       this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed = true;
@@ -64,7 +69,7 @@ export class SwapAndEarnFacadeService {
   public async setAlreadyRetrodropClaimed(): Promise<void> {
     const alreadyClaimedRounds = this.swapAndEarnStateService.retrodropUserInfo.map(userInfo =>
       this.web3Service
-        .checkClaimed(userInfo.index)
+        .checkClaimed(retrodropContractAddress, userInfo.index)
         .then(() => ({
           round: userInfo.round,
           isClaimed: false
@@ -110,9 +115,16 @@ export class SwapAndEarnFacadeService {
   ): Promise<void> {
     this._claimLoading$.next(true);
     let claimInProgressNotification: Subscription;
+    let contractAddress: string;
+
+    if (this.swapAndEarnStateService.currentTab === 'airdrop') {
+      contractAddress = airdropContractAddress;
+    } else {
+      contractAddress = retrodropContractAddress;
+    }
 
     try {
-      await this.web3Service.checkPause();
+      await this.web3Service.checkPause(contractAddress);
       let node: AirdropNode;
       let proof: string[];
 
@@ -132,9 +144,9 @@ export class SwapAndEarnFacadeService {
         proof = this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound].proof;
       }
 
-      await this.web3Service.checkClaimed(node.index);
+      await this.web3Service.checkClaimed(contractAddress, node.index);
 
-      await this.web3Service.executeClaim(node, proof, hash => {
+      await this.web3Service.executeClaim(contractAddress, node, proof, hash => {
         if (showSuccessModal) {
           this.popupService.showSuccessModal(hash);
         }

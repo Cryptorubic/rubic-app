@@ -28,7 +28,11 @@ export class SwapAndEarnApiService {
     if (!address) {
       return of([]);
     }
-    return this.httpService.get<RetrodropUserInfo>(`v2/merkle_proofs/retrodrop`, { address });
+    try {
+      return this.httpService.get<RetrodropUserInfo>(`v2/merkle_proofs/retrodrop`, { address });
+    } catch (error) {
+      return of([]);
+    }
   }
 
   public fetchSwapToEarnUserClaimInfo(): Observable<SwapToEarnUserClaimInfo> {
@@ -43,6 +47,17 @@ export class SwapAndEarnApiService {
         proof: []
       });
     }
-    return this.httpService.get<SwapToEarnUserClaimInfo>(`v2/merkle_proofs/claim`, { address });
+    try {
+      return this.httpService.get<SwapToEarnUserClaimInfo>(`v2/merkle_proofs/claim`, { address });
+    } catch (error) {
+      return of({
+        round: null,
+        is_participant: false,
+        address: '',
+        index: null,
+        amount: '',
+        proof: []
+      });
+    }
   }
 }
