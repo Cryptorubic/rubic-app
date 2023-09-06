@@ -155,6 +155,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: ['https://rpc-test.arthera.net'],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    'https://zetachain-athens-evm.blockpi.network/v1/rpc/public',
+    'https://rpc.ankr.com/zetachain_evm_athens_testnet'
+  ],
   [BLOCKCHAIN_NAME.BASE]: [
     'https://mainnet.base.org',
     'https://1rpc.io/base',
