@@ -13621,10 +13621,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.25.0:
-  version "4.25.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.25.0.tgz#832f3816b092cf0471e23264f9d71b582ea409dd"
-  integrity sha512-EfylTUv3cSvyyr9DvTbq0Re2X3qtOsRHxuUJ35xQTTMeUvfCNoEKYVbzwRUkq7kkL63rlIvZeVDqjIPHlc0veQ==
+rubic-sdk@4.26.0-alpha-symb-sdk-upd.0:
+  version "4.26.0-alpha-symb-sdk-upd.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.26.0-alpha-symb-sdk-upd.0.tgz#a4d149aa7dd8b10a820d6ae7c32d5a4121238e03"
+  integrity sha512-HOwR1hU3VagWXzRinWeU0ot/23/s5JHvADYHo2xB5ybP5SUtgu2BZjCwpeYcGGVpQMG/GI7m18rEXjC+Yqk63g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -13648,7 +13648,7 @@ rubic-sdk@4.25.0:
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "7.8.1"
-    symbiosis-js-sdk "2.10.34"
+    symbiosis-js-sdk "2.10.41"
     tronweb "^4.3.0"
     viem "^1.3.1"
     web3 "^1.8.1"
@@ -14935,10 +14935,10 @@ swarm-js@^0.1.40:
     tar "^4.0.2"
     xhr-request "^1.0.1"
 
-symbiosis-js-sdk@2.10.34:
-  version "2.10.34"
-  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.10.34.tgz#97a4d3503ac2090c3025a76481cb37fa1567a9d3"
-  integrity sha512-8ajvzGdl0UL3uqlTVFBgqgKv+BnVK4Io3EzXzc9o4q8RUyY3chVuP1hiswAXdFAgmj2ySBnfjfJZqMLictDTNQ==
+symbiosis-js-sdk@2.10.41:
+  version "2.10.41"
+  resolved "https://registry.yarnpkg.com/symbiosis-js-sdk/-/symbiosis-js-sdk-2.10.41.tgz#96a2211d7c1d19e63179048457c61b2c3a22216e"
+  integrity sha512-3KQti3OmKJG0WgYODgWQXV1nWzQuzyUurSuQaEd4ZzE9MBndcvNe6CsRxg4lrIYdfwyPcMCzCK+7SK7x4gsMwg==
   dependencies:
     big.js "^5.2.2"
     bignumber.js "^9.0.1"
