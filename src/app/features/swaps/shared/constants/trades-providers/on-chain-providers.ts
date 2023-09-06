@@ -525,5 +525,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Algebra',
     image: `${imageBasePath}algebra.svg`,
     color: '#00CAB2'
+  },
+  [ON_CHAIN_TRADE_TYPE.AERODROME]: {
+    name: 'Aerodrome',
+    image: `${imageBasePath}aerodrome.png`,
+    color: '#2A54F3'
   }
 };
