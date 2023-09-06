@@ -97,7 +97,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.KLAYTN]: {
     name: 'Klaytn',
-    rpc: 'https://rpc.ankr.com/klaytn/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    rpc: 'https://public-en-cypress.klaytn.net/'
   },
   [BLOCKCHAIN_NAME.VELAS]: {
     name: 'Velas',
@@ -125,6 +125,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    rpc: 'https://rpc.mantle.xyz/'
   }
 };
