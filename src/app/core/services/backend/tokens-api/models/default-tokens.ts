@@ -1023,5 +1023,17 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/waa.png'
     } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token
   ]
 };
