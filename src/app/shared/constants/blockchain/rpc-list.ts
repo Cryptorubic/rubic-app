@@ -104,6 +104,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.KLAYTN]: [
     'https://rpc.ankr.com/klaytn/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://public-en-cypress.klaytn.net/',
     'https://public-node-api.klaytnapi.com/v1/cypress',
     'https://cypress.fandom.finance/archive',
     'https://klaytn01.fandom.finance',
