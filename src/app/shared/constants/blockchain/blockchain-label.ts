@@ -123,5 +123,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MUMBAI]: 'Mumbai',
   [BLOCKCHAIN_NAME.FUJI]: 'Fuji',
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'Scroll',
-  [BLOCKCHAIN_NAME.ARTHERA]: 'Arthera'
+  [BLOCKCHAIN_NAME.ARTHERA]: 'Arthera',
+  [BLOCKCHAIN_NAME.ZETACHAIN]: 'Zetachain'
 };

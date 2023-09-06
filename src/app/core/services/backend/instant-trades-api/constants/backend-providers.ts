@@ -104,5 +104,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
 
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
   [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi',
-  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown'
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.XY_DEX]: 'xy_dex'
 };
