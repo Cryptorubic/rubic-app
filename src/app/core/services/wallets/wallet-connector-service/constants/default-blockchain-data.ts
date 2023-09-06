@@ -97,7 +97,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.KLAYTN]: {
     name: 'Klaytn',
-    rpc: 'https://1rpc.io/klay'
+    rpc: 'https://public-en-cypress.klaytn.net/'
   },
   [BLOCKCHAIN_NAME.VELAS]: {
     name: 'Velas',
