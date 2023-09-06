@@ -976,5 +976,17 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.MANTLE]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MANTLE], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.ARTHERA]: []
+  [BLOCKCHAIN_NAME.ARTHERA]: [],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token
+  ]
 };

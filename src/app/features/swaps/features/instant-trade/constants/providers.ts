@@ -221,5 +221,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.MUMBAI]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: getDefaultStateByProviders([]),
-    [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([])
+    [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.ZETACHAIN]: getDefaultStateByProviders([])
   };
