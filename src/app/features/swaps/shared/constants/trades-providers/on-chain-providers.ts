@@ -530,5 +530,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'XY',
     image: 'assets/images/icons/providers/bridge/xy.svg',
     color: '#1f4d96'
+  },
+  [ON_CHAIN_TRADE_TYPE.FUSIONX]: {
+    name: 'FusionX',
+    image: `${imageBasePath}fusionx.webp`,
+    color: '#b0b3b7'
   }
 };
