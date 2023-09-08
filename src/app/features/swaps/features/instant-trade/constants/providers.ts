@@ -216,7 +216,10 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       ON_CHAIN_TRADE_TYPE.XY_DEX
     ]),
-    [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.IZUMI]),
+    [BLOCKCHAIN_NAME.MANTLE]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.IZUMI,
+      ON_CHAIN_TRADE_TYPE.FUSIONX
+    ]),
     [BLOCKCHAIN_NAME.FUJI]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.GOERLI]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: getDefaultStateByProviders([]),
