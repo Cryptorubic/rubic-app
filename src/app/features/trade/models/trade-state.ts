@@ -1,22 +1,25 @@
-import { WrappedCrossChainTrade, WrappedOnChainTradeOrNull } from 'rubic-sdk';
-import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { RubicError } from '@core/errors/models/rubic-error';
+import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { RouteStep } from '@features/trade/models/route-step';
 
 interface TradefullState {
-  trade: WrappedCrossChainTrade | Exclude<WrappedOnChainTradeOrNull, null>;
-  status: TRADE_STATUS;
+  trade: WrappedSdkTrade['trade'];
   error: null;
-  selectedByUser: boolean;
-  needApprove: boolean;
+  // warnings - Min/Max amounts errors
+  tradeType: WrappedSdkTrade['tradeType'];
 }
 
 interface TradelessState {
   trade: null;
-  status: TRADE_STATUS;
-  error: RubicError<ERROR_TYPE>;
-  selectedByUser: false;
-  needApprove: false;
+  error: WrappedSdkTrade['error'];
+  // warnings - Min/Max amounts errors
+  tradeType: WrappedSdkTrade['tradeType'];
 }
 
-export type TradeState = TradefullState | TradelessState;
+export type TradeState = (TradefullState | TradelessState) & {
+  tags: {
+    isBest: boolean;
+    cheap: boolean;
+  };
+  needApprove: boolean;
+  routes: RouteStep[];
+};

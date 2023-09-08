@@ -1,0 +1,121 @@
+.element {
+  padding: 5px;
+
+  background: var(--primary-background);
+
+  border-radius: 17px;
+
+
+  &__provider-container {
+    padding: 10px;
+
+    background: var(--secondary-background);
+    border-radius: 17px;
+
+    &_best {
+      background: var(--io-background);
+    }
+  }
+
+  &__amounts-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+  }
+
+  &__amount {
+    display: flex;
+    align-items: center;
+  }
+
+  &__token-image {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+
+    border-radius: 100%;
+  }
+
+  &__token-amount {
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  &__amount-price {
+    color: var(--tui-text-03);
+  }
+
+  &__middle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__provider {
+    display: flex;
+    align-items: center;
+  }
+
+  &__provider-image {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+
+    border-radius: 5px;
+  }
+
+  &__provider-label {
+    color: var(--tui-text-03);
+  }
+
+  &__best-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%);
+  }
+
+  ::ng-deep &__expander {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+
+    svg {
+      transition: 0.2s ease-in-out;
+    }
+
+    &_active {
+      svg {
+        transform: rotate(180deg);
+        transform-origin: center;
+      }
+
+      svg path {
+        fill: var(--tui-text-03);
+      }
+    }
+
+    svg path {
+      fill: var(--tui-text-03);
+    }
+  }
+
+  &__right {
+    display: flex;
+  }
+
+  &__provider-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 10px 5px;
+  }
+
+  &__provider-info-element {
+    display: flex;
+    gap: 5px;
+  }
+}

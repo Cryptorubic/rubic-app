@@ -1,26 +1,5 @@
 @use 'src/scss/core' as *;
 
-:host {
-  margin-right: 20px;
-
-  background-color: var(--primary-color);
-  border-radius: 25px;
-
-  ::ng-deep app-rubic-button {
-    .t-wrapper {
-      padding: 0 1.4rem !important;
-
-      .t-content {
-        font-size: 16px !important;
-      }
-    }
-
-    .t-wrapper[data-appearance='secondary'] {
-      background-color: var(--primary-color) !important;
-    }
-  }
-}
-
 .image {
   height: 34px;
   margin-right: 10px;

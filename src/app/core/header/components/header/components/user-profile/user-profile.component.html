@@ -18,7 +18,7 @@
 </ng-template>
 
 <ng-template #dropdownButtonTemplate>
-  <div class="user-profile">
+  <button tuiButton appearance="secondary" type="button" size="m">
     <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
       <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="25" height="25" />
     </div>
@@ -36,7 +36,7 @@
     ></app-notification-badge>
 
     <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
-  </div>
+  </button>
 </ng-template>
 
 <!--<ng-template #dropdownOptionTemplate>-->

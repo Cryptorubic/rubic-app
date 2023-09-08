@@ -6,15 +6,14 @@ import {
   SwapFormInputControl,
   SwapFormOutput,
   SwapFormOutputControl
-} from '@core/services/swaps/models/swap-form-controls';
+} from '../../models/swap-form-controls';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { isMinimalToken } from '@shared/utils/is-token';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
@@ -23,11 +22,11 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
-      fromAssetType: new FormControl(null),
-      fromAsset: new FormControl(null),
+      fromBlockchain: new FormControl(null),
+      fromAmount: new FormControl(null),
+      fromToken: new FormControl(null),
       toBlockchain: new FormControl(null),
-      toToken: new FormControl(null),
-      fromAmount: new FormControl(null)
+      toToken: new FormControl(null)
     }),
     output: new FormGroup<SwapFormOutputControl>({
       toAmount: new FormControl(null)
@@ -51,22 +50,18 @@ export class SwapsFormService {
     distinctUntilChanged(
       (prev, next) =>
         prev.toBlockchain === next.toBlockchain &&
-        prev.fromAssetType === next.fromAssetType &&
-        compareAssets(prev.fromAsset, next.fromAsset) &&
+        prev.fromBlockchain === next.fromBlockchain &&
+        compareAssets(prev.fromToken, next.fromToken) &&
         compareTokens(prev.toToken, next.toToken) &&
         prev.fromAmount === next.fromAmount
     ),
     shareReplay(shareReplayConfig)
   );
 
-  public readonly fromBlockchain$: Observable<BlockchainName | null> = this.inputValue$.pipe(
-    map(inputValue => {
-      const assetType = inputValue.fromAssetType;
-      return BlockchainsInfo.isBlockchainName(assetType) ? assetType : null;
-    }),
-    distinctUntilChanged(),
-    shareReplay(shareReplayConfig)
-  );
+  // public readonly fromBlockchain$: Observable<BlockchainName | null> = this.inputValue$.pipe(
+  //   distinctUntilChanged(),
+  //   shareReplay(shareReplayConfig)
+  // );
 
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
     map(inputValue => inputValue.toBlockchain),
@@ -75,12 +70,7 @@ export class SwapsFormService {
   );
 
   public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
-    map(inputValue => {
-      if (isMinimalToken(inputValue.fromAsset)) {
-        return inputValue.fromAsset;
-      }
-      return null;
-    }),
+    map(inputValue => inputValue.fromToken),
     distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)
   );
@@ -125,8 +115,8 @@ export class SwapsFormService {
     this.inputValue$.pipe(
       map(form =>
         Boolean(
-          form.fromAssetType &&
-            form.fromAsset &&
+          form.fromBlockchain &&
+            form.fromToken &&
             form.toBlockchain &&
             form.toToken &&
             form.fromAmount?.gt(0)

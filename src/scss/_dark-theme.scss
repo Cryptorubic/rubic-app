@@ -1,89 +1,90 @@
 @use 'src/scss/vars' as *;
 
-html.dark {
-  --transparent-line: #{$transparent-white};
-  --filter-inversion: invert(0);
+html.light {
 
-  --primary-background: rgb(39, 40, 50);
-  --form-background: rgb(38, 40, 42);
-  --form-background-transparent: rgba(38, 40, 42, 0.9);
-  --solid-background: rgb(0, 0, 0);
-  --secondary-background: rgba(255, 255, 255, 0.1);
-  --secondary-background-deposits: rgba(255, 255, 255, 0.05);
-  --iframe-primary-background: rgb(44, 44, 44);
-
-  --mobile-user-profile-background: rgb(23, 25, 25);
-  --mobile-assets-selector-item-background: rgb(51, 53, 53);
-
-  --staking-form-duration-background: rgb(33, 33, 33);
-  --staking-form-selected-duration: rgb(46, 46, 46);
-
-  --swap-and-earn-points-about: rgb(48, 48, 48);
-  --swap-and-earn-tabs-border: rgb(65, 65, 65);
-
-  --primary-text: rgb(255, 255, 255);
-  --primary-text-invert: rgb(0, 0, 0);
-  --secondary-text: rgba(255, 255, 255, 0.65);
-
-  --tui-secondary: rgba(255, 255, 255, 0.1);
-  --tui-secondary-hover: rgba(255, 255, 255, 0.05);
-  --tui-secondary-active: rgba(255, 255, 255, 0.05);
-
-
-  --tui-base-01: #181a19;
-  --tui-base-02: init;
-
-  --tui-text-01: var(--primary-text);
-  --tui-text-02: var(--secondary-text);
-
-  --selection-color: rgba(255, 255, 255, 0.05);
-
-  &_colored {
-    background-color: $background-black;
-  }
-
-  body {
-    background: var(--primary-background);
-
-    &.default-iframe-background {
-      background: linear-gradient(45deg, black, var(--primary-color)) !important;
-    }
-
-    .sort-by-dropdown {
-      --tui-base-02: var(--solid-background);
-    }
-
-    .settings__button-auto:not(.settings__button-auto_active) {
-      border-color: var(--primary-text);
-    }
-
-    #onramper-widget {
-      filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.95);
-    }
-
-    .tui-skeleton {
-      &::after {
-        background-color: rgba(130, 130, 130, 0.15);
-      }
-    }
-
-    .swaps-form__delimiter .switcher img {
-      filter: brightness(2.5);
-    }
-
-    .swaps-header .swaps-header__icon {
-      filter: invert(1) opacity(0.7) hue-rotate(180deg);
-    }
-  }
-
-  app-rubic-button .t-wrapper[data-appearance='secondary'] {
-    border: 1px solid transparent;
-  }
-
-  @media (max-width: 651px) {
-    app-swap-button-container .t-wrapper[data-appearance='secondary'],
-    app-swap-button-container .t-wrapper[data-appearance='primary'] {
-      border: 1px solid var(--transparent-line);
-    }
-  }
+  //--transparent-line: #{$transparent-white};
+  //--filter-inversion: invert(0);
+  //
+  //--primary-background: rgb(39, 40, 50);
+  //--form-background: rgb(38, 40, 42);
+  //--form-background-transparent: rgba(38, 40, 42, 0.9);
+  //--solid-background: rgb(0, 0, 0);
+  //--secondary-background: rgba(255, 255, 255, 0.1);
+  //--secondary-background-deposits: rgba(255, 255, 255, 0.05);
+  //--iframe-primary-background: rgb(44, 44, 44);
+  //
+  //--mobile-user-profile-background: rgb(23, 25, 25);
+  //--mobile-assets-selector-item-background: rgb(51, 53, 53);
+  //
+  //--staking-form-duration-background: rgb(33, 33, 33);
+  //--staking-form-selected-duration: rgb(46, 46, 46);
+  //
+  //--swap-and-earn-points-about: rgb(48, 48, 48);
+  //--swap-and-earn-tabs-border: rgb(65, 65, 65);
+  //
+  //--primary-text: rgb(255, 255, 255);
+  //--primary-text-invert: rgb(0, 0, 0);
+  //--secondary-text: rgba(255, 255, 255, 0.65);
+  //
+  //--tui-secondary: rgba(255, 255, 255, 0.1);
+  //--tui-secondary-hover: rgba(255, 255, 255, 0.05);
+  //--tui-secondary-active: rgba(255, 255, 255, 0.05);
+  //
+  //
+  //--tui-base-01: #181a19;
+  //--tui-base-02: init;
+  //
+  //--tui-text-01: var(--primary-text);
+  //--tui-text-02: var(--secondary-text);
+  //
+  //--selection-color: rgba(255, 255, 255, 0.05);
+  //
+  //&_colored {
+  //  background-color: $background-black;
+  //}
+  //
+  //body {
+  //  background: var(--primary-background);
+  //
+  //  &.default-iframe-background {
+  //    background: linear-gradient(45deg, black, var(--primary-color)) !important;
+  //  }
+  //
+  //  .sort-by-dropdown {
+  //    --tui-base-02: var(--solid-background);
+  //  }
+  //
+  //  .settings__button-auto:not(.settings__button-auto_active) {
+  //    border-color: var(--primary-text);
+  //  }
+  //
+  //  #onramper-widget {
+  //    filter: invert(1) hue-rotate(180deg) opacity(0.8) contrast(0.95);
+  //  }
+  //
+  //  .tui-skeleton {
+  //    &::after {
+  //      background-color: rgba(130, 130, 130, 0.15);
+  //    }
+  //  }
+  //
+  //  .swaps-form__delimiter .switcher img {
+  //    filter: brightness(2.5);
+  //  }
+  //
+  //  .swaps-header .swaps-header__icon {
+  //    filter: invert(1) opacity(0.7) hue-rotate(180deg);
+  //  }
+  //}
+  //
+  //app-rubic-button .t-wrapper[data-appearance='secondary'] {
+  //  border: 1px solid transparent;
+  //}
+  //
+  //@media (max-width: 651px) {
+  //  app-swap-button-container .t-wrapper[data-appearance='secondary'],
+  //  app-swap-button-container .t-wrapper[data-appearance='primary'] {
+  //    border: 1px solid var(--transparent-line);
+  //  }
+  //}
 }

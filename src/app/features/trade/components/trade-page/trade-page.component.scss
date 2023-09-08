@@ -17,11 +17,12 @@
     margin-bottom: 5px;
   }
 
-  .priv {
+  app-providers-list {
+    display: block;
     width: 400px;
     height: 600px;
 
-    background: #3c3d44;
+    background: var(--secondary-background);
     border-radius: 17px;
   }
 }

@@ -1,6 +1,6 @@
 <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
   <div tuiGroup>
-    <app-rubic-button-circle class="menu-button unfocused" [size]="'l'" appearance="flat">
+    <button tuiIconButton appearance="secondary" type="button" size="m">
       <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
         <div class="burger-menu__line"></div>
         <div class="burger-menu__line"></div>
@@ -13,7 +13,7 @@
         color="red"
         [value]="unreadTrades$ | async"
       ></app-notification-badge>
-    </app-rubic-button-circle>
+    </button>
   </div>
 </tui-hosted-dropdown>
 

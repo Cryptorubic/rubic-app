@@ -96,6 +96,7 @@ export class RubicMenuComponent implements AfterViewInit {
 
   public handleButtonClick(item?: NavigationItem): void {
     this.gtmService.reloadGtmSession();
+    this.onClose.emit();
     if (item) {
       this.window.open(item.link, item?.target || '_blank');
     }

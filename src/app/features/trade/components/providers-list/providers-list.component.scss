@@ -1,0 +1,35 @@
+:host {
+  padding: 10px 0 10px 10px;
+}
+
+h5 {
+  margin: 0 0 15px;
+  padding-right: 10px;
+
+  font-size: 15px;
+  line-height: 15px;
+}
+
+.providers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  max-height: 550px;
+}
+
+::ng-deep {
+  app-provider-element {
+    display: block;
+    margin-right: 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  .t-bar {
+    height: 550px;
+    margin-right: -2px;
+  }
+}

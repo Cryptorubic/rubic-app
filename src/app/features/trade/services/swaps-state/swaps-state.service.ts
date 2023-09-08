@@ -1,30 +1,38 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
-import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { map } from 'rxjs/operators';
-import {
-  compareCrossChainTrades,
-  CrossChainReactivelyCalculatedTradeData,
-  OnChainReactivelyCalculatedTradeData,
-  OnChainTrade
-} from 'rubic-sdk';
+import { compareCrossChainTrades, OnChainTrade, WrappedCrossChainTradeOrNull } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
+import { SelectedTrade } from '@features/trade/models/selected-trade';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Injectable()
 export class SwapsStateService {
-  private readonly defaultState: TradeState = {
+  private readonly defaultState: SelectedTrade = {
     trade: null,
-    status: TRADE_STATUS.NOT_INITIATED,
     error: null,
+    needApprove: false,
+    tradeType: undefined,
+    tags: {
+      isBest: false,
+      cheap: false
+    },
+    routes: [],
     selectedByUser: false,
-    needApprove: false
+    status: TRADE_STATUS.DISABLED
   };
+
+  private swapType: SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
   /**
    * Trade state
    */
-  private readonly _tradeState$ = new BehaviorSubject<TradeState>(this.defaultState);
+  private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
   public readonly tradeState$ = this._tradeState$.asObservable();
 
@@ -37,80 +45,101 @@ export class SwapsStateService {
    */
   public readonly currentTrade$ = this.tradeState$.pipe(map(el => el?.trade));
 
-  public set currentTrade(state: { trade: TradeState['trade']; needApprove: boolean }) {
-    this._tradeState$.next({
-      ...this.tradeState,
-      trade: state.trade,
-      error: null,
-      needApprove: state.needApprove
-    });
+  public set currentTrade(state: SelectedTrade) {
+    this._tradeState$.next(state);
   }
 
-  /**
-   * Error
-   */
-  public readonly error$ = this.tradeState$.pipe(map(el => el?.error));
-
-  public set error(error: TradeState['error']) {
-    this._tradeState$.next({
-      ...this.tradeState,
-      error,
-      trade: null,
-      selectedByUser: false,
-      needApprove: false
-    });
+  public get currentTrade(): SelectedTrade {
+    return this._tradeState$.getValue();
   }
+
+  // /**
+  //  * Error
+  //  */
+  // public readonly error$ = this.tradeState$.pipe(map(el => el?.error));
+  //
+  // public set error(error: TradeState['error']) {
+  //   this._tradeState$.next({
+  //     ...this.tradeState,
+  //     error,
+  //     trade: null,
+  //     selectedByUser: false,
+  //     needApprove: false
+  //   });
+  // }
 
   /**
    * Trades Store
    */
-  private readonly _tradesStore$ = new BehaviorSubject<TradeState['trade'][]>([]);
+  private readonly _tradesStore$ = new BehaviorSubject<TradeState[]>([]);
 
-  public readonly tradeStore$ = this._tradesStore$.asObservable();
+  public readonly tradesStore$ = this._tradesStore$.asObservable();
 
   /**
    * Receiver address
    */
   private receiverAddress: string | null;
 
-  /**
-   * Need approve
-   */
-  public needApprove: boolean;
-
-  constructor() {}
+  constructor(private readonly swapsFormService: SwapsFormService) {
+    this.subscribeOnTradeChange();
+  }
 
   public updateTrade(
-    container: OnChainReactivelyCalculatedTradeData | CrossChainReactivelyCalculatedTradeData
+    wrappedTrade: WrappedSdkTrade,
+    type: SWAP_PROVIDER_TYPE,
+    needApprove: boolean
   ): void {
-    const wrappedTrade = container?.wrappedTrade;
-    if (!wrappedTrade) {
+    if (!wrappedTrade?.trade) {
       return;
     }
+    const trade = wrappedTrade.trade;
+    const defaultState: TradeState = wrappedTrade?.error
+      ? {
+          error: wrappedTrade.error,
+          trade: null,
+          needApprove,
+          tradeType: wrappedTrade.tradeType,
+          tags: { isBest: false, cheap: false },
+          routes: []
+        }
+      : {
+          error: null,
+          trade,
+          needApprove,
+          tradeType: wrappedTrade.tradeType,
+          tags: { isBest: false, cheap: false },
+          routes: []
+        };
+
     let currentTrades = this._tradesStore$.getValue();
 
     // Already contains trades
     if (currentTrades.length) {
-      const isCrossChainList = currentTrades?.[0].trade instanceof CrossChainTrade;
-      const isCrossChainTrade = wrappedTrade instanceof CrossChainTrade;
-
-      // Add to or modify same list
-      if ((isCrossChainList && isCrossChainTrade) || (!isCrossChainList && !isCrossChainTrade)) {
+      // Same list
+      if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider.tradeType === wrappedTrade.tradeType
+          provider => provider.tradeType === trade.type
         );
+        // New or old
         if (providerIndex !== -1) {
-          currentTrades[providerIndex] = wrappedTrade;
+          currentTrades[providerIndex] = {
+            ...currentTrades[providerIndex],
+            trade: defaultState.trade!,
+            needApprove: defaultState.needApprove,
+            tags: { isBest: false, cheap: false },
+            error: null
+          };
         } else {
-          currentTrades.push(wrappedTrade);
+          currentTrades.push(defaultState);
         }
       } else {
         // Make a new list with one element
-        currentTrades = [wrappedTrade];
+        currentTrades = [defaultState];
       }
     } else {
-      currentTrades.push(wrappedTrade);
+      currentTrades.push(defaultState);
     }
+    this.swapType = type;
     this._tradesStore$.next(currentTrades);
   }
 
@@ -121,7 +150,7 @@ export class SwapsStateService {
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       if (isCrossChain) {
-        currentTrades.sort(compareCrossChainTrades);
+        (currentTrades as WrappedCrossChainTradeOrNull[]).sort(compareCrossChainTrades);
       } else if (isOnChain) {
         currentTrades.sort();
       } else {
@@ -130,9 +159,31 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
-      this.currentTrade = { trade: bestTrade, needApprove: false };
+      this.currentTrade = {
+        ...bestTrade,
+        selectedByUser: false,
+        status: TRADE_STATUS.READY_TO_SWAP
+      };
     } else {
       this.currentTrade = this.defaultState;
     }
+  }
+
+  public setTags(): void {
+    // const currentTrades = this._tradesStore$.getValue();
+    // const clearedTags = currentTrades.map(trade => trade);
+  }
+
+  public async selectTrade(tradeType: TradeProvider): Promise<void> {
+    const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
+    this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+  }
+
+  private subscribeOnTradeChange(): void {
+    this.currentTrade$.subscribe(trade => {
+      this.swapsFormService.outputControl.patchValue({
+        toAmount: trade?.to?.tokenAmount || null
+      });
+    });
   }
 }

@@ -7,7 +7,7 @@
   }
 
   &__second-label {
-    color: #878787;
+    color: var(--tui-text-03);
     font-weight: 400;
     font-size: 15px;
   }
@@ -29,8 +29,8 @@
     margin-top: -5px;
     margin-left: -25px;
 
-    background: #1f202a;
-    border: 5px solid #1f202a;
+    background: var(--io-background);
+    border: 5px solid var(--io-background);
     border-radius: 100%;
   }
 

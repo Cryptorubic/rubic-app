@@ -3,12 +3,14 @@ import { Asset } from '@features/swaps/shared/models/form/asset';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
+import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 
 interface AssetSelector {
   readonly mainImage: string | null;
   readonly secondImage: string | null;
   readonly mainLabel: string | null;
   readonly secondLabel: string | null;
+  readonly secondColor: string | null;
 }
 
 @Component({
@@ -32,12 +34,14 @@ export class AssetSelectorComponent {
 
   private getTokenAsset(token: AvailableTokenAmount): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
+    const color = blockchainColor[token.blockchain];
 
     return {
       secondImage: blockchain.img,
       secondLabel: blockchain.name,
       mainImage: token.image,
-      mainLabel: token.symbol
+      mainLabel: token.symbol,
+      secondColor: color
     };
   }
 
@@ -47,7 +51,8 @@ export class AssetSelectorComponent {
       secondImage: '',
       secondLabel: 'Fiat currency',
       mainImage: fiat.image,
-      mainLabel: fiat.name
+      mainLabel: fiat.name,
+      secondColor: 'white'
     };
   }
 }

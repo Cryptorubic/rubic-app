@@ -28,13 +28,12 @@ export class AmountTransputComponent {
   @Input() public inputMode: 'input' | 'output' | 'combined';
 
   @Input() set amountValue(value: BigNumber) {
-    if (this.inputMode !== 'input' && value?.isFinite()) {
+    if (value?.isFinite()) {
       this.amount.setValue(value.toFixed(), { emitViewToModelChange: false });
-      this.updateInputValue();
     }
   }
 
-  @Output() public amountUpdated = new EventEmitter<void>();
+  @Output() public amountUpdated = new EventEmitter<BigNumber>();
 
   private get formattedAmount(): string {
     return this.amount?.value.split(',').join('');
@@ -48,26 +47,7 @@ export class AmountTransputComponent {
   public handleAmountChange(amount: string): void {
     if (this.inputMode !== 'output') {
       this.amount.setValue(amount, { emitViewToModelChange: false });
-      this.updateInputValue();
-    }
-  }
-
-  private updateInputValue(): void {
-    const amount =
-      this.formType === 'from'
-        ? this.swapFormService.inputValue.fromAmount
-        : this.swapFormService.outputValue.toAmount;
-    const amountKey = this.formType === 'from' ? 'fromAmount' : 'toAmount';
-    const controlKey = this.formType === 'from' ? 'inputControl' : 'outputControl';
-
-    if (
-      ((amount && !amount.isNaN()) || this.formattedAmount) &&
-      !amount?.eq(this.formattedAmount)
-    ) {
-      this.swapFormService[controlKey].patchValue({
-        [amountKey]: new BigNumber(this.formattedAmount)
-      });
-      this.amountUpdated.emit();
+      this.amountUpdated.emit(new BigNumber(this.formattedAmount));
     }
   }
 }

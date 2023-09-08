@@ -39,34 +39,37 @@
     ></app-rubic-menu>
   </app-rubic-menu-toggler>
 
-  <nav *noFrame class="rubic-header__nav">
-    <a
-      class="button-link"
-      (click)="navigateToSwaps()"
-      [class.button-link_active]="
-        rootPath &&
-        ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
-          (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
-      "
-      >Swaps</a
-    >
-    <div class="button-link" routerLink="/staking" [class.button-link_active]="isStakingPage">
-      Staking
-    </div>
-    <a
-      class="button-link"
-      (click)="navigateToLimitOrder()"
-      [class.button-link_active]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"
-      >Limit Order</a
-    >
-    <div
-      class="button-link"
-      routerLink="/revoke-approval"
-      [class.button-link_active]="isRevokePage"
-    >
-      Revoke Approval
-    </div>
-  </nav>
+  <button
+    tuiButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    [pseudoActive]="
+      rootPath &&
+      ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
+        (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
+    "
+  >
+    <div (click)="navigateToSwaps()">Swaps</div>
+  </button>
+
+  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isStakingPage" size="m">
+    <div routerLink="/staking">Staking</div>
+  </button>
+
+  <!--  <button-->
+  <!--    tuiButton-->
+  <!--    appearance="secondary"-->
+  <!--    type="button"-->
+  <!--    size="m"-->
+  <!--    [pseudoActive]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"-->
+  <!--  >-->
+  <!--    <div (click)="navigateToLimitOrder()">Limit Order</div>-->
+  <!--  </button>-->
+
+  <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
+  <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
+  <!--  </button>-->
 
   <ng-container *noFrame>
     <app-points-button
@@ -90,18 +93,17 @@
       <app-user-profile class="rubic-header__profile-user"></app-user-profile>
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
-
-    <app-settings-toggler
-      *noFrame
-      [settingsOpened]="settingsOpened"
-      (changeSettingsVisibility)="settingsOpened = $event"
-      class="rubic-header__settings"
-    >
-      <app-settings (handleClose)="settingsOpened = false"></app-settings>
-    </app-settings-toggler>
   </div>
 
-  <div class="rubic-header-mobile">
-    <app-mobile-menu *noFrame></app-mobile-menu>
-  </div>
+  <app-settings-toggler
+    *noFrame
+    [settingsOpened]="settingsOpened"
+    (changeSettingsVisibility)="settingsOpened = $event"
+  >
+    <app-settings (handleClose)="settingsOpened = false"></app-settings>
+  </app-settings-toggler>
+
+  <ng-container *noFrame>
+    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+  </ng-container>
 </header>

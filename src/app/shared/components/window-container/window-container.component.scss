@@ -1,14 +1,14 @@
 .container {
   padding: 10px;
 
-  background: #3c3d44;
+  background: var(--secondary-background);
   border-radius: 17px;
 }
 
-::ng-deep header > *:last-child {
-  display: flex;
-  margin-bottom: 10px;
-}
+//::ng-deep header > *:last-child {
+//  display: flex;
+//  margin-bottom: 10px;
+//}
 
 ::ng-deep footer > *:first-child {
   display: flex;

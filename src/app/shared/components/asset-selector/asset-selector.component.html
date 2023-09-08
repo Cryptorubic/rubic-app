@@ -1,11 +1,11 @@
 <div class="selector" (click)="handleAssetSelection.emit()">
   <ng-container *ngIf="visibleAsset; else emptySelector">
-    <div class="selector__second-image-container">
+    <div [style.background]="visibleAsset.secondColor" class="selector__second-image-container">
       <img
         class="selector__second-image"
         [src]="visibleAsset.secondImage"
-        width="30"
-        height="30"
+        width="40"
+        height="40"
         [alt]="visibleAsset.secondLabel"
       />
     </div>

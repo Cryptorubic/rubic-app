@@ -1,18 +1,6 @@
 @use 'src/scss/core' as *;
 
 .user-profile {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  height: 50px;
-  padding: 13px 21px;
-
-  background-color: var(--tui-secondary);
-
-  border: 1px solid var(--transparent-line);
-  border-radius: 50px;
-
   @include dark {
     border-color: transparent;
   }

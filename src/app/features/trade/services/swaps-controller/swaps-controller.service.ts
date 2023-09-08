@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { of, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
+import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
+import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -12,7 +14,9 @@ export class SwapsControllerService {
   constructor(
     private readonly swapFormService: SwapsFormService,
     private readonly sdkService: SdkService,
-    private readonly swapsState: SwapsStateService
+    private readonly swapsState: SwapsStateService,
+    private readonly crossChainService: CrossChainService,
+    private readonly onChainService: OnChainService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -57,28 +61,25 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { toBlockchain, fromAsset, toToken, fromAmount } = this.swapFormService.inputValue;
+          const { toBlockchain, fromToken } = this.swapFormService.inputValue;
 
-          if ('blockchain' in fromAsset) {
-            if (fromAsset.blockchain === toBlockchain) {
-              return this.sdkService.instantTrade.calculateTradeReactively(
-                fromAsset,
-                fromAmount.toFixed(),
-                toToken.address
-              );
-            } else {
-              return this.sdkService.crossChain.calculateTradesReactively(
-                fromAsset,
-                fromAmount.toFixed(),
-                toToken
-              );
-            }
+          if (fromToken.blockchain === toBlockchain) {
+            return this.onChainService.calculateTrades();
+          } else {
+            return this.crossChainService.calculateTrades([]);
           }
         }),
-        tap(() => {})
+        switchMap(container => {
+          const wrappedTrade = container.value.wrappedTrade;
+          return forkJoin([
+            of(wrappedTrade),
+            wrappedTrade?.trade?.needApprove() || of(false),
+            of(container.type)
+          ]);
+        })
       )
-      .subscribe(trade => {
-        this.swapsState.updateTrade(trade);
+      .subscribe(([trade, needApprove, type]) => {
+        this.swapsState.updateTrade(trade, type, needApprove);
         this.swapsState.pickProvider();
         this.setTradeAmount();
         // if (trade) {
@@ -94,7 +95,7 @@ export class SwapsControllerService {
     const trade = this.swapsState.tradeState?.trade;
     if (trade) {
       this.swapFormService.outputControl.patchValue({
-        toAmount: trade.trade.to.tokenAmount
+        toAmount: trade.to.tokenAmount
       });
     }
   }

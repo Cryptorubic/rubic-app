@@ -17,6 +17,8 @@
               formType="from"
               [selectedToken]="fromAsset$ | async"
               inputMode="input"
+              (amountUpdated)="updateInputValue($event)"
+              [amountValue]="fromAmount$ | async"
             ></app-amount-transput>
           </div>
         </app-input-output-container>
@@ -39,10 +41,16 @@
       </div>
 
       <ng-container footer>
-        <button (click)="expand()">Swap Button</button>
+        <button>Swap Button</button>
       </ng-container>
     </app-window-container>
   </div>
 
-  <div *ngIf="isExpanded" [@inOutAnimation] class="priv"></div>
+  <app-providers-list
+    *ngIf="showProviders$ | async"
+    @inOutAnimation
+    [states]="providers$ | async"
+    [selectedTradeType]="selectedTradeType$ | async"
+    (selectTrade)="selectTrade($event)"
+  ></app-providers-list>
 </div>
