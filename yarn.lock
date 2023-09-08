@@ -13621,10 +13621,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.28.1-alpha-syncswap-tokens.0:
-  version "4.28.1-alpha-syncswap-tokens.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.28.1-alpha-syncswap-tokens.0.tgz#8d69448a69aa1b0fed4f54856f191f427e68a012"
-  integrity sha512-ou2UttbE+AqApzi1y8qv/7fQTVCcCfJ4xvav/op/TJJXM3E/M2/1jrxQby/PQUrk1XFd5PclWkq5XwVORsNjHA==
+rubic-sdk@4.28.1-alpha-syncswap-tokens.2:
+  version "4.28.1-alpha-syncswap-tokens.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.28.1-alpha-syncswap-tokens.2.tgz#32b778f77e2c24217e71d8077d3f072f270b3823"
+  integrity sha512-BNSJZU7YZnQ8uRpSqf3g9qHoycsSPbUiZceiJJfz2GZKqffJZuutShXjkuEnBSxvhghZkW6z7gAbAHAISEuSFA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
