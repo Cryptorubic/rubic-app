@@ -5,11 +5,11 @@
 
   display: flex;
   justify-content: center;
-  max-height: 57px;
+  max-height: 38px;
 
   text-decoration: none;
 
-  background: linear-gradient(90deg, #0ac780 0%, #5be3e3 9.66%, #e3ffff 24.85%, #f9ecff 74.28%, #c978ef 87.32%, #5d11be 95.52%);
+  background: linear-gradient(275deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
 
   @include hide-unused-ui {
     display: none;
@@ -20,7 +20,7 @@
     z-index: 1;
 
     display: flex;
-    gap: 40px;
+    gap: 24px;
     align-items: center;
     justify-content: center;
 
@@ -29,7 +29,7 @@
   }
 
   &__text {
-    @include font(24px, 1, 400, #504E4E);
+    @include font(25px, 1, 400, #ffffff);
     margin: 0;
 
     letter-spacing: 1px;
@@ -41,18 +41,14 @@
   }
 
   &__link {
-    @include font(24px, 1, 400, #504E4E);
+    @include font(19px, 1, 400, #C3FFDB);
     display: flex;
 
     gap: 12px;
     align-items: center;
-    padding: 5px 22px;
 
     white-space: nowrap;
     text-decoration: none;
-
-    border: 2px solid #504e4e;
-    border-radius: 50px;
 
     &:hover {
       img {
@@ -61,8 +57,8 @@
     }
 
     img {
-      width: 10px;
-      height: 15px;
+      width: 25px;
+      height: 25px;
 
       margin-top: 3px;
 
@@ -74,11 +70,11 @@
 @include b($laptop-xl) {
   .banner {
     &__text {
-      @include font(20px, 1, 400, #504E4E);
+      @include font(20px, 1, 400, #ffffff);
     }
 
     &__link {
-      @include font(20px, 1, 400, #504E4E);
+      @include font(15px, 1, 400, #C3FFDB);
     }
   }
 }
@@ -95,12 +91,11 @@
 @include b($tablet) {
   .banner {
     &__text {
-      @include font(18px, 1, 400, #504E4E);
+      @include font(18px, 1, 400, #ffffff);
     }
 
     &__link {
-      @include font(18px, 1, 400, #504E4E);
-      padding: 5px 15px;
+      @include font(13px, 1, 400, #C3FFDB);
     }
   }
 }
@@ -115,17 +110,16 @@
     }
 
     &__text {
-      @include font(12px, 1, 400, #504E4E);
+      @include font(15px, 1, 400, #ffffff);
       text-align: left;
     }
 
     &__link {
-      @include font(12px, 1, 400, #504E4E);
       gap: 5px;
 
       img {
-        width: 5px;
-        height: 10px;
+        width: 15px;
+        height: 15px;
 
         transition: 100ms ease-in;
       }
@@ -138,9 +132,25 @@
     &__text {
       white-space: initial;
     }
+  }
+}
+
+@include b(420) {
+  .banner {
+    &__text {
+      @include font(13px, 1, 400, #ffffff);
+    }
 
     &__link {
-      border: 1px solid #504e4e;
+      &-text {
+        display: none;
+      }
+
+      img {
+        width: 20px;
+        height: 20px;
+        margin-top: 0;
+      }
     }
   }
 }
