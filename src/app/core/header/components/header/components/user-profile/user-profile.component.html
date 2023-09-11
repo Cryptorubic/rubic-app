@@ -20,7 +20,7 @@
 <ng-template #dropdownButtonTemplate>
   <button tuiButton appearance="secondary" type="button" size="m">
     <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-      <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="25" height="25" />
+      <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="24" height="24" />
     </div>
 
     <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">

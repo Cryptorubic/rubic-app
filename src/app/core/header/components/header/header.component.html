@@ -3,31 +3,11 @@
 <!--  *noFrame-->
 <!--&gt;</app-banner>-->
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
-  <a
-    *noFrame
-    class="rubic-header__logo"
-    routerLink="/"
-    [ngClass]="{ 'rubic-header__logo_hide': currentUser }"
-  >
-    <img
-      [src]="
-        (isDarkTheme$ | async)
-          ? 'assets/images/rubic-logo.png'
-          : 'assets/images/rubic-logo-dark.png'
-      "
-      alt="Rubic logotype"
-      width="122"
-    />
-  </a>
-  <a
-    *onlyFrame
-    class="rubic-header__logo"
-    rel="noopener noreferrer"
-    target="_blank"
-    [href]="noFrameLink"
-  >
-    <img src="assets/images/rubic-logo.png" alt="Rubic logotype" width="90" />
-  </a>
+  <app-logo
+    [currentUser]="!!currentUser"
+    [isDarkTheme]="isDarkTheme$ | async"
+    [noFrameLink]="noFrameLink"
+  ></app-logo>
 
   <app-rubic-menu-toggler *noFrame class="rubic-header__menu">
     <app-rubic-menu
@@ -49,12 +29,21 @@
       ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
         (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
     "
+    (click)="navigateToSwaps()"
   >
-    <div (click)="navigateToSwaps()">Swaps</div>
+    Swaps
   </button>
 
-  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isStakingPage" size="m">
-    <div routerLink="/staking">Staking</div>
+  <button
+    tuiButton
+    appearance="secondary"
+    type="button"
+    [pseudoActive]="isStakingPage"
+    size="m"
+    routerLink="/staking"
+    class="staking-button"
+  >
+    Staking
   </button>
 
   <!--  <button-->
@@ -87,6 +76,8 @@
     ></div>
   </button>
 
+  <app-language-selector></app-language-selector>
+
   <!--  Old button, return when earn and swap company will be over -->
   <!--  <app-buy-token-->
   <!--    *noFrame-->
@@ -103,14 +94,6 @@
       <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
   </div>
-
-  <app-settings-toggler
-    *noFrame
-    [settingsOpened]="settingsOpened"
-    (changeSettingsVisibility)="settingsOpened = $event"
-  >
-    <app-settings (handleClose)="settingsOpened = false"></app-settings>
-  </app-settings-toggler>
 
   <ng-container *noFrame>
     <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>

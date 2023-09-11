@@ -1,0 +1,31 @@
+<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+  <div tuiGroup>
+    <button tuiIconButton appearance="secondary" type="button" size="m">
+      <img
+        class="active-lang"
+        *ngLet="activeLanguage$ | async as activeLang"
+        [src]="activeLang.imgSrc"
+        [alt]="activeLang.title"
+      />
+    </button>
+  </div>
+</tui-hosted-dropdown>
+
+<ng-template #dropdown let-activeZone>
+  <div class="languages">
+    <button
+      *ngFor="let lang of languages"
+      tuiButton
+      appearance="secondary"
+      type="button"
+      size="m"
+      class="languages__element"
+      (click)="setLanguage(lang.lng)"
+    >
+      <span class="languages__element-inner">
+        <img class="languages__element-icon" [src]="lang.imgSrc" [alt]="lang.title" />
+        <div class="languages__element-label">{{ lang.title }}</div>
+      </span>
+    </button>
+  </div>
+</ng-template>

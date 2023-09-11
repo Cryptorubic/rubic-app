@@ -1,12 +1,13 @@
-<ng-container *ngLet="_currentComponent$ | async as currentComponentData">
-  <aside class="header-settings">
-    <app-header-settings
-      [title]="currentComponentData.titleKey"
-      [haveBackButton]="!this.isDefaultComponent"
-      (closeClick)="closeSettings()"
-      (backClick)="backToSettings()"
-    ></app-header-settings>
+<!--<ng-container *ngLet="_currentComponent$ | async as currentComponentData">-->
+<!--  <aside class="header-settings">-->
+<!--&lt;!&ndash;    <app-header-settings&ndash;&gt;-->
+<!--&lt;!&ndash;      [title]="currentComponentData.titleKey"&ndash;&gt;-->
+<!--&lt;!&ndash;      [haveBackButton]="!this.isDefaultComponent"&ndash;&gt;-->
+<!--&lt;!&ndash;      (closeClick)="closeSettings()"&ndash;&gt;-->
+<!--&lt;!&ndash;      (backClick)="backToSettings()"&ndash;&gt;-->
+<!--&lt;!&ndash;    ></app-header-settings>&ndash;&gt;-->
 
-    <div *polymorpheusOutlet="currentComponentData.component; context: _currentComponent$"></div>
-  </aside>
-</ng-container>
+<!--&lt;!&ndash;    <div *polymorpheusOutlet="currentComponentData.component; context: _currentComponent$"></div>&ndash;&gt;-->
+<!--  </aside>-->
+<!--</ng-container>-->
+SETTINGS
