@@ -78,6 +78,15 @@
     ></app-points-button>
   </ng-container>
 
+  <button tuiIconButton appearance="secondary" type="button" size="m" (click)="switchTheme()">
+    <div
+      class="image"
+      [inlineSVG]="
+        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
+      "
+    ></div>
+  </button>
+
   <!--  Old button, return when earn and swap company will be over -->
   <!--  <app-buy-token-->
   <!--    *noFrame-->
