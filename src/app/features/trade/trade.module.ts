@@ -17,9 +17,15 @@ import { TargetNetworkAddressService } from '@features/swaps/core/services/targe
 import { TuiExpandModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { TuiTagModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 
 @NgModule({
-  declarations: [TradePageComponent, ProvidersListComponent, ProviderElementComponent],
+  declarations: [
+    TradePageComponent,
+    ProvidersListComponent,
+    ProviderElementComponent,
+    PreviewSwapComponent
+  ],
   exports: [],
   imports: [
     TradeRoutingModule,
