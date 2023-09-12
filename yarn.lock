@@ -13621,10 +13621,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.29.0-alpha-aerodrome-dex.2:
-  version "4.29.0-alpha-aerodrome-dex.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.29.0-alpha-aerodrome-dex.2.tgz#ba14ef2e92f1a6d12d33e109a03f961f0e9a0da8"
-  integrity sha512-2u+mKOmN7OKgOnLXAy63myB7IO5g0mBXJgs1p7O4Fkq0iv6jIgoOQNxja/MEtxlA4gHeZ1RCOeoXpSgdkZN8PA==
+rubic-sdk@4.29.0-alpha-aerodrome-dex.3:
+  version "4.29.0-alpha-aerodrome-dex.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.29.0-alpha-aerodrome-dex.3.tgz#c7f3358ec5152645d66efe711a0995600b201c22"
+  integrity sha512-pzyY0undPuwpqhK0VVfFbS+XU0YxiKPrsyN+0oNWSmWm4f2kpsQYkhrKyjZYT4/Wavelmo+8wZEHJTdbOLOEWQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
