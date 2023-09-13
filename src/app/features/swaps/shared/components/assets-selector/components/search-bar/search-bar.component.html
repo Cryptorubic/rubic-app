@@ -4,7 +4,7 @@
     [ngModel]="searchQuery"
     (ngModelChange)="onQueryChanges($event)"
     [tuiTextfieldIcon]="'tuiIconSearchLarge'"
-    [tuiTextfieldSize]="searchBarSize"
+    [tuiTextfieldSize]="'m'"
   >
     {{ searchBarText$ | async | translate }}
   </tui-input>

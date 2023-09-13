@@ -1,52 +1,50 @@
 @use 'src/scss/core' as *;
 
+:host {
+  --tui-secondary: var(--tui-base-01);
+  --tui-padding: 0;
+  --tui-height-l: 60px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-label {
+  font-size: 12px;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  padding: 5px;
+  overflow: hidden;
+}
+
 .asset-types-aside {
   display: flex;
   align-items: center;
 
-  width: 194px;
+  width: 130px;
   height: 100%;
-  padding: 14px 10px;
-
-  background: rgba(170, 170, 170, 0.13);
-  border-radius: 0 10px 0 15px;
-
-  @include iframe {
-    left: unset;
-
-    width: 100%;
-    height: unset;
-    padding: 0 0 14px;
-
-    background: unset;
-    border-radius: unset;
-    box-shadow: unset;
-  }
-
-  @include iframe-horizontal {
-    width: 94%;
-  }
-
-  @include iframe-vertical {
-    padding-bottom: 0;
-  }
-
-  @include hide-unused-ui {
-    align-items: flex-start;
-  }
 
   &__scroll {
     max-height: 100%;
+  }
 
-    @include iframe {
-      height: 76px;
-    }
+  &__list-element {
+    flex: 1;
   }
 
   &__list {
     display: flex;
     flex-wrap: wrap;
-    grid-row-gap: 14px;
+    gap: 10px;
 
     @include iframe {
       flex-direction: row;
@@ -98,30 +96,10 @@
   &__blockchain-header {
     display: none;
   }
-
-  ::ng-deep app-icon-button {
-    button {
-      width: 77px !important;
-      height: 68px !important;
-
-      @include iframe {
-        width: 70px !important;
-        height: 56px !important;
-      }
-
-      .t-content {
-        justify-content: unset;
-
-        .image {
-          margin: 5px 0 2px;
-        }
-      }
-    }
-  }
 }
 
 .open-selector {
-  width: 77px;
+  width: 60px;
 
   ::ng-deep app-rubic-button {
     [tuiButton] {

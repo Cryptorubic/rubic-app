@@ -18,6 +18,8 @@ import { TuiExpandModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { TuiTagModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
+import { SwapsModule } from '@features/swaps/swaps.module';
+import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-selector/assets-selector.module';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { PreviewSwapComponent } from './components/preview-swap/preview-swap.com
     TuiExpandModule,
     TuiScrollbarModule,
     TuiTagModule,
-    InlineSVGModule
+    InlineSVGModule,
+    SwapsModule,
+    AssetsSelectorModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

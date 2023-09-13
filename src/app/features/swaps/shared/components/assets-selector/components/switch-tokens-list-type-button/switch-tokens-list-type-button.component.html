@@ -1,11 +1,10 @@
-<app-icon-button
-  *ngLet="buttonData$ | async as buttonData"
-  [icon]="'assets/images/icons/' + buttonData.icon"
-  [tuiHint]="buttonData.hintText"
-  [tuiHintShowDelay]="1100"
-  [border]="false"
-  (iconButtonClick)="switchMode()"
-  buttonSize="s"
+<button
+  tuiIconButton
+  size="m"
   appearance="secondary"
+  type="button"
+  *ngLet="buttonData$ | async as buttonData"
+  (click)="switchMode()"
 >
-</app-icon-button>
+  <img class="image" [src]="'assets/images/icons/' + buttonData.icon" [alt]="'Switch list'" />
+</button>

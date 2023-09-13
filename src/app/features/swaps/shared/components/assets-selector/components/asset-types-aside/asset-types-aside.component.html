@@ -7,28 +7,6 @@
   </div>
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
-      <ng-container *noFrame="'horizontal'">
-        <li
-          *ngIf="showFiats"
-          class="asset-types-aside__fiats"
-          [ngClass]="{ disabled: fiatsDisabled }"
-          tuiHintAppearance="error"
-          [tuiHint]="fiatsDisabled ? 'Cannot trade with selected blockchain' : null"
-        >
-          <app-icon-button
-            appearance="secondary"
-            icon="assets/images/icons/fiat-selector.svg"
-            [inlineSvg]="true"
-            [disabled]="selectedAssetType === 'fiat' || fiatsDisabled"
-            [border]="selectedAssetType === 'fiat'"
-            [borderRadiusPercent]="50"
-            label="Fiat"
-            (iconButtonClick)="openFiatsList()"
-          >
-          </app-icon-button>
-        </li>
-      </ng-container>
-
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
         <ng-container
           *ngLet="
@@ -39,36 +17,57 @@
             <ng-container
               *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
             >
-              <li
+              <button
+                class="asset-types-aside__list-element"
                 [id]="idPrefix + 'Network_' + blockchainItem.name"
-                [ngClass]="{ disabled: disabled }"
-                tuiHintAppearance="error"
+                tuiButton
+                size="l"
+                type="button"
+                appearance="secondary"
+                [disabled]="selectedAssetType === blockchainItem.name || disabled"
                 [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
+                (click)="onBlockchainSelect(blockchainItem.name)"
               >
-                <app-icon-button
-                  appearance="secondary"
-                  [icon]="blockchainItem.icon"
-                  [disabled]="selectedAssetType === blockchainItem.name || disabled"
-                  [border]="selectedAssetType === blockchainItem.name"
-                  [borderRadiusPercent]="50"
-                  [label]="blockchainItem.label"
-                  (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"
-                >
-                </app-icon-button>
-              </li>
+                <div class="icon-container">
+                  <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
+                  <span class="icon-label">{{ blockchainItem.label }}</span>
+                </div>
+              </button>
+
+              <!--              <li-->
+              <!--                [id]="idPrefix + 'Network_' + blockchainItem.name"-->
+              <!--                [ngClass]="{ disabled: disabled }"-->
+              <!--                tuiHintAppearance="error"-->
+              <!--                [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"-->
+              <!--              >-->
+              <!--                <app-icon-button-->
+              <!--                  appearance="secondary"-->
+              <!--                  [icon]="blockchainItem.icon"-->
+              <!--                  [disabled]="selectedAssetType === blockchainItem.name || disabled"-->
+              <!--                  [border]="selectedAssetType === blockchainItem.name"-->
+              <!--                  [borderRadiusPercent]="50"-->
+              <!--                  [label]="blockchainItem.label"-->
+              <!--                  (iconButtonClick)="onBlockchainSelect(blockchainItem.name)"-->
+              <!--                >-->
+              <!--                </app-icon-button>-->
+              <!--              </li>-->
             </ng-container>
           </ng-container>
         </ng-container>
 
-        <li class="open-selector" *noFrame>
-          <app-rubic-button
-            *ngIf="blockchainsAmount - shownBlockchainsAmount > 0"
+        <ng-container *ngIf="blockchainsAmount - shownBlockchainsAmount > 0">
+          <button
+            class="open-selector"
+            *noFrame
+            tuiButton
+            size="l"
+            type="button"
             appearance="secondary"
-            (onClick)="openBlockchainsList()"
+            (click)="openBlockchainsList()"
           >
             +{{ blockchainsAmount - shownBlockchainsAmount }}
-          </app-rubic-button>
-        </li>
+          </button>
+        </ng-container>
       </ng-container>
     </ul>
   </tui-scrollbar>

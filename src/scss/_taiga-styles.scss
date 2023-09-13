@@ -1,5 +1,9 @@
 @use 'src/scss/core' as *;
 
+[tuiWrapper]::after {
+  border: none !important;
+}
+
 
 //html.iframe-horizontal {
 //  tui-dialog {

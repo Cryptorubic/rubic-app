@@ -11,6 +11,8 @@ import { map } from 'rxjs/operators';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { DOCUMENT } from '@angular/common';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
+import { BehaviorSubject } from 'rxjs';
+import { Asset } from '@features/swaps/shared/models/form/asset';
 
 @Component({
   selector: 'app-trade-page',
@@ -31,6 +33,12 @@ import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trad
   ]
 })
 export class TradePageComponent {
+  private readonly _formContent$ = new BehaviorSubject<'form' | 'fromSelector' | 'toSelector'>(
+    'form'
+  );
+
+  public readonly formContent$ = this._formContent$.asObservable();
+
   public readonly fromAsset$ = this.swapFormService.fromToken$;
 
   public readonly toAsset$ = this.swapFormService.toToken$;
@@ -60,32 +68,36 @@ export class TradePageComponent {
     @Inject(DOCUMENT) private readonly document: Document
   ) {}
 
-  public openTokensSelect(formType: FormType): void {
-    this.modalService.openAssetsSelector(formType, '').subscribe((token: TokenAmount) => {
-      if (token) {
-        this.selectedAsset = token;
-        const inputElement = this.document.getElementById('token-amount-input-element');
-        const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
+  public handleTokenSelect(formType: FormType, asset: Asset): void {
+    const token = asset as TokenAmount;
+    if (token) {
+      this.selectedAsset = token;
+      const inputElement = this.document.getElementById('token-amount-input-element');
+      const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
 
-        if (inputElement && isFromAmountEmpty) {
-          setTimeout(() => {
-            inputElement.focus();
-          }, 0);
-        }
-
-        if (formType === 'from') {
-          this.swapFormService.inputControl.patchValue({
-            fromBlockchain: token.blockchain,
-            fromToken: token
-          });
-        } else {
-          this.swapFormService.inputControl.patchValue({
-            toToken: token,
-            toBlockchain: token.blockchain
-          });
-        }
+      if (inputElement && isFromAmountEmpty) {
+        setTimeout(() => {
+          inputElement.focus();
+        }, 0);
       }
-    });
+
+      if (formType === 'from') {
+        this.swapFormService.inputControl.patchValue({
+          fromBlockchain: token.blockchain,
+          fromToken: token
+        });
+      } else {
+        this.swapFormService.inputControl.patchValue({
+          toToken: token,
+          toBlockchain: token.blockchain
+        });
+      }
+    }
+    this._formContent$.next('form');
+  }
+
+  public openTokensSelect(formType: FormType): void {
+    this._formContent$.next(formType === 'from' ? 'fromSelector' : 'toSelector');
   }
 
   public updateInputValue(formattedAmount: BigNumber): void {

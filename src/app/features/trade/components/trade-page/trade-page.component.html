@@ -1,53 +1,74 @@
-<div class="swap-container">
+<div class="swap-container" *ngLet="formContent$ | async as content">
   <div class="form">
     <app-window-container>
-      <ng-container header>
-        <span>Swap Gas Fiat</span>
+      <!-- Trade -->
+      <ng-container *ngIf="content === 'form'">
+        <ng-container header>
+          <span>Swap Gas Fiat</span>
+        </ng-container>
+        <div class="form__container">
+          <app-input-output-container>
+            <app-asset-selector
+              left
+              (handleAssetSelection)="openTokensSelect('from')"
+              [asset]="fromAsset$ | async"
+            ></app-asset-selector>
+            <div right class="input-container">
+              <app-amount-transput
+                formType="from"
+                [selectedToken]="fromAsset$ | async"
+                inputMode="input"
+                (amountUpdated)="updateInputValue($event)"
+                [amountValue]="fromAmount$ | async"
+              ></app-amount-transput>
+            </div>
+          </app-input-output-container>
+
+          <app-input-output-container>
+            <app-asset-selector
+              left
+              (handleAssetSelection)="openTokensSelect('to')"
+              [asset]="toAsset$ | async"
+            ></app-asset-selector>
+            <div right class="input-container">
+              <app-amount-transput
+                formType="to"
+                [selectedToken]="toAsset$ | async"
+                inputMode="output"
+                [amountValue]="toAmount$ | async"
+              ></app-amount-transput>
+            </div>
+          </app-input-output-container>
+        </div>
+
+        <ng-container footer>
+          <button>Swap Button</button>
+        </ng-container>
       </ng-container>
-
-      <div class="form__container">
-        <app-input-output-container>
-          <app-asset-selector
-            left
-            (handleAssetSelection)="openTokensSelect('from')"
-            [asset]="fromAsset$ | async"
-          ></app-asset-selector>
-          <div right class="input-container">
-            <app-amount-transput
-              formType="from"
-              [selectedToken]="fromAsset$ | async"
-              inputMode="input"
-              (amountUpdated)="updateInputValue($event)"
-              [amountValue]="fromAmount$ | async"
-            ></app-amount-transput>
-          </div>
-        </app-input-output-container>
-
-        <app-input-output-container>
-          <app-asset-selector
-            left
-            (handleAssetSelection)="openTokensSelect('to')"
-            [asset]="toAsset$ | async"
-          ></app-asset-selector>
-          <div right class="input-container">
-            <app-amount-transput
-              formType="to"
-              [selectedToken]="toAsset$ | async"
-              inputMode="output"
-              [amountValue]="toAmount$ | async"
-            ></app-amount-transput>
-          </div>
-        </app-input-output-container>
-      </div>
-
-      <ng-container footer>
-        <button>Swap Button</button>
+      <ng-container *ngIf="content === 'fromSelector'">
+        <ng-container #header>
+          <span (click)="handleTokenSelect('from', null)">Back</span>
+          Swap Form</ng-container
+        >
+        <app-assets-selector-page
+          [type]="'from'"
+          (tokenSelect)="handleTokenSelect('from', $event)"
+        ></app-assets-selector-page>
+      </ng-container>
+      <ng-container *ngIf="content === 'toSelector'">
+        <ng-container #header
+          ><span (click)="handleTokenSelect('from', null)">Back</span>Swap Form</ng-container
+        >
+        <app-assets-selector-page
+          [type]="'to'"
+          (tokenSelect)="handleTokenSelect('to', $event)"
+        ></app-assets-selector-page>
       </ng-container>
     </app-window-container>
   </div>
 
   <app-providers-list
-    *ngIf="showProviders$ | async"
+    *ngIf="(showProviders$ | async) && content === 'form'"
     @inOutAnimation
     [states]="providers$ | async"
     [selectedTradeType]="selectedTradeType$ | async"

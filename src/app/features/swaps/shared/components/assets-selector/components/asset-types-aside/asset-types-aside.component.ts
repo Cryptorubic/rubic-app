@@ -42,10 +42,8 @@ export class AssetTypesAsideComponent {
         return this.blockchainsAmount;
       }
 
-      const showFiats = this.showFiats ? 1 : 0;
-
       if (windowSize >= WindowSize.MOBILE_MD) {
-        return 9 - showFiats;
+        return 11;
       }
 
       if (windowSize === WindowSize.MOBILE_MD_MINUS) {

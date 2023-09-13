@@ -1,0 +1,21 @@
+.assets-selector {
+  &__row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+}
+
+app-search-bar {
+  width: 100%;
+}
+
+.token-list-container {
+  width: 100%;
+  min-height: 410px;
+  max-height: 410px;
+
+  &__list {
+    height: 100%;
+  }
+}

@@ -26,6 +26,7 @@ import { SwitchTokensListTypeButtonComponent } from 'src/app/features/swaps/shar
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { FiatsListComponent } from './components/fiats-list/fiats-list.component';
 import { FiatsListElementComponent } from '@features/swaps/shared/components/assets-selector/components/fiats-list/components/fiats-list-element/fiats-list-element.component';
+import { AssetsSelectorPageComponent } from '@features/swaps/shared/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { FiatsListElementComponent } from '@features/swaps/shared/components/ass
     SwitchTokensListTypeButtonComponent,
     EmptyListComponent,
     FiatsListComponent,
-    FiatsListElementComponent
+    FiatsListElementComponent,
+    AssetsSelectorPageComponent
   ],
   imports: [
     CommonModule,
@@ -57,6 +59,7 @@ import { FiatsListElementComponent } from '@features/swaps/shared/components/ass
     TuiLoaderModule,
     InlineSVGModule,
     TuiAutoFocusModule
-  ]
+  ],
+  exports: [AssetsSelectorPageComponent]
 })
 export class AssetsSelectorModule {}

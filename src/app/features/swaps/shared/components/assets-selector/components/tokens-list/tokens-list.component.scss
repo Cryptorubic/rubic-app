@@ -9,26 +9,11 @@ $token-card-height: 55px;
 .tokens-container {
   position: relative;
 
-  height: calc(100% - 15px);
-  margin-top: 10px;
+  height: 100%;
+  padding: 10px;
 
-  @include b($mobile-md-minus) {
-    height: calc(100% - 130px);
-    margin-top: 15px;
-  }
-
-  @include iframe {
-    position: static;
-    left: unset;
-
-    width: 100%;
-    margin-top: 15px;
-    padding-top: 0;
-  }
-
-  @include iframe-vertical {
-    height: 210px;
-  }
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
 
   @include iframe-horizontal {
     height: $token-card-height + 20px;
@@ -58,9 +43,7 @@ tui-loader {
   padding-right: 15px;
 
   &__item {
-    padding: 5px 10px;
-
-    border-radius: 15px;
+    border-radius: var(--tui-radius-m);
 
     cursor: pointer;
 
@@ -69,14 +52,6 @@ tui-loader {
 
       background-color: transparent;
       border: 1px solid var(--transparent-line);
-    }
-
-    &:not(:last-child) {
-      margin-bottom: 15px;
-
-      @include iframe-vertical {
-        margin-bottom: 2px;
-      }
     }
 
     &:hover {
@@ -95,8 +70,6 @@ tui-loader {
     &_empty {
       display: flex;
       justify-content: center;
-
-      margin-bottom: 20px;
 
       font-size: 18px;
 
@@ -200,8 +173,10 @@ tui-loader {
 
   ::ng-deep {
     .cdk-virtual-scroll-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       width: 100%;
-      padding: 0 0 5px 24px;
 
       @include b($mobile-md) {
         padding: 0 0 0 16px;
