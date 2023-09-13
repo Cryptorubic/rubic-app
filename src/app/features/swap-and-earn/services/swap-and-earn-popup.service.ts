@@ -8,7 +8,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessClaimModalComponent } from '@features/swap-and-earn/components/success-claim-modal/success-claim-modal.component';
 import { DifferentAddressesModalComponent } from '@features/swap-and-earn/components/different-addresses-modal/different-addresses-modal.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SwapAndEarnPopupService {
   constructor(
     private readonly translateService: TranslateService,
