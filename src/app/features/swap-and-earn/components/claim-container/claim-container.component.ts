@@ -5,6 +5,7 @@ interface Round {
   roundNumber: number;
   claimData: string;
   isClosed: boolean;
+  isAlreadyClaimed?: boolean;
 }
 
 @Component({
@@ -22,46 +23,60 @@ export class ClaimContainerComponent {
     {
       roundNumber: 1,
       claimData: '05.04.2023 - 19.04.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 2,
       claimData: '05.04.2023 - 02.05.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 3,
       claimData: '05.04.2023 - 17.05.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 4,
       claimData: '05.04.2023 - 31.05.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 5,
       claimData: '05.04.2023 - 09.06.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 6,
       claimData: '05.04.2023 - 06.07.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 7,
       claimData: '05.04.2023 - 20.07.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 8,
       claimData: '05.04.2023 - 03.08.2023',
-      isClosed: true
+      isClosed: true,
+      isAlreadyClaimed: true
     },
     {
       roundNumber: 9,
       claimData: '05.04.2023 - 24.08.2023',
+      isClosed: true,
+      isAlreadyClaimed: true
+    },
+    {
+      roundNumber: 10,
+      claimData: '05.04.2023 - 14.09.2023',
       isClosed: false
     }
   ];

@@ -1,1 +1,1 @@
-export const airdropContractAddress = '0xba0b51dbE880ADcfFe5Bc870bf3BC53793d7bc39';
+export const airdropContractAddress = '0xb92411e40A74a93bf922790562bD1B20EA456ebE';
