@@ -4,7 +4,9 @@
       <app-round-row-container
         [round]="round.roundNumber"
         [claimData]="round.claimData"
-        [isAlreadyClaimed]="isAlreadyClaimed$ | async"
+        [isAlreadyClaimed]="
+          round.isAlreadyClaimed ? round.isAlreadyClaimed : (isAlreadyClaimed$ | async)
+        "
         [claimAmount]="claimedAmount$ | async"
         [isClosed]="round.isClosed"
       ></app-round-row-container>
