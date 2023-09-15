@@ -535,5 +535,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'FusionX',
     image: `${imageBasePath}fusionx.webp`,
     color: '#b0b3b7'
+  },
+  [ON_CHAIN_TRADE_TYPE.AERODROME]: {
+    name: 'Aerodrome',
+    image: `${imageBasePath}aerodrome.png`,
+    color: '#2A54F3'
   }
 };
