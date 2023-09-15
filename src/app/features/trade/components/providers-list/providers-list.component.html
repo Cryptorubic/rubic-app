@@ -1,12 +1,14 @@
-<h5>Providers list</h5>
-<tui-scrollbar class="providers-list" *ngLet="toToken$ | async as toToken">
-  <div class="list">
-    <app-provider-element
-      *ngFor="let state of states"
-      [tradeState]="state"
-      [toToken]="toToken"
-      [selectedTradeType]="selectedTradeType"
-      (click)="handleTradeSelection($event, state.tradeType)"
-    ></app-provider-element>
-  </div>
-</tui-scrollbar>
+<app-window-container>
+  <ng-container header>Providers list</ng-container>
+  <tui-scrollbar class="providers-list" *ngLet="toToken$ | async as toToken">
+    <div class="list">
+      <app-provider-element
+        *ngFor="let state of states"
+        [tradeState]="state"
+        [toToken]="toToken"
+        [selectedTradeType]="selectedTradeType"
+        (click)="handleTradeSelection($event, state.tradeType)"
+      ></app-provider-element>
+    </div>
+  </tui-scrollbar>
+</app-window-container>

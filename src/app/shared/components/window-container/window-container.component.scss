@@ -1,16 +1,21 @@
-.container {
+.window-container {
   padding: 10px;
 
   background: var(--secondary-background);
-  border-radius: 17px;
+  border-radius: var(--tui-radius-m);
 }
-
-//::ng-deep header > *:last-child {
-//  display: flex;
-//  margin-bottom: 10px;
-//}
 
 ::ng-deep footer > *:first-child {
   display: flex;
   margin-top: 10px;
+}
+
+header {
+  padding: 5px 20px 15px;
+
+  h5 {
+    margin: 0;
+
+    font-size: 15px;
+  }
 }

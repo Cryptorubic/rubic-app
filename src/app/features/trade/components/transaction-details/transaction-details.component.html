@@ -1,0 +1,43 @@
+<div
+  class="transaction-details"
+  *ngLet="{
+    details: details$ | async,
+    trade: trade$ | async,
+    wallet: walletAddress$ | async
+  } as state"
+>
+  <h5 class="transaction-details__label">Transaction details</h5>
+  <div class="transaction-details__row">
+    <div class="transaction-details__left">Price impact</div>
+    <div class="transaction-details__right">{{ state.details.priceImpact }} %</div>
+  </div>
+
+  <div class="transaction-details__row">
+    <div class="transaction-details__left">Slippage</div>
+    <div class="transaction-details__right">{{ state.details.slippage }} %</div>
+  </div>
+
+  <div class="transaction-details__row">
+    <div class="transaction-details__left">Minimum received</div>
+    <div class="transaction-details__right">{{ state.trade.toTokenAmountMin.toFixed() }}</div>
+  </div>
+
+  <div class="transaction-details__row">
+    <div class="transaction-details__left">Receiver address</div>
+    <div class="transaction-details__right">
+      {{ state.wallet | shortAddress : 5 : 5 }}
+
+      <a [safetyLink]="state.wallet">
+        <img
+          class="image"
+          src="assets/images/icons/scanner.svg"
+          [alt]="'common.checkOnScanner' | translate"
+        />
+      </a>
+
+      <button [cdkCopyToClipboard]="state.wallet">
+        <div class="image" inlineSVG="assets/images/swaps/swaps-info/copy-icon.svg"></div>
+      </button>
+    </div>
+  </div>
+</div>

@@ -12,20 +12,50 @@
     width: 526px;
     margin-right: 10px;
     margin-left: 10px;
+
+    &__container {
+      margin-bottom: 20px;
+    }
+
+    &_small {
+      width: 360px;
+    }
   }
 
   app-input-output-container:first-child {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
   }
 
   app-providers-list {
     display: block;
-    width: 400px;
-    height: 600px;
+    width: 360px;
+    height: 510px;
 
     background: var(--secondary-background);
     border-radius: 17px;
   }
 }
 
+::ng-deep {
+  app-input-output-container:first-child .container {
+    border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+  }
+
+  app-input-output-container:last-child .container {
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+  }
+}
+
+.input-container {
+  width: 100%;
+}
+
+.buttons-container {
+  display: flex;
+  gap: 10px;
+}
+
+app-action-button {
+  width: 100%;
+}

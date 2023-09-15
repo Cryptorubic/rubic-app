@@ -24,8 +24,9 @@ export class ProvidersListComponent {
     const element = event.target as HTMLElement;
 
     if (
-      element.parentElement.className?.includes('element__expander') ||
-      element.className?.includes('element__expander')
+      element?.parentElement?.className?.includes?.('element__expander') ||
+      element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
+      element?.className?.includes?.('element__expander')
     ) {
       event.preventDefault();
       return;

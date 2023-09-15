@@ -11,8 +11,8 @@ import { map } from 'rxjs/operators';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { DOCUMENT } from '@angular/common';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
-import { BehaviorSubject } from 'rxjs';
 import { Asset } from '@features/swaps/shared/models/form/asset';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 @Component({
   selector: 'app-trade-page',
@@ -22,22 +22,18 @@ import { Asset } from '@features/swaps/shared/models/form/asset';
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [
-        style({ width: 0, opacity: 0.5 }),
-        animate('0.1s ease-out', style({ width: 400, opacity: 1 }))
+        style({ transform: 'translateX(-25%)', opacity: 0.5 }),
+        animate('0.2s ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
       ]),
       transition(':leave', [
-        style({ width: 400, opacity: 1 }),
-        animate('0.1s ease-in', style({ width: 0, opacity: 0 }))
+        style({ transform: 'translateX(0)', opacity: 0.5, width: '360px' }),
+        animate('0.22s ease-in', style({ transform: 'translateX(-25%)', opacity: 0, width: 0 }))
       ])
     ])
   ]
 })
 export class TradePageComponent {
-  private readonly _formContent$ = new BehaviorSubject<'form' | 'fromSelector' | 'toSelector'>(
-    'form'
-  );
-
-  public readonly formContent$ = this._formContent$.asObservable();
+  public readonly formContent$ = this.tradePageService.formContent$;
 
   public readonly fromAsset$ = this.swapFormService.fromToken$;
 
@@ -53,7 +49,7 @@ export class TradePageComponent {
     map(providers => providers.filter(provider => provider.trade))
   );
 
-  public readonly showProviders$ = this.providers$.pipe(map(providers => providers.length > 1));
+  public readonly showProviders$ = this.providers$.pipe(map(providers => providers.length > 0));
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
@@ -65,7 +61,8 @@ export class TradePageComponent {
     private readonly swapsState: SwapsStateService,
     private readonly swapsControllerService: SwapsControllerService,
     private readonly swapFormQueryService: SwapFormQueryService,
-    @Inject(DOCUMENT) private readonly document: Document
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly tradePageService: TradePageService
   ) {}
 
   public handleTokenSelect(formType: FormType, asset: Asset): void {
@@ -93,11 +90,11 @@ export class TradePageComponent {
         });
       }
     }
-    this._formContent$.next('form');
+    this.tradePageService.setState('form');
   }
 
   public openTokensSelect(formType: FormType): void {
-    this._formContent$.next(formType === 'from' ? 'fromSelector' : 'toSelector');
+    this.tradePageService.setState(formType === 'from' ? 'fromSelector' : 'toSelector');
   }
 
   public updateInputValue(formattedAmount: BigNumber): void {
@@ -110,5 +107,14 @@ export class TradePageComponent {
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);
+    this.getSwapPreview();
+  }
+
+  public getSwapPreview(): void {
+    this.tradePageService.setState('preview');
+  }
+
+  public backToForm(): void {
+    this.tradePageService.setState('form');
   }
 }

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeContainer } from '@features/trade/models/trade-container';
+import { OnChainTrade } from 'rubic-sdk';
 
 @Injectable()
 export class OnChainService {
@@ -20,5 +21,9 @@ export class OnChainService {
     return this.sdkService.instantTrade
       .calculateTradeReactively(fromToken, fromAmount.toFixed(), toToken.address)
       .pipe(map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })));
+  }
+
+  public async swapTrade(trade: OnChainTrade): Promise<void> {
+    await trade.swap();
   }
 }

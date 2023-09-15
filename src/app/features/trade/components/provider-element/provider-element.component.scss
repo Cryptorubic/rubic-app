@@ -108,14 +108,33 @@
     display: flex;
   }
 
-  &__provider-info {
+  &__inner-container {
     display: flex;
-    justify-content: space-between;
-    padding: 10px 10px 5px;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
   }
 
-  &__provider-info-element {
+  &__provider-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+
+  &__provider-data-info {
     display: flex;
-    gap: 5px;
+  }
+
+  &__provider-rate {
+    display: flex;
+    gap: 10px;
+
+    color: var(--tui-text-03);
+    font-size: 12px;
+  }
+
+  &__provider-name {
+    color: var(--tui-text-01);
+    font-size: 15px;
   }
 }

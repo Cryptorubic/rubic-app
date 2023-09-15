@@ -1,5 +1,5 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
-import { RouteStep } from '@features/trade/models/route-step';
+import { RubicStep } from 'rubic-sdk';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
@@ -21,5 +21,5 @@ export type TradeState = (TradefullState | TradelessState) & {
     cheap: boolean;
   };
   needApprove: boolean;
-  routes: RouteStep[];
+  routes: RubicStep[];
 };

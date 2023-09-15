@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
-import { map } from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 import { compareCrossChainTrades, OnChainTrade, WrappedCrossChainTradeOrNull } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -10,12 +10,13 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class SwapsStateService {
   private readonly defaultState: SelectedTrade = {
     trade: null,
-    error: null,
+    error: new Error('Swap'),
     needApprove: false,
     tradeType: undefined,
     tags: {
@@ -44,6 +45,13 @@ export class SwapsStateService {
    * Current trade
    */
   public readonly currentTrade$ = this.tradeState$.pipe(map(el => el?.trade));
+
+  public readonly wrongBlockchain$ = this.swapsFormService.fromToken$.pipe(
+    filter(Boolean),
+    combineLatestWith(this.walletConnector.networkChange$),
+    map(([fromToken, network]) => fromToken?.blockchain !== network),
+    startWith(false)
+  );
 
   public set currentTrade(state: SelectedTrade) {
     this._tradeState$.next(state);
@@ -80,7 +88,10 @@ export class SwapsStateService {
    */
   private receiverAddress: string | null;
 
-  constructor(private readonly swapsFormService: SwapsFormService) {
+  constructor(
+    private readonly swapsFormService: SwapsFormService,
+    private readonly walletConnector: WalletConnectorService
+  ) {
     this.subscribeOnTradeChange();
   }
 
@@ -108,7 +119,7 @@ export class SwapsStateService {
           needApprove,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: []
+          routes: trade.getTradeInfo().routePath || []
         };
 
     let currentTrades = this._tradesStore$.getValue();

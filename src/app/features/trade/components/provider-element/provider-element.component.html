@@ -39,23 +39,29 @@
 
     <tui-expand [expanded]="expanded">
       <ng-template tuiExpandContent>
-        <p>NOBODY expects the Spanish Inquisition!</p>
+        <div class="element__inner-container">
+          <div *ngFor="let step of getSteps(tradeState.routes)" class="element__provider-row">
+            <div class="element__provider-data-info">
+              <img
+                class="element__provider-icon"
+                [src]="step.provider.image"
+                [alt]="step.provider.label"
+              />
+              <div class="element__provider-data">
+                <div class="element__provider-name">{{ step.provider.label }}</div>
+                <div class="element__provider-rate">
+                  <div *ngFor="let amount of step.amounts">{{ amount }}&nbsp;</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </ng-template>
     </tui-expand>
   </div>
-  <div class="element__provider-info">
-    <div class="element__provider-info-element">
-      <img src="assets/images/icons/gas.svg" alt="Gas Price" />
-      <div class="">{{ gasFee.toFixed() }}</div>
-    </div>
-
-    <div class="element__provider-info-element">
-      <div>$</div>
-      <div>{{ providerFee.toFixed() }} ETH</div>
-    </div>
-    <div class="element__provider-info-element">
-      <img src="assets/images/icons/time.svg" alt="Time for transaction" />
-      <div class="">{{ time }}</div>
-    </div>
-  </div>
+  <app-swap-data-element
+    [gasFee]="gasFee"
+    [providerFee]="providerFee"
+    [time]="time"
+  ></app-swap-data-element>
 </div>

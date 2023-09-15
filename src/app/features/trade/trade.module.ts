@@ -14,19 +14,28 @@ import { OnChainService } from '@features/trade/services/on-chain/on-chain.servi
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { TuiExpandModule, TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiExpandModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { TuiTagModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { SwapsModule } from '@features/swaps/swaps.module';
 import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-selector/assets-selector.module';
+import { ActionButtonComponent } from './components/action-button/action-button.component';
+import { ReceiverAddressButtonComponent } from './components/receiver-address-button/receiver-address-button.component';
+import { SwapDataElementComponent } from './components/swap-data-element/swap-data-element.component';
+import { TransactionDetailsComponent } from './components/transaction-details/transaction-details.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
     TradePageComponent,
     ProvidersListComponent,
     ProviderElementComponent,
-    PreviewSwapComponent
+    PreviewSwapComponent,
+    ActionButtonComponent,
+    ReceiverAddressButtonComponent,
+    SwapDataElementComponent,
+    TransactionDetailsComponent
   ],
   exports: [],
   imports: [
@@ -38,7 +47,9 @@ import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-s
     TuiTagModule,
     InlineSVGModule,
     SwapsModule,
-    AssetsSelectorModule
+    AssetsSelectorModule,
+    TuiButtonModule,
+    ClipboardModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

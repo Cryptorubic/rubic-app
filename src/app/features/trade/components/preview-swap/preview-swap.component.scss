@@ -1,0 +1,18 @@
+.preview {
+  margin-bottom: 10px;
+  padding: 5px;
+
+  background: var(--primary-background);
+  border-radius: var(--tui-radius-m);
+
+  &__data-container {
+    padding: 15px;
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
+
+button {
+  width: 100%;
+}

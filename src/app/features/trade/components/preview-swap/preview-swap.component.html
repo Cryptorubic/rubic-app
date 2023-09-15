@@ -1,1 +1,17 @@
-<p>preview-swap works!</p>
+<div class="preview">
+  <div class="preview__data-container">ZDES INFA O SWAPE</div>
+  <div class="preview__swap-info">
+    <app-swap-data-element
+      [gasFee]="gasFee"
+      [providerFee]="providerFee"
+      [time]="time"
+    ></app-swap-data-element>
+  </div>
+  <div class="preview__transaction-details">
+    <app-transaction-details></app-transaction-details>
+  </div>
+</div>
+
+<button tuiButton appearance="primary" type="button" size="m">
+  {{ 'Swap' }}
+</button>

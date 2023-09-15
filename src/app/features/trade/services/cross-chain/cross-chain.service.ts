@@ -29,6 +29,8 @@ import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cro
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+
 @Injectable()
 export class CrossChainService {
   private readonly defaultTimeout = 25_000;
@@ -175,5 +177,61 @@ export class CrossChainService {
       paymentInfo,
       receiverAddress
     };
+  }
+
+  public async swapTrade(trade: CrossChainTrade): Promise<void> {
+    // if (this.isSwapStarted === SWAP_PROCESS.NONE) {
+    //   this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
+    // }
+
+    // if (
+    //   this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+    //   !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
+    // ) {
+    //   await this.handleChangenowNonEvmTrade();
+    //   return;
+    // }
+
+    // if (!this.isSlippageCorrect()) {
+    //   return;
+    // }
+    // if (
+    //   !(await this.settingsService.checkSlippageAndPriceImpact(
+    //     SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+    //     this.selectedTrade.trade
+    //   ))
+    // ) {
+    //   return;
+    // }
+
+    // this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
+    // this.refreshService.startInProgress();
+
+    try {
+      // await this.crossChainCalculationService.swapTrade(currentSelectedTrade, () => {
+      //   this.isSwapStarted = SWAP_PROCESS.NONE;
+      //   this.unsetTradeSelectedByUser();
+      //
+      //   if (this.updatedSelectedTrade) {
+      //     this.updateSelectedTrade(this.updatedSelectedTrade);
+      //   }
+      //
+      //   this.tradeStatus = TRADE_STATUS.READY_TO_SWAP;
+      //   this.refreshService.stopInProgress();
+      //
+      //   this.startRecalculation();
+      // });
+
+      // const fromToken = currentSelectedTrade.trade.from;
+      // await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
+      await trade.swap();
+    } catch (error) {
+      // this.handleSwapError(error, currentSelectedTrade.tradeType);
+      // const parsedError = RubicSdkErrorParser.parseError(error);
+      //
+      // if (!(parsedError instanceof UserRejectError)) {
+      //   this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP, error.message);
+      // }
+    }
   }
 }

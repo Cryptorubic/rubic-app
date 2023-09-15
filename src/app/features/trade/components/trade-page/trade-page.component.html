@@ -1,11 +1,23 @@
 <div class="swap-container" *ngLet="formContent$ | async as content">
-  <div class="form">
+  <div class="form" [ngClass]="{ form_small: content === 'preview' }">
     <app-window-container>
+      <ng-container header>
+        <ng-container *ngIf="content === 'fromSelector'">
+          <span (click)="handleTokenSelect('from', null)">Back</span>
+          Swap Form
+        </ng-container>
+        <ng-container *ngIf="content === 'toSelector'">
+          <span (click)="handleTokenSelect('from', null)">Back</span>
+          Swap Form
+        </ng-container>
+        <ng-container *ngIf="content === 'form'">Rubic.exchange</ng-container>
+        <ng-container *ngIf="content === 'preview'">
+          <span (click)="backToForm()">Back</span>
+          Preview swap
+        </ng-container>
+      </ng-container>
       <!-- Trade -->
       <ng-container *ngIf="content === 'form'">
-        <ng-container header>
-          <span>Swap Gas Fiat</span>
-        </ng-container>
         <div class="form__container">
           <app-input-output-container>
             <app-asset-selector
@@ -42,27 +54,26 @@
         </div>
 
         <ng-container footer>
-          <button>Swap Button</button>
+          <div class="buttons-container">
+            <app-action-button></app-action-button>
+            <app-receiver-address-button></app-receiver-address-button>
+          </div>
         </ng-container>
       </ng-container>
       <ng-container *ngIf="content === 'fromSelector'">
-        <ng-container #header>
-          <span (click)="handleTokenSelect('from', null)">Back</span>
-          Swap Form</ng-container
-        >
         <app-assets-selector-page
           [type]="'from'"
           (tokenSelect)="handleTokenSelect('from', $event)"
         ></app-assets-selector-page>
       </ng-container>
       <ng-container *ngIf="content === 'toSelector'">
-        <ng-container #header
-          ><span (click)="handleTokenSelect('from', null)">Back</span>Swap Form</ng-container
-        >
         <app-assets-selector-page
           [type]="'to'"
           (tokenSelect)="handleTokenSelect('to', $event)"
         ></app-assets-selector-page>
+      </ng-container>
+      <ng-container *ngIf="content === 'preview'">
+        <app-preview-swap></app-preview-swap>
       </ng-container>
     </app-window-container>
   </div>

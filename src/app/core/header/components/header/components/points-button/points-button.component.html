@@ -1,6 +1,12 @@
 <ng-container *noFrame>
   <ng-container *ngLet="isAuth$ | async as isAuth">
-    <button tuiButton appearance="primary" type="button" (click)="navigateToSwapAndEarn()" size="m">
+    <button
+      tuiButton
+      appearance="secondary"
+      type="button"
+      (click)="navigateToSwapAndEarn()"
+      size="m"
+    >
       <img class="image" src="assets/images/rbc-white.png" alt="" />
       <ng-container *ngIf="isAuth; else text">
         <span>{{ points$ | async }}</span>

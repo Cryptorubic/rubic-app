@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 @Injectable()
 export class SwapsControllerService {
@@ -16,7 +17,8 @@ export class SwapsControllerService {
     private readonly sdkService: SdkService,
     private readonly swapsState: SwapsStateService,
     private readonly crossChainService: CrossChainService,
-    private readonly onChainService: OnChainService
+    private readonly onChainService: OnChainService,
+    private readonly swapStateService: SwapsStateService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -70,18 +72,24 @@ export class SwapsControllerService {
           }
         }),
         switchMap(container => {
-          const wrappedTrade = container.value.wrappedTrade;
-          return forkJoin([
-            of(wrappedTrade),
-            wrappedTrade?.trade?.needApprove() || of(false),
-            of(container.type)
-          ]);
+          const wrappedTrade = container?.value?.wrappedTrade;
+          if (wrappedTrade) {
+            return forkJoin([
+              of(wrappedTrade),
+              wrappedTrade?.trade?.needApprove() || of(false),
+              of(container.type)
+            ]).pipe(
+              tap(([trade, needApprove, type]) => {
+                this.swapsState.updateTrade(trade, type, needApprove);
+                this.swapsState.pickProvider();
+                this.setTradeAmount();
+              })
+            );
+          }
+          return of(null);
         })
       )
-      .subscribe(([trade, needApprove, type]) => {
-        this.swapsState.updateTrade(trade, type, needApprove);
-        this.swapsState.pickProvider();
-        this.setTradeAmount();
+      .subscribe(() => {
         // if (trade) {
         //   providers = trade.calculated === 0 ? [] : [...providers, trade];
         //   if (trade.calculated === trade.total && this.selectedTrade && trade?.calculated !== 0) {
@@ -97,6 +105,15 @@ export class SwapsControllerService {
       this.swapFormService.outputControl.patchValue({
         toAmount: trade.to.tokenAmount
       });
+    }
+  }
+
+  public async swap(): Promise<void> {
+    const trade = this.swapStateService.currentTrade.trade;
+    if (trade instanceof CrossChainTrade) {
+      await this.crossChainService.swapTrade(trade);
+    } else {
+      await this.onChainService.swapTrade(trade);
     }
   }
 }

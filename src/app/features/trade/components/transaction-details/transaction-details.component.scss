@@ -1,0 +1,35 @@
+.transaction-details {
+  padding: 15px;
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  &__label {
+    margin-top: 0;
+    margin-bottom: 15px;
+
+    font-size: 15px;
+    text-align: center;
+  }
+
+  &__left,
+  &__right {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  &__right {
+    justify-content: flex-end;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.image {
+  width: 13px;
+  height: 13px;
+}
