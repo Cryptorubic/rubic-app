@@ -2,6 +2,17 @@
   display: flex;
 }
 
+.back-button {
+  margin-right: 10px;
+  padding: 5px;
+
+  cursor: pointer;
+
+  &__image {
+    height: 10px;
+  }
+}
+
 .swap-container {
   display: flex;
   margin: 0 auto;
@@ -12,6 +23,12 @@
     width: 526px;
     margin-right: 10px;
     margin-left: 10px;
+
+    transition: 0.2s ease-in-out;
+
+    &_tokens {
+      width: 600px;
+    }
 
     &__container {
       margin-bottom: 20px;

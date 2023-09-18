@@ -4,14 +4,7 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
-
-interface AssetSelector {
-  readonly mainImage: string | null;
-  readonly secondImage: string | null;
-  readonly mainLabel: string | null;
-  readonly secondLabel: string | null;
-  readonly secondColor: string | null;
-}
+import { AssetSelector } from '@shared/models/asset-selector';
 
 @Component({
   selector: 'app-asset-selector',

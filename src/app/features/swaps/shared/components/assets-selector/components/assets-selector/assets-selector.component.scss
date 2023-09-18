@@ -161,7 +161,7 @@ tui-loader {
   }
 }
 
-.blockchains-list-container,
+::ng-deep .blockchains-list-container,
 .fiats-list-container {
   width: 100%;
 }

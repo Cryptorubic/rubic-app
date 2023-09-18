@@ -5,6 +5,7 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { map } from 'rxjs';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -50,4 +51,6 @@ export class BlockchainsListComponent implements OnInit, OnDestroy {
     this.assetsSelectorService.onBlockchainSelect(blockchainName);
     this.mobileNativeService.forceClose();
   }
+
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

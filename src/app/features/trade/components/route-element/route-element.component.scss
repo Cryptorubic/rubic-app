@@ -1,0 +1,28 @@
+.route-element {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  &__provider-data-info {
+    display: flex;
+  }
+
+  &__provider-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+
+  &__provider-rate {
+    display: flex;
+    gap: 10px;
+
+    color: var(--tui-text-03);
+    font-size: 12px;
+  }
+
+  &__provider-name {
+    color: var(--tui-text-01);
+    font-size: 15px;
+  }
+}

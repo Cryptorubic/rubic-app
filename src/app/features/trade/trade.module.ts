@@ -25,6 +25,7 @@ import { ReceiverAddressButtonComponent } from './components/receiver-address-bu
 import { SwapDataElementComponent } from './components/swap-data-element/swap-data-element.component';
 import { TransactionDetailsComponent } from './components/transaction-details/transaction-details.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { RouteElementComponent } from './components/route-element/route-element.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     ActionButtonComponent,
     ReceiverAddressButtonComponent,
     SwapDataElementComponent,
-    TransactionDetailsComponent
+    TransactionDetailsComponent,
+    RouteElementComponent
   ],
   exports: [],
   imports: [

@@ -1,9 +1,17 @@
 <div class="swap-container" *ngLet="formContent$ | async as content">
-  <div class="form" [ngClass]="{ form_small: content === 'preview' }">
+  <div
+    class="form"
+    [ngClass]="{
+      form_small: content === 'preview',
+      form_tokens: content === 'fromSelector' || content === 'toSelector'
+    }"
+  >
     <app-window-container>
       <ng-container header>
         <ng-container *ngIf="content === 'fromSelector'">
-          <span (click)="handleTokenSelect('from', null)">Back</span>
+          <span class="back-button" (click)="handleTokenSelect('from', null)">
+            <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+          </span>
           Swap Form
         </ng-container>
         <ng-container *ngIf="content === 'toSelector'">
@@ -12,8 +20,10 @@
         </ng-container>
         <ng-container *ngIf="content === 'form'">Rubic.exchange</ng-container>
         <ng-container *ngIf="content === 'preview'">
-          <span (click)="backToForm()">Back</span>
-          Preview swap
+          <span class="back-button" (click)="handleTokenSelect('from', null)">
+            <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+          </span>
+          Preview Swap
         </ng-container>
       </ng-container>
       <!-- Trade -->

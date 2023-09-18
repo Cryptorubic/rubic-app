@@ -44,6 +44,7 @@ import { PointsButtonComponent } from './components/header/components/points-but
 import { LogoComponent } from './components/header/components/logo/logo.component';
 import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
+import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { SettingsComponent } from '@core/header/components/header/components/set
     PointsButtonComponent,
     LogoComponent,
     LanguageSelectorComponent,
-    SettingsComponent
+    SettingsComponent,
+    ProfileMenuTogglerComponent
   ],
   imports: [
     CommonModule,

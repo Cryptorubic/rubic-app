@@ -2,7 +2,7 @@
   <ng-container *ngIf="isMobile; then mobileMenu; else desktopMenu"></ng-container>
 
   <ng-template #desktopMenu>
-    <tui-data-list class="data-list" size="m">
+    <tui-data-list class="data-list" size="m" role="menu" [emptyContent]="empty">
       <tui-opt-group>
         <ng-container *ngFor="let item of navigationList">
           <button
@@ -11,82 +11,87 @@
             type="button"
             size="m"
             *ngIf="item.type === 'internal'"
-            class="data-list__link"
+            class="data-list__element"
             (click)="handleButtonClick(item)"
           >
-            <div class="image" [inlineSVG]="item.imagePath"></div>
-            {{ item.translateKey | translate }}
-          </button>
-
-          <button
-            tuiButton
-            appearance="secondary"
-            type="button"
-            size="m"
-            *ngIf="item.type === 'external'"
-            class="data-list__link"
-            (click)="handleButtonClick(item)"
-          >
-            <a [href]="item.link" target="_blank">
+            <div class="data-list__element-container">
               <div class="image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
-            </a>
+            </div>
           </button>
+
+          <a
+            tuiButton
+            *ngIf="item.type === 'external'"
+            appearance="secondary"
+            class="data-list__element"
+            type="button"
+            size="m"
+            [href]="item.link"
+            target="_blank"
+          >
+            <div class="data-list__element-container">
+              <div class="image" [inlineSVG]="item.imagePath"></div>
+              {{ item.translateKey | translate }}
+            </div>
+          </a>
         </ng-container>
       </tui-opt-group>
     </tui-data-list>
   </ng-template>
 
   <ng-template #mobileMenu>
-    <tui-accordion [closeOthers]="false" [rounded]="false">
-      <tui-accordion-item
-        *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder; index as i"
-        [open]="i === 0"
-      >
-        <div class="data-list__title">{{ item.key }}</div>
+    <div></div>
+    <!--    <tui-accordion [closeOthers]="false" [rounded]="false">-->
+    <!--      <tui-accordion-item-->
+    <!--        *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder; index as i"-->
+    <!--        [open]="i === 0"-->
+    <!--      >-->
+    <!--        <div class="data-list__title">{{ item.key }}</div>-->
 
-        <ng-template tuiAccordionItemContent>
-          <ng-container *ngFor="let menu of item.value">
-            <div>
-              <ng-container
-                *ngIf="menu.type === 'internal'; then internal; else external"
-              ></ng-container>
-            </div>
+    <!--        <ng-template tuiAccordionItemContent>-->
+    <!--          <ng-container *ngFor="let menu of item.value">-->
+    <!--            <div>-->
+    <!--              <ng-container-->
+    <!--                *ngIf="menu.type === 'internal'; then internal; else external"-->
+    <!--              ></ng-container>-->
+    <!--            </div>-->
 
-            <ng-template #external>
-              <a
-                tuiButton
-                appearance="secondary"
-                type="button"
-                size="m"
-                [href]="menu.link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <button class="data-list__option" (click)="handleButtonClick()">
-                  {{ menu.translateKey | translate }}
-                </button>
-              </a>
-            </ng-template>
+    <!--            <ng-template #external>-->
+    <!--              <a-->
+    <!--                tuiButton-->
+    <!--                appearance="secondary"-->
+    <!--                type="button"-->
+    <!--                size="m"-->
+    <!--                [href]="menu.link"-->
+    <!--                target="_blank"-->
+    <!--                rel="noopener noreferrer"-->
+    <!--              >-->
+    <!--                <button class="data-list__option" (click)="handleButtonClick()">-->
+    <!--                  {{ menu.translateKey | translate }}-->
+    <!--                </button>-->
+    <!--              </a>-->
+    <!--            </ng-template>-->
 
-            <ng-template #internal>
-              <a
-                tuiButton
-                appearance="secondary"
-                type="button"
-                size="m"
-                (click)="mobileClose()"
-                [routerLink]="menu.link"
-                routerLinkActive="data-list__link_active"
-              >
-                <button class="data-list__option">
-                  {{ menu.translateKey | translate }}
-                </button>
-              </a>
-            </ng-template>
-          </ng-container>
-        </ng-template>
-      </tui-accordion-item>
-    </tui-accordion>
+    <!--            <ng-template #internal>-->
+    <!--              <a-->
+    <!--                tuiButton-->
+    <!--                appearance="secondary"-->
+    <!--                type="button"-->
+    <!--                size="m"-->
+    <!--                (click)="mobileClose()"-->
+    <!--                [routerLink]="menu.link"-->
+    <!--                routerLinkActive="data-list__element_active"-->
+    <!--              >-->
+    <!--                <button class="data-list__option">-->
+    <!--                  {{ menu.translateKey | translate }}-->
+    <!--                </button>-->
+    <!--              </a>-->
+    <!--            </ng-template>-->
+    <!--          </ng-container>-->
+    <!--        </ng-template>-->
+    <!--      </tui-accordion-item>-->
+    <!--    </tui-accordion>-->
   </ng-template>
+  <ng-template #empty></ng-template>
 </div>

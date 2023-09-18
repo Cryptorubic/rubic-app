@@ -14,7 +14,7 @@ h5 {
   margin-right: -10px;
 }
 
-::ng-deep {
+:host ::ng-deep {
   app-provider-element {
     display: block;
     margin-right: 10px;
@@ -25,7 +25,7 @@ h5 {
   }
 
   .t-bar {
-    height: 550px;
+    max-height: 455px;
     margin-right: -2px;
   }
 }

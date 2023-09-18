@@ -39,23 +39,7 @@
 
     <tui-expand [expanded]="expanded">
       <ng-template tuiExpandContent>
-        <div class="element__inner-container">
-          <div *ngFor="let step of getSteps(tradeState.routes)" class="element__provider-row">
-            <div class="element__provider-data-info">
-              <img
-                class="element__provider-icon"
-                [src]="step.provider.image"
-                [alt]="step.provider.label"
-              />
-              <div class="element__provider-data">
-                <div class="element__provider-name">{{ step.provider.label }}</div>
-                <div class="element__provider-rate">
-                  <div *ngFor="let amount of step.amounts">{{ amount }}&nbsp;</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-route-element [routes]="tradeState.routes"></app-route-element>
       </ng-template>
     </tui-expand>
   </div>

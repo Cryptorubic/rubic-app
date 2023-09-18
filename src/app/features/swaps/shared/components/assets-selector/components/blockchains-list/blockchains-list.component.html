@@ -1,33 +1,33 @@
 <div class="list-container">
-  <div class="list-container__back-button">
-    <app-back-button (onClick)="closeBlockchainsList()"></app-back-button>
-  </div>
-
   <div class="list-container__search">
     <app-search-bar></app-search-bar>
   </div>
 
-  <div>
-    <tui-scrollbar class="scrollbar">
-      <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
-        <ng-container *ngFor="let blockchain of blockchainsList">
-          <ng-container *ngLet="blockchain | functionCall : isDisabled : this as disabled">
-            <div
-              class="list__item item"
-              [ngClass]="{ item_disabled: disabled }"
-              tuiHintAppearance="error"
-              tuiHintDirection="right"
-              [tuiHint]="blockchain | functionCall : getHintText : this"
-              (click)="!disabled && onBlockchainSelect(blockchain.name)"
-            >
-              <div class="item__image-container">
+  <tui-scrollbar class="scrollbar">
+    <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
+      <ng-container *ngFor="let blockchain of blockchainsList">
+        <ng-container *ngLet="blockchain | functionCall : isDisabled : this as disabled">
+          <button
+            tuiButton
+            appearance="flat"
+            type="button"
+            size="m"
+            class="list__element"
+            (click)="!disabled && onBlockchainSelect(blockchain.name)"
+            [disabled]="disabled"
+          >
+            <div class="list__element-container">
+              <div class="list__image-container">
                 <img [src]="blockchain.icon" [alt]="blockchain.label" />
               </div>
-              <span class="item__label">{{ blockchain.label }}</span>
+              <span class="list__label">{{ blockchain.label }}</span>
             </div>
-          </ng-container>
+          </button>
         </ng-container>
-      </div>
-    </tui-scrollbar>
-  </div>
+      </ng-container>
+      <ng-container *ngIf="blockchainsList.length === 0">
+        <app-no-result label="No blockchains found" description="Try another query"></app-no-result>
+      </ng-container>
+    </div>
+  </tui-scrollbar>
 </div>

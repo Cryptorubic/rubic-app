@@ -1,0 +1,22 @@
+<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+  <div tuiGroup>
+    <button tuiIconButton appearance="secondary" type="button" size="m">
+      <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">
+        <div class="burger-menu__line"></div>
+        <div class="burger-menu__line"></div>
+        <div class="burger-menu__line"></div>
+      </div>
+      <app-notification-badge
+        class="notification-counter"
+        *ngIf="isMobile && (unreadTrades$ | async) && (currentUser$ | async) && !isOpened"
+        size="xs"
+        color="red"
+        [value]="unreadTrades$ | async"
+      ></app-notification-badge>
+    </button>
+  </div>
+</tui-hosted-dropdown>
+
+<ng-template #dropdown let-activeZone>
+  <ng-content></ng-content>
+</ng-template>

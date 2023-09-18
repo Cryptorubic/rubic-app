@@ -6,10 +6,60 @@
   border-radius: var(--tui-radius-m);
 
   &__data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     padding: 15px;
 
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
+  }
+
+  &__io-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  &__token-container {
+    display: flex;
+    height: 25px;
+  }
+
+  &__second-image-container {
+    width: 37.5px;
+    height: 100%;
+
+    border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+    img {
+      height: 100%;
+    }
+  }
+
+  &__main-image {
+    margin-left: -12.5px;
+
+    border-radius: 100%;
+    outline: 2px solid var(--io-background);
+  }
+
+  &__amount-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  &__token-amount {
+    width: 100%;
+  }
+
+  &__fiat-amount {
+    color: var(--tui-text-03);
+  }
+
+  &__token-info {
+    color: var(--tui-text-03);
   }
 }
 

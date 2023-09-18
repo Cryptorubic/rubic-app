@@ -81,6 +81,7 @@ import { AssetSelectorComponent } from '@shared/components/asset-selector/asset-
 import { WindowContainerComponent } from './components/window-container/window-container.component';
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
+import { NoResultComponent } from './components/no-result/no-result.component';
 
 @NgModule({
   declarations: [
@@ -142,7 +143,8 @@ import { AmountTransputComponent } from './components/amount-transput/amount-tra
     AssetSelectorComponent,
     WindowContainerComponent,
     InputOutputContainerComponent,
-    AmountTransputComponent
+    AmountTransputComponent,
+    NoResultComponent
   ],
   imports: [
     CommonModule,
@@ -225,7 +227,8 @@ import { AmountTransputComponent } from './components/amount-transput/amount-tra
     AssetSelectorComponent,
     WindowContainerComponent,
     InputOutputContainerComponent,
-    AmountTransputComponent
+    AmountTransputComponent,
+    NoResultComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

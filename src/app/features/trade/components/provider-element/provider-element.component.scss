@@ -107,34 +107,9 @@
   &__right {
     display: flex;
   }
+}
 
-  &__inner-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 30px;
-  }
-
-  &__provider-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-  }
-
-  &__provider-data-info {
-    display: flex;
-  }
-
-  &__provider-rate {
-    display: flex;
-    gap: 10px;
-
-    color: var(--tui-text-03);
-    font-size: 12px;
-  }
-
-  &__provider-name {
-    color: var(--tui-text-01);
-    font-size: 15px;
-  }
+app-route-element {
+  display: block;
+  margin-top: 20px;
 }
