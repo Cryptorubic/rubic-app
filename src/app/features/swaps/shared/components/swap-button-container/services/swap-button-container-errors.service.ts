@@ -225,7 +225,6 @@ export class SwapButtonContainerErrorsService {
     }
 
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
-    console.warn(fromAmount);
     if (!isTokenAmount(fromAsset)) {
       this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
       return;
@@ -247,7 +246,7 @@ export class SwapButtonContainerErrorsService {
 
     if (fromAsset.amount?.isFinite()) {
       this._errorLoading$.next(false);
-      // this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = fromAsset.amount.lt(fromAmount);
+      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = fromAsset.amount.lt(fromAmount);
     } else {
       this._errorLoading$.next(true);
     }

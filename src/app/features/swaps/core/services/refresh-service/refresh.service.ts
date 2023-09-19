@@ -32,7 +32,7 @@ export class RefreshService {
   /**
    * Refresh timeout in milliseconds.
    */
-  private readonly timeout = 30_000_000_000_000_000;
+  private readonly timeout = 30_000;
 
   private timeoutId: NodeJS.Timeout;
 
