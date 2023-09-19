@@ -30,10 +30,6 @@
       width: 600px;
     }
 
-    &__container {
-      margin-bottom: 20px;
-    }
-
     &_small {
       width: 360px;
     }
@@ -54,16 +50,6 @@
   }
 }
 
-::ng-deep {
-  app-input-output-container:first-child .container {
-    border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
-  }
-
-  app-input-output-container:last-child .container {
-    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
-  }
-}
-
 .input-container {
   width: 100%;
 }
@@ -71,8 +57,20 @@
 .buttons-container {
   display: flex;
   gap: 10px;
+  margin-top: 20px;
 }
 
 app-action-button {
   width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+app-target-network-address {
+  display: block;
 }

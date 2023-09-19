@@ -1,5 +1,4 @@
 import { Component, ChangeDetectionStrategy, Injector, Inject } from '@angular/core';
-import { IframeSettingsComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/iframe-settings/iframe-settings.component';
 import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
@@ -15,16 +14,16 @@ export class IframeSettingsButtonComponent {
   ) {}
 
   public openSettings(): void {
-    this.dialogService
-      .showDialog<IframeSettingsComponent, void>(
-        IframeSettingsComponent,
-        {
-          size: 'fullscreen',
-          fitContent: true,
-          title: 'Settings'
-        },
-        this.injector
-      )
-      .subscribe();
+    // this.dialogService
+    //   .showDialog<IframeSettingsComponent, void>(
+    //     IframeSettingsComponent,
+    //     {
+    //       size: 'fullscreen',
+    //       fitContent: true,
+    //       title: 'Settings'
+    //     },
+    //     this.injector
+    //   )
+    //   .subscribe();
   }
 }

@@ -5,7 +5,27 @@
   padding: 10px;
 
   background: var(--io-background);
-  border-radius: 17px;
+  border-radius: var(--tui-radius-m);
+
+  transition: 0.2s ease-in-out;
+
+  &_round {
+    &-top {
+      border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+    }
+
+    &-bottom {
+      border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+    }
+
+    &-all {
+      border-radius: var(--tui-radius-m);
+    }
+
+    &-none {
+      border-radius: 0;
+    }
+  }
 }
 
 .left,

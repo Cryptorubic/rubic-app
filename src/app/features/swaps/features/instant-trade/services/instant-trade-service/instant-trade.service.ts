@@ -25,7 +25,7 @@ import {
   TX_STATUS
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { AuthService } from '@core/services/auth/auth.service';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -57,9 +57,9 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   private get receiverAddress(): string | null {
-    if (!this.settingsService.instantTradeValue.showReceiverAddress) {
-      return null;
-    }
+    // if (!this.settingsService.instantTradeValue.showReceiverAddress) {
+    //   return null;
+    // }
     return this.targetNetworkAddressService.address;
   }
 
@@ -84,7 +84,7 @@ export class InstantTradeService extends TradeCalculationService {
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly sdkService: SdkService,
     private readonly authService: AuthService,
     private readonly gasService: GasService,
@@ -146,10 +146,10 @@ export class InstantTradeService extends TradeCalculationService {
     fromAmount: string,
     toToken: TokenAmount
   ): Promise<Array<OnChainTrade | OnChainTradeError>> {
-    const settings = this.settingsService.instantTradeValue;
-    const slippageTolerance = settings.slippageTolerance / 100;
-    const disableMultihops = settings.disableMultihops;
-    const deadlineMinutes = settings.deadline;
+    // const settings = this.settingsService.instantTradeValue;
+    // const slippageTolerance = settings.slippageTolerance / 100;
+    // const disableMultihops = settings.disableMultihops;
+    // const deadlineMinutes = settings.deadline;
 
     const fromTokenPrice = await this.tokensService.getAndUpdateTokenPrice(fromToken, true);
     const toTokenPrice = await this.tokensService.getAndUpdateTokenPrice(toToken, true);
@@ -193,9 +193,9 @@ export class InstantTradeService extends TradeCalculationService {
         timeout: 10000,
         gasCalculation: calculateGas ? 'calculate' : 'disabled',
         zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
-        slippageTolerance,
-        disableMultihops,
-        deadlineMinutes,
+        // slippageTolerance,
+        // disableMultihops,
+        // deadlineMinutes,
         useProxy
       })
       .subscribe(trade =>
@@ -213,9 +213,9 @@ export class InstantTradeService extends TradeCalculationService {
         timeout: 10000,
         gasCalculation: calculateGas ? 'calculate' : 'disabled',
         zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
-        slippageTolerance,
-        disableMultihops,
-        deadlineMinutes,
+        // slippageTolerance,
+        // disableMultihops,
+        // deadlineMinutes,
         useProxy
       }
     );

@@ -1,0 +1,36 @@
+.settings {
+  flex-wrap: wrap;
+  padding: 15px;
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+  }
+
+  &__toggle {
+    --tui-secondary: var(--tui-secondary-hover);
+
+    margin-left: auto;
+  }
+
+  &__slippage-input {
+    min-width: 75px;
+
+    ::ng-deep input {
+      padding-right: 25px !important;
+    }
+  }
+}

@@ -23,7 +23,7 @@ import {
   CrossChainReactivelyCalculatedTradeData
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
@@ -64,15 +64,15 @@ export class CrossChainCalculationService extends TradeCalculationService {
   private readonly defaultTimeout = 25_000;
 
   private get receiverAddress(): string | null {
-    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-      return null;
-    }
+    // if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
+    //   return null;
+    // }
     return this.targetNetworkAddressService.address;
   }
 
   constructor(
     private readonly sdkService: SdkService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
@@ -124,7 +124,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     toToken: TokenAmount,
     fromAmount: BigNumber
   ): Observable<CrossChainCalculatedTradeData> {
-    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    // const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
@@ -141,9 +141,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
     );
 
     const options: CrossChainManagerCalculationOptions = {
-      fromSlippageTolerance: slippageTolerance / 2,
-      toSlippageTolerance: slippageTolerance / 2,
-      slippageTolerance,
+      // fromSlippageTolerance: slippageTolerance / 2,
+      // toSlippageTolerance: slippageTolerance / 2,
+      // slippageTolerance,
       timeout: this.defaultTimeout,
       disabledProviders: disabledProviders,
       lifiDisabledBridgeTypes: [

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-input-output-container',
@@ -6,4 +6,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./input-output-container.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputOutputContainerComponent {}
+export class InputOutputContainerComponent {
+  @Input() public round: 'top' | 'bottom' | 'all' | 'none' = 'all';
+}

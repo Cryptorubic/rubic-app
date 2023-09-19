@@ -8,6 +8,10 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { filter, first, switchMap, tap } from 'rxjs/operators';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { FormControl, FormGroup } from '@angular/forms';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import {
   CcrSettingsForm,
   CcrSettingsFormControls,
@@ -15,17 +19,13 @@ import {
   ItSettingsFormControls,
   SettingsForm,
   SettingsFormControls
-} from '@features/swaps/core/services/settings-service/models/settings-form-controls';
-import { FormControl, FormGroup } from '@angular/forms';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { ModalService } from '@app/core/modals/services/modal.service';
-import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+} from '@features/trade/services/settings-service/models/settings-form-controls';
 
 @Injectable()
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
     instantTrades: 1,
-    crossChain: 4
+    crossChain: 3
   };
 
   public defaultItSettings: ItSettingsForm;

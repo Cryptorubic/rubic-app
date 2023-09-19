@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-receiver-address-button',
@@ -7,5 +7,5 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReceiverAddressButtonComponent {
-  public showReceiverAddress(): void {}
+  @Output() handleClick = new EventEmitter<void>();
 }

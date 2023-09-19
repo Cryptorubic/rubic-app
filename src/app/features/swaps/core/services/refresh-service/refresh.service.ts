@@ -4,7 +4,6 @@ import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/mo
 import { OnRefreshData } from '@features/swaps/core/services/refresh-service/models/on-refresh-data';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { SettingsService } from '../settings-service/settings.service';
 
 @Injectable()
 export class RefreshService {
@@ -50,24 +49,21 @@ export class RefreshService {
    * True, if refresh button should spin.
    */
   public readonly isRefreshRotating$ = this.status$.pipe(
-    map((status, counter) => {
+    map((_status, counter) => {
       const isInitial = counter === 1;
 
-      const isForcedRefresh =
-        this.isForcedRefresh || this.settingsService.instantTradeValue.autoRefresh;
+      // const isForcedRefresh =
+      //   this.isForcedRefresh || this.settingsService.instantTradeValue.autoRefresh;
 
       if (this.isForcedRefresh) {
         this.isForcedRefresh = false;
       }
 
-      return isInitial || (isForcedRefresh && status !== REFRESH_STATUS.STOPPED);
+      return isInitial /* || (isForcedRefresh && status !== REFRESH_STATUS.STOPPED) */;
     })
   );
 
-  constructor(
-    private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService
-  ) {
+  constructor(private readonly swapFormService: SwapFormService) {
     this.swapFormService.isFilled$.pipe(distinctUntilChanged()).subscribe(isFilled => {
       if (!isFilled) {
         this._status$.next(REFRESH_STATUS.STOPPED);

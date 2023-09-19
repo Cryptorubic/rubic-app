@@ -32,17 +32,8 @@ import { forkJoin, from, of, Subject, Subscription } from 'rxjs';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+import { debounceTime, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
@@ -112,10 +103,12 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
   public needApprove: boolean;
 
-  public readonly displayTargetAddressInput$ = this.settingsService.instantTradeValueChanges.pipe(
-    startWith(this.settingsService.instantTradeValue),
-    map(value => value.showReceiverAddress)
-  );
+  // public readonly displayTargetAddressInput$ = this.settingsService.instantTradeValueChanges.pipe(
+  //   startWith(this.settingsService.instantTradeValue),
+  //   map(value => value.showReceiverAddress),
+  // );
+
+  public readonly displayTargetAddressInput$ = of(true);
 
   /**
    * True, if 'approve' button should be shown near 'swap' button.
@@ -196,7 +189,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly errorService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
@@ -225,19 +218,19 @@ export class InstantTradeBottomFormComponent implements OnInit {
       }
     });
 
-    this.settingsService.instantTradeValueChanges
-      .pipe(
-        distinctUntilChanged((prev, next) => {
-          return (
-            prev.disableMultihops === next.disableMultihops &&
-            prev.slippageTolerance === next.slippageTolerance
-          );
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.conditionalCalculate('normal');
-      });
+    // this.settingsService.instantTradeValueChanges
+    //   .pipe(
+    //     distinctUntilChanged((prev, next) => {
+    //       return (
+    //         prev.disableMultihops === next.disableMultihops &&
+    //         prev.slippageTolerance === next.slippageTolerance
+    //       );
+    //     }),
+    //     takeUntil(this.destroy$)
+    //   )
+    //   .subscribe(() => {
+    //     this.conditionalCalculate('normal');
+    //   });
 
     this.authService.currentUser$
       .pipe(
@@ -248,11 +241,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
         this.conditionalCalculate('normal');
       });
 
-    this.refreshService.onRefresh$.pipe(takeUntil(this.destroy$)).subscribe(({ isForced }) => {
-      this.conditionalCalculate(
-        isForced || this.settingsService.instantTradeValue.autoRefresh ? 'normal' : 'hidden'
-      );
-    });
+    // this.refreshService.onRefresh$.pipe(takeUntil(this.destroy$)).subscribe(({ isForced }) => {
+    //   this.conditionalCalculate(
+    //     isForced || this.settingsService.instantTradeValue.autoRefresh ? 'normal' : 'hidden'
+    //   );
+    // });
   }
 
   private isSupportedOnChainNetwork(
@@ -732,15 +725,15 @@ export class InstantTradeBottomFormComponent implements OnInit {
       return;
     }
 
-    if (
-      !this.isWrappingTrade &&
-      !(await this.settingsService.checkSlippageAndPriceImpact(
-        SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-        this.selectedProvider.trade
-      ))
-    ) {
-      return;
-    }
+    // if (
+    //   !this.isWrappingTrade &&
+    //   !(await this.settingsService.checkSlippageAndPriceImpact(
+    //     SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+    //     this.selectedProvider.trade
+    //   ))
+    // ) {
+    //   return;
+    // }
 
     if (!this.selectedProvider) {
       this.errorService.catch(new NoSelectedProviderError());
@@ -838,7 +831,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   private isSlippageCorrect(): boolean {
     if (
       !this.selectedProvider ||
-      this.settingsService.instantTradeValue.autoSlippageTolerance ||
+      // this.settingsService.instantTradeValue.autoSlippageTolerance ||
       this.selectedProvider.trade.type !== ON_CHAIN_TRADE_TYPE.BRIDGERS
     ) {
       return true;

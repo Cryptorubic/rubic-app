@@ -1,4 +1,12 @@
-<div class="container">
+<div
+  class="container"
+  [ngClass]="{
+    'container_round-top': round === 'top',
+    'container_round-bottom': round === 'bottom',
+    'container_round-all': round === 'all',
+    'container_round-none': round === 'none'
+  }"
+>
   <div class="left"><ng-content select="[left]"></ng-content></div>
   <div class="right"><ng-content select="[right]"></ng-content></div>
 </div>

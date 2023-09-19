@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { BlockchainName, BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-cross-chain-bottom-form',
@@ -20,11 +21,13 @@ export class CrossChainBottomFormComponent {
 
   public readonly TRADE_STATUS = TRADE_STATUS;
 
-  public readonly displayTargetAddressInput$ =
-    this.settingsService.crossChainRoutingValueChanges.pipe(
-      startWith(this.settingsService.crossChainRoutingValue),
-      map(settings => settings.showReceiverAddress)
-    );
+  // public readonly displayTargetAddressInput$ =
+  //   this.settingsService.crossChainRoutingValueChanges.pipe(
+  //     startWith(this.settingsService.crossChainRoutingValue),
+  //     map(settings => settings.showReceiverAddress)
+  //   );
+
+  public readonly displayTargetAddressInput$ = of(true);
 
   public readonly tradeStatus$ = this.crossChainFormService.tradeStatus$;
 
@@ -52,7 +55,7 @@ export class CrossChainBottomFormComponent {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly swapFormService: SwapFormService
   ) {

@@ -1,6 +1,7 @@
 <div class="swap-container" *ngLet="formContent$ | async as content">
   <div
     class="form"
+    *ngLet="displayTargetAddressInput$ | async as displayReceiver"
     [ngClass]="{
       form_small: content === 'preview',
       form_tokens: content === 'fromSelector' || content === 'toSelector'
@@ -18,7 +19,24 @@
           <span (click)="handleTokenSelect('from', null)">Back</span>
           Swap Form
         </ng-container>
-        <ng-container *ngIf="content === 'form'">Rubic.exchange</ng-container>
+        <ng-container *ngIf="content === 'form'">
+          Rubic.exchange
+          <div class="actions">
+            <app-refresh-button class="swap-form__refresh">
+              <!--
+              *ngIf="
+                (isInstantTrade || isCrossChainRouting || isOnramper) &&
+                isFormFilled &&
+                allowRefresh
+              "
+              mode="swaps"
+              [isRotating$]="isRefreshRotating$"
+              (onRefresh)="onRefresh()"
+              -->
+            </app-refresh-button>
+            <app-settings-container class="swap-form__settings"></app-settings-container>
+          </div>
+        </ng-container>
         <ng-container *ngIf="content === 'preview'">
           <span class="back-button" (click)="handleTokenSelect('from', null)">
             <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
@@ -29,7 +47,7 @@
       <!-- Trade -->
       <ng-container *ngIf="content === 'form'">
         <div class="form__container">
-          <app-input-output-container>
+          <app-input-output-container round="top">
             <app-asset-selector
               left
               (handleAssetSelection)="openTokensSelect('from')"
@@ -46,7 +64,7 @@
             </div>
           </app-input-output-container>
 
-          <app-input-output-container>
+          <app-input-output-container [round]="displayReceiver ? 'none' : 'bottom'">
             <app-asset-selector
               left
               (handleAssetSelection)="openTokensSelect('to')"
@@ -63,10 +81,17 @@
           </app-input-output-container>
         </div>
 
+        <app-target-network-address
+          *ngIf="displayReceiver"
+          @receiverAnimation
+        ></app-target-network-address>
+
         <ng-container footer>
           <div class="buttons-container">
             <app-action-button></app-action-button>
-            <app-receiver-address-button></app-receiver-address-button>
+            <app-receiver-address-button
+              (handleClick)="toggleReceiver()"
+            ></app-receiver-address-button>
           </div>
         </ng-container>
       </ng-container>

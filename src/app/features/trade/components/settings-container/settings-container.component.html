@@ -7,12 +7,20 @@
     tuiDropdownDirection="bottom"
     [tuiDropdownMinHeight]="0"
   >
-    <img src="/assets/images/icons/options.svg" width="25" height="25" alt="Settings" />
+    <div class="image-container">
+      <div class="image" inlineSVG="/assets/images/icons/options.svg"></div>
+    </div>
   </tui-hosted-dropdown>
 </ng-template>
 
 <ng-template #settingsMobile>
   <button (click)="openMobile()">
-    <img src="/assets/images/icons/options.svg" width="25" height="25" alt="Settings" />
+    <img
+      class="image"
+      src="/assets/images/icons/options.svg"
+      width="21"
+      height="21"
+      alt="Settings"
+    />
   </button>
 </ng-template>

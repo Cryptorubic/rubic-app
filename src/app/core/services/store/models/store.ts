@@ -4,11 +4,12 @@ import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+
+import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import {
   CcrSettingsForm,
   ItSettingsForm
-} from '@features/swaps/core/services/settings-service/models/settings-form-controls';
-import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+} from '@features/trade/services/settings-service/models/settings-form-controls';
 
 export type Store = {
   [key in `RUBIC_SETTINGS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;

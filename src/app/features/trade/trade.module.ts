@@ -12,10 +12,15 @@ import { SwapFormQueryService } from '@features/trade/services/swap-form-query/s
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
-import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { TuiButtonModule, TuiExpandModule, TuiScrollbarModule } from '@taiga-ui/core';
-import { TuiTagModule } from '@taiga-ui/kit';
+import {
+  TuiButtonModule,
+  TuiExpandModule,
+  TuiHintModule,
+  TuiHostedDropdownModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
+import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { SwapsModule } from '@features/swaps/swaps.module';
@@ -26,6 +31,14 @@ import { SwapDataElementComponent } from './components/swap-data-element/swap-da
 import { TransactionDetailsComponent } from './components/transaction-details/transaction-details.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { RouteElementComponent } from './components/route-element/route-element.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
+import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
+import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
+import { SettingsContainerComponent } from '@features/trade/components/settings-container/settings-container.component';
+import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @NgModule({
   declarations: [
@@ -37,7 +50,10 @@ import { RouteElementComponent } from './components/route-element/route-element.
     ReceiverAddressButtonComponent,
     SwapDataElementComponent,
     TransactionDetailsComponent,
-    RouteElementComponent
+    RouteElementComponent,
+    SettingsContainerComponent,
+    SettingsItComponent,
+    SettingsCcrComponent
   ],
   exports: [],
   imports: [
@@ -51,7 +67,16 @@ import { RouteElementComponent } from './components/route-element/route-element.
     SwapsModule,
     AssetsSelectorModule,
     TuiButtonModule,
-    ClipboardModule
+    ClipboardModule,
+    ReactiveFormsModule,
+    TuiHintModule,
+    FormsModule,
+    TuiTextfieldControllerModule,
+    TuiInputNumberModule,
+    TuiToggleModule,
+    TuiHostedDropdownModule,
+    TuiInputModule,
+    SwapsSharedModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,
@@ -86,7 +111,8 @@ import { RouteElementComponent } from './components/route-element/route-element.
     OnChainService,
     CrossChainApiService,
     SettingsService,
-    TargetNetworkAddressService
+    TargetNetworkAddressService,
+    RefreshService
     // SettingsService,
     // RefreshService,
     // TradeService,

@@ -7,7 +7,7 @@ import { WithRoundPipe } from '@shared/pipes/with-round.pipe';
 import { BehaviorSubject, combineLatest, combineLatestWith, Observable, Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { map, startWith } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import {
   BlockchainsInfo,
   CHAIN_TYPE,
@@ -24,7 +24,7 @@ import { IframeService } from '@core/services/iframe/iframe.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
@@ -89,7 +89,7 @@ export class SwapButtonContainerErrorsService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly iframeService: IframeService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly ngZone: NgZone
   ) {
     this.subscribeOnSwapForm();
@@ -147,32 +147,30 @@ export class SwapButtonContainerErrorsService {
   private subscribeOnTargetNetworkAddress(): void {
     combineLatest([
       this.targetNetworkAddressService.isAddressValid$,
-      this.swapTypeService.swapMode$,
-      this.settingsService.instantTradeValueChanges.pipe(
-        startWith(this.settingsService.instantTradeValue)
-      ),
-      this.settingsService.crossChainRoutingValueChanges.pipe(
-        startWith(this.settingsService.crossChainRoutingValue)
-      )
-    ]).subscribe(
-      ([isAddressValid, swapMode, instantTradesSettingsForm, crossChainSettingsForm]) => {
-        let isWithReceiverAddress = false;
+      this.swapTypeService.swapMode$
+      // this.settingsService.instantTradeValueChanges.pipe(
+      //   startWith(this.settingsService.instantTradeValue)
+      // ),
+      // this.settingsService.crossChainRoutingValueChanges.pipe(
+      //   startWith(this.settingsService.crossChainRoutingValue)
+      // )
+    ]).subscribe(([isAddressValid]) => {
+      let isWithReceiverAddress = false;
 
-        switch (swapMode) {
-          case SWAP_PROVIDER_TYPE.INSTANT_TRADE:
-            isWithReceiverAddress = instantTradesSettingsForm.showReceiverAddress;
-            break;
-          case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING:
-            isWithReceiverAddress = crossChainSettingsForm.showReceiverAddress;
-            break;
-        }
+      // switch (swapMode) {
+      //   case SWAP_PROVIDER_TYPE.INSTANT_TRADE:
+      //     isWithReceiverAddress = instantTradesSettingsForm.showReceiverAddress;
+      //     break;
+      //   case SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING:
+      //     isWithReceiverAddress = crossChainSettingsForm.showReceiverAddress;
+      //     break;
+      // }
 
-        this.errorType[BUTTON_ERROR_TYPE.INVALID_TARGET_ADDRESS] =
-          isWithReceiverAddress && !isAddressValid;
+      this.errorType[BUTTON_ERROR_TYPE.INVALID_TARGET_ADDRESS] =
+        isWithReceiverAddress && !isAddressValid;
 
-        this.updateError();
-      }
-    );
+      this.updateError();
+    });
   }
 
   /**

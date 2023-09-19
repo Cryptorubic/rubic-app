@@ -4,7 +4,6 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
-  startWith,
   switchMap,
   tap
 } from 'rxjs/operators';
@@ -38,7 +37,7 @@ import {
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { CrossChainTaggedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -239,7 +238,7 @@ export class CrossChainFormService {
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
     private readonly tokensService: TokensService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly errorsService: ErrorsService,
@@ -597,14 +596,14 @@ export class CrossChainFormService {
    * Subscribes on cross-chain settings changes and controls recalculation after it.
    */
   private subscribeOnSettingsChanges(): void {
-    this.settingsService.crossChainRoutingValueChanges
-      .pipe(
-        startWith(this.settingsService.crossChainRoutingValue),
-        distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance)
-      )
-      .subscribe(() => {
-        this.startRecalculation();
-      });
+    // this.settingsService.crossChainRoutingValueChanges
+    //   .pipe(
+    //     startWith(this.settingsService.crossChainRoutingValue),
+    //     distinctUntilChanged((prev, next) => prev.slippageTolerance === next.slippageTolerance)
+    //   )
+    //   .subscribe(() => {
+    //     this.startRecalculation();
+    //   });
   }
 
   /**
@@ -612,10 +611,11 @@ export class CrossChainFormService {
    */
   private subscribeOnReceiverAddressChanges(): void {
     combineLatest([
-      this.settingsService.crossChainRoutingValueChanges.pipe(
-        startWith(this.settingsService.crossChainRoutingValue),
-        map(settings => settings.showReceiverAddress)
-      ),
+      // this.settingsService.crossChainRoutingValueChanges.pipe(
+      //   startWith(this.settingsService.crossChainRoutingValue),
+      //   map(settings => settings.showReceiverAddress)
+      // ),
+      of(true),
       this.targetNetworkAddressService.address$,
       this.swapFormService.fromBlockchain$
     ])
@@ -804,14 +804,14 @@ export class CrossChainFormService {
     if (!this.isSlippageCorrect()) {
       return;
     }
-    if (
-      !(await this.settingsService.checkSlippageAndPriceImpact(
-        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-        this.selectedTrade.trade
-      ))
-    ) {
-      return;
-    }
+    // if (
+    //   !(await this.settingsService.checkSlippageAndPriceImpact(
+    //     SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+    //     this.selectedTrade.trade
+    //   ))
+    // ) {
+    //   return;
+    // }
 
     this.tradeStatus = TRADE_STATUS.SWAP_IN_PROGRESS;
     this.refreshService.startInProgress();
@@ -877,14 +877,14 @@ export class CrossChainFormService {
   }
 
   private isSlippageCorrect(): boolean {
-    if (
-      this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      [CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
-        crossChainType => crossChainType !== this.selectedTrade.trade.type
-      )
-    ) {
-      return true;
-    }
+    // if (
+    //   this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
+    //   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(
+    //     crossChainType => crossChainType !== this.selectedTrade.trade.type
+    //   )
+    // ) {
+    //   return true;
+    // }
 
     const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService

@@ -1,7 +1,6 @@
 import { Inject, Injectable, Injector, Component, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { IframeService } from '@app/core/services/iframe/iframe.service';
-import { SettingsItComponent } from '@app/features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
 import { AssetsSelectorComponent } from '@app/features/swaps/shared/components/assets-selector/components/assets-selector/assets-selector.component';
 import { Asset } from '@app/features/swaps/shared/models/form/asset';
 import { Observable } from 'rxjs';
@@ -15,7 +14,6 @@ import { InstantTradeProviderData } from '@app/features/swaps/features/instant-t
 import { ProvidersListMobileComponent } from '@app/features/swaps/features/instant-trade/components/providers-panels/components/providers-list-mobile/providers-list-mobile.component';
 import { WalletsModalComponent } from '@app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import { SwapInfoContainerComponent } from '@app/features/swaps/features/swap-form/components/swap-info/components/swap-info-container/swap-info-container.component';
-import { SettingsCcrComponent } from '@app/features/swaps/features/swap-form/components/swap-settings/settings-ccr/settings-ccr.component';
 import { TradesListComponent } from '@app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/trades-list.component';
 import { ExpirationOptionalComponent } from '@app/features/swaps/features/limit-order/components/expiration-optional/expiration-optional.component';
 import { ExpirationCustomComponent } from '@app/features/swaps/features/limit-order/components/expiration-custom/expiration-custom.component';
@@ -29,6 +27,8 @@ import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
+import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
+import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 
 @Injectable()
 export class ModalService {

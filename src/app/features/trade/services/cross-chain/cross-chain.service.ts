@@ -27,7 +27,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
@@ -36,16 +36,16 @@ export class CrossChainService {
   private readonly defaultTimeout = 25_000;
 
   private get receiverAddress(): string | null {
-    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-      return null;
-    }
+    // if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
+    //   return null;
+    // }
     return this.targetNetworkAddressService.address;
   }
 
   constructor(
     private readonly sdkService: SdkService,
     private readonly swapFormService: SwapsFormService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
@@ -90,7 +90,7 @@ export class CrossChainService {
   private getOptions(
     _disabledTradeTypes: CrossChainTradeType[]
   ): CrossChainManagerCalculationOptions {
-    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    // const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
     const { /* disabledCrossChainTradeTypes: apiDisabledTradeTypes, */ disabledBridgeTypes } =
@@ -107,9 +107,12 @@ export class CrossChainService {
     // );
 
     return {
-      fromSlippageTolerance: slippageTolerance / 2,
-      toSlippageTolerance: slippageTolerance / 2,
-      slippageTolerance,
+      // fromSlippageTolerance: slippageTolerance / 2,
+      // toSlippageTolerance: slippageTolerance / 2,
+      // slippageTolerance,
+      fromSlippageTolerance: 1,
+      toSlippageTolerance: 1,
+      slippageTolerance: 1,
       timeout: this.defaultTimeout,
       disabledProviders: [], //disabledProviders,
       lifiDisabledBridgeTypes: [

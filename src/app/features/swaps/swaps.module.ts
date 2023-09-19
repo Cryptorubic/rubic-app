@@ -10,8 +10,6 @@ import {
   TuiTextfieldControllerModule,
   TuiDropdownModule
 } from '@taiga-ui/core';
-import { SettingsItComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-it/settings-it.component';
-import { SettingsContainerComponent } from 'src/app/features/swaps/features/swap-form/components/swap-settings/settings-container/settings-container.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   TuiAccordionModule,
@@ -25,8 +23,6 @@ import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-s
 import { CrossChainModule } from 'src/app/features/swaps/features/cross-chain/cross-chain.module';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { SwapFormComponent } from '@features/swaps/features/swap-form/swap-form.component';
-import { SettingsCcrComponent } from './features/swap-form/components/swap-settings/settings-ccr/settings-ccr.component';
-import { IframeSettingsComponent } from './features/swap-form/components/swap-settings/iframe-settings/iframe-settings.component';
 import { SwapInfoContainerComponent } from './features/swap-form/components/swap-info/components/swap-info-container/swap-info-container.component';
 import { FormSwitcherComponent } from '@features/swaps/features/swap-form/components/form-switcher/form-switcher.component';
 import { PlatformTokensAmountComponent } from './features/swap-form/components/platform-tokens-amount/platform-tokens-amount.component';
@@ -34,7 +30,6 @@ import { FormHeaderComponent } from '@features/swaps/features/swap-form/componen
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
 import { IframeSettingsButtonComponent } from '@core/header/components/header/components/iframe-settings-button/iframe-settings-button.component';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -53,14 +48,10 @@ import { TonPromoService } from '@features/swaps/features/cross-chain/services/t
 @NgModule({
   declarations: [
     SwapFormComponent,
-    SettingsContainerComponent,
-    SettingsItComponent,
-    SettingsCcrComponent,
     SwapInfoContainerComponent,
     FormSwitcherComponent,
     PlatformTokensAmountComponent,
     FormHeaderComponent,
-    IframeSettingsComponent,
     IframeSettingsButtonComponent,
     FormNavigationComponent,
     ChangenowPostFormComponent,
@@ -99,12 +90,6 @@ import { TonPromoService } from '@features/swaps/features/cross-chain/services/t
     TuiAccordionModule,
     TuiHintModule
   ],
-  providers: [
-    SettingsService,
-    RefreshService,
-    TradeService,
-    TargetNetworkAddressService,
-    TonPromoService
-  ]
+  providers: [RefreshService, TradeService, TargetNetworkAddressService, TonPromoService]
 })
 export class SwapsModule {}

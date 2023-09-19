@@ -1,7 +1,15 @@
 @use 'src/scss/core' as *;
 
-[tuiWrapper]::after {
-  border: none !important;
+[tuiWrapper] {
+  &:not([data-appearance='outline']) {
+    &::after {
+      border: none !important;
+    }
+  }
+}
+
+[tuiWrapper][data-appearance='textfield'] {
+  box-shadow: none;
 }
 
 

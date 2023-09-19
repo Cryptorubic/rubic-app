@@ -38,11 +38,6 @@
           >
           </app-refresh-button>
 
-          <app-settings-container
-            class="swap-form__settings"
-            *ngIf="!isOnramper && !isLimitOrder"
-          ></app-settings-container>
-
           <app-iframe-logout-button
             *ngIf="hideUnusedUI && getCurrentUser$ | async"
           ></app-iframe-logout-button>

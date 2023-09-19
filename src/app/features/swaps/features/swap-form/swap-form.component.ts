@@ -9,7 +9,7 @@ import {
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
+// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -103,7 +103,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
-    private readonly settingsService: SettingsService,
+    // private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
     private readonly translateService: TranslateService,
@@ -137,7 +137,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.settingsService.saveSettingsToLocalStorage();
+    console.log('destroy');
+    // this.settingsService.saveSettingsToLocalStorage();
   }
 
   private setFormValues(form: SwapFormInput): void {

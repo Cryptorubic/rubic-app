@@ -7,12 +7,14 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import BigNumber from 'bignumber.js';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { DOCUMENT } from '@angular/common';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import { Asset } from '@features/swaps/shared/models/form/asset';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { combineLatestWith } from 'rxjs';
+import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 
 @Component({
   selector: 'app-trade-page',
@@ -27,7 +29,17 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
       ]),
       transition(':leave', [
         style({ transform: 'translateX(0)', opacity: 0.5, width: '360px' }),
-        animate('0.22s ease-in', style({ transform: 'translateX(-25%)', opacity: 0, width: 0 }))
+        animate('0.2s ease-in', style({ transform: 'translateX(-25%)', opacity: 0, width: 0 }))
+      ])
+    ]),
+    trigger('receiverAnimation', [
+      transition(':enter', [
+        style({ height: '0px', opacity: 0.5 }),
+        animate('0.2s ease-out', style({ height: '56px', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, height: '56px' }),
+        animate('0.2s ease-in', style({ height: '0px', opacity: 0 }))
       ])
     ])
   ]
@@ -55,6 +67,32 @@ export class TradePageComponent {
 
   private selectedAsset: TokenAmount;
 
+  // @ts-ignore
+  public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
+    combineLatestWith(
+      this.toAsset$,
+      this.settingsService.crossChainRoutingValueChanges.pipe(
+        startWith(this.settingsService.crossChainRoutingValue)
+      ),
+      this.settingsService.instantTradeValueChanges.pipe(
+        startWith(this.settingsService.instantTradeValue)
+      )
+    ),
+    map(([from, to, crossChainReceiver, onChainReceiver]) => {
+      if (!from || !to) {
+        return crossChainReceiver.showReceiverAddress;
+      }
+      return from.blockchain === to.blockchain
+        ? onChainReceiver.showReceiverAddress
+        : crossChainReceiver.showReceiverAddress;
+    }),
+    distinctUntilChanged()
+  );
+  // this.settingsService.crossChainRoutingValueChanges.pipe(
+  //   startWith(this.settingsService.crossChainRoutingValue),
+  //   map(settings => settings.showReceiverAddress)
+  // );
+
   constructor(
     private readonly modalService: ModalService,
     private readonly swapFormService: SwapsFormService,
@@ -62,7 +100,8 @@ export class TradePageComponent {
     private readonly swapsControllerService: SwapsControllerService,
     private readonly swapFormQueryService: SwapFormQueryService,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly settingsService: SettingsService
   ) {}
 
   public handleTokenSelect(formType: FormType, asset: Asset): void {
@@ -116,5 +155,19 @@ export class TradePageComponent {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
+  }
+
+  public async toggleReceiver(): Promise<void> {
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    let settings = this.settingsService.crossChainRouting;
+    if (fromToken && toToken) {
+      // @ts-ignore
+      settings =
+        fromToken.blockchain === toToken.blockchain
+          ? this.settingsService.instantTrade
+          : this.settingsService.crossChainRouting;
+    }
+    const oldValue = settings.controls.showReceiverAddress.value;
+    settings.patchValue({ showReceiverAddress: !oldValue });
   }
 }
