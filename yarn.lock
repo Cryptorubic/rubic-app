@@ -2120,23 +2120,22 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lifi/sdk@^1.7.2":
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/@lifi/sdk/-/sdk-1.7.2.tgz#a3cda45ca67c747cf13ab593b572e14a2d3a41cb"
-  integrity sha512-FOkPDOPF9EcNv13FpCEDmrzFz2aDqqsOcgOEsRbiF59QfdUU2jNMhI19D9xGthdda4amx0cXHANykPRYLWtkQA==
+"@lifi/sdk@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/@lifi/sdk/-/sdk-2.2.1.tgz#55105a8dec8a4da3d391f42ac550691cab28900d"
+  integrity sha512-L6GJr71Xzu+OYyU+4X12vH7hv2AGffoMFcC/2ypj/eBbWStL8XxOpLv+gBPLAlpyllfqsaJ5l+plbZiDc072og==
   dependencies:
     "@ethersproject/abi" "^5.7.0"
     "@ethersproject/contracts" "^5.7.0"
-    "@lifi/types" "^1.19.0"
-    axios "1.1.3"
+    "@lifi/types" "^8.0.4"
     bignumber.js "^9.1.1"
     eth-rpc-errors "^4.0.3"
     ethers "^5.7.2"
 
-"@lifi/types@^1.19.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-1.24.0.tgz#3098d260c118ccb530227b2ae387cb602dd7aaf6"
-  integrity sha512-QQpyLovOVrfl2BFCOGP3gepZeXgn1IOWq7R5N7+zjKIC1UjNJ6zyH2Tss+K2eTlGMJqIT0DW5Pxef7exdo9cSw==
+"@lifi/types@^8.0.4":
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-8.2.0.tgz#f71800c28855d7e59c101f5102fc808e0d86b7e8"
+  integrity sha512-drDyQ3zy9LeZQN1NwUqLtZaxRDPN+pWMcrhAvyZVm7XAO+kt+9D0sBhlgxy7S+BANz9ij/rIlC0l5bzUkqp9ig==
   dependencies:
     ethers "^5.7.2"
 
@@ -4685,15 +4684,6 @@ aws4@^1.8.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.12.0.tgz#ce1c9d143389679e253b314241ea9aa5cec980d3"
   integrity sha512-NmWvPnx0F1SfrQbYwOi7OeaNGokp9XhzNioJ/CSBs8Qa4vxug81mhJEAVZwxXuBmYB5KDRfMq/F3RR0BIU7sWg==
-
-axios@1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.1.3.tgz#8274250dada2edf53814ed7db644b9c2866c1e35"
-  integrity sha512-00tXVRwKx/FZr/IDVFt4C+f9FYairX517WoGCL6dpOntqLkZofjhu43F/Xl44UOpqa+9sLFDrG/XAnFsUYgkDA==
-  dependencies:
-    follow-redirects "^1.15.0"
-    form-data "^4.0.0"
-    proxy-from-env "^1.1.0"
 
 axios@^0.21.0:
   version "0.21.4"
@@ -13621,15 +13611,15 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.29.2:
-  version "4.29.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.29.2.tgz#3cf8adb5b73606105490d2fc86cbaf494a966b6c"
-  integrity sha512-nNlAxVcuql+jnqMT8udvcE2yu/gJ9XjOgI5DLGJjHPHzcqZHom3poRnBBA8oE2GZj6EzeEUFHBZkfz71O/c6rg==
+rubic-sdk@4.29.3:
+  version "4.29.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.29.3.tgz#daf67c417e4a3a211866a7780a6dafb1a827fe85"
+  integrity sha512-9NnY7RVIUt3RX+y/v8sQa7wdbboVTqpmBjvXGrfOb4UfS1mf+9PNve8vexEtGhN5Ai9I1LST6zjYoxXXcjWn2Q==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
     "@layerzerolabs/scan-client" "^0.0.0-beta.6"
-    "@lifi/sdk" "^1.7.2"
+    "@lifi/sdk" "2.2.1"
     "@pancakeswap/sdk" "^5.1.0"
     "@pancakeswap/smart-router" "4.2.1"
     "@pancakeswap/swap-sdk-core" "^1.0.0"

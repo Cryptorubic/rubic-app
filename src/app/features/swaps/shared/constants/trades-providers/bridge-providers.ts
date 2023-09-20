@@ -7,19 +7,29 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.ACROSS]: {
     name: 'Across',
     image: `${imageBasePath}across.svg`,
-    color: '#29a98b'
+    color: '#6CF9D8'
+  },
+  [BRIDGE_TYPE.ALLBRIDGE]: {
+    name: 'Allbridge',
+    image: `${imageBasePath}allbridge.png`,
+    color: '#5B978E'
+  },
+  [BRIDGE_TYPE.AMAROK]: {
+    name: 'Connext',
+    image: `${imageBasePath}connext.svg`,
+    color: '#5B76FD'
   },
   [BRIDGE_TYPE.ANY_SWAP]: {
     name: 'AnySwap',
     image: `${imageBasePath}anyswap.svg`,
     color: '#5F6BFB'
   },
-  [BRIDGE_TYPE.ARBITRUM_BRIDGE]: {
+  [BRIDGE_TYPE.ARBITRUM]: {
     name: 'Arbitrum Bridge',
     image: `${imageBasePath}arbitrum-bridge.svg`,
     color: '#1275b7'
   },
-  [BRIDGE_TYPE.AVALANCHE_BRIDGE]: {
+  [BRIDGE_TYPE.AVALANCHE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
     color: '#c2c2c2'
@@ -31,10 +41,25 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#E6F3FF'
   },
 
+  [BRIDGE_TYPE.CBRIDGE]: {
+    name: 'cBridge',
+    image: `${imageBasePath}celer.svg`,
+    color: '#008aff'
+  },
   [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}celer.svg`,
     color: '#008aff'
+  },
+  [BRIDGE_TYPE.CONNEXT_AMAROK]: {
+    name: 'Connext',
+    image: `${imageBasePath}connext.svg`,
+    color: '#5B76FD'
+  },
+  [BRIDGE_TYPE.CIRCLE_CELER_BRIDGE]: {
+    name: 'CelerCircle',
+    image: `${imageBasePath}celercircle.png`,
+    color: '#77E9C9'
   },
   [BRIDGE_TYPE.CONNEXT]: {
     name: 'Connext',
@@ -46,6 +71,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'DLN',
     image: `${imageBasePath}debridge.svg`,
     color: '#bf38ee'
+  },
+
+  [BRIDGE_TYPE.GNOSIS_BRIDGE]: {
+    name: 'Gnosis Bridge',
+    image: `${imageBasePath}gnosisbridge.png`,
+    color: '#7F38A9'
   },
 
   [BRIDGE_TYPE.HOP]: {
@@ -68,6 +99,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   [BRIDGE_TYPE.LIFI]: {
     name: 'Lifi',
     image: `${imageBasePath}lifi.svg`,
+    color: '#bf38ee'
+  },
+  [BRIDGE_TYPE.LI_FUEL]: {
+    name: 'Li Fuel',
+    image: `${imageBasePath}lifuel.png`,
     color: '#bf38ee'
   },
 
@@ -94,6 +130,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
 
   [BRIDGE_TYPE.POLYGON]: {
+    name: 'Polygon bridge',
+    image: `${imageBasePath}polygon-bridge.png`,
+    color: '#5d25ba'
+  },
+  [BRIDGE_TYPE.POLYGON_BRIDGE]: {
     name: 'Polygon bridge',
     image: `${imageBasePath}polygon-bridge.png`,
     color: '#5d25ba'
@@ -148,6 +189,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}openocean.png`,
     color: '#15D9E1'
   },
+  [BRIDGE_TYPE.OMNI_BRIDGE]: {
+    name: 'Omni Bridge',
+    image: `${imageBasePath}omnibridge.png`,
+    color: '#5CAAE8'
+  },
   [BRIDGE_TYPE.XY]: {
     name: 'XY',
     image: `${imageBasePath}xy.svg`,
@@ -167,5 +213,10 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Scroll bridge',
     image: `${imageBasePath}scroll.svg`,
     color: '#fff0de'
+  },
+  [BRIDGE_TYPE.CELERIM]: {
+    name: 'Celerim',
+    image: `${imageBasePath}celerim.png`,
+    color: '#1682dc'
   }
 };
