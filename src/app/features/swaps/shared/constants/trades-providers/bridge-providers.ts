@@ -19,11 +19,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}connext.svg`,
     color: '#5B76FD'
   },
-  [BRIDGE_TYPE.CONNEXT_AMAROK]: {
-    name: 'Connext',
-    image: `${imageBasePath}connext.svg`,
-    color: '#5B76FD'
-  },
   [BRIDGE_TYPE.ANY_SWAP]: {
     name: 'AnySwap',
     image: `${imageBasePath}anyswap.svg`,
@@ -46,15 +41,20 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#E6F3FF'
   },
 
+  [BRIDGE_TYPE.CBRIDGE]: {
+    name: 'cBridge',
+    image: `${imageBasePath}celer.svg`,
+    color: '#008aff'
+  },
   [BRIDGE_TYPE.CELER_BRIDGE]: {
     name: 'cBridge',
     image: `${imageBasePath}celer.svg`,
     color: '#008aff'
   },
-  [BRIDGE_TYPE.CBRIDGE]: {
-    name: 'cBridge',
-    image: `${imageBasePath}celer.svg`,
-    color: '#008aff'
+  [BRIDGE_TYPE.CONNEXT_AMAROK]: {
+    name: 'Connext',
+    image: `${imageBasePath}connext.svg`,
+    color: '#5B76FD'
   },
   [BRIDGE_TYPE.CIRCLE_CELER_BRIDGE]: {
     name: 'CelerCircle',
