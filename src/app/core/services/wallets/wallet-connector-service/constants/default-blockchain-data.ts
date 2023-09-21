@@ -125,6 +125,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.mantle.xyz/'
+    rpc: 'https://rpc.ankr.com/mantle/d70cbe46075648e9be34196ec49a1dd0fc035c754c48875a823091c6d4aba8e4'
   }
 };
