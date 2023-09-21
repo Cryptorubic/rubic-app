@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
-import { filter, map, startWith } from 'rxjs/operators';
+import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import { compareCrossChainTrades, OnChainTrade, WrappedCrossChainTradeOrNull } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -16,7 +16,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 export class SwapsStateService {
   private readonly defaultState: SelectedTrade = {
     trade: null,
-    error: new Error('Swap'),
+    error: null,
     needApprove: false,
     tradeType: undefined,
     tags: {
@@ -25,7 +25,7 @@ export class SwapsStateService {
     },
     routes: [],
     selectedByUser: false,
-    status: TRADE_STATUS.DISABLED
+    status: TRADE_STATUS.NOT_INITIATED
   };
 
   private swapType: SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
@@ -35,7 +35,7 @@ export class SwapsStateService {
    */
   private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
-  public readonly tradeState$ = this._tradeState$.asObservable();
+  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
 
   public get tradeState(): TradeState {
     return this._tradeState$.value;
@@ -154,6 +154,11 @@ export class SwapsStateService {
     this._tradesStore$.next(currentTrades);
   }
 
+  public clearProviders(): void {
+    this._tradeState$.next(this.defaultState);
+    this._tradesStore$.next([]);
+  }
+
   public pickProvider(): void {
     const currentTrades = this._tradesStore$.getValue();
 
@@ -170,13 +175,24 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
-      this.currentTrade = {
+      const trade: SelectedTrade = {
         ...bestTrade,
         selectedByUser: false,
         status: TRADE_STATUS.READY_TO_SWAP
       };
+      if (trade.error) {
+        trade.status = TRADE_STATUS.DISABLED;
+      }
+      if (trade.needApprove) {
+        trade.status = TRADE_STATUS.READY_TO_APPROVE;
+      }
+
+      this.currentTrade = trade;
     } else {
-      this.currentTrade = this.defaultState;
+      this.currentTrade = {
+        ...this.defaultState,
+        status: TRADE_STATUS.LOADING
+      };
     }
   }
 
@@ -195,6 +211,13 @@ export class SwapsStateService {
       this.swapsFormService.outputControl.patchValue({
         toAmount: trade?.to?.tokenAmount || null
       });
+    });
+  }
+
+  public patchCalculationState(): void {
+    this._tradeState$.next({
+      ...this._tradeState$.value,
+      status: TRADE_STATUS.LOADING
     });
   }
 }

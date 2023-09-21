@@ -29,3 +29,13 @@ h5 {
     margin-right: -2px;
   }
 }
+
+.empty-list {
+  &__content {
+    margin-right: 10px;
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}

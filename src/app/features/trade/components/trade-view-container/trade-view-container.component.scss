@@ -1,15 +1,17 @@
 :host {
   display: flex;
-}
 
-.back-button {
-  margin-right: 10px;
-  padding: 5px;
+  ::ng-deep {
+    .back-button {
+      margin-right: 10px;
+      padding: 5px;
 
-  cursor: pointer;
+      cursor: pointer;
 
-  &__image {
-    height: 10px;
+      &__image {
+        height: 10px;
+      }
+    }
   }
 }
 
@@ -20,7 +22,7 @@
   .form {
     position: relative;
 
-    width: 526px;
+    width: 600px;
     margin-right: 10px;
     margin-left: 10px;
 
@@ -48,29 +50,4 @@
     background: var(--secondary-background);
     border-radius: 17px;
   }
-}
-
-.input-container {
-  width: 100%;
-}
-
-.buttons-container {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-app-action-button {
-  width: 100%;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-left: auto;
-}
-
-app-target-network-address {
-  display: block;
 }

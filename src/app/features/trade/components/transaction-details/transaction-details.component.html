@@ -17,9 +17,14 @@
     <div class="transaction-details__right">{{ state.details.slippage }} %</div>
   </div>
 
-  <div class="transaction-details__row">
+  <div class="transaction-details__row" *ngIf="state.trade?.toTokenAmountMin as minAmount">
     <div class="transaction-details__left">Minimum received</div>
-    <div class="transaction-details__right">{{ state.trade.toTokenAmountMin.toFixed() }}</div>
+    <div class="transaction-details__right">
+      <ng-container *ngIf="minAmount?.tokenAmount; else plain">{{
+        minAmount.tokenAmount.toFixed()
+      }}</ng-container>
+      <ng-template #plain>{{ minAmount.toFixed() }}</ng-template>
+    </div>
   </div>
 
   <div class="transaction-details__row">

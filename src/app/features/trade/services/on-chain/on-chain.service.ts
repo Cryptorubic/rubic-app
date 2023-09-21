@@ -23,7 +23,15 @@ export class OnChainService {
       .pipe(map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })));
   }
 
-  public async swapTrade(trade: OnChainTrade): Promise<void> {
-    await trade.swap();
+  public async swapTrade(trade: OnChainTrade, callback?: (hash: string) => void): Promise<void> {
+    await trade.swap({
+      onConfirm: callback
+    });
+  }
+
+  public async approveTrade(trade: OnChainTrade, callback?: (hash: string) => void): Promise<void> {
+    await trade.approve({
+      onTransactionHash: callback
+    });
   }
 }

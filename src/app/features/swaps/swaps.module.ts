@@ -63,7 +63,7 @@ import { TonPromoService } from '@features/swaps/features/cross-chain/services/t
     RateValueComponent,
     ReceiverValueComponent
   ],
-  exports: [],
+  exports: [FormSwitcherComponent],
   imports: [
     SwapsRoutingModule,
     SwapsSharedModule,

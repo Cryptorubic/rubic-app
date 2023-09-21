@@ -1,71 +1,116 @@
-<ng-container *ngIf="tradeInfo$ | async as tradeInfo">
-  <div class="preview" *ngLet="tradeState$ | async as tradeState">
-    <div class="preview__data-container">
-      <div class="preview__io-container">
-        <div class="preview__token-container">
-          <div
-            class="preview__second-image-container"
-            [style]="{ background: tradeInfo.fromAsset.secondColor }"
-          >
-            <img [src]="tradeInfo.fromAsset.secondImage" [alt]="tradeInfo.fromAsset.secondImage" />
+<app-window-container>
+  <ng-container header>
+    <span class="back-button" (click)="backToForm()">
+      <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+    </span>
+    Preview Swap
+  </ng-container>
+  <ng-container
+    *ngLet="{
+      tradeInfo: tradeInfo$ | async,
+      tradeState: tradeState$ | async,
+      transaction: transactionState$ | async
+    } as state"
+  >
+    <div class="preview">
+      <div class="preview__data-container">
+        <div class="preview__io-container">
+          <div class="preview__token-container">
+            <div
+              class="preview__second-image-container"
+              [style]="{ background: state.tradeInfo.fromAsset.secondColor }"
+            >
+              <img
+                [src]="state.tradeInfo.fromAsset.secondImage"
+                [alt]="state.tradeInfo.fromAsset.secondImage"
+              />
+            </div>
+            <img
+              class="preview__main-image"
+              [src]="state.tradeInfo.fromAsset.mainImage"
+              [alt]="state.tradeInfo.fromAsset.mainLabel"
+            />
           </div>
-          <img
-            class="preview__main-image"
-            [src]="tradeInfo.fromAsset.mainImage"
-            [alt]="tradeInfo.fromAsset.mainLabel"
-          />
+          <div class="preview__amount-container">
+            <div class="preview__token-amount">{{ state.tradeInfo.fromValue.tokenAmount }}</div>
+            <div
+              *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
+              class="preview__fiat-amount"
+            >
+              ~ ${{ amount }}&nbsp;-&nbsp;
+            </div>
+            <div class="preview__token-info">
+              {{ state.tradeInfo.fromAsset.mainLabel }} on
+              {{ state.tradeInfo.fromAsset.secondLabel }}
+            </div>
+          </div>
         </div>
-        <div class="preview__amount-container">
-          <div class="preview__token-amount">{{ tradeInfo.fromValue.tokenAmount }}</div>
-          <div *ngIf="tradeInfo.fromValue.fiatAmount?.gt(0)" class="preview__fiat-amount">
-            ~ ${{ tradeInfo.fromValue.fiatAmount }}&nbsp;-&nbsp;
+
+        <app-route-element
+          *ngIf="state.transaction === 'idle'"
+          [routes]="state.tradeState?.routes || []"
+        ></app-route-element>
+        <app-transaction-state
+          *ngIf="state.transaction !== 'idle' && state.transaction !== 'success'"
+          [transactionData]="{
+            type:
+              state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
+                ? 'swap'
+                : 'bridge',
+            needApprove: state.tradeState.needApprove
+          }"
+          [state]="state.transaction"
+        ></app-transaction-state>
+
+        <div class="preview__io-container">
+          <div class="preview__token-container">
+            <div
+              class="preview__second-image-container"
+              [style]="{ background: state.tradeInfo.toAsset.secondColor }"
+            >
+              <img
+                [src]="state.tradeInfo.toAsset.secondImage"
+                [alt]="state.tradeInfo.toAsset.secondImage"
+              />
+            </div>
+            <img
+              class="preview__main-image"
+              [src]="state.tradeInfo.toAsset.mainImage"
+              [alt]="state.tradeInfo.toAsset.mainLabel"
+            />
           </div>
-          <div class="preview__token-info">
-            {{ tradeInfo.fromAsset.mainLabel }} on {{ tradeInfo.fromAsset.secondLabel }}
+          <div class="preview__amount-container">
+            <div class="preview__token-amount">{{ state.tradeInfo.toValue.tokenAmount }}</div>
+            <div *ngIf="state.tradeInfo.toValue.fiatAmount as amount" class="preview__fiat-amount">
+              ~ ${{ amount }}&nbsp;-&nbsp;
+            </div>
+            <div class="preview__token-info">
+              {{ state.tradeInfo.toAsset.mainLabel }} on {{ state.tradeInfo.toAsset.secondLabel }}
+            </div>
           </div>
         </div>
       </div>
-
-      <app-route-element [routes]="tradeState.routes"></app-route-element>
-
-      <div class="preview__io-container">
-        <div class="preview__token-container">
-          <div
-            class="preview__second-image-container"
-            [style]="{ background: tradeInfo.toAsset.secondColor }"
-          >
-            <img [src]="tradeInfo.toAsset.secondImage" [alt]="tradeInfo.toAsset.secondImage" />
-          </div>
-          <img
-            class="preview__main-image"
-            [src]="tradeInfo.toAsset.mainImage"
-            [alt]="tradeInfo.toAsset.mainLabel"
-          />
-        </div>
-        <div class="preview__amount-container">
-          <div class="preview__token-amount">{{ tradeInfo.toValue.tokenAmount }}</div>
-          <div *ngIf="tradeInfo.toValue.fiatAmount?.gt(0)" class="preview__fiat-amount">
-            ~ ${{ tradeInfo.toValue.fiatAmount }}&nbsp;-&nbsp;
-          </div>
-          <div class="preview__token-info">
-            {{ tradeInfo.toAsset.mainLabel }} on {{ tradeInfo.toAsset.secondLabel }}
-          </div>
-        </div>
+      <div class="preview__swap-info">
+        <app-swap-data-element
+          [feeInfo]="state.tradeState?.feeInfo || null"
+          [time]="time"
+        ></app-swap-data-element>
+      </div>
+      <div class="preview__transaction-details">
+        <app-transaction-details></app-transaction-details>
       </div>
     </div>
-    <div class="preview__swap-info">
-      <app-swap-data-element
-        [gasFee]="gasFee"
-        [providerFee]="providerFee"
-        [time]="time"
-      ></app-swap-data-element>
-    </div>
-    <div class="preview__transaction-details">
-      <app-transaction-details></app-transaction-details>
-    </div>
-  </div>
 
-  <button tuiButton appearance="primary" type="button" size="m">
-    {{ 'Swap' }}
-  </button>
-</ng-container>
+    <button
+      *ngLet="buttonState$ | async as buttonState"
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="buttonState.action()"
+      [disabled]="buttonState.disabled"
+    >
+      {{ buttonState.label }}
+    </button>
+  </ng-container>
+</app-window-container>

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { TradePageComponent } from '@features/trade/components/trade-page/trade-page.component';
+import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -39,10 +39,14 @@ import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/se
 import { SettingsContainerComponent } from '@features/trade/components/settings-container/settings-container.component';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { TokenSelectorPageComponent } from './components/token-selector-page/token-selector-page.component';
+import { SwapFormPageComponent } from './components/swap-form-page/swap-form-page.component';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
+import { TransactionStateComponent } from './components/transaction-state/transaction-state.component';
 
 @NgModule({
   declarations: [
-    TradePageComponent,
+    TradeViewContainerComponent,
     ProvidersListComponent,
     ProviderElementComponent,
     PreviewSwapComponent,
@@ -53,7 +57,10 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
     RouteElementComponent,
     SettingsContainerComponent,
     SettingsItComponent,
-    SettingsCcrComponent
+    SettingsCcrComponent,
+    TokenSelectorPageComponent,
+    SwapFormPageComponent,
+    TransactionStateComponent
   ],
   exports: [],
   imports: [
@@ -112,7 +119,8 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
     CrossChainApiService,
     SettingsService,
     TargetNetworkAddressService,
-    RefreshService
+    RefreshService,
+    PreviewSwapService
     // SettingsService,
     // RefreshService,
     // TradeService,

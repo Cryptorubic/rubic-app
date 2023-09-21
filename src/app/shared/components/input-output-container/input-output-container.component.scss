@@ -1,8 +1,8 @@
-.container {
+.io-container {
   display: flex;
-  gap: 5px;
+  gap: var(--tui-padding-m);
   justify-content: center;
-  padding: 10px;
+  padding: var(--tui-padding-l);
 
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
@@ -11,25 +11,31 @@
 
   &_round {
     &-top {
+      padding-bottom: var(--tui-padding-s);
+
       border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
     }
 
     &-bottom {
+      padding-top: var(--tui-padding-s);
+
       border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
     }
 
     &-all {
-      border-radius: var(--tui-radius-m);
+      border-radius: var(--tui-radius-s);
     }
 
     &-none {
+      padding-top: var(--tui-padding-s);
+
       border-radius: 0;
     }
   }
 }
 
-.left,
-.right {
+.io-left,
+.io-right {
   display: flex;
   flex: 1;
 }

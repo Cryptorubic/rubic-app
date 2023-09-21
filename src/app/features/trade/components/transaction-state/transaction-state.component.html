@@ -1,0 +1,20 @@
+<div class="state">
+  <div class="state__element" *ngFor="let step of steps; let index = index">
+    <div
+      class="state__element-icon"
+      [ngClass]="{
+      'state__element-icon_done': index < stateIndex,
+      'state__element-icon_focus': index === stateIndex,
+    }"
+    ></div>
+    <div
+      class="state__element-text"
+      [ngClass]="{
+      'state__element-text_pending': index < stateIndex,
+      'state__element-text_focus': index === stateIndex,
+    }"
+    >
+      {{ step }}
+    </div>
+  </div>
+</div>

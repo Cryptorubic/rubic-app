@@ -4,6 +4,7 @@ import { combineLatestWith } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 
 @Component({
   selector: 'app-action-button',
@@ -37,18 +38,35 @@ export class ActionButtonComponent {
           action: this.switchChain.bind(this)
         };
       }
-      if (currentTrade.needApprove) {
+      if (currentTrade.status === TRADE_STATUS.READY_TO_APPROVE) {
         return {
           type: 'action',
           text: 'Approve',
           action: this.approve.bind(this)
         };
       }
-      return {
-        type: 'action',
-        text: 'Preview swap',
-        action: this.swap.bind(this)
-      };
+      if (currentTrade.status === TRADE_STATUS.READY_TO_SWAP) {
+        return {
+          type: 'action',
+          text: 'Preview swap',
+          action: this.swap.bind(this)
+        };
+      }
+      if (currentTrade.status === TRADE_STATUS.LOADING) {
+        return {
+          type: 'error',
+          text: 'Calculating',
+          action: () => {}
+        };
+      }
+      if (currentTrade.status === TRADE_STATUS.NOT_INITIATED) {
+        return {
+          type: 'error',
+          text: 'Select tokens',
+          action: () => {}
+        };
+      }
+      debugger;
     })
   );
 

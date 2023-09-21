@@ -1,27 +1,27 @@
 .element {
-  padding: 5px;
+  overflow: hidden;
 
   background: var(--primary-background);
-
-  border-radius: 17px;
-
+  border-radius: var(--tui-radius-m);
 
   &__provider-container {
-    padding: 10px;
+    padding: var(--tui-padding-l);
 
-    background: var(--secondary-background);
-    border-radius: 17px;
+    border-bottom: 1px solid var(--tui-secondary);
 
     &_best {
       background: var(--io-background);
     }
   }
 
+  &__row {
+    display: flex;
+  }
+
   &__amounts-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 30px;
   }
 
   &__amount {
@@ -29,17 +29,32 @@
     align-items: center;
   }
 
+  &__token {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+  }
+
+  &__token-info {
+    display: flex;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+  }
+
   &__token-image {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+    width: 12px;
+    height: 12px;
 
     border-radius: 100%;
   }
 
   &__token-amount {
+    max-width: 145px;
+    overflow: hidden;
+
     font-weight: 700;
     font-size: 18px;
+    text-overflow: ellipsis;
   }
 
   &__amount-price {
@@ -58,11 +73,11 @@
   }
 
   &__provider-image {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
+    width: 40px;
+    height: 40px;
+    margin-right: var(--tui-padding-m);
 
-    border-radius: 5px;
+    border-radius: 100%;
   }
 
   &__provider-label {
@@ -82,7 +97,7 @@
     justify-content: center;
     width: 20px;
     height: 20px;
-    margin-left: 10px;
+    margin-left: var(--tui-padding-s);
 
     svg {
       transition: 0.2s ease-in-out;
@@ -106,10 +121,13 @@
 
   &__right {
     display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+    align-items: flex-end;
   }
 }
 
 app-route-element {
   display: block;
-  margin-top: 20px;
+  margin-top: var(--tui-padding-l);
 }

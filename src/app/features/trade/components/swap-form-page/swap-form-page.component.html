@@ -1,0 +1,66 @@
+<app-window-container *ngLet="displayTargetAddressInput$ | async as displayReceiver">
+  <ng-container header>
+    Rubic.exchange
+    <div class="actions">
+      <app-refresh-button class="swap-form__refresh">
+        <!--
+      *ngIf="
+        (isInstantTrade || isCrossChainRouting || isOnramper) &&
+        isFormFilled &&
+        allowRefresh
+      "
+      mode="swaps"
+      [isRotating$]="isRefreshRotating$"
+      (onRefresh)="onRefresh()"
+      -->
+      </app-refresh-button>
+      <app-settings-container class="swap-form__settings"></app-settings-container>
+    </div>
+  </ng-container>
+  <div class="form__container">
+    <app-input-output-container round="top">
+      <app-asset-selector
+        left
+        (handleAssetSelection)="openTokensSelect('from')"
+        [asset]="fromAsset$ | async"
+      ></app-asset-selector>
+      <div right class="input-container">
+        <app-amount-transput
+          formType="from"
+          [selectedToken]="fromAsset$ | async"
+          inputMode="input"
+          (amountUpdated)="updateInputValue($event)"
+          [amountValue]="fromAmount$ | async"
+        ></app-amount-transput>
+      </div>
+    </app-input-output-container>
+    <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+    <app-input-output-container [round]="displayReceiver ? 'none' : 'bottom'">
+      <app-asset-selector
+        left
+        (handleAssetSelection)="openTokensSelect('to')"
+        [asset]="toAsset$ | async"
+      ></app-asset-selector>
+      <div right class="input-container">
+        <app-amount-transput
+          formType="to"
+          [selectedToken]="toAsset$ | async"
+          inputMode="output"
+          [amountValue]="toAmount$ | async"
+        ></app-amount-transput>
+      </div>
+    </app-input-output-container>
+  </div>
+
+  <app-target-network-address
+    *ngIf="displayReceiver"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <ng-container footer>
+    <div class="buttons-container">
+      <app-action-button></app-action-button>
+      <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+    </div>
+  </ng-container>
+</app-window-container>

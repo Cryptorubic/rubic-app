@@ -12,6 +12,8 @@
   background-color: var(--secondary-background);
   border-radius: 50%;
 
+  transform: translateY(-50%);
+
   cursor: pointer;
 
   @include iframe {

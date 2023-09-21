@@ -1,5 +1,5 @@
 .window-container {
-  padding: 10px;
+  padding: var(--tui-padding-m);
 
   background: var(--secondary-background);
   border-radius: var(--tui-radius-m);
@@ -11,7 +11,7 @@
 }
 
 header {
-  padding: 5px 20px 15px;
+  padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
 
   h5 {
     display: flex;

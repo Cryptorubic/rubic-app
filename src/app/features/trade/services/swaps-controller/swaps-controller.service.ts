@@ -7,6 +7,7 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { SelectedTrade } from '@features/trade/models/selected-trade';
 
 @Injectable()
 export class SwapsControllerService {
@@ -37,6 +38,10 @@ export class SwapsControllerService {
     this._calculateTrade$.next({ isForced });
   }
 
+  private startCalculation(isForced = false): void {
+    this._calculateTrade$.next({ isForced });
+  }
+
   private subscribeOnCalculation(): void {
     this._calculateTrade$
       .pipe(
@@ -57,6 +62,12 @@ export class SwapsControllerService {
             return { ...calculateData, stop: true };
           }
           return { ...calculateData, stop: false };
+        }),
+        tap(calculateData => {
+          if (calculateData.isForced) {
+            this.swapStateService.clearProviders();
+          }
+          this.swapStateService.patchCalculationState();
         }),
         switchMap(calculateData => {
           if (calculateData.stop) {
@@ -108,12 +119,33 @@ export class SwapsControllerService {
     }
   }
 
-  public async swap(): Promise<void> {
-    const trade = this.swapStateService.currentTrade.trade;
-    if (trade instanceof CrossChainTrade) {
-      await this.crossChainService.swapTrade(trade);
-    } else {
-      await this.onChainService.swapTrade(trade);
+  public async swap(
+    tradeState: SelectedTrade,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: () => void;
     }
+  ): Promise<void> {
+    if (tradeState.trade instanceof CrossChainTrade) {
+      await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
+    } else {
+      await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
+    }
+    callback?.onSwap();
+  }
+
+  public async approve(
+    tradeState: SelectedTrade,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: () => void;
+    }
+  ): Promise<void> {
+    if (tradeState.trade instanceof CrossChainTrade) {
+      await this.crossChainService.approveTrade(tradeState.trade, callback.onHash);
+    } else {
+      await this.onChainService.approveTrade(tradeState.trade, callback.onHash);
+    }
+    callback?.onSwap();
   }
 }

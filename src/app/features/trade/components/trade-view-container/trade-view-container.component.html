@@ -1,0 +1,25 @@
+<div class="swap-container" *ngLet="formContent$ | async as content">
+  <div
+    class="form"
+    [ngClass]="{
+      form_small: content === 'preview',
+      form_tokens: content === 'fromSelector' || content === 'toSelector'
+    }"
+    [ngSwitch]="content"
+  >
+    <app-token-selector-page *ngSwitchCase="'fromSelector'" type="from"></app-token-selector-page>
+    <app-token-selector-page *ngSwitchCase="'toSelector'" type="to"></app-token-selector-page>
+    <app-swap-form-page
+      [style]="{ display: content === 'form' ? 'block' : 'none' }"
+    ></app-swap-form-page>
+    <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
+  </div>
+
+  <app-providers-list
+    *ngIf="(showProviders$ | async) && content === 'form'"
+    @inOutAnimation
+    [states]="providers$ | async"
+    [selectedTradeType]="selectedTradeType$ | async"
+    (selectTrade)="selectTrade($event)"
+  ></app-providers-list>
+</div>

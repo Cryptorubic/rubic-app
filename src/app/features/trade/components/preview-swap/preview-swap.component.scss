@@ -1,23 +1,22 @@
 .preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 10px;
-  padding: 5px;
-
-  background: var(--primary-background);
-  border-radius: var(--tui-radius-m);
 
   &__data-container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 15px;
+    gap: var(--tui-padding-s);
+    padding: var(--tui-padding-l);
 
-    background: var(--io-background);
+    background: var(--primary-background);
     border-radius: var(--tui-radius-m);
   }
 
   &__io-container {
     display: flex;
-    gap: 10px;
+    gap: var(--tui-padding-s);
     align-items: center;
   }
 
@@ -38,7 +37,10 @@
   }
 
   &__main-image {
+    width: 25px;
     margin-left: -12.5px;
+
+    background: var(--io-background);
 
     border-radius: 100%;
     outline: 2px solid var(--io-background);
@@ -65,4 +67,13 @@
 
 button {
   width: 100%;
+}
+
+app-swap-data-element ::ng-deep {
+  .provider-info {
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
 }

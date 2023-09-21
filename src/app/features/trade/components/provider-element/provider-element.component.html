@@ -1,51 +1,57 @@
-<div *ngLet="tradeState?.trade as trade" class="element">
-  <div
-    *ngLet="tradeState.tradeType === selectedTradeType as isBest"
-    class="element__provider-container"
-    [ngClass]="{ 'element__provider-container_best': isBest }"
-  >
-    <div class="element__amounts-container">
-      <div *ngIf="trade?.to?.tokenAmount?.gt(0)" class="element__amount">
-        <img class="element__token-image" [src]="toToken.image" [alt]="toToken.name" />
-        <div class="element__token-amount">{{ trade.to.tokenAmount.toFixed() }}</div>
+<ng-container *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
+  <div *ngLet="tradeState?.trade as trade" class="element">
+    <div
+      *ngLet="tradeState.tradeType === selectedTradeType as isBest"
+      class="element__provider-container"
+      [ngClass]="{ 'element__provider-container_best': isBest }"
+    >
+      <div class="element__amounts-container">
+        <div *ngIf="trade?.to?.tokenAmount?.gt(0)" class="element__amount">
+          <img
+            class="element__provider-image"
+            [src]="providerInfo.image"
+            [alt]="providerInfo.name"
+          />
+          <div class="element__token">
+            <div class="element__token-amount">{{ trade.to.tokenAmount.toFixed() }}</div>
+            <div class="element__token-info">
+              <img class="element__token-image" [src]="toToken.image" [alt]="toToken.name" />
+              <div class="element__token-symbol">{{ trade.to.symbol }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="element__right">
+          <div *ngIf="trade?.to?.price?.gt(0)" class="element__amount-price">
+            ~{{ getPrice(trade.to.tokenAmount, trade.to.price) }}&nbsp;$
+          </div>
+          <div class="element__row">
+            <tui-tag
+              *ngIf="isBest"
+              class="element__best-badge"
+              size="s"
+              status="custom"
+              value="Best"
+            ></tui-tag>
+            <div
+              (click)="toggleExpand($event)"
+              inlineSVG="assets/images/icons/arrow-down.svg"
+              class="element__expander"
+              [ngClass]="{ element__expander_active: expanded }"
+            ></div>
+          </div>
+        </div>
       </div>
-      <div *ngIf="trade?.to?.price?.gt(0)" class="element__amount-price">
-        ~{{ getPrice(trade.to.tokenAmount, trade.to.price) }}&nbsp;$
-      </div>
+
+      <tui-expand [expanded]="expanded">
+        <ng-template tuiExpandContent>
+          <app-route-element [routes]="tradeState.routes"></app-route-element>
+        </ng-template>
+      </tui-expand>
     </div>
-    <div class="element__middle">
-      <div class="element__provider" *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
-        <img class="element__provider-image" [src]="providerInfo.image" [alt]="providerInfo.name" />
-        <div class="element__provider-label">{{ providerInfo.name }}</div>
-      </div>
-
-      <div class="element__right">
-        <tui-tag
-          *ngIf="isBest"
-          class="element__best-badge"
-          size="s"
-          status="custom"
-          value="Best"
-        ></tui-tag>
-
-        <div
-          (click)="toggleExpand($event)"
-          inlineSVG="assets/images/icons/arrow-down.svg"
-          class="element__expander"
-          [ngClass]="{ element__expander_active: expanded }"
-        ></div>
-      </div>
-    </div>
-
-    <tui-expand [expanded]="expanded">
-      <ng-template tuiExpandContent>
-        <app-route-element [routes]="tradeState.routes"></app-route-element>
-      </ng-template>
-    </tui-expand>
+    <app-swap-data-element
+      *ngLet="getFeeInfo()"
+      [feeInfo]="getFeeInfo()"
+      [time]="time"
+    ></app-swap-data-element>
   </div>
-  <app-swap-data-element
-    [gasFee]="gasFee"
-    [providerFee]="providerFee"
-    [time]="time"
-  ></app-swap-data-element>
-</div>
+</ng-container>

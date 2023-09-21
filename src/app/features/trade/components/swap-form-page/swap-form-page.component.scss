@@ -1,0 +1,30 @@
+app-action-button {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+app-target-network-address {
+  display: block;
+}
+
+.input-container {
+  width: 100%;
+}
+
+.buttons-container {
+  display: flex;
+  gap: var(--tui-padding-l);
+  margin-top: var(--tui-padding-l);
+}
+
+app-form-switcher {
+  display: flex;
+  justify-content: center;
+  height: 1px;
+}

@@ -1,6 +1,6 @@
 :host {
-  --tui-secondary: #24252e;
-  --tui-secondary-hover: #2c2d36;
+  --tui-secondary: var(--tui-base-01);
+  --tui-secondary-hover: var(--tui-secondary);
   --tui-secondary-active: #2c2d36;
 }
 

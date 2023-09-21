@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import BigNumber from 'bignumber.js';
-import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { first, map } from 'rxjs/operators';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { forkJoin, Observable } from 'rxjs';
-import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
-import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
-import { AssetSelector } from '@shared/models/asset-selector';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { Observable } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
+import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
+import { map } from 'rxjs/operators';
+import { transactionStep } from '@features/trade/models/transaction-steps';
+import { FeeInfo } from 'rubic-sdk';
 
 @Component({
   selector: 'app-preview-swap',
@@ -17,54 +15,65 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewSwapComponent {
-  public gasFee = new BigNumber(3.44159);
-
-  public providerFee = new BigNumber(3.44159);
-
   public time = '3 min';
 
-  public tradeInfo$ = forkJoin([
-    this.swapForm.fromToken$.pipe(first()),
-    this.swapForm.fromAmount$.pipe(first()),
-    this.swapForm.toToken$.pipe(first()),
-    this.swapForm.toAmount$.pipe(first())
-  ]).pipe(
-    map(([fromToken, fromAmount, toToken, toAmount]) => {
-      const fromAsset = this.getTokenAsset(fromToken);
-      const fromValue = {
-        tokenAmount: fromAmount,
-        fiatAmount: fromAmount.multipliedBy(fromToken.price || 0)
-      };
+  public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-      const toAsset = this.getTokenAsset(toToken);
-      const toValue = {
-        tokenAmount: toAmount,
-        fiatAmount: toAmount.multipliedBy(toToken.price || 0)
-      };
+  public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
+    this.previewSwapService.tradeState$.pipe(
+      map(tradeState => {
+        const info = tradeState.trade.getTradeInfo();
+        return {
+          ...tradeState,
+          feeInfo: info.feeInfo
+        };
+      })
+    );
 
-      return { fromAsset, fromValue, toAsset, toValue };
+  public readonly transactionState$ = this.previewSwapService.transactionState$;
+
+  public readonly buttonState$ = this.transactionState$.pipe(
+    map(el => {
+      const state = {
+        action: (): void => {},
+        label: TransactionStateComponent.getLabel(el),
+        disabled: true
+      };
+      if (el === transactionStep.approveReady) {
+        state.disabled = false;
+        state.action = this.approve.bind(this);
+      }
+      if (el === transactionStep.swapReady) {
+        state.disabled = false;
+        state.action = this.swap.bind(this);
+      }
+      if (el === transactionStep.idle) {
+        state.disabled = false;
+        state.action = this.startTrade.bind(this);
+      }
+      return state;
     })
   );
 
-  public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first()
-  );
-
   constructor(
-    private readonly swapsStateService: SwapsStateService,
-    private readonly swapForm: SwapsFormService
+    private readonly tradePageService: TradePageService,
+    private readonly previewSwapService: PreviewSwapService
   ) {}
 
-  private getTokenAsset(token: TokenAmount): AssetSelector {
-    const blockchain = BLOCKCHAINS[token.blockchain];
-    const color = blockchainColor[token.blockchain];
+  public backToForm(): void {
+    this.tradePageService.setState('form');
+    this.previewSwapService.setNextTxState('idle');
+  }
 
-    return {
-      secondImage: blockchain.img,
-      secondLabel: blockchain.name,
-      mainImage: token.image,
-      mainLabel: token.symbol,
-      secondColor: color
-    };
+  public async startTrade(): Promise<void> {
+    await this.previewSwapService.requestTxSign();
+  }
+
+  public async swap(): Promise<void> {
+    await this.previewSwapService.startSwap();
+  }
+
+  public async approve(): Promise<void> {
+    await this.previewSwapService.startApprove();
   }
 }

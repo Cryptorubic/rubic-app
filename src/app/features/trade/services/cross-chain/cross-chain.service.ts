@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { forkJoin, Observable } from 'rxjs';
 
@@ -30,6 +30,7 @@ import { CrossChainApiService } from '@features/trade/services/cross-chain-routi
 // import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 
 @Injectable()
 export class CrossChainService {
@@ -45,7 +46,7 @@ export class CrossChainService {
   constructor(
     private readonly sdkService: SdkService,
     private readonly swapFormService: SwapsFormService,
-    // private readonly settingsService: SettingsService,
+    private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
@@ -82,7 +83,10 @@ export class CrossChainService {
               ? { ...options, useProxy: this.getDisabledProxyConfig() }
               : options
           )
-          .pipe(map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })));
+          .pipe(
+            tap(console.log),
+            map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING }))
+          );
       })
     );
   }
@@ -90,7 +94,7 @@ export class CrossChainService {
   private getOptions(
     _disabledTradeTypes: CrossChainTradeType[]
   ): CrossChainManagerCalculationOptions {
-    // const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
     const { /* disabledCrossChainTradeTypes: apiDisabledTradeTypes, */ disabledBridgeTypes } =
@@ -107,12 +111,9 @@ export class CrossChainService {
     // );
 
     return {
-      // fromSlippageTolerance: slippageTolerance / 2,
-      // toSlippageTolerance: slippageTolerance / 2,
-      // slippageTolerance,
-      fromSlippageTolerance: 1,
-      toSlippageTolerance: 1,
-      slippageTolerance: 1,
+      fromSlippageTolerance: slippageTolerance / 2,
+      toSlippageTolerance: slippageTolerance / 2,
+      slippageTolerance,
       timeout: this.defaultTimeout,
       disabledProviders: [], //disabledProviders,
       lifiDisabledBridgeTypes: [
@@ -182,7 +183,10 @@ export class CrossChainService {
     };
   }
 
-  public async swapTrade(trade: CrossChainTrade): Promise<void> {
+  public async swapTrade(
+    trade: CrossChainTrade,
+    _callback?: (hash: string) => void
+  ): Promise<void> {
     // if (this.isSwapStarted === SWAP_PROCESS.NONE) {
     //   this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
     // }
@@ -236,5 +240,12 @@ export class CrossChainService {
       //   this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP, error.message);
       // }
     }
+  }
+
+  public async approveTrade(
+    trade: CrossChainTrade,
+    _callback?: (hash: string) => void
+  ): Promise<void> {
+    await trade.approve({});
   }
 }

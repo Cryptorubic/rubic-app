@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import BigNumber from 'bignumber.js';
+import { FeeInfo } from 'rubic-sdk';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -8,9 +8,7 @@ import BigNumber from 'bignumber.js';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapDataElementComponent {
-  @Input({ required: true }) gasFee: BigNumber;
-
-  @Input({ required: true }) providerFee: BigNumber;
+  @Input({ required: true }) feeInfo: FeeInfo | null;
 
   @Input({ required: true }) time: string;
 }

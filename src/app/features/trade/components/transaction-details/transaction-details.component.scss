@@ -1,12 +1,12 @@
 .transaction-details {
-  padding: 15px;
+  padding: var(--tui-padding-l);
 
-  background: var(--io-background);
+  background: var(--primary-background);
   border-radius: var(--tui-radius-m);
 
   &__label {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: var(--tui-padding-l);
 
     font-size: 15px;
     text-align: center;
@@ -15,7 +15,7 @@
   &__left,
   &__right {
     display: flex;
-    gap: 5px;
+    gap: var(--tui-padding-xs);
     align-items: center;
   }
 

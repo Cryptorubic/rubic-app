@@ -17,11 +17,12 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
 // ***** vars *****
 :root {
-  --primary-background: rgb(40, 40, 50);
-  --secondary-background: #3c3d44;
+  --app-background: #282935;
+  --primary-background: var(--tui-base-01);
+  --secondary-background: var(--tui-secondary);
   --dropdpwn-background: rgba(60, 61, 68, 0.85);
 
-  --io-background: #1f202a;
+  --io-background: #222331;
 
 
   --tui-primary: #00e28d;
@@ -40,12 +41,15 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-link: white;
   --tui-link-hover: white;
 
-  --tui-base-01: #2b2c37;
+  --tui-base-01: #2c2d3e;
   --tui-base-04: #4d4d59;
 
   --tui-text-01: white;
-  --tui-text-02: #878787;
-  --tui-text-03: #878787;
+  --tui-text-02: #9b9ba9;
+  --tui-text-03: #9b9ba9;
+
+  --tui-padding-xs: 0.25rem;
+  --tui-padding-s: 0.5rem;
 
   //--scroll-size: 0px;
   //--primary-color: #{$primary-color};

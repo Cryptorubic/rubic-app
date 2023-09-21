@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
 import { debounceTime, distinctUntilChanged, filter, skip, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { getCorrectAddressValidator } from '@features/swaps/shared/components/target-network-address/utils/get-correct-address-validator';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { combineLatestWith } from 'rxjs';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Component({
   selector: 'app-target-network-address',
@@ -24,7 +23,7 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
@@ -39,13 +38,17 @@ export class TargetNetworkAddressComponent implements OnInit {
       .pipe(
         skip(1),
         tap(inputForm => {
-          this.address.setAsyncValidators(getCorrectAddressValidator(inputForm));
+          this.address.setAsyncValidators(
+            getCorrectAddressValidator({
+              fromAssetType: inputForm.fromBlockchain,
+              toBlockchain: inputForm.toBlockchain
+            })
+          );
         }),
-        filter(form => !isNil(form.fromAsset) && !isNil(form.toToken)),
+        filter(form => !isNil(form.fromBlockchain) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareAssets(prev.fromAsset, curr.fromAsset) &&
-            compareTokens(prev.toToken, curr.toToken)
+            compareTokens(prev.fromToken, curr.toToken) && compareTokens(prev.toToken, curr.toToken)
           );
         }),
         takeUntil(this.destroy$)

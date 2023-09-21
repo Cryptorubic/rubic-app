@@ -5,6 +5,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
+import { FeeInfo } from 'rubic-sdk';
 
 @Component({
   selector: 'app-provider-element',
@@ -21,10 +22,6 @@ export class ProviderElementComponent {
 
   public readonly time: string = '3 Min';
 
-  public readonly providerFee: BigNumber = new BigNumber('0.14159');
-
-  public readonly gasFee: BigNumber = new BigNumber('3.44159');
-
   public expanded = false;
 
   constructor() {}
@@ -40,5 +37,9 @@ export class ProviderElementComponent {
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
     return TRADES_PROVIDERS[tradeProvider];
+  }
+
+  public getFeeInfo(): FeeInfo {
+    return this.tradeState.trade.getTradeInfo().feeInfo;
   }
 }

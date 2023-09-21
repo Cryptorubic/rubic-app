@@ -1,6 +1,6 @@
 /* Variables and mixins */
 @use 'scss/core' as *;
-@use 'scss/dark-theme' as *;
+@use 'scss/light-theme' as *;
 
 /* Global scss */
 @use 'scss/fonts' as *;
@@ -46,7 +46,7 @@ html {
     padding: 0;
     overflow-x: hidden;
 
-    background: var(--primary-background);
+    background: var(--app-background);
 
     main,
     input,
