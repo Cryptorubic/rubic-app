@@ -6,6 +6,7 @@
   display: flex;
   justify-content: center;
   max-height: 38px;
+  overflow: hidden;
 
   text-decoration: none;
 
@@ -13,6 +14,35 @@
 
   @include hide-unused-ui {
     display: none;
+  }
+
+  &__background-img {
+    &_1,
+    &_2,
+    &_3 {
+      position: absolute;
+    }
+
+    &_1 {
+      top: -11px;
+      left: 0;
+
+      transform: rotate(326deg);
+    }
+
+    &_2 {
+      top: -15px;
+      left: 226px;
+
+      transform: rotate(291deg) scale(0.7);
+    }
+
+    &_3 {
+      top: 10px;
+      left: 116px;
+
+      transform: rotate(267deg) scale(1.2);
+    }
   }
 
   &__container {
@@ -37,6 +67,10 @@
 
     &_bold {
       font-weight: bold;
+    }
+
+    &.mobile {
+      display: none;
     }
   }
 
@@ -92,6 +126,22 @@
   .banner {
     &__text {
       @include font(18px, 1, 400, #ffffff);
+
+      &.mobile {
+        display: inline;
+      }
+
+      &.desktop {
+        display: none;
+      }
+    }
+
+    &__background-img {
+      &_1,
+      &_2,
+      &_3 {
+        opacity: 0.4;
+      }
     }
 
     &__link {
@@ -137,6 +187,32 @@
 
 @include b(420) {
   .banner {
+    &__background-img {
+      &_1,
+      &_2,
+      &_3 {
+        opacity: 1;
+      }
+
+      &_1 {
+        top: -3px;
+        left: -20px;
+
+        transform: rotate(326deg) scale(0.7);
+      }
+
+      &_2 {
+        top: -16px;
+        left: 175px;
+
+        transform: rotate(291deg) scale(0.5);
+      }
+
+      &_3 {
+        display: none;
+      }
+    }
+
     &__text {
       @include font(13px, 1, 400, #ffffff);
     }
