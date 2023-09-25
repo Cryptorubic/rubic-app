@@ -8,6 +8,8 @@ import { SettingsService } from '@features/trade/services/settings-service/setti
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
+import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
+import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -28,6 +30,10 @@ import { SwapsControllerService } from '@features/trade/services/swaps-controlle
   ]
 })
 export class SwapFormPageComponent {
+  public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
+    map(status => status !== REFRESH_STATUS.STOPPED)
+  );
+
   public readonly fromAsset$ = this.swapFormService.fromToken$;
 
   public readonly toAsset$ = this.swapFormService.toToken$;
@@ -61,6 +67,7 @@ export class SwapFormPageComponent {
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
+    private readonly refreshService: RefreshService,
     private swapsControllerService: SwapsControllerService
   ) {}
 
@@ -104,5 +111,9 @@ export class SwapFormPageComponent {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
     });
+  }
+
+  public refreshTrades(): void {
+    this.refreshService.onButtonClick();
   }
 }

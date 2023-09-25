@@ -76,7 +76,9 @@ export class ErrorsService {
       label: this.translateService.instant(isWarning ? 'common.warning' : 'common.error'),
       status: isWarning ? TuiNotification.Warning : TuiNotification.Error,
       data: {},
-      autoClose: 7000
+      autoClose: 7000,
+      icon: '',
+      defaultAutoCloseTime: 0
     };
 
     if (this.isCustomRPCError(error)) {

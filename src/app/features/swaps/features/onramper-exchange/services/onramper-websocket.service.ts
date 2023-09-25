@@ -162,7 +162,9 @@ export class OnramperWebsocketService {
     this.notificationsService.show(new PolymorpheusComponent(SuccessTrxNotificationComponent), {
       status: TuiNotification.Success,
       autoClose: 15000,
-      data: { type: 'on-chain', withRecentTrades: true }
+      data: { type: 'on-chain', withRecentTrades: true },
+      icon: '',
+      defaultAutoCloseTime: 0
     });
 
     this.onramperFormCalculationService.stopBuyNativeInProgress();
@@ -182,7 +184,9 @@ export class OnramperWebsocketService {
       {
         status: TuiNotification.Info,
         autoClose: false,
-        data: { withRecentTrades: true }
+        data: { withRecentTrades: true },
+        icon: '',
+        defaultAutoCloseTime: 0
       }
     );
   }

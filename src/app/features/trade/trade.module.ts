@@ -43,7 +43,6 @@ import { SettingsService } from '@features/trade/services/settings-service/setti
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsContainerComponent } from '@features/trade/components/settings-container/settings-container.component';
-import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { TokenSelectorPageComponent } from './components/token-selector-page/token-selector-page.component';
 import { SwapFormPageComponent } from './components/swap-form-page/swap-form-page.component';
@@ -51,6 +50,7 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
 import { TransactionStateComponent } from './components/transaction-state/transaction-state.component';
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
+import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 
 @NgModule({
   declarations: [

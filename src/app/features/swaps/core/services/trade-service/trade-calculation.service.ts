@@ -18,7 +18,9 @@ export abstract class TradeCalculationService {
       data: {
         type: this.successTxModalType,
         withRecentTrades: this.successTxModalType !== 'on-chain'
-      }
+      },
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   };
 
@@ -28,7 +30,9 @@ export abstract class TradeCalculationService {
       {
         status: TuiNotification.Info,
         autoClose: false,
-        data: null
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
       }
     );
   };

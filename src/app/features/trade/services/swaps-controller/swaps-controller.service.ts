@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
@@ -12,6 +12,8 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { BlockchainsInfo, ChainType, RubicSdkError } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+
+import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -26,10 +28,12 @@ export class SwapsControllerService {
     private readonly swapStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly refreshService: RefreshService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
+    this.subscribeOnRefreshServiceCalls();
   }
 
   /**
@@ -55,6 +59,7 @@ export class SwapsControllerService {
         debounceTime(200),
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
+            this.refreshService.setStopped();
             // this.tradeStatus = TRADE_STATUS.DISABLED;
 
             // if (
@@ -71,6 +76,7 @@ export class SwapsControllerService {
           return { ...calculateData, stop: false };
         }),
         tap(calculateData => {
+          this.refreshService.setRefreshing();
           this.swapsState.setCalculationProgress(1, 0);
           if (calculateData.isForced) {
             this.swapStateService.clearProviders();
@@ -110,13 +116,26 @@ export class SwapsControllerService {
                   container.value.calculated
                 );
                 this.setTradeAmount();
+                if (container.value.total === container.value.calculated) {
+                  this.refreshService.setStopped();
+                }
               })
             );
           }
           return of(null);
+        }),
+        catchError((_err: unknown) => {
+          this.refreshService.setStopped();
+          return of(null);
         })
       )
       .subscribe();
+  }
+
+  private subscribeOnRefreshServiceCalls(): void {
+    this.refreshService.onRefresh$.subscribe(() => {
+      this.startRecalculation();
+    });
   }
 
   private setTradeAmount(): void {

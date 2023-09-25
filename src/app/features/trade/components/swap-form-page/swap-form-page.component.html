@@ -2,7 +2,11 @@
   <ng-container header>
     Rubic.exchange
     <div class="actions">
-      <app-refresh-button class="swap-form__refresh">
+      <app-refresh-button
+        [isRotating$]="isRefreshRotating$"
+        (onRefresh)="refreshTrades()"
+        class="swap-form__refresh"
+      >
         <!--
       *ngIf="
         (isInstantTrade || isCrossChainRouting || isOnramper) &&

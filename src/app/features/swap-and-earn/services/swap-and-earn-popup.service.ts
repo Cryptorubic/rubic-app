@@ -22,7 +22,9 @@ export class SwapAndEarnPopupService {
       {
         status: TuiNotification.Info,
         autoClose: false,
-        data: null
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
       }
     );
   }
@@ -33,7 +35,9 @@ export class SwapAndEarnPopupService {
       {
         status: TuiNotification.Warning,
         autoClose: 10000,
-        data: null
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
       }
     );
   }
@@ -44,7 +48,9 @@ export class SwapAndEarnPopupService {
       {
         status: TuiNotification.Success,
         autoClose: 10000,
-        data: null
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
       }
     );
   }
@@ -88,7 +94,13 @@ export class SwapAndEarnPopupService {
         status = TuiNotification.Error;
       }
 
-      this.notificationsService.show(label, { autoClose: 10000, status, data: null });
+      this.notificationsService.show(label, {
+        autoClose: 10000,
+        status,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      });
     }
   }
 }

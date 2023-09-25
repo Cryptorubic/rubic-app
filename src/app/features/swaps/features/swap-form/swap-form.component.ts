@@ -16,7 +16,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import BigNumber from 'bignumber.js';
-import { TuiNotification } from '@taiga-ui/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
@@ -176,15 +175,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
         this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER
           ? fromAmount
           : new BigNumber(NaN)
-    });
-  }
-
-  private notifyBeta(): void {
-    const message = this.translateService.instant('notifications.solanaBeta');
-    this.notificationsService.show(message, {
-      status: TuiNotification.Warning,
-      autoClose: 10000,
-      data: null
     });
   }
 

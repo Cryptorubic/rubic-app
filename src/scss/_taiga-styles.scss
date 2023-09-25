@@ -1,5 +1,9 @@
 @use 'src/scss/core' as *;
 
+.t-empty {
+  display: none !important;
+}
+
 [tuiWrapper] {
   &:not([data-appearance='outline']) {
     &::after {

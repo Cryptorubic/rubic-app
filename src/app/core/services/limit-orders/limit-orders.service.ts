@@ -117,7 +117,9 @@ export class LimitOrdersService {
             {
               status: TuiNotification.Info,
               autoClose: false,
-              data: null
+              data: null,
+              icon: '',
+              defaultAutoCloseTime: 0
             }
           )
       );
@@ -140,7 +142,9 @@ export class LimitOrdersService {
         data: {
           type: 'on-chain',
           withRecentTrades: false
-        }
+        },
+        icon: '',
+        defaultAutoCloseTime: 0
       });
     } finally {
       subscription$?.unsubscribe();
