@@ -20,7 +20,7 @@ export class SettingsCcrComponent implements OnInit {
 
   public slippageTolerance: number;
 
-  public readonly minimumSlippageTolerance = 2;
+  public readonly minimumSlippageTolerance = 1.5;
 
   constructor(
     private readonly settingsService: SettingsService,
