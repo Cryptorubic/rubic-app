@@ -28,7 +28,7 @@ export class RetrodropContainerComponent {
     },
     {
       roundNumber: 2,
-      claimData: '24.09.2023 - 24.03.2024',
+      claimData: '26.09.2023 - 26.03.2024',
       isClosed: true
     },
     {
