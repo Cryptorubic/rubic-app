@@ -1,17 +1,21 @@
-<app-window-container>
+<app-window-container
+  *ngLet="{
+    tradeInfo: tradeInfo$ | async,
+    tradeState: tradeState$ | async,
+    transaction: transactionState$ | async
+  } as state"
+>
   <ng-container header>
     <span class="back-button" (click)="backToForm()">
       <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
     </span>
-    Preview Swap
+    <ng-container *ngIf="state.transaction === 'idle'">Preview Swap</ng-container>
+    <ng-container *ngIf="state.transaction === 'success'">Success Swap</ng-container>
+    <ng-container *ngIf="state.transaction !== 'idle' && state.transaction !== 'success'"
+      >Swap</ng-container
+    >
   </ng-container>
-  <ng-container
-    *ngLet="{
-      tradeInfo: tradeInfo$ | async,
-      tradeState: tradeState$ | async,
-      transaction: transactionState$ | async
-    } as state"
-  >
+  <ng-container>
     <div class="preview">
       <div class="preview__data-container">
         <div class="preview__io-container">
@@ -90,18 +94,41 @@
           </div>
         </div>
       </div>
-      <div class="preview__swap-info">
+
+      <div *ngIf="state.transaction !== 'success'" class="preview__swap-info">
         <app-swap-data-element
           [feeInfo]="state.tradeState?.feeInfo || null"
           [time]="time"
         ></app-swap-data-element>
       </div>
-      <div class="preview__transaction-details">
+
+      <div *ngIf="state.transaction === 'success'" class="preview__buttons">
+        <button
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="navigateToExplorer()"
+        >
+          Explorer
+        </button>
+
+        <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToHistory()">
+          See Details >
+        </button>
+      </div>
+
+      <div *ngIf="state.transaction !== 'success'" class="preview__transaction-details">
         <app-transaction-details></app-transaction-details>
+      </div>
+
+      <div *ngIf="state.transaction === 'success'" class="preview__success-info">
+        <app-success-swap-info></app-success-swap-info>
       </div>
     </div>
 
     <button
+      class="preview__action-button"
       *ngLet="buttonState$ | async as buttonState"
       tuiButton
       appearance="primary"

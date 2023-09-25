@@ -7,6 +7,8 @@ import { TransactionStateComponent } from '@features/trade/components/transactio
 import { map } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import { FeeInfo } from 'rubic-sdk';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-preview-swap',
@@ -15,6 +17,8 @@ import { FeeInfo } from 'rubic-sdk';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PreviewSwapComponent {
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
+
   public time = '3 min';
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
@@ -51,13 +55,19 @@ export class PreviewSwapComponent {
         state.disabled = false;
         state.action = this.startTrade.bind(this);
       }
+      if (el === transactionStep.success) {
+        state.disabled = false;
+        state.label = 'Done';
+        state.action = this.backToForm.bind(this);
+      }
       return state;
     })
   );
 
   constructor(
     private readonly tradePageService: TradePageService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly router: Router
   ) {}
 
   public backToForm(): void {
@@ -75,5 +85,13 @@ export class PreviewSwapComponent {
 
   public async approve(): Promise<void> {
     await this.previewSwapService.startApprove();
+  }
+
+  public async navigateToHistory(): Promise<void> {
+    await this.router.navigate(['/history'], { queryParamsHandling: 'preserve' });
+  }
+
+  public async navigateToExplorer(): Promise<void> {
+    alert('Navigate to Explorer');
   }
 }

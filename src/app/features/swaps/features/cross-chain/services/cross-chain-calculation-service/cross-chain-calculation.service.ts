@@ -291,7 +291,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
   ): Promise<void> {
     const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
-    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(calculatedTrade, fromAddress);
+    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(
+      calculatedTrade.trade,
+      fromAddress
+    );
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 

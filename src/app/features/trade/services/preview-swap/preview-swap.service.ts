@@ -10,6 +10,7 @@ import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 @Injectable()
 export class PreviewSwapService {
@@ -113,6 +114,9 @@ export class PreviewSwapService {
                 },
                 onSwap: () => {
                   this._transactionState$.next('swapRequest');
+                },
+                onError: () => {
+                  this._transactionState$.next('approveReady');
                 }
               });
             }
@@ -122,12 +126,20 @@ export class PreviewSwapService {
                   this._transactionState$.next('sourcePending');
                 },
                 onSwap: () => {
-                  this._transactionState$.next('destinationPending');
-                  // @TODO
-                  setTimeout(() => {
+                  if (tradeState.trade instanceof CrossChainTrade) {
+                    this._transactionState$.next('destinationPending');
+                    setTimeout(() => {
+                      this._transactionState$.next('success');
+                      this._formState$.next('complete');
+                    }, 60_000);
+                  } else {
                     this._transactionState$.next('success');
-                    this._formState$.next('complete');
-                  }, 60_000);
+                  }
+
+                  // @TODO
+                },
+                onError: () => {
+                  this._transactionState$.next('swapReady');
                 }
               });
             }

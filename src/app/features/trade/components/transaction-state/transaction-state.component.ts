@@ -8,13 +8,15 @@ import { TransactionStep, transactionStep } from '@features/trade/models/transac
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransactionStateComponent {
-  public steps: string[];
+  public steps: { key: TransactionStep; value: string }[];
 
   public type: 'bridge' | 'swap';
 
   public stateIndex: number = 0;
 
-  @Input({ required: true }) set state(value: TransactionStep) {}
+  @Input({ required: true }) set state(value: TransactionStep) {
+    this.stateIndex = this.steps.findIndex(el => el.key === value);
+  }
 
   @Input({ required: true }) set transactionData(value: {
     type: 'bridge' | 'swap';
@@ -44,7 +46,10 @@ export class TransactionStateComponent {
         transactionStep.success
       );
     }
-    this.steps = steps.map(el => TransactionStateComponent.getLabel(el));
+    this.steps = steps.map(el => ({
+      key: el,
+      value: TransactionStateComponent.getLabel(el)
+    }));
   }
 
   public static getLabel(state: TransactionStep): string {
@@ -52,11 +57,11 @@ export class TransactionStateComponent {
       idle: 'Swap',
       error: 'error',
       approveReady: 'Approve',
-      approveRequest: 'Sign approve',
+      approveRequest: 'Sign Transaction',
       approvePending: 'Approve processing',
       swapReady: 'Swap',
-      swapRequest: 'Sign swap',
-      sourcePending: 'Pending on source network',
+      swapRequest: 'Sign Transaction',
+      sourcePending: 'Transaction in process',
       destinationPending: 'Pending on target network',
       success: 'Success swap'
     };

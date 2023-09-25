@@ -83,6 +83,13 @@ export class SwapsStateService {
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
 
+  private readonly _calculationProgress$ = new BehaviorSubject<{ total: number; current: number }>({
+    total: 0,
+    current: 0
+  });
+
+  public readonly calculationProgress$ = this._calculationProgress$.asObservable();
+
   /**
    * Receiver address
    */
@@ -219,5 +226,9 @@ export class SwapsStateService {
       ...this._tradeState$.value,
       status: TRADE_STATUS.LOADING
     });
+  }
+
+  public setCalculationProgress(total: number, current: number): void {
+    this._calculationProgress$.next({ total, current });
   }
 }

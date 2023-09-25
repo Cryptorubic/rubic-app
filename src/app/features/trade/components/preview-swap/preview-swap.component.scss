@@ -1,8 +1,17 @@
 .preview {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--tui-padding-m);
   margin-bottom: 10px;
+
+  &__buttons {
+    display: flex;
+    gap: var(--tui-padding-m);
+
+    > * {
+      flex: 1;
+    }
+  }
 
   &__data-container {
     display: flex;
@@ -63,10 +72,17 @@
   &__token-info {
     color: var(--tui-text-03);
   }
-}
 
-button {
-  width: 100%;
+  &__action-button {
+    width: 100%;
+  }
+
+  &__success-info {
+    overflow: hidden;
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);;
+  }
 }
 
 app-swap-data-element ::ng-deep {

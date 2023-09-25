@@ -20,7 +20,13 @@ import {
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import {
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiProgressModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { SwapsModule } from '@features/swaps/swaps.module';
@@ -43,6 +49,8 @@ import { TokenSelectorPageComponent } from './components/token-selector-page/tok
 import { SwapFormPageComponent } from './components/swap-form-page/swap-form-page.component';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TransactionStateComponent } from './components/transaction-state/transaction-state.component';
+import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
+import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +68,8 @@ import { TransactionStateComponent } from './components/transaction-state/transa
     SettingsCcrComponent,
     TokenSelectorPageComponent,
     SwapFormPageComponent,
-    TransactionStateComponent
+    TransactionStateComponent,
+    SuccessSwapInfoComponent
   ],
   exports: [],
   imports: [
@@ -83,7 +92,8 @@ import { TransactionStateComponent } from './components/transaction-state/transa
     TuiToggleModule,
     TuiHostedDropdownModule,
     TuiInputModule,
-    SwapsSharedModule
+    SwapsSharedModule,
+    TuiProgressModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,
@@ -120,7 +130,8 @@ import { TransactionStateComponent } from './components/transaction-state/transa
     SettingsService,
     TargetNetworkAddressService,
     RefreshService,
-    PreviewSwapService
+    PreviewSwapService,
+    OnChainApiService
     // SettingsService,
     // RefreshService,
     // TradeService,

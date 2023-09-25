@@ -7,16 +7,19 @@
     >
       <div class="element__amounts-container">
         <div *ngIf="trade?.to?.tokenAmount?.gt(0)" class="element__amount">
-          <img
-            class="element__provider-image"
-            [src]="providerInfo.image"
-            [alt]="providerInfo.name"
-          />
           <div class="element__token">
-            <div class="element__token-amount">{{ trade.to.tokenAmount.toFixed() }}</div>
+            <div class="element__token-amount">
+              {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount : 6 : 4 }}&nbsp;{{
+                trade.to.symbol
+              }}
+            </div>
             <div class="element__token-info">
-              <img class="element__token-image" [src]="toToken.image" [alt]="toToken.name" />
-              <div class="element__token-symbol">{{ trade.to.symbol }}</div>
+              <img
+                class="element__token-image"
+                [src]="providerInfo.image"
+                [alt]="providerInfo.name"
+              />
+              <div class="element__token-symbol">{{ providerInfo.name }}</div>
             </div>
           </div>
         </div>

@@ -1,25 +1,34 @@
-<div class="swap-container" *ngLet="formContent$ | async as content">
+<div
+  class="swap-container"
+  *ngLet="{
+    content: formContent$ | async,
+    providers: providers$ | async,
+    showProviders: showProviders$ | async
+  } as state"
+>
   <div
     class="form"
     [ngClass]="{
-      form_small: content === 'preview',
-      form_tokens: content === 'fromSelector' || content === 'toSelector'
+      form_small: state.content === 'preview',
+      form_tokens: state.content === 'fromSelector' || state.content === 'toSelector'
     }"
-    [ngSwitch]="content"
+    [ngSwitch]="state.content"
   >
     <app-token-selector-page *ngSwitchCase="'fromSelector'" type="from"></app-token-selector-page>
     <app-token-selector-page *ngSwitchCase="'toSelector'" type="to"></app-token-selector-page>
     <app-swap-form-page
-      [style]="{ display: content === 'form' ? 'block' : 'none' }"
+      [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
   </div>
 
   <app-providers-list
-    *ngIf="(showProviders$ | async) && content === 'form'"
+    *ngIf="state.showProviders && state.content === 'form'"
     @inOutAnimation
-    [states]="providers$ | async"
+    [states]="state.providers"
     [selectedTradeType]="selectedTradeType$ | async"
     (selectTrade)="selectTrade($event)"
+    [calculationProgress]="calculationProgress$ | async"
+    [showCalculation]="true"
   ></app-providers-list>
 </div>

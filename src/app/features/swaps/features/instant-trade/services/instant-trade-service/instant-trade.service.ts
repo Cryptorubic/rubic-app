@@ -106,12 +106,12 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   public async approve(trade: OnChainTrade): Promise<void> {
-    if (!this.platformConfigurationService.isAvailableBlockchain(trade.from.blockchain)) {
-      throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.from.blockchain]);
-    }
-    if (!this.platformConfigurationService.isAvailableBlockchain(trade.to.blockchain)) {
-      throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.to.blockchain]);
-    }
+    // if (!this.platformConfigurationService.isAvailableBlockchain(trade.from.blockchain)) {
+    //   throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.from.blockchain]);
+    // }
+    // if (!this.platformConfigurationService.isAvailableBlockchain(trade.to.blockchain)) {
+    //   throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.to.blockchain]);
+    // }
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);

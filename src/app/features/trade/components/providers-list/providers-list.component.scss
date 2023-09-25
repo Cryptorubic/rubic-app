@@ -6,6 +6,10 @@ h5 {
   line-height: 15px;
 }
 
+.waiting {
+  margin-bottom: var(--tui-padding-m);
+}
+
 .providers-list {
   display: flex;
   flex-direction: column;

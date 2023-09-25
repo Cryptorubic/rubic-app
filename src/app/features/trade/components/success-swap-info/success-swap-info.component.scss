@@ -1,0 +1,17 @@
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-l);
+  padding: var(--tui-padding-l);
+
+  text-align: center;
+
+  background: url('/assets/images/success-bg.svg');
+  background-size: cover;
+
+  &__title {
+    color: var(--tui-positive);
+    font-weight: 500;
+    font-size: 21px;
+  }
+}

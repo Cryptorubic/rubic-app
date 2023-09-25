@@ -11,9 +11,17 @@ export class TradePageService {
 
   public readonly formContent$ = this._formContent$.asObservable();
 
+  private readonly _showProviders$ = new BehaviorSubject<boolean>(false);
+
+  public readonly showProviders$ = this._showProviders$.asObservable();
+
   constructor() {}
 
   public setState(value: FormType): void {
     this._formContent$.next(value);
+  }
+
+  public setProvidersVisibility(value: boolean): void {
+    this._showProviders$.next(value);
   }
 }

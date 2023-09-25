@@ -2,7 +2,7 @@
   <div *ngIf="feeInfo?.provider?.cryptoFee.amount?.gt(0)" class="provider-info__element">
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div class="">
-      {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | withRound : 'toClosestValue' }}
+      {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
       {{ feeInfo.provider.cryptoFee.tokenSymbol }}
     </div>
   </div>
@@ -10,7 +10,7 @@
   <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0)" class="provider-info__element">
     <div>$</div>
     <div>
-      {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | withRound : 'toClosestValue' }}
+      {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
       {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
     </div>
   </div>

@@ -8,6 +8,10 @@ import { CrossChainService } from '@features/trade/services/cross-chain/cross-ch
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
+import { ErrorsService } from '@core/errors/errors.service';
+import { BlockchainsInfo, ChainType, RubicSdkError } from 'rubic-sdk';
+import { AuthService } from '@core/services/auth/auth.service';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -19,7 +23,10 @@ export class SwapsControllerService {
     private readonly swapsState: SwapsStateService,
     private readonly crossChainService: CrossChainService,
     private readonly onChainService: OnChainService,
-    private readonly swapStateService: SwapsStateService
+    private readonly swapStateService: SwapsStateService,
+    private readonly errorsService: ErrorsService,
+    private readonly authService: AuthService,
+    private readonly tradePageService: TradePageService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -64,8 +71,10 @@ export class SwapsControllerService {
           return { ...calculateData, stop: false };
         }),
         tap(calculateData => {
+          this.swapsState.setCalculationProgress(1, 0);
           if (calculateData.isForced) {
             this.swapStateService.clearProviders();
+            // this.page
           }
           this.swapStateService.patchCalculationState();
         }),
@@ -91,8 +100,15 @@ export class SwapsControllerService {
               of(container.type)
             ]).pipe(
               tap(([trade, needApprove, type]) => {
+                if (!this.haveEnoughBalance()) {
+                  trade.error = new RubicSdkError('Not enough balance');
+                }
                 this.swapsState.updateTrade(trade, type, needApprove);
                 this.swapsState.pickProvider();
+                this.swapsState.setCalculationProgress(
+                  container.value.total,
+                  container.value.calculated
+                );
                 this.setTradeAmount();
               })
             );
@@ -100,14 +116,7 @@ export class SwapsControllerService {
           return of(null);
         })
       )
-      .subscribe(() => {
-        // if (trade) {
-        //   providers = trade.calculated === 0 ? [] : [...providers, trade];
-        //   if (trade.calculated === trade.total && this.selectedTrade && trade?.calculated !== 0) {
-        //     this.saveTrade(providers);
-        //   }
-        // }
-      });
+      .subscribe();
   }
 
   private setTradeAmount(): void {
@@ -124,14 +133,21 @@ export class SwapsControllerService {
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
+      onError?: () => void;
     }
   ): Promise<void> {
-    if (tradeState.trade instanceof CrossChainTrade) {
-      await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
-    } else {
-      await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
+    try {
+      if (tradeState.trade instanceof CrossChainTrade) {
+        await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
+      } else {
+        await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
+      }
+      callback?.onSwap();
+    } catch (err) {
+      console.error(err);
+      callback?.onError();
+      this.errorsService.catch(err);
     }
-    callback?.onSwap();
   }
 
   public async approve(
@@ -139,13 +155,42 @@ export class SwapsControllerService {
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
+      onError?: () => void;
     }
   ): Promise<void> {
-    if (tradeState.trade instanceof CrossChainTrade) {
-      await this.crossChainService.approveTrade(tradeState.trade, callback.onHash);
-    } else {
-      await this.onChainService.approveTrade(tradeState.trade, callback.onHash);
+    try {
+      if (tradeState.trade instanceof CrossChainTrade) {
+        await this.crossChainService.approveTrade(tradeState.trade, callback.onHash);
+      } else {
+        await this.onChainService.approveTrade(tradeState.trade, callback.onHash);
+      }
+      callback?.onSwap();
+    } catch (err) {
+      console.error(err);
+      callback?.onError();
+      this.errorsService.catch(err);
     }
-    callback?.onSwap();
+  }
+
+  private haveEnoughBalance(): boolean {
+    const { fromToken, fromAmount } = this.swapFormService.inputValue;
+
+    let fromChainType: ChainType | undefined;
+    try {
+      fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    } catch {}
+    if (
+      !fromToken ||
+      !this.authService.userAddress ||
+      !fromChainType ||
+      fromChainType !== this.authService.userChainType
+    ) {
+      return true;
+    }
+
+    if (fromToken.amount?.isFinite()) {
+      return fromToken.amount.gte(fromAmount);
+    }
+    return true;
   }
 }

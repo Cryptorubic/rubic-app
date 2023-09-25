@@ -1,10 +1,12 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
+import { EvmBlockchainName } from 'rubic-sdk';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-action-button',
@@ -73,7 +75,9 @@ export class ActionButtonComponent {
   constructor(
     private readonly tradeState: SwapsStateService,
     private readonly walletConnector: WalletConnectorService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   private approve(): void {
@@ -84,11 +88,12 @@ export class ActionButtonComponent {
     this.tradePageService.setState('preview');
   }
 
-  private switchChain(): void {
-    alert('switchChain');
+  private async switchChain(): Promise<void> {
+    const { trade } = this.tradeState.currentTrade;
+    await this.walletConnector.switchChain(trade.from.blockchain as EvmBlockchainName);
   }
 
   private connectWallet(): void {
-    alert('conenctWallet');
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

@@ -1,5 +1,4 @@
 import { firstValueFrom } from 'rxjs';
-import { CrossChainCalculatedTrade } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import {
   BLOCKCHAIN_NAME,
   BlockchainsInfo,
@@ -16,6 +15,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { getSignature } from '@shared/utils/get-signature';
 import { Injectable } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 @Injectable()
 export class TonPromoService {
@@ -43,21 +43,19 @@ export class TonPromoService {
   }
 
   public async getTonPromoInfo(
-    calculatedTrade: CrossChainCalculatedTrade,
+    trade: CrossChainTrade,
     userWalletAddress: string
   ): Promise<ShortTonPromoInfo> {
     const emptyTonPromoInfo: ShortTonPromoInfo = {
       isTonPromoTrade: false,
       totalUserConfirmedTrades: 0
     };
-    const totalInputAmountInUSD = calculatedTrade.trade.from.price.multipliedBy(
-      calculatedTrade.trade.from.tokenAmount
-    );
+    const totalInputAmountInUSD = trade.from.price.multipliedBy(trade.from.tokenAmount);
 
     if (
-      !BlockchainsInfo.isEvmBlockchainName(calculatedTrade.trade.from.blockchain) ||
-      !(calculatedTrade.trade.to.blockchain === BLOCKCHAIN_NAME.TON) ||
-      !(calculatedTrade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
+      !BlockchainsInfo.isEvmBlockchainName(trade.from.blockchain) ||
+      !(trade.to.blockchain === BLOCKCHAIN_NAME.TON) ||
+      !(trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW) ||
       totalInputAmountInUSD.lt(20)
     ) {
       return emptyTonPromoInfo;
