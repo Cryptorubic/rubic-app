@@ -19,8 +19,24 @@
       >
         Auto
       </div>
-      <button (click)="onSlippageToleranceChange(2)" class="settings__button-auto">2</button>
-      <button (click)="onSlippageToleranceChange(4)" class="settings__button-auto">4</button>
+      <button
+        (click)="onSlippageToleranceChange(1.5)"
+        class="settings__button-auto"
+        [ngClass]="{
+          'settings__button-auto_active': crossChainRoutingForm.value.slippageTolerance === 1.5
+        }"
+      >
+        1.5
+      </button>
+      <button
+        (click)="onSlippageToleranceChange(3)"
+        class="settings__button-auto"
+        [ngClass]="{
+          'settings__button-auto_active': crossChainRoutingForm.value.slippageTolerance === 3
+        }"
+      >
+        3
+      </button>
       <div class="slippage-container">
         <input
           appCommaToPeriod

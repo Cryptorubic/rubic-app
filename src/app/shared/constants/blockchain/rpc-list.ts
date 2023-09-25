@@ -135,6 +135,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://linea.blockpi.network/v1/rpc/public'
   ],
   [BLOCKCHAIN_NAME.BASE]: [
+    'https://rpc.ankr.com/base/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://base.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://mainnet.base.org',
     'https://1rpc.io/base',
     'https://base.blockpi.network/v1/rpc/public',
