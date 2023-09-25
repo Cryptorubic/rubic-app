@@ -126,7 +126,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://smartbch.greyh.at',
     'https://smartbch.fountainhead.cash/mainnet'
   ],
-  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
+  [BLOCKCHAIN_NAME.ZK_SYNC]: [
+    'https://rpc.ankr.com/zksync_era/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://zksync.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://rpc.ankr.com/zksync_era',
+    'https://mainnet.era.zksync.io'
+  ],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
   [BLOCKCHAIN_NAME.LINEA]: [
     'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
