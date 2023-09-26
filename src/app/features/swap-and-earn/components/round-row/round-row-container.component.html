@@ -12,7 +12,13 @@
         </div>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
           <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-          {{ currentTab === 'retrodrop' && isClosed ? '-.-' : isClosed ? '0' : claimAmount }}
+          {{
+            (currentTab === 'retrodrop' && isClosed) || isNotParticipant
+              ? '-.-'
+              : isClosed
+              ? '0'
+              : claimAmount
+          }}
           RBC
         </span>
       </div>
@@ -32,7 +38,7 @@
               : (state.translation | translate)
           }}</span>
           <img
-            *ngIf="isAlreadyClaimed && !isClosed"
+            *ngIf="isAlreadyClaimed && !isClosed && !isNotParticipant"
             class="contest__claim-button-icon"
             src="assets/images/icons/exclamation-grey.svg"
             alt="Hint"

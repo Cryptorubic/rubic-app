@@ -28,7 +28,8 @@ type ButtonLabel =
   | 'stake'
   | 'claimed'
   | 'staked'
-  | 'incorrectAddressError';
+  | 'incorrectAddressError'
+  | 'notParticipant';
 
 interface ButtonState {
   label: ButtonLabel;
@@ -53,6 +54,8 @@ export class RoundRowContainerComponent {
 
   @Input() public readonly isClosed: boolean;
 
+  @Input() public readonly isNotParticipant: boolean = false;
+
   @Input() public readonly claimAmount: BigNumber = new BigNumber(0);
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
@@ -72,7 +75,8 @@ export class RoundRowContainerComponent {
     wrongAddressError: 'airdrop.button.wrongAddressError',
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
-    incorrectAddressError: 'airdrop.button.incorrectAddressError'
+    incorrectAddressError: 'airdrop.button.incorrectAddressError',
+    notParticipant: 'airdrop.button.notParticipant'
   };
 
   public isMobile = false;
@@ -181,6 +185,9 @@ export class RoundRowContainerComponent {
     }
     if (!network || network !== newRubicToken.blockchain) {
       return 'changeNetwork';
+    }
+    if (this.isNotParticipant) {
+      return 'notParticipant';
     }
     if (isAlreadyClaimed) {
       if (tab === 'airdrop') {

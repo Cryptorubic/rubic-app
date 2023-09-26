@@ -6,6 +6,7 @@
       [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(round.roundNumber) | async"
       [claimAmount]="getClaimAmount(round.roundNumber)"
       [isClosed]="round.isClosed"
+      [isNotParticipant]="isNotParticipant(round.roundNumber)"
     ></app-round-row-container>
   </ng-container>
 </div>

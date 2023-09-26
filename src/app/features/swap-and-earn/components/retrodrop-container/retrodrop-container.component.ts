@@ -29,7 +29,7 @@ export class RetrodropContainerComponent {
     {
       roundNumber: 2,
       claimData: '26.09.2023 - 26.03.2024',
-      isClosed: true
+      isClosed: false
     },
     {
       roundNumber: 3,
@@ -95,6 +95,10 @@ export class RetrodropContainerComponent {
         return true;
       })
     );
+  }
+
+  public isNotParticipant(round: number): boolean {
+    return !this.swapAndEarnStateService.retrodropUserInfo?.[round - 1].is_participant;
   }
 
   public getClaimAmount(round: number): BigNumber {
