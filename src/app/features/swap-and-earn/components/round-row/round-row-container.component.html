@@ -23,7 +23,10 @@
         </span>
       </div>
 
-      <tui-loader [showLoader]="(loading$ | async) && !isClosed" [overlay]="true">
+      <tui-loader
+        [showLoader]="(loading$ | async) && !isClosed && !isNotParticipant"
+        [overlay]="true"
+      >
         <div
           class="contest__claim-button"
           *ngLet="buttonState$ | async as state"
