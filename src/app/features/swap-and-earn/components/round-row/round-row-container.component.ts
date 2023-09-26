@@ -85,50 +85,28 @@ export class RoundRowContainerComponent {
     combineLatestWith(
       this.swapAndEarnStateService.isUserParticipantOfRetrodrop$,
       this.authService.currentUser$,
-      this.walletConnectorService.networkChange$,
-      this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed$,
-      this.swapAndEarnStateService.isRetrodropRoundsAlreadyClaimed$
+      this.walletConnectorService.networkChange$
     ),
-    map(
-      ([
+    map(([currentTab, isRetrodropAddressValid, user, network]) => {
+      const isValid =
+        currentTab === 'airdrop'
+          ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
+          : isRetrodropAddressValid;
+
+      const buttonLabel = this.getButtonKey([
         currentTab,
-        isRetrodropAddressValid,
+        isValid,
         user,
         network,
-        isAlreadyAirdropClaimed,
-        isRetrodropRoundsAlreadyClaimed
-      ]) => {
-        const isValid =
-          currentTab === 'airdrop'
-            ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
-            : isRetrodropAddressValid;
-        let isAlreadyClaimed;
-        if (currentTab === 'airdrop') {
-          isAlreadyClaimed = isAlreadyAirdropClaimed;
-        } else if (currentTab === 'retrodrop' && isRetrodropRoundsAlreadyClaimed.length > 0) {
-          isAlreadyClaimed = isRetrodropRoundsAlreadyClaimed[this.round - 1].isClaimed;
-        } else {
-          isAlreadyClaimed = true;
-        }
-        // currentTab === 'airdrop'
-        //   ? isAlreadyAirdropClaimed
-        //   : this.swapAndEarnStateService.isAlreadyRetrodropClaimedRounds[this.round - 1].isClaimed;
+        this.isAlreadyClaimed
+      ]);
 
-        const buttonLabel = this.getButtonKey([
-          currentTab,
-          isValid,
-          user,
-          network,
-          isAlreadyClaimed
-        ]);
-
-        return {
-          label: buttonLabel,
-          translation: this.buttonStateNameMap[buttonLabel],
-          isError: this.getErrorState(buttonLabel)
-        };
-      }
-    ),
+      return {
+        label: buttonLabel,
+        translation: this.buttonStateNameMap[buttonLabel],
+        isError: this.getErrorState(buttonLabel)
+      };
+    }),
     startWith({
       label: 'emptyError' as ButtonLabel,
       translation: this.buttonStateNameMap['emptyError'],
