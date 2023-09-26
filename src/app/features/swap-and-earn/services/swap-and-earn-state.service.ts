@@ -205,7 +205,7 @@ export class SwapAndEarnStateService {
   public async setAlreadyRetrodropClaimed(): Promise<void> {
     const alreadyClaimedRounds = this.retrodropUserInfo.map(userInfo =>
       this.web3Service
-        .checkClaimed(retrodropContractAddress, userInfo.index)
+        .checkClaimed(retrodropContractAddress[userInfo.round - 1], userInfo.index)
         .then(() => ({
           round: userInfo.round,
           isClaimed: false

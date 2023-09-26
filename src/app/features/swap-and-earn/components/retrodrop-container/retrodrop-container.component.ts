@@ -33,7 +33,7 @@ export class RetrodropContainerComponent {
       return forkJoin(
         claimsInfo.map(claim => {
           return this.web3Service
-            .checkClaimed(retrodropContractAddress, claim.index)
+            .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
             .then(() => {
               const searchedRound = rounds.find(round => round.roundNumber === claim.round);
               return { ...searchedRound, isAlreadyClaimed: false };

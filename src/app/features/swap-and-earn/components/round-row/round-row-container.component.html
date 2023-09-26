@@ -5,7 +5,7 @@
         <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
           <div class="contest__left">
             <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
-              >Round #{{ isAlreadyClaimed }}</span
+              >Round #{{ round }}</span
             >
             <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
               {{ claimData }}

@@ -127,10 +127,6 @@ export class RoundRowContainerComponent {
     if (this.window.innerWidth <= 900) {
       this.isMobile = true;
     }
-    setTimeout(() => {
-      console.log(this.round);
-      console.log(this.isAlreadyClaimed);
-    }, 2000);
   }
 
   public async handleClick(state: ButtonLabel): Promise<void> {
