@@ -28,7 +28,7 @@ export class SwapAndEarnApiService {
   }
 
   @Cacheable({
-    maxAge: 1_000_000
+    maxAge: 1_800_000
   })
   public fetchRetrodropUserInfo(): Observable<RetrodropUserInfo> {
     if (!this.address) {
