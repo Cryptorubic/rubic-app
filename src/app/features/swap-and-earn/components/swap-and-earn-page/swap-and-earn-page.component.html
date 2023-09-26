@@ -1,88 +1,16 @@
-<ng-container *ngLet="points$ | async as points">
-  <ng-container *ngLet="isAirdropAddressValid$ | async as isAirdropAddressValid">
-    <ng-container *ngLet="isRetrodropAddressValid$ | async as isRetrodropAddressValid">
-      <ng-container *ngLet="currentTab$ | async as currentTab">
-        <ng-container *ngIf="workingStatus$ | async; else noCompany">
-          <app-points-container
-            (handleClick)="handleWithdraw($event)"
-            [points]="points"
-          ></app-points-container>
-          <ng-container *ngIf="currentUser$ | async">
-            <div
-              class="drops"
-              *ngIf="(points.participant && isAirdropAddressValid) || isRetrodropAddressValid"
-            >
-              <div class="drops__tabs-container">
-                <div
-                  class="drops__tab swap-to-earn-tab"
-                  [ngClass]="{
-                    active: currentTab === 'airdrop',
-                    disabled: !isAirdropAddressValid
-                  }"
-                  (click)="isAirdropAddressValid ? switchTab('airdrop') : null"
-                  [tuiHint]="isAirdropAddressValid ? null : SwapToEarnHint"
-                  tuiHintAppearance="onDark"
-                  tuiHintDirection="top-right"
-                >
-                  <span class="drops__tab-text">Swap&Earn</span>
-                </div>
-                <div
-                  class="drops__tab retrodrop-tab"
-                  [ngClass]="{
-                    active: currentTab === 'retrodrop',
-                    disabled: !isRetrodropAddressValid
-                  }"
-                  (click)="isRetrodropAddressValid ? switchTab('retrodrop') : null"
-                  [tuiHint]="isRetrodropAddressValid ? null : RetrodropHint"
-                  tuiHintAppearance="onDark"
-                  tuiHintDirection="top-right"
-                >
-                  <span class="drops__tab-text">Retrodrop</span>
-                </div>
-              </div>
-              <div
-                class="drops__container"
-                [ngClass]="{
-                  'full-rounded': currentTab === 'retrodrop',
-                }"
-              >
-                <tui-scrollbar>
-                  <ng-container *ngIf="currentTab === 'airdrop'">
-                    <app-claim-container *ngIf="isAirdropAddressValid"></app-claim-container>
-                  </ng-container>
-                  <ng-container *ngIf="currentTab === 'retrodrop'">
-                    <app-retrodrop-container
-                      *ngIf="isRetrodropAddressValid"
-                    ></app-retrodrop-container>
-                  </ng-container>
-                </tui-scrollbar>
-                <p
-                  *ngIf="!points.participant && (currentUser$ | async) && currentTab === 'airdrop'"
-                  class="not-member"
-                >
-                  You are not a member of Swap to Earn program:(
-                </p>
-              </div>
-            </div>
-          </ng-container>
-          <app-swap-and-earn-faq></app-swap-and-earn-faq>
-        </ng-container>
-        <ng-template #noCompany></ng-template>
-      </ng-container>
-    </ng-container>
-  </ng-container>
-</ng-container>
-
-<ng-template #SwapToEarnHint>
-  <div>
-    You are not currently a member of the SwapToEarn program. You can read more about the program
-    here:
-    <a
-      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
-      target="_blank"
-      rel="noreferrer"
-      >Link</a
-    >
-  </div>
-</ng-template>
-<ng-template #RetrodropHint>You are not a participant in the retrodrop.</ng-template>
+<div class="swap-and-earn">
+  <app-window-container>
+    <ng-container header> Swap&Earn </ng-container>
+    <app-points-container
+      (handleClick)="handleWithdraw($event)"
+      [points]="points$ | async"
+    ></app-points-container>
+  </app-window-container>
+  <app-window-container>
+    <div class="drops__container">
+      <tui-scrollbar>
+        <app-claim-container></app-claim-container>
+      </tui-scrollbar>
+    </div>
+  </app-window-container>
+</div>

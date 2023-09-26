@@ -25,6 +25,6 @@ export class PointsButtonComponent {
   ) {}
 
   public async navigateToSwapAndEarn(): Promise<void> {
-    await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
+    await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });
   }
 }

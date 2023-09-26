@@ -8,6 +8,7 @@ import { SwapAndEarnRoutingModule } from '@features/swap-and-earn/swap-and-earn-
 import { SwapAndEarnFaqComponent } from './components/swap-and-earn-faq/swap-and-earn-faq.component';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import {
+  TuiButtonModule,
   TuiHintModule,
   TuiLoaderModule,
   TuiScrollbarModule,
@@ -50,7 +51,8 @@ import { RetrodropStakeModalComponent } from 'src/app/features/swap-and-earn/com
     InlineSVGModule,
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    TuiButtonModule
   ],
   providers: [
     ApproveScannerService,

@@ -698,7 +698,7 @@
       "staked": "Staked",
       "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
+      "changeNetwork": "Change Network",
       "incorrectAddressError": "Entered address is incorrect"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",

@@ -47,7 +47,7 @@ const routes: Routes = [
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
-    path: ROUTE_PATH.SWAP_AND_EARN,
+    path: ROUTE_PATH.AIRDROP,
     loadChildren: () =>
       import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
   },

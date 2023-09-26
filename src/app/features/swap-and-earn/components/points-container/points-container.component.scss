@@ -6,24 +6,9 @@
 }
 
 .points {
-  position: relative;
-
   display: flex;
   flex-direction: column;
-  margin-bottom: 80px;
-  padding: 30px 23px;
-
-  font-weight: 700;
-  font-size: 16px;
-
-  background: var(--form-background);
-  border: 1px solid var(--transparent-line);
-  border-radius: $border-radius-2;
-
-  @include b(900) {
-    width: 100%;
-    padding: 15px;
-  }
+  gap: 20px;
 
   &__cover {
     position: absolute;
@@ -55,50 +40,33 @@
 
   &__container {
     display: flex;
-    margin-bottom: 50px;
+    align-items: center;
+    height: 52px;
+  }
 
-    @include b($mobile-sm-middle) {
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 30px;
+  &__pending,
+  &__confirmed {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+
+    &-info {
+      position: relative;
+      z-index: 1;
     }
 
-    &_disabled {
-      @include b(900) {
-        filter: grayscale(1) opacity(0.5);
-      }
+    &-background {
+      position: absolute;
+      top: 50%;
+      z-index: 0;
 
-      .points__confirmed {
-        filter: grayscale(1);
+      height: 52px;
 
-        @include dark {
-          background-image: url('/assets/images/swap-and-earn/confirmed_disabled.svg');
-          filter: none;
-        }
-
-        @include b(900) {
-          background: var(--primary-color);
-          background-image: none !important;
-        }
-
-        img {
-          filter: grayscale(1) opacity(0.5);
-        }
-      }
-
-      .points__pending {
-        background-image: url('/assets/images/swap-and-earn/pending_disabled.svg');
-
-        @include b(900) {
-          background: none;
-        }
-      }
-    }
-
-    > * {
-      @include b(900) {
-        height: 50px;
-      }
+      transform: translateY(-50%);
     }
   }
 
@@ -106,122 +74,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 325px;
-    height: 71px;
 
-    background-image: url('/assets/images/swap-and-earn/pending.svg');
-    background-size: cover;
-
-    @include b(900) {
-      width: 100%;
-      height: auto;
-
-      background: none;
-      border: 1px solid var(--primary-color);
-      border-radius: $border-radius-1;
-    }
+    width: 266px;
   }
 
   &__confirmed {
-    z-index: 999;
+    width: 256px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 410px;
-    height: 71px;
-    margin-left: -15px;
+    margin-left: -10px;
 
-    background-image: url('/assets/images/swap-and-earn/confirmed.svg');
-
-    @include b(900) {
-      width: 100%;
-      height: auto;
-      margin-left: 10px;
-
-      background: var(--primary-color);
-      border-radius: $border-radius-1;
+    &-info {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      justify-content: center;
     }
 
-    @include b($mobile-sm-middle) {
-      width: calc(100% - 70px);
-      margin-left: 0;
+    &-rbc-logo {
+      width: 25px;
     }
 
-    img {
-      margin-right: 10px;
-
-      @include b(900) {
-        height: 30px;
-      }
-    }
-  }
-
-  &__about {
-    z-index: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 88px;
-    margin-left: -30px;
-    padding-left: 20px;
-
-    background: var(--swap-and-earn-points-about);
-    border-radius: 0 $border-radius-2 $border-radius-2 0;
-
-    @include b(900) {
-      width: 110px;
-      height: auto;
-      margin-left: 10px;
-      padding-left: 0;
-
-      border-radius: $border-radius-1;
-    }
-
-    @include b($mobile-sm-middle) {
-      width: 50px;
-      margin-left: 0;
-    }
-
-    img {
-      width: 32px;
+    &-about-icon {
+      width: 15px;
     }
   }
 
   &__button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    padding: 20px;
-
-    font-weight: 700;
-    font-size: $rubic-font-size-01;
-
-    border: 1px solid var(--primary-color);
-    border-radius: $border-radius-2;
+    height: 52px;
 
     transition: all 0.1s ease-out;
-
-    @include b(900) {
-      height: 50px;
-
-      border-radius: $border-radius-1;
-    }
-
-    &_disabled {
-      cursor: not-allowed;
-      filter: grayscale(1) opacity(0.5);
-
-      &:hover {
-        transform: none !important;
-      }
-
-      &:active {
-        transform: none !important;
-      }
-    }
 
     &:hover {
       transform: scale(1.02);
@@ -233,6 +115,51 @@
       transform: scale(1);
 
       transition: all 0.1s ease-out;
+    }
+
+    &_disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        transform: none !important;
+      }
+
+      &:active {
+        transform: none !important;
+      }
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .points {
+    width: 100%;
+
+    &__container {
+      gap: 10px;
+    }
+
+    &__pending,
+    &__confirmed {
+      width: 100%;
+      height: 100%;
+      padding: var(--tui-padding-l);
+
+      border-radius: var(--tui-radius-m);
+
+      &-background {
+        display: none;
+      }
+    }
+
+    &__pending {
+      background: var(--primary-background);
+    }
+
+    &__confirmed {
+      margin-left: 0;
+
+      background: var(--io-background);
     }
   }
 }

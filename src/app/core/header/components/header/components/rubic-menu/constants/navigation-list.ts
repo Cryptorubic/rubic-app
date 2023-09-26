@@ -74,7 +74,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Swap to Earn',
       type: 'internal',
-      link: ROUTE_PATH.SWAP_AND_EARN,
+      link: ROUTE_PATH.AIRDROP,
       active: false
     },
     {

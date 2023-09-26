@@ -2,7 +2,19 @@
 
 :host {
   display: block;
-  max-width: 860px;
+  max-width: 540px;
+
+  ::ng-deep {
+    &:nth-child(2) {
+      header {
+        display: none;
+      }
+
+      .window-container {
+        padding-right: 0 !important;
+      }
+    }
+  }
 }
 
 .not-member {
@@ -18,115 +30,8 @@
   }
 }
 
-.drops {
-  position: relative;
-
-  max-width: 826px;
-  margin: 0 auto;
-
-  &__tabs-container {
-    position: absolute;
-    top: -39px;
-    left: 0;
-
-    display: flex;
-    gap: 0;
-    width: 100%;
-  }
-
-  &__tab {
-    position: relative;
-
-    padding: 8px 30px 30px;
-
-    font-size: 14px;
-
-    border: 1px solid var(--swap-and-earn-tabs-border);
-    border-bottom: 0;
-    border-radius: 20px 20px 0 0;
-    cursor: pointer;
-
-    &.disabled {
-      cursor: default;
-    }
-
-    &.retrodrop-tab.active::before {
-      left: -6px;
-
-      background: linear-gradient(90deg, var(--primary-background) 50%, var(--form-background) 50%);
-    }
-
-    &.swap-to-earn-tab.active::before {
-      right: -6px;
-
-      background: linear-gradient(-90deg, var(--primary-background) 50%, var(--form-background) 50%);
-    }
-
-    &.active {
-      background: var(--form-background);
-      border-bottom: 2px solid var(--form-background);
-
-      &::before {
-        position: absolute;
-        bottom: 20px;
-        z-index: 1;
-
-        width: 10px;
-        height: 22px;
-
-        content: '';
-      }
-
-      &::after {
-        position: absolute;
-        right: 0;
-        bottom: 17px;
-        left: 0;
-        z-index: 1;
-
-        width: 100%;
-        height: 5px;
-
-        background: var(--form-background);
-
-        content: '';
-      }
-    }
-  }
-
-  &__container {
-    position: relative;
-
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 280px;
-    margin: 0 auto 40px;
-    padding: 13px;
-
-    font-weight: 700;
-    font-size: 16px;
-
-    background: var(--form-background);
-    border: 1px solid var(--transparent-line);
-    border-radius: 0 $border-radius-2 $border-radius-2 $border-radius-2;
-
-    &.full-rounded {
-      border-radius: $border-radius-2;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .drops {
-    &__container.full-rounded {
-      border-radius: $border-radius-2 0 $border-radius-2 $border-radius-2;
-    }
-
-    &__tab {
-      width: 50%;
-
-      text-align: center;
-    }
-  }
+.swap-and-earn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }

@@ -44,7 +44,7 @@ interface ButtonState {
 export class RoundRowContainerComponent {
   @Input() public readonly claimData: string = '';
 
-  @Input() public readonly round: string = '1';
+  @Input() public readonly roundNumber: string = '1';
 
   @Input() public readonly disabled: boolean = false;
 
