@@ -7,13 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.changeNowRecentTrades',
-    type: 'internal',
-    link: 'changenow-recent-trades',
-    imagePath: `${defaultSrc}history.svg`,
-    target: '_self'
-  },
-  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,
@@ -47,7 +40,7 @@ export const NAVIGATION_LIST = [
     translateKey: 'Testnet App',
     type: 'external',
     link: EXTERNAL_LINKS.TESTNET_APP,
-    imagePath: `${defaultSrc}testnet.svg`
+    imagePath: `${defaultSrc}test.svg`
   }
 ] as NavigationItem[];
 

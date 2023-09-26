@@ -6,6 +6,7 @@ import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trad
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -47,7 +48,8 @@ export class TradeViewContainerComponent {
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
     public readonly swapFormQueryService: SwapFormQueryService,
-    public readonly swapFormService: SwapsFormService
+    public readonly swapFormService: SwapsFormService,
+    public readonly swapTokensUpdaterService: SwapTokensUpdaterService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {

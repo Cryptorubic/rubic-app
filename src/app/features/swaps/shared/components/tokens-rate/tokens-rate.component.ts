@@ -1,9 +1,9 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { map } from 'rxjs/operators';
 import { combineLatest, Observable } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { IframeService } from '@core/services/iframe/iframe.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 interface TokenRate {
   amount: BigNumber;
@@ -29,7 +29,7 @@ export class TokensRateComponent implements OnInit {
   public readonly isIframe = this.iframeService.isIframe;
 
   constructor(
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     private readonly iframeService: IframeService
   ) {}
 
@@ -39,13 +39,13 @@ export class TokensRateComponent implements OnInit {
       this.swapFormService.outputValueDistinct$
     ]).pipe(
       map(([inputForm, outputForm]) => {
-        const { fromAmount, fromAsset, toToken } = inputForm;
+        const { fromAmount, fromToken, toToken } = inputForm;
         const { toAmount } = outputForm;
-        if (toAmount?.gt(0) && fromAmount?.gt(0) && fromAsset && toToken) {
+        if (toAmount?.gt(0) && fromAmount?.gt(0) && fromToken && toToken) {
           return {
             from: {
               amount: fromAmount.dividedBy(toAmount),
-              symbol: fromAsset.symbol
+              symbol: fromToken.symbol
             },
             to: {
               amount: toAmount.dividedBy(fromAmount),

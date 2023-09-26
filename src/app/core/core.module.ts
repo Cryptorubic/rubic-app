@@ -22,7 +22,6 @@ import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
-import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
@@ -60,7 +59,6 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
     SwapTypeService,
     SwapFormService,
     SwapFormQueryService,
-    SwapTokensUpdaterService,
     FiatsService,
     LimitOrdersService,
     SuccessTxModalService
@@ -83,7 +81,4 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
-export class CoreModule {
-  // Initialized services, which are not used directly in components
-  constructor(private readonly _swapTokensUpdaterService: SwapTokensUpdaterService) {}
-}
+export class CoreModule {}

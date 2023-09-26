@@ -31,36 +31,6 @@
     <tui-data-list class="data-list" size="m" role="menu">
       <tui-opt-group>
         <button
-          class="data-list__element"
-          tuiButton
-          appearance="secondary"
-          type="button"
-          size="m"
-          (click)="openRecentTradesModal()"
-        >
-          <div class="data-list__link-container">
-            {{ 'navigation.recentTrades' | translate }}
-            <app-notification-badge
-              class="notification-counter notification-counter_menu"
-              *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-              size="xs"
-              color="red"
-              [value]="unreadTrades$ | async"
-            ></app-notification-badge>
-          </div>
-        </button>
-        <button
-          tuiButton
-          class="data-list__element"
-          routerLink="history/limit-orders"
-          appearance="secondary"
-          type="button"
-          size="m"
-          queryParamsHandling="merge"
-        >
-          <div class="data-list__link-container">Limit Orders</div>
-        </button>
-        <button
           tuiButton
           class="data-list__element"
           appearance="secondary"

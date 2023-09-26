@@ -1,21 +1,21 @@
 import { Injectable } from '@angular/core';
-import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { filter, pairwise, startWith } from 'rxjs/operators';
 import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 
 @Injectable()
 export class SwapTokensUpdaterService {
   private intervalId: NodeJS.Timeout;
 
   constructor(
-    private readonly swapFormService: SwapFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService
   ) {
@@ -24,22 +24,22 @@ export class SwapTokensUpdaterService {
   }
 
   private subscribeOnForm(): void {
-    this.swapFormService.inputValue$
+    this.swapsFormService.inputValue$
       .pipe(startWith(null), pairwise())
       .subscribe(([prevForm, curForm]) => {
         if (
-          (!compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
-            isMinimalToken(curForm.fromAsset)) ||
+          (!compareAssets(prevForm?.fromToken, curForm.fromToken) &&
+            isMinimalToken(curForm.fromToken)) ||
           (!compareTokens(prevForm?.toToken, curForm.toToken) && curForm.toToken)
         ) {
           this.updateTokensPrices(curForm);
         }
 
         if (
-          !compareAssets(prevForm?.fromAsset, curForm.fromAsset) &&
-          isMinimalToken(curForm.fromAsset)
+          !compareAssets(prevForm?.fromToken, curForm.fromToken) &&
+          isMinimalToken(curForm.fromToken)
         ) {
-          this.updateTokenBalance(curForm.fromAsset);
+          this.updateTokenBalance(curForm.fromToken);
         }
       });
   }
@@ -55,8 +55,8 @@ export class SwapTokensUpdaterService {
     }
 
     const update = () => {
-      if (isMinimalToken(form.fromAsset)) {
-        this.tokensService.getAndUpdateTokenPrice(form.fromAsset);
+      if (isMinimalToken(form.fromToken)) {
+        this.tokensService.getAndUpdateTokenPrice(form.fromToken);
       }
       if (form.toToken) {
         this.tokensService.getAndUpdateTokenPrice(form.toToken, true);
@@ -78,16 +78,19 @@ export class SwapTokensUpdaterService {
 
   private subscribeOnTokens(): void {
     this.tokensStoreService.tokens$.pipe(filter(Boolean)).subscribe(tokens => {
-      const form = this.swapFormService.inputValue;
+      const form = this.swapsFormService.inputValue;
       const fromToken =
-        isMinimalToken(form.fromAsset) &&
-        tokens.find(token => compareTokens(token, form.fromAsset as MinimalToken));
+        isMinimalToken(form.fromToken) &&
+        tokens.find(token => compareTokens(token, form.fromToken as MinimalToken));
       const toToken = form.toToken && tokens.find(token => compareTokens(token, form.toToken));
 
-      this.swapFormService.inputControl.patchValue({
-        ...(fromToken && { fromAsset: fromToken }),
-        ...(toToken && { toToken })
-      });
+      this.swapsFormService.inputControl.patchValue(
+        {
+          ...(fromToken && { fromAsset: fromToken }),
+          ...(toToken && { toToken })
+        },
+        { emitEvent: false }
+      );
     });
   }
 }

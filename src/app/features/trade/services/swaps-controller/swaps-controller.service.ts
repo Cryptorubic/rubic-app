@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
@@ -34,6 +34,7 @@ export class SwapsControllerService {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
+    this.subscribeOnAddressChange();
   }
 
   /**
@@ -76,13 +77,14 @@ export class SwapsControllerService {
           return { ...calculateData, stop: false };
         }),
         tap(calculateData => {
-          this.refreshService.setRefreshing();
-          this.swapsState.setCalculationProgress(1, 0);
-          if (calculateData.isForced) {
-            this.swapStateService.clearProviders();
-            // this.page
+          if (!calculateData.stop) {
+            this.refreshService.setRefreshing();
+            this.swapsState.setCalculationProgress(1, 0);
+            if (calculateData.isForced) {
+              this.swapStateService.clearProviders();
+            }
+            this.swapStateService.patchCalculationState();
           }
-          this.swapStateService.patchCalculationState();
         }),
         switchMap(calculateData => {
           if (calculateData.stop) {
@@ -211,5 +213,16 @@ export class SwapsControllerService {
       return fromToken.amount.gte(fromAmount);
     }
     return true;
+  }
+
+  private subscribeOnAddressChange(): void {
+    this.authService.currentUser$
+      .pipe(
+        switchMap(() => this.swapFormService.isFilled$),
+        filter(isFilled => isFilled)
+      )
+      .subscribe(() => {
+        this.startRecalculation();
+      });
   }
 }

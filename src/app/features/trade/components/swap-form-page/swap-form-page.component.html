@@ -22,20 +22,24 @@
     </div>
   </ng-container>
   <div class="form__container">
-    <app-input-output-container round="top">
+    <app-input-output-container round="top" *ngLet="fromAsset$ | async as fromAsset">
       <app-asset-selector
         left
         (handleAssetSelection)="openTokensSelect('from')"
-        [asset]="fromAsset$ | async"
+        [asset]="fromAsset"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
           formType="from"
-          [selectedToken]="fromAsset$ | async"
+          [selectedToken]="fromAsset"
           inputMode="input"
           (amountUpdated)="updateInputValue($event)"
           [amountValue]="fromAmount$ | async"
         ></app-amount-transput>
+        <app-user-balance-container
+          [token]="fromAsset"
+          (maxButtonClickEvent)="handleMaxButton()"
+        ></app-user-balance-container>
       </div>
     </app-input-output-container>
     <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
@@ -52,6 +56,7 @@
           inputMode="output"
           [amountValue]="toAmount$ | async"
         ></app-amount-transput>
+        <app-tokens-rate></app-tokens-rate>
       </div>
     </app-input-output-container>
   </div>

@@ -1,66 +1,33 @@
 @use '../../../../../../../../scss/core' as *;
 
 .user-balance-container {
-  margin-top: 10px;
-
-  @include hide-unused-ui {
-    margin-top: 0;
-    margin-right: 10px;
-
-    white-space: nowrap;
-  }
-
-  @include iframe {
-    margin-top: 0;
-  }
-
-  @include b($mobile-md) {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-top: 5px;
-  }
+  display: flex;
+  height: 15px;
 
   &__balance {
-    @include iframe-card;
-    margin-right: 10px;
+    margin-right: var(--tui-padding-xs);
 
-    color: var(--secondary-text);
-    font-size: 14px;
-    line-height: 17px;
-
-    @include b($mobile-md) {
-      margin-right: 0;
-    }
-
-    &_amount {
-      @include b($mobile-md) {
-        margin-left: 5px;
-
-        color: var(--primary-color);
-      }
-    }
+    color: var(--tui-text-03);
+    font-size: 15px;
+    line-height: 15px;
   }
 
   &__max-button {
-    padding: 0;
+    padding: 3px 6px;
 
-    color: var(--primary-color);
-    font-size: 14px;
-    line-height: 17px;
+    font-weight: 700;
+    font-size: 9px;
+    line-height: 9px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
 
-    background-color: transparent;
+    background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
+    border-radius: var(--tui-radius-s);
 
-    @include b($mobile-md) {
-      display: none;
-    }
+    transition: 0.2s ease-in-out;
 
-    @include iframe {
-      @include b($mobile-md) {
-        display: block;
-      }
+    &:hover {
+      background: linear-gradient(90deg, #1c8c56 0%, #0d868c 91.5%);
     }
 
     &_disabled {

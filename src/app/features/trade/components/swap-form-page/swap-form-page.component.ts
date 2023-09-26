@@ -116,4 +116,11 @@ export class SwapFormPageComponent {
   public refreshTrades(): void {
     this.refreshService.onButtonClick();
   }
+
+  public handleMaxButton(): void {
+    const token = this.swapFormService.inputValue.fromToken;
+    this.swapFormService.inputControl.patchValue({
+      fromAmount: new BigNumber(token.amount)
+    });
+  }
 }
