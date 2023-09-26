@@ -100,7 +100,7 @@ export class SwapAndEarnFacadeService {
       };
       proof = this.swapAndEarnStateService.airdropUserClaimInfo.proof;
     } else {
-      contractAddress = retrodropContractAddress;
+      contractAddress = retrodropContractAddress[retrodropClaimedRound - 1];
       node = {
         index: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].index,
         account: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].address,

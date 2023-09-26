@@ -28,7 +28,9 @@ type ButtonLabel =
   | 'stake'
   | 'claimed'
   | 'staked'
-  | 'incorrectAddressError';
+  | 'incorrectAddressError'
+  | 'notParticipant'
+  | 'closed';
 
 interface ButtonState {
   label: ButtonLabel;
@@ -53,6 +55,8 @@ export class RoundRowContainerComponent {
 
   @Input() public readonly isClosed: boolean;
 
+  @Input() public readonly isNotParticipant: boolean = false;
+
   @Input() public readonly claimAmount: BigNumber = new BigNumber(0);
 
   public readonly currentTab$ = this.swapAndEarnStateService.currentTab$;
@@ -72,7 +76,9 @@ export class RoundRowContainerComponent {
     wrongAddressError: 'airdrop.button.wrongAddressError',
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
-    incorrectAddressError: 'airdrop.button.incorrectAddressError'
+    incorrectAddressError: 'airdrop.button.incorrectAddressError',
+    notParticipant: 'airdrop.button.notParticipant',
+    closed: 'airdrop.button.closed'
   };
 
   public isMobile = false;
@@ -81,50 +87,22 @@ export class RoundRowContainerComponent {
     combineLatestWith(
       this.swapAndEarnStateService.isUserParticipantOfRetrodrop$,
       this.authService.currentUser$,
-      this.walletConnectorService.networkChange$,
-      this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed$,
-      this.swapAndEarnStateService.isRetrodropRoundsAlreadyClaimed$
+      this.walletConnectorService.networkChange$
     ),
-    map(
-      ([
-        currentTab,
-        isRetrodropAddressValid,
-        user,
-        network,
-        isAlreadyAirdropClaimed,
-        isRetrodropRoundsAlreadyClaimed
-      ]) => {
-        const isValid =
-          currentTab === 'airdrop'
-            ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
-            : isRetrodropAddressValid;
-        let isAlreadyClaimed;
-        if (currentTab === 'airdrop') {
-          isAlreadyClaimed = isAlreadyAirdropClaimed;
-        } else if (currentTab === 'retrodrop' && isRetrodropRoundsAlreadyClaimed.length > 0) {
-          isAlreadyClaimed = isRetrodropRoundsAlreadyClaimed[this.round - 1].isClaimed;
-        } else {
-          isAlreadyClaimed = true;
-        }
-        // currentTab === 'airdrop'
-        //   ? isAlreadyAirdropClaimed
-        //   : this.swapAndEarnStateService.isAlreadyRetrodropClaimedRounds[this.round - 1].isClaimed;
+    map(([currentTab, isRetrodropAddressValid, user, network]) => {
+      const isValid =
+        currentTab === 'airdrop'
+          ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
+          : isRetrodropAddressValid;
 
-        const buttonLabel = this.getButtonKey([
-          currentTab,
-          isValid,
-          user,
-          network,
-          isAlreadyClaimed
-        ]);
+      const buttonLabel = this.getButtonKey([currentTab, isValid, user, network]);
 
-        return {
-          label: buttonLabel,
-          translation: this.buttonStateNameMap[buttonLabel],
-          isError: this.getErrorState(buttonLabel)
-        };
-      }
-    ),
+      return {
+        label: buttonLabel,
+        translation: this.buttonStateNameMap[buttonLabel],
+        isError: this.getErrorState(buttonLabel)
+      };
+    }),
     startWith({
       label: 'emptyError' as ButtonLabel,
       translation: this.buttonStateNameMap['emptyError'],
@@ -169,12 +147,11 @@ export class RoundRowContainerComponent {
     }
   }
 
-  private getButtonKey([tab, isValid, user, network, isAlreadyClaimed]: [
+  private getButtonKey([tab, isValid, user, network]: [
     SenTab,
     boolean,
     UserInterface,
-    BlockchainName,
-    boolean
+    BlockchainName
   ]): ButtonLabel {
     if (!user?.address) {
       return 'login';
@@ -182,7 +159,13 @@ export class RoundRowContainerComponent {
     if (!network || network !== newRubicToken.blockchain) {
       return 'changeNetwork';
     }
-    if (isAlreadyClaimed) {
+    if (this.isNotParticipant) {
+      return 'notParticipant';
+    }
+    if (this.isClosed) {
+      return 'closed';
+    }
+    if (this.isAlreadyClaimed) {
       if (tab === 'airdrop') {
         return 'claimed';
       } else {
