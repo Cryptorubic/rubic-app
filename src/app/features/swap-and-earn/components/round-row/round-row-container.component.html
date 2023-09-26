@@ -25,7 +25,7 @@
         </div>
 
         <tui-loader
-          [showLoader]="(loading$ | async) && !isClosed && !isNotParticipant"
+          [showLoader]="(loading$ | async) && !isClosed && !isNotParticipant && !isAlreadyClaimed"
           [overlay]="true"
         >
           <div
