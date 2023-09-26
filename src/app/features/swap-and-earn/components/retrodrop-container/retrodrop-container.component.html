@@ -1,9 +1,9 @@
 <div class="retrodrop">
-  <ng-container *ngFor="let round of rounds">
+  <ng-container *ngFor="let round of rounds$ | async">
     <app-round-row-container
       [round]="round.roundNumber"
       [claimData]="round.claimData"
-      [isAlreadyClaimed]="isCurrentRoundAlreadyClaimed(round.roundNumber) | async"
+      [isAlreadyClaimed]="round.isAlreadyClaimed"
       [claimAmount]="getClaimAmount(round.roundNumber)"
       [isClosed]="round.isClosed"
       [isNotParticipant]="isNotParticipant(round.roundNumber)"

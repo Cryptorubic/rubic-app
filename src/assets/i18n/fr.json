@@ -850,7 +850,8 @@
       "emptyError": "Enter holder address",
       "changeNetwork": "Change Network to Arbitrum",
       "incorrectAddressError": "Entered address is incorrect",
-      "notParticipant": "You are not a participant"
+      "notParticipant": "You are not a participant",
+      "closed": "Closed"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {

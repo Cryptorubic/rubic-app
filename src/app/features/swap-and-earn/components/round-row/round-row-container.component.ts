@@ -29,7 +29,8 @@ type ButtonLabel =
   | 'claimed'
   | 'staked'
   | 'incorrectAddressError'
-  | 'notParticipant';
+  | 'notParticipant'
+  | 'closed';
 
 interface ButtonState {
   label: ButtonLabel;
@@ -76,7 +77,8 @@ export class RoundRowContainerComponent {
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
     incorrectAddressError: 'airdrop.button.incorrectAddressError',
-    notParticipant: 'airdrop.button.notParticipant'
+    notParticipant: 'airdrop.button.notParticipant',
+    closed: 'airdrop.button.closed'
   };
 
   public isMobile = false;
@@ -93,13 +95,7 @@ export class RoundRowContainerComponent {
           ? this.swapAndEarnStateService.airdropUserClaimInfo.is_participant
           : isRetrodropAddressValid;
 
-      const buttonLabel = this.getButtonKey([
-        currentTab,
-        isValid,
-        user,
-        network,
-        this.isAlreadyClaimed
-      ]);
+      const buttonLabel = this.getButtonKey([currentTab, isValid, user, network]);
 
       return {
         label: buttonLabel,
@@ -131,6 +127,10 @@ export class RoundRowContainerComponent {
     if (this.window.innerWidth <= 900) {
       this.isMobile = true;
     }
+    setTimeout(() => {
+      console.log(this.round);
+      console.log(this.isAlreadyClaimed);
+    }, 2000);
   }
 
   public async handleClick(state: ButtonLabel): Promise<void> {
@@ -151,12 +151,11 @@ export class RoundRowContainerComponent {
     }
   }
 
-  private getButtonKey([tab, isValid, user, network, isAlreadyClaimed]: [
+  private getButtonKey([tab, isValid, user, network]: [
     SenTab,
     boolean,
     UserInterface,
-    BlockchainName,
-    boolean
+    BlockchainName
   ]): ButtonLabel {
     if (!user?.address) {
       return 'login';
@@ -167,7 +166,10 @@ export class RoundRowContainerComponent {
     if (this.isNotParticipant) {
       return 'notParticipant';
     }
-    if (isAlreadyClaimed) {
+    if (this.isClosed) {
+      return 'closed';
+    }
+    if (this.isAlreadyClaimed) {
       if (tab === 'airdrop') {
         return 'claimed';
       } else {
