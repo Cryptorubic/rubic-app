@@ -1,13 +1,17 @@
 <div class="swap-and-earn">
   <app-window-container>
     <ng-container header> Swap&Earn</ng-container>
-    <app-points-container></app-points-container>
+    <tui-loader [showLoader]="loadingPoints$ | async" [overlay]="true">
+      <app-points-container></app-points-container>
+    </tui-loader>
   </app-window-container>
   <app-window-container>
-    <div class="drops__container">
-      <tui-scrollbar>
-        <app-claim-container></app-claim-container>
-      </tui-scrollbar>
-    </div>
+    <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
+      <div class="drops__container">
+        <tui-scrollbar>
+          <app-claim-container></app-claim-container>
+        </tui-scrollbar>
+      </div>
+    </tui-loader>
   </app-window-container>
 </div>
