@@ -167,14 +167,14 @@
   }
 
   @if $type==s {
-    font-size: 0.75rem;
+    font-size: var(--tui-font-text-s);
   }
 
   @if $type==m {
-    font-size: 1rem;
+    font-size: var(--tui-font-text-m);;
   }
 
   @if $type==l {
-    font-size: 1.3125rem;
+    font-size: var(--tui-font-text-l);;
   }
 }

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
+import { transactionInfoText } from '@features/swaps/features/swap-form/components/swap-info/constants/transaction-info-text';
 
 @Component({
   selector: 'app-transaction-details',
@@ -14,6 +15,8 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransactionDetailsComponent {
+  public readonly text = transactionInfoText;
+
   public readonly trade$: Observable<CrossChainTrade | OnChainTrade> =
     this.tradeStateService.currentTrade$.pipe(first());
 
@@ -26,5 +29,5 @@ export class TransactionDetailsComponent {
     private readonly walletConnector: WalletConnectorService
   ) {}
 
-  protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
+  public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 }

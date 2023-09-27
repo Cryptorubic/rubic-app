@@ -60,7 +60,7 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     RateValueComponent,
     ReceiverValueComponent
   ],
-  exports: [FormSwitcherComponent],
+  exports: [FormSwitcherComponent, TransactionDetailsElementComponent],
   imports: [
     SwapsRoutingModule,
     SwapsSharedModule,

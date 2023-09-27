@@ -27,7 +27,7 @@ export const transactionInfoText = {
   },
   receiver: {
     label: 'Receiver address',
-    description: ''
+    description: 'Address to send assets'
   },
   minReceived: {
     label: 'Minimum Received',
