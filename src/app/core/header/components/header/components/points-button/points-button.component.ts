@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { AirdropStateService } from '@features/airdrop/services/airdrop-state.service';
 import { map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 
@@ -21,7 +21,7 @@ export class PointsButtonComponent {
   constructor(
     private readonly router: Router,
     private readonly authServices: AuthService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly swapAndEarnStateService: AirdropStateService
   ) {}
 
   public async navigateToSwapAndEarn(): Promise<void> {

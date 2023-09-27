@@ -48,13 +48,11 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.AIRDROP,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
   },
   {
     path: ROUTE_PATH.RETRODROP,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    loadChildren: () => import('./features/retrodrop/retrodrop.module').then(m => m.RetrodropModule)
   },
   {
     path: 'trade',

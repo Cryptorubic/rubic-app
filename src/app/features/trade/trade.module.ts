@@ -51,6 +51,7 @@ import { TransactionStateComponent } from './components/transaction-state/transa
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
+import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { RefreshService } from '@features/trade/services/refresh-service/refresh
     TargetNetworkAddressService,
     RefreshService,
     PreviewSwapService,
-    OnChainApiService
+    OnChainApiService,
+    SwapTokensUpdaterService
     // SettingsService,
     // RefreshService,
     // TradeService,

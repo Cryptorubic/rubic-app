@@ -13,15 +13,9 @@ export class UserBalanceContainerComponent {
 
   @Input() public hide: 'maxButton' | 'balance';
 
-  @Output() public maxButtonClickEvent: EventEmitter<void>;
+  @Output() public maxButtonClickEvent = new EventEmitter<void>();
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  constructor(private readonly headerStore: HeaderStore) {
-    this.maxButtonClickEvent = new EventEmitter<void>();
-  }
-
-  public maxButtonClick(): void {
-    this.maxButtonClickEvent.emit();
-  }
+  constructor(private readonly headerStore: HeaderStore) {}
 }

@@ -3,7 +3,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { AssetsSelectorComponentInput } from '@features/swaps/shared/components/assets-selector/models/assets-selector-component-context';
 import { SelectorListType } from '@features/swaps/shared/components/assets-selector/models/selector-list-type';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { Asset, AssetType } from '@features/swaps/shared/models/form/asset';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
 import { BlockchainName } from 'rubic-sdk';
@@ -12,6 +11,7 @@ import { TokensNetworkService } from '@core/services/tokens/tokens-network.servi
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { INSTANT_TRADE_PROVIDERS } from '@features/swaps/features/instant-trade/constants/providers';
 import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -52,7 +52,7 @@ export class AssetsSelectorService {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnAssetChange();
@@ -66,7 +66,7 @@ export class AssetsSelectorService {
 
   private isUserFirstNetworkSelection(
     fromBlockchain: BlockchainName,
-    assetTypeKey: 'fromAssetType' | 'toBlockchain'
+    assetTypeKey: 'fromBlockchain' | 'toBlockchain'
   ): boolean {
     return (
       !fromBlockchain ||
@@ -82,12 +82,12 @@ export class AssetsSelectorService {
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
-    const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
+    const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     const assetType = this.swapFormService.inputValue[assetTypeKey];
     const fromBlockchain =
-      this.swapFormService.inputValue.fromAsset &&
-      'blockchain' in this.swapFormService.inputValue.fromAsset
-        ? this.swapFormService.inputValue.fromAsset.blockchain
+      this.swapFormService.inputValue.fromToken &&
+      'blockchain' in this.swapFormService.inputValue.fromToken
+        ? this.swapFormService.inputValue.fromToken.blockchain
         : null;
 
     if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
@@ -96,16 +96,16 @@ export class AssetsSelectorService {
       this.assetType = fromBlockchain;
     }
 
-    this.selectorListType = assetType === 'fiat' ? 'fiats' : 'tokens';
+    this.selectorListType = 'tokens';
   }
 
   private subscribeOnAssetChange(): void {
     this.assetType$
       .pipe(filter(Boolean), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(assetType => {
-        const assetKey = this.formType === 'from' ? 'fromAsset' : 'toToken';
+        const assetKey = this.formType === 'from' ? 'fromBlockchain' : 'toToken';
         if (!this.swapFormService.inputValue[assetKey]) {
-          const assetTypeKey = this.formType === 'from' ? 'fromAssetType' : 'toBlockchain';
+          const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
           if (this.swapFormService.inputValue[assetTypeKey] !== assetType) {
             this.swapFormService.inputControl.patchValue({
               [assetTypeKey]: this.assetType
@@ -147,7 +147,7 @@ export class AssetsSelectorService {
   }
 
   public getAssetType(formType: FormType): AssetType {
-    const assetTypeKey = formType === 'from' ? 'fromAssetType' : 'toBlockchain';
+    const assetTypeKey = formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     return this.swapFormService.inputValue[assetTypeKey];
   }
 }

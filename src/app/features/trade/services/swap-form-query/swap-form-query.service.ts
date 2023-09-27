@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { catchError, distinctUntilChanged, first, map, pairwise, switchMap } from 'rxjs/operators';
-import { BehaviorSubject, forkJoin, from, Observable, of, skip } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -33,21 +33,19 @@ export class SwapFormQueryService {
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapFormService: SwapsFormService,
+    private readonly swapsFormService: SwapsFormService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnSwapForm();
-
     this.subscribeOnQueryParams();
   }
 
   private subscribeOnSwapForm(): void {
-    this.swapFormService.inputValue$
+    this.swapsFormService.inputValue$
       .pipe(
-        skip(1),
         distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
         pairwise()
       )
@@ -134,7 +132,7 @@ export class SwapFormQueryService {
       .subscribe(({ fromBlockchain, toToken, fromToken, toBlockchain, amount }) => {
         this.gtmService.needTrackFormEventsNow = false;
 
-        this.swapFormService.inputControl.patchValue({
+        this.swapsFormService.inputControl.patchValue({
           fromBlockchain,
           toBlockchain,
           ...(fromToken && { fromToken }),
@@ -204,7 +202,19 @@ export class SwapFormQueryService {
       }),
       catchError(() => {
         return this.searchTokenBySymbol(tokens, token, chain);
-      })
+      }),
+      switchMap(foundToken =>
+        forkJoin(
+          of(foundToken),
+          from(this.tokensService.getAndUpdateTokenBalance(foundToken)).pipe(
+            catchError(() => of(new BigNumber(NaN)))
+          )
+        )
+      ),
+      map(([foundToken, balance]) => ({
+        ...foundToken,
+        amount: balance
+      }))
     );
   }
 

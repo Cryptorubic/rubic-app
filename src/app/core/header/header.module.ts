@@ -45,6 +45,7 @@ import { LogoComponent } from './components/header/components/logo/logo.componen
 import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
+import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import { ProfileMenuTogglerComponent } from '@core/header/components/header/comp
     LogoComponent,
     LanguageSelectorComponent,
     SettingsComponent,
-    ProfileMenuTogglerComponent
+    ProfileMenuTogglerComponent,
+    HistoryButtonComponent
   ],
   imports: [
     CommonModule,

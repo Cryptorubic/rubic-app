@@ -27,9 +27,10 @@ export class AmountTransputComponent {
 
   @Input() public inputMode: 'input' | 'output' | 'combined';
 
-  @Input() set amountValue(value: BigNumber) {
-    if (this.inputMode !== 'input' || value?.gt(0)) {
-      this.amount.setValue(value.toFixed(), { emitViewToModelChange: false });
+  @Input() set amountValue(value: BigNumber | null) {
+    if (this.inputMode !== 'input' || (value && value?.gt(0))) {
+      const newAmount = value ? value.toFixed() : '';
+      this.amount.setValue(newAmount, { emitViewToModelChange: false });
     }
   }
 
