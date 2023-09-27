@@ -18,7 +18,7 @@ import {
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { AirdropStateService } from '@features/airdrop/services/airdrop-state.service';
+import { AirdropService } from '@features/airdrop/services/airdrop.service';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -64,7 +64,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
       }
     >,
     private readonly router: Router,
-    private readonly airdropStateService: AirdropStateService
+    private readonly airdropStateService: AirdropService
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;

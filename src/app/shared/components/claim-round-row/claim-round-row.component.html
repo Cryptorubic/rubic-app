@@ -11,14 +11,16 @@
           </div>
         </div>
         <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
-          <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
+          <img src="/src/assets/images/rbc-white.png" alt="Confirmed RBC" />
           {{ isClosed ? '0' : claimAmount }}
           RBC
         </span>
       </div>
 
       <tui-loader
-        [showLoader]="(loading$ | async) && !isClosed && !isNotParticipant && !isAlreadyClaimed"
+        [showLoader]="
+          (loading$ | async) && !isClosed && !isParticipantOfPrevRounds && !isAlreadyClaimed
+        "
         [overlay]="true"
       >
         <div
@@ -28,9 +30,9 @@
         >
           <span>{{ state.translation | translate }}</span>
           <img
-            *ngIf="isAlreadyClaimed && !isClosed && !isNotParticipant"
+            *ngIf="isAlreadyClaimed && !isClosed && !isParticipantOfPrevRounds"
             class="contest__claim-button-icon"
-            src="assets/images/icons/exclamation-grey.svg"
+            src="../../../../assets/images/icons/exclamation-grey.svg"
             alt="Hint"
             [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
             tuiHintAppearance="onDark"
@@ -65,7 +67,7 @@
               class="contest__amount contest__amount_mobile"
               [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
             >
-              <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
+              <img src="/src/assets/images/rbc-white.png" alt="Confirmed RBC" />
               {{ isClosed ? '0' : claimAmount }}
               RBC
             </span>
@@ -93,10 +95,10 @@
 </ng-container>
 
 <ng-template #hintTemplate>
-  <ng-container *ngIf="isAirdropAddressValid">
+  <ng-container *ngIf="claimName === 'airdrop'">
     Your tokens have been already claimed, please check your wallet.
   </ng-container>
-  <ng-container *ngIf="isRetrodropAddressValid$ | async">
+  <ng-container *ngIf="claimName === 'retrodrop'">
     Your tokens have already been successfully staked. Please review the Staking tab for further
     details.
   </ng-container>

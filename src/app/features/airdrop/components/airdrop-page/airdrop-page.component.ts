@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AirdropStateService } from '@features/airdrop/services/airdrop-state.service';
-import { AuthService } from '@core/services/auth/auth.service';
-import { AirdropFacadeService } from '@features/airdrop/services/airdrop-facade.service';
+import { AirdropService } from '@features/airdrop/services/airdrop.service';
 
 @Component({
   selector: 'app-airdrop-page',
@@ -10,25 +8,9 @@ import { AirdropFacadeService } from '@features/airdrop/services/airdrop-facade.
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AirdropPageComponent {
-  public readonly workingStatus$ = this.airdropStateService.workingStatus$;
+  public readonly loadingClaim$ = this.airdropService.fetchUserInfoLoading$;
 
-  public readonly points$ = this.airdropStateService.points$;
+  public readonly loadingPoints$ = this.airdropService.fetchUserPointsInfoLoading$;
 
-  public readonly currentUser$ = this.authService.currentUser$;
-
-  public readonly isAirdropAddressValid$ = this.airdropStateService.isUserParticipantOfSwapAndEarn$;
-
-  public readonly isRetrodropAddressValid$ = this.airdropStateService.isUserParticipantOfRetrodrop$;
-
-  public readonly loading$ = this.airdropFacadeService.airdropAndRetrodropFetchLoading$;
-
-  constructor(
-    private readonly airdropStateService: AirdropStateService,
-    private readonly airdropFacadeService: AirdropFacadeService,
-    private readonly authService: AuthService
-  ) {}
-
-  public async handleWithdraw(points: number): Promise<void> {
-    await this.airdropStateService.claimPoints(points);
-  }
+  constructor(private readonly airdropService: AirdropService) {}
 }

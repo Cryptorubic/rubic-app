@@ -16,11 +16,6 @@ export interface RetrodropUserClaimedAmount {
   amount: BigNumber;
 }
 
-export interface RetrodropUserAlreadyClaimed {
-  round: number;
-  isClaimed: boolean;
-}
-
 export interface RetrodropUserAddressRoundValid {
   round: number;
   isValid: boolean;

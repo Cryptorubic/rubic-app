@@ -51,7 +51,7 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { AirdropStateService } from '@features/airdrop/services/airdrop-state.service';
+import { AirdropService } from '@features/airdrop/services/airdrop.service';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -139,7 +139,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly sdkService: SdkService,
     private readonly router: Router,
-    private readonly swapAndEarnStateService: AirdropStateService
+    private readonly swapAndEarnStateService: AirdropService
   ) {
     this.setTradeData(this.context.data);
   }

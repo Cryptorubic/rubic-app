@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from 'rubic-sdk';
-import { airdropContractAbi } from '@features/airdrop/constants/airdrop/airdrop-contract-abi';
+import { airdropContractAbi } from '@features/airdrop/constants/airdrop-contract-abi';
 import { AirdropNode } from '@features/airdrop/models/airdrop-node';
-import { newRubicToken } from '@features/airdrop/constants/airdrop/airdrop-token';
+import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { GasService } from '@core/services/gas-service/gas.service';
 
 @Injectable({ providedIn: 'root' })
-export class AirdropWeb3Service {
+export class ClaimWeb3Service {
   constructor(private readonly gasService: GasService) {}
 
   public async executeClaim(
@@ -41,12 +41,11 @@ export class AirdropWeb3Service {
     }
   }
 
-  public async checkClaimed(contractAddress: string, index: number): Promise<void> {
+  public async checkClaimed(contractAddress: string, index: number): Promise<boolean> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
-    if (isPaused) {
-      throw new Error('claimed');
-    }
+
+    return !!isPaused;
   }
 }

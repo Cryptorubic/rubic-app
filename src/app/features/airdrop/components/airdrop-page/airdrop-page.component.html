@@ -1,10 +1,7 @@
 <div class="swap-and-earn">
   <app-window-container>
-    <ng-container header> Swap&Earn </ng-container>
-    <app-points-container
-      (handleClick)="handleWithdraw($event)"
-      [points]="points$ | async"
-    ></app-points-container>
+    <ng-container header> Swap&Earn</ng-container>
+    <app-points-container></app-points-container>
   </app-window-container>
   <app-window-container>
     <div class="drops__container">

@@ -6,25 +6,25 @@ import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiToggleModule,
+  TuiBadgeModule,
+  TuiDataListWrapperModule,
+  TuiInputCountModule,
   TuiInputModule,
   TuiTabsModule,
-  TuiInputCountModule,
-  TuiDataListWrapperModule,
-  TuiBadgeModule,
-  TuiTagModule
+  TuiTagModule,
+  TuiToggleModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
   TuiHintModule,
-  TuiSvgModule,
-  TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiScrollbarModule,
+  TuiSvgModule,
   TuiTextfieldControllerModule,
-  TuiScrollbarModule
+  TuiTooltipModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
@@ -82,6 +82,7 @@ import { WindowContainerComponent } from './components/window-container/window-c
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
+import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
 
 @NgModule({
   declarations: [
@@ -122,6 +123,7 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
+    ClaimRoundRowComponent,
     // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
@@ -228,7 +230,8 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     WindowContainerComponent,
     InputOutputContainerComponent,
     AmountTransputComponent,
-    NoResultComponent
+    NoResultComponent,
+    ClaimRoundRowComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

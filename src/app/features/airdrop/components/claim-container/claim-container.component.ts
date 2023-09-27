@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AirdropStateService } from '@features/airdrop/services/airdrop-state.service';
-
-interface Round {
-  roundNumber: number;
-  claimData: string;
-  isClosed: boolean;
-  isAlreadyClaimed?: boolean;
-}
+import { Observable } from 'rxjs';
+import { ClaimRound } from '@shared/models/claim/claim-round';
+import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
+import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
+import { AirdropService } from '@features/airdrop/services/airdrop.service';
 
 @Component({
   selector: 'app-claim-container',
@@ -15,71 +12,14 @@ interface Round {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimContainerComponent {
-  public readonly isAlreadyClaimed$ = this.airdropStateService.isAirdropRoundAlreadyClaimed$;
+  public readonly rounds$: Observable<ClaimRound[]> = this.airdropService.rounds$;
 
-  public readonly claimedAmount$ = this.airdropStateService.airdropClaimedTokens$;
+  constructor(
+    private readonly airdropService: AirdropService,
+    private readonly claimService: ClaimService
+  ) {}
 
-  public readonly rounds: Round[] = [
-    {
-      roundNumber: 1,
-      claimData: '05.04.2023 - 19.04.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 2,
-      claimData: '05.04.2023 - 02.05.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 3,
-      claimData: '05.04.2023 - 17.05.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 4,
-      claimData: '05.04.2023 - 31.05.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 5,
-      claimData: '05.04.2023 - 09.06.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 6,
-      claimData: '05.04.2023 - 06.07.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 7,
-      claimData: '05.04.2023 - 20.07.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 8,
-      claimData: '05.04.2023 - 03.08.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 9,
-      claimData: '05.04.2023 - 24.08.2023',
-      isClosed: true,
-      isAlreadyClaimed: true
-    },
-    {
-      roundNumber: 10,
-      claimData: '05.04.2023 - 14.09.2023',
-      isClosed: false
-    }
-  ];
-
-  constructor(private readonly airdropStateService: AirdropStateService) {}
+  public handleClaim(claimData: ClaimTokensData): void {
+    this.claimService.claimTokens(claimData);
+  }
 }

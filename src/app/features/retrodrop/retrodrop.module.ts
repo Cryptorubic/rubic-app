@@ -11,18 +11,12 @@ import {
 } from '@taiga-ui/core';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { RetrodropContainerComponent } from '@features/retrodrop/components/retrodrop-container/retrodrop-container.component';
 import { RetrodropStakeModalComponent } from '@features/retrodrop/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 import { RetrodropRoutingModule } from '@features/retrodrop/retrodrop-routing.module';
 import { RetrodropPageComponent } from '@features/retrodrop/components/retrodrop-page/retrodrop-page.component';
 
 @NgModule({
-  declarations: [
-    RetrodropPageComponent,
-    RetrodropContainerComponent,
-    RetrodropStakeModalComponent,
-    RetrodropContainerComponent
-  ],
+  declarations: [RetrodropPageComponent, RetrodropStakeModalComponent],
   imports: [
     CommonModule,
     RetrodropRoutingModule,

@@ -2,23 +2,22 @@ import { Injectable } from '@angular/core';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import { UserRejectError } from 'rubic-sdk';
 import { TranslateService } from '@ngx-translate/core';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { SuccessClaimModalComponent } from '@features/airdrop/components/success-claim-modal/success-claim-modal.component';
-import { DifferentAddressesModalComponent } from '@features/airdrop/components/different-addresses-modal/different-addresses-modal.component';
 
 @Injectable({ providedIn: 'root' })
-export class AirdropPopupService {
+export class ClaimPopupService {
   constructor(
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService,
     private readonly dialogService: TuiDialogService
   ) {}
 
-  public showProgressNotification(): Subscription {
+  public showProgressNotification(claimName: 'retrodrop' | 'airdrop'): Subscription {
     return this.notificationsService.show(
-      this.translateService.instant('airdrop.notification.progress'),
+      this.translateService.instant(`${claimName}.notification.progress`),
       {
         status: TuiNotification.Info,
         autoClose: false,
@@ -29,22 +28,9 @@ export class AirdropPopupService {
     );
   }
 
-  public showUnauthorizedUserNotification(): Subscription {
+  public showSuccessNotification(claimName: 'retrodrop' | 'airdrop'): Subscription {
     return this.notificationsService.show(
-      this.translateService.instant('airdrop.notification.unauthorized'),
-      {
-        status: TuiNotification.Warning,
-        autoClose: 10000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      }
-    );
-  }
-
-  public showSuccessNotification(): Subscription {
-    return this.notificationsService.show(
-      this.translateService.instant('airdrop.notification.success'),
+      this.translateService.instant(`${claimName}.notification.success`),
       {
         status: TuiNotification.Success,
         autoClose: 10000,
@@ -62,13 +48,6 @@ export class AirdropPopupService {
         data: { hash }
       })
       .subscribe();
-  }
-
-  public showWarningModal(): Observable<boolean> {
-    return this.dialogService.open<boolean>(
-      new PolymorpheusComponent(DifferentAddressesModalComponent),
-      { size: 'm' }
-    );
   }
 
   public handleError(err: unknown): void {
