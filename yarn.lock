@@ -2434,9 +2434,9 @@
     ethers "^5.7.2"
 
 "@lifi/types@^8.0.4":
-  version "8.7.1"
-  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-8.7.1.tgz#6d39a4c85ecebdd0a402320b51c540a2e2a57778"
-  integrity sha512-l7PO+0nk9bWDdixryYqQH6P868WLC6KLZD2+RizVv16Vw65X7I46aogyssq0Isz3oPiRing8m+haIdx+9Kdijw==
+  version "8.2.0"
+  resolved "https://registry.yarnpkg.com/@lifi/types/-/types-8.2.0.tgz#f71800c28855d7e59c101f5102fc808e0d86b7e8"
+  integrity sha512-drDyQ3zy9LeZQN1NwUqLtZaxRDPN+pWMcrhAvyZVm7XAO+kt+9D0sBhlgxy7S+BANz9ij/rIlC0l5bzUkqp9ig==
   dependencies:
     ethers "^5.7.2"
 

@@ -25,7 +25,7 @@ import {
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
     instantTrades: 1,
-    crossChain: 3
+    crossChain: 2
   };
 
   public defaultItSettings: ItSettingsForm;

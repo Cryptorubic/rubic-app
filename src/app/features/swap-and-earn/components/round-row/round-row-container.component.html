@@ -1,5 +1,5 @@
-<ng-container *ngLet="isAlreadyClaimed as isAlreadyClaimed">
-  <ng-container *ngLet="currentTab$ | async as currentTab">
+<ng-container *ngLet="currentTab$ | async as currentTab">
+  <ng-container *ngLet="buttonState$ | async as state">
     <div class="contest contest_desktop" *ngIf="!isMobile">
       <div class="contest__container">
         <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
@@ -14,32 +14,30 @@
           <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
             <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
             {{
-              currentTab === 'retrodrop' && isClosed
+              (currentTab === 'retrodrop' && isClosed) || isNotParticipant
                 ? '-.-'
                 : isClosed
                 ? '0'
-                : (claimAmount$ | async)
+                : claimAmount
             }}
             RBC
           </span>
         </div>
 
-        <tui-loader [showLoader]="(loading$ | async) && !isClosed" [overlay]="true">
+        <tui-loader
+          [showLoader]="(loading$ | async) && !isClosed && !isNotParticipant && !isAlreadyClaimed"
+          [overlay]="true"
+        >
           <div
             class="contest__claim-button"
-            *ngLet="buttonState$ | async as state"
             (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
             [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
           >
             <span>{{
-              currentTab === 'retrodrop' && isClosed
-                ? 'Soon'
-                : isClosed
-                ? 'Closed'
-                : (state.translation | translate)
+              currentTab === 'retrodrop' && isClosed ? 'Soon' : (state.translation | translate)
             }}</span>
             <img
-              *ngIf="isAlreadyClaimed && !isClosed"
+              *ngIf="isAlreadyClaimed && !isClosed && !isNotParticipant"
               class="contest__claim-button-icon"
               src="assets/images/icons/exclamation-grey.svg"
               alt="Hint"
@@ -77,13 +75,7 @@
                 [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
               >
                 <img src="/assets/images/rbc-white.png" alt="Confirmed RBC" />
-                {{
-                  currentTab === 'retrodrop' && isClosed
-                    ? '-.-'
-                    : isClosed
-                    ? '0'
-                    : (claimAmount$ | async)
-                }}
+                {{ currentTab === 'retrodrop' && isClosed ? '-.-' : isClosed ? '0' : claimAmount }}
                 RBC
               </span>
               <div
@@ -98,7 +90,6 @@
 
             <div
               class="contest__claim-button contest__claim-button_mobile"
-              *ngLet="buttonState$ | async as state"
               (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
               [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
             >
@@ -118,7 +109,7 @@
 </ng-container>
 
 <ng-template #hintTemplate>
-  <ng-container *ngIf="isAirdropAddressValid$ | async">
+  <ng-container *ngIf="isAirdropAddressValid">
     Your tokens have been already claimed, please check your wallet.
   </ng-container>
   <ng-container *ngIf="isRetrodropAddressValid$ | async">

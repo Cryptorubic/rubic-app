@@ -1,45 +1,32 @@
-import { first } from 'rxjs/operators';
-import { BehaviorSubject, lastValueFrom, Subscription } from 'rxjs';
+import { first, tap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, lastValueFrom, Subscription } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SwapAndEarnPopupService } from '@features/swap-and-earn/services/swap-and-earn-popup.service';
 import { SwapAndEarnWeb3Service } from '@features/swap-and-earn/services/swap-and-earn-web3.service';
-import { SwapAndEarnMerkleService } from '@features/swap-and-earn/services/swap-and-earn-merkle.service';
 import { newRubicToken } from '@features/swap-and-earn/constants/airdrop/airdrop-token';
 import { SdkService } from '@core/services/sdk/sdk.service';
-import { Web3Pure } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import BigNumber from 'bignumber.js';
-import { AirdropMerkleService } from '@features/swap-and-earn/services/airdrop-service/airdrop-merkle.service';
-import { RetrodropMerkleService } from '@features/swap-and-earn/services/retrodrop-service/retrodrop-merkle.service';
-import sourceAirdropMerkle from '@features/swap-and-earn/constants/airdrop/airdrop-merkle-tree.json';
-import sourceRetrodropMerkle from '@features/swap-and-earn/constants/retrodrop/retrodrop-merkle-tree.json';
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import { Injectable } from '@angular/core';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
+import { AirdropNode } from '@features/swap-and-earn/models/airdrop-node';
+import { SwapAndEarnApiService } from '@features/swap-and-earn/services/swap-and-earn-api.service';
+import { airdropContractAddress } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-address';
+import { retrodropContractAddress } from '@features/swap-and-earn/constants/retrodrop/retrodrop-contract-address';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class SwapAndEarnFacadeService {
   private readonly _claimLoading$ = new BehaviorSubject(false);
 
   public readonly claimLoading$ = this._claimLoading$.asObservable();
 
-  private readonly _isAirdropAddressValid$ = new BehaviorSubject(false);
+  private readonly _airdropAndRetrodropFetchLoading$ = new BehaviorSubject(false);
 
-  public readonly isAirdropAddressValid$ = this._isAirdropAddressValid$.asObservable();
-
-  private readonly _isRetrodropAddressValid$ = new BehaviorSubject(false);
-
-  public readonly isRetrodropAddressValid$ = this._isRetrodropAddressValid$.asObservable();
-
-  private readonly _isAlreadyClaimed$ = new BehaviorSubject(false);
-
-  public readonly isAlreadyClaimed$ = this._isAlreadyClaimed$.asObservable();
-
-  private readonly _claimedTokens$ = new BehaviorSubject(new BigNumber(0));
-
-  public readonly claimedTokens$ = this._claimedTokens$.asObservable();
+  public readonly airdropAndRetrodropFetchLoading$ =
+    this._airdropAndRetrodropFetchLoading$.asObservable();
 
   constructor(
     private readonly authService: AuthService,
@@ -49,108 +36,100 @@ export class SwapAndEarnFacadeService {
     private readonly popupService: SwapAndEarnPopupService,
     private readonly web3Service: SwapAndEarnWeb3Service,
     private readonly swapAndEarnStateService: SwapAndEarnStateService,
-    private readonly airdropMerkleService: AirdropMerkleService,
-    private readonly retrodropMerkleService: RetrodropMerkleService,
+    private readonly swapAndEarnApiService: SwapAndEarnApiService,
     private readonly router: Router
   ) {
     this.subscribeOnWalletChange();
-    this.subscribeOnTabChange();
-  }
-
-  public get merkleService(): SwapAndEarnMerkleService {
-    return this.swapAndEarnStateService.currentTab === 'airdrop'
-      ? this.airdropMerkleService
-      : this.retrodropMerkleService;
   }
 
   private subscribeOnWalletChange(): void {
     this.authService.currentUser$?.subscribe(user => {
       if (!user || !user.address) {
-        this._isAlreadyClaimed$.next(false);
-        this._isAirdropAddressValid$.next(false);
-        this._isRetrodropAddressValid$.next(false);
+        this.swapAndEarnStateService.isAirdropRoundAlreadyClaimed = false;
+        this.swapAndEarnStateService.isRetrodropRoundsAlreadyClaimed = Array(12).fill(false);
         return null;
       }
 
-      const userAddress = user.address.toLowerCase();
-
-      this._claimedTokens$.next(
-        Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
-      );
-
-      this.setAirdropValidAddress(userAddress);
-      this.setRetrodropValidAddress(userAddress);
-
-      this.setAlreadyClaimed(userAddress);
+      this.setRetrodropAndSwapToEarnUserInfo();
     });
   }
 
-  private subscribeOnTabChange(): void {
-    this.swapAndEarnStateService.currentTab$.subscribe(() => {
-      const userAddress = this.authService.userAddress.toLowerCase();
-
-      this._claimedTokens$.next(
-        Web3Pure.fromWei(this.merkleService.getAmountByAddress(userAddress).toString())
-      );
-
-      this.setAirdropValidAddress(userAddress);
-      this.setRetrodropValidAddress(userAddress);
-
-      this.setAlreadyClaimed(userAddress);
-    });
-  }
-
-  private setAirdropValidAddress(userAddress: string): void {
-    this._isAirdropAddressValid$.next(
-      Object.keys(sourceAirdropMerkle.claims).some(address => userAddress === address.toLowerCase())
-    );
-  }
-
-  private setRetrodropValidAddress(userAddress: string): void {
-    this._isRetrodropAddressValid$.next(
-      Object.keys(sourceRetrodropMerkle.claims).some(
-        address => userAddress === address.toLowerCase()
+  private setRetrodropAndSwapToEarnUserInfo(): void {
+    this._airdropAndRetrodropFetchLoading$.next(true);
+    forkJoin([
+      this.swapAndEarnApiService.fetchRetrodropUserInfo(),
+      this.swapAndEarnApiService.fetchSwapToEarnUserClaimInfo()
+    ])
+      .pipe(
+        tap(([retrodropUserInfo, swapToEarnUserClaimInfo]) => {
+          this.swapAndEarnStateService.airdropUserClaimInfo = swapToEarnUserClaimInfo;
+          this.swapAndEarnStateService.retrodropUserInfo = retrodropUserInfo;
+        })
       )
-    );
-  }
+      .subscribe(() => {
+        this.swapAndEarnStateService.setAlreadyAirdropClaimed();
+        this.swapAndEarnStateService.setAlreadyRetrodropClaimed();
 
-  private async setAlreadyClaimed(userAddress: string): Promise<void> {
-    const node = this.merkleService.getNodeByAddress(userAddress);
-    try {
-      await this.web3Service.checkClaimed(node.index);
-      this._isAlreadyClaimed$.next(false);
-    } catch (err) {
-      this._isAlreadyClaimed$.next(true);
-    }
+        this.swapAndEarnStateService.setClaimedTokens();
+
+        this.swapAndEarnStateService.setRetrodropRoundsAddressValid();
+        this.swapAndEarnStateService.isUserParticipantOfSwapAndEarn =
+          this.swapAndEarnStateService.airdropUserClaimInfo.is_participant;
+
+        this._airdropAndRetrodropFetchLoading$.next(false);
+      });
   }
 
   public async claimTokens(
+    retrodropClaimedRound: number = 1,
     showSuccessModal: boolean = true,
     navigateToStaking: boolean = false
   ): Promise<void> {
     this._claimLoading$.next(true);
     let claimInProgressNotification: Subscription;
+    let contractAddress: string;
+    let node: AirdropNode;
+    let proof: string[];
+
+    if (this.swapAndEarnStateService.currentTab === 'airdrop') {
+      contractAddress = airdropContractAddress;
+      node = {
+        index: this.swapAndEarnStateService.airdropUserClaimInfo.index,
+        account: this.swapAndEarnStateService.airdropUserClaimInfo.address,
+        amount: EthersBigNumber.from(this.swapAndEarnStateService.airdropUserClaimInfo.amount)
+      };
+      proof = this.swapAndEarnStateService.airdropUserClaimInfo.proof;
+    } else {
+      contractAddress = retrodropContractAddress[retrodropClaimedRound - 1];
+      node = {
+        index: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].index,
+        account: this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].address,
+        amount: EthersBigNumber.from(
+          this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].amount
+        )
+      };
+      proof = this.swapAndEarnStateService.retrodropUserInfo[retrodropClaimedRound - 1].proof;
+    }
 
     try {
-      await this.web3Service.checkPause();
-
-      const address = this.walletConnectorService.address;
-      const node = this.merkleService.getNodeByAddress(address);
-      const proof = this.merkleService.getProofByAddress(address);
-
-      await this.web3Service.checkClaimed(node.index);
-
-      await this.web3Service.executeClaim(node, proof, hash => {
+      await this.web3Service.checkPause(contractAddress);
+      await this.web3Service.checkClaimed(contractAddress, node.index);
+      await this.web3Service.executeClaim(contractAddress, node, proof, hash => {
         if (showSuccessModal) {
           this.popupService.showSuccessModal(hash);
         }
+
         if (navigateToStaking) {
           this.router.navigateByUrl(ROUTE_PATH.STAKING);
         }
+
         claimInProgressNotification = this.popupService.showProgressNotification();
       });
+
       this.popupService.showSuccessNotification();
-      this.setAlreadyClaimed(address);
+
+      await this.swapAndEarnStateService.setAlreadyAirdropClaimed();
+      await this.swapAndEarnStateService.setAlreadyRetrodropClaimed();
     } catch (err) {
       this.popupService.handleError(err);
     } finally {

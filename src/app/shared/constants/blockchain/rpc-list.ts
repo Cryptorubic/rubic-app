@@ -15,7 +15,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://polygonzkevm-mainnet.g.alchemy.com/v2/V_k_uJTiOSSLxom7KrLrPMdqKi3CiuMQ',
     'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://zkevm-rpc.com',
     'https://rpc.polygon-zkevm.gateway.fm',
@@ -72,7 +71,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: ['https://avax.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
-    'https://astar-mainnet.g.alchemy.com/v2/gt3UANW8GWpUzyVztq5bEkjyrT5onv8Q',
     'https://astar.public.blastapi.io',
     'https://rpc.astar.network:8545'
   ],
@@ -106,6 +104,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.KLAYTN]: [
     'https://rpc.ankr.com/klaytn/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://public-en-cypress.klaytn.net/',
     'https://public-node-api.klaytnapi.com/v1/cypress',
     'https://cypress.fandom.finance/archive',
     'https://klaytn01.fandom.finance',
@@ -127,10 +126,22 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://smartbch.greyh.at',
     'https://smartbch.fountainhead.cash/mainnet'
   ],
-  [BLOCKCHAIN_NAME.ZK_SYNC]: ['https://mainnet.era.zksync.io'],
+  [BLOCKCHAIN_NAME.ZK_SYNC]: [
+    'https://rpc.ankr.com/zksync_era/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://zksync.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://rpc.ankr.com/zksync_era',
+    'https://mainnet.era.zksync.io'
+  ],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
-  [BLOCKCHAIN_NAME.LINEA]: ['https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71'],
+  [BLOCKCHAIN_NAME.LINEA]: [
+    'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
+    'https://linea.drpc.org',
+    'https://1rpc.io/linea',
+    'https://linea.blockpi.network/v1/rpc/public'
+  ],
   [BLOCKCHAIN_NAME.BASE]: [
+    'https://rpc.ankr.com/base/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://base.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://mainnet.base.org',
     'https://1rpc.io/base',
     'https://base.blockpi.network/v1/rpc/public',
@@ -165,5 +176,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://bsc-testnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
-  [BLOCKCHAIN_NAME.ARTHERA]: []
+  [BLOCKCHAIN_NAME.ARTHERA]: [],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    'https://zetachain-athens-evm.blockpi.network/v1/rpc/public',
+    'https://rpc.ankr.com/zetachain_evm_athens_testnet'
+  ]
 };

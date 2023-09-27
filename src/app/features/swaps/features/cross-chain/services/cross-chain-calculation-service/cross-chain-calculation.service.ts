@@ -55,8 +55,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
-import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
-import { ShortTonPromoInfo } from '@features/swaps/features/cross-chain/services/ton-promo-service/models/ton-promo';
 import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
 
 @Injectable()
@@ -86,7 +84,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
-    private readonly tonPromoService: TonPromoService,
     private readonly swapAndEarnStateService: SwapAndEarnStateService
   ) {
     super('cross-chain-routing');
@@ -291,10 +288,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
   ): Promise<void> {
     const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
-    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(
-      calculatedTrade.trade,
-      fromAddress
-    );
     this.checkBlockchainsAvailable(calculatedTrade);
     this.checkDeviceAndShowNotification();
 
@@ -309,14 +302,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       transactionHash = txHash;
       confirmCallback?.();
       this.crossChainApiService.createTrade(txHash, calculatedTrade.trade, isSwapAndEarnSwapTrade);
-
-      if (tonPromoInfo.isTonPromoTrade) {
-        this.tonPromoService.postTonPromoTradeInfo(
-          calculatedTrade.trade as ChangenowCrossChainTrade,
-          fromAddress,
-          transactionHash
-        );
-      }
 
       const timestamp = Date.now();
 
@@ -337,14 +322,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ...(changenowId && { changenowId })
       };
 
-      this.openSwapSchemeModal(
-        calculatedTrade,
-        txHash,
-        timestamp,
-        fromToken,
-        toToken,
-        tonPromoInfo
-      );
+      this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
       try {
         this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
       } catch {}
@@ -432,8 +410,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     txHash: string,
     timestamp: number,
     fromToken: TokenAmount,
-    toToken: TokenAmount,
-    tonPromoTrade: ShortTonPromoInfo
+    toToken: TokenAmount
   ): Promise<void> {
     const { trade, route } = calculatedTrade;
 
@@ -476,9 +453,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timestamp,
       amountOutMin,
       changenowId,
-      ...(tonPromoTrade.isTonPromoTrade && {
-        points: this.tonPromoService.getTonPromoPointsAmount(tonPromoTrade.totalUserConfirmedTrades)
-      }),
       ...(this.isSwapAndEarnSwap(calculatedTrade) && {
         points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
       })

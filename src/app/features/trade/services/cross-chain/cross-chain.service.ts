@@ -43,7 +43,6 @@ import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippa
 import { ModalService } from '@core/modals/services/modal.service';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { AuthService } from '@core/services/auth/auth.service';
-import { TonPromoService } from '@features/swaps/features/cross-chain/services/ton-promo-service/ton-promo.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
@@ -77,7 +76,6 @@ export class CrossChainService {
     private readonly dialogService: ModalService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
-    private readonly tonPromoService: TonPromoService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService
@@ -236,7 +234,6 @@ export class CrossChainService {
     // }
     const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
-    const tonPromoInfo = await this.tonPromoService.getTonPromoInfo(trade, fromAddress);
     this.checkBlockchainsAvailable(trade);
 
     const [fromToken, toToken] = await Promise.all([
@@ -251,14 +248,6 @@ export class CrossChainService {
       transactionHash = txHash;
       callback?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
-
-      if (tonPromoInfo.isTonPromoTrade) {
-        this.tonPromoService.postTonPromoTradeInfo(
-          trade as ChangenowCrossChainTrade,
-          fromAddress,
-          transactionHash
-        );
-      }
 
       const timestamp = Date.now();
 
