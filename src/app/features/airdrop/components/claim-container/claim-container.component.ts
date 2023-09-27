@@ -1,6 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ClaimRound } from '@shared/models/claim/claim-round';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
@@ -12,7 +10,7 @@ import { AirdropService } from '@features/airdrop/services/airdrop.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimContainerComponent {
-  public readonly rounds$: Observable<ClaimRound[]> = this.airdropService.rounds$;
+  public readonly rounds$ = this.airdropService.rounds$;
 
   constructor(
     private readonly airdropService: AirdropService,
