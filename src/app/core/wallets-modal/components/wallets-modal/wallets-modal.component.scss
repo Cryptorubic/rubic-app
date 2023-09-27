@@ -13,52 +13,12 @@
     padding: 0 20px 20px;
   }
 
-  @include iframe-horizontal {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    margin: 0 auto;
-    padding: 0 20px;
-
-    background: var(--tui-base-01);
-  }
-
-  @include iframe-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 560px;
-    margin: 0 auto;
-
-    @include b($mobile-md) {
-      height: auto;
-    }
-  }
-
   @include b($mobile-md) {
     padding: 0 20px;
   }
 
   &__privacy-policy {
     margin-bottom: 10px;
-  }
-
-  &__content {
-    @include iframe-horizontal {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      height: 180px;
-      max-height: 180px;
-      padding: 0 30px;
-    }
   }
 
   &__title {
@@ -88,12 +48,6 @@
     }
   }
 
-  &__body {
-    @include iframe-vertical {
-      margin-bottom: 11px;
-    }
-  }
-
   &__footer {
     font-size: 15px;
     text-align: center;
@@ -105,14 +59,6 @@
     align-items: center;
 
     padding: 10px 37px 0;
-
-    @include iframe-horizontal {
-      flex-direction: row;
-      justify-content: center;
-
-      margin-bottom: 15px;
-      padding: 0;
-    }
   }
 
   &__provider-icon {
@@ -147,10 +93,6 @@
 
     transition: 0.2s ease-in-out;
 
-    @include iframe-horizontal {
-      max-width: 240px;
-    }
-
     &[disabled] {
       cursor: not-allowed;
       opacity: 0.5;
@@ -158,11 +100,6 @@
 
     &:not(:last-child) {
       margin-bottom: 15px;
-
-      @include iframe-horizontal {
-        margin-right: 20px;
-        margin-bottom: 0;
-      }
     }
 
     &:not([disabled]):hover {

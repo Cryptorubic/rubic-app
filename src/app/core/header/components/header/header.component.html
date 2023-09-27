@@ -1,4 +1,4 @@
-<app-banner href="https://rubic.exchange/birthday3" *noFrame></app-banner>
+<app-banner href="https://rubic.exchange/birthday3"></app-banner>
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
   <app-logo
     [currentUser]="!!currentUser"
@@ -6,7 +6,7 @@
     [noFrameLink]="noFrameLink"
   ></app-logo>
 
-  <app-rubic-menu-toggler *noFrame class="rubic-header__menu">
+  <app-rubic-menu-toggler class="rubic-header__menu">
     <app-rubic-menu
       [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
       [crossChainActive]="
@@ -57,7 +57,7 @@
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
   <!--  </button>-->
 
-  <ng-container *noFrame>
+  <ng-container>
     <app-points-button
       class="rubic-header__point-button"
       *ngIf="currentUser$ | async"
@@ -77,24 +77,14 @@
 
   <app-history-button></app-history-button>
 
-  <!--  Old button, return when earn and swap company will be over -->
-  <!--  <app-buy-token-->
-  <!--    *noFrame-->
-  <!--    class="rubic-header__buy-token"-->
-  <!--    [tokensType]="advertisementType"-->
-  <!--  ></app-buy-token>-->
-
   <div class="rubic-header__profile">
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
-      <app-login-button class="rubic-header__login" *noFrame></app-login-button>
+      <app-login-button class="rubic-header__login"></app-login-button>
     </ng-container>
     <ng-template #loggedIn>
       <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-      <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
   </div>
 
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
-  </ng-container>
+  <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
 </header>

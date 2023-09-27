@@ -29,8 +29,6 @@ import {
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
-import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
-import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
 import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
 import { PanelContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
@@ -46,7 +44,6 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { IframeAssetTypeIndicatorComponent } from 'src/app/shared/components/iframe-asset-type-indicator/iframe-asset-type-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
@@ -62,7 +59,6 @@ import { StatusBadgeComponent } from './components/status-badge/status-badge.com
 import { ChipsComponent } from './components/chips/chips.component';
 import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
-import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
@@ -101,7 +97,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    IframeAssetTypeIndicatorComponent,
     RubicContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
@@ -111,7 +106,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     ChipsComponent,
     ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
-    IframeLogoutButtonComponent,
     AutoSlippageWarningModalComponent,
     BackButtonComponent,
     LoginButtonComponent,
@@ -136,8 +130,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
-    NoFrameDirective,
-    OnlyFrameDirective,
     CommaToPeriodDirective,
     LiveChatComponent,
     AssetSelectorComponent,
@@ -199,9 +191,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     PanelErrorContentComponent,
     PanelContentComponent,
     LetDirective,
-    NoFrameDirective,
-    OnlyFrameDirective,
-    IframeAssetTypeIndicatorComponent,
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
@@ -213,7 +202,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     FunctionCallPipe,
     StatusBadgeComponent,
     ChipsComponent,
-    IframeLogoutButtonComponent,
     SafeSanitizerPipe,
     BackButtonComponent,
     RefreshButtonComponent,

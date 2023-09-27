@@ -29,7 +29,6 @@ import { PlatformTokensAmountComponent } from './features/swap-form/components/p
 import { FormHeaderComponent } from '@features/swaps/features/swap-form/components/form-header/form-header.component';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
-import { IframeSettingsButtonComponent } from '@core/header/components/header/components/iframe-settings-button/iframe-settings-button.component';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
@@ -51,7 +50,6 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     FormSwitcherComponent,
     PlatformTokensAmountComponent,
     FormHeaderComponent,
-    IframeSettingsButtonComponent,
     FormNavigationComponent,
     ChangenowPostFormComponent,
     TransactionDetailsComponent,

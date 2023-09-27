@@ -18,7 +18,7 @@
         ></app-onramper-swap-button>
 
         <ng-container *ngIf="!isOnramper">
-          <ng-container *ngIf="withApproveButton && (!isIframe || needApprove); else swapButton">
+          <ng-container *ngIf="withApproveButton && needApprove; else swapButton">
             <app-approve-swap-button
               (onApproveClick)="onApproveClick.emit()"
               (onSwapClick)="onSwapClick.emit()"

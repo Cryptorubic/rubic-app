@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { LIST_ANIMATION } from '@features/swaps/shared/components/assets-selector/animations/list-animation';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list.service';
@@ -38,15 +37,8 @@ export class TokensListComponent {
     })
   );
 
-  public readonly rubicDomain = 'app.rubic.exchange';
-
-  public readonly noFrameLink = `https://${this.rubicDomain}${this.queryParamsService.noFrameLink}`;
-
-  public readonly iframeRubicLink = this.iframeService.rubicLink;
-
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    private readonly iframeService: IframeService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListService: TokensListService,
     private readonly tokensListStoreService: TokensListStoreService

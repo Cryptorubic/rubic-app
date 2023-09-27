@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
-import { IframeService } from '@core/services/iframe/iframe.service';
 
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AssetsSelectorServices } from '@features/swaps/shared/components/assets-selector/constants/assets-selector-services';
@@ -39,8 +38,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
-  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
-
   public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
 
   public readonly isMobile = this.headerStore.isMobile;
@@ -48,7 +45,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   constructor(
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly iframeService: IframeService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,

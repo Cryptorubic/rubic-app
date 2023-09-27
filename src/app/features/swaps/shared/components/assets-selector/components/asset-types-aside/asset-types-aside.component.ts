@@ -7,7 +7,6 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -38,10 +37,6 @@ export class AssetTypesAsideComponent {
    */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
-      if (this.iframeService.isIframe) {
-        return this.blockchainsAmount;
-      }
-
       if (windowSize >= WindowSize.MOBILE_MD) {
         return 11;
       }
@@ -68,7 +63,6 @@ export class AssetTypesAsideComponent {
     private readonly fiatsListService: FiatsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
-    private readonly iframeService: IframeService,
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly queryParamsService: QueryParamsService,
@@ -147,13 +141,6 @@ export class AssetTypesAsideComponent {
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
     if (hiddenBlockchain) {
       slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
-    }
-
-    if (this.iframeService.isIframe) {
-      slicedBlockchains = [
-        ...slicedBlockchains.filter(blockchain => !this.isBlockchainDisabled(blockchain)),
-        ...slicedBlockchains.filter(blockchain => this.isBlockchainDisabled(blockchain))
-      ];
     }
 
     return slicedBlockchains.map(blockchain => ({

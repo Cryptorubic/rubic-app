@@ -1,21 +1,7 @@
-<a
-  *noFrame
-  class="rubic-header__logo"
-  routerLink="/"
-  [ngClass]="{ 'rubic-header__logo_hide': currentUser }"
->
+<a class="rubic-header__logo" routerLink="/" [ngClass]="{ 'rubic-header__logo_hide': currentUser }">
   <img
     [src]="isDarkTheme ? 'assets/images/rubic-logo.png' : 'assets/images/rubic-logo-dark.png'"
     alt="Rubic logotype"
     width="122"
   />
-</a>
-<a
-  *onlyFrame
-  class="rubic-header__logo"
-  rel="noopener noreferrer"
-  target="_blank"
-  [href]="noFrameLink"
->
-  <img src="assets/images/rubic-logo.png" alt="Rubic logotype" width="90" />
 </a>

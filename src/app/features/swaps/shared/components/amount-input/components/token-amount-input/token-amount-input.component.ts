@@ -15,7 +15,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { map, takeUntil } from 'rxjs/operators';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TranslateService } from '@ngx-translate/core';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { FormControl } from '@angular/forms';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { Asset } from '@features/swaps/shared/models/form/asset';
@@ -78,7 +77,6 @@ export class TokenAmountInputComponent implements OnInit {
     public readonly swapFormService: SwapFormService,
     public readonly swapTypeService: SwapTypeService,
     private readonly translateService: TranslateService,
-    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService
   ) {}

@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector, Component, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { IframeService } from '@app/core/services/iframe/iframe.service';
 import { AssetsSelectorComponent } from '@app/features/swaps/shared/components/assets-selector/components/assets-selector/assets-selector.component';
 import { Asset } from '@app/features/swaps/shared/models/form/asset';
 import { Observable } from 'rxjs';
@@ -33,7 +32,6 @@ import { SettingsItComponent } from '@features/trade/components/settings-it/sett
 @Injectable()
 export class ModalService {
   constructor(
-    private readonly iframeService: IframeService,
     private readonly modalService: AbstractModalService,
     private readonly mobileModalService$: MobileNativeModalService,
     @Inject(Injector) private readonly injector: Injector
@@ -45,10 +43,9 @@ export class ModalService {
    * @param idPrefix Id prefix for GA.
    */
   public openAssetsSelector(formType: 'from' | 'to', idPrefix: string = ''): Observable<Asset> {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 'l';
     return this.showDialog<AssetsSelectorComponent, Asset>(AssetsSelectorComponent, {
       title: 'Select token',
-      size,
+      size: 'l',
       data: {
         formType,
         idPrefix

@@ -1,5 +1,5 @@
 <section class="assets-selector">
-  <header class="assets-selector__header" *noFrame>
+  <header class="assets-selector__header">
     <h2>
       {{ headerText$ | async | translate }}
     </h2>
@@ -18,9 +18,9 @@
       <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="idPrefix"></app-asset-types-aside>
 
-        <ng-container *onlyFrame="'vertical'">
+        <ng-container>
           <app-search-bar
-            *ngIf="iframeTokenSearch || selectorListType === 'fiats'"
+            *ngIf="selectorListType === 'fiats'"
             class="vertical-iframe-token-search"
           ></app-search-bar>
         </ng-container>
@@ -30,14 +30,6 @@
         </div>
 
         <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
-          <ng-container *onlyFrame="'horizontal'">
-            <app-search-bar
-              *ngIf="iframeTokenSearch"
-              class="token-list-container__search"
-              [expandableField]="true"
-            ></app-search-bar>
-          </ng-container>
-
           <div class="token-list__header">
             <div class="token-list__header-label">Tokens</div>
           </div>
@@ -50,7 +42,7 @@
     </div>
 
     <ng-template #searchBar>
-      <div class="assets-selector__row" *noFrame>
+      <div class="assets-selector__row">
         <app-search-bar></app-search-bar>
 
         <app-switch-list-type-button

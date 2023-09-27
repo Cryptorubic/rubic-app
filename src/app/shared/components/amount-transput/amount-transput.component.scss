@@ -4,10 +4,6 @@
   width: 100%;
   height: 35px;
 
-  @include iframe-horizontal {
-    margin-bottom: 0;
-  }
-
   ::placeholder {
     letter-spacing: 0.6px;
   }
@@ -27,13 +23,6 @@
     background-color: transparent;
 
     border: none;
-
-    @include iframe-horizontal {
-      padding-left: 0;
-
-      font-size: 20px;
-      text-align: left;
-    }
 
     @include b($mobile-md) {
       font-size: 25px;

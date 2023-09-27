@@ -31,7 +31,6 @@ import { Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
 
@@ -113,13 +112,8 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly onramperFormService: OnramperFormService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
-    private readonly iframeService: IframeService,
     @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    if (this.iframeService.isIframe) {
-      this.hideFormSwitcherForIframe();
-    }
-  }
+  ) {}
 
   ngOnInit(): void {
     this.swapTypeService.swapMode$

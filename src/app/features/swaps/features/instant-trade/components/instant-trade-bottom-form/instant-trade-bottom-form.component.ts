@@ -35,7 +35,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 // import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { debounceTime, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
 import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
@@ -115,8 +114,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
    */
   public withApproveButton: boolean;
 
-  public isIframe: boolean;
-
   public errorText: string;
 
   /**
@@ -190,16 +187,13 @@ export class InstantTradeBottomFormComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly tokensService: TokensService,
     // private readonly settingsService: SettingsService,
-    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: ModalService,
     private readonly refreshService: RefreshService,
     @Inject(INJECTOR) private readonly injector: Injector,
     @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    this.isIframe = this.iframeService.isIframe;
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.setupNormalTradesCalculation();
@@ -836,12 +830,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
     ) {
       return true;
     }
-    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .showDialog(
         AutoSlippageWarningModalComponent,
         {
-          size,
+          size: 's',
           fitContent: true
         },
         this.injector

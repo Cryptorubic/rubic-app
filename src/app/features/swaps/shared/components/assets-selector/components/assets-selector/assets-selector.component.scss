@@ -14,22 +14,6 @@
   flex-direction: column;
   width: 100%;
 
-  @include iframe-horizontal {
-    flex-direction: column;
-    justify-content: center;
-    width: $iframe-horizontal-width;
-    height: 100vh;
-    margin: 0 auto;
-  }
-
-  @include iframe-vertical {
-    flex-direction: column;
-    justify-content: center;
-    width: $iframe-vertical-width;
-    height: 100vh;
-    margin: 0 auto;
-  }
-
   &__row {
     display: flex;
     grid-gap: 20px;
@@ -69,29 +53,6 @@
     width: calc(100% + 24px);
     min-height: 443px;
     max-height: 443px;
-
-    @include iframe {
-      left: 0;
-    }
-
-    @include iframe-horizontal {
-      flex-direction: column;
-      justify-content: center;
-
-      width: 100%;
-      height: 180px;
-      max-height: 180px;
-      padding: 0 30px 0 0;
-    }
-
-    @include iframe-vertical {
-      flex-direction: column;
-
-      width: $iframe-vertical-width;
-      height: $iframe-vertical-height;
-      max-height: $iframe-vertical-height;
-      padding: 20px;
-    }
   }
 
   &__top {
@@ -106,11 +67,6 @@ app-search-bar {
   @include b($mobile-md) {
     margin-bottom: 0;
   }
-
-  &.vertical-iframe-token-search {
-    margin-top: 10px;
-    margin-bottom: 0;
-  }
 }
 
 tui-loader {
@@ -122,33 +78,6 @@ tui-loader {
 
 .token-list-container {
   width: 100%;
-
-  @include iframe-horizontal {
-    display: flex;
-    align-items: center;
-    height: 90px;
-    overflow: hidden;
-
-    &__search {
-      position: relative;
-      top: -2px;
-
-      width: auto;
-      margin-right: 15px;
-      margin-bottom: 0;
-
-      border: 2px solid #626262;
-
-      border-radius: 15px;
-    }
-
-    &__list {
-      display: flex;
-      width: 100%;
-      height: 90px;
-      overflow: hidden;
-    }
-  }
 
   &__list {
     height: 100%;
@@ -250,21 +179,3 @@ tui-loader {
   }
 }
 
-@include b($mobile-sm) {
-  .assets-selector {
-    &__content {
-      @include iframe-vertical {
-        padding: 0 15px 0 0;
-      }
-    }
-  }
-
-  //@include iframe-vertical {
-  //  .token-list {
-  //    &__header {
-  //      margin: 0 0 1rem;
-  //      padding: 0 1rem 0 0;
-  //    }
-  //  }
-  //}
-}

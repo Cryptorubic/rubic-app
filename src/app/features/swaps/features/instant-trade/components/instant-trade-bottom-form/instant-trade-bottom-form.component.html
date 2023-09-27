@@ -1,4 +1,4 @@
-<div class="instant-trade-bottom-form" *ngLet="isIframe !== true as standardMode">
+<div class="instant-trade-bottom-form">
   <main class="instant-trade-bottom-form__body">
     <div class="instant-trade-bottom-form__body-top">
       <div class="instant-trade-bottom-form__body-top-wrapper">
@@ -9,11 +9,11 @@
         <div
           class="instant-trade-bottom-form__amount"
           [ngClass]="{
-            'instant-trade-bottom-form__amount__output_error': errorText && !isIframe
+            'instant-trade-bottom-form__amount__output_error': errorText
           }"
           *ngLet="allowTrade && isWrappingTrade as wrapProvider"
         >
-          <ng-container *ngIf="errorText && !isIframe && fromAmount">
+          <ng-container *ngIf="errorText && fromAmount">
             {{ 'errors.tradingIsNotAvailable' | translate }}
 
             <div
@@ -24,24 +24,18 @@
             ></div>
           </ng-container>
 
-          <ng-container *onlyFrame="'vertical'">
-            <app-iframe-asset-type-indicator
-              *ngIf="toToken?.blockchain as blockchain"
-              [assetType]="blockchain"
-            ></app-iframe-asset-type-indicator>
-          </ng-container>
-
           <div
-            *ngIf="standardMode || tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
+            *ngIf="tradeStatus !== TRADE_STATUS.LOADING; else iframeSkeleton"
             class="instant-trade-bottom-form__token-amount"
+          >
+            <!--
             [ngClass]="{
-              'instant-trade-bottom-form__token-amount_loading':
-                standardMode && tradeStatus === TRADE_STATUS.LOADING,
+              'instant-trade-bottom-form__token-amount_loading': tradeStatus === 2,
               'instant-trade-bottom-form__token-amount_placeholder': !(
                 selectedProvider || wrapProvider
               )
             }"
-          >
+          -->
             <ng-container *ngIf="(selectedProvider && toAmount) || (wrapProvider && fromAmount)">
               {{
                 wrapProvider
@@ -50,7 +44,7 @@
                     | bigNumberFormat
                     | withRound : 'toClosestValue' : { decimals: toToken?.decimals })
               }}
-              <app-tokens-rate *noFrame></app-tokens-rate>
+              <app-tokens-rate></app-tokens-rate>
             </ng-container>
           </div>
 
@@ -61,7 +55,7 @@
           </ng-template>
 
           <ng-container *ngIf="selectedProvider || wrapProvider">
-            <div class="instant-trade-bottom-form__iframe-info" *onlyFrame>
+            <div class="instant-trade-bottom-form__iframe-info">
               <app-tokens-rate></app-tokens-rate>
 
               <div *ngIf="!wrapProvider && getGas(selectedProvider).gt(0)">
@@ -72,15 +66,13 @@
         </div>
       </div>
     </div>
-    <ng-container *noFrame>
-      <app-providers-panels-container
-        *ngIf="allowTrade && !isWrappingTrade"
-        class="instant-trade-bottom-form__providers"
-        [providersData]="providersData"
-        (onSelectProvider)="onSelectProvider($event)"
-      >
-      </app-providers-panels-container>
-    </ng-container>
+    <app-providers-panels-container
+      *ngIf="allowTrade && !isWrappingTrade"
+      class="instant-trade-bottom-form__providers"
+      [providersData]="providersData"
+      (onSelectProvider)="onSelectProvider($event)"
+    >
+    </app-providers-panels-container>
     <app-target-network-address
       *ngIf="displayTargetAddressInput$ | async"
     ></app-target-network-address>

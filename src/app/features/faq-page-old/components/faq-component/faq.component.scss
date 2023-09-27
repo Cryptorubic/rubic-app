@@ -13,18 +13,10 @@
   }
 
   &__question {
+    --tui-base-01: var(--tui-secondary);
+    --tui-base-02: var(--tui-secondary-hover);
     margin-bottom: 15px !important;
 
     border-radius: 14px;
-
-    ::ng-deep {
-      .t-wrapper {
-        background: var(--form-background) !important;
-      }
-
-      .t-content {
-        font-size: 15px;
-      }
-    }
   }
 }

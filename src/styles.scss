@@ -85,15 +85,6 @@ button {
 
 }
 
-mainiframeSettingsFormcontent {
-  display: flex;
-  justify-content: center;
-
-  width: 100%;
-  max-width: 1440px;
-  padding: 0 20px 60px;
-}
-
 .noscroll {
   position: fixed;
   right: 0;
@@ -175,10 +166,6 @@ a {
 //    }
 //  }
 //}
-
-body.default-iframe-background {
-  background: linear-gradient(45deg, var(--primary-color) 20%, white);
-}
 
 #loader {
   position: fixed;

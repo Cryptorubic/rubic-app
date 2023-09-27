@@ -47,7 +47,6 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import CrossChainUnsupportedBlockchainError from '@core/errors/models/cross-chain/cross-chain-unsupported-blockchain-error';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
@@ -243,7 +242,6 @@ export class CrossChainFormService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly errorsService: ErrorsService,
-    private readonly iframeService: IframeService,
     private readonly dialogService: ModalService,
     private readonly tradeService: TradeService,
     private readonly changenowPostTradeService: ChangenowPostTradeService,
@@ -889,12 +887,11 @@ export class CrossChainFormService {
     //   return true;
     // }
 
-    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .showDialog(
         AutoSlippageWarningModalComponent,
         {
-          size,
+          size: 's',
           fitContent: true
         },
         this.injector

@@ -3,10 +3,6 @@
 :host {
   overflow: hidden;
 
-  @include iframe-horizontal {
-    width: 100%;
-  }
-
   @include b($mobile-md) {
     overflow: visible;
   }
@@ -22,34 +18,11 @@
   height: 58px;
   margin-bottom: 10px;
 
-  @include iframe {
-    height: 100%;
-  }
-
-  @include iframe-vertical {
-    align-items: flex-start;
-    justify-content: unset;
-
-    max-width: unset;
-  }
-
-  @include iframe-horizontal {
-    margin-bottom: 0;
-  }
-
   &__blockchain-and-value {
     display: flex;
 
     width: 100%;
     height: 100%;
-
-    @include iframe-vertical {
-      margin-bottom: 10px;
-    }
-
-    app-iframe-asset-type-indicator {
-      margin-right: 15px;
-    }
   }
 
   app-tokens-rate {
@@ -61,20 +34,6 @@
       bottom: 0;
 
       white-space: nowrap;
-
-      @include iframe-vertical {
-        position: static;
-      }
-    }
-
-    @include iframe-horizontal {
-      position: absolute;
-      bottom: -33px;
-      left: 5px;
-    }
-
-    @include iframe-vertical {
-      margin-left: 5px;
     }
   }
 
@@ -101,29 +60,6 @@
       font-size: 25px;
 
       text-align: right;
-    }
-
-    @include iframe-horizontal {
-      white-space: nowrap;
-      text-align: left;
-    }
-
-    @include iframe-vertical {
-      width: 100%;
-      height: 50px;
-      padding: 0 16px;
-
-      color: var(--primary-text);
-      font-size: 20px;
-      line-height: 50px;
-      text-align: start;
-
-      background-color: var(--primary-background);
-      border-radius: 10px;
-    }
-
-    @include iframe-vertical-light {
-      background-color: var(--iframe-primary-background);
     }
 
     &::-webkit-scrollbar {

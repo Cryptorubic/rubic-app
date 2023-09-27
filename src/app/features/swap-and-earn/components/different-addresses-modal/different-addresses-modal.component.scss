@@ -47,42 +47,4 @@
       }
     }
   }
-
-  /* stylelint-disable */
-  @include iframe-horizontal {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-
-    &__content {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: $iframe-horizontal-height;
-      padding-top: 0;
-    }
-
-    &__body {
-      margin-right: 80px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-
-      img {
-        transform: scale(1.5);
-      }
-    }
-
-    h3 {
-      text-align: left;
-      font-size: 18px;
-      margin: 0 0 20px;
-    }
-
-    ::ng-deep app-rubic-button button {
-      width: 150px;
-      float: left;
-    }
-  }
 }

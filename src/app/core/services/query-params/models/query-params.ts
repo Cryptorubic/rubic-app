@@ -1,5 +1,4 @@
 import { BlockchainName } from 'rubic-sdk';
-import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 
@@ -21,8 +20,6 @@ interface AllQueryParams {
   amountTo: string;
   onramperTxId: string;
 
-  // iframe
-  iframe: IframeAppearance;
   device: 'mobile' | 'desktop';
   domain: string;
   hideSelectionFrom: string;

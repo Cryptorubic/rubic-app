@@ -15,10 +15,6 @@ $token-card-height: 55px;
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
 
-  @include iframe-horizontal {
-    height: $token-card-height + 20px;
-  }
-
   &__empty-list {
     position: relative;
 
@@ -76,93 +72,6 @@ tui-loader {
       &:hover {
         background-color: unset;
       }
-    }
-  }
-}
-
-.tokens-list-horizontal-iframe {
-  display: flex;
-
-  &__item-container {
-    min-width: 206px;
-    max-width: 206px;
-  }
-
-  &__item {
-    min-width: 191px;
-    max-width: 191px;
-    height: $token-card-height;
-    padding: 5px 10px;
-
-    border: 2px solid #626262;
-
-    border-radius: 15px;
-
-    cursor: pointer;
-
-    @include iframe-horizontal {
-      padding: 4px;
-    }
-
-    @include light-iframe {
-      border: 1px solid #e9e9e9;
-
-      &:hover {
-        background-color: var(--rubic-base-14);
-      }
-    }
-
-    &:not(:last-child) {
-      margin-right: 15px;
-    }
-
-    &:hover {
-      background-color: var(--primary-background);
-    }
-
-    &_disabled {
-      cursor: not-allowed;
-      opacity: 0.4;
-
-      &:hover {
-        background-color: unset;
-      }
-    }
-
-    &_empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-size: 18px;
-
-      border: 0;
-      cursor: default;
-
-      &:hover {
-        background-color: unset;
-      }
-    }
-  }
-
-  &__item-link {
-    border-color: var(--primary-color);
-
-    a {
-      display: block;
-      width: 100%;
-      height: 100%;
-
-      line-height: 40px;
-      text-align: center;
-
-      @include iframe() {
-        line-height: 1.4;
-      }
-    }
-
-    &:hover {
-      background-color: unset;
     }
   }
 }

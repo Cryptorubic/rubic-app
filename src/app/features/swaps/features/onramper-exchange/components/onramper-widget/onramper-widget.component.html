@@ -6,8 +6,8 @@
   <ng-container *ngIf="widgetUrl$ | async as url; else loading">
     <iframe
       [src]="url | safeSanitizer : 'resourceUrl'"
-      [height]="!isIframe ? '660px' : iframeSize.height"
-      [width]="!isIframe ? (widgetWidth$ | async) : iframeSize.width"
+      [height]="'660px'"
+      [width]="widgetWidth$ | async"
       title="Onramper widget"
       allow="accelerometer; autoplay; camera; gyroscope; payment"
     >

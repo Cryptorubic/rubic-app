@@ -1,58 +1,7 @@
 @use 'src/scss/core' as *;
 
-:host {
-  @include iframe-vertical {
-    width: 100%;
-  }
-}
-
 .tokens {
   font-size: $rubic-font-size-01;
-
-  @include iframe-horizontal {
-    ::ng-deep app-rubic-button {
-      button,
-      .t-wrapper {
-        box-shadow: none !important;
-      }
-    }
-  }
-
-  @include iframe-vertical {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-
-    &__symbol,
-    &__inner-text {
-      font-size: 18px;
-    }
-
-    &_disabled {
-      .tokens__symbol,
-      .tokens__inner-text {
-        &::after {
-          display: none;
-        }
-      }
-
-      .tokens__inner {
-        opacity: 0.5;
-      }
-    }
-
-    &__clear {
-      display: none;
-    }
-
-    &__clear-mobile {
-      position: relative;
-      top: 2px;
-
-      display: block !important;
-    }
-  }
 
   &__image-container img {
     border-radius: 25%;
@@ -90,10 +39,6 @@
 
     white-space: nowrap;
     text-overflow: ellipsis;
-
-    @include iframe-vertical {
-      text-overflow: inherit;
-    }
   }
 
   &__clear-container {

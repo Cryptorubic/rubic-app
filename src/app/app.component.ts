@@ -2,7 +2,6 @@ import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
@@ -26,7 +25,6 @@ export class AppComponent implements AfterViewInit {
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
@@ -41,35 +39,6 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.gtmService.addGtmToDom();
-    this.setupIframeSettings();
-  }
-
-  /**
-   * Setups settings for app in iframe.
-   */
-  private setupIframeSettings(): void {
-    if (this.iframeService.isIframe) {
-      this.removeLiveChatInIframe();
-    }
-  }
-
-  /**
-   * Removes live chat in iframe mode.
-   */
-  private removeLiveChatInIframe(): void {
-    const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementById('chat-widget-container');
-      if (liveChat) {
-        liveChat.remove();
-        observer.disconnect();
-      }
-    });
-    observer.observe(this.document.body, {
-      attributes: false,
-      childList: true,
-      characterData: false,
-      subtree: false
-    });
   }
 
   /**
@@ -128,7 +97,6 @@ export class AppComponent implements AfterViewInit {
           ...(queryParams?.from && { from: queryParams.from }),
           ...(queryParams?.to && { to: queryParams.to })
         });
-        this.setAccentColor(queryParams);
         if (queryParams.hideUnusedUI) {
           this.setupUISettings(queryParams);
         }
@@ -142,37 +110,7 @@ export class AppComponent implements AfterViewInit {
 
     if (hideUI) {
       this.document.body.classList.add('hide-unused-ui');
-      this.removeLiveChatInIframe();
     }
-  }
-
-  private setAccentColor(queryParams: QueryParams): void {
-    const color = `#${queryParams.accentColor}`;
-    const alphaColor = this.hexToRgba(color, '0.6');
-    if (this.iframeService.isIframe && queryParams.accentColor) {
-      this.document.body.setAttribute(
-        'style',
-        '--tui-primary: ' +
-          color +
-          ';' +
-          ' --primary-color: ' +
-          color +
-          ';' +
-          ' --tui-primary-hover: ' +
-          alphaColor +
-          ';' +
-          '--tui-primary-active: ' +
-          alphaColor
-      );
-    }
-  }
-
-  private hexToRgba(hex: string, alpha: string): string {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-
-    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
   }
 
   /**

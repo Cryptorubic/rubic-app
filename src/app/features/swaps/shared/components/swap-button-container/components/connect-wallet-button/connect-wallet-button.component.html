@@ -1,4 +1,4 @@
-<ng-container *ngLet="!isIframe && (user$ | async) === undefined as loading">
+<ng-container *ngLet="(user$ | async) === undefined as loading">
   <app-rubic-button
     [id]="idPrefix + 'connect-wallet'"
     [loading]="loading"

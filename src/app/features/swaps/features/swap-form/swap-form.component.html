@@ -1,5 +1,3 @@
-<app-iframe-settings-button *onlyFrame></app-iframe-settings-button>
-
 <app-form-navigation *ngIf="!hideUnusedUI" class="swap-form-navigation"></app-form-navigation>
 
 <ng-container *ngLet="isFormFilled$ | async as isFormFilled">
@@ -18,13 +16,12 @@
       }"
     >
       <header
-        *noFrame
         class="swap-form__header"
         [ngClass]="{
           'swap-form__header_onramper': isOnramper
         }"
       >
-        <app-form-header class="swap-form__blockchains" *noFrame></app-form-header>
+        <app-form-header class="swap-form__blockchains"></app-form-header>
 
         <div class="swap-form__settings-wrapper">
           <app-refresh-button
@@ -37,29 +34,12 @@
             (onRefresh)="onRefresh()"
           >
           </app-refresh-button>
-
-          <app-iframe-logout-button
-            *ngIf="hideUnusedUI && getCurrentUser$ | async"
-          ></app-iframe-logout-button>
         </div>
       </header>
 
       <main class="swap-form__content">
         <div class="swap-form__block">
-          <app-iframe-asset-type-indicator
-            [assetType]="getFromBlockchain()"
-            *onlyFrame="'horizontal'"
-          >
-          </app-iframe-asset-type-indicator>
-
-          <app-token-amount-input
-            *noFrame="'vertical'"
-            (amountUpdated)="onFromAmountUpdate()"
-          ></app-token-amount-input>
-
-          <app-vertical-iframe-token-amount-input
-            *onlyFrame="'vertical'"
-          ></app-vertical-iframe-token-amount-input>
+          <app-token-amount-input (amountUpdated)="onFromAmountUpdate()"></app-token-amount-input>
         </div>
 
         <div class="swap-form__delimiter" [ngClass]="{ 'swap-form__delimiter_full': isOnramper }">
@@ -72,9 +52,6 @@
         </div>
 
         <div class="swap-form__block">
-          <app-iframe-asset-type-indicator *onlyFrame="'horizontal'" [assetType]="toBlockchain">
-          </app-iframe-asset-type-indicator>
-
           <app-instant-trade-bottom-form
             *ngIf="isInstantTrade"
             (allowRefreshChange)="allowRefresh = $event"
@@ -102,31 +79,27 @@
     ></app-limit-order-bottom-form>
   </ng-container>
 
-  <ng-container *noFrame>
-    <ng-container
-      *ngIf="isMobile$ | async; then swapInfoMobile; else swapInfoDesktop"
-    ></ng-container>
+  <ng-container *ngIf="isMobile$ | async; then swapInfoMobile; else swapInfoDesktop"></ng-container>
 
-    <ng-template #swapInfoDesktop>
-      <div class="swap-info-container">
-        <app-swap-info-container
-          *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
-          [swapType]="swapType"
-          [currentInstantTradeInfo]="currentInstantTradeInfo"
-          [tradeStatus]="tradeStatus"
-        ></app-swap-info-container>
-      </div>
-    </ng-template>
+  <ng-template #swapInfoDesktop>
+    <div class="swap-info-container">
+      <app-swap-info-container
+        *ngIf="isFormFilled && !isOnramper && !isLimitOrder"
+        [swapType]="swapType"
+        [currentInstantTradeInfo]="currentInstantTradeInfo"
+        [tradeStatus]="tradeStatus"
+      ></app-swap-info-container>
+    </div>
+  </ng-template>
 
-    <ng-template #swapInfoMobile>
-      <button
-        class="swap-info-container-mobile"
-        *ngIf="isFormFilled && !isOnramper && !isLimitOrder && tradeStatus !== TradeStatus.LOADING"
-        (click)="openSwapInfo()"
-      >
-        <div>Transaction details</div>
-        <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
-      </button>
-    </ng-template>
-  </ng-container>
+  <ng-template #swapInfoMobile>
+    <button
+      class="swap-info-container-mobile"
+      *ngIf="isFormFilled && !isOnramper && !isLimitOrder && tradeStatus !== TradeStatus.LOADING"
+      (click)="openSwapInfo()"
+    >
+      <div>Transaction details</div>
+      <div [inlineSVG]="'assets/images/icons/chevron.svg'"></div>
+    </button>
+  </ng-template>
 </ng-container>

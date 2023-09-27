@@ -20,8 +20,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { IframeService } from '@core/services/iframe/iframe.service';
-import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 
 @Injectable()
@@ -52,7 +50,6 @@ export class BlockchainsListService {
     private readonly searchQueryService: SearchQueryService,
     private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
-    private readonly iframeService: IframeService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
@@ -89,11 +86,9 @@ export class BlockchainsListService {
         const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
           blockchain.name
         );
-        const disabledFrom = !this.iframeService.isIframe
-          ? disabledFromBlockchains.includes(blockchain.name)
-          : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
-              blockchain.name
-            );
+        const disabledFrom = (
+          Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
+        ).includes(blockchain.name);
         const disabledLimitOrder = selectedBlockchain && blockchain.name !== selectedBlockchain;
 
         return {

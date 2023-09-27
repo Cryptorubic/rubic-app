@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { EXTERNAL_LINKS } from '@shared/constants/common/links';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
@@ -49,8 +48,6 @@ export class TokensListElementComponent implements OnInit {
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
-  public readonly isHorizontalFrame = this.iframeService.iframeAppearance === 'horizontal';
-
   public readonly TokenSecurityStatus = TokenSecurityStatus;
 
   public readonly securityMessages = {
@@ -70,7 +67,6 @@ export class TokensListElementComponent implements OnInit {
   public allowCopy: boolean;
 
   constructor(
-    private readonly iframeService: IframeService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly cdr: ChangeDetectorRef,

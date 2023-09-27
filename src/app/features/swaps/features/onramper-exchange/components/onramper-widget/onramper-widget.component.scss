@@ -8,10 +8,6 @@
   background: var(--form-background);
   border-radius: 19px;
 
-  @include iframe-vertical {
-    height: 530px;
-  }
-
   iframe {
     border-radius: 19px;
   }
@@ -20,11 +16,6 @@
     position: absolute;
     top: 0;
     left: -55px;
-
-    @include iframe-vertical {
-      top: 19px;
-      left: 60px;
-    }
 
     ::ng-deep app-rubic-button {
       .t-wrapper {

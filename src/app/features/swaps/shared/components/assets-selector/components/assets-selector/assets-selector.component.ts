@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import {
   AssetsSelectorComponentContext,
   AssetsSelectorComponentInput
@@ -25,8 +24,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 })
 export class AssetsSelectorComponent implements OnInit, OnDestroy {
   public idPrefix: string;
-
-  public readonly iframeTokenSearch = this.iframeService.tokenSearch;
 
   public readonly headerText$ = combineLatest([
     this.assetsSelectorService.selectorListType$,
@@ -54,7 +51,6 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: AssetsSelectorComponentContext,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly iframeService: IframeService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,

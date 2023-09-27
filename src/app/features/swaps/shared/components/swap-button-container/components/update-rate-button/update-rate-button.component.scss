@@ -1,10 +1,2 @@
 @use 'src/scss/core' as *;
 
-app-rubic-button[rate-is-updated=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 13px;
-      line-height: 16px;
-    }
-  }
-}

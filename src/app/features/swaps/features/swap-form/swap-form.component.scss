@@ -7,14 +7,6 @@
   max-width: 565px;
   margin: 0 auto;
 
-  @include iframe {
-    width: 100%;
-  }
-
-  @include iframe-horizontal {
-    max-width: unset;
-  }
-
   @include hide-unused-ui {
     display: inline;
 
@@ -34,26 +26,6 @@
   background: var(--form-background);
   border: 1px solid var(--transparent-line);
   border-radius: 19px;
-
-  @include iframe-horizontal {
-    display: flex;
-    align-items: flex-end;
-
-    min-height: $iframe-horizontal-height;
-    margin-bottom: 0;
-    padding: 0 20px 55px;
-  }
-
-  @include iframe-vertical {
-    width: $iframe-vertical-width;
-    height: $iframe-vertical-height;
-    margin-bottom: 0;
-    padding: 80px 25px 26px;
-  }
-
-  @include light-iframe {
-    background-color: white;
-  }
 
   @include hide-unused-ui {
     margin: 0;
@@ -120,42 +92,11 @@
 
     background-color: var(--primary-background);
 
-    @include iframe-horizontal {
-      display: flex;
-      align-items: center;
-      margin: 0 5px;
-
-      background-color: unset;
-    }
-
-    @include iframe-vertical {
-      display: flex;
-      justify-content: center;
-
-      padding: 0;
-
-      background: transparent;
-    }
-
     > * {
       position: absolute;
       left: 50%;
 
       transform: translate(-50%, -50%);
-
-      @include iframe-horizontal {
-        position: static;
-        left: unset;
-
-        transform: unset;
-      }
-
-      @include iframe-vertical {
-        position: static;
-        left: unset;
-
-        transform: none;
-      }
     }
 
     &::before,
@@ -172,10 +113,6 @@
       opacity: 0.5;
 
       content: '';
-
-      @include iframe-vertical {
-        display: none;
-      }
     }
 
     &::after {
@@ -199,42 +136,6 @@
 
   &__content {
     margin-top: 30px;
-
-    @include iframe-horizontal {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-
-      height: 50px;
-      margin-top: 0;
-    }
-
-    @include iframe-vertical {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-      margin-top: 0;
-    }
-  }
-
-  &__block {
-    @include iframe {
-      display: flex;
-
-      app-iframe-asset-type-indicator {
-        margin-right: 10px;
-      }
-    }
-
-    @include iframe-vertical {
-      app-instant-trade-bottom-form,
-      app-bridge-bottom-form,
-      app-cross-chain-bottom-form,
-      app-onramper-bottom-form {
-        width: 100%;
-      }
-    }
   }
 
   app-onramper-widget {
@@ -289,12 +190,6 @@ app-analytics-link {
 
     background: unset;
     border: unset;
-
-    @include iframe {
-      background: var(--form-background);
-      border: 1px solid var(--transparent-line);
-      border-radius: 19px;
-    }
 
     &_onramper {
       background: var(--form-background);
@@ -354,10 +249,6 @@ app-form-navigation {
   @include b($laptop-xl) {
     display: block;
     margin-bottom: 8px;
-
-    @include iframe {
-      display: none;
-    }
   }
 }
 
