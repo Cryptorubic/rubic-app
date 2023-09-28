@@ -4,40 +4,52 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
+    'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://eth.llamarpc.com',
+    'https://rpc.ankr.com/eth'
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
     'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
+    'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://binance.llamarpc.com',
+    'https://rpc.ankr.com/bsc'
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
+    'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://polygon.llamarpc.com',
+    'https://1rpc.io/matic',
+    'https://rpc.ankr.com/polygon'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
     'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://zkevm-rpc.com',
-    'https://rpc.polygon-zkevm.gateway.fm',
-    'https://1rpc.io/zkevm'
+    'https://rpc.ankr.com/polygon_zkevm',
+    'https://1rpc.io/polygon/zkevm'
   ],
   [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key=02530958-c8c4-4297-974c-66203e79800d',
-    'https://speedy-nodes-nyc.moralis.io/7625ae299d1e13d495412740/avalanche/mainnet'
+    'https://1rpc.io/avax/c',
+    'https://rpc.ankr.com/avalanche'
   ],
   [BLOCKCHAIN_NAME.MOONRIVER]: [
-    'https://moonriver-api.bwarelabs.com/e72ceb4c-1e99-4e9f-8f3c-83f0152ad69f',
-    'https://rpc.moonriver.moonbeam.network'
+    'https://moonriver.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://moonriver.public.blastapi.io',
+    'https://moonriver.unitedbloc.com:2000'
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
     'https://rpc.ankr.com/fantom/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://speedy-nodes-nyc.moralis.io/106bebf40377b2e543f51299/fantom/mainnet'
+    'https://ftm.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://rpc.ankr.com/fantom',
+    'https://1rpc.io/ftm'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://arb.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://arb1.arbitrum.io/rpc',
-    'https://arbitrum.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/'
+    'https://arbitrum.llamarpc.com',
+    'https://rpc.ankr.com/arbitrum'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   [BLOCKCHAIN_NAME.TELOS]: [
@@ -49,7 +61,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
     'https://rpc.ankr.com/optimism/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://mainnet.optimism.io'
+    'https://op.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://optimism.llamarpc.com',
+    'https://rpc.ankr.com/optimism'
   ],
   [BLOCKCHAIN_NAME.CRONOS]: ['https://evm-cronos.crypto.org'],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
@@ -132,7 +146,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/zksync_era',
     'https://mainnet.era.zksync.io'
   ],
-  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com'],
+  [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com', 'https://pulsechain.publicnode.com'],
   [BLOCKCHAIN_NAME.LINEA]: [
     'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
     'https://linea.drpc.org',
