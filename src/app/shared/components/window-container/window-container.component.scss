@@ -3,12 +3,14 @@
 
   background: var(--secondary-background);
   border-radius: var(--tui-radius-m);
+
+  ::ng-deep & > footer > *:first-child {
+    display: flex;
+    margin-top: var(--tui-padding-m);
+  }
 }
 
-::ng-deep footer > *:first-child {
-  display: flex;
-  margin-top: 10px;
-}
+
 
 header {
   padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);

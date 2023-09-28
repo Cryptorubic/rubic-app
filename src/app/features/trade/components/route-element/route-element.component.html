@@ -9,7 +9,14 @@
       <div class="element__provider-data">
         <div class="route-element__provider-name">{{ step.provider.label }}</div>
         <div class="route-element__provider-rate">
-          <div *ngFor="let amount of step.amounts">{{ amount }}&nbsp;</div>
+          <div *ngFor="let amount of step.amounts; index as i">
+            {{ amount }}
+            <img
+              *ngIf="i !== step.amounts.length - 1"
+              src="assets/images/icons/arrow/arrow-right.svg"
+              alt=""
+            />
+          </div>
         </div>
       </div>
     </div>

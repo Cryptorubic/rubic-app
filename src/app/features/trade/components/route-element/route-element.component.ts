@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CrossChainTradeType, OnChainTradeType, RubicStep } from 'rubic-sdk';
 import { ON_CHAIN_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/on-chain-providers';
 import { BRIDGE_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/bridge-providers';
+import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
+import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 
 interface ProviderStep {
   provider: {
@@ -37,6 +39,9 @@ export class RouteElementComponent {
         };
       }
       const provider = BRIDGE_PROVIDERS[route.provider as CrossChainTradeType];
+      const bnFormat = new BigNumberFormatPipe();
+      const amountFormat = new ShortenAmountPipe();
+
       return {
         provider: {
           label: `Bridge Via ${provider.name}`,
@@ -44,7 +49,9 @@ export class RouteElementComponent {
         },
         amounts: route.path.map(el => {
           const tokenAmountString =
-            'tokenAmount' in el && el.tokenAmount.gt(0) ? el.tokenAmount.toFixed() + ' ' : '';
+            'tokenAmount' in el && el.tokenAmount.gt(0)
+              ? amountFormat.transform(bnFormat.transform(el.tokenAmount), 8, 6) + ' '
+              : '';
           return `${tokenAmountString}${el.symbol}`;
         })
       };

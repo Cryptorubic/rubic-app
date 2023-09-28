@@ -9,7 +9,6 @@ import { OnChainService } from '@features/trade/services/on-chain/on-chain.servi
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
-import { BlockchainsInfo, ChainType, RubicSdkError } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
@@ -18,6 +17,8 @@ import { RefreshService } from '@features/trade/services/refresh-service/refresh
 @Injectable()
 export class SwapsControllerService {
   private readonly _calculateTrade$ = new Subject<{ isForced?: boolean; stop?: boolean }>();
+
+  public readonly calculateTrade$ = this._calculateTrade$.asObservable();
 
   constructor(
     private readonly swapFormService: SwapsFormService,
@@ -55,7 +56,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnCalculation(): void {
-    this._calculateTrade$
+    this.calculateTrade$
       .pipe(
         debounceTime(200),
         map(calculateData => {
@@ -104,13 +105,10 @@ export class SwapsControllerService {
           if (wrappedTrade) {
             return forkJoin([
               of(wrappedTrade),
-              wrappedTrade?.trade?.needApprove() || of(false),
+              wrappedTrade?.trade?.needApprove().catch(() => false) || of(false),
               of(container.type)
             ]).pipe(
               tap(([trade, needApprove, type]) => {
-                if (!this.haveEnoughBalance()) {
-                  trade.error = new RubicSdkError('Not enough balance');
-                }
                 this.swapsState.updateTrade(trade, type, needApprove);
                 this.swapsState.pickProvider();
                 this.swapsState.setCalculationProgress(
@@ -191,28 +189,6 @@ export class SwapsControllerService {
       callback?.onError();
       this.errorsService.catch(err);
     }
-  }
-
-  private haveEnoughBalance(): boolean {
-    const { fromToken, fromAmount } = this.swapFormService.inputValue;
-
-    let fromChainType: ChainType | undefined;
-    try {
-      fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    } catch {}
-    if (
-      !fromToken ||
-      !this.authService.userAddress ||
-      !fromChainType ||
-      fromChainType !== this.authService.userChainType
-    ) {
-      return true;
-    }
-
-    if (fromToken.amount?.isFinite()) {
-      return fromToken.amount.gte(fromAmount);
-    }
-    return true;
   }
 
   private subscribeOnAddressChange(): void {

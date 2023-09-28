@@ -11,6 +11,19 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import BigNumber from 'bignumber.js';
+
+interface TokenFiatAmount {
+  tokenAmount: BigNumber;
+  fiatAmount: string;
+}
+
+interface TradeInfo {
+  fromAsset: AssetSelector;
+  fromValue: TokenFiatAmount;
+  toAsset: AssetSelector;
+  toValue: TokenFiatAmount;
+}
 
 @Injectable()
 export class PreviewSwapService {
@@ -26,7 +39,7 @@ export class PreviewSwapService {
     first()
   );
 
-  public tradeInfo$ = forkJoin([
+  public tradeInfo$: Observable<TradeInfo> = forkJoin([
     this.swapForm.fromToken$.pipe(first()),
     this.swapForm.fromAmount$.pipe(first()),
     this.swapForm.toToken$.pipe(first()),

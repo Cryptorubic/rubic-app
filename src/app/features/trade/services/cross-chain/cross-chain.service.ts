@@ -18,13 +18,13 @@ import {
   EvmCrossChainTrade,
   EvmWeb3Pure,
   NotWhitelistedProviderError,
-  OnChainTrade,
   PriceToken,
   SwapTransactionOptions,
   Token,
   UnapprovedContractError,
   UnnecessaryApproveError,
-  UserRejectError
+  UserRejectError,
+  Web3Pure
 } from 'rubic-sdk';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -32,7 +32,6 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
-// import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
@@ -57,9 +56,9 @@ export class CrossChainService {
   private readonly defaultTimeout = 25_000;
 
   private get receiverAddress(): string | null {
-    // if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-    //   return null;
-    // }
+    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
+      return null;
+    }
     return this.targetNetworkAddressService.address;
   }
 
@@ -83,7 +82,8 @@ export class CrossChainService {
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
     let providers: CrossChainCalculatedTradeData[] = [];
-    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
+      this.swapFormService.inputValue;
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
@@ -128,15 +128,18 @@ export class CrossChainService {
             }),
             tap(el => {
               const tradeContainer = el?.value;
-              if (tradeContainer?.wrappedTrade?.trade) {
-                providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
-                if (
-                  tradeContainer.calculated === tradeContainer.total &&
-                  tradeContainer.wrappedTrade.trade &&
-                  tradeContainer?.calculated !== 0
-                ) {
-                  this.saveTrade(providers, tradeContainer.wrappedTrade.trade);
-                }
+              providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
+              if (
+                tradeContainer.calculated === tradeContainer.total &&
+                tradeContainer?.calculated !== 0
+              ) {
+                this.saveTrade(providers, {
+                  fromAmount: Web3Pure.toWei(fromAmount, fromToken.decimals),
+                  fromBlockchain,
+                  toBlockchain,
+                  fromAddress: fromToken.address,
+                  toAddress: toToken.address
+                });
               }
             })
           );
@@ -347,28 +350,33 @@ export class CrossChainService {
 
   private saveTrade(
     providers: CrossChainCalculatedTradeData[],
-    trade: CrossChainTrade | OnChainTrade
+    trade: {
+      fromAddress: string;
+      fromBlockchain: BlockchainName;
+      toAddress: string;
+      toBlockchain: BlockchainName;
+      fromAmount: string;
+    }
   ): void {
     this.crossChainApiService
       .saveProvidersStatistics({
         user: this.walletConnectorService.address,
-        from_token: trade?.from?.address,
-        from_network: TO_BACKEND_BLOCKCHAINS?.[trade?.from?.blockchain],
-        from_amount: trade?.from?.stringWeiAmount,
-        to_token: trade?.to?.address,
-        to_network: TO_BACKEND_BLOCKCHAINS?.[trade?.to?.blockchain],
+        from_token: trade.fromAddress,
+        from_network: TO_BACKEND_BLOCKCHAINS?.[trade.fromBlockchain],
+        from_amount: trade.fromAmount,
+        to_token: trade.toAddress,
+        to_network: TO_BACKEND_BLOCKCHAINS?.[trade.toBlockchain],
         providers_statistics: providers.map(providerTrade => {
-          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          const { calculationTime, wrappedTrade } = providerTrade;
           return {
-            provider_title: lastCalculatedTrade?.tradeType,
+            provider_title: wrappedTrade?.tradeType,
             calculation_time_in_seconds: String(calculationTime / 1000),
-            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
-            status: lastCalculatedTrade?.trade ? 'success' : 'error',
-            has_swap_in_source_network:
-              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
-            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
-            ...(lastCalculatedTrade?.error && {
-              additional_info: lastCalculatedTrade.error.message
+            to_amount: wrappedTrade?.trade?.to.stringWeiAmount,
+            status: wrappedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network: wrappedTrade?.trade && 'onChainTrade' in wrappedTrade.trade,
+            proxy_used: wrappedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(wrappedTrade?.error && {
+              additional_info: wrappedTrade.error.message
             })
           };
         })

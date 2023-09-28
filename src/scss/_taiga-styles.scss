@@ -1,9 +1,11 @@
 @use 'src/scss/core' as *;
 
+// Don't show empty blocks
 .t-empty {
   display: none !important;
 }
 
+// Remove border for all buttons except of ones with outline appearance
 [tuiWrapper] {
   &:not([data-appearance='outline']) {
     &::after {
@@ -12,6 +14,35 @@
   }
 }
 
+// Remove shadow for inputs
 [tuiWrapper][data-appearance='textfield'] {
   box-shadow: none;
+}
+
+// Common padding for all dialogs
+.t-dialog tui-dialog > .t-content {
+  padding: var(--tui-padding-l);
+}
+
+// Overlay options for dialogs
+.t-overlay_visible {
+  --tui-backdrop: blur(25px);
+  background: transparent !important;
+}
+
+
+// Close icons for dialogs
+tui-dialog-host .t-close {
+  background: var(--tui-secondary) !important;
+  opacity: 0.75;
+
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    filter: invert(1);
+  }
 }

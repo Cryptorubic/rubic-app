@@ -1,109 +1,64 @@
 @use 'src/scss/core' as *;
 
 .modal {
+  --tui-secondary: var(--tui-secondary-hover);
   position: relative;
 
-  padding: 40px 20px 20px;
-
-  font-weight: 300;
-
-  border-radius: 10px;
-
-  @include hide-unused-ui {
-    padding: 0 20px 20px;
-  }
-
   @include b($mobile-md) {
-    padding: 0 20px;
-  }
-
-  &__privacy-policy {
-    margin-bottom: 10px;
-  }
-
-  &__title {
-    margin-top: 0;
-    margin-bottom: 0;
-
-    color: $rubic-base-11;
-    font-weight: 300;
-    font-size: 24px;
-    line-height: 29px;
-
-    @include b($mobile-md) {
-      display: none;
-    }
+    padding: 0 var(--tui-padding-l);
   }
 
   &__header {
     margin-right: 40px;
   }
 
-  &__header,
-  &__body {
-    margin-bottom: 30px;
-
-    @include hide-unused-ui {
-      margin-bottom: 5px;
-    }
-  }
-
   &__footer {
-    font-size: 15px;
-    text-align: center;
+    display: inline-block !important;
   }
 
   &__body {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding: 10px 37px 0;
+    flex-wrap: wrap;
+    gap: var(--tui-padding-l);
   }
 
   &__provider-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 25px;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    white-space: nowrap;
 
     img {
       width: 100%;
     }
   }
 
-  &__link {
-    color: var(--primary-color);
-  }
+  &__button {
+    flex: 1;
 
-  &__provider-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 50px;
-    padding: 10px 20px;
-
-    font-size: 18px;
-
-    background: rgba(white, 0.1);
-    border-radius: 10px;
-    cursor: pointer;
+    text-decoration: none;
 
     transition: 0.2s ease-in-out;
 
-    &[disabled] {
-      cursor: not-allowed;
-      opacity: 0.5;
+    &:hover {
+      scale: 1.05;
     }
 
-    &:not(:last-child) {
-      margin-bottom: 15px;
-    }
+    ::ng-deep .t-content {
+      gap: var(--tui-padding-s);
 
-    &:not([disabled]):hover {
-      transform: scale(1.03);
+      white-space: nowrap;
     }
+  }
+
+  ::ng-deep .window-container {
+    padding: 0;
+  }
+
+  &__link {
+    color: var(--tui-primary);
   }
 }

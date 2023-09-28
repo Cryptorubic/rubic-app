@@ -28,6 +28,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { firstValueFrom, from, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -55,12 +56,11 @@ export class WalletsModalComponent implements OnInit {
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
-    return (
-      this.isMobile &&
-      isChromiumProviders.filter(
-        provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-      )
-    );
+    return this.isMobile
+      ? isChromiumProviders.filter(
+          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+        )
+      : isChromiumProviders.filter(provider => !provider.mobileOnly);
   }
 
   public get isMobile(): boolean {
@@ -194,4 +194,6 @@ export class WalletsModalComponent implements OnInit {
     this.headerStore.setWalletsLoadingStatus(false);
     this.context.completeWith();
   }
+
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

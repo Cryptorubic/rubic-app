@@ -9,6 +9,7 @@
   <h5 class="transaction-details__label">Transaction details</h5>
 
   <app-transaction-details-element
+    *ngIf="state.details?.priceImpact"
     [title]="text.priceImpact.label"
     [description]="text.priceImpact.description"
   >
@@ -16,6 +17,7 @@
   </app-transaction-details-element>
 
   <app-transaction-details-element
+    *ngIf="state.details?.slippage"
     [title]="text.slippage.label"
     [description]="text.slippage.description"
   >
@@ -33,6 +35,7 @@
   </app-transaction-details-element>
 
   <app-transaction-details-element
+    *ngIf="state.wallet && state.trade?.to"
     [title]="text.receiver.label"
     [description]="text.receiver.description"
   >

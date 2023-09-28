@@ -3,7 +3,7 @@ import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provi
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 
-export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
+const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',
     image: `${imageBasePath}acryptos.png`,
@@ -548,3 +548,10 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     color: '#2A54F3'
   }
 };
+
+export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = Object.fromEntries(
+  Object.entries(onChainTradeProviders).map(([key, value]: [OnChainTradeType, ProviderInfo]) => [
+    key,
+    { ...value, averageTime: 1 }
+  ])
+) as Record<OnChainTradeType, ProviderInfo>;

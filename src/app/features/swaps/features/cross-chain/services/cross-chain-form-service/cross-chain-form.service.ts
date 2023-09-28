@@ -331,14 +331,14 @@ export class CrossChainFormService {
                 fromAmount
               );
               return crossChainTrade$.pipe(
-                tap(({ total, calculated, lastCalculatedTrade }) => {
+                tap(({ total, calculated }) => {
                   const calculationEnded = calculated === total;
                   if (calculationEnded) {
                     this.isCalculating = false;
                     this.refreshService.setStopped();
                   }
 
-                  this.checkLastCalculatedTrade(lastCalculatedTrade, calculationEnded);
+                  // this.checkLastCalculatedTrade(wrappedTrade, calculationEnded);
                 }),
                 catchError((error: RubicSdkError) => {
                   this.tradeStatus = TRADE_STATUS.DISABLED;
@@ -994,17 +994,16 @@ export class CrossChainFormService {
         to_token: this.selectedTrade.trade?.to?.address,
         to_network: TO_BACKEND_BLOCKCHAINS?.[this.selectedTrade.trade?.to?.blockchain],
         providers_statistics: providers.map(providerTrade => {
-          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          const { calculationTime, wrappedTrade } = providerTrade;
           return {
-            provider_title: lastCalculatedTrade?.tradeType,
+            provider_title: wrappedTrade?.tradeType,
             calculation_time_in_seconds: String(calculationTime / 1000),
-            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
-            status: lastCalculatedTrade?.trade ? 'success' : 'error',
-            has_swap_in_source_network:
-              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
-            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
-            ...(lastCalculatedTrade?.error && {
-              additional_info: lastCalculatedTrade.error.message
+            to_amount: wrappedTrade?.trade?.to.stringWeiAmount,
+            status: wrappedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network: wrappedTrade?.trade && 'onChainTrade' in wrappedTrade.trade,
+            proxy_used: wrappedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(wrappedTrade?.error && {
+              additional_info: wrappedTrade.error.message
             })
           };
         })
@@ -1028,17 +1027,16 @@ export class CrossChainFormService {
         to_token: toToken.address,
         to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
         providers_statistics: providers.map(providerTrade => {
-          const { calculationTime, lastCalculatedTrade } = providerTrade;
+          const { calculationTime, wrappedTrade } = providerTrade;
           return {
-            provider_title: lastCalculatedTrade?.tradeType,
+            provider_title: wrappedTrade?.tradeType,
             calculation_time_in_seconds: String(calculationTime / 1000),
-            to_amount: lastCalculatedTrade?.trade?.to.stringWeiAmount,
-            status: lastCalculatedTrade?.trade ? 'success' : 'error',
-            has_swap_in_source_network:
-              lastCalculatedTrade?.trade && 'onChainTrade' in lastCalculatedTrade.trade,
-            proxy_used: lastCalculatedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
-            ...(lastCalculatedTrade?.error && {
-              additional_info: lastCalculatedTrade.error.message
+            to_amount: wrappedTrade?.trade?.to.stringWeiAmount,
+            status: wrappedTrade?.trade ? 'success' : 'error',
+            has_swap_in_source_network: wrappedTrade?.trade && 'onChainTrade' in wrappedTrade.trade,
+            proxy_used: wrappedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(wrappedTrade?.error && {
+              additional_info: wrappedTrade.error.message
             })
           };
         })
