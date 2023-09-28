@@ -2,7 +2,12 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
 import { debounceTime, filter, map, startWith } from 'rxjs/operators';
-import { compareCrossChainTrades, OnChainTrade, WrappedCrossChainTradeOrNull } from 'rubic-sdk';
+import {
+  BlockchainsInfo,
+  compareCrossChainTrades,
+  OnChainTrade,
+  WrappedCrossChainTradeOrNull
+} from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
@@ -51,6 +56,29 @@ export class SwapsStateService {
     combineLatestWith(this.walletConnector.networkChange$),
     map(([fromToken, network]) => fromToken?.blockchain !== network),
     startWith(false)
+  );
+
+  public readonly notEnoughBalance$ = this.swapsFormService.fromToken$.pipe(
+    filter(Boolean),
+    combineLatestWith(
+      this.swapsFormService.fromAmount$,
+      this.walletConnector.networkChange$,
+      this.walletConnector.addressChange$
+    ),
+    map(([token, amount, network, userAddress]) => {
+      try {
+        const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);
+        const currentChainType = BlockchainsInfo.getChainType(network);
+
+        if (!userAddress || !currentChainType || tokenChainType !== currentChainType || !token) {
+          return false;
+        }
+
+        return token.amount?.isFinite() ? token.amount.lt(amount) : true;
+      } catch {
+        return false;
+      }
+    })
   );
 
   public set currentTrade(state: SelectedTrade) {
@@ -231,4 +259,8 @@ export class SwapsStateService {
   public setCalculationProgress(total: number, current: number): void {
     this._calculationProgress$.next({ total, current });
   }
+  //
+  // public completeCalculaitng(): void {
+  //   const trade = this.currentTrade;
+  // }
 }

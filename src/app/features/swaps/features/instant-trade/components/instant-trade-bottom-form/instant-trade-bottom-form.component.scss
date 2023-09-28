@@ -1,44 +1,9 @@
 @use 'src/scss/core' as *;
 
-:host {
-  @include iframe-horizontal {
-    display: flex;
-  }
-
-  @include iframe-vertical {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
-}
-
 $green: rgb(74, 169, 86);
 
 .instant-trade-bottom-form {
   padding: 30px 0 20px;
-
-  @include iframe-horizontal {
-    position: relative;
-
-    width: $iframe-horizontal-input-width;
-    height: 50px;
-    padding: 0 7px 0 16px;
-
-    background: var(--primary-background);
-
-    border-radius: 10px;
-  }
-
-  @include iframe-horizontal-light {
-    background-color: var(--iframe-primary-background);
-  }
-
-  @include iframe-vertical {
-    width: 100%;
-    padding: 0 !important;
-
-    background-color: transparent;
-  }
 
   &__hint_error {
     display: flex;
@@ -61,16 +26,6 @@ $green: rgb(74, 169, 86);
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-
-    @include iframe-horizontal {
-      order: 2;
-      margin-left: auto;
-    }
-
-    @include iframe-vertical {
-      width: 100%;
-      margin-bottom: 6px;
-    }
   }
 
   &__provider-badge {
@@ -96,31 +51,7 @@ $green: rgb(74, 169, 86);
     }
   }
 
-  &__body {
-    @include iframe-vertical {
-      position: relative;
-    }
-
-    @include iframe-horizontal {
-      height: 100%;
-    }
-  }
-
   &__body-top {
-
-    @include iframe {
-      grid-gap: 0;
-    }
-
-    @include iframe-horizontal {
-      align-items: center;
-      width: 100%;
-
-      height: 100%;
-
-      min-height: unset;
-    }
-
     @include b($mobile-md) {
       padding: 36px 20px 20px;
 
@@ -133,16 +64,6 @@ $green: rgb(74, 169, 86);
     @include b($mobile-sm) {
       // flex-direction: column;
       align-items: flex-start;
-    }
-
-    @include iframe-vertical {
-      flex-direction: column;
-      padding: 0;
-      overflow: visible;
-
-      background-color: var(--form-background);
-      border: 0;
-      border-radius: 0;
     }
 
     &-wrapper {
@@ -164,39 +85,6 @@ $green: rgb(74, 169, 86);
 
   &__amount {
     text-align: right;
-
-    @include iframe-horizontal {
-      order: 1;
-    }
-
-    @include iframe-vertical {
-      position: relative;
-
-      display: flex;
-      width: 100%;
-      margin-bottom: 19px;
-
-      app-iframe-asset-type-indicator {
-        margin-right: 15px;
-      }
-    }
-
-    &_skeleton-container {
-      @include iframe-vertical {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        height: 50px;
-        padding-left: 16px;
-
-        background-color: var(--primary-background);
-        border-radius: 10px;
-      }
-
-      @include iframe-vertical-light {
-        background-color: var(--iframe-primary-background);
-      }
-    }
 
     &_skeleton {
       width: 200px;
@@ -231,33 +119,6 @@ $green: rgb(74, 169, 86);
 
     transition: opacity ease-in-out 0.3s;
 
-    @include iframe-horizontal {
-      margin-bottom: 0;
-
-      font-size: 20px;
-    }
-
-    @include iframe-vertical {
-      flex: 1;
-      width: 100%;
-      max-width: unset;
-      height: 50px;
-      margin-bottom: 0;
-      padding-left: 16px;
-
-      font-size: 20px;
-      line-height: 50px;
-      text-align: left;
-
-      background-color: var(--primary-background);
-
-      border-radius: 10px;
-    }
-
-    @include iframe-vertical-light {
-      background-color: var(--iframe-primary-background);
-    }
-
     &_loading {
       opacity: 0.25;
     }
@@ -275,51 +136,9 @@ $green: rgb(74, 169, 86);
     display: block;
     margin-top: 6px;
     margin-left: 20px;
-
-    @include iframe {
-      margin-top: 0;
-      margin-left: 4px;
-    }
-
-    @include iframe-vertical {
-      margin: 0 0 0 5px;
-    }
-  }
-
-  &__iframe-info {
-    position: absolute;
-    bottom: -33px;
-    left: 0;
-
-    display: flex;
-    align-items: center;
-
-    @include iframe-vertical {
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    > :first-child {
-      margin-right: 15px;
-    }
-
-    > div {
-      @include iframe-card;
-      white-space: nowrap;
-    }
   }
 
   &__swap {
-    @include iframe-vertical {
-      padding: 0 !important;
-
-      app-swap-button-container {
-        width: 100%;
-
-        margin-top: 16px !important;
-      }
-    }
-
     @include b($mobile-md) {
       app-swap-button-container {
         margin-top: 0 !important;
@@ -330,25 +149,12 @@ $green: rgb(74, 169, 86);
       display: block;
 
       margin-top: 16px;
-
-      @include iframe-horizontal {
-        margin-top: 0;
-        margin-left: 12px;
-      }
     }
   }
 
   app-target-network-address {
     display: block;
     margin-top: 10px;
-
-    @include iframe-vertical {
-      margin-top: 15px;
-    }
-
-    @include iframe-horizontal {
-      margin-top: 20px;
-    }
   }
 }
 
@@ -372,10 +178,6 @@ $green: rgb(74, 169, 86);
       position: absolute;
       right: 0;
       bottom: 0;
-
-      @include iframe-vertical {
-        position: static;
-      }
     }
 
     &__token-amount {

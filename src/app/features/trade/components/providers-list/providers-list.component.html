@@ -27,7 +27,8 @@
       "
     >
       <app-provider-element
-        *ngFor="let state of states"
+        *ngFor="let state of states; index as i"
+        [isBest]="i === 0"
         [tradeState]="state"
         [toToken]="toToken"
         [selectedTradeType]="selectedTradeType"

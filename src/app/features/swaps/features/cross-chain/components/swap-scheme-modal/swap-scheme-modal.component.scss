@@ -12,10 +12,6 @@
 
   text-align: center;
 
-  @include iframe-horizontal {
-    margin-bottom: 30px;
-  }
-
   @include hide-unused-ui {
     margin-bottom: 20px;
   }
@@ -29,10 +25,6 @@
 
     @include hide-unused-ui {
       margin: 20px;
-    }
-
-    @include iframe {
-      margin: 20px 20px 40px;
     }
   }
 
@@ -58,10 +50,6 @@
   }
 
   @include hide-unused-ui {
-    display: none;
-  }
-
-  @include iframe {
     display: none;
   }
 
@@ -109,10 +97,6 @@
 
   @include b($mobile-md) {
     max-width: 350px;
-  }
-
-  @include iframe-horizontal {
-    display: none;
   }
 
   &__isSwapAndEarnSwap {
@@ -361,10 +345,6 @@
   margin: 0 auto 1.5em;
 
   text-align: center;
-
-  @include iframe-horizontal {
-    margin-bottom: 10px;
-  }
 
   @include dark {
     color: #8e8d91;

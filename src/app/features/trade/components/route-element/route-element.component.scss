@@ -15,10 +15,20 @@
 
   &__provider-rate {
     display: flex;
-    gap: 10px;
+    gap: var(--tui-padding-xs);
 
     color: var(--tui-text-03);
     font-size: 12px;
+
+    > div {
+      display: flex;
+      gap: var(--tui-padding-xs);
+      align-items: center;
+    }
+
+    img {
+      height: 10px;
+    }
   }
 
   &__provider-name {

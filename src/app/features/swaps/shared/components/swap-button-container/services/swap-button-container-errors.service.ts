@@ -20,7 +20,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
@@ -88,7 +87,6 @@ export class SwapButtonContainerErrorsService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly iframeService: IframeService,
     // private readonly settingsService: SettingsService,
     private readonly ngZone: NgZone
   ) {
@@ -310,15 +308,9 @@ export class SwapButtonContainerErrorsService {
       // @TODO Solana. Remove after blockchain stabilization.
       case err[BUTTON_ERROR_TYPE.SOLANA_UNAVAILABLE]: {
         type = BUTTON_ERROR_TYPE.SOLANA_UNAVAILABLE;
-        if (this.iframeService.iframeAppearance === 'horizontal') {
-          translateParams = {
-            key: 'Unavailable'
-          };
-        } else {
-          translateParams = {
-            key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
-          };
-        }
+        translateParams = {
+          key: 'Solana is temporarily unavailable for Multi-Chain swaps.'
+        };
         break;
       }
       case err[BUTTON_ERROR_TYPE.WRONG_WALLET]: {

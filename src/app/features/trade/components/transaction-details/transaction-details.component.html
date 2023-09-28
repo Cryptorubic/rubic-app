@@ -7,32 +7,44 @@
   } as state"
 >
   <h5 class="transaction-details__label">Transaction details</h5>
-  <div class="transaction-details__row">
-    <div class="transaction-details__left">Price impact</div>
-    <div class="transaction-details__right">{{ state.details.priceImpact }} %</div>
-  </div>
 
-  <div class="transaction-details__row">
-    <div class="transaction-details__left">Slippage</div>
-    <div class="transaction-details__right">{{ state.details.slippage }} %</div>
-  </div>
+  <app-transaction-details-element
+    *ngIf="state.details?.priceImpact"
+    [title]="text.priceImpact.label"
+    [description]="text.priceImpact.description"
+  >
+    {{ state.details.priceImpact }} %
+  </app-transaction-details-element>
 
-  <div class="transaction-details__row" *ngIf="state.trade?.toTokenAmountMin as minAmount">
-    <div class="transaction-details__left">Minimum received</div>
-    <div class="transaction-details__right">
-      <ng-container *ngIf="minAmount?.tokenAmount; else plain">{{
-        minAmount.tokenAmount.toFixed()
-      }}</ng-container>
-      <ng-template #plain>{{ minAmount.toFixed() }}</ng-template>
-    </div>
-  </div>
+  <app-transaction-details-element
+    *ngIf="state.details?.slippage"
+    [title]="text.slippage.label"
+    [description]="text.slippage.description"
+  >
+    {{ state.details.slippage }} %
+  </app-transaction-details-element>
 
-  <div class="transaction-details__row">
-    <div class="transaction-details__left">Receiver address</div>
-    <div class="transaction-details__right">
+  <app-transaction-details-element
+    *ngIf="state.trade?.toTokenAmountMin as minAmount"
+    [title]="text.minReceived.label"
+    [description]="text.minReceived.description"
+  >
+    <ng-container *ngIf="minAmount?.tokenAmount || minAmount as amount">{{
+      amount | bigNumberFormat | shortenAmount : 10 : 8
+    }}</ng-container>
+  </app-transaction-details-element>
+
+  <app-transaction-details-element
+    *ngIf="state.wallet && state.trade?.to"
+    [title]="text.receiver.label"
+    [description]="text.receiver.description"
+  >
+    <div class="receiver-container">
       {{ state.wallet | shortAddress : 5 : 5 }}
 
-      <a [safetyLink]="state.wallet">
+      <a
+        [safetyLink]="state.wallet | scannerLink : state.trade.to.blockchain : ADDRESS_TYPE.WALLET"
+      >
         <img
           class="image"
           src="assets/images/icons/scanner.svg"
@@ -44,5 +56,5 @@
         <div class="image" inlineSVG="assets/images/swaps/swaps-info/copy-icon.svg"></div>
       </button>
     </div>
-  </div>
+  </app-transaction-details-element>
 </div>

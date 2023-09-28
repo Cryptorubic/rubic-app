@@ -1,7 +1,5 @@
 <div class="details-element">
   <div class="details-element__text">
-    <span class="details-element__text-title">{{ title }}</span>
-
     <img
       *ngIf="description"
       class="details-element__text-icon"
@@ -9,6 +7,8 @@
       [alt]="title"
       [tuiHint]="description"
     />
+
+    <span class="details-element__text-title">{{ title }}</span>
   </div>
 
   <div class="details-element__value">

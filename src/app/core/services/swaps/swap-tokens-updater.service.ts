@@ -71,7 +71,7 @@ export class SwapTokensUpdaterService {
    * Calls functions to update balance, if needed.
    */
   private updateTokenBalance(fromToken: TokenAmount): void {
-    if (!fromToken.amount.isFinite()) {
+    if (fromToken?.amount && !fromToken.amount.isFinite()) {
       this.tokensService.getAndUpdateTokenBalance(fromToken);
     }
   }

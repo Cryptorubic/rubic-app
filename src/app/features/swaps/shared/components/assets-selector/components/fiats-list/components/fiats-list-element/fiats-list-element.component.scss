@@ -8,10 +8,6 @@
 
   color: var(--form-bright-text-color);
 
-  @include iframe {
-    height: unset;
-  }
-
   &__name-container {
     max-width: 150px;
     margin-right: auto;
@@ -25,22 +21,12 @@
     height: 38px;
     margin-right: 20px;
 
-    @include iframe-vertical {
-      width: 24px;
-      height: 24px;
-    }
-
     img {
       width: 100%;
       max-width: 38px;
       max-height: 38px;
 
       border-radius: 25%;
-
-      @include iframe-vertical {
-        max-width: 24px;
-        max-height: 24px;
-      }
     }
   }
 }
@@ -52,20 +38,10 @@
     width: fit-content;
 
     line-height: 24px;
-
-    @include iframe {
-      font-size: 14px;
-      line-height: 16px;
-    }
   }
 
   &__name {
     font-size: 13px;
     line-height: 18px;
-
-    @include iframe {
-      font-size: 12px;
-      line-height: 14px;
-    }
   }
 }

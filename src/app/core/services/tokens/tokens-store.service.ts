@@ -23,7 +23,6 @@ import { StoreService } from '@core/services/store/store.service';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -82,8 +81,7 @@ export class TokensStoreService {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly storeService: StoreService,
-    private readonly swapFormService: SwapFormService,
-    private readonly iframeService: IframeService
+    private readonly swapFormService: SwapFormService
   ) {
     this.setupStorageTokens();
 
@@ -91,18 +89,14 @@ export class TokensStoreService {
   }
 
   public setupStorageTokens(): void {
-    this.iframeService.isIframe$.pipe(first(v => v !== undefined)).subscribe(isIframe => {
-      if (!isIframe) {
-        this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
-        if (this.storageTokens.length) {
-          const tokens = this.getDefaultTokenAmounts(
-            List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
-            false
-          );
-          this._tokens$.next(tokens);
-        }
-      }
-    });
+    this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
+    if (this.storageTokens.length) {
+      const tokens = this.getDefaultTokenAmounts(
+        List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
+        false
+      );
+      this._tokens$.next(tokens);
+    }
   }
 
   private setupSubscriptions(): void {

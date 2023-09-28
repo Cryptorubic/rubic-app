@@ -1,22 +1,21 @@
 .details-element {
   display: flex;
-  gap: 15px;
+  gap: var(--tui-padding-s);
   align-items: center;
   overflow: hidden;
 
-  font-size: 16px;
-
   &__text {
     display: flex;
+    align-items: center;
 
     &-title {
       white-space: nowrap;
     }
 
     &-icon {
-      width: 18px;
-      height: 18px;
-      margin-left: 10px;
+      width: 1rem;
+      height: 1rem;
+      margin-right: var(--tui-padding-m);
     }
   }
 

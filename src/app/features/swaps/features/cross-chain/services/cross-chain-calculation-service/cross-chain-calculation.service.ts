@@ -29,7 +29,6 @@ import { Injectable } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { CrossChainRoute } from '@features/swaps/features/cross-chain/models/cross-chain-route';
 import { firstValueFrom, forkJoin, Observable, of, Subscription } from 'rxjs';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
@@ -72,7 +71,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly sdkService: SdkService,
     // private readonly settingsService: SettingsService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly iframeService: IframeService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly headerStore: HeaderStore,
     private readonly dialogService: ModalService,
@@ -128,12 +126,12 @@ export class CrossChainCalculationService extends TradeCalculationService {
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
 
-    const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
+    const queryDisabledTradeTypes = this.queryParamsService.disabledProviders;
     const disabledProviders = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
         ...(apiDisabledTradeTypes || []),
-        ...(iframeDisabledTradeTypes || [])
+        ...(queryDisabledTradeTypes || [])
       ])
     );
 
@@ -250,7 +248,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
 
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
     this.checkBlockchainsAvailable(wrappedTrade);
-    this.checkDeviceAndShowNotification();
 
     const blockchain = wrappedTrade.trade.from.blockchain;
 
@@ -289,7 +286,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(calculatedTrade);
     this.checkBlockchainsAvailable(calculatedTrade);
-    this.checkDeviceAndShowNotification();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(calculatedTrade.trade.from),
@@ -377,12 +373,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     }
     if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
-    }
-  }
-
-  private checkDeviceAndShowNotification(): void {
-    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
-      this.notificationsService.showOpenMobileWallet();
     }
   }
 

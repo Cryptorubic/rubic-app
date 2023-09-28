@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js';
 import { InstantTradesApiService } from '@core/services/backend/instant-trades-api/instant-trades-api.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
   BLOCKCHAIN_NAME,
@@ -81,7 +80,6 @@ export class InstantTradeService extends TradeCalculationService {
 
   constructor(
     private readonly instantTradesApiService: InstantTradesApiService,
-    private readonly iframeService: IframeService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapFormService: SwapFormService,
     // private readonly settingsService: SettingsService,
@@ -112,7 +110,6 @@ export class InstantTradeService extends TradeCalculationService {
     // if (!this.platformConfigurationService.isAvailableBlockchain(trade.to.blockchain)) {
     //   throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.to.blockchain]);
     // }
-    this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
@@ -227,7 +224,6 @@ export class InstantTradeService extends TradeCalculationService {
     confirmCallback?: () => void
   ): Promise<void> {
     const { fromBlockchain } = this.inputValue;
-    this.checkDeviceAndShowNotification();
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
@@ -389,12 +385,6 @@ export class InstantTradeService extends TradeCalculationService {
       new BigNumber(0),
       price
     );
-  }
-
-  private checkDeviceAndShowNotification(): void {
-    if (this.iframeService.isIframe && this.iframeService.device === 'mobile') {
-      this.notificationsService.showOpenMobileWallet();
-    }
   }
 
   public saveNotWhitelistedProvider(

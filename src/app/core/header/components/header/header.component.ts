@@ -17,7 +17,6 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -90,7 +89,6 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
     private readonly errorService: ErrorsService,
@@ -130,12 +128,7 @@ export class HeaderComponent implements AfterViewInit {
    * Set notification position based on window scroll and width.
    */
   private setNotificationPosition(): void {
-    const offset = 90;
-    const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
-    this.document.documentElement.style.setProperty(
-      '--scroll-size',
-      this.iframeService.iframeAppearance === 'horizontal' ? '0' : pixelOffset
-    );
+    this.document.documentElement.style.setProperty('--scroll-size', '0');
   }
 
   /**

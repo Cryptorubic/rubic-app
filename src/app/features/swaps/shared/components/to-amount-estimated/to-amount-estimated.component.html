@@ -1,10 +1,5 @@
 <div class="bottom-amount" *ngLet="isFormFilled$ | async as isFormFilled">
   <div class="bottom-amount__blockchain-and-value" *ngLet="formData$ | async as formData">
-    <app-iframe-asset-type-indicator
-      *onlyFrame="'vertical'"
-      [assetType]="formData.toBlockchain"
-    ></app-iframe-asset-type-indicator>
-
     <div
       class="bottom-amount__output"
       [ngClass]="{
@@ -24,13 +19,11 @@
                 : 'toClosestValue'
                 : { minRound: 3, maxRound: 5, decimals: formData.toToken?.decimals }
           }}
-          <app-tokens-rate *noFrame></app-tokens-rate>
+          <app-tokens-rate></app-tokens-rate>
         </ng-container>
 
         <ng-container *ngIf="errorText">
-          <ng-container *noFrame>
-            {{ 'errors.tradingIsNotAvailable' | translate }}
-          </ng-container>
+          {{ 'errors.tradingIsNotAvailable' | translate }}
 
           <div
             tuiHintAppearance="error"
@@ -42,6 +35,4 @@
       </ng-container>
     </div>
   </div>
-
-  <app-tokens-rate *onlyFrame></app-tokens-rate>
 </div>

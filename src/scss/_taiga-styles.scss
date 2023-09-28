@@ -1,9 +1,11 @@
 @use 'src/scss/core' as *;
 
+// Don't show empty blocks
 .t-empty {
   display: none !important;
 }
 
+// Remove border for all buttons except of ones with outline appearance
 [tuiWrapper] {
   &:not([data-appearance='outline']) {
     &::after {
@@ -12,360 +14,35 @@
   }
 }
 
+// Remove shadow for inputs
 [tuiWrapper][data-appearance='textfield'] {
   box-shadow: none;
 }
 
+// Common padding for all dialogs
+.t-dialog tui-dialog > .t-content {
+  padding: var(--tui-padding-l);
+}
 
-//html.iframe-horizontal {
-//  tui-dialog {
-//    width: 100% !important;
-//    height: 100% !important;
-//
-//    border: 0 !important;
-//  }
-//}
-//
-//body.hide-unused-ui {
-//  tui-dialog {
-//    &[data-size='l'] {
-//      > .t-content {
-//        border-radius: 20px;
-//      }
-//    }
-//  }
-//}
-//
-//tui-dropdown {
-//  --tui-elevation-01: rgba(255, 255, 255, 0.03);
-//  --tui-radius-3: 19px;
-//  --tui-base-03: rgba(255, 255, 255, 0.1);
-//  border: 1px solid var(--transparent-line) !important;
-//  box-shadow: none !important;
-//  backdrop-filter: blur(50px);
-//}
-//
-//body.hide-unused-ui {
-//  tui-dialog {
-//    &[data-size='l'] {
-//      > .t-content {
-//        border-radius: 20px;
-//      }
-//    }
-//  }
-//
-//}
-//
-//tui-hint {
-//  &[data-appearance=onDark] {
-//    font-size: 16px !important;
-//
-//    background: var(--tui-base-01) !important;
-//    border: 1px solid var(--tui-base-03) !important;
-//
-//    &::before {
-//      display: none;
-//    }
-//  }
-//}
-//
-//tui-dialog {
-//  overflow: hidden;
-//
-//  @include b($mobile-sm-plus) {
-//    .t-header {
-//      flex: auto !important;
-//      overflow: auto !important;
-//    }
-//  }
-//
-//  > .t-content {
-//    background-color: var(--form-background-transparent) !important;
-//    border: 1px solid var(--transparent-line);
-//  }
-//
-//  &::after {
-//    box-shadow: unset !important;
-//  }
-//
-//  &[data-size='page'] {
-//    > .t-content {
-//      height: 100%;
-//      padding: 2rem 1.5rem !important;
-//    }
-//  }
-//
-//  &[data-size='l'] {
-//    width: 47.85em !important;
-//    margin-bottom: auto !important;
-//
-//    border: 7px solid transparent !important;
-//
-//    > .t-content {
-//      height: 100%;
-//      padding: 1.5em 1.5em 0 !important;
-//
-//      @include b($mobile-sm-middle) {
-//        padding: 0 !important;
-//      }
-//
-//      > section {
-//        height: 100%;
-//      }
-//    }
-//  }
-//
-//  &[data-size='xl'] {
-//    width: 100% !important;
-//    max-width: 910px !important;
-//
-//    > .t-content {
-//      padding: 32px !important;
-//    }
-//  }
-//
-//  &[data-size='m'] {
-//    margin-bottom: auto !important;
-//
-//    > .t-content {
-//      height: 100%;
-//      padding: 1.5em 1.5em 0 !important;
-//
-//      > section {
-//        height: 100%;
-//      }
-//    }
-//  }
-//
-//  &[data-size='s'] {
-//    .t-content {
-//      .heading {
-//        margin-right: 40px;
-//
-//        font-size: 21px;
-//      }
-//    }
-//  }
-//
-//  .t-wrapper {
-//    z-index: 1;
-//  }
-//
-//  .t-header {
-//    background: var(--tui-base-01);
-//  }
-//
-//  .t-close {
-//    position: absolute !important;
-//    top: 18px !important;
-//    right: 18px !important;
-//
-//    color: #bfbfbf !important;
-//
-//    background: transparent !important;
-//    transform: scale(1.2);
-//
-//    &:hover {
-//      transform: scale(1.4);
-//    }
-//  }
-//}
-//
-//::ng-deep tui-dialog {
-//  @include iframe-vertical {
-//    .t-close {
-//      top: 5px !important;
-//      right: 5px !important;
-//    }
-//  }
-//}
-//
-//tui-dialog-host {
-//  overflow-y: auto;
-//
-//  > div {
-//    backdrop-filter: blur(12px) !important;
-//  }
-//
-//  .t-overlay {
-//    overflow: inherit !important;
-//
-//    background: rgb(0 0 0 / 0%) !important;
-//
-//    &-it-confetti {
-//      background-image: url('/assets/images/swap-and-earn/it-confetti.png') !important;
-//    }
-//
-//    &-ccr-confetti {
-//      background-image: url('/assets/images/swap-and-earn/ccr-confetti.png') !important;
-//      background-repeat: no-repeat !important;
-//      background-position: center !important;
-//      background-size: cover !important;
-//    }
-//  }
-//
-//  .dialog {
-//    overflow: inherit !important;
-//  }
-//}
-//
-//tui-notification {
-//  .t-close {
-//    top: 10px !important;
-//  }
-//}
-//
-//tui-alert {
-//  position: relative;
-//  top: var(--scroll-size);
-//
-//  transition: 0.2s ease-in-out;
-//}
-//
-//@include b($mobile-md) {
-//  tui-dialog {
-//    &[data-size='l'] {
-//      min-width: calc(100vw + 14px) !important;
-//      height: 74%;
-//      margin-bottom: -7px !important;
-//      margin-left: -7px !important;
-//
-//      border-radius: 16px 16px 0 0;
-//
-//      > .t-content {
-//        border-radius: 20px 20px 0 0 !important;
-//      }
-//    }
-//  }
-//
-//  tui-hint {
-//    max-width: 160px !important;
-//  }
-//
-//  .t-text {
-//    font-size: $rubic-font-size-main;
-//  }
-//
-//  tui-dialog-host {
-//    overflow-y: auto;
-//
-//    > div {
-//      backdrop-filter: unset;
-//    }
-//
-//    .t-overlay {
-//      background-color: rgba(0, 0, 0, 0.4) !important;
-//    }
-//  }
-//}
-//
-//::ng-deep tui-dialog .t-content {
-//  @include iframe {
-//    padding: 0 !important;
-//  }
-//}
-//
-//::ng-deep tui-notifications-host {
-//  @include iframe {
-//    margin-top: 0 !important;
-//
-//    > div.t-wrapper {
-//      padding-top: 15px;
-//    }
-//  }
-//}
-//
-//::ng-deep tui-input-number input {
-//  border: none !important;
-//}
-//
-//tui-value-decoration {
-//  position: absolute;
-//  top: 17px;
-//  right: 11px;
-//}
-//
-//html.iframe-horizontal tui-dialog > div.t-content {
-//  padding: 0.5rem 2rem !important;
-//}
-//
-//html.iframe-horizontal tui-dialog {
-//  &[data-size='s'] {
-//    width: 31rem;
-//
-//    border: 0 !important;
-//  }
-//}
-//
-//html.iframe-vertical tui-dialog > div.t-content {
-//  height: 100%;
-//  padding: 0 !important;
-//
-//  border-radius: 20px;
-//}
-//
-//html.iframe-vertical tui-dialog > div.t-content > h2 {
-//  padding: 2rem 0.5rem 0 1rem;
-//}
-//
-//html.iframe-vertical tui-hint {
-//  max-width: 18rem !important;
-//}
-//
-//html.iframe-horizontal tui-hint {
-//  max-width: 36rem !important;
-//}
-//
-//
-//.t-wrapper[data-appearance='textfield'] {
-//  --tui-base-03: rgba(255, 255, 255, 0.1);
-//  background: transparent !important;
-//}
-//
-//tui-input div[data-appearance='textfield']::after {
-//  border: 1px solid var(--transparent-line);
-//}
-//
-//[tuiWrapper]._focused._focused::after {
-//  border: 2px solid var(--tui-primary);
-//}
-//
-//[tuiWrapper][data-appearance='textfield'] {
-//  background: transparent;
-//  box-shadow: none;
-//}
-//
-//.t-wrapper[data-appearance='secondary'] {
-//  &:hover,
-//  &:active {
-//    background-color: var(--tui-secondary-hover);
-//  }
-//}
-//
-//.t-wrapper[data-appearance='outline'] {
-//  color: var(--primary-color);
-//
-//  &::after {
-//    display: none;
-//  }
-//}
-//
-//:not(app-swap-button-container) {
-//  app-rubic-button .t-wrapper[data-appearance='secondary'] {
-//    border: 1px solid var(--transparent-line);
-//  }
-//}
-//
-//.light tui-toggle {
-//  .t-circle {
-//    border: 1px solid var(--transparent-line);
-//  }
-//
-//  .t-circle {
-//    background: var(--transparent-line);
-//  }
-//}
-//
-//.light [tuiWrapper][data-appearance='textfield'][data-appearance='textfield']::after {
-//  border: 1px solid var(--transparent-line);
-//}
+// Overlay options for dialogs
+.t-overlay_visible {
+  --tui-backdrop: blur(25px);
+  background: transparent !important;
+}
+
+
+// Close icons for dialogs
+tui-dialog-host .t-close {
+  background: var(--tui-secondary) !important;
+  opacity: 0.75;
+
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  svg {
+    filter: invert(1);
+  }
+}

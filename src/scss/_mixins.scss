@@ -32,65 +32,9 @@
   }
 }
 
-@mixin iframe-horizontal {
-  :host-context(html.iframe-horizontal) & {
-    @content;
-  }
-}
-
-@mixin iframe-vertical {
-  :host-context(html.iframe-vertical) & {
-    @content;
-  }
-}
-
-@mixin iframe {
-  :host-context(html.iframe) & {
-    @content;
-  }
-}
-
 @mixin hide-unused-ui {
   :host-context(body.hide-unused-ui) & {
     @content;
-  }
-}
-
-@mixin light-iframe {
-  :host-context(html.iframe:not(.dark)) & {
-    @content;
-  }
-}
-
-@mixin iframe-horizontal-light {
-  :host-context(html.iframe-horizontal:not(.dark)) & {
-    @content;
-  }
-}
-
-@mixin iframe-vertical-light {
-  :host-context(html.iframe-vertical:not(.dark)) & {
-    @content;
-  }
-}
-
-@mixin iframe-card {
-  :host-context(html.iframe) & {
-    display: block;
-    height: 27px;
-    padding: 5px 10px;
-
-    color: var(--tui-text-02);
-
-    font-size: 12px;
-    line-height: 17px;
-
-    background-color: var(--primary-background);
-    border-radius: 10px;
-  }
-
-  :host-context(html.iframe:not(.dark)) & {
-    background-color: var(--iframe-primary-background);
   }
 }
 
@@ -204,4 +148,33 @@
   background-position: center;
   background-size: cover;
   border-radius: 100%;
+}
+
+@mixin rubicText($type, $size) {
+  @if $type==accent {
+    font-weight: 700;
+    color: var(--tui-text-01);
+  }
+
+  @if $type==default {
+    font-weight: 400;
+    color: var(--tui-text-01);
+  }
+
+  @if $type==hidden {
+    font-weight: 400;
+    color: var(--tui-text-03);
+  }
+
+  @if $type==s {
+    font-size: var(--tui-font-text-s);
+  }
+
+  @if $type==m {
+    font-size: var(--tui-font-text-m);;
+  }
+
+  @if $type==l {
+    font-size: var(--tui-font-text-l);;
+  }
 }

@@ -1,16 +1,16 @@
 .settings {
   flex-wrap: wrap;
-  padding: 15px;
+  padding: var(--tui-padding-l);
 
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--tui-padding-s);
   }
 
   &__row {
     display: flex;
-    gap: 10px;
+    gap: var(--tui-padding-s);
     align-items: center;
     width: 100%;
   }

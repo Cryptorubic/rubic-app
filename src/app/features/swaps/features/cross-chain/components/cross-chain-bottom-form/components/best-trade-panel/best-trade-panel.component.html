@@ -39,14 +39,13 @@
 
       <ng-template #routeDesktop>
         <ng-container *ngIf="selectedTrade?.route as route">
-          <app-cross-chain-route *noFrame [route]="route"></app-cross-chain-route>
+          <app-cross-chain-route [route]="route"></app-cross-chain-route>
         </ng-container>
       </ng-template>
 
       <ng-template #routeMobile>
         <button [disabled]="!selectedTrade" (click)="openProvidersList(taggedTrades)">
           <app-cross-chain-best-route-mobile
-            *noFrame
             [trade]="selectedTrade"
           ></app-cross-chain-best-route-mobile>
         </button>

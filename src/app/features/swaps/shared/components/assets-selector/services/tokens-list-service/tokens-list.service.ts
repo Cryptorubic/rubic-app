@@ -5,7 +5,6 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { AssetsSelectorService } from '@features/swaps/shared/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { ListAnimationType } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/models/list-animation-type';
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
@@ -53,7 +52,6 @@ export class TokensListService {
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly iframeService: IframeService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnScroll();
@@ -90,8 +88,7 @@ export class TokensListService {
                 this.searchQueryService.query ||
                 this.listType === 'favorite' ||
                 !tokensNetworkState ||
-                tokensNetworkState.maxPage === tokensNetworkState.page ||
-                this.iframeService.isIframe
+                tokensNetworkState.maxPage === tokensNetworkState.page
               ) {
                 return false;
               }

@@ -7,20 +7,3 @@
     }
   }
 }
-
-app-rubic-button[error=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 14px;
-      line-height: 1;
-    }
-  }
-}
-
-app-rubic-button[error-min-max=true] {
-  @include iframe {
-    ::ng-deep button span {
-      font-size: 12px;
-    }
-  }
-}

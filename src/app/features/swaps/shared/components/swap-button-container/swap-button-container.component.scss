@@ -1,7 +1,2 @@
 @use 'src/scss/core' as *;
 
-:host {
-  @include iframe {
-    width: 180px;
-  }
-}

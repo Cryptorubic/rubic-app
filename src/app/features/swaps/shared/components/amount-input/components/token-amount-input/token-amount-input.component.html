@@ -19,7 +19,6 @@
     </div>
 
     <app-user-balance-container
-      *onlyFrame="'horizontal'"
       [token]="selectedToken"
       hide="balance"
       (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
@@ -48,7 +47,7 @@
       </label>
 
       <ng-container *ngIf="formType === 'from'">
-        <div class="token-amount-input-container__iframe-info-cards" *onlyFrame="'horizontal'">
+        <div class="token-amount-input-container__iframe-info-cards">
           <app-user-balance-container
             [token]="selectedToken"
             hide="maxButton"
@@ -61,7 +60,6 @@
   <ng-container *ngIf="selectedToken?.amount.gt(0)">
     <ng-container *ngIf="formType === 'from'">
       <app-user-balance-container
-        *noFrame
         [token]="selectedToken"
         (maxButtonClickEvent)="onUserBalanceMaxButtonClick()"
       ></app-user-balance-container>

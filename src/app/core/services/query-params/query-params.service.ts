@@ -3,10 +3,9 @@ import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, LIFI_BRIDGE_TYPES } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AdditionalTokens, QueryParams } from './models/query-params';
+import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -42,7 +41,6 @@ export class QueryParamsService {
 
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
-    delete urlTree.queryParams.iframe;
     return urlTree.toString();
   }
 
@@ -68,7 +66,6 @@ export class QueryParamsService {
     private readonly tokensNetworkService: TokensNetworkService,
     @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly iframeService: IframeService,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
     @Inject(WINDOW) private readonly window: Window
@@ -84,7 +81,7 @@ export class QueryParamsService {
     this.isDesktop = queryParams.isDesktop === 'true';
     this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
-    this.setIframeInfo(queryParams);
+    this.setHideSelectionStatus(queryParams);
 
     if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
       this.setEnabledProviders(queryParams.enabledProviders);
@@ -129,53 +126,8 @@ export class QueryParamsService {
     );
   }
 
-  private setIframeInfo(queryParams: QueryParams): void {
-    if (queryParams.hideUnusedUI) {
-      this.setLanguage(queryParams);
-      this.setHideSelectionStatus(queryParams);
-    }
-
-    if (!queryParams.hasOwnProperty('iframe')) {
-      this.iframeService.setIframeFalse();
-      return;
-    }
-
-    const { iframe } = queryParams;
-    if (iframe !== 'vertical' && iframe !== 'horizontal') {
-      this.iframeService.setIframeFalse();
-      return;
-    }
-
-    this.iframeService.setIframeInfo({
-      iframeAppearance: queryParams.iframe,
-      device: queryParams.device,
-      providerAddress: queryParams.feeTarget || queryParams.providerAddress,
-      tokenSearch: queryParams.tokenSearch === 'true',
-      rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
-    });
-
-    this.setBackgroundStatus(queryParams);
-    this.setHideSelectionStatus(queryParams);
-    this.setAdditionalIframeTokens(queryParams);
-    this.setThemeStatus(queryParams);
-    this.setLanguage(queryParams);
-  }
-
-  private setBackgroundStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const { background } = queryParams;
-    if (this.isBackgroundValid(background)) {
-      this.backgroundColor = background;
-      return;
-    }
-    this.document.body.classList.add('default-iframe-background');
-  }
-
   private setHideSelectionStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe && queryParams.hideUnusedUI !== 'true') {
+    if (queryParams.hideUnusedUI !== 'true') {
       return;
     }
 
@@ -186,42 +138,6 @@ export class QueryParamsService {
 
     if (tokensSelectionDisabled.includes(true)) {
       this._tokensSelectionDisabled$.next(tokensSelectionDisabled);
-    }
-  }
-
-  private setAdditionalIframeTokens(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const tokensFilterKeys: Readonly<Array<keyof QueryParams>> = [
-      'eth_tokens',
-      'bsc_tokens',
-      'polygon_tokens',
-      'harmony_tokens',
-      'avalanche_tokens',
-      'fantom_tokens',
-      'moonriver_tokens'
-    ] as const;
-    const tokensQueryParams = Object.fromEntries(
-      Object.entries(queryParams).filter(([key]) =>
-        tokensFilterKeys.includes(key as AdditionalTokens)
-      )
-    );
-
-    if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
-    }
-  }
-
-  private setThemeStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const { theme } = queryParams;
-    if (theme && (theme === 'dark' || theme === 'light')) {
-      this.themeService.setTheme(theme);
     }
   }
 

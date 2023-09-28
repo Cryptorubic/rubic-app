@@ -7,6 +7,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { EvmBlockchainName } from 'rubic-sdk';
 import { ModalService } from '@core/modals/services/modal.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Component({
   selector: 'app-action-button',
@@ -16,8 +17,12 @@ import { ModalService } from '@core/modals/services/modal.service';
 })
 export class ActionButtonComponent {
   public readonly buttonState$ = this.tradeState.tradeState$.pipe(
-    combineLatestWith(this.tradeState.wrongBlockchain$, this.walletConnector.addressChange$),
-    map(([currentTrade, wrongBlockchain, address]) => {
+    combineLatestWith(
+      this.tradeState.wrongBlockchain$,
+      this.tradeState.notEnoughBalance$,
+      this.walletConnector.addressChange$
+    ),
+    map(([currentTrade, wrongBlockchain, notEnoughBalance, address]) => {
       if (currentTrade.error) {
         return {
           type: 'error',
@@ -38,6 +43,13 @@ export class ActionButtonComponent {
           type: 'action',
           text: 'Switch Blockchain',
           action: this.switchChain.bind(this)
+        };
+      }
+      if (notEnoughBalance) {
+        return {
+          type: 'error',
+          text: 'Not enough balance',
+          action: () => {}
         };
       }
       if (currentTrade.status === TRADE_STATUS.READY_TO_APPROVE) {
@@ -77,7 +89,8 @@ export class ActionButtonComponent {
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly swapsFormService: SwapsFormService
   ) {}
 
   private approve(): void {
@@ -89,8 +102,8 @@ export class ActionButtonComponent {
   }
 
   private async switchChain(): Promise<void> {
-    const { trade } = this.tradeState.currentTrade;
-    await this.walletConnector.switchChain(trade.from.blockchain as EvmBlockchainName);
+    const blockchain = this.swapsFormService.inputValue.fromBlockchain;
+    await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
   }
 
   private connectWallet(): void {

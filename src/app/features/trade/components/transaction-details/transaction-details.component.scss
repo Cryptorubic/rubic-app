@@ -11,25 +11,24 @@
     font-size: 15px;
     text-align: center;
   }
-
-  &__left,
-  &__right {
-    display: flex;
-    gap: var(--tui-padding-xs);
-    align-items: center;
-  }
-
-  &__right {
-    justify-content: flex-end;
-  }
-
-  &__row {
-    display: flex;
-    justify-content: space-between;
-  }
 }
 
 .image {
   width: 13px;
   height: 13px;
+
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.receiver-container {
+  display: flex;
+  gap: var(--tui-padding-xs);
+  align-items: center;
+
+  a {
+    display: flex;
+  }
 }

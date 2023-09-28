@@ -47,6 +47,7 @@ html {
     overflow-x: hidden;
 
     background: var(--app-background);
+    font-size: 0.75rem;
 
     main,
     input,
@@ -83,15 +84,6 @@ button {
   border: none;
   cursor: pointer;
 
-}
-
-mainiframeSettingsFormcontent {
-  display: flex;
-  justify-content: center;
-
-  width: 100%;
-  max-width: 1440px;
-  padding: 0 20px 60px;
 }
 
 .noscroll {
@@ -175,10 +167,6 @@ a {
 //    }
 //  }
 //}
-
-body.default-iframe-background {
-  background: linear-gradient(45deg, var(--primary-color) 20%, white);
-}
 
 #loader {
   position: fixed;

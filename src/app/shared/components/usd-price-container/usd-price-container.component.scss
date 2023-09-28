@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 .usd-price-container {
-  @include iframe-card;
   display: flex;
   justify-content: flex-end;
 

@@ -46,35 +46,8 @@
     flex-wrap: wrap;
     gap: 10px;
 
-    @include iframe {
-      flex-direction: row;
-    }
-
-    @include iframe-vertical {
-      flex-wrap: nowrap;
-
-      margin-bottom: 20px;
-
-      ::ng-deep app-icon-button {
-        .image {
-
-          width: 30px;
-          height: 30px;
-          max-height: 30px;
-        }
-      }
-    }
-
-    @include iframe-horizontal {
-      flex-wrap: nowrap;
-    }
-
     li {
       margin: 0 5px;
-
-      @include iframe {
-        margin: 0 15px 0 0;
-      }
 
       &.disabled {
         cursor: not-allowed !important;
@@ -154,17 +127,6 @@
       align-items: center;
 
       padding-left: 0.5rem;
-
-      @include iframe-vertical {
-        padding-left: 0;
-      }
-
-      li:not(:last-child) {
-        @include iframe {
-          margin-right: 10px;
-          margin-bottom: unset;
-        }
-      }
     }
 
     &__blockchain-header {
@@ -173,10 +135,6 @@
       justify-content: space-between;
       margin-bottom: 1rem;
       padding: 0 1rem;
-
-      @include iframe-vertical {
-        padding: 0 1rem 0 0;
-      }
 
       &-label {
         font-weight: 400;
@@ -215,14 +173,6 @@
 
             .label-container {
               display: none;
-
-              @include iframe {
-                display: block;
-              }
-
-              @include iframe-vertical {
-                display: none;
-              }
             }
           }
         }

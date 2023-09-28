@@ -1,6 +1,5 @@
 <div class="network-container">
   <tui-input
-    *noFrame
     [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
     tuiTextfieldSize="l"
     [formControl]="address"
@@ -8,7 +7,7 @@
     [pseudoInvalid]="address.invalid"
     [tuiTextfieldCleaner]="!!address.value"
   >
-    <div *noFrame class="network-container__row">
+    <div class="network-container__row">
       <div
         class="network-container__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"

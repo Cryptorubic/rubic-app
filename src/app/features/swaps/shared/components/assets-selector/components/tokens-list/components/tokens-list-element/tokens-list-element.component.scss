@@ -2,7 +2,14 @@
 
 .token-card {
   display: flex;
-  gap: 10px;
+  gap: var(--tui-padding-m);
+  align-items: center;
+  padding: var(--tui-padding-xs) var(--tui-padding-s);
+
+  &:hover {
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+  }
 
   &__image-container {
     img {

@@ -17,7 +17,6 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { isOnramperRecentTrade } from '@shared/utils/recent-trades/is-onramper-recent-trade';
 import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
@@ -52,8 +51,7 @@ export class OnramperWebsocketService {
     private readonly onramperService: OnramperService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly swapFormService: SwapFormService,
-    private readonly onramperApiService: OnramperApiService,
-    private readonly iframeService: IframeService
+    private readonly onramperApiService: OnramperApiService
   ) {
     this.subscribeOnUserChange();
     this.subscribeOnForm();
@@ -61,10 +59,6 @@ export class OnramperWebsocketService {
   }
 
   private async checkTradeStatus(): Promise<void> {
-    if (this.iframeService.isIframe) {
-      return;
-    }
-
     const pendingTrades = this.recentTradesStoreService.currentUserRecentTrades.filter(
       trade => isOnramperRecentTrade(trade) && trade.calculatedStatusFrom === TX_STATUS.PENDING
     ) as OnramperRecentTrade[];
@@ -134,9 +128,7 @@ export class OnramperWebsocketService {
   private async handleSuccessfulTrade(txInfo: OnramperTransactionInfo): Promise<void> {
     const { out_amount: nativeAmount, additional_info } = txInfo;
     const { isDirect, id } = JSON.parse(additional_info) as { isDirect: boolean; id: string };
-    const recentTrade = !this.iframeService.isIframe
-      ? this.recentTradesStoreService.getSpecificOnramperTrade(id)
-      : this.currentRecentTrade;
+    const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(id);
 
     if (
       !recentTrade ||
@@ -153,9 +145,7 @@ export class OnramperWebsocketService {
       ...(isDirect && { calculatedStatusTo: TX_STATUS.SUCCESS })
     };
 
-    if (!this.iframeService.isIframe) {
-      this.recentTradesStoreService.updateTrade(updatedRecentTrade);
-    }
+    this.recentTradesStoreService.updateTrade(updatedRecentTrade);
 
     this.currentRecentTrade = updatedRecentTrade;
     this.progressNotificationSubscription$?.unsubscribe();
@@ -170,10 +160,7 @@ export class OnramperWebsocketService {
     this.onramperFormCalculationService.stopBuyNativeInProgress();
     this.onramperFormCalculationService.updateRate();
 
-    if (
-      (this.iframeService.isIframe || this.relocateToOnChain) &&
-      !EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)
-    ) {
+    if (this.relocateToOnChain && !EvmWeb3Pure.isNativeAddress(this.inputForm.toToken.address)) {
       await this.onramperService.updateSwapFormByRecentTrade(id);
     }
   }
@@ -210,9 +197,7 @@ export class OnramperWebsocketService {
     const { additional_info } = txInfo;
     const { id, isDirect } = JSON.parse(additional_info) as { isDirect: boolean; id: string };
 
-    const recentTrade = this.iframeService.isIframe
-      ? null
-      : this.recentTradesStoreService.getSpecificOnramperTrade(id);
+    const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(id);
 
     if (this.inputForm && !recentTrade) {
       this.notifyProgress();
@@ -232,21 +217,17 @@ export class OnramperWebsocketService {
         calculatedStatusFrom: TX_STATUS.PENDING,
         isDirect
       };
-      if (!this.iframeService.isIframe) {
-        this.recentTradesStoreService.saveTrade(
-          this.authService.userAddress,
-          this.currentRecentTrade
-        );
-      }
+      this.recentTradesStoreService.saveTrade(
+        this.authService.userAddress,
+        this.currentRecentTrade
+      );
     }
   }
 
   private handleErrorTrade(txInfo: OnramperTransactionInfo): void {
     const { id } = JSON.parse(txInfo.additional_info);
     const recentTrade = this.recentTradesStoreService.getSpecificOnramperTrade(id);
-    if (!this.iframeService.isIframe) {
-      this.recentTradesStoreService.updateTrade(recentTrade);
-    }
+    this.recentTradesStoreService.updateTrade(recentTrade);
 
     this.progressNotificationSubscription$?.unsubscribe();
 

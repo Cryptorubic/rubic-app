@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, first, switchMap, tap } from 'rxjs/operators';
+import { filter, switchMap, tap } from 'rxjs/operators';
 import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -62,7 +61,6 @@ export class SettingsService {
 
   constructor(
     private readonly storeService: StoreService,
-    private readonly iframeService: IframeService,
     private readonly authService: AuthService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly queryParamsService: QueryParamsService,
@@ -73,29 +71,6 @@ export class SettingsService {
 
     this.createForm();
     this.initSubscriptions();
-
-    this.subscribeOnQueryParams();
-  }
-
-  public subscribeOnQueryParams(): void {
-    this.queryParamsService.queryParams$.pipe(first(Boolean)).subscribe(queryParams => {
-      if (queryParams.iframe) {
-        const slippage = {
-          slippageIt: queryParams.slippageIt ? parseFloat(queryParams.slippageIt) : null,
-          slippageCcr: queryParams.slippageCcr ? parseFloat(queryParams.slippageCcr) : null
-        };
-
-        this.defaultItSettings = this.getDefaultITSettings(slippage.slippageIt);
-        this.defaultCcrSettings = this.getDefaultCCRSettings(slippage.slippageCcr);
-
-        this.instantTrade.patchValue({
-          slippageTolerance: this.defaultItSettings.slippageTolerance
-        });
-        this.crossChainRouting.patchValue({
-          slippageTolerance: this.defaultCcrSettings.slippageTolerance
-        });
-      }
-    });
   }
 
   private getDefaultITSettings(slippageIt?: number): ItSettingsForm {
@@ -153,16 +128,14 @@ export class SettingsService {
       .pipe(
         filter(user => Boolean(user?.address)),
         tap(() => {
-          if (!this.iframeService.isIframe) {
-            const itData = this.storeService.getItem('RUBIC_SETTINGS_INSTANT_TRADE');
-            if (itData) {
-              this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: itData });
-            }
+          const itData = this.storeService.getItem('RUBIC_SETTINGS_INSTANT_TRADE');
+          if (itData) {
+            this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: itData });
+          }
 
-            const ccrData = this.storeService.getItem('RUBIC_SETTINGS_CROSS_CHAIN_ROUTING');
-            if (ccrData) {
-              this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: ccrData });
-            }
+          const ccrData = this.storeService.getItem('RUBIC_SETTINGS_CROSS_CHAIN_ROUTING');
+          if (ccrData) {
+            this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: ccrData });
           }
         }),
         switchMap(() => this.settingsForm.valueChanges)

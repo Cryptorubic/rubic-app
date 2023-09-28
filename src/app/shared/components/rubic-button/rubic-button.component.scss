@@ -37,10 +37,6 @@
 
         background-color: var(--primary-background);
         opacity: 1 !important;
-
-        @include light-iframe {
-          background-color: var(--iframe-primary-background);
-        }
       }
     }
 

@@ -5,8 +5,7 @@ import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { nativeTokensList } from 'rubic-sdk';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { combineLatest, of } from 'rxjs';
-import { IframeService } from '@core/services/iframe/iframe.service';
+import { combineLatest } from 'rxjs';
 import { OnramperFormCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-form-calculation.service';
 
 @Component({
@@ -26,15 +25,14 @@ export class ReceiverAddressComponent {
 
   public readonly walletAddressText$ = combineLatest([
     this.windowWidthService.windowSize$,
-    this.authService.currentUser$,
-    of(this.iframeService.isIframe)
+    this.authService.currentUser$
   ]).pipe(
-    map(([windowSize, user, isIframe]) => {
+    map(([windowSize, user]) => {
       const walletAddress = user?.address;
       if (!walletAddress) {
         return null;
       }
-      if (isIframe || windowSize <= WindowSize.MOBILE_MD_MINUS) {
+      if (windowSize <= WindowSize.MOBILE_MD_MINUS) {
         return walletAddress.slice(0, 5) + '...' + walletAddress.slice(walletAddress.length - 4);
       }
       return walletAddress;
@@ -45,7 +43,6 @@ export class ReceiverAddressComponent {
     private readonly authService: AuthService,
     private readonly swapFormService: SwapFormService,
     private readonly windowWidthService: WindowWidthService,
-    private readonly iframeService: IframeService,
     private readonly onramperFormCalculationService: OnramperFormCalculationService
   ) {}
 }

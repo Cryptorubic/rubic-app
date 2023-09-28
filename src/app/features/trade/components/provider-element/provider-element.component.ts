@@ -20,6 +20,8 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) selectedTradeType: TradeProvider;
 
+  @Input({ required: true }) isBest: boolean = false;
+
   public readonly time: string = '3 Min';
 
   public expanded = false;

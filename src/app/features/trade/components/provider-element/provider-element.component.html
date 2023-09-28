@@ -1,7 +1,6 @@
 <ng-container *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
   <div *ngLet="tradeState?.trade as trade" class="element">
     <div
-      *ngLet="tradeState.tradeType === selectedTradeType as isBest"
       class="element__provider-container"
       [ngClass]="{ 'element__provider-container_best': isBest }"
     >

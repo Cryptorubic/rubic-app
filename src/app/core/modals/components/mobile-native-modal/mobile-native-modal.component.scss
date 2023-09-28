@@ -20,11 +20,6 @@
 
     height: fit-content;
     //padding-bottom: 50px; возможно придётся вернуть!
-
-    @include iframe-vertical {
-      height: initial;
-      padding-bottom: 0;
-    }
   }
 
   &.scrollable-content {
@@ -108,10 +103,6 @@
     align-items: center;
     justify-content: center;
     padding: 1rem 1rem 8px;
-
-    @include iframe-vertical {
-      display: none;
-    }
 
     &--rotated {
       transform: rotate(180deg);

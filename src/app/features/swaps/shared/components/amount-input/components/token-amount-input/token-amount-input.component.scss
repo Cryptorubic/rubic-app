@@ -18,25 +18,6 @@
 
   padding-bottom: 20px;
 
-  @include iframe-horizontal {
-    position: relative;
-
-    flex-direction: row;
-
-    width: $iframe-horizontal-input-width;
-    height: 50px;
-    min-height: 0;
-    padding: 0 7px 0 16px;
-
-    background: var(--primary-background);
-
-    border-radius: 10px;
-  }
-
-  @include light-iframe {
-    background-color: var(--iframe-primary-background);
-  }
-
   &__token-button {
     &_attractive {
       animation: 0.4s jump ease 60s infinite alternate;
@@ -54,32 +35,6 @@
       height: 100%;
     }
 
-    @include iframe-horizontal {
-      align-items: center;
-      justify-content: center;
-
-      &:first-child {
-        flex-direction: row-reverse;
-        order: 2;
-
-        app-select-asset-button-tokens {
-          display: flex;
-          align-items: center;
-        }
-
-        app-user-balance-container {
-          display: flex;
-          align-items: center;
-          margin-right: 10px;
-          margin-left: 5px;
-        }
-      }
-
-      &:nth-child(2) {
-        order: 1;
-      }
-    }
-
     app-set-to-market-button {
       display: block;
       margin-top: 10px;
@@ -95,10 +50,6 @@
   &__input-label {
     width: 100%;
     height: 35px;
-
-    @include iframe-horizontal {
-      margin-bottom: 0;
-    }
 
     ::placeholder {
       letter-spacing: 0.6px;
@@ -121,32 +72,12 @@
 
     border: none;
 
-    @include iframe-horizontal {
-      padding-left: 0;
-
-      font-size: 20px;
-      text-align: left;
-    }
-
     @include b($mobile-md) {
       font-size: 25px;
 
       &::placeholder {
         font-size: 20px;
       }
-    }
-  }
-
-  &__iframe-info-cards {
-    position: absolute;
-    bottom: -33px;
-    left: 0;
-
-    display: flex;
-    align-items: center;
-
-    app-usd-price-container {
-      margin-right: 5px;
     }
   }
 

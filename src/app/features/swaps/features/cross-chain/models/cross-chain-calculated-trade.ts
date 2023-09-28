@@ -11,5 +11,5 @@ export interface CrossChainCalculatedTradeData {
   calculated: number;
   calculationTime: number;
 
-  lastCalculatedTrade?: CrossChainCalculatedTrade | null;
+  wrappedTrade?: WrappedCrossChainTrade;
 }
