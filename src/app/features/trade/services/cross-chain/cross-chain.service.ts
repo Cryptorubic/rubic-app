@@ -53,7 +53,7 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 
 @Injectable()
 export class CrossChainService {
-  private readonly defaultTimeout = 25_000;
+  private readonly defaultTimeout = 15_000;
 
   private get receiverAddress(): string | null {
     if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
