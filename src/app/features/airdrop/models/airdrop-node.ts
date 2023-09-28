@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from 'ethers';
 
 export interface AirdropNode {
   index: number;

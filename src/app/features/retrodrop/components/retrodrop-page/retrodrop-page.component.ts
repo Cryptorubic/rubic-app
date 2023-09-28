@@ -7,6 +7,7 @@ import { TuiDialogService } from '@taiga-ui/core';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimRound } from '@shared/models/claim/claim-round';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-retrodrop-container',
@@ -19,23 +20,41 @@ export class RetrodropPageComponent {
 
   public readonly loading$ = this.retrodropService.fetchUserInfoLoading$;
 
+  public readonly isUserParticipantOfRetrodrop$ =
+    this.retrodropService.isUserParticipantOfRetrodrop$;
+
+  public readonly isAuth$ = this.authService.currentUser$;
+
   constructor(
+    private readonly authService: AuthService,
     private readonly retrodropService: RetrodropService,
     private readonly dialogService: TuiDialogService,
     private readonly claimService: ClaimService
   ) {}
 
-  public handleClaim(claimData: ClaimTokensData): void {
-    this.showStakeConfirmModal(claimData);
+  public trackByRoundNumber(_index: number, round: ClaimRound): number {
+    return round.roundNumber;
   }
 
-  public showStakeConfirmModal(claimData: ClaimTokensData): Subscription {
+  public handleClaim(roundData: { claimData: ClaimTokensData; claimRound: number }): void {
+    this.showStakeConfirmModal(roundData);
+  }
+
+  public showStakeConfirmModal(roundData: {
+    claimData: ClaimTokensData;
+    claimRound: number;
+  }): Subscription {
     return this.dialogService
       .open(new PolymorpheusComponent(RetrodropStakeModalComponent), {
         size: 's'
       })
       .subscribe(() => {
-        this.claimService.claimTokens(claimData, false, true);
+        this.claimService.claimTokens(
+          roundData.claimData,
+          () => this.retrodropService.updateRound(roundData.claimRound),
+          false,
+          true
+        );
       });
   }
 }

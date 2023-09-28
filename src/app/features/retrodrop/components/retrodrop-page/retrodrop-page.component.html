@@ -1,16 +1,24 @@
-<div class="retrodrop">
-  <app-window-container>
-    <ng-container header>Retrodrop</ng-container>
-    <tui-loader [showLoader]="loading$ | async" [overlay]="true">
-      <tui-scrollbar>
-        <ng-container *ngFor="let round of rounds$ | async">
-          <app-claim-round-row-container
-            [inputRound]="round"
-            [claimName]="'retrodrop'"
-            (handleClaim)="handleClaim($event)"
-          ></app-claim-round-row-container>
-        </ng-container>
-      </tui-scrollbar>
-    </tui-loader>
-  </app-window-container>
-</div>
+<app-window-container class="retrodrop">
+  <ng-container header>Retrodrop</ng-container>
+  <ng-container *ngIf="isAuth$ | async; else loginButton">
+    <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
+      <tui-loader [showLoader]="loading$ | async" [overlay]="true">
+        <tui-scrollbar>
+          <ng-container *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber">
+            <app-claim-round-row-container
+              [inputRound]="round"
+              (handleClaim)="handleClaim($event)"
+            ></app-claim-round-row-container>
+          </ng-container>
+        </tui-scrollbar>
+      </tui-loader>
+    </ng-container>
+  </ng-container>
+</app-window-container>
+
+<ng-template #loginButton>
+  <app-login-button></app-login-button>
+</ng-template>
+<ng-template #notMember>
+  <p class="retrodrop__not-member">You are not a participant in the retrodrop.</p>
+</ng-template>

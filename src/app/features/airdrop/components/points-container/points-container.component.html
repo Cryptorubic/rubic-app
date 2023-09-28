@@ -7,9 +7,6 @@
         points_disabled: showButtons && currentUser && points.requested_to_withdraw === 0
       }"
     >
-      <div *ngIf="currentUser && !points.participant" class="points__cover">
-        <img src="/assets/images/swap-and-earn/sad-mouse.svg" alt="You are not participant" />
-      </div>
       <div [ngClass]="{ points__container_disabled: showButtons }" class="points__container">
         <div class="points__pending">
           <span class="points__pending-info">{{ points.pending }} in Pending</span>

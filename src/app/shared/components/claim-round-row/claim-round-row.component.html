@@ -1,8 +1,10 @@
-<ng-container *ngLet="buttonState$ | async as buttonState">
+<ng-container *ngLet="round.status === 'closed' || round.status === 'soon' as setDisabled">
   <div class="round round_desktop" *ngIf="!isMobile">
     <div
       class="round__container"
-      [ngClass]="{ round__container_disabled: round.isClosed || round.isAlreadyClaimed }"
+      [ngClass]="{
+        round__container_disabled: setDisabled || round.isAlreadyClaimed
+      }"
     >
       <div class="round__header">
         <span class="round__number">Round #{{ round.roundNumber }}</span>
@@ -19,22 +21,25 @@
               src="assets/images/rbc-white.png"
               alt="Confirmed RBC"
             />
-            {{ round.isClosed ? '0' : round.claimAmount }} RBC
+            {{ claimAmount }} RBC
           </span>
         </div>
-        <tui-loader [showLoader]="(loading$ | async) && !round.isClosed" [overlay]="true">
+        <tui-loader
+          [showLoader]="(loading$ | async) && !setDisabled && !round.isAlreadyClaimed"
+          [overlay]="true"
+        >
           <button
             class="round__button"
             tuiButton
             appearance="primary"
-            [disabled]="round.isAlreadyClaimed || round.isClosed"
+            [disabled]="round.isAlreadyClaimed || setDisabled"
             type="button"
             size="m"
             (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
             [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
             tuiHintAppearance="onDark"
           >
-            {{ round.isClosed ? 'ClosedX' : (buttonState.translation | translate) }}
+            {{ buttonState.translation | translate }}
           </button>
         </tui-loader>
       </div>
@@ -66,11 +71,11 @@
               [ngClass]="{ round__amount_mobile_disabled: round.isAlreadyClaimed }"
             >
               <img src="assets/images/rbc-white.png" alt="Confirmed RBC" />
-              {{ round.isClosed ? '0' : round.claimAmount }}
+              {{ claimAmount }}
               RBC
             </span>
             <div
-              *ngIf="!round.isClosed"
+              *ngIf="!setDisabled"
               class="round__claim-button-icon_mobile"
               [ngClass]="{ 'round__claim-button-icon_mobile_disabled': !round.isAlreadyClaimed }"
               [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
@@ -83,7 +88,7 @@
             (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
             [ngClass]="{ 'round__claim-button_mobile_disabled': round.isAlreadyClaimed }"
           >
-            <span>{{ round.isClosed ? 'Closed' : (buttonState.translation | translate) }}</span>
+            <span>{{ buttonState.translation | translate }}</span>
           </div>
         </div>
       </div>
@@ -92,10 +97,10 @@
 </ng-container>
 
 <ng-template #hintTemplate>
-  <ng-container *ngIf="claimName === 'airdrop'">
+  <ng-container *ngIf="round.claimName === 'airdrop'">
     Your tokens have been already claimed, please check your wallet.
   </ng-container>
-  <ng-container *ngIf="claimName === 'retrodrop'">
+  <ng-container *ngIf="round.claimName === 'retrodrop'">
     Your tokens have already been successfully staked. Please review the Staking tab for further
     details.
   </ng-container>

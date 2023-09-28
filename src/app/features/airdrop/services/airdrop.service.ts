@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, from, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif, switchTap } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -14,10 +14,11 @@ import { airdropContractAddress } from '@features/airdrop/constants/airdrop-cont
 import { ClaimWeb3Service } from '@shared/services/token-distribution-services/claim-web3.service';
 import { defaultUserClaimInfo } from '@shared/services/token-distribution-services/constants/default-user-claim-info';
 import { AuthService } from '@core/services/auth/auth.service';
-import { Web3Pure } from 'rubic-sdk';
+import { BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import { ClaimRound } from '@shared/models/claim/claim-round';
 import { airdropRounds } from '@features/airdrop/constants/airdrop-rounds';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropService {
@@ -59,16 +60,20 @@ export class AirdropService {
   }
 
   private subscribeOnWalletChange(): void {
-    this.authService.currentUser$?.subscribe(user => {
-      if (!user || !user.address) {
-        return null;
-      }
+    combineLatest([this.authService.currentUser$, this.walletConnectorService.networkChange$])
+      .pipe(
+        tap(([user, network]) => {
+          if (!user || !user.address) {
+            return null;
+          }
 
-      this.setUserInfo();
-    });
+          this.setUserInfo(network);
+        })
+      )
+      .subscribe();
   }
 
-  private setUserInfo(): void {
+  private setUserInfo(network: BlockchainName): void {
     this._fetchUserInfoLoading$.next(true);
 
     this.apiService
@@ -77,20 +82,24 @@ export class AirdropService {
         switchTap(airdropUserInfo => {
           this._airdropUserInfo$.next(airdropUserInfo);
 
-          return from(this.setRounds(airdropUserInfo));
+          return from(this.setRounds(airdropUserInfo, network));
         }),
         catchError(() => of())
       )
       .subscribe(() => this._fetchUserInfoLoading$.next(false));
   }
 
-  private async setRounds(airdropUserInfo: AirdropUserClaimInfo): Promise<void> {
+  private async setRounds(
+    airdropUserInfo: AirdropUserClaimInfo,
+    network: BlockchainName
+  ): Promise<void> {
     const promisesRounds = airdropRounds.map(round => {
       if (airdropUserInfo.round === round.roundNumber) {
         return this.web3Service
           .checkClaimed(airdropContractAddress, airdropUserInfo.index)
           .then(isAlreadyClaimed => ({
             ...round,
+            network,
             isAlreadyClaimed,
             isParticipantOfCurrentRound: airdropUserInfo.is_participant,
             claimAmount: Web3Pure.fromWei(airdropUserInfo.amount),
@@ -99,18 +108,49 @@ export class AirdropService {
               node: {
                 index: airdropUserInfo.index,
                 account: airdropUserInfo.address,
-                amount: Web3Pure.fromWei(airdropUserInfo.amount)
+                amount: EthersBigNumber.from(airdropUserInfo.amount)
               },
               proof: airdropUserInfo.proof
             }
           }));
       } else {
-        return round;
+        return {
+          ...round,
+          ...airdropUserInfo,
+          network,
+          claimData: {
+            ...round.claimData,
+            node: {
+              ...round.claimData.node,
+              account: airdropUserInfo.address
+            }
+          }
+        };
       }
     });
 
     const formattedRounds = await Promise.all(promisesRounds);
     this._rounds$.next(formattedRounds.reverse());
+  }
+
+  public updateRound(roundNumber: number): void {
+    this.rounds$
+      .pipe(
+        map(rounds => {
+          return rounds.map(round => {
+            if (round.roundNumber === roundNumber) {
+              return {
+                ...round,
+                isAlreadyClaimed: true
+              };
+            } else {
+              return round;
+            }
+          });
+        }),
+        tap(updatedRounds => this._rounds$.next(updatedRounds))
+      )
+      .subscribe();
   }
 
   public updateSwapToEarnUserPointsInfo(): void {

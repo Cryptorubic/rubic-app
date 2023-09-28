@@ -1,29 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ClaimName } from '@shared/services/token-distribution-services/models/claim-name';
+import { ClaimStatus } from '@shared/models/claim/claim-round';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ClaimButtonStateService {
-  private readonly _buttonState$ = new BehaviorSubject<ButtonState>({
-    label: 'login',
-    translation: '',
-    isError: false
-  });
-
-  public readonly buttonState$ = this._buttonState$.asObservable();
-
-  constructor(
-    private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService
-  ) {}
+  constructor(private readonly walletConnectorService: WalletConnectorService) {}
 
   public readonly buttonStateNameMap: Record<ButtonLabel, string> = {
     login: 'airdrop.button.login',
@@ -32,6 +19,7 @@ export class ClaimButtonStateService {
     stake: 'airdrop.button.stake',
     staked: 'airdrop.button.staked',
     closed: 'airdrop.button.closed',
+    soon: 'airdrop.button.soon',
     emptyError: 'airdrop.button.emptyError',
     changeNetwork: 'airdrop.button.changeNetwork',
     notParticipant: 'airdrop.button.notParticipant',
@@ -42,34 +30,27 @@ export class ClaimButtonStateService {
   public setButtonState(
     isValid: boolean,
     userAddress: string,
+    network: BlockchainName,
     isParticipantOfPrevRounds: boolean,
-    isClosed: boolean,
+    status: ClaimStatus,
     isAlreadyClaimed: boolean,
     claimName: ClaimName
-  ): void {
-    this.walletConnectorService.networkChange$
-      .pipe(
-        tap(network => {
-          const buttonLabel = this.getButtonKey([
-            isValid,
-            userAddress,
-            network,
-            isParticipantOfPrevRounds,
-            isClosed,
-            isAlreadyClaimed,
-            claimName
-          ]);
+  ): ButtonState {
+    const buttonLabel = this.getButtonKey([
+      isValid,
+      userAddress,
+      network,
+      isParticipantOfPrevRounds,
+      status,
+      isAlreadyClaimed,
+      claimName
+    ]);
 
-          const buttonState = {
-            label: buttonLabel,
-            translation: this.buttonStateNameMap[buttonLabel],
-            isError: this.getErrorState(buttonLabel)
-          };
-
-          this._buttonState$.next(buttonState);
-        })
-      )
-      .subscribe();
+    return {
+      label: buttonLabel,
+      translation: this.buttonStateNameMap[buttonLabel],
+      isError: this.getErrorState(buttonLabel)
+    };
   }
 
   private getErrorState(buttonLabel: ButtonLabel): boolean {
@@ -81,18 +62,15 @@ export class ClaimButtonStateService {
     userAddress,
     network,
     isParticipantOfPrevRounds,
-    isClosed,
+    status,
     isAlreadyClaimed,
     claimName
-  ]: [boolean, string, BlockchainName, boolean, boolean, boolean, ClaimName]): ButtonLabel {
-    if (isClosed) {
-      return 'closed';
-    }
+  ]: [boolean, string, BlockchainName, boolean, ClaimStatus, boolean, ClaimName]): ButtonLabel {
     if (!userAddress) {
       return 'login';
     }
-    if (!network || network !== newRubicToken.blockchain) {
-      return 'changeNetwork';
+    if (status !== 'active') {
+      return status;
     }
     if (!isParticipantOfPrevRounds) {
       return 'notParticipant';
@@ -103,6 +81,9 @@ export class ClaimButtonStateService {
       } else {
         return 'staked';
       }
+    }
+    if (!network || network !== newRubicToken.blockchain) {
+      return 'changeNetwork';
     }
     if (isValid) {
       if (claimName === 'airdrop') {

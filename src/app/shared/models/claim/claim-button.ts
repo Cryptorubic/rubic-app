@@ -9,7 +9,8 @@ export type ButtonLabel =
   | 'staked'
   | 'incorrectAddressError'
   | 'notParticipant'
-  | 'closed';
+  | 'closed'
+  | 'soon';
 
 export interface ButtonState {
   label: ButtonLabel;

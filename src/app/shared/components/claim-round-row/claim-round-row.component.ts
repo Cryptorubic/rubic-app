@@ -11,14 +11,9 @@ import { WINDOW } from '@ng-web-apis/common';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
-import { Observable } from 'rxjs';
 import { ClaimButtonStateService } from '@shared/services/token-distribution-services/claim-button-state.service';
 import { ClaimRound } from '@shared/models/claim/claim-round';
-import { ClaimName } from '@shared/services/token-distribution-services/models/claim-name';
-
-interface NamedClaimRound extends ClaimRound {
-  claimName: ClaimName;
-}
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-claim-round-row-container',
@@ -27,30 +22,42 @@ interface NamedClaimRound extends ClaimRound {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimRoundRowComponent {
-  public round: NamedClaimRound;
+  public round: ClaimRound;
+
+  public claimAmount: string | BigNumber;
+
+  public buttonState: ButtonState;
 
   @Input({ required: true }) set inputRound(claimRound: ClaimRound) {
-    this.round = { ...claimRound, claimName: this.claimName };
+    this.round = claimRound;
 
-    this.claimButtonStateService.setButtonState(
+    if (this.round.status === 'soon') {
+      this.claimAmount = '-.-';
+    } else if (this.round.status === 'closed') {
+      this.claimAmount = '0';
+    } else {
+      this.claimAmount = this.round.claimAmount;
+    }
+
+    this.buttonState = this.claimButtonStateService.setButtonState(
       claimRound.isParticipantOfCurrentRound,
       claimRound.claimData.node?.account || '',
+      claimRound.network,
       claimRound.isParticipantOfPrevRounds,
-      claimRound.isClosed,
+      claimRound.status,
       claimRound.isAlreadyClaimed,
-      this.claimName
+      claimRound.claimName
     );
   }
 
-  @Input({ required: true }) public readonly claimName: ClaimName;
-
-  @Output() public readonly handleClaim = new EventEmitter<ClaimTokensData>();
+  @Output() public readonly handleClaim = new EventEmitter<{
+    claimData: ClaimTokensData;
+    claimRound: number;
+  }>();
 
   public isMobile = false;
 
   public readonly loading$ = this.claimService.claimLoading$;
-
-  public buttonState$: Observable<ButtonState> = this.claimButtonStateService.buttonState$;
 
   constructor(
     private readonly claimService: ClaimService,
@@ -73,7 +80,10 @@ export class ClaimRoundRowComponent {
         break;
       case 'claim':
       case 'stake':
-        this.handleClaim.emit(this.round.claimData);
+        this.handleClaim.emit({
+          claimData: this.round.claimData,
+          claimRound: this.round.roundNumber
+        });
         break;
       default:
     }

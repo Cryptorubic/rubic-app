@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
+import { ClaimRound } from '@shared/models/claim/claim-round';
 
 @Component({
   selector: 'app-claim-container',
@@ -17,7 +18,13 @@ export class ClaimContainerComponent {
     private readonly claimService: ClaimService
   ) {}
 
-  public handleClaim(claimData: ClaimTokensData): void {
-    this.claimService.claimTokens(claimData);
+  public trackByRoundNumber(_index: number, round: ClaimRound): number {
+    return round.roundNumber;
+  }
+
+  public handleClaim(roundData: { claimData: ClaimTokensData; claimRound: number }): void {
+    this.claimService.claimTokens(roundData.claimData, () =>
+      this.airdropService.updateRound(roundData.claimRound)
+    );
   }
 }

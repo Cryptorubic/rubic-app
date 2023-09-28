@@ -26,6 +26,7 @@ export class ClaimService {
 
   public async claimTokens(
     claimData: ClaimTokensData,
+    updateRound: () => void,
     showSuccessModal: boolean = true,
     navigateToStaking: boolean = false
   ): Promise<void> {
@@ -56,8 +57,7 @@ export class ClaimService {
 
       this.claimPopupService.showSuccessNotification(navigateToStaking ? 'retrodrop' : 'airdrop');
 
-      // await this.airdropStateService.setAlreadyAirdropClaimed();
-      // await this.airdropStateService.setAlreadyRetrodropClaimed();
+      updateRound();
     } catch (err) {
       this.claimPopupService.handleError(err);
     } finally {
