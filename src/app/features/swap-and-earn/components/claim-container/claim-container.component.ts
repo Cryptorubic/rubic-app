@@ -77,6 +77,12 @@ export class ClaimContainerComponent {
     {
       roundNumber: 10,
       claimData: '05.04.2023 - 14.09.2023',
+      isClosed: true,
+      isAlreadyClaimed: true
+    },
+    {
+      roundNumber: 11,
+      claimData: '05.04.2023 - 28.09.2023',
       isClosed: false
     }
   ];
