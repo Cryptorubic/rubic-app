@@ -6,6 +6,7 @@ import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { ClaimName } from '@shared/services/token-distribution-services/models/claim-name';
 
 @Injectable({
   providedIn: 'root'
@@ -43,27 +44,32 @@ export class ClaimButtonStateService {
     userAddress: string,
     isParticipantOfPrevRounds: boolean,
     isClosed: boolean,
-    isAlreadyClaimed: boolean
+    isAlreadyClaimed: boolean,
+    claimName: ClaimName
   ): void {
-    this.walletConnectorService.networkChange$.pipe(
-      tap(network => {
-        const buttonLabel = this.getButtonKey([
-          isValid,
-          userAddress,
-          network,
-          isParticipantOfPrevRounds,
-          isClosed,
-          isAlreadyClaimed
-        ]);
-        const buttonState = {
-          label: buttonLabel,
-          translation: this.buttonStateNameMap[buttonLabel],
-          isError: this.getErrorState(buttonLabel)
-        };
+    this.walletConnectorService.networkChange$
+      .pipe(
+        tap(network => {
+          const buttonLabel = this.getButtonKey([
+            isValid,
+            userAddress,
+            network,
+            isParticipantOfPrevRounds,
+            isClosed,
+            isAlreadyClaimed,
+            claimName
+          ]);
 
-        this._buttonState$.next(buttonState);
-      })
-    );
+          const buttonState = {
+            label: buttonLabel,
+            translation: this.buttonStateNameMap[buttonLabel],
+            isError: this.getErrorState(buttonLabel)
+          };
+
+          this._buttonState$.next(buttonState);
+        })
+      )
+      .subscribe();
   }
 
   private getErrorState(buttonLabel: ButtonLabel): boolean {
@@ -76,29 +82,30 @@ export class ClaimButtonStateService {
     network,
     isParticipantOfPrevRounds,
     isClosed,
-    isAlreadyClaimed
-  ]: [boolean, string, BlockchainName, boolean, boolean, boolean]): ButtonLabel {
+    isAlreadyClaimed,
+    claimName
+  ]: [boolean, string, BlockchainName, boolean, boolean, boolean, ClaimName]): ButtonLabel {
+    if (isClosed) {
+      return 'closed';
+    }
     if (!userAddress) {
       return 'login';
     }
     if (!network || network !== newRubicToken.blockchain) {
       return 'changeNetwork';
     }
-    if (isParticipantOfPrevRounds) {
+    if (!isParticipantOfPrevRounds) {
       return 'notParticipant';
     }
-    if (isClosed) {
-      return 'closed';
-    }
     if (isAlreadyClaimed) {
-      if ('airdrop' === 'airdrop') {
+      if (claimName === 'airdrop') {
         return 'claimed';
       } else {
         return 'staked';
       }
     }
     if (isValid) {
-      if ('airdrop' === 'airdrop') {
+      if (claimName === 'airdrop') {
         return 'claim';
       } else {
         return 'stake';

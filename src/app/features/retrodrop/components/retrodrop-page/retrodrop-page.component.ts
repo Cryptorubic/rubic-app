@@ -17,6 +17,8 @@ import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 export class RetrodropPageComponent {
   public readonly rounds$: Observable<ClaimRound[]> = this.retrodropService.rounds$;
 
+  public readonly loading$ = this.retrodropService.fetchUserInfoLoading$;
+
   constructor(
     private readonly retrodropService: RetrodropService,
     private readonly dialogService: TuiDialogService,

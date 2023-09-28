@@ -1,92 +1,89 @@
-<ng-container *ngLet="buttonState$ | async as state">
-  <div class="contest contest_desktop" *ngIf="!isMobile">
-    <div class="contest__container">
-      <div class="contest__info" [ngClass]="{ contest__info_disabled: isAlreadyClaimed }">
-        <div class="contest__left">
-          <span class="contest__round" [ngClass]="{ contest__round_disabled: isAlreadyClaimed }"
-            >Round #{{ round }}</span
-          >
-          <div class="contest__date" [ngClass]="{ contest__date_disabled: isAlreadyClaimed }">
-            {{ claimData }}
-          </div>
-        </div>
-        <span class="contest__amount" [ngClass]="{ contest__amount_disabled: isAlreadyClaimed }">
-          <img src="/src/assets/images/rbc-white.png" alt="Confirmed RBC" />
-          {{ isClosed ? '0' : claimAmount }}
-          RBC
-        </span>
+<ng-container *ngLet="buttonState$ | async as buttonState">
+  <div class="round round_desktop" *ngIf="!isMobile">
+    <div
+      class="round__container"
+      [ngClass]="{ round__container_disabled: round.isClosed || round.isAlreadyClaimed }"
+    >
+      <div class="round__header">
+        <span class="round__number">Round #{{ round.roundNumber }}</span>
       </div>
 
-      <tui-loader
-        [showLoader]="
-          (loading$ | async) && !isClosed && !isParticipantOfPrevRounds && !isAlreadyClaimed
-        "
-        [overlay]="true"
-      >
-        <div
-          class="contest__claim-button"
-          (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
-          [ngClass]="{ 'contest__claim-button_disabled': isAlreadyClaimed }"
-        >
-          <span>{{ state.translation | translate }}</span>
-          <img
-            *ngIf="isAlreadyClaimed && !isClosed && !isParticipantOfPrevRounds"
-            class="contest__claim-button-icon"
-            src="../../../../assets/images/icons/exclamation-grey.svg"
-            alt="Hint"
-            [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
-            tuiHintAppearance="onDark"
-          />
+      <div class="round__footer">
+        <div class="round__info">
+          <div class="round__info-date">
+            {{ round.claimDate }}
+          </div>
+          <span class="round__info-amount">
+            <img
+              class="round__info-amount-icon"
+              src="assets/images/rbc-white.png"
+              alt="Confirmed RBC"
+            />
+            {{ round.isClosed ? '0' : round.claimAmount }} RBC
+          </span>
         </div>
-      </tui-loader>
+        <tui-loader [showLoader]="(loading$ | async) && !round.isClosed" [overlay]="true">
+          <button
+            class="round__button"
+            tuiButton
+            appearance="primary"
+            [disabled]="round.isAlreadyClaimed || round.isClosed"
+            type="button"
+            size="m"
+            (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
+            [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
+            tuiHintAppearance="onDark"
+          >
+            {{ round.isClosed ? 'ClosedX' : (buttonState.translation | translate) }}
+          </button>
+        </tui-loader>
+      </div>
     </div>
   </div>
-
-  <div class="contest contest_mobile" *ngIf="isMobile">
-    <div class="contest__container contest__container_mobile">
+  <div class="round round_mobile" *ngIf="isMobile">
+    <div class="round__container round__container_mobile">
       <div
-        class="contest__info contest__info_mobile"
-        [ngClass]="{ contest__info_mobile_disabled: isAlreadyClaimed }"
+        class="round__info round__info_mobile"
+        [ngClass]="{ round__info_mobile_disabled: round.isAlreadyClaimed }"
       >
-        <div class="contest__left contest__left_mobile">
+        <div class="round__left round__left_mobile">
           <span
-            class="contest__round contest__round_mobile"
-            [ngClass]="{ contest__round_mobile_disabled: isAlreadyClaimed }"
-            >Round #{{ round }}</span
+            class="round__round round__round_mobile"
+            [ngClass]="{ round__round_mobile_disabled: round.isAlreadyClaimed }"
+            >Round #{{ round.roundNumber }}</span
           >
           <div
-            class="contest__date contest__date_mobile"
-            [ngClass]="{ contest__date_mobile_disabled: isAlreadyClaimed }"
+            class="round__date round__date_mobile"
+            [ngClass]="{ round__date_mobile_disabled: round.isAlreadyClaimed }"
           >
-            {{ claimData }}
+            {{ round.claimDate }}
           </div>
         </div>
         <div style="width: 100%">
-          <div class="contest__amount-wrapper contest__amount-wrapper_mobile">
+          <div class="round__amount-wrapper round__amount-wrapper_mobile">
             <span
-              class="contest__amount contest__amount_mobile"
-              [ngClass]="{ contest__amount_mobile_disabled: isAlreadyClaimed }"
+              class="round__amount round__amount_mobile"
+              [ngClass]="{ round__amount_mobile_disabled: round.isAlreadyClaimed }"
             >
-              <img src="/src/assets/images/rbc-white.png" alt="Confirmed RBC" />
-              {{ isClosed ? '0' : claimAmount }}
+              <img src="assets/images/rbc-white.png" alt="Confirmed RBC" />
+              {{ round.isClosed ? '0' : round.claimAmount }}
               RBC
             </span>
             <div
-              *ngIf="!isClosed"
-              class="contest__claim-button-icon_mobile"
-              [ngClass]="{ 'contest__claim-button-icon_mobile_disabled': !isAlreadyClaimed }"
+              *ngIf="!round.isClosed"
+              class="round__claim-button-icon_mobile"
+              [ngClass]="{ 'round__claim-button-icon_mobile_disabled': !round.isAlreadyClaimed }"
               [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
-              [tuiHint]="isAlreadyClaimed ? hintTemplate : null"
+              [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
               tuiHintAppearance="onDark"
             ></div>
           </div>
-
           <div
-            class="contest__claim-button contest__claim-button_mobile"
-            (click)="!isAlreadyClaimed ? handleClick(state.label) : null"
-            [ngClass]="{ 'contest__claim-button_mobile_disabled': isAlreadyClaimed }"
+            class="round__claim-button round__claim-button_mobile"
+            (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
+            [ngClass]="{ 'round__claim-button_mobile_disabled': round.isAlreadyClaimed }"
           >
-            <span>{{ isClosed ? 'Closed' : (state.translation | translate) }}</span>
+            <span>{{ round.isClosed ? 'Closed' : (buttonState.translation | translate) }}</span>
           </div>
         </div>
       </div>

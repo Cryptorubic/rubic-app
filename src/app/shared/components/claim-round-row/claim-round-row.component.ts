@@ -8,12 +8,17 @@ import {
 } from '@angular/core';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
-import BigNumber from 'bignumber.js';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { Observable } from 'rxjs';
 import { ClaimButtonStateService } from '@shared/services/token-distribution-services/claim-button-state.service';
+import { ClaimRound } from '@shared/models/claim/claim-round';
+import { ClaimName } from '@shared/services/token-distribution-services/models/claim-name';
+
+interface NamedClaimRound extends ClaimRound {
+  claimName: ClaimName;
+}
 
 @Component({
   selector: 'app-claim-round-row-container',
@@ -22,25 +27,22 @@ import { ClaimButtonStateService } from '@shared/services/token-distribution-ser
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClaimRoundRowComponent {
-  @Input() public readonly round: number = 1;
+  public round: NamedClaimRound;
 
-  @Input() public readonly claimDate: string = '';
+  @Input({ required: true }) set inputRound(claimRound: ClaimRound) {
+    this.round = { ...claimRound, claimName: this.claimName };
 
-  @Input() public readonly claimData: ClaimTokensData;
+    this.claimButtonStateService.setButtonState(
+      claimRound.isParticipantOfCurrentRound,
+      claimRound.claimData.node?.account || '',
+      claimRound.isParticipantOfPrevRounds,
+      claimRound.isClosed,
+      claimRound.isAlreadyClaimed,
+      this.claimName
+    );
+  }
 
-  @Input() public readonly claimAmount: BigNumber = new BigNumber(0);
-
-  @Input() public readonly isAlreadyClaimed: boolean;
-
-  @Input() public readonly isClosed: boolean;
-
-  @Input() public readonly isParticipantOfPrevRounds: boolean = false;
-
-  @Input() public readonly isParticipantOfCurrentRound: boolean = false;
-
-  @Input() public readonly disabled: boolean = false;
-
-  @Input() public readonly claimName: 'airdrop' | 'retrodrop' = 'airdrop';
+  @Input({ required: true }) public readonly claimName: ClaimName;
 
   @Output() public readonly handleClaim = new EventEmitter<ClaimTokensData>();
 
@@ -56,13 +58,6 @@ export class ClaimRoundRowComponent {
     private readonly claimButtonStateService: ClaimButtonStateService,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    this.claimButtonStateService.setButtonState(
-      this.isParticipantOfCurrentRound,
-      this.claimData.node.account,
-      this.isParticipantOfPrevRounds,
-      this.isClosed,
-      this.isAlreadyClaimed
-    );
     if (this.window.innerWidth <= 900) {
       this.isMobile = true;
     }
@@ -78,7 +73,7 @@ export class ClaimRoundRowComponent {
         break;
       case 'claim':
       case 'stake':
-        this.handleClaim.emit(this.claimData);
+        this.handleClaim.emit(this.round.claimData);
         break;
       default:
     }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, from, map, Observable, of } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { switchIif } from '@shared/utils/utils';
+import { switchIif, switchTap } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
 import {
   AirdropUserClaimInfo,
@@ -14,11 +14,10 @@ import { airdropContractAddress } from '@features/airdrop/constants/airdrop-cont
 import { ClaimWeb3Service } from '@shared/services/token-distribution-services/claim-web3.service';
 import { defaultUserClaimInfo } from '@shared/services/token-distribution-services/constants/default-user-claim-info';
 import { AuthService } from '@core/services/auth/auth.service';
-import { tap } from 'rxjs/operators';
 import { Web3Pure } from 'rubic-sdk';
 import { ClaimRound } from '@shared/models/claim/claim-round';
 import { airdropRounds } from '@features/airdrop/constants/airdrop-rounds';
-import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropService {
@@ -75,45 +74,43 @@ export class AirdropService {
     this.apiService
       .fetchAirdropUserClaimInfo()
       .pipe(
-        tap(airdropUserInfo => {
+        switchTap(airdropUserInfo => {
           this._airdropUserInfo$.next(airdropUserInfo);
 
-          this.setRounds(airdropUserInfo);
-          this._fetchUserInfoLoading$.next(false);
-        })
+          return from(this.setRounds(airdropUserInfo));
+        }),
+        catchError(() => of())
       )
-      .subscribe();
+      .subscribe(() => this._fetchUserInfoLoading$.next(false));
   }
 
   private async setRounds(airdropUserInfo: AirdropUserClaimInfo): Promise<void> {
-    const formattedRounds = airdropRounds.map(async round => {
+    const promisesRounds = airdropRounds.map(round => {
       if (airdropUserInfo.round === round.roundNumber) {
-        const isAlreadyClaimed = await this.web3Service.checkClaimed(
-          airdropContractAddress,
-          airdropUserInfo.index
-        );
-
-        return {
-          ...round,
-          isAlreadyClaimed,
-          isParticipantOfCurrentRound: airdropUserInfo.is_participant,
-          claimAmount: Web3Pure.fromWei(airdropUserInfo.amount),
-          claimData: {
-            contractAddress: airdropContractAddress,
-            node: {
-              index: airdropUserInfo.index,
-              account: airdropUserInfo.address,
-              amount: EthersBigNumber.from(airdropUserInfo.amount)
-            },
-            proof: airdropUserInfo.proof
-          }
-        };
+        return this.web3Service
+          .checkClaimed(airdropContractAddress, airdropUserInfo.index)
+          .then(isAlreadyClaimed => ({
+            ...round,
+            isAlreadyClaimed,
+            isParticipantOfCurrentRound: airdropUserInfo.is_participant,
+            claimAmount: Web3Pure.fromWei(airdropUserInfo.amount),
+            claimData: {
+              contractAddress: airdropContractAddress,
+              node: {
+                index: airdropUserInfo.index,
+                account: airdropUserInfo.address,
+                amount: Web3Pure.fromWei(airdropUserInfo.amount)
+              },
+              proof: airdropUserInfo.proof
+            }
+          }));
       } else {
         return round;
       }
     });
 
-    this._rounds$.next(await Promise.all(formattedRounds));
+    const formattedRounds = await Promise.all(promisesRounds);
+    this._rounds$.next(formattedRounds.reverse());
   }
 
   public updateSwapToEarnUserPointsInfo(): void {

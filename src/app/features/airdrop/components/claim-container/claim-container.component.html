@@ -1,15 +1,8 @@
 <div class="claim">
   <tui-scrollbar>
-    <ng-container *ngFor="let round of (rounds$ | async).slice().reverse()">
+    <ng-container *ngFor="let round of rounds$ | async">
       <app-claim-round-row-container
-        [round]="round.roundNumber"
-        [claimDate]="round.claimDate"
-        [claimData]="round.claimData"
-        [isAlreadyClaimed]="round.isAlreadyClaimed"
-        [claimAmount]="round.claimAmount"
-        [isClosed]="round.isClosed"
-        [isParticipantOfPrevRounds]="round.isParticipantOfPrevRounds"
-        [isParticipantOfCurrentRound]="round.isParticipantOfCurrentRound"
+        [inputRound]="round"
         [claimName]="'retrodrop'"
         (handleClaim)="handleClaim($event)"
       ></app-claim-round-row-container>

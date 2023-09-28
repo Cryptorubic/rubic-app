@@ -14,13 +14,19 @@
   }
 
   ::ng-deep {
-    tui-scrollbar .t-content {
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-      //margin-top: 5px;
-      //margin-right: 18px;
+    tui-scrollbar {
+      height: 425px;
+
+      .t-content {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
     }
+  }
+
+  .window-container {
+    padding-right: 0 !important;
   }
 }
 
@@ -28,4 +34,7 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  width: 100%;
+  max-width: 540px;
+  height: 425px;
 }
