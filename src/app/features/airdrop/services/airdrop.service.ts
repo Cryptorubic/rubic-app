@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, from, map, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  firstValueFrom,
+  from,
+  map,
+  Observable,
+  of
+} from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { switchIif, switchTap } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -47,6 +55,8 @@ export class AirdropService {
     defaultUserClaimInfo
   );
 
+  public readonly airdropUserInfo$ = this._airdropUserInfo$.asObservable();
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpService,
@@ -60,8 +70,9 @@ export class AirdropService {
   }
 
   private subscribeOnWalletChange(): void {
-    combineLatest([this.authService.currentUser$, this.walletConnectorService.networkChange$])
+    this.authService.currentUser$
       .pipe(
+        combineLatestWith(this.walletConnectorService.networkChange$),
         tap(([user, network]) => {
           if (!user || !user.address) {
             return null;

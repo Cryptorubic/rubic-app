@@ -17,19 +17,6 @@
   }
 }
 
-.not-member {
-  display: block;
-  width: 100%;
-  margin: auto;
-
-  font-size: 20px;
-  text-align: center;
-
-  @include b($mobile-sm) {
-    font-size: 16px;
-  }
-}
-
 .swap-and-earn {
   display: flex;
   flex-direction: column;
@@ -37,7 +24,7 @@
 
   &__points {
     position: relative;
-    
+
     &-cover {
       position: absolute;
       bottom: 0;
@@ -64,6 +51,21 @@
       img {
         height: 100%;
       }
+    }
+  }
+
+  &__not-member {
+    display: block;
+    max-width: 440px;
+    margin: 0 auto;
+    padding-right: 12px;
+
+    font-size: 16px;
+    line-height: 25px;
+    text-align: center;
+    
+    &-link {
+      color: var(--tui-primary);
     }
   }
 }

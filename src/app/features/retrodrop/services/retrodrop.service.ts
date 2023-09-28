@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BehaviorSubject, combineLatest, from, of } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, from, of } from 'rxjs';
 import { RetrodropUserInfo } from '@features/retrodrop/models/retrodrop-user-info';
 import { catchError, map, tap } from 'rxjs/operators';
 import { BlockchainName, Web3Pure } from 'rubic-sdk';
@@ -41,8 +41,21 @@ export class RetrodropService {
   }
 
   private subscribeOnWalletChange(): void {
-    combineLatest([this.authService.currentUser$, this.walletConnectorService.networkChange$])
+    // combineLatest([this.authService.currentUser$, this.walletConnectorService.networkChange$])
+    //   .pipe(
+    //     tap(([user, network]) => {
+    //       if (!user || !user.address) {
+    //         return null;
+    //       }
+    //
+    //       this.setUserInfo(user.address, network);
+    //     })
+    //   )
+    //   .subscribe();
+
+    this.authService.currentUser$
       .pipe(
+        combineLatestWith(this.walletConnectorService.networkChange$),
         tap(([user, network]) => {
           if (!user || !user.address) {
             return null;

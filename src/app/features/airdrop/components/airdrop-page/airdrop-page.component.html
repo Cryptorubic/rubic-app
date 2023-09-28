@@ -9,12 +9,28 @@
     </tui-loader>
   </app-window-container>
   <app-window-container *ngIf="isAuth$ | async">
-    <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
-      <div class="drops__container">
-        <tui-scrollbar>
-          <app-claim-container></app-claim-container>
-        </tui-scrollbar>
-      </div>
-    </tui-loader>
+    <ng-container *ngIf="(isParticipant$ | async).is_participant; else notMember">
+      <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
+        <div class="drops__container">
+          <tui-scrollbar>
+            <app-claim-container></app-claim-container>
+          </tui-scrollbar>
+        </div>
+      </tui-loader>
+    </ng-container>
   </app-window-container>
 </div>
+
+<ng-template #notMember>
+  <p class="swap-and-earn__not-member">
+    You are not currently a member of the SwapToEarn program. You can read more about the program
+    here:
+    <a
+      class="swap-and-earn__not-member-link"
+      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
+      target="_blank"
+      rel="noreferrer"
+      >Link</a
+    >
+  </p>
+</ng-template>

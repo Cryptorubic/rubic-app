@@ -17,6 +17,8 @@ export class AirdropPageComponent {
 
   public readonly isAuth$ = this.authService.currentUser$;
 
+  public readonly isParticipant$ = this.airdropService.airdropUserInfo$;
+
   constructor(
     private readonly airdropService: AirdropService,
     private readonly authService: AuthService
