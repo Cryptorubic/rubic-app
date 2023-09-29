@@ -37,6 +37,13 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}team.svg`
   },
   {
+    translateKey: 'navigation.retrodrop',
+    type: 'internal',
+    link: 'retrodrop',
+    target: '_self',
+    imagePath: `${defaultSrc}team.svg`
+  },
+  {
     translateKey: 'Testnet App',
     type: 'external',
     link: EXTERNAL_LINKS.TESTNET_APP,

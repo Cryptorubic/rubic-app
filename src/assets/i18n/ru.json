@@ -102,6 +102,7 @@
     "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются."
   },
   "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "О компании",

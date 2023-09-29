@@ -102,6 +102,7 @@
     "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
   },
   "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "关于",

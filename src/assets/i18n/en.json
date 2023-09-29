@@ -102,6 +102,7 @@
     "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported."
   },
   "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "About",
