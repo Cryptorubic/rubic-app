@@ -525,5 +525,20 @@ export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Izumi',
     image: `${imageBasePath}izumi.svg`,
     color: '#7E49FC'
+  },
+  AERODROME: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  FUSIONX: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  XY_DEX: {
+    name: '',
+    image: '',
+    color: ''
   }
 };

@@ -49,5 +49,29 @@ export const defaultFaucets: Partial<Record<BlockchainName, Faucet[]>> = {
       url: '',
       name: 'Zetachain'
     }
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    {
+      token: {
+        address: '0x0000000000000000000000000000000000000000',
+        symbol: 'ETH',
+        icon_url:
+          'https://assets.rubic.exchange/assets/taiko-grimsvotn/0x0000000000000000000000000000000000000000/logo.png'
+      },
+      url: '',
+      name: 'Taiko'
+    }
+  ],
+  [BLOCKCHAIN_NAME.SEPOLIA]: [
+    {
+      token: {
+        address: '0x0000000000000000000000000000000000000000',
+        symbol: 'ETH',
+        icon_url:
+          'https://assets.rubic.exchange/assets/sepolia/0x0000000000000000000000000000000000000000/logo.png'
+      },
+      url: '',
+      name: 'Sepolia'
+    }
   ]
 };

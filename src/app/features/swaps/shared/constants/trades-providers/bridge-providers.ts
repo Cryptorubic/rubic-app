@@ -168,5 +168,50 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Scroll bridge',
     image: `${imageBasePath}scroll.svg`,
     color: '#fff0de'
+  },
+  [BRIDGE_TYPE.TAIKO_BRIDGE]: {
+    name: 'Taiko bridge',
+    image: `${imageBasePath}taiko.svg`,
+    color: '#e81899'
+  },
+  cbridge: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  allbridge: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  omni: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  gnosis: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  amarok: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  celercircle: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  lifuel: {
+    name: '',
+    image: '',
+    color: ''
+  },
+  celerim: {
+    name: '',
+    image: '',
+    color: ''
   }
 };

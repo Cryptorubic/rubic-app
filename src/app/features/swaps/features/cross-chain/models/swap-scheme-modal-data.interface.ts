@@ -13,6 +13,8 @@ export interface SwapSchemeModalData {
   bridgeType?: ProviderInfo;
   viaUuid?: string;
   rangoRequestId?: string;
+  taikoTransactionId?: string;
+  sender?: string;
   amountOutMin?: string;
   changenowId?: string;
   points?: number;

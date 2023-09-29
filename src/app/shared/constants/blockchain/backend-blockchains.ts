@@ -123,6 +123,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet',
   [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain-evm-athens-testnet',
+  [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
+  [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.BASE]: 'base',
   [BLOCKCHAIN_NAME.MANTLE]: 'mantle'
 } as const;

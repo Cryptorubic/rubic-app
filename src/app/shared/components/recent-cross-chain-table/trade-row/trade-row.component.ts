@@ -97,6 +97,16 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     );
   }
 
+  public get isTaikoBridgeTrade(): boolean {
+    if (this.isChangenowTrade(this.trade)) {
+      return false;
+    }
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.TAIKO_BRIDGE
+    );
+  }
+
   public get showAction(): boolean {
     return (
       ((this.isSymbiosisTrade || this.isCbridgeTrade || this.isArbitrumBridgeTrade) &&

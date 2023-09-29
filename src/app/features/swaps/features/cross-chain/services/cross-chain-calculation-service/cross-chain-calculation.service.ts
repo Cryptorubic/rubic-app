@@ -20,7 +20,8 @@ import {
   UnapprovedContractError,
   EvmCrossChainTrade,
   EvmBasicTransactionOptions,
-  CrossChainReactivelyCalculatedTradeData
+  CrossChainReactivelyCalculatedTradeData,
+  TaikoBridgeTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -308,6 +309,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       const changenowId =
         calculatedTrade.trade instanceof ChangenowCrossChainTrade && calculatedTrade.trade.id;
 
+      const taikoTransactionId =
+        calculatedTrade.trade instanceof TaikoBridgeTrade && calculatedTrade.trade.id;
+
       const tradeData: CrossChainRecentTrade = {
         srcTxHash: txHash,
         fromToken,
@@ -319,7 +323,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
         fromAmount: calculatedTrade.trade.from.stringWeiAmount,
         toAmount: calculatedTrade.trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
-        ...(changenowId && { changenowId })
+        ...(changenowId && { changenowId }),
+        ...(taikoTransactionId && { taikoTransactionId, sender: fromAddress })
       };
 
       this.openSwapSchemeModal(calculatedTrade, txHash, timestamp, fromToken, toToken);
@@ -442,6 +447,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
+    const taikoTransactionId =
+      calculatedTrade.trade instanceof TaikoBridgeTrade ? calculatedTrade.trade.id : undefined;
+
     const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
@@ -452,7 +460,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       bridgeType: bridgeProvider,
       timestamp,
       amountOutMin,
-      changenowId
+      changenowId,
+      taikoTransactionId
     };
 
     this.dialogService
