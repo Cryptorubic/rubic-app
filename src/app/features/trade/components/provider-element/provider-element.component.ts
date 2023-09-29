@@ -22,8 +22,6 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) isBest: boolean = false;
 
-  public readonly time: string = '3 Min';
-
   public expanded = false;
 
   constructor() {}

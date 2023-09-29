@@ -53,7 +53,7 @@
     <app-swap-data-element
       *ngLet="getFeeInfo()"
       [feeInfo]="getFeeInfo()"
-      [time]="time"
+      [time]="(providerInfo.averageTime || 3) + ' M'"
     ></app-swap-data-element>
   </div>
 </ng-container>
