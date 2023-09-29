@@ -6,7 +6,7 @@ import { RetrodropStakeModalComponent } from '@features/retrodrop/components/ret
 import { TuiDialogService } from '@taiga-ui/core';
 import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimRound } from '@shared/models/claim/claim-round';
-import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
+import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
@@ -38,14 +38,11 @@ export class RetrodropPageComponent {
     return round.roundNumber;
   }
 
-  public handleClaim(roundData: { claimData: ClaimTokensData; claimRound: number }): void {
+  public handleClaim(roundData: NumberedClaimTokensData): void {
     this.showStakeConfirmModal(roundData);
   }
 
-  public showStakeConfirmModal(roundData: {
-    claimData: ClaimTokensData;
-    claimRound: number;
-  }): Subscription {
+  public showStakeConfirmModal(roundData: NumberedClaimTokensData): Subscription {
     return this.dialogService
       .open(new PolymorpheusComponent(RetrodropStakeModalComponent), {
         size: 's'

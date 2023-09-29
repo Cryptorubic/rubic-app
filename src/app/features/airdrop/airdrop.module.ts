@@ -21,6 +21,7 @@ import { AirdropRoutingModule } from '@features/airdrop/airdrop-routing.module';
 import { AirdropPageComponent } from '@features/airdrop/components/airdrop-page/airdrop-page.component';
 import { AirdropFaqComponent } from '@features/airdrop/components/airdrop-faq/airdrop-faq.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { AirdropApiService } from '@features/airdrop/services/airdrop-api.service';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,6 @@ import { TranslateModule } from '@ngx-translate/core';
     TuiLoaderModule,
     TuiButtonModule
   ],
-  providers: [ApproveScannerService, ClaimPopupService, ClaimWeb3Service]
+  providers: [ApproveScannerService, ClaimPopupService, ClaimWeb3Service, AirdropApiService]
 })
 export class AirdropModule {}

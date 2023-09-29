@@ -2,8 +2,8 @@
 
 .round {
   &__container {
-    margin-right: 13px;
-    padding: 5px;
+    margin-right: var(--tui-padding-m);
+    padding: var(--tui-padding-xs);
 
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
@@ -18,7 +18,7 @@
   }
 
   &__header {
-    padding: 0 0 5px 15px;
+    padding: 0 0 5px var(--tui-padding-l);
 
     font-size: 15px;
   }
@@ -29,7 +29,7 @@
 
   &__footer {
     display: flex;
-    gap: 5px;
+    gap: var(--tui-padding-xs);
     align-items: center;
     justify-content: space-between;
   }
@@ -73,7 +73,7 @@
 
     &-amount {
       display: flex;
-      gap: 10px;
+      gap: var(--tui-padding-m);
       align-items: center;
 
       &-icon {
@@ -111,7 +111,7 @@
 
     &-icon {
       width: 25px;
-      margin-left: 5px;
+      margin-left: var(--tui-padding-xs);
     }
   }
 }

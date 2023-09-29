@@ -20,7 +20,7 @@
 .swap-and-earn {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--tui-padding-s);
 
   &__points {
     position: relative;
@@ -58,12 +58,12 @@
     display: block;
     max-width: 440px;
     margin: 0 auto;
-    padding-right: 12px;
+    padding-right: var(--tui-padding-m);
 
     font-size: 16px;
     line-height: 25px;
     text-align: center;
-    
+
     &-link {
       color: var(--tui-primary);
     }

@@ -4,7 +4,7 @@ import { RetrodropUserInfo } from '@features/retrodrop/models/retrodrop-user-inf
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HttpService } from '@core/services/http/http.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class RetrodropApiService {
   constructor(
     private readonly walletConnectorService: WalletConnectorService,

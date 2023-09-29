@@ -46,11 +46,11 @@
             size="m"
             class="points__button"
             [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
-            [tuiHint]="getButtonHint() | async"
+            [tuiHint]="buttonHint$ | async"
             tuiHintAppearance="onDark"
             (click)="handleWithdraw(points)"
           >
-            {{ getButtonText() | async }}
+            {{ buttonText$ | async }}
           </button>
         </ng-container>
       </ng-container>

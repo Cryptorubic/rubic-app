@@ -46,6 +46,6 @@ export class ClaimWeb3Service {
       .getWeb3Public(newRubicToken.blockchain)
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
 
-    return !!isPaused;
+    return Boolean(isPaused);
   }
 }

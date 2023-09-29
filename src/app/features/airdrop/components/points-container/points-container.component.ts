@@ -3,7 +3,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { map } from 'rxjs/operators';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-points-container',
@@ -18,6 +17,34 @@ export class PointsContainerComponent {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
+  public readonly buttonHint$ = this.points$.pipe(
+    map(points => {
+      if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
+        return 'The withdrawal is already in progress. Minimum withdrawal: 300 RBC.';
+      }
+
+      if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
+        return 'Minimum withdrawal: 300 RBC.';
+      }
+
+      return null;
+    })
+  );
+
+  public readonly buttonText$ = this.points$.pipe(
+    map(points => {
+      if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
+        return 'Withdrawal has been requested';
+      }
+
+      if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
+        return 'Not Enough Points';
+      }
+
+      return 'Request withdrawal';
+    })
+  );
+
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly airdropService: AirdropService,
@@ -26,37 +53,5 @@ export class PointsContainerComponent {
 
   public async handleWithdraw(points: number): Promise<void> {
     await this.airdropService.claimPoints(points);
-  }
-
-  public getButtonHint(): Observable<string> {
-    return this.points$.pipe(
-      map(points => {
-        if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
-          return 'The withdrawal is already in progress. Minimum withdrawal: 300 RBC.';
-        }
-
-        if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
-          return 'Minimum withdrawal: 300 RBC.';
-        }
-
-        return null;
-      })
-    );
-  }
-
-  public getButtonText(): Observable<string> {
-    return this.points$.pipe(
-      map(points => {
-        if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
-          return 'Withdrawal has been requested';
-        }
-
-        if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
-          return 'Not Enough Points';
-        }
-
-        return 'Request withdrawal';
-      })
-    );
   }
 }

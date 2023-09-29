@@ -14,9 +14,7 @@ import { ClaimRound } from '@shared/models/claim/claim-round';
 import { switchTap } from '@shared/utils/utils';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RetrodropService {
   private readonly _fetchUserInfoLoading$ = new BehaviorSubject(false);
 

@@ -14,6 +14,8 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { RetrodropStakeModalComponent } from '@features/retrodrop/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 import { RetrodropRoutingModule } from '@features/retrodrop/retrodrop-routing.module';
 import { RetrodropPageComponent } from '@features/retrodrop/components/retrodrop-page/retrodrop-page.component';
+import { RetrodropApiService } from '@features/retrodrop/services/retrodrop-api.service';
+import { RetrodropService } from '@features/retrodrop/services/retrodrop.service';
 
 @NgModule({
   declarations: [RetrodropPageComponent, RetrodropStakeModalComponent],
@@ -30,6 +32,6 @@ import { RetrodropPageComponent } from '@features/retrodrop/components/retrodrop
     TuiLoaderModule,
     TuiButtonModule
   ],
-  providers: []
+  providers: [RetrodropService, RetrodropApiService]
 })
 export class RetrodropModule {}

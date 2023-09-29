@@ -20,7 +20,7 @@
       .t-content {
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: var(--tui-padding-xs);
       }
     }
   }
@@ -33,7 +33,7 @@
 .retrodrop {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--tui-padding-l);
   width: 100%;
   max-width: 540px;
   height: 425px;

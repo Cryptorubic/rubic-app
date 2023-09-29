@@ -8,7 +8,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HttpService } from '@core/services/http/http.service';
 import { defaultUserClaimInfo } from '@shared/services/token-distribution-services/constants/default-user-claim-info';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class AirdropApiService {
   constructor(
     private readonly walletConnectorService: WalletConnectorService,

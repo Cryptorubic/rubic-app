@@ -5,3 +5,8 @@ export interface ClaimTokensData {
   node: AirdropNode | null;
   proof: string[];
 }
+
+export interface NumberedClaimTokensData {
+  claimData: ClaimTokensData;
+  claimRound: number;
+}
