@@ -6,7 +6,7 @@ import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 const routes: Routes = [
   {
     path: ROUTE_PATH.NONE,
-    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
+    loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
     path: ROUTE_PATH.LIMIT_ORDER,
@@ -58,7 +58,7 @@ const routes: Routes = [
   },
   {
     path: 'trade',
-    loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
     path: ROUTE_PATH.REST,

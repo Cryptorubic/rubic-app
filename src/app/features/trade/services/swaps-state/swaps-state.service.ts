@@ -16,6 +16,7 @@ import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -125,7 +126,8 @@ export class SwapsStateService {
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
-    private readonly walletConnector: WalletConnectorService
+    private readonly walletConnector: WalletConnectorService,
+    private readonly tradePageService: TradePageService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -192,9 +194,11 @@ export class SwapsStateService {
   public clearProviders(): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
+    this.setCalculationProgress(0, 0);
+    this.tradePageService.setProvidersVisibility(false);
   }
 
-  public pickProvider(): void {
+  public pickProvider(isCalculationEnd: boolean): void {
     const currentTrades = this._tradesStore$.getValue();
 
     if (currentTrades.length) {
@@ -226,14 +230,9 @@ export class SwapsStateService {
     } else {
       this.currentTrade = {
         ...this.defaultState,
-        status: TRADE_STATUS.LOADING
+        status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
     }
-  }
-
-  public setTags(): void {
-    // const currentTrades = this._tradesStore$.getValue();
-    // const clearedTags = currentTrades.map(trade => trade);
   }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {

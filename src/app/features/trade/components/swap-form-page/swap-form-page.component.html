@@ -1,6 +1,9 @@
 <app-window-container *ngLet="displayTargetAddressInput$ | async as displayReceiver">
   <ng-container header>
-    Rubic.exchange
+    <div class="form-links">
+      <span>Swap</span>
+      <span>Gas</span>
+    </div>
     <div class="actions">
       <app-refresh-button
         [isRotating$]="isRefreshRotating$"

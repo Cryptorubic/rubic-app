@@ -76,11 +76,10 @@ export class SwapFormPageComponent {
   }
 
   public updateInputValue(formattedAmount: BigNumber): void {
-    if (!formattedAmount?.isNaN()) {
-      this.swapFormService.inputControl.patchValue({
-        fromAmount: new BigNumber(formattedAmount)
-      });
-    }
+    const amount = !formattedAmount?.isNaN() ? new BigNumber(formattedAmount) : null;
+    this.swapFormService.inputControl.patchValue({
+      fromAmount: amount
+    });
   }
 
   public async toggleReceiver(): Promise<void> {

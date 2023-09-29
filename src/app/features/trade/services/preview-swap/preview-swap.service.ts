@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
 import { TransactionStep } from '@features/trade/models/transaction-steps';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AssetSelector } from '@shared/models/asset-selector';
@@ -12,6 +12,8 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
+import { CrossChainTradeType, TX_STATUS, Web3PublicSupportedBlockchain } from 'rubic-sdk';
+import { SdkService } from '@core/services/sdk/sdk.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -71,7 +73,8 @@ export class PreviewSwapService {
   constructor(
     private readonly swapsStateService: SwapsStateService,
     private readonly swapForm: SwapsFormService,
-    private readonly swapsControllerService: SwapsControllerService
+    private readonly swapsControllerService: SwapsControllerService,
+    private readonly sdkService: SdkService
   ) {
     this.handleTransactionState();
   }
@@ -134,17 +137,16 @@ export class PreviewSwapService {
               });
             }
             case 'swapRequest': {
+              let txHash: string;
               return this.swapsControllerService.swap(tradeState, {
-                onHash: (_hash: string) => {
+                onHash: (hash: string) => {
+                  txHash = hash;
                   this._transactionState$.next('sourcePending');
                 },
                 onSwap: () => {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this._transactionState$.next('destinationPending');
-                    setTimeout(() => {
-                      this._transactionState$.next('success');
-                      this._formState$.next('complete');
-                    }, 60_000);
+                    this.initDstTxStatusPolling(txHash, Date.now());
                   } else {
                     this._transactionState$.next('success');
                   }
@@ -161,6 +163,43 @@ export class PreviewSwapService {
             }
           }
         })
+      )
+      .subscribe();
+  }
+
+  public initDstTxStatusPolling(srcHash: string, timestamp: number): void {
+    interval(30_000)
+      .pipe(
+        startWith(-1),
+        switchMap(() => this.tradeState$),
+        switchMap(tradeState => {
+          const amount =
+            'price' in tradeState.trade.toTokenAmountMin
+              ? tradeState.trade.toTokenAmountMin.tokenAmount
+              : tradeState.trade.toTokenAmountMin;
+          return from(
+            this.sdkService.crossChainStatusManager.getCrossChainStatus(
+              {
+                fromBlockchain: tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain,
+                toBlockchain: tradeState.trade.to.blockchain,
+                srcTxHash: srcHash,
+                txTimestamp: timestamp,
+                amountOutMin: amount.toFixed()
+              },
+              tradeState.tradeType as CrossChainTradeType
+            )
+          );
+        }),
+        tap(crossChainStatus => {
+          if (crossChainStatus.dstTxStatus === TX_STATUS.SUCCESS) {
+            this._transactionState$.next('success');
+            this._formState$.next('complete');
+          } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
+            this._transactionState$.next('error');
+            this._formState$.next('complete');
+          }
+        }),
+        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
       )
       .subscribe();
   }

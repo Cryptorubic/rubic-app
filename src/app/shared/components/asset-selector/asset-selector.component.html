@@ -19,11 +19,19 @@
 
     <div class="selector__labels">
       <span class="selector__second-label">{{ visibleAsset.secondLabel }}</span>
-      <span class="selector__main-label">{{ visibleAsset.mainLabel }}</span>
+      <span class="selector__main-label"
+        >{{ visibleAsset.mainLabel }}
+        <img src="assets/images/icons/arrow/arrow-down-white.svg" alt="Select token" />
+      </span>
     </div>
   </ng-container>
 
   <ng-template #emptySelector>
-    <div class="selector__empty">Select Token</div>
+    <div class="selector__empty">
+      <div class="selector__empty-container">
+        Select Token
+        <img src="assets/images/icons/arrow/arrow-down-white.svg" alt="Select token" />
+      </div>
+    </div>
   </ng-template>
 </div>
