@@ -1,99 +1,56 @@
 @use 'src/scss/core' as *;
 
+:host {
+  ::ng-deep {
+    app-window-container {
+      header h5 {
+        justify-content: space-between;
+      }
+    }
+
+    app-login-button button {
+      width: 100%;
+    }
+  }
+}
+
 .statistics {
   position: relative;
 
-  padding: 26px;
-
-  background: var(--form-background);
-  border-radius: 24px;
-
-  @include b($mobile-sm-plus) {
-    padding: 22px 22px 0;
-  }
-
-  &__head {
-    position: relative;
-
-    margin-bottom: 40px;
-
-    @include b($mobile-sm-plus) {
-      margin-bottom: 30px;
-    }
-  }
+  display: block;
+  max-width: 540px;
+  margin: 0 auto;
 
   &__title {
     @include font(18px, 22px, 500, var(--primary-text));
-
-    @include b($mobile-sm-plus) {
-      @include font(16px, 22px, 500, var(--primary-text));
-    }
   }
 
   &__info {
     display: flex;
     justify-content: space-between;
 
-    @include b($tablet) {
-      flex-direction: column;
-      padding: 0;
+    margin-bottom: 20px;
+    padding: 19px 21px;
 
-      border-radius: 22px;
-    }
-  }
-
-  &__refresh {
-    position: absolute;
-    top: 0;
-    right: 0;
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
   }
 
   &__col {
     display: flex;
     flex-direction: column;
-    padding: 0 45px;
-
-    @include b($tablet) {
-      flex-direction: row;
-      margin-bottom: 26px;
-      padding: 0;
-    }
-
-    @include b($mobile-sm-plus) {
-      gap: 20px;
-      padding: 0;
-    }
 
     .statistics__param:first-child {
       margin-bottom: 40px;
-
-      @include b($tablet) {
-        margin-bottom: 0;
-      }
     }
   }
 
   &__param {
-    @include b($tablet) {
-      width: 50%;
-    }
-
-    @include b($mobile-sm-plus) {
-      overflow: hidden;
-    }
-
     &-label {
-      @include font(16px, 19px, 500, var(--secondary-text));
+      @include font(9px, 9px, 500, var(--tui-text-03), 0.45px);
       display: flex;
       align-items: center;
       margin-bottom: 7px;
-
-      @include b($tablet) {
-        margin-bottom: 4px;
-
-        font-size: 14px;
-        line-height: 17px;
-      }
 
       &-hint {
         width: 18px;
@@ -115,21 +72,8 @@
     }
 
     &-value {
-      @include font(22px, 26px, 500, var(--primary-text));
+      @include font(15px, 140%, 500, var(--primary-text), 0.45px);
       transition: 0.4s opacity ease-in-out;
-
-      @include b($tablet) {
-        font-size: 20px;
-        line-height: 24px;
-      }
-
-      @include b($mobile-sm-plus) {
-        max-width: 150px;
-        overflow: hidden;
-
-        font-size: 18px;
-        text-overflow: ellipsis;
-      }
 
       &_loading {
         opacity: 0.4;

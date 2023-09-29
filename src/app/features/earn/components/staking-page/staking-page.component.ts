@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { WalletsModalService } from '@app/core/wallets-modal/services/wallets-modal.service';
 import { RoundStatus } from '../../models/round-status.enum';
 import { StakingService } from '../../services/staking.service';
 
@@ -17,11 +16,7 @@ export class StakingPageComponent {
 
   public readonly needLogin$ = this.stakingService.needLogin$;
 
-  constructor(
-    private readonly router: Router,
-    private readonly stakingService: StakingService,
-    private readonly walletsModalService: WalletsModalService
-  ) {}
+  constructor(private readonly router: Router, private readonly stakingService: StakingService) {}
 
   public toggleAccordion(): void {
     this.accordionState = !this.accordionState;
@@ -29,9 +24,5 @@ export class StakingPageComponent {
 
   public navigateToStakeForm(): void {
     this.router.navigate(['staking', 'new-position']);
-  }
-
-  public login(): void {
-    this.walletsModalService.open().subscribe();
   }
 }

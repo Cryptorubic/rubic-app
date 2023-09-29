@@ -52,7 +52,7 @@ app-deposits {
   margin-top: 20px;
 
   &__link {
-    @include font(16px, 19px, 400, var(--primary-color));
+    @include font(16px, 19px, 400, var(--tui-primary));
     display: flex;
     gap: 5px;
     align-items: center;
@@ -80,7 +80,7 @@ app-deposits {
 .past-campaings {
   ::ng-deep tui-accordion {
     --tui-base-02: transparent;
-    
+
     @include b($tablet) {
       .header {
         min-height: 30px;
@@ -108,7 +108,7 @@ app-deposits {
 
   .staking {
     margin-bottom: 12px;
-    
+
     &__title {
       margin-bottom: 22px;
 
@@ -116,7 +116,7 @@ app-deposits {
       line-height: 22px;
     }
   }
-  
+
   .lp {
     &__title {
       margin-bottom: 22px;

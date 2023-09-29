@@ -3,6 +3,7 @@ import { StatisticsService } from '../../services/statistics.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BehaviorSubject, skip } from 'rxjs';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-statistics',
@@ -27,7 +28,10 @@ export class StatisticsComponent implements OnInit {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  public readonly currentUser$ = this.authService.currentUser$;
+
   constructor(
+    private readonly authService: AuthService,
     private readonly statisticsService: StatisticsService,
     private readonly cdr: ChangeDetectorRef,
     private readonly headerStore: HeaderStore,
