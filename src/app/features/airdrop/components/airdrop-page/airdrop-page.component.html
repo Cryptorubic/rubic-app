@@ -9,7 +9,7 @@
     </tui-loader>
   </app-window-container>
   <app-window-container *ngIf="isAuth$ | async">
-    <ng-container *ngIf="(isParticipant$ | async).is_participant; else notMember">
+    <ng-container *ngIf="(fetchError$ | async) === false; else noResult">
       <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
         <div class="drops__container">
           <tui-scrollbar>
@@ -33,4 +33,10 @@
       >Link</a
     >
   </p>
+</ng-template>
+<ng-template #noResult>
+  <app-no-result
+    label="The server request has failed"
+    description="Please try reloading the page."
+  ></app-no-result>
 </ng-template>

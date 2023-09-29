@@ -13,6 +13,8 @@ export class AirdropPageComponent {
 
   public readonly loadingClaim$ = this.airdropService.fetchUserInfoLoading$;
 
+  public readonly fetchError$ = this.airdropService.fetchError$;
+
   public readonly loadingPoints$ = this.airdropService.fetchUserPointsInfoLoading$;
 
   public readonly isAuth$ = this.authService.currentUser$;

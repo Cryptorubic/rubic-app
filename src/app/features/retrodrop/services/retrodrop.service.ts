@@ -26,6 +26,10 @@ export class RetrodropService {
 
   public readonly rounds$ = this._rounds$.asObservable();
 
+  private readonly _fetchError$ = new BehaviorSubject<boolean>(false);
+
+  public readonly fetchError$ = this._fetchError$.asObservable();
+
   private readonly _isUserParticipantOfRetrodrop$ = new BehaviorSubject(false);
 
   public readonly isUserParticipantOfRetrodrop$ =
@@ -41,18 +45,6 @@ export class RetrodropService {
   }
 
   private subscribeOnWalletChange(): void {
-    // combineLatest([this.authService.currentUser$, this.walletConnectorService.networkChange$])
-    //   .pipe(
-    //     tap(([user, network]) => {
-    //       if (!user || !user.address) {
-    //         return null;
-    //       }
-    //
-    //       this.setUserInfo(user.address, network);
-    //     })
-    //   )
-    //   .subscribe();
-
     this.authService.currentUser$
       .pipe(
         combineLatestWith(this.walletConnectorService.networkChange$),
@@ -80,9 +72,15 @@ export class RetrodropService {
 
           return from(this.setRounds(userAddress, network, retrodropUserInfo));
         }),
-        catchError(() => of())
+        catchError(() => {
+          this._fetchError$.next(true);
+          return of();
+        })
       )
-      .subscribe(() => this._fetchUserInfoLoading$.next(false));
+      .subscribe(() => {
+        this._fetchError$.next(false);
+        this._fetchUserInfoLoading$.next(false);
+      });
   }
 
   private async setRounds(

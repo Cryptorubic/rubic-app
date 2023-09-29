@@ -51,6 +51,10 @@ export class AirdropService {
 
   public readonly rounds$ = this._rounds$.asObservable();
 
+  private readonly _fetchError$ = new BehaviorSubject<boolean>(false);
+
+  public readonly fetchError$ = this._fetchError$.asObservable();
+
   private readonly _airdropUserInfo$ = new BehaviorSubject<AirdropUserClaimInfo>(
     defaultUserClaimInfo
   );
@@ -95,9 +99,15 @@ export class AirdropService {
 
           return from(this.setRounds(airdropUserInfo, network));
         }),
-        catchError(() => of())
+        catchError(() => {
+          this._fetchError$.next(true);
+          return of();
+        })
       )
-      .subscribe(() => this._fetchUserInfoLoading$.next(false));
+      .subscribe(() => {
+        this._fetchUserInfoLoading$.next(false);
+        this._fetchError$.next(false);
+      });
   }
 
   private async setRounds(

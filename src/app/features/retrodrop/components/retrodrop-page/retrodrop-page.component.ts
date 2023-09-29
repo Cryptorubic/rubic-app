@@ -20,6 +20,8 @@ export class RetrodropPageComponent {
 
   public readonly loading$ = this.retrodropService.fetchUserInfoLoading$;
 
+  public readonly fetchError$ = this.retrodropService.fetchError$;
+
   public readonly isUserParticipantOfRetrodrop$ =
     this.retrodropService.isUserParticipantOfRetrodrop$;
 
