@@ -49,7 +49,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
-    rpc: 'https://optimism-mainnet.infura.io'
+    rpc: 'https://rpc.ankr.com/optimism'
   },
   [BLOCKCHAIN_NAME.CRONOS]: {
     name: 'Cronos Mainnet Beta',
