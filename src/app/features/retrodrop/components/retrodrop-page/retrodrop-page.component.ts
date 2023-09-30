@@ -4,10 +4,8 @@ import { RetrodropService } from '@features/retrodrop/services/retrodrop.service
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { RetrodropStakeModalComponent } from '@features/retrodrop/components/retrodrop-stake-modal/retrodrop-stake-modal.component';
 import { TuiDialogService } from '@taiga-ui/core';
-import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { ClaimRound } from '@shared/models/claim/claim-round';
 import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data';
-import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-retrodrop-container',
@@ -25,13 +23,11 @@ export class RetrodropPageComponent {
   public readonly isUserParticipantOfRetrodrop$ =
     this.retrodropService.isUserParticipantOfRetrodrop$;
 
-  public readonly isAuth$ = this.authService.currentUser$;
+  public readonly isAuth$ = this.retrodropService.currentUser$;
 
   constructor(
-    private readonly authService: AuthService,
     private readonly retrodropService: RetrodropService,
-    private readonly dialogService: TuiDialogService,
-    private readonly claimService: ClaimService
+    private readonly dialogService: TuiDialogService
   ) {}
 
   public trackByRoundNumber(_index: number, round: ClaimRound): number {
@@ -48,12 +44,7 @@ export class RetrodropPageComponent {
         size: 's'
       })
       .subscribe(() => {
-        this.claimService.claimTokens(
-          roundData.claimData,
-          () => this.retrodropService.updateRound(roundData.claimRound),
-          false,
-          true
-        );
+        this.retrodropService.claimTokens(roundData.claimData, roundData.claimRound, false, true);
       });
   }
 }

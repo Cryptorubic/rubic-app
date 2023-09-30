@@ -51,7 +51,7 @@ export class PointsContainerComponent {
     private readonly authService: AuthService
   ) {}
 
-  public async handleWithdraw(points: number): Promise<void> {
-    await this.airdropService.claimPoints(points);
+  public async handleWithdraw(points: number, address: string): Promise<void> {
+    await this.airdropService.claimPoints(points, address);
   }
 }

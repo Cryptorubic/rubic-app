@@ -9,11 +9,11 @@ import {
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
-import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { ClaimRound, ClaimStatus } from '@shared/models/claim/claim-round';
 import BigNumber from 'bignumber.js';
 import { setButtonState } from '@shared/utils/claim-button-state';
+import { AirdropService } from '@features/airdrop/services/airdrop.service';
 
 @Component({
   selector: 'app-claim-round-row-container',
@@ -38,10 +38,10 @@ export class ClaimRoundRowComponent {
 
   public isMobile = false;
 
-  public readonly loading$ = this.claimService.claimLoading$;
+  public readonly loading$ = this.airdropService.claimLoading$;
 
   constructor(
-    private readonly claimService: ClaimService,
+    private readonly airdropService: AirdropService,
     private readonly walletModalService: WalletsModalService,
     @Inject(WINDOW) private readonly window: Window
   ) {
@@ -53,7 +53,7 @@ export class ClaimRoundRowComponent {
   public async handleClick(state: ButtonLabel): Promise<void> {
     switch (state) {
       case 'changeNetwork':
-        await this.claimService.changeNetwork();
+        await this.airdropService.changeNetwork();
         break;
       case 'login':
         this.walletModalService.open$();

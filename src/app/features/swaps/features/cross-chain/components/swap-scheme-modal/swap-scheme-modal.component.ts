@@ -139,7 +139,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly sdkService: SdkService,
     private readonly router: Router,
-    private readonly swapAndEarnStateService: AirdropService
+    private readonly airdropService: AirdropService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -157,7 +157,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    this.swapAndEarnStateService.updateSwapToEarnUserPointsInfo();
+    this.airdropService.updateSwapToEarnUserPointsInfo();
     SwapSchemeModalComponent.toggleConfettiBackground('remove');
   }
 

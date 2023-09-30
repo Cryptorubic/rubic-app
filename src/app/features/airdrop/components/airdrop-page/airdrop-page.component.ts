@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
-import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-airdrop-page',
@@ -17,12 +16,9 @@ export class AirdropPageComponent {
 
   public readonly loadingPoints$ = this.airdropService.fetchUserPointsInfoLoading$;
 
-  public readonly isAuth$ = this.authService.currentUser$;
+  public readonly isAuth$ = this.airdropService.currentUser$;
 
   public readonly isParticipant$ = this.airdropService.airdropUserInfo$;
 
-  constructor(
-    private readonly airdropService: AirdropService,
-    private readonly authService: AuthService
-  ) {}
+  constructor(private readonly airdropService: AirdropService) {}
 }

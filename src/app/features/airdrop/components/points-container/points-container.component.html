@@ -48,7 +48,7 @@
             [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
             [tuiHint]="buttonHint$ | async"
             tuiHintAppearance="onDark"
-            (click)="handleWithdraw(points)"
+            (click)="handleWithdraw(points, currentUser.address)"
           >
             {{ buttonText$ | async }}
           </button>

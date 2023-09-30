@@ -3,7 +3,6 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
 import { map } from 'rxjs/operators';
-import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-points-button',
@@ -12,17 +11,13 @@ import { AuthService } from '@core/services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PointsButtonComponent {
-  public readonly points$ = this.swapAndEarnStateService.points$.pipe(
+  public readonly points$ = this.airdropService.points$.pipe(
     map(points => points.pending + points.confirmed)
   );
 
-  public readonly isAuth$ = this.authServices.currentUser$;
+  public readonly isAuth$ = this.airdropService.currentUser$;
 
-  constructor(
-    private readonly router: Router,
-    private readonly authServices: AuthService,
-    private readonly swapAndEarnStateService: AirdropService
-  ) {}
+  constructor(private readonly router: Router, private readonly airdropService: AirdropService) {}
 
   public async navigateToSwapAndEarn(): Promise<void> {
     await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });

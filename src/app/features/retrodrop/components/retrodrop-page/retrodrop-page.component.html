@@ -1,7 +1,7 @@
 <app-window-container class="retrodrop">
   <ng-container header>Retrodrop</ng-container>
   <ng-container *ngIf="isAuth$ | async; else loginButton">
-    <ng-container *ngIf="(fetchError$ | async) === false; else noResult">
+    <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
       <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
         <tui-loader [showLoader]="loading$ | async" [overlay]="true">
           <tui-scrollbar>
@@ -25,7 +25,7 @@
   <p class="retrodrop__not-member">You are not a participant in the retrodrop.</p>
 </ng-template>
 
-<ng-template #noResult>
+<ng-template #serverRequestFailed>
   <app-no-result
     label="The server request has failed"
     description="Please try reloading the page."

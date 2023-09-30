@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  combineLatestWith,
-  firstValueFrom,
-  from,
-  map,
-  Observable,
-  of
-} from 'rxjs';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { BehaviorSubject, from, map, Observable, of } from 'rxjs';
 import { switchIif, switchTap } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
 import {
@@ -19,25 +10,19 @@ import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/
 import { ModalService } from '@core/modals/services/modal.service';
 import { AirdropApiService } from '@features/airdrop/services/airdrop-api.service';
 import { airdropContractAddress } from '@features/airdrop/constants/airdrop-contract-address';
-import { ClaimWeb3Service } from '@shared/services/token-distribution-services/claim-web3.service';
 import { defaultUserClaimInfo } from '@shared/services/token-distribution-services/constants/default-user-claim-info';
-import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainName, Web3Pure } from 'rubic-sdk';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
-import { ClaimRound } from '@shared/models/claim/claim-round';
 import { airdropRounds } from '@features/airdrop/constants/airdrop-rounds';
 import { catchError, tap } from 'rxjs/operators';
+import { ClaimService } from '@shared/services/token-distribution-services/claim.services';
 
 @Injectable({ providedIn: 'root' })
-export class AirdropService {
+export class AirdropService extends ClaimService {
   private readonly defaultPoints: AirdropUserPointsInfo = {
     confirmed: 0,
     pending: 0
   };
-
-  private readonly _fetchUserInfoLoading$ = new BehaviorSubject(false);
-
-  public readonly fetchUserInfoLoading$ = this._fetchUserInfoLoading$.asObservable();
 
   private readonly _fetchUserPointsInfoLoading$ = new BehaviorSubject(false);
 
@@ -47,14 +32,6 @@ export class AirdropService {
 
   public readonly points$ = this._points$.asObservable();
 
-  private readonly _rounds$ = new BehaviorSubject<ClaimRound[]>([]);
-
-  public readonly rounds$ = this._rounds$.asObservable();
-
-  private readonly _fetchError$ = new BehaviorSubject<boolean>(false);
-
-  public readonly fetchError$ = this._fetchError$.asObservable();
-
   private readonly _airdropUserInfo$ = new BehaviorSubject<AirdropUserClaimInfo>(
     defaultUserClaimInfo
   );
@@ -62,37 +39,19 @@ export class AirdropService {
   public readonly airdropUserInfo$ = this._airdropUserInfo$.asObservable();
 
   constructor(
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly httpService: HttpService,
     private readonly dialogService: ModalService,
-    private readonly apiService: AirdropApiService,
-    private readonly web3Service: ClaimWeb3Service,
-    private readonly authService: AuthService
+    private readonly apiService: AirdropApiService
   ) {
+    super();
     this.handleAddressChange();
-    this.subscribeOnWalletChange();
   }
 
-  private subscribeOnWalletChange(): void {
-    this.authService.currentUser$
-      .pipe(
-        combineLatestWith(this.walletConnectorService.networkChange$),
-        tap(([user, network]) => {
-          if (!user || !user.address) {
-            return null;
-          }
-
-          this.setUserInfo(network);
-        })
-      )
-      .subscribe();
-  }
-
-  private setUserInfo(network: BlockchainName): void {
+  protected setUserInfo(network: BlockchainName, address: string): void {
     this._fetchUserInfoLoading$.next(true);
 
     this.apiService
-      .fetchAirdropUserClaimInfo()
+      .fetchAirdropUserClaimInfo(address)
       .pipe(
         switchTap(airdropUserInfo => {
           this._airdropUserInfo$.next(airdropUserInfo);
@@ -116,7 +75,7 @@ export class AirdropService {
   ): Promise<void> {
     const promisesRounds = airdropRounds.map(round => {
       if (airdropUserInfo.round === round.roundNumber) {
-        return this.web3Service
+        return this.claimWeb3Service
           .checkClaimed(airdropContractAddress, airdropUserInfo.index)
           .then(isAlreadyClaimed => ({
             ...round,
@@ -154,32 +113,17 @@ export class AirdropService {
     this._rounds$.next(formattedRounds.reverse());
   }
 
-  public updateRound(roundNumber: number): void {
-    this.rounds$
-      .pipe(
-        map(rounds => {
-          return rounds.map(round => {
-            if (round.roundNumber === roundNumber) {
-              return {
-                ...round,
-                isAlreadyClaimed: true
-              };
-            } else {
-              return round;
-            }
-          });
-        }),
-        tap(updatedRounds => this._rounds$.next(updatedRounds))
-      )
-      .subscribe();
-  }
-
   public updateSwapToEarnUserPointsInfo(): void {
     this._fetchUserPointsInfoLoading$.next(true);
-    this.apiService.fetchAirdropUserPointsInfo().subscribe(points => {
-      this._points$.next(points);
-      this._fetchUserPointsInfoLoading$.next(false);
-    });
+
+    this.walletConnectorService.addressChange$.pipe(
+      tap(address => {
+        this.apiService.fetchAirdropUserPointsInfo(address).subscribe(points => {
+          this._points$.next(points);
+          this._fetchUserPointsInfoLoading$.next(false);
+        });
+      })
+    );
   }
 
   public getSwapAndEarnPointsAmount(): Observable<number> {
@@ -194,11 +138,9 @@ export class AirdropService {
     );
   }
 
-  public async claimPoints(points: number): Promise<void> {
-    const address = this.walletConnectorService.address;
-
+  public async claimPoints(points: number, address: string): Promise<void> {
     if (address) {
-      await firstValueFrom(this.httpService.post(`rewards/withdraw/?address=${address}`));
+      this.httpService.post(`rewards/withdraw/?address=${address}`);
 
       this.dialogService
         .showDialog(SuccessWithdrawModalComponent, {
@@ -217,7 +159,7 @@ export class AirdropService {
       .pipe(
         switchIif(
           Boolean,
-          () => this.apiService.fetchAirdropUserPointsInfo(),
+          address => this.apiService.fetchAirdropUserPointsInfo(address as string),
           () => of(this.defaultPoints)
         )
       )
