@@ -47,14 +47,12 @@ const routes: Routes = [
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
-    path: ROUTE_PATH.SWAP_AND_EARN,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    path: ROUTE_PATH.AIRDROP,
+    loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
   },
   {
     path: ROUTE_PATH.RETRODROP,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    loadChildren: () => import('./features/retrodrop/retrodrop.module').then(m => m.RetrodropModule)
   },
   {
     path: 'trade',

@@ -1,8 +1,8 @@
 import {
-  Component,
-  ChangeDetectionStrategy,
-  Inject,
   AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
   OnDestroy
 } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
@@ -18,7 +18,7 @@ import {
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -47,7 +47,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
+  public readonly points$ = this.airdropPointsService.points$;
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -64,7 +64,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
       }
     >,
     private readonly router: Router,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;
@@ -81,7 +81,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.swapAndEarnStateService.updateSwapToEarnUserPointsInfo();
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     SuccessTxModalComponent.toggleConfettiBackground('remove');
   }
 
@@ -98,12 +98,12 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
-    this.swapAndEarnStateService.updateSwapToEarnUserPointsInfo();
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     this.context.completeWith(null);
   }
 
   public async navigateToSwapAndEarn(): Promise<void> {
-    await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
+    await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });
 
     this.context.completeWith(null);
   }

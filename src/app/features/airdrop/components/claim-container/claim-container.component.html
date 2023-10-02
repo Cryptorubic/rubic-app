@@ -1,0 +1,10 @@
+<div class="claim">
+  <tui-scrollbar>
+    <ng-container *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber">
+      <app-claim-round-row-container
+        [inputRound]="round"
+        (handleClaim)="handleClaim($event)"
+      ></app-claim-round-row-container>
+    </ng-container>
+  </tui-scrollbar>
+</div>

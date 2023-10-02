@@ -1,0 +1,45 @@
+@use '../../../../../scss/core' as *;
+
+:host {
+  display: flex;
+  justify-content: center;
+
+  @include b(900) {
+    ::ng-deep {
+      tui-scrollbar .t-content {
+        margin-top: 0;
+        margin-right: 0;
+      }
+    }
+  }
+
+  ::ng-deep {
+    tui-scrollbar {
+      height: 355px;
+
+      .t-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tui-padding-xs);
+      }
+    }
+  }
+
+  .window-container {
+    padding-right: 0 !important;
+  }
+}
+
+.retrodrop {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-l);
+  width: 100%;
+  max-width: 540px;
+  height: 425px;
+
+  &__not-member {
+    font-size: 16px;
+    text-align: center;
+  }
+}
