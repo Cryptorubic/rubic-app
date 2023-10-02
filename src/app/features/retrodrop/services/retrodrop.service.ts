@@ -27,29 +27,25 @@ export class RetrodropService extends ClaimService {
   protected setUserInfo(network: BlockchainName, userAddress: string): void {
     this._fetchUserInfoLoading$.next(true);
 
-    try {
-      this.retrodropApiService
-        .fetchRetrodropUserInfo(userAddress)
-        .pipe(
-          switchTap(retrodropUserInfo => {
-            this._isUserParticipantOfRetrodrop$.next(
-              retrodropUserInfo.some(round => round.is_participant)
-            );
+    this.retrodropApiService
+      .fetchRetrodropUserInfo(userAddress)
+      .pipe(
+        switchTap(retrodropUserInfo => {
+          this._isUserParticipantOfRetrodrop$.next(
+            retrodropUserInfo.some(round => round.is_participant)
+          );
 
-            return from(this.setRounds(userAddress, network, retrodropUserInfo));
-          }),
-          catchError(() => {
-            this._fetchError$.next(true);
-            return of();
-          })
-        )
-        .subscribe(() => {
-          this._fetchError$.next(false);
-          this._fetchUserInfoLoading$.next(false);
-        });
-    } catch (e) {
-      console.log('1 ', e);
-    }
+          return from(this.setRounds(userAddress, network, retrodropUserInfo));
+        }),
+        catchError(() => {
+          this._fetchError$.next(true);
+          return of();
+        })
+      )
+      .subscribe(() => {
+        this._fetchError$.next(false);
+        this._fetchUserInfoLoading$.next(false);
+      });
   }
 
   private async setRounds(

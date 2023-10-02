@@ -19,11 +19,11 @@ export class PointsContainerComponent {
 
   public readonly buttonHint$ = this.points$.pipe(
     map(points => {
-      if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
+      if (points.requested_to_withdraw > 0 && points.confirmed <= 300) {
         return 'The withdrawal is already in progress. Minimum withdrawal: 300 RBC.';
       }
 
-      if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
+      if (points.requested_to_withdraw === 0 && points.confirmed <= 300) {
         return 'Minimum withdrawal: 300 RBC.';
       }
 
@@ -33,11 +33,11 @@ export class PointsContainerComponent {
 
   public readonly buttonText$ = this.points$.pipe(
     map(points => {
-      if (points.requested_to_withdraw > 0 && !(points.confirmed >= 300)) {
+      if (points.requested_to_withdraw > 0 && points.confirmed <= 300) {
         return 'Withdrawal has been requested';
       }
 
-      if (points.requested_to_withdraw === 0 && !(points.confirmed >= 300)) {
+      if (points.requested_to_withdraw === 0 && points.confirmed <= 300) {
         return 'Not Enough Points';
       }
 
