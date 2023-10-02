@@ -1,7 +1,7 @@
 import { BehaviorSubject, combineLatestWith, lastValueFrom, Subscription } from 'rxjs';
 import { ROUTE_PATH } from '@shared/constants/common/links';
-import { ClaimWeb3Service } from '@shared/services/token-distribution-services/claim-web3.service';
-import { ClaimPopupService } from '@shared/services/token-distribution-services/claim-popup.service';
+import { ClaimWeb3Service } from '@shared/services/claim-services/claim-web3.service';
+import { ClaimPopupService } from '@shared/services/claim-services/claim-popup.service';
 import { Router } from '@angular/router';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { first, map, tap } from 'rxjs/operators';
@@ -13,7 +13,7 @@ import { ClaimRound } from '@shared/models/claim/claim-round';
 import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainName } from 'rubic-sdk';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export abstract class ClaimService {
   protected readonly claimWeb3Service = inject(ClaimWeb3Service);
 
@@ -45,11 +45,7 @@ export abstract class ClaimService {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
-  protected constructor() {
-    this.subscribeOnWalletChange();
-  }
-
-  private subscribeOnWalletChange(): void {
+  protected subscribeOnWalletChange(): void {
     this.authService.currentUser$
       .pipe(
         combineLatestWith(this.walletConnectorService.networkChange$),

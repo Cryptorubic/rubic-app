@@ -5,7 +5,7 @@ import {
   AirdropUserPointsInfo
 } from '@features/airdrop/models/airdrop-user-info';
 import { HttpService } from '@core/services/http/http.service';
-import { defaultUserClaimInfo } from '@shared/services/token-distribution-services/constants/default-user-claim-info';
+import { defaultUserClaimInfo } from '@shared/services/claim-services/constants/default-user-claim-info';
 
 @Injectable()
 export class AirdropApiService {

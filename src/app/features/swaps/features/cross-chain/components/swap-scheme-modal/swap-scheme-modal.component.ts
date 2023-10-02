@@ -51,7 +51,7 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { AirdropService } from '@features/airdrop/services/airdrop.service';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Component({
   selector: 'polymorpheus-swap-scheme-modal',
@@ -139,7 +139,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly sdkService: SdkService,
     private readonly router: Router,
-    private readonly airdropService: AirdropService
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     this.setTradeData(this.context.data);
   }
@@ -157,7 +157,7 @@ export class SwapSchemeModalComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    this.airdropService.updateSwapToEarnUserPointsInfo();
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     SwapSchemeModalComponent.toggleConfettiBackground('remove');
   }
 

@@ -16,6 +16,7 @@ export class RetrodropApiService {
         address: address
       });
     } catch (error) {
+      console.log('2 ', error);
       return of([]);
     }
   }

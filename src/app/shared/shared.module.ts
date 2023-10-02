@@ -79,6 +79,8 @@ import { InputOutputContainerComponent } from './components/input-output-contain
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
 import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 
 @NgModule({
   declarations: [
@@ -221,6 +223,14 @@ import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim
     NoResultComponent,
     ClaimRoundRowComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
+  providers: [
+    ScannerLinkPipe,
+    WithRoundPipe,
+    BigNumberFormatPipe,
+    TimeGuard,
+    SafeSanitizerPipe,
+    AirdropPointsService,
+    AirdropPointsApiService
+  ]
 })
 export class SharedModule {}

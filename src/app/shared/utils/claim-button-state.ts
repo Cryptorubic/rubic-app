@@ -1,7 +1,7 @@
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
 import { ClaimStatus } from '@shared/models/claim/claim-round';
-import { ClaimName } from '@shared/services/token-distribution-services/models/claim-name';
+import { ClaimName } from '@shared/services/claim-services/models/claim-name';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 
 const buttonStateNameMap: Record<ButtonLabel, string> = {

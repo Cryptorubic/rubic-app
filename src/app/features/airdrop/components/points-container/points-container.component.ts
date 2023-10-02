@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { map } from 'rxjs/operators';
-import { AirdropService } from '@features/airdrop/services/airdrop.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Component({
   selector: 'app-points-container',
@@ -11,7 +11,7 @@ import { AuthService } from '@core/services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PointsContainerComponent {
-  public readonly points$ = this.airdropService.points$;
+  public readonly points$ = this.airdropPointsService.points$;
 
   public readonly isLoggedIn$ = this.walletConnectorService.addressChange$.pipe(map(Boolean));
 
@@ -47,11 +47,11 @@ export class PointsContainerComponent {
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly airdropService: AirdropService,
+    private readonly airdropPointsService: AirdropPointsService,
     private readonly authService: AuthService
   ) {}
 
   public async handleWithdraw(points: number, address: string): Promise<void> {
-    await this.airdropService.claimPoints(points, address);
+    await this.airdropPointsService.claimPoints(points, address);
   }
 }

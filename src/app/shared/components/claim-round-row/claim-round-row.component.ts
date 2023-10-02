@@ -13,7 +13,7 @@ import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data'
 import { ClaimRound, ClaimStatus } from '@shared/models/claim/claim-round';
 import BigNumber from 'bignumber.js';
 import { setButtonState } from '@shared/utils/claim-button-state';
-import { AirdropService } from '@features/airdrop/services/airdrop.service';
+import { ClaimService } from '@shared/services/claim-services/claim.services';
 
 @Component({
   selector: 'app-claim-round-row-container',
@@ -38,10 +38,10 @@ export class ClaimRoundRowComponent {
 
   public isMobile = false;
 
-  public readonly loading$ = this.airdropService.claimLoading$;
+  public readonly loading$ = this.claimService.claimLoading$;
 
   constructor(
-    private readonly airdropService: AirdropService,
+    private readonly claimService: ClaimService,
     private readonly walletModalService: WalletsModalService,
     @Inject(WINDOW) private readonly window: Window
   ) {
@@ -53,7 +53,7 @@ export class ClaimRoundRowComponent {
   public async handleClick(state: ButtonLabel): Promise<void> {
     switch (state) {
       case 'changeNetwork':
-        await this.airdropService.changeNetwork();
+        await this.claimService.changeNetwork();
         break;
       case 'login':
         this.walletModalService.open$();

@@ -53,8 +53,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { AirdropService } from '@features/airdrop/services/airdrop.service';
 import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -82,7 +82,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
-    private readonly swapAndEarnStateService: AirdropService
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     super('cross-chain-routing');
   }
@@ -444,7 +444,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       amountOutMin,
       changenowId,
       ...(this.isSwapAndEarnSwap(calculatedTrade) && {
-        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+        points: await firstValueFrom(this.airdropPointsService.getSwapAndEarnPointsAmount())
       })
     };
 

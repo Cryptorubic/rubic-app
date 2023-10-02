@@ -18,7 +18,7 @@ import {
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { AirdropService } from '@features/airdrop/services/airdrop.service';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -47,7 +47,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.airdropStateService.points$;
+  public readonly points$ = this.airdropPointsService.points$;
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -64,7 +64,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
       }
     >,
     private readonly router: Router,
-    private readonly airdropStateService: AirdropService
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;
@@ -81,7 +81,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.airdropStateService.updateSwapToEarnUserPointsInfo();
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     SuccessTxModalComponent.toggleConfettiBackground('remove');
   }
 
@@ -98,7 +98,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
-    this.airdropStateService.updateSwapToEarnUserPointsInfo();
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     this.context.completeWith(null);
   }
 

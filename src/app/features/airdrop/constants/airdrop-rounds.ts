@@ -1,5 +1,5 @@
 import { ClaimRound } from '@shared/models/claim/claim-round';
-import { DefaultRoundInfo } from '@shared/services/token-distribution-services/constants/default-round-info';
+import { DefaultRoundInfo } from '@shared/services/claim-services/constants/default-round-info';
 
 export const airdropRounds: ClaimRound[] = [
   {
