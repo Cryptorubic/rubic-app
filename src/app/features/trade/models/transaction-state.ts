@@ -1,0 +1,11 @@
+import { BlockchainName } from 'rubic-sdk';
+import { TransactionStep } from '@features/trade/models/transaction-steps';
+
+export interface TransactionState {
+  readonly step: TransactionStep;
+  readonly data: {
+    hash?: string;
+    toBlockchain?: BlockchainName;
+    wrongNetwork?: boolean;
+  };
+}

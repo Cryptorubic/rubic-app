@@ -52,8 +52,15 @@
         />
       </a>
 
-      <button [cdkCopyToClipboard]="state.wallet">
-        <div class="image" inlineSVG="assets/images/swaps/swaps-info/copy-icon.svg"></div>
+      <button [cdkCopyToClipboard]="state.wallet" (cdkCopyToClipboardCopied)="copyToClipboard()">
+        <div
+          class="image"
+          [inlineSVG]="
+            isWalletCopied
+              ? 'assets/images/swaps/swaps-info/tick.svg'
+              : 'assets/images/swaps/swaps-info/copy-icon.svg'
+          "
+        ></div>
       </button>
     </div>
   </app-transaction-details-element>

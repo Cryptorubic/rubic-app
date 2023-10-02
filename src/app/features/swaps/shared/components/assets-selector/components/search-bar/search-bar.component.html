@@ -5,6 +5,7 @@
     (ngModelChange)="onQueryChanges($event)"
     [tuiTextfieldIcon]="'tuiIconSearchLarge'"
     [tuiTextfieldSize]="'m'"
+    [tuiTextfieldLabelOutside]="true"
   >
     {{ searchBarText$ | async | translate }}
   </tui-input>

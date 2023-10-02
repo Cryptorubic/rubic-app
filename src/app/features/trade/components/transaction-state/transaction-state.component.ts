@@ -24,26 +24,16 @@ export class TransactionStateComponent {
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
+    if (value.needApprove) {
+      steps.push(transactionStep.approvePending);
+    }
     if (value.type === 'swap') {
-      if (value.needApprove) {
-        steps.push(transactionStep.approveRequest);
-        steps.push(transactionStep.approvePending);
-      }
-      steps.push(
-        transactionStep.swapRequest,
-        transactionStep.sourcePending,
-        transactionStep.success
-      );
+      steps.push(transactionStep.swapRequest, transactionStep.sourcePending);
     } else {
-      if (value.needApprove) {
-        steps.push(transactionStep.approveRequest);
-        steps.push(transactionStep.approvePending);
-      }
       steps.push(
         transactionStep.swapRequest,
         transactionStep.sourcePending,
-        transactionStep.destinationPending,
-        transactionStep.success
+        transactionStep.destinationPending
       );
     }
     this.steps = steps.map(el => ({
@@ -57,12 +47,11 @@ export class TransactionStateComponent {
       idle: 'Swap',
       error: 'error',
       approveReady: 'Approve',
-      approveRequest: 'Sign Transaction',
-      approvePending: 'Approve processing',
+      approvePending: 'Manage allowance',
       swapReady: 'Swap',
-      swapRequest: 'Sign Transaction',
-      sourcePending: 'Transaction in process',
-      destinationPending: 'Pending on target network',
+      swapRequest: 'Transaction Sign',
+      sourcePending: 'Waiting for transaction',
+      destinationPending: 'Waiting for complete in destination chain',
       success: 'Success swap'
     };
     return map[state];

@@ -123,7 +123,7 @@ export class OnChainService {
             slippageTolerance,
             disableMultihops,
             deadlineMinutes,
-            useProxy: false || useProxy
+            useProxy: useProxy
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(

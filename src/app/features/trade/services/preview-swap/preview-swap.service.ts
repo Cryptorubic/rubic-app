@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
-import { TransactionStep } from '@features/trade/models/transaction-steps';
 import { first, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -12,8 +11,15 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
-import { CrossChainTradeType, TX_STATUS, Web3PublicSupportedBlockchain } from 'rubic-sdk';
+import {
+  BlockchainName,
+  CrossChainTradeType,
+  TX_STATUS,
+  Web3PublicSupportedBlockchain
+} from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
+import { TransactionState } from '@features/trade/models/transaction-state';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -33,7 +39,14 @@ export class PreviewSwapService {
 
   public readonly formState$ = this._formState$.asObservable();
 
-  private readonly _transactionState$ = new BehaviorSubject<TransactionStep>('idle');
+  private readonly _transactionState$ = new BehaviorSubject<TransactionState>({
+    step: 'idle',
+    data: {}
+  });
+
+  private get transactionState(): TransactionState {
+    return this._transactionState$.getValue();
+  }
 
   public readonly transactionState$ = this._transactionState$.asObservable();
 
@@ -74,9 +87,11 @@ export class PreviewSwapService {
     private readonly swapsStateService: SwapsStateService,
     private readonly swapForm: SwapsFormService,
     private readonly swapsControllerService: SwapsControllerService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.handleTransactionState();
+    this.subscribeOnNetworkChange();
   }
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -92,7 +107,7 @@ export class PreviewSwapService {
     };
   }
 
-  public setNextTxState(state: TransactionStep): void {
+  public setNextTxState(state: TransactionState): void {
     this._transactionState$.next(state);
   }
 
@@ -108,31 +123,32 @@ export class PreviewSwapService {
   }
 
   public startSwap(): void {
-    this._transactionState$.next('swapRequest');
+    this._transactionState$.next({ step: 'swapRequest', data: this.transactionState.data });
   }
 
   public startApprove(): void {
-    this._transactionState$.next('approveRequest');
+    this._transactionState$.next({ step: 'approvePending', data: this.transactionState.data });
   }
-
-  public handleTransactionSign(): void {}
 
   private handleTransactionState(): void {
     this.transactionState$
       .pipe(
         switchMap(state => forkJoin([this.tradeState$, of(state)])),
         switchMap(([tradeState, txState]) => {
-          switch (txState) {
-            case 'approveRequest': {
+          switch (txState.step) {
+            case 'approvePending': {
               return this.swapsControllerService.approve(tradeState, {
-                onHash: (_hash: string) => {
-                  this._transactionState$.next('approvePending');
-                },
                 onSwap: () => {
-                  this._transactionState$.next('swapRequest');
+                  this._transactionState$.next({
+                    step: 'swapRequest',
+                    data: this.transactionState.data
+                  });
                 },
                 onError: () => {
-                  this._transactionState$.next('approveReady');
+                  this._transactionState$.next({
+                    step: 'approveReady',
+                    data: this.transactionState.data
+                  });
                 }
               });
             }
@@ -141,20 +157,30 @@ export class PreviewSwapService {
               return this.swapsControllerService.swap(tradeState, {
                 onHash: (hash: string) => {
                   txHash = hash;
-                  this._transactionState$.next('sourcePending');
+                  this._transactionState$.next({
+                    step: 'sourcePending',
+                    data: this.transactionState.data
+                  });
                 },
                 onSwap: () => {
                   if (tradeState.trade instanceof CrossChainTrade) {
-                    this._transactionState$.next('destinationPending');
-                    this.initDstTxStatusPolling(txHash, Date.now());
+                    this._transactionState$.next({
+                      step: 'destinationPending',
+                      data: this.transactionState.data
+                    });
+                    this.initDstTxStatusPolling(txHash, Date.now(), tradeState.trade.to.blockchain);
                   } else {
-                    this._transactionState$.next('success');
+                    this._transactionState$.next({
+                      step: 'success',
+                      data: { hash: txHash, toBlockchain: tradeState.trade.to.blockchain }
+                    });
                   }
-
-                  // @TODO
                 },
                 onError: () => {
-                  this._transactionState$.next('swapReady');
+                  this._transactionState$.next({
+                    step: 'swapReady',
+                    data: this.transactionState.data
+                  });
                 }
               });
             }
@@ -167,7 +193,11 @@ export class PreviewSwapService {
       .subscribe();
   }
 
-  public initDstTxStatusPolling(srcHash: string, timestamp: number): void {
+  public initDstTxStatusPolling(
+    srcHash: string,
+    timestamp: number,
+    toBlockchain: BlockchainName
+  ): void {
     interval(30_000)
       .pipe(
         startWith(-1),
@@ -192,15 +222,43 @@ export class PreviewSwapService {
         }),
         tap(crossChainStatus => {
           if (crossChainStatus.dstTxStatus === TX_STATUS.SUCCESS) {
-            this._transactionState$.next('success');
+            this._transactionState$.next({
+              step: 'success',
+              data: {
+                hash: crossChainStatus.dstTxHash,
+                toBlockchain
+              }
+            });
             this._formState$.next('complete');
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
-            this._transactionState$.next('error');
+            this._transactionState$.next({ step: 'error', data: this.transactionState.data });
             this._formState$.next('complete');
           }
         }),
         takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
       )
       .subscribe();
+  }
+
+  private subscribeOnNetworkChange(): void {
+    this.walletConnectorService.networkChange$
+      .pipe(
+        startWith(this.walletConnectorService.network),
+        switchMap(network => forkJoin(of(network), this.tradeState$))
+      )
+      .subscribe(([network, trade]) => {
+        const tokenBlockchain = trade.trade.from.blockchain;
+        if (network !== tokenBlockchain) {
+          this._transactionState$.next({
+            ...this._transactionState$.value,
+            data: { wrongNetwork: true }
+          });
+        } else {
+          this._transactionState$.next({
+            ...this._transactionState$.value,
+            data: { ...this.transactionState.data, wrongNetwork: false }
+          });
+        }
+      });
   }
 }

@@ -3,7 +3,6 @@ export const transactionStep = {
   error: 'error',
 
   approveReady: 'approveReady',
-  approveRequest: 'approveRequest',
   approvePending: 'approvePending',
 
   swapReady: 'swapReady',

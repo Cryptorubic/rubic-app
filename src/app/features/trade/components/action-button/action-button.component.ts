@@ -5,7 +5,6 @@ import { map, startWith } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
-import { EvmBlockchainName } from 'rubic-sdk';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
@@ -38,13 +37,6 @@ export class ActionButtonComponent {
           action: this.connectWallet.bind(this)
         };
       }
-      if (wrongBlockchain) {
-        return {
-          type: 'action',
-          text: 'Switch Blockchain',
-          action: this.switchChain.bind(this)
-        };
-      }
       if (notEnoughBalance) {
         return {
           type: 'error',
@@ -52,14 +44,11 @@ export class ActionButtonComponent {
           action: () => {}
         };
       }
-      if (currentTrade.status === TRADE_STATUS.READY_TO_APPROVE) {
-        return {
-          type: 'action',
-          text: 'Approve',
-          action: this.approve.bind(this)
-        };
-      }
-      if (currentTrade.status === TRADE_STATUS.READY_TO_SWAP) {
+      if (
+        currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
+        currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
+        wrongBlockchain
+      ) {
         return {
           type: 'action',
           text: 'Preview swap',
@@ -103,11 +92,6 @@ export class ActionButtonComponent {
 
   private swap(): void {
     this.tradePageService.setState('preview');
-  }
-
-  private async switchChain(): Promise<void> {
-    const blockchain = this.swapsFormService.inputValue.fromBlockchain;
-    await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
   }
 
   private connectWallet(): void {

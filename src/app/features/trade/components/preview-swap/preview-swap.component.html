@@ -8,12 +8,13 @@
   <ng-container header>
     <span class="back-button" (click)="backToForm()">
       <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+      <ng-container *ngIf="state.transaction.step === 'idle'">Preview Swap</ng-container>
+      <ng-container *ngIf="state.transaction.step === 'success'">Success Swap</ng-container>
+      <ng-container
+        *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+        >Swap</ng-container
+      >
     </span>
-    <ng-container *ngIf="state.transaction === 'idle'">Preview Swap</ng-container>
-    <ng-container *ngIf="state.transaction === 'success'">Success Swap</ng-container>
-    <ng-container *ngIf="state.transaction !== 'idle' && state.transaction !== 'success'"
-      >Swap</ng-container
-    >
   </ng-container>
   <ng-container>
     <div class="preview">
@@ -37,7 +38,9 @@
           </div>
           <div class="preview__amount-container">
             <div class="preview__token-amount">
-              {{ state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}
+              {{
+                state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+              }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
             </div>
             <div
               *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
@@ -46,18 +49,18 @@
               ~ ${{ amount }}&nbsp;-&nbsp;
             </div>
             <div class="preview__token-info">
-              {{ state.tradeInfo.fromAsset.mainLabel }} on
+              on
               {{ state.tradeInfo.fromAsset.secondLabel }}
             </div>
           </div>
         </div>
 
         <app-route-element
-          *ngIf="state.transaction === 'idle'"
+          *ngIf="state.transaction.step === 'idle'"
           [routes]="state.tradeState?.routes || []"
         ></app-route-element>
         <app-transaction-state
-          *ngIf="state.transaction !== 'idle' && state.transaction !== 'success'"
+          *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
           [transactionData]="{
             type:
               state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
@@ -65,7 +68,7 @@
                 : 'bridge',
             needApprove: state.tradeState.needApprove
           }"
-          [state]="state.transaction"
+          [state]="state.transaction.step"
         ></app-transaction-state>
 
         <div class="preview__io-container">
@@ -99,34 +102,38 @@
         </div>
       </div>
 
-      <div *ngIf="state.transaction !== 'success'" class="preview__swap-info">
+      <div *ngIf="state.transaction.step !== 'success'" class="preview__swap-info">
         <app-swap-data-element
           [feeInfo]="state.tradeState?.feeInfo || null"
           [time]="time"
         ></app-swap-data-element>
       </div>
 
-      <div *ngIf="state.transaction === 'success'" class="preview__buttons">
-        <button
+      <div *ngIf="state.transaction.step === 'success'" class="preview__buttons">
+        <a
           tuiButton
           appearance="primary"
           type="button"
           size="m"
+          [safetyLink]="
+            state.transaction.data.hash
+              | scannerLink : state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
+          "
           (click)="navigateToExplorer()"
         >
           Explorer
-        </button>
+        </a>
 
         <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToHistory()">
           See Details >
         </button>
       </div>
 
-      <div *ngIf="state.transaction !== 'success'" class="preview__transaction-details">
+      <div *ngIf="state.transaction.step !== 'success'" class="preview__transaction-details">
         <app-transaction-details></app-transaction-details>
       </div>
 
-      <div *ngIf="state.transaction === 'success'" class="preview__success-info">
+      <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
         <app-success-swap-info></app-success-swap-info>
       </div>
     </div>

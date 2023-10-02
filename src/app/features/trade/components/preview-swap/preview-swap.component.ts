@@ -6,9 +6,12 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
 import { map } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
-import { FeeInfo } from 'rubic-sdk';
+import { EvmBlockchainName, FeeInfo } from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { Router } from '@angular/router';
+import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -40,39 +43,46 @@ export class PreviewSwapComponent {
     map(el => {
       const state = {
         action: (): void => {},
-        label: TransactionStateComponent.getLabel(el),
+        label: TransactionStateComponent.getLabel(el.step),
         disabled: true
       };
-      if (el === transactionStep.approveReady) {
+      if (el.step === transactionStep.approveReady) {
         state.disabled = false;
         state.action = this.approve.bind(this);
-      }
-      if (el === transactionStep.swapReady) {
+      } else if (el.step === transactionStep.swapReady) {
         state.disabled = false;
         state.action = this.swap.bind(this);
-      }
-      if (el === transactionStep.idle) {
+      } else if (el.step === transactionStep.idle) {
         state.disabled = false;
         state.action = this.startTrade.bind(this);
-      }
-      if (el === transactionStep.success) {
+      } else if (el.step === transactionStep.success) {
         state.disabled = false;
         state.label = 'Done';
         state.action = this.backToForm.bind(this);
+      }
+
+      if (el.data?.wrongNetwork) {
+        state.disabled = false;
+        state.action = this.switchChain.bind(this);
+        state.label = `Change network`;
       }
       return state;
     })
   );
 
+  protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly swapsFormService: SwapsFormService,
+    private readonly walletConnector: WalletConnectorService
   ) {}
 
   public backToForm(): void {
     this.tradePageService.setState('form');
-    this.previewSwapService.setNextTxState('idle');
+    this.previewSwapService.setNextTxState({ step: 'idle', data: {} });
   }
 
   public async startTrade(): Promise<void> {
@@ -80,7 +90,7 @@ export class PreviewSwapComponent {
   }
 
   public async swap(): Promise<void> {
-    await this.previewSwapService.startSwap();
+    this.previewSwapService.startSwap();
   }
 
   public async approve(): Promise<void> {
@@ -93,5 +103,10 @@ export class PreviewSwapComponent {
 
   public async navigateToExplorer(): Promise<void> {
     alert('Navigate to Explorer');
+  }
+
+  private async switchChain(): Promise<void> {
+    const blockchain = this.swapsFormService.inputValue.fromBlockchain;
+    await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
   }
 }
