@@ -72,7 +72,7 @@
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidityCCR": "這筆交易的流動性不足",
     "insufficientLiquidityIT": "這筆交易的流動性不足。",
-    "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
+    "oneinchRefreshError": "1inch 目前不可用。 請嘗試刷新交易。",
     "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
     "chooseSupportedBridge": "選擇支持的網橋",
@@ -101,7 +101,8 @@
     "noSelectedToken": "选择令牌",
     "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "关于",
@@ -292,10 +293,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "gasRefund": {
@@ -515,7 +515,7 @@
       "see": "看 ",
       "transactionDetailsLink": "交易明細",
       "itWillAppearsIn": ". 它會出現在 ",
-      "myTradesLink":"很快頁面",
+      "myTradesLink": "很快頁面",
       "pageSoon": " 我的交易.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
@@ -672,10 +672,11 @@
       "staked": "Staked",
       "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
+      "changeNetwork": "Change Network",
       "incorrectAddressError": "Entered address is incorrect",
-      "notParticipant": "You are not a participant",
-      "closed": "Closed"
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
@@ -691,6 +692,18 @@
     "modals": {
       "success": "Your tokens are on the way!",
       "explorerLink": "Check the transaction on explorer."
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }

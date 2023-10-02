@@ -72,7 +72,7 @@
     "notSupportedBridge": "Выбранный мост не поддерживается. Пожалуйста, выберите поддерживаемый мост.",
     "insufficientLiquidityCCR": "Недостаточная ликвидность для этой сделки",
     "insufficientLiquidityIT": "Недостаточная ликвидность для этой сделки.",
-    "oneinchRefreshError":  "1inch в настоящее время недоступен. Пожалуйста, попробуйте обновить сделку.",
+    "oneinchRefreshError": "1inch в настоящее время недоступен. Пожалуйста, попробуйте обновить сделку.",
     "1inchNotSupportedToken": "1inch не поддерживает один из введенных токенов.",
     "cancelDeadline": "Ваша транзакция была отменена, поскольку срок транзакции истек. Пожалуйста, увеличьте срок транзакции или количество газа.",
     "chooseSupportedBridge": "Выберите поддерживаемый мост",
@@ -101,7 +101,8 @@
     "noSelectedToken": "Выберите Токен",
     "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются."
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "О компании",
@@ -292,10 +293,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "tradePage": {
@@ -513,9 +513,9 @@
     },
     "successTxModal": {
       "see": "See ",
-      "transactionDetailsLink":"transaction details",
+      "transactionDetailsLink": "transaction details",
       "itWillAppearsIn": ". It will appears in ",
-      "myTradesLink":"My trades",
+      "myTradesLink": "My trades",
       "pageSoon": " page soon.",
       "title": "Транзакция успешно отправлена!",
       "ccrTitle": "Транзакция в исходной сети успешно отправлена!",
@@ -558,7 +558,7 @@
       "walletAddress": "Адрес кошелька в блокчейне TRON, на который будут предоставляться токены."
     },
     "crossChainRouting": {
-      "autoRefreshTitle":  "Автообновление",
+      "autoRefreshTitle": "Автообновление",
       "autoRefresh": "Обновление курса каждые 30 секунд.",
       "showReceiverAddressTitle": "Показать адрес получателя",
       "showReceiverAddress": "Показать адрес получателя",
@@ -672,10 +672,11 @@
       "staked": "Staked",
       "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
+      "changeNetwork": "Change Network",
       "incorrectAddressError": "Entered address is incorrect",
-      "notParticipant": "You are not a participant",
-      "closed": "Closed"
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
@@ -691,6 +692,18 @@
     "modals": {
       "success": "Your tokens are on the way!",
       "explorerLink": "Check the transaction on explorer."
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }
