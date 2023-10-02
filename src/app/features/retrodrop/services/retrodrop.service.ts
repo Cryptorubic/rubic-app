@@ -37,6 +37,7 @@ export class RetrodropService extends ClaimService {
 
           return from(this.setRounds(userAddress, network, retrodropUserInfo));
         }),
+        // @TODO refactoring _fetchError$ logic
         catchError(() => {
           this._fetchError$.next(true);
           return of();

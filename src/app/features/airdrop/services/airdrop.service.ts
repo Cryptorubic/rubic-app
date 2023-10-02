@@ -35,6 +35,7 @@ export class AirdropService extends ClaimService {
 
           return from(this.setRounds(airdropUserInfo, network));
         }),
+        // @TODO refactoring _fetchError$ logic
         catchError(() => {
           this._fetchError$.next(true);
           return of();
