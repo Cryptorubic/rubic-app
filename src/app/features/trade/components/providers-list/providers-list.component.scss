@@ -11,10 +11,7 @@ h5 {
 }
 
 .providers-list {
-  display: flex;
-  flex-direction: column;
-
-  max-height: 455px;
+  height: 455px;
   margin-right: -10px;
 }
 
@@ -29,7 +26,7 @@ h5 {
   }
 
   .t-bar {
-    max-height: 455px;
+    height: 455px;
     margin-right: -2px;
   }
 }

@@ -13,6 +13,10 @@
   }
 
   &__main-label {
+    display: flex;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+
     color: white;
     font-weight: 700;
     font-size: 21px;
@@ -51,21 +55,32 @@
     border-radius: 100%;
   }
 
+  &__empty-container {
+    position: relative;
+    z-index: 1;
+  }
+
   &__empty {
     position: relative;
 
     display: flex;
+    gap: var(--tui-padding-xs);
     align-items: center;
     justify-content: center;
     width: 135px;
     height: 100%;
 
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+
     background: var(--tui-secondary);
-    border-radius: 16px 0 0 16px;
+    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
     &::after {
       position: absolute;
       right: -25px;
+      z-index: 0;
 
       width: 50px;
       height: 100%;

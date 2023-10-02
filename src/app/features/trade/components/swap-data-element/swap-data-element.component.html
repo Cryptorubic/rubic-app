@@ -1,14 +1,14 @@
 <div class="provider-info">
   <div *ngIf="feeInfo?.provider?.cryptoFee.amount?.gt(0)" class="provider-info__element">
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
-    <div class="">
+    <div>
       {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
       {{ feeInfo.provider.cryptoFee.tokenSymbol }}
     </div>
   </div>
 
   <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0)" class="provider-info__element">
-    <div>$</div>
+    <img src="assets/images/icons/money.svg" alt="Fee" />
     <div>
       {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
       {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}

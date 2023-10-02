@@ -10,5 +10,5 @@ import { FeeInfo } from 'rubic-sdk';
 export class SwapDataElementComponent {
   @Input({ required: true }) feeInfo: FeeInfo | null;
 
-  @Input({ required: true }) time: string;
+  @Input({ required: true }) time: string | number;
 }

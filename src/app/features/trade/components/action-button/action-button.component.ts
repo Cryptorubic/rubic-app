@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -80,7 +80,11 @@ export class ActionButtonComponent {
           action: () => {}
         };
       }
-      debugger;
+    }),
+    startWith({
+      type: 'error',
+      text: 'Select tokens',
+      action: () => {}
     })
   );
 

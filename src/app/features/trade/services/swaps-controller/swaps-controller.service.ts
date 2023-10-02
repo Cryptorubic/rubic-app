@@ -43,15 +43,11 @@ export class SwapsControllerService {
    */
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
-      this.startRecalculation();
+      this.startRecalculation(true);
     });
   }
 
-  private startRecalculation(isForced = true): void {
-    this._calculateTrade$.next({ isForced });
-  }
-
-  private startCalculation(isForced = false): void {
+  private startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
   }
 
@@ -102,7 +98,9 @@ export class SwapsControllerService {
         }),
         switchMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
+
           if (wrappedTrade) {
+            const isCalculationEnd = container.value.total === container.value.calculated;
             return forkJoin([
               of(wrappedTrade),
               wrappedTrade?.trade?.needApprove().catch(() => false) || of(false),
@@ -110,22 +108,27 @@ export class SwapsControllerService {
             ]).pipe(
               tap(([trade, needApprove, type]) => {
                 this.swapsState.updateTrade(trade, type, needApprove);
-                this.swapsState.pickProvider();
+                this.swapsState.pickProvider(isCalculationEnd);
                 this.swapsState.setCalculationProgress(
                   container.value.total,
                   container.value.calculated
                 );
                 this.setTradeAmount();
-                if (container.value.total === container.value.calculated) {
+                if (isCalculationEnd) {
                   this.refreshService.setStopped();
                 }
               })
             );
           }
+          if (!container?.value) {
+            this.refreshService.setStopped();
+            this.swapStateService.clearProviders();
+          }
           return of(null);
         }),
         catchError((_err: unknown) => {
           this.refreshService.setStopped();
+          this.swapsState.pickProvider(true);
           return of(null);
         })
       )
@@ -134,7 +137,7 @@ export class SwapsControllerService {
 
   private subscribeOnRefreshServiceCalls(): void {
     this.refreshService.onRefresh$.subscribe(() => {
-      this.startRecalculation();
+      this.startRecalculation(false);
     });
   }
 
@@ -198,7 +201,7 @@ export class SwapsControllerService {
         filter(isFilled => isFilled)
       )
       .subscribe(() => {
-        this.startRecalculation();
+        this.startRecalculation(false);
       });
   }
 }
