@@ -4,7 +4,6 @@ import { BlockchainsListService } from '@features/swaps/shared/components/assets
 import { TokensListStoreService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { TokensListService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
-import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 /**
@@ -14,7 +13,6 @@ export const AssetsSelectorServices = [
   AssetsSelectorService,
   SearchQueryService,
   BlockchainsListService,
-  FiatsListService,
 
   TokensListTypeService,
   TokensListStoreService,

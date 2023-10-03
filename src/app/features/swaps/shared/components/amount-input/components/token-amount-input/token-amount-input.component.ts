@@ -19,8 +19,6 @@ import { FormControl } from '@angular/forms';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { Asset } from '@features/swaps/shared/models/form/asset';
 import { combineLatest } from 'rxjs';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
   selector: 'app-token-amount-input',
@@ -51,16 +49,11 @@ export class TokenAmountInputComponent implements OnInit {
   public selectedAsset: Asset;
 
   public readonly showLimitOrderOnChainError$ = combineLatest([
-    this.swapTypeService.swapMode$,
     this.swapFormService.inputValue$
   ]).pipe(
-    map(([swapType, form]) => {
+    map(([form]) => {
       const { fromAssetType, toBlockchain } = form;
-      return (
-        swapType === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-        this.formType === 'to' &&
-        fromAssetType !== toBlockchain
-      );
+      return this.formType === 'to' && fromAssetType !== toBlockchain;
     })
   );
 
@@ -70,12 +63,12 @@ export class TokenAmountInputComponent implements OnInit {
   }
 
   public get isOnramper(): boolean {
-    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+    return false;
+    // return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
   constructor(
     public readonly swapFormService: SwapFormService,
-    public readonly swapTypeService: SwapTypeService,
     private readonly translateService: TranslateService,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroy$: TuiDestroyService

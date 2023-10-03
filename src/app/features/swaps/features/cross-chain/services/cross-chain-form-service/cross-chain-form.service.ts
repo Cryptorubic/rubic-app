@@ -58,7 +58,6 @@ import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { Router } from '@angular/router';
 import {
@@ -233,7 +232,6 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -274,15 +272,15 @@ export class CrossChainFormService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
-
-            if (
-              this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-            ) {
-              this.refreshService.setStopped();
-              this.swapFormService.outputControl.patchValue({
-                toAmount: new BigNumber(NaN)
-              });
-            }
+            //
+            // if (
+            //   this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+            // ) {
+            //   this.refreshService.setStopped();
+            //   this.swapFormService.outputControl.patchValue({
+            //     toAmount: new BigNumber(NaN)
+            //   });
+            // }
 
             return { ...calculateData, stop: true };
           }
@@ -707,10 +705,10 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
-      this._calculateTrade$.next({ stop: true });
-      return;
-    }
+    // if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+    //   this._calculateTrade$.next({ stop: true });
+    //   return;
+    // }
 
     const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
     const fromBlockchain = fromAssetType as BlockchainName;

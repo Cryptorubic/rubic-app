@@ -13,9 +13,6 @@
         }"
         [formType]="formType"
       ></app-select-asset-button-tokens>
-      <ng-container *ngIf="formType === 'to'">
-        <app-set-to-market-button *ngIf="isWithTokens"></app-set-to-market-button>
-      </ng-container>
     </div>
 
     <app-user-balance-container

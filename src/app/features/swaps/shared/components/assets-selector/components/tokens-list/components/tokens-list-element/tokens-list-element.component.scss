@@ -11,6 +11,14 @@
     border-radius: var(--tui-radius-m);
   }
 
+  &__favorite {
+    &_active {
+      ::ng-deep path {
+        stroke: var(--tui-primary);
+      }
+    }
+  }
+
   &__image-container {
     img {
       width: 32px;

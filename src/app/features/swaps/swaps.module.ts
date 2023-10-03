@@ -28,11 +28,9 @@ import { FormSwitcherComponent } from '@features/swaps/features/swap-form/compon
 import { PlatformTokensAmountComponent } from './features/swap-form/components/platform-tokens-amount/platform-tokens-amount.component';
 import { FormHeaderComponent } from '@features/swaps/features/swap-form/components/form-header/form-header.component';
 import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
-import { OnramperExchangerModule } from '@features/swaps/features/onramper-exchange/onramper-exchanger.module';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
-import { LimitOrderModule } from '@features/swaps/features/limit-order/limit-order.module';
 import { FormNavigationComponent } from './features/swap-form/components/form-navigation/form-navigation.component';
 import { ChangenowPostFormComponent } from './features/post-form/components/changenow-post-form/changenow-post-form.component';
 import { TransactionDetailsComponent } from '@features/swaps/features/swap-form/components/swap-info/components/transaction-details/transaction-details.component';
@@ -66,8 +64,6 @@ import { ReceiverValueComponent } from '@features/swaps/features/swap-form/compo
     SwapsSharedModule,
     InstantTradeModule,
     CrossChainModule,
-    OnramperExchangerModule,
-    LimitOrderModule,
     TuiHostedDropdownModule,
     TuiDataListModule,
     TuiSvgModule,

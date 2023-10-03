@@ -166,7 +166,7 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider.trade.type === trade.type
+          provider => provider?.trade?.type === trade?.type
         );
         // New or old
         if (providerIndex !== -1) {

@@ -1,55 +1,55 @@
-<ng-container
-  *ngLet="{
-    showBlockchains: showBlockchains$ | async,
-    fromBlockchainItem: fromBlockchainItem$ | async,
-    toBlockchainItem: toBlockchainItem$ | async,
-    isLimitOrder: isLimitOrder$ | async,
-    swapType: swapType$ | async
-  } as options"
->
-  <div *ngIf="options.showBlockchains; else text" class="swaps-header">
-    <div class="swaps-header__icons">
-      <div class="swaps-header__icon-wrapper">
-        <ng-container
-          *ngLet="
-            getFirstBlockchainItem(
-              options.fromBlockchainItem,
-              options.toBlockchainItem
-            ) as blockchainItem
-          "
-        >
-          <img
-            class="swaps-header__blockchain-from"
-            [src]="blockchainItem.icon"
-            [alt]="blockchainItem.label"
-          />
-        </ng-container>
-      </div>
+<!--<ng-container-->
+<!--  *ngLet="{-->
+<!--    showBlockchains: showBlockchains$ | async,-->
+<!--    fromBlockchainItem: fromBlockchainItem$ | async,-->
+<!--    toBlockchainItem: toBlockchainItem$ | async,-->
+<!--    isLimitOrder: isLimitOrder$ | async,-->
+<!--    swapType: swapType$ | async-->
+<!--  } as options"-->
+<!--&gt;-->
+<!--  <div *ngIf="options.showBlockchains; else text" class="swaps-header">-->
+<!--    <div class="swaps-header__icons">-->
+<!--      <div class="swaps-header__icon-wrapper">-->
+<!--        <ng-container-->
+<!--          *ngLet="-->
+<!--            getFirstBlockchainItem(-->
+<!--              options.fromBlockchainItem,-->
+<!--              options.toBlockchainItem-->
+<!--            ) as blockchainItem-->
+<!--          "-->
+<!--        >-->
+<!--          <img-->
+<!--            class="swaps-header__blockchain-from"-->
+<!--            [src]="blockchainItem.icon"-->
+<!--            [alt]="blockchainItem.label"-->
+<!--          />-->
+<!--        </ng-container>-->
+<!--      </div>-->
 
-      <div class="swaps-header__icon-wrapper" *ngIf="!options.isLimitOrder">
-        <img
-          class="swaps-header__blockchain-to"
-          [src]="options.toBlockchainItem.icon"
-          [alt]="options.toBlockchainItem.label"
-        />
-      </div>
-    </div>
+<!--      <div class="swaps-header__icon-wrapper" *ngIf="!options.isLimitOrder">-->
+<!--        <img-->
+<!--          class="swaps-header__blockchain-to"-->
+<!--          [src]="options.toBlockchainItem.icon"-->
+<!--          [alt]="options.toBlockchainItem.label"-->
+<!--        />-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div class="swaps-header__title">
-      <div class="swaps-header__trade-type">
-        {{ swapType$ | async }}
-      </div>
-      <div class="swaps-header__name">
-        <span>{{ options.fromBlockchainItem.label }}</span>
-        <ng-container *ngIf="!options.isLimitOrder && !(options.swapType === 'Instant Trade')">
-          {{ 'blockchainSwap.to' | translate }}
-          <span>{{ options.toBlockchainItem.label }}</span>
-        </ng-container>
-      </div>
-    </div>
-  </div>
+<!--    <div class="swaps-header__title">-->
+<!--      <div class="swaps-header__trade-type">-->
+<!--        {{ swapType$ | async }}-->
+<!--      </div>-->
+<!--      <div class="swaps-header__name">-->
+<!--        <span>{{ options.fromBlockchainItem.label }}</span>-->
+<!--        <ng-container *ngIf="!options.isLimitOrder && !(options.swapType === 'Instant Trade')">-->
+<!--          {{ 'blockchainSwap.to' | translate }}-->
+<!--          <span>{{ options.toBlockchainItem.label }}</span>-->
+<!--        </ng-container>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
-  <ng-template #text>
-    <app-platform-tokens-amount [amountOfTokens]="'15,000+'"></app-platform-tokens-amount>
-  </ng-template>
-</ng-container>
+<!--  <ng-template #text>-->
+<!--    <app-platform-tokens-amount [amountOfTokens]="'15,000+'"></app-platform-tokens-amount>-->
+<!--  </ng-template>-->
+<!--</ng-container>-->

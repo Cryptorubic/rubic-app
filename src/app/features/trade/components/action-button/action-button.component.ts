@@ -47,7 +47,7 @@ export class ActionButtonComponent {
       if (
         currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
         currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
-        wrongBlockchain
+        (currentTrade.trade && wrongBlockchain)
       ) {
         return {
           type: 'action',
@@ -69,6 +69,11 @@ export class ActionButtonComponent {
           action: () => {}
         };
       }
+      return {
+        type: 'error',
+        text: 'Trade is not available',
+        action: () => {}
+      };
     }),
     startWith({
       type: 'error',

@@ -10,6 +10,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -68,8 +69,20 @@ export class SwapFormPageComponent {
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
     private readonly refreshService: RefreshService,
-    private swapsControllerService: SwapsControllerService
-  ) {}
+    private readonly swapsControllerService: SwapsControllerService,
+    private readonly tokensStoreService: TokensStoreService
+  ) {
+    this.swapFormService.fromBlockchain$.subscribe(blockchain => {
+      if (blockchain) {
+        this.tokensStoreService.startBalanceCalculating(blockchain);
+      }
+    });
+    this.swapFormService.toBlockchain$.subscribe(blockchain => {
+      if (blockchain) {
+        this.tokensStoreService.startBalanceCalculating(blockchain);
+      }
+    });
+  }
 
   public openTokensSelect(formType: FormType): void {
     this.tradePageService.setState(formType === 'from' ? 'fromSelector' : 'toSelector');

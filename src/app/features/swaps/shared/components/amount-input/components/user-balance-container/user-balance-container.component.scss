@@ -2,7 +2,7 @@
 
 .user-balance-container {
   display: flex;
-  height: 15px;
+  align-items: center;
 
   &__balance {
     margin-right: var(--tui-padding-xs);
@@ -13,16 +13,16 @@
   }
 
   &__max-button {
-    padding: 3px 6px;
-
-    font-weight: 700;
-    font-size: 9px;
-    line-height: 9px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-
+    //padding: 3px 6px;
+    //
+    //font-weight: 700;
+    //font-size: 9px;
+    //line-height: 9px;
+    //letter-spacing: 0.1em;
+    //text-transform: uppercase;
+    //
     background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
-    border-radius: var(--tui-radius-s);
+    //border-radius: var(--tui-radius-s);
 
     transition: 0.2s ease-in-out;
 

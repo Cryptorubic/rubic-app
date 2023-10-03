@@ -18,9 +18,6 @@ import {
   CbridgeCrossChainSupportedBlockchain,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainCbridgeManager,
-  EvmBlockchainName,
-  EvmWeb3Pure,
-  Injector,
   TX_STATUS,
   Web3PublicSupportedBlockchain,
   Web3Pure
@@ -29,11 +26,8 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
-import { OnramperRecentTrade } from '@shared/models/recent-trades/onramper-recent-trade';
-import { OnramperApiService } from '@core/services/backend/onramper-api/onramper-api.service';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
-import { OnramperTransactionStatus } from '@features/swaps/features/onramper-exchange/models/onramper-transaction-status';
 
 @Injectable()
 export class RecentTradesService {
@@ -58,7 +52,6 @@ export class RecentTradesService {
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly sdkService: SdkService,
-    private readonly onramperApiService: OnramperApiService,
     private readonly changenowPostTradeService: ChangenowPostTradeService
   ) {}
 
@@ -140,7 +133,6 @@ export class RecentTradesService {
     if (isCrossChainRecentTrade(trade)) {
       return this.getCrossChainStatuses(trade, uiTrade);
     }
-    return this.getOnramperStatuses(trade, uiTrade);
   }
 
   private async getCrossChainStatuses(
@@ -179,96 +171,6 @@ export class RecentTradesService {
     uiTrade.dstTxLink = dstTxHash
       ? this.scannerLinkPipe.transform(dstTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
       : null;
-
-    return uiTrade;
-  }
-
-  private async getOnramperStatuses(
-    trade: OnramperRecentTrade,
-    uiTrade: UiRecentTrade
-  ): Promise<UiRecentTrade> {
-    if (trade.srcTxHash) {
-      uiTrade.statusFrom = trade.calculatedStatusFrom;
-
-      const srcTxHash = trade.srcTxHash;
-      uiTrade.srcTxHash = srcTxHash;
-      uiTrade.srcTxLink = srcTxHash
-        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
-        : null;
-    } else {
-      const tradeApiData = await this.onramperApiService.getTradeData(
-        this.authService.userAddress,
-        trade.txId
-      );
-
-      if (trade.calculatedStatusFrom !== TX_STATUS.PENDING) {
-        uiTrade.statusFrom = trade.calculatedStatusFrom;
-      } else {
-        if (tradeApiData.status === OnramperTransactionStatus.COMPLETED) {
-          uiTrade.statusFrom = TX_STATUS.SUCCESS;
-        } else if (tradeApiData.status === OnramperTransactionStatus.FAILED) {
-          uiTrade.statusFrom = TX_STATUS.FAIL;
-        } else {
-          uiTrade.statusFrom = TX_STATUS.PENDING;
-        }
-      }
-
-      const srcTxHash = tradeApiData.tx_hash;
-      uiTrade.srcTxHash = srcTxHash;
-      uiTrade.srcTxLink = srcTxHash
-        ? this.scannerLinkPipe.transform(srcTxHash, uiTrade.toBlockchain, ADDRESS_TYPE.TRANSACTION)
-        : null;
-
-      if (srcTxHash) {
-        this.recentTradesStoreService.updateTrade({
-          ...trade,
-          calculatedStatusFrom: uiTrade.statusFrom,
-          srcTxHash,
-          nativeAmount: tradeApiData.out_amount
-        });
-      }
-    }
-
-    if (uiTrade.statusFrom === TX_STATUS.FAIL) {
-      this.recentTradesStoreService.updateTrade({
-        ...trade,
-        calculatedStatusTo: TX_STATUS.FAIL
-      });
-      uiTrade.statusTo = TX_STATUS.FAIL;
-      return uiTrade;
-    }
-    if (EvmWeb3Pure.isNativeAddress(uiTrade.toToken.address)) {
-      uiTrade.statusTo = uiTrade.statusFrom;
-      if (uiTrade.statusTo === TX_STATUS.SUCCESS) {
-        this.recentTradesStoreService.updateTrade({
-          ...trade,
-          calculatedStatusTo: uiTrade.statusTo
-        });
-      }
-      return uiTrade;
-    }
-    if (!trade.dstTxHash) {
-      return uiTrade;
-    }
-
-    const dstTxHash = trade.dstTxHash;
-    uiTrade.dstTxHash = dstTxHash;
-    uiTrade.dstTxLink = this.scannerLinkPipe.transform(
-      dstTxHash,
-      uiTrade.toBlockchain,
-      ADDRESS_TYPE.TRANSACTION
-    );
-
-    uiTrade.statusTo = await Injector.web3PublicService
-      .getWeb3Public(uiTrade.toBlockchain as EvmBlockchainName)
-      .getTransactionStatus(dstTxHash);
-
-    if (uiTrade.statusTo !== trade.calculatedStatusTo) {
-      this.recentTradesStoreService.updateTrade({
-        ...trade,
-        calculatedStatusTo: uiTrade.statusTo
-      });
-    }
 
     return uiTrade;
   }

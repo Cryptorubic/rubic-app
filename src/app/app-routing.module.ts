@@ -17,10 +17,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
   },
   {
-    path: ROUTE_PATH.HISTORY,
-    loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
-  },
-  {
     path: ROUTE_PATH.REVOKE_APPROVAL,
     loadChildren: () =>
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)

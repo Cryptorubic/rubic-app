@@ -35,10 +35,6 @@ interface TradeInfo {
 
 @Injectable()
 export class PreviewSwapService {
-  private readonly _formState$ = new BehaviorSubject<'preview' | 'process' | 'complete'>('preview');
-
-  public readonly formState$ = this._formState$.asObservable();
-
   private readonly _transactionState$ = new BehaviorSubject<TransactionState>({
     step: 'idle',
     data: {}
@@ -112,7 +108,6 @@ export class PreviewSwapService {
   }
 
   public async requestTxSign(): Promise<void> {
-    this._formState$.next('process');
     const tradeState = await firstValueFrom(this.tradeState$);
 
     if (tradeState.needApprove) {
@@ -229,10 +224,8 @@ export class PreviewSwapService {
                 toBlockchain
               }
             });
-            this._formState$.next('complete');
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
             this._transactionState$.next({ step: 'error', data: this.transactionState.data });
-            this._formState$.next('complete');
           }
         }),
         takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)

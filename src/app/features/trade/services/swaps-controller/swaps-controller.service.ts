@@ -91,9 +91,19 @@ export class SwapsControllerService {
           const { toBlockchain, fromToken } = this.swapFormService.inputValue;
 
           if (fromToken.blockchain === toBlockchain) {
-            return this.onChainService.calculateTrades();
+            return this.onChainService.calculateTrades().pipe(
+              catchError(err => {
+                console.debug(err);
+                return of(null);
+              })
+            );
           } else {
-            return this.crossChainService.calculateTrades([]);
+            return this.crossChainService.calculateTrades([]).pipe(
+              catchError(err => {
+                console.debug(err);
+                return of(null);
+              })
+            );
           }
         }),
         catchError(err => {
@@ -105,24 +115,33 @@ export class SwapsControllerService {
 
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
-            return forkJoin([
-              of(wrappedTrade),
-              wrappedTrade?.trade?.needApprove().catch(() => false) || of(false),
-              of(container.type)
-            ]).pipe(
-              tap(([trade, needApprove, type]) => {
-                this.swapsState.updateTrade(trade, type, needApprove);
-                this.swapsState.pickProvider(isCalculationEnd);
-                this.swapsState.setCalculationProgress(
-                  container.value.total,
-                  container.value.calculated
-                );
-                this.setTradeAmount();
-                if (isCalculationEnd) {
-                  this.refreshService.setStopped();
-                }
-              })
-            );
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
+              .pipe(
+                tap(([trade, needApprove, type]) => {
+                  try {
+                    this.swapsState.updateTrade(trade, type, needApprove);
+                    this.swapsState.pickProvider(isCalculationEnd);
+                    this.swapsState.setCalculationProgress(
+                      container.value.total,
+                      container.value.calculated
+                    );
+                    this.setTradeAmount();
+                    if (isCalculationEnd) {
+                      this.refreshService.setStopped();
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                })
+              )
+              .pipe(
+                catchError(() => {
+                  // this.swapsState.updateTrade(trade, type, needApprove);
+                  this.swapsState.pickProvider(isCalculationEnd);
+                  return of(null);
+                })
+              );
           }
           if (!container?.value) {
             this.refreshService.setStopped();

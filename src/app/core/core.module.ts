@@ -17,16 +17,13 @@ import { httpLoaderFactory } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
-import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
-import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/interceprors/onramper-intercepror';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -42,11 +39,6 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
       useClass: RubicExchangeInterceptor,
       multi: true
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: OnramperIntercepror,
-      multi: true
-    },
     NG_EVENT_PLUGINS,
     SdkLoaderService,
     {
@@ -56,11 +48,9 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
       multi: true
     },
     SdkService,
-    SwapTypeService,
     SwapFormService,
     SwapFormQueryService,
     FiatsService,
-    LimitOrdersService,
     SuccessTxModalService
   ],
   imports: [

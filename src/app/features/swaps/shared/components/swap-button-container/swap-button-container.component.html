@@ -10,13 +10,6 @@
   <ng-container *ngIf="(isUpdateRateStatus$ | async) === false; else updateRateButton">
     <ng-container *ngLet="error$ | async as error">
       <ng-container *ngIf="!error.text || error.loading; else errorButton">
-        <app-onramper-swap-button
-          *ngIf="isOnramper"
-          [buttonText]="buttonText"
-          (handleDirectBuy)="handleDirectBuy.emit()"
-          (onSwapClick)="onSwapClick.emit()"
-        ></app-onramper-swap-button>
-
         <ng-container *ngIf="!isOnramper">
           <ng-container *ngIf="withApproveButton && needApprove; else swapButton">
             <app-approve-swap-button

@@ -5,8 +5,7 @@ import { AvailableBlockchain } from '@features/swaps/shared/components/assets-se
 import {
   blockchainsList,
   notEvmChangeNowBlockchainsList,
-  RankedBlockchain,
-  topRankedBlockchains
+  RankedBlockchain
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -15,12 +14,9 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { SearchQueryService } from '@features/swaps/shared/components/assets-selector/services/search-query-service/search-query.service';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { BlockchainName, limitOrderSupportedBlockchains } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { OnramperCalculationService } from '@features/swaps/features/onramper-exchange/services/onramper-calculation.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -48,7 +44,6 @@ export class BlockchainsListService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly destroy$: TuiDestroyService
   ) {
@@ -59,17 +54,7 @@ export class BlockchainsListService {
   }
 
   private setAvailableBlockchains(): void {
-    const isLimitOrder = this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
-    const formattedLimitOrderSupportedBlockchains: RankedBlockchain[] =
-      limitOrderSupportedBlockchains.map(blockchain => ({
-        name: blockchain,
-        rank: topRankedBlockchains.includes(blockchain) ? 1 : 0,
-        tags: []
-      }));
-
-    let blockchains: readonly RankedBlockchain[] = isLimitOrder
-      ? formattedLimitOrderSupportedBlockchains
-      : blockchainsList;
+    let blockchains: readonly RankedBlockchain[] = blockchainsList;
     if (this.queryParamsService.enabledBlockchains) {
       blockchains = blockchains.filter(blockchain =>
         this.queryParamsService.enabledBlockchains.includes(blockchain.name)
@@ -79,7 +64,7 @@ export class BlockchainsListService {
     const { formType } = this.assetsSelectorService;
     const { fromAsset } = this.swapFormService.inputValue;
     const selectedBlockchain =
-      isLimitOrder && formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
+      formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
 
     this._availableBlockchains = blockchains
       .map(blockchain => {
@@ -136,14 +121,12 @@ export class BlockchainsListService {
     return this.assetsSelectorService.formType === 'from' && blockchain.disabledFrom;
   }
 
-  public isDisabledTo(blockchain: AvailableBlockchain): boolean {
+  public isDisabledTo(_blockchain: AvailableBlockchain): boolean {
     if (this.assetsSelectorService.formType !== 'to') {
       return false;
     }
     const fromAssetType = this.assetsSelectorService.getAssetType('from');
-    return (
-      fromAssetType === 'fiat' && !OnramperCalculationService.isSupportedBlockchain(blockchain.name)
-    );
+    return fromAssetType === 'fiat';
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {

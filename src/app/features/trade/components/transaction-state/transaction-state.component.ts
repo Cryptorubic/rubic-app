@@ -45,13 +45,13 @@ export class TransactionStateComponent {
   public static getLabel(state: TransactionStep): string {
     const map: Record<TransactionStep, string> = {
       idle: 'Swap',
-      error: 'error',
+      error: 'Error',
       approveReady: 'Approve',
       approvePending: 'Manage allowance',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
       sourcePending: 'Waiting for transaction',
-      destinationPending: 'Waiting for complete in destination chain',
+      destinationPending: 'Waiting for complete in target chain',
       success: 'Success swap'
     };
     return map[state];
