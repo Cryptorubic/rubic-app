@@ -96,6 +96,10 @@ export class SwapsControllerService {
             return this.crossChainService.calculateTrades([]);
           }
         }),
+        catchError(err => {
+          console.debug(err);
+          return of(null);
+        }),
         switchMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
 

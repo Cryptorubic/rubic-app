@@ -121,6 +121,7 @@ export class CrossChainService {
             // @TODO REMOVE AFTER CN READY
             map(el => {
               if (
+                el?.wrappedTrade?.trade &&
                 el?.wrappedTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
                 !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain)
               ) {
