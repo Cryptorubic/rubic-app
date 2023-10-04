@@ -450,8 +450,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const taikoTransactionId =
       calculatedTrade.trade instanceof TaikoBridgeTrade ? calculatedTrade.trade.id : undefined;
 
-    console.log('APP_Hash: ', taikoTransactionId);
-
     const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
