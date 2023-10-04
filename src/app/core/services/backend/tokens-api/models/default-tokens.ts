@@ -1035,5 +1035,29 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/zetachain.png'
     } as Token
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.TAIKO],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.TAIKO],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token
+  ],
+  [BLOCKCHAIN_NAME.SEPOLIA]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.SEPOLIA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SEPOLIA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token
   ]
 };

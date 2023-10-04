@@ -167,7 +167,9 @@ export class RecentTradesService {
           viaUuid: trade.viaUuid,
           rangoRequestId: trade.rangoRequestId,
           amountOutMin: trade.amountOutMin,
-          changenowId: trade.changenowId
+          changenowId: trade.changenowId,
+          taikoTransactionId: trade.taikoTransactionId,
+          sender: trade.sender
         },
         trade.crossChainTradeType
       );

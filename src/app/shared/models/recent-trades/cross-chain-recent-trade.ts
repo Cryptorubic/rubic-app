@@ -11,11 +11,13 @@ export interface CrossChainRecentTrade extends CommonRecentTrade {
    */
   crossChainProviderType?: string;
   bridgeType?: BridgeType;
+  sender?: string;
 
   viaUuid?: string;
   rangoRequestId?: string;
   amountOutMin?: string;
   changenowId?: string;
+  taikoTransactionId?: string;
 
   fromAmount: string;
   toAmount: string;

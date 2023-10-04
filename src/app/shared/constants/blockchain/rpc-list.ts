@@ -159,6 +159,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://zetachain-athens-evm.blockpi.network/v1/rpc/public',
     'https://rpc.ankr.com/zetachain_evm_athens_testnet'
   ],
+  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.jolnir.taiko.xyz'],
+  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.BASE]: [
     'https://mainnet.base.org',
     'https://1rpc.io/base',

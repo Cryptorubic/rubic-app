@@ -97,6 +97,10 @@ export class SwapSchemeModalComponent implements OnInit, OnDestroy {
 
   public rangoRequestId: string | undefined;
 
+  public taikoTransactionId: string | undefined;
+
+  public sender: string | undefined;
+
   private timestamp: number;
 
   private amountOutMin: string;
@@ -170,7 +174,9 @@ export class SwapSchemeModalComponent implements OnInit, OnDestroy {
                 viaUuid: this.viaUuid,
                 rangoRequestId: this.rangoRequestId,
                 amountOutMin: this.amountOutMin,
-                changenowId: this.changenowId
+                changenowId: this.changenowId,
+                taikoTransactionId: this.taikoTransactionId,
+                sender: this.sender
               },
               this.crossChainProvider
             )
@@ -263,7 +269,9 @@ export class SwapSchemeModalComponent implements OnInit, OnDestroy {
                     viaUuid: this.viaUuid,
                     rangoRequestId: this.rangoRequestId,
                     amountOutMin: this.amountOutMin,
-                    changenowId: this.changenowId
+                    changenowId: this.changenowId,
+                    taikoTransactionId: this.taikoTransactionId,
+                    sender: this.sender
                   },
                   this.crossChainProvider
                 )
@@ -372,9 +380,15 @@ export class SwapSchemeModalComponent implements OnInit, OnDestroy {
     this.viaUuid = data.viaUuid;
     this.rangoRequestId = data.rangoRequestId;
 
+    this.taikoTransactionId = data.taikoTransactionId;
+    this.sender = data.sender;
+
     this.timestamp = data.timestamp;
 
     this.amountOutMin = data.amountOutMin;
     this.changenowId = data.changenowId;
+
+    this.taikoTransactionId = data.taikoTransactionId;
+    this.sender = data.sender;
   }
 }
