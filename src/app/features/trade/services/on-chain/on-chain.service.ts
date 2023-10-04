@@ -67,7 +67,7 @@ export class OnChainService {
     private readonly queryParamsService: QueryParamsService
   ) {}
 
-  public calculateTrades(): Observable<TradeContainer> {
+  public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     return forkJoin([
@@ -123,7 +123,8 @@ export class OnChainService {
             slippageTolerance,
             disableMultihops,
             deadlineMinutes,
-            useProxy: useProxy
+            useProxy: useProxy,
+            disabledProviders
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(
@@ -185,6 +186,12 @@ export class OnChainService {
 
     try {
       await trade.swap(options);
+
+      const [fromToken, toToken] = await Promise.all([
+        this.tokensService.findToken(trade.from),
+        this.tokensService.findToken(trade.to)
+      ]);
+      await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(

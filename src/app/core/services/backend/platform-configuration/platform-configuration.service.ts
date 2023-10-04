@@ -53,6 +53,16 @@ export class PlatformConfigurationService {
 
   public readonly disabledProviders$ = this._disabledProviders$.asObservable();
 
+  private readonly _providersAverageTime$ = new BehaviorSubject<
+    Record<CrossChainTradeType, number>
+  >(undefined);
+
+  public readonly providersAverageTime$ = this._providersAverageTime$.asObservable();
+
+  public get providersAverageTime(): Record<CrossChainTradeType, number> {
+    return this._providersAverageTime$.getValue();
+  }
+
   public get disabledProviders(): ProvidersConfiguration {
     return this._disabledProviders$.getValue();
   }
@@ -98,6 +108,9 @@ export class PlatformConfigurationService {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
           this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
+          this._providersAverageTime$.next(
+            this.mapAverageProvidersTime(response.cross_chain_providers)
+          );
           this.handleCrossChainProxyProviders(response.cross_chain_providers);
         }
       }),
@@ -164,5 +177,24 @@ export class PlatformConfigurationService {
       }, {} as DisabledBridgeTypes);
 
     return { disabledBridgeTypes, disabledCrossChainTradeTypes: disabledCrossChainProviders };
+  }
+
+  private mapAverageProvidersTime(crossChainProviders: {
+    [k in string]: CrossChainProviderStatus;
+  }): Record<CrossChainTradeType, number> {
+    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+      ToBackendCrossChainProviders,
+      CrossChainProviderStatus
+    ][];
+    if (!crossChainProvidersEntries.length) {
+      return;
+    }
+
+    return Object.fromEntries(
+      crossChainProvidersEntries.map(([provider, status]) => [
+        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
+        status.average_execution_time
+      ])
+    ) as Record<CrossChainTradeType, number>;
   }
 }

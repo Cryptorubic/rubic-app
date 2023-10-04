@@ -7,5 +7,6 @@ export interface TransactionState {
     hash?: string;
     toBlockchain?: BlockchainName;
     wrongNetwork?: boolean;
+    activeWallet?: boolean;
   };
 }

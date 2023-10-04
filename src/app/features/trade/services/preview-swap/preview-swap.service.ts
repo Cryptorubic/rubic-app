@@ -20,6 +20,7 @@ import {
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -84,10 +85,12 @@ export class PreviewSwapService {
     private readonly swapForm: SwapsFormService,
     private readonly swapsControllerService: SwapsControllerService,
     private readonly sdkService: SdkService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tradePageService: TradePageService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
+    this.subscribeOnAddressChange();
   }
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -172,10 +175,8 @@ export class PreviewSwapService {
                   }
                 },
                 onError: () => {
-                  this._transactionState$.next({
-                    step: 'swapReady',
-                    data: this.transactionState.data
-                  });
+                  this._transactionState$.next({ step: 'idle', data: {} });
+                  this.tradePageService.setState('form');
                 }
               });
             }
@@ -198,10 +199,6 @@ export class PreviewSwapService {
         startWith(-1),
         switchMap(() => this.tradeState$),
         switchMap(tradeState => {
-          const amount =
-            'price' in tradeState.trade.toTokenAmountMin
-              ? tradeState.trade.toTokenAmountMin.tokenAmount
-              : tradeState.trade.toTokenAmountMin;
           return from(
             this.sdkService.crossChainStatusManager.getCrossChainStatus(
               {
@@ -209,7 +206,12 @@ export class PreviewSwapService {
                 toBlockchain: tradeState.trade.to.blockchain,
                 srcTxHash: srcHash,
                 txTimestamp: timestamp,
-                amountOutMin: amount.toFixed()
+                ...('id' in tradeState.trade && {
+                  changenowId: tradeState.trade.id as string
+                }),
+                ...('amountOutMin' in tradeState.trade && {
+                  amountOutMin: tradeState.trade.amountOutMin as string
+                })
               },
               tradeState.tradeType as CrossChainTradeType
             )
@@ -241,17 +243,19 @@ export class PreviewSwapService {
       )
       .subscribe(([network, trade]) => {
         const tokenBlockchain = trade.trade.from.blockchain;
-        if (network !== tokenBlockchain) {
-          this._transactionState$.next({
-            ...this._transactionState$.value,
-            data: { wrongNetwork: true }
-          });
-        } else {
-          this._transactionState$.next({
-            ...this._transactionState$.value,
-            data: { ...this.transactionState.data, wrongNetwork: false }
-          });
-        }
+        const state = this._transactionState$.getValue();
+        state.data.wrongNetwork = network !== tokenBlockchain;
+        this._transactionState$.next(state);
+      });
+  }
+
+  private subscribeOnAddressChange(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(startWith(this.walletConnectorService.address))
+      .subscribe(address => {
+        const state = this._transactionState$.getValue();
+        state.data.activeWallet = Boolean(address);
+        this._transactionState$.next(state);
       });
   }
 }

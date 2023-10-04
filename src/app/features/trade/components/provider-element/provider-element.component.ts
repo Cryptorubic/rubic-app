@@ -6,12 +6,14 @@ import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provi
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import {
+  CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
   nativeTokensList,
   Web3Pure
 } from 'rubic-sdk';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-provider-element',
@@ -30,7 +32,7 @@ export class ProviderElementComponent {
 
   public expanded = false;
 
-  constructor() {}
+  constructor(private readonly platformConfigurationService: PlatformConfigurationService) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -42,7 +44,14 @@ export class ProviderElementComponent {
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
-    return TRADES_PROVIDERS[tradeProvider];
+    const provider = TRADES_PROVIDERS[tradeProvider];
+    const providerAverageTime = this.platformConfigurationService.providersAverageTime;
+    const currentProviderTime = providerAverageTime?.[tradeProvider as CrossChainTradeType];
+
+    return {
+      ...provider,
+      averageTime: currentProviderTime ? currentProviderTime : provider.averageTime
+    };
   }
 
   public getFeeInfo(): FeeInfo {

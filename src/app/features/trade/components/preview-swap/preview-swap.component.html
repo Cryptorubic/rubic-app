@@ -101,7 +101,6 @@
           </div>
         </div>
       </div>
-      GasData
       <div *ngIf="state.transaction.step !== 'success'" class="preview__swap-info">
         <app-swap-data-element
           [gasInfo]="getGasData(state.tradeState.trade)"
@@ -120,7 +119,6 @@
             state.transaction.data.hash
               | scannerLink : state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
           "
-          (click)="navigateToExplorer()"
         >
           Explorer
         </a>

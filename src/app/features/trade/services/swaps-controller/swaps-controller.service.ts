@@ -13,12 +13,39 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
+import {
+  CrossChainIsUnavailableError,
+  CrossChainTradeType,
+  LowSlippageError,
+  NotSupportedTokensError,
+  OnChainTradeType,
+  RubicSdkError,
+  UnsupportedReceiverAddressError
+} from 'rubic-sdk';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@core/errors/models/error-type';
+import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
+import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
+import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
+import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
+import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 
 @Injectable()
 export class SwapsControllerService {
   private readonly _calculateTrade$ = new Subject<{ isForced?: boolean; stop?: boolean }>();
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable();
+
+  /**
+   * Contains trades types, which were disabled due to critical errors.
+   */
+  private disabledTradesTypes: { crossChain: CrossChainTradeType[]; onChain: OnChainTradeType[] } =
+    {
+      crossChain: [],
+      onChain: []
+    };
 
   constructor(
     private readonly swapFormService: SwapsFormService,
@@ -91,14 +118,14 @@ export class SwapsControllerService {
           const { toBlockchain, fromToken } = this.swapFormService.inputValue;
 
           if (fromToken.blockchain === toBlockchain) {
-            return this.onChainService.calculateTrades().pipe(
+            return this.onChainService.calculateTrades(this.disabledTradesTypes.onChain).pipe(
               catchError(err => {
                 console.debug(err);
                 return of(null);
               })
             );
           } else {
-            return this.crossChainService.calculateTrades([]).pipe(
+            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
               catchError(err => {
                 console.debug(err);
                 return of(null);
@@ -190,6 +217,14 @@ export class SwapsControllerService {
       callback?.onSwap();
     } catch (err) {
       console.error(err);
+      const parsedError = this.parseCalculationError(err);
+      if (this.isExecutionCriticalError(parsedError)) {
+        if (tradeState.trade instanceof CrossChainTrade) {
+          this.disabledTradesTypes.crossChain.push(tradeState.trade.type);
+        } else {
+          this.disabledTradesTypes.onChain.push(tradeState.trade.type);
+        }
+      }
       callback?.onError();
       this.errorsService.catch(err);
     }
@@ -226,5 +261,49 @@ export class SwapsControllerService {
       .subscribe(() => {
         this.startRecalculation(false);
       });
+  }
+
+  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof NotSupportedTokensError) {
+      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
+    }
+    if (error instanceof UnsupportedReceiverAddressError) {
+      return new RubicError('This provider doesn’t support the receiver address.');
+    }
+    if (error instanceof CrossChainIsUnavailableError) {
+      return new CrossChainIsUnavailableWarning();
+    }
+    if (error instanceof LowSlippageError) {
+      return new RubicError('Slippage is too low for transaction.');
+    }
+    if (error instanceof TooLowAmountError) {
+      return new RubicError(
+        "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
+      );
+    }
+    if (error?.message?.includes('No available routes')) {
+      return new RubicError('No available routes.');
+    }
+    if (error?.message?.includes('There are no providers for trade')) {
+      return new RubicError('There are no providers for trade.');
+    }
+    if (error?.message?.includes('Representation of ')) {
+      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
+    }
+
+    const parsedError = error && RubicSdkErrorParser.parseError(error);
+    if (!parsedError || parsedError instanceof ExecutionRevertedError) {
+      return new CrossChainPairCurrentlyUnavailableError();
+    } else {
+      return parsedError;
+    }
+  }
+
+  private isExecutionCriticalError(error: RubicError<ERROR_TYPE>): boolean {
+    return [
+      NotWhitelistedProviderWarning,
+      UnsupportedDeflationTokenWarning,
+      ExecutionRevertedError
+    ].some(CriticalError => error instanceof CriticalError);
   }
 }

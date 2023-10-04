@@ -38,11 +38,11 @@ export class TransactionStateComponent {
     }
     this.steps = steps.map(el => ({
       key: el,
-      value: TransactionStateComponent.getLabel(el)
+      value: TransactionStateComponent.getLabel(el, this.type)
     }));
   }
 
-  public static getLabel(state: TransactionStep): string {
+  public static getLabel(state: TransactionStep, type: 'bridge' | 'swap'): string {
     const map: Record<TransactionStep, string> = {
       idle: 'Swap',
       error: 'Error',
@@ -50,7 +50,8 @@ export class TransactionStateComponent {
       approvePending: 'Manage allowance',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
-      sourcePending: 'Waiting for transaction',
+      sourcePending:
+        type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
       success: 'Success swap'
     };

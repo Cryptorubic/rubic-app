@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   EvmBlockchainName,
@@ -22,6 +22,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -51,9 +52,12 @@ export class PreviewSwapComponent {
 
   public readonly buttonState$ = this.transactionState$.pipe(
     map(el => {
+      const isCrossChain =
+        this.swapsFormService.inputValue.fromBlockchain !==
+        this.swapsFormService.inputValue.toBlockchain;
       const state = {
         action: (): void => {},
-        label: TransactionStateComponent.getLabel(el.step),
+        label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
         disabled: true
       };
       if (el.step === transactionStep.approveReady) {
@@ -73,8 +77,13 @@ export class PreviewSwapComponent {
 
       if (el.data?.wrongNetwork) {
         state.disabled = false;
-        state.action = this.switchChain.bind(this);
+        state.action = () => this.switchChain();
         state.label = `Change network`;
+      }
+      if (el.data?.activeWallet === false) {
+        state.disabled = false;
+        state.action = () => this.connectWallet();
+        state.label = `Connect wallet`;
       }
       return state;
     })
@@ -87,7 +96,9 @@ export class PreviewSwapComponent {
     private readonly previewSwapService: PreviewSwapService,
     private readonly router: Router,
     private readonly swapsFormService: SwapsFormService,
-    private readonly walletConnector: WalletConnectorService
+    private readonly walletConnector: WalletConnectorService,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private injector: Injector
   ) {}
 
   public backToForm(): void {
@@ -111,13 +122,22 @@ export class PreviewSwapComponent {
     await this.router.navigate(['/history'], { queryParamsHandling: 'preserve' });
   }
 
-  public async navigateToExplorer(): Promise<void> {
-    alert('Navigate to Explorer');
-  }
-
   private async switchChain(): Promise<void> {
     const blockchain = this.swapsFormService.inputValue.fromBlockchain;
-    await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
+    const switched = await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
+    if (switched) {
+      await this.previewSwapService.requestTxSign();
+    }
+  }
+
+  private connectWallet(): void {
+    this.modalService
+      .openWalletModal(this.injector)
+      .pipe(
+        switchMap(() => this.walletConnector.addressChange$),
+        switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
+      )
+      .subscribe();
   }
 
   public getGasData(
