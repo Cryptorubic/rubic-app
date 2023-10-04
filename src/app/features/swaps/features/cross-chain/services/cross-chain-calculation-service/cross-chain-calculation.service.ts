@@ -1,27 +1,27 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
+  ChangenowCrossChainTrade,
+  ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
+  CrossChainReactivelyCalculatedTradeData,
   CrossChainTradeType,
+  EvmBasicTransactionOptions,
+  EvmCrossChainTrade,
+  EvmWeb3Pure,
   LifiCrossChainTrade,
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
-  UnnecessaryApproveError,
-  WrappedCrossChainTrade,
-  ChangenowCrossChainTrade,
-  ChangenowPaymentInfo,
-  Token,
   PriceToken,
-  BLOCKCHAIN_NAME,
-  UserRejectError,
-  EvmWeb3Pure,
+  SwapTransactionOptions,
+  TaikoBridgeTrade,
+  Token,
   UnapprovedContractError,
-  EvmCrossChainTrade,
-  EvmBasicTransactionOptions,
-  CrossChainReactivelyCalculatedTradeData,
-  TaikoBridgeTrade
+  UnnecessaryApproveError,
+  UserRejectError,
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -450,6 +450,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const taikoTransactionId =
       calculatedTrade.trade instanceof TaikoBridgeTrade ? calculatedTrade.trade.id : undefined;
 
+    console.log('APP_Hash: ', taikoTransactionId);
+
     const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
@@ -461,7 +463,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       timestamp,
       amountOutMin,
       changenowId,
-      taikoTransactionId
+      taikoTransactionId,
+      sender: this.authService.userAddress
     };
 
     this.dialogService
