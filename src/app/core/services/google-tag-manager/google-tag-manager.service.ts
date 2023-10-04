@@ -1,8 +1,6 @@
-import { Inject, Injectable } from '@angular/core';
-import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angular-google-tag-manager';
+import { Inject, inject, Injectable } from '@angular/core';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
@@ -11,6 +9,8 @@ import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-m
 import { WINDOW } from '@ng-web-apis/common';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
+import BigNumber from 'bignumber.js';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -31,6 +31,8 @@ const formStepsInitial = {
   providedIn: 'root'
 })
 export class GoogleTagManagerService {
+  private readonly angularGtmService = inject(GoogleAnalyticsService);
+
   private readonly _instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
   private readonly _multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
@@ -59,7 +61,6 @@ export class GoogleTagManagerService {
   }
 
   constructor(
-    private readonly angularGtmService: AngularGoogleTagManagerService,
     private readonly cookieService: CookieService,
     private readonly storeService: StoreService,
     private readonly httpService: HttpService,
@@ -121,11 +122,8 @@ export class GoogleTagManagerService {
    * @param value User's selected token or approve action.
    */
   public fireFormInteractionEvent(eventCategory: SupportedSwapProviderType, value: string): void {
-    this.angularGtmService.pushTag({
-      event: 'GAevent',
-      ecategory: formEventCategoryMap[eventCategory],
-      eaction: `${formEventCategoryMap[eventCategory]}_${value}`,
-      elabel: undefined
+    this.angularGtmService.event(`${formEventCategoryMap[eventCategory]}_${value}`, {
+      category: formEventCategoryMap[eventCategory]
     });
   }
 
@@ -159,30 +157,46 @@ export class GoogleTagManagerService {
     revenue: BigNumber,
     price: BigNumber
   ): void {
-    this.forms[eventCategory].next(formStepsInitial);
-    this.angularGtmService.pushTag({
-      event: 'transactionSigned',
-      ecategory: formEventCategoryMap[eventCategory],
-      eaction: `${formEventCategoryMap[eventCategory]}_success`,
-      elabel: undefined,
-      interactionType: false,
-      ecommerce: {
-        currencyCode: 'USD',
-        purchase: {
-          actionField: {
-            id: txId,
-            revenue: revenue
-          },
-          products: [
-            {
-              name: `${fromToken} to ${toToken}`,
-              price: price,
-              category: formEventCategoryMap[eventCategory],
-              quantity: 1
-            }
-          ]
-        }
+    const options = {
+      currencyCode: 'USD',
+      purchase: {
+        actionField: {
+          id: txId,
+          revenue: revenue
+        },
+        products: [
+          {
+            name: `${fromToken} to ${toToken}`,
+            price: price,
+            category: formEventCategoryMap[eventCategory],
+            quantity: 1
+          }
+        ]
       }
+    };
+    console.log(options);
+    this.forms[eventCategory].next(formStepsInitial);
+    this.angularGtmService.event(`${formEventCategoryMap[eventCategory]}_success`, {
+      category: formEventCategoryMap[eventCategory],
+      label: 'transactionSigned',
+      interaction: false
+      // options: {
+      //   currencyCode: 'USD',
+      //   purchase: {
+      //     actionField: {
+      //       id: txId,
+      //       revenue: revenue
+      //     },
+      //     products: [
+      //       {
+      //         name: `${fromToken} to ${toToken}`,
+      //         price: price,
+      //         category: formEventCategoryMap[eventCategory],
+      //         quantity: 1
+      //       }
+      //     ]
+      //   }
+      // }
     });
   }
 
@@ -192,11 +206,9 @@ export class GoogleTagManagerService {
    */
   public fireConnectWalletEvent(walletName: WALLET_NAME): void {
     this.reloadGtmSession();
-    this.angularGtmService.pushTag({
-      event: 'GAevent',
-      ecategory: 'wallet',
-      eaction: `connect_wallet_${walletName}`,
-      elabel: undefined
+    this.angularGtmService.event(`connect_wallet_${walletName}`, {
+      category: 'wallet',
+      label: `${walletName}`
     });
   }
 
@@ -204,11 +216,8 @@ export class GoogleTagManagerService {
    * Fires GTM event when user clicks.
    */
   public fireClickEvent(ecategory: string, eaction: string): void {
-    this.angularGtmService.pushTag({
-      event: 'GAevent',
-      ecategory: ecategory,
-      eaction: eaction,
-      elabel: undefined
+    this.angularGtmService.event(eaction, {
+      category: ecategory
     });
   }
 
@@ -216,11 +225,8 @@ export class GoogleTagManagerService {
    * Fires GTM event on transaction error.
    */
   public fireTransactionError(ecategory: string, eaction: string): void {
-    this.angularGtmService.pushTag({
-      event: 'GAevent',
-      ecategory: ecategory,
-      eaction: eaction.toLowerCase().split(' ').join('_'),
-      elabel: undefined
+    this.angularGtmService.event(eaction.toLowerCase().split(' ').join('_'), {
+      category: ecategory
     });
   }
 
@@ -280,6 +286,6 @@ export class GoogleTagManagerService {
    * Adds google tag manager to DOM immediately.
    */
   public addGtmToDom(): void {
-    this.angularGtmService.addGtmToDom();
+    // this.angularGtmService.addGtmToDom();
   }
 }
