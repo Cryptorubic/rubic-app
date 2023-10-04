@@ -52,6 +52,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 
 @Injectable()
 export class CrossChainService {
@@ -100,7 +101,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -167,7 +168,8 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[]
+    disabledTradeTypes: CrossChainTradeType[],
+    fromBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -184,6 +186,7 @@ export class CrossChainService {
         ...(iframeDisabledTradeTypes || [])
       ])
     );
+    const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -197,6 +200,7 @@ export class CrossChainService {
       ],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
+      gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
   }

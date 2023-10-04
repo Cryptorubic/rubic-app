@@ -5,7 +5,13 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
-import { FeeInfo } from 'rubic-sdk';
+import {
+  EvmCrossChainTrade,
+  EvmOnChainTrade,
+  FeeInfo,
+  nativeTokensList,
+  Web3Pure
+} from 'rubic-sdk';
 
 @Component({
   selector: 'app-provider-element',
@@ -41,5 +47,27 @@ export class ProviderElementComponent {
 
   public getFeeInfo(): FeeInfo {
     return this.tradeState.trade.getTradeInfo().feeInfo;
+  }
+
+  public getGasData(): { amount: BigNumber; symbol: string } | null {
+    const trade = this.tradeState.trade;
+    let gasData = null;
+    if (trade instanceof EvmCrossChainTrade) {
+      gasData = trade.gasData;
+    } else if (trade instanceof EvmOnChainTrade) {
+      gasData = trade.gasFeeInfo;
+    }
+
+    if (!gasData || !gasData.gasLimit) {
+      return null;
+    }
+    const blockchain = trade.from.blockchain;
+    const nativeToken = nativeTokensList[blockchain];
+    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+
+    return {
+      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      symbol: nativeToken.symbol
+    };
   }
 }

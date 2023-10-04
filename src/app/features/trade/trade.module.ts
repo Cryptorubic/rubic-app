@@ -17,6 +17,7 @@ import {
   TuiExpandModule,
   TuiHintModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -95,7 +96,8 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
     TuiHostedDropdownModule,
     TuiInputModule,
     SwapsSharedModule,
-    TuiProgressModule
+    TuiProgressModule,
+    TuiLoaderModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

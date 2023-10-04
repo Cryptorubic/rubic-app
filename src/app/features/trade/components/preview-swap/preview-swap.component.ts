@@ -6,12 +6,22 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
 import { map } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
-import { EvmBlockchainName, FeeInfo } from 'rubic-sdk';
+import {
+  EvmBlockchainName,
+  EvmCrossChainTrade,
+  EvmOnChainTrade,
+  FeeInfo,
+  nativeTokensList,
+  OnChainTrade,
+  Web3Pure
+} from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import BigNumber from 'bignumber.js';
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 @Component({
   selector: 'app-preview-swap',
@@ -108,5 +118,28 @@ export class PreviewSwapComponent {
   private async switchChain(): Promise<void> {
     const blockchain = this.swapsFormService.inputValue.fromBlockchain;
     await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
+  }
+
+  public getGasData(
+    trade: CrossChainTrade | OnChainTrade
+  ): { amount: BigNumber; symbol: string } | null {
+    let gasData = null;
+    if (trade instanceof EvmCrossChainTrade) {
+      gasData = trade.gasData;
+    } else if (trade instanceof EvmOnChainTrade) {
+      gasData = trade.gasFeeInfo;
+    }
+
+    if (!gasData || !gasData.gasLimit) {
+      return null;
+    }
+    const blockchain = trade.from.blockchain;
+    const nativeToken = nativeTokensList[blockchain];
+    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+
+    return {
+      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      symbol: nativeToken.symbol
+    };
   }
 }
