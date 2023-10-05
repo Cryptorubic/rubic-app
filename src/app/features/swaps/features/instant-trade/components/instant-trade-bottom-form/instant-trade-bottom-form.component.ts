@@ -704,7 +704,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
       );
       this.isTradeSelectedByUser = true;
 
-      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.INSTANT_TRADE, 'approve');
       await this.tokensService.updateNativeTokenBalance(provider.trade.from.blockchain);
     } catch (err) {
       this.errorService.catch(err);

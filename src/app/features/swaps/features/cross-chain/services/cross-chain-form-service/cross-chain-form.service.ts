@@ -763,8 +763,6 @@ export class CrossChainFormService {
         };
       }
 
-      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
-
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);

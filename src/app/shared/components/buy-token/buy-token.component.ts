@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { List } from 'immutable';
@@ -115,7 +115,6 @@ export class BuyTokenComponent {
    */
   public buyToken(searchedTokens?: { from: TokenInfo; to: TokenInfo }): void {
     this.gtmService.reloadGtmSession();
-    this.gtmService.fireClickEvent('click', 'buy_rbc');
     from(this.router.navigate(['/']))
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
