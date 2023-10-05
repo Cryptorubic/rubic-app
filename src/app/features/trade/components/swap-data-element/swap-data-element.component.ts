@@ -25,13 +25,15 @@ export class SwapDataElementComponent {
 
     if (value?.nativeToken?.price) {
       this.displayAmount = `~ $${sum.multipliedBy(value.nativeToken.price).toFixed(2)}`;
-    } else {
+    } else if (value.nativeToken?.symbol) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();
 
       this.displayAmount = `${shortenPipe.transform(bnPipe.transform(sum), 6, 4)} ${
         value.nativeToken.symbol
       }`;
+    } else {
+      this.displayAmount = 'Unknown';
     }
   }
 
