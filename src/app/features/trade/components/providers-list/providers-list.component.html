@@ -39,6 +39,7 @@
           [toToken]="toToken"
           [selectedTradeType]="selectedTradeType"
           (click)="handleTradeSelection($event, state.tradeType)"
+          [nativeToken]="nativeToken$ | async"
         ></app-provider-element>
       </div>
       <ng-template #emptyContent>

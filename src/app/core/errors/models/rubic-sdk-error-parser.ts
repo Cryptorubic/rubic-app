@@ -45,7 +45,7 @@ export class RubicSdkErrorParser {
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
     if (err instanceof UpdatedRatesError) {
-      return new CrossChainAmountChangeWarning(err.trade);
+      return new CrossChainAmountChangeWarning(err.transaction);
     }
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();

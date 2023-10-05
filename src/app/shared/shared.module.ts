@@ -81,10 +81,10 @@ import { NoResultComponent } from './components/no-result/no-result.component';
 import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
+import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 
 @NgModule({
   declarations: [
-    // Components.
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
@@ -120,7 +120,6 @@ import { AirdropPointsApiService } from '@shared/services/airdrop-points-service
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
     ClaimRoundRowComponent,
-    // Pipes.
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
@@ -130,7 +129,6 @@ import { AirdropPointsApiService } from '@shared/services/airdrop-points-service
     FalsyPipe,
     FunctionCallPipe,
     SafeSanitizerPipe,
-    // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
@@ -140,7 +138,8 @@ import { AirdropPointsApiService } from '@shared/services/airdrop-points-service
     WindowContainerComponent,
     InputOutputContainerComponent,
     AmountTransputComponent,
-    NoResultComponent
+    NoResultComponent,
+    RateChangedModalComponent
   ],
   imports: [
     CommonModule,
@@ -221,7 +220,8 @@ import { AirdropPointsApiService } from '@shared/services/airdrop-points-service
     InputOutputContainerComponent,
     AmountTransputComponent,
     NoResultComponent,
-    ClaimRoundRowComponent
+    ClaimRoundRowComponent,
+    RateChangedModalComponent
   ],
   providers: [
     ScannerLinkPipe,

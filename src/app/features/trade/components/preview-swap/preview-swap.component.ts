@@ -13,7 +13,8 @@ import {
   FeeInfo,
   nativeTokensList,
   OnChainTrade,
-  Web3Pure
+  Web3Pure,
+  EvmWeb3Pure
 } from 'rubic-sdk';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { Router } from '@angular/router';
@@ -23,6 +24,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { ModalService } from '@core/modals/services/modal.service';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -36,6 +38,12 @@ export class PreviewSwapComponent {
   public time = '3 min';
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
+
+  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
+    switchMap(blockchain =>
+      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
+    )
+  );
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.tradeState$.pipe(
@@ -98,7 +106,8 @@ export class PreviewSwapComponent {
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
-    @Inject(Injector) private injector: Injector
+    @Inject(Injector) private injector: Injector,
+    private readonly tokensService: TokensService
   ) {}
 
   public backToForm(): void {

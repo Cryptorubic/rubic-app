@@ -67,7 +67,6 @@ import {
 import { ModalService } from '@app/core/modals/services/modal.service';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
-import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
@@ -922,22 +921,22 @@ export class CrossChainFormService {
         this.isSwapStarted = SWAP_PROCESS.NONE;
       }
 
-      if (parsedError instanceof CrossChainAmountChangeWarning) {
-        const currentTrade = this.taggedTrades.find(
-          trade => trade.tradeType === parsedError.trade.type
-        );
-        if (!currentTrade) {
-          return;
-        }
-        const newTrade = {
-          ...currentTrade,
-          trade: parsedError.trade
-        };
-        this.updateTradesList(newTrade);
-        if (this.selectedTrade.tradeType === parsedError.trade.type) {
-          this.updateSelectedTrade(newTrade);
-        }
-      }
+      // if (parsedError instanceof CrossChainAmountChangeWarning) {
+      //   const currentTrade = this.taggedTrades.find(
+      //     trade => trade.tradeType === parsedError.trade.type
+      //   );
+      //   if (!currentTrade) {
+      //     return;
+      //   }
+      //   const newTrade = {
+      //     ...currentTrade,
+      //     trade: parsedError.trade
+      //   };
+      //   this.updateTradesList(newTrade);
+      //   if (this.selectedTrade.tradeType === parsedError.trade.type) {
+      //     this.updateSelectedTrade(newTrade);
+      //   }
+      // }
 
       this.errorsService.catch(parsedError);
     }

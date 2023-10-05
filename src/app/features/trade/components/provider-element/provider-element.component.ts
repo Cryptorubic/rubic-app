@@ -14,6 +14,8 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { Token } from '@shared/models/tokens/token';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-provider-element',
@@ -30,9 +32,14 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) isBest: boolean = false;
 
+  @Input({ required: true }) nativeToken: Token;
+
   public expanded = false;
 
-  constructor(private readonly platformConfigurationService: PlatformConfigurationService) {}
+  constructor(
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensService: TokensService
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -54,8 +61,11 @@ export class ProviderElementComponent {
     };
   }
 
-  public getFeeInfo(): FeeInfo {
-    return this.tradeState.trade.getTradeInfo().feeInfo;
+  public getFeeInfo(): { fee: FeeInfo; nativeToken: Token } {
+    return {
+      fee: this.tradeState.trade.getTradeInfo().feeInfo,
+      nativeToken: this.nativeToken
+    };
   }
 
   public getGasData(): { amount: BigNumber; symbol: string } | null {

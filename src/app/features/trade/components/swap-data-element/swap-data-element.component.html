@@ -7,16 +7,9 @@
     </div>
   </div>
 
-  <div
-    *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0)"
-    class="provider-info__element"
-    [tuiHint]="feeData"
-  >
+  <div *ngIf="displayAmount" class="provider-info__element" [tuiHint]="feeData">
     <img src="assets/images/icons/money.svg" alt="Fee" />
-    <div>
-      {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
-      {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
-    </div>
+    {{ displayAmount }}
   </div>
   <div class="provider-info__element" [tuiHint]="timeTooltip">
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />

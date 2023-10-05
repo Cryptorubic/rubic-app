@@ -26,6 +26,8 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
+import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class ModalService {
@@ -248,5 +250,16 @@ export class ModalService {
    */
   public openArbitrumWarningModal(): Observable<void> {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
+  }
+
+  public openRateChangedModal(
+    oldAmount: BigNumber,
+    newAmount: BigNumber,
+    tokenSymbol: string
+  ): Observable<boolean> {
+    return this.showDialog(RateChangedModalComponent, {
+      size: 's',
+      data: { oldAmount, newAmount, tokenSymbol }
+    });
   }
 }

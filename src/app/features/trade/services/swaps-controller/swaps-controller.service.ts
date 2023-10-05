@@ -20,7 +20,9 @@ import {
   NotSupportedTokensError,
   OnChainTradeType,
   RubicSdkError,
-  UnsupportedReceiverAddressError
+  UnsupportedReceiverAddressError,
+  UpdatedRatesError,
+  Web3Pure
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -31,6 +33,8 @@ import { ExecutionRevertedError } from '@core/errors/models/common/execution-rev
 import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
+import { ModalService } from '@core/modals/services/modal.service';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SwapsControllerService {
@@ -57,7 +61,8 @@ export class SwapsControllerService {
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tradePageService: TradePageService,
-    private readonly refreshService: RefreshService
+    private readonly refreshService: RefreshService,
+    private readonly modalService: ModalService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -216,17 +221,32 @@ export class SwapsControllerService {
       }
       callback?.onSwap();
     } catch (err) {
-      console.error(err);
-      const parsedError = this.parseCalculationError(err);
-      if (this.isExecutionCriticalError(parsedError)) {
-        if (tradeState.trade instanceof CrossChainTrade) {
-          this.disabledTradesTypes.crossChain.push(tradeState.trade.type);
+      if (err instanceof UpdatedRatesError && tradeState.trade instanceof CrossChainTrade) {
+        const allowSwap = await firstValueFrom(
+          this.modalService.openRateChangedModal(
+            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
+            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
+            tradeState.trade.to.symbol
+          )
+        );
+        if (allowSwap) {
+          try {
+            await this.crossChainService.swapTrade(
+              tradeState.trade as CrossChainTrade,
+              callback.onHash,
+              err.transaction
+            );
+            callback?.onSwap();
+          } catch (innerErr) {
+            this.catchSwapError(err, tradeState, callback?.onError);
+          }
+          return;
         } else {
-          this.disabledTradesTypes.onChain.push(tradeState.trade.type);
+          this.tradePageService.setState('form');
         }
+      } else {
+        this.catchSwapError(err, tradeState, callback?.onError);
       }
-      callback?.onError();
-      this.errorsService.catch(err);
     }
   }
 
@@ -305,5 +325,23 @@ export class SwapsControllerService {
       UnsupportedDeflationTokenWarning,
       ExecutionRevertedError
     ].some(CriticalError => error instanceof CriticalError);
+  }
+
+  private catchSwapError(
+    err: RubicSdkError,
+    tradeState: SelectedTrade,
+    onError?: () => void
+  ): void {
+    console.error(err);
+    const parsedError = this.parseCalculationError(err);
+    if (this.isExecutionCriticalError(parsedError)) {
+      if (tradeState.trade instanceof CrossChainTrade) {
+        this.disabledTradesTypes.crossChain.push(tradeState.trade.type);
+      } else {
+        this.disabledTradesTypes.onChain.push(tradeState.trade.type);
+      }
+    }
+    onError?.();
+    this.errorsService.catch(err);
   }
 }

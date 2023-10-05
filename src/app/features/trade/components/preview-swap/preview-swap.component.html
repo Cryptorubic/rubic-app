@@ -103,8 +103,11 @@
       </div>
       <div *ngIf="state.transaction.step !== 'success'" class="preview__swap-info">
         <app-swap-data-element
-          [gasInfo]="getGasData(state.tradeState.trade)"
-          [feeInfo]="state.tradeState?.feeInfo || null"
+          [gasInfo]="getGasData(state?.tradeState?.trade)"
+          [feeInfoChange]="{
+            fee: state.tradeState?.feeInfo || null,
+            nativeToken: nativeToken$ | async
+          }"
           [time]="time"
         ></app-swap-data-element>
       </div>

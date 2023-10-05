@@ -26,7 +26,8 @@ import {
   UnapprovedContractError,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure
+  Web3Pure,
+  EvmEncodeConfig
 } from 'rubic-sdk';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -238,7 +239,11 @@ export class CrossChainService {
     };
   }
 
-  public async swapTrade(trade: CrossChainTrade, callback?: (hash: string) => void): Promise<void> {
+  public async swapTrade(
+    trade: CrossChainTrade,
+    callback?: (hash: string) => void,
+    directTransaction?: EvmEncodeConfig
+  ): Promise<void> {
     if (!this.isSlippageCorrect(trade)) {
       return;
     }
@@ -290,7 +295,8 @@ export class CrossChainService {
         fromAmount: trade.from.stringWeiAmount,
         toAmount: trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
-        ...(changenowId && { changenowId })
+        ...(changenowId && { changenowId }),
+        ...(directTransaction && { directTransaction })
       };
 
       try {
