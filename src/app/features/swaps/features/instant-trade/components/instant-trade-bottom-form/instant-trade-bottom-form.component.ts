@@ -63,7 +63,6 @@ import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade
 import { compareTokens } from '@shared/utils/utils';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
-import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 
 interface SettledProviderTrade {
   providerName: OnChainTradeType;
@@ -712,7 +711,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
       const parsedError = RubicSdkErrorParser.parseError(err);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.APPROVE_ON_CHAIN_SWAP, err.message);
+        this.gtmService.fireTransactionError(
+          this.selectedProvider.trade.from.name,
+          this.selectedProvider.trade.to.name,
+          err.code
+        );
       }
 
       this.setProviderState(
@@ -728,6 +731,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
   }
 
   public async createTrade(): Promise<void> {
+    this.gtmService.fireClickOnSwapButtonEvent(
+      this.selectedProvider.trade.from.name,
+      this.selectedProvider.trade.to.name
+    );
+
     if (!this.isSlippageCorrect()) {
       return;
     }
@@ -786,7 +794,11 @@ export class InstantTradeBottomFormComponent implements OnInit {
       const parsedError = RubicSdkErrorParser.parseError(err);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.ON_CHAIN_SWAP, err.message);
+        this.gtmService.fireTransactionError(
+          this.selectedProvider.trade.from.name,
+          this.selectedProvider.trade.to.name,
+          err.code
+        );
       }
 
       this.setProviderState(

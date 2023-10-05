@@ -141,6 +141,63 @@ export class GoogleTagManagerService {
   }
 
   /**
+   * Fires click on swap button GTM event.
+   */
+  public fireClickOnSwapButtonEvent(tokenInName: string, tokenOutName: string): void {
+    this.angularGtmService.gtag('event', 'click_swap', {
+      input_token: tokenInName,
+      output_token: tokenOutName
+    });
+  }
+
+  /**
+   * Fires wallet GTM event.
+   */
+  public fireClickOnConnectWalletButtonEvent(): void {
+    this.angularGtmService.gtag('event', 'click_connect_wallet');
+  }
+
+  /**
+   * Fires click on wallet provider GTM event.
+   * @param walletName User's wallet provider.
+   */
+  public fireClickOnWalletProviderEvent(walletName: WALLET_NAME): void {
+    this.angularGtmService.gtag('event', 'select_wallet', {
+      wallet_type: walletName
+    });
+  }
+
+  /**
+   * Fires wallet GTM event.
+   * @param walletName User's wallet provider.
+   */
+  public fireConnectWalletEvent(walletName: WALLET_NAME): void {
+    this.angularGtmService.gtag('event', 'connect_wallet', {
+      wallet_type: walletName
+    });
+  }
+
+  /**
+   * Fires token select GTM event.
+   * @param tokenName Token name.
+   */
+  public fireSelectInputTokenEvent(tokenName: string): void {
+    this.angularGtmService.gtag('event', `select_input_token`, {
+      input_token: tokenName
+    });
+  }
+
+  /**
+   * Fires token select GTM event.
+   * @param tokenName Token name.
+   */
+  public fireSelectOutputTokenEvent(tokenName: string): void {
+    this.angularGtmService.gtag('event', `select_output_token`, {
+      output_token: tokenName
+    });
+  }
+
+  /**
    * Fires "transaction signed" GTM event and resets steps of swap type's form.
    * @param eventCategory Swap type.
    * @param txId Transaction hash.
@@ -157,75 +214,41 @@ export class GoogleTagManagerService {
     revenue: BigNumber,
     price: BigNumber
   ): void {
-    const options = {
-      currencyCode: 'USD',
-      purchase: {
-        actionField: {
-          id: txId,
-          revenue: revenue
-        },
-        products: [
-          {
-            name: `${fromToken} to ${toToken}`,
-            price: price,
-            category: formEventCategoryMap[eventCategory],
-            quantity: 1
-          }
-        ]
-      }
-    };
-    console.log(options);
     this.forms[eventCategory].next(formStepsInitial);
-    this.angularGtmService.event(`${formEventCategoryMap[eventCategory]}_success`, {
-      category: formEventCategoryMap[eventCategory],
-      label: 'transactionSigned',
-      interaction: false
-      // options: {
-      //   currencyCode: 'USD',
-      //   purchase: {
-      //     actionField: {
-      //       id: txId,
-      //       revenue: revenue
-      //     },
-      //     products: [
-      //       {
-      //         name: `${fromToken} to ${toToken}`,
-      //         price: price,
-      //         category: formEventCategoryMap[eventCategory],
-      //         quantity: 1
-      //       }
-      //     ]
-      //   }
-      // }
-    });
-  }
+    const item = [
+      {
+        item_name: `${fromToken}_to_${toToken}`, //начальные и конечные токены
+        item_category: 'swap_success',
+        price: price.toFixed(), //общая сумма операции в USD
+        quantity: 1
+      }
+    ];
 
-  /**
-   * Fires wallet GTM event.
-   * @param walletName User's wallet provider.
-   */
-  public fireConnectWalletEvent(walletName: WALLET_NAME): void {
-    this.reloadGtmSession();
-    this.angularGtmService.event(`connect_wallet_${walletName}`, {
-      category: 'wallet',
-      label: `${walletName}`
-    });
-  }
-
-  /**
-   * Fires GTM event when user clicks.
-   */
-  public fireClickEvent(ecategory: string, eaction: string): void {
-    this.angularGtmService.event(eaction, {
-      category: ecategory
+    this.angularGtmService.gtag('event', 'purchase', {
+      transaction_id: txId, //id транзакции в системе
+      value: revenue.toFixed(), //комиссия системы в USD
+      currency: 'USD',
+      items: JSON.stringify(item)
     });
   }
 
   /**
    * Fires GTM event on transaction error.
    */
-  public fireTransactionError(ecategory: string, eaction: string): void {
-    this.angularGtmService.event(eaction.toLowerCase().split(' ').join('_'), {
+  public fireTransactionError(tokenInName: string, tokenOutName: string, errorCode: number): void {
+    this.angularGtmService.gtag('event', 'swap_error', {
+      input_token: tokenInName,
+      output_token: tokenOutName,
+      error_code: errorCode
+    });
+  }
+
+  // OLD EVENT'S //
+  /**
+   * Fires GTM event when user clicks.
+   */
+  public fireClickEvent(ecategory: string, eaction: string): void {
+    this.angularGtmService.event(eaction, {
       category: ecategory
     });
   }
