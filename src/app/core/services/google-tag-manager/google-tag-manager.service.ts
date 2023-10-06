@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
@@ -22,8 +22,6 @@ const formStepsInitial = {
   providedIn: 'root'
 })
 export class GoogleTagManagerService {
-  private readonly angularGtmService = inject(GoogleAnalyticsService);
-
   private readonly _instantTradeSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
 
   private readonly _multiChainSteps$ = new BehaviorSubject<FormSteps>(formStepsInitial);
@@ -43,7 +41,10 @@ export class GoogleTagManagerService {
     return Boolean(this.cookieService.get('gtmSessionActive'));
   }
 
-  constructor(private readonly cookieService: CookieService) {}
+  constructor(
+    private readonly cookieService: CookieService,
+    private readonly angularGtmService: GoogleAnalyticsService
+  ) {}
 
   /**
    * Reloads GTM session.
