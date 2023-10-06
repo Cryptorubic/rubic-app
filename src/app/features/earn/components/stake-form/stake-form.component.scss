@@ -12,7 +12,6 @@
   display: block;
   max-width: 490px;
   margin: 9px auto 20px;
-  padding: 26px;
 
   background: var(--form-background);
   border-radius: 24px;
@@ -82,7 +81,7 @@
     align-items: center;
     justify-content: space-between;
   }
-    
+
   &__data-and-amount {
     margin-bottom: 12px;
   }
@@ -120,7 +119,7 @@
       font-size: 16px;
       line-height: 16px;
     }
-    
+
     &-icon {
       width: 26px;
       height: 26px;
@@ -141,11 +140,11 @@
     height: 31px;
 
     text-align: right;
-    
+
     background-color: transparent;
-    
+
     border: none;
-    
+
     @include b($tablet) {
       padding-right: 0;
 
