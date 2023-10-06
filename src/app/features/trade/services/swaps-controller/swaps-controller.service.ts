@@ -209,17 +209,23 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     callback?: {
       onHash?: (hash: string) => void;
-      onSwap?: () => void;
+      onSwap?: (additionalInfo: { changenowId?: string }) => void;
       onError?: () => void;
     }
   ): Promise<void> {
     try {
+      const additionalData: { changenowId?: string } = {
+        changenowId: undefined
+      };
       if (tradeState.trade instanceof CrossChainTrade) {
         await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
+        if ('id' in tradeState.trade) {
+          additionalData.changenowId = tradeState.trade.id as string;
+        }
       } else {
         await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
       }
-      callback?.onSwap();
+      callback?.onSwap(additionalData);
     } catch (err) {
       if (err instanceof UpdatedRatesError && tradeState.trade instanceof CrossChainTrade) {
         const allowSwap = await firstValueFrom(
@@ -231,12 +237,18 @@ export class SwapsControllerService {
         );
         if (allowSwap) {
           try {
+            const additionalData: { changenowId?: string } = {
+              changenowId: undefined
+            };
             await this.crossChainService.swapTrade(
               tradeState.trade as CrossChainTrade,
               callback.onHash,
               err.transaction
             );
-            callback?.onSwap();
+            if ('id' in tradeState.trade) {
+              additionalData.changenowId = tradeState.trade.id as string;
+            }
+            callback?.onSwap(additionalData);
           } catch (innerErr) {
             this.catchSwapError(err, tradeState, callback?.onError);
           }

@@ -831,7 +831,11 @@ export class CrossChainFormService {
       });
 
       const fromToken = currentSelectedTrade.trade.from;
-      await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken);
+      const toToken = currentSelectedTrade.trade.to;
+      await Promise.all([
+        this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken),
+        this.tokensService.updateTokenBalanceAfterCcrSwap(toToken)
+      ]);
     } catch (error) {
       this.handleSwapError(error, currentSelectedTrade.tradeType);
       const parsedError = RubicSdkErrorParser.parseError(error);

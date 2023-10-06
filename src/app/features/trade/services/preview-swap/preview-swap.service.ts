@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of,
+  shareReplay
+} from 'rxjs';
 import { first, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -21,6 +30,7 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -48,7 +58,8 @@ export class PreviewSwapService {
   public readonly transactionState$ = this._transactionState$.asObservable();
 
   public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first()
+    first(),
+    shareReplay(shareReplayConfig)
   );
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
@@ -160,13 +171,18 @@ export class PreviewSwapService {
                     data: this.transactionState.data
                   });
                 },
-                onSwap: () => {
+                onSwap: (additionalInfo: { changenowId?: string }) => {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this._transactionState$.next({
                       step: 'destinationPending',
                       data: this.transactionState.data
                     });
-                    this.initDstTxStatusPolling(txHash, Date.now(), tradeState.trade.to.blockchain);
+                    this.initDstTxStatusPolling(
+                      txHash,
+                      Date.now(),
+                      tradeState.trade.to.blockchain,
+                      additionalInfo
+                    );
                   } else {
                     this._transactionState$.next({
                       step: 'success',
@@ -192,7 +208,8 @@ export class PreviewSwapService {
   public initDstTxStatusPolling(
     srcHash: string,
     timestamp: number,
-    toBlockchain: BlockchainName
+    toBlockchain: BlockchainName,
+    additionalInfo: { changenowId?: string }
   ): void {
     interval(30_000)
       .pipe(
@@ -206,8 +223,8 @@ export class PreviewSwapService {
                 toBlockchain: tradeState.trade.to.blockchain,
                 srcTxHash: srcHash,
                 txTimestamp: timestamp,
-                ...('id' in tradeState.trade && {
-                  changenowId: tradeState.trade.id as string
+                ...(additionalInfo?.changenowId && {
+                  changenowId: additionalInfo.changenowId
                 }),
                 ...('amountOutMin' in tradeState.trade && {
                   amountOutMin: tradeState.trade.amountOutMin as string
