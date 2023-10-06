@@ -8,8 +8,12 @@
       }
     }
 
-    app-login-button button {
-      width: 100%;
+    app-login-button {
+      margin-top: 20px;
+      
+      button {
+        width: 100%;
+      }
     }
   }
 }
@@ -29,7 +33,6 @@
     display: flex;
     justify-content: space-between;
 
-    margin-bottom: 20px;
     padding: 19px 21px;
 
     background: var(--io-background);
@@ -47,7 +50,7 @@
 
   &__param {
     &-label {
-      @include font(9px, 9px, 500, var(--tui-text-03), 0.45px);
+      @include font(11px, 10px, 500, var(--tui-text-03), 0.45px);
       display: flex;
       align-items: center;
       margin-bottom: 7px;

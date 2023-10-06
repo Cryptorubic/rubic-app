@@ -61,27 +61,36 @@
         <td class="tui-table__td">{{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}</td>
         <td class="tui-table__td">
           <div class="tui-table__td-actions">
-            <app-rubic-button
-              [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
-              (onClick)="onClaim.emit(deposit)"
-              [disabled]="deposit.totalNftRewards.isZero()"
-              [loading]="claimingId === deposit.id"
-              >{{ 'staking.deposits.claimRewards' | translate }}</app-rubic-button
-            >
-            <app-rubic-button
-              [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
-              (onClick)="onWithdraw.emit(deposit)"
-              [loading]="withdrawingId === deposit.id"
-              [tuiHint]="'Withdraw'"
-              [tuiHintDirection]="'top-right'"
-              tuiHintAppearance="onDark"
-            >
-              <img
-                [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
-                [src]="'assets/images/icons/leave-black.svg'"
-                alt=""
-              />
-            </app-rubic-button>
+            <tui-loader [showLoader]="claimingId === deposit.id" [overlay]="true">
+              <button
+                tuiButton
+                size="s"
+                type="button"
+                [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
+                (click)="onClaim.emit(deposit)"
+                [disabled]="deposit.totalNftRewards.isZero()"
+              >
+                {{ 'staking.deposits.claimRewards' | translate }}
+              </button>
+            </tui-loader>
+            <tui-loader [showLoader]="claimingId === deposit.id" [overlay]="true">
+              <button
+                tuiButton
+                size="s"
+                type="button"
+                [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
+                (click)="onWithdraw.emit(deposit)"
+                [tuiHint]="'Withdraw'"
+                [tuiHintDirection]="'top-right'"
+                tuiHintAppearance="onDark"
+              >
+                <img
+                  [ngClass]="{ 'leave-btn_disabled': !deposit.canWithdraw }"
+                  [src]="'assets/images/icons/leave-black.svg'"
+                  alt=""
+                />
+              </button>
+            </tui-loader>
           </div>
         </td>
       </tr>

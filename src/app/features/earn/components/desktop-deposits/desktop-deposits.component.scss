@@ -1,6 +1,22 @@
 @use 'src/scss/core' as *;
 
 .tui-table {
+  thead {
+    .tui-table__th {
+      @include font(11px, 10px, 500, var(--tui-text-03), 0.45px);
+      height: auto;
+      padding: 0 var(--tui-padding-l);
+    }
+  }
+
+  tbody {
+    .tui-table__td {
+      @include font(11px, 10px, 500, var(--primary-text), 0.45px);
+      height: auto;
+      padding: 0 var(--tui-padding-l);
+    }
+  }
+
   .tui-table__tr:first-child {
     border-bottom: none;
   }
@@ -37,53 +53,20 @@
       align-items: center;
 
       img {
-        width: 26px;
-        height: 26px;
-        margin-right: 8px;
+        width: 13px;
+        height: 15px;
+        margin-right: 5px;
       }
     }
 
     &-actions {
       display: flex;
+      gap: 5px;
       justify-content: flex-end;
-
-      app-rubic-button:first-child {
-        margin-right: 8px;
-      }
-
-      ::ng-deep app-rubic-button {
-        button {
-          height: 27px;
-        }
-
-        .t-wrapper[data-appearance='secondary'] {
-          background: var(--tui-secondary);
-        }
-
-        .t-loader[data-tui-element-size='m'] {
-          font-size: unset;
-        }
-
-        .t-wrapper {
-          padding: 0 10px;
-        }
-      }
-    }
-  }
-
-  tbody {
-    td {
-      font-size: 15px;
-    }
-
-    ::ng-deep app-rubic-button button {
-      font-size: 15px !important;
     }
   }
 }
 
-::ng-deep app-rubic-button {
-  .leave-btn_disabled {
-    opacity: 0.4;
-  }
+.leave-btn_disabled {
+  opacity: 0.4;
 }

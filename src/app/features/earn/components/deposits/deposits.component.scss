@@ -1,70 +1,36 @@
 @use 'src/scss/core' as *;
 
 .deposits {
-  &__wrapper {
-    position: relative;
+  position: relative;
 
-    padding: 26px 12px;
-
-    background: var(--form-background);
-    border-radius: $border-radius-2;
-  }
+  display: block;
+  max-width: 540px;
+  margin: 0 auto;
 
   &__head {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    margin-bottom: 26px;
+    margin-bottom: var(--tui-padding-m);
+  }
 
-    @include b($tablet) {
-      padding-left: 10px;
-    }
+  &__body {
+    padding: var(--tui-padding-m);
 
-    ::ng-deep .deposits__head-btn {
-      width: 144px;
-
-      @include b($tablet) {
-        width: 121px;
-      }
-
-      button {
-        height: 27px;
-
-        font-size: 15px;
-
-        @include b($tablet) {
-          font-size: 14px;
-        }
-      }
-
-      .t-wrapper {
-        padding: 0 14px !important;
-
-        @include b($tablet) {
-          padding: 10px !important;
-        }
-      }
-    }
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
   }
 
   &__title {
     display: flex;
     gap: 12px;
     align-items: center;
-    padding: 0 14px;
-
-    @include b(480) {
-      padding: 0 14px 0 0;
-    }
+    padding: 0 var(--tui-padding-l);
 
     &-text {
-      @include font(18px, 22px, 500, var(--primary-text));
+      @include font(15px, 21px, 500, var(--primary-text));
       white-space: nowrap;
-
-      @include b(480) {
-        @include font(16px, 19px, 500, var(--primary-text));
-      }
     }
   }
 
