@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { TuiDialogModule, TuiRootModule, TuiAlertModule } from '@taiga-ui/core';
+import { TuiAlertModule, TuiDialogModule, TuiRootModule } from '@taiga-ui/core';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { NavigationEnd, Router, Scroll } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
@@ -10,7 +10,7 @@ import { filter, pairwise } from 'rxjs/operators';
 import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { GoogleTagManagerModule } from 'angular-google-tag-manager';
+import { NgxGoogleAnalyticsModule, provideGoogleAnalytics } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 
 @NgModule({
@@ -29,11 +29,9 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-p
     BrowserAnimationsModule,
     AppRoutingModule,
     HttpClientModule,
-    GoogleTagManagerModule.forRoot({
-      id: 'GTM-PZ8NH4J'
-    })
+    NgxGoogleAnalyticsModule
   ],
-  providers: [MOBILE_NATIVE_MODAL_PROVIDER],
+  providers: [MOBILE_NATIVE_MODAL_PROVIDER, provideGoogleAnalytics('G-QHYCGJXV8G')],
   bootstrap: [AppComponent]
 })
 export class AppModule {
