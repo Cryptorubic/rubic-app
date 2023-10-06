@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, Injector, Inject } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { SwapTypeService } from '@app/core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
-import { Observable } from 'rxjs';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 
@@ -16,26 +14,19 @@ import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 export class MobileMenuComponent {
   public isMenuOpened = false;
 
-  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE> = this.swapTypeService.swapMode$;
-
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly currentUser$ = this.authService.currentUser$;
 
   constructor(
     private readonly authService: AuthService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly liveChatService: LiveChatService
   ) {}
 
   public async navigateToSwaps(): Promise<void> {
-    await this.swapTypeService.navigateToSwaps();
-  }
-
-  public async navigateToLimitOrder(): Promise<void> {
-    await this.swapTypeService.navigateToLimitOrder();
+    // await this.swapTypeService.navigateToSwaps();
   }
 
   public openNavigationMenu(): void {

@@ -1,26 +1,26 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
+  ChangenowCrossChainTrade,
+  ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
+  CrossChainReactivelyCalculatedTradeData,
   CrossChainTradeType,
+  EvmBasicTransactionOptions,
+  EvmCrossChainTrade,
+  EvmWeb3Pure,
   LifiCrossChainTrade,
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
-  UnnecessaryApproveError,
-  WrappedCrossChainTrade,
-  ChangenowCrossChainTrade,
-  ChangenowPaymentInfo,
-  Token,
   PriceToken,
-  BLOCKCHAIN_NAME,
-  UserRejectError,
-  EvmWeb3Pure,
+  SwapTransactionOptions,
+  Token,
   UnapprovedContractError,
-  EvmCrossChainTrade,
-  EvmBasicTransactionOptions,
-  CrossChainReactivelyCalculatedTradeData
+  UnnecessaryApproveError,
+  UserRejectError,
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 // import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -53,8 +53,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { centralizedBridges } from '@features/swaps/shared/constants/trades-providers/centralized-bridges';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -82,7 +82,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly tokensService: TokensService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     super('cross-chain-routing');
   }
@@ -444,7 +444,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
       amountOutMin,
       changenowId,
       ...(this.isSwapAndEarnSwap(calculatedTrade) && {
-        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+        points: await firstValueFrom(this.airdropPointsService.getSwapAndEarnPointsAmount())
       })
     };
 

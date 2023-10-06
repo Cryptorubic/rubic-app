@@ -18,8 +18,6 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
@@ -37,7 +35,6 @@ export class SwapFormQueryService {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly swapFormService: SwapFormService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly fiatsService: FiatsService,
@@ -103,10 +100,7 @@ export class SwapFormQueryService {
       });
 
     this.swapFormService.outputValue$.pipe(skip(1)).subscribe(value => {
-      if (
-        this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-        value.toAmount?.gt(0)
-      ) {
+      if (value.toAmount?.gt(0)) {
         this.queryParamsService.patchQueryParams({
           amountTo: value.toAmount.toFixed()
         });
@@ -115,17 +109,17 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnSwapType(): void {
-    this.swapTypeService.swapMode$.pipe(distinctUntilChanged()).subscribe(mode => {
-      if (!this._initialLoading$.getValue() && mode === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
-        const amountTo = this.queryParamsService.queryParams.amountTo;
-        const { toAmount } = this.swapFormService.outputValue;
-        if (!toAmount?.eq(amountTo)) {
-          this.swapFormService.outputControl.patchValue({
-            ...(amountTo && { toAmount: new BigNumber(amountTo) })
-          });
-        }
-      }
-    });
+    // this.swapTypeService.swapMode$.pipe(distinctUntilChanged()).subscribe(mode => {
+    //   if (!this._initialLoading$.getValue() && mode === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+    //     const amountTo = this.queryParamsService.queryParams.amountTo;
+    //     const { toAmount } = this.swapFormService.outputValue;
+    //     if (!toAmount?.eq(amountTo)) {
+    //       this.swapFormService.outputControl.patchValue({
+    //         ...(amountTo && { toAmount: new BigNumber(amountTo) })
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   private subscribeOnQueryParams(): void {
@@ -162,7 +156,7 @@ export class SwapFormQueryService {
           );
         })
       )
-      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, amount, amountTo }) => {
+      .subscribe(({ fromAsset, toToken, fromAssetType, toBlockchain, amount }) => {
         this.gtmService.needTrackFormEventsNow = false;
 
         this.swapFormService.inputControl.patchValue({
@@ -172,11 +166,11 @@ export class SwapFormQueryService {
           ...(toToken && { toToken }),
           ...(amount && { fromAmount: new BigNumber(amount) })
         });
-        if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
-          this.swapFormService.outputControl.patchValue({
-            ...(amountTo && { toAmount: new BigNumber(amountTo) })
-          });
-        }
+        // if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+        //   this.swapFormService.outputControl.patchValue({
+        //     ...(amountTo && { toAmount: new BigNumber(amountTo) })
+        //   });
+        // }
 
         this._initialLoading$.next(false);
       });

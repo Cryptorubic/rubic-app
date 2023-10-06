@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { map } from 'rxjs';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-platform-tokens-amount',
@@ -16,11 +14,12 @@ export class PlatformTokensAmountComponent {
 
   public amountsArray: string[];
 
-  public readonly isLimitOrder$ = this.swapTypeService.swapMode$.pipe(
-    map(swapType => swapType === SWAP_PROVIDER_TYPE.LIMIT_ORDER)
-  );
+  // public readonly isLimitOrder$ = this.swapTypeService.swapMode$.pipe(
+  //   map(swapType => swapType === SWAP_PROVIDER_TYPE.LIMIT_ORDER)
+  // );
+  public readonly isLimitOrder$ = of(false);
 
-  constructor(private readonly swapTypeService: SwapTypeService) {}
+  constructor() {}
 
   private getAmounts(amounts: string): string[] {
     return amounts.split('').map(symbol => {

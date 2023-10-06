@@ -14,8 +14,6 @@ import { ProvidersListMobileComponent } from '@app/features/swaps/features/insta
 import { WalletsModalComponent } from '@app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import { SwapInfoContainerComponent } from '@app/features/swaps/features/swap-form/components/swap-info/components/swap-info-container/swap-info-container.component';
 import { TradesListComponent } from '@app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/trades-list.component';
-import { ExpirationOptionalComponent } from '@app/features/swaps/features/limit-order/components/expiration-optional/expiration-optional.component';
-import { ExpirationCustomComponent } from '@app/features/swaps/features/limit-order/components/expiration-custom/expiration-custom.component';
 import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
 import { CrossChainTaggedTrade } from '@app/features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
 import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
@@ -28,6 +26,8 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
+import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class ModalService {
@@ -192,31 +192,6 @@ export class ModalService {
   }
 
   /**
-   * Show Limit Order Expiration Settings dialog.
-   */
-  public openExpirationalSettingsModal(): Observable<void> {
-    return this.showDialog(ExpirationOptionalComponent, {
-      title: 'Expires in',
-      fitContent: true
-    });
-  }
-
-  /**
-   * Show Limit Order Expiration Custom dialog.
-   * @param injector Injector
-   */
-  public openExpirationalCustomModal(injector: Injector): void {
-    this.mobileModalService$.openNextModal(
-      ExpirationCustomComponent,
-      {
-        title: 'Custom Expiration',
-        fitContent: true
-      },
-      injector
-    );
-  }
-
-  /**
    * Show Wallet Modal dialog.
    * @param injector Injector
    */
@@ -275,5 +250,16 @@ export class ModalService {
    */
   public openArbitrumWarningModal(): Observable<void> {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
+  }
+
+  public openRateChangedModal(
+    oldAmount: BigNumber,
+    newAmount: BigNumber,
+    tokenSymbol: string
+  ): Observable<boolean> {
+    return this.showDialog(RateChangedModalComponent, {
+      size: 's',
+      data: { oldAmount, newAmount, tokenSymbol }
+    });
   }
 }

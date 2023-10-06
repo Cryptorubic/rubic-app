@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CrossChainFormService } from '@features/swaps/features/cross-chain/services/cross-chain-form-service/cross-chain-form.service';
@@ -43,7 +42,7 @@ export class TransactionDetailsComponent {
   public readonly trade$ = this.swapFormService.outputValue$.pipe(
     combineLatestWith(this.currentOnChainTrade$),
     debounceTime(0),
-    map(() => this.getTrade(this.swapModeService.swapMode)),
+    map(() => this.getTrade(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING)),
     distinctUntilChanged()
   );
 
@@ -52,7 +51,6 @@ export class TransactionDetailsComponent {
   public readonly tradeData$ = this.trade$.pipe(map(trade => this.transformTrade(trade)));
 
   constructor(
-    private readonly swapModeService: SwapTypeService,
     private readonly crossChainFormService: CrossChainFormService,
     private readonly swapFormService: SwapFormService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,

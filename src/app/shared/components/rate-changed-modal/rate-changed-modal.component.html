@@ -1,0 +1,44 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__success-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Rate changed</h3>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text">
+        <div>
+          The exchange rate has changed. You hould accept the new rate in order to continue the
+          transaction
+        </div>
+
+        <div>
+          <span>Quoted amount:</span>
+          <span>{{ oldAmount | bigNumberFormat | shortenAmount : 6 : 4 }} {{ tokenSymbol }}</span>
+        </div>
+
+        <div>
+          <span>Current amount:</span>
+          <span>{{ newAmount | bigNumberFormat | shortenAmount : 6 : 4 }} {{ tokenSymbol }}</span>
+        </div>
+
+        <div>
+          <span>Rate change:</span> <span>{{ difference.toFixed(2) }}%</span>
+        </div>
+      </div>
+
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="outline" type="button" size="m" (click)="onCancel()">
+          {{ 'common.cancel' | translate }}
+        </button>
+
+        <button tuiButton appearance="primary" type="button" size="m" (click)="onConfirm()">
+          {{ 'common.OK' | translate }}
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

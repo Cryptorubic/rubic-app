@@ -9,6 +9,7 @@ import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  BlockchainsInfo,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
@@ -19,12 +20,14 @@ import {
   EvmWeb3Pure,
   NotWhitelistedProviderError,
   PriceToken,
+  RubicSdkError,
   SwapTransactionOptions,
   Token,
   UnapprovedContractError,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure
+  Web3Pure,
+  EvmEncodeConfig
 } from 'rubic-sdk';
 import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -50,6 +53,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 
 @Injectable()
 export class CrossChainService {
@@ -98,7 +102,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -116,6 +120,23 @@ export class CrossChainService {
               ...el,
               calculationTime: Date.now() - calculationStartTime
             })),
+            // @TODO REMOVE AFTER CN READY
+            map(el => {
+              if (
+                el?.wrappedTrade?.trade &&
+                el?.wrappedTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+                !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain)
+              ) {
+                return {
+                  ...el,
+                  wrappedTrade: {
+                    ...el.wrappedTrade,
+                    error: new RubicSdkError('Trade with non evm networks is not allowed yet')
+                  }
+                };
+              }
+              return el;
+            }),
             map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
             tap(el => {
               if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
@@ -148,7 +169,8 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[]
+    disabledTradeTypes: CrossChainTradeType[],
+    fromBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -165,6 +187,7 @@ export class CrossChainService {
         ...(iframeDisabledTradeTypes || [])
       ])
     );
+    const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -178,6 +201,7 @@ export class CrossChainService {
       ],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
+      gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
   }
@@ -215,7 +239,11 @@ export class CrossChainService {
     };
   }
 
-  public async swapTrade(trade: CrossChainTrade, callback?: (hash: string) => void): Promise<void> {
+  public async swapTrade(
+    trade: CrossChainTrade,
+    callback?: (hash: string) => void,
+    directTransaction?: EvmEncodeConfig
+  ): Promise<void> {
     if (!this.isSlippageCorrect(trade)) {
       return;
     }
@@ -267,7 +295,8 @@ export class CrossChainService {
         fromAmount: trade.from.stringWeiAmount,
         toAmount: trade.to.stringWeiAmount,
         rubicId: EvmWeb3Pure.randomHex(16),
-        ...(changenowId && { changenowId })
+        ...(changenowId && { changenowId }),
+        ...(directTransaction && { directTransaction })
       };
 
       try {

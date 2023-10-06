@@ -6,25 +6,25 @@ import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiToggleModule,
+  TuiBadgeModule,
+  TuiDataListWrapperModule,
+  TuiInputCountModule,
   TuiInputModule,
   TuiTabsModule,
-  TuiInputCountModule,
-  TuiDataListWrapperModule,
-  TuiBadgeModule,
-  TuiTagModule
+  TuiTagModule,
+  TuiToggleModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
   TuiHintModule,
-  TuiSvgModule,
-  TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiScrollbarModule,
+  TuiSvgModule,
   TuiTextfieldControllerModule,
-  TuiScrollbarModule
+  TuiTooltipModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
@@ -78,10 +78,13 @@ import { WindowContainerComponent } from './components/window-container/window-c
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
+import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
+import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 
 @NgModule({
   declarations: [
-    // Components.
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
@@ -116,7 +119,7 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
-    // Pipes.
+    ClaimRoundRowComponent,
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
@@ -126,7 +129,6 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     FalsyPipe,
     FunctionCallPipe,
     SafeSanitizerPipe,
-    // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
@@ -136,7 +138,8 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     WindowContainerComponent,
     InputOutputContainerComponent,
     AmountTransputComponent,
-    NoResultComponent
+    NoResultComponent,
+    RateChangedModalComponent
   ],
   imports: [
     CommonModule,
@@ -216,8 +219,18 @@ import { NoResultComponent } from './components/no-result/no-result.component';
     WindowContainerComponent,
     InputOutputContainerComponent,
     AmountTransputComponent,
-    NoResultComponent
+    NoResultComponent,
+    ClaimRoundRowComponent,
+    RateChangedModalComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
+  providers: [
+    ScannerLinkPipe,
+    WithRoundPipe,
+    BigNumberFormatPipe,
+    TimeGuard,
+    SafeSanitizerPipe,
+    AirdropPointsService,
+    AirdropPointsApiService
+  ]
 })
 export class SharedModule {}

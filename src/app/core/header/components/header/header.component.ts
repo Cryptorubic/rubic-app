@@ -20,7 +20,6 @@ import { Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
@@ -93,7 +92,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -115,7 +113,6 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-    this.swapType$ = this.swapTypeService.swapMode$;
   }
 
   public ngAfterViewInit(): void {
@@ -140,11 +137,7 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    await this.swapTypeService.navigateToSwaps();
-  }
-
-  public async navigateToLimitOrder(): Promise<void> {
-    await this.swapTypeService.navigateToLimitOrder();
+    await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
   public handleMenuButtonClick(): void {

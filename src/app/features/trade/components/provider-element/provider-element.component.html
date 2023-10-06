@@ -51,9 +51,9 @@
       </tui-expand>
     </div>
     <app-swap-data-element
-      *ngLet="getFeeInfo()"
-      [feeInfo]="getFeeInfo()"
-      [time]="time"
+      [gasInfo]="getGasData()"
+      [feeInfoChange]="getFeeInfo()"
+      [time]="(providerInfo.averageTime || 3) + ' M'"
     ></app-swap-data-element>
   </div>
 </ng-container>

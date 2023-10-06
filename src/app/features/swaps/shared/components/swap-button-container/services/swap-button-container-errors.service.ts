@@ -18,8 +18,6 @@ import {
 } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isNil } from '@shared/utils/utils';
 import { disabledFromBlockchains } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
@@ -80,7 +78,6 @@ export class SwapButtonContainerErrorsService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly queryParamsService: QueryParamsService,
     private readonly withRoundPipe: WithRoundPipe,
     private readonly translateService: TranslateService,
@@ -117,12 +114,12 @@ export class SwapButtonContainerErrorsService {
   }
 
   private subscribeOnSwapMode(): void {
-    this.swapTypeService.swapMode$.subscribe(swapMode => {
-      if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
-        this.setMinAmountError(false);
-        this.setMaxAmountError(false);
-      }
-    });
+    // this.swapTypeService.swapMode$.subscribe(swapMode => {
+    //   if (swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE) {
+    //     this.setMinAmountError(false);
+    //     this.setMaxAmountError(false);
+    //   }
+    // });
   }
 
   private subscribeOnWalletNetwork(): void {
@@ -144,8 +141,8 @@ export class SwapButtonContainerErrorsService {
 
   private subscribeOnTargetNetworkAddress(): void {
     combineLatest([
-      this.targetNetworkAddressService.isAddressValid$,
-      this.swapTypeService.swapMode$
+      this.targetNetworkAddressService.isAddressValid$
+      // this.swapTypeService.swapMode$
       // this.settingsService.instantTradeValueChanges.pipe(
       //   startWith(this.settingsService.instantTradeValue)
       // ),
@@ -177,10 +174,7 @@ export class SwapButtonContainerErrorsService {
   private checkAmounts(): void {
     const { fromAmount } = this.swapFormService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
-    this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] =
-      !fromAmount?.gt(0) ||
-      (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-        !toAmount?.gt(0));
+    this.errorType[BUTTON_ERROR_TYPE.NO_AMOUNT] = !fromAmount?.gt(0) || !toAmount?.gt(0);
   }
 
   /**
@@ -215,10 +209,10 @@ export class SwapButtonContainerErrorsService {
    * Can start error loading process, if balance is not yet calculated.
    */
   private checkUserBalance(): void {
-    if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
-      this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
-      return;
-    }
+    // if (this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.LIMIT_ORDER) {
+    //   this.errorType[BUTTON_ERROR_TYPE.INSUFFICIENT_FUNDS] = false;
+    //   return;
+    // }
 
     const { fromAsset, fromAmount } = this.swapFormService.inputValue;
     if (!isTokenAmount(fromAsset)) {
@@ -474,15 +468,13 @@ export class SwapButtonContainerErrorsService {
     this.walletConnectorService.addressChange$
       .pipe(
         map(() => this.walletConnectorService.provider.walletName),
-        combineLatestWith(this.targetNetworkAddressService.address$, this.swapTypeService.swapMode$)
+        combineLatestWith(this.targetNetworkAddressService.address$)
       )
-      .subscribe(([wallet, receiver, swapMode]) => {
+      .subscribe(([wallet, receiver]) => {
         const isWalletAddress =
           receiver === null || compareAddresses(receiver, this.walletConnectorService.address);
         this.errorType[BUTTON_ERROR_TYPE.ARGENT_WITHOUT_RECEIVER] =
-          wallet === WALLET_NAME.ARGENT &&
-          isWalletAddress &&
-          swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+          wallet === WALLET_NAME.ARGENT && isWalletAddress;
       });
   }
 }

@@ -1,0 +1,44 @@
+<div class="swap-and-earn">
+  <app-window-container *ngLet="points$ | async as points" class="swap-and-earn__points">
+    <div *ngIf="(isAuth$ | async) && !points.participant" class="swap-and-earn__points-cover">
+      <img src="/assets/images/swap-and-earn/sad-mouse.svg" alt="You are not participant" />
+    </div>
+    <ng-container header>Swap&Earn</ng-container>
+    <tui-loader [showLoader]="loadingPoints$ | async" [overlay]="true">
+      <app-points-container></app-points-container>
+    </tui-loader>
+  </app-window-container>
+  <app-window-container *ngIf="isAuth$ | async">
+    <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
+      <ng-container *ngIf="isParticipant$ | async; else notMember">
+        <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
+          <div class="drops__container">
+            <tui-scrollbar>
+              <app-claim-container></app-claim-container>
+            </tui-scrollbar>
+          </div>
+        </tui-loader>
+      </ng-container>
+    </ng-container>
+  </app-window-container>
+</div>
+
+<ng-template #notMember>
+  <p class="swap-and-earn__not-member">
+    You are not currently a member of the SwapToEarn program. You can read more about the program
+    here:
+    <a
+      class="swap-and-earn__not-member-link"
+      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
+      target="_blank"
+      rel="noreferrer"
+      >Link</a
+    >
+  </p>
+</ng-template>
+<ng-template #serverRequestFailed>
+  <app-no-result
+    label="The server request has failed"
+    description="Please try reloading the page."
+  ></app-no-result>
+</ng-template>

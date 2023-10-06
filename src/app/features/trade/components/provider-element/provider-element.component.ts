@@ -5,7 +5,17 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
 import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
-import { FeeInfo } from 'rubic-sdk';
+import {
+  CrossChainTradeType,
+  EvmCrossChainTrade,
+  EvmOnChainTrade,
+  FeeInfo,
+  nativeTokensList,
+  Web3Pure
+} from 'rubic-sdk';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { Token } from '@shared/models/tokens/token';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-provider-element',
@@ -22,11 +32,14 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) isBest: boolean = false;
 
-  public readonly time: string = '3 Min';
+  @Input({ required: true }) nativeToken: Token;
 
   public expanded = false;
 
-  constructor() {}
+  constructor(
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensService: TokensService
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -38,10 +51,42 @@ export class ProviderElementComponent {
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
-    return TRADES_PROVIDERS[tradeProvider];
+    const provider = TRADES_PROVIDERS[tradeProvider];
+    const providerAverageTime = this.platformConfigurationService.providersAverageTime;
+    const currentProviderTime = providerAverageTime?.[tradeProvider as CrossChainTradeType];
+
+    return {
+      ...provider,
+      averageTime: currentProviderTime ? currentProviderTime : provider.averageTime
+    };
   }
 
-  public getFeeInfo(): FeeInfo {
-    return this.tradeState.trade.getTradeInfo().feeInfo;
+  public getFeeInfo(): { fee: FeeInfo; nativeToken: Token } {
+    return {
+      fee: this.tradeState.trade.getTradeInfo().feeInfo,
+      nativeToken: this.nativeToken
+    };
+  }
+
+  public getGasData(): { amount: BigNumber; symbol: string } | null {
+    const trade = this.tradeState.trade;
+    let gasData = null;
+    if (trade instanceof EvmCrossChainTrade) {
+      gasData = trade.gasData;
+    } else if (trade instanceof EvmOnChainTrade) {
+      gasData = trade.gasFeeInfo;
+    }
+
+    if (!gasData || !gasData.gasLimit) {
+      return null;
+    }
+    const blockchain = trade.from.blockchain;
+    const nativeToken = nativeTokensList[blockchain];
+    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+
+    return {
+      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      symbol: nativeToken.symbol
+    };
   }
 }

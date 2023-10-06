@@ -103,7 +103,6 @@ export class TokensListElementComponent implements OnInit {
     const request$ = this.token.favorite
       ? this.tokensStoreService.removeFavoriteToken(this.token)
       : this.tokensStoreService.addFavoriteToken(this.token);
-    this.token.favorite = !this.token.favorite;
 
     request$.subscribe({
       error: () => {
@@ -111,7 +110,8 @@ export class TokensListElementComponent implements OnInit {
       },
       complete: () => {
         this.loadingFavoriteToken = false;
-        this.cdr.markForCheck();
+        this.token.favorite = !this.token.favorite;
+        this.cdr.detectChanges();
         this.toggleFavoriteToken.emit();
       }
     });

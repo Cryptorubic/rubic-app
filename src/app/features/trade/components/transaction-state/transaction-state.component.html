@@ -6,7 +6,14 @@
       'state__element-icon_done': index < stateIndex,
       'state__element-icon_focus': index === stateIndex,
     }"
-    ></div>
+    >
+      <img
+        *ngIf="index < stateIndex"
+        src="/assets/images/icons/checkmark/checkmark-thin-white.svg"
+        alt=""
+      />
+      <span *ngIf="index === stateIndex" class="loader"></span>
+    </div>
     <div
       class="state__element-text"
       [ngClass]="{

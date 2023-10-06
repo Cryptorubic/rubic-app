@@ -3,6 +3,10 @@ import { TradeState } from '@features/trade/models/trade-state';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { BehaviorSubject, interval } from 'rxjs';
+import { map, switchMap, takeWhile } from 'rxjs/operators';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { EvmWeb3Pure } from 'rubic-sdk';
 
 @Component({
   selector: 'app-providers-list',
@@ -29,13 +33,41 @@ export class ProvidersListComponent {
 
   @Input({ required: true }) showCalculation: boolean;
 
-  @Input({ required: true }) calculationProgress: { total: number; current: number };
+  @Input({ required: true }) set calculationProgress(value: { total: number; current: number }) {
+    this._calculationProgress = value;
+    if (value.current === 0) {
+      this._triggerCalculation$.next();
+    }
+  }
+
+  private _calculationProgress: { total: number; current: number };
+
+  public get calculationProgress(): { total: number; current: number } {
+    return this._calculationProgress;
+  }
 
   public readonly toToken$ = this.swapsFormService.toToken$;
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
-  constructor(private readonly swapsFormService: SwapsFormService) {}
+  private readonly _triggerCalculation$ = new BehaviorSubject<void>(null);
+
+  public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
+    switchMap(() => interval(100)),
+    takeWhile(el => el < 150),
+    map(time => ({ total: 150, current: time }))
+  );
+
+  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
+    switchMap(blockchain =>
+      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
+    )
+  );
+
+  constructor(
+    private readonly swapsFormService: SwapsFormService,
+    private readonly tokensService: TokensService
+  ) {}
 
   public handleTradeSelection(event: MouseEvent, tradeType: TradeProvider): void {
     const element = event.target as HTMLElement;

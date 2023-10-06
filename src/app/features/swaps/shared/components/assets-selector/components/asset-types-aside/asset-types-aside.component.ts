@@ -7,9 +7,6 @@ import { AssetsSelectorService } from '@features/swaps/shared/components/assets-
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { FiatsListService } from '@features/swaps/shared/components/assets-selector/services/fiats-list-service/fiats-list.service';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
@@ -48,22 +45,14 @@ export class AssetTypesAsideComponent {
     })
   );
 
-  public readonly fiatsDisabled = this.fiatsListService.isDisabled();
-
   public get showFiats(): boolean {
-    return (
-      this.formType === 'from' &&
-      this.swapTypeService.swapMode !== SWAP_PROVIDER_TYPE.LIMIT_ORDER &&
-      !this.queryParamsService.hideUnusedUI
-    );
+    return this.formType === 'from' && !this.queryParamsService.hideUnusedUI;
   }
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
-    private readonly fiatsListService: FiatsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window,

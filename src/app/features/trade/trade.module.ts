@@ -17,6 +17,7 @@ import {
   TuiExpandModule,
   TuiHintModule,
   TuiHostedDropdownModule,
+  TuiLoaderModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -52,6 +53,7 @@ import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chai
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
+import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,8 @@ import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updat
     TuiHostedDropdownModule,
     TuiInputModule,
     SwapsSharedModule,
-    TuiProgressModule
+    TuiProgressModule,
+    TuiLoaderModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,
@@ -133,7 +136,8 @@ import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updat
     RefreshService,
     PreviewSwapService,
     OnChainApiService,
-    SwapTokensUpdaterService
+    SwapTokensUpdaterService,
+    TradePageService
     // SettingsService,
     // RefreshService,
     // TradeService,

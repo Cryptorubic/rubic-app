@@ -6,12 +6,11 @@ import {
   OnInit,
   Self
 } from '@angular/core';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 // import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
-import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -27,12 +26,11 @@ import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { RefreshService } from '@features/swaps/core/services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { notEvmChangeNowBlockchainsList } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
-import { OnramperFormService } from '@features/swaps/features/onramper-exchange/services/onramper-form.service';
 
 @Component({
   selector: 'app-swap-form',
@@ -66,7 +64,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
 
   public readonly getCurrentUser$ = this.authService.currentUser$;
 
-  public readonly onramperWidgetOpened$ = this.onramperFormService.widgetOpened$;
+  public readonly onramperWidgetOpened$ = of(false);
 
   private readonly _fromAmountUpdated$ = new Subject<void>();
 
@@ -83,23 +81,26 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   };
 
   public get isInstantTrade(): boolean {
-    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
+    return true;
+    // return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.INSTANT_TRADE;
   }
 
   public get isCrossChainRouting(): boolean {
-    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
+    return false;
+    // return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
   }
 
   public get isOnramper(): boolean {
-    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
+    return false;
+    // return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.ONRAMPER;
   }
 
   public get isLimitOrder(): boolean {
-    return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
+    return false;
+    // return this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER;
   }
 
   constructor(
-    private readonly swapTypeService: SwapTypeService,
     private readonly swapFormService: SwapFormService,
     // private readonly settingsService: SettingsService,
     private readonly cdr: ChangeDetectorRef,
@@ -109,18 +110,17 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     private readonly authService: AuthService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly onramperFormService: OnramperFormService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   ngOnInit(): void {
-    this.swapTypeService.swapMode$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(swapMode => {
-        this.swapType = swapMode;
-      });
+    // this.swapTypeService.swapMode$
+    //   .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+    //   .subscribe(swapMode => {
+    //     this.swapType = swapMode;
+    //   });
 
     this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       this.setFormValues(form);
@@ -150,8 +150,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
   }
 
   public async revert(): Promise<void> {
-    const { fromAssetType, toBlockchain, fromAsset, toToken, fromAmount } =
-      this.swapFormService.inputValue;
+    const { fromAssetType, toBlockchain, fromAsset, toToken } = this.swapFormService.inputValue;
     if (!BlockchainsInfo.isBlockchainName(fromAssetType) || !isMinimalToken(fromAsset)) {
       return;
     }
@@ -165,10 +164,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
       ...(toAmount?.gt(0) && { fromAmount: toAmount })
     });
     this.swapFormService.outputControl.patchValue({
-      toAmount:
-        this.swapTypeService.swapMode === SWAP_PROVIDER_TYPE.LIMIT_ORDER
-          ? fromAmount
-          : new BigNumber(NaN)
+      toAmount: new BigNumber(NaN)
     });
   }
 
@@ -180,7 +176,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
       .pipe(
         map(form => [form?.fromAsset?.symbol || null, form?.toToken?.symbol || null]),
         distinctUntilChanged(compareObjects),
-        withLatestFrom(this.swapTypeService.swapMode$),
         takeUntil(this.destroy$)
       )
       .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {
@@ -216,9 +211,7 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     return this.fromAssetType;
   }
 
-  public closeWidget(): void {
-    this.onramperFormService.widgetOpened = false;
-  }
+  public closeWidget(): void {}
 
   public onFromAmountUpdate(): void {
     this._fromAmountUpdated$.next();

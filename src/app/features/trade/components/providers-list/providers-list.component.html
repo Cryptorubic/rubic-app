@@ -1,49 +1,57 @@
 <app-window-container>
   <ng-container header>Providers list</ng-container>
-  <div class="waiting" *ngIf="calculationProgress.total !== calculationProgress.current" @progress>
-    <h5>
-      <ng-container
-        *ngIf="calculationProgress.current < calculationProgress.total / 2; else longProviders"
-        >Calculating providers...</ng-container
-      >
-      <ng-template #longProviders>
-        More providers can get close, but they are delaying the answer...
-      </ng-template>
-    </h5>
-    <progress
-      [max]="calculationProgress.total"
-      new
-      size="xs"
-      tuiProgressBar
-      [value]="calculationProgress.current"
-    ></progress>
-  </div>
-  <tui-scrollbar class="providers-list" *ngLet="toToken$ | async as toToken">
+  <ng-container *ngIf="calculationProgress">
     <div
-      class="list"
-      *ngIf="
-        states?.length > 0 || calculationProgress.total !== calculationProgress.current;
-        else emptyContent
-      "
+      class="waiting"
+      *ngIf="calculationProgress.total !== calculationProgress.current"
+      @progress
     >
-      <app-provider-element
-        *ngFor="let state of states; index as i"
-        [isBest]="i === 0"
-        [tradeState]="state"
-        [toToken]="toToken"
-        [selectedTradeType]="selectedTradeType"
-        (click)="handleTradeSelection($event, state.tradeType)"
-      ></app-provider-element>
+      <h5>
+        <ng-container
+          *ngIf="calculationProgress.current < calculationProgress.total / 2; else longProviders"
+          >Calculating providers...</ng-container
+        >
+        <ng-template #longProviders>
+          More providers can get close, but they are delaying the answer...
+        </ng-template>
+      </h5>
+      <progress
+        *ngIf="calculationProcess$ | async as progress"
+        [max]="progress.total"
+        new
+        size="xs"
+        tuiProgressBar
+        [value]="progress.current"
+      ></progress>
     </div>
-    <ng-template #emptyContent>
-      <div class="empty-list">
-        <div class="empty-list__content">
-          <app-no-result
-            label="No routes available"
-            description="Please try another token combination."
-          ></app-no-result>
-        </div>
+    <tui-scrollbar class="providers-list" *ngLet="toToken$ | async as toToken">
+      <div
+        class="list"
+        *ngIf="
+          states?.length > 0 || calculationProgress.total !== calculationProgress.current;
+          else emptyContent
+        "
+      >
+        <app-provider-element
+          *ngFor="let state of states; index as i"
+          [isBest]="i === 0"
+          [tradeState]="state"
+          [toToken]="toToken"
+          [selectedTradeType]="selectedTradeType"
+          (click)="handleTradeSelection($event, state.tradeType)"
+          [nativeToken]="nativeToken$ | async"
+        ></app-provider-element>
       </div>
-    </ng-template>
-  </tui-scrollbar>
+      <ng-template #emptyContent>
+        <div class="empty-list">
+          <div class="empty-list__content">
+            <app-no-result
+              label="No routes available"
+              description="Please try another token combination."
+            ></app-no-result>
+          </div>
+        </div>
+      </ng-template>
+    </tui-scrollbar>
+  </ng-container>
 </app-window-container>

@@ -12,8 +12,6 @@ import { ApproveSwapButtonComponent } from '@features/swaps/shared/components/sw
 import { ApproveSwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/approve-swap-button.service';
 import { ApproveButtonComponent } from '@features/swaps/shared/components/swap-button-container/components/approve-swap-button/approve-button/approve-button.component';
 import { ErrorButtonComponent } from '@features/swaps/shared/components/swap-button-container/components/error-button/error-button.component';
-import { OnramperSwapButtonComponent } from './components/onramper-swap-button/onramper-swap-button.component';
-import { DirectBuyButtonComponent } from './components/onramper-swap-button/buy-native-button/direct-buy-button.component';
 import { OnramperSwapButtonService } from '@features/swaps/shared/components/swap-button-container/services/onramper-swap-button.service';
 
 @NgModule({
@@ -24,9 +22,7 @@ import { OnramperSwapButtonService } from '@features/swaps/shared/components/swa
     UpdateRateButtonComponent,
     ApproveSwapButtonComponent,
     ApproveButtonComponent,
-    ErrorButtonComponent,
-    OnramperSwapButtonComponent,
-    DirectBuyButtonComponent
+    ErrorButtonComponent
   ],
   imports: [CommonModule, SharedModule],
   exports: [SwapButtonContainerComponent],

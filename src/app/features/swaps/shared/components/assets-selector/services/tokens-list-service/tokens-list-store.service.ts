@@ -34,8 +34,6 @@ import { Token } from '@shared/models/tokens/token';
 import { TokensListTypeService } from '@features/swaps/shared/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListType } from '@features/swaps/shared/components/assets-selector/models/tokens-list-type';
 import { isMinimalToken } from '@shared/utils/is-token';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -108,7 +106,6 @@ export class TokensListStoreService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnUpdateTokens();
@@ -183,10 +180,7 @@ export class TokensListStoreService {
       )
       .subscribe((tokensList: TokensList) => {
         if ('tokensToShow' in tokensList) {
-          this.tokensToShow =
-            this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.LIMIT_ORDER
-              ? tokensList.tokensToShow
-              : tokensList.tokensToShow.filter(t => !EvmWeb3Pure.isNativeAddress(t.address));
+          this.tokensToShow = tokensList.tokensToShow;
           this.customToken = null;
         } else {
           this.tokensToShow = [];

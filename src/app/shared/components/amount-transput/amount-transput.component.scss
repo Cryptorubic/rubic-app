@@ -14,9 +14,9 @@
 
     padding: 0;
 
-    color: var(--primary-text);
+    color: var(--tui-text-01);
     font-weight: 400;
-    font-size: 22px;
+    font-size: 21px;
     letter-spacing: 0.1em;
     text-align: right;
 
@@ -30,6 +30,10 @@
       &::placeholder {
         font-size: 20px;
       }
+    }
+
+    &::-webkit-input-placeholder {
+      color: var(--tui-text-03);
     }
   }
 }

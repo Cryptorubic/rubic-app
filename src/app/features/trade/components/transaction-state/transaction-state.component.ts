@@ -24,45 +24,35 @@ export class TransactionStateComponent {
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
+    if (value.needApprove) {
+      steps.push(transactionStep.approvePending);
+    }
     if (value.type === 'swap') {
-      if (value.needApprove) {
-        steps.push(transactionStep.approveRequest);
-        steps.push(transactionStep.approvePending);
-      }
-      steps.push(
-        transactionStep.swapRequest,
-        transactionStep.sourcePending,
-        transactionStep.success
-      );
+      steps.push(transactionStep.swapRequest, transactionStep.sourcePending);
     } else {
-      if (value.needApprove) {
-        steps.push(transactionStep.approveRequest);
-        steps.push(transactionStep.approvePending);
-      }
       steps.push(
         transactionStep.swapRequest,
         transactionStep.sourcePending,
-        transactionStep.destinationPending,
-        transactionStep.success
+        transactionStep.destinationPending
       );
     }
     this.steps = steps.map(el => ({
       key: el,
-      value: TransactionStateComponent.getLabel(el)
+      value: TransactionStateComponent.getLabel(el, this.type)
     }));
   }
 
-  public static getLabel(state: TransactionStep): string {
+  public static getLabel(state: TransactionStep, type: 'bridge' | 'swap'): string {
     const map: Record<TransactionStep, string> = {
       idle: 'Swap',
-      error: 'error',
+      error: 'Error',
       approveReady: 'Approve',
-      approveRequest: 'Sign Transaction',
-      approvePending: 'Approve processing',
+      approvePending: 'Manage allowance',
       swapReady: 'Swap',
-      swapRequest: 'Sign Transaction',
-      sourcePending: 'Transaction in process',
-      destinationPending: 'Pending on target network',
+      swapRequest: 'Transaction Sign',
+      sourcePending:
+        type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
+      destinationPending: 'Waiting for complete in target chain',
       success: 'Success swap'
     };
     return map[state];

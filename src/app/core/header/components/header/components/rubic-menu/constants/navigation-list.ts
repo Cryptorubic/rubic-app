@@ -37,6 +37,13 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}team.svg`
   },
   {
+    translateKey: 'navigation.retrodrop',
+    type: 'internal',
+    link: 'retrodrop',
+    target: '_self',
+    imagePath: `${defaultSrc}retrodrop.svg`
+  },
+  {
     translateKey: 'Testnet App',
     type: 'external',
     link: EXTERNAL_LINKS.TESTNET_APP,
@@ -67,7 +74,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Swap to Earn',
       type: 'internal',
-      link: ROUTE_PATH.SWAP_AND_EARN,
+      link: ROUTE_PATH.AIRDROP,
       active: false
     },
     {

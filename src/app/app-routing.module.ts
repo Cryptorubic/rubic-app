@@ -6,7 +6,7 @@ import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
 const routes: Routes = [
   {
     path: ROUTE_PATH.NONE,
-    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
+    loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
     path: ROUTE_PATH.LIMIT_ORDER,
@@ -15,10 +15,6 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.STAKING,
     loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
-  },
-  {
-    path: ROUTE_PATH.HISTORY,
-    loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },
   {
     path: ROUTE_PATH.REVOKE_APPROVAL,
@@ -47,18 +43,16 @@ const routes: Routes = [
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
   },
   {
-    path: ROUTE_PATH.SWAP_AND_EARN,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    path: ROUTE_PATH.AIRDROP,
+    loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
   },
   {
     path: ROUTE_PATH.RETRODROP,
-    loadChildren: () =>
-      import('./features/swap-and-earn/swap-and-earn.module').then(m => m.SwapAndEarnModule)
+    loadChildren: () => import('./features/retrodrop/retrodrop.module').then(m => m.RetrodropModule)
   },
   {
     path: 'trade',
-    loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
+    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
     path: ROUTE_PATH.REST,

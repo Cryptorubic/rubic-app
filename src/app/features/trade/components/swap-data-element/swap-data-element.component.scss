@@ -6,5 +6,10 @@
   &__element {
     display: flex;
     gap: var(--tui-padding-s);
+    align-items: center;
+
+    img {
+      height: 0.75rem;
+    }
   }
 }

@@ -58,7 +58,6 @@ import { compareTradesRoutes } from '@features/swaps/features/cross-chain/utils/
 import { TradeService } from '@features/swaps/core/services/trade-service/trade.service';
 import { SwapFormInputTokens } from '@core/services/swaps/models/swap-form-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
 import { Router } from '@angular/router';
 import {
@@ -68,7 +67,6 @@ import {
 import { ModalService } from '@app/core/modals/services/modal.service';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
-import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
@@ -233,7 +231,6 @@ export class CrossChainFormService {
 
   constructor(
     private readonly swapFormService: SwapFormService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly refreshService: RefreshService,
     private readonly authService: AuthService,
     private readonly crossChainCalculationService: CrossChainCalculationService,
@@ -274,15 +271,15 @@ export class CrossChainFormService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.tradeStatus = TRADE_STATUS.DISABLED;
-
-            if (
-              this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-            ) {
-              this.refreshService.setStopped();
-              this.swapFormService.outputControl.patchValue({
-                toAmount: new BigNumber(NaN)
-              });
-            }
+            //
+            // if (
+            //   this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+            // ) {
+            //   this.refreshService.setStopped();
+            //   this.swapFormService.outputControl.patchValue({
+            //     toAmount: new BigNumber(NaN)
+            //   });
+            // }
 
             return { ...calculateData, stop: true };
           }
@@ -707,10 +704,10 @@ export class CrossChainFormService {
    * Makes pre-calculation checks and start recalculation.
    */
   private startRecalculation(isForced = true): void {
-    if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
-      this._calculateTrade$.next({ stop: true });
-      return;
-    }
+    // if (this.swapTypeService.getSwapProviderType() !== SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING) {
+    //   this._calculateTrade$.next({ stop: true });
+    //   return;
+    // }
 
     const { fromAssetType, toBlockchain } = this.swapFormService.inputValue;
     const fromBlockchain = fromAssetType as BlockchainName;
@@ -924,22 +921,22 @@ export class CrossChainFormService {
         this.isSwapStarted = SWAP_PROCESS.NONE;
       }
 
-      if (parsedError instanceof CrossChainAmountChangeWarning) {
-        const currentTrade = this.taggedTrades.find(
-          trade => trade.tradeType === parsedError.trade.type
-        );
-        if (!currentTrade) {
-          return;
-        }
-        const newTrade = {
-          ...currentTrade,
-          trade: parsedError.trade
-        };
-        this.updateTradesList(newTrade);
-        if (this.selectedTrade.tradeType === parsedError.trade.type) {
-          this.updateSelectedTrade(newTrade);
-        }
-      }
+      // if (parsedError instanceof CrossChainAmountChangeWarning) {
+      //   const currentTrade = this.taggedTrades.find(
+      //     trade => trade.tradeType === parsedError.trade.type
+      //   );
+      //   if (!currentTrade) {
+      //     return;
+      //   }
+      //   const newTrade = {
+      //     ...currentTrade,
+      //     trade: parsedError.trade
+      //   };
+      //   this.updateTradesList(newTrade);
+      //   if (this.selectedTrade.tradeType === parsedError.trade.type) {
+      //     this.updateSelectedTrade(newTrade);
+      //   }
+      // }
 
       this.errorsService.catch(parsedError);
     }

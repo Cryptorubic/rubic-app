@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 @Component({
@@ -9,17 +8,15 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormNavigationComponent {
-  public readonly swapType$ = this.swapTypeService.swapMode$;
-
   public readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  constructor(private readonly swapTypeService: SwapTypeService) {}
+  constructor() {}
 
   public async navigateToSwaps(): Promise<void> {
-    await this.swapTypeService.navigateToSwaps();
+    // await this.swapTypeService.navigateToSwaps();
   }
 
   public async navigateToLimitOrder(): Promise<void> {
-    await this.swapTypeService.navigateToLimitOrder();
+    // await this.swapTypeService.navigateToLimitOrder();
   }
 }

@@ -1,22 +1,15 @@
 <app-window-container *ngLet="displayTargetAddressInput$ | async as displayReceiver">
   <ng-container header>
-    Rubic.exchange
+    <div class="form-links">
+      <span>Swap</span>
+      <span>Gas</span>
+    </div>
     <div class="actions">
       <app-refresh-button
         [isRotating$]="isRefreshRotating$"
         (onRefresh)="refreshTrades()"
         class="swap-form__refresh"
       >
-        <!--
-      *ngIf="
-        (isInstantTrade || isCrossChainRouting || isOnramper) &&
-        isFormFilled &&
-        allowRefresh
-      "
-      mode="swaps"
-      [isRotating$]="isRefreshRotating$"
-      (onRefresh)="onRefresh()"
-      -->
       </app-refresh-button>
       <app-settings-container class="swap-form__settings"></app-settings-container>
     </div>

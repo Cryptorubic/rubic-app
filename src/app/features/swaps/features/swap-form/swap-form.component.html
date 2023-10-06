@@ -65,18 +65,9 @@
             (tradeStatusChange)="tradeStatus = $event"
           >
           </app-cross-chain-bottom-form>
-
-          <app-onramper-bottom-form *ngIf="isOnramper"></app-onramper-bottom-form>
         </div>
       </main>
-
-      <app-onramper-widget *ngIf="onramperWidgetOpened$ | async"></app-onramper-widget>
     </div>
-
-    <app-limit-order-bottom-form
-      *ngIf="isLimitOrder"
-      [fromAmountUpdated$]="fromAmountUpdated$"
-    ></app-limit-order-bottom-form>
   </ng-container>
 
   <ng-container *ngIf="isMobile$ | async; then swapInfoMobile; else swapInfoDesktop"></ng-container>

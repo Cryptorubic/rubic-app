@@ -1,12 +1,12 @@
-<div class="buttons-container" *ngLet="swapType$ | async as swapType">
-  <app-rubic-button
-    [appearance]="swapType !== SWAP_PROVIDER_TYPE.LIMIT_ORDER ? 'primary' : 'secondary'"
-    (onClick)="navigateToSwaps()"
-    >Swaps</app-rubic-button
-  >
-  <app-rubic-button
-    [appearance]="swapType === SWAP_PROVIDER_TYPE.LIMIT_ORDER ? 'primary' : 'secondary'"
-    (onClick)="navigateToLimitOrder()"
-    >Limit Order</app-rubic-button
-  >
-</div>
+<!--<div class="buttons-container" *ngLet="swapType$ | async as swapType">-->
+<!--  <app-rubic-button-->
+<!--    [appearance]="swapType !== SWAP_PROVIDER_TYPE.LIMIT_ORDER ? 'primary' : 'secondary'"-->
+<!--    (onClick)="navigateToSwaps()"-->
+<!--    >Swaps</app-rubic-button-->
+<!--  >-->
+<!--  <app-rubic-button-->
+<!--    [appearance]="swapType === SWAP_PROVIDER_TYPE.LIMIT_ORDER ? 'primary' : 'secondary'"-->
+<!--    (onClick)="navigateToLimitOrder()"-->
+<!--    >Limit Order</app-rubic-button-->
+<!--  >-->
+<!--</div>-->

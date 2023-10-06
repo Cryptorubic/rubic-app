@@ -2,6 +2,15 @@ app-action-button {
   width: 100%;
 }
 
+.form-links {
+  display: flex;
+  gap: var(--tui-padding-s);
+
+  span:last-child {
+    color: var(--tui-text-03);
+  }
+}
+
 .actions {
   display: flex;
   gap: 10px;

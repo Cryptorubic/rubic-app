@@ -1,9 +1,0 @@
-<div class="receiver-address" *ngIf="walletAddressText$ | async as walletAddress">
-  <ng-container *ngIf="buyingTokenSymbol$ | async as tokenSymbol">
-    <img src="assets/images/icons/hint.svg" alt="hint" />
-    <div class="receiver-address__text">
-      You will receive <span class="medium">{{ tokenSymbol }}</span> to
-      <span class="medium">{{ walletAddress }}</span>
-    </div>
-  </ng-container>
-</div>

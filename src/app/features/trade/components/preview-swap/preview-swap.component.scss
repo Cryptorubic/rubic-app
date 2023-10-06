@@ -31,12 +31,13 @@
 
   &__token-container {
     display: flex;
-    height: 25px;
+    height: 30px;
   }
 
   &__second-image-container {
-    width: 37.5px;
+    width: 45px;
     height: 100%;
+    overflow: hidden;
 
     border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
 
@@ -46,23 +47,29 @@
   }
 
   &__main-image {
-    width: 25px;
-    margin-left: -12.5px;
+    width: 30px;
+    margin-left: -15px;
 
-    background: var(--io-background);
+    background: var(--primary-background);
 
     border-radius: 100%;
-    outline: 2px solid var(--io-background);
+    outline: 2px solid var(--primary-background);
   }
 
   &__amount-container {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+
+    > * {
+      line-height: 1rem;
+    }
   }
 
   &__token-amount {
     width: 100%;
+
+    font-weight: 500;
   }
 
   &__fiat-amount {

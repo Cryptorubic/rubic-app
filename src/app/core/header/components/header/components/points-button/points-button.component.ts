@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
-import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { map } from 'rxjs/operators';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
@@ -12,19 +12,19 @@ import { AuthService } from '@core/services/auth/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PointsButtonComponent {
-  public readonly points$ = this.swapAndEarnStateService.points$.pipe(
+  public readonly points$ = this.airdropPointsService.points$.pipe(
     map(points => points.pending + points.confirmed)
   );
 
-  public readonly isAuth$ = this.authServices.currentUser$;
+  public readonly isAuth$ = this.authService.currentUser$;
 
   constructor(
     private readonly router: Router,
-    private readonly authServices: AuthService,
-    private readonly swapAndEarnStateService: SwapAndEarnStateService
+    private readonly airdropPointsService: AirdropPointsService,
+    private readonly authService: AuthService
   ) {}
 
   public async navigateToSwapAndEarn(): Promise<void> {
-    await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
+    await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });
   }
 }

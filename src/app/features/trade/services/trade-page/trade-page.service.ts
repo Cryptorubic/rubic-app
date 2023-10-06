@@ -3,9 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 type FormType = 'form' | 'fromSelector' | 'toSelector' | 'preview';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TradePageService {
   private readonly _formContent$ = new BehaviorSubject<FormType>('form');
 

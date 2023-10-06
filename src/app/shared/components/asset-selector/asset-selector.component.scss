@@ -13,6 +13,10 @@
   }
 
   &__main-label {
+    display: flex;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+
     color: white;
     font-weight: 700;
     font-size: 21px;
@@ -41,8 +45,7 @@
     width: 67px;
 
     background: #627eea;
-    border-radius: 16px 0 0 16px;
-    //padding-right: 25px;
+    border-radius: var(--tui-radius-m)0 0 var(--tui-radius-m);
   }
 
   &__second-image {
@@ -51,27 +54,39 @@
     border-radius: 100%;
   }
 
+  &__empty-container {
+    position: relative;
+    z-index: 1;
+  }
+
   &__empty {
     position: relative;
 
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 135px;
+    width: 150px;
     height: 100%;
+    margin-right: -25px;
+    padding-left: 25px;
+
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
 
     background: var(--tui-secondary);
-    border-radius: 16px 0 0 16px;
+    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
     &::after {
       position: absolute;
       right: -25px;
+      z-index: 0;
 
-      width: 50px;
+      width: 25px;
       height: 100%;
 
       background: var(--tui-secondary);
-      border-radius: 100%;
+      border-radius: 0 50px 50px 0;
 
       content: '';
     }

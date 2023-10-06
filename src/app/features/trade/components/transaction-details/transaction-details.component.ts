@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { first, map } from 'rxjs/operators';
 import { OnChainTrade, TradeInfo } from 'rubic-sdk';
@@ -24,10 +24,21 @@ export class TransactionDetailsComponent {
 
   public readonly walletAddress$ = this.walletConnector.addressChange$;
 
+  public isWalletCopied = false;
+
   constructor(
     private readonly tradeStateService: SwapsStateService,
-    private readonly walletConnector: WalletConnectorService
+    private readonly walletConnector: WalletConnectorService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
+
+  public copyToClipboard(): void {
+    this.isWalletCopied = true;
+    setTimeout(() => {
+      this.isWalletCopied = false;
+      this.cdr.markForCheck();
+    }, 700);
+  }
 }

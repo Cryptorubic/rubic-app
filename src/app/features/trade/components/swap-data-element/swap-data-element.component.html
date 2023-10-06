@@ -1,21 +1,40 @@
 <div class="provider-info">
-  <div *ngIf="feeInfo?.provider?.cryptoFee.amount?.gt(0)" class="provider-info__element">
+  <div *ngIf="gasInfo?.amount?.gt(0)" class="provider-info__element" [tuiHint]="gasTooltip">
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
-    <div class="">
-      {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
-      {{ feeInfo.provider.cryptoFee.tokenSymbol }}
+    <div>
+      {{ gasInfo.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
+      {{ gasInfo.symbol }}
     </div>
   </div>
 
-  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0)" class="provider-info__element">
-    <div>$</div>
-    <div>
-      {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 6 : 4 }}
-      {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
-    </div>
+  <div *ngIf="displayAmount" class="provider-info__element" [tuiHint]="feeData">
+    <img src="assets/images/icons/money.svg" alt="Fee" />
+    {{ displayAmount }}
   </div>
-  <div class="provider-info__element">
+  <div class="provider-info__element" [tuiHint]="timeTooltip">
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>
   </div>
 </div>
+
+<ng-template #feeData>
+  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)">
+    Protocol Fee:
+    {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
+    {{ feeInfo.rubicProxy.fixedFee.tokenSymbol }}
+  </div>
+  <div *ngIf="feeInfo?.provider?.cryptoFee?.amount.isFinite()">
+    Provider Fee:
+    {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
+    {{ feeInfo.provider.cryptoFee.tokenSymbol }}
+  </div>
+</ng-template>
+
+<ng-template #timeTooltip>Estimated arriving time</ng-template>
+<ng-template #gasTooltip>
+  <div>
+    Estimated Gas:
+    {{ gasInfo.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
+    {{ gasInfo.symbol }}
+  </div>
+</ng-template>

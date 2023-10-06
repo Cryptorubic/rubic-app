@@ -49,7 +49,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
-    rpc: 'https://mainnet.optimism.io'
+    rpc: 'https://rpc.ankr.com/optimism'
   },
   [BLOCKCHAIN_NAME.CRONOS]: {
     name: 'Cronos Mainnet Beta',
@@ -125,7 +125,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.ankr.com/mantle/d70cbe46075648e9be34196ec49a1dd0fc035c754c48875a823091c6d4aba8e4'
+    rpc: 'https://rpc.mantle.xyz/'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
