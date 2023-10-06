@@ -10,19 +10,19 @@ import { TradeCalculationService } from '@features/swaps/core/services/trade-ser
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  BlockchainsInfo,
   Injector,
-  SwapTransactionOptions,
-  Token,
-  OnChainTradeType,
-  UnnecessaryApproveError,
-  Web3Public,
-  Web3Pure,
+  NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeError,
-  BlockchainsInfo,
-  NotWhitelistedProviderError,
+  OnChainTradeType,
   PriceToken,
-  TX_STATUS
+  SwapTransactionOptions,
+  Token,
+  TX_STATUS,
+  UnnecessaryApproveError,
+  Web3Public,
+  Web3Pure
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -368,7 +368,7 @@ export class InstantTradeService extends TradeCalculationService {
       transactionHash,
       fromToken,
       toToken,
-      new BigNumber(0),
+      new BigNumber(1),
       price
     );
   }

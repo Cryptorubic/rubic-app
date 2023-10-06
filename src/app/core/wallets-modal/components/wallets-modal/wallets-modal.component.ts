@@ -6,7 +6,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import { USER_AGENT } from '@ng-web-apis/common';
+import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
@@ -15,7 +15,6 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainId, BlockchainName } from 'rubic-sdk';
-import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
@@ -30,6 +29,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { firstValueFrom, from, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -103,7 +103,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly iframeService: IframeService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly gtmService: GoogleTagManagerService
   ) {}
 
   ngOnInit() {
@@ -146,6 +147,8 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
+    this.gtmService.fireClickOnWalletProviderEvent(provider);
+
     const providerInfo = this.allProviders.find(elem => elem.value === provider);
     if (
       (this.iframeService.iframeAppearance === 'horizontal' &&

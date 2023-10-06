@@ -13,6 +13,7 @@ import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
 import {
   BlockchainName,
   BlockchainsInfo,
+  ChangenowCrossChainTrade,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
@@ -23,7 +24,6 @@ import {
   NotSupportedTokensError,
   RubicSdkError,
   UnsupportedReceiverAddressError,
-  ChangenowCrossChainTrade,
   Web3Pure
 } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -69,7 +69,6 @@ import {
 } from '@features/swaps/shared/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
-import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 import { CrossChainApiService } from '@core/services/backend/cross-chain-routing-api/cross-chain-api.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -764,8 +763,6 @@ export class CrossChainFormService {
         };
       }
 
-      this.gtmService.updateFormStep(SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING, 'approve');
-
       await this.tokensService.updateNativeTokenBalance(fromBlockchain);
     } catch (error) {
       const parsedError = RubicSdkErrorParser.parseError(error);
@@ -774,8 +771,9 @@ export class CrossChainFormService {
         this.isSwapStarted = SWAP_PROCESS.NONE;
       } else {
         this.gtmService.fireTransactionError(
-          GA_ERRORS_CATEGORY.APPROVE_CROSS_CHAIN_SWAP,
-          error.message
+          this.selectedTrade.trade.from.name,
+          this.selectedTrade.trade.to.name,
+          error.code
         );
       }
 
@@ -792,6 +790,11 @@ export class CrossChainFormService {
   }
 
   public async swapTrade(): Promise<void> {
+    this.gtmService.fireClickOnSwapButtonEvent(
+      this.selectedTrade.trade.from.name,
+      this.selectedTrade.trade.to.name
+    );
+
     if (this.isSwapStarted === SWAP_PROCESS.NONE) {
       this.isSwapStarted = SWAP_PROCESS.SWAP_STARTED;
     }
@@ -842,7 +845,11 @@ export class CrossChainFormService {
       const parsedError = RubicSdkErrorParser.parseError(error);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP, error.message);
+        this.gtmService.fireTransactionError(
+          this.selectedTrade.trade.from.name,
+          this.selectedTrade.trade.to.name,
+          error.code
+        );
       }
     }
   }
@@ -872,8 +879,9 @@ export class CrossChainFormService {
 
       if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError(
-          GA_ERRORS_CATEGORY.CHANGENOW_CROSS_CHAIN_SWAP,
-          error.message
+          this.selectedTrade.trade.from.name,
+          this.selectedTrade.trade.to.name,
+          error.code
         );
       }
     }

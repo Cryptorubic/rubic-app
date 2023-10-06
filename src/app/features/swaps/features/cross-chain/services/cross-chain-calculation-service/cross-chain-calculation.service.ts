@@ -1,26 +1,26 @@
 import { TradeCalculationService } from '@features/swaps/core/services/trade-service/trade-calculation.service';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
+  ChangenowCrossChainTrade,
+  ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainProvider,
+  CrossChainReactivelyCalculatedTradeData,
   CrossChainTradeType,
+  EvmBasicTransactionOptions,
+  EvmCrossChainTrade,
+  EvmWeb3Pure,
   LifiCrossChainTrade,
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
-  UnnecessaryApproveError,
-  WrappedCrossChainTrade,
-  ChangenowCrossChainTrade,
-  ChangenowPaymentInfo,
-  Token,
   PriceToken,
-  BLOCKCHAIN_NAME,
-  UserRejectError,
-  EvmWeb3Pure,
+  SwapTransactionOptions,
+  Token,
   UnapprovedContractError,
-  EvmCrossChainTrade,
-  EvmBasicTransactionOptions,
-  CrossChainReactivelyCalculatedTradeData
+  UnnecessaryApproveError,
+  UserRejectError,
+  WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
@@ -393,7 +393,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     fromAmount: BigNumber
   ): void {
     // @TODO remove hardcode
-    const fee = new BigNumber(1);
+    const fee = new BigNumber(2);
 
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,

@@ -11,7 +11,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/sw
 import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { SettingsService } from '@features/swaps/core/services/settings-service/settings.service';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
-import { distinctUntilChanged, map, takeUntil, withLatestFrom } from 'rxjs/operators';
+import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -21,7 +21,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { InstantTradeInfo } from '@features/swaps/features/instant-trade/models/instant-trade-info';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { compareObjects } from '@shared/utils/utils';
 import { AuthService } from '@core/services/auth/auth.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapFormInput } from '@core/services/swaps/models/swap-form-controls';
@@ -132,8 +131,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
     this.swapFormService.inputValue$.pipe(takeUntil(this.destroy$)).subscribe(form => {
       this.setFormValues(form);
     });
-
-    this.watchGtmEvents();
   }
 
   ngOnDestroy(): void {
@@ -185,43 +182,6 @@ export class SwapFormComponent implements OnInit, OnDestroy {
       autoClose: 10000,
       data: null
     });
-  }
-
-  private watchGtmEvents(): void {
-    this.gtmService.fetchPassedFormSteps();
-    this.gtmService.startGtmSession();
-
-    this.swapFormService.inputValue$
-      .pipe(
-        map(form => [form?.fromAsset?.symbol || null, form?.toToken?.symbol || null]),
-        distinctUntilChanged(compareObjects),
-        withLatestFrom(this.swapTypeService.swapMode$),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(([[fromToken, toToken], swapMode]: [[string, string], SWAP_PROVIDER_TYPE]) => {
-        if (
-          swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE ||
-          swapMode !== SWAP_PROVIDER_TYPE.INSTANT_TRADE
-        ) {
-          return;
-        }
-
-        if (!this.gtmService.isGtmSessionActive) {
-          this.gtmService.clearPassedFormSteps();
-        }
-
-        if (this.gtmService.needTrackFormEventsNow) {
-          if (fromToken) {
-            this.gtmService.updateFormStep(swapMode, 'token1');
-          }
-
-          if (toToken) {
-            this.gtmService.updateFormStep(swapMode, 'token2');
-          }
-        } else {
-          this.gtmService.needTrackFormEventsNow = true;
-        }
-      });
   }
 
   public getFromBlockchain(): BlockchainName {
