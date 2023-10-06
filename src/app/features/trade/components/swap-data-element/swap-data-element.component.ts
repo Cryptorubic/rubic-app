@@ -14,7 +14,7 @@ import { Token } from '@shared/models/tokens/token';
 export class SwapDataElementComponent {
   public feeInfo: FeeInfo;
 
-  public displayAmount: string;
+  public displayAmount: string | null;
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
@@ -23,9 +23,9 @@ export class SwapDataElementComponent {
       .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
 
-    if (value?.nativeToken?.price) {
+    if (value?.nativeToken?.price && sum.gt(0)) {
       this.displayAmount = `~ $${sum.multipliedBy(value.nativeToken.price).toFixed(2)}`;
-    } else if (value.nativeToken?.symbol) {
+    } else if (value.nativeToken?.symbol && sum.gt(0)) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();
 
@@ -33,7 +33,7 @@ export class SwapDataElementComponent {
         value.nativeToken.symbol
       }`;
     } else {
-      this.displayAmount = 'Unknown';
+      this.displayAmount = null;
     }
   }
 

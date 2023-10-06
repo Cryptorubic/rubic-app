@@ -113,7 +113,7 @@ export class CrossChainService {
             toSdkCompatibleToken,
             tokenState.isDeflation
               ? { ...options, useProxy: this.getDisabledProxyConfig() }
-              : { ...options, useProxy: this.getDisabledProxyConfig() }
+              : options
           )
           .pipe(
             map(el => ({
