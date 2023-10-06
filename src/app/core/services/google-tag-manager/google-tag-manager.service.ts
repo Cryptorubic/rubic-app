@@ -3,7 +3,6 @@ import { GoogleTagManagerService as AngularGoogleTagManagerService } from 'angul
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
 import BigNumber from 'bignumber.js';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
 import { StoreService } from '@core/services/store/store.service';
@@ -11,6 +10,7 @@ import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-m
 import { WINDOW } from '@ng-web-apis/common';
 import { HttpService } from 'src/app/core/services/http/http.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE

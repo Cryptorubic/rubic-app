@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { BehaviorSubject, interval } from 'rxjs';
 import { map, switchMap, takeWhile } from 'rxjs/operators';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { EvmWeb3Pure } from 'rubic-sdk';
+import { TradeProvider } from '@features/trade/models/trade-provider';
 
 @Component({
   selector: 'app-providers-list',

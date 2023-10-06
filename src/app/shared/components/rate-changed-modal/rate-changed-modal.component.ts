@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import BigNumber from 'bignumber.js';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-rate-changed-modal',

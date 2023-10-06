@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { Asset } from '@features/swaps/shared/models/form/asset';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { AssetSelector } from '@shared/models/asset-selector';
+import { Asset } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-asset-selector',

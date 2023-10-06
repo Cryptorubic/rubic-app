@@ -35,20 +35,19 @@
         ></app-status-badge>
         <img
           class="status-from-link-arrow"
-          *ngIf="!changenowId"
           src="assets/images/icons/arrow/link-arrow.svg"
           alt="link-arrow"
         />
       </a>
-      <img
-        *ngIf="changenowId"
-        class="status-from-copy-icon"
-        src="assets/images/icons/copy.svg"
-        alt="Copy"
-        (click)="copyToClipboard()"
-        [tuiHint]="template"
-        [tuiHintManual]="hintShown"
-      />
+      <!--      <img-->
+      <!--        *ngIf="changenowId"-->
+      <!--        class="status-from-copy-icon"-->
+      <!--        src="assets/images/icons/copy.svg"-->
+      <!--        alt="Copy"-->
+      <!--        (click)="copyToClipboard()"-->
+      <!--        [tuiHint]="template"-->
+      <!--        [tuiHintManual]="hintShown"-->
+      <!--      />-->
     </div>
   </td>
 
@@ -119,7 +118,7 @@
           <a
             *ngIf="!showToContinue; else toContinue"
             class="tx__status-from"
-            [class.hide-arrow]="changenowId || !uiTrade?.srcTxLink"
+            [class.hide-arrow]="!uiTrade?.srcTxLink"
             [href]="uiTrade?.srcTxLink"
             target="_blank"
             style="align-items: center"
@@ -131,15 +130,15 @@
             >
             </app-status-badge>
           </a>
-          <img
-            *ngIf="changenowId"
-            class="status-from-copy-icon-mobile"
-            src="assets/images/icons/copy.svg"
-            alt="Copy"
-            (click)="copyToClipboard()"
-            [tuiHint]="template"
-            [tuiHintManual]="hintShown"
-          />
+          <!--          <img-->
+          <!--            *ngIf="changenowId"-->
+          <!--            class="status-from-copy-icon-mobile"-->
+          <!--            src="assets/images/icons/copy.svg"-->
+          <!--            alt="Copy"-->
+          <!--            (click)="copyToClipboard()"-->
+          <!--            [tuiHint]="template"-->
+          <!--            [tuiHintManual]="hintShown"-->
+          <!--          />-->
         </div>
         <ng-template #toContinue>
           <button class="tx__to-continue" (click)="continueOnramperTrade()">Continue</button>

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Injector, Inject } from '@angular/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { LiveChatService } from '@core/services/live-chat/live-chat.service';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-mobile-menu',

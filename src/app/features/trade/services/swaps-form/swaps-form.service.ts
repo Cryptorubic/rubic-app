@@ -9,7 +9,6 @@ import {
 } from '../../models/swap-form-controls';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { BlockchainName } from 'rubic-sdk';
@@ -17,6 +16,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
+import { compareAssets } from '@features/trade/utils/compare-assets';
 
 @Injectable()
 export class SwapsFormService {

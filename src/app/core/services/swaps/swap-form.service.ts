@@ -14,10 +14,10 @@ import {
 } from '@core/services/swaps/models/swap-form-controls';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { isMinimalToken } from '@shared/utils/is-token';
 import BigNumber from 'bignumber.js';
+import { compareAssets } from '@features/trade/utils/compare-assets';
 
 @Injectable()
 export class SwapFormService {
@@ -74,6 +74,7 @@ export class SwapFormService {
     shareReplay(shareReplayConfig)
   );
 
+  // @ts-ignore
   public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
     map(inputValue => {
       if (isMinimalToken(inputValue.fromAsset)) {

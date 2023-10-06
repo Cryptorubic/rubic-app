@@ -9,10 +9,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
-    path: ROUTE_PATH.LIMIT_ORDER,
-    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
-  },
-  {
     path: ROUTE_PATH.STAKING,
     loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
   },
@@ -21,13 +17,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
   },
-  {
-    path: ROUTE_PATH.CHANGENOW_RECENT_TRADES,
-    loadChildren: () =>
-      import('./features/changenow-recent-trades/changenow-recent-trades.module').then(
-        m => m.ChangenowRecentTradesModuleModule
-      )
-  },
+  // {
+  //   path: ROUTE_PATH.CHANGENOW_RECENT_TRADES,
+  //   loadChildren: () =>
+  //     import('./features/changenow-recent-trades/changenow-recent-trades.module').then(
+  //       m => m.ChangenowRecentTradesModuleModule
+  //     )
+  // },
   {
     path: ROUTE_PATH.ABOUT,
     loadChildren: () =>
@@ -49,10 +45,6 @@ const routes: Routes = [
   {
     path: ROUTE_PATH.RETRODROP,
     loadChildren: () => import('./features/retrodrop/retrodrop.module').then(m => m.RetrodropModule)
-  },
-  {
-    path: 'trade',
-    loadChildren: () => import('./features/swaps/swaps.module').then(m => m.SwapsModule)
   },
   {
     path: ROUTE_PATH.REST,

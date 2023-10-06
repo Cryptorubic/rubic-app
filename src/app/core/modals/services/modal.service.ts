@@ -1,24 +1,13 @@
 import { Inject, Injectable, Injector, Component, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { AssetsSelectorComponent } from '@app/features/swaps/shared/components/assets-selector/components/assets-selector/assets-selector.component';
-import { Asset } from '@app/features/swaps/shared/models/form/asset';
 import { Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
 import { MobileUserProfileComponent } from '@app/core/header/components/header/components/mobile-user-profile/mobile-user-profile.component';
-import { BlockchainsListComponent } from '@app/features/swaps/shared/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { MobileNativeModalService } from './mobile-native-modal.service';
-import { InstantTradeProviderData } from '@app/features/swaps/features/instant-trade/models/providers-controller-data';
-import { ProvidersListMobileComponent } from '@app/features/swaps/features/instant-trade/components/providers-panels/components/providers-list-mobile/providers-list-mobile.component';
 import { WalletsModalComponent } from '@app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
-import { SwapInfoContainerComponent } from '@app/features/swaps/features/swap-form/components/swap-info/components/swap-info-container/swap-info-container.component';
-import { TradesListComponent } from '@app/features/swaps/features/cross-chain/components/cross-chain-bottom-form/components/best-trade-panel/components/trades-list/trades-list.component';
 import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
-import { CrossChainTaggedTrade } from '@app/features/swaps/features/cross-chain/models/cross-chain-tagged-trade';
-import { SWAP_PROVIDER_TYPE } from '@app/features/swaps/features/swap-form/models/swap-provider-type';
-import { TRADE_STATUS } from '@app/shared/models/swaps/trade-status';
-import { InstantTradeInfo } from '@app/features/swaps/features/instant-trade/models/instant-trade-info';
 import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
 import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
@@ -28,6 +17,7 @@ import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/se
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
+import { Asset } from '@features/trade/models/asset';
 
 @Injectable()
 export class ModalService {
@@ -39,18 +29,19 @@ export class ModalService {
 
   /**
    * Show tokens dialog.
-   * @param formType Tokens type (from || to).
-   * @param idPrefix Id prefix for GA.
+   * @param _formType Tokens type (from || to).
+   * @param _idPrefix Id prefix for GA.
    */
-  public openAssetsSelector(formType: 'from' | 'to', idPrefix: string = ''): Observable<Asset> {
-    return this.showDialog<AssetsSelectorComponent, Asset>(AssetsSelectorComponent, {
-      title: 'Select token',
-      size: 'l',
-      data: {
-        formType,
-        idPrefix
-      }
-    });
+  public openAssetsSelector(_formType: 'from' | 'to', _idPrefix: string = ''): Observable<Asset> {
+    return undefined;
+    // return this.showDialog<AssetsSelectorComponent, Asset>(AssetsSelectorComponent, {
+    //   title: 'Select token',
+    //   size: 'l',
+    //   data: {
+    //     formType,
+    //     idPrefix
+    //   }
+    // });
   }
 
   /**
@@ -122,17 +113,17 @@ export class ModalService {
 
   /**
    * Show Blockchain List dialog.
-   * @param injector Injector.
+   * @param _injector Injector.
    */
-  public openBlockchainList(injector: Injector): void {
-    this.mobileModalService$.openNextModal(
-      BlockchainsListComponent,
-      {
-        title: 'Select Blockchain',
-        scrollableContent: true
-      },
-      injector
-    );
+  public openBlockchainList(_injector: Injector): void {
+    // this.mobileModalService$.openNextModal(
+    //   BlockchainsListComponent,
+    //   {
+    //     title: 'Select Blockchain',
+    //     scrollableContent: true
+    //   },
+    //   injector
+    // );
   }
 
   /**
@@ -140,56 +131,56 @@ export class ModalService {
    * @param data Instant Trade Providers data
    * @param injector Injector
    */
-  public openProvidersModal(
-    data: InstantTradeProviderData[],
-    injector: Injector
-  ): Observable<InstantTradeProviderData> {
-    return this.showDialog(
-      ProvidersListMobileComponent,
-      {
-        title: 'Available Providers',
-        scrollableContent: true,
-        data
-      },
-      injector
-    );
-  }
+  // public openProvidersModal(
+  //   data: InstantTradeProviderData[],
+  //   injector: Injector
+  // ): Observable<InstantTradeProviderData> {
+  //   return this.showDialog(
+  //     ProvidersListMobileComponent,
+  //     {
+  //       title: 'Available Providers',
+  //       scrollableContent: true,
+  //       data
+  //     },
+  //     injector
+  //   );
+  // }
 
   /**
    * Show Cross Chain Providers dialog.
    * @param data Cross Chain Tagged Trades data
    * @param injector Injector
    */
-  public openCrossChainProvidersModal(
-    data: { taggedTrades: CrossChainTaggedTrade[] },
-    injector?: Injector
-  ): Observable<void> {
-    return this.showDialog(
-      TradesListComponent,
-      {
-        title: 'Available Cross-Chain Providers',
-        scrollableContent: true,
-        data
-      },
-      injector
-    );
-  }
+  // public openCrossChainProvidersModal(
+  //   data: { taggedTrades: CrossChainTaggedTrade[] },
+  //   injector?: Injector
+  // ): Observable<void> {
+  //   return this.showDialog(
+  //     TradesListComponent,
+  //     {
+  //       title: 'Available Cross-Chain Providers',
+  //       scrollableContent: true,
+  //       data
+  //     },
+  //     injector
+  //   );
+  // }
 
   /**
    * Show Transaction Details dialog.
    * @param data Transaction Details data
    */
-  public openSwapInfoModal(data: {
-    swapType: SWAP_PROVIDER_TYPE;
-    currentInstantTradeInfo: InstantTradeInfo;
-    tradeStatus: TRADE_STATUS;
-  }): Observable<void> {
-    return this.showDialog(SwapInfoContainerComponent, {
-      title: 'Transaction Details',
-      fitContent: true,
-      data
-    });
-  }
+  // public openSwapInfoModal(data: {
+  //   swapType: SWAP_PROVIDER_TYPE;
+  //   currentInstantTradeInfo: InstantTradeInfo;
+  //   tradeStatus: TRADE_STATUS;
+  // }): Observable<void> {
+  //   return this.showDialog(SwapInfoContainerComponent, {
+  //     title: 'Transaction Details',
+  //     fitContent: true,
+  //     data
+  //   });
+  // }
 
   /**
    * Show Wallet Modal dialog.

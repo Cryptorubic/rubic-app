@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, forkJoin, interval, Observable, of, Subscription, timer } from 'rxjs';
 
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -24,13 +23,11 @@ import {
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
-import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { ENVIRONMENT } from '../../../../../environments/environment';
 import { OnChainManagerCalculationOptions } from 'rubic-sdk/lib/features/on-chain/calculation-manager/models/on-chain-manager-calculation-options';
@@ -39,6 +36,9 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
+import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { TradeParser } from '@features/trade/utils/trade-parser';
 
 @Injectable()
 export class OnChainService {

@@ -15,11 +15,11 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { AssetType } from '@features/trade/models/asset';
 
 @Injectable()
 export class SwapFormQueryService {

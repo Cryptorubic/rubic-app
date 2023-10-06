@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
-import { OnRefreshData } from '@features/swaps/core/services/refresh-service/models/on-refresh-data';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
+import { OnRefreshData } from '@features/trade/models/on-refresh-data';
 
 @Injectable()
 export class RefreshService {
