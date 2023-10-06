@@ -40,7 +40,6 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.gtmService.addGtmToDom();
     this.setupIframeSettings();
   }
 
