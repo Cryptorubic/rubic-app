@@ -13593,10 +13593,8 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@^4.31.1-alpha-getUsdPrice.1:
-  version "4.31.1-alpha-getUsdPrice.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.31.1-alpha-getUsdPrice.1.tgz#059879b26cf9d2776d9034e2709fa00131a0d9f0"
-  integrity sha512-/OLiXFoqSkKnqDtrA67nyL9UB4BGqDnRo0MxHvXfQEz0si5v4QHGzx7EOnOCm0+pEtUeW70ZuLEs23Ipp7Gn9Q==
+"rubic-sdk@file:../rubic-sdk":
+  version "4.31.1-alpha-getUsdPrice.2"
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
