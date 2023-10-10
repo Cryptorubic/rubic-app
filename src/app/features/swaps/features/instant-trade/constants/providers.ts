@@ -1,8 +1,7 @@
 import { INSTANT_TRADE_STATUS } from '@features/swaps/features/instant-trade/models/instant-trades-trade-status';
 import { InstantTradeProviderData } from '@features/swaps/features/instant-trade/models/providers-controller-data';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 import { instantTradesLabels } from '@shared/constants/instant-trade/instant-trades-labels';
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 import { SupportedOnChainNetworks } from '@features/swaps/features/instant-trade/constants/instant-trade.type';
 
 const defaultState: Omit<InstantTradeProviderData, 'name' | 'label'> = {
@@ -26,6 +25,7 @@ function getDefaultStateByProviders(providers: OnChainTradeType[]): InstantTrade
     }
   ];
 }
+
 // Curve commented because hack
 export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTradeProviderData[]> =
   {
@@ -227,5 +227,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.MUMBAI]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([]),
-    [BLOCKCHAIN_NAME.ZETACHAIN]: getDefaultStateByProviders([])
+    [BLOCKCHAIN_NAME.ZETACHAIN]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.TAIKO]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.SEPOLIA]: getDefaultStateByProviders([])
   };
