@@ -148,6 +148,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com', 'https://pulsechain.publicnode.com'],
   [BLOCKCHAIN_NAME.LINEA]: [
+    'https://linea.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
     'https://linea.drpc.org',
     'https://1rpc.io/linea',
