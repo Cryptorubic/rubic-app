@@ -9905,10 +9905,10 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-iziswap-sdk@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.4.0.tgz#5e6e3ce767d4689f074acec294b9f002c1bc1d8d"
-  integrity sha512-wo9Kx2woq0Vfi0gFDf6lieT0mPIsZ6PkxatwkY21z/XiNQHMB0lkWoU0heY5o1r539BfLahExZc98ncCjnFKyQ==
+iziswap-sdk@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.4.2.tgz#ef7c877cd99b2e73e7c42c6cd2fbf039424670d4"
+  integrity sha512-PqlHtKd96d99NDnqs4H85OWxFHIN7ZQdTECIywCkZnAn11FI6K7I8KoXHv9KO2T0qATtiCh8bnjo20Q37YZQxw==
   dependencies:
     bignumber.js "^9.0.2"
     http "^0.0.1-security"
@@ -13593,10 +13593,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.32.0-alpha-manta-chain.0:
-  version "4.32.0-alpha-manta-chain.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.32.0-alpha-manta-chain.0.tgz#b459516319f49f5455cdb95748cb521b7b45995e"
-  integrity sha512-NN+oYnVWAeGE8RFQYW+N1kqSMXdY5hLqZNXxe1kJE7u2rOnD6GAQpk0528Tx2mqOijLpw+C54UzBPP9q1nOHFw==
+rubic-sdk@4.32.0-alpha-manta-chain.1:
+  version "4.32.0-alpha-manta-chain.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.32.0-alpha-manta-chain.1.tgz#71f1a4d00e0d26c110281b900520b3cc08bab1ec"
+  integrity sha512-aLukhn2IG18LEB+h7+xX6HGLAlggS21Osl7Dd98L+bmB8Px8s6x8IQpxvM/UKq7nN2/mBGn/rSo7XSQIxA7U7Q==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -13616,7 +13616,7 @@ rubic-sdk@4.32.0-alpha-manta-chain.0:
     ethers "^5.6.8"
     graphql-request "^6.1.0"
     grpc-web "^1.4.2"
-    iziswap-sdk "^1.4.0"
+    iziswap-sdk "1.4.2"
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "7.8.1"
