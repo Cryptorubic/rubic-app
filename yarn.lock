@@ -9905,10 +9905,10 @@ istanbul-reports@^3.0.2:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-iziswap-sdk@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.4.0.tgz#5e6e3ce767d4689f074acec294b9f002c1bc1d8d"
-  integrity sha512-wo9Kx2woq0Vfi0gFDf6lieT0mPIsZ6PkxatwkY21z/XiNQHMB0lkWoU0heY5o1r539BfLahExZc98ncCjnFKyQ==
+iziswap-sdk@1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.4.2.tgz#ef7c877cd99b2e73e7c42c6cd2fbf039424670d4"
+  integrity sha512-PqlHtKd96d99NDnqs4H85OWxFHIN7ZQdTECIywCkZnAn11FI6K7I8KoXHv9KO2T0qATtiCh8bnjo20Q37YZQxw==
   dependencies:
     bignumber.js "^9.0.2"
     http "^0.0.1-security"
@@ -13616,7 +13616,7 @@ rubic-sdk@4.32.0-alpha-symbiosis-tron.2:
     ethers "^5.6.8"
     graphql-request "^6.1.0"
     grpc-web "^1.4.2"
-    iziswap-sdk "^1.4.0"
+    iziswap-sdk "1.4.2"
     lodash.clonedeep "^4.5.0"
     rango-sdk-basic "^0.0.7"
     rxjs "7.8.1"
