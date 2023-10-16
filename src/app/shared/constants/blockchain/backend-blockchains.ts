@@ -126,7 +126,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain-evm-athens-testnet',
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
-  [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia'
+  [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

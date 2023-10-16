@@ -230,5 +230,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.ARTHERA]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.ZETACHAIN]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.TAIKO]: getDefaultStateByProviders([]),
-    [BLOCKCHAIN_NAME.SEPOLIA]: getDefaultStateByProviders([])
+    [BLOCKCHAIN_NAME.SEPOLIA]: getDefaultStateByProviders([]),
+    [BLOCKCHAIN_NAME.MANTA_PACIFIC]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.IZUMI])
   };
