@@ -9,7 +9,16 @@ import {
   of,
   shareReplay
 } from 'rxjs';
-import { first, map, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  startWith,
+  switchMap,
+  takeWhile,
+  tap
+} from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AssetSelector } from '@shared/models/asset-selector';
@@ -142,6 +151,8 @@ export class PreviewSwapService {
   private handleTransactionState(): void {
     this.transactionState$
       .pipe(
+        distinctUntilChanged(),
+        debounceTime(10),
         switchMap(state => forkJoin([this.tradeState$, of(state)])),
         switchMap(([tradeState, txState]) => {
           switch (txState.step) {

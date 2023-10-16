@@ -7,6 +7,7 @@ import { SwapFormQueryService } from '@features/trade/services/swap-form-query/s
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
+import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -31,8 +32,10 @@ export class TradeViewContainerComponent {
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
     tap(providers => {
-      if (providers.length > 0) {
+      if (providers.length > 0 && providers[0].trade.type !== ON_CHAIN_TRADE_TYPE.WRAPPED) {
         this.tradePageService.setProvidersVisibility(true);
+      } else {
+        this.tradePageService.setProvidersVisibility(false);
       }
     }),
     map(providers => providers.filter(provider => provider.trade))

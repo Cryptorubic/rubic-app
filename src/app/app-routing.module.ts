@@ -26,8 +26,6 @@ const routes: Routes = [
   // },
   {
     path: ROUTE_PATH.ABOUT,
-    loadChildren: () =>
-      import('./features/features-page-old/features-page.module').then(m => m.FeaturesPageModule),
     canLoad: [LandingRedirectGuard],
     canActivate: [LandingRedirectGuard],
     data: {
