@@ -1,12 +1,12 @@
 .mobile-navigation-list {
   &__link {
     display: block;
-    padding: 28px;
+    padding: 20px 28px;
 
     color: var(--primary-text);
     font-size: 16px;
 
-    border-bottom: 1px solid var(--transparent-line);
+    border-bottom: 1px solid rgb(34 35 39 / 0.5);
 
     &:hover {
       color: var(--primary-color);

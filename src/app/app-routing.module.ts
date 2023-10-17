@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LandingRedirectGuard } from '@shared/guards/landing-redirect-guard.service';
-import { EXTERNAL_LINKS, ROUTE_PATH } from '@shared/constants/common/links';
+import { ROUTE_PATH } from '@shared/constants/common/links';
 
 const routes: Routes = [
   {
@@ -24,14 +23,14 @@ const routes: Routes = [
   //       m => m.ChangenowRecentTradesModuleModule
   //     )
   // },
-  {
-    path: ROUTE_PATH.ABOUT,
-    canLoad: [LandingRedirectGuard],
-    canActivate: [LandingRedirectGuard],
-    data: {
-      externalUrl: EXTERNAL_LINKS.LANDING
-    }
-  },
+  // {
+  //   path: ROUTE_PATH.ABOUT,
+  //   canLoad: [LandingRedirectGuard],
+  //   canActivate: [LandingRedirectGuard],
+  //   data: {
+  //     externalUrl: EXTERNAL_LINKS.LANDING
+  //   }
+  // },
   {
     path: ROUTE_PATH.FAQ,
     loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)

@@ -4,7 +4,7 @@
   &__card {
     padding: 1rem;
 
-    background-color: var(--mobile-user-profile-background);
+    background-color: var(--io-background);
 
     background-image: url('/assets/images/rubic-account-card.png');
     background-repeat: no-repeat;
@@ -104,7 +104,7 @@
     display: flex;
     margin: 1rem 0;
 
-    background-color: var(--transparent-line);
+    background-color: var(--io-background);
     border-radius: 12px;
 
     &-ink {
