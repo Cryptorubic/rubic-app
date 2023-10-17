@@ -385,7 +385,6 @@ export class StakingService {
         this.setDepositsLoading(false);
 
         this.ngZone.run(() => {
-          console.log('deposits: ', deposits);
           this._deposits$.next(deposits);
           this._total$.next({ balance: totalBalance, rewards: totalRewards });
         });
