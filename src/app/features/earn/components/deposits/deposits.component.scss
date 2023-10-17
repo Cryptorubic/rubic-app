@@ -64,49 +64,6 @@
   margin: 0 auto;
 }
 
-.actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  justify-content: center;
-
-  color: black;
-
-  @include b($tablet) {
-    flex-direction: column;
-    margin-bottom: 16px;
-    padding: 0;
-  }
-
-  app-rubic-button {
-    flex: 1;
-
-    @include b($tablet) {
-      width: 100%;
-
-      ::ng-deep button[data-size='l'] {
-        height: 44px;
-      }
-    }
-
-    ::ng-deep .t-wrapper[data-appearance='primary'] {
-      color: black;
-    }
-
-    svg {
-      margin-right: 8px;
-
-      rect {
-        stroke: black;
-      }
-
-      path {
-        fill: black;
-      }
-    }
-  }
-}
-
 .fade-in {
   animation-name: fade-in;
   animation-duration: 0.4s;

@@ -6,11 +6,15 @@
       header h5 {
         justify-content: space-between;
       }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tui-padding-m);
+      }
     }
 
     app-login-button {
-      margin-top: 20px;
-      
       button {
         width: 100%;
       }
@@ -87,5 +91,35 @@
         letter-spacing: 1px;
       }
     }
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--tui-padding-m);
+    align-items: center;
+    justify-content: center;
+
+    button {
+      flex-shrink: 1;
+      width: 100%;
+    }
+  }
+}
+
+.fade-in {
+  animation-name: fade-in;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }

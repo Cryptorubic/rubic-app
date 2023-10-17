@@ -174,4 +174,27 @@
   <ng-container *ngIf="!user">
     <app-login-button></app-login-button>
   </ng-container>
+  <ng-container
+    *ngLet="{
+      deposits: deposits$ | async,
+      depositsLoading: depositsLoading$ | async
+    } as depositsInfo"
+  >
+    <ng-container *ngIf="user && !depositsInfo.deposits?.length && !depositsInfo.depositsLoading">
+      <div class="statistics__actions fade-in">
+        <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToCcrForm()">
+          Bridge
+        </button>
+        <button
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="navigateToStakeForm()"
+        >
+          Stake
+        </button>
+      </div>
+    </ng-container>
+  </ng-container>
 </app-window-container>
