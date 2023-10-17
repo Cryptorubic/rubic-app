@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
@@ -9,8 +8,9 @@ import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
-import { REFRESH_STATUS } from '@features/swaps/core/services/refresh-service/models/refresh-status';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
+import { FormType } from '@features/trade/models/form-type';
 
 @Component({
   selector: 'app-swap-form-page',

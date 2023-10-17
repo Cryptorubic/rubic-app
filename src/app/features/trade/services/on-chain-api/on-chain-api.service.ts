@@ -15,11 +15,11 @@ import {
   OnChainTradeType,
   Web3Pure
 } from 'rubic-sdk';
-import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { BACKEND_PROVIDERS } from './constants/backend-providers';
 import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { TradeParser } from '@features/trade/utils/trade-parser';
 
 const onChainApiRoutes = {
   createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,

@@ -12,7 +12,6 @@ import {
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import { firstValueFrom, Observable } from 'rxjs';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from './constants/to-backend-cross-chain-providers';
-import { TradeParser } from '@features/swaps/features/instant-trade/services/instant-trade-service/utils/trade-parser';
 import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -21,6 +20,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
 import { ProviderStatisctic } from '@core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@shared/utils/get-signature';
+import { TradeParser } from '@features/trade/utils/trade-parser';
 
 @Injectable()
 export class CrossChainApiService {

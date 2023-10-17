@@ -1,11 +1,9 @@
 /* eslint-disable rxjs/finnish */
 import { Injectable } from '@angular/core';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { SettingsWarningModalComponent } from '@app/features/swaps/shared/components/settings-warning-modal/settings-warning-modal.component';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -19,6 +17,8 @@ import {
   SettingsForm,
   SettingsFormControls
 } from '@features/trade/services/settings-service/models/settings-form-controls';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 
 @Injectable()
 export class SettingsService {

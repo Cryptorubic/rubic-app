@@ -1,7 +1,7 @@
 import { BlockchainName, ChangenowApiStatus, TxStatus } from 'rubic-sdk';
 import { Token } from '@shared/models/tokens/token';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
+import { AssetType } from '@features/trade/models/asset';
 
 export interface UiRecentTrade {
   fromAssetType: AssetType;

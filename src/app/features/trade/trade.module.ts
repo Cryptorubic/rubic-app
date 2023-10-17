@@ -30,8 +30,6 @@ import {
 } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
-import { SwapsModule } from '@features/swaps/swaps.module';
-import { AssetsSelectorModule } from '@features/swaps/shared/components/assets-selector/assets-selector.module';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
 import { ReceiverAddressButtonComponent } from './components/receiver-address-button/receiver-address-button.component';
 import { SwapDataElementComponent } from './components/swap-data-element/swap-data-element.component';
@@ -39,7 +37,6 @@ import { TransactionDetailsComponent } from './components/transaction-details/tr
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { RouteElementComponent } from './components/route-element/route-element.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SwapsSharedModule } from '@features/swaps/shared/swaps-shared.module';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
@@ -54,6 +51,13 @@ import { SuccessSwapInfoComponent } from './components/success-swap-info/success
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
+import { TransactionDetailsElementComponent } from '@features/trade/components/swap-info/components/transaction-details-element/transaction-details-element.component';
+import { UserBalanceContainerComponent } from '@features/trade/components/user-balance-container/user-balance-container.component';
+import { FormSwitcherComponent } from '@features/trade/components/form-switcher/form-switcher.component';
+import { TargetNetworkAddressComponent } from '@features/trade/components/target-network-address/target-network-address.component';
+import { TokensRateComponent } from '@features/trade/components/tokens-rate/tokens-rate.component';
+import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +76,13 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
     TokenSelectorPageComponent,
     SwapFormPageComponent,
     TransactionStateComponent,
-    SuccessSwapInfoComponent
+    SuccessSwapInfoComponent,
+    TransactionDetailsElementComponent,
+    UserBalanceContainerComponent,
+    FormSwitcherComponent,
+    TargetNetworkAddressComponent,
+    TokensRateComponent,
+    SettingsWarningModalComponent
   ],
   exports: [],
   imports: [
@@ -83,8 +93,6 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
     TuiScrollbarModule,
     TuiTagModule,
     InlineSVGModule,
-    SwapsModule,
-    AssetsSelectorModule,
     TuiButtonModule,
     ClipboardModule,
     ReactiveFormsModule,
@@ -95,9 +103,9 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
     TuiToggleModule,
     TuiHostedDropdownModule,
     TuiInputModule,
-    SwapsSharedModule,
     TuiProgressModule,
-    TuiLoaderModule
+    TuiLoaderModule,
+    AssetsSelectorModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

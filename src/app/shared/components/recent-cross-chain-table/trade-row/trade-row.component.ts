@@ -44,8 +44,8 @@ import { TransactionReceipt } from 'web3-eth';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { UiRecentTrade } from '@core/recent-trades/models/ui-recent-trade.interface';
-import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 @Component({
   selector: '[trade-row]',
@@ -55,7 +55,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
   providers: [TuiDestroyService]
 })
 export class TradeRowComponent implements OnInit, OnDestroy {
-  @Input() trade: RecentTrade | ChangenowPostTrade;
+  @Input() trade: RecentTrade | RubicAny;
 
   @Input() mode: 'mobile' | 'table-row';
 
@@ -78,9 +78,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public revertBtnLoading = false;
 
   public get isSymbiosisTrade(): boolean {
-    if (this.isChangenowTrade(this.trade)) {
-      return false;
-    }
     return (
       isCrossChainRecentTrade(this.trade) &&
       this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS
@@ -88,9 +85,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public get isArbitrumBridgeTrade(): boolean {
-    if (this.isChangenowTrade(this.trade)) {
-      return false;
-    }
     return (
       isCrossChainRecentTrade(this.trade) &&
       this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
@@ -113,12 +107,10 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public get isCbridgeTrade(): boolean {
-    if (!this.isChangenowTrade(this.trade)) {
-      return (
-        isCrossChainRecentTrade(this.trade) &&
-        this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
-      );
-    }
+    return (
+      isCrossChainRecentTrade(this.trade) &&
+      this.trade.crossChainTradeType === CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE
+    );
   }
 
   public get fromAssetTypeName(): string {
@@ -134,27 +126,11 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public readonly BLOCKCHAIN_LABEL = blockchainLabel;
 
   public get showToContinue(): boolean {
-    if (this.isChangenowTrade(this.trade)) {
-      return !this.uiTrade?.statusTo && this.uiTrade?.statusFrom === TX_STATUS.SUCCESS;
-    }
-
     return (
       isOnramperRecentTrade(this.trade) &&
       !this.uiTrade?.statusTo &&
       this.uiTrade?.statusFrom === TX_STATUS.SUCCESS
     );
-  }
-
-  public get changenowId(): string | undefined {
-    if ('changenowId' in this.trade) {
-      return this.trade.changenowId;
-    }
-
-    if (this.isChangenowTrade(this.trade)) {
-      return this.trade.id;
-    }
-
-    return undefined;
   }
 
   public hintShown: boolean;
@@ -181,18 +157,7 @@ export class TradeRowComponent implements OnInit, OnDestroy {
     this.saveTrades();
   }
 
-  public isChangenowTrade(trade: RecentTrade | ChangenowPostTrade): trade is ChangenowPostTrade {
-    return 'id' in trade;
-  }
-
-  public getTradeData(
-    trade: RecentTrade | ChangenowPostTrade,
-    uiTrade: UiRecentTrade
-  ): Promise<UiRecentTrade> {
-    if (this.isChangenowTrade(trade)) {
-      return this.recentTradesService.getChangeNowTradeData(trade);
-    }
-
+  public getTradeData(trade: RecentTrade, uiTrade: UiRecentTrade): Promise<UiRecentTrade> {
     return this.recentTradesService.getTradeData(trade, uiTrade);
   }
 
@@ -228,10 +193,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public getToStatusBadgeText(status: TxStatus | ChangenowApiStatus): string {
-    if (this.isChangenowTrade(this.trade)) {
-      return getStatusBadgeText(status);
-    }
-
     if (isOnramperRecentTrade(this.trade)) {
       if (this.uiTrade?.statusFrom === TX_STATUS.PENDING) {
         return 'Waiting';
@@ -248,24 +209,19 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   private saveTrades(): void {
-    if (!this.isChangenowTrade(this.trade)) {
-      const isCrossChainFinished = this.uiTrade.statusTo !== TX_STATUS.PENDING;
+    const isCrossChainFinished = this.uiTrade.statusTo !== TX_STATUS.PENDING;
 
-      this.recentTradesStoreService.updateTrade({
-        ...this.trade,
-        ...(isCrossChainFinished && {
-          calculatedStatusTo: this.uiTrade.statusTo,
-          calculatedStatusFrom: this.uiTrade.statusFrom
-        }),
-        dstTxHash: this.uiTrade.dstTxHash
-      });
-    }
+    this.recentTradesStoreService.updateTrade({
+      ...this.trade,
+      ...(isCrossChainFinished && {
+        calculatedStatusTo: this.uiTrade.statusTo,
+        calculatedStatusFrom: this.uiTrade.statusFrom
+      }),
+      dstTxHash: this.uiTrade.dstTxHash
+    });
   }
 
   public async revertTrade(): Promise<void> {
-    if (this.isChangenowTrade(this.trade)) {
-      return;
-    }
     if (!isCrossChainRecentTrade(this.trade)) {
       return;
     }
@@ -316,9 +272,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   }
 
   public async continueOnramperTrade(): Promise<void> {
-    if (this.isChangenowTrade(this.trade)) {
-      return;
-    }
     if (!isOnramperRecentTrade(this.trade)) {
       return;
     }
@@ -333,7 +286,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
 
   public copyToClipboard(): void {
     this.showHint();
-    this.navigator.clipboard.writeText(this.changenowId);
   }
 
   private showHint(): void {
@@ -347,9 +299,6 @@ export class TradeRowComponent implements OnInit, OnDestroy {
   public async claimTokens(): Promise<void> {
     this.revertBtnLoading = true;
 
-    if (this.isChangenowTrade(this.trade)) {
-      return;
-    }
     if (!isCrossChainRecentTrade(this.trade)) {
       return;
     }

@@ -30,8 +30,6 @@ import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
-import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
-import { PanelContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
@@ -94,8 +92,6 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     UsdPriceContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
@@ -191,8 +187,6 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
     SafetyLinkDirective,
     TokenAmountDirective,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     LetDirective,
     ThemedIconPipe,
     UsdPriceContainerComponent,

@@ -1,6 +1,6 @@
 import { BlockchainName } from 'rubic-sdk';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
+import { AssetType } from '@features/trade/models/asset';
 
 export type AdditionalTokens =
   | 'eth_tokens'

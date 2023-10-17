@@ -2,14 +2,13 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import {
   CcrSettingsForm,
   ItSettingsForm
 } from '@features/trade/services/settings-service/models/settings-form-controls';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 export type Store = {
   [key in `RUBIC_SETTINGS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -60,10 +59,6 @@ export type Store = {
   };
 
   RUBIC_TOKENS: StorageToken[];
-
-  RUBIC_CHANGENOW_POST_TRADE: ChangenowPostTrade;
-
-  RUBIC_CHANGENOW_RECENT_TRADE: ChangenowPostTrade[];
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -75,8 +70,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_RECENT_TRADES: null,
   RUBIC_UNREAD_TRADES: null,
   RUBIC_TOKENS: null,
-  RUBIC_CHANGENOW_POST_TRADE: null,
-  RUBIC_CHANGENOW_RECENT_TRADE: null,
   RUBIC_SETTINGS_CROSS_CHAIN_ROUTING: null,
   RUBIC_SETTINGS_INSTANT_TRADE: null,
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,

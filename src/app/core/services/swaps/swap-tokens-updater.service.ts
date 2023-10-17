@@ -3,12 +3,12 @@ import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { filter, pairwise, startWith } from 'rxjs/operators';
-import { compareAssets } from '@features/swaps/shared/utils/compare-assets';
 import { compareTokens } from '@shared/utils/utils';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
+import { compareAssets } from '@features/trade/utils/compare-assets';
 
 @Injectable()
 export class SwapTokensUpdaterService {

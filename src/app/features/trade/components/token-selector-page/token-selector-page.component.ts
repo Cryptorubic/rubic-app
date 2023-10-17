@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
-import { FormType } from '@features/swaps/shared/models/form/form-type';
-import { Asset } from '@features/swaps/shared/models/form/asset';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { DOCUMENT } from '@angular/common';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { FormType } from '@features/trade/models/form-type';
+import { Asset } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-token-selector-page',

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { transactionInfoText } from '@features/swaps/features/swap-form/components/swap-info/constants/transaction-info-text';
+import { transactionInfoText } from '@features/trade/constants/transaction-info-text';
 
 @Component({
   selector: 'app-transaction-details',

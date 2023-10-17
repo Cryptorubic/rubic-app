@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 type FormType = 'form' | 'fromSelector' | 'toSelector' | 'preview';
 
@@ -11,7 +12,7 @@ export class TradePageService {
 
   private readonly _showProviders$ = new BehaviorSubject<boolean>(false);
 
-  public readonly showProviders$ = this._showProviders$.asObservable();
+  public readonly showProviders$ = this._showProviders$.asObservable().pipe(debounceTime(50));
 
   constructor() {}
 

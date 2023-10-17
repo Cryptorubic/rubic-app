@@ -1,9 +1,0 @@
-@use 'src/scss/core' as *;
-
-.error-button {
-  ::ng-deep {
-    .t-content {
-      color: rgb(216, 120, 121);
-    }
-  }
-}

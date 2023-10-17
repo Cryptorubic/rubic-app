@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { firstValueFrom, forkJoin, Observable } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -29,7 +28,6 @@ import {
   Web3Pure,
   EvmEncodeConfig
 } from 'rubic-sdk';
-import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -38,7 +36,6 @@ import { CrossChainApiService } from '@features/trade/services/cross-chain-routi
 
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { CrossChainCalculatedTradeData } from '@features/swaps/features/cross-chain/models/cross-chain-calculated-trade';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
@@ -53,7 +50,10 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
-import { shouldCalculateGas } from '@features/swaps/features/instant-trade/services/instant-trade-service/constants/should-calculate-gas';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 
 @Injectable()
 export class CrossChainService {

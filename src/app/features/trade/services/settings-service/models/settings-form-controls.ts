@@ -1,5 +1,5 @@
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { FormControlType, FormGroupType } from '@shared/models/utils/angular-forms-types';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 export interface ItSettingsForm {
   autoSlippageTolerance: boolean;

@@ -9,14 +9,14 @@ import {
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { TradeProvider } from '@features/trade/models/trade-provider';
 
 @Injectable()
 export class SwapsStateService {

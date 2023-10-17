@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, Self } from '@angular/core';
-import { TargetNetworkAddressService } from '@features/swaps/core/services/target-network-address-service/target-network-address.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-settings-ccr',

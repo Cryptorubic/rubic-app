@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, Injector, OnInit, Type } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-settings-container',

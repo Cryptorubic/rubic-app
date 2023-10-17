@@ -26,8 +26,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { isCrossChainRecentTrade } from '@shared/utils/recent-trades/is-cross-chain-recent-trade';
 import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
-import { ChangenowPostTradeService } from '@features/swaps/core/services/changenow-post-trade-service/changenow-post-trade.service';
-import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
 
 @Injectable()
 export class RecentTradesService {
@@ -51,26 +49,8 @@ export class RecentTradesService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly recentTradesStoreService: RecentTradesStoreService,
-    private readonly sdkService: SdkService,
-    private readonly changenowPostTradeService: ChangenowPostTradeService
+    private readonly sdkService: SdkService
   ) {}
-
-  public async getChangeNowTradeData(trade: ChangenowPostTrade): Promise<UiRecentTrade> {
-    const { id, toToken, timestamp, fromToken } = trade;
-    const status = await this.changenowPostTradeService.getChangenowSwapStatus(id);
-
-    return {
-      fromAssetType: fromToken.blockchain,
-      toBlockchain: toToken.blockchain,
-      fromAsset: fromToken,
-      toToken,
-      timestamp,
-      srcTxLink: null,
-      srcTxHash: null,
-      statusTo: status,
-      statusFrom: status
-    };
-  }
 
   public async getTradeData(
     trade: RecentTrade,

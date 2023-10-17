@@ -3,8 +3,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { FormType } from '@features/swaps/shared/models/form/form-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { FormType } from '@features/trade/models/form-type';
 
 @Component({
   selector: 'app-amount-transput',

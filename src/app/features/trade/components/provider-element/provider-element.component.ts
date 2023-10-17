@@ -2,9 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provider-info';
-import { TRADES_PROVIDERS } from '@features/swaps/shared/constants/trades-providers/trades-providers';
-import { TradeProvider } from '@features/swaps/shared/models/trade-provider/trade-provider';
 import {
   CrossChainTradeType,
   EvmCrossChainTrade,
@@ -16,6 +13,9 @@ import {
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { Token } from '@shared/models/tokens/token';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { TradeProvider } from '@features/trade/models/trade-provider';
+import { ProviderInfo } from '@features/trade/models/provider-info';
+import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 
 @Component({
   selector: 'app-provider-element',
