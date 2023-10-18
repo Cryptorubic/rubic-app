@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector, Component, Type } from '@angular/core';
+import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -18,6 +18,10 @@ import { SettingsItComponent } from '@features/trade/components/settings-it/sett
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
 import { Asset } from '@features/trade/models/asset';
+import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
+import { TradeState } from '@features/trade/models/trade-state';
+import { TradeProvider } from '@features/trade/models/trade-provider';
+import { CalculationProgress } from '@features/trade/models/calculationProgress';
 
 @Injectable()
 export class ModalService {
@@ -42,6 +46,32 @@ export class ModalService {
     //     idPrefix
     //   }
     // });
+  }
+
+  /**
+   * Show Other providers list dialog.
+   */
+  public openOtherProvidersList(
+    states: TradeState[],
+    selectedTradeType: TradeProvider,
+    calculationProgress: CalculationProgress,
+    isModal: true,
+    injector: Injector
+  ): Observable<TradeProvider> {
+    return this.showDialog<ProvidersListComponent, TradeProvider>(
+      ProvidersListComponent,
+      {
+        title: 'Available Cross-Chain Providers',
+        scrollableContent: true,
+        data: {
+          states,
+          selectedTradeType,
+          calculationProgress,
+          isModal
+        }
+      },
+      injector
+    );
   }
 
   /**

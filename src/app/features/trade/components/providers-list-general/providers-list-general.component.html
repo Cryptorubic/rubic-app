@@ -1,0 +1,80 @@
+<app-window-container *ngIf="!isMobile; else mobileProviders">
+  <ng-container header>Providers list</ng-container>
+  <ng-container *ngIf="calculationProgress">
+    <ng-container
+      *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
+    ></ng-container>
+    <app-providers-list
+      [states]="states"
+      [selectedTradeType]="selectedTradeType"
+      [calculationProgress]="calculationProgress"
+      [isModal]="false"
+      (selectTrade)="handleTradeSelection($event)"
+    ></app-providers-list>
+  </ng-container>
+</app-window-container>
+
+<ng-template #waiting>
+  <div class="waiting" @progress>
+    <h5>
+      <ng-container
+        *ngIf="calculationProgress.current < calculationProgress.total / 2; else longProviders"
+        >Calculating providers...
+      </ng-container>
+      <ng-template #longProviders>
+        More providers can get close, but they are delaying the answer...
+      </ng-template>
+    </h5>
+    <progress
+      *ngIf="calculationProcess$ | async as progress"
+      [max]="progress.total"
+      new
+      size="xs"
+      tuiProgressBar
+      [value]="progress.current"
+    ></progress>
+  </div>
+</ng-template>
+
+<ng-template #emptyContent>
+  <div class="empty-list">
+    <div class="empty-list__content">
+      <app-no-result
+        label="No routes available"
+        description="Please try another token combination."
+      ></app-no-result>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #mobileProviders>
+  <ng-container
+    *ngLet="
+      states?.length > 0 ||
+      calculationProgress.total !== calculationProgress.current as showProvider
+    "
+  >
+    <ng-container
+      *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
+    ></ng-container>
+    <ng-container>
+      <div class="list" *ngIf="showProvider; else emptyContent">
+        <app-providers-list
+          [states]="states.slice(0, 1)"
+          [selectedTradeType]="selectedTradeType"
+          [calculationProgress]="calculationProgress"
+          [isModal]="false"
+          (selectTrade)="handleTradeSelection($event)"
+        >
+        </app-providers-list>
+      </div>
+      <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
+        <span class="other-providers__text">Other Providers</span>
+        <span
+          class="other-providers__arrow"
+          [inlineSVG]="'assets/images/icons/arrow-down.svg'"
+        ></span>
+      </div>
+    </ng-container>
+  </ng-container>
+</ng-template>

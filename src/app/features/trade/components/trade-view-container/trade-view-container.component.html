@@ -22,7 +22,7 @@
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
   </div>
 
-  <app-providers-list
+  <app-providers-list-general
     *ngIf="state.showProviders && state.content === 'form'"
     @inOutAnimation
     [states]="state.providers"
@@ -30,5 +30,5 @@
     (selectTrade)="selectTrade($event)"
     [calculationProgress]="calculationProgress$ | async"
     [showCalculation]="true"
-  ></app-providers-list>
+  ></app-providers-list-general>
 </div>

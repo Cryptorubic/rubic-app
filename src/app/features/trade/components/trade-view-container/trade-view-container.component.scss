@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: flex;
 
@@ -51,5 +53,29 @@
 
     background: var(--secondary-background);
     border-radius: 17px;
+  }
+}
+
+@include b($mobile-md) {
+  .swap-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l);
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+
+    .form {
+      width: 360px;
+      overflow: hidden;
+    }
+
+    app-providers-list {
+      width: 100%;
+      height: auto;
+
+      background: none;
+      border-radius: 0;
+    }
   }
 }

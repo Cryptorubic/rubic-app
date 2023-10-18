@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .element {
   overflow: hidden;
 
@@ -131,4 +133,27 @@
 app-route-element {
   display: block;
   margin-top: var(--tui-padding-l);
+}
+
+@include b($mobile-md) {
+  .element {
+    &__token-info {
+      gap: var(--tui-padding-s);
+    }
+
+    &__token-image {
+      width: 25px;
+      height: 25px;
+
+      border-radius: 100%;
+    }
+
+    &__token-symbol {
+      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+    }
+
+    &__token-amount {
+      display: none;
+    }
+  }
 }
