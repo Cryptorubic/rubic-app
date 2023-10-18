@@ -3,7 +3,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, Web3Pure, Injector } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, Injector, Web3Pure } from 'rubic-sdk';
 import {
   BehaviorSubject,
   catchError,

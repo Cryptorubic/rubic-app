@@ -9,69 +9,69 @@
       <th class="tui-table__th">&nbsp;</th>
     </tr>
   </thead>
-  <tbody>
-    <ng-container *ngFor="let deposit of deposits; let id = index; trackBy: trackBy">
-      <tr class="tui-table__tr data-row">
-        <td class="tui-table__td">
-          <div class="tui-table__td-id">
-            <img src="assets/images/rbc.png" alt="" />
-            {{ deposit.id }}
-          </div>
-        </td>
-        <td class="tui-table__td">
-          <span
-            [tuiHint]="
-              deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }
-            "
-            [tuiHintDirection]="'top-right'"
-            tuiHintAppearance="onDark"
-          >
-            {{
-              deposit.amount | bigNumberFormat | withRound : 'toClosestValue' : { decimals: 0 }
-            }}</span
-          >
-        </td>
-        <td class="tui-table__td">
-          <span
-            [tuiHint]="
-              (deposit.totalNftRewards
-                | bigNumberFormat
-                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
-            "
-            [tuiHint]="
-              (deposit.totalNftRewards
-                | bigNumberFormat
-                | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
-            "
-            [tuiHintManual]="false"
-            [tuiHintDirection]="'top-left'"
-            [tuiHintShowDelay]="50"
-            tuiHintAppearance="onDark"
-          >
-            {{ id | functionCall : getTotalNftRewards : this }}
-          </span>
-        </td>
-        <td class="tui-table__td">
+  <tbody *ngFor="let deposit of deposits; let id = index; trackBy: trackBy">
+    <tr class="tui-table__tr data-row">
+      <td class="tui-table__td">
+        <div class="tui-table__td-id">
+          <img src="assets/images/rbc.png" alt="" />
+          {{ deposit.id }}
+        </div>
+      </td>
+      <td class="tui-table__td">
+        <span
+          [tuiHint]="deposit.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 }"
+          [tuiHintDirection]="'top-right'"
+          tuiHintAppearance="onDark"
+        >
           {{
-            deposit.tokenApr && deposit.tokenApr.gte(0)
-              ? (deposit.tokenApr | bigNumberFormat : 2) + '%'
-              : '-'
-          }}
-        </td>
-        <td class="tui-table__td">{{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}</td>
-        <td class="tui-table__td">
-          <div class="tui-table__td-actions">
-            <app-rubic-button
+            deposit.amount | bigNumberFormat | withRound : 'toClosestValue' : { decimals: 0 }
+          }}</span
+        >
+      </td>
+      <td class="tui-table__td">
+        <span
+          [tuiHint]="
+            (deposit.totalNftRewards
+              | bigNumberFormat
+              | withRound : 'fixedValue' : { decimals: 10 }) + ' ETH'
+          "
+          [tuiHintManual]="false"
+          [tuiHintDirection]="'top-left'"
+          [tuiHintShowDelay]="50"
+          tuiHintAppearance="onDark"
+        >
+          {{ id | functionCall : getTotalNftRewards : this }}
+        </span>
+      </td>
+      <td class="tui-table__td">
+        {{
+          deposit.tokenApr && deposit.tokenApr.gte(0)
+            ? (deposit.tokenApr | bigNumberFormat : 2) + '%'
+            : '-'
+        }}
+      </td>
+      <td class="tui-table__td">{{ deposit.endTimestamp | date : 'dd.MM.yyyy' }}</td>
+      <td class="tui-table__td">
+        <div class="tui-table__td-actions">
+          <tui-loader [showLoader]="claimingId === deposit.id" [overlay]="true">
+            <button
+              tuiButton
+              size="xs"
+              type="button"
               [appearance]="deposit.totalNftRewards.gt(0) ? 'primary' : 'secondary'"
-              (onClick)="onClaim.emit(deposit)"
+              (click)="onClaim.emit(deposit)"
               [disabled]="deposit.totalNftRewards.isZero()"
-              [loading]="claimingId === deposit.id"
-              >{{ 'staking.deposits.claimRewards' | translate }}</app-rubic-button
             >
-            <app-rubic-button
+              {{ 'staking.deposits.claimRewards' | translate }}
+            </button>
+          </tui-loader>
+          <tui-loader [showLoader]="claimingId === deposit.id" [overlay]="true">
+            <button
+              tuiButton
+              size="xs"
+              type="button"
               [appearance]="deposit.canWithdraw ? 'primary' : 'secondary'"
-              (onClick)="onWithdraw.emit(deposit)"
-              [loading]="withdrawingId === deposit.id"
+              (click)="onWithdraw.emit(deposit)"
               [tuiHint]="'Withdraw'"
               [tuiHintDirection]="'top-right'"
               tuiHintAppearance="onDark"
@@ -81,12 +81,13 @@
                 [src]="'assets/images/icons/leave-black.svg'"
                 alt=""
               />
-            </app-rubic-button>
-          </div>
-        </td>
-      </tr>
-      <tr style="height: 12px"></tr>
-    </ng-container>
+            </button>
+          </tui-loader>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+  <tfoot>
     <tr class="tui-table__tr">
       <td class="tui-table__td">{{ 'staking.deposits.total' | translate }}</td>
       <td class="tui-table__td">
@@ -113,5 +114,5 @@
         }}
       </td>
     </tr>
-  </tbody>
+  </tfoot>
 </table>

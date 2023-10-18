@@ -1,0 +1,17 @@
+<div class="header">
+  <tui-tabs class="tabs" [activeItemIndex]="activeItemIndex$ | async">
+    <button tuiTab (click)="onClick(0)">
+      <div class="icon" inlineSVG="assets/images/icons/history/cross.svg"></div>
+      Cross Chain
+    </button>
+    <button tuiTab (click)="onClick(1)">
+      <div class="icon" inlineSVG="assets/images/icons/history/onchain.svg"></div>
+      On Chain
+    </button>
+    <button tuiTab (click)="onClick(2)">
+      <div class="icon" inlineSVG="assets/images/icons/history/cn.svg"></div>
+      Change Now
+    </button>
+  </tui-tabs>
+  <div class="filter">filter</div>
+</div>

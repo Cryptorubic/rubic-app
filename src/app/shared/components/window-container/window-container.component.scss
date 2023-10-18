@@ -10,10 +10,12 @@
   }
 }
 
-
-
 header {
   padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+
+  &:has(> *:empty) {
+    display: none;
+  }
 
   h5 {
     display: flex;
@@ -22,5 +24,9 @@ header {
     margin: 0;
 
     font-size: 15px;
+
+    &:empty {
+      display: none;
+    }
   }
 }
