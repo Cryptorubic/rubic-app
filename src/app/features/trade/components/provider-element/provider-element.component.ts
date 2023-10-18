@@ -32,6 +32,8 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) isBest: boolean = false;
 
+  @Input({ required: true }) shortedInfo: boolean = false;
+
   @Input({ required: true }) nativeToken: Token;
 
   public expanded = false;

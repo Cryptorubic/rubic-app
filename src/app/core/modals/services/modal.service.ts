@@ -67,7 +67,8 @@ export class ModalService {
           states,
           selectedTradeType,
           calculationProgress,
-          isModal
+          isModal,
+          shortedInfo: false
         }
       },
       injector

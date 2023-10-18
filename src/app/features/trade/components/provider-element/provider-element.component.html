@@ -1,5 +1,9 @@
 <ng-container *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
-  <div *ngLet="tradeState?.trade as trade" class="element">
+  <div
+    *ngLet="tradeState?.trade as trade"
+    class="element"
+    [ngClass]="{ element_shorted: shortedInfo }"
+  >
     <div
       class="element__provider-container"
       [ngClass]="{ 'element__provider-container_best': isBest }"

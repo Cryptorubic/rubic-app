@@ -30,6 +30,10 @@ export class ProvidersListComponent {
   isModal: boolean = this.context?.data?.isModal || false;
 
   @PolymorpheusInput()
+  @Input()
+  shortedInfo: boolean = this.context?.data?.shortedInfo || false;
+
+  @PolymorpheusInput()
   @Input({ required: true })
   states: TradeState[] = this.context?.data?.states || [];
 
@@ -80,6 +84,7 @@ export class ProvidersListComponent {
         selectedTradeType: TradeProvider;
         calculationProgress: CalculationProgress;
         isModal: boolean;
+        shortedInfo: boolean;
       }
     >,
     private readonly swapsFormService: SwapsFormService,

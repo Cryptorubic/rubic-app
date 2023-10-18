@@ -137,23 +137,25 @@ app-route-element {
 
 @include b($mobile-md) {
   .element {
-    &__token-info {
-      gap: var(--tui-padding-s);
-    }
+    &_shorted {
+      .element__token-info {
+        gap: var(--tui-padding-s);
+      }
 
-    &__token-image {
-      width: 25px;
-      height: 25px;
+      .element__token-image {
+        width: 25px;
+        height: 25px;
 
-      border-radius: 100%;
-    }
+        border-radius: 100%;
+      }
 
-    &__token-symbol {
-      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
-    }
+      .element__token-symbol {
+        @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+      }
 
-    &__token-amount {
-      display: none;
+      .element__token-amount {
+        display: none;
+      }
     }
   }
 }

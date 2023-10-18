@@ -1,0 +1,53 @@
+@use 'src/scss/core' as *;
+
+:host {
+  width: 100%;
+}
+
+h5 {
+  margin: 0 0 15px;
+  padding-right: 10px;
+
+  font-size: 15px;
+  line-height: 15px;
+}
+
+.waiting {
+  margin-bottom: var(--tui-padding-m);
+}
+
+.providers-list {
+  height: 455px;
+  margin-right: -10px;
+}
+
+.empty-list {
+  &__content {
+    margin-right: 10px;
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
+
+.other-providers {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--tui-padding-m);
+  padding: var(--tui-padding-l);
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  &__text {
+    @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+  }
+}
+
+@include b($mobile-md) {
+  .waiting {
+    padding: var(--tui-padding-m);
+  }
+}

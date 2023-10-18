@@ -36,4 +36,10 @@
   .waiting {
     padding: var(--tui-padding-m);
   }
+
+  .list {
+    &_padding {
+      padding: 0 var(--tui-padding-m);
+    }
+  }
 }
