@@ -4,7 +4,12 @@ import { StakingRoutingModule } from './staking-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiHintModule, TuiLoaderModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
 import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -45,7 +50,8 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     TuiTextfieldControllerModule,
     TuiSliderModule,
     TuiHintModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiButtonModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })
