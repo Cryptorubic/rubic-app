@@ -1,12 +1,12 @@
-<div class="statistics">
-  <div class="statistics__head">
-    <span class="statistics__title">{{ 'staking.overview.title' | translate }}</span>
+<app-window-container class="statistics" *ngLet="currentUser$ | async as user">
+  <ng-container header
+    ><span class="statistics__title">{{ 'staking.overview.title' | translate }}</span>
     <app-rotating-icon
       class="statistics__refresh"
       (iconClick)="refreshStatistics()"
       [rotating]="loading"
     ></app-rotating-icon>
-  </div>
+  </ng-container>
   <div class="statistics__info">
     <div class="statistics__col">
       <div class="statistics__param">
@@ -23,7 +23,9 @@
         </div>
       </div>
       <div *ngIf="!isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
+        <div class="statistics__param-label">
+          {{ 'staking.overview.avgLockTime' | translate }}
+        </div>
         <div class="statistics__param-value">
           9 <span>{{ 'staking.common.months' | translate }}</span>
         </div>
@@ -81,7 +83,9 @@
         </div>
       </div>
       <div *ngIf="isMobile" class="statistics__param">
-        <div class="statistics__param-label">{{ 'staking.overview.avgLockTime' | translate }}</div>
+        <div class="statistics__param-label">
+          {{ 'staking.overview.avgLockTime' | translate }}
+        </div>
         <div class="statistics__param-value">
           9 <span>{{ 'staking.common.months' | translate }}</span>
         </div>
@@ -167,4 +171,30 @@
       </div>
     </div>
   </div>
-</div>
+  <ng-container *ngIf="!user">
+    <app-login-button></app-login-button>
+  </ng-container>
+  <ng-container
+    *ngLet="{
+      deposits: deposits$ | async,
+      depositsLoading: depositsLoading$ | async
+    } as depositsInfo"
+  >
+    <ng-container *ngIf="user && !depositsInfo.deposits?.length && !depositsInfo.depositsLoading">
+      <div class="statistics__actions fade-in">
+        <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToCcrForm()">
+          Bridge
+        </button>
+        <button
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="navigateToStakeForm()"
+        >
+          Stake
+        </button>
+      </div>
+    </ng-container>
+  </ng-container>
+</app-window-container>

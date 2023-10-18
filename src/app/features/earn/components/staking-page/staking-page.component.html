@@ -1,6 +1,6 @@
 <app-statistics></app-statistics>
 
-<ng-container *ngIf="(needLogin$ | async) === false; else connectWallet">
+<ng-container *ngIf="(needLogin$ | async) === false">
   <app-deposits></app-deposits>
 </ng-container>
 
@@ -14,9 +14,3 @@
     <div class="rules__icon" [inlineSVG]="'assets/images/icons/link-arrow.svg'"></div>
   </a>
 </div>
-
-<ng-template #connectWallet>
-  <app-rubic-button class="connect-wallet" appearance="primary" (onClick)="login()"
-    >{{ 'staking.common.connectWallet' | translate }}
-  </app-rubic-button>
-</ng-template>
