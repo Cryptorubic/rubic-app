@@ -32,9 +32,9 @@
 
   padding: 12px 16px;
 
-  background: var(--form-background);
-  border: 1px solid var(--transparent-line);
-  border-radius: 12px;
+  background-color: var(--io-background);
+  border-bottom: 1px solid var(--tui-base-04);
+  border-radius: var(--tui-padding-m);
 
   &__row {
     display: flex;

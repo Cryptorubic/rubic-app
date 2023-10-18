@@ -4,6 +4,35 @@
   --tui-data-list-padding: 5px;
 }
 
+::ng-deep {
+  tui-accordion {
+    tui-accordion-item {
+      .t-wrapper {
+        background: transparent !important;
+
+        .t-header {
+          background: transparent !important;
+        }
+      }
+
+      tui-expand {
+        .t-content {
+          padding: 0 !important;
+
+          .t-wrapper {
+            border-bottom: 1px solid var(--tui-base-04);
+            border-radius: 0;
+
+            :last-child {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .image {
   width: 24px;
   height: 24px;
