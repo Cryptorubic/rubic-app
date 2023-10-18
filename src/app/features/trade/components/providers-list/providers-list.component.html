@@ -1,13 +1,12 @@
 <ng-container>
-  <tui-scrollbar class="providers-list">
-    <div
-      class="list"
-      [ngClass]="{ list_padding: isModal }"
-      *ngIf="
-        states?.length > 0 || calculationProgress.total !== calculationProgress.current;
-        else emptyContent
-      "
-    >
+  <tui-scrollbar
+    class="providers-list"
+    *ngIf="
+      states?.length > 0 || calculationProgress.total !== calculationProgress.current;
+      else emptyContent
+    "
+  >
+    <div class="list" [ngClass]="{ list_padding: isModal }">
       <app-provider-element
         *ngFor="let state of states; index as i"
         [isBest]="i === 0"

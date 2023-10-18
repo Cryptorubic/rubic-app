@@ -14,6 +14,25 @@
   </ng-container>
 </app-window-container>
 
+<ng-template #mobileProviders>
+  <ng-container
+    *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
+  ></ng-container>
+  <app-providers-list
+    [states]="states.slice(0, 1)"
+    [selectedTradeType]="selectedTradeType"
+    [calculationProgress]="calculationProgress"
+    [isModal]="false"
+    [shortedInfo]="true"
+    (selectTrade)="handleTradeSelection($event)"
+  >
+  </app-providers-list>
+  <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
+    <span class="other-providers__text">Other Providers</span>
+    <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
+  </div>
+</ng-template>
+
 <ng-template #waiting>
   <div class="waiting" @progress>
     <h5>
@@ -34,44 +53,4 @@
       [value]="progress.current"
     ></progress>
   </div>
-</ng-template>
-
-<ng-template #emptyContent>
-  <div class="empty-list">
-    <div class="empty-list__content">
-      <app-no-result
-        label="No routes available"
-        description="Please try another token combination."
-      ></app-no-result>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #mobileProviders>
-  <ng-container
-    *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
-  ></ng-container>
-  <ng-container
-    *ngIf="
-      states?.length > 0 || calculationProgress.total !== calculationProgress.current;
-      else emptyContent
-    "
-  >
-    <app-providers-list
-      [states]="states.slice(0, 1)"
-      [selectedTradeType]="selectedTradeType"
-      [calculationProgress]="calculationProgress"
-      [isModal]="false"
-      [shortedInfo]="true"
-      (selectTrade)="handleTradeSelection($event)"
-    >
-    </app-providers-list>
-    <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
-      <span class="other-providers__text">Other Providers</span>
-      <span
-        class="other-providers__arrow"
-        [inlineSVG]="'assets/images/icons/arrow-down.svg'"
-      ></span>
-    </div>
-  </ng-container>
 </ng-template>

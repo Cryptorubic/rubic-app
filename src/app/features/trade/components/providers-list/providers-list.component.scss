@@ -16,6 +16,11 @@
   }
 }
 
+.providers-list {
+  height: 455px;
+  margin-right: -10px;
+}
+
 .empty-list {
   &__content {
     margin-right: 10px;
@@ -41,5 +46,10 @@
     &_padding {
       padding: 0 var(--tui-padding-m);
     }
+  }
+
+  .providers-list {
+    height: auto;
+    margin-right: 0;
   }
 }

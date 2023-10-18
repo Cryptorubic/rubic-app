@@ -16,21 +16,6 @@ h5 {
   margin-bottom: var(--tui-padding-m);
 }
 
-.providers-list {
-  height: 455px;
-  margin-right: -10px;
-}
-
-.empty-list {
-  &__content {
-    margin-right: 10px;
-    padding: var(--tui-padding-l);
-
-    background: var(--primary-background);
-    border-radius: var(--tui-radius-m);
-  }
-}
-
 .other-providers {
   display: flex;
   align-items: center;
