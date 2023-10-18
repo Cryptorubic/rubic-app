@@ -3,10 +3,6 @@
 :host {
   display: block;
 
-  @include b($tablet) {
-    padding: 0;
-  }
-
   ::ng-deep {
     app-window-container {
       header {
@@ -14,10 +10,6 @@
         padding-left: 0;
       }
     }
-
-    //app-stake-button button {
-    //  width: 100%;
-    //}
   }
 }
 
