@@ -2,7 +2,7 @@
 
 .tui-table {
   thead {
-    height: 30px;
+    height: var(--tui-height-s);
 
     .tui-table__tr {
       &:hover {
@@ -31,7 +31,7 @@
     }
 
     .tui-table__tr {
-      height: 30px;
+      height: var(--tui-height-s);
 
       &:hover {
         background: initial;
@@ -80,7 +80,7 @@
 
     &-actions {
       display: flex;
-      gap: 5px;
+      gap: var(--tui-padding-xs);
       justify-content: flex-end;
 
       opacity: 0;

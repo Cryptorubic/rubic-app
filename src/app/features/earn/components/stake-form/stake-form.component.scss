@@ -14,6 +14,10 @@
         padding-left: 0;
       }
     }
+
+    //app-stake-button button {
+    //  width: 100%;
+    //}
   }
 }
 
@@ -301,6 +305,12 @@
 
   &__text-locked-until {
     color: var(--tui-text-01);
+  }
+}
+
+.button-container {
+  button {
+    width: 100%;
   }
 }
 

@@ -3,7 +3,7 @@
 .new-position {
   &__info {
     margin-bottom: var(--tui-padding-m);
-    padding: 21px 44px 16px;
+    padding: var(--tui-padding-xl);
 
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
