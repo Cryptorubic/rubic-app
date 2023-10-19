@@ -49,7 +49,7 @@
     <div
       class="round__container"
       [ngClass]="{
-        round__container_border: isModal
+        round__container_border: isModal || round.claimName === 'retrodrop'
       }"
     >
       <div class="round__header">
