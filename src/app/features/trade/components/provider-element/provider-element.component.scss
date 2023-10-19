@@ -45,7 +45,7 @@
   }
 
   &__token-provider {
-    @include font(18px, 18px, 500, var(--tui-text-03) 0.54px);
+    @include font(18px, 18px, 500, var(--tui-text-03), 0.54px);
     display: none;
   }
 
@@ -146,7 +146,7 @@ app-route-element {
       .element__amounts-container {
         align-items: end;
       }
-      
+
       .element__token-info {
         gap: var(--tui-padding-s);
       }
