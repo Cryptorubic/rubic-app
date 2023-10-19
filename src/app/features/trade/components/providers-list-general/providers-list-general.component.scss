@@ -16,6 +16,11 @@ h5 {
   margin-bottom: var(--tui-padding-m);
 }
 
+.providers-list {
+  height: 455px;
+  margin-right: -10px;
+}
+
 .other-providers {
   display: flex;
   align-items: center;
@@ -34,5 +39,10 @@ h5 {
 @include b($mobile-md) {
   .waiting {
     padding: var(--tui-padding-m);
+  }
+
+  .providers-list {
+    height: auto;
+    margin-right: 0;
   }
 }

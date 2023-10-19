@@ -4,13 +4,18 @@
     <ng-container
       *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
     ></ng-container>
-    <app-providers-list
-      [states]="states"
-      [selectedTradeType]="selectedTradeType"
-      [calculationProgress]="calculationProgress"
-      [isModal]="false"
-      (selectTrade)="handleTradeSelection($event)"
-    ></app-providers-list>
+    <tui-scrollbar
+      class="providers-list"
+      *ngIf="states?.length > 0 || calculationProgress.total !== calculationProgress.current"
+    >
+      <app-providers-list
+        [states]="states"
+        [selectedTradeType]="selectedTradeType"
+        [calculationProgress]="calculationProgress"
+        [isModal]="false"
+        (selectTrade)="handleTradeSelection($event)"
+      ></app-providers-list>
+    </tui-scrollbar>
   </ng-container>
 </app-window-container>
 
