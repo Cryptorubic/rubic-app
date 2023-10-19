@@ -1,0 +1,11 @@
+<div class="element">
+  <div class="element__label">{{ 'staking.overview.$lockedRBC' | translate }}</div>
+  <div
+    class="element__value"
+    [class.element-value_loading]="!value?.isFinite()"
+    [class.tui-skeleton]="!value"
+  >
+    $
+    {{ value?.isFinite() ? (value | bigNumberFormat : 2) : '--.--' }}
+  </div>
+</div>
