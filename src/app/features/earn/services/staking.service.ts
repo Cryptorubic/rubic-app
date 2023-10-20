@@ -34,15 +34,14 @@ import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THRE
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
 
-const STAKING_END_TIMESTAMP = new Date(2024, 3, 14).getTime();
+const STAKING_END_TIMESTAMP = new Date(2024, 6, 10).getTime();
 
 @Injectable()
 export class StakingService {
   public readonly MIN_STAKE_AMOUNT = 1;
 
-  public readonly MAX_LOCK_TIME = Math.trunc(
-    (STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH
-  );
+  public readonly MAX_LOCK_TIME =
+    Math.floor(Math.trunc((STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH) / 3) * 3;
 
   public readonly user$ = this.authService.currentUser$;
 
