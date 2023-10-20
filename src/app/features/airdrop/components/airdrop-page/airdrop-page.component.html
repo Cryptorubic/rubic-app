@@ -15,6 +15,19 @@
           <div class="drops__container">
             <tui-scrollbar>
               <app-claim-container></app-claim-container>
+              <ng-container *ngIf="isMobile$ | async">
+                <div
+                  class="old-claims"
+                  *ngIf="(rounds$ | async)?.length > 1"
+                  (click)="openOldClaims()"
+                >
+                  <span class="old-claims__text">Old Claims</span>
+                  <span
+                    class="old-claims__arrow"
+                    [inlineSVG]="'assets/images/icons/arrow-down.svg'"
+                  ></span>
+                </div>
+              </ng-container>
             </tui-scrollbar>
           </div>
         </tui-loader>

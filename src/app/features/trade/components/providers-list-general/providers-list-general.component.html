@@ -1,0 +1,61 @@
+<app-window-container *ngIf="!isMobile; else mobileProviders">
+  <ng-container header>Providers list</ng-container>
+  <ng-container *ngIf="calculationProgress">
+    <ng-container
+      *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
+    ></ng-container>
+    <tui-scrollbar
+      class="providers-list"
+      *ngIf="states?.length > 0 || calculationProgress.total !== calculationProgress.current"
+    >
+      <app-providers-list
+        [states]="states"
+        [selectedTradeType]="selectedTradeType"
+        [calculationProgress]="calculationProgress"
+        [isModal]="false"
+        (selectTrade)="handleTradeSelection($event)"
+      ></app-providers-list>
+    </tui-scrollbar>
+  </ng-container>
+</app-window-container>
+
+<ng-template #mobileProviders>
+  <ng-container
+    *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
+  ></ng-container>
+  <app-providers-list
+    [states]="states.slice(0, 1)"
+    [selectedTradeType]="selectedTradeType"
+    [calculationProgress]="calculationProgress"
+    [isModal]="false"
+    [shortedInfo]="true"
+    (selectTrade)="handleTradeSelection($event)"
+  >
+  </app-providers-list>
+  <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
+    <span class="other-providers__text">Other Providers</span>
+    <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
+  </div>
+</ng-template>
+
+<ng-template #waiting>
+  <div class="waiting" @progress>
+    <h5>
+      <ng-container
+        *ngIf="calculationProgress.current < calculationProgress.total / 2; else longProviders"
+        >Calculating providers...
+      </ng-container>
+      <ng-template #longProviders>
+        More providers can get close, but they are delaying the answer...
+      </ng-template>
+    </h5>
+    <progress
+      *ngIf="calculationProcess$ | async as progress"
+      [max]="progress.total"
+      new
+      size="xs"
+      tuiProgressBar
+      [value]="progress.current"
+    ></progress>
+  </div>
+</ng-template>

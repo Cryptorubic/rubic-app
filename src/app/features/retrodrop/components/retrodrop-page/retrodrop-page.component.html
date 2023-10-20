@@ -5,12 +5,12 @@
       <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
         <tui-loader [showLoader]="loading$ | async" [overlay]="true">
           <tui-scrollbar>
-            <ng-container *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber">
-              <app-claim-round-row-container
-                [inputRound]="round"
-                (handleClaim)="handleClaim($event)"
-              ></app-claim-round-row-container>
-            </ng-container>
+            <app-claim-round-row-container
+              *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber"
+              [isModal]="false"
+              [inputRound]="round"
+              (handleClaim)="handleClaim($event)"
+            ></app-claim-round-row-container>
           </tui-scrollbar>
         </tui-loader>
       </ng-container>

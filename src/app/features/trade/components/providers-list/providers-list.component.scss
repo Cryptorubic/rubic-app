@@ -1,19 +1,4 @@
-h5 {
-  margin: 0 0 15px;
-  padding-right: 10px;
-
-  font-size: 15px;
-  line-height: 15px;
-}
-
-.waiting {
-  margin-bottom: var(--tui-padding-m);
-}
-
-.providers-list {
-  height: 455px;
-  margin-right: -10px;
-}
+@use 'src/scss/core' as *;
 
 :host ::ng-deep {
   app-provider-element {
@@ -38,5 +23,23 @@ h5 {
 
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
+  }
+}
+
+@include b($mobile-md) {
+  :host ::ng-deep {
+    app-provider-element {
+      margin-right: 0;
+    }
+  }
+
+  .waiting {
+    padding: var(--tui-padding-m);
+  }
+
+  .list {
+    &_padding {
+      padding: 0 var(--tui-padding-m);
+    }
   }
 }

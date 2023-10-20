@@ -54,12 +54,12 @@
       position: relative;
 
       width: 100%;
-      max-width: 171px;
+      max-width: 190px;
 
       &::after {
         position: absolute;
         top: 50%;
-        right: -15px;
+        right: -10px;
 
         width: 2px;
         height: 30px;
@@ -81,7 +81,6 @@
       }
     }
   }
-
 
   &__button {
     z-index: 0;
@@ -112,6 +111,57 @@
     &-icon {
       width: 25px;
       margin-left: var(--tui-padding-xs);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  :host {
+    width: 100%;
+  }
+
+  .round {
+    &__container {
+      margin-right: 0;
+      padding: 0;
+      overflow: hidden;
+
+      background: var(--secondary-background);
+
+      &_border {
+        border: 2px solid var(--app-background);
+      }
+    }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--tui-padding-l);
+    }
+
+    &__footer {
+      padding: var(--tui-padding-m) var(--tui-padding-l);
+
+      background: var(--io-background);
+      border-top: 3px solid var(--app-background);
+    }
+
+    &__number,
+    &__date {
+      @include font(12px, 16px, 500, var(--tui-text-01), 0.36px);
+    }
+
+    &__info {
+      &-amount {
+        @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
+        gap: var(--tui-padding-xs);
+      }
+    }
+
+    &__button {
+      width: 100px;
+      height: 40px;
     }
   }
 }
