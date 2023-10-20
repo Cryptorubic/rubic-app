@@ -21,12 +21,4 @@ export class HistoryButtonComponent {
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService
   ) {}
-
-  public openRecentTradesModal(): void {
-    this.modalService
-      .openRecentTradesModal({
-        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
-  }
 }

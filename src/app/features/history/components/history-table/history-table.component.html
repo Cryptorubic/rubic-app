@@ -1,0 +1,226 @@
+<tui-loader
+  [overlay]="true"
+  [showLoader]="!!(loading$ | async)"
+  *ngLet="isCrossChain$ | async as isCrossChain"
+>
+  <table
+    *ngIf="data$ | async as data"
+    tuiTable
+    class="table"
+    [columns]="columns$ | async"
+    [direction]="(direction$ | async) || 1"
+    [tuiSortBy]="sorter$ | async"
+    (directionChange)="changeDirection($event)"
+    (tuiSortByChange)="changeSorting($event)"
+  >
+    <thead>
+      <tr tuiThGroup>
+        <ng-container *ngIf="isCrossChain; else onChain">
+          <th *tuiHead="'from'" [sorter]="null" tuiTh>{{ 'recentTrades.from' | translate }}</th>
+          <th *tuiHead="'to'" [sorter]="null" tuiTh>{{ 'recentTrades.to' | translate }}</th>
+          <th *tuiHead="'date'" tuiTh>{{ 'recentTrades.date' | translate }}</th>
+          <th *tuiHead="'statusFrom'" [sorter]="null" tuiTh>
+            {{ 'recentTrades.statusFrom' | translate }}
+          </th>
+          <th *tuiHead="'statusTo'" [sorter]="null" tuiTh>
+            {{ 'recentTrades.statusTo' | translate }}
+          </th>
+          <th *tuiHead="'provider'" [sorter]="null" tuiTh>Provider</th>
+        </ng-container>
+        <ng-template #onChain>
+          <th *tuiHead="'from'" [sorter]="null" tuiTh>{{ 'recentTrades.from' | translate }}</th>
+          <th *tuiHead="'to'" [sorter]="null" tuiTh>{{ 'recentTrades.to' | translate }}</th>
+          <th *tuiHead="'blockchain'" [sorter]="null" tuiTh>Blockchain</th>
+          <th *tuiHead="'date'" tuiTh>{{ 'recentTrades.date' | translate }}</th>
+          <th *tuiHead="'status'" [sorter]="null" tuiTh>Status</th>
+          <th *tuiHead="'provider'" [sorter]="null" tuiTh>Provider</th>
+        </ng-template>
+      </tr>
+    </thead>
+    <tbody *tuiLet="data | tuiTableSort as sortedData" tuiTbody [data]="sortedData">
+      <tr *ngFor="let item of sortedData" tuiTr>
+        <ng-container *ngIf="isCrossChain; else onChainData">
+          <td *tuiCell="'from'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__top">
+                <div class="token-images" *ngIf="item?.fromBlockchain?.color">
+                  <div
+                    class="token-images__second-container"
+                    [style]="{ background: item.fromBlockchain.color }"
+                  >
+                    <img [src]="item.fromBlockchain.image" [alt]="item.fromBlockchain.label" />
+                  </div>
+                  <img
+                    class="token-images__main-image"
+                    [src]="item.fromToken.image"
+                    [alt]="item.fromToken.symbol"
+                  />
+                </div>
+                <!--              <div class="asset__asset-type">-->
+                <!--                {{ item.fromBlockchain.label }}-->
+                <!--              </div>-->
+                {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.fromToken.symbol }}
+              </div>
+              <!--            <div class="token-container__bot">-->
+              <!--              {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}-->
+              <!--              {{ item.fromToken.symbol }}-->
+              <!--            </div>-->
+            </div>
+          </td>
+          <td *tuiCell="'to'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__top">
+                <div class="token-images" *ngIf="item?.tolockchain?.color">
+                  <div
+                    class="token-images__second-container"
+                    [style]="{ background: item.toBlockchain.color }"
+                  >
+                    <img [src]="item.toBlockchain.image" [alt]="item.toBlockchain.label" />
+                  </div>
+                  <img
+                    class="token-images__main-image"
+                    [src]="item.toToken.image"
+                    [alt]="item.toToken.symbol"
+                  />
+                </div>
+                <div class="asset__asset-type">
+                  <!--                {{ item.toBlockchain.label }}-->
+                  {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                  {{ item.toToken.symbol }}
+                </div>
+              </div>
+              <!--            <div class="token-container__bot">-->
+              <!--              {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}-->
+              <!--              {{ item.toToken.symbol }}-->
+              <!--            </div>-->
+            </div>
+          </td>
+          <td *tuiCell="'date'" tuiTd>
+            {{ item?.date | date : 'MMM dd, yyyy' }}
+            {{ ' at ' + (item?.date | date : 'h:mm') }}
+          </td>
+          <td *tuiCell="'statusFrom'" tuiTd>
+            <a [safetyLink]="item.fromTx.explorerLink" class="token-container__inner">
+              <tui-badge
+                *ngIf="item?.fromTx?.status"
+                [status]="item.fromTx.status.appearance"
+                [value]="item.fromTx.status.label"
+              ></tui-badge>
+              <img
+                *ngIf="item.fromTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
+          </td>
+          <td *tuiCell="'statusTo'" tuiTd>
+            <a [safetyLink]="item.toTx.explorerLink" class="token-container__inner">
+              <tui-badge
+                *ngIf="item.toTx?.status"
+                [status]="item.toTx.status.appearance"
+                [value]="item.toTx.status.label"
+              ></tui-badge>
+              <img
+                *ngIf="item.toTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
+          </td>
+          <td *tuiCell="'provider'" tuiTd>
+            <div class="provider-container" *ngIf="item?.provider?.name">
+              <img
+                class="provider-container__image"
+                [src]="item.provider.image"
+                [alt]="item.provider.name"
+              />
+              {{ item.provider.name }}
+            </div>
+          </td>
+        </ng-container>
+        <ng-template #onChainData>
+          <td *tuiCell="'from'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__inner">
+                <img
+                  class="token-container__main-image"
+                  [src]="item.fromToken.image"
+                  [alt]="item.fromToken.symbol"
+                />
+
+                {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.fromToken.symbol }}
+              </div>
+            </div>
+          </td>
+          <td *tuiCell="'to'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__inner">
+                <img
+                  class="token-container__main-image"
+                  [src]="item.toToken.image"
+                  [alt]="item.toToken.symbol"
+                />
+                {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.toToken.symbol }}
+              </div>
+            </div>
+          </td>
+          <td *tuiCell="'blockchain'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__inner" *ngIf="item?.blockchain?.image">
+                <img
+                  class="token-container__main-image"
+                  [src]="item.blockchain.image"
+                  [alt]="item.blockchain.label"
+                />
+                {{ item.blockchain.label }}
+              </div>
+            </div>
+          </td>
+          <td *tuiCell="'date'" tuiTd>
+            {{ item?.date | date : 'MMM dd, yyyy' }}
+            {{ ' at ' + (item?.date | date : 'h:mm') }}
+          </td>
+          <td *tuiCell="'status'" tuiTd>
+            <a
+              *ngIf="item.tx?.status"
+              class="token-container__inner"
+              [safetyLink]="item.tx?.explorerLink"
+            >
+              <tui-badge
+                [status]="item.tx.status.appearance"
+                [value]="item.tx.status.label"
+              ></tui-badge>
+              <img
+                *ngIf="item.tx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
+          </td>
+          <td *tuiCell="'provider'" tuiTd>
+            <div class="provider-container">
+              <!--              <img-->
+              <!--                class="provider-container__image"-->
+              <!--                [src]="item.provider.image"-->
+              <!--                [alt]="item.provider.name"-->
+              <!--              />-->
+              <!--              {{ item.provider.name }}-->
+              {{ item?.provider?.name || 'Unknown' }}
+            </div>
+          </td>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+  <tui-pagination
+    [index]="(page$ | async) || 0"
+    [length]="(totalPages$ | async) || 0"
+    (indexChange)="changePage($event)"
+  ></tui-pagination>
+</tui-loader>
