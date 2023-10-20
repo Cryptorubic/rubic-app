@@ -13,7 +13,7 @@
 .mobile-deposits {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
 
   &__wrapper {
     height: 242px;
@@ -21,7 +21,6 @@
     padding: var(--tui-padding-m) 0;
 
     background: var(--io-background);
-    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   }
 
   &__element {
@@ -62,7 +61,7 @@
     padding: var(--tui-padding-l) var(--tui-padding-m);
 
     background: var(--io-background);
-    border-radius: var(--tui-radius-m);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   }
 
   &__buttons {
