@@ -1,4 +1,4 @@
-import { Inject, Injectable, Injector, Component, Type } from '@angular/core';
+import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
 import { Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
@@ -18,6 +18,7 @@ import { SettingsItComponent } from '@features/trade/components/settings-it/sett
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
 import { Asset } from '@features/trade/models/asset';
+import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
 
 @Injectable()
 export class ModalService {
@@ -42,6 +43,21 @@ export class ModalService {
     //     idPrefix
     //   }
     // });
+  }
+
+  /**
+   * Show Old claims dialog.
+   */
+  public openOldClaims(isModal: boolean, injector: Injector): Observable<void> {
+    return this.showDialog<ClaimContainerComponent, void>(
+      ClaimContainerComponent,
+      {
+        title: 'Old Claims',
+        scrollableContent: true,
+        data: { isModal }
+      },
+      injector
+    );
   }
 
   /**

@@ -1,5 +1,5 @@
 <ng-container *ngLet="round.status === 'closed' || round.status === 'soon' as setDisabled">
-  <div class="round round_desktop" *ngIf="!isMobile">
+  <div class="round round_desktop" *ngIf="(isMobile$ | async) === false">
     <div
       class="round__container"
       [ngClass]="{
@@ -45,52 +45,51 @@
       </div>
     </div>
   </div>
-  <div class="round round_mobile" *ngIf="isMobile">
-    <div class="round__container round__container_mobile">
-      <div
-        class="round__info round__info_mobile"
-        [ngClass]="{ round__info_mobile_disabled: round.isAlreadyClaimed }"
-      >
-        <div class="round__left round__left_mobile">
-          <span
-            class="round__round round__round_mobile"
-            [ngClass]="{ round__round_mobile_disabled: round.isAlreadyClaimed }"
-            >Round #{{ round.roundNumber }}</span
-          >
-          <div
-            class="round__date round__date_mobile"
-            [ngClass]="{ round__date_mobile_disabled: round.isAlreadyClaimed }"
-          >
-            {{ round.claimDate }}
-          </div>
-        </div>
-        <div style="width: 100%">
-          <div class="round__amount-wrapper round__amount-wrapper_mobile">
-            <span
-              class="round__amount round__amount_mobile"
-              [ngClass]="{ round__amount_mobile_disabled: round.isAlreadyClaimed }"
-            >
-              <img src="assets/images/rbc-white.png" alt="Confirmed RBC" />
-              {{ claimAmountValue }}
-              RBC
-            </span>
-            <div
-              *ngIf="!setDisabled"
-              class="round__claim-button-icon_mobile"
-              [ngClass]="{ 'round__claim-button-icon_mobile_disabled': !round.isAlreadyClaimed }"
-              [inlineSVG]="'assets/images/icons/exclamation-grey.svg'"
-              [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
-              tuiHintAppearance="onDark"
-            ></div>
-          </div>
-          <div
-            class="round__claim-button round__claim-button_mobile"
+  <div class="round" *ngIf="isMobile$ | async">
+    <div
+      class="round__container"
+      [ngClass]="{
+        round__container_border: isModal || round.claimName === 'retrodrop'
+      }"
+    >
+      <div class="round__header">
+        <span class="round__info-amount">
+          <img
+            class="round__info-amount-icon"
+            src="assets/images/rbc-white.png"
+            alt="Confirmed RBC"
+          />
+          {{ claimAmountValue }} RBC
+        </span>
+        <tui-loader
+          [showLoader]="(loading$ | async) && !setDisabled && !round.isAlreadyClaimed"
+          [overlay]="true"
+        >
+          <button
+            class="round__button"
+            tuiButton
+            appearance="primary"
+            [disabled]="round.isAlreadyClaimed || setDisabled"
+            type="button"
+            size="m"
             (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
-            [ngClass]="{ 'round__claim-button_mobile_disabled': round.isAlreadyClaimed }"
+            [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
+            tuiHintAppearance="onDark"
           >
-            <span>{{ buttonState.translation | translate }}</span>
-          </div>
-        </div>
+            {{ buttonState.translation | translate }}
+          </button>
+        </tui-loader>
+      </div>
+      <div
+        class="round__footer"
+        [ngClass]="{
+          round__footer_border: isModal
+        }"
+      >
+        <span class="round__number">Round #{{ round.roundNumber }}</span>
+        <span class="round__date">
+          {{ round.claimDate }}
+        </span>
       </div>
     </div>
   </div>
