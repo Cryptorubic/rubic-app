@@ -14,7 +14,7 @@
     "
   >
     <div class="deposits__head">
-      <div class="deposits__title">
+      <div class="deposits__title" [ngClass]="{ 'deposits__title_full-width': !showDeposits }">
         <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
         <app-rotating-icon
           [rotating]="depositsInfo.depositsLoading"
@@ -22,10 +22,11 @@
         ></app-rotating-icon>
       </div>
       <button
+        *ngIf="showDeposits"
         class="deposits__head-btn"
         tuiButton
         type="button"
-        size="s"
+        size="m"
         appearance="primary"
         (click)="navigateToStakeForm()"
       >

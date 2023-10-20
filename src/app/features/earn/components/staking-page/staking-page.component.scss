@@ -31,7 +31,7 @@ app-deposits {
 .new-position-button {
   display: none;
   width: 100%;
-  margin-bottom: 32px;
+  margin-bottom: var(--tui-padding-l);
 
   @include b($mobile-md) {
     display: block;

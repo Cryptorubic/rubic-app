@@ -13,6 +13,16 @@
     justify-content: space-between;
 
     margin-bottom: var(--tui-padding-m);
+
+    &-btn {
+      height: 30px;
+
+      font-weight: 500;
+      font-size: 15px;
+      letter-spacing: 0.15px;
+
+      border-radius: var(--tui-radius-m);
+    }
   }
 
   &__body {
@@ -31,6 +41,11 @@
     &-text {
       @include font(15px, 21px, 500, var(--primary-text));
       white-space: nowrap;
+    }
+
+    &_full-width {
+      justify-content: space-between;
+      width: 100%;
     }
   }
 
@@ -52,7 +67,6 @@
 
   text-align: center;
 
-  background: var(--io-background);
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 }
 
@@ -135,5 +149,9 @@
       background: none;
       border-radius: 0;
     }
+  }
+
+  .no-deposits {
+    background: var(--io-background);
   }
 }
