@@ -40,22 +40,20 @@
       height: 15px;
     }
   }
+}
 
-  &__new-deposit-btn {
-    @include font(16px, 19px, 500, --rubic-base-02);
-    padding: 6px 14px;
+.no-deposits {
+  @include font(16px, 16px, 400, var(--tui-text-03), 0.54px);
 
-    letter-spacing: 1px;
+  width: 100%;
 
-    white-space: nowrap;
+  margin-top: 2px;
+  padding: var(--tui-padding-m);
 
-    background: var(--primary-color);
-    border-radius: $border-radius-3;
+  text-align: center;
 
-    @include b(480) {
-      @include font(14px, 15px, 500, --rubic-base-02);
-    }
-  }
+  background: var(--io-background);
+  border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 }
 
 .connect-wallet {
@@ -83,6 +81,21 @@
 }
 
 @include b($mobile-md) {
+  ::ng-deep {
+    app-rotating-icon svg path {
+      fill: var(--tui-text-01);
+    }
+
+    app-window-container {
+      .window-container {
+        padding: 0 !important;
+
+        background: none !important;
+        border-radius: 0 !important;
+      }
+    }
+  }
+
   .deposits {
     &__wrapper {
       position: relative;
@@ -93,12 +106,34 @@
       border-radius: 0;
     }
 
+    &__title {
+      gap: 8px;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0;
+
+      &-text {
+        @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
+      }
+    }
+
     &__head {
       margin-bottom: 0;
-      padding: 10px 14px 0;
+      padding: var(--tui-padding-m);
 
-      background: var(--form-background);
-      border-radius: 10px 10px 0 0;
+      background: var(--io-background);
+      border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+
+      &-btn {
+        display: none;
+      }
+    }
+
+    &__body {
+      padding: 0;
+
+      background: none;
+      border-radius: 0;
     }
   }
 }

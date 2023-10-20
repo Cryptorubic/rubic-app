@@ -10,6 +10,8 @@ import { StakingService } from '../../services/staking.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingPageComponent {
+  public readonly deposits$ = this.stakingService.deposits$;
+
   public accordionState = false;
 
   public readonly RoundStatus = RoundStatus;

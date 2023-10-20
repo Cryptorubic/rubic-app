@@ -28,6 +28,16 @@ app-deposits {
   }
 }
 
+.new-position-button {
+  display: none;
+  width: 100%;
+  margin-bottom: 32px;
+
+  @include b($mobile-md) {
+    display: block;
+  }
+}
+
 .accordion {
   margin-bottom: 12px;
   padding: 12px;

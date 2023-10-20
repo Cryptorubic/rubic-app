@@ -24,7 +24,7 @@
       depositsLoading: depositsLoading$ | async
     } as depositsInfo"
   >
-    <ng-container *ngIf="user && !depositsInfo.deposits?.length && !depositsInfo.depositsLoading">
+    <ng-container *ngIf="user && !depositsInfo.deposits?.length">
       <div class="statistics__actions fade-in">
         <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToCcrForm()">
           Bridge

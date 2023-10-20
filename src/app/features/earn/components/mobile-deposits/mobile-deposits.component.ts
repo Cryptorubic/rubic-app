@@ -23,6 +23,8 @@ export class MobileDepositsComponent {
 
   @Output() onWithdraw = new EventEmitter<Deposit>();
 
+  public index = 0;
+
   public trackBy(index: number, _: Deposit): number {
     return index;
   }

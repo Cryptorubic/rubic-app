@@ -11,7 +11,12 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
-import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
+import {
+  TuiAccordionModule,
+  TuiCarouselModule,
+  TuiPaginationModule,
+  TuiSliderModule
+} from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { StakingService } from './services/staking.service';
@@ -63,7 +68,9 @@ import { AverageAprComponent } from './components/statistics/components/average-
     TuiSliderModule,
     TuiHintModule,
     TuiHintModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiCarouselModule,
+    TuiPaginationModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })

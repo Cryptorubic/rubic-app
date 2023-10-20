@@ -1,99 +1,83 @@
 @use 'src/scss/core' as *;
 
-.mobile-table {
+::ng-deep {
+  button.withdraw .t-wrapper {
+    padding: 0 !important;
+  }
+
+  tui-carousel {
+    margin-bottom: var(--tui-padding-m);
+  }
+}
+
+.mobile-deposits {
   display: flex;
   flex-direction: column;
   gap: 12px;
 
-  &__head {
-    display: flex;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
+  &__wrapper {
+    margin-top: 2px;
+    padding: var(--tui-padding-m) 0;
 
-    border-bottom: 1px solid var(--transparent-line);
-
-    >.mobile-table__cell {
-      @include font(12px, 15px, 500, var(--secondary-text));
-      justify-content: initial;
-      margin: 0;
-    }
+    background: var(--io-background);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   }
 
-  &__row {
+  &__element {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    width: 100%;
+    max-width: 232px;
+    margin: 0 auto;
 
-    &-wrapper {
-      padding: 10px 14px;
+    background: var(--app-background);
+    border-radius: var(--tui-radius-m);
+  }
 
-      background: var(--form-background);
-      border-radius: 10px;
-    }
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+    padding: var(--tui-padding-m) var(--tui-padding-l);
 
-    &:first-child {
-      margin-bottom: 10px;
+    border-bottom: 2px solid var(--io-background);
 
-      .mobile-table__cell {
-        width: 50%;
-        margin: 0;
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-        color: var(--primary-color);
+      &-title {
+        color: var(--tui-text-03);
       }
     }
-
-    &_total {
-      align-items: center;
-      padding: 20px 14px 10px;
-
-      background: var(--form-background);
-      border-radius: 0 0 10px 10px;
-    }
   }
 
-  &__cell {
-    @include font(12px, 14px, 400, var(--primary-text));
+  &__total {
     display: flex;
     align-items: center;
-    width: calc(100% / 5);
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--tui-padding-l) var(--tui-padding-m);
 
-    &:last-child {
-      display: flex;
-      flex: 1;
-      gap: 8px;
-      align-items: center;
-      justify-content: end;
-      width: 100%;
-      margin-top: 10px;
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
+  }
 
-      ::ng-deep app-rubic-button {
-        button {
-          height: 27px;
+  &__buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--tui-padding-s);
 
-          font-size: 14px;
-          line-height: 14px;
-
-          .t-loader[data-tui-element-size='m'] {
-            font-size: unset;
-          }
-
-          .t-wrapper {
-            padding: 0 10px;
-          }
-        }
-      }
+    button.claim {
+      width: 168px;
+      height: 40px;
     }
 
-    img {
-      width: 20px;
-      height: 20px;
-      margin-right: 6px;
-    }
-
-    &-apr {
-      max-width: 70%;
-      overflow: hidden;
-
-      text-overflow: ellipsis;
+    button.withdraw {
+      width: 40px;
+      height: 40px;
     }
   }
 }

@@ -1,6 +1,17 @@
 <app-statistics></app-statistics>
-
 <ng-container *ngIf="(needLogin$ | async) === false">
+  <button
+    *ngIf="(deposits$ | async).length"
+    class="new-position-button"
+    tuiButton
+    type="button"
+    size="l"
+    appearance="primary"
+    (click)="navigateToStakeForm()"
+  >
+    {{ 'staking.deposits.newPosition' | translate }}
+  </button>
+
   <app-deposits></app-deposits>
 </ng-container>
 
