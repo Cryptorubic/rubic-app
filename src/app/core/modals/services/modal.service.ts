@@ -18,6 +18,7 @@ import { SettingsItComponent } from '@features/trade/components/settings-it/sett
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
 import { Asset } from '@features/trade/models/asset';
+import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
@@ -46,6 +47,21 @@ export class ModalService {
     //     idPrefix
     //   }
     // });
+  }
+
+  /**
+   * Show Old claims dialog.
+   */
+  public openOldClaims(isModal: boolean, injector: Injector): Observable<void> {
+    return this.showDialog<ClaimContainerComponent, void>(
+      ClaimContainerComponent,
+      {
+        title: 'Old Claims',
+        scrollableContent: true,
+        data: { isModal }
+      },
+      injector
+    );
   }
 
   /**

@@ -69,3 +69,37 @@
     }
   }
 }
+
+.old-claims {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--tui-padding-m);
+  padding: var(--tui-padding-l);
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  &__text {
+    @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+  }
+}
+
+@include b($mobile-md) {
+  :host {
+    ::ng-deep {
+      header h5 {
+        justify-content: center;
+      }
+
+      &:nth-child(2) {
+        .window-container {
+          padding: 0;
+
+          background: none;
+          border-radius: 0;
+        }
+      }
+    }
+  }
+}

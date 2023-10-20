@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { AirdropService } from '@features/airdrop/services/airdrop.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { HeaderStore } from '@core/header/services/header.store';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-airdrop-page',
@@ -21,8 +23,19 @@ export class AirdropPageComponent {
 
   public readonly isParticipant$ = this.airdropService.airdropUserInfo$;
 
+  public readonly isMobile$ = this.headerService.getMobileDisplayStatus();
+
+  public readonly rounds$ = this.airdropService.rounds$;
+
   constructor(
+    private readonly headerService: HeaderStore,
+    private readonly modalService: ModalService,
     private readonly airdropService: AirdropService,
+    @Inject(Injector) private readonly injector: Injector,
     private readonly airdropPointsService: AirdropPointsService
   ) {}
+
+  public openOldClaims(): void {
+    this.modalService.openOldClaims(true, this.injector).subscribe();
+  }
 }
