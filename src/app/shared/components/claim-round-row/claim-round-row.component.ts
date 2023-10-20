@@ -1,19 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  Output
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { WalletsModalService } from '@core/wallets-modal/services/wallets-modal.service';
-import { WINDOW } from '@ng-web-apis/common';
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
 import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { ClaimRound, ClaimStatus } from '@shared/models/claim/claim-round';
 import BigNumber from 'bignumber.js';
 import { setButtonState } from '@shared/utils/claim-button-state';
 import { ClaimService } from '@shared/services/claim-services/claim.services';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-claim-round-row-container',
@@ -28,6 +21,8 @@ export class ClaimRoundRowComponent {
 
   public buttonState: ButtonState;
 
+  @Input({ required: true }) isModal: boolean = false;
+
   @Input({ required: true }) set inputRound(claimRound: ClaimRound) {
     this.round = claimRound;
     this.setButtonStateValue(claimRound);
@@ -36,19 +31,15 @@ export class ClaimRoundRowComponent {
 
   @Output() public readonly handleClaim = new EventEmitter<NumberedClaimTokensData>();
 
-  public isMobile = false;
+  public isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly loading$ = this.claimService.claimLoading$;
 
   constructor(
     private readonly claimService: ClaimService,
     private readonly walletModalService: WalletsModalService,
-    @Inject(WINDOW) private readonly window: Window
-  ) {
-    if (this.window.innerWidth <= 900) {
-      this.isMobile = true;
-    }
-  }
+    private readonly headerStore: HeaderStore
+  ) {}
 
   public async handleClick(state: ButtonLabel): Promise<void> {
     switch (state) {
