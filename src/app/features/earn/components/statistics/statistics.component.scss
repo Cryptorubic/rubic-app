@@ -133,6 +133,23 @@
         fill: var(--tui-text-01);
       }
 
+      app-window-container {
+        header {
+          padding: var(--tui-padding-l);
+
+          background: var(--io-background);
+          border-bottom: 2px solid var(--app-background);
+          border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
+        }
+
+        .window-container {
+          padding: 0;
+
+          background: none;
+          border-radius: 0;
+        }
+      }
+
       app-average-lock-time {
         grid-row-start: 2;
         grid-row-end: 3;
@@ -171,6 +188,8 @@
       grid-template-columns: 1fr min-content;
 
       padding: 12px 38px 12px 16px;
+
+      border-radius: 0 0 var(--tui-radius-l) var(--tui-radius-l);
     }
   }
 }
