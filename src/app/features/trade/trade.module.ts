@@ -6,7 +6,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
-import { ProvidersListComponent } from './components/providers-list/providers-list.component';
+import { ProvidersListGeneralComponent } from '@features/trade/components/providers-list-general/providers-list-general.component';
 import { ProviderElementComponent } from './components/provider-element/provider-element.component';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
@@ -58,11 +58,12 @@ import { FormSwitcherComponent } from '@features/trade/components/form-switcher/
 import { TargetNetworkAddressComponent } from '@features/trade/components/target-network-address/target-network-address.component';
 import { TokensRateComponent } from '@features/trade/components/tokens-rate/tokens-rate.component';
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
+import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 
 @NgModule({
   declarations: [
     TradeViewContainerComponent,
-    ProvidersListComponent,
+    ProvidersListGeneralComponent,
     ProviderElementComponent,
     PreviewSwapComponent,
     ActionButtonComponent,
@@ -82,7 +83,8 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
     FormSwitcherComponent,
     TargetNetworkAddressComponent,
     TokensRateComponent,
-    SettingsWarningModalComponent
+    SettingsWarningModalComponent,
+    ProvidersListComponent
   ],
   exports: [],
   imports: [

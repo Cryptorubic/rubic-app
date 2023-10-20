@@ -10,7 +10,7 @@
   &__provider-icon {
     width: 24px;
     height: 24px;
-    margin-right: 10px;
+    margin-right: var(--tui-padding-s);
   }
 
   &__provider-rate {

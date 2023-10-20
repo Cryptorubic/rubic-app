@@ -19,6 +19,10 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
 import BigNumber from 'bignumber.js';
 import { Asset } from '@features/trade/models/asset';
 import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
+import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
+import { TradeState } from '@features/trade/models/trade-state';
+import { TradeProvider } from '@features/trade/models/trade-provider';
+import { CalculationProgress } from '@features/trade/models/calculationProgress';
 
 @Injectable()
 export class ModalService {
@@ -55,6 +59,33 @@ export class ModalService {
         title: 'Old Claims',
         scrollableContent: true,
         data: { isModal }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Other providers list dialog.
+   */
+  public openOtherProvidersList(
+    states: TradeState[],
+    selectedTradeType: TradeProvider,
+    calculationProgress: CalculationProgress,
+    isModal: true,
+    injector: Injector
+  ): Observable<TradeProvider> {
+    return this.showDialog<ProvidersListComponent, TradeProvider>(
+      ProvidersListComponent,
+      {
+        title: 'Available Cross-Chain Providers',
+        scrollableContent: true,
+        data: {
+          states,
+          selectedTradeType,
+          calculationProgress,
+          isModal,
+          shortedInfo: false
+        }
       },
       injector
     );

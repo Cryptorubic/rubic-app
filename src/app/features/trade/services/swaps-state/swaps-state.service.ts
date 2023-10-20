@@ -17,6 +17,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
+import { CalculationProgress } from '@features/trade/models/calculationProgress';
 
 @Injectable()
 export class SwapsStateService {
@@ -112,7 +113,7 @@ export class SwapsStateService {
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
 
-  private readonly _calculationProgress$ = new BehaviorSubject<{ total: number; current: number }>({
+  private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
     current: 0
   });
@@ -258,6 +259,7 @@ export class SwapsStateService {
   public setCalculationProgress(total: number, current: number): void {
     this._calculationProgress$.next({ total, current });
   }
+
   //
   // public completeCalculaitng(): void {
   //   const trade = this.currentTrade;
