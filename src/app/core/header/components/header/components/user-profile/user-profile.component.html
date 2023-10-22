@@ -1,8 +1,4 @@
 <ng-container>
-  <ng-container *ngIf="isMobile$ | async; then profileMobile; else profileDesktop"></ng-container>
-</ng-container>
-
-<ng-template #profileDesktop>
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
@@ -46,10 +42,56 @@
       </tui-opt-group>
     </tui-data-list>
   </ng-template>
-</ng-template>
+</ng-container>
 
-<ng-template #profileMobile>
-  <!--  <button (click)="openProfileModal()">-->
-  <!--    <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>-->
-  <!--  </button>-->
-</ng-template>
+<!--<ng-template #profileDesktop>-->
+<!--  <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">-->
+<!--    <div tuiGroup>-->
+<!--      <button tuiButton appearance="secondary" type="button" size="m">-->
+<!--        <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">-->
+<!--          <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="24" height="24" />-->
+<!--        </div>-->
+
+<!--        <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">-->
+<!--          {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}-->
+<!--        </div>-->
+
+<!--        <app-notification-badge-->
+<!--          class="notification-counter notification-counter_profile"-->
+<!--          *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"-->
+<!--          size="xs"-->
+<!--          color="red"-->
+<!--          [value]="unreadTrades$ | async"-->
+<!--        ></app-notification-badge>-->
+
+<!--        <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </tui-hosted-dropdown>-->
+
+<!--  <ng-template #dropdown let-activeZone>-->
+<!--    <tui-data-list class="data-list" size="m" role="menu">-->
+<!--      <tui-opt-group>-->
+<!--        <button-->
+<!--          tuiButton-->
+<!--          class="data-list__element"-->
+<!--          appearance="secondary"-->
+<!--          type="button"-->
+<!--          size="m"-->
+<!--          class="user-profile__logout"-->
+<!--          (click)="logout()"-->
+<!--        >-->
+<!--          <div class="data-list__link-container">-->
+<!--            {{ 'navigation.logout' | translate }}-->
+<!--          </div>-->
+<!--        </button>-->
+<!--      </tui-opt-group>-->
+<!--    </tui-data-list>-->
+<!--  </ng-template>-->
+<!--</ng-template>-->
+
+<!--<ng-template #profileMobile>-->
+<!--  <button (click)="openProfileModal()">-->
+<!--    <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>-->
+<!--  </button>-->
+<!--</ng-template>-->

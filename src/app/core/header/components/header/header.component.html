@@ -17,6 +17,7 @@
   </app-rubic-menu-toggler>
 
   <button
+    class="swap-button"
     tuiButton
     appearance="secondary"
     type="button"
@@ -32,13 +33,13 @@
   </button>
 
   <button
+    class="staking-button"
     tuiButton
     appearance="secondary"
     type="button"
     [pseudoActive]="isStakingPage"
     size="m"
     routerLink="/staking"
-    class="staking-button"
   >
     Staking
   </button>
@@ -64,7 +65,14 @@
     ></app-points-button>
   </ng-container>
 
-  <button tuiIconButton appearance="secondary" type="button" size="m" (click)="switchTheme()">
+  <button
+    class="theme-switcher"
+    tuiIconButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    (click)="switchTheme()"
+  >
     <div
       class="image"
       [inlineSVG]="
