@@ -78,6 +78,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       active: false
     },
     {
+      translateKey: 'Retrodrop',
+      type: 'internal',
+      link: ROUTE_PATH.RETRODROP,
+      active: false
+    },
+    {
       translateKey: 'Revoke Approval',
       type: 'internal',
       link: ROUTE_PATH.REVOKE_APPROVAL,

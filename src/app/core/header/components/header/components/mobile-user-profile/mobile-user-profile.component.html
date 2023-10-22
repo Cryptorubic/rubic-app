@@ -20,31 +20,32 @@
               [cdkCopyToClipboard]="currentUser.address"
               (cdkCopyToClipboardCopied)="onWalletAddressCopied()"
             >
-              <div
+              <span
                 *ngIf="!isWalletCopied"
                 class="mobile-user-profile__icon"
                 [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-              ></div>
-              <div
+              ></span>
+              <span
                 *ngIf="isWalletCopied"
                 class="mobile-user-profile__icon"
                 [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
-              ></div>
+              ></span>
             </button>
             <a
               [safetyLink]="
                 currentUser.address | scannerLink : currentUser.blockchainName : ADDRESS_TYPE.WALLET
               "
-              ><div
+            >
+              <div
                 class="mobile-user-profile__icon"
                 [inlineSVG]="'assets/images/icons/scanner.svg'"
               ></div>
             </a>
             <button (click)="logout()">
-              <div
+              <span
                 class="mobile-user-profile__icon"
                 [inlineSVG]="'assets/images/icons/header/logout.svg'"
-              ></div>
+              ></span>
             </button>
           </div>
         </ng-container>
