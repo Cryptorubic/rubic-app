@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, of, timer, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BlockchainName, BLOCKCHAIN_NAME, Injector, GasPrice, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
@@ -185,7 +185,9 @@ export class GasService {
     const requestTimeout = 2000;
 
     const oneInchEstimation$ = this.httpClient
-      .get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1')
+      .get<OneInchGasResponse>('https://api.1inch.dev/gas-price/v1.4/1', {
+        headers: { Authorization: `Bearer Xm2RjvwebukwFWf0XqTzqbmB0u91Gwwb` }
+      })
       .pipe(
         timeout(requestTimeout),
         map(response => ({
