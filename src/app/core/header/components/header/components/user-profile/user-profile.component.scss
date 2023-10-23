@@ -53,11 +53,15 @@
 }
 
 .arrow {
-  @include b($mobile-md) {
-    display: none;
-  }
-
   ::ng-deep svg path {
     fill: var(--tui-text-01);
+  }
+}
+
+@include b($mobile-md) {
+  ::ng-deep {
+    tui-hosted-dropdown .tui-group .t-wrapper {
+      padding: 0 var(--tui-padding-l) !important;
+    }
   }
 }
