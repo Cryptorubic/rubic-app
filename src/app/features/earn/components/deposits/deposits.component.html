@@ -5,50 +5,55 @@
     depositsLoading: depositsLoading$ | async
   } as depositsInfo"
 >
-  <ng-container
-    *ngIf="depositsInfo.deposits && depositsInfo.deposits?.length && !depositsInfo.depositsLoading"
+  <app-window-container
+    class="deposits fade-in"
+    *ngLet="
+      depositsInfo.deposits &&
+      depositsInfo.deposits?.length &&
+      !depositsInfo.depositsLoading as showDeposits
+    "
   >
-    <app-window-container class="deposits fade-in">
-      <tui-loader
-        class="inline-flex"
-        [showLoader]="depositsInfo.depositsLoading"
-        [inheritColor]="true"
-        [overlay]="true"
+    <div class="deposits__head">
+      <div class="deposits__title" [ngClass]="{ 'deposits__title_full-width': !showDeposits }">
+        <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
+        <app-rotating-icon
+          [rotating]="depositsInfo.depositsLoading"
+          (iconClick)="refreshDeposits()"
+        ></app-rotating-icon>
+      </div>
+      <button
+        *ngIf="showDeposits"
+        class="deposits__head-btn"
+        tuiButton
+        type="button"
+        size="m"
+        appearance="primary"
+        (click)="navigateToStakeForm()"
       >
-        <div class="deposits__head">
-          <div class="deposits__title">
-            <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
-            <app-rotating-icon
-              [rotating]="depositsInfo.depositsLoading"
-              (iconClick)="refreshDeposits()"
-            ></app-rotating-icon>
-          </div>
-          <button
-            class="deposits__head-btn"
-            tuiButton
-            type="button"
-            size="s"
-            appearance="primary"
-            (click)="navigateToStakeForm()"
-          >
-            {{ 'staking.deposits.newPosition' | translate }}
-          </button>
-        </div>
-        <div class="deposits__body" *ngIf="depositsInfo.deposits.length">
-          <app-desktop-deposits
-            *ngIf="!isMobile; else mobileTable"
-            [deposits]="depositsInfo.deposits"
-            [total]="total$ | async"
-            [claimingId]="claimingId$ | async"
-            [withdrawingId]="withdrawingId$ | async"
-            [isDarkTheme]="depositsInfo.isDarkTheme"
-            (onClaim)="startClaim($event)"
-            (onWithdraw)="startWithdraw($event)"
-          ></app-desktop-deposits>
-        </div>
-      </tui-loader>
-    </app-window-container>
-  </ng-container>
+        {{ 'staking.deposits.newPosition' | translate }}
+      </button>
+    </div>
+    <tui-loader
+      class="inline-flex"
+      [showLoader]="depositsInfo.depositsLoading"
+      *ngIf="showDeposits; else noDeposits"
+      [inheritColor]="true"
+      [overlay]="true"
+    >
+      <div class="deposits__body" *ngIf="depositsInfo.deposits.length">
+        <app-desktop-deposits
+          *ngIf="!isMobile; else mobileTable"
+          [deposits]="depositsInfo.deposits"
+          [total]="total$ | async"
+          [claimingId]="claimingId$ | async"
+          [withdrawingId]="withdrawingId$ | async"
+          [isDarkTheme]="depositsInfo.isDarkTheme"
+          (onClaim)="startClaim($event)"
+          (onWithdraw)="startWithdraw($event)"
+        ></app-desktop-deposits>
+      </div>
+    </tui-loader>
+  </app-window-container>
 
   <ng-template #mobileTable>
     <app-mobile-deposits
@@ -60,5 +65,10 @@
       (onClaim)="startClaim($event)"
       (onWithdraw)="startWithdraw($event)"
     ></app-mobile-deposits>
+  </ng-template>
+  <ng-template #noDeposits>
+    <div class="no-deposits">
+      <span class="no-deposits__text">You have no deposits.</span>
+    </div>
   </ng-template>
 </ng-container>

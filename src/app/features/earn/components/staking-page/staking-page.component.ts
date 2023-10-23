@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { RoundStatus } from '../../models/round-status.enum';
 import { StakingService } from '../../services/staking.service';
 
 @Component({
@@ -10,17 +9,13 @@ import { StakingService } from '../../services/staking.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StakingPageComponent {
-  public accordionState = false;
+  public readonly deposits$ = this.stakingService.deposits$;
 
-  public readonly RoundStatus = RoundStatus;
+  public readonly depositsLoading$ = this.stakingService.depositsLoading$;
 
   public readonly needLogin$ = this.stakingService.needLogin$;
 
   constructor(private readonly router: Router, private readonly stakingService: StakingService) {}
-
-  public toggleAccordion(): void {
-    this.accordionState = !this.accordionState;
-  }
 
   public navigateToStakeForm(): void {
     this.router.navigate(['staking', 'new-position']);

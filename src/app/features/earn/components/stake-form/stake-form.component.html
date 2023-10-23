@@ -21,6 +21,7 @@
           appTokenAmount
           [formControl]="rbcAmountCtrl"
           [decimals]="18"
+          maxlength="15"
           inputmode="decimal"
           (amountChange)="handleErrors($event)"
         />
