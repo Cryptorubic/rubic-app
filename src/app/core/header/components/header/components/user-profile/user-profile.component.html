@@ -1,8 +1,4 @@
 <ng-container>
-  <ng-container *ngIf="isMobile$ | async; then profileMobile; else profileDesktop"></ng-container>
-</ng-container>
-
-<ng-template #profileDesktop>
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
@@ -46,10 +42,4 @@
       </tui-opt-group>
     </tui-data-list>
   </ng-template>
-</ng-template>
-
-<ng-template #profileMobile>
-  <!--  <button (click)="openProfileModal()">-->
-  <!--    <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>-->
-  <!--  </button>-->
-</ng-template>
+</ng-container>
