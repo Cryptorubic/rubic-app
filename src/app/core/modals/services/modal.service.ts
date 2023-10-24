@@ -146,7 +146,7 @@ export class ModalService {
     return this.showDialog<SettingsItComponent, void>(
       SettingsItComponent,
       {
-        title: 'Instant Trade Settings',
+        title: 'On-chain Settings',
         fitContent: true
       },
       injector
