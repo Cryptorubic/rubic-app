@@ -24,16 +24,21 @@
 
     border: none;
 
-    @include b($mobile-md) {
-      font-size: 25px;
-
-      &::placeholder {
-        font-size: 20px;
-      }
-    }
-
     &::-webkit-input-placeholder {
       color: var(--tui-text-03);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .amount-transput {
+    &__input {
+      @include font(25px, 35px, 500, var(--tui-text-01), 0.25px);
+      text-align: left;
+
+      &::placeholder {
+        @include font(18px, 18px, 500, var(--tui-text-03), 0.54px);
+      }
     }
   }
 }

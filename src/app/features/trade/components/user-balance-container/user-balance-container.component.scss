@@ -1,8 +1,13 @@
 @use 'src/scss/core' as *;
 
+:host {
+  width: 100%;
+}
+
 .user-balance-container {
   display: flex;
   align-items: center;
+  width: 100%;
 
   &__balance {
     margin-right: var(--tui-padding-xs);
@@ -21,6 +26,8 @@
     //letter-spacing: 0.1em;
     //text-transform: uppercase;
     //
+    margin-top: -2px;
+
     background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
     //border-radius: var(--tui-radius-s);
 
@@ -35,5 +42,11 @@
 
       cursor: default;
     }
+  }
+}
+
+@include b($mobile-md) {
+  .user-balance-container {
+    justify-content: space-between;
   }
 }

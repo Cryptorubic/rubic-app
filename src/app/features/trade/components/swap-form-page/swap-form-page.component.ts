@@ -11,6 +11,7 @@ import { RefreshService } from '@features/trade/services/refresh-service/refresh
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
 import { FormType } from '@features/trade/models/form-type';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -34,6 +35,8 @@ export class SwapFormPageComponent {
   public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
     map(status => status !== REFRESH_STATUS.STOPPED)
   );
+
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly fromAsset$ = this.swapFormService.fromToken$;
 
@@ -70,7 +73,8 @@ export class SwapFormPageComponent {
     private readonly settingsService: SettingsService,
     private readonly refreshService: RefreshService,
     private readonly swapsControllerService: SwapsControllerService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly headerStore: HeaderStore
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {

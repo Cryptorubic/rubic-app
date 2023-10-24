@@ -15,7 +15,11 @@
     </div>
   </ng-container>
   <div class="form__container">
-    <app-input-output-container round="top" *ngLet="fromAsset$ | async as fromAsset">
+    <app-input-output-container
+      [round]="(isMobile$ | async) === false ? 'top' : 'none'"
+      [marginTop]="(isMobile$ | async) !== false"
+      *ngLet="fromAsset$ | async as fromAsset"
+    >
       <app-asset-selector
         left
         (handleAssetSelection)="openTokensSelect('from')"

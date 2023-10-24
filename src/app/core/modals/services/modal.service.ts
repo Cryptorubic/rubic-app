@@ -128,21 +128,29 @@ export class ModalService {
   /**
    * Show Cross-Chain Settings dialog.
    */
-  public openCcrSettings(): Observable<void> {
-    return this.showDialog(SettingsCcrComponent, {
-      title: 'Cross-chain Settings',
-      fitContent: true
-    });
+  public openCcrSettings(injector: Injector): Observable<void> {
+    return this.showDialog(
+      SettingsCcrComponent,
+      {
+        title: 'Cross-chain Settings',
+        fitContent: true
+      },
+      injector
+    );
   }
 
   /**
    * Show Instant Trade Settings dialog.
    */
-  public openItSettings(): Observable<void> {
-    return this.showDialog<SettingsItComponent, void>(SettingsItComponent, {
-      title: 'Instant Trade Settings',
-      fitContent: true
-    });
+  public openItSettings(injector: Injector): Observable<void> {
+    return this.showDialog<SettingsItComponent, void>(
+      SettingsItComponent,
+      {
+        title: 'Instant Trade Settings',
+        fitContent: true
+      },
+      injector
+    );
   }
 
   /**

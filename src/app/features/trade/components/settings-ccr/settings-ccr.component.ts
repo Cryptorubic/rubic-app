@@ -1,8 +1,10 @@
-import { Component, ChangeDetectionStrategy, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Optional, Self } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -23,6 +25,9 @@ export class SettingsCcrComponent {
   );
 
   constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, {}>,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Self() private readonly destroy$: TuiDestroyService
