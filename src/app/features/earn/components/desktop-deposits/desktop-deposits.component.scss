@@ -62,6 +62,16 @@
     }
   }
 
+  tfoot {
+    .tui-table__td {
+      color: var(--tui-primary);
+    }
+
+    .tui-table__td.total {
+      text-align: left;
+    }
+  }
+
   .tui-table__tr {
     border-bottom: none;
   }

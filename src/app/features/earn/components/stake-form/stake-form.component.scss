@@ -14,6 +14,7 @@
 }
 
 ::placeholder {
+  @include font(15px, 21px, 400, var(--primary-text), 0.45px);
   color: var(--tui-text-03);
 }
 
@@ -24,25 +25,12 @@
 
   background: var(--form-background);
   border-radius: 24px;
-
-  @include b($tablet) {
-    max-width: 100%;
-    margin: 9px auto 16px;
-    padding: 20px;
-
-    border-radius: 16px;
-  }
 }
 
 .title {
   position: relative;
 
   margin-bottom: 36px;
-
-
-  @include b($tablet) {
-    margin-bottom: 25px;
-  }
 
   &__back {
     @include clearbtn();
@@ -74,10 +62,6 @@
 
 .token {
   margin-bottom: var(--tui-padding-m);
-
-  @include b($tablet) {
-    margin-bottom: 32px;
-  }
 
   &__header,
   &__footer {
@@ -191,8 +175,6 @@
       }
 
       &:hover {
-        color: var(--primary-color);
-
         box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
         transform: translateY(-3px) scale(1.03);
 
@@ -216,18 +198,10 @@
         &-end {
           @include font(16px, 19px, 500, var(--primary-color));
 
-          @include b($tablet) {
-            @include font(14px, 14px, 500, var(--primary-color));
-          }
-
           &-hint {
             @include font(16px, 19px, 400, #f3ba2f);
             letter-spacing: 0.03em;
             text-align: center;
-
-            @include b($tablet) {
-              @include font(14px, 14px, 400, #f3ba2f);
-            }
           }
         }
       }
@@ -327,6 +301,125 @@
 
       rect[fill='black'] {
         fill: var(--primary-color);
+      }
+    }
+  }
+}
+
+@include b($mobile-md) {
+  ::ng-deep {
+    app-window-container {
+      header h5 {
+        position: relative;
+
+        justify-content: center;
+      }
+
+      .window-container {
+        padding: 0 !important;
+
+        background: none !important;
+        border-radius: 0 !important;
+      }
+    }
+  }
+
+  .stake-form {
+    gap: 2px;
+    padding: 0;
+
+    background: none;
+    border-radius: 0;
+  }
+
+  .title__back {
+    position: absolute;
+    left: var(--tui-padding-m);
+  }
+
+  .token {
+    margin-bottom: 0;
+    padding: var(--tui-padding-l);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__amount-input {
+      @include font(25px, 35px, 700, var(--primary-text), 0.25px);
+      margin: 0;
+      padding: 0;
+
+      text-align: left;
+    }
+
+    &__balance {
+      flex-direction: column-reverse;
+      gap: 15px;
+      align-items: flex-end;
+    }
+
+    &__max {
+      margin-top: 0;
+      margin-left: 0;
+    }
+
+    &__footer {
+      flex-direction: row-reverse;
+      align-items: flex-end;
+      margin-top: -35px;
+    }
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .duration {
+    padding: var(--tui-padding-l);
+
+    background: var(--io-background);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+    &__title {
+      display: none;
+    }
+
+    &__common {
+      gap: var(--tui-padding-s);
+      margin-top: 0;
+
+      &-chip {
+        padding: var(--tui-padding-s) var(--tui-padding-m);
+
+        font-size: 12px;
+        line-height: 14px;
+        letter-spacing: 0.36px;
+
+        &-label,
+        &-rate {
+          font-size: 12px;
+        }
+
+        &-rate {
+          &-end {
+            @include font(16px, 19px, 500, var(--primary-color));
+
+            &-hint {
+              @include font(16px, 19px, 400, #f3ba2f);
+              letter-spacing: 0.03em;
+              text-align: center;
+            }
+          }
+        }
+
+        &-label {
+          margin-bottom: 5px;
+        }
       }
     }
   }

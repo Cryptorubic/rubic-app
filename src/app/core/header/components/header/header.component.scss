@@ -29,3 +29,25 @@
   width: 24px;
   height: 100%;
 }
+
+@include b($mobile-md) {
+  .rubic-header {
+    justify-content: space-between;
+    padding: var(--tui-radius-m) var(--tui-radius-l);
+  }
+
+  app-rubic-menu-toggler,
+  app-points-button,
+  app-language-selector,
+  app-history-button {
+    display: none;
+  }
+
+  button {
+    &.theme-switcher,
+    &.swap-button,
+    &.staking-button {
+      display: none;
+    }
+  }
+}

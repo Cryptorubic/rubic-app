@@ -16,7 +16,7 @@ button {
   &[disabled] {
     cursor: not-allowed;
 
-    img {
+    span {
       opacity: 0.5;
     }
   }

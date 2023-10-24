@@ -11,7 +11,12 @@ import {
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { StatisticsService } from './services/statistics.service';
-import { TuiAccordionModule, TuiSliderModule } from '@taiga-ui/kit';
+import {
+  TuiAccordionModule,
+  TuiCarouselModule,
+  TuiPaginationModule,
+  TuiSliderModule
+} from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DepositsComponent } from './components/deposits/deposits.component';
 import { StakingService } from './services/staking.service';
@@ -25,6 +30,12 @@ import { StakingNotificationService } from './services/staking-notification.serv
 import { StakingPageComponent } from './components/staking-page/staking-page.component';
 import { DesktopDepositsComponent } from './components/desktop-deposits/desktop-deposits.component';
 import { MobileDepositsComponent } from './components/mobile-deposits/mobile-deposits.component';
+import { LockedRbcComponent } from './components/statistics/components/locked-rbc/locked-rbc.component';
+import { LockedRbcInDollarsComponent } from './components/statistics/components/locked-rbc-in-dollars/locked-rbc-in-dollars.component';
+import { LockedRbcInPercentComponent } from './components/statistics/components/locked-rbc-in-percent/locked-rbc-in-percent.component';
+import { AverageLockTimeComponent } from './components/statistics/components/average-lock-time/average-lock-time.component';
+import { RewardPerWeekComponent } from './components/statistics/components/reward-per-week/reward-per-week.component';
+import { AverageAprComponent } from './components/statistics/components/average-apr/average-apr.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +48,13 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     WithdrawModalComponent,
     ClaimModalComponent,
     DesktopDepositsComponent,
-    MobileDepositsComponent
+    MobileDepositsComponent,
+    LockedRbcComponent,
+    LockedRbcInDollarsComponent,
+    LockedRbcInPercentComponent,
+    AverageLockTimeComponent,
+    RewardPerWeekComponent,
+    AverageAprComponent
   ],
   imports: [
     CommonModule,
@@ -51,7 +68,9 @@ import { MobileDepositsComponent } from './components/mobile-deposits/mobile-dep
     TuiSliderModule,
     TuiHintModule,
     TuiHintModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiCarouselModule,
+    TuiPaginationModule
   ],
   providers: [StatisticsService, StakingService, StakingModalService, StakingNotificationService]
 })
