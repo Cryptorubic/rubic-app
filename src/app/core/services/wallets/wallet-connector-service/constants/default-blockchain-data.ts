@@ -134,5 +134,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: {
     name: 'Manta Pacific',
     rpc: 'https://pacific-rpc.manta.network/http'
+  },
+  [BLOCKCHAIN_NAME.SCROLL]: {
+    name: 'Scroll',
+    rpc: 'https://rpc.scroll.io/'
   }
 };
