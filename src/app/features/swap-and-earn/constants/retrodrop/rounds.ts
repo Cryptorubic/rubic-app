@@ -16,7 +16,7 @@ export const rounds: Round[] = [
   {
     roundNumber: 3,
     claimData: '24.10.2023 - 24.04.2024',
-    isClosed: true,
+    isClosed: false,
     isAlreadyClaimed: false
   },
   {
