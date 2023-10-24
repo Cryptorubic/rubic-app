@@ -15,12 +15,22 @@ import { TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@ta
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
 import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
-import { TableService } from '@features/history/services/table-service/table.service';
 import { TuiLetModule } from '@taiga-ui/cdk';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CrossChainDesktopTableComponent } from '@features/history/components/cross-chain-desktop-table/cross-chain-desktop-table.component';
+import { OnChainDesktopTableComponent } from '@features/history/components/on-chain-desktop-table/on-chain-desktop-table.component';
+import { CrossChainTableService } from '@features/history/services/cross-chain-table-service/cross-chain-table.service';
+import { OnChainTableService } from '@features/history/services/on-chain-table-service/on-chain-table.service';
+import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
 
 @NgModule({
-  declarations: [HistoryViewComponent, HistoryHeaderComponent, HistoryTableComponent],
+  declarations: [
+    HistoryViewComponent,
+    HistoryHeaderComponent,
+    HistoryTableComponent,
+    CrossChainDesktopTableComponent,
+    OnChainDesktopTableComponent
+  ],
   imports: [
     CommonModule,
     HistoryRoutingModule,
@@ -39,6 +49,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     TuiDataListWrapperModule,
     ReactiveFormsModule
   ],
-  providers: [TableService]
+  providers: [CommonTableService, CrossChainTableService, OnChainTableService]
 })
 export class HistoryModule {}

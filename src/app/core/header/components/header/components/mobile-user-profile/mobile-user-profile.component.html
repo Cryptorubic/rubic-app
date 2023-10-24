@@ -63,30 +63,14 @@
     </div>
   </div>
 
-  <div class="mobile-user-profile__history-switcher">
-    <div
-      class="mobile-user-profile__history-switcher-ink"
-      [class.right]="menu === TradesHistory.LIMIT_ORDER"
-    ></div>
-    <button
-      class="mobile-user-profile__history-switcher-item"
-      [class.active]="menu === TradesHistory.CROSS_CHAIN"
-      (click)="switchMenu(TradesHistory.CROSS_CHAIN)"
-    >
-      Recent Trades
-    </button>
-    <button
-      class="mobile-user-profile__history-switcher-item"
-      [class.active]="menu === TradesHistory.LIMIT_ORDER"
-      (click)="switchMenu(TradesHistory.LIMIT_ORDER)"
-    >
-      Limit Orders
-    </button>
-  </div>
-
-  <div [ngSwitch]="menu">
-    <div *ngSwitchCase="TradesHistory.CROSS_CHAIN">
-      <app-recent-crosschain-tx></app-recent-crosschain-tx>
-    </div>
-  </div>
+  <button
+    class="history-button"
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    (click)="navigateHistory()"
+  >
+    See transactions history
+  </button>
 </div>
