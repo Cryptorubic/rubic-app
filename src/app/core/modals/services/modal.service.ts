@@ -234,7 +234,7 @@ export class ModalService {
    * @param injector Injector
    */
   public openWalletModal(injector: Injector): Observable<void> {
-    return this.showDialog(WalletsModalComponent, { size: 's' }, injector);
+    return this.showDialog(WalletsModalComponent, { title: 'Connect wallet', size: 's' }, injector);
   }
 
   /**

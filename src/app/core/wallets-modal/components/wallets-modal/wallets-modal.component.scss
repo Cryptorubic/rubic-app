@@ -4,10 +4,6 @@
   --tui-secondary: var(--tui-secondary-hover);
   position: relative;
 
-  @include b($mobile-md) {
-    padding: 0 var(--tui-padding-l);
-  }
-
   &__header {
     margin-right: 40px;
   }
@@ -60,5 +56,41 @@
 
   &__link {
     color: var(--tui-primary);
+  }
+}
+
+@include b($mobile-md) {
+  .modal {
+    ::ng-deep .window-container {
+      padding: 0 var(--tui-padding-l);
+    }
+
+    &__body {
+      flex-direction: column;
+      flex-wrap: nowrap;
+    }
+
+    &__button {
+      ::ng-deep .t-content {
+        @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
+        flex-direction: row-reverse;
+        gap: var(--tui-padding-l);
+        justify-content: flex-end;
+        padding: 15px 0;
+      }
+    }
+
+    &__provider-icon {
+      img {
+        width: 30px;
+      }
+    }
+
+    &__footer {
+      width: 100%;
+      margin-top: var(--tui-padding-l);
+
+      text-align: center;
+    }
   }
 }
