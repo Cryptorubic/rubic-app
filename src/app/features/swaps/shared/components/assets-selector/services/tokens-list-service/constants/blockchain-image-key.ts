@@ -40,5 +40,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.LINEA]: 'linea',
   [BLOCKCHAIN_NAME.BASE]: 'base',
   [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
-  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific'
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
+  [BLOCKCHAIN_NAME.SCROLL]: 'scroll'
 };
