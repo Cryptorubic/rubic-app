@@ -198,5 +198,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
-  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http']
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
+  [BLOCKCHAIN_NAME.SCROLL]: [
+    'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/scroll',
+    'https://rpc.scroll.io/',
+    'https://1rpc.io/scroll'
+  ]
 };
