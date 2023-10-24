@@ -208,7 +208,17 @@ export class SwapsStateService {
       if (isCrossChain) {
         (currentTrades as WrappedCrossChainTradeOrNull[]).sort(compareCrossChainTrades);
       } else if (isOnChain) {
-        currentTrades.sort();
+        currentTrades.sort((a, b) => {
+          const aPrice = (a.trade as OnChainTrade).to.price.multipliedBy(a.trade.to.tokenAmount);
+          const bPrice = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
+
+          if (aPrice.gt(bPrice)) {
+            return -1;
+          } else if (bPrice.gt(aPrice)) {
+            return 1;
+          }
+          return 0;
+        });
       } else {
         return;
       }
@@ -239,6 +249,9 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    this.swapsFormService.outputControl.patchValue({
+      toAmount: trade?.trade?.to?.tokenAmount || null
+    });
   }
 
   private subscribeOnTradeChange(): void {

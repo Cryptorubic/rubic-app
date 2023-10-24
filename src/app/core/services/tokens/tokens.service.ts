@@ -172,19 +172,28 @@ export class TokensService {
     });
   }
 
-  public async updateTokenBalanceAfterCcrSwap(token: {
-    address: string;
-    blockchain: BlockchainName;
-  }): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(token.blockchain);
-    if (Web3Pure[chainType].isNativeAddress(token.address)) {
-      await this.getAndUpdateTokenBalance(token);
+  public async updateTokenBalanceAfterCcrSwap(
+    fromToken: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    toToken: {
+      address: string;
+      blockchain: BlockchainName;
+    }
+  ): Promise<void> {
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+
+    if (Web3Pure[chainType].isNativeAddress(fromToken.address)) {
+      await this.getAndUpdateTokenBalance(fromToken);
+      await this.getAndUpdateTokenBalance(toToken);
     } else {
       await Promise.all([
-        this.getAndUpdateTokenBalance(token),
+        this.getAndUpdateTokenBalance(fromToken),
+        this.getAndUpdateTokenBalance(toToken),
         this.getAndUpdateTokenBalance({
           address: Web3Pure[chainType].nativeTokenAddress,
-          blockchain: token.blockchain
+          blockchain: fromToken.blockchain
         })
       ]);
     }

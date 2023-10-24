@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  forkJoin,
-  from,
-  interval,
-  Observable,
-  of,
-  shareReplay
-} from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -39,7 +30,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
-import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -67,8 +57,7 @@ export class PreviewSwapService {
   public readonly transactionState$ = this._transactionState$.asObservable();
 
   public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first(),
-    shareReplay(shareReplayConfig)
+    first()
   );
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
