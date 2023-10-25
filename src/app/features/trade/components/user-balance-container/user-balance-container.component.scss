@@ -1,13 +1,8 @@
 @use 'src/scss/core' as *;
 
-:host {
-  width: 100%;
-}
-
 .user-balance-container {
   display: flex;
   align-items: center;
-  width: 100%;
 
   &__balance {
     margin-right: var(--tui-padding-xs);
@@ -46,7 +41,12 @@
 }
 
 @include b($mobile-md) {
+  :host {
+    width: 100%;
+  }
+  
   .user-balance-container {
     justify-content: space-between;
+    width: 100%;
   }
 }

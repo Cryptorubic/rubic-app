@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .transaction-details {
   padding: var(--tui-padding-l);
 
@@ -30,5 +32,15 @@
 
   a {
     display: flex;
+  }
+}
+
+@include b($mobile-sm) {
+  .transaction-details {
+    background: var(--io-background);
+
+    &__label {
+      font-size: 18px;
+    }
   }
 }
