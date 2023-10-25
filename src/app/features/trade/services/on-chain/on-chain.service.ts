@@ -50,7 +50,7 @@ export class OnChainService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
+    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0);
   }
 
   constructor(
@@ -123,7 +123,7 @@ export class OnChainService {
             slippageTolerance,
             disableMultihops,
             deadlineMinutes,
-            useProxy: useProxy,
+            useProxy,
             disabledProviders
           };
 

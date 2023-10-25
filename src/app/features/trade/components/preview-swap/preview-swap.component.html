@@ -100,6 +100,7 @@
           *ngIf="state.transaction.step === 'idle'"
           [routes]="state.tradeState?.routes || []"
         ></app-route-element>
+
         <app-transaction-state
           *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
           [transactionData]="{

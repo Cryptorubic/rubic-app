@@ -4,7 +4,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
 import { compareTokens, isNil } from '@app/shared/utils/utils';
-import { combineLatestWith } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
@@ -31,6 +30,13 @@ export class TargetNetworkAddressComponent implements OnInit {
   public ngOnInit(): void {
     this.subscribeOnTargetAddress();
     this.subscribeOnFormValues();
+    const input = this.swapFormService.inputValue;
+    this.address.setAsyncValidators(
+      getCorrectAddressValidator({
+        fromAssetType: input.fromBlockchain,
+        toBlockchain: input.toBlockchain
+      })
+    );
   }
 
   private subscribeOnFormValues(): void {
@@ -60,14 +66,11 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
-      .pipe(
-        combineLatestWith(this.address.statusChanges),
-        debounceTime(10),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(([address, status]) => {
-        this.targetNetworkAddressService.setIsAddressValid(status === 'VALID');
-        this.targetNetworkAddressService.setAddress(status === 'VALID' ? address : null);
+      .pipe(debounceTime(10), takeUntil(this.destroy$))
+      .subscribe(address => {
+        const isValid = this.address.valid;
+        this.targetNetworkAddressService.setIsAddressValid(isValid);
+        this.targetNetworkAddressService.setAddress(isValid ? address : null);
       });
   }
 }

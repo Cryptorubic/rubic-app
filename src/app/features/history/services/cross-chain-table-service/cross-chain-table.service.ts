@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { combineLatest, combineLatestWith, Observable } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
 import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiControlValue, tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
@@ -18,40 +18,18 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { txStatusMapping } from '@features/history/models/tx-status-mapping';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
 import { FormControl } from '@angular/forms';
-import { OnChainTableData } from '@features/history/models/on-chain-table-data';
-import { OnChainTableResponse } from '@features/history/models/on-chain-table-response';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
-import { BACKEND_PROVIDERS } from '@core/services/backend/instant-trades-api/constants/backend-providers';
+import { TableService } from '@features/history/models/table-service';
 
 @Injectable()
-export class TableService {
-  private readonly _activeItemIndex$ = new BehaviorSubject<0 | 1>(0);
-
-  public readonly activeItemIndex$ = this._activeItemIndex$.asObservable();
-
-  public set activeItemIndex(value: 0 | 1) {
-    this._activeItemIndex$.next(value);
-  }
-
-  private readonly _size$ = new BehaviorSubject<number>(10);
-
-  public readonly size$ = this._size$.asObservable();
-
-  private readonly _page$ = new BehaviorSubject<number>(0);
-
-  public readonly page$ = this._page$.asObservable();
-
-  private readonly _direction$ = new BehaviorSubject<-1 | 1>(-1);
-
-  public readonly direction$ = this._direction$.asObservable();
-
-  private readonly _sorter$ = new BehaviorSubject<TableKey>('created_at');
-
-  public readonly sorter$ = this._sorter$.asObservable();
-
+export class CrossChainTableService extends TableService<
+  'created_at',
+  CrossChainTableResponse,
+  CrossChainTableData
+> {
   public readonly statusFilter = new FormControl<string>('All');
 
-  readonly request$ = combineLatest([
+  public readonly request$ = combineLatest([
     this.sorter$,
     this.direction$,
     this.page$,
@@ -65,43 +43,33 @@ export class TableService {
     share()
   );
 
-  readonly loading$ = this.request$.pipe(map(tuiIsFalsy));
+  public readonly loading$ = this.request$.pipe(map(tuiIsFalsy));
 
-  readonly total$ = this.request$.pipe(
+  public readonly total$ = this.request$.pipe(
     filter(tuiIsPresent),
     map(({ total }) => total),
     startWith(1)
   );
 
-  readonly data$: Observable<readonly (CrossChainTableData | OnChainTableData)[]> =
-    this.request$.pipe(
-      filter(tuiIsPresent),
-      map(response => response.data.filter(tuiIsPresent)),
-      startWith([])
-    );
+  public readonly totalPages$ = this.total$.pipe(
+    combineLatestWith(this.size$),
+    map(([total, size]) => Math.trunc(total / size) + 1)
+  );
+
+  public readonly data$: Observable<CrossChainTableData[]> = this.request$.pipe(
+    filter(tuiIsPresent),
+    map(response => response.data.filter(tuiIsPresent)),
+    startWith([])
+  );
 
   constructor(
-    private readonly httpService: HttpService,
-    private readonly walletConnector: WalletConnectorService
-  ) {}
-
-  public onDirection(direction: -1 | 1): void {
-    this._direction$.next(direction);
+    protected readonly httpService: HttpService,
+    protected readonly walletConnector: WalletConnectorService
+  ) {
+    super('created_at');
   }
 
-  public onSize(size: number): void {
-    this._size$.next(size);
-  }
-
-  public onPage(page: number): void {
-    this._page$.next(page);
-  }
-
-  public onSorting(page: TableKey): void {
-    this._sorter$.next(page);
-  }
-
-  private getData(
+  protected getData(
     key: TableKey,
     direction: -1 | 1,
     page: number,
@@ -109,14 +77,13 @@ export class TableService {
     statusFilter: string,
     activeIndex: 0 | 1
   ): Observable<{
-    data: (CrossChainTableData | OnChainTableData)[];
+    data: CrossChainTableData[];
     total: number;
   }> {
     const address = this.walletConnector.address;
     const filterField = Object.entries(txStatusMapping).find(
       ([, value]) => value.label === statusFilter
     )?.[0];
-    const isCrossChain = activeIndex === 0;
 
     const params: CrossChainTableRequest | OnChainTableRequest = {
       address,
@@ -125,72 +92,13 @@ export class TableService {
       ordering: direction === -1 ? `-${key}` : key,
       ...(filterField && activeIndex === 0 && { trade_status: filterField })
     };
-    const path = isCrossChain ? 'crosschain' : 'onchain';
 
     return this.httpService
-      .get<CrossChainTableResponse | OnChainTableResponse>(`v2/trades/${path}`, params)
-      .pipe(
-        map(response =>
-          isCrossChain
-            ? this.transformCrossChainResponse(response as CrossChainTableResponse)
-            : this.transformOnChainResponse(response as OnChainTableResponse)
-        )
-      );
+      .get<CrossChainTableResponse>(`v2/trades/crosschain`, params)
+      .pipe(map(response => this.transformResponse(response)));
   }
 
-  private transformOnChainResponse(response: OnChainTableResponse): {
-    data: OnChainTableData[];
-    total: number;
-  } {
-    return {
-      data: response.results.map(backendData => {
-        const fromToken = {
-          symbol: backendData.from_token.symbol,
-
-          image: backendData.from_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.from_amount, backendData.from_token.decimals)
-        };
-
-        const toToken = {
-          symbol: backendData.to_token.symbol,
-          image: backendData.to_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.to_amount, backendData.to_token.decimals)
-        };
-
-        const blockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.network];
-        const blockchain = {
-          name: blockchainName,
-          label: blockchainLabel[blockchainName],
-          color: blockchainColor[blockchainName],
-          image: blockchainIcon[blockchainName]
-        };
-
-        const tx = {
-          hash: backendData.transaction.hash,
-          status: txStatusMapping[backendData.status],
-          explorerLink: backendData.transaction.explorer_url
-        };
-
-        const searchedProvider = Object.entries(BACKEND_PROVIDERS).find(
-          ([, value]) => value === backendData.provider
-        )?.[0];
-
-        const provider = TRADES_PROVIDERS[searchedProvider as TradeProvider];
-
-        return {
-          fromToken,
-          toToken,
-          blockchain,
-          tx,
-          date: backendData.created_at,
-          provider
-        };
-      }),
-      total: response.count
-    };
-  }
-
-  private transformCrossChainResponse(response: CrossChainTableResponse): {
+  protected transformResponse(response: CrossChainTableResponse): {
     data: CrossChainTableData[];
     total: number;
   } {

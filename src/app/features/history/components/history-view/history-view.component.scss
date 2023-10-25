@@ -1,5 +1,11 @@
+@use 'src/scss/core' as *;
+
 :host {
   display: block;
   width: 900px;
   margin: 0 auto;
+
+  @include b($tablet-plus) {
+    width: 100%;
+  }
 }

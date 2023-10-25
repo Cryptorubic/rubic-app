@@ -14,6 +14,7 @@ import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { Router } from '@angular/router';
 
 interface ContextData {
   tradesHistory: TradesHistory;
@@ -25,10 +26,6 @@ interface ContextData {
   styleUrls: ['./mobile-user-profile.component.scss']
 })
 export class MobileUserProfileComponent {
-  public menu: TradesHistory = this.context.data.tradesHistory;
-
-  public readonly TradesHistory = TradesHistory;
-
   public readonly currentBalance$: Observable<{ balance: BigNumber; symbol: string }>;
 
   public isWalletCopied: boolean;
@@ -47,7 +44,8 @@ export class MobileUserProfileComponent {
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokenService: TokensService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly router: Router
   ) {
     const currentUser$ = this.authService.currentUser$;
 
@@ -97,7 +95,8 @@ export class MobileUserProfileComponent {
     this.authService.disconnectWallet();
   }
 
-  public switchMenu(menu: TradesHistory): void {
-    this.menu = menu;
+  public async navigateHistory(): Promise<void> {
+    await this.router.navigate(['/history']);
+    this.context.completeWith();
   }
 }

@@ -1,83 +1,145 @@
-.token-images {
-  display: flex;
-  height: 16px;
+@use 'src/scss/core' as *;
 
-  &__second-container {
-    width: 24px;
-    height: 100%;
-    overflow: hidden;
+:host ::ng-deep {
+  .token-images {
+    display: flex;
+    height: 16px;
 
-    border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
-
-    img {
+    &__second-container {
+      width: 24px;
       height: 100%;
+      overflow: hidden;
+
+      border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+      img {
+        height: 100%;
+      }
+    }
+
+    &__main-image {
+      width: 16px;
+      margin-left: -8px;
+
+      background: var(--primary-background);
+
+      border-radius: 100%;
+      outline: 1px solid var(--primary-background);
     }
   }
 
-  &__main-image {
-    width: 16px;
-    margin-left: -8px;
-
-    background: var(--primary-background);
-
-    border-radius: 100%;
-    outline: 1px solid var(--primary-background);
-  }
-}
-
-.token-container {
-  display: flex;
-  flex-direction: column;
-
-  &__inner {
+  .token-container {
     display: flex;
+    flex-direction: column;
+
+    &__inner {
+      display: flex;
+      align-items: center;
+    }
+
+    &__main-image {
+      width: 16px;
+      height: 16px;
+      margin-right: var(--tui-padding-xs);
+
+      border-radius: 100%;
+    }
+
+    &__top,
+    &__bot {
+      display: flex;
+      gap: var(--tui-padding-s);
+    }
+  }
+
+  .provider-container {
+    display: flex;
+    gap: var(--tui-padding-xs);
     align-items: center;
+
+    &__image {
+      width: 16px;
+      height: 16px;
+    }
   }
 
-  &__main-image {
-    width: 16px;
-    height: 16px;
-    margin-right: var(--tui-padding-xs);
+  .table {
+    width: 100%;
+    overflow: hidden;
 
-    border-radius: 100%;
+    background: var(--tui-base-01);
+    border-radius: var(--tui-radius-m);
+
+    th {
+      @include b($tablet-plus) {
+        display: none;
+      }
+    }
+
+    td,
+    th {
+      border: none;
+    }
   }
 
-  &__top,
-  &__bot {
+  tui-pagination {
+    display: block;
+    margin-top: var(--tui-padding-m);
+  }
+
+  .status-from-link-arrow {
+    margin-left: var(--tui-padding-xs);
+  }
+
+  .mobile-view {
     display: flex;
-    gap: var(--tui-padding-s);
+    flex-wrap: wrap;
+    gap: var(--tui-padding-m);
+
+    &__from-field,
+    &__to-field {
+      display: flex;
+      gap: var(--tui-padding-xs);
+      align-items: center;
+    }
+
+    &__card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--tui-padding-s);
+
+      @include b($mobile-md) {
+        flex-direction: column;
+        gap: var(--tui-padding-xs);
+      }
+
+      @include b($mobile-sm-middle) {
+        flex-direction: row;
+      }
+    }
+
+    &__card {
+      display: flex;
+      flex: 1;
+      flex-basis: calc(50% - (var(--tui-padding-m) / 2));
+      flex-direction: column;
+      gap: var(--tui-padding-s);
+      max-width: calc(50% - (var(--tui-padding-m) / 2));
+      padding: var(--tui-padding-l);
+
+      background: var(--tui-base-01);
+      border-radius: var(--tui-radius-m);
+
+      @include b($mobile-sm-middle) {
+        flex-basis: 100%;
+        max-width: 100%;
+      }
+    }
+
+    &__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
   }
-}
-
-.provider-container {
-  display: flex;
-  gap: var(--tui-padding-xs);
-  align-items: center;
-
-  &__image {
-    width: 16px;
-    height: 16px;
-  }
-}
-
-.table {
-  width: 100%;
-  overflow: hidden;
-
-  background: var(--tui-base-01);
-  border-radius: var(--tui-radius-m);
-
-  td,
-  th {
-    border: none;
-  }
-}
-
-tui-pagination {
-  display: block;
-  margin-top: var(--tui-padding-m);
-}
-
-.status-from-link-arrow {
-  margin-left: var(--tui-padding-xs);
 }

@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { TableService } from './table.service';
+import { CommonTableService } from './common-table.service';
 
-describe('TableService', () => {
-  let service: TableService;
+describe('CommonTableService', () => {
+  let service: CommonTableService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TableService);
+    service = TestBed.inject(CommonTableService);
   });
 
   it('should be created', () => {

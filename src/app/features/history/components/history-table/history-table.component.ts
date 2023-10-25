@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TableService } from '@features/history/services/table-service/table.service';
-import { combineLatestWith } from 'rxjs';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { RubicWindow } from '@shared/utils/rubic-window';
+import { WINDOW } from '@ng-web-apis/common';
 import { map } from 'rxjs/operators';
-
-const crossChinCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
-const onChinCols = ['from', 'to', 'blockchain', 'date', 'status', 'provider'] as const;
+import { combineLatestWith, of } from 'rxjs';
+import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
+import { CrossChainTableService } from '@features/history/services/cross-chain-table-service/cross-chain-table.service';
+import { OnChainTableService } from '@features/history/services/on-chain-table-service/on-chain-table.service';
 
 @Component({
   selector: 'app-history-table',
@@ -13,47 +14,28 @@ const onChinCols = ['from', 'to', 'blockchain', 'date', 'status', 'provider'] as
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HistoryTableComponent {
-  public readonly data$ = this.tableService.data$;
+  public readonly loading$ = this.crossChainTableService.loading$.pipe(
+    combineLatestWith(this.onChainTableService.loading$),
+    map(loadings => loadings.some(Boolean))
+  );
 
-  public readonly loading$ = this.tableService.loading$;
-
-  public readonly direction$ = this.tableService.direction$;
-
-  public readonly sorter$ = this.tableService.sorter$;
-
-  public readonly page$ = this.tableService.page$;
-
-  public readonly isCrossChain$ = this.tableService.activeItemIndex$.pipe(
+  public readonly isCrossChain$ = this.commonTableService.activeItemIndex$.pipe(
     map(index => index === 0)
   );
 
-  public readonly columns$ = this.isCrossChain$.pipe(
-    map(isCrossChain => (isCrossChain ? crossChinCols : onChinCols))
+  public readonly device$ = of(this.window.innerWidth).pipe(
+    map(height => {
+      if (height > 960) {
+        return 'desktop';
+      }
+      return height > 600 ? 'tablet' : 'mobile';
+    })
   );
 
-  public readonly total$ = this.tableService.total$;
-
-  public readonly totalPages$ = this.total$.pipe(
-    combineLatestWith(this.tableService.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
-  );
-
-  constructor(private readonly tableService: TableService) {}
-
-  public changeDirection(direction: 1 | -1): void {
-    this.tableService.onDirection(direction);
-  }
-
-  public changeSorting(sorting: unknown): void {
-    const sort = sorting as (typeof crossChinCols)[number];
-    if (sort === 'date') {
-      this.tableService.onSorting('created_at');
-    }
-  }
-
-  public changePage(page: number): void {
-    this.tableService.onPage(page);
-  }
-
-  protected readonly prompt = prompt;
+  constructor(
+    @Inject(WINDOW) private readonly window: RubicWindow,
+    private readonly commonTableService: CommonTableService,
+    private readonly crossChainTableService: CrossChainTableService,
+    private readonly onChainTableService: OnChainTableService
+  ) {}
 }

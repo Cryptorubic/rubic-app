@@ -98,48 +98,8 @@
     }
   }
 
-  &__history-switcher {
-    position: relative;
-
-    display: flex;
-    margin: 1rem 0;
-
-    background-color: var(--io-background);
-    border-radius: 12px;
-
-    &-ink {
-      position: absolute;
-      left: 0;
-
-      width: 50%;
-      height: 100%;
-
-      background-color: #00e28e;
-      border-radius: 12px;
-
-      transition-duration: 0.3s;
-
-      &.right {
-        left: 50%;
-      }
-    }
-
-    &-item {
-      z-index: 2;
-
-      width: 100%;
-      padding: 13px;
-
-      color: #aaa;
-      font-weight: 600;
-      font-size: 14px;
-      letter-spacing: 1px;
-
-      transition-duration: 0.3s;
-
-      &.active {
-        color: var(--form-background);
-      }
-    }
+  .history-button {
+    width: 100%;
+    margin-top: var(--tui-padding-xl);
   }
 }
