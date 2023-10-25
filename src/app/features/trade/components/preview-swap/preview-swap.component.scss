@@ -103,10 +103,10 @@ app-swap-data-element ::ng-deep {
   }
 }
 
-@include b($mobile-sm) {
+@include b($mobile-md) {
   app-route-element {
     z-index: 1;
-    
+
     ::ng-deep .route-element {
       gap: 24px;
 
@@ -122,28 +122,36 @@ app-swap-data-element ::ng-deep {
     }
   }
 
+  app-transaction-state {
+    margin: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+  }
+
   .preview {
     &__data-container {
       position: relative;
 
-      gap: 24px;
+      gap: 0;
       margin-top: 2px;
 
       background: var(--io-background);
       border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 
-      &::before {
-        position: absolute;
-        top: 16px;
-        left: 27px;
-        z-index: 0;
+      &_with-line {
+        gap: 24px;
 
-        width: 2px;
-        height: calc(100% - 70px);
+        &::before {
+          position: absolute;
+          top: 16px;
+          left: 27px;
+          z-index: 0;
 
-        background: var(--tui-base-04);
+          width: 2px;
+          height: calc(100% - 70px);
 
-        content: '';
+          background: var(--tui-base-04);
+
+          content: '';
+        }
       }
     }
 

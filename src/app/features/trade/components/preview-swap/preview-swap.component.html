@@ -18,7 +18,10 @@
   </ng-container>
   <ng-container>
     <div class="preview">
-      <div class="preview__data-container">
+      <div
+        class="preview__data-container"
+        [ngClass]="{ 'preview__data-container_with-line': state.transaction.step === 'idle' }"
+      >
         <ng-container *ngIf="(isMobile$ | async) === false; else mobileInputTokenContainer">
           <div class="preview__io-container">
             <div class="preview__token-container">
@@ -220,7 +223,7 @@
       </div>
 
       <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info></app-success-swap-info>
+        <app-success-swap-info [points]="state.transaction.data.points"></app-success-swap-info>
       </div>
     </div>
 

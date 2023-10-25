@@ -35,7 +35,7 @@
   }
 }
 
-@include b($mobile-sm) {
+@include b($mobile-md) {
   .transaction-details {
     background: var(--io-background);
 

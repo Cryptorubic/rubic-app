@@ -41,7 +41,7 @@
   }
 }
 
-@include b($mobile-sm) {
+@include b($mobile-md) {
   .settings {
     &__form {
       gap: var(--tui-padding-m);
