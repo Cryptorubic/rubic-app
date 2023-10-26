@@ -1,7 +1,12 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, LIFI_BRIDGE_TYPES } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  LIFI_BRIDGE_TYPES
+} from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,6 +18,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
+import { IframeService } from '@core/services/iframe-service/iframe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -68,7 +74,8 @@ export class QueryParamsService {
     private readonly router: Router,
     private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly iframeService: IframeService
   ) {}
 
   public setupQueryParams(queryParams: QueryParams): void {
@@ -82,6 +89,7 @@ export class QueryParamsService {
     this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setHideSelectionStatus(queryParams);
+    this.setIframeInfo(queryParams);
 
     if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
       this.setEnabledProviders(queryParams.enabledProviders);
@@ -105,6 +113,53 @@ export class QueryParamsService {
       queryParams: this.queryParams,
       queryParamsHandling: 'merge'
     });
+  }
+
+  private setIframeInfo(queryParams: QueryParams): void {
+    if (queryParams.hideUnusedUI) {
+      this.setLanguage(queryParams);
+      this.setHideSelectionStatus(queryParams);
+    }
+
+    if (!queryParams.hasOwnProperty('iframe')) {
+      this.iframeService.setIframeFalse();
+      return;
+    }
+
+    const { iframe } = queryParams;
+    if (iframe !== 'true') {
+      this.iframeService.setIframeFalse();
+      return;
+    }
+
+    this.iframeService.setIframeInfo({
+      iframe: true,
+      device: queryParams.device,
+      providerAddress: queryParams.feeTarget || queryParams.providerAddress,
+      tokenSearch: queryParams.tokenSearch === 'true'
+    });
+
+    this.setHideSelectionStatus(queryParams);
+    this.setAdditionalIframeTokens(queryParams);
+    this.setLanguage(queryParams);
+  }
+
+  private setAdditionalIframeTokens(queryParams: QueryParams): void {
+    if (!this.iframeService.isIframe) {
+      return;
+    }
+
+    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME);
+
+    const tokensQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([key]) =>
+        tokensFilterKeys.includes(key as BlockchainName)
+      )
+    );
+
+    if (Object.keys(tokensQueryParams).length !== 0) {
+      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
+    }
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {

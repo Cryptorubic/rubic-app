@@ -12,6 +12,7 @@ import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { IframeService } from '@core/services/iframe-service/iframe.service';
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,8 @@ export class AppComponent implements AfterViewInit {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly iframeService: IframeService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -65,6 +67,31 @@ export class AppComponent implements AfterViewInit {
           console.debug('timestamp file is not found');
         });
     }
+  }
+
+  /**
+   * Setups settings for app in iframe.
+   */
+  private setupIframeSettings(): void {
+    if (this.iframeService.isIframe) {
+      this.removeLiveChatInIframe();
+    }
+  }
+
+  private removeLiveChatInIframe(): void {
+    const observer = new MutationObserver(() => {
+      const liveChat = this.document.getElementById('chat-widget-container');
+      if (liveChat) {
+        liveChat.remove();
+        observer.disconnect();
+      }
+    });
+    observer.observe(this.document.body, {
+      attributes: false,
+      childList: true,
+      characterData: false,
+      subtree: false
+    });
   }
 
   /**
