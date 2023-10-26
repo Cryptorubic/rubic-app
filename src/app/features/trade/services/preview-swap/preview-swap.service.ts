@@ -145,7 +145,14 @@ export class PreviewSwapService {
         distinctUntilChanged(),
         debounceTime(10),
         switchMap(state => forkJoin([this.tradeState$, of(state)])),
-        switchMap(async ([tradeState, txState]) => {
+        switchMap(([tradeState, txState]) => {
+          return forkJoin([
+            of(tradeState),
+            of(txState),
+            this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade)
+          ]);
+        }),
+        switchMap(([tradeState, txState, points]) => {
           switch (txState.step) {
             case 'approvePending': {
               return this.swapsControllerService.approve(tradeState, {
@@ -164,9 +171,6 @@ export class PreviewSwapService {
               });
             }
             case 'swapRequest': {
-              const points = await firstValueFrom(
-                this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade)
-              );
               let txHash: string;
 
               return this.swapsControllerService.swap(tradeState, {

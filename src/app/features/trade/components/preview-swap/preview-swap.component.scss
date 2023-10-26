@@ -108,7 +108,7 @@ app-swap-data-element ::ng-deep {
     z-index: 1;
 
     ::ng-deep .route-element {
-      gap: 24px;
+      gap: var(--tui-padding-xl);
 
       &__provider-icon {
         background: var(--io-background);
