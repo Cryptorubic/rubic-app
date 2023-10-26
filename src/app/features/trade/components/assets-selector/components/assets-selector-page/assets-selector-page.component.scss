@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .assets-selector {
   &__row {
     display: flex;
@@ -8,6 +10,12 @@
 
 app-search-bar {
   width: 100%;
+}
+
+.token-list {
+  &__header {
+    display: none;
+  }
 }
 
 .token-list-container {
@@ -22,4 +30,36 @@ app-search-bar {
 
 .blockchains-list-container {
   width: 100%;
+}
+
+@include b($mobile-md) {
+  .assets-selector {
+    padding-top: var(--tui-padding-l);
+
+    border-top: 1px solid var(--tui-base-04);
+
+    &__row {
+      > .assets-selector__row {
+        margin: var(--tui-padding-l) 0;
+        padding: 0 var(--tui-padding-l);
+      }
+    }
+
+    > .assets-selector__row {
+      flex-direction: column;
+      gap: 0;
+      margin-top: 0;
+    }
+  }
+
+  .token-list {
+    &__header {
+      display: block;
+      padding: 0 1rem;
+
+      &-label {
+        @include font(18px, 18px, 400, var(--tui-text-01), 0.54px);
+      }
+    }
+  }
 }

@@ -14,15 +14,15 @@
       <app-settings-container class="swap-form__settings"></app-settings-container>
     </div>
   </ng-container>
-  <div class="form__container">
+  <div class="form__container" *ngLet="isMobile$ | async as isMobile">
     <app-input-output-container
-      [round]="(isMobile$ | async) === false ? 'top' : 'none'"
-      [marginTop]="(isMobile$ | async) !== false"
+      [round]="!isMobile ? 'top' : 'none'"
+      [marginTop]="isMobile"
       *ngLet="fromAsset$ | async as fromAsset"
     >
       <app-asset-selector
         left
-        (handleAssetSelection)="openTokensSelect('from')"
+        (handleAssetSelection)="openTokensSelect('from', isMobile)"
         [asset]="fromAsset"
       ></app-asset-selector>
       <div right class="input-container">
@@ -43,7 +43,7 @@
     <app-input-output-container [round]="displayReceiver ? 'none' : 'bottom'">
       <app-asset-selector
         left
-        (handleAssetSelection)="openTokensSelect('to')"
+        (handleAssetSelection)="openTokensSelect('to', isMobile)"
         [asset]="toAsset$ | async"
       ></app-asset-selector>
       <div right class="input-container">

@@ -17,12 +17,13 @@ import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/se
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
-import { Asset } from '@features/trade/models/asset';
 import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
+import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
+import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 
 @Injectable()
 export class ModalService {
@@ -34,19 +35,19 @@ export class ModalService {
 
   /**
    * Show tokens dialog.
-   * @param _formType Tokens type (from || to).
-   * @param _idPrefix Id prefix for GA.
    */
-  public openAssetsSelector(_formType: 'from' | 'to', _idPrefix: string = ''): Observable<Asset> {
-    return undefined;
-    // return this.showDialog<AssetsSelectorComponent, Asset>(AssetsSelectorComponent, {
-    //   title: 'Select token',
-    //   size: 'l',
-    //   data: {
-    //     formType,
-    //     idPrefix
-    //   }
-    // });
+  public openAssetsSelector(formType: 'from' | 'to', injector: Injector): Observable<void> {
+    return this.showDialog<TokenSelectorPageComponent, void>(
+      TokenSelectorPageComponent,
+      {
+        title: 'Select token',
+        size: 'l',
+        data: {
+          formType
+        }
+      },
+      injector
+    );
   }
 
   /**
@@ -171,71 +172,15 @@ export class ModalService {
    * @param _injector Injector.
    */
   public openBlockchainList(_injector: Injector): void {
-    // this.mobileModalService$.openNextModal(
-    //   BlockchainsListComponent,
-    //   {
-    //     title: 'Select Blockchain',
-    //     scrollableContent: true
-    //   },
-    //   injector
-    // );
+    this.mobileModalService$.openNextModal(
+      BlockchainsListComponent,
+      {
+        title: 'Select Blockchain',
+        scrollableContent: true
+      },
+      _injector
+    );
   }
-
-  /**
-   * Show Instant Trade Providers dialog.
-   * @param data Instant Trade Providers data
-   * @param injector Injector
-   */
-  // public openProvidersModal(
-  //   data: InstantTradeProviderData[],
-  //   injector: Injector
-  // ): Observable<InstantTradeProviderData> {
-  //   return this.showDialog(
-  //     ProvidersListMobileComponent,
-  //     {
-  //       title: 'Available Providers',
-  //       scrollableContent: true,
-  //       data
-  //     },
-  //     injector
-  //   );
-  // }
-
-  /**
-   * Show Cross Chain Providers dialog.
-   * @param data Cross Chain Tagged Trades data
-   * @param injector Injector
-   */
-  // public openCrossChainProvidersModal(
-  //   data: { taggedTrades: CrossChainTaggedTrade[] },
-  //   injector?: Injector
-  // ): Observable<void> {
-  //   return this.showDialog(
-  //     TradesListComponent,
-  //     {
-  //       title: 'Available Cross-Chain Providers',
-  //       scrollableContent: true,
-  //       data
-  //     },
-  //     injector
-  //   );
-  // }
-
-  /**
-   * Show Transaction Details dialog.
-   * @param data Transaction Details data
-   */
-  // public openSwapInfoModal(data: {
-  //   swapType: SWAP_PROVIDER_TYPE;
-  //   currentInstantTradeInfo: InstantTradeInfo;
-  //   tradeStatus: TRADE_STATUS;
-  // }): Observable<void> {
-  //   return this.showDialog(SwapInfoContainerComponent, {
-  //     title: 'Transaction Details',
-  //     fitContent: true,
-  //     data
-  //   });
-  // }
 
   /**
    * Show Wallet Modal dialog.

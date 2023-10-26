@@ -126,7 +126,7 @@
       flex-wrap: nowrap;
       align-items: center;
 
-      padding-left: 0.5rem;
+      padding-left: 1rem;
     }
 
     &__blockchain-header {
@@ -137,12 +137,11 @@
       padding: 0 1rem;
 
       &-label {
-        font-weight: 400;
-        font-size: 16px;
+        @include font(18px, 18px, 400, var(--tui-text-01), 0.54px);
       }
 
       &-expand {
-        color: var(--mobile-ccr-best-route-label-text);
+        color: var(--tui-primary);
         font-weight: 400;
         font-size: 16px;
       }

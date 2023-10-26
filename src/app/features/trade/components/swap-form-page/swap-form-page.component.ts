@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
@@ -12,6 +12,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
 import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -74,7 +75,9 @@ export class SwapFormPageComponent {
     private readonly refreshService: RefreshService,
     private readonly swapsControllerService: SwapsControllerService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -88,8 +91,12 @@ export class SwapFormPageComponent {
     });
   }
 
-  public openTokensSelect(formType: FormType): void {
-    this.tradePageService.setState(formType === 'from' ? 'fromSelector' : 'toSelector');
+  public openTokensSelect(formType: FormType, isMobile: boolean): void {
+    if (isMobile) {
+      this.modalService.openAssetsSelector(formType, this.injector).subscribe();
+    } else {
+      this.tradePageService.setState(formType === 'from' ? 'fromSelector' : 'toSelector');
+    }
   }
 
   public updateInputValue(formattedAmount: BigNumber): void {

@@ -6,14 +6,15 @@
   </header>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <ng-container *ngIf="!isMobile; then searchBar"> </ng-container>
+    <ng-container *ngIf="!isMobile; then searchBar"></ng-container>
     <div class="assets-selector__content">
-      <ng-container *ngIf="isMobile; then searchBar"> </ng-container>
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
           <app-blockchains-list></app-blockchains-list>
         </div>
       </ng-container>
+
+      <ng-container *ngIf="isMobile; then searchBar"></ng-container>
 
       <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="idPrefix"></app-asset-types-aside>

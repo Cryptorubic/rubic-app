@@ -1,5 +1,5 @@
 <app-window-container>
-  <ng-container header>
+  <ng-container header *ngIf="(isMobile$ | async) === false">
     <span class="back-button" (click)="backToForm()">
       <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
       Swap Form
