@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .io-container {
   display: flex;
   gap: var(--tui-padding-m);
@@ -39,4 +41,33 @@
   display: flex;
   flex: 1;
   align-items: center;
+}
+
+@include b($mobile-md) {
+  .io-container {
+    flex-direction: column;
+    gap: 0;
+    justify-content: flex-start;
+
+    &_round {
+      &-none,
+      &-bottom {
+        padding-top: var(--tui-padding-xl);
+      }
+    }
+
+    &_margin-top {
+      margin-top: 2px;
+    }
+  }
+
+  .io-left {
+    margin-bottom: var(--tui-padding-m);
+  }
+
+  .io-right {
+    flex: none;
+    align-items: flex-start;
+    height: 60px;
+  }
 }

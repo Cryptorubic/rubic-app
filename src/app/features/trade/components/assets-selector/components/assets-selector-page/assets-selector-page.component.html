@@ -1,8 +1,7 @@
 <section class="assets-selector">
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <ng-container *ngIf="!isMobile; then searchBar"> </ng-container>
+    <ng-container *ngIf="!isMobile; then searchBar"></ng-container>
     <div class="assets-selector__row">
-      <ng-container *ngIf="isMobile; then searchBar"> </ng-container>
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
           <app-blockchains-list></app-blockchains-list>
@@ -19,7 +18,12 @@
           ></app-search-bar>
         </ng-container>
 
+        <ng-container *ngIf="isMobile; then searchBar"></ng-container>
+
         <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
+          <div class="token-list__header">
+            <div class="token-list__header-label">Tokens</div>
+          </div>
           <div class="token-list-container__list">
             <app-tokens-list></app-tokens-list>
           </div>

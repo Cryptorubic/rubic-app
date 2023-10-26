@@ -11,7 +11,7 @@
   <div class="token-card__symbol-name-container">
     <div class="token-card__symbol-container">
       <span class="token-card__symbol">{{
-        token.symbol.length > 10 || isMobile ? token.symbol.slice(0, 10) + '...' : token.symbol
+        token.symbol.length > 10 ? token.symbol.slice(0, 10) + '...' : token.symbol
       }}</span>
 
       <div class="token-card__actions">

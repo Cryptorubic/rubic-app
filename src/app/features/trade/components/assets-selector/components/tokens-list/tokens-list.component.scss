@@ -15,6 +15,14 @@ $token-card-height: 55px;
   background: var(--io-background);
   border-radius: var(--tui-radius-m);
 
+  @include b($mobile-md) {
+    height: 64vh;
+    padding: var(--tui-padding-l);
+
+    background: none;
+    border-radius: 0;
+  }
+
   &__empty-list {
     position: relative;
 
@@ -38,14 +46,16 @@ tui-loader {
   height: 100%;
   padding-right: 15px;
 
+  @include b($mobile-md) {
+    padding: 0;
+  }
+
   &__item {
     border-radius: var(--tui-radius-m);
 
     cursor: pointer;
 
     @include b($mobile-md) {
-      padding: 0.5rem 1rem;
-
       background-color: transparent;
       border: 1px solid var(--transparent-line);
     }
@@ -86,10 +96,6 @@ tui-loader {
       flex-direction: column;
       gap: 10px;
       width: 100%;
-
-      @include b($mobile-md) {
-        padding: 0 0 0 16px;
-      }
     }
   }
 }

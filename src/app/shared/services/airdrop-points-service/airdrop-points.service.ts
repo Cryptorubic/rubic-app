@@ -8,6 +8,8 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
+import { OnChainTrade } from 'rubic-sdk';
+import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 @Injectable()
 export class AirdropPointsService {
@@ -46,14 +48,22 @@ export class AirdropPointsService {
     );
   }
 
-  public getSwapAndEarnPointsAmount(): Observable<number> {
+  public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
     return this.points$.pipe(
       map(points => {
-        if (points.participant) {
+        if (tradeType instanceof CrossChainTrade) {
+          if (points.participant) {
+            return 50;
+          }
+
+          return 100;
+        } else {
+          if (points.participant) {
+            return 25;
+          }
+
           return 50;
         }
-
-        return 100;
       })
     );
   }

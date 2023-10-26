@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .selector {
   display: flex;
   height: 50px;
@@ -45,7 +47,7 @@
     width: 67px;
 
     background: #627eea;
-    border-radius: var(--tui-radius-m)0 0 var(--tui-radius-m);
+    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
   }
 
   &__second-image {
@@ -89,6 +91,37 @@
       border-radius: 0 50px 50px 0;
 
       content: '';
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .selector {
+    height: 40px;
+
+    &__main-image {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__empty-container {
+      img {
+        margin-left: var(--tui-padding-s);
+      }
+    }
+
+    &__empty {
+      justify-content: flex-start;
+      padding-left: 16px;
+
+      font-weight: 400;
+      font-size: 18px;
+
+      border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+      &::after {
+        right: -18px;
+      }
     }
   }
 }

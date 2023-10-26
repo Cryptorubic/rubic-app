@@ -8,5 +8,6 @@ export interface TransactionState {
     toBlockchain?: BlockchainName;
     wrongNetwork?: boolean;
     activeWallet?: boolean;
+    points?: number;
   };
 }

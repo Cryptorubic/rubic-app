@@ -30,6 +30,7 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -95,7 +96,8 @@ export class PreviewSwapService {
     private readonly swapsControllerService: SwapsControllerService,
     private readonly sdkService: SdkService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
@@ -144,6 +146,13 @@ export class PreviewSwapService {
         debounceTime(10),
         switchMap(state => forkJoin([this.tradeState$, of(state)])),
         switchMap(([tradeState, txState]) => {
+          return forkJoin([
+            of(tradeState),
+            of(txState),
+            this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade)
+          ]);
+        }),
+        switchMap(([tradeState, txState, points]) => {
           switch (txState.step) {
             case 'approvePending': {
               return this.swapsControllerService.approve(tradeState, {
@@ -163,6 +172,7 @@ export class PreviewSwapService {
             }
             case 'swapRequest': {
               let txHash: string;
+
               return this.swapsControllerService.swap(tradeState, {
                 onHash: (hash: string) => {
                   txHash = hash;
@@ -186,7 +196,7 @@ export class PreviewSwapService {
                   } else {
                     this._transactionState$.next({
                       step: 'success',
-                      data: { hash: txHash, toBlockchain: tradeState.trade.to.blockchain }
+                      data: { hash: txHash, toBlockchain: tradeState.trade.to.blockchain, points }
                     });
                   }
                 },

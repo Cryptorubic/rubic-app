@@ -61,3 +61,34 @@ app-no-result {
   display: block;
   width: 100%;
 }
+
+@include b($mobile-md) {
+  .scrollbar {
+    max-height: fit-content;
+  }
+
+  .list {
+    padding: var(--tui-padding-l);
+
+    background: none;
+    border-top: 1px solid var(--tui-base-04);
+    border-radius: 0;
+
+    &__image-container {
+      width: 28px;
+      height: 28px;
+    }
+
+    &__element-container {
+      align-items: center;
+    }
+
+    &__element {
+      background: var(--tui-base-01);
+
+      ::ng-deep .t-wrapper {
+        padding: 0 var(--tui-padding-l) !important;
+      }
+    }
+  }
+}
