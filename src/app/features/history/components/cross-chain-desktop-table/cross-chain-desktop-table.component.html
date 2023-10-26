@@ -82,35 +82,34 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'statusFrom'" tuiTd>
-            <div class="token-container__inner">
+            <a class="token-container__inner" [safetyLink]="item.fromTx.explorerLink">
               <tui-badge
                 *ngIf="item?.fromTx?.status"
                 [status]="item.fromTx.status.appearance"
                 [value]="item.fromTx.status.label"
               ></tui-badge>
-              <a *ngIf="item.fromTx.explorerLink" [safetyLink]="item.fromTx.explorerLink"
-                ><img
-                  class="status-from-link-arrow"
-                  src="assets/images/icons/arrow/link-arrow.svg"
-                  alt="link-arrow"
-              /></a>
-            </div>
+              <img
+                *ngIf="item.fromTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
-            <div class="token-container__inner">
+            <a class="token-container__inner" [safetyLink]="item.toTx.explorerLink">
               <tui-badge
                 *ngIf="item.toTx?.status"
                 [status]="item.toTx.status.appearance"
                 [value]="item.toTx.status.label"
               ></tui-badge>
-              <a [safetyLink]="item.toTx.explorerLink" *ngIf="item.toTx.explorerLink">
-                <img
-                  class="status-from-link-arrow"
-                  src="assets/images/icons/arrow/link-arrow.svg"
-                  alt="link-arrow"
-                />
-              </a>
-            </div>
+              <img
+                *ngIf="item.toTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
           </td>
           <td *tuiCell="'provider'" tuiTd>
             <div class="provider-container" *ngIf="item?.provider?.name">
@@ -179,39 +178,38 @@
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.statusFrom' | translate }}</div>
           <div class="mobile-view__row-value">
-            <div class="token-container__inner">
+            <a class="token-container__inner" [safetyLink]="item.fromTx.explorerLink">
               <tui-badge
                 *ngIf="item?.fromTx?.status"
                 [status]="item.fromTx.status.appearance"
                 [value]="item.fromTx.status.label"
               ></tui-badge>
-              <a *ngIf="item.fromTx.explorerLink" [safetyLink]="item.fromTx.explorerLink"
-                ><img
-                  class="status-from-link-arrow"
-                  src="assets/images/icons/arrow/link-arrow.svg"
-                  alt="link-arrow"
-              /></a>
-            </div>
+              <img
+                *ngIf="item.fromTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
           </div>
         </div>
 
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.statusTo' | translate }}</div>
           <div class="mobile-view__row-value">
-            <div class="token-container__inner">
+            <a class="token-container__inner" [safetyLink]="item.toTx.explorerLink">
               <tui-badge
                 *ngIf="item.toTx?.status"
                 [status]="item.toTx.status.appearance"
                 [value]="item.toTx.status.label"
               ></tui-badge>
-              <a [safetyLink]="item.toTx.explorerLink" *ngIf="item.toTx.explorerLink">
-                <img
-                  class="status-from-link-arrow"
-                  src="assets/images/icons/arrow/link-arrow.svg"
-                  alt="link-arrow"
-                />
-              </a>
-            </div>
+              <img
+                *ngIf="item.toTx.explorerLink"
+                class="status-from-link-arrow"
+                src="assets/images/icons/arrow/link-arrow.svg"
+                alt="link-arrow"
+              />
+            </a>
           </div>
         </div>
 
