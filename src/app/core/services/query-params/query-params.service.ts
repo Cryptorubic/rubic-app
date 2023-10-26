@@ -64,8 +64,6 @@ export class QueryParamsService {
 
   public enabledBlockchains: BlockchainName[];
 
-  public backgroundColor: string;
-
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensStoreService: TokensStoreService,
@@ -149,7 +147,7 @@ export class QueryParamsService {
       return;
     }
 
-    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME);
+    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME).map(el => el.toLowerCase());
 
     const tokensQueryParams = Object.fromEntries(
       Object.entries(queryParams).filter(([key]) =>
@@ -182,10 +180,6 @@ export class QueryParamsService {
   }
 
   private setHideSelectionStatus(queryParams: QueryParams): void {
-    if (queryParams.hideUnusedUI !== 'true') {
-      return;
-    }
-
     const tokensSelectionDisabled: [boolean, boolean] = [
       queryParams.hideSelectionFrom === 'true',
       queryParams.hideSelectionTo === 'true'
@@ -199,27 +193,5 @@ export class QueryParamsService {
   private setLanguage(queryParams: QueryParams): void {
     const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
     this.translateService.use(language);
-  }
-
-  private isBackgroundValid(stringToTest: string): boolean {
-    if (stringToTest === '') {
-      return false;
-    }
-    if (stringToTest === 'inherit') {
-      return false;
-    }
-    if (stringToTest === 'transparent') {
-      return false;
-    }
-
-    const image = document.createElement('img');
-    image.style.background = 'rgb(0, 0, 0)';
-    image.style.background = stringToTest;
-    if (image.style.background !== 'rgb(0, 0, 0)') {
-      return true;
-    }
-    image.style.background = 'rgb(255, 255, 255)';
-    image.style.background = stringToTest;
-    return image.style.background !== 'rgb(255, 255, 255)';
   }
 }

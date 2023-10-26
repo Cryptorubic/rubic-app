@@ -80,6 +80,7 @@ import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
+import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
     InputOutputContainerComponent,
     AmountTransputComponent,
     NoResultComponent,
-    RateChangedModalComponent
+    RateChangedModalComponent,
+    NoFrameDirective
   ],
   imports: [
     CommonModule,
@@ -215,7 +217,8 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
     AmountTransputComponent,
     NoResultComponent,
     ClaimRoundRowComponent,
-    RateChangedModalComponent
+    RateChangedModalComponent,
+    NoFrameDirective
   ],
   providers: [
     ScannerLinkPipe,

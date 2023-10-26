@@ -22,6 +22,7 @@
     >
       <app-asset-selector
         left
+        selectorType="from"
         (handleAssetSelection)="openTokensSelect('from', isMobile)"
         [asset]="fromAsset"
       ></app-asset-selector>
@@ -43,6 +44,7 @@
     <app-input-output-container [round]="displayReceiver ? 'none' : 'bottom'">
       <app-asset-selector
         left
+        selectorType="to"
         (handleAssetSelection)="openTokensSelect('to', isMobile)"
         [asset]="toAsset$ | async"
       ></app-asset-selector>
