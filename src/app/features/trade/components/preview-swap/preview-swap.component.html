@@ -136,7 +136,9 @@
             </div>
             <div class="preview__amount-container">
               <div class="preview__token-amount">
-                {{ state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}
+                {{
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
               <div
                 *ngIf="state.tradeInfo.toValue.fiatAmount as amount"
@@ -144,9 +146,7 @@
               >
                 ~ ${{ amount }}&nbsp;-&nbsp;
               </div>
-              <div class="preview__token-info">
-                {{ state.tradeInfo.toAsset.mainLabel }} on {{ state.tradeInfo.toAsset.secondLabel }}
-              </div>
+              <div class="preview__token-info">on {{ state.tradeInfo.toAsset.secondLabel }}</div>
             </div>
           </div>
         </ng-container>
@@ -170,7 +170,9 @@
                 />
               </div>
               <div class="preview__token-amount">
-                {{ state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6 }}
+                {{
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
               </div>
             </div>
             <div class="preview__fiat-container">
@@ -181,7 +183,7 @@
                 ~ ${{ amount }}&nbsp;-&nbsp;
               </div>
               <div class="preview__token-info">
-                {{ state.tradeInfo.toAsset.mainLabel }} on
+                on
                 {{ state.tradeInfo.toAsset.secondLabel }}
               </div>
             </div>
