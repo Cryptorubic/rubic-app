@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Injector, OnInit, Type } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, OnInit, Type } from '@angular/core';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -36,7 +36,8 @@ export class SettingsContainerComponent implements OnInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {
     this.open = false;
   }
@@ -57,8 +58,8 @@ export class SettingsContainerComponent implements OnInit {
       .pipe(
         switchMap(mode =>
           mode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-            ? this.modalService.openItSettings()
-            : this.modalService.openCcrSettings()
+            ? this.modalService.openItSettings(this.injector)
+            : this.modalService.openCcrSettings(this.injector)
         )
       )
       .subscribe();

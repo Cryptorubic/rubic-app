@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 app-action-button {
   width: 100%;
 }
@@ -38,5 +40,28 @@ app-target-network-address {
 app-form-switcher {
   display: flex;
   justify-content: center;
-  height: 1px;
+  height: 2px;
+}
+
+@include b($mobile-md) {
+  ::ng-deep {
+    .window-container {
+      padding: 0 !important;
+
+      background: none !important;
+      border-radius: 0 !important;
+
+      header {
+        padding: var(--tui-padding-l) !important;
+
+        background: var(--io-background);
+        border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+      }
+    }
+  }
+
+  .input-container {
+    gap: var(--tui-padding-xs);
+    align-items: flex-start;
+  }
 }

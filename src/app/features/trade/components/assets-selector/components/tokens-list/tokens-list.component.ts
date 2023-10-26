@@ -7,6 +7,7 @@ import { LIST_ANIMATION } from '@features/trade/components/assets-selector/anima
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
+import { MobileNativeModalService } from '@core/modals/services/mobile-native-modal.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -41,7 +42,8 @@ export class TokensListComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListService: TokensListService,
-    private readonly tokensListStoreService: TokensListStoreService
+    private readonly tokensListStoreService: TokensListStoreService,
+    private readonly mobileNativeService: MobileNativeModalService
   ) {}
 
   /**
@@ -59,6 +61,8 @@ export class TokensListComponent {
    * @param token Selected token.
    */
   public onTokenSelect(token: AvailableTokenAmount): void {
+    this.mobileNativeService.forceClose();
+
     if (token.available) {
       this.assetsSelectorService.onAssetSelect(token);
     }

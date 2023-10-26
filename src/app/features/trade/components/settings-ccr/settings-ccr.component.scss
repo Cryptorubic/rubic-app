@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .settings {
   flex-wrap: wrap;
   padding: var(--tui-padding-l);
@@ -31,6 +33,42 @@
 
     ::ng-deep input {
       padding-right: 25px !important;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .settings {
+    &__form {
+      gap: var(--tui-padding-m);
+    }
+
+    &__row {
+      font-size: 16px;
+
+      button {
+        font-size: 15px;
+      }
+
+      ::ng-deep {
+        tui-input-number {
+          &#deadline {
+            text-align: center;
+          }
+
+          &#slippage {
+            margin-left: auto;
+          }
+
+          tui-primitive-textfield {
+            font-size: 15px;
+          }
+        }
+      }
+    }
+
+    &__toggle {
+      transform: scale(1.25);
     }
   }
 }

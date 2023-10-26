@@ -1,5 +1,7 @@
 <app-window-container class="modal">
-  <ng-container header>{{ 'modals.walletsModal.title' | translate }}</ng-container>
+  <ng-container header *ngIf="!isMobile">
+    {{ 'modals.walletsModal.title' | translate }}
+  </ng-container>
   <main class="modal__body">
     <ng-container *ngFor="let provider of providers">
       <ng-container *ngIf="provider.display">
@@ -37,7 +39,7 @@
   </main>
   <ng-container footer>
     <footer class="modal__footer">
-      <div class="modal__privacy-policy">
+      <div class="modal__privacy-policy" *ngIf="!isMobile">
         By connecting to the wallet, you automatically agree to our
         <a class="modal__link" href="https://rubic.exchange/pdf/TermsOfService.pdf" target="_blank">
           Terms of Service

@@ -8,4 +8,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 })
 export class InputOutputContainerComponent {
   @Input() public round: 'top' | 'bottom' | 'all' | 'none' = 'all';
+
+  @Input() public marginTop: boolean;
 }

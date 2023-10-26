@@ -10,11 +10,11 @@ import {
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
+  EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
   OnChainTrade,
-  Web3Pure,
-  EvmWeb3Pure
+  Web3Pure
 } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -25,6 +25,7 @@ import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-
 import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-preview-swap',
@@ -97,6 +98,8 @@ export class PreviewSwapComponent {
     })
   );
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   constructor(
@@ -107,7 +110,8 @@ export class PreviewSwapComponent {
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   public backToForm(): void {
