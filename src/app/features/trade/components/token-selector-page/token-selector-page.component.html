@@ -6,7 +6,7 @@
     </span>
   </ng-container>
   <app-assets-selector-page
-    [type]="type"
-    (tokenSelect)="handleTokenSelect(type, $event)"
+    [type]="formType"
+    (tokenSelect)="handleTokenSelect(formType, $event)"
   ></app-assets-selector-page>
 </app-window-container>

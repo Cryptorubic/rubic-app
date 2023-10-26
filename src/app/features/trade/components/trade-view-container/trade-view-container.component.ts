@@ -32,7 +32,7 @@ export class TradeViewContainerComponent {
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
     tap(providers => {
-      if (providers.length > 0 && providers[0].trade.type !== ON_CHAIN_TRADE_TYPE.WRAPPED) {
+      if (providers.length > 0 && providers[0].trade?.type !== ON_CHAIN_TRADE_TYPE.WRAPPED) {
         this.tradePageService.setProvidersVisibility(true);
       } else {
         this.tradePageService.setProvidersVisibility(false);
