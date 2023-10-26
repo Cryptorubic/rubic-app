@@ -309,10 +309,18 @@
 @include b($mobile-md) {
   ::ng-deep {
     app-window-container {
-      header h5 {
-        position: relative;
+      header {
+        padding: var(--tui-padding-l) !important;
 
-        justify-content: center;
+        background: var(--io-background);
+        border-bottom: 2px solid var(--app-background);
+        border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
+
+        h5 {
+          position: relative;
+
+          justify-content: center;
+        }
       }
 
       .window-container {
@@ -342,7 +350,7 @@
     padding: var(--tui-padding-l);
 
     background: var(--io-background);
-    border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 
     &__header {
       flex-direction: column;
@@ -380,10 +388,10 @@
   }
 
   .duration {
-    padding: var(--tui-padding-l);
+    padding: var(--tui-padding-s) 0;
 
-    background: var(--io-background);
-    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+    background: none;
+    border-radius: 0;
 
     &__title {
       display: none;
@@ -422,5 +430,9 @@
         }
       }
     }
+  }
+
+  .hint {
+    margin-top: 0;
   }
 }
