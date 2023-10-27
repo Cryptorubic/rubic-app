@@ -16,6 +16,7 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
+  EvmEncodeConfig,
   EvmWeb3Pure,
   NotWhitelistedProviderError,
   PriceToken,
@@ -25,8 +26,7 @@ import {
   UnapprovedContractError,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure,
-  EvmEncodeConfig
+  Web3Pure
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -44,7 +44,6 @@ import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-
 import { AuthService } from '@core/services/auth/auth.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -79,7 +78,6 @@ export class CrossChainService {
     private readonly dialogService: ModalService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
-    private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService
   ) {}
@@ -299,9 +297,7 @@ export class CrossChainService {
         ...(directTransaction && { directTransaction })
       };
 
-      try {
-        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
-      } catch {}
+      console.log(fromAddress, tradeData);
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
     };

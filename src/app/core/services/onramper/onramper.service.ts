@@ -30,33 +30,33 @@ export class OnramperService {
     private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
-  public async updateSwapFormByRecentTrade(rubicId: string): Promise<void> {
-    const trade = this.recentTradesStoreService.getSpecificOnramperTrade(rubicId);
-    if (!trade) {
-      return;
-    }
-
-    const blockchain = trade.toToken.blockchain as EvmBlockchainName;
-    const nativeToken = await this.tokensService.findToken({
-      address: EvmWeb3Pure.nativeTokenAddress,
-      blockchain
-    });
-
-    const fromFee = await this.getFromFees(blockchain);
-    const fromAmount = new BigNumber(trade.nativeAmount).minus(fromFee);
-
-    const toToken = await this.tokensService.findToken(trade.toToken);
-
-    this.swapFormService.inputControl.patchValue({
-      fromAssetType: blockchain,
-      fromAsset: nativeToken,
-      toBlockchain: blockchain,
-      toToken,
-      fromAmount
-    });
-
-    this.queryParamsService.patchQueryParams({ onramperTxId: rubicId });
-  }
+  // public async updateSwapFormByRecentTrade(rubicId: string): Promise<void> {
+  //   const trade = this.recentTradesStoreService.getSpecificOnramperTrade(rubicId);
+  //   if (!trade) {
+  //     return;
+  //   }
+  //
+  //   const blockchain = trade.toToken.blockchain as EvmBlockchainName;
+  //   const nativeToken = await this.tokensService.findToken({
+  //     address: EvmWeb3Pure.nativeTokenAddress,
+  //     blockchain
+  //   });
+  //
+  //   const fromFee = await this.getFromFees(blockchain);
+  //   const fromAmount = new BigNumber(trade.nativeAmount).minus(fromFee);
+  //
+  //   const toToken = await this.tokensService.findToken(trade.toToken);
+  //
+  //   this.swapFormService.inputControl.patchValue({
+  //     fromAssetType: blockchain,
+  //     fromAsset: nativeToken,
+  //     toBlockchain: blockchain,
+  //     toToken,
+  //     fromAmount
+  //   });
+  //
+  //   this.queryParamsService.patchQueryParams({ onramperTxId: rubicId });
+  // }
 
   public async getFromFees(blockchain: EvmBlockchainName): Promise<BigNumber> {
     const gasPrice = await this.gasService.getGasPriceInEthUnits(blockchain);
