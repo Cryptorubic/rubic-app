@@ -149,7 +149,7 @@ export class PreviewSwapService {
           return forkJoin([
             of(tradeState),
             of(txState),
-            this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade)
+            this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade).pipe(first())
           ]);
         }),
         switchMap(([tradeState, txState, points]) => {

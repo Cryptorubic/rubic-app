@@ -7,7 +7,6 @@ import { FormType } from '@features/trade/models/form-type';
 import { Asset } from '@features/trade/models/asset';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
@@ -17,9 +16,11 @@ import { HeaderStore } from '@core/header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokenSelectorPageComponent {
-  @PolymorpheusInput()
-  @Input({ required: true })
-  type: 'from' | 'to' = this.context?.data?.formType;
+  public formType: 'from' | 'to';
+
+  @Input({ required: true }) set type(value: 'from' | 'to') {
+    this.formType = value || 'from';
+  }
 
   private selectedAsset: TokenAmount;
 
@@ -33,7 +34,9 @@ export class TokenSelectorPageComponent {
     private readonly swapFormService: SwapsFormService,
     private readonly tradePageService: TradePageService,
     private readonly headerStore: HeaderStore
-  ) {}
+  ) {
+    this.formType = this.context?.data?.formType;
+  }
 
   public handleTokenSelect(formType: FormType, asset: Asset): void {
     const token = asset as TokenAmount;

@@ -22,22 +22,22 @@
 
       <button
         tuiButton
-        [appearance]="formValue.slippageTolerance === 2 ? 'primary' : 'outline'"
+        [appearance]="formValue.slippageTolerance === 1.5 ? 'primary' : 'outline'"
         type="button"
         size="s"
-        (click)="onSlippageToleranceChange(2)"
+        (click)="onSlippageToleranceChange(1.5)"
       >
-        2%
+        1.5%
       </button>
 
       <button
         tuiButton
-        [appearance]="formValue.slippageTolerance === 4 ? 'primary' : 'outline'"
+        [appearance]="formValue.slippageTolerance === 3 ? 'primary' : 'outline'"
         type="button"
         size="s"
-        (click)="onSlippageToleranceChange(4)"
+        (click)="onSlippageToleranceChange(3)"
       >
-        4%
+        3%
       </button>
 
       <tui-input-number
@@ -45,7 +45,7 @@
         class="settings__slippage-input"
         tuiTextfieldSize="s"
         tuiTextfieldPostfix="%"
-        [min]="1"
+        [min]="1.5"
         [max]="50"
         [ngModel]="formValue.slippageTolerance"
         [ngModelOptions]="{ standalone: true }"
