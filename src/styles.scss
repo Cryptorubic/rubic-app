@@ -37,6 +37,10 @@ html {
   height: auto !important;
   overflow-x: hidden;
 
+  &.iframe {
+    width: 400px;
+  }
+
   body {
     position: relative;
 

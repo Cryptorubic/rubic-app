@@ -2,15 +2,6 @@ import { BlockchainName } from 'rubic-sdk';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 import { AssetType } from '@features/trade/models/asset';
 
-export type AdditionalTokens =
-  | 'eth_tokens'
-  | 'bsc_tokens'
-  | 'polygon_tokens'
-  | 'harmony_tokens'
-  | 'avalanche_tokens'
-  | 'fantom_tokens'
-  | 'moonriver_tokens';
-
 interface AllQueryParams {
   from: string;
   to: string;
@@ -20,13 +11,13 @@ interface AllQueryParams {
   amountTo: string;
   onramperTxId: string;
 
+  iframe: string;
   device: 'mobile' | 'desktop';
   domain: string;
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;
   slippageCcr: string;
-  background: string;
   accentColor: string; // correct format is ...&accentColor=00FFFF
   theme: string;
   language: SupportedLanguages;
@@ -45,5 +36,5 @@ interface AllQueryParams {
 }
 
 export type QueryParams = {
-  [P in AdditionalTokens]?: string[];
+  [P in BlockchainName]?: string[];
 } & Partial<AllQueryParams>;

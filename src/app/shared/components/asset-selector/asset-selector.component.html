@@ -1,4 +1,4 @@
-<div class="selector" (click)="handleAssetSelection.emit()">
+<div class="selector" (click)="handleSelection()">
   <ng-container *ngIf="visibleAsset; else emptySelector">
     <div [style.background]="visibleAsset.secondColor" class="selector__second-image-container">
       <img
