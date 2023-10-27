@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { map } from 'rxjs';
@@ -6,13 +6,14 @@ import { BlockchainsListService } from '@features/trade/components/assets-select
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+
 @Component({
   selector: 'app-blockchains-list',
   templateUrl: './blockchains-list.component.html',
   styleUrls: ['./blockchains-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlockchainsListComponent implements OnInit, OnDestroy {
+export class BlockchainsListComponent implements OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
     map(blockchains => [
       ...blockchains.slice(0, 8),
@@ -25,10 +26,6 @@ export class BlockchainsListComponent implements OnInit, OnDestroy {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService
   ) {}
-
-  ngOnInit(): void {
-    this.assetsSelectorService.openBlockchainsList();
-  }
 
   ngOnDestroy(): void {
     this.assetsSelectorService.setSelectorListTypeByAssetType();
