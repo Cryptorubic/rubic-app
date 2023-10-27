@@ -82,7 +82,7 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'statusFrom'" tuiTd>
-            <a class="token-container__inner" [safetyLink]="item.fromTx.explorerLink">
+            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
               <tui-badge
                 *ngIf="item?.fromTx?.status"
                 [status]="item.fromTx.status.appearance"
@@ -97,7 +97,7 @@
             </a>
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
-            <a class="token-container__inner" [safetyLink]="item.toTx.explorerLink">
+            <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">
               <tui-badge
                 *ngIf="item.toTx?.status"
                 [status]="item.toTx.status.appearance"
