@@ -1,4 +1,4 @@
-<div class="user-balance-container">
+<div class="user-balance-container" *ngLet="token$ | async as token">
   <ng-container *ngIf="token?.amount?.gt(0)">
     <span class="user-balance-container__balance" *ngIf="hide !== 'balance'"
       >Balance:
