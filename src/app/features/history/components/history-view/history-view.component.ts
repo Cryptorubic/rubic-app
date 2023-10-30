@@ -13,6 +13,6 @@ export class HistoryViewComponent {
   }
 
   public readAllTrades(): void {
-    setTimeout(() => this.recentTradesStoreService.updateUnreadTrades(true), 0);
+    this.recentTradesStoreService.updateUnreadTrades(true);
   }
 }

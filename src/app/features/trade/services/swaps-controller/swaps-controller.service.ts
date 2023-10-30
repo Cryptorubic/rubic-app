@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, of, Subject } from 'rxjs';
+import { firstValueFrom, forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -34,7 +34,6 @@ import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-c
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class SwapsControllerService {
@@ -242,8 +241,7 @@ export class SwapsControllerService {
             };
             await this.crossChainService.swapTrade(
               tradeState.trade as CrossChainTrade,
-              callback.onHash,
-              err.transaction
+              callback.onHash
             );
             if ('id' in tradeState.trade) {
               additionalData.changenowId = tradeState.trade.id as string;
