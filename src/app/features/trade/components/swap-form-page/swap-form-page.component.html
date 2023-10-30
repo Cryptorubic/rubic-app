@@ -35,6 +35,7 @@
           [amountValue]="fromAmount$ | async"
         ></app-amount-transput>
         <app-user-balance-container
+          *ngIf="currentUser$ | async"
           [token]="fromAsset"
           (maxButtonClickEvent)="handleMaxButton()"
         ></app-user-balance-container>

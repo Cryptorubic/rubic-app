@@ -13,6 +13,7 @@ import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
 import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -47,6 +48,8 @@ export class SwapFormPageComponent {
 
   public readonly toAmount$ = this.swapFormService.toAmount$;
 
+  public readonly currentUser$ = this.authService.currentUser$;
+
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
       this.toAsset$,
@@ -77,6 +80,7 @@ export class SwapFormPageComponent {
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly modalService: ModalService,
+    private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
