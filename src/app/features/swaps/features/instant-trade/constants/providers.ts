@@ -180,7 +180,10 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.TRON]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.BRIDGERS]),
     [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.YUZU_SWAP]),
     [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.NET_SWAP]),
-    [BLOCKCHAIN_NAME.KLAYTN]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]),
+    [BLOCKCHAIN_NAME.KLAYTN]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.CLAIM_SWAP,
+      ON_CHAIN_TRADE_TYPE.ONE_INCH
+    ]),
     [BLOCKCHAIN_NAME.VELAS]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.WAGYU_SWAP,
       ON_CHAIN_TRADE_TYPE.ASTRO_SWAP
