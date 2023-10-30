@@ -3,7 +3,6 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
-import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -45,15 +44,8 @@ export class SuccessTrxNotificationComponent {
     // CompleteWith doesn't work.
     (this.context as RubicAny).closeHook();
 
-    const isDesktop = this.windowWidthService.windowSize === WindowSize.DESKTOP;
     if (this.headerStore.isMobile) {
       this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
-    } else {
-      this.modalService
-        .openRecentTradesModal({
-          size: !isDesktop ? 'page' : ('xl' as 'l') // hack for custom modal size
-        })
-        .subscribe();
     }
   }
 }

@@ -31,6 +31,7 @@ import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -97,7 +98,8 @@ export class PreviewSwapService {
     private readonly sdkService: SdkService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly airdropPointsService: AirdropPointsService
+    private readonly airdropPointsService: AirdropPointsService,
+    private readonly recentTradesStoreService: RecentTradesStoreService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
@@ -185,7 +187,7 @@ export class PreviewSwapService {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this._transactionState$.next({
                       step: 'destinationPending',
-                      data: this.transactionState.data
+                      data: { ...this.transactionState.data, points }
                     });
                     this.initDstTxStatusPolling(
                       txHash,
@@ -199,6 +201,8 @@ export class PreviewSwapService {
                       data: { hash: txHash, toBlockchain: tradeState.trade.to.blockchain, points }
                     });
                   }
+
+                  this.recentTradesStoreService.updateUnreadTrades();
                 },
                 onError: () => {
                   this._transactionState$.next({ step: 'idle', data: {} });

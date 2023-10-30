@@ -16,7 +16,6 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
-  EvmWeb3Pure,
   NotWhitelistedProviderError,
   PriceToken,
   RubicSdkError,
@@ -25,8 +24,7 @@ import {
   UnapprovedContractError,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure,
-  EvmEncodeConfig
+  Web3Pure
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -40,11 +38,9 @@ import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blo
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';
-import { CrossChainRecentTrade } from '@shared/models/recent-trades/cross-chain-recent-trade';
 import { AuthService } from '@core/services/auth/auth.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
@@ -79,7 +75,6 @@ export class CrossChainService {
     private readonly dialogService: ModalService,
     @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
-    private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService
   ) {}
@@ -239,11 +234,7 @@ export class CrossChainService {
     };
   }
 
-  public async swapTrade(
-    trade: CrossChainTrade,
-    callback?: (hash: string) => void,
-    directTransaction?: EvmEncodeConfig
-  ): Promise<void> {
+  public async swapTrade(trade: CrossChainTrade, callback?: (hash: string) => void): Promise<void> {
     if (!this.isSlippageCorrect(trade)) {
       return;
     }
@@ -263,7 +254,6 @@ export class CrossChainService {
     //   await this.handleChangenowNonEvmTrade();
     //   return;
     // }
-    const fromAddress = this.authService.userAddress;
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     this.checkBlockchainsAvailable(trade);
 
@@ -279,29 +269,6 @@ export class CrossChainService {
       transactionHash = txHash;
       callback?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
-
-      const timestamp = Date.now();
-
-      const changenowId = trade instanceof ChangenowCrossChainTrade && trade.id;
-
-      const tradeData: CrossChainRecentTrade = {
-        srcTxHash: txHash,
-        fromToken,
-        toToken,
-        crossChainTradeType: trade.type,
-        timestamp,
-        bridgeType: trade.bridgeType,
-        amountOutMin: trade.toTokenAmountMin.toFixed(),
-        fromAmount: trade.from.stringWeiAmount,
-        toAmount: trade.to.stringWeiAmount,
-        rubicId: EvmWeb3Pure.randomHex(16),
-        ...(changenowId && { changenowId }),
-        ...(directTransaction && { directTransaction })
-      };
-
-      try {
-        this.recentTradesStoreService.saveTrade(fromAddress, tradeData);
-      } catch {}
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
     };

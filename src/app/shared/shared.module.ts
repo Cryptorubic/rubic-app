@@ -55,7 +55,6 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ChipsComponent } from './components/chips/chips.component';
-import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
@@ -65,8 +64,6 @@ import { SuccessOrderModalComponent } from './components/success-modal/success-o
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
-import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cross-chain-table/recent-cross-chain-table.component';
-import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
@@ -104,15 +101,12 @@ import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive
     CopyContainerComponent,
     StatusBadgeComponent,
     ChipsComponent,
-    ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
     AutoSlippageWarningModalComponent,
     BackButtonComponent,
     LoginButtonComponent,
     RefreshButtonComponent,
     SuccessOrderModalComponent,
-    RecentCrossChainTableTxComponent,
-    TradeRowComponent,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
@@ -205,8 +199,6 @@ import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive
     BackButtonComponent,
     RefreshButtonComponent,
     LoginButtonComponent,
-    RecentCrossChainTableTxComponent,
-    TradeRowComponent,
     CommaToPeriodDirective,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
