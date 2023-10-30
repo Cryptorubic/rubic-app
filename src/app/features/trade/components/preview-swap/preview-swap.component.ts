@@ -7,6 +7,7 @@ import { TransactionStateComponent } from '@features/trade/components/transactio
 import { map, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
+  CrossChainTradeType,
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -26,6 +27,9 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
+import { TradeProvider } from '@features/trade/models/trade-provider';
+import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -111,7 +115,8 @@ export class PreviewSwapComponent {
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
     private readonly tokensService: TokensService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public backToForm(): void {
@@ -151,6 +156,18 @@ export class PreviewSwapComponent {
         switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
       )
       .subscribe();
+  }
+
+  public getAverageTime(tradeProvider: TradeProvider): number {
+    if (tradeProvider) {
+      const provider = TRADES_PROVIDERS[tradeProvider];
+      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
+      const currentProviderTime = providerAverageTime?.[tradeProvider as CrossChainTradeType];
+
+      return currentProviderTime ? currentProviderTime : provider.averageTime;
+    } else {
+      return 3;
+    }
   }
 
   public getGasData(

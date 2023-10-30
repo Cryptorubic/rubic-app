@@ -197,7 +197,7 @@
             fee: state.tradeState?.feeInfo || null,
             nativeToken: nativeToken$ | async
           }"
-          [time]="time"
+          [time]="getAverageTime(state?.tradeState?.tradeType) + ' M'"
         ></app-swap-data-element>
       </div>
 
