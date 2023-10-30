@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { filter, pairwise, startWith } from 'rxjs/operators';
+import { debounceTime, filter, pairwise, startWith, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
-import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 import { compareAssets } from '@features/trade/utils/compare-assets';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { forkJoin, of } from 'rxjs';
 
 @Injectable()
 export class SwapTokensUpdaterService {
@@ -17,10 +18,12 @@ export class SwapTokensUpdaterService {
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly walletConnector: WalletConnectorService
   ) {
     this.subscribeOnForm();
     this.subscribeOnTokens();
+    this.subscribeOnUserChange();
   }
 
   private subscribeOnForm(): void {
@@ -77,11 +80,11 @@ export class SwapTokensUpdaterService {
   }
 
   private subscribeOnTokens(): void {
-    this.tokensStoreService.tokens$.pipe(filter(Boolean)).subscribe(tokens => {
+    this.tokensStoreService.tokens$.pipe(debounceTime(50), filter(Boolean)).subscribe(tokens => {
       const form = this.swapsFormService.inputValue;
       const fromToken =
         isMinimalToken(form.fromToken) &&
-        tokens.find(token => compareTokens(token, form.fromToken as MinimalToken));
+        tokens.find(token => compareTokens(token, form.fromToken));
       const toToken = form.toToken && tokens.find(token => compareTokens(token, form.toToken));
 
       this.swapsFormService.inputControl.patchValue(
@@ -92,5 +95,24 @@ export class SwapTokensUpdaterService {
         { emitEvent: false }
       );
     });
+  }
+
+  private subscribeOnUserChange(): void {
+    this.walletConnector.addressChange$
+      .pipe(
+        switchMap(() => {
+          const { fromToken, toToken } = this.swapsFormService.inputValue;
+
+          if (!fromToken && !toToken) {
+            return of(null);
+          }
+
+          return forkJoin([
+            ...(fromToken && [this.tokensService.getAndUpdateTokenBalance(fromToken)]),
+            ...(toToken && [this.tokensService.getAndUpdateTokenBalance(toToken)])
+          ]);
+        })
+      )
+      .subscribe();
   }
 }
