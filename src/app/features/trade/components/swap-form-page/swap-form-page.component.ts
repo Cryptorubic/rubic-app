@@ -107,8 +107,8 @@ export class SwapFormPageComponent {
 
   public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
     const isValueCorrect = !value.actualValue?.isNaN();
-    const oldValue = this.swapFormService.inputValue.fromAmount.actualValue;
-    if (!oldValue.eq(value.actualValue)) {
+    const oldValue = this.swapFormService.inputValue?.fromAmount?.actualValue;
+    if (!oldValue || !oldValue.eq(value.actualValue)) {
       this.swapFormService.inputControl.patchValue({
         fromAmount: isValueCorrect ? value : null
       });
