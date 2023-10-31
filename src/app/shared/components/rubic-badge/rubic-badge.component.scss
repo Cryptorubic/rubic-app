@@ -1,0 +1,50 @@
+@use 'src/scss/vars' as *;
+
+.badge {
+  display: flex;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  height: 24px;
+  padding: 0 var(--tui-padding-m);
+
+  border-radius: var(--tui-radius-m);
+
+  &_error {
+    background: var(--tui-error-bg);
+
+    .badge__dot {
+      background: var(--tui-error-fill);
+    }
+  }
+
+  &_warning {
+    background: var(--tui-warning-bg);
+
+    .badge__dot {
+      background: var(--tui-warning-fill);
+    }
+  }
+
+  &_success {
+    background: var(--tui-success-bg);
+
+    .badge__dot {
+      background: var(--tui-success-fill);
+    }
+  }
+
+  &_info {
+    background: var(--tui-info-bg);
+
+    .badge__dot {
+      background: var(--tui-info-fill);
+    }
+  }
+
+  &__dot {
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+  }
+}

@@ -7,6 +7,7 @@ import { TransactionStateComponent } from '@features/trade/components/transactio
 import { map, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
+  CrossChainTradeType,
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -27,6 +28,8 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
+import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -36,8 +39,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 })
 export class PreviewSwapComponent {
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
-
-  public time = '3 min';
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
@@ -118,7 +119,8 @@ export class PreviewSwapComponent {
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
     private readonly tokensService: TokensService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public backToForm(): void {
@@ -163,6 +165,18 @@ export class PreviewSwapComponent {
         switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
       )
       .subscribe();
+  }
+
+  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
+    if (trade.tradeType) {
+      const provider = TRADES_PROVIDERS[trade.tradeType];
+      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
+      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
+
+      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
+    } else {
+      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
+    }
   }
 
   public getGasData(

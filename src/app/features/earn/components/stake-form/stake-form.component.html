@@ -1,9 +1,11 @@
 <app-window-container class="form-container">
   <ng-container header>
-    <button class="title__back" (click)="back()">
-      <span inlineSVG="assets/images/icons/arrow-back.svg"></span>
-    </button>
-    <span class="title__text">New position</span>
+    <div class="title__wrapper" (click)="back()">
+      <button class="title__back">
+        <span inlineSVG="assets/images/icons/arrow-back.svg"></span>
+      </button>
+      <span class="title__text">New position</span>
+    </div>
   </ng-container>
 
   <div class="stake-form">

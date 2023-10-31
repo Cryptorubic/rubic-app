@@ -73,10 +73,8 @@
               class="token-container__inner"
               [safetyLink]="item.tx?.explorerLink"
             >
-              <tui-badge
-                [status]="item.tx.status.appearance"
-                [value]="item.tx.status.label"
-              ></tui-badge>
+              <app-rubic-badge [status]="item.tx.status.appearance" [label]="item.tx.status.label">
+              </app-rubic-badge>
               <img
                 *ngIf="item.tx.explorerLink"
                 [safetyLink]="item.tx?.explorerLink"
@@ -161,10 +159,8 @@
               class="token-container__inner"
               [safetyLink]="item.tx?.explorerLink"
             >
-              <tui-badge
-                [status]="item.tx.status.appearance"
-                [value]="item.tx.status.label"
-              ></tui-badge>
+              <app-rubic-badge [status]="item.tx.status.appearance" [label]="item.tx.status.label">
+              </app-rubic-badge>
               <img
                 *ngIf="item.tx.explorerLink"
                 [safetyLink]="item.tx?.explorerLink"

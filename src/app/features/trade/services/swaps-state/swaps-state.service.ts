@@ -5,6 +5,7 @@ import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
   BlockchainsInfo,
   compareCrossChainTrades,
+  compareCrossChainTradesWithoutTokenPrice,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
@@ -18,6 +19,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class SwapsStateService {
@@ -200,27 +202,19 @@ export class SwapsStateService {
   }
 
   public pickProvider(isCalculationEnd: boolean): void {
-    const currentTrades = this._tradesStore$.getValue();
+    let currentTrades = this._tradesStore$.getValue();
 
     if (currentTrades.length) {
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
-      if (isCrossChain) {
-        (currentTrades as WrappedCrossChainTradeOrNull[]).sort(compareCrossChainTrades);
-      } else if (isOnChain) {
-        currentTrades.sort((a, b) => {
-          const aPrice = (a.trade as OnChainTrade).to.price.multipliedBy(a.trade.to.tokenAmount);
-          const bPrice = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
+      const isThereTokenWithoutPrice = currentTrades.some(
+        currentTrade => !currentTrade.trade.to.price
+      );
 
-          if (aPrice.gt(bPrice)) {
-            return -1;
-          } else if (bPrice.gt(aPrice)) {
-            return 1;
-          }
-          return 0;
-        });
-      } else {
-        return;
+      if (isCrossChain || isOnChain) {
+        currentTrades = isCrossChain
+          ? this.sortCrossChainTrades(currentTrades, isThereTokenWithoutPrice)
+          : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
       }
 
       const bestTrade = currentTrades[0];
@@ -244,6 +238,46 @@ export class SwapsStateService {
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
     }
+  }
+
+  private sortCrossChainTrades(
+    currentTrades: TradeState[],
+    isThereTokenWithoutPrice: boolean
+  ): TradeState[] {
+    if (isThereTokenWithoutPrice) {
+      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
+        compareCrossChainTradesWithoutTokenPrice
+      ) as TradeState[];
+    } else {
+      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
+        compareCrossChainTrades
+      ) as TradeState[];
+    }
+  }
+
+  private sortOnChainTrades(
+    currentTrades: TradeState[],
+    isThereTokenWithoutPrice: boolean
+  ): TradeState[] {
+    return currentTrades.sort((a, b) => {
+      let aValue: BigNumber;
+      let bValue: BigNumber;
+
+      if (isThereTokenWithoutPrice) {
+        aValue = a.trade.to.tokenAmount;
+        bValue = b.trade.to.tokenAmount;
+      } else {
+        aValue = (a.trade as OnChainTrade).to.price.multipliedBy(a.trade.to.tokenAmount);
+        bValue = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
+      }
+
+      if (aValue.gt(bValue)) {
+        return -1;
+      } else if (bValue.gt(aValue)) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
