@@ -129,7 +129,7 @@ export class OnChainService {
 
           return this.sdkService.instantTrade.calculateTradeReactively(
             fromSdkToken,
-            fromAmount.toFixed(),
+            fromAmount.actualValue.toFixed(),
             toSdkToken,
             options
           );

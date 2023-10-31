@@ -82,11 +82,12 @@ export class SwapsFormService {
     shareReplay(shareReplayConfig)
   );
 
-  public readonly fromAmount$: Observable<BigNumber> = this.inputValue$.pipe(
-    map(inputValue => inputValue.fromAmount),
-    distinctUntilChanged(),
-    shareReplay(shareReplayConfig)
-  );
+  public readonly fromAmount$: Observable<{ visibleValue: string; actualValue: BigNumber }> =
+    this.inputValue$.pipe(
+      map(inputValue => inputValue.fromAmount),
+      distinctUntilChanged(),
+      shareReplay(shareReplayConfig)
+    );
 
   /**
    * Output control, used to patch value.
@@ -120,7 +121,7 @@ export class SwapsFormService {
             form.fromToken &&
             form.toBlockchain &&
             form.toToken &&
-            form.fromAmount?.gt(0)
+            form.fromAmount.actualValue?.gt(0)
         )
       )
     ),

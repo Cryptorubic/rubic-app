@@ -27,14 +27,17 @@ export class AmountTransputComponent {
 
   @Input() public inputMode: 'input' | 'output' | 'combined';
 
-  @Input() set amountValue(value: BigNumber | null) {
-    if (this.inputMode !== 'input' || (value && value?.gt(0))) {
-      const newAmount = value ? value.toFixed() : '';
+  @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
+    if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
+      const newAmount = value?.actualValue ? value.visibleValue : '';
       this.amount.setValue(newAmount, { emitViewToModelChange: false });
     }
   }
 
-  @Output() public amountUpdated = new EventEmitter<BigNumber>();
+  @Output() public amountUpdated = new EventEmitter<{
+    visibleValue: string;
+    actualValue: BigNumber;
+  }>();
 
   private get formattedAmount(): string {
     return this.amount?.value.split(',').join('');
@@ -48,7 +51,10 @@ export class AmountTransputComponent {
   public handleAmountChange(amount: string): void {
     if (this.inputMode !== 'output') {
       this.amount.setValue(amount, { emitViewToModelChange: false });
-      this.amountUpdated.emit(new BigNumber(this.formattedAmount));
+      this.amountUpdated.emit({
+        visibleValue: this.formattedAmount,
+        actualValue: new BigNumber(this.formattedAmount)
+      });
     }
   }
 }

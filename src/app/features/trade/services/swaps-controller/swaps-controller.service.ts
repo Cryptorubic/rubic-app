@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, of, Subject } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -34,6 +34,7 @@ import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-c
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
+import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -61,12 +62,14 @@ export class SwapsControllerService {
     private readonly authService: AuthService,
     private readonly tradePageService: TradePageService,
     private readonly refreshService: RefreshService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly settingsService: SettingsService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
     this.subscribeOnAddressChange();
+    this.subscribeOnSettings();
   }
 
   /**
@@ -353,5 +356,13 @@ export class SwapsControllerService {
     }
     onError?.();
     this.errorsService.catch(err);
+  }
+
+  private subscribeOnSettings(): void {
+    this.settingsService.crossChainRoutingValueChanges
+      .pipe(combineLatestWith(this.settingsService.instantTradeValueChanges))
+      .subscribe(() => {
+        this.startRecalculation(true);
+      });
   }
 }

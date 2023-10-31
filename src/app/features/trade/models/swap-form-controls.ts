@@ -7,7 +7,10 @@ import { FormControlType } from '@shared/models/utils/angular-forms-types';
 export interface SwapFormInput {
   fromBlockchain: BlockchainName | null;
   fromToken: TokenAmount | null;
-  fromAmount: BigNumber | null;
+  fromAmount: {
+    visibleValue: string;
+    actualValue: BigNumber;
+  } | null;
 
   toBlockchain: BlockchainName | null;
   toToken: TokenAmount | null;

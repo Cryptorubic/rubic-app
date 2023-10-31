@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -137,7 +137,12 @@ export class PreviewSwapComponent {
   }
 
   public async navigateToHistory(): Promise<void> {
-    await this.router.navigate(['/history'], { queryParamsHandling: 'preserve' });
+    const trade = await firstValueFrom(this.tradeState$);
+    const isCrossChain = trade.trade instanceof CrossChainTrade;
+    await this.router.navigate(['/history'], {
+      queryParamsHandling: 'preserve',
+      state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
+    });
   }
 
   private async switchChain(): Promise<void> {

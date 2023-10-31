@@ -43,7 +43,7 @@ export class TokenSelectorPageComponent {
     if (token) {
       this.selectedAsset = token;
       const inputElement = this.document.getElementById('token-amount-input-element');
-      const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.isFinite();
+      const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.actualValue.isFinite();
 
       if (inputElement && isFromAmountEmpty) {
         setTimeout(() => {

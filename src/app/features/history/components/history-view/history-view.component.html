@@ -1,7 +1,18 @@
 <app-window-container>
   <ng-container header>Recent Trades</ng-container>
-  <ng-container>
+  <ng-container *ngIf="isUserActive$ | async; else noUser">
     <app-history-header></app-history-header>
     <app-history-table></app-history-table>
   </ng-container>
+  <ng-template #noUser>
+    <app-no-result
+      label="Wallet has not connected"
+      description="Connect wallet to obtain user trades history"
+    ></app-no-result>
+    <div class="button-container">
+      <button tuiButton appearance="primary" type="button" size="m" (click)="connectWallet()">
+        {{ 'navigation.login' | translate }}
+      </button>
+    </div>
+  </ng-template>
 </app-window-container>

@@ -104,7 +104,7 @@ export class CrossChainService {
         return this.sdkService.crossChain
           .calculateTradesReactively(
             fromSdkCompatibleToken,
-            fromAmount.toFixed(),
+            fromAmount.actualValue.toFixed(),
             toSdkCompatibleToken,
             tokenState.isDeflation
               ? { ...options, useProxy: this.getDisabledProxyConfig() }
@@ -150,7 +150,7 @@ export class CrossChainService {
                 tradeContainer?.calculated !== 0
               ) {
                 this.saveTrade(providers, {
-                  fromAmount: Web3Pure.toWei(fromAmount, fromToken.decimals),
+                  fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
                   fromBlockchain,
                   toBlockchain,
                   fromAddress: fromToken.address,
