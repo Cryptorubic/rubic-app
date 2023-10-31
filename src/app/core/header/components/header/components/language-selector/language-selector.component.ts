@@ -14,7 +14,7 @@ export class LanguageSelectorComponent {
   public readonly languages = LANGUAGES_LIST;
 
   public readonly activeLanguage$ = this.translateService.onLangChange.pipe(
-    startWith({ lang: this.translateService.defaultLang }),
+    startWith({ lang: this.translateService.currentLang }),
     map(lang => {
       return this.languages.find(el => el.lng === lang.lang);
     })

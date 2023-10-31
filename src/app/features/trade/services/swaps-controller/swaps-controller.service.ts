@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatestWith, firstValueFrom, forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { catchError, debounceTime, filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
@@ -40,7 +40,7 @@ import { SettingsService } from '@features/trade/services/settings-service/setti
 export class SwapsControllerService {
   private readonly _calculateTrade$ = new Subject<{ isForced?: boolean; stop?: boolean }>();
 
-  public readonly calculateTrade$ = this._calculateTrade$.asObservable();
+  public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
 
   /**
    * Contains trades types, which were disabled due to critical errors.
@@ -176,6 +176,11 @@ export class SwapsControllerService {
                   return of(null);
                 })
               );
+          } else {
+            this.swapsState.setCalculationProgress(
+              container.value.total,
+              container.value.calculated
+            );
           }
           if (!container?.value) {
             this.refreshService.setStopped();
@@ -360,7 +365,15 @@ export class SwapsControllerService {
 
   private subscribeOnSettings(): void {
     this.settingsService.crossChainRoutingValueChanges
-      .pipe(combineLatestWith(this.settingsService.instantTradeValueChanges))
+      .pipe(
+        startWith(this.settingsService.crossChainRoutingValue),
+        combineLatestWith(
+          this.settingsService.instantTradeValueChanges.pipe(
+            startWith(this.settingsService.instantTradeValue)
+          )
+        ),
+        debounceTime(10)
+      )
       .subscribe(() => {
         this.startRecalculation(true);
       });

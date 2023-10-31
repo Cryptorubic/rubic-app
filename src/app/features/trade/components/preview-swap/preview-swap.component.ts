@@ -13,6 +13,7 @@ import {
   EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   Web3Pure
 } from 'rubic-sdk';
@@ -74,6 +75,12 @@ export class PreviewSwapComponent {
         state.action = this.approve.bind(this);
       } else if (el.step === transactionStep.swapReady) {
         state.disabled = false;
+        if (
+          !isCrossChain &&
+          this.previewSwapService?.tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
+        ) {
+          state.label = 'Wrap';
+        }
         state.action = this.swap.bind(this);
       } else if (el.step === transactionStep.idle) {
         state.disabled = false;

@@ -121,7 +121,7 @@ export class SwapsFormService {
             form.fromToken &&
             form.toBlockchain &&
             form.toToken &&
-            form.fromAmount.actualValue?.gt(0)
+            form.fromAmount?.actualValue?.gt(0)
         )
       )
     ),

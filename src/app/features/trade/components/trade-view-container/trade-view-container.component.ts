@@ -30,12 +30,21 @@ import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 export class TradeViewContainerComponent {
   public readonly formContent$ = this.tradePageService.formContent$;
 
+  // private timeout: NodeJS.Timeout;
+
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
     tap(providers => {
       if (providers.length > 0 && providers[0].trade?.type !== ON_CHAIN_TRADE_TYPE.WRAPPED) {
         this.tradePageService.setProvidersVisibility(true);
       } else {
         this.tradePageService.setProvidersVisibility(false);
+        //
+        // if (!this.timeout) {
+        //   this.timeout = setTimeout(() => {
+        //     this.tradePageService.setProvidersVisibility(true);
+        //     clearTimeout(this.timeout);
+        //   }, 3_000);
+        // }
       }
     }),
     map(providers => providers.filter(provider => provider.trade))
