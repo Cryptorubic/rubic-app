@@ -10,14 +10,6 @@
           {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}
         </div>
 
-        <app-notification-badge
-          class="notification-counter notification-counter_profile"
-          *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-          size="xs"
-          color="red"
-          [value]="unreadTrades$ | async"
-        ></app-notification-badge>
-
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>
     </div>

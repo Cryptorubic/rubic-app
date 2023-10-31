@@ -1,4 +1,4 @@
-import { BehaviorSubject, map, Observable, of } from 'rxjs';
+import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
@@ -10,6 +10,7 @@ import { AirdropPointsApiService } from '@shared/services/airdrop-points-service
 import { Injectable } from '@angular/core';
 import { OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { AuthService } from '@core/services/auth/auth.service';
 
 @Injectable()
 export class AirdropPointsService {
@@ -30,7 +31,8 @@ export class AirdropPointsService {
     private readonly httpService: HttpService,
     private readonly dialogService: ModalService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly apiService: AirdropPointsApiService
+    private readonly apiService: AirdropPointsApiService,
+    private readonly authService: AuthService
   ) {
     this.handleAddressChange();
   }
@@ -38,14 +40,17 @@ export class AirdropPointsService {
   public updateSwapToEarnUserPointsInfo(): void {
     this._fetchUserPointsInfoLoading$.next(true);
 
-    this.walletConnectorService.addressChange$.pipe(
-      tap(address => {
-        this.apiService.fetchAirdropUserPointsInfo(address).subscribe(points => {
+    this.authService.currentUser$
+      .pipe(
+        switchMap(currentUser => {
+          return this.apiService.fetchAirdropUserPointsInfo(currentUser.address);
+        }),
+        tap(points => {
           this._points$.next(points);
           this._fetchUserPointsInfoLoading$.next(false);
-        });
-      })
-    );
+        })
+      )
+      .subscribe();
   }
 
   public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
@@ -70,7 +75,9 @@ export class AirdropPointsService {
 
   public async claimPoints(points: number, address: string): Promise<void> {
     if (address) {
-      this.httpService.post(`rewards/withdraw/?address=${address}`);
+      this.httpService
+        .post(`rewards/withdraw/?address=${address}`)
+        .subscribe(() => this.updateSwapToEarnUserPointsInfo());
 
       this.dialogService
         .showDialog(SuccessWithdrawModalComponent, {
@@ -79,8 +86,6 @@ export class AirdropPointsService {
           }
         })
         .subscribe();
-
-      this.updateSwapToEarnUserPointsInfo();
     }
   }
 

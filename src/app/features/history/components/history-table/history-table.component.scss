@@ -28,6 +28,22 @@
     }
   }
 
+  a.token-container__inner {
+    text-decoration: none;
+    
+    img {
+      transition: all 0.1s ease-in-out;
+    }
+
+    &:hover {
+      img {
+        transform: scale(1.3) translate(2px, -2px);
+
+        transition: all 0.1s ease-in-out;
+      }
+    }
+  }
+
   .token-container {
     display: flex;
     flex-direction: column;
@@ -35,20 +51,6 @@
     &__inner {
       display: flex;
       align-items: center;
-
-      text-decoration: none;
-
-      img {
-        transition: all 0.1s ease-in-out;
-      }
-
-      &:hover {
-        img {
-          transform: scale(1.3) translate(2px, -2px);
-
-          transition: all 0.1s ease-in-out;
-        }
-      }
     }
 
     &__main-image {

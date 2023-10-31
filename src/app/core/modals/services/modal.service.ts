@@ -8,8 +8,7 @@ import { MobileUserProfileComponent } from '@app/core/header/components/header/c
 import { MobileNativeModalService } from './mobile-native-modal.service';
 import { WalletsModalComponent } from '@app/core/wallets-modal/components/wallets-modal/wallets-modal.component';
 import { IMobileNativeOptions, INextModal } from '../models/mobile-native-options';
-import { RecentCrosschainTxComponent } from '@app/core/recent-trades/components/recent-crosschain-tx/recent-crosschain-tx.component';
-import { TuiDialogOptions, TuiDialogSize } from '@taiga-ui/core';
+import { TuiDialogOptions } from '@taiga-ui/core';
 import { MobileNavigationMenuComponent } from '@app/core/header/components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
@@ -188,15 +187,6 @@ export class ModalService {
    */
   public openWalletModal(injector: Injector): Observable<void> {
     return this.showDialog(WalletsModalComponent, { title: 'Connect wallet', size: 's' }, injector);
-  }
-
-  /**
-   * Show Recent Trades Modal dialog.
-   */
-  public openRecentTradesModal(data: { size: TuiDialogSize }): Observable<void> {
-    return this.showDialog(RecentCrosschainTxComponent, {
-      size: data.size
-    });
   }
 
   /**

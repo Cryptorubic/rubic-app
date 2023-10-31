@@ -3,6 +3,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 
 @Component({
   selector: 'app-points-container',
@@ -51,7 +52,7 @@ export class PointsContainerComponent {
     private readonly authService: AuthService
   ) {}
 
-  public async handleWithdraw(points: number, address: string): Promise<void> {
-    await this.airdropPointsService.claimPoints(points, address);
+  public async handleWithdraw(points: AirdropUserPointsInfo, address: string): Promise<void> {
+    await this.airdropPointsService.claimPoints(points.confirmed, address);
   }
 }
