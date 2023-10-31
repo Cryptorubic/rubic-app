@@ -5,6 +5,7 @@ import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
   BlockchainsInfo,
   compareCrossChainTrades,
+  compareCrossChainTradesWithoutTokenPrice,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
@@ -206,7 +207,17 @@ export class SwapsStateService {
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       if (isCrossChain) {
-        (currentTrades as WrappedCrossChainTradeOrNull[]).sort(compareCrossChainTrades);
+        const isThereTokenWithoutPrice = currentTrades.some(
+          currentTrade => !currentTrade.trade.to.price
+        );
+
+        if (isThereTokenWithoutPrice) {
+          (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
+            compareCrossChainTradesWithoutTokenPrice
+          );
+        } else {
+          (currentTrades as WrappedCrossChainTradeOrNull[]).sort(compareCrossChainTrades);
+        }
       } else if (isOnChain) {
         currentTrades.sort((a, b) => {
           const aPrice = (a.trade as OnChainTrade).to.price.multipliedBy(a.trade.to.tokenAmount);
