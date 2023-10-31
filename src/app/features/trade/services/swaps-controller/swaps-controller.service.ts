@@ -193,8 +193,8 @@ export class SwapsControllerService {
   }
 
   private subscribeOnRefreshServiceCalls(): void {
-    this.refreshService.onRefresh$.subscribe(() => {
-      this.startRecalculation(false);
+    this.refreshService.onRefresh$.subscribe(refreshState => {
+      this.startRecalculation(refreshState.isForced);
     });
   }
 
