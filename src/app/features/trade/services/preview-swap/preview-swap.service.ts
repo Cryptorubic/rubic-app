@@ -70,10 +70,10 @@ export class PreviewSwapService {
     map(([fromToken, fromAmount, toToken, toAmount]) => {
       const fromAsset = this.getTokenAsset(fromToken);
       const fromValue = {
-        tokenAmount: fromAmount,
+        tokenAmount: fromAmount.actualValue,
         fiatAmount:
-          fromAmount.gt(0) && fromToken.price
-            ? fromAmount.multipliedBy(fromToken.price || 0).toFixed(2)
+          fromAmount.actualValue.gt(0) && fromToken.price
+            ? fromAmount.actualValue.multipliedBy(fromToken.price || 0).toFixed(2)
             : null
       };
 

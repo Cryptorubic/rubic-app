@@ -11,7 +11,12 @@ import {
   TuiSelectModule,
   TuiTabsModule
 } from '@taiga-ui/kit';
-import { TuiLoaderModule, TuiSvgModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiLoaderModule,
+  TuiSvgModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
 import { TuiTableModule, TuiTablePaginationModule } from '@taiga-ui/addon-table';
@@ -47,7 +52,8 @@ import { CommonTableService } from '@features/history/services/common-table-serv
     TuiSelectModule,
     TuiTextfieldControllerModule,
     TuiDataListWrapperModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TuiButtonModule
   ],
   providers: [CommonTableService, CrossChainTableService, OnChainTableService]
 })

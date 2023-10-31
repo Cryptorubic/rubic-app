@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { map } from 'rxjs/operators';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-history-view',
@@ -6,4 +9,16 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./history-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class HistoryViewComponent {}
+export class HistoryViewComponent {
+  public readonly isUserActive$ = this.walletConnector.addressChange$.pipe(map(Boolean));
+
+  constructor(
+    private readonly walletConnector: WalletConnectorService,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
+  ) {}
+
+  public connectWallet(): void {
+    this.modalService.openWalletModal(this.injector).subscribe();
+  }
+}

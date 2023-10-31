@@ -35,14 +35,14 @@ export class TokensRateComponent implements OnInit {
       map(([inputForm, outputForm]) => {
         const { fromAmount, fromToken, toToken } = inputForm;
         const { toAmount } = outputForm;
-        if (toAmount?.gt(0) && fromAmount?.gt(0) && fromToken && toToken) {
+        if (toAmount?.gt(0) && fromAmount?.actualValue.gt(0) && fromToken && toToken) {
           return {
             from: {
-              amount: fromAmount.dividedBy(toAmount),
+              amount: fromAmount.actualValue.dividedBy(toAmount),
               symbol: fromToken.symbol
             },
             to: {
-              amount: toAmount.dividedBy(fromAmount),
+              amount: toAmount.dividedBy(fromAmount.actualValue),
               symbol: toToken.symbol
             }
           };

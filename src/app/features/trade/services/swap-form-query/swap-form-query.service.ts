@@ -89,7 +89,9 @@ export class SwapFormQueryService {
           ...(curr.toToken?.symbol && { to: curr.toToken.symbol }),
           ...(curr.fromBlockchain && { fromChain: curr.fromBlockchain }),
           ...(curr.toBlockchain && { toChain: curr.toBlockchain }),
-          ...(curr.fromAmount?.gt(0) && { amount: curr.fromAmount.toFixed() }),
+          ...(curr.fromAmount?.actualValue.gt(0) && {
+            amount: curr.fromAmount.actualValue.toFixed()
+          }),
           ...(!isEqual && { onramperTxId: null })
         });
       });
@@ -137,7 +139,12 @@ export class SwapFormQueryService {
           toBlockchain,
           ...(fromToken && { fromToken }),
           ...(toToken && { toToken }),
-          ...(amount && { fromAmount: new BigNumber(amount) })
+          ...(amount && {
+            fromAmount: {
+              actualValue: new BigNumber(amount),
+              visibleValue: amount
+            }
+          })
         });
 
         this._initialLoading$.next(false);

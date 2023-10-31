@@ -37,5 +37,10 @@ export class HistoryTableComponent {
     private readonly commonTableService: CommonTableService,
     private readonly crossChainTableService: CrossChainTableService,
     private readonly onChainTableService: OnChainTableService
-  ) {}
+  ) {
+    const type = this.window.history.state?.type;
+    if (type) {
+      this.commonTableService.activeItemIndex = type === 'cross-chain' ? 0 : 1;
+    }
+  }
 }

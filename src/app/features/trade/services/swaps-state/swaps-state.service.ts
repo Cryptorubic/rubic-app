@@ -76,7 +76,7 @@ export class SwapsStateService {
           return false;
         }
 
-        return token.amount?.isFinite() ? token.amount.lt(amount) : true;
+        return token.amount?.isFinite() ? token.amount.lt(amount.actualValue) : true;
       } catch {
         return false;
       }

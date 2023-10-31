@@ -1,9 +1,4 @@
-<ng-container
-  *ngIf="
-    states?.length > 0 || calculationProgress.total !== calculationProgress.current;
-    else emptyContent
-  "
->
+<ng-container *ngIf="calculationProgress.total !== calculationProgress.current; else emptyContent">
   <div class="list" [ngClass]="{ list_padding: isModal }">
     <app-provider-element
       *ngFor="let state of states; index as i"

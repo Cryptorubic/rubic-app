@@ -45,7 +45,9 @@ export class SwapFormPageComponent {
 
   public readonly fromAmount$ = this.swapFormService.fromAmount$;
 
-  public readonly toAmount$ = this.swapFormService.toAmount$;
+  public readonly toAmount$ = this.swapFormService.toAmount$.pipe(
+    map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null))
+  );
 
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
@@ -99,11 +101,14 @@ export class SwapFormPageComponent {
     }
   }
 
-  public updateInputValue(formattedAmount: BigNumber): void {
-    const amount = !formattedAmount?.isNaN() ? new BigNumber(formattedAmount) : null;
-    this.swapFormService.inputControl.patchValue({
-      fromAmount: amount
-    });
+  public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
+    const isValueCorrect = !value.actualValue?.isNaN();
+    const oldValue = this.swapFormService.inputValue.fromAmount.actualValue;
+    if (!oldValue.eq(value.actualValue)) {
+      this.swapFormService.inputControl.patchValue({
+        fromAmount: isValueCorrect ? value : null
+      });
+    }
   }
 
   public async toggleReceiver(): Promise<void> {
@@ -129,7 +134,12 @@ export class SwapFormPageComponent {
       fromToken: toToken,
       toToken: fromToken,
       toBlockchain: fromBlockchain,
-      ...(toAmount?.gt(0) && { fromAmount: toAmount })
+      ...(toAmount?.gt(0) && {
+        fromAmount: {
+          visibleValue: toAmount.toFixed(),
+          actualValue: toAmount
+        }
+      })
     });
     this.swapFormService.outputControl.patchValue({
       toAmount: null
@@ -143,7 +153,10 @@ export class SwapFormPageComponent {
   public handleMaxButton(): void {
     const token = this.swapFormService.inputValue.fromToken;
     this.swapFormService.inputControl.patchValue({
-      fromAmount: new BigNumber(token.amount)
+      fromAmount: {
+        actualValue: token.amount,
+        visibleValue: token.amount.toFixed()
+      }
     });
   }
 }
