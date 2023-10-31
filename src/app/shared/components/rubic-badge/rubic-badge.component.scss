@@ -5,12 +5,12 @@
   gap: var(--tui-padding-s);
   align-items: center;
   height: 24px;
-  padding: 0 10px;
+  padding: 0 var(--tui-padding-m);
 
   border-radius: var(--tui-radius-m);
 
   &_error {
-    background: rgb(244 87 37 / 12%);
+    background: var(--tui-error-bg);
 
     .badge__dot {
       background: #f45725;
@@ -18,7 +18,7 @@
   }
 
   &_warning {
-    background: rgb(255 199 0 / 12%);
+    background: var(--tui-warning-bg);
 
     .badge__dot {
       background: #ffc700;
@@ -26,7 +26,7 @@
   }
 
   &_success {
-    background: rgb(74 201 155 / 12%);
+    background: var(--tui-success-bg);
 
     .badge__dot {
       background: #4ac99b;
@@ -34,7 +34,7 @@
   }
 
   &_info {
-    background: rgb(112 182 246 / 12%);
+    background: var(--tui-info-bg);
 
     .badge__dot {
       background: #70b6f6;

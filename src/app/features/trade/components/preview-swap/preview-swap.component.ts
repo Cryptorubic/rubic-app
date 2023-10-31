@@ -27,7 +27,6 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TradeProvider } from '@features/trade/models/trade-provider';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 
@@ -39,8 +38,6 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 })
 export class PreviewSwapComponent {
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
-
-  public time = '3 min';
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
@@ -163,15 +160,15 @@ export class PreviewSwapComponent {
       .subscribe();
   }
 
-  public getAverageTime(tradeProvider: TradeProvider): number {
-    if (tradeProvider) {
-      const provider = TRADES_PROVIDERS[tradeProvider];
+  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): number {
+    if (trade.tradeType) {
+      const provider = TRADES_PROVIDERS[trade.tradeType];
       const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime = providerAverageTime?.[tradeProvider as CrossChainTradeType];
+      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
 
       return currentProviderTime ? currentProviderTime : provider.averageTime;
     } else {
-      return 3;
+      return trade instanceof CrossChainTrade ? 30 : 3;
     }
   }
 
