@@ -14,6 +14,7 @@ import {
   EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   Web3Pure
 } from 'rubic-sdk';
@@ -65,6 +66,8 @@ export class PreviewSwapComponent {
       const isCrossChain =
         this.swapsFormService.inputValue.fromBlockchain !==
         this.swapsFormService.inputValue.toBlockchain;
+
+      console.log(this.previewSwapService.tradeState);
       const state = {
         action: (): void => {},
         label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
@@ -94,6 +97,13 @@ export class PreviewSwapComponent {
         state.disabled = false;
         state.action = () => this.connectWallet();
         state.label = `Connect wallet`;
+      }
+      if (
+        (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&
+        !isCrossChain &&
+        this.previewSwapService?.tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
+      ) {
+        state.label = 'Wrap';
       }
       return state;
     })
@@ -161,7 +171,7 @@ export class PreviewSwapComponent {
   }
 
   public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
-    if (trade.tradeType) {
+    if (trade?.tradeType) {
       const provider = TRADES_PROVIDERS[trade.tradeType];
       const providerAverageTime = this.platformConfigurationService.providersAverageTime;
       const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];

@@ -46,7 +46,7 @@ export class SwapsStateService {
 
   public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
 
-  public get tradeState(): TradeState {
+  public get tradeState(): SelectedTrade {
     return this._tradeState$.value;
   }
 
@@ -78,7 +78,7 @@ export class SwapsStateService {
           return false;
         }
 
-        return token.amount?.isFinite() ? token.amount.lt(amount.actualValue) : true;
+        return token.amount?.isFinite() ? token.amount.lt(amount?.actualValue) : true;
       } catch {
         return false;
       }

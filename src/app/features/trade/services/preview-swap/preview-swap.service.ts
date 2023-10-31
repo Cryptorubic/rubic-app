@@ -62,6 +62,10 @@ export class PreviewSwapService {
     first()
   );
 
+  public get tradeState(): SelectedTrade {
+    return this.swapsStateService.tradeState;
+  }
+
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
     this.swapForm.fromToken$.pipe(first()),
     this.swapForm.fromAmount$.pipe(first()),
