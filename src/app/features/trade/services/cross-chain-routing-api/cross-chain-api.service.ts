@@ -101,7 +101,8 @@ export class CrossChainApiService {
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
-          : this.window.document.location.href
+          : this.window.document.location.href,
+      ...('id' in trade && { changenow_id: trade.id })
     };
 
     await firstValueFrom(
