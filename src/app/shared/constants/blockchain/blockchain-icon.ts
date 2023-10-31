@@ -118,7 +118,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
   [BLOCKCHAIN_NAME.PULSECHAIN]: `${basePath}pulsechain.svg`,
   [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.svg`,
-  [BLOCKCHAIN_NAME.BASE]: `${basePath}base.png`,
+  [BLOCKCHAIN_NAME.BASE]: `${basePath}base.svg`,
   [BLOCKCHAIN_NAME.MANTLE]: `${basePath}mantle.svg`,
   [BLOCKCHAIN_NAME.GOERLI]: `${basePath}eth-contrast.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: `${basePath}bnb.svg`,
