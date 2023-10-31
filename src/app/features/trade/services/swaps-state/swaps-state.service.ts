@@ -211,12 +211,10 @@ export class SwapsStateService {
         currentTrade => !currentTrade.trade.to.price
       );
 
-      if (isCrossChain) {
-        currentTrades = this.sortCrossChainTrades(currentTrades, isThereTokenWithoutPrice);
-      } else if (isOnChain) {
-        currentTrades = this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
-      } else {
-        return;
+      if (isCrossChain || isOnChain) {
+        currentTrades = isCrossChain
+          ? this.sortCrossChainTrades(currentTrades, isThereTokenWithoutPrice)
+          : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
       }
 
       const bestTrade = currentTrades[0];

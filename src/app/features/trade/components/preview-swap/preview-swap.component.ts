@@ -160,15 +160,15 @@ export class PreviewSwapComponent {
       .subscribe();
   }
 
-  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): number {
+  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (trade.tradeType) {
       const provider = TRADES_PROVIDERS[trade.tradeType];
       const providerAverageTime = this.platformConfigurationService.providersAverageTime;
       const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
 
-      return currentProviderTime ? currentProviderTime : provider.averageTime;
+      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
     } else {
-      return trade instanceof CrossChainTrade ? 30 : 3;
+      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
     }
   }
 

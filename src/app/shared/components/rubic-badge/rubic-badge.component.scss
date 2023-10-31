@@ -13,7 +13,7 @@
     background: var(--tui-error-bg);
 
     .badge__dot {
-      background: #f45725;
+      background: var(--tui-error-fill);
     }
   }
 
@@ -21,7 +21,7 @@
     background: var(--tui-warning-bg);
 
     .badge__dot {
-      background: #ffc700;
+      background: var(--tui-warning-fill);
     }
   }
 
@@ -29,7 +29,7 @@
     background: var(--tui-success-bg);
 
     .badge__dot {
-      background: #4ac99b;
+      background: var(--tui-success-fill);
     }
   }
 
@@ -37,7 +37,7 @@
     background: var(--tui-info-bg);
 
     .badge__dot {
-      background: #70b6f6;
+      background: var(--tui-info-fill);
     }
   }
 
