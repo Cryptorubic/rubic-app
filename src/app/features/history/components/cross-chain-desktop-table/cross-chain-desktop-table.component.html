@@ -83,11 +83,12 @@
           </td>
           <td *tuiCell="'statusFrom'" tuiTd>
             <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
-              <tui-badge
+              <app-rubic-badge
                 *ngIf="item?.fromTx?.status"
                 [status]="item.fromTx.status.appearance"
-                [value]="item.fromTx.status.label"
-              ></tui-badge>
+                [label]="item.fromTx.status.label"
+              >
+              </app-rubic-badge>
               <img
                 *ngIf="item.fromTx.explorerLink"
                 class="status-from-link-arrow"
@@ -98,11 +99,12 @@
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
             <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">
-              <tui-badge
-                *ngIf="item.toTx?.status"
+              <app-rubic-badge
+                *ngIf="item?.toTx?.status"
                 [status]="item.toTx.status.appearance"
-                [value]="item.toTx.status.label"
-              ></tui-badge>
+                [label]="item.toTx.status.label"
+              >
+              </app-rubic-badge>
               <img
                 *ngIf="item.toTx.explorerLink"
                 class="status-from-link-arrow"
@@ -179,11 +181,12 @@
           <div class="mobile-view__row-key">{{ 'recentTrades.statusFrom' | translate }}</div>
           <div class="mobile-view__row-value">
             <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
-              <tui-badge
+              <app-rubic-badge
                 *ngIf="item?.fromTx?.status"
                 [status]="item.fromTx.status.appearance"
-                [value]="item.fromTx.status.label"
-              ></tui-badge>
+                [label]="item.fromTx.status.label"
+              >
+              </app-rubic-badge>
               <img
                 *ngIf="item?.fromTx?.explorerLink"
                 class="status-from-link-arrow"
@@ -198,11 +201,12 @@
           <div class="mobile-view__row-key">{{ 'recentTrades.statusTo' | translate }}</div>
           <div class="mobile-view__row-value">
             <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">
-              <tui-badge
-                *ngIf="item.toTx?.status"
+              <app-rubic-badge
+                *ngIf="item?.toTx?.status"
                 [status]="item.toTx.status.appearance"
-                [value]="item.toTx.status.label"
-              ></tui-badge>
+                [label]="item.toTx.status.label"
+              >
+              </app-rubic-badge>
               <img
                 *ngIf="item?.toTx?.explorerLink"
                 class="status-from-link-arrow"
