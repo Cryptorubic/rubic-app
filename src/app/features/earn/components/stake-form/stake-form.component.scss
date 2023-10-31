@@ -6,8 +6,7 @@
   ::ng-deep {
     app-window-container {
       header {
-        padding-right: 0;
-        padding-left: 0;
+        padding: 0 0 var(--tui-padding-m) var(--tui-padding-m);
       }
     }
   }
@@ -28,9 +27,13 @@
 }
 
 .title {
-  position: relative;
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    width: fit-content;
 
-  margin-bottom: 36px;
+    cursor: pointer;
+  }
 
   &__back {
     @include clearbtn();

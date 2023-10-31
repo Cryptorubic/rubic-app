@@ -78,6 +78,7 @@ import { AirdropPointsService } from '@shared/services/airdrop-points-service/ai
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
+import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
 
 @NgModule({
   declarations: [
@@ -131,7 +132,8 @@ import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive
     AmountTransputComponent,
     NoResultComponent,
     RateChangedModalComponent,
-    NoFrameDirective
+    NoFrameDirective,
+    RubicBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -210,7 +212,8 @@ import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive
     NoResultComponent,
     ClaimRoundRowComponent,
     RateChangedModalComponent,
-    NoFrameDirective
+    NoFrameDirective,
+    RubicBadgeComponent
   ],
   providers: [
     ScannerLinkPipe,
