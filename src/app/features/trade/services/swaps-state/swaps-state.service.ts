@@ -70,13 +70,6 @@ export class SwapsStateService {
       this.walletConnector.addressChange$
     ),
     map(([token, amount, network, userAddress]) => {
-      console.log('====== NOT_ENOUGH_BALANCE ======');
-      console.log('FROM_TOKEN_NAME: ', token?.name);
-      console.log('FROM_TOKEN_USER_AMOUNT: ', token?.amount?.toFixed());
-      console.log('FROM_TOKEN_INPUT_AMOUNT: ', amount?.actualValue?.toFixed());
-      console.log('NETWORK: ', network);
-      console.log('USER_ADDRESS: ', userAddress);
-      console.log('====== NOT_ENOUGH_BALANCE ======');
       try {
         const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);
         const currentChainType = BlockchainsInfo.getChainType(network);
@@ -87,7 +80,6 @@ export class SwapsStateService {
 
         return token.amount?.isFinite() ? token.amount.lt(amount?.actualValue) : true;
       } catch (error) {
-        console.log('ERROR: ', error);
         return false;
       }
     })
