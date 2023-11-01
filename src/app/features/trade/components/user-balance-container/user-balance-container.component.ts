@@ -1,10 +1,10 @@
 import {
-  Component,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
   EventEmitter,
-  Output,
   Input,
-  ChangeDetectorRef
+  Output
 } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -28,7 +28,11 @@ export class UserBalanceContainerComponent {
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
     combineLatestWith(this.triggerRefresh$),
     map(([fromToken]) => {
-      return this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token));
+      const currentToken = this.tokensStoreService.tokens.find(token =>
+        compareTokens(fromToken, token)
+      );
+      console.log('Token for MAX_BUTTON: ', currentToken);
+      return currentToken;
     })
   );
 
