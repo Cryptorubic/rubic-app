@@ -231,6 +231,7 @@ export class SwapsStateService {
         trade.status = TRADE_STATUS.READY_TO_APPROVE;
       }
 
+      this._tradesStore$.next(currentTrades);
       this.currentTrade = trade;
     } else {
       this.currentTrade = {
