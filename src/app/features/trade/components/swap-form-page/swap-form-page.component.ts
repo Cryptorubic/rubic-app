@@ -156,11 +156,13 @@ export class SwapFormPageComponent {
 
   public handleMaxButton(): void {
     const token = this.swapFormService.inputValue.fromToken;
-    this.swapFormService.inputControl.patchValue({
-      fromAmount: {
-        actualValue: token.amount,
-        visibleValue: token.amount.toFixed()
-      }
-    });
+    if (token.amount) {
+      this.swapFormService.inputControl.patchValue({
+        fromAmount: {
+          actualValue: token.amount,
+          visibleValue: token.amount.toFixed()
+        }
+      });
+    }
   }
 }

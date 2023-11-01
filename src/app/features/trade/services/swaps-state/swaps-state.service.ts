@@ -207,9 +207,9 @@ export class SwapsStateService {
     if (currentTrades.length) {
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
-      const isThereTokenWithoutPrice = currentTrades.some(
-        currentTrade => !currentTrade.trade.to.price
-      );
+      const isThereTokenWithoutPrice = currentTrades
+        .filter(trade => trade?.trade?.to)
+        .some(currentTrade => !currentTrade.trade.to.price);
 
       if (isCrossChain || isOnChain) {
         currentTrades = isCrossChain
