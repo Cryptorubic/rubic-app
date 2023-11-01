@@ -1,9 +1,5 @@
-<svg width="52" height="50" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Group 1000006814">
-<ellipse id="Ellipse 3024" cx="26.0908" cy="24.9999" rx="25.4089" ry="24.9999" fill="#FF433E"/>
-<g id="Group 1000006310">
-<path id="Vector" d="M19.2173 10H14V40H19.2173V10Z" fill="white"/>
-<path id="Vector_2" d="M33.4784 40L22.0505 25L33.4784 10H40.0173L28.7449 25L40.0173 40H33.4784Z" fill="white"/>
-</g>
-</g>
+<svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="25.6816" cy="24.9999" rx="25" ry="24.9999" fill="#FF433E"/>
+<path d="M19.2173 10H14V40H19.2173V10Z" fill="white"/>
+<path d="M33.4782 40L22.0503 25L33.4782 10H40.0171L28.7446 25L40.0171 40H33.4782Z" fill="white"/>
 </svg>

@@ -1,15 +1,15 @@
-<svg width="52" height="50" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="26.0905" cy="24.9999" rx="25.4089" ry="24.9999" fill="#002D74"/>
+<svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="25.6816" cy="24.9999" rx="25" ry="24.9999" fill="#002D74"/>
 <path d="M26.0109 10L13 17.512V32.5362L26.0109 40.0483L39 32.5362V17.512L26.0109 10ZM35.1465 30.3064L25.9892 35.5887L16.8535 30.3064V19.7419L26.0109 14.4596L35.1465 19.7419V30.3064Z" fill="white"/>
-<path d="M26.0109 40.0483L39 32.5362V17.512L26.0109 10V14.4596L35.1466 19.7419V30.328L25.9893 35.6103V40.0483H26.0109Z" fill="url(#paint0_linear_201_61)"/>
-<path d="M25.9892 10L13 17.512V32.5362L25.9892 40.0483V35.5887L16.8535 30.3064V19.7202L25.9892 14.4596V10Z" fill="url(#paint1_linear_201_61)"/>
+<path d="M26.0109 40.0483L39 32.5362V17.512L26.0109 10V14.4596L35.1466 19.7419V30.328L25.9893 35.6103V40.0483H26.0109Z" fill="url(#paint0_linear_61_33)"/>
+<path d="M25.9892 10L13 17.512V32.5362L25.9892 40.0483V35.5887L16.8535 30.3064V19.7202L25.9892 14.4596V10Z" fill="url(#paint1_linear_61_33)"/>
 <path d="M32.0726 28.5313L26.011 32.0384L19.9277 28.5313V21.5171L26.011 18.0101L32.0726 21.5171L29.5397 22.9892L25.9894 20.9326L22.4606 22.9892V27.0808L26.011 29.1375L29.5613 27.0808L32.0726 28.5313Z" fill="white"/>
 <defs>
-<linearGradient id="paint0_linear_201_61" x1="32.509" y1="40.049" x2="32.509" y2="25.0245" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_61_33" x1="32.509" y1="40.049" x2="32.509" y2="25.0245" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
 <stop offset="1" stop-color="white" stop-opacity="0.67"/>
 </linearGradient>
-<linearGradient id="paint1_linear_201_61" x1="19.4997" y1="10" x2="19.4997" y2="25.0245" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint1_linear_61_33" x1="19.4997" y1="10" x2="19.4997" y2="25.0245" gradientUnits="userSpaceOnUse">
 <stop stop-color="white"/>
 <stop offset="1" stop-color="white"/>
 </linearGradient>
