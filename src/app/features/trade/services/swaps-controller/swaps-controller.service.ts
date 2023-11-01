@@ -176,15 +176,15 @@ export class SwapsControllerService {
                   return of(null);
                 })
               );
+          }
+          if (!container?.value) {
+            this.refreshService.setStopped();
+            this.swapStateService.clearProviders();
           } else {
             this.swapsState.setCalculationProgress(
               container.value.total,
               container.value.calculated
             );
-          }
-          if (!container?.value) {
-            this.refreshService.setStopped();
-            this.swapStateService.clearProviders();
           }
           return of(null);
         }),

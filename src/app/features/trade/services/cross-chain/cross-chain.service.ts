@@ -290,6 +290,7 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+      await this.crossChainApiService.patchTrade(transactionHash, true);
     } catch (error) {
       if (
         transactionHash &&
