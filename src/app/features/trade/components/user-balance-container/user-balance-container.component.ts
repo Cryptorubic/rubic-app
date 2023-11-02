@@ -27,12 +27,9 @@ export class UserBalanceContainerComponent {
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
     combineLatestWith(this.triggerRefresh$),
-    map(([fromToken]) => {
-      const findedToken = this.tokensStoreService.tokens.find(token =>
-        compareTokens(fromToken, token)
-      );
-      return findedToken;
-    })
+    map(([fromToken]) =>
+      this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
+    )
   );
 
   @Input() public hide: 'maxButton' | 'balance';
