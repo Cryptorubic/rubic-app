@@ -125,12 +125,15 @@ export class SwapsControllerService {
           const { toBlockchain, fromToken } = this.swapFormService.inputValue;
 
           if (fromToken.blockchain === toBlockchain) {
-            return this.onChainService.calculateTrades(this.disabledTradesTypes.onChain).pipe(
-              catchError(err => {
-                console.debug(err);
-                return of(null);
-              })
-            );
+            // @TODO Make bl instead of hardcode
+            return this.onChainService
+              .calculateTrades([...this.disabledTradesTypes.onChain, 'XY_DEX'])
+              .pipe(
+                catchError(err => {
+                  console.debug(err);
+                  return of(null);
+                })
+              );
           } else {
             return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
               catchError(err => {
