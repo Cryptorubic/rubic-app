@@ -5,7 +5,6 @@ import { map, pluck, switchMap } from 'rxjs/operators';
 import { TradeVolume } from '@core/services/backend/volume-api/models/trade-volume';
 import { TradeVolumeRequest } from '@core/services/backend/volume-api/models/trade-volume-request';
 import { BigNumber } from 'bignumber.js';
-import { TradeVolumeByPeriod } from './models/trade-volume-by-period';
 import { LpReward } from './models/lp-rewards';
 
 @Injectable({
@@ -34,14 +33,6 @@ export class VolumeApiService {
     timer(0, 1000 * 60 * 60)
       .pipe(switchMap(() => this.fetchVolume()))
       .subscribe(volume => this.tradeVolume$.next(volume));
-  }
-
-  /**
-   * Makes request for trade volume mapped by period.
-   * @return Observable trade volume by period.
-   */
-  public fetchVolumesByPeriod(): Observable<TradeVolumeByPeriod> {
-    return this.httpService.get('total_values/stats/crosschain-lp');
   }
 
   /**

@@ -7,8 +7,6 @@ import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BlockchainName } from 'rubic-sdk';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { isMinimalToken } from '@shared/utils/is-token';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
@@ -17,6 +15,7 @@ import {
   notEvmChangeNowBlockchainsList,
   RankedBlockchain
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -44,7 +43,7 @@ export class BlockchainsListService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService
   ) {
     this.setAvailableBlockchains();
@@ -61,11 +60,6 @@ export class BlockchainsListService {
       );
     }
 
-    const { formType } = this.assetsSelectorService;
-    const { fromAsset } = this.swapFormService.inputValue;
-    const selectedBlockchain =
-      formType === 'to' && isMinimalToken(fromAsset) && fromAsset.blockchain;
-
     this._availableBlockchains = blockchains
       .map(blockchain => {
         const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
@@ -74,7 +68,6 @@ export class BlockchainsListService {
         const disabledFrom = (
           Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
         ).includes(blockchain.name);
-        const disabledLimitOrder = selectedBlockchain && blockchain.name !== selectedBlockchain;
 
         return {
           name: blockchain.name,
@@ -83,8 +76,7 @@ export class BlockchainsListService {
           label: blockchainLabel[blockchain.name],
           tags: blockchain.tags,
           disabledConfiguration,
-          disabledFrom,
-          disabledLimitOrder
+          disabledFrom
         };
       })
       .sort((a, b) => b.rank - a.rank);
@@ -111,7 +103,6 @@ export class BlockchainsListService {
   public isDisabled(blockchain: AvailableBlockchain): boolean {
     return (
       blockchain.disabledConfiguration ||
-      blockchain.disabledLimitOrder ||
       this.isDisabledFrom(blockchain) ||
       this.isDisabledTo(blockchain)
     );
@@ -138,9 +129,6 @@ export class BlockchainsListService {
     }
     if (blockchain.disabledConfiguration) {
       return 'Temporary disabled';
-    }
-    if (blockchain.disabledLimitOrder) {
-      return 'Change selected source token';
     }
     return null;
   }

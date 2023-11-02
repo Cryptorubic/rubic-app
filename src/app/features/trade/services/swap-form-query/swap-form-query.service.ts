@@ -5,11 +5,6 @@ import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
-import {
-  defaultFormParameters,
-  DefaultParametersFrom,
-  DefaultParametersTo
-} from '@core/services/swaps/constants/default-form-parameters';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
@@ -20,6 +15,11 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { AssetType } from '@features/trade/models/asset';
+import {
+  defaultFormParameters,
+  DefaultParametersFrom,
+  DefaultParametersTo
+} from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 
 @Injectable()
 export class SwapFormQueryService {

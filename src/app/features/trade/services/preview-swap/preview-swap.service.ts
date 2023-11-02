@@ -31,7 +31,7 @@ import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
-import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
+import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -103,7 +103,7 @@ export class PreviewSwapService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly airdropPointsService: AirdropPointsService,
-    private readonly recentTradesStoreService: RecentTradesStoreService
+    private readonly recentTradesStoreService: UnreadTradesService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();

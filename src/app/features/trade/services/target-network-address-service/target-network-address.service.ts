@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { BlockchainsInfo, ChainType } from 'rubic-sdk';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Injectable()
 export class TargetNetworkAddressService {
@@ -21,7 +21,7 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressValid$ = this._isAddressValid$.asObservable();
 
-  constructor(private readonly swapFormService: SwapFormService) {
+  constructor(private readonly swapFormService: SwapsFormService) {
     this.watchIsAddressRequired();
   }
 

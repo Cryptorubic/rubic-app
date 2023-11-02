@@ -49,7 +49,6 @@ import { TransactionStateComponent } from './components/transaction-state/transa
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
-import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { TransactionDetailsElementComponent } from '@features/trade/components/swap-info/components/transaction-details-element/transaction-details-element.component';
@@ -59,6 +58,7 @@ import { TargetNetworkAddressComponent } from '@features/trade/components/target
 import { TokensRateComponent } from '@features/trade/components/tokens-rate/tokens-rate.component';
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
+import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 
 @NgModule({
   declarations: [

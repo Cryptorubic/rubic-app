@@ -6,7 +6,7 @@ import { StoreService } from '@core/services/store/store.service';
 @Injectable({
   providedIn: 'root'
 })
-export class RecentTradesStoreService {
+export class UnreadTradesService {
   private get userAddress(): string {
     return this.authService.userAddress;
   }

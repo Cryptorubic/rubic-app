@@ -15,13 +15,9 @@ import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
 import { httpLoaderFactory } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
-import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
-import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
 
@@ -48,9 +44,6 @@ import { ModalsModule } from './modals/modals.module';
       multi: true
     },
     SdkService,
-    SwapFormService,
-    SwapFormQueryService,
-    FiatsService,
     SuccessTxModalService
   ],
   imports: [
@@ -66,7 +59,6 @@ import { ModalsModule } from './modals/modals.module';
         deps: [HttpClient]
       }
     }),
-    RecentTradesModule,
     ModalsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]

@@ -8,11 +8,11 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -53,7 +53,7 @@ export class AssetTypesAsideComponent {
     private readonly blockchainsListService: BlockchainsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
@@ -63,17 +63,15 @@ export class AssetTypesAsideComponent {
   ) {}
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
-    if ('blockchain' in this.swapFormService.inputValue.fromAsset) {
-      const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
-      const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
-        blockchain => blockchain.name === 'ZK_SYNC'
-      );
+    const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
+    const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
+      blockchain => blockchain.name === 'ZK_SYNC'
+    );
 
-      if (this.swapFormService.inputValue.fromAsset.blockchain !== 'ZK_SYNC') {
-        return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
-      } else {
-        return this.formType === 'from' ? [zkSyncBlockchain] : [...allAvailableBlockchains];
-      }
+    if (this.swapFormService.inputValue.fromToken.blockchain !== 'ZK_SYNC') {
+      return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
+    } else {
+      return this.formType === 'from' ? [zkSyncBlockchain] : [...allAvailableBlockchains];
     }
   }
 
@@ -101,11 +99,7 @@ export class AssetTypesAsideComponent {
       slicedBlockchains,
       toBlockchain
     );
-    const fromBlockchain =
-      this.swapFormService.inputValue.fromAsset &&
-      'blockchain' in this.swapFormService.inputValue.fromAsset
-        ? this.swapFormService.inputValue.fromAsset.blockchain
-        : null;
+    const fromBlockchain = this.swapFormService.inputValue.fromBlockchain;
     const isSelectedFromBlockchainIncluded = this.isSelectedBlockchainIncluded(
       slicedBlockchains,
       fromBlockchain

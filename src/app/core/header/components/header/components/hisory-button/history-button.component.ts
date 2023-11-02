@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
+import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { ModalService } from '@core/modals/services/modal.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -16,7 +16,7 @@ export class HistoryButtonComponent {
   public readonly currentUser$ = this.authService.currentUser$;
 
   constructor(
-    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly recentTradesStoreService: UnreadTradesService,
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService

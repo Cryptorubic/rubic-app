@@ -22,7 +22,7 @@ import {
 } from '@core/header/components/header/components/rubic-menu/constants/navigation-list';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -67,7 +67,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly headerStore: HeaderStore,
-    private readonly recentTradesStoreService: RecentTradesStoreService,
+    private readonly recentTradesStoreService: UnreadTradesService,
     private readonly mobileNativeService: MobileNativeModalService,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService

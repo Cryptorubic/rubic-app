@@ -24,17 +24,14 @@ import { MobileMenuTogglerComponent } from './components/header/components/mobil
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
-import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { BannerComponent } from './components/header/components/banner/app-banner.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
-import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
@@ -51,9 +48,7 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    TutorialsComponent,
     ThemeSwitcherComponent,
-    TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
     BannerComponent,
@@ -88,7 +83,6 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
     FormsModule,
     TuiLoaderModule,
     ModalsModule,
-    RecentTradesModule,
     ClipboardModule,
     TuiAccordionModule,
     TuiDialogModule,

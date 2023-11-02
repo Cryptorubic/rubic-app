@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/c
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { map } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';
-import { RecentTradesStoreService } from '@core/services/recent-trades/recent-trades-store.service';
+import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
   selector: 'app-history-view',
@@ -17,7 +17,7 @@ export class HistoryViewComponent {
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly recentTradesStoreService: RecentTradesStoreService
+    private readonly recentTradesStoreService: UnreadTradesService
   ) {
     this.readAllTrades();
   }
