@@ -76,7 +76,7 @@ export class RetrodropService extends ClaimService {
                 proof: claim.proof
               },
               claimAmount: amount?.gt(0) ? amount : new BigNumber(0),
-              participantOfPrevRounds: 'participant' as 'not participant' | 'participant',
+              isParticipantOfPrevRounds: true,
               isParticipantOfCurrentRound: claim.is_participant,
               isAlreadyClaimed
             };

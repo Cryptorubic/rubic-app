@@ -27,26 +27,18 @@ const getButtonKey = ([
   isParticipantOfCurrentRound,
   userAddress,
   network,
-  participantOfPrevRounds,
+  isParticipantOfPrevRounds,
   status,
   isAlreadyClaimed,
   claimName
-]: [
-  boolean,
-  string,
-  BlockchainName,
-  'not participant' | 'participant',
-  ClaimStatus,
-  boolean,
-  ClaimName
-]): ButtonLabel => {
+]: [boolean, string, BlockchainName, boolean, ClaimStatus, boolean, ClaimName]): ButtonLabel => {
   if (!userAddress) {
     return 'login';
   }
   if (status !== 'active') {
     return status;
   }
-  if (participantOfPrevRounds === 'not participant' || !isParticipantOfCurrentRound) {
+  if (isParticipantOfPrevRounds === false || !isParticipantOfCurrentRound) {
     return 'notParticipant';
   }
   if (isAlreadyClaimed) {
@@ -79,7 +71,7 @@ export const setButtonState = (
   isParticipantOfCurrentRound: boolean,
   userAddress: string,
   network: BlockchainName,
-  participantOfPrevRounds: 'not participant' | 'participant',
+  isParticipantOfPrevRounds: boolean,
   status: ClaimStatus,
   isAlreadyClaimed: boolean,
   claimName: ClaimName
@@ -88,7 +80,7 @@ export const setButtonState = (
     isParticipantOfCurrentRound,
     userAddress,
     network,
-    participantOfPrevRounds,
+    isParticipantOfPrevRounds,
     status,
     isAlreadyClaimed,
     claimName

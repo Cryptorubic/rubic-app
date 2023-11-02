@@ -18,5 +18,5 @@ export interface ClaimRound extends DefaultRoundInfo {
   claimDate: string;
   status: ClaimStatus;
   claimName: ClaimName;
-  participantOfPrevRounds?: 'not participant' | 'participant';
+  isParticipantOfPrevRounds?: boolean;
 }

@@ -7,7 +7,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.08.2023 - 24.02.2024',
     status: 'active',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -15,7 +15,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '26.09.2023 - 26.03.2024',
     status: 'active',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -23,7 +23,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.10.2023 - 24.04.2024',
     status: 'active',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -31,7 +31,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.11.2023 - 24.05.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -39,7 +39,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.12.2023 - 24.06.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -47,7 +47,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.01.2024 - 24.07.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -55,7 +55,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.02.2024 - 24.08.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -63,7 +63,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.03.2024 - 24.09.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -71,7 +71,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.04.2024 - 24.10.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -79,7 +79,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.05.2024 - 24.11.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -87,7 +87,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.06.2024 - 24.12.2024',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   },
   {
@@ -95,7 +95,7 @@ export const retrodropRounds: ClaimRound[] = [
     claimDate: '24.07.2024 - 24.01.2025',
     status: 'soon',
     claimName: 'retrodrop',
-    participantOfPrevRounds: 'not participant',
+    isParticipantOfPrevRounds: false,
     ...defaultRoundInfo
   }
 ];
