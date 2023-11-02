@@ -145,7 +145,7 @@
     }
 
     &__background-img-3 {
-      transform: scale(0.8);
+      width: 160px;
     }
 
     &__text {
@@ -180,6 +180,10 @@
       padding: 8px 14px;
     }
 
+    &__background-img-3 {
+      width: 120px;
+    }
+
     &__text {
       @include font(11px, 1, 500, #ffffff);
 
@@ -192,10 +196,6 @@
 
 @include b($mobile-sm) {
   .banner {
-    &__text {
-      @include font(13px, 1, 500, #ffffff);
-    }
-
     &__link {
       &-text {
         display: none;
