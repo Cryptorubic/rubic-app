@@ -44,7 +44,6 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { GA_ERRORS_CATEGORY } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
@@ -311,11 +310,7 @@ export class CrossChainService {
       const parsedError = RubicSdkErrorParser.parseError(error);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(
-          GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP,
-          error.message,
-          error.code
-        );
+        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
       }
 
       throw parsedError;
@@ -443,7 +438,7 @@ export class CrossChainService {
     fromAmount: BigNumber
   ): void {
     // @TODO remove hardcode
-    const fee = new BigNumber(1);
+    const fee = new BigNumber(2);
 
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,

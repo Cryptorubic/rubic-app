@@ -18,6 +18,7 @@ import {
   Token,
   TX_STATUS,
   UnnecessaryApproveError,
+  UserRejectError,
   Web3Public,
   Web3Pure
 } from 'rubic-sdk';
@@ -216,6 +217,10 @@ export class OnChainService {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
+      if (!(err instanceof UserRejectError)) {
+        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, err.code);
+      }
+
       if (transactionHash && !this.isNotMinedError(err)) {
         this.updateTrade(transactionHash, false);
       }
@@ -263,7 +268,7 @@ export class OnChainService {
       transactionHash,
       fromToken,
       toToken,
-      new BigNumber(0),
+      new BigNumber(1),
       price
     );
   }
