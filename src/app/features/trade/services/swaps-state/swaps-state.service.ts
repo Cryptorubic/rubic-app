@@ -84,7 +84,7 @@ export class SwapsStateService {
         }
 
         return token.amount?.isFinite() ? token.amount.lt(amount?.actualValue) : true;
-      } catch (error) {
+      } catch {
         return false;
       }
     })

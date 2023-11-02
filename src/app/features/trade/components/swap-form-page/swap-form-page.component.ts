@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/c
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
-import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -158,6 +158,7 @@ export class SwapFormPageComponent {
   public handleMaxButton(): void {
     this.swapFormService.fromToken$
       .pipe(
+        first(),
         tap(fromToken => {
           const token = this.tokensStoreService.tokens.find(currentToken =>
             compareTokens(fromToken, currentToken)
@@ -174,15 +175,5 @@ export class SwapFormPageComponent {
         })
       )
       .subscribe();
-
-    // const token = this.swapFormService.inputValue.fromToken;
-    // if (token.amount) {
-    //   this.swapFormService.inputControl.patchValue({
-    //     fromAmount: {
-    //       actualValue: token.amount,
-    //       visibleValue: token.amount.toFixed()
-    //     }
-    //   });
-    // }
   }
 }
