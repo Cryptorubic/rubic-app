@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { LiveChatService } from '@core/services/live-chat/live-chat.service';
 
 @Component({
   selector: 'app-banner',
@@ -9,5 +10,9 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 export class BannerComponent {
   @Input() href: string;
 
-  constructor() {}
+  constructor(private readonly liveChatService: LiveChatService) {}
+
+  public toggleLiveChat(): void {
+    this.liveChatService.toggleLiveChatContainerHeight('show', true);
+  }
 }

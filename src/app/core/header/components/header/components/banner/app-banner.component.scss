@@ -5,44 +5,17 @@
 
   display: flex;
   justify-content: center;
-  max-height: 38px;
+  height: 57px;
+  max-height: 57px;
   overflow: hidden;
 
   text-decoration: none;
 
-  background: linear-gradient(275deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
+  background: linear-gradient(90deg, #36ffb4 -16.66%, #1b0b4a 31.67%, #260646 51.48%, #0c4363 80.49%, #36ffb4 128.91%);
+  cursor: pointer;
 
   @include hide-unused-ui {
     display: none;
-  }
-
-  &__background-img {
-    &_1,
-    &_2,
-    &_3 {
-      position: absolute;
-    }
-
-    &_1 {
-      top: -11px;
-      left: 0;
-
-      transform: rotate(326deg);
-    }
-
-    &_2 {
-      top: -15px;
-      left: 226px;
-
-      transform: rotate(291deg) scale(0.7);
-    }
-
-    &_3 {
-      top: 10px;
-      left: 116px;
-
-      transform: rotate(267deg) scale(1.2);
-    }
   }
 
   &__container {
@@ -69,8 +42,22 @@
       font-weight: bold;
     }
 
-    &.mobile {
-      display: none;
+    &_link {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+        background: #fff;
+
+        content: '';
+      }
     }
   }
 
@@ -113,35 +100,10 @@
   }
 }
 
-@include b(1000) {
-  .banner {
-    &__background-img_right,
-    &__background-img_left {
-      display: none;
-    }
-  }
-}
-
 @include b($tablet) {
   .banner {
     &__text {
       @include font(18px, 1, 400, #ffffff);
-
-      &.mobile {
-        display: inline;
-      }
-
-      &.desktop {
-        display: none;
-      }
-    }
-
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 0.4;
-      }
     }
 
     &__link {
@@ -157,6 +119,10 @@
     &__container {
       gap: 10px;
       width: 100%;
+    }
+
+    &__background-img_1 {
+      width: 50px;
     }
 
     &__text {
@@ -187,32 +153,6 @@
 
 @include b(420) {
   .banner {
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 1;
-      }
-
-      &_1 {
-        top: -3px;
-        left: -20px;
-
-        transform: rotate(326deg) scale(0.7);
-      }
-
-      &_2 {
-        top: -16px;
-        left: 175px;
-
-        transform: rotate(291deg) scale(0.5);
-      }
-
-      &_3 {
-        display: none;
-      }
-    }
-
     &__text {
       @include font(13px, 1, 400, #ffffff);
     }
