@@ -20,6 +20,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
+import { compareTokens } from '@shared/utils/utils';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -69,7 +71,11 @@ export class SwapsStateService {
       this.walletConnector.networkChange$,
       this.walletConnector.addressChange$
     ),
-    map(([token, amount, network, userAddress]) => {
+    map(([inputToken, amount, network, userAddress]) => {
+      const token = this.tokensStoreService.tokens.find(currentToken =>
+        compareTokens(inputToken, currentToken)
+      );
+
       try {
         const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);
         const currentChainType = BlockchainsInfo.getChainType(network);
@@ -130,7 +136,8 @@ export class SwapsStateService {
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly tokensStoreService: TokensStoreService
   ) {
     this.subscribeOnTradeChange();
   }
