@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { HttpService } from '@core/services/http/http.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AirdropPointsApiService {
   constructor(private readonly httpService: HttpService) {}
 

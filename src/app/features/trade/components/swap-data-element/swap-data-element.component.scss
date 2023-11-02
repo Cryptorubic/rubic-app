@@ -1,5 +1,8 @@
+@use 'src/scss/core' as *;
+
 .provider-info {
   display: flex;
+  gap: var(--tui-padding-l);
   justify-content: space-between;
   padding: var(--tui-padding-l);
 

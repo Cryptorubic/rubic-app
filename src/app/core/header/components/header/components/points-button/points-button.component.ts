@@ -13,7 +13,9 @@ import { AuthService } from '@core/services/auth/auth.service';
 })
 export class PointsButtonComponent {
   public readonly points$ = this.airdropPointsService.points$.pipe(
-    map(points => points.pending + points.confirmed)
+    map(points => {
+      return points.pending + points.confirmed;
+    })
   );
 
   public readonly isAuth$ = this.authService.currentUser$;

@@ -1,21 +1,18 @@
-<a [safetyLink]="href" class="banner">
-  <img class="banner__background-img_1" src="assets/referralBanner/star.svg" alt="star" />
-  <img class="banner__background-img_2" src="assets/referralBanner/star.svg" alt="star" />
-  <img class="banner__background-img_3" src="assets/referralBanner/star.svg" alt="star" />
+<a [safetyLink]="href" class="banner" (click)="toggleLiveChat()">
   <div class="banner__container">
-    <span class="banner__text desktop">
-      Rubic’s 3rd Birthday! Explore L2 Networks & Get a share of 1,5M+ RBC!
+    <img class="banner__background-img_1" src="assets/referralBanner/support.png" alt="star" />
+    <span class="banner__text">
+      Please <span class="banner__text_link">report</span> new app bugs if you encounter any
     </span>
-    <span class="banner__text mobile"> It's Rubic's Birthday! Explore new L2 networks! </span>
-    <a [safetyLink]="href" class="banner__link">
-      <span class="banner__link-text">Learn more</span>
-      <img
-        src="assets/referralBanner/arrow-banner-long.svg"
-        width="20"
-        height="11"
-        alt="Learn more"
-      />
-    </a>
+    <!--    <a [safetyLink]="href" class="banner__link">-->
+    <!--      <span class="banner__link-text">Learn more</span>-->
+    <!--      <img-->
+    <!--        src="assets/referralBanner/arrow-banner-long.svg"-->
+    <!--        width="20"-->
+    <!--        height="11"-->
+    <!--        alt="Learn more"-->
+    <!--      />-->
+    <!--    </a>-->
   </div>
   <!--  <img class="banner__background-img_right" src="assets/referralBanner/banner-right.png" alt="" />-->
 </a>
