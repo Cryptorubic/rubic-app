@@ -5,15 +5,18 @@ import { BlockchainName } from 'rubic-sdk';
 
 export type ClaimStatus = 'closed' | 'soon' | 'active';
 
-export interface ClaimRound {
+export interface DefaultRoundInfo {
+  isAlreadyClaimed?: boolean;
+  isParticipantOfCurrentRound?: boolean;
+  claimAmount: BigNumber;
+  claimData: ClaimTokensData;
+  network: BlockchainName;
+}
+
+export interface ClaimRound extends DefaultRoundInfo {
   roundNumber: number;
   claimDate: string;
-  claimData: ClaimTokensData;
-  claimAmount: BigNumber;
   status: ClaimStatus;
   claimName: ClaimName;
-  network: BlockchainName;
-  isAlreadyClaimed?: boolean;
   participantOfPrevRounds?: 'not participant' | 'participant';
-  isParticipantOfCurrentRound?: boolean;
 }
