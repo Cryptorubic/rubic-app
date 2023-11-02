@@ -24,7 +24,7 @@ const getErrorState = (buttonLabel: ButtonLabel): boolean => {
 };
 
 const getButtonKey = ([
-  isValid,
+  isParticipantOfCurrentRound,
   userAddress,
   network,
   isParticipantOfPrevRounds,
@@ -38,7 +38,7 @@ const getButtonKey = ([
   if (status !== 'active') {
     return status;
   }
-  if (!isParticipantOfPrevRounds) {
+  if (isParticipantOfPrevRounds === false || !isParticipantOfCurrentRound) {
     return 'notParticipant';
   }
   if (isAlreadyClaimed) {
@@ -51,7 +51,7 @@ const getButtonKey = ([
   if (!network || network !== newRubicToken.blockchain) {
     return 'changeNetwork';
   }
-  if (isValid) {
+  if (isParticipantOfCurrentRound) {
     if (claimName === 'airdrop') {
       return 'claim';
     } else {
@@ -68,7 +68,7 @@ const getButtonKey = ([
 };
 
 export const setButtonState = (
-  isValid: boolean,
+  isParticipantOfCurrentRound: boolean,
   userAddress: string,
   network: BlockchainName,
   isParticipantOfPrevRounds: boolean,
@@ -77,7 +77,7 @@ export const setButtonState = (
   claimName: ClaimName
 ): ButtonState => {
   const buttonLabel = getButtonKey([
-    isValid,
+    isParticipantOfCurrentRound,
     userAddress,
     network,
     isParticipantOfPrevRounds,

@@ -1,16 +1,8 @@
 import BigNumber from 'bignumber.js';
-import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { DefaultRoundInfo } from '@shared/models/claim/claim-round';
 
-interface IDefaultRoundInfo {
-  isAlreadyClaimed: boolean;
-  isParticipantOfCurrentRound: boolean;
-  claimAmount: BigNumber;
-  claimData: ClaimTokensData;
-  network: BlockchainName;
-}
-
-export const DefaultRoundInfo: IDefaultRoundInfo = {
+export const defaultRoundInfo: DefaultRoundInfo = {
   isAlreadyClaimed: true,
   isParticipantOfCurrentRound: false,
   claimAmount: new BigNumber(0),

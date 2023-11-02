@@ -1,8 +1,8 @@
-<svg width="52" height="50" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-<ellipse cx="26.0905" cy="24.9999" rx="25.4089" ry="24.9999" fill="#101821"/>
-<path d="M13 40L33.8163 31.1807L27.2266 24.4578L13 40ZM20.647 17.7453L27.2367 24.4578L39 10L20.647 17.7453Z" fill="url(#paint0_linear_201_101)"/>
+<svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="25.6816" cy="24.9999" rx="25" ry="24.9999" fill="#101821"/>
+<path d="M13 40L33.8163 31.1807L27.2266 24.4578L13 40ZM20.647 17.7453L27.2367 24.4578L39 10L20.647 17.7453Z" fill="url(#paint0_linear_62_132)"/>
 <defs>
-<linearGradient id="paint0_linear_201_101" x1="13.0004" y1="25.0002" x2="38.9963" y2="25.0002" gradientUnits="userSpaceOnUse">
+<linearGradient id="paint0_linear_62_132" x1="13.0004" y1="25.0002" x2="38.9963" y2="25.0002" gradientUnits="userSpaceOnUse">
 <stop stop-color="#00CCFF"/>
 <stop offset="1" stop-color="#33FF99"/>
 </linearGradient>

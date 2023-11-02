@@ -58,16 +58,16 @@ export class AirdropPointsService {
       map(points => {
         if (tradeType instanceof CrossChainTrade) {
           if (points.participant) {
-            return 50;
-          }
-
-          return 100;
-        } else {
-          if (points.participant) {
             return 25;
           }
 
           return 50;
+        } else {
+          if (points.participant) {
+            return 12;
+          }
+
+          return 25;
         }
       })
     );

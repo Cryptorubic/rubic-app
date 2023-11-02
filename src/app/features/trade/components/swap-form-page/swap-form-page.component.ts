@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/c
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
-import { distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -14,6 +14,7 @@ import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
+import { compareTokens } from '@shared/utils/utils';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -155,14 +156,24 @@ export class SwapFormPageComponent {
   }
 
   public handleMaxButton(): void {
-    const token = this.swapFormService.inputValue.fromToken;
-    if (token.amount) {
-      this.swapFormService.inputControl.patchValue({
-        fromAmount: {
-          actualValue: token.amount,
-          visibleValue: token.amount.toFixed()
-        }
-      });
-    }
+    this.swapFormService.fromToken$
+      .pipe(
+        first(),
+        tap(fromToken => {
+          const token = this.tokensStoreService.tokens.find(currentToken =>
+            compareTokens(fromToken, currentToken)
+          );
+
+          if (token.amount) {
+            this.swapFormService.inputControl.patchValue({
+              fromAmount: {
+                actualValue: token.amount,
+                visibleValue: token.amount.toFixed()
+              }
+            });
+          }
+        })
+      )
+      .subscribe();
   }
 }
