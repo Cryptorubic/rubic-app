@@ -74,10 +74,6 @@ export class SwapsStateService {
     ),
     map(([inputToken, storeTokens, amount, network, userAddress]) => {
       const token = storeTokens.find(currentToken => compareTokens(inputToken, currentToken));
-      console.log('===================');
-      console.log('token symbol: ', token.symbol);
-      console.log('token amount: ', token.amount.toFixed());
-      console.log('===================');
 
       try {
         const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);
