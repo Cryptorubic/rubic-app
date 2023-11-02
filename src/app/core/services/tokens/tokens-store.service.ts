@@ -206,12 +206,16 @@ export class TokensStoreService {
         .getTokensBalances(this.userAddress, tokens.map(token => token.address).toArray())
         .catch(() => []);
 
-      return tokenAmounts.map((token, index) => ({
-        ...token,
-        amount: balances[index]
-          ? Web3Pure.fromWei(balances[index], token.decimals)
-          : new BigNumber(NaN)
-      }));
+      return tokenAmounts.map((token, index) => {
+        console.log(token.symbol);
+        console.log(Web3Pure.fromWei(balances[index], token.decimals).toFixed());
+        return {
+          ...token,
+          amount: balances[index]
+            ? Web3Pure.fromWei(balances[index], token.decimals)
+            : new BigNumber(NaN)
+        };
+      });
     } catch (err: unknown) {
       console.debug(err);
       return List([]);

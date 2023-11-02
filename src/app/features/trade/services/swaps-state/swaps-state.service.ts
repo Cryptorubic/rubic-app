@@ -67,14 +67,17 @@ export class SwapsStateService {
   public readonly notEnoughBalance$ = this.swapsFormService.fromToken$.pipe(
     filter(Boolean),
     combineLatestWith(
+      this.tokensStoreService.tokens$,
       this.swapsFormService.fromAmount$,
       this.walletConnector.networkChange$,
       this.walletConnector.addressChange$
     ),
-    map(([inputToken, amount, network, userAddress]) => {
-      const token = this.tokensStoreService.tokens.find(currentToken =>
-        compareTokens(inputToken, currentToken)
-      );
+    map(([inputToken, storeTokens, amount, network, userAddress]) => {
+      const token = storeTokens.find(currentToken => compareTokens(inputToken, currentToken));
+      console.log('===================');
+      console.log('token symbol: ', token.symbol);
+      console.log('token amount: ', token.amount.toFixed());
+      console.log('===================');
 
       try {
         const tokenChainType = BlockchainsInfo.getChainType(token.blockchain);
