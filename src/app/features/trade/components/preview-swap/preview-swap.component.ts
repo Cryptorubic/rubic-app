@@ -67,7 +67,6 @@ export class PreviewSwapComponent {
         this.swapsFormService.inputValue.fromBlockchain !==
         this.swapsFormService.inputValue.toBlockchain;
 
-      console.log(this.previewSwapService.tradeState);
       const state = {
         action: (): void => {},
         label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
@@ -88,7 +87,7 @@ export class PreviewSwapComponent {
         state.action = this.backToForm.bind(this);
       }
 
-      if (el.data?.wrongNetwork) {
+      if (el.data?.wrongNetwork && el.step !== transactionStep.success) {
         state.disabled = false;
         state.action = () => this.switchChain();
         state.label = `Change network`;
@@ -128,7 +127,13 @@ export class PreviewSwapComponent {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
-    this.previewSwapService.setNextTxState({ step: 'idle', data: {} });
+    this.previewSwapService.setNextTxState({
+      step: 'idle',
+      data: {
+        wrongNetwork: this.previewSwapService.transactionState.data?.wrongNetwork,
+        activeWallet: this.previewSwapService.transactionState.data?.activeWallet
+      }
+    });
   }
 
   public async startTrade(): Promise<void> {

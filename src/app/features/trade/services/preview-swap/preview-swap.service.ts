@@ -32,6 +32,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
+import { transactionStep } from '@features/trade/models/transaction-steps';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -52,7 +53,7 @@ export class PreviewSwapService {
     data: {}
   });
 
-  private get transactionState(): TransactionState {
+  public get transactionState(): TransactionState {
     return this._transactionState$.getValue();
   }
 
@@ -280,7 +281,9 @@ export class PreviewSwapService {
         const tokenBlockchain = trade.trade.from.blockchain;
         const state = this._transactionState$.getValue();
         state.data.wrongNetwork = network !== tokenBlockchain;
-        this._transactionState$.next(state);
+        if (this.transactionState.step !== transactionStep.success) {
+          this._transactionState$.next(state);
+        }
       });
   }
 
