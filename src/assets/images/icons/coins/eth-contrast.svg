@@ -1,1 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><g fill="none" fill-rule="evenodd"><circle cx="16" cy="16" r="16" fill="#627EEA"/><g fill="#FFF" fill-rule="nonzero"><path fill-opacity=".602" d="M16.498 4v8.87l7.497 3.35z"/><path d="M16.498 4L9 16.22l7.498-3.35z"/><path fill-opacity=".602" d="M16.498 21.968v6.027L24 17.616z"/><path d="M16.498 27.995v-6.028L9 17.616z"/><path fill-opacity=".2" d="M16.498 20.573l7.497-4.353-7.497-3.348z"/><path fill-opacity=".602" d="M9 16.22l7.498 4.353v-7.701z"/></g></g></svg>
+<svg width="52" height="50" viewBox="0 0 52 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="26.0908" cy="24.9999" rx="25.4089" ry="24.9999" fill="#627EEA"/>
+<path d="M26.1868 9V21.0508L36.3722 25.6021L26.1868 9Z" fill="white" fill-opacity="0.602"/>
+<path d="M26.1868 9L16 25.6021L26.1868 21.0508V9Z" fill="white"/>
+<path d="M26.1868 33.4113V41.5996L36.379 27.4987L26.1868 33.4113Z" fill="white" fill-opacity="0.602"/>
+<path d="M26.1868 41.5996V33.41L16 27.4987L26.1868 41.5996Z" fill="white"/>
+<path d="M26.1868 31.5161L36.3722 25.6021L26.1868 21.0535V31.5161Z" fill="white" fill-opacity="0.2"/>
+<path d="M16 25.6021L26.1868 31.5161V21.0535L16 25.6021Z" fill="white" fill-opacity="0.602"/>
+</svg>

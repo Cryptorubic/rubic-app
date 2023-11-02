@@ -1,7 +1,7 @@
 import { Token } from '@app/shared/models/tokens/token';
 import {
-  BlockchainName,
   BLOCKCHAIN_NAME,
+  BlockchainName,
   nativeTokensList,
   wrappedNativeTokensList
 } from 'rubic-sdk';
@@ -503,7 +503,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.FUSE],
       ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/fuse.png'
+      image: 'assets/images/icons/default-tokens/fuse.svg'
     } as Token,
     {
       ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FUSE],
