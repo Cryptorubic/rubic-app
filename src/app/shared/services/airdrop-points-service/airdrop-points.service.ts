@@ -12,7 +12,7 @@ import { OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { AuthService } from '@core/services/auth/auth.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AirdropPointsService {
   private readonly defaultPoints: AirdropUserPointsInfo = {
     confirmed: 0,

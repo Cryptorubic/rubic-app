@@ -74,8 +74,6 @@ import { InputOutputContainerComponent } from './components/input-output-contain
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
 import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
-import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
-import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
@@ -215,14 +213,6 @@ import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.compon
     NoFrameDirective,
     RubicBadgeComponent
   ],
-  providers: [
-    ScannerLinkPipe,
-    WithRoundPipe,
-    BigNumberFormatPipe,
-    TimeGuard,
-    SafeSanitizerPipe,
-    AirdropPointsService,
-    AirdropPointsApiService
-  ]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
 export class SharedModule {}
