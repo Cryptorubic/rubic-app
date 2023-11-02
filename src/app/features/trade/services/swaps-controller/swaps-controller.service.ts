@@ -303,9 +303,7 @@ export class SwapsControllerService {
 
   private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
-      return new RubicError(
-        'Currently, Rubic does not support swap-tokens-updater-service between these tokens.'
-      );
+      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     if (error instanceof UnsupportedReceiverAddressError) {
       return new RubicError('This provider doesn’t support the receiver address.');
