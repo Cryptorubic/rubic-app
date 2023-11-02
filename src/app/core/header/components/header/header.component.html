@@ -94,5 +94,7 @@
     </ng-template>
   </div>
 
-  <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+  <ng-container *noFrame>
+    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+  </ng-container>
 </header>
