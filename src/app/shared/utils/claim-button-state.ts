@@ -24,21 +24,29 @@ const getErrorState = (buttonLabel: ButtonLabel): boolean => {
 };
 
 const getButtonKey = ([
-  isValid,
+  isParticipantOfCurrentRound,
   userAddress,
   network,
-  isParticipantOfPrevRounds,
+  participantOfPrevRounds,
   status,
   isAlreadyClaimed,
   claimName
-]: [boolean, string, BlockchainName, boolean, ClaimStatus, boolean, ClaimName]): ButtonLabel => {
+]: [
+  boolean,
+  string,
+  BlockchainName,
+  'not participant' | 'participant',
+  ClaimStatus,
+  boolean,
+  ClaimName
+]): ButtonLabel => {
   if (!userAddress) {
     return 'login';
   }
   if (status !== 'active') {
     return status;
   }
-  if (!isParticipantOfPrevRounds) {
+  if (participantOfPrevRounds === 'not participant' || !isParticipantOfCurrentRound) {
     return 'notParticipant';
   }
   if (isAlreadyClaimed) {
@@ -51,7 +59,7 @@ const getButtonKey = ([
   if (!network || network !== newRubicToken.blockchain) {
     return 'changeNetwork';
   }
-  if (isValid) {
+  if (isParticipantOfCurrentRound) {
     if (claimName === 'airdrop') {
       return 'claim';
     } else {
@@ -68,19 +76,19 @@ const getButtonKey = ([
 };
 
 export const setButtonState = (
-  isValid: boolean,
+  isParticipantOfCurrentRound: boolean,
   userAddress: string,
   network: BlockchainName,
-  isParticipantOfPrevRounds: boolean,
+  participantOfPrevRounds: 'not participant' | 'participant',
   status: ClaimStatus,
   isAlreadyClaimed: boolean,
   claimName: ClaimName
 ): ButtonState => {
   const buttonLabel = getButtonKey([
-    isValid,
+    isParticipantOfCurrentRound,
     userAddress,
     network,
-    isParticipantOfPrevRounds,
+    participantOfPrevRounds,
     status,
     isAlreadyClaimed,
     claimName

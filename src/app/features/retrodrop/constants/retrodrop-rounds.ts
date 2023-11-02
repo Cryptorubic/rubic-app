@@ -4,7 +4,7 @@ import { ClaimName } from '@shared/services/claim-services/models/claim-name';
 
 const defaultRetrodropRoundInfo = {
   ...DefaultRoundInfo,
-  isParticipantOfPrevRounds: false,
+  isParticipantOfPrevRounds: 'not participant',
   claimName: 'retrodrop' as ClaimName
 };
 

@@ -14,6 +14,6 @@ export interface ClaimRound {
   claimName: ClaimName;
   network: BlockchainName;
   isAlreadyClaimed?: boolean;
-  isParticipantOfPrevRounds?: boolean;
+  participantOfPrevRounds?: 'not participant' | 'participant';
   isParticipantOfCurrentRound?: boolean;
 }

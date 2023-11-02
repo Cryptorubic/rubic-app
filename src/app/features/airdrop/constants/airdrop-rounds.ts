@@ -7,7 +7,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 19.04.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -15,7 +14,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 02.05.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -23,7 +21,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 17.05.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -31,7 +28,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 31.05.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -39,7 +35,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 09.06.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -47,7 +42,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 06.07.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -55,7 +49,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 20.07.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -63,7 +56,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 03.08.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -71,7 +63,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 24.08.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -79,7 +70,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 14.09.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -87,7 +77,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 28.09.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -95,7 +84,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 12.10.2023',
     status: 'closed',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   },
   {
@@ -103,7 +91,6 @@ export const airdropRounds: ClaimRound[] = [
     claimDate: '05.04.2023 - 01.11.2023',
     status: 'active',
     claimName: 'airdrop',
-    isParticipantOfPrevRounds: true,
     ...DefaultRoundInfo
   }
 ];
