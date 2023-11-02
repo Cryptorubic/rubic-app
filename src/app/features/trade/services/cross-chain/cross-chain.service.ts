@@ -311,7 +311,11 @@ export class CrossChainService {
       const parsedError = RubicSdkErrorParser.parseError(error);
 
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP, error.message);
+        this.gtmService.fireTransactionError(
+          GA_ERRORS_CATEGORY.CROSS_CHAIN_SWAP,
+          error.message,
+          error.code
+        );
       }
 
       throw parsedError;

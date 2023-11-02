@@ -12,6 +12,7 @@ import { SelectorListType } from '@features/trade/components/assets-selector/mod
 import { INSTANT_TRADE_PROVIDERS } from '@features/trade/constants/providers';
 import { notEvmChangeNowBlockchainsList } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -53,7 +54,8 @@ export class AssetsSelectorService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly swapFormService: SwapsFormService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -143,6 +145,12 @@ export class AssetsSelectorService {
   }
 
   public onAssetSelect(asset: Asset): void {
+    if (this._formType === 'from') {
+      this.gtmService.fireSelectInputTokenEvent(asset.name);
+    }
+    if (this._formType === 'to') {
+      this.gtmService.fireSelectOutputTokenEvent(asset.name);
+    }
     this._assetSelected$.next(asset);
   }
 

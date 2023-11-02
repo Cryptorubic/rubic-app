@@ -148,6 +148,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com', 'https://pulsechain.publicnode.com'],
   [BLOCKCHAIN_NAME.LINEA]: [
+    'https://linea.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
     'https://linea.drpc.org',
     'https://1rpc.io/linea',
@@ -194,5 +195,14 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.ZETACHAIN]: [
     'https://zetachain-athens-evm.blockpi.network/v1/rpc/public',
     'https://rpc.ankr.com/zetachain_evm_athens_testnet'
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.jolnir.taiko.xyz'],
+  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
+  [BLOCKCHAIN_NAME.SCROLL]: [
+    'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/scroll',
+    'https://rpc.scroll.io/',
+    'https://1rpc.io/scroll'
   ]
 };

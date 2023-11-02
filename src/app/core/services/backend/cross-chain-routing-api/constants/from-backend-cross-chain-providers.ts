@@ -1,4 +1,4 @@
-import { CrossChainTradeType, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 
 export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
@@ -16,5 +16,6 @@ export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
   stargate: CROSS_CHAIN_TRADE_TYPE.STARGATE,
   rbc_arbitrum_bridge: CROSS_CHAIN_TRADE_TYPE.ARBITRUM,
   squidrouter: CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER,
-  scroll_bridge: CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE
+  scroll_sepolia: CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE,
+  taiko_bridge: CROSS_CHAIN_TRADE_TYPE.TAIKO_BRIDGE
 };

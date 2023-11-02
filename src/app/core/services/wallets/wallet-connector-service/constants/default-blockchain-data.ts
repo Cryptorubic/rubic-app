@@ -130,5 +130,13 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
     rpc: 'https://mainnet.era.zksync.io'
+  },
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: {
+    name: 'Manta Pacific',
+    rpc: 'https://pacific-rpc.manta.network/http'
+  },
+  [BLOCKCHAIN_NAME.SCROLL]: {
+    name: 'Scroll',
+    rpc: 'https://rpc.scroll.io/'
   }
 };

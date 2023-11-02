@@ -258,5 +258,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celerim.png`,
     color: '#1682dc',
     averageTime: 5
+  },
+  [BRIDGE_TYPE.TAIKO_BRIDGE]: {
+    name: 'Taiko bridge',
+    image: `${imageBasePath}taiko.svg`,
+    color: '#e81899',
+    averageTime: 5
   }
 };
