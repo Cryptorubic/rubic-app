@@ -223,10 +223,9 @@ export class SwapAndEarnStateService {
     return this.points$.pipe(
       map(points => {
         if (points.participant) {
-          return 50;
+          return 25;
         }
-
-        return 100;
+        return 50;
       })
     );
   }
