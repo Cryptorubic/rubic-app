@@ -81,4 +81,22 @@ export class ClaimRoundRowComponent {
       this.claimAmountValue = claimAmount;
     }
   }
+
+  public getHintText(): string | null {
+    if (
+      this.round.status === 'closed' ||
+      this.round.status === 'soon' ||
+      (!this.round.isParticipantOfPrevRounds && this.round.claimName !== 'airdrop')
+    ) {
+      return null;
+    }
+
+    if (this.round.isAlreadyClaimed) {
+      if (this.round.claimName === 'retrodrop') {
+        return 'Your tokens have already been successfully staked. Please review the Staking tab for further details.';
+      } else {
+        return 'Your tokens have been already claimed, please check your wallet.';
+      }
+    }
+  }
 }
