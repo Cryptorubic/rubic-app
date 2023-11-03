@@ -25,6 +25,14 @@
 
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
+
+    app-route-element {
+      margin-left: var(--tui-padding-l);
+
+      ::ng-deep .route-element__provider-data-info {
+        align-items: center;
+      }
+    }
   }
 
   &__io-container {
