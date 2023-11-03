@@ -163,6 +163,10 @@ app-swap-data-element ::ng-deep {
           content: '';
         }
       }
+
+      app-route-element {
+        margin-left: 0;
+      }
     }
 
     &__io-container {

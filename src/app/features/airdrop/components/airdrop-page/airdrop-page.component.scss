@@ -86,10 +86,26 @@
 }
 
 @include b($mobile-md) {
-  :host {
+  .swap-and-earn {
     ::ng-deep {
-      header h5 {
-        justify-content: center;
+      &:first-child {
+        .window-container {
+          padding: var(--tui-padding-m) !important;
+
+          background: var(--secondary-background) !important;
+          border-radius: var(--tui-radius-m) !important;
+
+          header {
+            padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l) !important;
+
+            background: none !important;
+            border-radius: 0 !important;
+
+            h5 {
+              justify-content: center;
+            }
+          }
+        }
       }
 
       &:nth-child(2) {
