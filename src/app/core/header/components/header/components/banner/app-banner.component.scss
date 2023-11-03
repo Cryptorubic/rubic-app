@@ -5,43 +5,40 @@
 
   display: flex;
   justify-content: center;
-  max-height: 38px;
+  height: 57px;
+  max-height: 57px;
   overflow: hidden;
 
   text-decoration: none;
 
-  background: linear-gradient(275deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
+  background: linear-gradient(90deg, #36ffb4 -16.66%, #1f0a5a 22.06%, #410a63 75.35%, #36ffb4 122.84%);
 
   @include hide-unused-ui {
     display: none;
   }
 
   &__background-img {
-    &_1,
-    &_2,
-    &_3 {
+    &-1,
+    &-2,
+    &-3 {
       position: absolute;
     }
 
-    &_1 {
-      top: -11px;
-      left: 0;
-
-      transform: rotate(326deg);
+    &-1 {
+      bottom: 0;
+      left: -200px;
     }
 
-    &_2 {
-      top: -15px;
-      left: 226px;
-
-      transform: rotate(291deg) scale(0.7);
+    &-2 {
+      top: 0;
+      left: -130px;
     }
 
-    &_3 {
-      top: 10px;
-      left: 116px;
+    &-3 {
+      top: 0;
+      right: -130px;
 
-      transform: rotate(267deg) scale(1.2);
+      transform: translateX(50%);
     }
   }
 
@@ -59,7 +56,7 @@
   }
 
   &__text {
-    @include font(25px, 1, 400, #ffffff);
+    @include font(25px, 1, 500, #ffffff);
     margin: 0;
 
     letter-spacing: 1px;
@@ -69,8 +66,8 @@
       font-weight: bold;
     }
 
-    &.mobile {
-      display: none;
+    &_thin {
+      font-weight: lighter;
     }
   }
 
@@ -113,35 +110,23 @@
   }
 }
 
-@include b(1000) {
-  .banner {
-    &__background-img_right,
-    &__background-img_left {
-      display: none;
-    }
-  }
-}
-
 @include b($tablet) {
   .banner {
-    &__text {
-      @include font(18px, 1, 400, #ffffff);
+    gap: 25px;
 
-      &.mobile {
-        display: inline;
-      }
-
-      &.desktop {
-        display: none;
-      }
+    &__background-img-1,
+    &__background-img-2 {
+      display: none;
     }
 
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 0.4;
-      }
+    &__background-img-3 {
+      position: static;
+
+      transform: translateX(0);
+    }
+
+    &__text {
+      @include font(18px, 1, 400, #ffffff);
     }
 
     &__link {
@@ -157,6 +142,10 @@
     &__container {
       gap: 10px;
       width: 100%;
+    }
+
+    &__background-img-3 {
+      width: 160px;
     }
 
     &__text {
@@ -185,38 +174,28 @@
   }
 }
 
-@include b(420) {
+@include b(460) {
   .banner {
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 1;
-      }
+    &__container {
+      padding: 8px 14px;
+    }
 
-      &_1 {
-        top: -3px;
-        left: -20px;
-
-        transform: rotate(326deg) scale(0.7);
-      }
-
-      &_2 {
-        top: -16px;
-        left: 175px;
-
-        transform: rotate(291deg) scale(0.5);
-      }
-
-      &_3 {
-        display: none;
-      }
+    &__background-img-3 {
+      width: 120px;
     }
 
     &__text {
-      @include font(13px, 1, 400, #ffffff);
-    }
+      @include font(11px, 1, 500, #ffffff);
 
+      &_thin {
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .banner {
     &__link {
       &-text {
         display: none;
