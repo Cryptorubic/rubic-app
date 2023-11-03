@@ -83,12 +83,20 @@ export class ClaimRoundRowComponent {
   }
 
   public getHintText(): string | null {
-    if (
-      this.round.status === 'closed' ||
-      this.round.status === 'soon' ||
-      (!this.round.isParticipantOfPrevRounds && this.round.claimName !== 'airdrop')
-    ) {
+    if (this.round.status === 'closed' && this.round.claimName !== 'airdrop') {
       return null;
+    }
+
+    if (this.round.status === 'closed' && this.round.claimName === 'airdrop') {
+      return 'The Claiming Round has finished; all claimed tokens have now been transferred into the next Claiming Round.';
+    }
+
+    if (this.round.status === 'soon') {
+      return 'The staking round will start soon.';
+    }
+
+    if (!this.round.isParticipantOfPrevRounds && this.round.claimName !== 'airdrop') {
+      return "You're not eligible";
     }
 
     if (this.round.isAlreadyClaimed) {
