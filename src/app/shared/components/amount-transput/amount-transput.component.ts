@@ -5,6 +5,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
+import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 
 @Component({
   selector: 'app-amount-transput',
@@ -29,7 +30,10 @@ export class AmountTransputComponent {
 
   @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
     if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
-      const newAmount = value?.actualValue ? value.visibleValue : '';
+      const shortenPipe = new ShortenAmountPipe();
+      const newAmount = value?.actualValue
+        ? shortenPipe.transform(value?.visibleValue, 12, 6, true)
+        : '';
       this.amount.setValue(newAmount, { emitViewToModelChange: false });
     }
   }
