@@ -128,7 +128,7 @@ export class InstantTradeService extends TradeCalculationService {
     };
 
     try {
-      await trade.approve(transactionOptions);
+      await trade.approve(transactionOptions, true, trade.from.tokenAmount);
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {

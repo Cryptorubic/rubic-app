@@ -251,8 +251,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
   public async approve(wrappedTrade: WrappedCrossChainTrade): Promise<void> {
     this.checkBlockchainsAvailable(wrappedTrade);
     this.checkDeviceAndShowNotification();
-
-    const blockchain = wrappedTrade.trade.from.blockchain;
+    const trade = wrappedTrade.trade;
+    const blockchain = trade.from.blockchain;
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
@@ -266,10 +266,10 @@ export class CrossChainCalculationService extends TradeCalculationService {
     };
 
     try {
-      if (wrappedTrade.trade instanceof EvmCrossChainTrade) {
+      if (trade instanceof EvmCrossChainTrade) {
         swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
       }
-      await wrappedTrade.trade.approve(swapOptions);
+      await trade.approve(swapOptions, true, trade.from.tokenAmount);
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
