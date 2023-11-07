@@ -1,21 +1,19 @@
-import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BLOCKCHAIN_NAME,
+  BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
-  LIFI_BRIDGE_TYPES
+  LIFI_BRIDGE_TYPES,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType
 } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
-import { WINDOW } from '@ng-web-apis/common';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
@@ -56,23 +54,19 @@ export class QueryParamsService {
 
   public domain: string;
 
-  public disabledProviders: CrossChainTradeType[] | undefined;
-
   public disabledLifiBridges: LifiBridgeTypes[] | undefined;
 
-  public enabledProviders: CrossChainTradeType[] | undefined;
+  public disabledCrossChainProviders: CrossChainTradeType[] = [];
+
+  public disabledOnChainProviders: OnChainTradeType[] = [];
 
   public enabledBlockchains: BlockchainName[];
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
-    @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
-    @Inject(WINDOW) private readonly window: Window,
     private readonly iframeService: IframeService
   ) {}
 
@@ -89,9 +83,21 @@ export class QueryParamsService {
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
 
-    if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
-      this.setEnabledProviders(queryParams.enabledProviders);
-      this.setDisabledProviders(queryParams.enabledProviders);
+    if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
+      this.setOnChainProviders(
+        queryParams.whitelistOnChain?.toLowerCase(),
+        queryParams.blacklistOnChain?.toLowerCase()
+      );
+    }
+
+    if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
+      this.setCrossChainProviders(
+        queryParams.whitelistCrossChain?.toLowerCase(),
+        queryParams.blacklistCrossChain?.toLowerCase()
+      );
+    }
+
+    if (queryParams.enabledBlockchains) {
       this.enabledBlockchains = queryParams.enabledBlockchains;
     }
 
@@ -167,16 +173,40 @@ export class QueryParamsService {
     );
   }
 
-  private setDisabledProviders(enabledProviders: string[]): void {
-    this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
-      provider => !enabledProviders.includes(provider.toLowerCase())
-    );
+  private setCrossChainProviders(whitelistCrossChain: string, blacklistCrossChain: string): void {
+    if (whitelistCrossChain?.length) {
+      this.disabledCrossChainProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
+        provider => !whitelistCrossChain.includes(provider.toLowerCase())
+      );
+    }
+
+    if (blacklistCrossChain?.length) {
+      const disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
+        blacklistCrossChain.includes(provider.toLowerCase())
+      );
+
+      this.disabledCrossChainProviders = Array.from(
+        new Set<CrossChainTradeType>([...this.disabledCrossChainProviders, ...disabledProviders])
+      );
+    }
   }
 
-  private setEnabledProviders(enabledProviders: string[]): void {
-    this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
-      enabledProviders.includes(provider.toLowerCase())
-    );
+  private setOnChainProviders(whitelistOnChain: string, blacklistOnChain: string): void {
+    if (whitelistOnChain?.length) {
+      this.disabledOnChainProviders = Object.values(ON_CHAIN_TRADE_TYPE).filter(
+        provider => !whitelistOnChain.includes(provider.toLowerCase())
+      );
+    }
+
+    if (blacklistOnChain?.length) {
+      const disabledProviders = Object.values(ON_CHAIN_TRADE_TYPE).filter(provider =>
+        blacklistOnChain.includes(provider.toLowerCase())
+      );
+
+      this.disabledOnChainProviders = Array.from(
+        new Set<OnChainTradeType>([...this.disabledOnChainProviders, ...disabledProviders])
+      );
+    }
   }
 
   private setHideSelectionStatus(queryParams: QueryParams): void {

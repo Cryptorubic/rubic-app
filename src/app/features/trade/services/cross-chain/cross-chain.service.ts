@@ -173,12 +173,12 @@ export class CrossChainService {
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
 
-    const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
+    const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProviders = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
         ...(apiDisabledTradeTypes || []),
-        ...(iframeDisabledTradeTypes || [])
+        ...(queryDisabledTradeTypes || [])
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
