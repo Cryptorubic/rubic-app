@@ -114,7 +114,7 @@ export class InstantTradeService extends TradeCalculationService {
     }
     this.checkDeviceAndShowNotification();
     let subscription$: Subscription;
-    const { blockchain } = TradeParser.getItSwapParams(trade);
+    const { blockchain, fromAmount, fromDecimals } = TradeParser.getItSwapParams(trade);
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
@@ -128,7 +128,8 @@ export class InstantTradeService extends TradeCalculationService {
     };
 
     try {
-      await trade.approve(transactionOptions);
+      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      await trade.approve(transactionOptions, true, amount);
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
