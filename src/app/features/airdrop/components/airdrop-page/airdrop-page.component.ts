@@ -21,7 +21,7 @@ export class AirdropPageComponent {
 
   public readonly isAuth$ = this.airdropService.currentUser$;
 
-  public readonly isParticipant$ = this.airdropService.airdropUserInfo$;
+  public readonly airdropUserInfo$ = this.airdropService.airdropUserInfo$;
 
   public readonly isMobile$ = this.headerService.getMobileDisplayStatus();
 

@@ -88,7 +88,8 @@ export class ClaimRoundRowComponent {
     }
 
     if (this.round.status === 'closed' && this.round.claimName === 'airdrop') {
-      return 'The Claiming Round has finished; all claimed tokens have now been transferred into the next Claiming Round.';
+      return `The Claiming Round has finished;
+      all claimed tokens have now been transferred into the next Claiming Round.`;
     }
 
     if (this.round.status === 'soon') {
