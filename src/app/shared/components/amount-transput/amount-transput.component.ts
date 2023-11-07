@@ -30,10 +30,15 @@ export class AmountTransputComponent {
 
   @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
     if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
-      const shortenPipe = new ShortenAmountPipe();
-      const newAmount = value?.actualValue
-        ? shortenPipe.transform(value?.visibleValue, 12, 6, true)
-        : '';
+      let newAmount = value?.actualValue ? value.visibleValue : '';
+
+      if (this.inputMode !== 'input') {
+        const shortenPipe = new ShortenAmountPipe();
+
+        newAmount = value?.actualValue
+          ? shortenPipe.transform(value?.visibleValue, 12, 6, true)
+          : '';
+      }
       this.amount.setValue(newAmount, { emitViewToModelChange: false });
     }
   }
@@ -56,7 +61,7 @@ export class AmountTransputComponent {
     if (this.inputMode !== 'output') {
       this.amount.setValue(amount, { emitViewToModelChange: false });
       this.amountUpdated.emit({
-        visibleValue: this.formattedAmount,
+        visibleValue: amount,
         actualValue: new BigNumber(this.formattedAmount)
       });
     }
