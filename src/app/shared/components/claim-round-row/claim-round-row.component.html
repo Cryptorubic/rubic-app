@@ -36,7 +36,7 @@
             type="button"
             size="m"
             (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
-            [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
+            [tuiHint]="getHintText()"
             tuiHintAppearance="onDark"
           >
             {{ buttonState.translation | translate }}
@@ -73,7 +73,7 @@
             type="button"
             size="m"
             (click)="!round.isAlreadyClaimed ? handleClick(buttonState.label) : null"
-            [tuiHint]="round.isAlreadyClaimed ? hintTemplate : null"
+            [tuiHint]="getHintText()"
             tuiHintAppearance="onDark"
           >
             {{ buttonState.translation | translate }}

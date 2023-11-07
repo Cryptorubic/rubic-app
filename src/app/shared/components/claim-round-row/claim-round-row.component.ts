@@ -81,4 +81,31 @@ export class ClaimRoundRowComponent {
       this.claimAmountValue = claimAmount;
     }
   }
+
+  public getHintText(): string | null {
+    if (this.round.status === 'closed' && this.round.claimName !== 'airdrop') {
+      return null;
+    }
+
+    if (this.round.status === 'closed' && this.round.claimName === 'airdrop') {
+      return `The Claiming Round has finished;
+      all claimed tokens have now been transferred into the next Claiming Round.`;
+    }
+
+    if (this.round.status === 'soon') {
+      return 'The staking round will start soon.';
+    }
+
+    if (!this.round.isParticipantOfPrevRounds && this.round.claimName !== 'airdrop') {
+      return "You're not eligible";
+    }
+
+    if (this.round.isAlreadyClaimed) {
+      if (this.round.claimName === 'retrodrop') {
+        return 'Your tokens have already been successfully staked. Please review the Staking tab for further details.';
+      } else {
+        return 'Your tokens have been already claimed, please check your wallet.';
+      }
+    }
+  }
 }

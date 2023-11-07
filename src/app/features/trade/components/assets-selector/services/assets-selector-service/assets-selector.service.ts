@@ -9,7 +9,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { FormType } from '@features/trade/models/form-type';
 import { Asset, AssetType } from '@features/trade/models/asset';
 import { SelectorListType } from '@features/trade/components/assets-selector/models/selector-list-type';
-import { INSTANT_TRADE_PROVIDERS } from '@features/trade/constants/providers';
 import { notEvmChangeNowBlockchainsList } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -60,12 +59,6 @@ export class AssetsSelectorService {
     this.subscribeOnAssetChange();
   }
 
-  private isSupportedOnChainNetwork(blockchain: BlockchainName): boolean {
-    return Object.entries(INSTANT_TRADE_PROVIDERS).some(
-      ([supportedNetwork, providers]) => supportedNetwork === blockchain && providers.length > 0
-    );
-  }
-
   private isUserFirstNetworkSelection(
     fromBlockchain: BlockchainName,
     assetTypeKey: 'fromBlockchain' | 'toBlockchain'
@@ -76,7 +69,6 @@ export class AssetsSelectorService {
       Boolean(
         assetTypeKey === 'toBlockchain' && fromBlockchain && this.swapFormService.inputValue.toToken
       ) ||
-      !this.isSupportedOnChainNetwork(fromBlockchain) ||
       fromBlockchain in notEvmChangeNowBlockchainsList
     );
   }
