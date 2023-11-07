@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   BLOCKCHAIN_NAME,
@@ -17,6 +17,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,8 @@ export class QueryParamsService {
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly router: Router,
     private readonly translateService: TranslateService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   public setupQueryParams(queryParams: QueryParams): void {
@@ -84,28 +86,24 @@ export class QueryParamsService {
     this.setIframeInfo(queryParams);
 
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
-      console.log('whitelistOnChain: ', queryParams?.whitelistOnChain);
-      console.log('blacklistOnChain: ', queryParams?.blacklistOnChain);
-      console.log(
-        'all cross-chain providers: ',
-        Object.values(CROSS_CHAIN_TRADE_TYPE).map(provider => provider.toLowerCase())
-      );
+      const urlParams = new URLSearchParams(this.window.location.search);
+      const whitelistOnChain = urlParams.getAll('whitelistOnChain');
+      const blacklistOnChain = urlParams.getAll('blacklistOnChain');
+
       this.setOnChainProviders(
-        queryParams.whitelistOnChain?.toLowerCase(),
-        queryParams.blacklistOnChain?.toLowerCase()
+        whitelistOnChain.map(provider => provider.toLowerCase()),
+        blacklistOnChain.map(provider => provider.toLowerCase())
       );
     }
 
     if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
-      console.log('whitelistCrossChain: ', queryParams?.whitelistCrossChain);
-      console.log('blacklistCrossChain: ', queryParams?.blacklistCrossChain);
-      console.log(
-        'all on-chain providers: ',
-        Object.values(ON_CHAIN_TRADE_TYPE).map(provider => provider.toLowerCase())
-      );
+      const urlParams = new URLSearchParams(this.window.location.search);
+      const whitelistCrossChain = urlParams.getAll('whitelistCrossChain');
+      const blacklistCrossChain = urlParams.getAll('blacklistCrossChain');
+
       this.setCrossChainProviders(
-        queryParams.whitelistCrossChain?.toLowerCase(),
-        queryParams.blacklistCrossChain?.toLowerCase()
+        whitelistCrossChain.map(provider => provider.toLowerCase()),
+        blacklistCrossChain.map(provider => provider.toLowerCase())
       );
     }
 
@@ -185,7 +183,10 @@ export class QueryParamsService {
     );
   }
 
-  private setCrossChainProviders(whitelistCrossChain: string, blacklistCrossChain: string): void {
+  private setCrossChainProviders(
+    whitelistCrossChain: string[],
+    blacklistCrossChain: string[]
+  ): void {
     if (whitelistCrossChain?.length) {
       this.disabledCrossChainProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
         provider => !whitelistCrossChain.includes(provider.toLowerCase())
@@ -203,7 +204,7 @@ export class QueryParamsService {
     }
   }
 
-  private setOnChainProviders(whitelistOnChain: string, blacklistOnChain: string): void {
+  private setOnChainProviders(whitelistOnChain: string[], blacklistOnChain: string[]): void {
     if (whitelistOnChain?.length) {
       this.disabledOnChainProviders = Object.values(ON_CHAIN_TRADE_TYPE).filter(
         provider => !whitelistOnChain.includes(provider.toLowerCase())
