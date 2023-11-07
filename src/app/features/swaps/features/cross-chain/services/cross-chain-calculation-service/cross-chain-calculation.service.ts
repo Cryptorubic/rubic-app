@@ -20,6 +20,7 @@ import {
   UnapprovedContractError,
   UnnecessaryApproveError,
   UserRejectError,
+  Web3Pure,
   WrappedCrossChainTrade
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -56,6 +57,7 @@ import { centralizedBridges } from '@features/swaps/shared/constants/trades-prov
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { SwapSchemeModalData } from '@features/swaps/features/cross-chain/models/swap-scheme-modal-data.interface';
+import { TradeParser } from '../../../instant-trade/services/instant-trade-service/utils/trade-parser';
 
 @Injectable()
 export class CrossChainCalculationService extends TradeCalculationService {
@@ -269,7 +271,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       if (trade instanceof EvmCrossChainTrade) {
         swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
       }
-      await trade.approve(swapOptions, true, trade.from.tokenAmount);
+      const { fromAmount, fromDecimals } = TradeParser.getCrossChainSwapParams(trade);
+      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      await trade.approve(swapOptions, true, amount);
 
       this.notificationsService.showApproveSuccessful();
     } catch (err) {
