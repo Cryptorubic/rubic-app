@@ -84,6 +84,12 @@ export class QueryParamsService {
     this.setIframeInfo(queryParams);
 
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
+      console.log('whitelistOnChain: ', queryParams?.whitelistOnChain);
+      console.log('blacklistOnChain: ', queryParams?.blacklistOnChain);
+      console.log(
+        'all cross-chain providers: ',
+        Object.values(CROSS_CHAIN_TRADE_TYPE).map(provider => provider.toLowerCase())
+      );
       this.setOnChainProviders(
         queryParams.whitelistOnChain?.toLowerCase(),
         queryParams.blacklistOnChain?.toLowerCase()
@@ -91,6 +97,12 @@ export class QueryParamsService {
     }
 
     if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
+      console.log('whitelistCrossChain: ', queryParams?.whitelistCrossChain);
+      console.log('blacklistCrossChain: ', queryParams?.blacklistCrossChain);
+      console.log(
+        'all on-chain providers: ',
+        Object.values(ON_CHAIN_TRADE_TYPE).map(provider => provider.toLowerCase())
+      );
       this.setCrossChainProviders(
         queryParams.whitelistCrossChain?.toLowerCase(),
         queryParams.blacklistCrossChain?.toLowerCase()
