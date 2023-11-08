@@ -103,10 +103,10 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.IZUMI]: 'izumi',
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
   [ON_CHAIN_TRADE_TYPE.AERODROME]: 'aerodrome',
-
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
   [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi',
   [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: 'xy_dex',
-  [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx'
+  [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx',
+  [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi'
 };
