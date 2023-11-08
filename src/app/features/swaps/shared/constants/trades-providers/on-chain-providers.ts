@@ -4,6 +4,11 @@ import { ProviderInfo } from '@features/swaps/shared/models/trade-provider/provi
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 
 export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = {
+  [ON_CHAIN_TRADE_TYPE.LIFI]: {
+    color: '#bf38ee',
+    image: 'assets/images/icons/providers/bridge/lifi.svg',
+    name: 'Lifi'
+  },
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',
     image: `${imageBasePath}acryptos.png`,

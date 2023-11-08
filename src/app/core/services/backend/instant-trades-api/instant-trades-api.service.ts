@@ -11,7 +11,6 @@ import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import { AuthService } from '../../auth/auth.service';
 import {
   BlockchainName,
-  LifiTrade,
   NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeType,
@@ -84,9 +83,7 @@ export class InstantTradesApiService {
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
     let backendProvider = BACKEND_PROVIDERS[provider];
-    if (trade instanceof LifiTrade) {
-      backendProvider = 'lifi';
-    }
+
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
       provider: backendProvider,
