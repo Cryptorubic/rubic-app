@@ -81,7 +81,10 @@ export class PreviewSwapComponent {
       } else if (el.step === transactionStep.idle) {
         state.disabled = false;
         state.action = this.startTrade.bind(this);
-      } else if (el.step === transactionStep.success) {
+      } else if (
+        el.step === transactionStep.success ||
+        el.step === transactionStep.destinationPending
+      ) {
         state.disabled = false;
         state.label = 'Done';
         state.action = this.backToForm.bind(this);
