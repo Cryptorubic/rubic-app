@@ -234,6 +234,9 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.ZETACHAIN]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.TAIKO]: getDefaultStateByProviders([]),
     [BLOCKCHAIN_NAME.SEPOLIA]: getDefaultStateByProviders([]),
-    [BLOCKCHAIN_NAME.MANTA_PACIFIC]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.IZUMI]),
+    [BLOCKCHAIN_NAME.MANTA_PACIFIC]: getDefaultStateByProviders([
+      ON_CHAIN_TRADE_TYPE.IZUMI,
+      ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
+    ]),
     [BLOCKCHAIN_NAME.SCROLL]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.SYNC_SWAP])
   };
