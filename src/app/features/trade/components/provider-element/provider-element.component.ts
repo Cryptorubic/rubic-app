@@ -73,10 +73,21 @@ export class ProviderElementComponent {
   public getGasData(): { amount: BigNumber; symbol: string } | null {
     const trade = this.tradeState.trade;
     let gasData = null;
+    let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
+      gasPrice = gasData.gasPrice;
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
+      gasPrice = gasData.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;
+      console.log(`====================${trade.type} START====================`);
+      console.log('MaxFeePerGas: ', gasData.maxFeePerGas?.toFixed());
+      console.log('GasPrice: ', gasData.gasPrice?.toFixed());
+      console.log('GasFeeInEth in WEI: ', Web3Pure.toWei(gasData?.gasFeeInEth));
+      console.log('GasLimit: ', gasData.gasLimit?.toFixed());
+      console.log('Finally GasPrice: ', (gasPrice as BigNumber).toFixed());
+      console.log('Finally GasLimit: ', gasData?.gasLimit?.multipliedBy(gasPrice).toFixed());
+      console.log(`====================${trade.type} END====================`);
     }
 
     if (!gasData || !gasData.gasLimit) {
@@ -84,7 +95,7 @@ export class ProviderElementComponent {
     }
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+    const gasLimit = gasData.gasLimit.multipliedBy(gasPrice);
 
     return {
       amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
