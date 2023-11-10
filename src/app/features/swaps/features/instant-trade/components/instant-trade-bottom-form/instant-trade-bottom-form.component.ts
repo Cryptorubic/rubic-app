@@ -479,7 +479,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
   private filterTradesWithBestLifiTrade(
     trades: (OnChainTrade | OnChainTradeError)[]
   ): (OnChainTrade | OnChainTradeError)[] {
-    const hasAvailableLifiTrades = trades.find(
+    const hasAvailableLifiTrades = trades.some(
       trade => trade.type === 'LIFI' && trade instanceof OnChainTrade
     );
     if (!hasAvailableLifiTrades) return trades;
