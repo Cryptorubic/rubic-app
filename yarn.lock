@@ -13593,10 +13593,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@^4.37.2-alpha.polygon-zkEvm-rpc.1:
-  version "4.37.2-alpha.polygon-zkEvm-rpc.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.37.2-alpha.polygon-zkEvm-rpc.1.tgz#11543abbdf305d02e446c524a785cc06f4b10789"
-  integrity sha512-ZkWOVE733FAs4nRqVjenbXHglAxvCZ3GB+dxv3YrOL8Dyen5tPEYMdHoKNXLSRYUqqvnx10joZ9Y4S4DQi9tew==
+rubic-sdk@^4.37.2-alpha.polygon-zkEvm-rpc.2:
+  version "4.37.2-alpha.polygon-zkEvm-rpc.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.37.2-alpha.polygon-zkEvm-rpc.2.tgz#5bd329a488b8c18758b4a44c99d768d39b248d3c"
+  integrity sha512-J49+kCnhN63VUdwmCXmHYI51g+h3tOAknofvW3zqDl5J6tVGdnL1tKtWM1HZkhxQ+Pb5CE8ZWB0koP7lHmaPaA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
