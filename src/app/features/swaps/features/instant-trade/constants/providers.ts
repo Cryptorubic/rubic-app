@@ -83,7 +83,6 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
       // ON_CHAIN_TRADE_TYPE.XY_DEX
-      // ,
       // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
     [BLOCKCHAIN_NAME.MOONRIVER]: getDefaultStateByProviders([
@@ -182,7 +181,8 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.NET_SWAP]),
     [BLOCKCHAIN_NAME.KLAYTN]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.LIFI,
-      ON_CHAIN_TRADE_TYPE.CLAIM_SWAP
+      ON_CHAIN_TRADE_TYPE.CLAIM_SWAP,
+      ON_CHAIN_TRADE_TYPE.ONE_INCH
     ]),
     [BLOCKCHAIN_NAME.VELAS]: getDefaultStateByProviders([
       ON_CHAIN_TRADE_TYPE.WAGYU_SWAP,

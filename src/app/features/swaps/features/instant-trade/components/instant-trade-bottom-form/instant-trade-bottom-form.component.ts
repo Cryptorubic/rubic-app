@@ -431,7 +431,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
     const isUserAuthorized =
       Boolean(this.authService.userAddress) &&
       this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
-    trades = this.filterTradesWithBestLifiTrade(trades);
     const providersPromises = this.providersData.map(async provider => {
       const settledTrade = trades.find(trade => trade.type === provider.name);
       const defaultProvider: InstantTradeProviderData = {
@@ -469,36 +468,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
 
     this.providersData = await Promise.all(providersPromises);
     this.chooseBestProvider();
-  }
-
-  /**
-   * @description Lifi-aggregator provides several providers at the same time, this method chooses the most profitable trade
-   * @param trades OnChainTrade[]
-   * @returns trades with only one most profitable trade by any lifi-supported provider
-   */
-  private filterTradesWithBestLifiTrade(
-    trades: (OnChainTrade | OnChainTradeError)[]
-  ): (OnChainTrade | OnChainTradeError)[] {
-    const hasAvailableLifiTrades = trades.some(
-      trade => trade.type === 'LIFI' && trade instanceof OnChainTrade
-    );
-    if (!hasAvailableLifiTrades) return trades;
-    let availableLifiTrades: OnChainTrade[] = [];
-    let otherTrades: (OnChainTrade | OnChainTradeError)[] = [];
-    for (let i = 0; i < trades.length; i++) {
-      const trade = trades[i];
-      if (trade.type === 'LIFI' && trade instanceof OnChainTrade) {
-        availableLifiTrades.push(trade);
-      } else if (trade.type !== 'LIFI') {
-        otherTrades.push(trade);
-      }
-    }
-    const bestLifiTrade = availableLifiTrades.reduce((bestTrade, trade) => {
-      const bestTradeAmount = bestTrade.to.tokenAmount;
-      const currentTradeAmount = trade.to.tokenAmount;
-      return bestTradeAmount.comparedTo(currentTradeAmount) > 0 ? bestTrade : trade;
-    }, availableLifiTrades[0]);
-    return [...otherTrades, bestLifiTrade];
   }
 
   /**
