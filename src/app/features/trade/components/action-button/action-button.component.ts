@@ -40,7 +40,7 @@ export class ActionButtonComponent {
       if (notEnoughBalance) {
         return {
           type: 'error',
-          text: 'Not enough balance',
+          text: 'Insufficient balance',
           action: () => {}
         };
       }

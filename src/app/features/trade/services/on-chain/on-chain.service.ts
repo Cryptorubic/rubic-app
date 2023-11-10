@@ -109,6 +109,11 @@ export class OnChainService {
             this.authService.userAddress &&
             isAddressCorrectValue;
 
+          const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
+          const disabledTradeTypes = Array.from(
+            new Set<OnChainTradeType>([...disabledProviders, ...queryDisabledTradeTypes])
+          );
+
           const settings = this.settingsService.instantTradeValue;
           const slippageTolerance = settings.slippageTolerance / 100;
           const disableMultihops = settings.disableMultihops;
@@ -125,7 +130,7 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders
+            disabledProviders: disabledTradeTypes
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(
