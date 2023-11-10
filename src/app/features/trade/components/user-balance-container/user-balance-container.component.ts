@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { debounceTime, map, tap } from 'rxjs/operators';
+import { debounceTime, map, startWith, tap } from 'rxjs/operators';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
@@ -26,7 +26,7 @@ export class UserBalanceContainerComponent {
   private readonly triggerRefresh$ = this._triggerRefresh$.asObservable();
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
-    combineLatestWith(this.triggerRefresh$),
+    combineLatestWith(this.triggerRefresh$.pipe(startWith())),
     map(([fromToken]) =>
       this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
     )

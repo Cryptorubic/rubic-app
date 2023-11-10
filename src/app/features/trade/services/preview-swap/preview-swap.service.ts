@@ -3,6 +3,7 @@ import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, 
 import {
   debounceTime,
   distinctUntilChanged,
+  filter,
   first,
   map,
   startWith,
@@ -32,7 +33,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { transactionStep } from '@features/trade/models/transaction-steps';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -109,6 +109,7 @@ export class PreviewSwapService {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
+    this.subscribeOnFormChange();
   }
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -272,29 +273,35 @@ export class PreviewSwapService {
       .subscribe();
   }
 
-  private subscribeOnNetworkChange(): void {
-    this.walletConnectorService.networkChange$
-      .pipe(
-        startWith(this.walletConnectorService.network),
-        switchMap(network => forkJoin(of(network), this.tradeState$))
-      )
-      .subscribe(([network, trade]) => {
-        const tokenBlockchain = trade.trade.from.blockchain;
-        const state = this._transactionState$.getValue();
-        state.data.wrongNetwork = network !== tokenBlockchain;
-        if (this.transactionState.step !== transactionStep.success) {
-          this._transactionState$.next(state);
-        }
+  private subscribeOnFormChange(): void {
+    this.tradePageService.formContent$
+      .pipe(filter(content => content === 'preview'))
+      .subscribe(() => {
+        this.checkAddress();
+        this.checkNetwork();
       });
   }
 
+  private subscribeOnNetworkChange(): void {
+    this.walletConnectorService.networkChange$.subscribe(() => this.checkNetwork());
+  }
+
   private subscribeOnAddressChange(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(startWith(this.walletConnectorService.address))
-      .subscribe(address => {
-        const state = this._transactionState$.getValue();
-        state.data.activeWallet = Boolean(address);
-        this._transactionState$.next(state);
-      });
+    this.walletConnectorService.addressChange$.subscribe(() => this.checkAddress());
+  }
+
+  private checkAddress(): void {
+    const address = this.walletConnectorService.address;
+    const state = this._transactionState$.getValue();
+    state.data.activeWallet = Boolean(address);
+    this._transactionState$.next(state);
+  }
+
+  private checkNetwork(): void {
+    const network = this.walletConnectorService.network;
+    const tokenBlockchain = this.tradeState.trade.from.blockchain;
+    const state = this._transactionState$.getValue();
+    state.data.wrongNetwork = network !== tokenBlockchain;
+    this._transactionState$.next(state);
   }
 }

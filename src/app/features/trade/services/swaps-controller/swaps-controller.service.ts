@@ -35,6 +35,7 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 
 @Injectable()
 export class SwapsControllerService {
@@ -125,9 +126,8 @@ export class SwapsControllerService {
           const { toBlockchain, fromToken } = this.swapFormService.inputValue;
 
           if (fromToken.blockchain === toBlockchain) {
-            // @TODO Make bl instead of hardcode
             return this.onChainService
-              .calculateTrades([...this.disabledTradesTypes.onChain, 'XY_DEX'])
+              .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
               .pipe(
                 catchError(err => {
                   console.debug(err);

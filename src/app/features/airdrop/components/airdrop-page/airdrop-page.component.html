@@ -10,7 +10,7 @@
   </app-window-container>
   <app-window-container *ngIf="isAuth$ | async">
     <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
-      <ng-container *ngIf="isParticipant$ | async; else notMember">
+      <ng-container *ngIf="(airdropUserInfo$ | async)?.is_participant; else notMember">
         <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
           <div class="drops__container">
             <tui-scrollbar>

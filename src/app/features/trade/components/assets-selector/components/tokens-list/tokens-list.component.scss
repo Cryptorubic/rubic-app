@@ -4,6 +4,12 @@ $token-card-height: 55px;
 
 :host {
   width: 100%;
+
+  @include b($mobile-md) {
+    ::ng-deep tui-scroll-controls .t-bar {
+      right: -14px !important;
+    }
+  }
 }
 
 .tokens-container {

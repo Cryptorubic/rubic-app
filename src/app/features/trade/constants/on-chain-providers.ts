@@ -514,7 +514,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
     name: 'BaseSwap',
-    image: `${imageBasePath}baseswap.webp`,
+    image: `${imageBasePath}baseswap.png`,
     color: '#000DBF'
   },
   [ON_CHAIN_TRADE_TYPE.VOOI]: {
