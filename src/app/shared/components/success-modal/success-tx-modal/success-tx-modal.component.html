@@ -1,4 +1,4 @@
-<div class="modal" [id]="idPrefix + 'gtm-transaction-modal'" *ngLet="points$ | async as points">
+<div class="modal" [id]="idPrefix + 'gtm-transaction-modal'">
   <div class="modal__content">
     <main class="modal__body">
       <img
@@ -32,8 +32,8 @@
         <h3 *noFrame="'horizontal'" class="modal__title-points">Yahoo!</h3>
       </ng-container>
       <span class="modal__point-subtitle" *ngIf="isSwapAndEarnSwap"
-        >You will be credited with {{ points.participant ? '12' : '25' }} points when the
-        transaction is successful</span
+        >You will be credited with {{ bonusPoints$ | async }} points when the transaction is
+        successful</span
       >
     </main>
     <footer class="modal__footer">
