@@ -15,8 +15,7 @@ import {
   FeeInfo,
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTrade,
-  Web3Pure
+  OnChainTrade
 } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -30,6 +29,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { compareTokens } from '@shared/utils/utils';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -125,7 +126,8 @@ export class PreviewSwapComponent {
     @Inject(Injector) private injector: Injector,
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensStoreService: TokensStoreService
   ) {}
 
   public backToForm(): void {
@@ -194,10 +196,13 @@ export class PreviewSwapComponent {
     trade: CrossChainTrade | OnChainTrade
   ): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
     let gasData = null;
+    let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
+      gasPrice = gasData?.gasPrice;
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
+      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;
     }
 
     if (!gasData || !gasData.gasLimit) {
@@ -205,11 +210,14 @@ export class PreviewSwapComponent {
     }
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+      compareTokens(token, { blockchain, address: nativeToken.address })
+    ).price;
+    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
 
     return {
-      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
-      amountInUsd: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      amount: gasLimit,
+      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
   }
