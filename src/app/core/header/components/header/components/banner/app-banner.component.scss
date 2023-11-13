@@ -170,7 +170,7 @@
 @include b(420) {
   .banner {
     height: 31px;
-    
+
     &__text {
       @include font(13px, 1, 400, #ffffff);
     }
