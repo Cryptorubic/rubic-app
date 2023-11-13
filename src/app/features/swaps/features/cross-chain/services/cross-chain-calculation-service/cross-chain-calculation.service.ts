@@ -448,7 +448,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
     const toBlockchain = calculatedTrade.trade.to.blockchain;
-    console.log('toBlockchain', toBlockchain);
     const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
