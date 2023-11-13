@@ -122,6 +122,10 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
+          const providerAddress =
+            toToken.blockchain === BLOCKCHAIN_NAME.LINEA &&
+            '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+
           const options: OnChainManagerCalculationOptions = {
             timeout: 10000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
@@ -130,7 +134,8 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: disabledTradeTypes
+            disabledProviders: disabledTradeTypes,
+            ...(providerAddress && { providerAddress })
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(

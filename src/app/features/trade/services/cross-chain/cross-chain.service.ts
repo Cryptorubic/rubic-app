@@ -96,7 +96,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -164,7 +164,8 @@ export class CrossChainService {
 
   private getOptions(
     disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -182,6 +183,8 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
+    const providerAddress =
+      toBlockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -196,7 +199,8 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy,
+      ...(providerAddress && { providerAddress })
     };
   }
 

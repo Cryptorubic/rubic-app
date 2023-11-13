@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 import { OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { AuthService } from '@core/services/auth/auth.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropPointsService {
@@ -58,10 +59,10 @@ export class AirdropPointsService {
       map(points => {
         if (tradeType instanceof CrossChainTrade) {
           if (points.participant) {
-            return 25;
+            return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ? 12 : 25;
           }
 
-          return 50;
+          return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ? 25 : 50;
         } else {
           if (points.participant) {
             return 12;
