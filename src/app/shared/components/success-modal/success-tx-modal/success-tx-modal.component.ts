@@ -20,6 +20,7 @@ import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
 import { map } from 'rxjs';
+
 @Component({
   selector: 'polymorpheus-success-tx-modal',
   templateUrl: './success-tx-modal.component.html',
