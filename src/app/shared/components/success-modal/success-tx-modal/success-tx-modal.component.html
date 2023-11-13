@@ -32,7 +32,7 @@
         <h3 *noFrame="'horizontal'" class="modal__title-points">Yahoo!</h3>
       </ng-container>
       <span class="modal__point-subtitle" *ngIf="isSwapAndEarnSwap"
-        >You will be credited with {{ bonusPointsAmount }} points when the transaction is
+        >You will be credited with {{ bonusPoints$ | async }} points when the transaction is
         successful</span
       >
     </main>
