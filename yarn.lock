@@ -13593,10 +13593,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.37.5-alpha.linea-promo.2:
-  version "4.37.5-alpha.linea-promo.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.37.5-alpha.linea-promo.2.tgz#615cad12142d993e34b7f3bde6ea01ac867bfc7c"
-  integrity sha512-oMKXM+fmuSeuGsN+r4zzIZTpcvNnyRKAVx82+mt3ldJa7RU1ZAN6M79W5SaOKoViN6Zu2o/WkMqpNWxDfNMFTw==
+rubic-sdk@4.37.4:
+  version "4.37.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.37.4.tgz#4c8a2f271a9b82cbce7f506e22eb2e6208aac018"
+  integrity sha512-H9eF73qHZ82BYApfYJFqoiuloI+kKLZFRux/sC2qvlq4fBA04X+whiKgVjcVEbQEEblB9sQg90YxxreUsjHOVw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
