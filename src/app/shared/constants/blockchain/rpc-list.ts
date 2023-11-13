@@ -22,9 +22,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/polygon'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://rpc.ankr.com/polygon_zkevm',
-    'https://1rpc.io/polygon/zkevm'
+    'https://nd-286-108-077.p2pify.com/2bf96e69ad7bef27f9598f04c61ed737',
+    'https://go.getblock.io/dc26bc690261423eba3ddcf356fcda2c',
+    'https://zkevm-rpc.com',
+    'https://1rpc.io/polygon/zkevm',
+    'https://polygon-zkevm-mainnet.public.blastapi.io'
+    // 'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
   ],
   [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
