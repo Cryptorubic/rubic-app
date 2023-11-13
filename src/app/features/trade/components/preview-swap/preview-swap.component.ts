@@ -192,7 +192,7 @@ export class PreviewSwapComponent {
 
   public getGasData(
     trade: CrossChainTrade | OnChainTrade
-  ): { amount: BigNumber; symbol: string } | null {
+  ): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
     let gasData = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
@@ -209,6 +209,7 @@ export class PreviewSwapComponent {
 
     return {
       amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      amountInUsd: Web3Pure.fromWei(gasLimit, trade.from.decimals),
       symbol: nativeToken.symbol
     };
   }
