@@ -125,7 +125,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
   ): Observable<CrossChainCalculatedTradeData> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
-
+    const providerAddress =
+      toToken.blockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
@@ -138,7 +139,6 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ...(iframeDisabledTradeTypes || [])
       ])
     );
-
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
@@ -151,7 +151,8 @@ export class CrossChainCalculationService extends TradeCalculationService {
       ],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy,
+      ...(providerAddress && { providerAddress })
     };
 
     return forkJoin([
@@ -446,6 +447,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
         ? calculatedTrade.trade.id
         : undefined;
 
+    const toBlockchain = calculatedTrade.trade.to.blockchain;
     const defaultData: SwapSchemeModalData = {
       fromToken,
       toToken,
@@ -458,7 +460,9 @@ export class CrossChainCalculationService extends TradeCalculationService {
       amountOutMin,
       changenowId,
       ...(this.isSwapAndEarnSwap(calculatedTrade) && {
-        points: await firstValueFrom(this.swapAndEarnStateService.getSwapAndEarnPointsAmount())
+        points: await firstValueFrom(
+          this.swapAndEarnStateService.getSwapAndEarnPointsAmount(toBlockchain)
+        )
       })
     };
 

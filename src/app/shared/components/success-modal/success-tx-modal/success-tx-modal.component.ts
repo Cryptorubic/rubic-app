@@ -19,6 +19,7 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -47,7 +48,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
+  public readonly bonusPoints$ = this.swapAndEarnStateService.points$.pipe(
+    map(points => this.getBonusPoints(points.participant))
+  );
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -106,5 +109,13 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
 
     this.context.completeWith(null);
+  }
+
+  public getBonusPoints(isParticipant: boolean): number {
+    if (isParticipant) {
+      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 6 : 12;
+    } else {
+      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 12 : 25;
+    }
   }
 }

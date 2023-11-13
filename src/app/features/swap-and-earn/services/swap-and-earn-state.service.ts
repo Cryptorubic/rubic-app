@@ -16,7 +16,7 @@ import {
   RetrodropUserClaimedAmount,
   RetrodropUserInfo
 } from '@features/swap-and-earn/models/retrodrop-user-info';
-import { Web3Pure } from 'rubic-sdk';
+import { BlockchainName, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { SwapAndEarnApiService } from '@features/swap-and-earn/services/swap-and-earn-api.service';
 import { airdropContractAddress } from '@features/swap-and-earn/constants/airdrop/airdrop-contract-address';
@@ -219,13 +219,17 @@ export class SwapAndEarnStateService {
     this.isRetrodropRoundsAlreadyClaimed = await Promise.all(alreadyClaimedRounds);
   }
 
-  public getSwapAndEarnPointsAmount(): Observable<number> {
+  /**
+   *
+   * @param toBlockchain Optional, used for changing RBC-points amount in PROMO actions
+   */
+  public getSwapAndEarnPointsAmount(toBlockchain?: BlockchainName): Observable<number> {
     return this.points$.pipe(
       map(points => {
         if (points.participant) {
-          return 25;
+          return toBlockchain === 'LINEA' ? 12 : 25;
         }
-        return 50;
+        return toBlockchain === 'LINEA' ? 25 : 50;
       })
     );
   }
