@@ -98,7 +98,9 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
+    //for Linea-PROMO
+    const isLineaSwap = trade.from.blockchain === 'LINEA';
+    return isLineaSwap || trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
@@ -187,6 +189,8 @@ export class InstantTradeService extends TradeCalculationService {
       deflationFromStatus.isDeflation || deflationToStatus.isDeflation
         ? false
         : this.platformConfigurationService.useOnChainProxy;
+    const providerAddress =
+      toToken.blockchain === 'LINEA' ? '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb' : undefined;
 
     return this.sdkService.instantTrade.calculateTrade(
       fromSdkCompatibleToken,
@@ -199,7 +203,8 @@ export class InstantTradeService extends TradeCalculationService {
         slippageTolerance,
         disableMultihops,
         deadlineMinutes,
-        useProxy
+        useProxy,
+        providerAddress
       }
     );
   }

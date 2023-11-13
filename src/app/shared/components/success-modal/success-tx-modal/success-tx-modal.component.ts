@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   OnDestroy
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -19,7 +20,6 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
-
 @Component({
   selector: 'polymorpheus-success-tx-modal',
   templateUrl: './success-tx-modal.component.html',
@@ -38,6 +38,8 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   public txHash: string;
 
   public blockchain: BlockchainName;
+
+  public bonusPointsAmount: number;
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
@@ -72,6 +74,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     this.txHash = context.data.txHash;
     this.blockchain = context.data.blockchain;
     this.ccrProviderType = context.data.ccrProviderType;
+    this.points$.pipe(takeUntilDestroyed()).subscribe(points => {
+      this.bonusPointsAmount = this.defineBonusPointsAmount(!points.participant);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -106,5 +111,13 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     await this.router.navigate([ROUTE_PATH.SWAP_AND_EARN], { queryParamsHandling: '' });
 
     this.context.completeWith(null);
+  }
+
+  public defineBonusPointsAmount(isFirstSwap: boolean): number {
+    if (isFirstSwap) {
+      return this.blockchain === 'LINEA' ? 12 : 25;
+    } else {
+      return this.blockchain === 'LINEA' ? 6 : 12;
+    }
   }
 }
