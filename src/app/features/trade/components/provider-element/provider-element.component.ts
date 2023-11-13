@@ -7,7 +7,8 @@ import {
   EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
-  nativeTokensList
+  nativeTokensList,
+  Web3Pure
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { Token } from '@shared/models/tokens/token';
@@ -76,7 +77,9 @@ export class ProviderElementComponent {
     let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
-      gasPrice = gasData?.gasPrice;
+      gasPrice = gasData?.gasPrice?.gt(0)
+        ? gasData.gasPrice
+        : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
       gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;

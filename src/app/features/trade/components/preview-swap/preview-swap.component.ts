@@ -15,7 +15,8 @@ import {
   FeeInfo,
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTrade
+  OnChainTrade,
+  Web3Pure
 } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -199,7 +200,9 @@ export class PreviewSwapComponent {
     let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
-      gasPrice = gasData?.gasPrice;
+      gasPrice = gasData?.gasPrice?.gt(0)
+        ? gasData.gasPrice
+        : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
       gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;
