@@ -126,7 +126,7 @@ export class CrossChainCalculationService extends TradeCalculationService {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
     const providerAddress =
-      toToken.blockchain === 'LINEA' && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+      toToken.blockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;

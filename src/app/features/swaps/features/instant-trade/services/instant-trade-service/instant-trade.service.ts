@@ -190,7 +190,7 @@ export class InstantTradeService extends TradeCalculationService {
         ? false
         : this.platformConfigurationService.useOnChainProxy;
     const providerAddress =
-      toToken.blockchain === 'LINEA' && '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb';
+      toToken.blockchain === BLOCKCHAIN_NAME.LINEA && '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb';
 
     return this.sdkService.instantTrade.calculateTrade(
       fromSdkCompatibleToken,

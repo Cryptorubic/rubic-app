@@ -19,7 +19,7 @@ import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { SwapAndEarnStateService } from '@features/swap-and-earn/services/swap-and-earn-state.service';
-import { Observable, map } from 'rxjs';
+import { map } from 'rxjs';
 @Component({
   selector: 'polymorpheus-success-tx-modal',
   templateUrl: './success-tx-modal.component.html',
@@ -39,8 +39,6 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public blockchain: BlockchainName;
 
-  public bonusPoints$: Observable<number>;
-
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public readonly CROSS_CHAIN_PROVIDER = CROSS_CHAIN_TRADE_TYPE;
@@ -49,7 +47,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly points$ = this.swapAndEarnStateService.points$;
+  public readonly bonusPoints$ = this.swapAndEarnStateService.points$.pipe(
+    map(points => this.getBonusPoints(points.participant))
+  );
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -74,7 +74,6 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     this.txHash = context.data.txHash;
     this.blockchain = context.data.blockchain;
     this.ccrProviderType = context.data.ccrProviderType;
-    this.bonusPoints$ = this.points$.pipe(map(points => this.getBonusPoints(points.participant)));
   }
 
   ngAfterViewInit(): void {
@@ -113,9 +112,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public getBonusPoints(isParticipant: boolean): number {
     if (isParticipant) {
-      return this.blockchain === 'LINEA' ? 6 : 12;
+      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 6 : 12;
     } else {
-      return this.blockchain === 'LINEA' ? 12 : 25;
+      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 12 : 25;
     }
   }
 }
