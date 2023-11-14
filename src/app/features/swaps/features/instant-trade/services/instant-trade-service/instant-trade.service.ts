@@ -98,9 +98,7 @@ export class InstantTradeService extends TradeCalculationService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    //for Linea-PROMO
-    const isLineaSwap = trade.from.blockchain === 'LINEA';
-    return isLineaSwap || trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
+    return trade.feeInfo.rubicProxy.fixedFee.amount.gt(0);
   }
 
   public async needApprove(trade: OnChainTrade): Promise<boolean> {
