@@ -432,7 +432,7 @@ export class InstantTradeBottomFormComponent implements OnInit {
       Boolean(this.authService.userAddress) &&
       this.authService.userChainType === BlockchainsInfo.getChainType(this.fromToken.blockchain);
     const providersPromises = this.providersData.map(async provider => {
-      const settledTrade = trades.find(trade => trade.type === provider.name);
+      const settledTrade = trades.filter(Boolean).find(trade => trade?.type === provider.name);
       const defaultProvider: InstantTradeProviderData = {
         name: provider.name,
         label: provider.label,
