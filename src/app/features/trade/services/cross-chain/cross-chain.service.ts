@@ -49,6 +49,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
+import { TradeParser } from '@features/trade/utils/trade-parser';
 
 @Injectable()
 export class CrossChainService {
@@ -339,7 +340,9 @@ export class CrossChainService {
       if (trade instanceof EvmCrossChainTrade) {
         swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
       }
-      await trade.approve(swapOptions);
+      const { fromAmount, fromDecimals } = TradeParser.getCrossChainSwapParams(trade);
+      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      await trade.approve(swapOptions, true, amount);
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {
         return;

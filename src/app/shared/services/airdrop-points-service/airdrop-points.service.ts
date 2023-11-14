@@ -8,10 +8,9 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropPointsService {
@@ -57,19 +56,17 @@ export class AirdropPointsService {
   public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
     return this.points$.pipe(
       map(points => {
+        let finalPoints = 0;
+
         if (tradeType instanceof CrossChainTrade) {
-          if (points.participant) {
-            return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ? 12 : 25;
-          }
-
-          return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ? 25 : 50;
+          finalPoints = points.participant ? 25 : 50;
         } else {
-          if (points.participant) {
-            return 12;
-          }
-
-          return 25;
+          finalPoints = points.participant ? 12 : 25;
         }
+
+        return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA
+          ? Math.trunc(finalPoints / 2)
+          : finalPoints;
       })
     );
   }
