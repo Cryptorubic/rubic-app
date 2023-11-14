@@ -186,7 +186,7 @@ export class PreviewSwapService {
                   txHash = hash;
                   this._transactionState$.next({
                     step: 'sourcePending',
-                    data: this.transactionState.data
+                    data: { ...this.transactionState.data, points }
                   });
                 },
                 onSwap: (additionalInfo: { changenowId?: string }) => {
@@ -199,7 +199,8 @@ export class PreviewSwapService {
                       txHash,
                       Date.now(),
                       tradeState.trade.to.blockchain,
-                      additionalInfo
+                      additionalInfo,
+                      points
                     );
                   } else {
                     this._transactionState$.next({
@@ -230,7 +231,8 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string }
+    additionalInfo: { changenowId?: string },
+    points: number
   ): void {
     interval(30_000)
       .pipe(
@@ -261,7 +263,8 @@ export class PreviewSwapService {
               step: 'success',
               data: {
                 hash: crossChainStatus.dstTxHash,
-                toBlockchain
+                toBlockchain,
+                points
               }
             });
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {

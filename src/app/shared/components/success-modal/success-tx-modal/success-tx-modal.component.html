@@ -30,11 +30,11 @@
       </ng-container>
       <ng-container *ngIf="isSwapAndEarnSwap">
         <h3 class="modal__title-points">Yahoo!</h3>
+        <span class="modal__point-subtitle"
+          >You will be credited with {{ bonusPoints$ | async }} points when the transaction is
+          successful</span
+        >
       </ng-container>
-      <span class="modal__point-subtitle" *ngIf="isSwapAndEarnSwap"
-        >You will be credited with {{ bonusPoints$ | async }} points when the transaction is
-        successful</span
-      >
     </main>
     <footer class="modal__footer">
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
