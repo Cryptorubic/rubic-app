@@ -7,8 +7,7 @@ import {
   EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
-  nativeTokensList,
-  Web3Pure
+  nativeTokensList
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { Token } from '@shared/models/tokens/token';
@@ -17,6 +16,8 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { compareTokens } from '@shared/utils/utils';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
+import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
 
 @Component({
   selector: 'app-provider-element',
@@ -77,9 +78,16 @@ export class ProviderElementComponent {
     let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
-      gasPrice = gasData?.gasPrice?.gt(0)
-        ? gasData.gasPrice
-        : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+
+      if (trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? Web3Pure.fromWei(gasData.gasPrice)
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      } else {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? gasData.gasPrice
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      }
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
       gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;
