@@ -32,6 +32,7 @@ import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 
 @Component({
   selector: 'app-preview-swap',
@@ -200,12 +201,19 @@ export class PreviewSwapComponent {
     let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
-      gasPrice = gasData?.gasPrice?.gt(0)
-        ? gasData.gasPrice
-        : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+
+      if (trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? Web3Pure.fromWei(gasData.gasPrice)
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      } else {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? gasData.gasPrice
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      }
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
-      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData.maxFeePerGas;
+      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
 
     if (!gasData || !gasData.gasLimit) {
