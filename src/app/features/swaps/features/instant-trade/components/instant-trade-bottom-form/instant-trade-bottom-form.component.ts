@@ -451,7 +451,6 @@ export class InstantTradeBottomFormComponent implements OnInit {
           error: RubicSdkErrorParser.parseError(settledTrade.error)
         };
       }
-      // settledTrade.to.tokenAmount;
       const needApprove = isUserAuthorized
         ? await this.instantTradeService.needApprove(settledTrade)
         : false;
