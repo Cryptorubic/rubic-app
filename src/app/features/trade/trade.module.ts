@@ -18,6 +18,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiNotificationModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -61,6 +62,7 @@ import { ProvidersListComponent } from '@features/trade/components/providers-lis
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
 import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
+import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +89,8 @@ import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service'
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    CnPreviewSwapComponent
+    CnPreviewSwapComponent,
+    CnTradeInfoComponent
   ],
   exports: [],
   imports: [
@@ -110,7 +113,8 @@ import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service'
     TuiInputModule,
     TuiProgressModule,
     TuiLoaderModule,
-    AssetsSelectorModule
+    AssetsSelectorModule,
+    TuiNotificationModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

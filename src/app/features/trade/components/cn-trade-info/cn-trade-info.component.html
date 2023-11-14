@@ -1,0 +1,47 @@
+<app-window-container
+  *ngLet="{
+    trade: trade$ | async,
+    wallet: walletAddress$ | async
+  } as state"
+>
+  <ng-container header>Transaction details</ng-container>
+  <div class="transaction-details">
+    <app-transaction-details-element
+      [title]="text.transactionId.label"
+      [description]="text.transactionId.description"
+      >{{ state.trade.id }}
+    </app-transaction-details-element>
+
+    <app-transaction-details-element
+      *ngIf="state.wallet && state.trade?.toToken.blockchain"
+      [title]="text.receiver.label"
+      [description]="text.receiver.description"
+    >
+      <div class="receiver-container">
+        {{ state.wallet | shortAddress : 5 : 5 }}
+
+        <a
+          [safetyLink]="
+            state.wallet | scannerLink : state.trade.toToken.blockchain : ADDRESS_TYPE.WALLET
+          "
+        >
+          <img
+            class="image"
+            src="assets/images/icons/scanner.svg"
+            [alt]="'common.checkOnScanner' | translate"
+          />
+        </a>
+      </div>
+    </app-transaction-details-element>
+
+    <app-transaction-details-element
+      *ngIf="state.trade.extraField"
+      [title]="text.memo.label"
+      [description]="text.memo.description"
+      >{{ state.trade.extraField.value }}
+    </app-transaction-details-element>
+  </div>
+  <tui-notification *ngIf="state.trade.extraField" status="warning" class="tui-space_vertical-4">
+    {{ text.memo.description }}
+  </tui-notification>
+</app-window-container>

@@ -32,4 +32,6 @@
     [calculationProgress]="calculationProgress$ | async"
     [showCalculation]="true"
   ></app-providers-list-general>
+
+  <app-cn-trade-info *ngIf="state.content === 'cnPreview'"></app-cn-trade-info>
 </div>
