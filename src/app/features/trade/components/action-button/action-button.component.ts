@@ -6,7 +6,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-action-button',
@@ -19,9 +20,10 @@ export class ActionButtonComponent {
     combineLatestWith(
       this.tradeState.wrongBlockchain$,
       this.tradeState.notEnoughBalance$,
-      this.walletConnector.addressChange$
+      this.walletConnector.addressChange$,
+      this.targetNetworkAddressService.isAddressValid$
     ),
-    map(([currentTrade, wrongBlockchain, notEnoughBalance, address]) => {
+    map(([currentTrade, wrongBlockchain, notEnoughBalance, address, isReciverValid]) => {
       if (currentTrade.error) {
         return {
           type: 'error',
@@ -49,11 +51,30 @@ export class ActionButtonComponent {
         currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
         (currentTrade.trade && wrongBlockchain)
       ) {
-        return {
-          type: 'action',
-          text: 'Preview swap',
-          action: this.swap.bind(this)
-        };
+        // Handle ChangeNow Non EVM trade
+        if (
+          currentTrade?.trade?.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+          !BlockchainsInfo.isEvmBlockchainName(currentTrade?.trade.from.blockchain)
+        ) {
+          if (isReciverValid) {
+            return {
+              type: 'action',
+              text: 'Preview swap',
+              action: this.swapCn.bind(this)
+            };
+          }
+          return {
+            type: 'error',
+            text: 'Enter receiver address',
+            action: () => {}
+          };
+        } else {
+          return {
+            type: 'action',
+            text: 'Preview swap',
+            action: this.swap.bind(this)
+          };
+        }
       }
       if (currentTrade.status === TRADE_STATUS.LOADING) {
         return {
@@ -88,15 +109,15 @@ export class ActionButtonComponent {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly swapsFormService: SwapsFormService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {}
-
-  private approve(): void {
-    this.tradePageService.setState('preview');
-  }
 
   private swap(): void {
     this.tradePageService.setState('preview');
+  }
+
+  private swapCn(): void {
+    this.tradePageService.setState('cnPreview');
   }
 
   private connectWallet(): void {

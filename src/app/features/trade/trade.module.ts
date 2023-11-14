@@ -59,6 +59,8 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
+import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
+import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,8 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
     TargetNetworkAddressComponent,
     TokensRateComponent,
     SettingsWarningModalComponent,
-    ProvidersListComponent
+    ProvidersListComponent,
+    CnPreviewSwapComponent
   ],
   exports: [],
   imports: [
@@ -147,7 +150,8 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
     PreviewSwapService,
     OnChainApiService,
     SwapTokensUpdaterService,
-    TradePageService
+    TradePageService,
+    CnSwapService
     // SettingsService,
     // RefreshService,
     // TradeService,
