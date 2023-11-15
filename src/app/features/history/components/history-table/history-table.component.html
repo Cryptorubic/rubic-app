@@ -2,14 +2,38 @@
   <ng-container
     *ngLet="{
       device: device$ | async,
-      isCrossChain: isCrossChain$ | async
+      isCrossChain: isCrossChain$ | async,
+      isOnChain: isOnChain$ | async,
+      isCn: isCn$ | async,
+      isUserActive: isUserActive$ | async
     } as state"
   >
-    <ng-container *ngIf="state.isCrossChain; else onChain">
-      <app-cross-chain-desktop-table [device]="state.device"></app-cross-chain-desktop-table>
+    <ng-container *ngIf="state.isCrossChain">
+      <app-cross-chain-desktop-table
+        *ngIf="state.isUserActive; else noUser"
+        [device]="state.device"
+      ></app-cross-chain-desktop-table>
     </ng-container>
-    <ng-template #onChain>
-      <app-on-chain-desktop-table [device]="state.device"></app-on-chain-desktop-table>
-    </ng-template>
+    <ng-container *ngIf="state.isOnChain">
+      <app-on-chain-desktop-table
+        *ngIf="state.isUserActive; else noUser"
+        [device]="state.device"
+      ></app-on-chain-desktop-table>
+    </ng-container>
+    <ng-container *ngIf="state.isCn">
+      <app-cn-table [device]="state.device"></app-cn-table>
+    </ng-container>
   </ng-container>
 </tui-loader>
+
+<ng-template #noUser>
+  <app-no-result
+    label="Wallet has not connected"
+    description="Connect wallet to obtain user trades history"
+  ></app-no-result>
+  <div class="button-container">
+    <button tuiButton appearance="primary" type="button" size="m" (click)="connectWallet()">
+      {{ 'navigation.login' | translate }}
+    </button>
+  </div>
+</ng-template>

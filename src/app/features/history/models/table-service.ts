@@ -3,6 +3,7 @@ import { CrossChainTableData } from '@features/history/models/cross-chain-table-
 import { OnChainTableData } from '@features/history/models/on-chain-table-data';
 import { inject } from '@angular/core';
 import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
+import { CnTableData } from '@features/history/models/cn-table-data';
 
 export abstract class TableService<Sorter, Response, Data> {
   protected readonly _size$ = new BehaviorSubject<number>(10);
@@ -36,7 +37,7 @@ export abstract class TableService<Sorter, Response, Data> {
   protected constructor(private readonly initialSorterValue: Sorter) {}
 
   protected abstract getData(..._arguments: unknown[]): Observable<{
-    data: (CrossChainTableData | OnChainTableData)[];
+    data: (CrossChainTableData | OnChainTableData | CnTableData)[];
     total: number;
   }>;
 

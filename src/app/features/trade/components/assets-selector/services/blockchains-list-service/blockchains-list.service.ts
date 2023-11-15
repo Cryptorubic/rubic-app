@@ -6,13 +6,11 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BlockchainName } from 'rubic-sdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import {
   blockchainsList,
-  notEvmChangeNowBlockchainsList,
   RankedBlockchain
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -65,9 +63,6 @@ export class BlockchainsListService {
         const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
           blockchain.name
         );
-        const disabledFrom = (
-          Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
-        ).includes(blockchain.name);
 
         return {
           name: blockchain.name,
@@ -76,7 +71,7 @@ export class BlockchainsListService {
           label: blockchainLabel[blockchain.name],
           tags: blockchain.tags,
           disabledConfiguration,
-          disabledFrom
+          disabledFrom: false
         };
       })
       .sort((a, b) => b.rank - a.rank);

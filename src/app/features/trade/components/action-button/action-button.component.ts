@@ -23,7 +23,7 @@ export class ActionButtonComponent {
       this.walletConnector.addressChange$,
       this.targetNetworkAddressService.isAddressValid$
     ),
-    map(([currentTrade, wrongBlockchain, notEnoughBalance, address, isReciverValid]) => {
+    map(([currentTrade, wrongBlockchain, notEnoughBalance, address, isReceiverValid]) => {
       if (currentTrade.error) {
         return {
           type: 'error',
@@ -56,7 +56,7 @@ export class ActionButtonComponent {
           currentTrade?.trade?.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
           !BlockchainsInfo.isEvmBlockchainName(currentTrade?.trade.from.blockchain)
         ) {
-          if (isReciverValid) {
+          if (isReceiverValid) {
             return {
               type: 'action',
               text: 'Preview swap',
