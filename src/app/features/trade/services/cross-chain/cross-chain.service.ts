@@ -120,7 +120,8 @@ export class CrossChainService {
               if (
                 el?.wrappedTrade?.trade &&
                 el?.wrappedTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-                !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain)
+                !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain) &&
+                el.wrappedTrade.trade.from.blockchain !== BLOCKCHAIN_NAME.TRON
               ) {
                 return {
                   ...el,
@@ -255,7 +256,7 @@ export class CrossChainService {
     //   this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
     //   !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
     // ) {
-    //   await this.handleChangenowNonEvmTrade();
+    //   await this.getChangenowPaymentInfo();
     //   return;
     // }
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
