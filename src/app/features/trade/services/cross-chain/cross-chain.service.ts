@@ -49,6 +49,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
+import { TradeParser } from '@features/trade/utils/trade-parser';
 
 @Injectable()
 export class CrossChainService {
@@ -96,7 +97,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -164,7 +165,8 @@ export class CrossChainService {
 
   private getOptions(
     disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -173,15 +175,17 @@ export class CrossChainService {
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
 
-    const iframeDisabledTradeTypes = this.queryParamsService.disabledProviders;
+    const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProviders = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
         ...(apiDisabledTradeTypes || []),
-        ...(iframeDisabledTradeTypes || [])
+        ...(queryDisabledTradeTypes || [])
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
+    const providerAddress =
+      toBlockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -196,7 +200,8 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy,
+      ...(providerAddress && { providerAddress })
     };
   }
 
@@ -335,7 +340,9 @@ export class CrossChainService {
       if (trade instanceof EvmCrossChainTrade) {
         swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
       }
-      await trade.approve(swapOptions);
+      const { fromAmount, fromDecimals } = TradeParser.getCrossChainSwapParams(trade);
+      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      await trade.approve(swapOptions, true, amount);
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {
         return;

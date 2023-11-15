@@ -11,6 +11,8 @@ import { Router } from '@angular/router';
 export class SuccessSwapInfoComponent {
   @Input({ required: true }) points: number;
 
+  @Input({ required: true }) showPoints: boolean;
+
   constructor(private readonly router: Router) {}
 
   public async navigateToSwapAndEarn(): Promise<void> {

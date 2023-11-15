@@ -109,6 +109,11 @@ export class OnChainService {
             this.authService.userAddress &&
             isAddressCorrectValue;
 
+          const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
+          const disabledTradeTypes = Array.from(
+            new Set<OnChainTradeType>([...disabledProviders, ...queryDisabledTradeTypes])
+          );
+
           const settings = this.settingsService.instantTradeValue;
           const slippageTolerance = settings.slippageTolerance / 100;
           const disableMultihops = settings.disableMultihops;
@@ -117,6 +122,10 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
+          const providerAddress =
+            toToken.blockchain === BLOCKCHAIN_NAME.LINEA &&
+            '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb';
+
           const options: OnChainManagerCalculationOptions = {
             timeout: 10000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
@@ -125,7 +134,8 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders
+            disabledProviders: disabledTradeTypes,
+            ...(providerAddress && { providerAddress })
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(
@@ -236,7 +246,7 @@ export class OnChainService {
     if (!this.platformConfigurationService.isAvailableBlockchain(trade.to.blockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.to.blockchain]);
     }
-    const { blockchain } = TradeParser.getItSwapParams(trade);
+    const { blockchain, fromAmount, fromDecimals } = TradeParser.getItSwapParams(trade);
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
@@ -248,7 +258,8 @@ export class OnChainService {
     };
 
     try {
-      await trade.approve(transactionOptions);
+      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      await trade.approve(transactionOptions, true, amount);
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {
         return;

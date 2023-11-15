@@ -25,7 +25,10 @@ interface AllQueryParams {
   feeTarget: string;
   hideUnusedUI: string;
   isDesktop: string;
-  enabledProviders: string[];
+  whitelistOnChain: string[];
+  whitelistCrossChain: string[];
+  blacklistOnChain: string[];
+  blacklistCrossChain: string[];
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;

@@ -107,7 +107,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
 
   [BRIDGE_TYPE.CHANGENOW]: {
-    name: 'ChangeNow',
+    name: 'ChangeNOW',
     image: `${imageBasePath}changenow.png`,
     color: '#8888bb',
     averageTime: 5

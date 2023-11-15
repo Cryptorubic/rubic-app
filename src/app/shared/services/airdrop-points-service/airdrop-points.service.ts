@@ -1,6 +1,6 @@
 import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
-import { tap } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -8,7 +8,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { AuthService } from '@core/services/auth/auth.service';
 
@@ -55,20 +55,19 @@ export class AirdropPointsService {
 
   public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
     return this.points$.pipe(
+      first(),
       map(points => {
+        let finalPoints = 0;
+
         if (tradeType instanceof CrossChainTrade) {
-          if (points.participant) {
-            return 25;
-          }
-
-          return 50;
+          finalPoints = points.participant ? 25 : 50;
         } else {
-          if (points.participant) {
-            return 12;
-          }
-
-          return 25;
+          finalPoints = points.participant ? 12 : 25;
         }
+
+        return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA
+          ? Math.trunc(finalPoints / 2)
+          : finalPoints;
       })
     );
   }
