@@ -1,8 +1,9 @@
 <div class="provider-info">
   <div *ngIf="gasInfo?.amountInUsd?.gt(0)" class="provider-info__element" [tuiHint]="gasTooltip">
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
-    <div>
-      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 6 : 4 }}
+    <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
+    <div *ngIf="gasInfo.amountInUsd.gt(0.01)">
+      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 6 : 2 }}
       $
     </div>
   </div>
