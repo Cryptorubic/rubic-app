@@ -28,6 +28,7 @@ import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.ser
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
 import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/interceprors/onramper-intercepror';
+import { LifiApiKeyInterceptor } from './interceptors/lifi-api-key.interceptor';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -46,6 +47,11 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
     {
       provide: HTTP_INTERCEPTORS,
       useClass: OnramperIntercepror,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LifiApiKeyInterceptor,
       multi: true
     },
     NG_EVENT_PLUGINS,
