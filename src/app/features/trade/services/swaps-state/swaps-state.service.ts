@@ -82,6 +82,7 @@ export class SwapsStateService {
         if (!userAddress || !currentChainType || tokenChainType !== currentChainType || !token) {
           return false;
         }
+
         return token.amount?.isFinite() ? token.amount.lt(amount?.actualValue) : true;
       } catch {
         return false;

@@ -91,7 +91,11 @@ export class PreviewSwapComponent {
         state.action = this.backToForm.bind(this);
       }
 
-      if (el.data.wrongNetwork && !BlockchainsInfo.isEvmBlockchainName(fromBlockchain)) {
+      if (
+        el.data.wrongNetwork &&
+        !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+        el.step !== transactionStep.success
+      ) {
         state.disabled = false;
         state.action = () => this.logoutAndChangeWallet();
         state.label = 'Change Wallet';

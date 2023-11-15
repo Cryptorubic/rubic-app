@@ -8,6 +8,7 @@ import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
+  BlockchainsInfo,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
@@ -17,6 +18,7 @@ import {
   EvmCrossChainTrade,
   NotWhitelistedProviderError,
   PriceToken,
+  RubicSdkError,
   SwapTransactionOptions,
   Token,
   UnapprovedContractError,
@@ -113,6 +115,24 @@ export class CrossChainService {
               ...el,
               calculationTime: Date.now() - calculationStartTime
             })),
+            // @TODO REMOVE AFTER CN READY
+            map(el => {
+              if (
+                el?.wrappedTrade?.trade &&
+                el?.wrappedTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
+                !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain) &&
+                el.wrappedTrade.trade.from.blockchain !== BLOCKCHAIN_NAME.TRON
+              ) {
+                return {
+                  ...el,
+                  wrappedTrade: {
+                    ...el.wrappedTrade,
+                    error: new RubicSdkError('Trade with non evm networks is not allowed yet')
+                  }
+                };
+              }
+              return el;
+            }),
             map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
             tap(el => {
               if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
