@@ -73,6 +73,7 @@ export class SwapsStateService {
       this.walletConnector.addressChange$
     ),
     map(([inputToken, storeTokens, amount, network, userAddress]) => {
+      //BUG 2009
       const token = storeTokens.find(currentToken => compareTokens(inputToken, currentToken));
 
       try {
@@ -82,7 +83,6 @@ export class SwapsStateService {
         if (!userAddress || !currentChainType || tokenChainType !== currentChainType || !token) {
           return false;
         }
-
         return token.amount?.isFinite() ? token.amount.lt(amount?.actualValue) : true;
       } catch {
         return false;

@@ -128,8 +128,9 @@ export class WalletConnectorService {
       );
     }
 
-    // walletName === WALLET_NAME.TRON_LINK
-    return new TronLinkAdapter(...defaultConstructorParameters);
+    if (walletName === WALLET_NAME.TRON_LINK) {
+      return new TronLinkAdapter(...defaultConstructorParameters);
+    }
   }
 
   public async activate(): Promise<void> {
