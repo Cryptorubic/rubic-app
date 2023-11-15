@@ -237,18 +237,28 @@ export class CrossChainService {
       receiverAddress
     };
   }
+  /**
+   *
+   * @param trade trade data
+   * @param callbackOnHash function call with hash-string and 'sourcePending'-status
+   * @returns 'success' - on successfull swap, 'reject' - on any error
+   */
 
-  public async swapTrade(trade: CrossChainTrade, callback?: (hash: string) => void): Promise<void> {
+  public async swapTrade(
+    trade: CrossChainTrade,
+    callbackOnHash?: (hash: string) => void
+  ): Promise<'success' | 'reject'> {
     if (!this.isSlippageCorrect(trade)) {
-      return;
+      return 'reject';
     }
-    if (
-      !(await this.settingsService.checkSlippageAndPriceImpact(
-        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-        trade
-      ))
-    ) {
-      return;
+
+    const isHighSlippageOrPriceImpact = !(await this.settingsService.checkSlippageAndPriceImpact(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      trade
+    ));
+
+    if (isHighSlippageOrPriceImpact) {
+      return 'reject';
     }
     // @TODO
     // if (
@@ -271,7 +281,7 @@ export class CrossChainService {
 
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
-      callback?.(txHash);
+      callbackOnHash?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
@@ -295,6 +305,7 @@ export class CrossChainService {
       await trade.swap(swapOptions);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       await this.crossChainApiService.patchTrade(transactionHash, true);
+      return 'success';
     } catch (error) {
       if (
         transactionHash &&
