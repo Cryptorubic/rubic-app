@@ -73,7 +73,6 @@ export class SwapsStateService {
       this.walletConnector.addressChange$
     ),
     map(([inputToken, storeTokens, amount, network, userAddress]) => {
-      //BUG 2009
       const token = storeTokens.find(currentToken => compareTokens(inputToken, currentToken));
 
       try {
