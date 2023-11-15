@@ -2,7 +2,7 @@
   <div *ngIf="gasInfo?.amountInUsd?.gt(0)" class="provider-info__element" [tuiHint]="gasTooltip">
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div>
-      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 6 : 2 }}
+      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 6 : 4 }}
       $
     </div>
   </div>
@@ -33,8 +33,13 @@
 <ng-template #timeTooltip>Estimated arriving time</ng-template>
 <ng-template #gasTooltip>
   <div>
-    Estimated Gas:
-    {{ gasInfo.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
-    {{ gasInfo.symbol }}
+    <span> Estimated Gas: </span>
+    <br />
+    <span>
+      {{ gasInfo.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
+      {{ gasInfo.symbol }} ~
+      {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 8 : 8 }}
+      $
+    </span>
   </div>
 </ng-template>
