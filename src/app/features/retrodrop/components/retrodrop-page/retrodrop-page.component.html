@@ -3,11 +3,12 @@
   <ng-container *ngIf="isAuth$ | async; else loginButton">
     <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
       <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
-        <tui-loader [showLoader]="loading$ | async" [overlay]="true">
+        <tui-loader [showLoader]="fetchUserInfoLoading$ | async" [overlay]="true">
           <tui-scrollbar>
             <app-claim-round-row-container
               *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber"
               [isModal]="false"
+              [loading]="claimLoading$ | async"
               [inputRound]="round"
               (handleClaim)="handleClaim($event)"
             ></app-claim-round-row-container>

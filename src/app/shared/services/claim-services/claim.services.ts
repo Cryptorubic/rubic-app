@@ -72,6 +72,7 @@ export abstract class ClaimService {
     showSuccessModal: boolean = true,
     navigateToStaking: boolean = false
   ): Promise<void> {
+    this.claimLoading = true;
     let claimInProgressNotification: Subscription;
 
     try {

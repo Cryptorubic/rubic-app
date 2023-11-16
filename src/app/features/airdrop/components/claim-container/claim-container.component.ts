@@ -22,13 +22,17 @@ export class ClaimContainerComponent {
 
   public readonly isMobile$ = this.headerService.getMobileDisplayStatus();
 
+  public readonly claimLoading$ = this.airdropService.claimLoading$;
+
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { isModal: boolean }>,
     private readonly airdropService: AirdropService,
     private readonly headerService: HeaderStore
-  ) {}
+  ) {
+    this.claimLoading$.subscribe();
+  }
 
   public trackByRoundNumber(_index: number, round: ClaimRound): number {
     return round.roundNumber;

@@ -25,7 +25,7 @@
           </span>
         </div>
         <tui-loader
-          [showLoader]="(loading$ | async) && !setDisabled && !round.isAlreadyClaimed"
+          [showLoader]="loading && !setDisabled && !round.isAlreadyClaimed"
           [overlay]="true"
         >
           <button
@@ -62,7 +62,7 @@
           {{ claimAmountValue }} RBC
         </span>
         <tui-loader
-          [showLoader]="(loading$ | async) && !setDisabled && !round.isAlreadyClaimed"
+          [showLoader]="loading && !setDisabled && !round.isAlreadyClaimed"
           [overlay]="true"
         >
           <button
