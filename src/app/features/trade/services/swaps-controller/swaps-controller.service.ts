@@ -228,14 +228,19 @@ export class SwapsControllerService {
         changenowId: undefined
       };
       if (tradeState.trade instanceof CrossChainTrade) {
-        await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
-        if ('id' in tradeState.trade) {
-          additionalData.changenowId = tradeState.trade.id as string;
+        const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
+        if (status === 'success') {
+          callback?.onSwap(additionalData);
+          if ('id' in tradeState.trade) {
+            additionalData.changenowId = tradeState.trade.id as string;
+          }
+        } else {
+          callback.onError?.();
         }
       } else {
         await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
+        callback?.onSwap(additionalData);
       }
-      callback?.onSwap(additionalData);
     } catch (err) {
       if (err instanceof UpdatedRatesError && tradeState.trade instanceof CrossChainTrade) {
         const allowSwap = await firstValueFrom(
