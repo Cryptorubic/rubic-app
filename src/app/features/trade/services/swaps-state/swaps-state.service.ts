@@ -6,6 +6,7 @@ import {
   BlockchainsInfo,
   compareCrossChainTrades,
   compareCrossChainTradesWithoutTokenPrice,
+  nativeTokensList,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
@@ -256,10 +257,33 @@ export class SwapsStateService {
         compareCrossChainTradesWithoutTokenPrice
       ) as TradeState[];
     } else {
-      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
+      return (this.updProviderFeeTokenPrice(currentTrades) as WrappedCrossChainTradeOrNull[]).sort(
         compareCrossChainTrades
       ) as TradeState[];
     }
+  }
+
+  private updProviderFeeTokenPrice(currentTrades: TradeState[]): TradeState[] {
+    return currentTrades.map(tradeState => {
+      const blockchain = tradeState.trade.from.blockchain;
+      const nativeToken = nativeTokensList[blockchain];
+      const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+        compareTokens(token, { blockchain, address: nativeToken.address })
+      ).price;
+
+      return {
+        ...tradeState,
+        feeInfo: {
+          provider: {
+            cryptoFee: {
+              token: {
+                price: new BigNumber(nativeTokenPrice)
+              }
+            }
+          }
+        }
+      };
+    });
   }
 
   private sortOnChainTrades(
