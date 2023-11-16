@@ -9,11 +9,10 @@
   <h5 class="transaction-details__label">Transaction details</h5>
 
   <app-transaction-details-element
-    *ngIf="state.details?.priceImpact"
     [title]="text.priceImpact.label"
     [description]="text.priceImpact.description"
   >
-    {{ state.details.priceImpact }} %
+    {{ state.details.priceImpact >= 0 ? state.details.priceImpact + '%' : 'unknown' }}
   </app-transaction-details-element>
 
   <app-transaction-details-element
