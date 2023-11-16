@@ -16,7 +16,7 @@ import { NumberedClaimTokensData } from '@shared/models/claim/claim-tokens-data'
 export class RetrodropPageComponent {
   public readonly rounds$: Observable<ClaimRound[]> = this.retrodropService.rounds$;
 
-  public readonly loading$ = this.retrodropService.fetchUserInfoLoading$;
+  public readonly fetchUserInfoLoading$ = this.retrodropService.fetchUserInfoLoading$;
 
   public readonly fetchError$ = this.retrodropService.fetchError$;
 
@@ -25,7 +25,7 @@ export class RetrodropPageComponent {
 
   public readonly isAuth$ = this.retrodropService.currentUser$;
 
-  public readonly loadingClaim$ = this.retrodropService.claimLoading$;
+  public readonly claimLoading$ = this.retrodropService.claimLoading$;
 
   constructor(
     private readonly retrodropService: RetrodropService,
