@@ -3,6 +3,7 @@ import { CrossChainTableService } from '@features/history/services/cross-chain-t
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -15,6 +16,10 @@ const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provide
 export class CrossChainDesktopTableComponent {
   @Input({ required: true }) device: 'mobile' | 'desktop' | 'tablet';
 
+  public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public readonly columns = crossChainCols;
+
   public readonly data$ = this.crossChainTableSrvice.data$;
 
   public readonly loading$ = this.crossChainTableSrvice.loading$;
@@ -22,8 +27,6 @@ export class CrossChainDesktopTableComponent {
   public readonly direction$ = this.crossChainTableSrvice.direction$;
 
   public readonly sorter$ = this.crossChainTableSrvice.sorter$;
-
-  public readonly columns = crossChainCols;
 
   public readonly page$ = this.crossChainTableSrvice.page$;
 
@@ -55,7 +58,15 @@ export class CrossChainDesktopTableComponent {
     return innerItem as unknown as CrossChainTableData;
   }
 
-  public claimArbitrumTokens(toTxHash: string): void {
-    this.commonTableService.claimArbitrumBridgeTokens(toTxHash);
+  public handleStatusToItemClick(item: CrossChainTableData): void {
+    const fromBlockchain = item.fromBlockchain.name;
+    switch (fromBlockchain) {
+      case BLOCKCHAIN_NAME.ARBITRUM:
+        this.commonTableService.claimArbitrumBridgeTokens(item.toTx.hash);
+        break;
+      default:
+        console.warn("Blockhain hasn't onStatusToClick actions!");
+        return;
+    }
   }
 }

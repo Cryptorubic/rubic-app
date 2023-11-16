@@ -100,7 +100,11 @@
           <td *tuiCell="'statusTo'" tuiTd>
             <ng-container *ngIf="item.toTx.status">
               <a
-                *ngIf="item.toTx.status.label !== 'Claim'; else claim"
+                *ngIf="
+                  item.fromBlockchain.name !== BLOCKCHAIN_NAME.ARBITRUM &&
+                    item.toTx.status.label !== 'Claim';
+                  else statusToActionButton
+                "
                 class="token-container__inner"
                 [safetyLink]="item.toTx.explorerLink"
               >
@@ -116,13 +120,13 @@
                   alt="link-arrow"
                 />
               </a>
-              <ng-template #claim>
+              <ng-template #statusToActionButton>
                 <button
                   tuiButton
                   appearance="primary"
                   type="button"
                   size="s"
-                  (click)="claimArbitrumTokens(item.toTx.hash)"
+                  (click)="handleStatusToItemClick(item)"
                 >
                   {{ item.toTx.status.label }}
                 </button>
