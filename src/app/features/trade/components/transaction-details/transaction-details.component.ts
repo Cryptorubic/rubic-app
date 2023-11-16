@@ -50,4 +50,14 @@ export class TransactionDetailsComponent {
       this.cdr.markForCheck();
     }, 700);
   }
+
+  public getPriceImpactCssClass(priceImpact: number): string {
+    const isUnknown = isNaN(priceImpact) || priceImpact === undefined || priceImpact === null;
+    if (isUnknown) return '';
+    else if (priceImpact < 0.01) return 'transaction-details__priceImpact-low';
+    else if (priceImpact >= 0.01 && priceImpact < 15) return '';
+    else if (priceImpact >= 15 && priceImpact < 30)
+      return 'transaction-details__priceImpact-medium';
+    else return 'transaction-details__priceImpact-high';
+  }
 }

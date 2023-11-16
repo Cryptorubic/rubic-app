@@ -13,6 +13,18 @@
     font-size: 15px;
     text-align: center;
   }
+
+  &__priceImpact-low {
+    color: $primary-color;
+  }
+
+  &__priceImpact-medium {
+    color: $rubic-warning;
+  }
+
+  &__priceImpact-high {
+    color: $rubic-text-error;
+  }
 }
 
 .image {
