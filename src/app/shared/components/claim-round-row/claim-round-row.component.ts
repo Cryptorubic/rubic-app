@@ -51,6 +51,7 @@ export class ClaimRoundRowComponent {
         break;
       case 'claim':
       case 'stake':
+        this.claimService.claimLoading = true;
         this.handleClaim.emit({
           claimData: this.round.claimData,
           claimRound: this.round.roundNumber

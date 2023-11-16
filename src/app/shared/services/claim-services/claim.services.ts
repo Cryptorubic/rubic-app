@@ -45,6 +45,10 @@ export abstract class ClaimService {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
+  public set claimLoading(isLoading: boolean) {
+    this._claimLoading$.next(isLoading);
+  }
+
   protected subscribeOnWalletChange(): void {
     this.authService.currentUser$
       .pipe(
@@ -68,7 +72,6 @@ export abstract class ClaimService {
     showSuccessModal: boolean = true,
     navigateToStaking: boolean = false
   ): Promise<void> {
-    this._claimLoading$.next(true);
     let claimInProgressNotification: Subscription;
 
     try {
@@ -100,7 +103,7 @@ export abstract class ClaimService {
       this.claimPopupService.handleError(err);
     } finally {
       claimInProgressNotification?.unsubscribe();
-      this._claimLoading$.next(false);
+      this.claimLoading = false;
     }
   }
 
@@ -125,12 +128,12 @@ export abstract class ClaimService {
   }
 
   public async changeNetwork(): Promise<void> {
-    this._claimLoading$.next(true);
+    this.claimLoading = true;
     try {
       await this.walletConnectorService.switchChain(newRubicToken.blockchain);
       await lastValueFrom(this.sdkService.sdkLoading$.pipe(first(el => el === false)));
     } finally {
-      this._claimLoading$.next(false);
+      this.claimLoading = false;
     }
   }
 }
