@@ -25,6 +25,8 @@ export class RetrodropPageComponent {
 
   public readonly isAuth$ = this.retrodropService.currentUser$;
 
+  public readonly loadingClaim$ = this.retrodropService.claimLoading$;
+
   constructor(
     private readonly retrodropService: RetrodropService,
     private readonly dialogService: TuiDialogService

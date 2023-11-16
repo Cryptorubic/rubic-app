@@ -22,6 +22,8 @@ export class ClaimContainerComponent {
 
   public readonly isMobile$ = this.headerService.getMobileDisplayStatus();
 
+  public readonly loading$ = this.airdropService.claimLoading$;
+
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
