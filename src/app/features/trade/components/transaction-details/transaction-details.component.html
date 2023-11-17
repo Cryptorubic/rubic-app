@@ -12,7 +12,7 @@
     [title]="text.priceImpact.label"
     [description]="text.priceImpact.description"
   >
-    <span [ngClass]="[getPriceImpactCssClass(state.details?.priceImpact)]">
+    <span [ngClass]="[priceImpactCssClass$ | async]">
       {{ state.details?.priceImpact | priceImpactFormat }}
     </span>
   </app-transaction-details-element>

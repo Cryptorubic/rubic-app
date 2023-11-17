@@ -8,7 +8,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { transactionInfoText } from '@features/trade/constants/transaction-info-text';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
-import { switchIif } from '@shared/utils/utils';
+import { isNil, switchIif } from '@shared/utils/utils';
 
 @Component({
   selector: 'app-transaction-details',
@@ -23,6 +23,10 @@ export class TransactionDetailsComponent {
     this.tradeStateService.currentTrade$.pipe(first());
 
   public readonly details$: Observable<TradeInfo> = this.trade$.pipe(map(el => el.getTradeInfo()));
+
+  public readonly priceImpactCssClass$: Observable<string> = this.details$.pipe(
+    map(trade => this.getPriceImpactCssClass(trade.priceImpact))
+  );
 
   public readonly walletAddress$ = this.targetAddressService.address$.pipe(
     switchIif(
@@ -52,12 +56,17 @@ export class TransactionDetailsComponent {
   }
 
   public getPriceImpactCssClass(priceImpact: number): string {
-    const isUnknown = isNaN(priceImpact) || priceImpact === undefined || priceImpact === null;
-    if (isUnknown) return '';
-    else if (priceImpact < 0.01) return 'transaction-details__priceImpact-low';
-    else if (priceImpact >= 0.01 && priceImpact < 15) return '';
-    else if (priceImpact >= 15 && priceImpact < 30)
+    const isUnknown = isNaN(priceImpact) || isNil(priceImpact);
+    if (isUnknown) {
+      return '';
+    } else if (priceImpact < 0.01) {
+      return 'transaction-details__priceImpact-low';
+    } else if (priceImpact >= 0.01 && priceImpact < 15) {
+      return '';
+    } else if (priceImpact >= 15 && priceImpact < 30) {
       return 'transaction-details__priceImpact-medium';
-    else return 'transaction-details__priceImpact-high';
+    } else {
+      return 'transaction-details__priceImpact-high';
+    }
   }
 }
