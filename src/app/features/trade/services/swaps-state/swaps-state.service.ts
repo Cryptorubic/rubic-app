@@ -5,7 +5,7 @@ import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
   BlockchainName,
   BlockchainsInfo,
-  getComparator,
+  compareCrossChainTrades,
   nativeTokensList,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
@@ -253,10 +253,14 @@ export class SwapsStateService {
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
     return (currentTrades as WrappedCrossChainTradeOrNull[]).sort((nextTrade, prevTrade) => {
-      const nativePriceForNextTrade = this.getNativeTokenPrice(nextTrade.trade.from.blockchain);
-      const nativePriceForPrevTrade = this.getNativeTokenPrice(prevTrade.trade.from.blockchain);
+      const nativePriceForNextTrade = nextTrade?.trade
+        ? this.getNativeTokenPrice(nextTrade.trade.from.blockchain)
+        : new BigNumber(0);
+      const nativePriceForPrevTrade = prevTrade?.trade
+        ? this.getNativeTokenPrice(prevTrade.trade.from.blockchain)
+        : new BigNumber(0);
 
-      return getComparator(
+      return compareCrossChainTrades(
         nextTrade,
         prevTrade,
         nativePriceForNextTrade,
