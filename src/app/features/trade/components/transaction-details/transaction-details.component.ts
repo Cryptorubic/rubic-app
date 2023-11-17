@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { first, map } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { OnChainTrade, TradeInfo } from 'rubic-sdk';
 import { Observable, of } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -25,7 +25,8 @@ export class TransactionDetailsComponent {
   public readonly details$: Observable<TradeInfo> = this.trade$.pipe(map(el => el.getTradeInfo()));
 
   public readonly priceImpactCssClass$: Observable<string> = this.details$.pipe(
-    map(trade => this.getPriceImpactCssClass(trade.priceImpact))
+    map(trade => this.getPriceImpactCssClass(trade.priceImpact)),
+    startWith('')
   );
 
   public readonly walletAddress$ = this.targetAddressService.address$.pipe(
@@ -55,20 +56,17 @@ export class TransactionDetailsComponent {
     }, 700);
   }
 
-  public isString(value: unknown): boolean {
-    return typeof value === 'string';
-  }
-
   public getPriceImpactCssClass(priceImpact: number): string {
     const isUnknown = isNaN(priceImpact) || isNil(priceImpact);
     if (isUnknown || (priceImpact >= 0.01 && priceImpact < 15)) {
       return '';
-    } else if (priceImpact < 0.01) {
-      return 'transaction-details__priceImpact-low';
-    } else if (priceImpact >= 15 && priceImpact < 30) {
-      return 'transaction-details__priceImpact-medium';
-    } else {
-      return 'transaction-details__priceImpact-high';
     }
+    if (priceImpact < 0.01) {
+      return 'transaction-details__priceImpact-low';
+    }
+    if (priceImpact >= 15 && priceImpact < 30) {
+      return 'transaction-details__priceImpact-medium';
+    }
+    return 'transaction-details__priceImpact-high';
   }
 }

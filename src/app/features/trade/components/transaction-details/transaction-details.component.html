@@ -13,7 +13,7 @@
     [description]="text.priceImpact.description"
   >
     <ng-container *ngLet="priceImpactCssClass$ | async as priceImpactCssClass">
-      <span *ngIf="isString(priceImpactCssClass)" [ngClass]="[priceImpactCssClass]">
+      <span [ngClass]="[priceImpactCssClass]">
         {{ state.details?.priceImpact | priceImpactFormat }}
       </span>
     </ng-container>
