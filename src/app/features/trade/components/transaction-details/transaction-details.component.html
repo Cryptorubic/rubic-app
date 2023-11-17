@@ -9,11 +9,14 @@
   <h5 class="transaction-details__label">Transaction details</h5>
 
   <app-transaction-details-element
-    *ngIf="state.details?.priceImpact"
     [title]="text.priceImpact.label"
     [description]="text.priceImpact.description"
   >
-    {{ state.details.priceImpact }} %
+    <ng-container *ngLet="priceImpactCssClass$ | async as priceImpactCssClass">
+      <span [ngClass]="[priceImpactCssClass]">
+        {{ state.details?.priceImpact | priceImpactFormat }}
+      </span>
+    </ng-container>
   </app-transaction-details-element>
 
   <app-transaction-details-element
