@@ -23,6 +23,8 @@ export class ClaimRoundRowComponent {
 
   @Input({ required: true }) isModal: boolean = false;
 
+  @Input({ required: true }) loading: boolean = false;
+
   @Input({ required: true }) set inputRound(claimRound: ClaimRound) {
     this.round = claimRound;
     this.setButtonStateValue(claimRound);
@@ -32,8 +34,6 @@ export class ClaimRoundRowComponent {
   @Output() public readonly handleClaim = new EventEmitter<NumberedClaimTokensData>();
 
   public isMobile$ = this.headerStore.getMobileDisplayStatus();
-
-  public readonly loading$ = this.claimService.claimLoading$;
 
   constructor(
     private readonly claimService: ClaimService,
