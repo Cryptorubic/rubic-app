@@ -12,9 +12,11 @@
     [title]="text.priceImpact.label"
     [description]="text.priceImpact.description"
   >
-    <span [ngClass]="[priceImpactCssClass$ | async]">
-      {{ state.details?.priceImpact | priceImpactFormat }}
-    </span>
+    <ng-container *ngLet="priceImpactCssClass$ | async as priceImpactCssClass">
+      <span *ngIf="isString(priceImpactCssClass)" [ngClass]="[priceImpactCssClass]">
+        {{ state.details?.priceImpact | priceImpactFormat }}
+      </span>
+    </ng-container>
   </app-transaction-details-element>
 
   <app-transaction-details-element

@@ -55,6 +55,10 @@ export class TransactionDetailsComponent {
     }, 700);
   }
 
+  public isString(value: unknown): boolean {
+    return typeof value === 'string';
+  }
+
   public getPriceImpactCssClass(priceImpact: number): string {
     const isUnknown = isNaN(priceImpact) || isNil(priceImpact);
     if (isUnknown) {
