@@ -3,9 +3,9 @@ import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
 import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
+  BlockchainName,
   BlockchainsInfo,
-  compareCrossChainTrades,
-  compareCrossChainTradesWithoutTokenPrice,
+  getComparator,
   nativeTokensList,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
@@ -252,38 +252,27 @@ export class SwapsStateService {
     currentTrades: TradeState[],
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
-    if (isThereTokenWithoutPrice) {
-      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
-        compareCrossChainTradesWithoutTokenPrice
-      ) as TradeState[];
-    } else {
-      return (this.updProviderFeeTokenPrice(currentTrades) as WrappedCrossChainTradeOrNull[]).sort(
-        compareCrossChainTrades
-      ) as TradeState[];
-    }
+    return (currentTrades as WrappedCrossChainTradeOrNull[]).sort((nextTrade, prevTrade) => {
+      const nativePriceForNextTrade = this.getNativeTokenPrice(nextTrade.trade.from.blockchain);
+      const nativePriceForPrevTrade = this.getNativeTokenPrice(prevTrade.trade.from.blockchain);
+
+      return getComparator(
+        nextTrade,
+        prevTrade,
+        nativePriceForNextTrade,
+        nativePriceForPrevTrade,
+        isThereTokenWithoutPrice
+      );
+    }) as TradeState[];
   }
 
-  private updProviderFeeTokenPrice(currentTrades: TradeState[]): TradeState[] {
-    return currentTrades.map(tradeState => {
-      const blockchain = tradeState.trade.from.blockchain;
-      const nativeToken = nativeTokensList[blockchain];
-      const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
-        compareTokens(token, { blockchain, address: nativeToken.address })
-      ).price;
+  private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
+    const nativeToken = nativeTokensList[blockchain];
+    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+      compareTokens(token, { blockchain, address: nativeToken.address })
+    ).price;
 
-      return {
-        ...tradeState,
-        feeInfo: {
-          provider: {
-            cryptoFee: {
-              token: {
-                price: new BigNumber(nativeTokenPrice)
-              }
-            }
-          }
-        }
-      };
-    });
+    return new BigNumber(nativeTokenPrice);
   }
 
   private sortOnChainTrades(
