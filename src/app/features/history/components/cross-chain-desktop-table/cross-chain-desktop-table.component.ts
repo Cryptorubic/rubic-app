@@ -3,7 +3,10 @@ import { CrossChainTableService } from '@features/history/services/cross-chain-t
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from 'rubic-sdk';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
+import { CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO } from './constants/status-to-action-cases';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -34,7 +37,8 @@ export class CrossChainDesktopTableComponent {
 
   constructor(
     private readonly crossChainTableSrvice: CrossChainTableService,
-    private readonly commonTableService: CommonTableService
+    private readonly commonTableService: CommonTableService,
+    private readonly walletConnector: WalletConnectorService
   ) {}
 
   public changeDirection(direction: 1 | -1): void {
@@ -58,14 +62,23 @@ export class CrossChainDesktopTableComponent {
     return innerItem as unknown as CrossChainTableData;
   }
 
-  public handleStatusToItemClick(item: CrossChainTableData): void {
-    const fromBlockchain = item.fromBlockchain.name;
-    switch (fromBlockchain) {
-      case BLOCKCHAIN_NAME.ARBITRUM:
-        this.commonTableService.claimArbitrumBridgeTokens(item.toTx.hash);
+  public shouldShowStatusToActionButton(item: CrossChainTableData): boolean {
+    const shouldShow = CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO.some(
+      _case => _case.provider === item.provider?.name && _case.status === item.toTx.status.label
+    );
+    return shouldShow;
+  }
+
+  public async handleStatusToItemClick(item: CrossChainTableData): Promise<void> {
+    const provider = item.provider.name;
+    const toBlockchain = item.toBlockchain.name as EvmBlockchainName;
+    switch (provider) {
+      case FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge:
+        const isSwitched = await this.walletConnector.switchChain(toBlockchain);
+        if (isSwitched) this.commonTableService.claimArbitrumBridgeTokens(item.toTx.hash);
         break;
       default:
-        console.warn("Blockhain hasn't onStatusToClick actions!");
+        console.warn("Blockhain doesn't have onStatusToClick actions!");
         return;
     }
   }
