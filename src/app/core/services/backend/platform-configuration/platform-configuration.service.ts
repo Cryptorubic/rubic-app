@@ -5,7 +5,7 @@ import {
   BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS
 } from '@app/shared/constants/blockchain/backend-blockchains';
-import { BehaviorSubject, catchError, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
@@ -18,6 +18,7 @@ import { PlatformConfig } from '@core/services/backend/platform-configuration/mo
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
+import { timeout } from 'rxjs/operators';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
@@ -102,6 +103,8 @@ export class PlatformConfigurationService {
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
+      timeout(15_000),
+      retry(1),
       catchError(() => of(defaultConfig)),
       tap(response => {
         if (response.server_is_active === true) {

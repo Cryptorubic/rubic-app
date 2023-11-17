@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { timeout } from 'rxjs/operators';
 
 export const SERVER_REST_URL = `${ENVIRONMENT.apiBaseUrl}/`;
 
@@ -12,9 +13,11 @@ export class HttpService {
   constructor(private http: HttpClient) {}
 
   public get<T>(url: string, data?: {}, path?: string): Observable<T> {
-    return this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
+    const request$ = this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
       params: data || {}
     });
+
+    return path ? request$ : request$.pipe(timeout(15_000), retry(1));
   }
 
   public patch<T>(url: string, data?: {}, params?: {}, path?: string): Observable<T> {
