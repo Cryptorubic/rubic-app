@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of,
+  shareReplay
+} from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -33,6 +42,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -60,11 +70,15 @@ export class PreviewSwapService {
   public readonly transactionState$ = this._transactionState$.asObservable();
 
   public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first()
+    first(),
+    shareReplay(shareReplayConfig),
+    tap(trade => (this._tradeState = trade))
   );
 
+  private _tradeState: SelectedTrade | null;
+
   public get tradeState(): SelectedTrade {
-    return this.swapsStateService.tradeState;
+    return this._tradeState;
   }
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
@@ -302,7 +316,7 @@ export class PreviewSwapService {
 
   private checkNetwork(): void {
     const network = this.walletConnectorService.network;
-    const tokenBlockchain = this.tradeState.trade.from.blockchain;
+    const tokenBlockchain = this.swapForm.inputValue.fromBlockchain;
     const state = this._transactionState$.getValue();
     state.data.wrongNetwork = network !== tokenBlockchain;
     this._transactionState$.next(state);
