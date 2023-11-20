@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  firstValueFrom,
-  forkJoin,
-  from,
-  interval,
-  Observable,
-  of,
-  shareReplay
-} from 'rxjs';
+import { BehaviorSubject, forkJoin, from, interval, Observable, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -42,7 +33,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
-import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -71,7 +61,6 @@ export class PreviewSwapService {
 
   public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
     first(),
-    shareReplay(shareReplayConfig),
     tap(trade => (this._tradeState = trade))
   );
 
@@ -144,9 +133,7 @@ export class PreviewSwapService {
   }
 
   public async requestTxSign(): Promise<void> {
-    const tradeState = await firstValueFrom(this.tradeState$);
-
-    if (tradeState.needApprove) {
+    if (this.tradeState.needApprove) {
       this.startApprove();
     } else {
       this.startSwap();
@@ -166,8 +153,10 @@ export class PreviewSwapService {
       .pipe(
         distinctUntilChanged(),
         debounceTime(10),
-        switchMap(state => forkJoin([this.tradeState$, of(state)])),
-        switchMap(([tradeState, txState]) => {
+        switchMap(state =>
+          forkJoin([of(state), this.tradeState ? of(this.tradeState) : this.tradeState$])
+        ),
+        switchMap(([txState, tradeState]) => {
           return forkJoin([
             of(tradeState),
             of(txState),
