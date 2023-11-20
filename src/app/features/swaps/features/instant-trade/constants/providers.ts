@@ -71,7 +71,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       // ON_CHAIN_TRADE_TYPE.XY_DEX
     ]),
     [BLOCKCHAIN_NAME.HARMONY]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.VIPER_SWAP,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
     ]),
@@ -118,7 +118,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.ONE_INCH
     ]),
     [BLOCKCHAIN_NAME.TELOS]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.ZAPPY,
       ON_CHAIN_TRADE_TYPE.APE_SWAP,
@@ -132,7 +132,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       // ON_CHAIN_TRADE_TYPE.XY_DEX
     ]),
     [BLOCKCHAIN_NAME.CRONOS]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.CRO_SWAP,
       ON_CHAIN_TRADE_TYPE.CRO_DEX
     ]),
@@ -154,7 +154,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.BEAM_SWAP
     ]),
     [BLOCKCHAIN_NAME.CELO]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.UBE_SWAP
       // ON_CHAIN_TRADE_TYPE.CURVE
     ]),
@@ -164,7 +164,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN
     ]),
     [BLOCKCHAIN_NAME.ETHEREUM_POW]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP,
       ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3,
       ON_CHAIN_TRADE_TYPE.UNISWAP_V2
@@ -180,7 +180,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
     [BLOCKCHAIN_NAME.OASIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.YUZU_SWAP]),
     [BLOCKCHAIN_NAME.METIS]: getDefaultStateByProviders([ON_CHAIN_TRADE_TYPE.NET_SWAP]),
     [BLOCKCHAIN_NAME.KLAYTN]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.CLAIM_SWAP,
       ON_CHAIN_TRADE_TYPE.ONE_INCH
     ]),
@@ -200,7 +200,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       // ON_CHAIN_TRADE_TYPE.XY_DEX
     ]),
     [BLOCKCHAIN_NAME.PULSECHAIN]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.PULSEX_V1,
       ON_CHAIN_TRADE_TYPE.PULSEX_V2,
       ON_CHAIN_TRADE_TYPE.UNISWAP_V2,
@@ -208,7 +208,7 @@ export const INSTANT_TRADE_PROVIDERS: Record<SupportedOnChainNetworks, InstantTr
       ON_CHAIN_TRADE_TYPE.SUSHI_SWAP
     ]),
     [BLOCKCHAIN_NAME.LINEA]: getDefaultStateByProviders([
-      ON_CHAIN_TRADE_TYPE.LIFI,
+      // ON_CHAIN_TRADE_TYPE.LIFI,
       ON_CHAIN_TRADE_TYPE.OPEN_OCEAN,
       ON_CHAIN_TRADE_TYPE.HORIZONDEX,
       ON_CHAIN_TRADE_TYPE.VOOI,
