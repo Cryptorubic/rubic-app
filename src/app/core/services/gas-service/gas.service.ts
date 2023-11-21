@@ -418,9 +418,12 @@ export class GasService {
   })
   private fetchMantleGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MANTLE);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+        };
+      })
     );
   }
 
@@ -467,9 +470,12 @@ export class GasService {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
       BLOCKCHAIN_NAME.POLYGON_ZKEVM
     );
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+        };
+      })
     );
   }
 
