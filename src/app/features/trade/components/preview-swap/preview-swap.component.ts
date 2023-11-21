@@ -202,7 +202,10 @@ export class PreviewSwapComponent {
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
 
-      if (trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM) {
+      if (
+        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
+        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
+      ) {
         gasPrice = gasData?.gasPrice?.gt(0)
           ? Web3Pure.fromWei(gasData.gasPrice)
           : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
