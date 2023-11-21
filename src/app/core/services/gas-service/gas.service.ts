@@ -151,6 +151,16 @@ export class GasService {
       return { shouldCalculateGasPrice, gasPriceOptions: {} };
     }
 
+    // @TODO Remove after gas fix
+    if (
+      blockchain !== BLOCKCHAIN_NAME.POLYGON_ZKEVM &&
+      blockchain !== BLOCKCHAIN_NAME.SCROLL &&
+      blockchain !== BLOCKCHAIN_NAME.MANTLE &&
+      blockchain !== BLOCKCHAIN_NAME.MANTA_PACIFIC
+    ) {
+      return { shouldCalculateGasPrice, gasPriceOptions: {} };
+    }
+
     const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = await this.getGasPriceInEthUnits(
       blockchain
     );
@@ -421,7 +431,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).toFixed()
         };
       })
     );
@@ -441,7 +451,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).toFixed()
         };
       })
     );
@@ -459,7 +469,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).toFixed()
         };
       })
     );
@@ -478,7 +488,7 @@ export class GasService {
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
-        const gasPrice = new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed();
+        const gasPrice = new BigNumber(gasPriceInWei).toFixed();
         return {
           gasPrice
         };
