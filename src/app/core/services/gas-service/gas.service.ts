@@ -25,7 +25,11 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.ZK_SYNC,
   BLOCKCHAIN_NAME.LINEA,
-  BLOCKCHAIN_NAME.BASE
+  BLOCKCHAIN_NAME.BASE,
+  BLOCKCHAIN_NAME.MANTLE,
+  BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+  BLOCKCHAIN_NAME.SCROLL,
+  BLOCKCHAIN_NAME.MANTA_PACIFIC
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -77,7 +81,11 @@ export class GasService {
       [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.LINEA]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.BASE]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.BASE]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.MANTLE]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.SCROLL]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -91,7 +99,11 @@ export class GasService {
       [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
       [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
       [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this),
-      [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this)
+      [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this),
+      [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
+      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
+      [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -391,6 +403,70 @@ export class GasService {
   })
   private fetchBaseGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BASE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Mantle gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMantleGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MANTLE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Manta Pacific gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMantaPacificGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.MANTA_PACIFIC
+    );
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Scroll gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchScrollGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SCROLL);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Polygon-zkEVM gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchPolygonZkEvmGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.POLYGON_ZKEVM
+    );
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
