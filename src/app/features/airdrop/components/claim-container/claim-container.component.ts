@@ -30,9 +30,7 @@ export class ClaimContainerComponent {
     private readonly context: TuiDialogContext<void, { isModal: boolean }>,
     private readonly airdropService: AirdropService,
     private readonly headerService: HeaderStore
-  ) {
-    this.claimLoading$.subscribe();
-  }
+  ) {}
 
   public trackByRoundNumber(_index: number, round: ClaimRound): number {
     return round.roundNumber;

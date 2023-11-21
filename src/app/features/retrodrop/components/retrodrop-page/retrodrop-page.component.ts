@@ -30,9 +30,7 @@ export class RetrodropPageComponent {
   constructor(
     private readonly retrodropService: RetrodropService,
     private readonly dialogService: TuiDialogService
-  ) {
-    this.claimLoading$.subscribe();
-  }
+  ) {}
 
   public trackByRoundNumber(_index: number, round: ClaimRound): number {
     return round.roundNumber;
