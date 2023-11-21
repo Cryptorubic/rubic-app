@@ -21,6 +21,7 @@ import {
   OnChainTradeType,
   RubicSdkError,
   UnsupportedReceiverAddressError,
+  UserRejectError,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -246,13 +247,17 @@ export class SwapsControllerService {
         err instanceof CrossChainAmountChangeWarning &&
         tradeState.trade instanceof CrossChainTrade
       ) {
-        const allowSwap = await firstValueFrom(
-          this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
-            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
-            tradeState.trade.to.symbol
-          )
-        );
+        let allowSwap = false;
+
+        try {
+          allowSwap = await firstValueFrom(
+            this.modalService.openRateChangedModal(
+              Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
+              Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
+              tradeState.trade.to.symbol
+            )
+          );
+        } catch {}
         if (allowSwap) {
           try {
             const additionalData: { changenowId?: string } = {
@@ -268,11 +273,11 @@ export class SwapsControllerService {
             }
             callback?.onSwap(additionalData);
           } catch (innerErr) {
-            this.catchSwapError(err, tradeState, callback?.onError);
+            this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
           return;
         } else {
-          this.tradePageService.setState('form');
+          this.catchSwapError(new UserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
