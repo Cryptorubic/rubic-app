@@ -8,6 +8,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
+import { TradeState } from '@features/trade/models/trade-state';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -30,23 +31,8 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
 export class TradeViewContainerComponent {
   public readonly formContent$ = this.tradePageService.formContent$;
 
-  // private timeout: NodeJS.Timeout;
-
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
-    tap(providers => {
-      if (providers.length > 0 && providers[0].trade?.type !== ON_CHAIN_TRADE_TYPE.WRAPPED) {
-        this.tradePageService.setProvidersVisibility(true);
-      } else {
-        this.tradePageService.setProvidersVisibility(false);
-        //
-        // if (!this.timeout) {
-        //   this.timeout = setTimeout(() => {
-        //     this.tradePageService.setProvidersVisibility(true);
-        //     clearTimeout(this.timeout);
-        //   }, 3_000);
-        // }
-      }
-    }),
+    tap(providers => this.setProvidersVisibility(providers)),
     map(providers => providers.filter(provider => provider.trade))
   );
 
@@ -71,5 +57,31 @@ export class TradeViewContainerComponent {
 
   public getSwapPreview(): void {
     this.tradePageService.setState('preview');
+  }
+
+  private setProvidersVisibility(providers: TradeState[]): void {
+    if (this.swapFormService.isFilled) {
+      let timeout: NodeJS.Timeout;
+      if (providers.length === 0) {
+        timeout = setTimeout(() => {
+          this.tradePageService.setProvidersVisibility(true);
+          clearTimeout(timeout);
+        }, 1_500);
+      } else if (providers[0].trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED) {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        this.tradePageService.setProvidersVisibility(false);
+      } else if (providers.length > 0) {
+        this.tradePageService.setProvidersVisibility(true);
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+      } else {
+        if (!timeout) {
+          this.tradePageService.setProvidersVisibility(false);
+        }
+      }
+    }
   }
 }

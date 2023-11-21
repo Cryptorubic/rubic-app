@@ -59,6 +59,7 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
+import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
     TargetNetworkAddressComponent,
     TokensRateComponent,
     SettingsWarningModalComponent,
-    ProvidersListComponent
+    ProvidersListComponent,
+    PriceImpactFormatPipe
   ],
   exports: [],
   imports: [

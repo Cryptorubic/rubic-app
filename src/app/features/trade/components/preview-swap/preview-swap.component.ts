@@ -7,6 +7,7 @@ import { TransactionStateComponent } from '@features/trade/components/transactio
 import { map, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
+  BlockchainsInfo,
   CrossChainTradeType,
   EvmBlockchainName,
   EvmCrossChainTrade,
@@ -33,6 +34,8 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -70,6 +73,7 @@ export class PreviewSwapComponent {
         this.swapsFormService.inputValue.fromBlockchain !==
         this.swapsFormService.inputValue.toBlockchain;
 
+      const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
       const state = {
         action: (): void => {},
         label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
@@ -93,7 +97,21 @@ export class PreviewSwapComponent {
         state.action = this.backToForm.bind(this);
       }
 
-      if (el.data?.wrongNetwork && el.step !== transactionStep.success) {
+      if (
+        el.data.wrongNetwork &&
+        !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+        el.step !== transactionStep.success
+      ) {
+        state.disabled = false;
+        state.action = () => this.logoutAndChangeWallet();
+        state.label = 'Change Wallet';
+      }
+
+      if (
+        el.data?.wrongNetwork &&
+        el.step !== transactionStep.success &&
+        BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
+      ) {
         state.disabled = false;
         state.action = () => this.switchChain();
         state.label = `Change network`;
@@ -129,7 +147,9 @@ export class PreviewSwapComponent {
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly authService: AuthService,
+    private readonly gtmService: GoogleTagManagerService
   ) {}
 
   public backToForm(): void {
@@ -162,6 +182,12 @@ export class PreviewSwapComponent {
       queryParamsHandling: 'preserve',
       state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
     });
+  }
+
+  private logoutAndChangeWallet(): void {
+    this.authService.disconnectWallet();
+    this.gtmService.fireClickOnConnectWalletButtonEvent();
+    this.modalService.openWalletModal(this.injector).subscribe();
   }
 
   private async switchChain(): Promise<void> {
