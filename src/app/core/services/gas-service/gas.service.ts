@@ -431,10 +431,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei)
-            .dividedBy(10 ** 9)
-            .dividedBy(10 ** 9)
-            .toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
     );
@@ -454,10 +451,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei)
-            .dividedBy(10 ** 9)
-            .dividedBy(10 ** 9)
-            .toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
     );
@@ -475,10 +469,7 @@ export class GasService {
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
-          gasPrice: new BigNumber(gasPriceInWei)
-            .dividedBy(10 ** 9)
-            .dividedBy(10 ** 9)
-            .toFixed()
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
     );
@@ -497,10 +488,7 @@ export class GasService {
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
-        const gasPrice = new BigNumber(gasPriceInWei)
-          .dividedBy(10 ** 9)
-          .dividedBy(10 ** 9)
-          .toFixed();
+        const gasPrice = new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed();
         return {
           gasPrice
         };
