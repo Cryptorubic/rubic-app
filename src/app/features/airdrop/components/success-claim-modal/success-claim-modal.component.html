@@ -12,9 +12,11 @@
       <p>
         {{ 'airdrop.modals.success' | translate }}&nbsp;
         <br />
-        <a [safetyLink]="hash | scannerLink : blockchain : addressType">{{
-          'airdrop.modals.explorerLink' | translate
-        }}</a>
+        <a
+          class="modal__footer-explorerLink"
+          [safetyLink]="hash | scannerLink : blockchain : addressType"
+          >{{ 'airdrop.modals.explorerLink' | translate }}</a
+        >
       </p>
       <div class="modal__footer-actions">
         <button tuiButton type="button" size="m" appearance="primary" (click)="handleConfirm()">
