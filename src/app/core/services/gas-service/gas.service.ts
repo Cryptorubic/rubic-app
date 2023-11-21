@@ -438,9 +438,12 @@ export class GasService {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
       BLOCKCHAIN_NAME.MANTA_PACIFIC
     );
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+        };
+      })
     );
   }
 
@@ -453,9 +456,12 @@ export class GasService {
   })
   private fetchScrollGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SCROLL);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+        };
+      })
     );
   }
 
@@ -472,8 +478,9 @@ export class GasService {
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
+        const gasPrice = new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed();
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
+          gasPrice
         };
       })
     );
