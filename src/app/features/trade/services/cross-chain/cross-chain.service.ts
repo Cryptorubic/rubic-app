@@ -186,8 +186,7 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
-    const providerAddress =
-      toBlockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    const providerAddress = this.getProviderAddressBasedOnPromo(toBlockchain, fromBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -205,6 +204,21 @@ export class CrossChainService {
       useProxy: this.platformConfigurationService.useCrossChainChainProxy,
       ...(providerAddress && { providerAddress })
     };
+  }
+
+  private getProviderAddressBasedOnPromo(
+    toChain: BlockchainName,
+    fromChain: BlockchainName
+  ): string {
+    if (
+      toChain === BLOCKCHAIN_NAME.LINEA ||
+      toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
+      fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC
+    ) {
+      return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    }
+
+    return '';
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {
@@ -239,6 +253,7 @@ export class CrossChainService {
       receiverAddress
     };
   }
+
   /**
    *
    * @param trade trade data
