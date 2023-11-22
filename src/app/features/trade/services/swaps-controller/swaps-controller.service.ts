@@ -37,6 +37,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
+import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 
 @Injectable()
 export class SwapsControllerService {
