@@ -16,6 +16,7 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
+  EvmEncodeConfig,
   NotWhitelistedProviderError,
   PriceToken,
   RubicSdkError,
@@ -257,12 +258,14 @@ export class CrossChainService {
    *
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
+   * @param directTransaction Transaction config to execute forced
    * @returns 'success' - on successfull swap, 'reject' - on any error
    */
 
   public async swapTrade(
     trade: CrossChainTrade,
-    callbackOnHash?: (hash: string) => void
+    callbackOnHash?: (hash: string) => void,
+    directTransaction?: EvmEncodeConfig
   ): Promise<'success' | 'reject'> {
     if (!this.isSlippageCorrect(trade)) {
       return 'reject';
@@ -314,7 +317,8 @@ export class CrossChainService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
-      ...(this.queryParamsService.testMode && { testMode: true })
+      ...(this.queryParamsService.testMode && { testMode: true }),
+      ...(directTransaction && { directTransaction })
     };
 
     try {
