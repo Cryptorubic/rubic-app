@@ -36,7 +36,7 @@ import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsuppo
 import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
-import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
+import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -303,7 +303,11 @@ export class SwapsControllerService {
     } catch (err) {
       console.error(err);
       callback?.onError();
-      this.errorsService.catch(err);
+      let error = err;
+      if (err?.message?.includes('Transaction was not mined within 50 blocks')) {
+        error = new DelayedApproveError();
+      }
+      this.errorsService.catch(error);
     }
   }
 

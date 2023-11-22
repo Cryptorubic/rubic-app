@@ -92,6 +92,17 @@
     color: var(--tui-text-03);
   }
 
+  &__action-container {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+
+    button {
+      flex-shrink: 1;
+      width: 100%;
+    }
+  }
+
   &__action-button {
     width: 100%;
   }
