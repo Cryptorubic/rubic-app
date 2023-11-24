@@ -203,7 +203,7 @@ export class PreviewSwapService {
                     data: { ...this.transactionState.data, points }
                   });
                 },
-                onSwap: (additionalInfo: { changenowId?: string }) => {
+                onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this._transactionState$.next({
                       step: 'destinationPending',
