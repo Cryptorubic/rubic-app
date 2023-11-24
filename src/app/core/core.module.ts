@@ -20,6 +20,7 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
+import { LifiApiKeyInterceptor } from './interceptors/lifi-api-key.interceptor';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -33,6 +34,11 @@ import { ModalsModule } from './modals/modals.module';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RubicExchangeInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LifiApiKeyInterceptor,
       multi: true
     },
     NG_EVENT_PLUGINS,
