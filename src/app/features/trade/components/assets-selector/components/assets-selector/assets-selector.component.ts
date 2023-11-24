@@ -88,6 +88,10 @@ export class AssetsSelectorComponent implements OnInit, OnDestroy {
       `${window.innerHeight}px`
     );
     this.document.documentElement.classList.add('is-locked');
+
+    if (window.devicePixelRatio * 100 > 100) {
+      this.document.documentElement.classList.add('scroll-y');
+    }
   }
 
   private resetWindowHeight(): void {
