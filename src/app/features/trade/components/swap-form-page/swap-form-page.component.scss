@@ -44,7 +44,7 @@ app-form-switcher {
 }
 
 @include b($mobile-md) {
-  ::ng-deep {
+  :host ::ng-deep {
     .window-container {
       padding: 0 !important;
 

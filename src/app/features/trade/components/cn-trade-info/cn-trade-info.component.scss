@@ -44,4 +44,18 @@
 tui-notification {
   margin-top: var(--tui-padding-s) !important;
   margin-bottom: 0 !important;
+
+  border: 1px solid;
+}
+
+.row {
+  display: flex;
+  gap: var(--tui-padding-s);
+  justify-content: flex-end;
+}
+
+app-transaction-details-element {
+  display: flex;
+  align-items: center;
+  height: 24px;
 }

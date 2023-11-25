@@ -1,7 +1,8 @@
 <app-window-container
   *ngLet="{
     trade: trade$ | async,
-    wallet: walletAddress$ | async
+    wallet: walletAddress$ | async,
+    extraField: extraField$ | async
   } as state"
 >
   <ng-container header>Transaction details</ng-container>
@@ -9,7 +10,11 @@
     <app-transaction-details-element
       [title]="text.transactionId.label"
       [description]="text.transactionId.description"
-      >{{ state.trade.id }}
+    >
+      <div class="row">
+        {{ state.trade.id }}
+        <app-copy-container [text]="state.trade.id"></app-copy-container>
+      </div>
     </app-transaction-details-element>
 
     <app-transaction-details-element
@@ -35,13 +40,19 @@
     </app-transaction-details-element>
 
     <app-transaction-details-element
-      *ngIf="state.trade.extraField"
-      [title]="text.memo.label"
-      [description]="text.memo.description"
-      >{{ state.trade.extraField.value }}
+      *ngIf="state.extraField"
+      [title]="state.extraField.name"
+      [description]="state.extraField.text"
+    >
+      <div class="row">
+        {{ state.extraField.value }}
+        <app-copy-container [text]="state.extraField.value"></app-copy-container>
+      </div>
     </app-transaction-details-element>
   </div>
-  <tui-notification *ngIf="state.trade.extraField" status="warning" class="tui-space_vertical-4">
-    {{ text.memo.description }}
+  <tui-notification *ngIf="state.extraField" status="warning" class="tui-space_vertical-4">
+    {{ state.extraField.text }}
   </tui-notification>
+
+  <ng-template></ng-template>
 </app-window-container>

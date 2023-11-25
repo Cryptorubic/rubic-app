@@ -4,7 +4,8 @@
     tradeState: tradeState$ | async,
     transaction: transactionState$ | async,
     status: status$ | async,
-    cnTrade: cnTrade$ | async
+    cnTrade: cnTrade$ | async,
+    isMobile: isMobile$ | async
   } as state"
 >
   <ng-container header>
@@ -15,10 +16,10 @@
   </ng-container>
   <ng-container>
     <div class="preview">
-      <div class="form__container" *ngLet="isMobile$ | async as isMobile">
+      <div class="form__container">
         <app-input-output-container
-          [round]="!isMobile ? 'top' : 'none'"
-          [marginTop]="isMobile"
+          [round]="!state.isMobile ? 'top' : 'none'"
+          [marginTop]="state.isMobile"
           *ngLet="fromAsset$ | async as fromAsset"
         >
           <app-asset-selector left selectorType="from" [asset]="fromAsset"></app-asset-selector>
@@ -54,7 +55,10 @@
     <div class="target-address">
       <div class="target-address__title">Deposit address to transfer funds</div>
       <div class="target-address__text">
-        {{ state.cnTrade.depositAddress }}
+        {{
+          state.cnTrade.depositAddress
+            | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
+        }}
         <button
           [cdkCopyToClipboard]="state.cnTrade.depositAddress"
           class="copy-icon copy-icon_green"
@@ -86,7 +90,11 @@
             Awaiting deposit
           </div>
         </div>
-        <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="Next step" />
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
         <div class="row-item status-item">
           <div class="status-item__circle" *ngIf="state.status === 'waiting'"></div>
           <div
@@ -127,7 +135,11 @@
             Confirming
           </div>
         </div>
-        <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="Next step" />
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
         <div class="row-item status-item">
           <div
             class="status-item__circle"
@@ -164,7 +176,11 @@
             Exchanging
           </div>
         </div>
-        <img src="assets/images/icons/arrow/arrow-right-white.svg" alt="Next step" />
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
         <div class="row-item status-item">
           <div
             class="status-item__circle"

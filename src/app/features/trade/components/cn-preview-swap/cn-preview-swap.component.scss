@@ -167,6 +167,16 @@ app-form-switcher {
   }
 }
 
+.row-status {
+  @include b($mobile-md) {
+    flex-direction: column;
+
+    .arrow-step {
+      rotate: 90deg;
+    }
+  }
+}
+
 .copy-icon {
   width: 18px;
   height: 18px;

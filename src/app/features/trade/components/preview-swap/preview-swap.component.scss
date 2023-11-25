@@ -126,12 +126,6 @@ app-swap-data-element ::ng-deep {
     }
   }
 
-  app-swap-data-element ::ng-deep {
-    .provider-info {
-      background: var(--io-background);
-    }
-  }
-
   app-transaction-state {
     margin: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
   }
@@ -142,9 +136,6 @@ app-swap-data-element ::ng-deep {
 
       gap: 0;
       margin-top: 2px;
-
-      background: var(--io-background);
-      border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 
       &_with-line {
         gap: 24px;
