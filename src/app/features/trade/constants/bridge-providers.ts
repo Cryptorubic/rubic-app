@@ -165,6 +165,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5
   },
 
+  [BRIDGE_TYPE.RANGO]: {
+    name: 'Rango',
+    image: `${imageBasePath}rango.png`,
+    color: '#5d25ba',
+    averageTime: 5
+  },
+
   [BRIDGE_TYPE.REFUEL]: {
     name: 'Refuel',
     image: `${imageBasePath}refuel.png`,
