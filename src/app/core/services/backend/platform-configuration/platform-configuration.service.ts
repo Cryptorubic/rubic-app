@@ -103,7 +103,7 @@ export class PlatformConfigurationService {
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
-      timeout(15_000),
+      timeout(5_000),
       retry(1),
       catchError(() => of(defaultConfig)),
       tap(response => {

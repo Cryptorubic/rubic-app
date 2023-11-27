@@ -31,6 +31,9 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { compareTokens } from '@shared/utils/utils';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -91,6 +94,7 @@ export class PreviewSwapComponent {
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService
   ) {
@@ -164,12 +168,27 @@ export class PreviewSwapComponent {
 
   public getGasData(
     trade: CrossChainTrade | OnChainTrade
-  ): { amount: BigNumber; symbol: string } | null {
+  ): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
     let gasData = null;
+    let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
+
+      if (
+        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
+        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
+      ) {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? Web3Pure.fromWei(gasData.gasPrice)
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      } else {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? gasData.gasPrice
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      }
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
+      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
 
     if (!gasData || !gasData.gasLimit) {
@@ -177,10 +196,14 @@ export class PreviewSwapComponent {
     }
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+      compareTokens(token, { blockchain, address: nativeToken.address })
+    ).price;
+    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
 
     return {
-      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      amount: gasLimit,
+      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
   }
@@ -210,7 +233,10 @@ export class PreviewSwapComponent {
     } else if (transactionState.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);
-    } else if (transactionState.step === transactionStep.success) {
+    } else if (
+      transactionState.step === transactionStep.success ||
+      transactionState.step === transactionStep.destinationPending
+    ) {
       state.disabled = false;
       state.label = 'Done';
       state.action = this.backToForm.bind(this);
@@ -243,14 +269,13 @@ export class PreviewSwapComponent {
 
     const tradeState = await firstValueFrom(this.previewSwapService.selectedTradeState$);
     if (
-      (transactionState.step === transactionStep.inactive ||
+      (transactionState.step === transactionStep.idle ||
         transactionState.step === transactionStep.swapReady) &&
       !isCrossChain &&
       tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
     ) {
       state.label = 'Wrap';
     }
-
     return state;
   }
 }

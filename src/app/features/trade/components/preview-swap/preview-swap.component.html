@@ -239,17 +239,29 @@
       "
     ></app-mev-bot>
 
-    <button
-      class="preview__action-button"
-      *ngLet="buttonState$ | async as buttonState"
-      tuiButton
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="buttonState.action()"
-      [disabled]="buttonState.disabled"
-    >
-      {{ buttonState.label }}
-    </button>
+    <div class="preview__action-container">
+      <button
+        class="preview__action-button"
+        *ngLet="buttonState$ | async as buttonState"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="buttonState.action()"
+        [disabled]="buttonState.disabled"
+      >
+        {{ buttonState.label }}
+      </button>
+      <button
+        *ngIf="state.transaction.step === 'destinationPending'"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="navigateToHistory()"
+      >
+        See Details >
+      </button>
+    </div>
   </ng-container>
 </app-window-container>

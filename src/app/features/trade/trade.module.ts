@@ -61,6 +61,7 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
+import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 
 @NgModule({
@@ -88,6 +89,7 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
+    PriceImpactFormatPipe,
     MevBotComponent
   ],
   exports: [],

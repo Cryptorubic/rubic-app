@@ -37,6 +37,10 @@
 
     }
 
+    &-explorerLink {
+      color: var(--tui-primary);
+    }
+
     &-actions {
       display: flex;
       gap: 16px;

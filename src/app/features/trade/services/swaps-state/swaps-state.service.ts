@@ -3,9 +3,10 @@ import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
 import { debounceTime, filter, map, startWith } from 'rxjs/operators';
 import {
+  BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
-  compareCrossChainTradesWithoutTokenPrice,
+  nativeTokensList,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
@@ -215,7 +216,7 @@ export class SwapsStateService {
       const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       const isThereTokenWithoutPrice = currentTrades
         .filter(trade => trade?.trade?.to)
-        .some(currentTrade => !currentTrade.trade.to.price);
+        .some(currentTrade => !currentTrade.trade.to?.price?.gt(0));
 
       if (isCrossChain || isOnChain) {
         currentTrades = isCrossChain
@@ -251,15 +252,31 @@ export class SwapsStateService {
     currentTrades: TradeState[],
     isThereTokenWithoutPrice: boolean
   ): TradeState[] {
-    if (isThereTokenWithoutPrice) {
-      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
-        compareCrossChainTradesWithoutTokenPrice
-      ) as TradeState[];
-    } else {
-      return (currentTrades as WrappedCrossChainTradeOrNull[]).sort(
-        compareCrossChainTrades
-      ) as TradeState[];
-    }
+    return (currentTrades as WrappedCrossChainTradeOrNull[]).sort((nextTrade, prevTrade) => {
+      const nativePriceForNextTrade = nextTrade?.trade
+        ? this.getNativeTokenPrice(nextTrade.trade.from.blockchain)
+        : new BigNumber(0);
+      const nativePriceForPrevTrade = prevTrade?.trade
+        ? this.getNativeTokenPrice(prevTrade.trade.from.blockchain)
+        : new BigNumber(0);
+
+      return compareCrossChainTrades(
+        nextTrade,
+        prevTrade,
+        nativePriceForNextTrade,
+        nativePriceForPrevTrade,
+        isThereTokenWithoutPrice
+      );
+    }) as TradeState[];
+  }
+
+  private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
+    const nativeToken = nativeTokensList[blockchain];
+    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+      compareTokens(token, { blockchain, address: nativeToken.address })
+    ).price;
+
+    return new BigNumber(nativeTokenPrice);
   }
 
   private sortOnChainTrades(

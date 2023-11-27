@@ -4,7 +4,7 @@
       <app-claim-round-row-container
         *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber"
         [isModal]="isModal"
-        [loading]="loading$ | async"
+        [loading]="claimLoading$ | async"
         [inputRound]="round"
         (handleClaim)="handleClaim($event)"
       ></app-claim-round-row-container>
@@ -16,7 +16,7 @@
   <app-claim-round-row-container
     *ngFor="let round of (rounds$ | async).slice(0, 1); trackBy: trackByRoundNumber"
     [isModal]="isModal"
-    [loading]="loading$ | async"
+    [loading]="claimLoading$ | async"
     [inputRound]="round"
     (handleClaim)="handleClaim($event)"
   ></app-claim-round-row-container>

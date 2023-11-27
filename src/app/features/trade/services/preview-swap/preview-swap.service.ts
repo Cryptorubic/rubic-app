@@ -64,19 +64,9 @@ export class PreviewSwapService {
 
   public readonly transactionState$ = this._transactionState$.asObservable();
 
-  // public readonly tradeState$ = this.transactionState$.pipe(
-  //   first(el => el.step === 'idle'),
-  //   switchMap(() => this.swapsStateService.tradeState$)
-  // );
-
   private readonly _selectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
 
   public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
-
-  // public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-  //   debounceTime(50),
-  //   first()
-  // );
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
     this.swapForm.fromToken$.pipe(first()),
@@ -331,7 +321,7 @@ export class PreviewSwapService {
     this._transactionState$.next(state);
   }
 
-  private async checkNetwork(): Promise<void> {
+  private checkNetwork(): void {
     const network = this.walletConnectorService.network;
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;

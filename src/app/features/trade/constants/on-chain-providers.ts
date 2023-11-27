@@ -506,11 +506,10 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
   },
-  [ON_CHAIN_TRADE_TYPE.LIFI_DEFAULT]: {
-    // @TODO Remove mock
+  [ON_CHAIN_TRADE_TYPE.LIFI]: {
     name: 'Lifi',
-    image: `${imageBasePath}horixondex.png`,
-    color: '#444391'
+    image: `assets/images/icons/providers/bridge/lifi.svg`,
+    color: '#bf38ee'
   },
   [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
     name: 'BaseSwap',
