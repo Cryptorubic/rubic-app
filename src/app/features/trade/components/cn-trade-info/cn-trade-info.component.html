@@ -45,7 +45,11 @@
       [description]="state.extraField.text"
     >
       <div class="row">
-        {{ state.extraField.value }}
+        {{
+          state.extraField.value.length > 25
+            ? (state.extraField.value | shortAddress : 10 : 10)
+            : state.extraField.value
+        }}
         <app-copy-container [text]="state.extraField.value"></app-copy-container>
       </div>
     </app-transaction-details-element>

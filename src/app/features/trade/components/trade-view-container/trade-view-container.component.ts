@@ -6,7 +6,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { BlockchainsInfo, CROSS_CHAIN_TRADE_TYPE, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { firstValueFrom } from 'rxjs';
@@ -69,12 +69,11 @@ export class TradeViewContainerComponent {
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);
-    const currentTrade = this.swapsState.currentTrade;
+    const isAddressRequired = await firstValueFrom(
+      this.targetNetworkAddressService.isAddressRequired$
+    );
     // Handle ChangeNow Non EVM trade
-    if (
-      currentTrade?.trade?.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade?.trade.from.blockchain)
-    ) {
+    if (isAddressRequired) {
       const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
       if (isAddressValid) {
         this.tradePageService.setState('cnPreview');
