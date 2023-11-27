@@ -4,7 +4,6 @@ import { CrossChainTableData } from '@features/history/models/cross-chain-table-
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
 import { BLOCKCHAIN_NAME, EvmBlockchainName } from 'rubic-sdk';
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
@@ -64,18 +63,22 @@ export class CrossChainDesktopTableComponent {
 
   public shouldShowStatusToActionButton(item: CrossChainTableData): boolean {
     const shouldShow = CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO.some(
-      _case => _case.provider === item.provider?.name && _case.status === item.toTx.status.label
+      _case =>
+        item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
+        _case.status === item.toTx.status.label
     );
     return shouldShow;
   }
 
   public async handleStatusToItemClick(item: CrossChainTableData): Promise<void> {
-    const provider = item.provider.name;
+    // const provider = item.provider.name;
+    const fromBlockchain = item.fromBlockchain.name as EvmBlockchainName;
     const toBlockchain = item.toBlockchain.name as EvmBlockchainName;
-    switch (provider) {
-      case FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge:
+    switch (fromBlockchain) {
+      // case FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge:
+      case BLOCKCHAIN_NAME.ARBITRUM:
         const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-        if (isSwitched) this.commonTableService.claimArbitrumBridgeTokens(item.toTx.hash);
+        if (isSwitched) this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
         break;
       default:
         console.warn("Blockhain doesn't have onStatusToClick actions!");

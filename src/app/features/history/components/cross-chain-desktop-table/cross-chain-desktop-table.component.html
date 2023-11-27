@@ -111,7 +111,7 @@
                 </app-rubic-badge>
                 <img
                   *ngIf="item.toTx.explorerLink"
-                  class="status-from-link-arrow"
+                  class="status-to-link-arrow"
                   src="assets/images/icons/arrow/link-arrow.svg"
                   alt="link-arrow"
                 />
@@ -122,6 +122,7 @@
                   appearance="primary"
                   type="button"
                   size="xs"
+                  class="statusTo-actionButton"
                   (click)="handleStatusToItemClick(item)"
                 >
                   {{ item.toTx.status.label }}
