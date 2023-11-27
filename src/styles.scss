@@ -70,6 +70,10 @@ html.is-locked body {
   overflow: hidden;
 }
 
+html.scroll-y body {
+  overflow-y: visible;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   margin: 0;

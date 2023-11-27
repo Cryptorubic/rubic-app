@@ -89,7 +89,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'pulsex_v1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
   [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: 'horizondex',
-  [ON_CHAIN_TRADE_TYPE.LIFI_DEFAULT]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: 'baseswap',
   [ON_CHAIN_TRADE_TYPE.CRONA_SWAP]: 'cronaswap',
   [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: 'beamswap',
@@ -103,10 +102,10 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.IZUMI]: 'izumi',
   [ON_CHAIN_TRADE_TYPE.REN_BTC]: 'renbtc',
   [ON_CHAIN_TRADE_TYPE.AERODROME]: 'aerodrome',
-
   [ON_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
   [ON_CHAIN_TRADE_TYPE.VOOI]: 'vooi',
   [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: 'xy_dex',
-  [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx'
+  [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx',
+  [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi'
 };

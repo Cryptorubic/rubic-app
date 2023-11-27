@@ -21,7 +21,7 @@ import {
   OnChainTradeType,
   RubicSdkError,
   UnsupportedReceiverAddressError,
-  UpdatedRatesError,
+  UserRejectError,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -36,6 +36,8 @@ import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsuppo
 import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
+import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
+import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
 
 @Injectable()
 export class SwapsControllerService {
@@ -228,23 +230,35 @@ export class SwapsControllerService {
         changenowId: undefined
       };
       if (tradeState.trade instanceof CrossChainTrade) {
-        await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
-        if ('id' in tradeState.trade) {
-          additionalData.changenowId = tradeState.trade.id as string;
+        const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
+        if (status === 'success') {
+          callback?.onSwap(additionalData);
+          if ('id' in tradeState.trade) {
+            additionalData.changenowId = tradeState.trade.id as string;
+          }
+        } else {
+          callback.onError?.();
         }
       } else {
         await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
+        callback?.onSwap(additionalData);
       }
-      callback?.onSwap(additionalData);
     } catch (err) {
-      if (err instanceof UpdatedRatesError && tradeState.trade instanceof CrossChainTrade) {
-        const allowSwap = await firstValueFrom(
-          this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
-            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
-            tradeState.trade.to.symbol
-          )
-        );
+      if (
+        err instanceof CrossChainAmountChangeWarning &&
+        tradeState.trade instanceof CrossChainTrade
+      ) {
+        let allowSwap = false;
+
+        try {
+          allowSwap = await firstValueFrom(
+            this.modalService.openRateChangedModal(
+              Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
+              Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
+              tradeState.trade.to.symbol
+            )
+          );
+        } catch {}
         if (allowSwap) {
           try {
             const additionalData: { changenowId?: string } = {
@@ -252,18 +266,19 @@ export class SwapsControllerService {
             };
             await this.crossChainService.swapTrade(
               tradeState.trade as CrossChainTrade,
-              callback.onHash
+              callback.onHash,
+              err.transaction
             );
             if ('id' in tradeState.trade) {
               additionalData.changenowId = tradeState.trade.id as string;
             }
             callback?.onSwap(additionalData);
           } catch (innerErr) {
-            this.catchSwapError(err, tradeState, callback?.onError);
+            this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
           return;
         } else {
-          this.tradePageService.setState('form');
+          this.catchSwapError(new UserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -289,7 +304,11 @@ export class SwapsControllerService {
     } catch (err) {
       console.error(err);
       callback?.onError();
-      this.errorsService.catch(err);
+      let error = err;
+      if (err?.message?.includes('Transaction was not mined within 50 blocks')) {
+        error = new DelayedApproveError();
+      }
+      this.errorsService.catch(error);
     }
   }
 

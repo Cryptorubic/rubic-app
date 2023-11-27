@@ -13,6 +13,18 @@
     font-size: 15px;
     text-align: center;
   }
+
+  &__priceImpact-low {
+    color: var(--tui-success-fill);
+  }
+
+  &__priceImpact-medium {
+    color: var(--tui-warning-fill);
+  }
+
+  &__priceImpact-high {
+    color: var(--tui-error-fill);
+  }
 }
 
 .image {

@@ -16,6 +16,7 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
+  EvmEncodeConfig,
   NotWhitelistedProviderError,
   PriceToken,
   RubicSdkError,
@@ -185,8 +186,7 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
-    const providerAddress =
-      toBlockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    const providerAddress = this.getProviderAddressBasedOnPromo(toBlockchain, fromBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -204,6 +204,21 @@ export class CrossChainService {
       useProxy: this.platformConfigurationService.useCrossChainChainProxy,
       ...(providerAddress && { providerAddress })
     };
+  }
+
+  private getProviderAddressBasedOnPromo(
+    toChain: BlockchainName,
+    fromChain: BlockchainName
+  ): string {
+    if (
+      toChain === BLOCKCHAIN_NAME.LINEA ||
+      toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
+      fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC
+    ) {
+      return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    }
+
+    return '';
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {
@@ -239,17 +254,30 @@ export class CrossChainService {
     };
   }
 
-  public async swapTrade(trade: CrossChainTrade, callback?: (hash: string) => void): Promise<void> {
+  /**
+   *
+   * @param trade trade data
+   * @param callbackOnHash function call with hash-string and 'sourcePending'-status
+   * @param directTransaction Transaction config to execute forced
+   * @returns 'success' - on successfull swap, 'reject' - on any error
+   */
+
+  public async swapTrade(
+    trade: CrossChainTrade,
+    callbackOnHash?: (hash: string) => void,
+    directTransaction?: EvmEncodeConfig
+  ): Promise<'success' | 'reject'> {
     if (!this.isSlippageCorrect(trade)) {
-      return;
+      return 'reject';
     }
-    if (
-      !(await this.settingsService.checkSlippageAndPriceImpact(
-        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-        trade
-      ))
-    ) {
-      return;
+
+    const isHighSlippageOrPriceImpact = !(await this.settingsService.checkSlippageAndPriceImpact(
+      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
+      trade
+    ));
+
+    if (isHighSlippageOrPriceImpact) {
+      return 'reject';
     }
     // @TODO
     // if (
@@ -272,7 +300,7 @@ export class CrossChainService {
 
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
-      callback?.(txHash);
+      callbackOnHash?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
 
       this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
@@ -289,13 +317,15 @@ export class CrossChainService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
-      ...(this.queryParamsService.testMode && { testMode: true })
+      ...(this.queryParamsService.testMode && { testMode: true }),
+      ...(directTransaction && { directTransaction })
     };
 
     try {
       await trade.swap(swapOptions);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       await this.crossChainApiService.patchTrade(transactionHash, true);
+      return 'success';
     } catch (error) {
       if (
         transactionHash &&
