@@ -90,7 +90,8 @@ export class SettingsService {
       autoSlippageTolerance: true,
       slippageTolerance:
         this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
-      showReceiverAddress: false
+      showReceiverAddress: false,
+      useMevBotProtection: false
     };
   }
 
@@ -118,7 +119,8 @@ export class SettingsService {
           this.defaultItSettings.autoSlippageTolerance
         ),
         slippageTolerance: new FormControl<number>(this.defaultCcrSettings.slippageTolerance),
-        showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress)
+        showReceiverAddress: new FormControl<boolean>(this.defaultCcrSettings.showReceiverAddress),
+        useMevBotProtection: new FormControl<boolean>(this.defaultCcrSettings.useMevBotProtection)
       })
     });
   }

@@ -18,6 +18,8 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiModeModule,
+  TuiNotificationModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -59,6 +61,7 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
+import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +87,8 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
     TargetNetworkAddressComponent,
     TokensRateComponent,
     SettingsWarningModalComponent,
-    ProvidersListComponent
+    ProvidersListComponent,
+    MevBotComponent
   ],
   exports: [],
   imports: [
@@ -107,7 +111,9 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
     TuiInputModule,
     TuiProgressModule,
     TuiLoaderModule,
-    AssetsSelectorModule
+    AssetsSelectorModule,
+    TuiNotificationModule,
+    TuiModeModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

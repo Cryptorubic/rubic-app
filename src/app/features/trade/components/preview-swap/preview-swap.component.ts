@@ -4,7 +4,7 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
-import { map, switchMap } from 'rxjs/operators';
+import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
@@ -33,6 +33,8 @@ import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
+import { TransactionState } from '@features/trade/models/transaction-state';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-preview-swap',
@@ -52,12 +54,13 @@ export class PreviewSwapComponent {
   );
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
-    this.previewSwapService.tradeState$.pipe(
+    this.previewSwapService.selectedTradeState$.pipe(
+      first(tuiIsPresent),
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
         return {
           ...tradeState,
-          feeInfo: info.feeInfo
+          feeInfo: info?.feeInfo
         };
       })
     );
@@ -65,64 +68,11 @@ export class PreviewSwapComponent {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   public readonly buttonState$ = this.transactionState$.pipe(
-    map(el => {
-      const isCrossChain =
-        this.swapsFormService.inputValue.fromBlockchain !==
-        this.swapsFormService.inputValue.toBlockchain;
-
-      const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
-      const state = {
-        action: (): void => {},
-        label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
-        disabled: true
-      };
-      if (el.step === transactionStep.approveReady) {
-        state.disabled = false;
-        state.action = this.approve.bind(this);
-      } else if (el.step === transactionStep.swapReady) {
-        state.disabled = false;
-        state.action = this.swap.bind(this);
-      } else if (el.step === transactionStep.idle) {
-        state.disabled = false;
-        state.action = this.startTrade.bind(this);
-      } else if (el.step === transactionStep.success) {
-        state.disabled = false;
-        state.label = 'Done';
-        state.action = this.backToForm.bind(this);
-      }
-
-      if (
-        el.data.wrongNetwork &&
-        !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
-        el.step !== transactionStep.success
-      ) {
-        state.disabled = false;
-        state.action = () => this.logoutAndChangeWallet();
-        state.label = 'Change Wallet';
-      }
-
-      if (
-        el.data?.wrongNetwork &&
-        el.step !== transactionStep.success &&
-        BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
-      ) {
-        state.disabled = false;
-        state.action = () => this.switchChain();
-        state.label = `Change network`;
-      }
-      if (el.data?.activeWallet === false) {
-        state.disabled = false;
-        state.action = () => this.connectWallet();
-        state.label = `Connect wallet`;
-      }
-      if (
-        (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&
-        !isCrossChain &&
-        this.previewSwapService?.tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
-      ) {
-        state.label = 'Wrap';
-      }
-      return state;
+    switchMap(transactionState => this.getState(transactionState)),
+    startWith({
+      action: () => {},
+      label: 'Select Tokens',
+      disabled: true
     })
   );
 
@@ -143,16 +93,15 @@ export class PreviewSwapComponent {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService
-  ) {}
+  ) {
+    this.previewSwapService.getSelectedProvider();
+  }
 
   public backToForm(): void {
     this.tradePageService.setState('form');
     this.previewSwapService.setNextTxState({
-      step: 'idle',
-      data: {
-        wrongNetwork: this.previewSwapService.transactionState.data?.wrongNetwork,
-        activeWallet: this.previewSwapService.transactionState.data?.activeWallet
-      }
+      step: 'inactive',
+      data: {}
     });
   }
 
@@ -234,5 +183,74 @@ export class PreviewSwapComponent {
       amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
       symbol: nativeToken.symbol
     };
+  }
+
+  private async getState(
+    transactionState: TransactionState
+  ): Promise<{ action: () => void; label: string; disabled: boolean }> {
+    const isCrossChain =
+      this.swapsFormService.inputValue.fromBlockchain !==
+      this.swapsFormService.inputValue.toBlockchain;
+
+    const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+    const state = {
+      action: (): void => {},
+      label: TransactionStateComponent.getLabel(
+        transactionState.step,
+        isCrossChain ? 'bridge' : 'swap'
+      ),
+      disabled: true
+    };
+    if (transactionState.step === transactionStep.approveReady) {
+      state.disabled = false;
+      state.action = this.approve.bind(this);
+    } else if (transactionState.step === transactionStep.swapReady) {
+      state.disabled = false;
+      state.action = this.swap.bind(this);
+    } else if (transactionState.step === transactionStep.idle) {
+      state.disabled = false;
+      state.action = this.startTrade.bind(this);
+    } else if (transactionState.step === transactionStep.success) {
+      state.disabled = false;
+      state.label = 'Done';
+      state.action = this.backToForm.bind(this);
+    }
+
+    if (
+      transactionState.data.wrongNetwork &&
+      !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+      transactionState.step !== transactionStep.success
+    ) {
+      state.disabled = false;
+      state.action = () => this.logoutAndChangeWallet();
+      state.label = 'Change Wallet';
+    }
+
+    if (
+      transactionState.data?.wrongNetwork &&
+      transactionState.step !== transactionStep.success &&
+      BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
+    ) {
+      state.disabled = false;
+      state.action = () => this.switchChain();
+      state.label = `Change network`;
+    }
+    if (transactionState.data?.activeWallet === false) {
+      state.disabled = false;
+      state.action = () => this.connectWallet();
+      state.label = `Connect wallet`;
+    }
+
+    const tradeState = await firstValueFrom(this.previewSwapService.selectedTradeState$);
+    if (
+      (transactionState.step === transactionStep.inactive ||
+        transactionState.step === transactionStep.swapReady) &&
+      !isCrossChain &&
+      tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
+    ) {
+      state.label = 'Wrap';
+    }
+
+    return state;
   }
 }

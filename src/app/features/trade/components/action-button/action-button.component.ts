@@ -7,6 +7,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 
 @Component({
   selector: 'app-action-button',
@@ -88,14 +89,12 @@ export class ActionButtonComponent {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapsFormService: SwapsFormService,
+    private readonly previewSwapService: PreviewSwapService
   ) {}
 
-  private approve(): void {
-    this.tradePageService.setState('preview');
-  }
-
   private swap(): void {
+    this.previewSwapService.activatePage();
     this.tradePageService.setState('preview');
   }
 

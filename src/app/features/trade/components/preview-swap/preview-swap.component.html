@@ -232,6 +232,13 @@
       </div>
     </div>
 
+    <app-mev-bot
+      *ngIf="state.transaction.step === 'idle'"
+      [tradePrice]="
+        state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
+      "
+    ></app-mev-bot>
+
     <button
       class="preview__action-button"
       *ngLet="buttonState$ | async as buttonState"

@@ -16,14 +16,15 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
-import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
+  EvmBlockchainName,
   TX_STATUS,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -33,6 +34,10 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
+import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { SelectedTrade } from '@features/trade/models/selected-trade';
+import { ErrorsService } from '@core/errors/errors.service';
+import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -49,7 +54,7 @@ interface TradeInfo {
 @Injectable()
 export class PreviewSwapService {
   private readonly _transactionState$ = new BehaviorSubject<TransactionState>({
-    step: 'idle',
+    step: 'inactive',
     data: {}
   });
 
@@ -59,13 +64,19 @@ export class PreviewSwapService {
 
   public readonly transactionState$ = this._transactionState$.asObservable();
 
-  public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first()
-  );
+  // public readonly tradeState$ = this.transactionState$.pipe(
+  //   first(el => el.step === 'idle'),
+  //   switchMap(() => this.swapsStateService.tradeState$)
+  // );
 
-  public get tradeState(): SelectedTrade {
-    return this.swapsStateService.tradeState;
-  }
+  private readonly _selectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
+
+  public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
+
+  // public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
+  //   debounceTime(50),
+  //   first()
+  // );
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
     this.swapForm.fromToken$.pipe(first()),
@@ -104,7 +115,9 @@ export class PreviewSwapService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly airdropPointsService: AirdropPointsService,
-    private readonly recentTradesStoreService: UnreadTradesService
+    private readonly recentTradesStoreService: UnreadTradesService,
+    private readonly settingsService: SettingsService,
+    private readonly errorsService: ErrorsService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
@@ -130,7 +143,7 @@ export class PreviewSwapService {
   }
 
   public async requestTxSign(): Promise<void> {
-    const tradeState = await firstValueFrom(this.tradeState$);
+    const tradeState = await firstValueFrom(this.selectedTradeState$);
 
     if (tradeState.needApprove) {
       this.startApprove();
@@ -147,12 +160,19 @@ export class PreviewSwapService {
     this._transactionState$.next({ step: 'approvePending', data: this.transactionState.data });
   }
 
+  public activatePage(): void {
+    this._transactionState$.next({ step: 'idle', data: {} });
+  }
+
   private handleTransactionState(): void {
     this.transactionState$
       .pipe(
         distinctUntilChanged(),
+        filter(state => state.step !== 'inactive'),
         debounceTime(10),
-        switchMap(state => forkJoin([this.tradeState$, of(state)])),
+        switchMap(state => {
+          return forkJoin([this.selectedTradeState$.pipe(first()), of(state)]);
+        }),
         switchMap(([tradeState, txState]) => {
           return forkJoin([
             of(tradeState),
@@ -180,43 +200,54 @@ export class PreviewSwapService {
             }
             case 'swapRequest': {
               let txHash: string;
+              const useMevProtection =
+                this.settingsService.crossChainRoutingValue.useMevBotProtection;
+              return from(this.loadRpcParams(useMevProtection)).pipe(
+                switchMap(rpcChanged => {
+                  return rpcChanged
+                    ? this.swapsControllerService.swap(tradeState, {
+                        onHash: (hash: string) => {
+                          txHash = hash;
+                          this._transactionState$.next({
+                            step: 'sourcePending',
+                            data: { ...this.transactionState.data, points }
+                          });
+                        },
+                        onSwap: (additionalInfo: { changenowId?: string }) => {
+                          if (tradeState.trade instanceof CrossChainTrade) {
+                            this._transactionState$.next({
+                              step: 'destinationPending',
+                              data: { ...this.transactionState.data, points }
+                            });
+                            this.initDstTxStatusPolling(
+                              txHash,
+                              Date.now(),
+                              tradeState.trade.to.blockchain,
+                              additionalInfo,
+                              points
+                            );
+                          } else {
+                            this._transactionState$.next({
+                              step: 'success',
+                              data: {
+                                hash: txHash,
+                                toBlockchain: tradeState.trade.to.blockchain,
+                                points
+                              }
+                            });
+                          }
 
-              return this.swapsControllerService.swap(tradeState, {
-                onHash: (hash: string) => {
-                  txHash = hash;
-                  this._transactionState$.next({
-                    step: 'sourcePending',
-                    data: { ...this.transactionState.data, points }
-                  });
-                },
-                onSwap: (additionalInfo: { changenowId?: string }) => {
-                  if (tradeState.trade instanceof CrossChainTrade) {
-                    this._transactionState$.next({
-                      step: 'destinationPending',
-                      data: { ...this.transactionState.data, points }
-                    });
-                    this.initDstTxStatusPolling(
-                      txHash,
-                      Date.now(),
-                      tradeState.trade.to.blockchain,
-                      additionalInfo,
-                      points
-                    );
-                  } else {
-                    this._transactionState$.next({
-                      step: 'success',
-                      data: { hash: txHash, toBlockchain: tradeState.trade.to.blockchain, points }
-                    });
-                  }
-
-                  this.airdropPointsService.updateSwapToEarnUserPointsInfo();
-                  this.recentTradesStoreService.updateUnreadTrades();
-                },
-                onError: () => {
-                  this._transactionState$.next({ step: 'idle', data: {} });
-                  this.tradePageService.setState('form');
-                }
-              });
+                          this.airdropPointsService.updateSwapToEarnUserPointsInfo();
+                          this.recentTradesStoreService.updateUnreadTrades();
+                        },
+                        onError: () => {
+                          this._transactionState$.next({ step: 'inactive', data: {} });
+                          this.tradePageService.setState('form');
+                        }
+                      })
+                    : this.catchSwitchCancel();
+                })
+              );
             }
             default: {
               return of(null);
@@ -237,7 +268,7 @@ export class PreviewSwapService {
     interval(30_000)
       .pipe(
         startWith(-1),
-        switchMap(() => this.tradeState$),
+        switchMap(() => this.selectedTradeState$.pipe(first())),
         switchMap(tradeState => {
           return from(
             this.sdkService.crossChainStatusManager.getCrossChainStatus(
@@ -300,11 +331,38 @@ export class PreviewSwapService {
     this._transactionState$.next(state);
   }
 
-  private checkNetwork(): void {
+  private async checkNetwork(): Promise<void> {
     const network = this.walletConnectorService.network;
-    const tokenBlockchain = this.tradeState.trade.from.blockchain;
+    const selectedTrade = this._selectedTradeState$.value;
+    const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
-    state.data.wrongNetwork = network !== tokenBlockchain;
+    state.data.wrongNetwork = tokenBlockchain && network !== tokenBlockchain;
     this._transactionState$.next(state);
+  }
+
+  private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
+    const tradeState = await firstValueFrom(this.selectedTradeState$);
+    const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
+    let rpc = undefined;
+    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
+      rpc = 'https://rpc.propellerheads.xyz/eth';
+    }
+
+    try {
+      await this.walletConnectorService.addChain(fromBlockchain, rpc);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  public getSelectedProvider(): void {
+    this._selectedTradeState$.next(this.swapsStateService.tradeState);
+  }
+
+  private async catchSwitchCancel(): Promise<void> {
+    this.errorsService.catch(new UserRejectError());
+    this._transactionState$.next({ step: 'inactive', data: {} });
+    this.tradePageService.setState('form');
   }
 }

@@ -9,6 +9,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -47,7 +48,8 @@ export class TradeViewContainerComponent {
     private readonly tradePageService: TradePageService,
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
-    public readonly swapTokensUpdaterService: SwapTokensUpdaterService
+    public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
+    private readonly previewSwapService: PreviewSwapService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
@@ -56,6 +58,7 @@ export class TradeViewContainerComponent {
   }
 
   public getSwapPreview(): void {
+    this.previewSwapService.activatePage();
     this.tradePageService.setState('preview');
   }
 
