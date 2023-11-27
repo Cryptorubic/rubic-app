@@ -4,6 +4,11 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
+  [ON_CHAIN_TRADE_TYPE.LIFI]: {
+    color: '#bf38ee',
+    image: 'assets/images/icons/providers/bridge/lifi.svg',
+    name: 'Lifi'
+  },
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',
     image: `${imageBasePath}acryptos.png`,
@@ -505,11 +510,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'HorizonDEX',
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
-  },
-  [ON_CHAIN_TRADE_TYPE.LIFI]: {
-    name: 'Lifi',
-    image: `assets/images/icons/providers/bridge/lifi.svg`,
-    color: '#bf38ee'
   },
   [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
     name: 'BaseSwap',
