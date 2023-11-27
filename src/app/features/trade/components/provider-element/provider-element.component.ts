@@ -7,15 +7,17 @@ import {
   EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
-  nativeTokensList,
-  Web3Pure
+  nativeTokensList
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { Token } from '@shared/models/tokens/token';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
+import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { compareTokens } from '@shared/utils/utils';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
+import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
 
 @Component({
   selector: 'app-provider-element',
@@ -40,7 +42,7 @@ export class ProviderElementComponent {
 
   constructor(
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly tokensService: TokensService
+    private readonly tokensStoreService: TokensStoreService
   ) {}
 
   public toggleExpand(event: Event): void {
@@ -70,13 +72,28 @@ export class ProviderElementComponent {
     };
   }
 
-  public getGasData(): { amount: BigNumber; symbol: string } | null {
+  public getGasData(): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
     const trade = this.tradeState.trade;
     let gasData = null;
+    let gasPrice = null;
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
+
+      if (
+        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
+        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
+      ) {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? Web3Pure.fromWei(gasData.gasPrice)
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      } else {
+        gasPrice = gasData?.gasPrice?.gt(0)
+          ? gasData.gasPrice
+          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
+      }
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
+      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
 
     if (!gasData || !gasData.gasLimit) {
@@ -84,10 +101,14 @@ export class ProviderElementComponent {
     }
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+      compareTokens(token, { blockchain, address: nativeToken.address })
+    ).price;
+    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
 
     return {
-      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      amount: gasLimit,
+      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
   }

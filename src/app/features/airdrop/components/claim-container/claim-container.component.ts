@@ -22,7 +22,7 @@ export class ClaimContainerComponent {
 
   public readonly isMobile$ = this.headerService.getMobileDisplayStatus();
 
-  public readonly loading$ = this.airdropService.claimLoading$;
+  public readonly claimLoading$ = this.airdropService.claimLoading$;
 
   constructor(
     @Optional()

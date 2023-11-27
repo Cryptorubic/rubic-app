@@ -73,7 +73,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.GNOSIS]: [
     'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],
-  [BLOCKCHAIN_NAME.FUSE]: ['https://fuse-rpc.gateway.pokt.network/'],
+  [BLOCKCHAIN_NAME.FUSE]: ['https://fuse-pokt.nodies.app', 'https://rpc.fuse.io'],
   [BLOCKCHAIN_NAME.MOONBEAM]: [
     'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],

@@ -16,6 +16,7 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
+  EvmEncodeConfig,
   NotWhitelistedProviderError,
   PriceToken,
   RubicSdkError,
@@ -185,8 +186,7 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
-    const providerAddress =
-      toBlockchain === BLOCKCHAIN_NAME.LINEA && '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    const providerAddress = this.getProviderAddressBasedOnPromo(toBlockchain, fromBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -204,6 +204,21 @@ export class CrossChainService {
       useProxy: this.platformConfigurationService.useCrossChainChainProxy,
       ...(providerAddress && { providerAddress })
     };
+  }
+
+  private getProviderAddressBasedOnPromo(
+    toChain: BlockchainName,
+    fromChain: BlockchainName
+  ): string {
+    if (
+      toChain === BLOCKCHAIN_NAME.LINEA ||
+      toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
+      fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC
+    ) {
+      return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
+    }
+
+    return '';
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {
@@ -238,16 +253,19 @@ export class CrossChainService {
       receiverAddress
     };
   }
+
   /**
    *
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
+   * @param directTransaction Transaction config to execute forced
    * @returns 'success' - on successfull swap, 'reject' - on any error
    */
 
   public async swapTrade(
     trade: CrossChainTrade,
-    callbackOnHash?: (hash: string) => void
+    callbackOnHash?: (hash: string) => void,
+    directTransaction?: EvmEncodeConfig
   ): Promise<'success' | 'reject'> {
     if (!this.isSlippageCorrect(trade)) {
       return 'reject';
@@ -299,7 +317,8 @@ export class CrossChainService {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
-      ...(this.queryParamsService.testMode && { testMode: true })
+      ...(this.queryParamsService.testMode && { testMode: true }),
+      ...(directTransaction && { directTransaction })
     };
 
     try {

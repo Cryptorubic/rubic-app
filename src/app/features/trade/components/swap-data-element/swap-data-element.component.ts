@@ -37,7 +37,11 @@ export class SwapDataElementComponent {
     }
   }
 
-  @Input({ required: true }) gasInfo: { amount: BigNumber; symbol: string } | null;
+  @Input({ required: true }) gasInfo: {
+    amount: BigNumber;
+    amountInUsd: BigNumber;
+    symbol: string;
+  } | null;
 
   @Input({ required: true }) time: string | number;
 
