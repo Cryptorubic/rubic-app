@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
 import { CrossChainTableService } from '@features/history/services/cross-chain-table-service/cross-chain-table.service';
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
 import { BLOCKCHAIN_NAME, EvmBlockchainName } from 'rubic-sdk';
-import { CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO } from './constants/status-to-action-cases';
+import { tableRowsWithActionButtons } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { ActionButtonLoadingStatus } from './model/types';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -22,6 +23,8 @@ export class CrossChainDesktopTableComponent {
 
   public readonly columns = crossChainCols;
 
+  private readonly actionButtonsStatuses: ActionButtonLoadingStatus[] = [];
+
   public readonly data$ = this.crossChainTableSrvice.data$;
 
   public readonly loading$ = this.crossChainTableSrvice.loading$;
@@ -37,7 +40,8 @@ export class CrossChainDesktopTableComponent {
   constructor(
     private readonly crossChainTableSrvice: CrossChainTableService,
     private readonly commonTableService: CommonTableService,
-    private readonly walletConnector: WalletConnectorService
+    private readonly walletConnector: WalletConnectorService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public changeDirection(direction: 1 | -1): void {
@@ -62,7 +66,7 @@ export class CrossChainDesktopTableComponent {
   }
 
   public shouldShowStatusToActionButton(item: CrossChainTableData): boolean {
-    const shouldShow = CASES_WHEN_SHOW_BUTTON_IN_STATUS_TO.some(
+    const shouldShow = tableRowsWithActionButtons.some(
       _case =>
         item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
         _case.status === item.toTx.status.label
@@ -74,15 +78,40 @@ export class CrossChainDesktopTableComponent {
     // const provider = item.provider.name;
     const fromBlockchain = item.fromBlockchain.name as EvmBlockchainName;
     const toBlockchain = item.toBlockchain.name as EvmBlockchainName;
+
+    const status = this.startLoadingOnActionButton(item);
+
     switch (fromBlockchain) {
       // case FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge:
       case BLOCKCHAIN_NAME.ARBITRUM:
         const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-        if (isSwitched) this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+        if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+
         break;
       default:
         console.warn("Blockhain doesn't have onStatusToClick actions!");
-        return;
+        break;
     }
+
+    status.isLoading = false;
+    this.cdr.markForCheck();
+  }
+
+  public isLoadingActionButton(fromTxHash: string): boolean {
+    console.log(this.actionButtonsStatuses);
+    return !!this.actionButtonsStatuses.find(status => status.fromTxHash === fromTxHash)?.isLoading;
+  }
+
+  private startLoadingOnActionButton(item: CrossChainTableData): ActionButtonLoadingStatus {
+    let status = this.actionButtonsStatuses.find(el => el.fromTxHash === item.fromTx.hash);
+
+    if (!status) {
+      status = { fromTxHash: item.fromTx.hash, isLoading: true };
+      this.actionButtonsStatuses.push(status);
+    } else {
+      status.isLoading = true;
+    }
+
+    return status;
   }
 }

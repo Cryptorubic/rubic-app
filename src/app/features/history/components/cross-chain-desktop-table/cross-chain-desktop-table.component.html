@@ -117,16 +117,17 @@
                 />
               </a>
               <ng-template #statusToActionButton>
-                <button
-                  tuiButton
-                  appearance="primary"
-                  type="button"
-                  size="xs"
-                  class="statusTo-actionButton"
-                  (click)="handleStatusToItemClick(item)"
-                >
-                  {{ item.toTx.status.label }}
-                </button>
+                <div class="statusTo-actionButton__wrapper">
+                  <app-rubic-button
+                    [size]="'xs'"
+                    [loading]="isLoadingActionButton(item.fromTx.hash)"
+                    [disabled]="isLoadingActionButton(item.fromTx.hash)"
+                    fullWidth
+                    (onClick)="handleStatusToItemClick(item)"
+                  >
+                    {{ item.toTx.status.label }}
+                  </app-rubic-button>
+                </div>
               </ng-template>
             </ng-container>
           </td>
