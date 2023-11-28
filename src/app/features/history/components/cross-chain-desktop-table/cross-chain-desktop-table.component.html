@@ -100,7 +100,7 @@
           <td *tuiCell="'statusTo'" tuiTd>
             <ng-container *ngIf="item.toTx.status">
               <a
-                *ngIf="!shouldShowStatusToActionButton(item); else statusToActionButton"
+                *ngIf="!shouldShowActionButton(item); else statusToActionButton"
                 class="token-container__inner"
                 [safetyLink]="item.toTx.explorerLink"
               >
