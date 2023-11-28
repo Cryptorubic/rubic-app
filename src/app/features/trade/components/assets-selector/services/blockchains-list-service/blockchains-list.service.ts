@@ -11,9 +11,13 @@ import { AssetsSelectorService } from '@features/trade/components/assets-selecto
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import {
   blockchainsList,
+  notEvmChangeNowBlockchainsList,
   RankedBlockchain
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import { BlockchainName } from 'rubic-sdk';
 
 @Injectable()
 export class BlockchainsListService {
@@ -42,7 +46,8 @@ export class BlockchainsListService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly searchQueryService: SearchQueryService,
     private readonly swapFormService: SwapsFormService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly iframeService: IframeService
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
@@ -63,6 +68,11 @@ export class BlockchainsListService {
         const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
           blockchain.name
         );
+        const disabledFrom = !this.iframeService.isIframe
+          ? disabledFromBlockchains.includes(blockchain.name)
+          : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
+              blockchain.name
+            );
 
         return {
           name: blockchain.name,
@@ -71,7 +81,7 @@ export class BlockchainsListService {
           label: blockchainLabel[blockchain.name],
           tags: blockchain.tags,
           disabledConfiguration,
-          disabledFrom: false
+          disabledFrom
         };
       })
       .sort((a, b) => b.rank - a.rank);
