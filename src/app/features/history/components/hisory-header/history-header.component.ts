@@ -34,7 +34,7 @@ export class HistoryHeaderComponent {
     });
   }
 
-  public onClick(index: 0 | 1): void {
+  public onClick(index: 0 | 1 | 2): void {
     this.commonTableService.activeItemIndex = index;
     this.crossChainTableService.onPage(0);
     this.onChainTableService.onPage(0);

@@ -159,3 +159,10 @@
     }
   }
 }
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: var(--tui-padding-l);
+}

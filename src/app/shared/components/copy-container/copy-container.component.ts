@@ -14,9 +14,7 @@ import { NAVIGATOR } from '@ng-web-apis/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CopyContainerComponent {
-  @Input() text: string = '';
-
-  @Input() loading = false;
+  @Input({ required: true }) text: string;
 
   public hintShown = false;
 

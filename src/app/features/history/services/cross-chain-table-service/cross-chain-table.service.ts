@@ -37,7 +37,6 @@ export class CrossChainTableService extends TableService<
     tuiControlValue<string>(this.statusFilter),
     this.activeItemIndex$
   ]).pipe(
-    // zero time debounce for a case when both key and direction change
     debounceTime(50),
     switchMap(query => this.getData(...query).pipe(startWith(null))),
     share()
@@ -75,7 +74,7 @@ export class CrossChainTableService extends TableService<
     page: number,
     pageSze: number,
     statusFilter: string,
-    activeIndex: 0 | 1
+    activeIndex: 0 | 1 | 2
   ): Observable<{
     data: CrossChainTableData[];
     total: number;

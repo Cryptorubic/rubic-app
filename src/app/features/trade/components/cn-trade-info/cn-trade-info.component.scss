@@ -1,4 +1,10 @@
-@use 'src/scss/core' as *;
+:host {
+  display: block;
+  width: 360px;
+
+  background: var(--secondary-background);
+  border-radius: 17px;
+}
 
 .transaction-details {
   padding: var(--tui-padding-l);
@@ -12,18 +18,6 @@
 
     font-size: 15px;
     text-align: center;
-  }
-
-  &__priceImpact-low {
-    color: var(--tui-success-fill);
-  }
-
-  &__priceImpact-medium {
-    color: var(--tui-warning-fill);
-  }
-
-  &__priceImpact-high {
-    color: var(--tui-error-fill);
   }
 }
 
@@ -47,10 +41,21 @@
   }
 }
 
-@include b($mobile-md) {
-  .transaction-details {
-    &__label {
-      font-size: 18px;
-    }
-  }
+tui-notification {
+  margin-top: var(--tui-padding-s) !important;
+  margin-bottom: 0 !important;
+
+  border: 1px solid;
+}
+
+.row {
+  display: flex;
+  gap: var(--tui-padding-s);
+  justify-content: flex-end;
+}
+
+app-transaction-details-element {
+  display: flex;
+  align-items: center;
+  height: 24px;
 }

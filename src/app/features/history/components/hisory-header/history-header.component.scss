@@ -8,6 +8,7 @@
   border-radius: var(--tui-radius-m);
 
   @include b($mobile-sm-middle) {
+    justify-content: space-around;
     width: 100%;
   }
 
@@ -21,7 +22,7 @@
     padding: 0 var(--tui-padding-l);
 
     @include b($mobile-sm-middle) {
-      width: 50%;
+      padding: 0 var(--tui-padding-s);
     }
 
     &:not(:first-child) {
