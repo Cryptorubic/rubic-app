@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { TransactionReceipt } from 'web3-eth';
 import { TuiNotification } from '@taiga-ui/core';
 import {
@@ -11,6 +11,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { ErrorsService } from '@core/errors/errors.service';
+import { HttpService } from '@app/core/services/http/http.service';
 
 @Injectable()
 export class CommonTableService {
@@ -26,7 +27,8 @@ export class CommonTableService {
     private readonly errorService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    private readonly sdkService: SdkService
+    private readonly sdkService: SdkService,
+    private readonly http: HttpService
   ) {}
 
   public async claimArbitrumBridgeTokens(srcTxHash: string): Promise<TransactionReceipt> {
@@ -50,7 +52,7 @@ export class CommonTableService {
       transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
         onConfirm: onTransactionHash
       });
-
+      await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
@@ -68,6 +70,18 @@ export class CommonTableService {
     }
 
     return transactionReceipt;
+  }
+
+  private async sendHashesOnClaimSuccess(
+    srcTxHash: string,
+    destTxHash: string
+  ): Promise<{ detail: string }> {
+    return firstValueFrom(
+      this.http.post<{ detail: string }>('v2/trades/crosschain/rbc_arbitrum_bridge', {
+        source_tx_hash: srcTxHash,
+        dest_tx_hash: destTxHash
+      })
+    );
   }
 
   public async revertSymbiosis(srcTxHash: string): Promise<TransactionReceipt> {

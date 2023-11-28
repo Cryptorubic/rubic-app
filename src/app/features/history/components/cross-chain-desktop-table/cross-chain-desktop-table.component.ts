@@ -70,7 +70,7 @@ export class CrossChainDesktopTableComponent {
     const shouldShow = tableRowsWithActionButtons.some(
       actionCase =>
         item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        item.fromTx.status.label === actionCase.status &&
+        item.toTx.status.label === actionCase.status &&
         actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
     );
     return shouldShow;
