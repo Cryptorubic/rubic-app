@@ -7,6 +7,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-action-button',
@@ -54,6 +55,9 @@ export class ActionButtonComponent {
             action: () => {}
           };
         }
+        const isCnFromEvm =
+          currentTrade.trade instanceof ChangenowCrossChainTrade &&
+          BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
         if (
           currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
           currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
@@ -62,6 +66,13 @@ export class ActionButtonComponent {
           // Handle Non EVM trade
           if (isAddressRequired) {
             if (isReceiverValid) {
+              if (isCnFromEvm) {
+                return {
+                  type: 'action',
+                  text: 'Preview swap',
+                  action: this.swap.bind(this)
+                };
+              }
               return {
                 type: 'action',
                 text: 'Preview swap',
