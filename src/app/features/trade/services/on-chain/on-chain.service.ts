@@ -149,7 +149,7 @@ export class OnChainService {
   }
 
   private getProviderAddressBasedOnPromo(toChain: BlockchainName): string {
-    if (toChain === BLOCKCHAIN_NAME.LINEA || toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC) {
+    if (toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC) {
       return '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb';
     }
 

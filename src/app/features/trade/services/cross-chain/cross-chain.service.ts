@@ -190,11 +190,7 @@ export class CrossChainService {
     toChain: BlockchainName,
     fromChain: BlockchainName
   ): string {
-    if (
-      toChain === BLOCKCHAIN_NAME.LINEA ||
-      toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
-      fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC
-    ) {
+    if (toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC || fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC) {
       return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
     }
 
