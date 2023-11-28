@@ -68,10 +68,10 @@ export class CrossChainDesktopTableComponent {
 
   public shouldShowStatusToActionButton(item: CrossChainTableData): boolean {
     const shouldShow = tableRowsWithActionButtons.some(
-      _case =>
+      actionCase =>
         item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        item.toTx.status.label === _case.status &&
-        _case.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
+        item.toTx.status.label === actionCase.status &&
+        actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
     );
     return shouldShow;
   }
