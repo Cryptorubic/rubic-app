@@ -72,6 +72,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       `${window.innerHeight}px`
     );
     this.document.documentElement.classList.add('is-locked');
+    this.document.documentElement.classList.add('scroll-y');
   }
 
   private resetWindowHeight(): void {

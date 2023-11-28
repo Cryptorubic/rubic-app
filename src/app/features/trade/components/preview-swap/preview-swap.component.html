@@ -111,7 +111,7 @@
               state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
                 ? 'swap'
                 : 'bridge',
-            needApprove: state.tradeState.needApprove
+            needApprove: state.tradeState?.needApprove
           }"
           [state]="state.transaction.step"
         ></app-transaction-state>
@@ -225,21 +225,36 @@
       </div>
 
       <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info [points]="state.transaction.data.points"></app-success-swap-info>
+        <app-success-swap-info
+          [showPoints]="state?.tradeState?.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false"
+          [points]="state.transaction.data.points"
+        ></app-success-swap-info>
       </div>
     </div>
 
-    <button
-      class="preview__action-button"
-      *ngLet="buttonState$ | async as buttonState"
-      tuiButton
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="buttonState.action()"
-      [disabled]="buttonState.disabled"
-    >
-      {{ buttonState.label }}
-    </button>
+    <div class="preview__action-container">
+      <button
+        class="preview__action-button"
+        *ngLet="buttonState$ | async as buttonState"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="buttonState.action()"
+        [disabled]="buttonState.disabled"
+      >
+        {{ buttonState.label }}
+      </button>
+      <button
+        *ngIf="state.transaction.step === 'destinationPending'"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="navigateToHistory()"
+      >
+        See Details >
+      </button>
+    </div>
   </ng-container>
 </app-window-container>

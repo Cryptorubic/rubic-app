@@ -1,6 +1,6 @@
 import { BehaviorSubject, map, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
-import { tap } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -55,6 +55,7 @@ export class AirdropPointsService {
 
   public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
     return this.points$.pipe(
+      first(),
       map(points => {
         let finalPoints = 0;
 
@@ -64,7 +65,9 @@ export class AirdropPointsService {
           finalPoints = points.participant ? 12 : 25;
         }
 
-        return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA
+        return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ||
+          tradeType.to.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
+          tradeType.from.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC
           ? Math.trunc(finalPoints / 2)
           : finalPoints;
       })

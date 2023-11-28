@@ -240,7 +240,8 @@ export class ModalService {
   ): Observable<boolean> {
     return this.showDialog(RateChangedModalComponent, {
       size: 's',
-      data: { oldAmount, newAmount, tokenSymbol }
+      data: { oldAmount, newAmount, tokenSymbol },
+      required: true
     });
   }
 }

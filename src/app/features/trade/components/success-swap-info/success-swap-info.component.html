@@ -1,10 +1,12 @@
 <div class="info">
   <div class="info__title">Yahoo!</div>
-  <div class="info__description">
-    You will be credited with {{ points }} points when the transaction is successful
-  </div>
-  <div class="info__bottom">
-    Points can be seen
-    <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
-  </div>
+  <ng-container *ngIf="showPoints">
+    <div class="info__description">
+      You will be credited with {{ points }} points when the transaction is successful
+    </div>
+    <div class="info__bottom">
+      Points can be seen
+      <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
+    </div>
+  </ng-container>
 </div>

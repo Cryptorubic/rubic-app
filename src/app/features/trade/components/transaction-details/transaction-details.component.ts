@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { first, map } from 'rxjs/operators';
+import { first, map, startWith } from 'rxjs/operators';
 import { OnChainTrade, TradeInfo } from 'rubic-sdk';
 import { Observable, of } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -8,7 +8,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { transactionInfoText } from '@features/trade/constants/transaction-info-text';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
-import { switchIif } from '@shared/utils/utils';
+import { isNil, switchIif } from '@shared/utils/utils';
 
 @Component({
   selector: 'app-transaction-details',
@@ -23,6 +23,11 @@ export class TransactionDetailsComponent {
     this.tradeStateService.currentTrade$.pipe(first());
 
   public readonly details$: Observable<TradeInfo> = this.trade$.pipe(map(el => el.getTradeInfo()));
+
+  public readonly priceImpactCssClass$: Observable<string> = this.details$.pipe(
+    map(trade => this.getPriceImpactCssClass(trade.priceImpact)),
+    startWith('')
+  );
 
   public readonly walletAddress$ = this.targetAddressService.address$.pipe(
     switchIif(
@@ -49,5 +54,19 @@ export class TransactionDetailsComponent {
       this.isWalletCopied = false;
       this.cdr.markForCheck();
     }, 700);
+  }
+
+  public getPriceImpactCssClass(priceImpact: number): string {
+    const isUnknown = isNaN(priceImpact) || isNil(priceImpact);
+    if (isUnknown || (priceImpact >= 0.01 && priceImpact < 15)) {
+      return '';
+    }
+    if (priceImpact < 0.01) {
+      return 'transaction-details__priceImpact-low';
+    }
+    if (priceImpact >= 15 && priceImpact < 30) {
+      return 'transaction-details__priceImpact-medium';
+    }
+    return 'transaction-details__priceImpact-high';
   }
 }

@@ -37,12 +37,16 @@
 
     }
 
+    &-explorerLink {
+      color: var(--tui-primary);
+    }
+
     &-actions {
       display: flex;
       gap: 16px;
       padding-top: 16px;
 
-      app-rubic-button {
+      button {
         width: 100%;
       }
     }

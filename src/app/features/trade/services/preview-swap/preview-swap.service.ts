@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, interval, Observable, of } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -60,11 +60,14 @@ export class PreviewSwapService {
   public readonly transactionState$ = this._transactionState$.asObservable();
 
   public readonly tradeState$: Observable<SelectedTrade> = this.swapsStateService.tradeState$.pipe(
-    first()
+    first(),
+    tap(trade => (this._tradeState = trade))
   );
 
+  private _tradeState: SelectedTrade | null;
+
   public get tradeState(): SelectedTrade {
-    return this.swapsStateService.tradeState;
+    return this._tradeState;
   }
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
@@ -130,9 +133,7 @@ export class PreviewSwapService {
   }
 
   public async requestTxSign(): Promise<void> {
-    const tradeState = await firstValueFrom(this.tradeState$);
-
-    if (tradeState.needApprove) {
+    if (this.tradeState.needApprove) {
       this.startApprove();
     } else {
       this.startSwap();
@@ -152,8 +153,10 @@ export class PreviewSwapService {
       .pipe(
         distinctUntilChanged(),
         debounceTime(10),
-        switchMap(state => forkJoin([this.tradeState$, of(state)])),
-        switchMap(([tradeState, txState]) => {
+        switchMap(state =>
+          forkJoin([of(state), this.tradeState ? of(this.tradeState) : this.tradeState$])
+        ),
+        switchMap(([txState, tradeState]) => {
           return forkJoin([
             of(tradeState),
             of(txState),
@@ -186,7 +189,7 @@ export class PreviewSwapService {
                   txHash = hash;
                   this._transactionState$.next({
                     step: 'sourcePending',
-                    data: this.transactionState.data
+                    data: { ...this.transactionState.data, points }
                   });
                 },
                 onSwap: (additionalInfo: { changenowId?: string }) => {
@@ -199,7 +202,8 @@ export class PreviewSwapService {
                       txHash,
                       Date.now(),
                       tradeState.trade.to.blockchain,
-                      additionalInfo
+                      additionalInfo,
+                      points
                     );
                   } else {
                     this._transactionState$.next({
@@ -230,7 +234,8 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string }
+    additionalInfo: { changenowId?: string },
+    points: number
   ): void {
     interval(30_000)
       .pipe(
@@ -261,7 +266,8 @@ export class PreviewSwapService {
               step: 'success',
               data: {
                 hash: crossChainStatus.dstTxHash,
-                toBlockchain
+                toBlockchain,
+                points
               }
             });
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
@@ -299,7 +305,7 @@ export class PreviewSwapService {
 
   private checkNetwork(): void {
     const network = this.walletConnectorService.network;
-    const tokenBlockchain = this.tradeState.trade.from.blockchain;
+    const tokenBlockchain = this.swapForm.inputValue.fromBlockchain;
     const state = this._transactionState$.getValue();
     state.data.wrongNetwork = network !== tokenBlockchain;
     this._transactionState$.next(state);

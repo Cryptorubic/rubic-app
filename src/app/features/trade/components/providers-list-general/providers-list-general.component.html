@@ -4,10 +4,7 @@
     <ng-container
       *ngIf="calculationProgress.total !== calculationProgress.current; then waiting"
     ></ng-container>
-    <tui-scrollbar
-      class="providers-list"
-      *ngIf="states?.length > 0 || calculationProgress.total !== calculationProgress.current"
-    >
+    <tui-scrollbar class="providers-list">
       <app-providers-list
         [states]="states"
         [selectedTradeType]="selectedTradeType"
