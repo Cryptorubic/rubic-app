@@ -1,15 +1,15 @@
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BRIDGE_TYPE } from 'rubic-sdk';
 import { TableRowWithActionButton } from '../model/types';
+import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 
 /**
  * for claim-status in arbitrum bridge needs to show button with specific action
  */
 export const tableRowsWithActionButtons = [
   // @TODO RUBIC-2017 Add revert button for symbiosis provider
-  //   { provider: FROM_BACKEND_CROSS_CHAIN_PROVIDERS.symbiosis, status: 'Revert' },
+  //   { provider: BRIDGE_PROVIDERS[BRIDGE_TYPE.SYMBIOSIS], status: 'Revert' },
   {
-    provider: FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge,
+    provider: BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM],
     fromBlockchain: BLOCKCHAIN_NAME.ARBITRUM,
     status: 'Claim'
   }

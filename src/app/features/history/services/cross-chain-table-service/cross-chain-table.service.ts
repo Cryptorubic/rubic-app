@@ -20,6 +20,7 @@ import { DestinationTxStatus } from '@features/history/models/destination-tx-sta
 import { FormControl } from '@angular/forms';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
 import { TableService } from '@features/history/models/table-service';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
 @Injectable()
 export class CrossChainTableService extends TableService<
@@ -145,7 +146,10 @@ export class CrossChainTableService extends TableService<
           explorerLink: backendData.dest_transaction.explorer_url
         };
 
-        const provider = TRADES_PROVIDERS[backendData.provider as TradeProvider];
+        const provider =
+          TRADES_PROVIDERS[
+            FROM_BACKEND_CROSS_CHAIN_PROVIDERS[backendData.provider] as TradeProvider
+          ];
 
         return {
           fromToken,

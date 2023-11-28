@@ -1,7 +1,8 @@
-import { CrossChainTradeType, EvmBlockchainName } from 'rubic-sdk';
+import { ProviderInfo } from '@app/features/trade/models/provider-info';
+import { EvmBlockchainName } from 'rubic-sdk';
 
 export interface TableRowWithActionButton {
-  provider: CrossChainTradeType;
+  provider: ProviderInfo;
   status: string;
   fromBlockchain: EvmBlockchainName;
 }

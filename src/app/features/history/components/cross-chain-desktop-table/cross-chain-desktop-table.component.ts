@@ -3,10 +3,11 @@ import { CrossChainTableService } from '@features/history/services/cross-chain-t
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
-import { BLOCKCHAIN_NAME, EvmBlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BRIDGE_TYPE, EvmBlockchainName } from 'rubic-sdk';
 import { tableRowsWithActionButtons } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ActionButtonLoadingStatus } from './model/types';
+import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -69,28 +70,25 @@ export class CrossChainDesktopTableComponent {
     const shouldShow = tableRowsWithActionButtons.some(
       _case =>
         item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        _case.status === item.toTx.status.label
+        item.toTx.status.label === _case.status &&
+        _case.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
     );
     return shouldShow;
   }
 
   public async handleStatusToItemClick(item: CrossChainTableData): Promise<void> {
-    // const provider = item.provider.name;
+    const provider = item.provider;
     const fromBlockchain = item.fromBlockchain.name as EvmBlockchainName;
     const toBlockchain = item.toBlockchain.name as EvmBlockchainName;
 
-    const status = this.startLoadingOnActionButton(item);
+    const status = this.startLoadingOnAction(item);
 
-    switch (fromBlockchain) {
-      // case FROM_BACKEND_CROSS_CHAIN_PROVIDERS.rbc_arbitrum_bridge:
-      case BLOCKCHAIN_NAME.ARBITRUM:
-        const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-        if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
-
-        break;
-      default:
-        console.warn("Blockhain doesn't have onStatusToClick actions!");
-        break;
+    if (
+      provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM] &&
+      fromBlockchain === BLOCKCHAIN_NAME.ARBITRUM
+    ) {
+      const isSwitched = await this.walletConnector.switchChain(toBlockchain);
+      if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
     }
 
     status.isLoading = false;
@@ -98,11 +96,10 @@ export class CrossChainDesktopTableComponent {
   }
 
   public isLoadingActionButton(fromTxHash: string): boolean {
-    console.log(this.actionButtonsStatuses);
     return !!this.actionButtonsStatuses.find(status => status.fromTxHash === fromTxHash)?.isLoading;
   }
 
-  private startLoadingOnActionButton(item: CrossChainTableData): ActionButtonLoadingStatus {
+  private startLoadingOnAction(item: CrossChainTableData): ActionButtonLoadingStatus {
     let status = this.actionButtonsStatuses.find(el => el.fromTxHash === item.fromTx.hash);
 
     if (!status) {
