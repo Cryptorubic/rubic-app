@@ -30,7 +30,7 @@
 
   a.token-container__inner {
     text-decoration: none;
-    
+
     img {
       transition: all 0.1s ease-in-out;
     }
@@ -103,8 +103,15 @@
     margin-top: var(--tui-padding-m);
   }
 
-  .status-from-link-arrow {
+  .status-from-link-arrow,
+  .status-to-link-arrow {
     margin-left: var(--tui-padding-xs);
+  }
+
+  .statusTo {
+    &-actionButton__wrapper {
+      width: 87.4px;
+    }
   }
 
   .mobile-view {
