@@ -12,6 +12,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { ErrorsService } from '@core/errors/errors.service';
 import { HttpService } from '@app/core/services/http/http.service';
+import { getSignature } from '@app/shared/utils/get-signature';
 
 @Injectable()
 export class CommonTableService {
@@ -52,6 +53,7 @@ export class CommonTableService {
       transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
         onConfirm: onTransactionHash
       });
+
       await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -77,10 +79,19 @@ export class CommonTableService {
     destTxHash: string
   ): Promise<{ detail: string }> {
     return firstValueFrom(
-      this.http.post<{ detail: string }>('v2/trades/crosschain/rbc_arbitrum_bridge', {
-        source_tx_hash: srcTxHash,
-        dest_tx_hash: destTxHash
-      })
+      this.http.post<{ detail: string }>(
+        'v2/trades/crosschain/rbc_arbitrum_bridge',
+        {
+          source_tx_hash: srcTxHash,
+          dest_tx_hash: destTxHash
+        },
+        null,
+        {
+          headers: {
+            Signature: getSignature(destTxHash.toLowerCase(), srcTxHash.toLowerCase())
+          }
+        }
+      )
     );
   }
 
