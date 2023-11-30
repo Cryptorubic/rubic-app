@@ -14239,10 +14239,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.40.0-alpha-metis-promo.21:
-  version "4.40.0-alpha-metis-promo.21"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.40.0-alpha-metis-promo.21.tgz#0d24b94a92ffafdffb1efc7a08b4974713a22631"
-  integrity sha512-hhNxZUJPg+d8MZ6G1zmn/zNb9DUPHKNMxfPdKlfchtxtGaR3adTHHfx92IMP33vDBbh9dg3JZ9afWBm+FmWyiw==
+rubic-sdk@4.40.0-alpha-metis-promo.23:
+  version "4.40.0-alpha-metis-promo.23"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.40.0-alpha-metis-promo.23.tgz#ee909f65705057e8c2bff36123c2a6e34b48bca0"
+  integrity sha512-n9cqwXhcYMtJeLnc+TD7824EZJ3BXiiUBwEbPxbF8Ru/2ilKcoAYWvAxPMeeoyex1Hke5Zh09QOJPdlREnnreQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
