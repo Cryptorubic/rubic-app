@@ -1,11 +1,20 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
-import { debounceTime, filter, map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap
+} from 'rxjs/operators';
 import {
   BlockchainName,
   BlockchainsInfo,
+  compareAddresses,
   compareCrossChainTrades,
+  EvmWrapTrade,
   nativeTokensList,
   OnChainTrade,
   WrappedCrossChainTradeOrNull
@@ -21,8 +30,10 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
-import { compareTokens } from '@shared/utils/utils';
+import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { CalculationStatus } from '@features/trade/models/calculation-status';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 
 @Injectable()
 export class SwapsStateService {
@@ -127,6 +138,72 @@ export class SwapsStateService {
   });
 
   public readonly calculationProgress$ = this._calculationProgress$.asObservable();
+
+  // @ts-ignore
+  public readonly calculationStatus$: Observable<CalculationStatus> =
+    this.swapsFormService.fromToken$.pipe(
+      distinctUntilChanged((oldToken, newToken) => {
+        return oldToken && newToken ? compareAddresses(oldToken.address, newToken.address) : false;
+      }),
+      combineLatestWith(
+        this.swapsFormService.toToken$.pipe(
+          distinctUntilChanged((oldToken, newToken) => {
+            return oldToken && newToken
+              ? compareAddresses(oldToken.address, newToken.address)
+              : false;
+          })
+        )
+      ),
+      switchMap(() => {
+        return timer(2_000).pipe(
+          map(() => true),
+          startWith(false)
+        );
+      }),
+      combineLatestWith(
+        this.swapsFormService.isFilled$.pipe(distinctUntilChanged()),
+        this.tradesStore$,
+        this.calculationProgress$
+      ),
+      debounceTime(50),
+      map(([timerEmit, formFilled, trades, progress]) => {
+        const wrapTrade = trades.some(el => el.trade instanceof EvmWrapTrade);
+        const hasRealTrades = trades.filter(el => Boolean(el.trade)).length > 0;
+        const activeCalculation = progress.current !== progress.total;
+
+        const calculationResult = {
+          noRoutes: !activeCalculation && !hasRealTrades && progress.total > 0,
+          showSidebar: false,
+          activeCalculation,
+          calculationProgress: progress
+        };
+
+        if (!formFilled || wrapTrade) {
+          return { ...calculationResult, showSidebar: false };
+        }
+
+        const defaultState = progress.total === 1 && progress.current === 0;
+        const realCalculation = progress.total > 0;
+
+        if (((defaultState || realCalculation) && hasRealTrades) || timerEmit) {
+          return { ...calculationResult, showSidebar: true };
+        }
+
+        return calculationResult;
+      }),
+      debounceTime(100),
+      distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
+      shareReplay(shareReplayConfig),
+      startWith({
+        noRoutes: false,
+        showSidebar: false,
+        activeCalculation: false,
+        calculationProgress: {
+          total: 0,
+          current: 0
+        }
+      })
+    );
 
   /**
    * Receiver address

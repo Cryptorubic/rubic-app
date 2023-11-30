@@ -36,9 +36,7 @@ export class TradeViewContainerComponent {
     map(providers => providers.filter(provider => provider.trade))
   );
 
-  public readonly calculationProgress$ = this.swapsState.calculationProgress$;
-
-  public readonly showProviders$ = this.tradePageService.showProviders$;
+  public readonly calculationStatus$ = this.swapsState.calculationStatus$;
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
