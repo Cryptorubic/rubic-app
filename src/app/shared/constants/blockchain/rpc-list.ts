@@ -117,7 +117,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.METIS]: [
     'https://rpc.ankr.com/metis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://andromeda.metis.io/?owner=1088',
-    'https://metis-pokt.nodies.app'
+    'https://metis-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.DFK]: [
     'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc',
