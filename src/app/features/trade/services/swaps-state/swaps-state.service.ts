@@ -143,13 +143,17 @@ export class SwapsStateService {
   public readonly calculationStatus$: Observable<CalculationStatus> =
     this.swapsFormService.fromToken$.pipe(
       distinctUntilChanged((oldToken, newToken) => {
-        return oldToken && newToken ? compareAddresses(oldToken.address, newToken.address) : false;
+        return oldToken && newToken
+          ? compareAddresses(oldToken.address, newToken.address) &&
+              oldToken.blockchain === newToken.blockchain
+          : false;
       }),
       combineLatestWith(
         this.swapsFormService.toToken$.pipe(
           distinctUntilChanged((oldToken, newToken) => {
             return oldToken && newToken
-              ? compareAddresses(oldToken.address, newToken.address)
+              ? compareAddresses(oldToken.address, newToken.address) &&
+                  oldToken.blockchain === newToken.blockchain
               : false;
           })
         )
