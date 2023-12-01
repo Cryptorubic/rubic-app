@@ -86,7 +86,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis-token',
+      [BLOCKCHAIN_NAME.METIS]: 'metis-andromeda',
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
