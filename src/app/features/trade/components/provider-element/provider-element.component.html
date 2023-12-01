@@ -2,11 +2,13 @@
   <div
     *ngLet="tradeState?.trade as trade"
     class="element"
-    [ngClass]="{ element_shorted: shortedInfo }"
+    [ngClass]="{ element_shorted: shortedInfo, element_disabled: tradeState?.error }"
   >
     <div
       class="element__provider-container"
-      [ngClass]="{ 'element__provider-container_best': isBest }"
+      [ngClass]="{
+        'element__provider-container_selected': selectedTradeType === tradeState?.tradeType
+      }"
     >
       <div class="element__amounts-container">
         <div *ngIf="trade?.to?.tokenAmount?.gt(0)" class="element__amount">
@@ -38,6 +40,15 @@
               size="s"
               status="custom"
               value="Best"
+              [tuiHint]="'The most profitable trade according to our calculations'"
+            ></tui-tag>
+            <tui-tag
+              *ngIf="tradeState?.error"
+              class="element__warning-badge"
+              size="s"
+              status="custom"
+              value="Warn"
+              [tuiHint]="tradeState.error?.message"
             ></tui-tag>
             <div
               (click)="toggleExpand($event)"

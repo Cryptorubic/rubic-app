@@ -151,7 +151,7 @@ export class SwapsStateService {
       return;
     }
     const trade = wrappedTrade.trade;
-    const defaultState: TradeState = wrappedTrade?.error
+    const defaultState: TradeState = !wrappedTrade?.trade
       ? {
           error: wrappedTrade.error,
           trade: null,
@@ -161,7 +161,7 @@ export class SwapsStateService {
           routes: []
         }
       : {
-          error: null,
+          error: wrappedTrade?.error,
           trade,
           needApprove,
           tradeType: wrappedTrade.tradeType,

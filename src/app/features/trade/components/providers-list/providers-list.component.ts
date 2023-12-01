@@ -55,13 +55,18 @@ export class ProvidersListComponent {
     )
   );
 
-  public handleTradeSelection(event: MouseEvent, tradeType: TradeProvider): void {
+  public handleTradeSelection(
+    event: MouseEvent,
+    tradeType: TradeProvider,
+    tradeError?: Error
+  ): void {
     const element = event.target as HTMLElement;
 
     if (
       element?.parentElement?.className?.includes?.('element__expander') ||
       element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
-      element?.className?.includes?.('element__expander')
+      element?.className?.includes?.('element__expander') ||
+      tradeError
     ) {
       event.preventDefault();
       return;
