@@ -114,7 +114,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://chainrpc.com'
   ],
   [BLOCKCHAIN_NAME.OASIS]: ['https://emerald.oasis.dev'],
-  [BLOCKCHAIN_NAME.METIS]: ['https://andromeda.metis.io/?owner=1088'],
+  [BLOCKCHAIN_NAME.METIS]: [
+    'https://rpc.ankr.com/metis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://andromeda.metis.io/?owner=1088',
+    'https://metis-pokt.nodies.app'
+  ],
   [BLOCKCHAIN_NAME.DFK]: [
     'https://subnets.avax.network/defi-kingdoms/dfk-chain/rpc',
     'https://avax-dfk.gateway.pokt.network/v1/lb/6244818c00b9f0003ad1b619/ext/bc/q2aTwKuyzgs8pynF7UXBZCU7DejbZbZ6EUyHr3JQzYgwNPUPi/rpc'
