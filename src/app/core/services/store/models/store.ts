@@ -9,6 +9,7 @@ import {
   ItSettingsForm
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 
 export type Store = {
   [key in `RUBIC_SETTINGS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -59,6 +60,10 @@ export type Store = {
   };
 
   RUBIC_TOKENS: StorageToken[];
+
+  RUBIC_CHANGENOW_POST_TRADE: ChangenowPostTrade;
+
+  RUBIC_CHANGENOW_RECENT_TRADE: ChangenowPostTrade[];
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -70,6 +75,8 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_RECENT_TRADES: null,
   RUBIC_UNREAD_TRADES: null,
   RUBIC_TOKENS: null,
+  RUBIC_CHANGENOW_POST_TRADE: null,
+  RUBIC_CHANGENOW_RECENT_TRADE: null,
   RUBIC_SETTINGS_CROSS_CHAIN_ROUTING: null,
   RUBIC_SETTINGS_INSTANT_TRADE: null,
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,

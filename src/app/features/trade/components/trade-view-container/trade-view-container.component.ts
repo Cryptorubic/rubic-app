@@ -6,9 +6,11 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainsInfo, ChangenowCrossChainTrade, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -47,16 +49,33 @@ export class TradeViewContainerComponent {
     private readonly tradePageService: TradePageService,
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
-    public readonly swapTokensUpdaterService: SwapTokensUpdaterService
+    public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);
-    this.getSwapPreview();
-  }
+    const currentTrade = this.swapsState.tradeState;
+    const isAddressRequired = await firstValueFrom(
+      this.targetNetworkAddressService.isAddressRequired$
+    );
+    // Handle ChangeNow Non EVM trade
+    if (isAddressRequired) {
+      const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
+      const isCnFromEvm =
+        currentTrade.trade instanceof ChangenowCrossChainTrade &&
+        BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
-  public getSwapPreview(): void {
-    this.tradePageService.setState('preview');
+      if (isAddressValid) {
+        if (isCnFromEvm) {
+          this.tradePageService.setState('preview');
+        } else {
+          this.tradePageService.setState('cnPreview');
+        }
+      }
+    } else {
+      this.tradePageService.setState('preview');
+    }
   }
 
   private setProvidersVisibility(providers: TradeState[]): void {

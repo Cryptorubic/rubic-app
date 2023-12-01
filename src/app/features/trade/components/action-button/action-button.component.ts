@@ -6,7 +6,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-action-button',
@@ -19,62 +20,99 @@ export class ActionButtonComponent {
     combineLatestWith(
       this.tradeState.wrongBlockchain$,
       this.tradeState.notEnoughBalance$,
-      this.walletConnector.addressChange$
+      this.walletConnector.addressChange$,
+      this.targetNetworkAddressService.isAddressValid$,
+      this.targetNetworkAddressService.isAddressRequired$
     ),
-    map(([currentTrade, wrongBlockchain, notEnoughBalance, address]) => {
-      if (currentTrade.error) {
-        return {
-          type: 'error',
-          text: currentTrade.error.message,
-          action: () => {}
-        };
-      }
+    map(
+      ([
+        currentTrade,
+        wrongBlockchain,
+        notEnoughBalance,
+        address,
+        isReceiverValid,
+        isAddressRequired
+      ]) => {
+        if (currentTrade.error) {
+          return {
+            type: 'error',
+            text: currentTrade.error.message,
+            action: () => {}
+          };
+        }
 
-      if (!address) {
-        return {
-          type: 'action',
-          text: 'Connect wallet',
-          action: this.connectWallet.bind(this)
-        };
-      }
-      if (notEnoughBalance) {
+        if (!address) {
+          return {
+            type: 'action',
+            text: 'Connect wallet',
+            action: this.connectWallet.bind(this)
+          };
+        }
+        if (notEnoughBalance) {
+          return {
+            type: 'error',
+            text: 'Insufficient balance',
+            action: () => {}
+          };
+        }
+        const isCnFromEvm =
+          currentTrade.trade instanceof ChangenowCrossChainTrade &&
+          BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+        if (
+          currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
+          currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
+          (currentTrade.trade && wrongBlockchain)
+        ) {
+          // Handle Non EVM trade
+          if (isAddressRequired) {
+            if (isReceiverValid) {
+              if (isCnFromEvm) {
+                return {
+                  type: 'action',
+                  text: 'Preview swap',
+                  action: this.swap.bind(this)
+                };
+              }
+              return {
+                type: 'action',
+                text: 'Preview swap',
+                action: this.swapCn.bind(this)
+              };
+            }
+            return {
+              type: 'error',
+              text: 'Enter receiver address',
+              action: () => {}
+            };
+          } else {
+            return {
+              type: 'action',
+              text: 'Preview swap',
+              action: this.swap.bind(this)
+            };
+          }
+        }
+        if (currentTrade.status === TRADE_STATUS.LOADING) {
+          return {
+            type: 'error',
+            text: 'Calculating',
+            action: () => {}
+          };
+        }
+        if (currentTrade.status === TRADE_STATUS.NOT_INITIATED) {
+          return {
+            type: 'error',
+            text: 'Select tokens',
+            action: () => {}
+          };
+        }
         return {
           type: 'error',
-          text: 'Insufficient balance',
+          text: 'Trade is not available',
           action: () => {}
         };
       }
-      if (
-        currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
-        currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
-        (currentTrade.trade && wrongBlockchain)
-      ) {
-        return {
-          type: 'action',
-          text: 'Preview swap',
-          action: this.swap.bind(this)
-        };
-      }
-      if (currentTrade.status === TRADE_STATUS.LOADING) {
-        return {
-          type: 'error',
-          text: 'Calculating',
-          action: () => {}
-        };
-      }
-      if (currentTrade.status === TRADE_STATUS.NOT_INITIATED) {
-        return {
-          type: 'error',
-          text: 'Select tokens',
-          action: () => {}
-        };
-      }
-      return {
-        type: 'error',
-        text: 'Trade is not available',
-        action: () => {}
-      };
-    }),
+    ),
     startWith({
       type: 'error',
       text: 'Select tokens',
@@ -88,15 +126,15 @@ export class ActionButtonComponent {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly swapsFormService: SwapsFormService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {}
-
-  private approve(): void {
-    this.tradePageService.setState('preview');
-  }
 
   private swap(): void {
     this.tradePageService.setState('preview');
+  }
+
+  private swapCn(): void {
+    this.tradePageService.setState('cnPreview');
   }
 
   private connectWallet(): void {

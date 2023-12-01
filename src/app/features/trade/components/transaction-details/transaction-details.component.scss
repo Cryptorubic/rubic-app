@@ -49,8 +49,6 @@
 
 @include b($mobile-md) {
   .transaction-details {
-    background: var(--io-background);
-
     &__label {
       font-size: 18px;
     }
