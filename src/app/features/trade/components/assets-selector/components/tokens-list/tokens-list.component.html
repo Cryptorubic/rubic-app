@@ -1,10 +1,13 @@
-<ng-container *ngLet="tokensToShow$ | async as tokensToShow">
+<ng-container *ngLet="newTokensToShow$ | async as tokensToShow">
   <tui-scrollbar class="tokens-container">
     <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
         <!--standard mode -->
         <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
-          <app-empty-list></app-empty-list>
+          <div class="tokens-container__empty-list_metis" *ngIf="metisText$ | async">
+            {{ metisText$ | async }}
+          </div>
+          <app-empty-list *ngIf="(metisText$ | async) === ''"></app-empty-list>
         </div>
 
         <ng-template #tokenList>
