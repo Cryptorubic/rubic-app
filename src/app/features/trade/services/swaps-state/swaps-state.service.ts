@@ -17,6 +17,7 @@ import {
   EvmWrapTrade,
   nativeTokensList,
   OnChainTrade,
+  Token,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -34,6 +35,7 @@ import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Injectable()
 export class SwapsStateService {
@@ -171,7 +173,10 @@ export class SwapsStateService {
       ),
       debounceTime(50),
       map(([timerEmit, formFilled, trades, progress]) => {
-        const wrapTrade = trades.some(el => el.trade instanceof EvmWrapTrade);
+        const { fromToken, toToken } = this.swapsFormService.inputValue;
+        const wrapTrade =
+          trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
+
         const hasRealTrades = trades.filter(el => Boolean(el.trade)).length > 0;
         const activeCalculation = progress.current !== progress.total;
 
@@ -416,4 +421,16 @@ export class SwapsStateService {
   // public completeCalculaitng(): void {
   //   const trade = this.currentTrade;
   // }
+  private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
+    if (!fromToken || !toToken) {
+      return false;
+    }
+    const fromSdkToken = new Token(fromToken);
+    const toSdkToken = new Token(toToken);
+
+    return (
+      (fromSdkToken.isNative && toSdkToken.isWrapped) ||
+      (fromSdkToken.isWrapped && toSdkToken.isNative)
+    );
+  }
 }
