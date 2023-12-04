@@ -15,6 +15,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 
 @Component({
   selector: 'app-asset-selector',
@@ -86,5 +87,14 @@ export class AssetSelectorComponent {
       return;
     }
     this.handleAssetSelection.emit();
+  }
+
+  /**
+   * Sets default image to token, in case original image has thrown error.
+   * @param $event Img error event.
+   */
+  public onTokenImageError($event: Event): void {
+    const target = $event.target as HTMLImageElement;
+    target.src = DEFAULT_TOKEN_IMAGE;
   }
 }
