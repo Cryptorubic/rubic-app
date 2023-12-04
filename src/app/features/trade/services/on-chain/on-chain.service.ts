@@ -41,6 +41,7 @@ import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chai
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
+import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 
 @Injectable()
 export class OnChainService {
@@ -247,7 +248,7 @@ export class OnChainService {
         this.updateTrade(transactionHash, false);
       }
 
-      throw err;
+      throw RubicSdkErrorParser.parseError(err);
     }
   }
 
