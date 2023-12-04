@@ -56,14 +56,26 @@ export class TokensListComponent {
       const toToken = this.swapFormService.inputValue.toToken;
       const currentBlockchain = this.assetsSelectorService.assetType;
 
-      // Проверки для целевой сети
-      if (formType === 'to' && fromBlockchain === BLOCKCHAIN_NAME.METIS) {
-        return this.dstChainTokensCheck(tokens, fromBlockchain, fromToken, currentBlockchain);
+      // Проверки для исходной сети
+      if (formType === 'from') {
+        return this.srcChainTokensCheck(
+          tokens,
+          toBlockchain,
+          fromToken,
+          toToken,
+          currentBlockchain
+        );
       }
 
-      // Проверки для исходной сети
-      if (formType === 'from' && toBlockchain === BLOCKCHAIN_NAME.METIS) {
-        return this.srcChainTokensCheck(tokens, toBlockchain, toToken, currentBlockchain);
+      // Проверки для целевой сети
+      if (formType === 'to') {
+        return this.dstChainTokensCheck(
+          tokens,
+          fromBlockchain,
+          fromToken,
+          toToken,
+          currentBlockchain
+        );
       }
 
       return tokens;
@@ -83,50 +95,101 @@ export class TokensListComponent {
   public srcChainTokensCheck(
     tokens: AvailableTokenAmount[],
     toBlockchain: BlockchainName,
+    fromToken: TokenAmount,
     toToken: TokenAmount,
     currentBlockchain: AssetType
   ): AvailableTokenAmount[] {
-    if (
-      (toBlockchain !== BLOCKCHAIN_NAME.METIS &&
-        toBlockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
-        toBlockchain !== BLOCKCHAIN_NAME.AVALANCHE &&
-        toBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN) ||
-      (toToken &&
-        toBlockchain === BLOCKCHAIN_NAME.METIS &&
-        currentBlockchain !== BLOCKCHAIN_NAME.METIS &&
-        currentBlockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
-        currentBlockchain !== BLOCKCHAIN_NAME.AVALANCHE &&
-        currentBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN)
-    ) {
-      this._metisText$.next('Swaps from Metis are not available to the selected network');
-      return [];
+    if (!fromToken && !toToken) {
+      return tokens;
     }
 
-    if (toBlockchain === BLOCKCHAIN_NAME.METIS && toToken?.symbol.toLowerCase() === 'metis') {
-      if (currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
-        return tokens;
+    if (currentBlockchain !== BLOCKCHAIN_NAME.METIS) {
+      // Свап в Metis
+      if (toBlockchain === BLOCKCHAIN_NAME.METIS) {
+        //Свап в Metis (Metis) только из ETH (любой токен)
+
+        // Свап в Metis из неподходящие сети
+        if (
+          currentBlockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
+          currentBlockchain !== BLOCKCHAIN_NAME.AVALANCHE &&
+          currentBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+        ) {
+          this._metisText$.next('Swaps from Metis are not available to the selected network');
+          return [];
+        }
+
+        if (
+          currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+          toToken?.symbol.toLowerCase() === 'metis'
+        ) {
+          return tokens;
+        }
+
+        // Свап в Metis
+        if (
+          currentBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
+          currentBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+        ) {
+          // Свап в Metis (usdt) из подходящей сети (любой токен)
+          if (toToken?.symbol.toLowerCase() === 'm.usdt') {
+            return tokens;
+          } else {
+            // Свап в Metis (любой токен кроме usdt) из подходящей сети (любой токен)
+            this._metisText$.next(
+              'Select USDT on the target network as other tokens are not supported'
+            );
+            return [];
+          }
+        }
       }
     }
 
-    if (toBlockchain === BLOCKCHAIN_NAME.ETHEREUM && toToken?.symbol.toLowerCase() === 'metis') {
-      return [tokens.find(token => token.symbol.toLowerCase() === 'metis')];
-    }
+    if (currentBlockchain === BLOCKCHAIN_NAME.METIS) {
+      // Свап из Metis в Metis
+      if (toBlockchain === BLOCKCHAIN_NAME.METIS) {
+        return tokens;
+      }
 
-    if (
-      currentBlockchain !== BLOCKCHAIN_NAME.METIS ||
-      toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ||
-      toBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
-      toBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
-    ) {
-      if (toToken) {
-        if (toToken.symbol.toLowerCase() === 'usdt' || toToken.symbol.toLowerCase() === 'm.usdt') {
+      // Свап из Metis в неподходящие сети
+      if (
+        toBlockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
+        toBlockchain !== BLOCKCHAIN_NAME.AVALANCHE &&
+        toBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+      ) {
+        this._metisText$.next('Swaps from Metis are not available to the selected network');
+        return [];
+      }
+
+      // Свап из Metis в подходящие сети
+      if (
+        toBlockchain === BLOCKCHAIN_NAME.ETHEREUM ||
+        toBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
+        toBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+      ) {
+        // Свап в ETH (metis) только из Metis (metis)
+        if (
+          toBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
+          toToken?.symbol.toLowerCase() === 'metis'
+        ) {
+          return [tokens.find(token => token.symbol.toLowerCase() === 'metis')];
+        }
+
+        // Свап в USDT из Metis (любой токен)
+        if (
+          toToken?.symbol.toLowerCase() === 'usdt' ||
+          toToken?.symbol.toLowerCase() === 'm.usdt'
+        ) {
           return tokens;
-        } else {
+        }
+
+        // Свап не в USDT из Metis (любой токен)
+        if (toToken?.symbol.toLowerCase() !== 'usdt') {
           this._metisText$.next(
             'Select USDT on the target network as other tokens are not supported'
           );
           return [];
         }
+        return tokens;
       }
     }
 
@@ -137,21 +200,31 @@ export class TokensListComponent {
     tokens: AvailableTokenAmount[],
     fromBlockchain: BlockchainName,
     fromToken: TokenAmount,
+    toToken: TokenAmount,
     currentBlockchain: AssetType
   ): AvailableTokenAmount[] {
+    if (!fromToken && !toToken) {
+      return tokens;
+    }
+
+    // Свап из Metis в другие сети
     if (fromBlockchain === BLOCKCHAIN_NAME.METIS) {
       return this.getAvailableTokensForSwapFromSrcMetis(tokens, currentBlockchain, fromToken);
     }
 
+    // Свап из подходящих сетей в Metis
     if (currentBlockchain === BLOCKCHAIN_NAME.METIS) {
+      // Свап из подходящих сетей (любой токен) в Metis (m.usdt)
       if (
-        fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
-        fromBlockchain === BLOCKCHAIN_NAME.AVALANCHE
+        fromToken &&
+        (fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
+          fromBlockchain === BLOCKCHAIN_NAME.AVALANCHE)
       ) {
         return [tokens.find(token => token.symbol.toLowerCase() === 'm.usdt')];
       }
 
-      if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+      // Свап из ETH (любой токен) в Metis (m.usdt / metis)
+      if (fromToken && fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
         return tokens.filter(
           token => token.symbol.toLowerCase() === 'm.usdt' || token.symbol.toLowerCase() === 'metis'
         );
@@ -166,6 +239,7 @@ export class TokensListComponent {
     currentBlockchain: AssetType,
     fromToken: TokenAmount
   ): AvailableTokenAmount[] {
+    // Свап из Metis в неподходящие сети
     if (
       currentBlockchain !== BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN &&
       currentBlockchain !== BLOCKCHAIN_NAME.AVALANCHE &&
@@ -173,11 +247,12 @@ export class TokensListComponent {
       currentBlockchain !== BLOCKCHAIN_NAME.METIS
     ) {
       this._metisText$.next(
-        'From the selected network swaps are available only in BNB, Avalanche and Ethereum'
+        'Swaps are available from the selected network only in BNB, Avalanche and Ethereum or swaps within the Metis network'
       );
       return [];
     }
 
+    // Свап из Metis (metis) в ETH (metis / usdt)
     if (
       currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
       fromToken?.symbol.toLowerCase() === 'metis'
@@ -187,6 +262,7 @@ export class TokensListComponent {
       );
     }
 
+    // Свап из Metis (любой токен) в подходящие сети (usdt)
     if (
       currentBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
       currentBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
