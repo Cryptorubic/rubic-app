@@ -244,10 +244,7 @@ export class SwapsControllerService {
         callback?.onSwap(additionalData);
       }
     } catch (err) {
-      if (
-        err instanceof CrossChainAmountChangeWarning &&
-        tradeState.trade instanceof CrossChainTrade
-      ) {
+      if (err instanceof CrossChainAmountChangeWarning) {
         let allowSwap = false;
 
         try {
@@ -264,11 +261,19 @@ export class SwapsControllerService {
             const additionalData: { changenowId?: string } = {
               changenowId: undefined
             };
-            await this.crossChainService.swapTrade(
-              tradeState.trade as CrossChainTrade,
-              callback.onHash,
-              err.transaction
-            );
+            if (tradeState.trade instanceof CrossChainTrade) {
+              await this.crossChainService.swapTrade(
+                tradeState.trade as CrossChainTrade,
+                callback.onHash,
+                err.transaction
+              );
+            } else {
+              await this.onChainService.swapTrade(
+                tradeState.trade,
+                callback.onHash,
+                err.transaction
+              );
+            }
             if ('id' in tradeState.trade) {
               additionalData.changenowId = tradeState.trade.id as string;
             }
