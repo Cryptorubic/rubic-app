@@ -207,5 +207,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/scroll',
     'https://rpc.scroll.io/',
     'https://1rpc.io/scroll'
+  ],
+  [BLOCKCHAIN_NAME.STARKNET]: [
+    'https://rpc.starknet.lava.build',
+    'https://starknet-mainnet.public.blastapi.io',
+    'https://data.voyager.online/',
+    'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ]
 };
