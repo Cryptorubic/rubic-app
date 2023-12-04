@@ -54,7 +54,12 @@ export class CommonTableService {
         onConfirm: onTransactionHash
       });
 
-      await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
+      await this.sendHashesOnResSuccess(
+        srcTxHash,
+        transactionReceipt.transactionHash,
+        'v2/trades/crosschain/rbc_arbitrum_bridge'
+      );
+
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
@@ -74,13 +79,14 @@ export class CommonTableService {
     return transactionReceipt;
   }
 
-  private async sendHashesOnClaimSuccess(
+  private async sendHashesOnResSuccess(
     srcTxHash: string,
-    destTxHash: string
+    destTxHash: string,
+    endpoint: string
   ): Promise<{ detail: string }> {
     return firstValueFrom(
       this.http.post<{ detail: string }>(
-        'v2/trades/crosschain/rbc_arbitrum_bridge',
+        endpoint,
         {
           source_tx_hash: srcTxHash,
           dest_tx_hash: destTxHash
@@ -116,6 +122,12 @@ export class CommonTableService {
       transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, {
         onConfirm: onTransactionHash
       });
+
+      await this.sendHashesOnResSuccess(
+        srcTxHash,
+        transactionReceipt.transactionHash,
+        'v2/trades/crosschain/symbiosis_revert'
+      );
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {

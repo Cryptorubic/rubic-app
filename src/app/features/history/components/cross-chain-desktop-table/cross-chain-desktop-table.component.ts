@@ -69,9 +69,7 @@ export class CrossChainDesktopTableComponent {
   public shouldShowActionButton(item: CrossChainTableData): boolean {
     const shouldShow = tableRowsWithActionButtons.some(
       actionCase =>
-        item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        item.toTx.status.label === actionCase.status &&
-        actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
+        item.toTx.status.label === actionCase.status && item.provider === actionCase.provider
     );
     return shouldShow;
   }
@@ -89,6 +87,11 @@ export class CrossChainDesktopTableComponent {
     ) {
       const isSwitched = await this.walletConnector.switchChain(toBlockchain);
       if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+    }
+
+    if (provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.SYMBIOSIS]) {
+      const isSwitched = await this.walletConnector.switchChain(toBlockchain);
+      if (isSwitched) await this.commonTableService.revertSymbiosis(item.fromTx.hash);
     }
 
     status.isLoading = false;
