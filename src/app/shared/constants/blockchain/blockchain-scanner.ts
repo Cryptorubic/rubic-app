@@ -749,7 +749,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   [BLOCKCHAIN_NAME.STARKNET]: {
     baseUrl: 'https://starkscan.co/',
     nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.WALLET]: 'contract/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
