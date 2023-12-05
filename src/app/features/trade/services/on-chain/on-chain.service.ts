@@ -122,7 +122,6 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const providerAddress = this.getProviderAddressBasedOnPromo(toToken.blockchain);
 
           const options: OnChainManagerCalculationOptions = {
             timeout: 10000,
@@ -132,8 +131,7 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: disabledTradeTypes,
-            ...(providerAddress && { providerAddress })
+            disabledProviders: disabledTradeTypes
           };
 
           return this.sdkService.instantTrade.calculateTradeReactively(
@@ -146,14 +144,6 @@ export class OnChainService {
       ),
       map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE }))
     );
-  }
-
-  private getProviderAddressBasedOnPromo(toChain: BlockchainName): string {
-    if (toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC) {
-      return '0x77dC28028A09DF50Cf037cfFdC002B7969530CCb';
-    }
-
-    return '';
   }
 
   public async swapTrade(trade: OnChainTrade, callback?: (hash: string) => void): Promise<void> {
