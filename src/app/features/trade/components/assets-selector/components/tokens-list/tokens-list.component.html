@@ -4,7 +4,10 @@
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
         <!--standard mode -->
         <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
-          <app-empty-list></app-empty-list>
+          <div class="tokens-container__empty-list_metis" *ngIf="metisText$ | async">
+            {{ metisText$ | async }}
+          </div>
+          <app-empty-list *ngIf="(metisText$ | async) === ''"></app-empty-list>
         </div>
 
         <ng-template #tokenList>
