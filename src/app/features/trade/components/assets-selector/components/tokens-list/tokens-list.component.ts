@@ -263,7 +263,7 @@ export class TokensListComponent {
       currentBlockchain !== BLOCKCHAIN_NAME.METIS
     ) {
       this._metisText$.next(
-        'Swaps are available from the selected network only in BNB, Avalanche and Ethereum or swaps within the Metis network'
+        'Cross-chain swaps from the Metis network are currently supported only to Ethereum, BNB Chain, and Avalanche.'
       );
       return [];
     }
