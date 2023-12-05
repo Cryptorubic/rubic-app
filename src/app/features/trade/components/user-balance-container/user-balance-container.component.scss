@@ -1,0 +1,52 @@
+@use 'src/scss/core' as *;
+
+.user-balance-container {
+  display: flex;
+  align-items: center;
+
+  &__balance {
+    margin-right: var(--tui-padding-xs);
+
+    color: var(--tui-text-03);
+    font-size: 15px;
+    line-height: 15px;
+  }
+
+  &__max-button {
+    //padding: 3px 6px;
+    //
+    //font-weight: 700;
+    //font-size: 9px;
+    //line-height: 9px;
+    //letter-spacing: 0.1em;
+    //text-transform: uppercase;
+    //
+    margin-top: -2px;
+
+    background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
+    //border-radius: var(--tui-radius-s);
+
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      background: linear-gradient(90deg, #1c8c56 0%, #0d868c 91.5%);
+    }
+
+    &_disabled {
+      color: var(--secondary-text);
+
+      cursor: default;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  :host {
+    width: 100%;
+  }
+  
+  .user-balance-container {
+    justify-content: space-between;
+    width: 100%;
+  }
+}

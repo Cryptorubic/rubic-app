@@ -1,54 +1,24 @@
 @use 'src/scss/core' as *;
 
+.data-list {
+  --tui-data-list-padding: 5px;
+  --tui-data-list-margin: 0px;
+
+  &__element:not(:last-child) {
+    margin-bottom: 5px;
+  }
+
+  &__link-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+  }
+}
+
 .user-profile {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  height: 50px;
-  padding: 13px 21px;
-
-  background-color: var(--tui-secondary);
-
-  border: 1px solid var(--transparent-line);
-  border-radius: 50px;
-
-  @include dark {
-    border-color: transparent;
-  }
-
-  @include iframe {
-    height: 40px;
-    padding: 0 20px;
-
-    background-color: var(--primary-background);
-  }
-
-  @include light-iframe {
-    background-color: var(--iframe-primary-background);
-  }
-
-  @include iframe-vertical {
-    padding: 0 10px;
-  }
-
-  &:hover {
-    background: var(--tui-secondary-hover);
-
-    transition: 0.3s ease-in-out;
-  }
-
-  &:hover {
-    cursor: pointer;
-
-    @include iframe {
-      box-shadow: none;
-      cursor: default;
-    }
-  }
-
   &__chain-icon {
-    width: 25px;
+    width: 24px;
     margin-right: 10px;
 
     img {
@@ -60,29 +30,11 @@
   }
 
   &__address {
-    margin-right: 11px;
-
-    font-size: $rubic-font-size-01;
-
-    @include iframe {
-      font-size: 14px;
-    }
-  }
-
-  &__dropdown-item {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    min-width: 135px;
-
-    height: 100%;
-
-    font-size: 15px;
+    margin-right: 10px;
   }
 
   &__logout {
-    color: $rubic-text-error;
+    color: var(--tui-negative);
   }
 }
 
@@ -101,12 +53,15 @@
 }
 
 .arrow {
-
-  @include b($mobile-md) {
-    display: none;
-  }
-
   ::ng-deep svg path {
-    fill: var(--secondary-text);
+    fill: var(--tui-text-01);
+  }
+}
+
+@include b($mobile-md) {
+  ::ng-deep {
+    tui-hosted-dropdown .tui-group .t-wrapper {
+      padding: 0 var(--tui-padding-l) !important;
+    }
   }
 }

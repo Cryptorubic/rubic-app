@@ -1,0 +1,132 @@
+<div class="settings">
+  <form [formGroup]="instantTradeForm" class="settings__form">
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.slippage' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.instantTrades.slippageTitle' | translate }}</label>
+    </div>
+
+    <div class="settings__row" *ngLet="formValue$ | async as formValue">
+      <button
+        tuiButton
+        [appearance]="formValue.autoSlippageTolerance ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="toggleAutoSlippageTolerance()"
+      >
+        Auto
+      </button>
+
+      <button
+        tuiButton
+        [appearance]="formValue.slippageTolerance === 0.1 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(0.1)"
+      >
+        0.1%
+      </button>
+
+      <button
+        tuiButton
+        [appearance]="formValue.slippageTolerance === 0.5 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(0.5)"
+      >
+        0.5%
+      </button>
+
+      <tui-input-number
+        id="slippage"
+        class="settings__slippage-input"
+        tuiTextfieldSize="s"
+        tuiTextfieldPostfix="%"
+        [min]="0.01"
+        [max]="50"
+        [ngModel]="formValue.slippageTolerance"
+        [ngModelOptions]="{ standalone: true }"
+        [precision]="2"
+        [style.text-align]="'right'"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+      >
+        {{ formValue.slippageTolerance }}%
+      </tui-input-number>
+    </div>
+
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.deadline' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.instantTrades.deadlineTitle' | translate }}</label>
+    </div>
+
+    <div class="settings__row">
+      <tui-input-number
+        id="deadline"
+        class="settings__deadline-input"
+        formControlName="deadline"
+        decimal="never"
+        [max]="240"
+        [min]="1"
+        tuiTextfieldSize="s"
+        >20
+      </tui-input-number>
+      <span> {{ 'common.minutes' | translate }}</span>
+    </div>
+
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.multihops' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.instantTrades.multihopsTitle' | translate }}</label>
+
+      <tui-toggle
+        class="settings__toggle"
+        id="disableMultihops"
+        formControlName="disableMultihops"
+      ></tui-toggle>
+    </div>
+
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.autoRefresh' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.instantTrades.autoRefreshTitle' | translate }}</label>
+
+      <tui-toggle
+        class="settings__toggle"
+        id="autoRefresh"
+        formControlName="autoRefresh"
+      ></tui-toggle>
+    </div>
+
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.instantTrades.showReceiverAddress' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.instantTrades.showReceiverAddressTitle' | translate }}</label>
+      <tui-toggle
+        class="settings__toggle"
+        id="showReceiverAddress"
+        formControlName="showReceiverAddress"
+      ></tui-toggle>
+    </div>
+  </form>
+</div>

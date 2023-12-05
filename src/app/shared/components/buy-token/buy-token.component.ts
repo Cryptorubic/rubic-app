@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { first, map, switchMap } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { Router } from '@angular/router';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { from, Observable } from 'rxjs';
@@ -12,6 +11,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 export interface TokenInfo {
   blockchain: BlockchainName;
@@ -50,7 +50,7 @@ export class BuyTokenComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly swapFormService: SwapFormService,
+    private readonly swapFormService: SwapsFormService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly themeService: ThemeService,
     private readonly tokensStoreService: TokensStoreService
@@ -119,14 +119,20 @@ export class BuyTokenComponent {
       .pipe(switchMap(() => this.findTokensByAddress(searchedTokens)))
       .subscribe(({ fromToken, toToken }) => {
         this.swapFormService.inputControl.patchValue({
-          fromAsset: fromToken,
+          fromToken: fromToken,
           toToken,
-          fromAssetType: fromToken.blockchain,
+          fromBlockchain: fromToken.blockchain,
           toBlockchain: toToken.blockchain,
           fromAmount:
             this.tokensType === 'default'
-              ? this.defaultTokens.from.amount
-              : this.customTokens.from.amount
+              ? {
+                  actualValue: this.defaultTokens.from.amount,
+                  visibleValue: this.defaultTokens.from.amount.toFixed()
+                }
+              : {
+                  actualValue: this.customTokens.from.amount,
+                  visibleValue: this.customTokens.from.amount.toFixed()
+                }
         });
       });
   }

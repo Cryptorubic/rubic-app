@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { TuiNotification, TuiAlertOptions, TuiAlertService } from '@taiga-ui/core';
+import { TuiAlertOptions, TuiAlertService } from '@taiga-ui/core';
 import { Observable, Subscription } from 'rxjs';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
@@ -41,25 +41,31 @@ export class NotificationsService {
 
   public showApproveInProgress<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.approveInProgress'), {
-      status: options?.status ?? TuiNotification.Info,
+      status: options?.status ?? 'info',
       autoClose: options?.autoClose ?? false,
-      data: null
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   }
 
   public showApproveSuccessful<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.successApprove'), {
-      status: options?.status ?? TuiNotification.Success,
+      status: options?.status ?? 'success',
       autoClose: options?.autoClose ?? this.LONG_DELAY,
-      data: null
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   }
 
   public showOpenMobileWallet<I = unknown>(options?: TuiAlertOptions<I>): Subscription {
     return this.show(this.translateService.instant('notifications.openMobileWallet'), {
-      status: options?.status ?? TuiNotification.Info,
+      status: options?.status ?? 'info',
       autoClose: options?.autoClose ?? this.SHORT_DELAY,
-      data: null
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   }
 }

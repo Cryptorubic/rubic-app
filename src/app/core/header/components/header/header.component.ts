@@ -17,11 +17,8 @@ import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
@@ -29,6 +26,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { ThemeService } from '@core/services/theme/theme.service';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-header',
@@ -90,12 +88,10 @@ export class HeaderComponent implements AfterViewInit {
     @Inject(PLATFORM_ID) platformId: Object,
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly iframeService: IframeService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
     private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly swapTypeService: SwapTypeService,
     private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -117,7 +113,6 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-    this.swapType$ = this.swapTypeService.swapMode$;
   }
 
   public ngAfterViewInit(): void {
@@ -130,12 +125,7 @@ export class HeaderComponent implements AfterViewInit {
    * Set notification position based on window scroll and width.
    */
   private setNotificationPosition(): void {
-    const offset = 90;
-    const pixelOffset = `${this.window.scrollY < offset ? offset : 0}px`;
-    this.document.documentElement.style.setProperty(
-      '--scroll-size',
-      this.iframeService.iframeAppearance === 'horizontal' ? '0' : pixelOffset
-    );
+    this.document.documentElement.style.setProperty('--scroll-size', '0');
   }
 
   /**
@@ -147,14 +137,14 @@ export class HeaderComponent implements AfterViewInit {
   }
 
   public async navigateToSwaps(): Promise<void> {
-    await this.swapTypeService.navigateToSwaps();
-  }
-
-  public async navigateToLimitOrder(): Promise<void> {
-    await this.swapTypeService.navigateToLimitOrder();
+    await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
   }
 
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
+  }
+
+  public switchTheme(): void {
+    this.themeService.switchTheme();
   }
 }

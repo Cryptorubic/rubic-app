@@ -46,6 +46,7 @@ export const instantTradesLabels: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.KYBER_SWAP]: 'KyberSwap',
 
   [ON_CHAIN_TRADE_TYPE.LUA_SWAP]: 'LuaSwap',
+  [ON_CHAIN_TRADE_TYPE.LIFI]: 'Lifi',
 
   [ON_CHAIN_TRADE_TYPE.MAVERICK]: 'Maverick',
   [ON_CHAIN_TRADE_TYPE.MDEX]: 'MDEX',

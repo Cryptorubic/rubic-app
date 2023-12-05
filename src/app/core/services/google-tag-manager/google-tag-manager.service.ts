@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';

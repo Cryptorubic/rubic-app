@@ -3,63 +3,48 @@
 :host {
   display: block;
 
-  @include b($tablet) {
-    padding: 0;
+  ::ng-deep {
+    app-window-container {
+      header {
+        padding: 0 0 var(--tui-padding-m) var(--tui-padding-m);
+      }
+    }
   }
+}
+
+::placeholder {
+  @include font(15px, 21px, 400, var(--primary-text), 0.45px);
+  color: var(--tui-text-03);
 }
 
 .form-container {
   display: block;
   max-width: 490px;
   margin: 9px auto 20px;
-  padding: 26px;
 
   background: var(--form-background);
   border-radius: 24px;
-
-  @include b($tablet) {
-    max-width: 100%;
-    margin: 9px auto 16px;
-    padding: 20px;
-
-    border-radius: 16px;
-  }
 }
 
 .title {
-  position: relative;
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    width: fit-content;
 
-  margin-bottom: 36px;
-
-
-  @include b($tablet) {
-    margin-bottom: 25px;
+    cursor: pointer;
   }
 
   &__back {
     @include clearbtn();
-    position: absolute;
-    left: 0;
+    display: flex;
+    margin-top: 1px;
+    margin-right: var(--tui-padding-l);
 
     cursor: pointer;
 
-    @include b($tablet) {
-      top: 3px;
-
-      margin-bottom: 32px;
-
-      ::ng-deep div svg {
-        width: 13px;
-        height: 12px;
-      }
-    }
-
-    ::ng-deep div svg path {
-      fill: #000;
-
-      @include dark {
-        fill: #fff;
-      }
+    ::ng-deep span svg {
+      height: 12px;
     }
   }
 
@@ -69,30 +54,75 @@
   }
 }
 
+.stake-form {
+  display: flex;
+  flex-direction: column;
+  padding: var(--tui-padding-m);
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+}
+
 .token {
-  margin-bottom: 20px;
+  margin-bottom: var(--tui-padding-m);
 
-  @include b($tablet) {
-    margin-bottom: 32px;
-  }
-
-  &__data-and-amount,
-  &__balance-and-price {
+  &__header,
+  &__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-    
-  &__data-and-amount {
-    margin-bottom: 12px;
+
+  &__header {
+    gap: var(--tui-padding-m);
+    margin-bottom: var(--tui-padding-m);
   }
 
-  &__balance-and-price {
-    @include font(15px, 18px, 500, var(--secondary-text));
+  &__footer {
+    @include font(15px, 15px, 500, var(--tui-text-03), 0.45px);
+  }
 
-    @include b($tablet) {
-      line-height: 14px;
+  &__logo {
+    @include font(21px, 21px, 500, var(--primary-text));
+    display: flex;
+    align-items: center;
+
+    &-icon {
+      width: 21px;
+      height: 21px;
+      margin-right: var(--tui-padding-xs);
     }
+  }
+
+  &__amount-input {
+    @include font(15px, 21px, 400, var(--primary-text), 0.45px);
+    width: 100%;
+    margin-top: 1px;
+
+    text-align: right;
+
+    background-color: transparent;
+
+    border: none;
+  }
+
+  &__balance {
+    display: flex;
+    align-items: center;
+  }
+
+  &__max {
+    @include font(9px, 9px, 400, var(--tui-text-01), 0.45px);
+
+    margin-top: -2px;
+    margin-left: var(--tui-padding-l);
+    padding: var(--tui-padding-xs) var(--tui-radius-s);
+
+    background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
+
+    border-radius: var(--tui-radius-xs);
+
+    cursor: pointer;
   }
 
   &__price {
@@ -102,80 +132,13 @@
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-
-  &__data {
-    @include font(20px, 24px, 500, var(--primary-text));
-    display: flex;
-    align-items: center;
-    width: fit-content;
-    margin-right: 12px;
-    padding: 8px 12px 8px 0;
-
-    background: var(--form-background);
-    border-radius: 100px;
-
-    @include b($tablet) {
-      padding: 7px 12px 7px 0;
-
-      font-size: 16px;
-      line-height: 16px;
-    }
-    
-    &-icon {
-      width: 26px;
-      height: 26px;
-      margin-right: 12px;
-
-      @include b($tablet) {
-        width: 22px;
-        height: 22px;
-        margin-right: 8px;
-      }
-    }
-  }
-
-  &__amount {
-    @include font(26px, 31px, 400, var(--primary-text));
-    flex-grow: 1;
-    width: 100%;
-    height: 31px;
-
-    text-align: right;
-    
-    background-color: transparent;
-    
-    border: none;
-    
-    @include b($tablet) {
-      padding-right: 0;
-
-      font-size: 20px;
-      line-height: 24px;
-    }
-  }
-
-  &__max {
-    margin-left: 12px;
-
-    color: var(--primary-color);
-
-    cursor: pointer;
-
-    @include b($tablet) {
-      margin-left: 10px;
-    }
-  }
 }
 
 .divider {
-  height: 1px;
-  margin-bottom: 20px;
+  height: 2px;
+  margin-bottom: var(--tui-padding-m);
 
-  background: var(--transparent-line);
-
-  @include b($tablet) {
-    margin-bottom: 40px;
-  }
+  background: var(--secondary-background);
 }
 
 .duration {
@@ -184,7 +147,7 @@
   align-items: flex-start;
 
   &__title {
-    @include font(18px, 22px, 500, var(--primary-text));
+    @include font(15px, 15px, 500, var(--tui-text-03), 0.45px);
     white-space: nowrap;
   }
 
@@ -192,33 +155,21 @@
     display: grid;
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
+    gap: var(--tui-padding-m);
     width: 100%;
-    margin: 20px 0;
-
-    @include b($mobile-md) {
-      gap: 7px;
-    }
+    margin-top: var(--tui-padding-m);
 
     &-chip {
       @include clearbtn();
-      @include font(16px, 19px, 500, var(--secondary-text));
+      @include font(15px, 16px, 500, var(--tui-text-01), 0.15px);
       width: 100%;
       padding: 8px 12px;
 
-      border: 1px solid var(--primary-color);
-      border-radius: 10px;
+      background: var(--secondary-background);
+      border-radius: var(--tui-radius-m);
       cursor: pointer;
 
       transition: transform 0.1s ease-in-out;
-
-      @include b($tablet) {
-        width: 100%;
-        padding: 8px;
-
-        font-size: 12px;
-        line-height: 14px;
-      }
 
       &:last-child {
         display: grid;
@@ -227,11 +178,8 @@
       }
 
       &:hover {
-        color: var(--primary-color);
-
-        border: 1px solid var(--primary-color);
         box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-        transform: translateY(-5px) scale(1.05);
+        transform: translateY(-3px) scale(1.03);
 
         transition: transform 0.1s ease-in-out;
       }
@@ -242,29 +190,21 @@
       }
 
       &-label,
-      &-earn {
+      &-rate {
         display: block;
 
         font-size: 14px;
         white-space: nowrap;
       }
 
-      &-earn {
+      &-rate {
         &-end {
           @include font(16px, 19px, 500, var(--primary-color));
-
-          @include b($tablet) {
-            @include font(14px, 14px, 500, var(--primary-color));
-          }
 
           &-hint {
             @include font(16px, 19px, 400, #f3ba2f);
             letter-spacing: 0.03em;
             text-align: center;
-
-            @include b($tablet) {
-              @include font(14px, 14px, 400, #f3ba2f);
-            }
           }
         }
       }
@@ -274,16 +214,9 @@
       }
 
       &_selected {
-        @include font(16px, 19px, 500, var(--staking-form-selected-duration));
+        color: var(--tui-primary-text);
 
-        background-color: var(--primary-color);
-
-        @include b($tablet) {
-
-          @include font(14px, 14px, 500, var(--staking-form-selected-duration));
-          width: 100%;
-          padding: 8px;
-        }
+        background-color: var(--tui-primary);
 
         .duration__common-chip-earn-end {
           color: var(--staking-form-selected-duration);
@@ -300,17 +233,13 @@
 
           transition: none;
         }
-
-        &:hover {
-          color: var(--staking-form-selected-duration);
-        }
       }
 
       &[disabled] {
         color: rgba(144, 144, 144, 0.7);
 
         background-color: transparent;
-        border: 1px solid var(--transparent-line);
+        border: 1px solid var(--secondary-background);
 
         .duration__common-chip-earn-end,
         .duration__common-chip-earn-end-hint {
@@ -328,44 +257,41 @@
 }
 
 .hint {
-  @include font(14px, 16px, 500, #f3ba2f);
+  @include font(15px, 21px, 400, #f3ba2f, 0.15px);
   display: flex;
+  margin-top: var(--tui-padding-m);
   margin-bottom: 20px;
-  padding: 12px;
+  padding: var(--tui-padding-m);
 
   word-break: break-word;
 
   background: rgba(243, 186, 47, 0.15);
-  border-radius: 12px;
-
-  @include b($tablet) {
-    margin-bottom: 16px;
-
-    line-height: 14px;
-
-    border-radius: 14px;
-
-    &__icon {
-      margin-right: 9px;
-    }
-  }
+  border-radius: var(--tui-radius-m);
 
   &__icon {
-    margin-right: 12px;
+    margin-right: var(--tui-padding-m);
+  }
+
+  &__text-locked-until {
+    color: var(--tui-text-01);
+  }
+}
+
+.button-container {
+  button {
+    width: 100%;
   }
 }
 
 .rules {
   &__link {
-    @include font(16px, 19px, 400, var(--primary-color));
+    @include font(15px, 21px, 400, var(--tui-primary), 0.45px);
     display: flex;
     gap: 5px;
     align-items: center;
     justify-content: center;
     width: fit-content;
     margin: 0 auto 30px;
-    margin-bottom: 30px;
-    text-decoration-line: underline;
   }
 
   &__icon {
@@ -380,5 +306,136 @@
         fill: var(--primary-color);
       }
     }
+  }
+}
+
+@include b($mobile-md) {
+  ::ng-deep {
+    app-window-container {
+      header {
+        padding: var(--tui-padding-l) !important;
+
+        background: var(--io-background);
+        border-bottom: 2px solid var(--app-background);
+        border-radius: var(--tui-radius-l) var(--tui-radius-l) 0 0;
+
+        h5 {
+          position: relative;
+
+          justify-content: center;
+        }
+      }
+
+      .window-container {
+        padding: 0 !important;
+
+        background: none !important;
+        border-radius: 0 !important;
+      }
+    }
+  }
+
+  .stake-form {
+    gap: 2px;
+    padding: 0;
+
+    background: none;
+    border-radius: 0;
+  }
+
+  .title__back {
+    position: absolute;
+    left: var(--tui-padding-m);
+  }
+
+  .token {
+    margin-bottom: 0;
+    padding: var(--tui-padding-l);
+
+    background: var(--io-background);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+    &__header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    &__amount-input {
+      @include font(25px, 35px, 700, var(--primary-text), 0.25px);
+      margin: 0;
+      padding: 0;
+
+      text-align: left;
+    }
+
+    &__balance {
+      flex-direction: column-reverse;
+      gap: 15px;
+      align-items: flex-end;
+    }
+
+    &__max {
+      margin-top: 0;
+      margin-left: 0;
+    }
+
+    &__footer {
+      flex-direction: row-reverse;
+      align-items: flex-end;
+      margin-top: -35px;
+    }
+  }
+
+  .divider {
+    display: none;
+  }
+
+  .duration {
+    padding: var(--tui-padding-s) 0;
+
+    background: none;
+    border-radius: 0;
+
+    &__title {
+      display: none;
+    }
+
+    &__common {
+      gap: var(--tui-padding-s);
+      margin-top: 0;
+
+      &-chip {
+        padding: var(--tui-padding-s) var(--tui-padding-m);
+
+        font-size: 12px;
+        line-height: 14px;
+        letter-spacing: 0.36px;
+
+        &-label,
+        &-rate {
+          font-size: 12px;
+        }
+
+        &-rate {
+          &-end {
+            @include font(16px, 19px, 500, var(--primary-color));
+
+            &-hint {
+              @include font(16px, 19px, 400, #f3ba2f);
+              letter-spacing: 0.03em;
+              text-align: center;
+            }
+          }
+        }
+
+        &-label {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+
+  .hint {
+    margin-top: 0;
   }
 }

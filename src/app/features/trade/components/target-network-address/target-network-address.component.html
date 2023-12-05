@@ -1,0 +1,36 @@
+<div class="network-container">
+  <tui-input
+    [tuiTextfieldCustomContent]="!!address.value ? (address.valid ? success : error) : ''"
+    tuiTextfieldSize="l"
+    [formControl]="address"
+    [pseudoFocus]="address.invalid"
+    [pseudoInvalid]="address.invalid"
+    [tuiTextfieldCleaner]="!!address.value"
+    [tuiTextfieldLabelOutside]="true"
+  >
+    <div class="network-container__row">
+      <div
+        class="network-container__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="
+          'crossChainPage.targetAddress.hint' | translate : { network: (toBlockchain$ | async) }
+        "
+        tuiHintAppearance="onDark"
+      ></div>
+      <label class="network-container__label">Wallet address or ENS name in target network</label>
+    </div>
+  </tui-input>
+
+  <ng-template #success>
+    <div
+      class="network-container__input-status-icon"
+      [inlineSVG]="'assets/images/icons/forms/success-input.svg'"
+    ></div>
+  </ng-template>
+  <ng-template #error>
+    <div
+      class="network-container__input-status-icon"
+      [inlineSVG]="'assets/images/icons/forms/error-input.svg'"
+    ></div>
+  </ng-template>
+</div>

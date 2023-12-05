@@ -266,7 +266,9 @@ export class ApproveScannerService {
     return this.notificationsService.show(this.translateService.instant('Revoke in progress'), {
       status: TuiNotification.Info,
       autoClose: false,
-      data: null
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   }
 
@@ -274,7 +276,9 @@ export class ApproveScannerService {
     return this.notificationsService.show('Successful revoke', {
       status: TuiNotification.Success,
       autoClose: 10000,
-      data: null
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
     });
   }
 
@@ -291,7 +295,13 @@ export class ApproveScannerService {
         status = TuiNotification.Error;
       }
 
-      this.notificationsService.show(label, { autoClose: 10000, status, data: null });
+      this.notificationsService.show(label, {
+        autoClose: 10000,
+        status,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      });
     }
   }
 

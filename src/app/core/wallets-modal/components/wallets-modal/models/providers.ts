@@ -9,10 +9,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: true,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: false,
-    supportsInIframe: true,
     disabled: false
   },
   {
@@ -22,10 +18,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: true,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: true,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: false,
-    supportsInIframe: false,
     disabled: false
   },
   {
@@ -35,10 +27,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: true,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: false,
-    supportsInVerticalMobileIframe: true,
-    supportsInIframe: false,
     disabled: false
   },
   {
@@ -48,10 +36,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: false,
-    supportsInVerticalMobileIframe: true,
-    supportsInIframe: true,
     disabled: false
   },
   {
@@ -61,10 +45,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: true,
-    supportsInIframe: true,
     disabled: false
   },
   {
@@ -74,10 +54,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: true,
-    supportsInIframe: true,
     disabled: false
   },
   {
@@ -87,10 +63,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     desktopOnly: false,
     mobileOnly: false,
     display: true,
-    supportsInHorizontalIframe: false,
-    supportsInVerticalIframe: true,
-    supportsInVerticalMobileIframe: true,
-    supportsInIframe: true,
     disabled: false
   }
 ];

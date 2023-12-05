@@ -1,16 +1,6 @@
 import { BlockchainName } from 'rubic-sdk';
-import { IframeAppearance } from '@core/services/iframe/models/iframe-appearance';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
-import { AssetType } from '@features/swaps/shared/models/form/asset';
-
-export type AdditionalTokens =
-  | 'eth_tokens'
-  | 'bsc_tokens'
-  | 'polygon_tokens'
-  | 'harmony_tokens'
-  | 'avalanche_tokens'
-  | 'fantom_tokens'
-  | 'moonriver_tokens';
+import { AssetType } from '@features/trade/models/asset';
 
 interface AllQueryParams {
   from: string;
@@ -21,15 +11,13 @@ interface AllQueryParams {
   amountTo: string;
   onramperTxId: string;
 
-  // iframe
-  iframe: IframeAppearance;
+  iframe: string;
   device: 'mobile' | 'desktop';
   domain: string;
   hideSelectionFrom: string;
   hideSelectionTo: string;
   slippageIt: string;
   slippageCcr: string;
-  background: string;
   accentColor: string; // correct format is ...&accentColor=00FFFF
   theme: string;
   language: SupportedLanguages;
@@ -37,7 +25,10 @@ interface AllQueryParams {
   feeTarget: string;
   hideUnusedUI: string;
   isDesktop: string;
-  enabledProviders: string[];
+  whitelistOnChain: string[];
+  whitelistCrossChain: string[];
+  blacklistOnChain: string[];
+  blacklistCrossChain: string[];
   enabledBlockchains: BlockchainName[];
   tokenSearch: string;
   rubicLink: string;
@@ -48,5 +39,5 @@ interface AllQueryParams {
 }
 
 export type QueryParams = {
-  [P in AdditionalTokens]?: string[];
+  [P in BlockchainName]?: string[];
 } & Partial<AllQueryParams>;

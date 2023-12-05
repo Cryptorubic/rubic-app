@@ -1,0 +1,83 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: flex;
+
+  ::ng-deep {
+    .back-button {
+      display: flex;
+      gap: var(--tui-padding-s);
+      align-items: center;
+      padding: 0 5px;
+
+      cursor: pointer;
+
+      &__image {
+        height: 10px;
+      }
+    }
+  }
+}
+
+.swap-container {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 auto;
+
+  .form {
+    position: relative;
+
+    width: 600px;
+    margin-right: 10px;
+    margin-left: 10px;
+
+    transition: 0.2s ease-in-out;
+
+    &_tokens {
+      width: 600px;
+    }
+
+    &_small {
+      width: 360px;
+    }
+  }
+
+  app-input-output-container:first-child {
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  app-providers-list-general {
+    display: block;
+    width: 360px;
+    height: 510px;
+
+    background: var(--secondary-background);
+    border-radius: 17px;
+  }
+}
+
+@include b($mobile-md) {
+  .swap-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l);
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+
+    .form {
+      width: 360px;
+      overflow: hidden;
+    }
+
+    app-providers-list-general {
+      width: 360px;
+      height: auto;
+      overflow: hidden;
+
+      background: none;
+      border-radius: 0;
+    }
+  }
+}

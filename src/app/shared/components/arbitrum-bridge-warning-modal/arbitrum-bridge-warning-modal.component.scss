@@ -39,49 +39,34 @@
     }
   }
 
-  /* stylelint-disable */
-  @include iframe-horizontal {
+  &__body {
     display: flex;
     align-items: center;
+    height: 100%;
+    margin-right: 80px;
 
-    &__content {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding-top: 0;
+    img {
+      width: 120px;
     }
+  }
 
-    &__body {
-      margin-right: 80px;
-      height: 100%;
-      display: flex;
-      align-items: center;
+  &__footer {
+    &-text {
+      @include font(20px, 32px, 500, var(--primary-text));
 
       img {
-        width: 120px;
+        margin-left: 4px;
       }
     }
+  }
 
-    &__footer {
+  h3 {
+    font-size: 18px;
+    text-align: left;
+  }
 
-      &-text {
-        @include font(20px, 32px, 500, var(--primary-text));
-
-        img {
-          margin-left: 4px;
-        }
-      }
-    }
-
-    h3 {
-      text-align: left;
-      font-size: 18px;
-    }
-
-    ::ng-deep app-rubic-button button {
-      width: 150px;
-      float: left;
-    }
+  ::ng-deep app-rubic-button button {
+    float: left;
+    width: 150px;
   }
 }

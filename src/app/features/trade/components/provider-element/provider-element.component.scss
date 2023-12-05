@@ -1,0 +1,198 @@
+@use 'src/scss/core' as *;
+
+.element {
+  overflow: hidden;
+
+  background: var(--primary-background);
+  border-radius: var(--tui-radius-m);
+  cursor: pointer;
+
+  &_disabled {
+    cursor: no-drop;
+    opacity: 0.75;
+  }
+
+  &__provider-container {
+    padding: var(--tui-padding-l);
+
+    border-bottom: 1px solid var(--tui-secondary);
+
+    &_selected {
+      background: var(--io-background);
+    }
+  }
+
+  &__row {
+    display: flex;
+    gap: var(--tui-padding-s);
+  }
+
+  &__amounts-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__amount {
+    display: flex;
+    align-items: center;
+  }
+
+  &__token {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+  }
+
+  &__token-info {
+    display: flex;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+  }
+
+  &__token-provider {
+    @include font(18px, 18px, 500, var(--tui-text-03), 0.54px);
+    display: none;
+  }
+
+  &__token-image {
+    width: 12px;
+    height: 12px;
+
+    border-radius: 100%;
+  }
+
+  &__token-amount {
+    max-width: 145px;
+    overflow: hidden;
+
+    font-weight: 700;
+    font-size: 18px;
+    text-overflow: ellipsis;
+  }
+
+  &__amount-price {
+    color: var(--tui-text-03);
+  }
+
+  &__middle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__provider {
+    display: flex;
+    align-items: center;
+  }
+
+  &__provider-image {
+    width: 40px;
+    height: 40px;
+    margin-right: var(--tui-padding-m);
+
+    border-radius: 100%;
+  }
+
+  &__provider-label {
+    color: var(--tui-text-03);
+  }
+
+  &__best-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%);
+  }
+
+  &__warning-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
+  }
+
+  ::ng-deep &__expander {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+
+    svg {
+      transition: 0.2s ease-in-out;
+    }
+
+    &_active {
+      svg {
+        transform: rotate(180deg);
+        transform-origin: center;
+      }
+
+      svg path {
+        fill: var(--tui-text-03);
+      }
+    }
+
+    svg path {
+      fill: var(--tui-text-03);
+    }
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+    align-items: flex-end;
+  }
+}
+
+app-route-element {
+  display: block;
+  margin-top: var(--tui-padding-l);
+}
+
+@include b($mobile-md) {
+  .element {
+    &_shorted {
+      .element__amounts-container {
+        align-items: end;
+      }
+
+      .element__token-info {
+        gap: var(--tui-padding-s);
+      }
+
+      .element__token {
+        gap: var(--tui-padding-m);
+      }
+
+      .element__token-provider {
+        display: block;
+      }
+
+      .element__token-image {
+        width: 25px;
+        height: 25px;
+
+        border-radius: 100%;
+      }
+
+      .element__token-symbol {
+        @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+      }
+
+      .element__token-amount {
+        display: none;
+      }
+
+      .element__right {
+        gap: var(--tui-padding-m);
+      }
+
+      .element__amount-price {
+        display: none;
+      }
+    }
+  }
+}

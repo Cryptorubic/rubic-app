@@ -1,0 +1,63 @@
+@use 'src/scss/core' as *;
+
+.tabs {
+  height: var(--tui-height-m);
+  margin-bottom: var(--tui-padding-s);
+
+  background: var(--tui-base-01);
+  border-radius: var(--tui-radius-m);
+
+  @include b($mobile-sm-middle) {
+    justify-content: space-around;
+    width: 100%;
+  }
+
+  ._active .icon ::ng-deep svg path,
+  button:hover .icon ::ng-deep svg path {
+    fill: var(--tui-text-01);
+  }
+
+  button {
+    margin: 0 !important;
+    padding: 0 var(--tui-padding-l);
+
+    @include b($mobile-sm-middle) {
+      padding: 0 var(--tui-padding-s);
+    }
+
+    &:not(:first-child) {
+      border-left: 1px solid var(--secondary-background);
+    }
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    margin-right: var(--tui-padding-s);
+
+    ::ng-deep svg path {
+      transition: 0.3s ease-in-out;
+
+      fill: var(--tui-text-03);
+    }
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  @include b($mobile-sm-middle) {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
+
+.filter {
+  margin-bottom: var(--tui-padding-s);
+
+  &__select {
+    width: 120px;
+  }
+}

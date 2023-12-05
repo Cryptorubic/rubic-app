@@ -1,0 +1,127 @@
+@use 'src/scss/core' as *;
+
+.selector {
+  display: flex;
+  height: 50px;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &__second-label {
+    color: var(--tui-text-03);
+    font-weight: 400;
+    font-size: 15px;
+  }
+
+  &__main-label {
+    display: flex;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+
+    color: white;
+    font-weight: 700;
+    font-size: 21px;
+  }
+
+  &__labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__main-image {
+    box-sizing: content-box;
+    margin-top: -5px;
+    margin-left: -25px;
+
+    background: var(--io-background);
+    border: 5px solid var(--io-background);
+    border-radius: 100%;
+  }
+
+  &__second-image-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 67px;
+
+    background: #627eea;
+    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+  }
+
+  &__second-image {
+    margin-right: 20px;
+
+    border-radius: 100%;
+  }
+
+  &__empty-container {
+    position: relative;
+    z-index: 1;
+  }
+
+  &__empty {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 100%;
+    margin-right: -25px;
+    padding-left: 25px;
+
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+
+    &::after {
+      position: absolute;
+      right: -25px;
+      z-index: 0;
+
+      width: 25px;
+      height: 100%;
+
+      background: var(--tui-secondary);
+      border-radius: 0 50px 50px 0;
+
+      content: '';
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .selector {
+    height: 40px;
+
+    &__main-image {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__empty-container {
+      img {
+        margin-left: var(--tui-padding-s);
+      }
+    }
+
+    &__empty {
+      justify-content: flex-start;
+      padding-left: 16px;
+
+      font-weight: 400;
+      font-size: 18px;
+
+      border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+      &::after {
+        right: -18px;
+      }
+    }
+  }
+}

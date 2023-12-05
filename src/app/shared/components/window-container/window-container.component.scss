@@ -1,0 +1,32 @@
+.window-container {
+  padding: var(--tui-padding-m);
+
+  background: var(--secondary-background);
+  border-radius: var(--tui-radius-m);
+
+  ::ng-deep & > footer > *:first-child {
+    display: flex;
+    margin-top: var(--tui-padding-m);
+  }
+}
+
+header {
+  padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+
+  &:has(> *:empty) {
+    display: none;
+  }
+
+  h5 {
+    display: flex;
+    align-items: center;
+    height: 21px;
+    margin: 0;
+
+    font-size: 15px;
+
+    &:empty {
+      display: none;
+    }
+  }
+}

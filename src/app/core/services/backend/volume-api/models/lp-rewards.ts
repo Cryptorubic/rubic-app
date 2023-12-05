@@ -3,11 +3,3 @@ export interface LpReward {
   hash: string;
   amount: number;
 }
-
-export interface LpRewardParsed {
-  txHash: string;
-  scannerLink: string;
-  rewards: number;
-  date: Date;
-  balance?: number;
-}

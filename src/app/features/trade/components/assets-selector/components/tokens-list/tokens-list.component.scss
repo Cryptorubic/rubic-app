@@ -1,0 +1,124 @@
+@use 'src/scss/core' as *;
+
+$token-card-height: 55px;
+
+:host {
+  width: 100%;
+
+  @include b($mobile-md) {
+    ::ng-deep tui-scroll-controls .t-bar {
+      right: -14px !important;
+    }
+  }
+}
+
+.tokens-container {
+  position: relative;
+
+  height: 100%;
+  padding: 10px;
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  @include b($mobile-md) {
+    height: 64vh;
+    padding: var(--tui-padding-l);
+
+    background: none;
+    border-radius: 0;
+  }
+
+  &__empty-list {
+    position: relative;
+
+    margin-top: 20px;
+  }
+
+  ::ng-deep .t-content {
+    height: 100%;
+
+    @include b($mobile-md-minus) {
+      height: calc(100% - 10px);
+    }
+  }
+}
+
+tui-loader {
+  height: 100%;
+}
+
+.tokens-list {
+  height: 100%;
+  padding-right: 15px;
+
+  @include b($mobile-md) {
+    padding: 0;
+  }
+
+  &__item {
+    border-radius: var(--tui-radius-m);
+
+    cursor: pointer;
+
+    @include b($mobile-md) {
+      background-color: transparent;
+      border: 1px solid var(--transparent-line);
+    }
+
+    &:hover {
+      background-color: var(--transparent-line);
+    }
+
+    &_disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+
+    &_empty {
+      display: flex;
+      justify-content: center;
+
+      font-size: 18px;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+  }
+}
+
+.tokens-scrollbar {
+  height: 100%;
+  overflow-x: hidden !important;
+
+  ::ng-deep {
+    .cdk-virtual-scroll-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+  }
+}
+
+.vertical-frame-link {
+  border: 2px solid var(--primary-color);
+
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    line-height: 30px;
+    text-align: center;
+  }
+
+  &:hover {
+    background-color: unset;
+  }
+}

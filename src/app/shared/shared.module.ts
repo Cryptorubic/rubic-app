@@ -1,40 +1,35 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
-  TuiToggleModule,
+  TuiBadgeModule,
+  TuiDataListWrapperModule,
+  TuiInputCountModule,
   TuiInputModule,
   TuiTabsModule,
-  TuiInputCountModule,
-  TuiDataListWrapperModule,
-  TuiBadgeModule,
-  TuiTagModule
+  TuiTagModule,
+  TuiToggleModule
 } from '@taiga-ui/kit';
 import {
   TuiButtonModule,
   TuiDataListModule,
   TuiDropdownModule,
   TuiHintModule,
-  TuiSvgModule,
-  TuiTooltipModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiScrollbarModule,
+  TuiSvgModule,
   TuiTextfieldControllerModule,
-  TuiScrollbarModule
+  TuiTooltipModule
 } from '@taiga-ui/core';
 import { TuiActiveZoneModule, TuiHoveredModule } from '@taiga-ui/cdk';
-import { RubicLanguageSelectComponent } from 'src/app/core/header/components/header/components/rubic-language-select/rubic-language-select.component';
 import { GasIndicatorComponent } from 'src/app/shared/components/gas-indicator/gas-indicator.component';
 import { LetDirective } from 'src/app/shared/directives/let/let.directive';
-import { NoFrameDirective } from 'src/app/shared/directives/noFrame/no-frame.directive';
-import { OnlyFrameDirective } from 'src/app/shared/directives/onlyFrame/only-frame.directive';
 import { UsdPriceContainerComponent } from 'src/app/shared/components/usd-price-container/usd-price-container.component';
-import { PanelErrorContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-error-content/panel-error-content.component';
-import { PanelContentComponent } from '@features/swaps/features/instant-trade/components/providers-panels/components/provider-panel/panel-content/panel-content.component';
 import { BigNumberFormatPipe } from './pipes/big-number-format.pipe';
 import { ScannerLinkPipe } from './pipes/scanner-link.pipe';
 import { SafetyLinkDirective } from './directives/safety-link/safety-link.directive';
@@ -47,7 +42,6 @@ import { RubicButtonCircleComponent } from './components/rubic-button-circle/rub
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { IframeAssetTypeIndicatorComponent } from 'src/app/shared/components/iframe-asset-type-indicator/iframe-asset-type-indicator.component';
 import { ThemedIconPipe } from './pipes/themed-icon.pipe';
 import { SuccessTxModalComponent } from 'src/app/shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 import { SuccessTrxNotificationComponent } from './components/success-trx-notification/success-trx-notification.component';
@@ -61,9 +55,7 @@ import { CopyContainerComponent } from './components/copy-container/copy-contain
 import { FunctionCallPipe } from '@shared/pipes/function-call.pipe';
 import { StatusBadgeComponent } from './components/status-badge/status-badge.component';
 import { ChipsComponent } from './components/chips/chips.component';
-import { ProgressTrxNotificationComponent } from '@shared/components/progress-trx-notification/progress-trx-notification.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
-import { IframeLogoutButtonComponent } from '@shared/components/iframe-logout-button/iframe-logout-button.component';
 import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
@@ -72,33 +64,35 @@ import { SuccessOrderModalComponent } from './components/success-modal/success-o
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
-import { RecentCrossChainTableTxComponent } from '@shared/components/recent-cross-chain-table/recent-cross-chain-table.component';
-import { TradeRowComponent } from '@shared/components/recent-cross-chain-table/trade-row/trade-row.component';
 import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { LiveChatComponent } from './components/live-chat/live-chat.component';
+import { AssetSelectorComponent } from '@shared/components/asset-selector/asset-selector.component';
+import { WindowContainerComponent } from './components/window-container/window-container.component';
+import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
+import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
+import { NoResultComponent } from './components/no-result/no-result.component';
+import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
+import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
+import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
+import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
 
 @NgModule({
   declarations: [
-    // Components.
     DropdownSelectorComponent,
     RubicButtonCircleComponent,
     RubicButtonCircleComponent,
     RubicButtonComponent,
     IconButtonComponent,
-    RubicLanguageSelectComponent,
     RubicVolumeComponent,
     SuccessTxModalComponent,
     SuccessTrxNotificationComponent,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     UsdPriceContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
     BuyTokenComponent,
-    IframeAssetTypeIndicatorComponent,
     RubicContainerComponent,
     RotatingIconComponent,
     InfoHintComponent,
@@ -106,20 +100,16 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     CopyContainerComponent,
     StatusBadgeComponent,
     ChipsComponent,
-    ProgressTrxNotificationComponent,
     SymbiosisWarningTxModalComponent,
-    IframeLogoutButtonComponent,
     AutoSlippageWarningModalComponent,
     BackButtonComponent,
     LoginButtonComponent,
     RefreshButtonComponent,
     SuccessOrderModalComponent,
-    RecentCrossChainTableTxComponent,
-    TradeRowComponent,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
-    // Pipes.
+    ClaimRoundRowComponent,
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
@@ -129,14 +119,19 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     FalsyPipe,
     FunctionCallPipe,
     SafeSanitizerPipe,
-    // Directives.
     SafetyLinkDirective,
     TokenAmountDirective,
     LetDirective,
-    NoFrameDirective,
-    OnlyFrameDirective,
     CommaToPeriodDirective,
-    LiveChatComponent
+    LiveChatComponent,
+    AssetSelectorComponent,
+    WindowContainerComponent,
+    InputOutputContainerComponent,
+    AmountTransputComponent,
+    NoResultComponent,
+    RateChangedModalComponent,
+    NoFrameDirective,
+    RubicBadgeComponent
   ],
   imports: [
     CommonModule,
@@ -168,7 +163,8 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     TuiTagModule,
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
-    TuiHoveredModule
+    TuiHoveredModule,
+    NgOptimizedImage
   ],
   exports: [
     BigNumberFormatPipe,
@@ -181,19 +177,13 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     RubicButtonComponent,
     IconButtonComponent,
     ShortenAmountPipe,
-    RubicLanguageSelectComponent,
     RubicVolumeComponent,
     FalsyPipe,
     WithRoundPipe,
     SafetyLinkDirective,
     TokenAmountDirective,
     GasIndicatorComponent,
-    PanelErrorContentComponent,
-    PanelContentComponent,
     LetDirective,
-    NoFrameDirective,
-    OnlyFrameDirective,
-    IframeAssetTypeIndicatorComponent,
     ThemedIconPipe,
     UsdPriceContainerComponent,
     RotatingIconComponent,
@@ -205,17 +195,23 @@ import { LiveChatComponent } from './components/live-chat/live-chat.component';
     FunctionCallPipe,
     StatusBadgeComponent,
     ChipsComponent,
-    IframeLogoutButtonComponent,
     SafeSanitizerPipe,
     BackButtonComponent,
     RefreshButtonComponent,
     LoginButtonComponent,
-    RecentCrossChainTableTxComponent,
-    TradeRowComponent,
     CommaToPeriodDirective,
     SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
-    LiveChatComponent
+    LiveChatComponent,
+    AssetSelectorComponent,
+    WindowContainerComponent,
+    InputOutputContainerComponent,
+    AmountTransputComponent,
+    NoResultComponent,
+    ClaimRoundRowComponent,
+    RateChangedModalComponent,
+    NoFrameDirective,
+    RubicBadgeComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

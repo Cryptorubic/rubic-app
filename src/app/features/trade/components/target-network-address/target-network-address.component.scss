@@ -1,0 +1,15 @@
+@use 'src/scss/mixins' as *;
+@use 'src/scss/core' as *;
+
+.network-container {
+  margin-top: 1px;
+
+  &__row {
+    display: flex;
+    gap: 10px;
+  }
+
+  tui-input {
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+  }
+}

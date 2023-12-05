@@ -1,0 +1,206 @@
+@use 'src/scss/core' as *;
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  margin-bottom: 10px;
+
+  &__buttons {
+    display: flex;
+    gap: var(--tui-padding-m);
+
+    > * {
+      flex: 1;
+
+      text-decoration: none;
+    }
+  }
+
+  &__data-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-s);
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+
+    app-route-element {
+      margin-left: var(--tui-padding-l);
+
+      ::ng-deep .route-element__provider-data-info {
+        align-items: center;
+      }
+    }
+  }
+
+  &__io-container {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+  }
+
+  &__token-container {
+    display: flex;
+    height: 30px;
+  }
+
+  &__second-image-container {
+    width: 45px;
+    height: 100%;
+    overflow: hidden;
+
+    border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+    img {
+      height: 100%;
+    }
+  }
+
+  &__main-image {
+    width: 30px;
+    margin-left: -15px;
+
+    background: var(--primary-background);
+
+    border-radius: 100%;
+    outline: 2px solid var(--primary-background);
+  }
+
+  &__amount-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    > * {
+      line-height: 1rem;
+    }
+  }
+
+  &__token-amount {
+    width: 100%;
+
+    font-weight: 500;
+  }
+
+  &__fiat-amount {
+    color: var(--tui-text-03);
+  }
+
+  &__token-info {
+    color: var(--tui-text-03);
+  }
+
+  &__action-container {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+
+    button {
+      flex-shrink: 1;
+      width: 100%;
+    }
+  }
+
+  &__action-button {
+    width: 100%;
+  }
+
+  &__success-info {
+    overflow: hidden;
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);;
+  }
+}
+
+app-swap-data-element ::ng-deep {
+  .provider-info {
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
+
+@include b($mobile-md) {
+  app-route-element {
+    z-index: 1;
+
+    ::ng-deep .route-element {
+      gap: var(--tui-padding-xl);
+
+      &__provider-icon {
+        background: var(--io-background);
+      }
+    }
+  }
+
+  app-transaction-state {
+    margin: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+  }
+
+  .preview {
+    &__data-container {
+      position: relative;
+
+      gap: 0;
+      margin-top: 2px;
+
+      &_with-line {
+        gap: 24px;
+
+        &::before {
+          position: absolute;
+          top: 16px;
+          left: 27px;
+          z-index: 0;
+
+          width: 2px;
+          height: calc(100% - 70px);
+
+          background: var(--tui-base-04);
+
+          content: '';
+        }
+      }
+
+      app-route-element {
+        margin-left: 0;
+      }
+    }
+
+    &__io-container {
+      z-index: 1;
+
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+      align-items: flex-start;
+    }
+
+    &__token-and-amount-container {
+      display: flex;
+      gap: var(--tui-padding-s);
+      align-items: center;
+    }
+
+    &__fiat-container {
+      display: flex;
+      margin-left: 63px;
+    }
+
+    &__token-container {
+      height: 25px;
+    }
+
+    &__token-amount {
+      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+    }
+
+    &__main-image {
+      width: 25px;
+    }
+  }
+}

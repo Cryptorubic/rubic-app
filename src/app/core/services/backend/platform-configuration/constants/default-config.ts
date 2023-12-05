@@ -11,7 +11,8 @@ export const defaultConfig: PlatformConfig = {
       {
         active: true,
         disabledProviders: [],
-        useProxy: true
+        useProxy: true,
+        average_execution_time: 30
       }
     ])
   ),

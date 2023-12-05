@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LimitOrdersComponent } from '@features/history/limit-orders/components/limit-orders/limit-orders.component';
+import { HistoryViewComponent } from '@features/history/components/history-view/history-view.component';
 
-const routes: Routes = [{ path: 'limit-orders', component: LimitOrdersComponent }];
+const routes: Routes = [{ path: '', component: HistoryViewComponent }];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

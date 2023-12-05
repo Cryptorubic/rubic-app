@@ -18,6 +18,8 @@ export class RubicError<T extends ERROR_TYPE> extends Error {
 
   public code?: number;
 
+  public isWarning: boolean = false;
+
   constructor(
     contentProvider: T extends ERROR_TYPE.TEXT
       ? TranslationKey

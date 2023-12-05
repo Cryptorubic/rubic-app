@@ -21,8 +21,9 @@ export class TrustWalletAdapter extends WalletConnectAbstractAdapter {
     super(
       {
         projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        chains: WALLET_CONNECT_SUPPORTED_CHAINS,
-        showQrModal: false
+        showQrModal: false,
+        chains: [1],
+        optionalChains: WALLET_CONNECT_SUPPORTED_CHAINS
       },
       accountChange$,
       chainChange$,

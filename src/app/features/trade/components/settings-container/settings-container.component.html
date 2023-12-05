@@ -1,0 +1,22 @@
+<ng-container *ngIf="isMobile$ | async; then settingsMobile; else settingsDesktop"></ng-container>
+
+<ng-template #settingsDesktop>
+  <tui-hosted-dropdown
+    [content]="settingsComponent"
+    [(open)]="open"
+    tuiDropdownDirection="bottom"
+    [tuiDropdownMinHeight]="0"
+  >
+    <div class="image-container">
+      <div class="image" inlineSVG="/assets/images/icons/options.svg"></div>
+    </div>
+  </tui-hosted-dropdown>
+</ng-template>
+
+<ng-template #settingsMobile>
+  <button (click)="openMobile()">
+    <div class="image-container">
+      <div class="image" inlineSVG="/assets/images/icons/options.svg"></div>
+    </div>
+  </button>
+</ng-template>

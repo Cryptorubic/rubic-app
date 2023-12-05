@@ -1,0 +1,260 @@
+<app-window-container
+  *ngLet="{
+    tradeInfo: tradeInfo$ | async,
+    tradeState: tradeState$ | async,
+    transaction: transactionState$ | async
+  } as state"
+>
+  <ng-container header>
+    <span class="back-button" (click)="backToForm()">
+      <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+      <ng-container *ngIf="state.transaction.step === 'idle'">Preview Swap</ng-container>
+      <ng-container *ngIf="state.transaction.step === 'success'">Success Swap</ng-container>
+      <ng-container
+        *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+        >Swap</ng-container
+      >
+    </span>
+  </ng-container>
+  <ng-container>
+    <div class="preview">
+      <div
+        class="preview__data-container"
+        [ngClass]="{ 'preview__data-container_with-line': state.transaction.step === 'idle' }"
+      >
+        <ng-container *ngIf="(isMobile$ | async) === false; else mobileInputTokenContainer">
+          <div class="preview__io-container">
+            <div class="preview__token-container">
+              <div
+                class="preview__second-image-container"
+                [style]="{ background: state.tradeInfo.fromAsset.secondColor }"
+              >
+                <img
+                  [src]="state.tradeInfo.fromAsset.secondImage"
+                  [alt]="state.tradeInfo.fromAsset.secondImage"
+                />
+              </div>
+              <img
+                class="preview__main-image"
+                [src]="state.tradeInfo.fromAsset.mainImage"
+                [alt]="state.tradeInfo.fromAsset.mainLabel"
+              />
+            </div>
+            <div class="preview__amount-container">
+              <div class="preview__token-amount">
+                {{
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
+              </div>
+              <div
+                *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
+                class="preview__fiat-amount"
+              >
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ state.tradeInfo.fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileInputTokenContainer>
+          <div class="preview__io-container">
+            <div class="preview__token-and-amount-container">
+              <div class="preview__token-container">
+                <div
+                  class="preview__second-image-container"
+                  [style]="{ background: state.tradeInfo.fromAsset.secondColor }"
+                >
+                  <img
+                    [src]="state.tradeInfo.fromAsset.secondImage"
+                    [alt]="state.tradeInfo.fromAsset.secondImage"
+                  />
+                </div>
+                <img
+                  class="preview__main-image"
+                  [src]="state.tradeInfo.fromAsset.mainImage"
+                  [alt]="state.tradeInfo.fromAsset.mainLabel"
+                />
+              </div>
+              <div class="preview__token-amount">
+                {{
+                  state.tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.fromAsset.mainLabel }}
+              </div>
+            </div>
+            <div class="preview__fiat-container">
+              <div
+                *ngIf="state.tradeInfo.fromValue.fiatAmount as amount"
+                class="preview__fiat-amount"
+              >
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ state.tradeInfo.fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <app-route-element
+          *ngIf="state.transaction.step === 'idle'"
+          [routes]="state.tradeState?.routes || []"
+        ></app-route-element>
+
+        <app-transaction-state
+          *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+          [transactionData]="{
+            type:
+              state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
+                ? 'swap'
+                : 'bridge',
+            needApprove: state.tradeState?.needApprove
+          }"
+          [state]="state.transaction.step"
+        ></app-transaction-state>
+
+        <ng-container *ngIf="(isMobile$ | async) === false; else mobileOutputTokenContainer">
+          <div class="preview__io-container">
+            <div class="preview__token-container">
+              <div
+                class="preview__second-image-container"
+                [style]="{ background: state.tradeInfo.toAsset.secondColor }"
+              >
+                <img
+                  [src]="state.tradeInfo.toAsset.secondImage"
+                  [alt]="state.tradeInfo.toAsset.secondImage"
+                />
+              </div>
+              <img
+                class="preview__main-image"
+                [src]="state.tradeInfo.toAsset.mainImage"
+                [alt]="state.tradeInfo.toAsset.mainLabel"
+              />
+            </div>
+            <div class="preview__amount-container">
+              <div class="preview__token-amount">
+                {{
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
+              </div>
+              <div
+                *ngIf="state.tradeInfo.toValue.fiatAmount as amount"
+                class="preview__fiat-amount"
+              >
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">on {{ state.tradeInfo.toAsset.secondLabel }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileOutputTokenContainer>
+          <div class="preview__io-container">
+            <div class="preview__token-and-amount-container">
+              <div class="preview__token-container">
+                <div
+                  class="preview__second-image-container"
+                  [style]="{ background: state.tradeInfo.toAsset.secondColor }"
+                >
+                  <img
+                    [src]="state.tradeInfo.toAsset.secondImage"
+                    [alt]="state.tradeInfo.toAsset.secondImage"
+                  />
+                </div>
+                <img
+                  class="preview__main-image"
+                  [src]="state.tradeInfo.toAsset.mainImage"
+                  [alt]="state.tradeInfo.toAsset.mainLabel"
+                />
+              </div>
+              <div class="preview__token-amount">
+                {{
+                  state.tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ state.tradeInfo.toAsset.mainLabel }}
+              </div>
+            </div>
+            <div class="preview__fiat-container">
+              <div
+                *ngIf="state.tradeInfo.toValue.fiatAmount as amount"
+                class="preview__fiat-amount"
+              >
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="preview__token-info">
+                on
+                {{ state.tradeInfo.toAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div *ngIf="state.transaction.step !== 'success'" class="preview__swap-info">
+        <app-swap-data-element
+          [gasInfo]="getGasData(state?.tradeState?.trade)"
+          [feeInfoChange]="{
+            fee: state.tradeState?.feeInfo || null,
+            nativeToken: nativeToken$ | async
+          }"
+          [time]="getAverageTime(state?.tradeState)"
+        ></app-swap-data-element>
+      </div>
+
+      <div *ngIf="state.transaction.step === 'success'" class="preview__buttons">
+        <a
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          [safetyLink]="
+            state.transaction.data.hash
+              | scannerLink : state.transaction.data.toBlockchain : ADDRESS_TYPE.TRANSACTION
+          "
+        >
+          Explorer
+        </a>
+
+        <button tuiButton appearance="primary" type="button" size="m" (click)="navigateToHistory()">
+          See Details >
+        </button>
+      </div>
+
+      <div *ngIf="state.transaction.step !== 'success'" class="preview__transaction-details">
+        <app-transaction-details></app-transaction-details>
+      </div>
+
+      <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
+        <app-success-swap-info
+          [showPoints]="state?.tradeState?.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false"
+          [points]="state.transaction.data.points"
+        ></app-success-swap-info>
+      </div>
+    </div>
+
+    <div class="preview__action-container">
+      <button
+        class="preview__action-button"
+        *ngLet="buttonState$ | async as buttonState"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="buttonState.action()"
+        [disabled]="buttonState.disabled"
+      >
+        {{ buttonState.label }}
+      </button>
+      <button
+        *ngIf="state.transaction.step === 'destinationPending'"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="navigateToHistory()"
+      >
+        See Details >
+      </button>
+    </div>
+  </ng-container>
+</app-window-container>

@@ -1,350 +1,79 @@
 @use 'src/scss/core' as *;
 
-.data-list {
-  min-width: 230px;
-  padding: 16px 0;
-
-  @include b($mobile-md) {
-    padding: 0;
-  }
-
-  &__title {
-    padding: 10px 28px;
-
-    font-size: 18px;
-
-    background-color: var(--form-background);
-
-    @include b($mobile-md) {
-      padding: 0;
-    }
-  }
-
-  &__option {
-    justify-content: flex-start;
-    height: 45px;
-    min-height: initial !important;
-    margin: 0;
-    padding: 17px 28px !important;
-
-    color: var(--primary-text);
-    font-weight: 400 !important;
-
-    font-size: 18px !important;
-
-    border: none;
-    border-radius: 156px;
-
-    @include b($mobile-md) {
-      width: 100%;
-      height: unset;
-      padding: 15px 28px 15px 50px;
-
-      font-size: 16px;
-      text-align: left;
-
-      background-color: var(--form-background);
-      border-bottom: 1px solid var(--transparent-line);
-      border-radius: 0;
-
-      &:active {
-        color: var(--primary-color);
-
-        background-color: unset;
-
-        ::ng-deep svg {
-          path[fill='black'] {
-            fill: var(--primary-color);
-          }
-
-          rect[fill='black'] {
-            fill: var(--primary-color);
-          }
-        }
-      }
-    }
-
-    &:hover {
-      color: var(--primary-color);
-
-      ::ng-deep svg {
-        path[fill='black'] {
-          fill: var(--primary-color);
-        }
-
-        rect[fill='black'] {
-          fill: var(--primary-color);
-        }
-      }
-    }
-
-    &:active {
-      color: white;
-
-      background-color: var(--primary-color);
-
-      @include b($mobile-md) {
-        background-color: transparent;
-      }
-
-      a {
-        color: white;
-      }
-    }
-
-    &_disabled {
-      color: rgba(#909090, 0.6);
-
-      &:hover,
-      &:active,
-      &:focus {
-        color: rgba(#909090, 0.6);
-
-        background: transparent;
-
-        border-color: transparent;
-
-        cursor: default;
-      }
-    }
-
-    &_logout {
-      color: $rubic-text-error;
-    }
-
-    ::ng-deep {
-      a:not(.new-btn):not(.btn):not(.minimal-btn):not(.rubic-btn) {
-        color: var(--primary-text);
-        text-decoration: none;
-
-        transition: 0.35s color ease;
-      }
-    }
-  }
-
-  &__option-image {
-    width: 24px;
-    height: 20px;
-    margin-right: 15px;
-
-    text-align: center;
-
-    ::ng-deep svg {
-      width: auto;
-      height: 100%;
-
-      path[fill='black'] {
-        fill: var(--primary-text);
-      }
-
-      rect[fill='black'] {
-        fill: var(--primary-text);
-      }
-
-      path[fill='white'] {
-        fill: var(--primary-text);
-      }
-    }
-
-    &_history {
-      height: 24px;
-    }
-  }
-
-  &__link {
-    text-decoration: none !important;
-
-    @include b($mobile-md) {
-      border-bottom: 1px solid var(--transparent-line);
-
-      &:last-of-type {
-        border-bottom: none;
-      }
-    }
-
-    &_modal {
-      position: relative;
-      top: auto;
-      right: auto;
-
-      display: block;
-    }
-  }
-
-  &__address {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    cursor: default;
-
-    &:hover {
-      background: transparent;
-    }
-
-    img {
-      margin-right: 18px;
-    }
-  }
-
-  tui-opt-group {
-    margin: 0;
-
-    &:last-child {
-      padding-bottom: 0;
-    }
-  }
-}
-
-tui-opt-group:not(:empty) ~ tui-opt-group {
-  &::after {
-    top: 0;
-
-    background: #303030;
-  }
-
-  &::before {
-    display: none;
-  }
-}
-
-.rubic-menu {
-  &__chain-icon {
-    width: auto;
-    max-width: 18px;
-    height: auto;
-    margin-right: 5px;
-
-    vertical-align: middle;
-  }
-
-  &__mobile {
-    display: none;
-  }
-
-  &__login {
-    margin: 0 auto;
-  }
+:host {
+  --tui-data-list-padding: 5px;
 }
 
 ::ng-deep {
-  .rubic-menu__bottom {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 2px;
-    align-items: center;
-    padding: 10px 6px;
-
-    border-top: 1px solid rgba(225, 225, 225, 0.6);
-
-    [tuiButton] {
-      height: 45px;
-
-      font-size: 14px !important;
-    }
-  }
-}
-
-.notification-counter {
-  position: absolute;
-
-  top: 0;
-  right: -5px;
-
-  &_menu {
-    top: -4px;
-    right: 8px;
-  }
-}
-
-@include b($mobile-md) {
-  .notification-counter {
-    position: absolute;
-
-    top: 0;
-    right: -5px;
-
-    display: none;
-
-    &_menu {
-      top: -4px;
-      right: 8px;
-    }
-  }
-
-  tui-opt-group {
-    padding: 0;
-  }
-
-  ::ng-deep tui-accordion {
+  tui-accordion {
     tui-accordion-item {
-      &:first-of-type {
-        .t-wrapper {
-          &::after {
-            border-top: none !important;
+      .t-wrapper {
+        background: transparent !important;
+
+        .t-header {
+          background: transparent !important;
+        }
+      }
+
+      tui-expand {
+        .t-content {
+          padding: 0 !important;
+
+          .t-wrapper {
+            border-bottom: 1px solid var(--tui-base-04);
+            border-radius: 0;
+
+            :last-child {
+              border-bottom: none;
+            }
           }
         }
       }
     }
   }
+}
 
-  ::ng-deep tui-accordion-item {
-    --tui-base-01: var(--form-background);
-    --tui-base-04: var(--transparent-line);
+.image {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
 
-    .t-wrapper {
-      &::after {
-        border-right: none !important;
-        border-left: none !important;
-      }
-
-      .header {
-        padding: 0 1rem 0 0 !important;
-      }
-    }
-  }
-
-  ::ng-deep tui-expand {
-    .t-wrapper {
-      .t-content {
-        padding: 0;
-      }
-    }
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
   }
 }
 
-@include b($laptop-xl) {
-  .rubic-menu {
-    &__mobile {
-      display: none;
-    }
+.data-list {
+  --tui-data-list-padding: 5px;
+  --tui-data-list-margin: 0px;
 
-    &__container {
-      min-width: 153px;
+  &__element {
+    text-decoration: none;
+
+    &:not(:last-child) {
+      margin-bottom: 5px;
     }
   }
 
-  .notification-counter {
-    display: block;
+  &__element-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
   }
 }
 
-@include b($mobile-md) {
-  .menu-button {
-    ::ng-deep [data-tui-host-size='l'][tuiIconButton] {
-      width: 20px;
-      height: 24px;
+.image {
+  width: 24px;
+  height: 24px;
 
-      &._hovered,
-      &._pressed,
-      &._focused {
-        background: transparent !important;
-        box-shadow: none;
-
-        .t-wrapper {
-          background: transparent;
-        }
-      }
-    }
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
   }
+}
+
+a {
+  display: flex;
 }

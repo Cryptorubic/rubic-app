@@ -1,6 +1,7 @@
 // ***** breakpoints *****
 $laptop-xl: 1140;
 $laptop: 1023;
+$tablet-plus: 960;
 $tablet: 768;
 $mobile-md: 651;
 $mobile-md-minus: 599;
@@ -17,55 +18,98 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
 // ***** vars *****
 :root {
-  --scroll-size: 0px;
-  --primary-color: #{$primary-color};
-  --secondary-color: #{$secondary-color};
-  --filter-inversion: invert(1);
-  --accent-color: #9438a6;
+  --app-background: #282935;
+  --primary-background: var(--tui-base-01);
+  --secondary-background: var(--tui-secondary);
+  --dropdpwn-background: rgba(60, 61, 68, 0.85);
 
-  --transparent-line: #{$transparent-black};
+  --io-background: #222331;
 
-  --primary-background: rgb(246, 246, 246);
-  --form-background: rgb(255, 255, 255);
-  --form-background-transparent: rgba(255, 255, 255, 0.9);
-  --solid-background: rgb(255, 255, 255);
-  --secondary-background: rgba(0, 0, 0, 0.035);
-  --secondary-background-deposits: rgba(0, 0, 0, 0.035);
-  --iframe-primary-background: rgb(244, 244, 244);
 
-  --mobile-user-profile-background: rgb(255, 255, 255);
-  --mobile-ccr-best-route-label-text: rgb(0, 226, 142);
-  --mobile-ccr-best-route-label-background: rgba(0, 226, 142, 0.15);
+  --tui-primary: #00e28d;
+  --tui-primary-hover: #02b774;
+  --tui-primary-active: #02b774;
+  --tui-primary-text: #14141d;
 
-  --staking-form-duration-background: rgb(33, 33, 33);
-  --staking-form-selected-duration: rgb(46, 46, 46);
+  --tui-secondary: #3b3d4f;
+  --tui-secondary-hover: #4c4e67;
+  --tui-secondary-active: #4c4e67;
 
-  --swap-and-earn-points-about: rgb(241, 241, 241);
-  --swap-and-earn-tabs-border: rgb(227, 227, 227);
+  --tui-elevation-01: var(--tui-secondary);
+  --tui-elevation-02: var(--tui-secondary);
+  --tui-clear: var(--primary-background);
 
-  --primary-text: rgb(0, 0, 0);
-  --primary-text-invert: rgb(255, 255, 255);
-  --secondary-text: rgba(0, 0, 0, 0.5);
+  --tui-link: white;
+  --tui-link-hover: white;
 
-  --tui-primary: #{$primary-color};
-  --tui-primary-hover: #{darken($primary-color, 10%)};
-  --tui-primary-active: #{darken($primary-color, 10%)};
-  --tui-primary-text: var(--primary-text-invert);
+  --tui-base-01: #2c2d3e;
+  --tui-base-02: #2c2d3e;
+  --tui-base-03: #2c2d3e;
+  --tui-base-04: #4d4d59;
 
-  --tui-secondary: rgba(255, 255, 255, 1);
-  --tui-secondary-hover: rgba(255, 255, 255, 0.5);
-  --tui-secondary-active: rgba(255, 255, 255, 0.5);
-  --tui-secondary-text: var(--primary-text);
-  --tui-link: var(--primary-text);
-  --tui-link-hover: var(--primary-text);
+  --tui-text-01: white;
+  --tui-text-02: #9a9ab0;
+  --tui-text-03: #9a9ab0;
 
-  --tui-text-02: #3b3a3a;
-  --tui-text-03: var(--tui-text-02);
+  --tui-padding-xs: 0.25rem;
+  --tui-padding-s: 0.5rem;
+  --tui-padding-xl: 1.25rem;
 
-  --selection-color: rgb(243 249 243);
+  //--scroll-size: 0px;
+  //--primary-color: #{$primary-color};
+  //--secondary-color: #{$secondary-color};
+  //--filter-inversion: invert(1);
+  //--accent-color: #9438a6;
+  //
+  //--transparent-line: #{$transparent-black};
+  //
+  //--primary-background: rgb(246, 246, 246);
+  //--form-background: rgb(255, 255, 255);
+  //--form-background-transparent: rgba(255, 255, 255, 0.9);
+  //--solid-background: rgb(255, 255, 255);
+  //--secondary-background: rgba(0, 0, 0, 0.035);
+  //--secondary-background-deposits: rgba(0, 0, 0, 0.035);
+  //--iframe-primary-background: rgb(244, 244, 244);
+  //
+  //--mobile-user-profile-background: rgb(255, 255, 255);
+  //--mobile-ccr-best-route-label-text: rgb(0, 226, 142);
+  //--mobile-ccr-best-route-label-background: rgba(0, 226, 142, 0.15);
+  //
+  //--staking-form-duration-background: rgb(33, 33, 33);
+  //--staking-form-selected-duration: rgb(46, 46, 46);
+  //
+  //--swap-and-earn-points-about: rgb(241, 241, 241);
+  //--swap-and-earn-tabs-border: rgb(227, 227, 227);
+  //
+  //--primary-text: rgb(0, 0, 0);
+  //--primary-text-invert: rgb(255, 255, 255);
+  //--secondary-text: rgba(0, 0, 0, 0.5);
+  //
+  //--tui-primary: #{$primary-color};
+  //--tui-primary-hover: #{darken($primary-color, 10%)};
+  //--tui-primary-active: #{darken($primary-color, 10%)};
+  //--tui-primary-text: var(--primary-text-invert);
+  //
+  //--tui-secondary: rgba(255, 255, 255, 1);
+  //--tui-secondary-hover: rgba(255, 255, 255, 0.5);
+  //--tui-secondary-active: rgba(255, 255, 255, 0.5);
+  //--tui-secondary-text: var(--primary-text);
+  //--tui-link: var(--primary-text);
+  //--tui-link-hover: var(--primary-text);
+  //
+  //--tui-text-02: #3b3a3a;
+  //--tui-text-03: var(--tui-text-02);
+  //
+  //--selection-color: rgb(243 249 243);
+  //
+  //--error-color: #e9590c;
+  //--warning-color: #f2994a;
 
-  --error-color: #e9590c;
-  --warning-color: #f2994a;
+  //
+
+  --tui-disabled-opacity: 0.5;
+  --tui-radius-l: 17px;
+  --tui-radius-m: 17px;
 }
 
 // ***** typography *****
@@ -110,14 +154,6 @@ $text-gray-2: #878787;
 $rubic-font-size-main: 14px;
 $rubic-font-size-01: 16px;
 $rubic-font-size-02: 18px;
-
-
-// ***** iframe sizes *****
-$iframe-horizontal-width: 1180px;
-$iframe-horizontal-height: 180px;
-$iframe-horizontal-input-width: 363px;
-$iframe-vertical-width: 372px;
-$iframe-vertical-height: 530px;
 
 // ***** themes *****
 $dark: 'dark';

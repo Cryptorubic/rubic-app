@@ -1,34 +1,79 @@
 @use 'src/scss/core' as *;
 
 .tui-table {
-  .tui-table__tr:first-child {
-    border-bottom: none;
+  thead {
+    height: var(--tui-height-s);
+
+    .tui-table__tr {
+      &:hover {
+        background: initial;
+      }
+    }
+
+    .tui-table__th {
+      @include font(11px, 10px, 500, var(--tui-text-03), 0.45px);
+
+      height: auto;
+      padding: 0;
+
+      text-align: center;
+    }
   }
 
-  .tui-table__tr:last-child {
-    border-bottom: none;
+  tbody,
+  tfoot {
+    .tui-table__tr.data-row:hover {
+      background: var(--secondary-background);
+
+      .tui-table__td-actions {
+        opacity: 1;
+      }
+    }
+
+    .tui-table__tr {
+      height: var(--tui-height-s);
+
+      &:hover {
+        background: initial;
+      }
+    }
 
     .tui-table__td {
-      height: auto;
-      padding: 0 1rem;
+      @include font(11px, 10px, 500, var(--primary-text), 0.45px);
 
-      color: var(--primary-color);
+      height: auto;
+      padding: 0;
+
+      text-align: center;
+
+      vertical-align: middle;
+
+      &:first-child {
+        padding-left: var(--tui-padding-m);
+
+        border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+      }
+
+      &:last-child {
+        padding-right: var(--tui-padding-m);
+
+        border-radius: 0 var(--tui-radius-m) var(--tui-radius-m) 0;
+      }
     }
   }
 
-  .tui-table__tr.data-row {
-    background: var(--secondary-background-deposits);
+  tfoot {
+    .tui-table__td {
+      color: var(--tui-primary);
+    }
+
+    .tui-table__td.total {
+      text-align: left;
+    }
+  }
+
+  .tui-table__tr {
     border-bottom: none;
-
-    .tui-table__td:first-child {
-      border-top-left-radius: 14px;
-      border-bottom-left-radius: 14px;
-    }
-
-    .tui-table__td:last-child {
-      border-top-right-radius: 14px;
-      border-bottom-right-radius: 14px;
-    }
   }
 
   .tui-table__td {
@@ -37,53 +82,27 @@
       align-items: center;
 
       img {
-        width: 26px;
-        height: 26px;
-        margin-right: 8px;
+        width: 13px;
+        height: 15px;
+        margin-right: 5px;
       }
     }
 
     &-actions {
       display: flex;
+      gap: var(--tui-padding-xs);
       justify-content: flex-end;
 
-      app-rubic-button:first-child {
-        margin-right: 8px;
+      opacity: 0;
+
+      button {
+        font-size: 11px;
+        white-space: nowrap;
       }
-
-      ::ng-deep app-rubic-button {
-        button {
-          height: 27px;
-        }
-
-        .t-wrapper[data-appearance='secondary'] {
-          background: var(--tui-secondary);
-        }
-
-        .t-loader[data-tui-element-size='m'] {
-          font-size: unset;
-        }
-
-        .t-wrapper {
-          padding: 0 10px;
-        }
-      }
-    }
-  }
-
-  tbody {
-    td {
-      font-size: 15px;
-    }
-
-    ::ng-deep app-rubic-button button {
-      font-size: 15px !important;
     }
   }
 }
 
-::ng-deep app-rubic-button {
-  .leave-btn_disabled {
-    opacity: 0.4;
-  }
+.leave-btn_disabled {
+  opacity: 0.4;
 }

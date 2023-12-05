@@ -1,22 +1,13 @@
 <tui-root>
   <ng-container *ngIf="isBackendAvailable">
-    <div class="wrapper" *noFrame>
+    <div class="wrapper">
       <app-header></app-header>
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
-      <app-rubic-footer class="footer"></app-rubic-footer>
+      <app-rubic-footer *noFrame class="footer"></app-rubic-footer>
     </div>
     <app-live-chat></app-live-chat>
-
-    <div class="iframe-wrapper" *onlyFrame>
-      <div class="iframe-content">
-        <app-header></app-header>
-        <main class="main-content">
-          <router-outlet></router-outlet>
-        </main>
-      </div>
-    </div>
   </ng-container>
 
   <ng-container ngProjectAs="tuiOverDialogs">

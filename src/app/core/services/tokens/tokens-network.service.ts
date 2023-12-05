@@ -9,7 +9,6 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 
@@ -49,8 +48,7 @@ export class TokensNetworkService {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensApiService: TokensApiService,
-    private readonly authService: AuthService,
-    private readonly iframeService: IframeService
+    private readonly authService: AuthService
   ) {
     this.setupSubscriptions();
   }
@@ -58,15 +56,13 @@ export class TokensNetworkService {
   private setupSubscriptions(): void {
     this._tokensRequestParameters$
       .pipe(
-        switchMap(params => {
-          return this.tokensApiService.getTokensList(params, this._tokensNetworkState$);
+        switchMap(() => {
+          return this.tokensApiService.getTokensList(this._tokensNetworkState$);
         }),
         tap(backendTokens => {
           this.needRefetchTokens = this.tokensApiService.needRefetchTokens;
 
-          if (!this.iframeService.isIframe) {
-            this.tokensStoreService.updateStorageTokens(backendTokens);
-          }
+          this.tokensStoreService.updateStorageTokens(backendTokens);
           this.tokensStoreService.patchTokens(backendTokens, false);
         }),
         switchMap(backendTokens => {

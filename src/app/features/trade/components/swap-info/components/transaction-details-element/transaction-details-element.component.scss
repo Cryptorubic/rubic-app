@@ -1,0 +1,28 @@
+.details-element {
+  display: flex;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+
+  &__text {
+    display: flex;
+    align-items: center;
+
+    &-title {
+      white-space: nowrap;
+    }
+
+    &-icon {
+      width: 0.75rem;
+      height: 0.75rem;
+      margin-right: var(--tui-padding-s);
+    }
+  }
+
+  &__value {
+    margin-left: auto;
+
+    white-space: nowrap;
+  }
+}

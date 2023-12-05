@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { NotificationsService } from 'src/app/core/services/notifications/notifications.service';
 import { UnknownErrorComponent } from 'src/app/core/errors/components/unknown-error/unknown-error.component';
-import { UnknownError } from 'src/app/core/errors/models/unknown.error';
 import { CUSTOM_RPC_ERROR } from '@core/errors/models/standard/custom-rpc-error';
 import { EIP_1474 } from '@core/errors/models/standard/eip-1474';
 import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
@@ -42,19 +41,6 @@ export class ErrorsService {
   }
 
   /**
-   * Catch error, show console message and notification if error is RubicError instance or show default unknown error message
-   * @param error Caught error.
-   */
-  public catchAnyError(error: Error): void {
-    if (error instanceof RubicError) {
-      this.catch(error);
-    } else {
-      console.debug(error);
-      this.catch(new UnknownError());
-    }
-  }
-
-  /**
    * Catch error, show console message and notification if it needed.
    * @param err Caught error.
    */
@@ -70,13 +56,16 @@ export class ErrorsService {
       return;
     }
 
-    const isWarning = error instanceof RubicWarning;
+    const isWarning =
+      error instanceof RubicWarning || (error instanceof RubicError && error.isWarning);
 
     const options = {
       label: this.translateService.instant(isWarning ? 'common.warning' : 'common.error'),
       status: isWarning ? TuiNotification.Warning : TuiNotification.Error,
       data: {},
-      autoClose: 7000
+      autoClose: 7000,
+      icon: '',
+      defaultAutoCloseTime: 0
     };
 
     if (this.isCustomRPCError(error)) {
