@@ -27,19 +27,23 @@ import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 export class ProvidersListComponent {
   @PolymorpheusInput()
   @Input({ required: true })
-  isModal: boolean = this.context?.data?.isModal || false;
+  public readonly isModal: boolean = this.context?.data?.isModal || false;
 
   @PolymorpheusInput()
   @Input()
-  shortedInfo: boolean = this.context?.data?.shortedInfo || false;
+  public readonly shortedInfo: boolean = this.context?.data?.shortedInfo || false;
 
   @PolymorpheusInput()
   @Input({ required: true })
-  states: TradeState[] = this.context?.data?.states || [];
+  public readonly states: TradeState[] = this.context?.data?.states || [];
 
   @PolymorpheusInput()
   @Input({ required: true })
-  selectedTradeType: TradeProvider = this.context?.data?.selectedTradeType;
+  public readonly selectedTradeType: TradeProvider = this.context?.data?.selectedTradeType;
+
+  @PolymorpheusInput()
+  @Input({ required: true })
+  public readonly noRoutes: boolean = this.context?.data?.noRoutes || false;
 
   @PolymorpheusInput()
   @Input({ required: true })
@@ -55,13 +59,18 @@ export class ProvidersListComponent {
     )
   );
 
-  public handleTradeSelection(event: MouseEvent, tradeType: TradeProvider): void {
+  public handleTradeSelection(
+    event: MouseEvent,
+    tradeType: TradeProvider,
+    tradeError?: Error
+  ): void {
     const element = event.target as HTMLElement;
 
     if (
       element?.parentElement?.className?.includes?.('element__expander') ||
       element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
-      element?.className?.includes?.('element__expander')
+      element?.className?.includes?.('element__expander') ||
+      tradeError
     ) {
       event.preventDefault();
       return;
@@ -85,6 +94,7 @@ export class ProvidersListComponent {
         calculationProgress: CalculationProgress;
         isModal: boolean;
         shortedInfo: boolean;
+        noRoutes: boolean;
       }
     >,
     private readonly swapsFormService: SwapsFormService,

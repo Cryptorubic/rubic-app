@@ -20,6 +20,7 @@ import { DestinationTxStatus } from '@features/history/models/destination-tx-sta
 import { FormControl } from '@angular/forms';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
 import { TableService } from '@features/history/models/table-service';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
 @Injectable()
 export class CrossChainTableService extends TableService<
@@ -37,7 +38,6 @@ export class CrossChainTableService extends TableService<
     tuiControlValue<string>(this.statusFilter),
     this.activeItemIndex$
   ]).pipe(
-    // zero time debounce for a case when both key and direction change
     debounceTime(50),
     switchMap(query => this.getData(...query).pipe(startWith(null))),
     share()
@@ -75,7 +75,7 @@ export class CrossChainTableService extends TableService<
     page: number,
     pageSze: number,
     statusFilter: string,
-    activeIndex: 0 | 1
+    activeIndex: 0 | 1 | 2
   ): Observable<{
     data: CrossChainTableData[];
     total: number;
@@ -145,7 +145,10 @@ export class CrossChainTableService extends TableService<
           explorerLink: backendData.dest_transaction.explorer_url
         };
 
-        const provider = TRADES_PROVIDERS[backendData.provider as TradeProvider];
+        const provider =
+          TRADES_PROVIDERS[
+            FROM_BACKEND_CROSS_CHAIN_PROVIDERS[backendData.provider] as TradeProvider
+          ];
 
         return {
           fromToken,

@@ -65,8 +65,7 @@ export class AirdropPointsService {
           finalPoints = points.participant ? 12 : 25;
         }
 
-        return tradeType.to.blockchain === BLOCKCHAIN_NAME.LINEA ||
-          tradeType.to.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
+        return tradeType.to.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
           tradeType.from.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC
           ? Math.trunc(finalPoints / 2)
           : finalPoints;

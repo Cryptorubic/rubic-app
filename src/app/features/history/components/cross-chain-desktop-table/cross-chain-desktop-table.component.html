@@ -98,20 +98,38 @@
             </a>
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
-            <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">
-              <app-rubic-badge
-                *ngIf="item?.toTx?.status"
-                [status]="item.toTx.status.appearance"
-                [label]="item.toTx.status.label"
+            <ng-container *ngIf="item.toTx.status">
+              <a
+                *ngIf="!shouldShowActionButton(item); else statusToActionButton"
+                class="token-container__inner"
+                [safetyLink]="item.toTx.explorerLink"
               >
-              </app-rubic-badge>
-              <img
-                *ngIf="item.toTx.explorerLink"
-                class="status-from-link-arrow"
-                src="assets/images/icons/arrow/link-arrow.svg"
-                alt="link-arrow"
-              />
-            </a>
+                <app-rubic-badge
+                  [status]="item.toTx.status.appearance"
+                  [label]="item.toTx.status.label"
+                >
+                </app-rubic-badge>
+                <img
+                  *ngIf="item.toTx.explorerLink"
+                  class="status-to-link-arrow"
+                  src="assets/images/icons/arrow/link-arrow.svg"
+                  alt="link-arrow"
+                />
+              </a>
+              <ng-template #statusToActionButton>
+                <div class="statusTo-actionButton__wrapper">
+                  <app-rubic-button
+                    [size]="'xs'"
+                    [loading]="isLoadingActionButton(item.fromTx.hash)"
+                    [disabled]="isLoadingActionButton(item.fromTx.hash)"
+                    fullWidth
+                    (onClick)="handleStatusToItemClick(item)"
+                  >
+                    {{ item.toTx.status.label }}
+                  </app-rubic-button>
+                </div>
+              </ng-template>
+            </ng-container>
           </td>
           <td *tuiCell="'provider'" tuiTd>
             <div class="provider-container" *ngIf="item?.provider?.name">

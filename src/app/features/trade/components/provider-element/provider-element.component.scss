@@ -7,18 +7,24 @@
   border-radius: var(--tui-radius-m);
   cursor: pointer;
 
+  &_disabled {
+    cursor: no-drop;
+    opacity: 0.75;
+  }
+
   &__provider-container {
     padding: var(--tui-padding-l);
 
     border-bottom: 1px solid var(--tui-secondary);
 
-    &_best {
+    &_selected {
       background: var(--io-background);
     }
   }
 
   &__row {
     display: flex;
+    gap: var(--tui-padding-s);
   }
 
   &__amounts-container {
@@ -99,13 +105,19 @@
     background: linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%);
   }
 
+  &__warning-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase;
+
+    background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
+  }
+
   ::ng-deep &__expander {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 20px;
     height: 20px;
-    margin-left: var(--tui-padding-s);
 
     svg {
       transition: 0.2s ease-in-out;

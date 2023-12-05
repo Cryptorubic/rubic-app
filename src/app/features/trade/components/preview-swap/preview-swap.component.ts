@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TransactionStateComponent } from '@features/trade/components/transaction-state/transaction-state.component';
-import { map, switchMap } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
@@ -68,7 +68,8 @@ export class PreviewSwapComponent {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   public readonly buttonState$ = this.transactionState$.pipe(
-    map(el => {
+    combineLatestWith(this.tradeState$.pipe(first())),
+    map(([el, tradeState]) => {
       const isCrossChain =
         this.swapsFormService.inputValue.fromBlockchain !==
         this.swapsFormService.inputValue.toBlockchain;
@@ -120,6 +121,11 @@ export class PreviewSwapComponent {
         state.disabled = false;
         state.action = () => this.connectWallet();
         state.label = `Connect wallet`;
+      }
+      if (tradeState?.error) {
+        state.disabled = true;
+        state.action = () => {};
+        state.label = tradeState.error.message;
       }
       if (
         (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&

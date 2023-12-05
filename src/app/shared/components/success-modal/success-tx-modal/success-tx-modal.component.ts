@@ -112,10 +112,6 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public getBonusPoints(isParticipant: boolean): number {
-    if (isParticipant) {
-      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 6 : 12;
-    } else {
-      return this.blockchain === BLOCKCHAIN_NAME.LINEA ? 12 : 25;
-    }
+    return isParticipant ? 12 : 25;
   }
 }
