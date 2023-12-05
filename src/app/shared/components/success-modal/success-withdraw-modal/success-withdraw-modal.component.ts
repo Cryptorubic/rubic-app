@@ -1,8 +1,8 @@
 import {
-  Component,
-  ChangeDetectionStrategy,
-  Inject,
   AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
   OnDestroy
 } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';

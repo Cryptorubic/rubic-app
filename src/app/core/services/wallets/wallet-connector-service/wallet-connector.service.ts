@@ -13,7 +13,6 @@ import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { IframeService } from '@core/services/iframe/iframe.service';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
@@ -35,6 +34,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
+import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 
 @Injectable({
   providedIn: 'root'
@@ -71,7 +71,6 @@ export class WalletConnectorService {
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
-    private readonly iframeService: IframeService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone
@@ -130,8 +129,11 @@ export class WalletConnectorService {
       );
     }
 
-    // walletName === WALLET_NAME.TRON_LINK
-    return new TronLinkAdapter(...defaultConstructorParameters);
+    if (walletName === WALLET_NAME.TRON_LINK) {
+      return new TronLinkAdapter(...defaultConstructorParameters);
+    }
+
+    this.errorService.catch(new WalletNotInstalledError());
   }
 
   public async activate(): Promise<void> {

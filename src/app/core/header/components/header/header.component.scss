@@ -1,288 +1,53 @@
 @use 'src/scss/core' as *;
 
-.button-link {
-  display: inline-block;
-  padding: 14px 20px;
-
-  color: var(--primary-text);
-
-  font-size: $rubic-font-size-01;
-  text-decoration: none;
-
-  background-color: var(--tui-secondary);
-
-  border-radius: 100px;
-
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: none;
-
-    background-color: var(--tui-secondary-hover);
-  }
-
-  &:hover {
-    transition: 0.3s ease-in-out;
-  }
-
-  &:not(&_active) {
-    background-color: transparent;
-
-    &:hover {
-      background-color: var(--tui-secondary-hover);
-    }
-  }
-
-  &:active,
-  &_active:active {
-    background-color: var(--primary-color);
-
-    :host-context(html.dark) & {
-      color: var(--primary-text) !important;
-    }
-  }
-
-  &:focus {
-    text-decoration: none;
-
-    border-color: var(--primary-color);
-  }
-
-  &_disabled {
-    color: $rubic-text-disable !important;
-
-    pointer-events: none;
-  }
-}
-
 .rubic-header {
   position: relative;
 
   display: flex;
+  gap: 15px;
   align-items: center;
-  justify-content: space-between;
-  padding: 30px 30px 24px;
-
-  @include b($mobile-sm) {
-    padding: 5px 10px !important;
-
-    > * {
-      @include iframe {
-        transform: unset;
-      }
-    }
-  }
-
-  @include b($mobile-md) {
-    .rubic-header-mobile {
-      transform: unset;
-    }
-  }
-
-  @include iframe {
-    margin-right: 50px;
-    padding: 0 !important;
-
-    app-iframe-logout-button {
-      margin-left: 6px;
-    }
-  }
-
-  @include iframe-horizontal {
-    app-iframe-logout-button {
-      margin-left: 10px;
-    }
-  }
-
-  @include hide-unused-ui {
-    display: none;
-  }
-
-  &__disabled-link {
-    color: #909090;
-    font-size: 16px;
-  }
-
-  &__nav,
-  &__profile {
-    display: flex;
-    align-items: center;
-  }
-
-  &__profile {
-    grid-gap: 25px;
-
-    @include iframe {
-      grid-gap: 0;
-
-      &-user {
-        margin-left: 6px;
-      }
-    }
-  }
+  padding: 30px;
 
   &__logo {
     display: block;
     margin-right: 40px;
 
-    @include iframe-vertical {
-      margin-right: auto;
-    }
-
     img {
       display: block;
     }
   }
+}
 
-  &__menu {
-    display: inline-flex;
-    margin-right: auto;
+.staking-button {
+  margin-right: auto;
+}
+
+.image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 100%;
+}
+
+@include b($mobile-md) {
+  .rubic-header {
+    justify-content: space-between;
+    padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 
-  &__nav {
-    position: absolute;
-    left: 50%;
-
-    gap: 10px;
-
-    width: 565px;
-
-    transform: translateX(-50%);
-  }
-
-  &__profile-trades {
-    position: relative;
-  }
-
-  &__buy-token {
-    flex-shrink: 0;
-    margin: 0 25px;
-  }
-
-  &-mobile {
+  app-rubic-menu-toggler,
+  app-points-button,
+  app-language-selector,
+  app-history-button {
     display: none;
   }
 
-  &__point-button {
-    display: block;
-    margin-left: 5px;
-
-    transform: scale(0.9);
-  }
-}
-
-.notification-counter {
-  position: absolute;
-  top: -5px;
-  right: 0;
-
-  &[data-tui-host-status='default'] {
-    color: white;
-
-    background-color: var(--primary-color);
-  }
-
-  &[data-tui-host-padding='m'][data-tui-host-size='s'] {
-    padding: 1px 0.375rem 0;
-  }
-}
-
-@include b($laptop-xl) {
-  .rubic-header {
-    padding: 21px 20px 19px;
-
-    &__profile-trades,
-    &__login,
-    &__nav {
+  button {
+    &.theme-switcher,
+    &.swap-button,
+    &.staking-button {
       display: none;
-    }
-
-    &__profile-user {
-      @include iframe {
-        display: block;
-      }
-    }
-
-    &__logo {
-      margin-right: auto;
-    }
-
-    &__menu {
-      order: 1;
-      margin-right: 0;
-      margin-left: 0;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .rubic-header {
-    &-mobile {
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 99999;
-
-      display: flex;
-    }
-
-    &__profile-user {
-      display: block;
-
-      transform: scale(0.9);
-    }
-
-    &__login {
-      display: none;
-    }
-
-    &__menu {
-      display: none;
-    }
-
-    &__settings {
-      display: none;
-    }
-
-    &__logo_hide {
-      display: none;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .rubic-header {
-    &__logo {
-      img {
-        margin-left: 3px;
-      }
-    }
-
-    &__buy-token {
-      display: none;
-    }
-
-    ::ng-deep &__buy-token {
-      button[tuiButton][data-tui-host-size='l'] {
-        height: 40px;
-
-        font-size: 14px;
-
-        .t-wrapper {
-          padding: 0 20px !important;
-        }
-      }
-    }
-  }
-}
-
-.rubic-header {
-  @include iframe-vertical {
-    &__logo {
-      img {
-        width: 80px;
-      }
     }
   }
 }

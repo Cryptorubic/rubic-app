@@ -1,12 +1,12 @@
 import {
-  Component,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
-  ViewChildren,
+  Component,
   QueryList,
+  Self,
   TemplateRef,
-  Self
+  ViewChildren
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -16,7 +16,6 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
 import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -36,7 +35,6 @@ export class UserProfileComponent implements AfterViewInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly recentTradesStoreService: RecentTradesStoreService,
     private readonly modalService: ModalService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
@@ -65,8 +63,6 @@ export class UserProfileComponent implements AfterViewInit {
 
   public dropdownIsOpened = false;
 
-  public readonly unreadTrades$ = this.recentTradesStoreService.unreadTrades$;
-
   @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
 
   ngAfterViewInit(): void {
@@ -85,14 +81,6 @@ export class UserProfileComponent implements AfterViewInit {
 
   public getDropdownStatus(status: boolean): void {
     this.dropdownIsOpened = status;
-  }
-
-  public openRecentTradesModal(): void {
-    this.modalService
-      .openRecentTradesModal({
-        size: this.headerStore.isMobile ? 'page' : ('xl' as 'l') // hack for custom modal size
-      })
-      .subscribe();
   }
 
   public openLimitOrdersModal(): void {}

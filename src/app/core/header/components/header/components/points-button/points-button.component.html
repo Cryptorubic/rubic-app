@@ -1,17 +1,19 @@
-<ng-container *ngLet="isAuth$ | async as isAuth">
-  <app-rubic-button
-    *noFrame
-    class="button_buy-token"
-    (click)="navigateToSwapAndEarn()"
-    appearance="secondary"
-  >
-    <img class="image" src="assets/images/rbc-white.png" alt="" />
-    <ng-container *ngIf="isAuth; else text">
-      <span [style]="isAuth ? 'color: #ffffff' : ''">{{ points$ | async }}</span>
-    </ng-container>
-  </app-rubic-button>
-
-  <ng-template #text>
-    <span [style]="isAuth ? '' : 'color: #000000'">Swap to Earn</span>
-  </ng-template>
+<ng-container>
+  <ng-container *ngLet="isAuth$ | async as isAuth">
+    <button
+      tuiButton
+      appearance="secondary"
+      type="button"
+      (click)="navigateToSwapAndEarn()"
+      size="m"
+    >
+      <img class="image" src="assets/images/rbc-white.png" alt="" />
+      <ng-container *ngIf="isAuth; else text">
+        <span>{{ points$ | async }}</span>
+      </ng-container>
+    </button>
+    <ng-template #text>
+      <span>Swap to Earn</span>
+    </ng-template>
+  </ng-container>
 </ng-container>

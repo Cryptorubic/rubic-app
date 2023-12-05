@@ -101,7 +101,8 @@
     "noSelectedToken": "Select Token",
     "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported."
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "About",
@@ -291,10 +292,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "gasRefund": {
@@ -471,6 +471,7 @@
       "rewards": "Rewards",
       "endDate": "End Date",
       "claimRewards": "Claim Rewards",
+      "claim": "Claim",
       "total": "TOTAL",
       "totalRBC": "TOTAL RBC:",
       "totalRewards": "TOTAL REWARDS:",
@@ -512,9 +513,9 @@
     },
     "successTxModal": {
       "see": "See ",
-      "transactionDetailsLink":"transaction details",
+      "transactionDetailsLink": "transaction details",
       "itWillAppearsIn": ". It will appears in ",
-      "myTradesLink":"My trades",
+      "myTradesLink": "My trades",
       "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
@@ -698,10 +699,11 @@
       "staked": "Staked",
       "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
+      "changeNetwork": "Change Network",
       "incorrectAddressError": "Entered address is incorrect",
-      "notParticipant": "You are not a participant",
-      "closed": "Closed"
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
@@ -717,6 +719,18 @@
     "modals": {
       "success": "Your tokens are on the way!",
       "explorerLink": "Check the transaction on explorer."
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }

@@ -1,9 +1,0 @@
-<div class="buttons">
-  <app-direct-buy-button (onClick)="handleDirectBuy.emit()"></app-direct-buy-button>
-
-  <app-swap-button
-    *ngIf="(isDirectBuy$ | async) === false"
-    [buttonText]="buttonText"
-    (onClick)="onSwapClick.emit()"
-  ></app-swap-button>
-</div>

@@ -7,9 +7,5 @@ export interface WalletProvider {
   desktopOnly: boolean;
   mobileOnly: boolean;
   display: boolean;
-  supportsInHorizontalIframe: boolean;
-  supportsInVerticalIframe: boolean;
-  supportsInVerticalMobileIframe: boolean;
-  supportsInIframe: boolean;
   disabled: boolean;
 }

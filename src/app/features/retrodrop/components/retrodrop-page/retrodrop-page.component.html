@@ -1,0 +1,34 @@
+<app-window-container class="retrodrop">
+  <ng-container header>Retrodrop</ng-container>
+  <ng-container *ngIf="isAuth$ | async; else loginButton">
+    <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
+      <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
+        <tui-loader [showLoader]="fetchUserInfoLoading$ | async" [overlay]="true">
+          <tui-scrollbar>
+            <app-claim-round-row-container
+              *ngFor="let round of rounds$ | async; trackBy: trackByRoundNumber"
+              [isModal]="false"
+              [loading]="claimLoading$ | async"
+              [inputRound]="round"
+              (handleClaim)="handleClaim($event)"
+            ></app-claim-round-row-container>
+          </tui-scrollbar>
+        </tui-loader>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</app-window-container>
+
+<ng-template #loginButton>
+  <app-login-button></app-login-button>
+</ng-template>
+<ng-template #notMember>
+  <p class="retrodrop__not-member">You are not a participant in the retrodrop.</p>
+</ng-template>
+
+<ng-template #serverRequestFailed>
+  <app-no-result
+    label="The server request has failed"
+    description="Please try reloading the page."
+  ></app-no-result>
+</ng-template>

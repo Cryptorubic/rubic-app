@@ -7,13 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'navigation.changeNowRecentTrades',
-    type: 'internal',
-    link: 'changenow-recent-trades',
-    imagePath: `${defaultSrc}history.svg`,
-    target: '_self'
-  },
-  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,
@@ -44,10 +37,17 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}team.svg`
   },
   {
+    translateKey: 'navigation.retrodrop',
+    type: 'internal',
+    link: 'retrodrop',
+    target: '_self',
+    imagePath: `${defaultSrc}retrodrop.svg`
+  },
+  {
     translateKey: 'Testnet App',
     type: 'external',
     link: EXTERNAL_LINKS.TESTNET_APP,
-    imagePath: `${defaultSrc}testnet.svg`
+    imagePath: `${defaultSrc}test.svg`
   }
 ] as NavigationItem[];
 
@@ -74,7 +74,13 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Swap to Earn',
       type: 'internal',
-      link: ROUTE_PATH.SWAP_AND_EARN,
+      link: ROUTE_PATH.AIRDROP,
+      active: false
+    },
+    {
+      translateKey: 'Retrodrop',
+      type: 'internal',
+      link: ROUTE_PATH.RETRODROP,
       active: false
     },
     {

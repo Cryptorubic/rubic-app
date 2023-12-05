@@ -1,19 +1,23 @@
-<div
-  class="t-close"
-  inlineSVG="assets/images/icons/crosshair.svg"
-  (click)="context.completeWith(false)"
-></div>
-<div class="title">{{ 'staking.newPositionModal.title' | translate }}</div>
-<div class="text">
-  <span [class.tui-skeleton]="!amount">
-    {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }}</span
-  >
-  {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ duration }}
-  {{ 'staking.common.months' | translate }}. <br />{{
-    'staking.stakeForm.hint.lockedUntil' | translate
-  }}
-  {{ unlockDate | date : 'mediumDate' }}
+<div class="new-position__info">
+  <div class="title">{{ 'staking.newPositionModal.title' | translate }}</div>
+  <div class="text">
+    <span [class.tui-skeleton]="!amount">
+      {{ amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 2 } }}</span
+    >
+    {{ 'staking.stakeForm.hint.lockedRBCExpiresIn' | translate }} {{ duration }}
+    {{ 'staking.common.months' | translate }}. <br />{{
+      'staking.stakeForm.hint.lockedUntil' | translate
+    }}
+    {{ unlockDate | date : 'mediumDate' }}
+  </div>
 </div>
-<app-rubic-button appearance="primary" class="agree" (onClick)="context.completeWith(true)">{{
-  'staking.newPositionModal.buttonText' | translate
-}}</app-rubic-button>
+<button
+  tuiButton
+  type="button"
+  size="m"
+  appearance="primary"
+  class="agree"
+  (click)="context.completeWith(true)"
+>
+  {{ 'staking.newPositionModal.buttonText' | translate }}
+</button>

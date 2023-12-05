@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { RecentTradesStoreService } from '@app/core/services/recent-trades/recent-trades-store.service';
+import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 
 @Component({
   selector: 'app-rubic-menu-toggler',
@@ -20,7 +20,7 @@ export class RubicMenuTogglerComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly recentTradesStoreService: RecentTradesStoreService
+    private readonly recentTradesStoreService: UnreadTradesService
   ) {}
 
   public closeMenu(): void {

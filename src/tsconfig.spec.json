@@ -20,7 +20,8 @@
       "@app/*": ["src/app/*"],
       "@core/*": ["src/app/core/*"],
       "@features/*": ["src/app/features/*"],
-      "@shared/*": ["src/app/shared/*"]
+      "@shared/*": ["src/app/shared/*"],
+      "zlib": ["node_modules/browserify-zlib"]
     }
   },
   "files": [

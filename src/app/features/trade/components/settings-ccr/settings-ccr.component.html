@@ -1,0 +1,99 @@
+<div class="settings">
+  <form [formGroup]="crossChainRoutingForm" class="settings__form">
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.crossChainRouting.slippage' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.crossChainRouting.slippageTitle' | translate }}</label>
+    </div>
+    <div class="settings__row" *ngLet="formValue$ | async as formValue">
+      <button
+        tuiButton
+        [appearance]="crossChainRoutingForm.value.autoSlippageTolerance ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="toggleAutoSlippageTolerance()"
+      >
+        Auto
+      </button>
+
+      <button
+        tuiButton
+        [appearance]="formValue.slippageTolerance === 1.5 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(1.5)"
+      >
+        1.5%
+      </button>
+
+      <button
+        tuiButton
+        [appearance]="formValue.slippageTolerance === 3 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(3)"
+      >
+        3%
+      </button>
+
+      <tui-input-number
+        id="slippage"
+        class="settings__slippage-input"
+        tuiTextfieldSize="s"
+        tuiTextfieldPostfix="%"
+        [min]="1.5"
+        [max]="50"
+        [ngModel]="formValue.slippageTolerance"
+        [ngModelOptions]="{ standalone: true }"
+        [precision]="2"
+        [style.text-align]="'right'"
+        (ngModelChange)="onSlippageToleranceChange($event)"
+      >
+        {{ formValue.slippageTolerance }}%
+      </tui-input-number>
+
+      <!--      <div-->
+      <!--        (click)="toggleAutoSlippageTolerance()"-->
+      <!--        class="settings__button-auto"-->
+      <!--        [ngClass]="{-->
+      <!--          'settings__button-auto_active': crossChainRoutingForm.value.autoSlippageTolerance-->
+      <!--        }"-->
+      <!--      >-->
+      <!--        Auto-->
+      <!--      </div>-->
+      <!--      <button (click)="onSlippageToleranceChange(3)" class="settings__button-auto">3</button>-->
+      <!--      <button (click)="onSlippageToleranceChange(5)" class="settings__button-auto">5</button>-->
+      <!--      <div class="slippage-container">-->
+      <!--        <input-->
+      <!--          appCommaToPeriod-->
+      <!--          [ngModel]="slippageTolerance"-->
+      <!--          (amountChange)="onSlippageToleranceChange($event)"-->
+      <!--          [ngModelOptions]="{ standalone: true }"-->
+      <!--          [tuiTextfieldLabelOutside]="true"-->
+      <!--          [tuiTextfieldSize]="'s'"-->
+      <!--          [minAmount]="minimumSlippageTolerance"-->
+      <!--        />-->
+      <!--        <div>%</div>-->
+      <!--        <span></span>-->
+      <!--      </div>-->
+    </div>
+    <div class="settings__row">
+      <div
+        class="settings__hint"
+        [inlineSVG]="'/assets/images/icons/hint.svg'"
+        [tuiHint]="'settings.crossChainRouting.showReceiverAddress' | translate"
+        tuiHintAppearance="onDark"
+      ></div>
+      <label>{{ 'settings.crossChainRouting.showReceiverAddressTitle' | translate }}</label>
+      <tui-toggle
+        class="settings__toggle"
+        id="showReceiverAddress"
+        formControlName="showReceiverAddress"
+      ></tui-toggle>
+    </div>
+  </form>
+</div>

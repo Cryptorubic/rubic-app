@@ -1,77 +1,14 @@
 @use 'src/scss/core' as *;
 
 .modal {
+  --tui-secondary: var(--tui-secondary-hover);
   position: relative;
 
-  padding: 40px 20px 20px;
+  ::ng-deep .window-container {
+    padding: 0;
 
-  font-weight: 300;
-
-  border-radius: 10px;
-
-  @include hide-unused-ui {
-    padding: 0 20px 20px;
-  }
-
-  @include iframe-horizontal {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    margin: 0 auto;
-    padding: 0 20px;
-
-    background: var(--tui-base-01);
-  }
-
-  @include iframe-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 560px;
-    margin: 0 auto;
-
-    @include b($mobile-md) {
-      height: auto;
-    }
-  }
-
-  @include b($mobile-md) {
-    padding: 0 20px;
-  }
-
-  &__privacy-policy {
-    margin-bottom: 10px;
-  }
-
-  &__content {
-    @include iframe-horizontal {
-      display: flex;
-      flex-direction: column;
+    header h5 {
       justify-content: center;
-      width: 100%;
-      height: 180px;
-      max-height: 180px;
-      padding: 0 30px;
-    }
-  }
-
-  &__title {
-    margin-top: 0;
-    margin-bottom: 0;
-
-    color: $rubic-base-11;
-    font-weight: 300;
-    font-size: 24px;
-    line-height: 29px;
-
-    @include b($mobile-md) {
-      display: none;
     }
   }
 
@@ -79,94 +16,84 @@
     margin-right: 40px;
   }
 
-  &__header,
-  &__body {
-    margin-bottom: 30px;
-
-    @include hide-unused-ui {
-      margin-bottom: 5px;
-    }
-  }
-
-  &__body {
-    @include iframe-vertical {
-      margin-bottom: 11px;
-    }
-  }
-
   &__footer {
-    font-size: 15px;
+    display: inline-block !important;
+
     text-align: center;
   }
 
   &__body {
     display: flex;
     flex-direction: column;
-    align-items: center;
-
-    padding: 10px 37px 0;
-
-    @include iframe-horizontal {
-      flex-direction: row;
-      justify-content: center;
-
-      margin-bottom: 15px;
-      padding: 0;
-    }
+    flex-wrap: nowrap;
+    gap: var(--tui-padding-l);
   }
 
   &__provider-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 25px;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    white-space: nowrap;
 
     img {
       width: 100%;
     }
   }
 
-  &__link {
-    color: var(--primary-color);
-  }
+  &__button {
+    flex: 1;
 
-  &__provider-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 50px;
-    padding: 10px 20px;
-
-    font-size: 18px;
-
-    background: rgba(white, 0.1);
-    border-radius: 10px;
-    cursor: pointer;
+    text-decoration: none;
 
     transition: 0.2s ease-in-out;
 
-    @include iframe-horizontal {
-      max-width: 240px;
+    &:hover {
+      scale: 1.05;
     }
 
-    &[disabled] {
-      cursor: not-allowed;
-      opacity: 0.5;
+
+    ::ng-deep .t-content {
+      gap: var(--tui-padding-s);
+      padding: var(--tui-padding-m) 0;
+
+      white-space: nowrap;
+    }
+  }
+
+  &__link {
+    color: var(--tui-primary);
+  }
+}
+
+@include b($mobile-md) {
+  .modal {
+    ::ng-deep .window-container {
+      padding: 0 var(--tui-padding-l);
     }
 
-    &:not(:last-child) {
-      margin-bottom: 15px;
-
-      @include iframe-horizontal {
-        margin-right: 20px;
-        margin-bottom: 0;
+    &__button {
+      ::ng-deep .t-content {
+        @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
+        flex-direction: row-reverse;
+        gap: var(--tui-padding-l);
+        justify-content: flex-end;
       }
     }
 
-    &:not([disabled]):hover {
-      transform: scale(1.03);
+    &__provider-icon {
+      img {
+        width: 30px;
+      }
+    }
+
+    &__footer {
+      width: 100%;
+      margin-top: var(--tui-padding-l);
+
+      text-align: center;
     }
   }
 }

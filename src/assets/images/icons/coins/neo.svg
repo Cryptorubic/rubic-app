@@ -1,5 +1,5 @@
-<svg width="418" height="418" viewBox="0 0 418 418" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="209" cy="209" r="209" fill="#00E599"/>
-<path d="M89.7124 123.025V298.359L203.679 340V162.475L327.509 116.45L214.637 77L89.7124 123.025Z" fill="white"/>
-<path d="M212.453 169.05V263.291L327.515 304.934V126.312L212.453 169.05Z" fill="white" fill-opacity="0.76"/>
+<svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<ellipse cx="25.6819" cy="24.9999" rx="25" ry="24.9999" fill="#00E599"/>
+<path d="M12 15.25V35.2501L25 40V19.75L39.1251 14.5L26.25 10L12 15.25Z" fill="white"/>
+<path d="M26.001 20.5V31.2499L39.1259 36.0001V15.6249L26.001 20.5Z" fill="white" fill-opacity="0.76"/>
 </svg>

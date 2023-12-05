@@ -9,19 +9,21 @@ import { TableTotal } from '../../models/table-total.interface';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MobileDepositsComponent {
-  @Input() deposits: Deposit[];
+  @Input({ required: true }) deposits: Deposit[];
 
-  @Input() total: TableTotal;
+  @Input({ required: true }) total: TableTotal;
 
-  @Input() claimingId: string;
+  @Input({ required: true }) claimingId: string;
 
-  @Input() withdrawingId: string;
+  @Input({ required: true }) withdrawingId: string;
 
-  @Input() isDarkTheme: boolean;
+  @Input({ required: true }) isDarkTheme: boolean;
 
   @Output() onClaim = new EventEmitter<Deposit>();
 
   @Output() onWithdraw = new EventEmitter<Deposit>();
+
+  public index = 0;
 
   public trackBy(index: number, _: Deposit): number {
     return index;

@@ -1,32 +1,15 @@
-<app-banner href="https://new-app.rubic.exchange" *noFrame></app-banner>
+<app-banner
+  href="https://docs.rubic.finance/rubic/swap-to-earn-program-on-rubic"
+  *noFrame
+></app-banner>
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
-  <a
-    *noFrame
-    class="rubic-header__logo"
-    routerLink="/"
-    [ngClass]="{ 'rubic-header__logo_hide': currentUser }"
-  >
-    <img
-      [src]="
-        (isDarkTheme$ | async)
-          ? 'assets/images/rubic-logo.png'
-          : 'assets/images/rubic-logo-dark.png'
-      "
-      alt="Rubic logotype"
-      width="122"
-    />
-  </a>
-  <a
-    *onlyFrame
-    class="rubic-header__logo"
-    rel="noopener noreferrer"
-    target="_blank"
-    [href]="noFrameLink"
-  >
-    <img src="assets/images/rubic-logo.png" alt="Rubic logotype" width="90" />
-  </a>
+  <app-logo
+    [currentUser]="!!currentUser"
+    [isDarkTheme]="isDarkTheme$ | async"
+    [noFrameLink]="noFrameLink"
+  ></app-logo>
 
-  <app-rubic-menu-toggler *noFrame class="rubic-header__menu">
+  <app-rubic-menu-toggler class="rubic-header__menu">
     <app-rubic-menu
       [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
       [crossChainActive]="
@@ -36,69 +19,85 @@
     ></app-rubic-menu>
   </app-rubic-menu-toggler>
 
-  <nav *noFrame class="rubic-header__nav">
-    <a
-      class="button-link"
-      (click)="navigateToSwaps()"
-      [class.button-link_active]="
-        rootPath &&
-        ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
-          (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
-      "
-      >Swaps</a
-    >
-    <div class="button-link" routerLink="/staking" [class.button-link_active]="isStakingPage">
-      Staking
-    </div>
-    <a
-      class="button-link"
-      (click)="navigateToLimitOrder()"
-      [class.button-link_active]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"
-      >Limit Order</a
-    >
-    <div
-      class="button-link"
-      routerLink="/revoke-approval"
-      [class.button-link_active]="isRevokePage"
-    >
-      Revoke Approval
-    </div>
-  </nav>
+  <button
+    class="swap-button"
+    tuiButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    [pseudoActive]="
+      rootPath &&
+      ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
+        (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
+    "
+    (click)="navigateToSwaps()"
+  >
+    Swaps
+  </button>
 
-  <ng-container *noFrame>
+  <button
+    class="staking-button"
+    tuiButton
+    appearance="secondary"
+    type="button"
+    [pseudoActive]="isStakingPage"
+    size="m"
+    routerLink="/staking"
+  >
+    Staking
+  </button>
+
+  <!--  <button-->
+  <!--    tuiButton-->
+  <!--    appearance="secondary"-->
+  <!--    type="button"-->
+  <!--    size="m"-->
+  <!--    [pseudoActive]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"-->
+  <!--  >-->
+  <!--    <div (click)="navigateToLimitOrder()">Limit Order</div>-->
+  <!--  </button>-->
+
+  <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
+  <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
+  <!--  </button>-->
+
+  <ng-container>
     <app-points-button
       class="rubic-header__point-button"
       *ngIf="currentUser$ | async"
     ></app-points-button>
   </ng-container>
 
-  <!--  Old button, return when earn and swap company will be over -->
-  <!--  <app-buy-token-->
-  <!--    *noFrame-->
-  <!--    class="rubic-header__buy-token"-->
-  <!--    [tokensType]="advertisementType"-->
-  <!--  ></app-buy-token>-->
+  <button
+    class="theme-switcher"
+    tuiIconButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    (click)="switchTheme()"
+  >
+    <div
+      class="image"
+      [inlineSVG]="
+        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
+      "
+    ></div>
+  </button>
+
+  <app-language-selector></app-language-selector>
+
+  <app-history-button></app-history-button>
 
   <div class="rubic-header__profile">
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
-      <app-login-button class="rubic-header__login" *noFrame></app-login-button>
+      <app-login-button class="rubic-header__login"></app-login-button>
     </ng-container>
     <ng-template #loggedIn>
       <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-      <app-iframe-logout-button *onlyFrame></app-iframe-logout-button>
     </ng-template>
-
-    <app-settings-toggler
-      *noFrame
-      [settingsOpened]="settingsOpened"
-      (changeSettingsVisibility)="settingsOpened = $event"
-      class="rubic-header__settings"
-    >
-      <app-settings (handleClose)="settingsOpened = false"></app-settings>
-    </app-settings-toggler>
   </div>
 
-  <div class="rubic-header-mobile">
-    <app-mobile-menu *noFrame></app-mobile-menu>
-  </div>
+  <ng-container *noFrame>
+    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+  </ng-container>
 </header>

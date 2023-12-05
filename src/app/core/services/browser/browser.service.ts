@@ -1,19 +1,17 @@
 import { Inject, Injectable } from '@angular/core';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WINDOW } from '@ng-web-apis/common';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BrowserService {
-  private mobileBreakpoint = 500;
+  private readonly mobileBreakpoint = 500;
 
   public get currentBrowser(): BROWSER {
     switch (true) {
-      case this.window.innerWidth >= this.mobileBreakpoint ||
-        (this.iframeService.isIframe && this.iframeService.device === 'desktop'):
+      case this.window.innerWidth >= this.mobileBreakpoint:
         return BROWSER.DESKTOP;
       case !this.window.ethereum:
         return BROWSER.MOBILE;
@@ -26,8 +24,5 @@ export class BrowserService {
     }
   }
 
-  constructor(
-    @Inject(WINDOW) private window: RubicWindow,
-    private readonly iframeService: IframeService
-  ) {}
+  constructor(@Inject(WINDOW) private window: RubicWindow) {}
 }

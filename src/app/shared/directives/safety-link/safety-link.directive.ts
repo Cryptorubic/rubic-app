@@ -12,12 +12,14 @@ export class SafetyLinkDirective {
   @HostBinding('attr.href') hrefAttr: string = null;
 
   @Input() set safetyLink(link: string) {
-    this._link = link;
+    if (link) {
+      this._link = link;
 
-    this.hrefAttr = link;
-    if (this.isLinkExternal()) {
-      this.relAttr = 'noopener';
-      this.targetAttr = '_blank';
+      this.hrefAttr = link;
+      if (this.isLinkExternal()) {
+        this.relAttr = 'noopener';
+        this.targetAttr = '_blank';
+      }
     }
   }
 

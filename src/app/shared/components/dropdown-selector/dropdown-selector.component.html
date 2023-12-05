@@ -2,7 +2,12 @@
   <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>
 </tui-hosted-dropdown>
 <ng-template #content let-activeZone>
-  <tui-data-list class="data-list" tuiDataListDropdownManager [tuiActiveZoneParent]="activeZone">
+  <tui-data-list
+    size="m"
+    class="data-list"
+    tuiDataListDropdownManager
+    [tuiActiveZoneParent]="activeZone"
+  >
     <button
       class="data-list__option"
       tuiOption

@@ -15,19 +15,12 @@ import { HeaderComponent } from './header/components/header/header.component';
 import { HeaderModule } from './header/header.module';
 import { httpLoaderFactory } from './app.loaders';
 import { ErrorsModule } from './errors/errors.module';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
-import { SwapFormQueryService } from '@core/services/swaps/swap-form-query.service';
-import { SwapTypeService } from '@core/services/swaps/swap-type.service';
-import { FiatsService } from '@core/services/fiats/fiats.service';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
-import { SwapTokensUpdaterService } from '@core/services/swaps/swap-tokens-updater.service';
-import { RecentTradesModule } from '@core/recent-trades/recent-trades.module';
-import { LimitOrdersService } from '@core/services/limit-orders/limit-orders.service';
 import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
-import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/interceprors/onramper-intercepror';
+import { LifiApiKeyInterceptor } from './interceptors/lifi-api-key.interceptor';
 
 @NgModule({
   declarations: [MaintenanceComponent, RubicFooterComponent],
@@ -45,7 +38,7 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: OnramperIntercepror,
+      useClass: LifiApiKeyInterceptor,
       multi: true
     },
     NG_EVENT_PLUGINS,
@@ -57,12 +50,6 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
       multi: true
     },
     SdkService,
-    SwapTypeService,
-    SwapFormService,
-    SwapFormQueryService,
-    SwapTokensUpdaterService,
-    FiatsService,
-    LimitOrdersService,
     SuccessTxModalService
   ],
   imports: [
@@ -78,12 +65,8 @@ import { OnramperIntercepror } from '@features/swaps/features/onramper-exchange/
         deps: [HttpClient]
       }
     }),
-    RecentTradesModule,
     ModalsModule
   ],
   exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
 })
-export class CoreModule {
-  // Initialized services, which are not used directly in components
-  constructor(private readonly _swapTokensUpdaterService: SwapTokensUpdaterService) {}
-}
+export class CoreModule {}

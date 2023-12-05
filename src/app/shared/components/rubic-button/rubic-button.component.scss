@@ -7,7 +7,7 @@
 
   [tuiButton] {
     font-weight: 400 !important;
-    font-size: $rubic-font-size-01;
+    font-size: $rubic-font-size-main;
 
     border: none;
 
@@ -37,10 +37,6 @@
 
         background-color: var(--primary-background);
         opacity: 1 !important;
-
-        @include light-iframe {
-          background-color: var(--iframe-primary-background);
-        }
       }
     }
 

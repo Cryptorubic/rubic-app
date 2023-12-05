@@ -1,0 +1,28 @@
+@use 'src/scss/core' as *;
+
+.switcher {
+  z-index: 999;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: content-box;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+
+  background-color: var(--secondary-background);
+  border-radius: 50%;
+
+  transform: translateY(-50%);
+
+  cursor: pointer;
+
+  img {
+    &:first-child {
+      transform: rotate(180deg);
+    }
+  }
+}
