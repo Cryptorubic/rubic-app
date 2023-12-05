@@ -1,4 +1,4 @@
-<ng-container *ngLet="newTokensToShow$ | async as tokensToShow">
+<ng-container *ngLet="tokensToShow$ | async as tokensToShow">
   <tui-scrollbar class="tokens-container">
     <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">

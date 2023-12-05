@@ -31,8 +31,6 @@ export class TokensListComponent {
 
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
-  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
-
   public readonly customToken$ = this.tokensListStoreService.customToken$;
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
@@ -48,7 +46,7 @@ export class TokensListComponent {
 
   public readonly metisText$ = this._metisText$.asObservable();
 
-  public readonly newTokensToShow$ = this.tokensToShow$.pipe(
+  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$.pipe(
     map(tokens => {
       const formType = this.assetsSelectorService.formType;
       const fromBlockchain = this.swapFormService.inputValue['fromBlockchain'];
