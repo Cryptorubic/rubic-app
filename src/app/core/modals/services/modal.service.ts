@@ -72,7 +72,8 @@ export class ModalService {
     selectedTradeType: TradeProvider,
     calculationProgress: CalculationProgress,
     isModal: true,
-    injector: Injector
+    injector: Injector,
+    noRoutes: boolean
   ): Observable<TradeProvider> {
     return this.showDialog<ProvidersListComponent, TradeProvider>(
       ProvidersListComponent,
@@ -84,7 +85,8 @@ export class ModalService {
           selectedTradeType,
           calculationProgress,
           isModal,
-          shortedInfo: false
+          shortedInfo: false,
+          noRoutes
         }
       },
       injector

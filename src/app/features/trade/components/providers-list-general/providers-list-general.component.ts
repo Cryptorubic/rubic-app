@@ -9,12 +9,12 @@ import {
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { BehaviorSubject, interval } from 'rxjs';
-import { map, switchMap, takeWhile } from 'rxjs/operators';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
-import { CalculationProgress } from '@features/trade/models/calculationProgress';
+import { CalculationStatus } from '@features/trade/models/calculation-status';
+import { BehaviorSubject, interval, map } from 'rxjs';
+import { switchMap, takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -41,20 +41,18 @@ export class ProvidersListGeneralComponent {
 
   @Input({ required: true }) showCalculation: boolean;
 
-  @Input({ required: true }) set calculationProgress(value: CalculationProgress) {
-    this._calculationProgress = value;
-    if (value.current === 0) {
+  @Input({ required: true }) set calculationStatus(value: CalculationStatus) {
+    this._calculationStatus = value;
+    if (value.calculationProgress.current === 1) {
       this._triggerCalculation$.next();
     }
   }
 
-  private _calculationProgress: CalculationProgress;
+  private _calculationStatus: CalculationStatus;
 
-  public get calculationProgress(): CalculationProgress {
-    return this._calculationProgress;
+  public get calculationStatus(): CalculationStatus {
+    return this._calculationStatus;
   }
-
-  @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
   private readonly _triggerCalculation$ = new BehaviorSubject<void>(null);
 
@@ -63,6 +61,16 @@ export class ProvidersListGeneralComponent {
     takeWhile(el => el < 150),
     map(time => ({ total: 150, current: time }))
   );
+
+  public readonly calculationText$ = this.calculationProcess$.pipe(
+    map(time => {
+      return time.current <= 50
+        ? 'Calculating providers...'
+        : 'More providers can get close, but they are delaying the answer...';
+    })
+  );
+
+  @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -81,9 +89,10 @@ export class ProvidersListGeneralComponent {
       .openOtherProvidersList(
         this.states,
         this.selectedTradeType,
-        this.calculationProgress,
+        this.calculationStatus.calculationProgress,
         true,
-        this.injector
+        this.injector,
+        this.calculationStatus.noRoutes
       )
       .subscribe(tradeType => {
         if (tradeType) {
