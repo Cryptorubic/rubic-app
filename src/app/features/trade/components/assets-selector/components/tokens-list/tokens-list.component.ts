@@ -122,6 +122,7 @@ export class TokensListComponent {
           currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
           toToken?.symbol.toLowerCase() === 'metis'
         ) {
+          this._metisText$.next('');
           return tokens.filter(token => token.address !== NATIVE_TOKEN_ADDRESS);
         }
 
@@ -133,6 +134,7 @@ export class TokensListComponent {
         ) {
           // Свап в Metis (usdt) из подходящей сети (любой токен, кроме нативки)
           if (toToken?.symbol.toLowerCase() === 'm.usdt') {
+            this._metisText$.next('');
             return tokens.filter(token => token.address !== NATIVE_TOKEN_ADDRESS);
           } else {
             // Свап в Metis (любой токен кроме usdt) из подходящей сети (любой токен)
@@ -148,6 +150,7 @@ export class TokensListComponent {
     if (currentBlockchain === BLOCKCHAIN_NAME.METIS) {
       // Свап из Metis в Metis
       if (toBlockchain === BLOCKCHAIN_NAME.METIS) {
+        this._metisText$.next('');
         return tokens;
       }
 
@@ -174,6 +177,7 @@ export class TokensListComponent {
           toBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
           toToken?.symbol.toLowerCase() === 'metis'
         ) {
+          this._metisText$.next('');
           return [tokens.find(token => token.symbol.toLowerCase() === 'metis')];
         }
 
@@ -182,6 +186,7 @@ export class TokensListComponent {
           toToken?.symbol.toLowerCase() === 'usdt' ||
           toToken?.symbol.toLowerCase() === 'm.usdt'
         ) {
+          this._metisText$.next('');
           return tokens;
         }
 
@@ -211,6 +216,7 @@ export class TokensListComponent {
     currentBlockchain: AssetType
   ): AvailableTokenAmount[] {
     if (!fromToken && !toToken) {
+      this._metisText$.next('');
       return tokens;
     }
 
@@ -234,11 +240,13 @@ export class TokensListComponent {
         (fromBlockchain === BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN ||
           fromBlockchain === BLOCKCHAIN_NAME.AVALANCHE)
       ) {
+        this._metisText$.next('');
         return [tokens.find(token => token.symbol.toLowerCase() === 'm.usdt')];
       }
 
       // Свап из ETH (любой токен) в Metis (m.usdt / metis)
       if (fromToken && fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM) {
+        this._metisText$.next('');
         return tokens.filter(
           token => token.symbol.toLowerCase() === 'm.usdt' || token.symbol.toLowerCase() === 'metis'
         );
@@ -271,6 +279,7 @@ export class TokensListComponent {
       currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM &&
       fromToken?.symbol.toLowerCase() === 'metis'
     ) {
+      this._metisText$.next('');
       return tokens.filter(
         token => token.symbol.toLowerCase() === 'usdt' || token.symbol.toLowerCase() === 'metis'
       );
@@ -282,6 +291,7 @@ export class TokensListComponent {
       currentBlockchain === BLOCKCHAIN_NAME.AVALANCHE ||
       currentBlockchain === BLOCKCHAIN_NAME.ETHEREUM
     ) {
+      this._metisText$.next('');
       return [tokens.find(token => token.symbol.toLowerCase() === 'usdt')];
     }
 
