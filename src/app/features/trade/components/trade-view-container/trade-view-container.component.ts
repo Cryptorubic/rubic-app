@@ -20,12 +20,12 @@ import { firstValueFrom } from 'rxjs';
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [
-        style({ transform: 'translateX(-25%)', opacity: 0.5 }),
-        animate('1s ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+        style({ opacity: 0, scale: 0 }),
+        animate('0.25s ease-in-out', style({ opacity: 1, scale: 1 }))
       ]),
       transition(':leave', [
-        style({ transform: 'translateX(0)', opacity: 0.5, width: '360px' }),
-        animate('0.2s ease-in', style({ transform: 'translateX(-25%)', opacity: 0, width: 0 }))
+        style({ opacity: 0.5, width: '360px', scale: 1 }),
+        animate('0.25s ease-in-out', style({ opacity: 0, width: 0, scale: 0 }))
       ])
     ])
   ]
@@ -38,9 +38,7 @@ export class TradeViewContainerComponent {
     map(providers => providers.filter(provider => provider.trade))
   );
 
-  public readonly calculationProgress$ = this.swapsState.calculationProgress$;
-
-  public readonly showProviders$ = this.tradePageService.showProviders$;
+  public readonly calculationStatus$ = this.swapsState.calculationStatus$;
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
