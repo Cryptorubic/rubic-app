@@ -15,6 +15,7 @@ import { QueryParamsService } from '@core/services/query-params/query-params.ser
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 @Component({
   selector: 'app-asset-selector',
@@ -43,7 +44,8 @@ export class AssetSelectorComponent {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly tokenService: TokensService
   ) {
     this.queryParamsService.tokensSelectionDisabled$
       .pipe(takeUntil(this.destroy$))
@@ -86,5 +88,13 @@ export class AssetSelectorComponent {
       return;
     }
     this.handleAssetSelection.emit();
+  }
+
+  /**
+   * Sets default image to token, in case original image has thrown error.
+   * @param $event Img error event.
+   */
+  public onTokenImageError($event: Event): void {
+    this.tokenService.onTokenImageError($event);
   }
 }
