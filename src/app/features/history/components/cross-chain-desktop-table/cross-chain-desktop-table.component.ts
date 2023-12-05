@@ -86,12 +86,16 @@ export class CrossChainDesktopTableComponent {
       fromBlockchain === BLOCKCHAIN_NAME.ARBITRUM
     ) {
       const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-      if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+      if (isSwitched) {
+        await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
+      }
     }
 
     if (provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.SYMBIOSIS]) {
       const isSwitched = await this.walletConnector.switchChain(toBlockchain);
-      if (isSwitched) await this.commonTableService.revertSymbiosis(item.fromTx.hash);
+      if (isSwitched) {
+        await this.commonTableService.revertSymbiosis(item.fromTx.hash);
+      }
     }
 
     status.isLoading = false;
