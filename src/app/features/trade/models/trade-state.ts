@@ -3,7 +3,7 @@ import { RubicStep } from 'rubic-sdk';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
-  error: null;
+  error: null | WrappedSdkTrade['error'];
   // warnings - Min/Max amounts errors
   tradeType: WrappedSdkTrade['tradeType'];
 }

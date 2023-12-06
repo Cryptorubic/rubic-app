@@ -18,6 +18,7 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
+  TuiNotificationModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -60,6 +61,9 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
+import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
+import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
+import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +90,9 @@ import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    PriceImpactFormatPipe
+    PriceImpactFormatPipe,
+    CnPreviewSwapComponent,
+    CnTradeInfoComponent
   ],
   exports: [],
   imports: [
@@ -109,7 +115,8 @@ import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
     TuiInputModule,
     TuiProgressModule,
     TuiLoaderModule,
-    AssetsSelectorModule
+    AssetsSelectorModule,
+    TuiNotificationModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,
@@ -149,7 +156,8 @@ import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
     PreviewSwapService,
     OnChainApiService,
     SwapTokensUpdaterService,
-    TradePageService
+    TradePageService,
+    CnSwapService
     // SettingsService,
     // RefreshService,
     // TradeService,

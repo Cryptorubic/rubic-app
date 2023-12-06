@@ -2,6 +2,7 @@
   display: flex;
   gap: var(--tui-padding-s);
   align-items: center;
+  width: 100%;
   overflow: hidden;
 
   &__text {

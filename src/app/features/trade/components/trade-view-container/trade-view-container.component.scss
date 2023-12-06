@@ -21,6 +21,7 @@
 
 .swap-container {
   display: flex;
+  align-items: flex-start;
   margin: 0 auto;
 
   .form {
@@ -71,8 +72,9 @@
     }
 
     app-providers-list-general {
-      width: 100%;
+      width: 360px;
       height: auto;
+      overflow: hidden;
 
       background: none;
       border-radius: 0;

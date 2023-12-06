@@ -1,5 +1,5 @@
 <div class="header">
-  <tui-tabs class="tabs" [underline]="false" size="m" [activeItemIndex]="activeItemIndex$ | async">
+  <tui-tabs class="tabs" [underline]="false" size="s" [activeItemIndex]="activeItemIndex$ | async">
     <button tuiTab (click)="onClick(0)">
       <div class="icon" inlineSVG="assets/images/icons/history/cross.svg"></div>
       Cross Chain
@@ -8,10 +8,10 @@
       <div class="icon" inlineSVG="assets/images/icons/history/onchain.svg"></div>
       On Chain
     </button>
-    <!--    <button tuiTab (click)="onClick(2)">-->
-    <!--      <div class="icon" inlineSVG="assets/images/icons/history/cn.svg"></div>-->
-    <!--      Change Now-->
-    <!--    </button>-->
+    <button tuiTab (click)="onClick(2)">
+      <div class="icon" inlineSVG="assets/images/icons/history/cn.svg"></div>
+      CN
+    </button>
   </tui-tabs>
   <div class="filter">
     <form class="b-form">

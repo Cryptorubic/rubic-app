@@ -8,7 +8,6 @@ import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  BlockchainsInfo,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
@@ -19,7 +18,6 @@ import {
   EvmEncodeConfig,
   NotWhitelistedProviderError,
   PriceToken,
-  RubicSdkError,
   SwapTransactionOptions,
   Token,
   UnapprovedContractError,
@@ -98,7 +96,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -116,24 +114,6 @@ export class CrossChainService {
               ...el,
               calculationTime: Date.now() - calculationStartTime
             })),
-            // @TODO REMOVE AFTER CN READY
-            map(el => {
-              if (
-                el?.wrappedTrade?.trade &&
-                el?.wrappedTrade?.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-                !BlockchainsInfo.isEvmBlockchainName(el.wrappedTrade.trade.from.blockchain) &&
-                el.wrappedTrade.trade.from.blockchain !== BLOCKCHAIN_NAME.TRON
-              ) {
-                return {
-                  ...el,
-                  wrappedTrade: {
-                    ...el.wrappedTrade,
-                    error: new RubicSdkError('Trade with non evm networks is not allowed yet')
-                  }
-                };
-              }
-              return el;
-            }),
             map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
             tap(el => {
               if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
@@ -167,8 +147,7 @@ export class CrossChainService {
 
   private getOptions(
     disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
+    fromBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -186,7 +165,6 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
-    const providerAddress = this.getProviderAddressBasedOnPromo(toBlockchain, fromBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -201,24 +179,8 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy,
-      ...(providerAddress && { providerAddress })
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
-  }
-
-  private getProviderAddressBasedOnPromo(
-    toChain: BlockchainName,
-    fromChain: BlockchainName
-  ): string {
-    if (
-      toChain === BLOCKCHAIN_NAME.LINEA ||
-      toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
-      fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC
-    ) {
-      return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
-    }
-
-    return '';
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {

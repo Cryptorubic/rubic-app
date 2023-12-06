@@ -5,34 +5,10 @@
   display: block;
 }
 
-.container {
+.button-container {
   position: relative;
 
-  width: 100%;
-  height: 100%;
-  padding: 20px 66px 20px 20px;
-
-  color: var(--primary-color);
-  font-weight: 500;
-  font-size: 20px;
-  line-height: 120%;
-
-  background-color: rgba(var(--primary-color), 0.2);
-  border-radius: 12px;
-
-  transition: transform 0.1s ease-in-out;
-
-  @include mixins.b(mobile) {
-    word-break: break-all;
-  }
-
   &:active {
-    transform: scale(0.97);
+    transform: scale(0.95);
   }
-}
-
-.icon {
-  position: absolute;
-  top: calc(50% - 12px);
-  right: 10px;
 }
