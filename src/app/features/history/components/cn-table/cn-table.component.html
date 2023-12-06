@@ -66,8 +66,17 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'status'" tuiTd>
-            <app-rubic-badge [status]="item.status.appearance" [label]="item.status.label">
-            </app-rubic-badge>
+            <div class="status-container">
+              <app-rubic-badge [status]="item.status.appearance" [label]="item.status.label">
+              </app-rubic-badge>
+              <span
+                class="status-container__copy-button content__icon"
+                [inlineSVG]="'assets/images/icons/copy.svg'"
+                (click)="copyToClipboard(item.id)"
+                [tuiHint]="copyHint"
+                [tuiHintManual]="hintsVisibility[item.id]"
+              ></span>
+            </div>
           </td>
           <td *tuiCell="'receiver'" tuiTd>
             {{ item?.receiverAddress | shortAddress : 10 : 8 }}
@@ -214,6 +223,7 @@
       </div>
     </div>
   </ng-template>
+  <ng-template #copyHint>Transaction hash copied to clipboard!</ng-template>
 </ng-container>
 
 <!--<tui-pagination-->

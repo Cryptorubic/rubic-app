@@ -79,6 +79,21 @@
     }
   }
 
+  .status-container {
+    display: flex;
+    align-items: center;
+
+    app-rubic-badge {
+      margin-right: var(--tui-padding-xs);
+    }
+
+    &__copy-button {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
   .table {
     width: 100%;
     overflow: hidden;
