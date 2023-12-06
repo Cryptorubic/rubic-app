@@ -92,7 +92,7 @@ export class CrossChainDesktopTableComponent {
     }
 
     if (provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.SYMBIOSIS]) {
-      const isSwitched = await this.walletConnector.switchChain(toBlockchain);
+      const isSwitched = await this.walletConnector.switchChain(fromBlockchain);
       if (isSwitched) {
         await this.commonTableService.revertSymbiosis(item.fromTx.hash);
       }
