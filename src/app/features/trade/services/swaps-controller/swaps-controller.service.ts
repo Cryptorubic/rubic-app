@@ -232,13 +232,13 @@ export class SwapsControllerService {
       if (tradeState.trade instanceof CrossChainTrade) {
         const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
         if (status === 'success') {
-          callback?.onSwap(additionalData);
           if ('id' in tradeState.trade) {
             additionalData.changenowId = tradeState.trade.id as string;
           }
           if ('rangoRequestId' in tradeState.trade) {
             additionalData.rangoRequestId = tradeState.trade.rangoRequestId as string;
           }
+          callback?.onSwap(additionalData);
         } else {
           callback.onError?.();
         }
@@ -261,7 +261,7 @@ export class SwapsControllerService {
         } catch {}
         if (allowSwap) {
           try {
-            const additionalData: { changenowId?: string } = {
+            const additionalData: { changenowId?: string; rangoRequestId?: string } = {
               changenowId: undefined
             };
             if (tradeState.trade instanceof CrossChainTrade) {
@@ -279,6 +279,9 @@ export class SwapsControllerService {
             }
             if ('id' in tradeState.trade) {
               additionalData.changenowId = tradeState.trade.id as string;
+            }
+            if ('rangoRequestId' in tradeState.trade) {
+              additionalData.rangoRequestId = tradeState.trade.rangoRequestId as string;
             }
             callback?.onSwap(additionalData);
           } catch (innerErr) {

@@ -102,7 +102,8 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...('id' in trade && { changenow_id: trade.id })
+      ...('id' in trade && { changenow_id: trade.id }),
+      ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId })
     };
 
     await firstValueFrom(

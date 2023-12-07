@@ -234,7 +234,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string },
+    additionalInfo: { changenowId?: string; rangoRequestId?: string },
     points: number
   ): void {
     interval(30_000)
@@ -251,6 +251,9 @@ export class PreviewSwapService {
                 txTimestamp: timestamp,
                 ...(additionalInfo?.changenowId && {
                   changenowId: additionalInfo.changenowId
+                }),
+                ...(additionalInfo.rangoRequestId && {
+                  rangoRequestId: additionalInfo.rangoRequestId
                 }),
                 ...('amountOutMin' in tradeState.trade && {
                   amountOutMin: tradeState.trade.amountOutMin as string
