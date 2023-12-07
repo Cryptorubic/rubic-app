@@ -1,0 +1,16 @@
+@use 'src/scss/core' as *;
+
+.badge-with-copy-btn {
+  display: flex;
+  align-items: center;
+
+  app-rubic-badge {
+    margin-right: var(--tui-padding-xs);
+  }
+
+  &__copy-button {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

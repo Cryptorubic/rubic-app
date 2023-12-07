@@ -78,6 +78,7 @@ import { RateChangedModalComponent } from '@shared/components/rate-changed-modal
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
 import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
+import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-copy-btn/rubic-badge-with-copy-btn.component';
 
 @NgModule({
   declarations: [
@@ -134,6 +135,7 @@ import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
     NoFrameDirective,
     RubicBadgeComponent,
     GetUsdPricePipe
+    RubicBadgeWithCopyBtnComponent
   ],
   imports: [
     CommonModule,
@@ -215,6 +217,7 @@ import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
     NoFrameDirective,
     RubicBadgeComponent,
     GetUsdPricePipe
+    RubicBadgeWithCopyBtnComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

@@ -15,7 +15,8 @@ import {
   TuiButtonModule,
   TuiLoaderModule,
   TuiSvgModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiHintModule
 } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { HistoryTableComponent } from './components/history-table/history-table.component';
@@ -56,7 +57,8 @@ import { CnTableService } from '@features/history/services/cn-table-service/cn-t
     TuiTextfieldControllerModule,
     TuiDataListWrapperModule,
     ReactiveFormsModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiHintModule
   ],
   providers: [CommonTableService, CrossChainTableService, OnChainTableService, CnTableService]
 })

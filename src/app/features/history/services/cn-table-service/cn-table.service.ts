@@ -116,7 +116,6 @@ export class CnTableService extends TableService<'date', ChangenowPostTrade, CnT
             receiverAddress: tradeData.receiverAddress
           };
         });
-        console.log(trades);
         return {
           data: trades,
           total: trades.length
