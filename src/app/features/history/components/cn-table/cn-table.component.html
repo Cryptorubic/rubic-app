@@ -66,8 +66,7 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'status'" tuiTd>
-            <app-rubic-badge [status]="item.status.appearance" [label]="item.status.label">
-            </app-rubic-badge>
+            <app-rubic-badge-with-copy-btn [item]="item"></app-rubic-badge-with-copy-btn>
           </td>
           <td *tuiCell="'receiver'" tuiTd>
             {{ item?.receiverAddress | shortAddress : 10 : 8 }}

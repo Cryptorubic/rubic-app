@@ -1,0 +1,12 @@
+<div class="badge-with-copy-btn">
+  <app-rubic-badge [status]="item.status.appearance" [label]="item.status.label"> </app-rubic-badge>
+  <span
+    class="badge-with-copy-btn__copy-button content__icon"
+    [inlineSVG]="'assets/images/icons/copy.svg'"
+    (click)="copyToClipboard(item.id)"
+    [tuiHint]="copyHint"
+    [tuiHintManual]="isHintVisible"
+  ></span>
+</div>
+
+<ng-template #copyHint>Transaction id copied to clipboard!</ng-template>

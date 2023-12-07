@@ -8,6 +8,8 @@ export interface CnTableData {
   fromBlockchain: HistoryBlockchain;
   toBlockchain: HistoryBlockchain;
 
+  id: string;
+
   status: TxStatus;
   date: string;
   receiverAddress: string;
