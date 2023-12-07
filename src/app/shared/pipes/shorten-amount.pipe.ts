@@ -10,17 +10,24 @@ export class ShortenAmountPipe implements PipeTransform {
    * @param maxDigits max numerical digits in written value. Periods and commas are not counted
    * @param maxDecimals max numerical digits after dot
    * @param allowNull If true, transforms '0' otherwise transforms to '...'.
+   * @param allowOnlyPositives If amount <= 0, transforms '0' otherwise transforms to '...'.
    */
   transform(
     value: string,
     maxDigits: number = 9,
     maxDecimals: number = 4,
-    allowNull: boolean = false
+    allowNull: boolean = false,
+    allowOnlyPositives: boolean = false
   ): string {
     const integerPart = value.split('.')[0];
     const decimalPart = value.split('.')[1]?.slice(0, maxDecimals);
 
     const newValue = integerPart + (decimalPart ? `.${decimalPart}` : '');
+
+    if (allowOnlyPositives) {
+      return new BigNumber(newValue).isLessThanOrEqualTo(0) ? '0' : `${newValue}...`;
+    }
+
     if (new BigNumber(newValue).eq(0)) {
       return allowNull ? '0' : `${newValue.slice(0, newValue.length - 1)}...`;
     }

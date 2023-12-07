@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -25,7 +25,7 @@ import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
   styleUrls: ['./provider-element.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderElementComponent implements OnChanges {
+export class ProviderElementComponent {
   @Input({ required: true }) tradeState: TradeState;
 
   @Input({ required: true }) toToken: TokenAmount;
@@ -40,26 +40,14 @@ export class ProviderElementComponent implements OnChanges {
 
   public expanded = false;
 
-  public toTokenAmount: BigNumber;
-
   constructor(
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly tokensStoreService: TokensStoreService
   ) {}
 
-  ngOnChanges() {
-    if (this.tradeState && this.tradeState.trade) {
-      this.toTokenAmount = this.getPositiveAmount(this.tradeState.trade.to.tokenAmount);
-    }
-  }
-
   public toggleExpand(event: Event): void {
     event.preventDefault();
     this.expanded = !this.expanded;
-  }
-
-  public getPrice(tokenAmount: BigNumber, price: BigNumber): string {
-    return tokenAmount.multipliedBy(price).toFixed(2);
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
@@ -119,9 +107,5 @@ export class ProviderElementComponent implements OnChanges {
       amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
-  }
-
-  private getPositiveAmount(amount: BigNumber): BigNumber {
-    return amount.gt(0) ? amount : new BigNumber(0);
   }
 }
