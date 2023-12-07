@@ -11,10 +11,10 @@
       }"
     >
       <div class="element__amounts-container">
-        <div class="element__amount">
+        <div *ngIf="toTokenAmount" class="element__amount">
           <div class="element__token">
             <div class="element__token-amount">
-              {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount : 6 : 4 }}&nbsp;{{
+              {{ toTokenAmount | bigNumberFormat | shortenAmount : 6 : 4 : true }}&nbsp;{{
                 trade.to.symbol
               }}
             </div>
@@ -31,7 +31,7 @@
         </div>
         <div class="element__right">
           <div *ngIf="trade?.to?.price?.gt(0)" class="element__amount-price">
-            ~{{ getPrice(trade.to.tokenAmount, trade.to.price) }}&nbsp;$
+            ~{{ getPrice(toTokenAmount, trade.to.price) }}&nbsp;$
           </div>
           <div class="element__row">
             <tui-tag

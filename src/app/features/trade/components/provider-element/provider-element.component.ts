@@ -40,10 +40,18 @@ export class ProviderElementComponent {
 
   public expanded = false;
 
+  public toTokenAmount: BigNumber;
+
   constructor(
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly tokensStoreService: TokensStoreService
   ) {}
+
+  ngOnChanges() {
+    if (this.tradeState && this.tradeState.trade) {
+      this.toTokenAmount = this.getPositiveAmount(this.tradeState.trade.to.tokenAmount);
+    }
+  }
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
@@ -111,5 +119,9 @@ export class ProviderElementComponent {
       amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
+  }
+
+  private getPositiveAmount(amount: BigNumber): BigNumber {
+    return amount.gt(0) ? amount : new BigNumber(0);
   }
 }
