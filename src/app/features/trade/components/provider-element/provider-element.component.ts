@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -25,7 +25,7 @@ import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
   styleUrls: ['./provider-element.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProviderElementComponent {
+export class ProviderElementComponent implements OnChanges {
   @Input({ required: true }) tradeState: TradeState;
 
   @Input({ required: true }) toToken: TokenAmount;
