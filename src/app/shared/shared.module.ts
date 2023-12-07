@@ -134,7 +134,7 @@ import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-co
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,
-    GetUsdPricePipe
+    GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent
   ],
   imports: [
@@ -216,7 +216,7 @@ import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-co
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,
-    GetUsdPricePipe
+    GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
