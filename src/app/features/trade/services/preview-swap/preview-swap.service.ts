@@ -335,7 +335,7 @@ export class PreviewSwapService {
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
     let rpc = undefined;
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
-      rpc = 'https://rpc.propellerheads.xyz/eth';
+      rpc = 'https://rpc.flashbots.net';
     }
 
     try {
