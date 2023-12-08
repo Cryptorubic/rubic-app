@@ -7,18 +7,30 @@ import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AnimationState, animationState } from './consts/animation-state';
 
 @Component({
   selector: 'app-target-network-address',
   templateUrl: './target-network-address.component.html',
   styleUrls: ['./target-network-address.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  animations: [
+    trigger('moveLabel', [
+      state(animationState.focus, style({ color: '#02b774', fontSize: '12px', top: '-5px' })),
+      state(animationState.leave, style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
+      transition(`${animationState.focus} => ${animationState.leave}`, [animate('0.2s ease-out')]),
+      transition(`${animationState.leave} => ${animationState.focus}`, [animate('0.2s ease-in')])
+    ])
+  ]
 })
 export class TargetNetworkAddressComponent implements OnInit {
   public readonly address = new FormControl<string>(this.targetNetworkAddressService.address);
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
+
+  public animationState: AnimationState = animationState.leave;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -37,6 +49,14 @@ export class TargetNetworkAddressComponent implements OnInit {
         toBlockchain: input.toBlockchain
       })
     );
+  }
+
+  public onInputClick(isFocused: boolean): void {
+    if (this.address.value || isFocused) {
+      this.animationState = animationState.focus;
+    } else {
+      this.animationState = animationState.leave;
+    }
   }
 
   private subscribeOnFormValues(): void {
