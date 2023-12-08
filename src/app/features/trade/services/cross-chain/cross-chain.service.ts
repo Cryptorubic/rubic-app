@@ -96,7 +96,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -147,8 +147,7 @@ export class CrossChainService {
 
   private getOptions(
     disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
+    fromBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -166,7 +165,6 @@ export class CrossChainService {
       ])
     );
     const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
-    const providerAddress = this.getProviderAddressBasedOnPromo(toBlockchain, fromBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -181,20 +179,8 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy,
-      ...(providerAddress && { providerAddress })
+      useProxy: this.platformConfigurationService.useCrossChainChainProxy
     };
-  }
-
-  private getProviderAddressBasedOnPromo(
-    toChain: BlockchainName,
-    fromChain: BlockchainName
-  ): string {
-    if (toChain === BLOCKCHAIN_NAME.MANTA_PACIFIC || fromChain === BLOCKCHAIN_NAME.MANTA_PACIFIC) {
-      return '0xD5DE355ce5300e65E8Bb87584F3bc12324E3F9dc';
-    }
-
-    return '';
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {

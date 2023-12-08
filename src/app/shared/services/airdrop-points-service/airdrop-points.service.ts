@@ -8,7 +8,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, OnChainTrade } from 'rubic-sdk';
+import { OnChainTrade } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { AuthService } from '@core/services/auth/auth.service';
 
@@ -65,10 +65,7 @@ export class AirdropPointsService {
           finalPoints = points.participant ? 12 : 25;
         }
 
-        return tradeType.to.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC ||
-          tradeType.from.blockchain === BLOCKCHAIN_NAME.MANTA_PACIFIC
-          ? Math.trunc(finalPoints / 2)
-          : finalPoints;
+        return finalPoints;
       })
     );
   }

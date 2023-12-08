@@ -329,8 +329,9 @@ export class SwapsStateService {
     const toSdkToken = new Token(toToken);
 
     return (
-      (fromSdkToken.isNative && toSdkToken.isWrapped) ||
-      (fromSdkToken.isWrapped && toSdkToken.isNative)
+      ((fromSdkToken.isNative && toSdkToken.isWrapped) ||
+        (fromSdkToken.isWrapped && toSdkToken.isNative)) &&
+      fromToken.blockchain === toToken.blockchain
     );
   }
 
