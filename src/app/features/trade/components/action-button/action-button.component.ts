@@ -6,7 +6,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
@@ -128,7 +127,6 @@ export class ActionButtonComponent {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly swapsFormService: SwapsFormService,
     private readonly previewSwapService: PreviewSwapService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {}
