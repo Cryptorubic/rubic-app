@@ -18,6 +18,7 @@ import { TokensNetworkService } from '@core/services/tokens/tokens-network.servi
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +70,7 @@ export class QueryParamsService {
     private readonly router: Router,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
+    private readonly sessionStorage: SessionStorageService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
@@ -84,6 +86,10 @@ export class QueryParamsService {
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
+
+    if (queryParams?.referral) {
+      this.sessionStorage.setItem('referral', queryParams?.referral);
+    }
 
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
       const urlParams = new URLSearchParams(this.window.location.search);
