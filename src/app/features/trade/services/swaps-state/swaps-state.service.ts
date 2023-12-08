@@ -1,13 +1,22 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
 import { TradeState } from '@features/trade/models/trade-state';
-import { debounceTime, filter, map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  map,
+  startWith,
+  switchMap
+} from 'rxjs/operators';
 import {
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
+  EvmWrapTrade,
   nativeTokensList,
   OnChainTrade,
+  Token,
   WrappedCrossChainTradeOrNull
 } from 'rubic-sdk';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -21,24 +30,17 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
-import { compareTokens } from '@shared/utils/utils';
+import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { CalculationStatus } from '@features/trade/models/calculation-status';
+import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
+import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 
 @Injectable()
 export class SwapsStateService {
-  private readonly defaultState: SelectedTrade = {
-    trade: null,
-    error: null,
-    needApprove: false,
-    tradeType: undefined,
-    tags: {
-      isBest: false,
-      cheap: false
-    },
-    routes: [],
-    selectedByUser: false,
-    status: TRADE_STATUS.NOT_INITIATED
-  };
+  private readonly defaultState: SelectedTrade = defaultTradeState;
 
   private swapType: SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING;
 
@@ -99,21 +101,6 @@ export class SwapsStateService {
     return this._tradeState$.getValue();
   }
 
-  // /**
-  //  * Error
-  //  */
-  // public readonly error$ = this.tradeState$.pipe(map(el => el?.error));
-  //
-  // public set error(error: TradeState['error']) {
-  //   this._tradeState$.next({
-  //     ...this.tradeState,
-  //     error,
-  //     trade: null,
-  //     selectedByUser: false,
-  //     needApprove: false
-  //   });
-  // }
-
   /**
    * Trades Store
    */
@@ -127,6 +114,9 @@ export class SwapsStateService {
   });
 
   public readonly calculationProgress$ = this._calculationProgress$.asObservable();
+
+  // @ts-ignore
+  public readonly calculationStatus$ = this.initCalculationStatus();
 
   /**
    * Receiver address
@@ -151,7 +141,7 @@ export class SwapsStateService {
       return;
     }
     const trade = wrappedTrade.trade;
-    const defaultState: TradeState = wrappedTrade?.error
+    const defaultState: TradeState = !wrappedTrade?.trade
       ? {
           error: wrappedTrade.error,
           trade: null,
@@ -161,7 +151,7 @@ export class SwapsStateService {
           routes: []
         }
       : {
-          error: null,
+          error: wrappedTrade?.error,
           trade,
           needApprove,
           tradeType: wrappedTrade.tradeType,
@@ -331,8 +321,82 @@ export class SwapsStateService {
     this._calculationProgress$.next({ total, current });
   }
 
-  //
-  // public completeCalculaitng(): void {
-  //   const trade = this.currentTrade;
-  // }
+  private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
+    if (!fromToken || !toToken) {
+      return false;
+    }
+    const fromSdkToken = new Token(fromToken);
+    const toSdkToken = new Token(toToken);
+
+    return (
+      ((fromSdkToken.isNative && toSdkToken.isWrapped) ||
+        (fromSdkToken.isWrapped && toSdkToken.isNative)) &&
+      fromToken.blockchain === toToken.blockchain
+    );
+  }
+
+  private initCalculationStatus(): Observable<CalculationStatus> {
+    // @ts-ignore
+    return this.swapsFormService.fromToken$.pipe(
+      distinctUntilChanged(this.shouldEmitToken),
+      combineLatestWith(
+        this.swapsFormService.toToken$.pipe(distinctUntilChanged(this.shouldEmitToken))
+      ),
+      switchMap(this.getTimerObservable),
+      combineLatestWith(
+        this.swapsFormService.isFilled$.pipe(distinctUntilChanged()),
+        this.tradesStore$,
+        this.calculationProgress$
+      ),
+      debounceTime(50),
+      map(options => this.getCalculationStatus(options)),
+      debounceTime(100),
+      distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
+      shareReplay(shareReplayConfig),
+      startWith(defaultCalculationStatus)
+    );
+  }
+
+  private getCalculationStatus(
+    options: [boolean, boolean, TradeState[], CalculationProgress]
+  ): CalculationStatus {
+    const [timerEmit, formFilled, trades, progress] = options;
+    const { fromToken, toToken } = this.swapsFormService.inputValue;
+    const wrapTrade =
+      trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
+
+    const hasRealTrades = trades.filter(el => Boolean(el.trade)).length > 0;
+    const activeCalculation = progress.current !== progress.total;
+
+    const calculationResult = {
+      noRoutes: !activeCalculation && !hasRealTrades && progress.total > 0,
+      showSidebar: false,
+      activeCalculation,
+      calculationProgress: progress
+    };
+
+    if (!formFilled || wrapTrade) {
+      return { ...calculationResult, showSidebar: false };
+    }
+
+    const defaultState = progress.total === 1 && progress.current === 0;
+    const realCalculation = progress.total > 0;
+
+    if (((defaultState || realCalculation) && hasRealTrades) || timerEmit) {
+      return { ...calculationResult, showSidebar: true };
+    }
+
+    return calculationResult;
+  }
+
+  private shouldEmitToken(oldToken: TokenAmount, newToken: TokenAmount): boolean {
+    return Boolean(oldToken && newToken) ?? compareTokens(oldToken, newToken);
+  }
+
+  private getTimerObservable(): Observable<boolean> {
+    return timer(2_000).pipe(
+      map(() => true),
+      startWith(false)
+    );
+  }
 }

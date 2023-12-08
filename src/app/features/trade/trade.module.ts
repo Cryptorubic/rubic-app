@@ -18,8 +18,8 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiLoaderModule,
-  TuiModeModule,
   TuiNotificationModule,
+  TuiModeModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -62,6 +62,9 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
+import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
+import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
+import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 
 @NgModule({
@@ -90,6 +93,8 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
     SettingsWarningModalComponent,
     ProvidersListComponent,
     PriceImpactFormatPipe,
+    CnPreviewSwapComponent,
+    CnTradeInfoComponent,
     MevBotComponent
   ],
   exports: [],
@@ -155,7 +160,8 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
     PreviewSwapService,
     OnChainApiService,
     SwapTokensUpdaterService,
-    TradePageService
+    TradePageService,
+    CnSwapService
     // SettingsService,
     // RefreshService,
     // TradeService,

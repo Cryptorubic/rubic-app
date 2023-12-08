@@ -14,6 +14,8 @@
             size="m"
             class="list__element"
             (click)="!disabled && onBlockchainSelect(blockchain.name)"
+            [tuiHint]="blockchain | functionCall : getHintText : this"
+            tuiHintAppearance="error"
             [disabled]="disabled"
           >
             <div class="list__element-container">

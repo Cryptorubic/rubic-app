@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -71,7 +71,8 @@ export class PreviewSwapComponent {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   public readonly buttonState$ = this.transactionState$.pipe(
-    switchMap(transactionState => this.getState(transactionState)),
+    combineLatestWith(this.tradeState$.pipe(first())),
+    switchMap(states => this.getState(...states)),
     startWith({
       action: () => {},
       label: 'Select Tokens',
@@ -209,7 +210,8 @@ export class PreviewSwapComponent {
   }
 
   private async getState(
-    transactionState: TransactionState
+    el: TransactionState,
+    tradeState: SelectedTrade
   ): Promise<{ action: () => void; label: string; disabled: boolean }> {
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
@@ -218,24 +220,21 @@ export class PreviewSwapComponent {
     const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
     const state = {
       action: (): void => {},
-      label: TransactionStateComponent.getLabel(
-        transactionState.step,
-        isCrossChain ? 'bridge' : 'swap'
-      ),
+      label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
       disabled: true
     };
-    if (transactionState.step === transactionStep.approveReady) {
+    if (el.step === transactionStep.approveReady) {
       state.disabled = false;
       state.action = this.approve.bind(this);
-    } else if (transactionState.step === transactionStep.swapReady) {
+    } else if (el.step === transactionStep.swapReady) {
       state.disabled = false;
       state.action = this.swap.bind(this);
-    } else if (transactionState.step === transactionStep.idle) {
+    } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);
     } else if (
-      transactionState.step === transactionStep.success ||
-      transactionState.step === transactionStep.destinationPending
+      el.step === transactionStep.success ||
+      el.step === transactionStep.destinationPending
     ) {
       state.disabled = false;
       state.label = 'Done';
@@ -243,9 +242,9 @@ export class PreviewSwapComponent {
     }
 
     if (
-      transactionState.data.wrongNetwork &&
+      el.data.wrongNetwork &&
       !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
-      transactionState.step !== transactionStep.success
+      el.step !== transactionStep.success
     ) {
       state.disabled = false;
       state.action = () => this.logoutAndChangeWallet();
@@ -253,24 +252,26 @@ export class PreviewSwapComponent {
     }
 
     if (
-      transactionState.data?.wrongNetwork &&
-      transactionState.step !== transactionStep.success &&
+      el.data?.wrongNetwork &&
+      el.step !== transactionStep.success &&
       BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
     ) {
       state.disabled = false;
       state.action = () => this.switchChain();
       state.label = `Change network`;
     }
-    if (transactionState.data?.activeWallet === false) {
+    if (el.data?.activeWallet === false) {
       state.disabled = false;
       state.action = () => this.connectWallet();
       state.label = `Connect wallet`;
     }
-
-    const tradeState = await firstValueFrom(this.previewSwapService.selectedTradeState$);
+    if (tradeState?.error) {
+      state.disabled = true;
+      state.action = () => {};
+      state.label = tradeState.error.message;
+    }
     if (
-      (transactionState.step === transactionStep.idle ||
-        transactionState.step === transactionStep.swapReady) &&
+      (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&
       !isCrossChain &&
       tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
     ) {

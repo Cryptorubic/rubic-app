@@ -6,9 +6,11 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { BlockchainsInfo, ChangenowCrossChainTrade, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { firstValueFrom } from 'rxjs';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 
 @Component({
@@ -19,12 +21,12 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [
-        style({ transform: 'translateX(-25%)', opacity: 0.5 }),
-        animate('1s ease-out', style({ transform: 'translateX(0)', opacity: 1 }))
+        style({ opacity: 0, scale: 0 }),
+        animate('0.25s ease-in-out', style({ opacity: 1, scale: 1 }))
       ]),
       transition(':leave', [
-        style({ transform: 'translateX(0)', opacity: 0.5, width: '360px' }),
-        animate('0.2s ease-in', style({ transform: 'translateX(-25%)', opacity: 0, width: 0 }))
+        style({ opacity: 0.5, width: '360px', scale: 1 }),
+        animate('0.25s ease-in-out', style({ opacity: 0, width: 0, scale: 0 }))
       ])
     ])
   ]
@@ -37,9 +39,7 @@ export class TradeViewContainerComponent {
     map(providers => providers.filter(provider => provider.trade))
   );
 
-  public readonly calculationProgress$ = this.swapsState.calculationProgress$;
-
-  public readonly showProviders$ = this.tradePageService.showProviders$;
+  public readonly calculationStatus$ = this.swapsState.calculationStatus$;
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
@@ -49,17 +49,39 @@ export class TradeViewContainerComponent {
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
     public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly previewSwapService: PreviewSwapService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);
-    this.getSwapPreview();
+    await this.getSwapPreview();
   }
 
-  public getSwapPreview(): void {
-    this.previewSwapService.activatePage();
-    this.tradePageService.setState('preview');
+  public async getSwapPreview(): Promise<void> {
+    const currentTrade = this.swapsState.tradeState;
+    const isAddressRequired = await firstValueFrom(
+      this.targetNetworkAddressService.isAddressRequired$
+    );
+    // Handle ChangeNow Non EVM trade
+    if (isAddressRequired) {
+      const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
+      const isCnFromEvm =
+        currentTrade.trade instanceof ChangenowCrossChainTrade &&
+        BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
+      if (isAddressValid) {
+        if (isCnFromEvm) {
+          this.previewSwapService.activatePage();
+          this.tradePageService.setState('preview');
+        } else {
+          this.tradePageService.setState('cnPreview');
+        }
+      }
+    } else {
+      this.previewSwapService.activatePage();
+      this.tradePageService.setState('preview');
+    }
   }
 
   private setProvidersVisibility(providers: TradeState[]): void {
