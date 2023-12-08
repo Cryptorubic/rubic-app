@@ -1,5 +1,4 @@
 import { Inject, Injectable } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
 import { DOCUMENT } from '@angular/common';
 import { LOCAL_STORAGE } from '@ng-web-apis/common';
 import { Store, storeRecord } from 'src/app/core/services/store/models/store';
@@ -9,7 +8,6 @@ import { Store, storeRecord } from 'src/app/core/services/store/models/store';
 })
 export class StoreService {
   constructor(
-    private readonly cookieService: CookieService,
     @Inject(DOCUMENT) private document: Document,
     @Inject(LOCAL_STORAGE) private localStorage: Storage
   ) {}
