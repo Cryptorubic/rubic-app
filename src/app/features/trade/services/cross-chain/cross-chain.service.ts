@@ -155,6 +155,7 @@ export class CrossChainService {
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
+    const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProviders = Array.from(
@@ -175,6 +176,10 @@ export class CrossChainService {
       lifiDisabledBridgeTypes: [
         ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
+      ],
+      rangoDisabledProviders: [
+        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
+        ...(queryRangoDisabledBridges || [])
       ],
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,

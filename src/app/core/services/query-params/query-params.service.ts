@@ -7,7 +7,9 @@ import {
   CrossChainTradeType,
   LIFI_BRIDGE_TYPES,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType
+  OnChainTradeType,
+  RangoTradeType,
+  rangoTradeTypes
 } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -56,6 +58,8 @@ export class QueryParamsService {
   public domain: string;
 
   public disabledLifiBridges: LifiBridgeTypes[] | undefined;
+
+  public disabledRangoBridges: RangoTradeType[] | undefined;
 
   public disabledCrossChainProviders: CrossChainTradeType[] = [];
 
@@ -113,6 +117,10 @@ export class QueryParamsService {
 
     if (queryParams.disabledLifiBridges) {
       this.setDisabledLifiBridges(queryParams.disabledLifiBridges);
+    }
+
+    if (queryParams.disabledRangoBridges) {
+      this.setDisabledRangoBridges(queryParams.disabledRangoBridges);
     }
 
     this.queryParams = queryParams;
@@ -181,6 +189,11 @@ export class QueryParamsService {
     this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
+  }
+
+  private setDisabledRangoBridges(disabledBridges: string[]): void {
+    const bridges = Object.values(rangoTradeTypes) || [];
+    this.disabledRangoBridges = bridges.filter(bridge => disabledBridges.includes(bridge));
   }
 
   private setCrossChainProviders(
