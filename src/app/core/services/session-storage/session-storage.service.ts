@@ -1,14 +1,15 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { SESSION_STORAGE } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionStorageService {
-  constructor() {}
+  constructor(@Inject(SESSION_STORAGE) private sessionStorage: Storage) {}
 
   public setItem(key: string, value: string): void {
     try {
-      sessionStorage.setItem(key, JSON.stringify(value));
+      this.sessionStorage.setItem(key, JSON.stringify(value));
     } catch (err: unknown) {
       console.debug(err);
     }
@@ -16,7 +17,7 @@ export class SessionStorageService {
 
   public getItem(key: string): string {
     try {
-      return sessionStorage.getItem(key);
+      return this.sessionStorage.getItem(key);
     } catch {
       console.debug(`Can not get key: ${key}`);
       return undefined;
@@ -25,7 +26,7 @@ export class SessionStorageService {
 
   public deleteItem(key: string): void {
     try {
-      sessionStorage.removeItem(key);
+      this.sessionStorage.removeItem(key);
     } catch (err: unknown) {
       console.debug(err);
     }
