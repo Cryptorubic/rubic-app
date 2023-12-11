@@ -68,21 +68,22 @@
     ></app-points-button>
   </ng-container>
 
-  <button
-    class="theme-switcher"
-    tuiIconButton
-    appearance="secondary"
-    type="button"
-    size="m"
-    (click)="switchTheme()"
-  >
-    <div
-      class="image"
-      [inlineSVG]="
-        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
-      "
-    ></div>
-  </button>
+  <!-- Uncomment when light theme ready -->
+  <!--  <button-->
+  <!--    class="theme-switcher"-->
+  <!--    tuiIconButton-->
+  <!--    appearance="secondary"-->
+  <!--    type="button"-->
+  <!--    size="m"-->
+  <!--    (click)="switchTheme()"-->
+  <!--  >-->
+  <!--    <div-->
+  <!--      class="image"-->
+  <!--      [inlineSVG]="-->
+  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
+  <!--      "-->
+  <!--    ></div>-->
+  <!--  </button>-->
 
   <app-language-selector></app-language-selector>
 
