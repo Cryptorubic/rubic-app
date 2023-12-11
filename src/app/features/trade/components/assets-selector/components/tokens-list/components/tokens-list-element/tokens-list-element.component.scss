@@ -1,9 +1,21 @@
 @use 'src/scss/core' as *;
 
+.test {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+}
+
+.token-card-container {
+  display: flex;
+  gap: var(--tui-padding-s);
+}
+
 .token-card {
   display: flex;
   gap: var(--tui-padding-m);
   align-items: center;
+  width: 100%;
   padding: var(--tui-padding-xs) var(--tui-padding-s);
 
   &:hover {

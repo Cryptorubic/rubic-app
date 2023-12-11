@@ -1,5 +1,11 @@
-<div class="back-button">
-  <app-rubic-button appearance="secondary" size="s" (onClick)="onClick.emit()">
-    <div class="back-button__arrow" inlineSVG="assets/images/icons/chevron.svg"></div>
+<div class="back-button" (click)="onClick.emit()">
+  <app-rubic-button *ngIf="isMobile; else image" appearance="secondary" size="s">
+    <ng-container *ngTemplateOutlet="image"></ng-container>
   </app-rubic-button>
+
+  <ng-template #image>
+    <div class="back-button__container">
+      <div class="back-button__arrow" inlineSVG="assets/images/icons/chevron.svg"></div>
+    </div>
+  </ng-template>
 </div>

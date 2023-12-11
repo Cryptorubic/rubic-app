@@ -2,18 +2,21 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   TuiButtonModule,
+  TuiDataListModule,
+  TuiDropdownModule,
   TuiHintModule,
+  TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiScrollbarModule,
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule } from '@taiga-ui/kit';
+import { TuiDataListDropdownManagerModule, TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { SharedModule } from '@shared/shared.module';
-import { TuiAutoFocusModule } from '@taiga-ui/cdk';
+import { TuiActiveZoneModule, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { AssetTypesAsideComponent } from '@features/trade/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
 import { AssetsSelectorComponent } from '@features/trade/components/assets-selector/components/assets-selector/assets-selector.component';
@@ -54,7 +57,12 @@ import { AssetsSelectorPageComponent } from '@features/trade/components/assets-s
     TuiHintModule,
     TuiLoaderModule,
     InlineSVGModule,
-    TuiAutoFocusModule
+    TuiAutoFocusModule,
+    TuiHostedDropdownModule,
+    TuiDataListDropdownManagerModule,
+    TuiActiveZoneModule,
+    TuiDropdownModule,
+    TuiDataListModule
   ],
   exports: [AssetsSelectorPageComponent]
 })
