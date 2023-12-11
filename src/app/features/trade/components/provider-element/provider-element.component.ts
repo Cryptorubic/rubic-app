@@ -50,10 +50,6 @@ export class ProviderElementComponent {
     this.expanded = !this.expanded;
   }
 
-  public getPrice(tokenAmount: BigNumber, price: BigNumber): string {
-    return tokenAmount.multipliedBy(price).toFixed(2);
-  }
-
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
     const provider = TRADES_PROVIDERS[tradeProvider];
     const providerAverageTime = this.platformConfigurationService.providersAverageTime;
