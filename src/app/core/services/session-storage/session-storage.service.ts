@@ -17,7 +17,7 @@ export class SessionStorageService {
 
   public getItem(key: string): string {
     try {
-      return JSON.parse(this.sessionStorage.getItem('key'));
+      return JSON.parse(this.sessionStorage.getItem(key));
     } catch {
       console.debug(`Can not get key: ${key}`);
       return undefined;
