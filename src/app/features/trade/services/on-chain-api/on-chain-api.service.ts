@@ -19,6 +19,7 @@ import { toBackendWallet } from '@core/services/backend/instant-trades-api/const
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 const onChainApiRoutes = {
   createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
@@ -31,7 +32,8 @@ export class OnChainApiService {
   constructor(
     private readonly httpService: HttpService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
   public notifyInstantTradesBot(body: {
@@ -73,6 +75,7 @@ export class OnChainApiService {
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
+    const referral = this.sessionStorage.getItem('referral');
     const options = {
       blockchain: blockchain,
       fromAddress: fromAddress,
@@ -92,7 +95,8 @@ export class OnChainApiService {
       user: this.authService.userAddress,
       fee,
       promocode: promoCode,
-      hash
+      hash,
+      ...(referral && { influencer: referral })
     };
 
     const url = onChainApiRoutes.createData(toBackendWallet);

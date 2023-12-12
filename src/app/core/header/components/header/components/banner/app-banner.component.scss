@@ -11,7 +11,7 @@
 
   text-decoration: none;
 
-  background: linear-gradient(90deg, #31cdbb -1.46%, #5a26ed 82.32%, #b926ed 119.52%);
+  background: linear-gradient(90deg, #36ffb4 0.03%, #41ffff 20.41%, #f7f4ff 39.47%, #fffbed 66.86%, #d4ef66 80.77%, #efd166 93.08%, #ee8f37 102.37%);
   cursor: pointer;
 
   @include hide-unused-ui {
@@ -32,7 +32,7 @@
   }
 
   &__text {
-    @include font(25px, 1, 300, #ffffff);
+    @include font(25px, 1, 300, #000000);
     margin: 0;
 
     letter-spacing: 1px;
@@ -86,10 +86,6 @@
       transition: 100ms ease-in;
     }
   }
-
-  &__background-img {
-    transform: rotate(330deg);
-  }
 }
 
 @include b($laptop-xl) {
@@ -124,7 +120,7 @@
     }
 
     &__text {
-      @include font(18px, 1, 400, #ffffff);
+      @include font(18px, 1, 400, #000000);
       text-align: left;
     }
 
@@ -154,7 +150,7 @@
     height: 31px;
 
     &__text {
-      @include font(13px, 1, 400, #ffffff);
+      @include font(13px, 1, 400, #000000);
     }
 
     &__link {
