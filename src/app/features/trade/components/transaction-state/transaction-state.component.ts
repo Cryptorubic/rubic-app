@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TransactionStep, transactionStep } from '@features/trade/models/transaction-steps';
+import { BehaviorSubject } from 'rxjs';
+
+type StepState = 'fullfilled' | 'pending' | '';
 
 @Component({
   selector: 'app-transaction-state',
@@ -14,8 +17,24 @@ export class TransactionStateComponent {
 
   public stateIndex: number = 0;
 
+  private _stepsStates$: BehaviorSubject<StepState[]> = new BehaviorSubject([]);
+
+  public stepsStates$ = this._stepsStates$.asObservable();
+
   @Input({ required: true }) set state(value: TransactionStep) {
-    this.stateIndex = this.steps.findIndex(el => el.key === value);
+    const stateIndex = this.steps.findIndex(el => el.key === value);
+    const stepsStates: StepState[] = this.steps.map((_, index) => {
+      const lastStep = this.steps[this.steps.length - 1].key;
+      if (index < stateIndex || value === lastStep) {
+        return 'fullfilled';
+      }
+      if (index === stateIndex) {
+        return 'pending';
+      }
+      return '';
+    });
+
+    this._stepsStates$.next(stepsStates);
   }
 
   @Input({ required: true }) set transactionData(value: {

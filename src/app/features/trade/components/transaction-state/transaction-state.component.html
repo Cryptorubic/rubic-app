@@ -1,24 +1,24 @@
-<div class="state">
+<div class="state" *ngLet="stepsStates$ | async as stepsStates">
   <div class="state__element" *ngFor="let step of steps; let index = index">
     <div
       class="state__element-icon"
       [ngClass]="{
-      'state__element-icon_done': index < stateIndex,
-      'state__element-icon_focus': index === stateIndex,
+        'state__element-icon_focus': stepsStates[index] === 'pending',
+        'state__element-icon_done': stepsStates[index] === 'fullfilled',
     }"
     >
       <img
-        *ngIf="index < stateIndex"
+        *ngIf="stepsStates[index] === 'fullfilled'"
         src="/assets/images/icons/checkmark/checkmark-thin-white.svg"
         alt=""
       />
-      <span *ngIf="index === stateIndex" class="loader"></span>
+      <span *ngIf="stepsStates[index] === 'pending'" class="loader"></span>
     </div>
     <div
       class="state__element-text"
       [ngClass]="{
-      'state__element-text_pending': index < stateIndex,
-      'state__element-text_focus': index === stateIndex,
+        'state__element-text_focus': stepsStates[index] === 'fullfilled',
+      'state__element-text_pending': stepsStates[index] === 'pending',
     }"
     >
       {{ step.value }}
