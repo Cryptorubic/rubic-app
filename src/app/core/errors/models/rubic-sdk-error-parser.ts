@@ -144,6 +144,11 @@ export class RubicSdkErrorParser {
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
     }
+
+    if (err.message.includes('price change more than your slippage!')) {
+      return new RubicError('Please, increase the slippage and try again!');
+    }
+
     return new ExecutionRevertedError(err.message);
   }
 
