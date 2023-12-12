@@ -37,6 +37,7 @@ interface AllQueryParams {
   testMode: string;
   crossChainIntegratorAddress: string;
   onChainIntegratorAddress: string;
+  referral: string;
 }
 
 export type QueryParams = {

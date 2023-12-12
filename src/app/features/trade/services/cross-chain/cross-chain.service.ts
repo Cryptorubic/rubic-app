@@ -49,6 +49,7 @@ import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chai
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { TradeParser } from '@features/trade/utils/trade-parser';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable()
 export class CrossChainService {
@@ -68,6 +69,7 @@ export class CrossChainService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly sessionStorage: SessionStorageService,
     private readonly tokensService: TokensService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -279,13 +281,16 @@ export class CrossChainService {
       blockchain
     );
 
+    const referrer = this.sessionStorage.getItem('referral');
+
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(directTransaction && { directTransaction })
+      ...(directTransaction && { directTransaction }),
+      ...(referrer && { referrer })
     };
 
     try {
