@@ -9,7 +9,7 @@
     [tuiTextfieldLabelOutside]="false"
     (focusedChange)="onInputClick($event)"
   >
-    <div [@moveLabel]="animationState" class="network-container__row">
+    <div [@moveLabel]="isActiveInput" class="network-container__row">
       <label class="network-container__label">Wallet address or ENS name in target network</label>
     </div>
   </tui-input>

@@ -10,8 +10,6 @@ import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 export class ReceiverAddressButtonComponent {
   @Output() handleClick = new EventEmitter<void>();
 
-  public isVisibleHint: boolean = false;
-
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 
   constructor(private swapFormService: SwapsFormService) {}

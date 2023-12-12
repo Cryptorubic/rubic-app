@@ -8,7 +8,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AnimationState, animationState } from './consts/animation-state';
 
 @Component({
   selector: 'app-target-network-address',
@@ -18,10 +17,9 @@ import { AnimationState, animationState } from './consts/animation-state';
   providers: [TuiDestroyService],
   animations: [
     trigger('moveLabel', [
-      state(animationState.focus, style({ color: '#02b774', fontSize: '12px', top: '-5px' })),
-      state(animationState.leave, style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
-      transition(`${animationState.focus} => ${animationState.leave}`, [animate('0.2s ease-out')]),
-      transition(`${animationState.leave} => ${animationState.focus}`, [animate('0.2s ease-in')])
+      state('true', style({ color: '#02b774', fontSize: '12px', top: '-5px' })),
+      state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
+      transition(`true <=> false`, animate('0.2s ease-out'))
     ])
   ]
 })
@@ -30,7 +28,7 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 
-  public animationState: AnimationState = animationState.leave;
+  public isActiveInput: boolean = false;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -52,11 +50,7 @@ export class TargetNetworkAddressComponent implements OnInit {
   }
 
   public onInputClick(isFocused: boolean): void {
-    if (this.address.value || isFocused) {
-      this.animationState = animationState.focus;
-    } else {
-      this.animationState = animationState.leave;
-    }
+    this.isActiveInput = isFocused || !!this.address.value;
   }
 
   private subscribeOnFormValues(): void {

@@ -1,13 +1,10 @@
 <button
   tuiIconButton
   [tuiHint]="hint"
-  [tuiHintManual]="isVisibleHint"
   appearance="secondary"
   type="button"
   size="m"
   (click)="handleClick.emit()"
-  (mouseenter)="isVisibleHint = true"
-  (mouseleave)="isVisibleHint = false"
 >
   <div class="image" inlineSVG="/assets/images/icons/wallet-change.svg"></div>
 </button>
