@@ -23,12 +23,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#5B978E',
     averageTime: 5
   },
-  [BRIDGE_TYPE.AMAROK]: {
-    name: 'Connext',
-    image: `${imageBasePath}connext.svg`,
-    color: '#5B76FD',
-    averageTime: 5
-  },
   [BRIDGE_TYPE.ANY_SWAP]: {
     name: 'AnySwap',
     image: `${imageBasePath}anyswap.svg`,
@@ -201,12 +195,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#5d25ba',
     averageTime: 5
   },
-  [BRIDGE_TYPE.POLYGON_BRIDGE]: {
-    name: 'Polygon bridge',
-    image: `${imageBasePath}polygon-bridge.png`,
-    color: '#5d25ba',
-    averageTime: 5
-  },
   //RRRRRRRRRRRRRRRRRRRR
   [BRIDGE_TYPE.RAINBOW]: {
     name: 'Rainbow Bridge',
@@ -276,12 +264,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#33FF99',
     averageTime: 5
   },
-  [BRIDGE_TYPE.THORCHAIN_STREAMING]: {
-    name: 'Thorchain Streaming',
-    image: `${imageBasePath}thorchain.svg`,
-    color: '#33FF99',
-    averageTime: 5
-  },
+  //VVVVVVVVVVVVVVVVVVVVV
   [BRIDGE_TYPE.VOYAGER]: {
     name: 'Voyager',
     image: `${imageBasePath}voyager.svg`,
