@@ -15,8 +15,6 @@ export class TransactionStateComponent {
 
   public type: 'bridge' | 'swap';
 
-  public stateIndex: number = 0;
-
   private _stepsStates$: BehaviorSubject<StepState[]> = new BehaviorSubject([]);
 
   public stepsStates$ = this._stepsStates$.asObservable();
