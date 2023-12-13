@@ -44,18 +44,6 @@
     font-size: 16px;
     text-align: center;
   }
-
-  &__inner-wrapper {
-    margin-left: 10px;
-
-    h5 {
-      height: 21px;
-      margin: 0;
-      padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
-
-      font-size: 15px;
-    }
-  }
 }
 
 @include b($mobile-md) {
