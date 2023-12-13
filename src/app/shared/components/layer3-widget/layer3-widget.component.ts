@@ -22,8 +22,8 @@ export class Layer3WidgetComponent {
     console.log(layerWidget);
 
     this.window.addEventListener('message', event => {
-      if (event) {
-        console.log(event);
+      if (event.data) {
+        console.log(event.data);
       }
     });
   }
