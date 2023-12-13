@@ -48,6 +48,7 @@ export class TransactionStateComponent {
         transactionStep.destinationPending
       );
     }
+    steps.push(transactionStep.success);
     this.steps = steps.map(el => ({
       key: el,
       value: TransactionStateComponent.getLabel(el, this.type)
