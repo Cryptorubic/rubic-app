@@ -19,8 +19,11 @@ export class TransactionStateComponent {
   @Input({ required: true }) set state(value: TransactionStep) {
     const stateIndex = this.steps.findIndex(el => el.key === value);
     this.stepsStates = this.steps.map((_, index) => {
-      const lastStep = this.steps[this.steps.length - 1].key;
-      if (index < stateIndex || value === lastStep) {
+      if (
+        index < stateIndex ||
+        value === transactionStep.success ||
+        value === transactionStep.error
+      ) {
         return 'fullfilled';
       }
       if (index === stateIndex) {
