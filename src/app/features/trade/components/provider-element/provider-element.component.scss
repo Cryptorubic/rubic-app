@@ -12,6 +12,11 @@
       font-size: 18px;
       line-height: 18px;
     }
+
+    @media (min-width: 4096px) {
+      font-size: 26px;
+      line-height: 26px;
+    }
   }
 
   &_disabled {
@@ -52,6 +57,10 @@
     &-price {
       @media (min-width: 2048px) {
         font-size: 16px;
+      }
+
+      @media (min-width: 4096px) {
+        font-size: 26px;
       }
     }
   }

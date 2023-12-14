@@ -6,4 +6,10 @@ button {
 
     font-size: 20px !important;
   }
+
+  @media (min-width: 4096px) {
+    height: 76px !important;
+
+    font-size: 35px !important;
+  }
 }

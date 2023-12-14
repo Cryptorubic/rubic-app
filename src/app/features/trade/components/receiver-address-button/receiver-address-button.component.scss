@@ -16,6 +16,11 @@
     height: 30px;
   }
 
+  @media (min-width: 4096px) {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
   svg {
     width: 100%;
     height: 100%;
@@ -27,4 +32,12 @@
     width: var(--tui-height-l) !important;
     height: var(--tui-height-l) !important;
   }
+}
+
+@media (min-width: 4096px) {
+  button {
+    width: 76px !important;
+    height: 76px !important;
+  }
+
 }

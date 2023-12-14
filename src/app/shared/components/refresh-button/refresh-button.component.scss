@@ -26,6 +26,11 @@
     height: 23px;
   }
 
+  @media (min-width: 4096px) {
+    width: 43px;
+    height: 43px;
+  }
+
   cursor: pointer;
 
   &__icon {
@@ -37,6 +42,11 @@
     @media (min-width: 2048px) {
       width: 23px;
       height: 21px;
+    }
+
+    @media (min-width: 4096px) {
+      width: 43px;
+      height: 41px;
     }
 
     ::ng-deep {

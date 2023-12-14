@@ -28,6 +28,10 @@
       font-size: 25px;
     }
 
+    @media (min-width: 4096px) {
+      font-size: 55px;
+    }
+
     &::-webkit-input-placeholder {
       color: var(--tui-text-03);
     }

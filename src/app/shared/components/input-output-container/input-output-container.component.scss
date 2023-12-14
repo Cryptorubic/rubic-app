@@ -11,15 +11,27 @@
 
   transition: 0.2s ease-in-out;
 
+  @media (min-width: 4096px) {
+    padding: 10px 20px 30px;
+  }
+
   &_round {
     &-top {
       padding-bottom: var(--tui-padding-s);
+
+      @media (min-width: 4096px) {
+        padding-bottom: 32px;
+      }
 
       border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
     }
 
     &-bottom {
       padding-top: var(--tui-padding-s);
+
+      @media (min-width: 4096px) {
+        padding-top: 32px;
+      }
 
       border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
     }

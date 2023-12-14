@@ -15,6 +15,11 @@ h5 {
     font-size: 20px;
     line-height: 20px;
   }
+
+  @media (min-width: 4096px) {
+    font-size: 30px;
+    line-height: 30px;
+  }
 }
 
 .waiting {

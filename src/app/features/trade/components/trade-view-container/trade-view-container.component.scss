@@ -37,6 +37,10 @@
       width: 700px;
     }
 
+    @media (min-width: 4096px) {
+      width: 1000px;
+    }
+
     &_tokens {
       width: 600px;
     }
@@ -58,6 +62,10 @@
 
     @media (min-width: 2048px) {
       width: 430px;
+    }
+
+    @media (min-width: 4096px) {
+      width: 530px;
     }
 
     background: var(--secondary-background);

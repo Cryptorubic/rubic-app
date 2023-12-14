@@ -10,10 +10,18 @@
     display: flex;
     margin-top: var(--tui-padding-m);
   }
+
+  @media (min-width: 4096px) {
+    padding: 30px 20px;
+  }
 }
 
 header {
   padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+
+  @media (min-width: 4096px) {
+    padding: 0 20px 30px;
+  }
 
   &:has(> *:empty) {
     display: none;
@@ -29,6 +37,10 @@ header {
 
     @media (min-width: 2048px) {
       font-size: 20px;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 40px;
     }
 
     &:empty {

@@ -1,5 +1,17 @@
 @use 'src/scss/core' as *;
 
+@media (min-width: 4096px) {
+  :host ::ng-deep {
+    .window-container {
+      padding: 30px 20px 20px !important;
+
+      header {
+        //padding: var(--tui-padding-l) !important;
+      }
+    }
+  }
+}
+
 app-action-button {
   width: 100%;
 }
@@ -18,6 +30,10 @@ app-action-button {
   gap: 10px;
   align-items: center;
   margin-left: auto;
+
+  @media (min-width: 4096px) {
+    gap: 20px;
+  }
 }
 
 app-target-network-address {
@@ -32,6 +48,10 @@ app-target-network-address {
 
   @media (min-width: 2048px) {
     gap: 6px;
+  }
+
+  @media (min-width: 4096px) {
+    gap: 0;
   }
 }
 

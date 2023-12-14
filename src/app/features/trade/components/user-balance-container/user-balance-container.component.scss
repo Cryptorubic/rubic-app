@@ -15,6 +15,11 @@
       font-size: 20px;
       line-height: 20px;
     }
+
+    @media (min-width: 4096px) {
+      font-size: 40px;
+      line-height: 40px;
+    }
   }
 
   &__max-button {
@@ -30,6 +35,10 @@
 
     @media (min-width: 2048px) {
       font-size: 16px !important;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 26px;
     }
 
     background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
