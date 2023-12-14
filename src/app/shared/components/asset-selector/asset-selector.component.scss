@@ -12,6 +12,10 @@
     color: var(--tui-text-03);
     font-weight: 400;
     font-size: 15px;
+
+    @media (min-width: 2048px) {
+      font-size: 20px;
+    }
   }
 
   &__main-label {
@@ -22,12 +26,20 @@
     color: white;
     font-weight: 700;
     font-size: 21px;
+
+    @media (min-width: 2048px) {
+      font-size: 23px;
+    }
   }
 
   &__labels {
     display: flex;
     flex-direction: column;
     justify-content: center;
+
+    @media (min-width: 2048px) {
+      gap: 6px;
+    }
   }
 
   &__main-image {

@@ -6,6 +6,10 @@
   justify-content: space-between;
   padding: var(--tui-padding-l);
 
+  @media (min-width: 2048px) {
+    padding: var(--tui-padding-xl) var(--tui-padding-l) var(--tui-padding-xl) var(--tui-padding-l);
+  }
+
   &__element {
     display: flex;
     gap: var(--tui-padding-s);
@@ -13,10 +17,18 @@
 
     img {
       height: 0.75rem;
+
+      @media (min-width: 2048px) {
+        height: 18px;
+      }
     }
 
     &.time {
       margin-left: auto;
+    }
+
+    @media (min-width: 2048px) {
+      font-size: 16px !important;
     }
   }
 }

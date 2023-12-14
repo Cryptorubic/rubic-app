@@ -33,6 +33,10 @@
 
     transition: 0.2s ease-in-out;
 
+    @media (min-width: 2048px) {
+      width: 700px;
+    }
+
     &_tokens {
       width: 600px;
     }
@@ -51,6 +55,10 @@
     display: block;
     width: 360px;
     height: 510px;
+
+    @media (min-width: 2048px) {
+      width: 430px;
+    }
 
     background: var(--secondary-background);
     border-radius: 17px;

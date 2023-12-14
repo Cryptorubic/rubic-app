@@ -21,6 +21,11 @@
   width: 18px;
   height: 18px;
 
+  @media (min-width: 2048px) {
+    width: 23px;
+    height: 23px;
+  }
+
   cursor: pointer;
 
   &__icon {
@@ -28,6 +33,11 @@
     align-items: center;
     width: 18px;
     height: 16px;
+
+    @media (min-width: 2048px) {
+      width: 23px;
+      height: 21px;
+    }
 
     ::ng-deep {
       svg {

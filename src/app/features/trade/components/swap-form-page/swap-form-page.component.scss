@@ -29,6 +29,10 @@ app-target-network-address {
   flex-direction: column;
   align-items: flex-end;
   width: 100%;
+
+  @media (min-width: 2048px) {
+    gap: 6px;
+  }
 }
 
 .buttons-container {

@@ -10,6 +10,11 @@
   ::ng-deep svg {
     width: 20px;
     height: 20px;
+
+    @media (min-width: 2048px) {
+      width: 25px;
+      height: 25px;
+    }
   }
 }
 

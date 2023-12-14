@@ -24,6 +24,10 @@
 
     border: none;
 
+    @media (min-width: 2048px) {
+      font-size: 25px;
+    }
+
     &::-webkit-input-placeholder {
       color: var(--tui-text-03);
     }

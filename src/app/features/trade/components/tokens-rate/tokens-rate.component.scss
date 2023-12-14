@@ -6,6 +6,10 @@
   justify-content: end;
   height: 15px;
 
+  @media (min-width: 2048px) {
+    height: auto;
+  }
+
   &__amounts {
     overflow: hidden;
 
@@ -14,6 +18,11 @@
     line-height: 15px;
     letter-spacing: 0.08em;
     white-space: nowrap;
+
+    @media (min-width: 2048px) {
+      font-size: 20px;
+      line-height: 20px;
+    }
   }
 
   &__direction-button {

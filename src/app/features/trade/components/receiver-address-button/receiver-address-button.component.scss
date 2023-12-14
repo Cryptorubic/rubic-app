@@ -11,8 +11,20 @@
   width: 24px;
   height: 24px;
 
+  @media (min-width: 2048px) {
+    width: 30px;
+    height: 30px;
+  }
+
   svg {
     width: 100%;
     height: 100%;
+  }
+}
+
+@media (min-width: 2048px) {
+  button {
+    width: var(--tui-height-l) !important;
+    height: var(--tui-height-l) !important;
   }
 }

@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .window-container {
   padding: var(--tui-padding-m);
 
@@ -24,6 +26,10 @@ header {
     margin: 0;
 
     font-size: 15px;
+
+    @media (min-width: 2048px) {
+      font-size: 20px;
+    }
 
     &:empty {
       display: none;
