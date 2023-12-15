@@ -9,10 +9,8 @@
   } as state"
 >
   <ng-container header>
-    <span class="back-button" (click)="backToForm()">
-      <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
-      Change Now Swap
-    </span>
+    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
+    <span class="back-button__text">Change Now Swap</span>
   </ng-container>
   <ng-container>
     <div class="preview">

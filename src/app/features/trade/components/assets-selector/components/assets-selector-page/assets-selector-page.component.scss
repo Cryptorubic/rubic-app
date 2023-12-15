@@ -4,7 +4,10 @@
   &__row {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+
+    &:not(:first-child) {
+      margin-top: 10px;
+    }
   }
 }
 
