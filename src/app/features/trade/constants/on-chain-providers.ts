@@ -4,6 +4,11 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
+  [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
+    name: '10KSwap',
+    image: `${imageBasePath}10Kswap.png`,
+    color: '#03fc84'
+  },
   //AAAAAAAAAAAAAAAAAAAAA
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',

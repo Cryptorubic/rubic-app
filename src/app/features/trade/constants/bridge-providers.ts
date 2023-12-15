@@ -4,12 +4,6 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 const imageBasePath = 'assets/images/icons/providers/bridge/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
-  [BRIDGE_TYPE['10K_SWAP']]: {
-    name: '10KSwap',
-    image: `${imageBasePath}10Kswap.png`,
-    color: '#03fc84',
-    averageTime: 5
-  },
   //AAAAAAAAAAAAAAAAAAAA
   [BRIDGE_TYPE.ACROSS]: {
     name: 'Across',

@@ -2,10 +2,10 @@ import { OnChainTradeType, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 
 export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   // Missed dexes
+  [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ALDRIN_EXCHANGE]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ANNEX]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ARTH_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.AVNU]: 'unknown',
