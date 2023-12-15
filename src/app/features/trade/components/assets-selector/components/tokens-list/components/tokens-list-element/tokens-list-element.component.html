@@ -61,7 +61,7 @@
   <ng-template #content let-activeZone>
     <tui-data-list tuiDataListDropdownManager size="l" [tuiActiveZoneParent]="activeZone">
       <div class="token-card-wrapper">
-        <div class="token-card__actions">
+        <div class="token-card__actions token-card__actions_clickable">
           <ng-container *ngIf="allowCopy">
             <span
               class="token-card__name-container-copy-icon"
