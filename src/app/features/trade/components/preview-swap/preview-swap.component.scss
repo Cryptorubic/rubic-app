@@ -23,6 +23,15 @@
     gap: var(--tui-padding-s);
     padding: var(--tui-padding-l);
 
+    @media (min-width: 2048px) {
+      gap: 20px;
+    }
+
+    @media (min-width: 4096px) {
+      gap: 40px;
+      padding: 20px;
+    }
+
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
 
@@ -39,11 +48,19 @@
     display: flex;
     gap: var(--tui-padding-s);
     align-items: center;
+
+    @media (min-width: 4096px) {
+      gap: 20px;
+    }
   }
 
   &__token-container {
     display: flex;
     height: 30px;
+
+    @media (min-width: 4096px) {
+      height: 60px;
+    }
   }
 
   &__second-image-container {
@@ -56,6 +73,11 @@
     img {
       height: 100%;
     }
+
+    @media (min-width: 4096px) {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   &__main-image {
@@ -66,12 +88,21 @@
 
     border-radius: 100%;
     outline: 2px solid var(--primary-background);
+
+    @media (min-width: 4096px) {
+      width: 60px;
+      height: 60px;
+    }
   }
 
   &__amount-container {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
+
+    @media (min-width: 2048px) {
+      gap: 6px;
+    }
 
     > * {
       line-height: 1rem;
@@ -82,6 +113,16 @@
     width: 100%;
 
     font-weight: 500;
+
+    @media (min-width: 2048px) {
+      font-size: 18px;
+      line-height: 18px !important;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 38px;
+      line-height: 38px !important;
+    }
   }
 
   &__fiat-amount {
@@ -90,6 +131,16 @@
 
   &__token-info {
     color: var(--tui-text-03);
+
+    @media (min-width: 2048px) {
+      font-size: 16px;
+      line-height: 16px !important;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 36px;
+      line-height: 36px !important;
+    }
   }
 
   &__action-container {
@@ -100,6 +151,16 @@
     button {
       flex-shrink: 1;
       width: 100%;
+
+      @media (min-width: 2048px) {
+        font-size: 20px !important;
+      }
+
+      @media (min-width: 4096px) {
+        height: 90px;
+
+        font-size: 40px !important;
+      }
     }
   }
 
@@ -121,6 +182,10 @@ app-swap-data-element ::ng-deep {
 
     background: var(--primary-background);
     border-radius: var(--tui-radius-m);
+
+    @media (min-width: 4096px) {
+      padding: 30px 20px;
+    }
   }
 }
 

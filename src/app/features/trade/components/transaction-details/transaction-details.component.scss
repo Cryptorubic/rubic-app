@@ -6,12 +6,24 @@
   background: var(--primary-background);
   border-radius: var(--tui-radius-m);
 
+  @media (min-width: 4096px) {
+    padding: 30px 20px;
+  }
+
   &__label {
     margin-top: 0;
     margin-bottom: var(--tui-padding-l);
 
     font-size: 15px;
     text-align: center;
+
+    @media (min-width: 2048px) {
+      font-size: 18px;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 35px;
+    }
   }
 
   &__priceImpact-low {
@@ -31,6 +43,11 @@
   width: 13px;
   height: 13px;
 
+  @media (min-width: 4096px) {
+    width: 33px;
+    height: 33px;
+  }
+
   ::ng-deep svg {
     width: 100%;
     height: 100%;
@@ -41,6 +58,10 @@
   display: flex;
   gap: var(--tui-padding-xs);
   align-items: center;
+
+  @media (min-width: 4096px) {
+    gap: 12px;
+  }
 
   a {
     display: flex;

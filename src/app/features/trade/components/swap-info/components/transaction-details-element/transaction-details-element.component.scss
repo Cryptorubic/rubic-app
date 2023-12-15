@@ -5,18 +5,46 @@
   width: 100%;
   overflow: hidden;
 
+  @media (min-width: 2048px) {
+    margin-bottom: 4px;
+  }
+
+  @media (min-width: 4096px) {
+    margin-bottom: 16px;
+  }
+
   &__text {
     display: flex;
     align-items: center;
 
     &-title {
       white-space: nowrap;
+
+      @media (min-width: 2048px) {
+        font-size: 16px;
+        line-height: 1;
+      }
+
+      @media (min-width: 4096px) {
+        font-size: 32px;
+        line-height: 1;
+      }
     }
 
     &-icon {
       width: 0.75rem;
       height: 0.75rem;
       margin-right: var(--tui-padding-s);
+
+      @media (min-width: 2048px) {
+        width: 16px;
+        height: 16px;
+      }
+
+      @media (min-width: 4096px) {
+        width: 32px;
+        height: 32px;
+      }
     }
   }
 
@@ -24,5 +52,15 @@
     margin-left: auto;
 
     white-space: nowrap;
+
+    @media (min-width: 2048px) {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 32px;
+      line-height: 1;
+    }
   }
 }

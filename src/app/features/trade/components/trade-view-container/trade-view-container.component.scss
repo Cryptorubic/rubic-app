@@ -10,10 +10,26 @@
       align-items: center;
       padding: 0 5px;
 
+      @media (min-width: 2048px) {
+        padding: 0;
+      }
+
+      @media (min-width: 4096px) {
+        gap: 20px;
+      }
+
       cursor: pointer;
 
       &__image {
         height: 10px;
+
+        @media (min-width: 2048px) {
+          height: 12px;
+        }
+
+        @media (min-width: 4096px) {
+          height: 22px;
+        }
       }
     }
   }
@@ -47,6 +63,14 @@
 
     &_small {
       width: 360px;
+
+      @media (min-width: 2048px) {
+        width: 400px;
+      }
+
+      @media (min-width: 4096px) {
+        width: 750px;
+      }
     }
   }
 
@@ -65,7 +89,7 @@
     }
 
     @media (min-width: 4096px) {
-      width: 580px;
+      width: 650px;
     }
 
     background: var(--secondary-background);

@@ -14,8 +14,8 @@
     }
 
     @media (min-width: 4096px) {
-      font-size: 28px;
-      line-height: 28px;
+      font-size: 37px;
+      line-height: 37px;
     }
   }
 
@@ -65,10 +65,12 @@
     &-price {
       @media (min-width: 2048px) {
         font-size: 16px;
+        line-height: 1;
       }
 
       @media (min-width: 4096px) {
         font-size: 32px;
+        line-height: 1;
       }
     }
   }
@@ -111,13 +113,13 @@
     height: 12px;
 
     @media (min-width: 2048px) {
-      width: 20px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
     }
 
     @media (min-width: 4096px) {
-      width: 45px;
-      height: 45px;
+      width: 60px;
+      height: 60px;
     }
 
     border-radius: 100%;
@@ -131,13 +133,14 @@
       max-width: 195px;
 
       font-size: 21px;
+      line-height: 1;
     }
 
     @media (min-width: 4096px) {
-      max-width: 265px;
-      overflow: visible;
+      max-width: 330px;
 
-      font-size: 32px;
+      font-size: 42px;
+      line-height: 1;
     }
 
     font-weight: 700;
@@ -238,7 +241,7 @@
     }
 
     @media (min-width: 4096px) {
-      gap: 32px;
+      gap: 42px;
     }
   }
 }

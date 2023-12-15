@@ -7,6 +7,7 @@
     display: flex;
 
     @media (min-width: 4096px) {
+      gap: 12px;
       align-items: center;
       margin-left: 20px;
     }
@@ -17,9 +18,14 @@
     height: 24px;
     margin-right: var(--tui-padding-s);
 
+    @media (min-width: 2048px) {
+      width: 30px;
+      height: 30px;
+    }
+
     @media (min-width: 4096px) {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
     }
   }
 
@@ -30,9 +36,13 @@
     color: var(--tui-text-03);
     font-size: 12px;
 
+    @media (min-width: 2048px) {
+      font-size: 14px;
+    }
+
     @media (min-width: 4096px) {
-      font-size: 22px;
-      line-height: 22px;
+      font-size: 30px;
+      line-height: 30px;
     }
 
     > div {
@@ -50,11 +60,15 @@
     color: var(--tui-text-01);
     font-size: 15px;
 
+    @media (min-width: 2048px) {
+      font-size: 17px;
+    }
+
     @media (min-width: 4096px) {
       margin-bottom: 12px;
 
-      font-size: 28px;
-      line-height: 28px;
+      font-size: 32px;
+      line-height: 32px;
     }
   }
 }
