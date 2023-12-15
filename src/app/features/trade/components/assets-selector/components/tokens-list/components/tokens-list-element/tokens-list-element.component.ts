@@ -212,6 +212,4 @@ export class TokensListElementComponent implements OnInit {
 
     return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress || ''}`;
   }
-
-  protected readonly open = open;
 }
