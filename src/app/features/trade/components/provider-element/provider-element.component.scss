@@ -14,8 +14,8 @@
     }
 
     @media (min-width: 4096px) {
-      font-size: 26px;
-      line-height: 26px;
+      font-size: 28px;
+      line-height: 28px;
     }
   }
 
@@ -33,6 +33,10 @@
       padding: var(--tui-padding-xl) var(--tui-padding-l) var(--tui-padding-xl) var(--tui-padding-l);
     }
 
+    @media (min-width: 4096px) {
+      padding: 30px;
+    }
+
     &_selected {
       background: var(--io-background);
     }
@@ -48,6 +52,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    @media (min-width: 4096px) {
+      align-items: baseline;
+    }
   }
 
   &__amount {
@@ -60,7 +68,7 @@
       }
 
       @media (min-width: 4096px) {
-        font-size: 26px;
+        font-size: 32px;
       }
     }
   }
@@ -73,6 +81,10 @@
     @media (min-width: 2048px) {
       gap: 12px;
     }
+
+    @media (min-width: 4096px) {
+      gap: 32px;
+    }
   }
 
   &__token-info {
@@ -82,6 +94,10 @@
 
     @media (min-width: 2048px) {
       gap: 8px;
+    }
+
+    @media (min-width: 4096px) {
+      gap: 12px;
     }
   }
 
@@ -99,6 +115,11 @@
       height: 20px;
     }
 
+    @media (min-width: 4096px) {
+      width: 45px;
+      height: 45px;
+    }
+
     border-radius: 100%;
   }
 
@@ -110,6 +131,13 @@
       max-width: 195px;
 
       font-size: 21px;
+    }
+
+    @media (min-width: 4096px) {
+      max-width: 265px;
+      overflow: visible;
+
+      font-size: 32px;
     }
 
     font-weight: 700;
@@ -169,8 +197,18 @@
     width: 20px;
     height: 20px;
 
+    @media (min-width: 4096px) {
+      width: 25px;
+      height: 25px;
+    }
+
     svg {
       transition: 0.2s ease-in-out;
+
+      @media (min-width: 4096px) {
+        width: 25px;
+        height: 25px;
+      }
     }
 
     &_active {
@@ -197,6 +235,10 @@
 
     @media (min-width: 2048px) {
       gap: 12px;
+    }
+
+    @media (min-width: 4096px) {
+      gap: 32px;
     }
   }
 }

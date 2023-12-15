@@ -10,6 +10,11 @@
     padding: var(--tui-padding-xl) var(--tui-padding-l) var(--tui-padding-xl) var(--tui-padding-l);
   }
 
+  @media (min-width: 4096px) {
+    gap: 40px;
+    padding: 30px;
+  }
+
   &__element {
     display: flex;
     gap: var(--tui-padding-s);
@@ -21,6 +26,10 @@
       @media (min-width: 2048px) {
         height: 18px;
       }
+
+      @media (min-width: 4096px) {
+        height: 30px;
+      }
     }
 
     &.time {
@@ -29,6 +38,10 @@
 
     @media (min-width: 2048px) {
       font-size: 16px !important;
+    }
+
+    @media (min-width: 4096px) {
+      font-size: 28px !important;
     }
   }
 }
