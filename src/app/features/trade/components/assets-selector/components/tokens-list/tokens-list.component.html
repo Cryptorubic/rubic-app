@@ -31,11 +31,11 @@
                 [tuiHint]="!token.available ? disabledTokenHint : null"
                 tuiHintAppearance="error"
                 tuiHintDirection="bottom-right"
-                (click)="onTokenSelect(token)"
               >
                 <app-tokens-list-element
                   [token]="token"
                   [balanceLoading]="isBalanceLoading$ | async"
+                  (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>
               </li>
             </cdk-virtual-scroll-viewport>

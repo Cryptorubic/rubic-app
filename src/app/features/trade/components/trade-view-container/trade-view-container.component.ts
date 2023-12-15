@@ -60,15 +60,15 @@ export class TradeViewContainerComponent {
     // Handle ChangeNow Non EVM trade
     if (isAddressRequired) {
       const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
-      const isCnFromEvm =
+      const isCnFromNonEvm =
         currentTrade.trade instanceof ChangenowCrossChainTrade &&
-        BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+        !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
       if (isAddressValid) {
-        if (isCnFromEvm) {
-          this.tradePageService.setState('preview');
-        } else {
+        if (isCnFromNonEvm) {
           this.tradePageService.setState('cnPreview');
+        } else {
+          this.tradePageService.setState('preview');
         }
       }
     } else {

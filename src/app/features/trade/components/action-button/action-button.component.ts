@@ -55,9 +55,10 @@ export class ActionButtonComponent {
             action: () => {}
           };
         }
-        const isCnFromEvm =
+        const isCnFromNonEvm =
           currentTrade.trade instanceof ChangenowCrossChainTrade &&
-          BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+          !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
         if (
           currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
           currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
@@ -66,17 +67,17 @@ export class ActionButtonComponent {
           // Handle Non EVM trade
           if (isAddressRequired) {
             if (isReceiverValid) {
-              if (isCnFromEvm) {
+              if (isCnFromNonEvm) {
                 return {
                   type: 'action',
                   text: 'Preview swap',
-                  action: this.swap.bind(this)
+                  action: this.swapCn.bind(this)
                 };
               }
               return {
                 type: 'action',
                 text: 'Preview swap',
-                action: this.swapCn.bind(this)
+                action: this.swap.bind(this)
               };
             }
             return {
