@@ -5,6 +5,9 @@
   margin-top: 1px;
 
   &__row {
+    position: relative;
+    top: 0;
+
     display: flex;
     gap: 10px;
   }
