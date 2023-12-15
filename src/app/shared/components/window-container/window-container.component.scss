@@ -11,7 +11,7 @@
 }
 
 header {
-  padding: 0 var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+  padding: 0 var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
 
   &:has(> *:empty) {
     display: none;

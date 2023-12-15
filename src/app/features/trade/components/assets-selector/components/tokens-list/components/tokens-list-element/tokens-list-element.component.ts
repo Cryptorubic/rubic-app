@@ -40,11 +40,15 @@ import { GO_PLUS_AVAILABLE_NETWORKS } from '@features/trade/components/assets-se
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent implements OnInit {
+  public dropdownOpen = false;
+
   @Input() token: TokenAmount;
 
   @Input() balanceLoading = false;
 
   @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
+
+  @Output() selectToken = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
