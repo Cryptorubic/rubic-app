@@ -1,3 +1,14 @@
-<button tuiIconButton appearance="secondary" type="button" size="m" (click)="handleClick.emit()">
+<button
+  tuiIconButton
+  [tuiHint]="hint"
+  appearance="secondary"
+  type="button"
+  size="m"
+  (click)="handleClick.emit()"
+>
   <div class="image" inlineSVG="/assets/images/icons/wallet-change.svg"></div>
 </button>
+
+<ng-template #hint>
+  {{ 'crossChainPage.targetAddress.hint' | translate : { network: (toBlockchain$ | async) } }}
+</ng-template>
