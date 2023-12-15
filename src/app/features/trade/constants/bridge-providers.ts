@@ -264,5 +264,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}taiko.svg`,
     color: '#e81899',
     averageTime: 5
+  },
+  [BRIDGE_TYPE.PULSE_CHAIN_BRIDGE]: {
+    name: 'Pulsechain bridge',
+    image: `assets/images/icons/coins/pulsechain.svg`,
+    color: '#fff',
+    averageTime: 5
   }
 };
