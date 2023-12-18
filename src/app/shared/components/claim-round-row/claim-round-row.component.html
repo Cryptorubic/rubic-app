@@ -21,7 +21,12 @@
               src="assets/images/rbc-white.png"
               alt="Confirmed RBC"
             />
-            {{ claimAmountValue }} RBC
+            {{
+              claimAmountValue === '-.-'
+                ? claimAmountValue
+                : (claimAmountValue | bigNumberFormat | shortenAmount : 6 : 2 : true)
+            }}
+            RBC
           </span>
         </div>
         <tui-loader
@@ -59,7 +64,12 @@
             src="assets/images/rbc-white.png"
             alt="Confirmed RBC"
           />
-          {{ claimAmountValue }} RBC
+          {{
+            claimAmountValue === '-.-'
+              ? claimAmountValue
+              : (claimAmountValue | bigNumberFormat | shortenAmount : 6 : 2 : true)
+          }}
+          RBC
         </span>
         <tui-loader
           [showLoader]="loading && !setDisabled && !round.isAlreadyClaimed"

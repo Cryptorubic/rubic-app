@@ -155,7 +155,7 @@
     &__info {
       &-amount {
         @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
-        gap: var(--tui-padding-xs);
+        gap: var(--tui-padding-s);
       }
     }
 
