@@ -46,7 +46,7 @@
 
   &__token-info {
     display: flex;
-    gap: var(--tui-padding-xs);
+    gap: var(--tui-padding-s);
     align-items: center;
   }
 
@@ -56,8 +56,8 @@
   }
 
   &__token-image {
-    width: 12px;
-    height: 12px;
+    width: 18px;
+    height: 18px;
 
     border-radius: 100%;
   }
@@ -71,8 +71,16 @@
     text-overflow: ellipsis;
   }
 
+  &__token-symbol {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+  }
+
   &__amount-price {
     color: var(--tui-text-03);
+    font-weight: 400;
+    font-size: 14px;
   }
 
   &__middle {
