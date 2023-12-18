@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { first, map, startWith } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith } from 'rxjs/operators';
 import { OnChainTrade, TradeInfo } from 'rubic-sdk';
 import { Observable, of } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -26,6 +26,7 @@ export class TransactionDetailsComponent {
 
   public readonly priceImpactCssClass$: Observable<string> = this.details$.pipe(
     map(trade => this.getPriceImpactCssClass(trade.priceImpact)),
+    distinctUntilChanged(),
     startWith('')
   );
 

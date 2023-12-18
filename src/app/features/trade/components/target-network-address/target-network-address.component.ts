@@ -7,18 +7,28 @@ import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-target-network-address',
   templateUrl: './target-network-address.component.html',
   styleUrls: ['./target-network-address.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService],
+  animations: [
+    trigger('moveLabel', [
+      state('true', style({ color: '#02b774', fontSize: '12px', top: '-5px' })),
+      state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
+      transition(`true <=> false`, animate('0.2s ease-out'))
+    ])
+  ]
 })
 export class TargetNetworkAddressComponent implements OnInit {
   public readonly address = new FormControl<string>(this.targetNetworkAddressService.address);
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
+
+  public isActiveInput: boolean = false;
 
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -37,6 +47,10 @@ export class TargetNetworkAddressComponent implements OnInit {
         toBlockchain: input.toBlockchain
       })
     );
+  }
+
+  public onInputClick(isFocused: boolean): void {
+    this.isActiveInput = isFocused || !!this.address.value;
   }
 
   private subscribeOnFormValues(): void {
