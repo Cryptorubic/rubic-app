@@ -113,6 +113,7 @@ export class RubicSdkErrorParser {
       return new TokenWithFeeError();
     }
     if (
+      err.message.includes('Make sure you have at least') ||
       err.stack?.includes('InsufficientFundsGasPriceValueError') ||
       err instanceof InsufficientFundsGasPriceValueError
     ) {
