@@ -1,7 +1,6 @@
-<div class="layer3-widget">
-  <iframe
-    (load)="setupIframe()"
-    id="layer3-widget"
-    src="https://layer3-widget.rubic.exchange/"
-  ></iframe>
-</div>
+<iframe
+  (load)="setupIframe()"
+  id="layer3-widget"
+  src="https://layer3-widget.rubic.exchange/"
+  [style]="isMobile ? 'width: 100%' : 'width: 100px'"
+></iframe>
