@@ -14239,8 +14239,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-"rubic-sdk@file:../rubic-sdk":
-  version "4.43.0-ps-bridge.0"
+rubic-sdk@4.43.0-alpha-ps-bridge.0:
+  version "4.43.0-alpha-ps-bridge.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.43.0-alpha-ps-bridge.0.tgz#734997561103aa3d1e08da4912fca93748b28183"
+  integrity sha512-D35UCU7RMhTMtsv37aJ/wIGAJ1lzCzKw8Sjt8VFZilhb8KFB91c70Gcs0h/CYrho7yslsAGjXqbsJcNc4tf00g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
