@@ -26,6 +26,7 @@ import {
   CrossChainTradeType,
   EvmBlockchainName,
   TX_STATUS,
+  UserRejectError,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -349,6 +350,7 @@ export class PreviewSwapService {
   }
 
   private async catchSwitchCancel(): Promise<void> {
+    this.errorsService.catch(new UserRejectError());
     this._transactionState$.next({ step: 'idle', data: {} });
   }
 }
