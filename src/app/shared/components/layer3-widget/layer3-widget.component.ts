@@ -32,7 +32,7 @@ export class Layer3WidgetComponent {
     } else {
       layerWidget.style.width = '310px';
       layerWidget.style.position = 'absolute';
-      layerWidget.style.bottom = '25px';
+      layerWidget.style.top = '165px';
       layerWidget.style.left = '15px';
       layerWidget.style.zIndex = '1000';
     }
@@ -48,7 +48,7 @@ export class Layer3WidgetComponent {
           layerWidget.style.height = 'auto';
           layerWidget.style.width = '310px';
           layerWidget.style.left = '15px';
-          layerWidget.style.bottom = '25px';
+          layerWidget.style.top = '165px';
           layerWidget.style.transform = 'translate(0, 0)';
         }
       }
@@ -64,8 +64,8 @@ export class Layer3WidgetComponent {
           layerWidget.style.width = '700px';
           layerWidget.style.borderRadius = '15px';
           layerWidget.style.left = '50%';
-          layerWidget.style.bottom = '50%';
-          layerWidget.style.transform = 'translate(-50%, 50%)';
+          layerWidget.style.top = '50%';
+          layerWidget.style.transform = 'translate(-50%, -50%)';
         }
       }
     });
