@@ -34,7 +34,7 @@ export class Layer3WidgetComponent {
       layerWidget.style.position = 'absolute';
       layerWidget.style.top = '435px';
       layerWidget.style.left = '15px';
-      layerWidget.style.zIndex = '-1';
+      layerWidget.style.zIndex = '1000';
     }
 
     this.window.addEventListener('message', event => {
@@ -66,7 +66,6 @@ export class Layer3WidgetComponent {
           layerWidget.style.left = '50%';
           layerWidget.style.top = '50%';
           layerWidget.style.transform = 'translate(-50%, -50%)';
-          layerWidget.style.zIndex = '1000';
         }
       }
     });
