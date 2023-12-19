@@ -233,7 +233,7 @@
     </div>
 
     <app-mev-bot
-      *ngIf="state.transaction.step === 'idle'"
+      *ngIf="state.transaction.step !== 'success'"
       [tradePrice]="
         state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
       "

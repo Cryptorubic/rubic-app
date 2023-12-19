@@ -37,7 +37,6 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
-import { UserRejectError } from '@core/errors/models/provider/user-reject-error';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -333,17 +332,16 @@ export class PreviewSwapService {
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
-    let rpc = undefined;
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
-      rpc = 'https://rpc.flashbots.net';
+      const rpc = 'https://rpc.flashbots.net';
+      try {
+        await this.walletConnectorService.addChain(fromBlockchain, rpc);
+        return true;
+      } catch {
+        return false;
+      }
     }
-
-    try {
-      await this.walletConnectorService.addChain(fromBlockchain, rpc);
-      return true;
-    } catch {
-      return false;
-    }
+    return true;
   }
 
   public getSelectedProvider(): void {
@@ -351,8 +349,6 @@ export class PreviewSwapService {
   }
 
   private async catchSwitchCancel(): Promise<void> {
-    this.errorsService.catch(new UserRejectError());
-    this._transactionState$.next({ step: 'inactive', data: {} });
-    this.tradePageService.setState('form');
+    this._transactionState$.next({ step: 'idle', data: {} });
   }
 }
