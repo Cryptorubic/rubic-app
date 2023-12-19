@@ -31,6 +31,7 @@ export class LiveChatService {
       event => {
         if (event.data?.type === 'lc_visibility') {
           const value = event.data?.value;
+
           if (!this.isMobile) {
             if (value === 'minimized' || value === 'hidden') {
               liveChat.height = '84px';
