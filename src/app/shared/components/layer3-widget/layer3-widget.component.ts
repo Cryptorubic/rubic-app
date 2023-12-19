@@ -23,6 +23,7 @@ export class Layer3WidgetComponent {
     const layerWidget = this.window.document.querySelector(
       'iframe#layer3-widget'
     ) as HTMLIFrameElement;
+    const topOffset = this.window.innerWidth < 1280 ? '435px' : '165px';
 
     if (this.isMobile) {
       layerWidget.style.width = '100%';
@@ -32,9 +33,9 @@ export class Layer3WidgetComponent {
     } else {
       layerWidget.style.width = '310px';
       layerWidget.style.position = 'absolute';
-      layerWidget.style.top = '165px';
+      layerWidget.style.top = topOffset;
       layerWidget.style.left = '15px';
-      layerWidget.style.zIndex = '1000';
+      layerWidget.style.zIndex = '-1';
     }
 
     this.window.addEventListener('message', event => {
@@ -48,7 +49,7 @@ export class Layer3WidgetComponent {
           layerWidget.style.height = 'auto';
           layerWidget.style.width = '310px';
           layerWidget.style.left = '15px';
-          layerWidget.style.top = '165px';
+          layerWidget.style.top = topOffset;
           layerWidget.style.transform = 'translate(0, 0)';
         }
       }
@@ -66,6 +67,7 @@ export class Layer3WidgetComponent {
           layerWidget.style.left = '50%';
           layerWidget.style.top = '50%';
           layerWidget.style.transform = 'translate(-50%, -50%)';
+          layerWidget.style.zIndex = '1000';
         }
       }
     });
