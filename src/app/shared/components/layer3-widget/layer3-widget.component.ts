@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { HeaderStore } from '@core/header/services/header.store';
+import { CalculationStatus } from '@features/trade/models/calculation-status';
 
 @Component({
   selector: 'app-layer3-widget',
@@ -10,6 +11,8 @@ import { HeaderStore } from '@core/header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Layer3WidgetComponent {
+  @Input({ required: true }) isTradeCalculating: CalculationStatus;
+
   public isMobile = false;
 
   constructor(
@@ -28,13 +31,6 @@ export class Layer3WidgetComponent {
     layerWidget.style.zIndex = '1000';
     layerWidget.style.position = 'relative';
     layerWidget.style.pointerEvents = 'auto';
-
-    // if (this.isMobile) {
-    //   layerWidget.style.marginBottom = '60px';
-    //   layerWidget.style.marginTop = '-95px';
-    // } else {
-    //   layerWidget.style.position = 'relative';
-    // }
 
     this.window.addEventListener('message', event => {
       if (event.data === 'closeModal') {
@@ -63,7 +59,7 @@ export class Layer3WidgetComponent {
           layerWidget.style.height = '656px';
           layerWidget.style.width = '700px';
           layerWidget.style.borderRadius = '15px';
-          layerWidget.style.left = '22%';
+          layerWidget.style.left = this.isTradeCalculating.activeCalculation ? '22%' : '-10%';
           layerWidget.style.top = '-10%';
         }
       }
