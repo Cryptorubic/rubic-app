@@ -103,6 +103,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SOLANA]: `${basePath}solana.svg`,
   [BLOCKCHAIN_NAME.SOLAR]: `${basePath}solar.svg`,
   [BLOCKCHAIN_NAME.STACKS]: `${basePath}stacks.svg`,
+  [BLOCKCHAIN_NAME.STARKNET]: `${basePath}starknet.svg`,
   [BLOCKCHAIN_NAME.STEEM]: `${basePath}steem.svg`,
   [BLOCKCHAIN_NAME.STELLAR]: `${basePath}stellar.svg`,
   [BLOCKCHAIN_NAME.STRATIS]: `${basePath}stratis.svg`,
