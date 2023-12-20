@@ -11,7 +11,7 @@ import { CalculationStatus } from '@features/trade/models/calculation-status';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Layer3WidgetComponent {
-  @Input({ required: true }) isTradeCalculating: CalculationStatus;
+  @Input({ required: true }) calculationStatus: CalculationStatus;
 
   public isMobile = false;
 
@@ -59,7 +59,7 @@ export class Layer3WidgetComponent {
           layerWidget.style.height = '656px';
           layerWidget.style.width = '700px';
           layerWidget.style.borderRadius = '15px';
-          layerWidget.style.left = this.isTradeCalculating.activeCalculation ? '22%' : '-10%';
+          layerWidget.style.left = this.calculationStatus.showSidebar ? '22%' : '-10%';
           layerWidget.style.top = '-10%';
         }
       }
