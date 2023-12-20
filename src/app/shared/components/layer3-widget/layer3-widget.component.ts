@@ -24,18 +24,17 @@ export class Layer3WidgetComponent {
       'iframe#layer3-widget'
     ) as HTMLIFrameElement;
 
-    if (this.isMobile) {
-      layerWidget.style.width = '100%';
-      layerWidget.style.marginBottom = '60px';
-      layerWidget.style.marginTop = '-95px';
-      layerWidget.style.zIndex = '1000';
-    } else {
-      layerWidget.style.width = '310px';
-      layerWidget.style.position = 'absolute';
-      layerWidget.style.top = '435px';
-      layerWidget.style.left = '15px';
-      layerWidget.style.zIndex = '1000';
-    }
+    layerWidget.style.width = '100%';
+    layerWidget.style.zIndex = '1000';
+    layerWidget.style.position = 'relative';
+    layerWidget.style.pointerEvents = 'auto';
+
+    // if (this.isMobile) {
+    //   layerWidget.style.marginBottom = '60px';
+    //   layerWidget.style.marginTop = '-95px';
+    // } else {
+    //   layerWidget.style.position = 'relative';
+    // }
 
     this.window.addEventListener('message', event => {
       if (event.data === 'closeModal') {
@@ -45,11 +44,11 @@ export class Layer3WidgetComponent {
           layerWidget.style.height = 'initial';
           layerWidget.style.marginTop = '-95px';
         } else {
+          layerWidget.style.position = 'relative';
           layerWidget.style.height = 'auto';
-          layerWidget.style.width = '310px';
-          layerWidget.style.left = '15px';
-          layerWidget.style.top = '435px';
-          layerWidget.style.transform = 'translate(0, 0)';
+          layerWidget.style.width = '100%';
+          layerWidget.style.left = '0';
+          layerWidget.style.top = '0';
         }
       }
 
@@ -57,15 +56,15 @@ export class Layer3WidgetComponent {
         if (this.isMobile) {
           layerWidget.style.position = 'absolute';
           layerWidget.style.top = '0';
+          layerWidget.style.left = '0';
           layerWidget.style.height = '100vh';
-          layerWidget.style.marginTop = '0';
         } else {
+          layerWidget.style.position = 'absolute';
           layerWidget.style.height = '656px';
           layerWidget.style.width = '700px';
           layerWidget.style.borderRadius = '15px';
-          layerWidget.style.left = '50%';
-          layerWidget.style.top = '50%';
-          layerWidget.style.transform = 'translate(-50%, -50%)';
+          layerWidget.style.left = '22%';
+          layerWidget.style.top = '-10%';
         }
       }
     });
