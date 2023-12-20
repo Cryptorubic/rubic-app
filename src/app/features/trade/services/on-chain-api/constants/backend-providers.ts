@@ -120,5 +120,6 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: 'xy_dex',
   [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx',
   [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango'
+  [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
+  [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos'
 };

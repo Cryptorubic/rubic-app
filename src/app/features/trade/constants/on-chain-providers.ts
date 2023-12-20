@@ -301,6 +301,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //OOOOOOOOOOOOOOOOOOOOOOO
+  [ON_CHAIN_TRADE_TYPE.ODOS]: {
+    name: 'Odos',
+    image: `${imageBasePath}odos.svg`,
+    color: 'black'
+  },
   [ON_CHAIN_TRADE_TYPE.OKC_SWAP]: {
     name: 'OkcSwap',
     image: `${imageBasePath}okcswap.png`,
