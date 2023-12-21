@@ -7,7 +7,9 @@ import {
   CrossChainTradeType,
   LIFI_BRIDGE_TYPES,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType
+  OnChainTradeType,
+  RubicTradeTypeForRango,
+  rangoTradeTypes
 } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +20,7 @@ import { TokensNetworkService } from '@core/services/tokens/tokens-network.servi
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +60,8 @@ export class QueryParamsService {
 
   public disabledLifiBridges: LifiBridgeTypes[] | undefined;
 
+  public disabledRangoBridges: RubicTradeTypeForRango[] | undefined;
+
   public disabledCrossChainProviders: CrossChainTradeType[] = [];
 
   public disabledOnChainProviders: OnChainTradeType[] = [];
@@ -69,6 +74,7 @@ export class QueryParamsService {
     private readonly router: Router,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
+    private readonly sessionStorage: SessionStorageService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
@@ -84,6 +90,10 @@ export class QueryParamsService {
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
+
+    if (queryParams?.referral) {
+      this.sessionStorage.setItem('referral', queryParams?.referral);
+    }
 
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
       const urlParams = new URLSearchParams(this.window.location.search);
@@ -113,6 +123,10 @@ export class QueryParamsService {
 
     if (queryParams.disabledLifiBridges) {
       this.setDisabledLifiBridges(queryParams.disabledLifiBridges);
+    }
+
+    if (queryParams.disabledRangoBridges) {
+      this.setDisabledRangoBridges(queryParams.disabledRangoBridges);
     }
 
     this.queryParams = queryParams;
@@ -181,6 +195,13 @@ export class QueryParamsService {
     this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
+  }
+
+  private setDisabledRangoBridges(disabledBridges: string[]): void {
+    const bridges = Object.keys(rangoTradeTypes) || [];
+    this.disabledRangoBridges = bridges.filter(bridge =>
+      disabledBridges.includes(bridge)
+    ) as RubicTradeTypeForRango[];
   }
 
   private setCrossChainProviders(

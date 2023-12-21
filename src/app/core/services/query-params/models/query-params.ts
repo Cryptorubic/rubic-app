@@ -33,9 +33,11 @@ interface AllQueryParams {
   tokenSearch: string;
   rubicLink: string;
   disabledLifiBridges: string[];
+  disabledRangoBridges: string[];
   testMode: string;
   crossChainIntegratorAddress: string;
   onChainIntegratorAddress: string;
+  referral: string;
 }
 
 export type QueryParams = {

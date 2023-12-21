@@ -163,16 +163,14 @@ export class PreviewSwapService {
         distinctUntilChanged(),
         filter(state => state.step !== 'inactive'),
         debounceTime(10),
-        switchMap(state => {
-          return forkJoin([this.selectedTradeState$.pipe(first()), of(state)]);
-        }),
-        switchMap(([tradeState, txState]) => {
-          return forkJoin([
+        switchMap(state => forkJoin([this.selectedTradeState$.pipe(first()), of(state)])),
+        switchMap(([tradeState, txState]) =>
+          forkJoin([
             of(tradeState),
             of(txState),
             this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade).pipe(first())
-          ]);
-        }),
+          ])
+        ),
         switchMap(([tradeState, txState, points]) => {
           switch (txState.step) {
             case 'approvePending': {
@@ -195,6 +193,7 @@ export class PreviewSwapService {
               let txHash: string;
               const useMevProtection =
                 this.settingsService.crossChainRoutingValue.useMevBotProtection;
+
               return from(this.loadRpcParams(useMevProtection)).pipe(
                 switchMap(rpcChanged => {
                   return rpcChanged
@@ -206,7 +205,10 @@ export class PreviewSwapService {
                             data: { ...this.transactionState.data, points }
                           });
                         },
-                        onSwap: (additionalInfo: { changenowId?: string }) => {
+                        onSwap: (additionalInfo: {
+                          changenowId?: string;
+                          rangoRequestId?: string;
+                        }) => {
                           if (tradeState.trade instanceof CrossChainTrade) {
                             this._transactionState$.next({
                               step: 'destinationPending',
@@ -255,7 +257,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string },
+    additionalInfo: { changenowId?: string; rangoRequestId?: string },
     points: number
   ): void {
     interval(30_000)
@@ -272,6 +274,9 @@ export class PreviewSwapService {
                 txTimestamp: timestamp,
                 ...(additionalInfo?.changenowId && {
                   changenowId: additionalInfo.changenowId
+                }),
+                ...(additionalInfo.rangoRequestId && {
+                  rangoRequestId: additionalInfo.rangoRequestId
                 }),
                 ...('amountOutMin' in tradeState.trade && {
                   amountOutMin: tradeState.trade.amountOutMin as string

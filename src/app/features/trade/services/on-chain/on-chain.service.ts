@@ -42,6 +42,7 @@ import { shouldCalculateGas } from '@features/trade/constants/should-calculate-g
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable()
 export class OnChainService {
@@ -67,7 +68,8 @@ export class OnChainService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -176,6 +178,7 @@ export class OnChainService {
     );
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
+    const referrer = this.sessionStorage.getItem('referral');
     let transactionHash: string;
 
     const options: SwapTransactionOptions = {
@@ -195,7 +198,8 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
-      ...(directTransaction && { directTransaction })
+      ...(directTransaction && { directTransaction }),
+      ...(referrer && { referrer })
     };
 
     try {

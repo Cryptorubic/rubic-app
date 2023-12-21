@@ -130,12 +130,12 @@ export class SettingsService {
       .pipe(
         filter(user => Boolean(user?.address)),
         tap(() => {
-          const itData = this.storeService.getItem('RUBIC_SETTINGS_INSTANT_TRADE');
+          const itData = this.storeService.getItem('RUBIC_OPTIONS_INSTANT_TRADE');
           if (itData) {
             this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.INSTANT_TRADE]: itData });
           }
 
-          const ccrData = this.storeService.getItem('RUBIC_SETTINGS_CROSS_CHAIN_ROUTING');
+          const ccrData = this.storeService.getItem('RUBIC_OPTIONS_CROSS_CHAIN_ROUTING');
           if (ccrData) {
             this.settingsForm.patchValue({ [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: ccrData });
           }
@@ -200,11 +200,11 @@ export class SettingsService {
 
   public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {
     this.storeService.setItem(
-      'RUBIC_SETTINGS_INSTANT_TRADE',
+      'RUBIC_OPTIONS_INSTANT_TRADE',
       JSON.parse(JSON.stringify(form[SWAP_PROVIDER_TYPE.INSTANT_TRADE]))
     );
     this.storeService.setItem(
-      'RUBIC_SETTINGS_CROSS_CHAIN_ROUTING',
+      'RUBIC_OPTIONS_CROSS_CHAIN_ROUTING',
       JSON.parse(JSON.stringify(form[SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]))
     );
   }

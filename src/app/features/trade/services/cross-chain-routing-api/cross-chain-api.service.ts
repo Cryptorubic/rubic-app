@@ -21,6 +21,7 @@ import { ProviderStatisctic } from '@core/services/backend/cross-chain-routing-a
 import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable()
 export class CrossChainApiService {
@@ -30,6 +31,7 @@ export class CrossChainApiService {
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
+    private readonly sessionStorage: SessionStorageService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
@@ -88,6 +90,8 @@ export class CrossChainApiService {
       toDecimals,
       toAddress
     } = TradeParser.getCrossChainSwapParams(trade);
+    const referral = this.sessionStorage.getItem('referral');
+
     const tradeInfo = {
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
@@ -102,7 +106,9 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...('id' in trade && { changenow_id: trade.id })
+      ...('id' in trade && { changenow_id: trade.id }),
+      ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
+      ...(referral && { influencer: referral })
     };
 
     await firstValueFrom(

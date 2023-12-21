@@ -77,7 +77,9 @@ import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
+import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
 import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-copy-btn/rubic-badge-with-copy-btn.component';
+import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.component';
 
 @NgModule({
   declarations: [
@@ -133,7 +135,9 @@ import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-co
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,
-    RubicBadgeWithCopyBtnComponent
+    GetUsdPricePipe,
+    RubicBadgeWithCopyBtnComponent,
+    Layer3WidgetComponent
   ],
   imports: [
     CommonModule,
@@ -214,7 +218,9 @@ import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-co
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,
-    RubicBadgeWithCopyBtnComponent
+    GetUsdPricePipe,
+    RubicBadgeWithCopyBtnComponent,
+    Layer3WidgetComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
