@@ -123,4 +123,4 @@ export const BACKEND_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango'
 } as const;
 
-export type BackendProviders = (typeof BACKEND_PROVIDERS)[keyof typeof BACKEND_PROVIDERS];
+export type ToBackendOnChainProviders = (typeof BACKEND_PROVIDERS)[keyof typeof BACKEND_PROVIDERS];
