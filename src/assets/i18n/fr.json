@@ -825,7 +825,8 @@
     "successfulStake": "Dépôt réussi",
     "successfulWithdraw": "Retrait réussi",
     "withdrawInProgress": "Retrait en cours",
-    "openMobileWallet": "Veuillez signer la transaction dans votre portefeuille"
+    "openMobileWallet": "Veuillez signer la transaction dans votre portefeuille",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "Acheter RBC",

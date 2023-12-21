@@ -26,7 +26,6 @@ import {
   CrossChainTradeType,
   EvmBlockchainName,
   TX_STATUS,
-  UserRejectError,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -38,6 +37,8 @@ import { UnreadTradesService } from '@core/services/unread-trades-service/unread
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -107,7 +108,9 @@ export class PreviewSwapService {
     private readonly airdropPointsService: AirdropPointsService,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
-    private readonly errorsService: ErrorsService
+    private readonly errorsService: ErrorsService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
@@ -334,7 +337,7 @@ export class PreviewSwapService {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
     if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
-      const rpc = 'https://rpc.flashbots.net';
+      const rpc = 'https://rubic-eth.rpc.blxrbdn.com';
       try {
         await this.walletConnectorService.addChain(fromBlockchain, rpc);
         return true;
@@ -350,7 +353,14 @@ export class PreviewSwapService {
   }
 
   private async catchSwitchCancel(): Promise<void> {
-    this.errorsService.catch(new UserRejectError());
+    const warningText = this.translateService.instant('notifications.cancelRpcSwitch');
+    this.notificationsService.show(warningText, {
+      status: 'warning',
+      autoClose: true,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
     this._transactionState$.next({ step: 'idle', data: {} });
   }
 }
