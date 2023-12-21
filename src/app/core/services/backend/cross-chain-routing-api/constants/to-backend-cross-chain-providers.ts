@@ -17,8 +17,11 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: 'rango'
 } as const;
 
-export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
+export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
+  CrossChainTradeType,
+  ToBackendCrossChainProviders
+> = {
   ...toProviders
-};
+} as const;
 
 export type ToBackendCrossChainProviders = (typeof toProviders)[keyof typeof toProviders];
