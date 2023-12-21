@@ -7,7 +7,10 @@ export interface OnChainRewardResponse {
   contract_address: string;
 }
 
-export interface CrossChainRewardResponse extends OnChainRewardResponse {}
+export interface CrossChainRewardResponse {
+  amount: number;
+  contract_address: string;
+}
 
 export interface CrossChainRewardRequestParams {
   /**
