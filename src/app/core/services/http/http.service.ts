@@ -12,9 +12,9 @@ export const SERVER_REST_URL = `${ENVIRONMENT.apiBaseUrl}/`;
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  public get<T>(url: string, params?: {}, path?: string): Observable<T> {
+  public get<T>(url: string, data?: {}, path?: string): Observable<T> {
     const request$ = this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
-      params
+      params: data || {}
     });
 
     return path ? request$ : request$.pipe(timeout(5_000), retry(1));
