@@ -647,7 +647,8 @@
     "successfulStake": "Staking war erfolgreich",
     "successfulWithdraw": "Auszahlung erfolgreich",
     "withdrawInProgress": "Auszahlung in Arbeit",
-    "openMobileWallet": "Öffne bitte die Wallet-App auf Deinem Gerät und bestätige die Transaktion"
+    "openMobileWallet": "Öffne bitte die Wallet-App auf Deinem Gerät und bestätige die Transaktion",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "RBC kaufen",
