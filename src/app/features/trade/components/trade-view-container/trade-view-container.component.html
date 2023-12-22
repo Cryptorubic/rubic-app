@@ -22,8 +22,9 @@
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-cn-preview-swap *ngSwitchCase="'cnPreview'"></app-cn-preview-swap>
     <app-layer3-widget
+      *ngIf="!isMobile"
+      [isVisible]="state.content === 'form'"
       [calculationStatus]="state.calculationStatus"
-      *ngIf="!isMobile && state.content === 'form'"
     ></app-layer3-widget>
   </div>
 
@@ -40,8 +41,9 @@
   ></app-providers-list-general>
 
   <app-layer3-widget
+    *ngIf="isMobile"
+    [isVisible]="state.content === 'form'"
     [calculationStatus]="state.calculationStatus"
-    *ngIf="isMobile && state.content === 'form'"
   ></app-layer3-widget>
 
   <app-cn-trade-info *ngIf="state.content === 'cnPreview'"></app-cn-trade-info>

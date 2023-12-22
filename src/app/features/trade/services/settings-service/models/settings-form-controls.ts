@@ -16,6 +16,7 @@ export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
   showReceiverAddress: boolean;
+  useMevBotProtection: boolean;
 }
 
 export type CcrSettingsFormControls = FormControlType<CcrSettingsForm>;

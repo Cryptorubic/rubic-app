@@ -158,9 +158,13 @@ export class WalletConnectorService {
   /**
    * Prompts the user to switch the network, or add it to the wallet if the network has not been added yet.
    * @param evmBlockchainName Chain to switch to.
+   * @param customRpcUrl Custom rpc to add to user wallet.
    * @return True if the network switch was successful, otherwise false.
    */
-  public async switchChain(evmBlockchainName: EvmBlockchainName): Promise<boolean> {
+  public async switchChain(
+    evmBlockchainName: EvmBlockchainName,
+    customRpcUrl?: string
+  ): Promise<boolean> {
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
     const provider = this.provider as EvmWalletAdapter;
     try {
@@ -169,7 +173,7 @@ export class WalletConnectorService {
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
-          await this.addChain(evmBlockchainName);
+          await this.addChain(evmBlockchainName, customRpcUrl);
           await provider.switchChain(chainId);
           return true;
         } catch (err) {
@@ -187,24 +191,38 @@ export class WalletConnectorService {
   /**
    * Adds new network through wallet provider.
    * @param evmBlockchainName Chain to switch to.
+   * @param customRpcUrl Custom rpc to add to user wallet.
    */
-  public async addChain(evmBlockchainName: EvmBlockchainName): Promise<void> {
+  public async addChain(
+    evmBlockchainName: EvmBlockchainName,
+    customRpcUrl?: string
+  ): Promise<void> {
+    const params = this.getRpcParams(evmBlockchainName, customRpcUrl);
+    await (this.provider as EvmWalletAdapter).addChain(params);
+  }
+
+  private getRpcParams(
+    evmBlockchainName: EvmBlockchainName,
+    customRpcUrl?: string
+  ): AddEvmChainParams {
     const chainId = blockchainId[evmBlockchainName];
     const nativeCoin = nativeTokensList[evmBlockchainName];
     const scannerUrl = blockchainScanner[evmBlockchainName].baseUrl;
     const icon = blockchainIcon[evmBlockchainName];
-    let chainName: string;
-    let rpcUrl: string;
+
+    let chainName = blockchainLabel[evmBlockchainName];
+    let rpcUrl = rpcList[evmBlockchainName][0];
     const defaultData = defaultBlockchainData[evmBlockchainName];
-    if (defaultData) {
+
+    if (customRpcUrl) {
+      chainName = blockchainLabel[evmBlockchainName] + ' Protected';
+      rpcUrl = customRpcUrl;
+    } else if (defaultData) {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
-    } else {
-      chainName = blockchainLabel[evmBlockchainName];
-      rpcUrl = rpcList[evmBlockchainName][0];
     }
 
-    const params: AddEvmChainParams = {
+    return {
       chainId: `0x${chainId.toString(16)}`,
       chainName,
       nativeCurrency: {
@@ -216,6 +234,5 @@ export class WalletConnectorService {
       blockExplorerUrls: [scannerUrl],
       iconUrls: [`${this.window.location.origin}/${icon}`]
     };
-    await (this.provider as EvmWalletAdapter).addChain(params);
   }
 }

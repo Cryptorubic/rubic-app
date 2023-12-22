@@ -1,0 +1,19 @@
+<tui-notification
+  *ngIf="displayMev"
+  [status]="crossChainRoutingForm.value.useMevBotProtection ? 'success' : 'warning'"
+  class="mev-bot"
+>
+  <div class="tui-text_body-l-2">
+    <strong>MEV bot protection</strong>
+  </div>
+  <div class="mev-bot__row">
+    Use private RPC to protect your trades
+    <form [formGroup]="crossChainRoutingForm" class="settings__form">
+      <tui-toggle
+        class="mev-bot__toggle"
+        id="useMevBotProtection"
+        formControlName="useMevBotProtection"
+      ></tui-toggle>
+    </form>
+  </div>
+</tui-notification>

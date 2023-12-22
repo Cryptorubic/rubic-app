@@ -233,6 +233,15 @@
       </div>
     </div>
 
+    <app-mev-bot
+      *ngIf="
+        state.transaction.step !== 'success' && state.tradeState?.trade?.from.blockchain === 'ETH'
+      "
+      [tradePrice]="
+        state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
+      "
+    ></app-mev-bot>
+
     <div class="preview__action-container">
       <button
         class="preview__action-button"
