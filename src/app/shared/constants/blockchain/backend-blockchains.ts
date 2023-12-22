@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
+const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',

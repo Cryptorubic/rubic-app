@@ -53,7 +53,8 @@ export class TransactionStateComponent {
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
-      success: 'Success swap'
+      success: 'Success swap',
+      inactive: 'Inactive'
     };
     return map[state];
   }

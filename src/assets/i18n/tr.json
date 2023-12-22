@@ -825,7 +825,8 @@
     "successfulStake": "Stake başarılı",
     "successfulWithdraw": "Çekme başarılı",
     "withdrawInProgress": "Çekme işlemi devam ediyor",
-    "openMobileWallet": "Lütfen işlemi imzalamak için mobil cüzdan uygulamasını açın"
+    "openMobileWallet": "Lütfen işlemi imzalamak için mobil cüzdan uygulamasını açın",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "RBC al",
