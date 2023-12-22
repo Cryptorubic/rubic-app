@@ -1,5 +1,5 @@
 import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
-import { ToBackendOnChainProviders } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
+import { BackendProviders } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
 import { BackendBlockchain } from '@app/shared/constants/blockchain/backend-blockchains';
 
 export interface OnChainRewardResponse {
@@ -32,7 +32,7 @@ export interface CrossChainRewardRequestParams {
 
 export interface OnChainRewardRequestParams {
   address: string;
-  provider: ToBackendOnChainProviders;
+  provider: BackendProviders;
   network: BackendBlockchain;
   from_token: string;
   to_token: string;
