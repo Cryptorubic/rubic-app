@@ -234,10 +234,6 @@
     </div>
 
     <app-mev-bot
-      *ngIf="
-        state.transaction.step !== 'success' &&
-        state.tradeState?.trade?.from.blockchain === 'ethereum'
-      "
       [tradePrice]="
         state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
       "
