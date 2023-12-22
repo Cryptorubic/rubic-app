@@ -334,7 +334,7 @@ export class PreviewSwapService {
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
-    state.data.wrongNetwork = tokenBlockchain && network !== tokenBlockchain;
+    state.data.wrongNetwork = network !== tokenBlockchain;
     this._transactionState$.next(state);
   }
 

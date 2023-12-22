@@ -14,9 +14,7 @@ export class MevBotComponent {
   public displayMev: boolean = false;
 
   @Input() set tradePrice(value: BigNumber | undefined) {
-    console.log('value', value);
     const minDollarAmountToDisplay = 999;
-    console.log('check', value.gt(minDollarAmountToDisplay));
     this.displayMev = value ? value.gt(minDollarAmountToDisplay) : false;
     if (!this.displayMev) {
       this.settingsService.crossChainRouting.patchValue({

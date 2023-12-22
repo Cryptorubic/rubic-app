@@ -13,6 +13,8 @@ import { CalculationStatus } from '@features/trade/models/calculation-status';
 export class Layer3WidgetComponent {
   @Input({ required: true }) calculationStatus: CalculationStatus;
 
+  @Input() isVisible: boolean = false;
+
   public isMobile = false;
 
   constructor(
