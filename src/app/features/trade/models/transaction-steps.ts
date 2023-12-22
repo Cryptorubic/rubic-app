@@ -1,6 +1,7 @@
 export const transactionStep = {
   idle: 'idle',
   error: 'error',
+  inactive: 'inactive',
 
   approveReady: 'approveReady',
   approvePending: 'approvePending',

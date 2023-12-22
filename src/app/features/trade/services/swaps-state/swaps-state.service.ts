@@ -50,7 +50,7 @@ export class SwapsStateService {
    */
   private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
-  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
+  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(0));
 
   public get tradeState(): SelectedTrade {
     return this._tradeState$.value;
