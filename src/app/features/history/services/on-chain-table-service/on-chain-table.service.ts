@@ -16,8 +16,8 @@ import { txStatusMapping } from '@features/history/models/tx-status-mapping';
 import { OnChainTableData } from '@features/history/models/on-chain-table-data';
 import { OnChainTableResponse } from '@features/history/models/on-chain-table-response';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
-import { BACKEND_PROVIDERS } from '@core/services/backend/instant-trades-api/constants/backend-providers';
 import { TableService } from '@features/history/models/table-service';
+import { BACKEND_PROVIDERS } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
 
 @Injectable()
 export class OnChainTableService extends TableService<

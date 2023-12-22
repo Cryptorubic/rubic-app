@@ -13,12 +13,33 @@
   height: 32px;
   padding: 0;
 
-  background-color: var(--secondary-background);
+  background-color: var(--io-background);
+  border: 2px solid var(--secondary-background);
   border-radius: 50%;
 
   transform: translateY(-50%);
 
   cursor: pointer;
+
+  transition: 0.2s ease-in-out;
+
+  &__img-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.2s ease-in-out;
+  }
+
+  &:hover {
+    background-color: var(--secondary-background);
+
+    .switcher__img-container {
+      rotate: 180deg;
+    }
+  }
 
   img {
     &:first-child {

@@ -13,11 +13,16 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: 'rbc_arbitrum_bridge',
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter',
   [CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE]: 'scroll_sepolia',
-  [CROSS_CHAIN_TRADE_TYPE.TAIKO_BRIDGE]: 'taiko_bridge'
+  [CROSS_CHAIN_TRADE_TYPE.TAIKO_BRIDGE]: 'taiko_bridge',
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: 'rango',
+  [CROSS_CHAIN_TRADE_TYPE.PULSE_CHAIN_BRIDGE]: 'pulsechain_bridge'
 } as const;
 
-export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
+export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
+  CrossChainTradeType,
+  ToBackendCrossChainProviders
+> = {
   ...toProviders
-};
+} as const;
 
 export type ToBackendCrossChainProviders = (typeof toProviders)[keyof typeof toProviders];

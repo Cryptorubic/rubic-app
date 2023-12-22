@@ -6,6 +6,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { ModalService } from '@core/modals/services/modal.service';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
 
@@ -55,9 +56,10 @@ export class ActionButtonComponent {
             action: () => {}
           };
         }
-        const isCnFromEvm =
+        const isCnFromNonEvm =
           currentTrade.trade instanceof ChangenowCrossChainTrade &&
-          BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+          !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
         if (
           currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
           currentTrade.status === TRADE_STATUS.READY_TO_APPROVE ||
@@ -66,17 +68,17 @@ export class ActionButtonComponent {
           // Handle Non EVM trade
           if (isAddressRequired) {
             if (isReceiverValid) {
-              if (isCnFromEvm) {
+              if (isCnFromNonEvm) {
                 return {
                   type: 'action',
                   text: 'Preview swap',
-                  action: this.swap.bind(this)
+                  action: this.swapCn.bind(this)
                 };
               }
               return {
                 type: 'action',
                 text: 'Preview swap',
-                action: this.swapCn.bind(this)
+                action: this.swap.bind(this)
               };
             }
             return {
@@ -126,10 +128,12 @@ export class ActionButtonComponent {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
+    private readonly previewSwapService: PreviewSwapService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {}
 
   private swap(): void {
+    this.previewSwapService.activatePage();
     this.tradePageService.setState('preview');
   }
 

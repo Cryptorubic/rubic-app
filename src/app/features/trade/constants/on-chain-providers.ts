@@ -4,15 +4,21 @@ import { ProviderInfo } from '@features/trade/models/provider-info';
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
 
 const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
-  [ON_CHAIN_TRADE_TYPE.LIFI]: {
-    color: '#bf38ee',
-    image: 'assets/images/icons/providers/bridge/lifi.svg',
-    name: 'Lifi'
+  [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: {
+    name: '10KSwap',
+    image: `${imageBasePath}10Kswap.png`,
+    color: '#03fc84'
   },
+  //AAAAAAAAAAAAAAAAAAAAA
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: {
     name: 'Acryptos',
     image: `${imageBasePath}acryptos.png`,
     color: '#FF0A1C'
+  },
+  [ON_CHAIN_TRADE_TYPE.AERODROME]: {
+    name: 'Aerodrome',
+    image: `${imageBasePath}aerodrome.png`,
+    color: '#2A54F3'
   },
   [ON_CHAIN_TRADE_TYPE.ALDRIN_EXCHANGE]: {
     name: 'AldrinExchange',
@@ -20,6 +26,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#383838'
   },
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: {
+    name: 'Algebra',
+    image: `${imageBasePath}algebra.svg`,
+    color: '#00CAB2'
+  },
+  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: {
     name: 'Algebra',
     image: `${imageBasePath}algebra.svg`,
     color: '#00CAB2'
@@ -49,7 +60,13 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}auroraswap.svg`,
     color: '#34A5F5'
   },
+  [ON_CHAIN_TRADE_TYPE.AVNU]: {
+    name: 'Avnu',
+    image: `${imageBasePath}avnu.png`,
+    color: 'white'
+  },
 
+  //BBBBBBBBBBBBBBBBBBBBB
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: {
     name: 'BabySwap',
     image: `${imageBasePath}babyswap.svg`,
@@ -59,6 +76,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Balancer',
     image: `${imageBasePath}balancer.svg`,
     color: 'white'
+  },
+  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
+    name: 'BaseSwap',
+    image: `${imageBasePath}baseswap.png`,
+    color: '#000DBF'
   },
   [ON_CHAIN_TRADE_TYPE.BEAM_SWAP]: {
     name: 'BeamSwap',
@@ -76,6 +98,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: 'white'
   },
 
+  //CCCCCCCCCCCCCCCCCCCC
+  [ON_CHAIN_TRADE_TYPE.CHERRY_SWAP]: {
+    name: 'Cherry Swap',
+    image: `${imageBasePath}cherryswap.svg`,
+    color: 'pink'
+  },
   [ON_CHAIN_TRADE_TYPE.CLAIM_SWAP]: {
     name: 'ClaimSwap',
     image: `${imageBasePath}claimswap.svg`,
@@ -117,12 +145,19 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#19E0CE'
   },
 
+  //EEEEEEEEEEEEEEEEEEEE
+  [ON_CHAIN_TRADE_TYPE.ECHO_DEX]: {
+    name: 'Echo',
+    image: `${imageBasePath}ecodex.svg`,
+    color: 'white'
+  },
   [ON_CHAIN_TRADE_TYPE.ELK]: {
     name: 'Elk',
     image: `${imageBasePath}elk.png`,
     color: '#009A5C'
   },
 
+  //DDDDDDDDDDDDDDDDDDDDD
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
     image: `${imageBasePath}defiplaza.png`,
@@ -149,12 +184,38 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#085F8E'
   },
 
+  //FFFFFFFFFFFFFFFFFFFFFFF
+  [ON_CHAIN_TRADE_TYPE.FINKUJIRA]: {
+    name: 'Finkujira',
+    image: `${imageBasePath}finkujira.svg`,
+    color: '#0a1124'
+  },
+  [ON_CHAIN_TRADE_TYPE.FUSIONX]: {
+    name: 'FusionX',
+    image: `${imageBasePath}fusionx.webp`,
+    color: '#b0b3b7'
+  },
+
+  //HHHHHHHHHHHHHHHHHHHHH
   [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: {
     name: 'HoneySwap',
     image: `${imageBasePath}honeyswap.webp`,
     color: '#efc20b'
   },
+  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: {
+    name: 'HorizonDEX',
+    image: `${imageBasePath}horixondex.png`,
+    color: '#444391'
+  },
 
+  //IIIIIIIIIIIIIIIIIIIIIIII
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: {
+    name: 'Izumi',
+    image: `${imageBasePath}izumi.svg`,
+    color: '#7E49FC'
+  },
+
+  //JJJJJJJJJJJJJJJJJJJJJJJJJJ
   [ON_CHAIN_TRADE_TYPE.JET_SWAP]: {
     name: 'JetSwap',
     image: `${imageBasePath}jetswap.png`,
@@ -181,18 +242,26 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#5b55e3'
   },
 
+  //KKKKKKKKKKKKKKKKKKKKKK
   [ON_CHAIN_TRADE_TYPE.KYBER_SWAP]: {
     name: 'KyberSwap',
     image: `${imageBasePath}kyberswap.svg`,
     color: '#31CB9E'
   },
 
+  //LLLLLLLLLLLLLLLLLLLLLLL
+  [ON_CHAIN_TRADE_TYPE.LIFI]: {
+    color: '#bf38ee',
+    image: 'assets/images/icons/providers/bridge/lifi.svg',
+    name: 'LiFi'
+  },
   [ON_CHAIN_TRADE_TYPE.LUA_SWAP]: {
     name: 'LuaSwap',
     image: `${imageBasePath}luaswap.png`,
     color: '#FABD45'
   },
 
+  //MMMMMMMMMMMMMMMMMMMMMMMM
   [ON_CHAIN_TRADE_TYPE.MAVERICK]: {
     name: 'Maverick',
     image: `${imageBasePath}maverick.png`,
@@ -224,12 +293,19 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: 'white'
   },
 
+  //NNNNNNNNNNNNNNNNNNNNNNNNN
   [ON_CHAIN_TRADE_TYPE.NET_SWAP]: {
     name: 'NetSwap',
     image: `${imageBasePath}netswap.png`,
     color: '#257AF1'
   },
 
+  //OOOOOOOOOOOOOOOOOOOOOOO
+  [ON_CHAIN_TRADE_TYPE.OKC_SWAP]: {
+    name: 'OkcSwap',
+    image: `${imageBasePath}okcswap.png`,
+    color: '#511785'
+  },
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
     name: 'Omnidex',
     image: `${imageBasePath}omnidex.png`,
@@ -271,8 +347,14 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#5E12A0'
   },
 
+  //PPPPPPPPPPPPPPPPPPPPPPPPPP
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP]: {
     name: 'PancakeSwap',
+    image: `${imageBasePath}pancakeswap.svg`,
+    color: '#00ADE8'
+  },
+  [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP_V3]: {
+    name: 'PancakeSwapV3',
     image: `${imageBasePath}pancakeswap.svg`,
     color: '#00ADE8'
   },
@@ -280,6 +362,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Pangolin',
     image: `${imageBasePath}pangolin.svg`,
     color: '#FC5408'
+  },
+  [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: {
+    name: 'ParaSwap',
+    image: `${imageBasePath}paraswap.svg`,
+    color: '#2237ab'
   },
   [ON_CHAIN_TRADE_TYPE.PEGASYS]: {
     name: 'Pegasys',
@@ -296,7 +383,18 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}polydex.svg`,
     color: '#0D2866'
   },
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
+    name: 'PulseX V1',
+    image: `${imageBasePath}pulsex.png`,
+    color: '#00ff73'
+  },
+  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: {
+    name: 'PulseX V2',
+    image: `${imageBasePath}pulsex.png`,
+    color: '#ff0006'
+  },
 
+  //QQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
   [ON_CHAIN_TRADE_TYPE.QUICK_SWAP]: {
     name: 'QuickSwap',
     image: `${imageBasePath}quickswap.svg`,
@@ -308,6 +406,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#36C2EA'
   },
 
+  //RRRRRRRRRRRRRRRRRRRRRRRRRRRR
+  [ON_CHAIN_TRADE_TYPE.RANGO]: {
+    name: 'Rango',
+    image: `assets/images/icons/providers/bridge/rango.png`,
+    color: 'blue'
+  },
   [ON_CHAIN_TRADE_TYPE.RAYDIUM]: {
     name: 'Raydium',
     image: `${imageBasePath}raydium.svg`,
@@ -324,6 +428,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: 'grey'
   },
 
+  //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
     name: 'SaberStableSwap',
     image: `${imageBasePath}saberstableswap.png`,
@@ -349,6 +454,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}smoothy.png`,
     color: '#BC2723'
   },
+  [ON_CHAIN_TRADE_TYPE.SOLANA]: {
+    name: 'Solana',
+    image: `${imageBasePath}solana.png`,
+    color: '#050e42'
+  },
   [ON_CHAIN_TRADE_TYPE.SOLAR_BEAM]: {
     name: 'SolarBeam',
     image: `${imageBasePath}solarbeam.svg`,
@@ -358,6 +468,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'SoulSwap',
     image: `${imageBasePath}soulswap.png`,
     color: '#B06DED'
+  },
+  [ON_CHAIN_TRADE_TYPE.SPACEFI_SWAP]: {
+    name: 'SpaceFiSwap',
+    image: `${imageBasePath}spacefi.svg`,
+    color: 'white'
   },
   [ON_CHAIN_TRADE_TYPE.SPIRIT_SWAP]: {
     name: 'SpiritSwap',
@@ -379,6 +494,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}stellaswap.svg`,
     color: '#E2107B'
   },
+  [ON_CHAIN_TRADE_TYPE.SUN_SWAP]: {
+    name: 'SunSwap',
+    image: `${imageBasePath}sunswap.svg`,
+    color: 'orange'
+  },
   [ON_CHAIN_TRADE_TYPE.SURFDEX]: {
     name: 'Surfdex',
     image: `${imageBasePath}surfswap.png`,
@@ -394,12 +514,18 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/symbiosis.png',
     color: '#79d778'
   },
+  [ON_CHAIN_TRADE_TYPE.SYNAPSE]: {
+    name: 'Synapse Swapper',
+    image: 'assets/images/icons/providers/bridge/synapse.png',
+    color: 'purple'
+  },
   [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: {
     name: 'Sync Swap',
     image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
   },
 
+  //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
@@ -411,6 +537,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#00F4FF'
   },
 
+  //UUUUUUUUUUUUUUUUUUUUUUUUUU
   [ON_CHAIN_TRADE_TYPE.UBE_SWAP]: {
     name: 'UbeSwap',
     image: `${imageBasePath}ubeswap.svg`,
@@ -427,6 +554,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#FD017A'
   },
 
+  //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
     name: 'Verse',
     image: `${imageBasePath}verse.png`,
@@ -436,6 +564,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Viper',
     image: `${imageBasePath}viperswap.svg`,
     color: '#00805C'
+  },
+  [ON_CHAIN_TRADE_TYPE.VOOI]: {
+    name: 'Vooi',
+    image: `${imageBasePath}vooi.svg`,
+    color: '#084b69'
   },
   [ON_CHAIN_TRADE_TYPE.VOLTAGE_SWAP]: {
     name: 'VoltageSwap',
@@ -448,6 +581,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#2B3852'
   },
 
+  //WWWWWWWWWWWWWWWWWWWWWWWWWWW
   [ON_CHAIN_TRADE_TYPE.WAGYU_SWAP]: {
     name: 'WagyuSwap',
     image: `${imageBasePath}wagyuswap.png`,
@@ -473,7 +607,27 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}wrapped.png`,
     color: '#34A5F5'
   },
+  [ON_CHAIN_TRADE_TYPE.WYND]: {
+    name: 'WyndDex',
+    image: `${imageBasePath}wynd.svg`,
+    color: '#7e8087'
+  },
 
+  //XXXXXXXXXXXXXXXXXXXXXXXXXXX
+  [ON_CHAIN_TRADE_TYPE.XY_DEX]: {
+    name: 'XY',
+    image: 'assets/images/icons/providers/bridge/xy.svg',
+    color: '#1f4d96'
+  },
+
+  //YYYYYYYYYYYYYYYYYYYYYYYYYY
+  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: {
+    name: 'YuzuSwap',
+    image: `${imageBasePath}yuzuswap.png`,
+    color: '#EE5466'
+  },
+
+  //ZZZZZZZZZZZZZZZZZZZZZZZZZ
   [ON_CHAIN_TRADE_TYPE.ZAPPY]: {
     name: 'Zappy',
     image: `${imageBasePath}zappy.svg`,
@@ -488,63 +642,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
     color: '#34A5F5'
-  },
-
-  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: {
-    name: 'YuzuSwap',
-    image: `${imageBasePath}yuzuswap.png`,
-    color: '#EE5466'
-  },
-
-  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
-    name: 'PulseX V1',
-    image: `${imageBasePath}pulsex.png`,
-    color: '#00ff73'
-  },
-  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: {
-    name: 'PulseX V2',
-    image: `${imageBasePath}pulsex.png`,
-    color: '#ff0006'
-  },
-  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: {
-    name: 'HorizonDEX',
-    image: `${imageBasePath}horixondex.png`,
-    color: '#444391'
-  },
-  [ON_CHAIN_TRADE_TYPE.BASE_SWAP]: {
-    name: 'BaseSwap',
-    image: `${imageBasePath}baseswap.png`,
-    color: '#000DBF'
-  },
-  [ON_CHAIN_TRADE_TYPE.VOOI]: {
-    name: 'Vooi',
-    image: `${imageBasePath}vooi.svg`,
-    color: '#084b69'
-  },
-  [ON_CHAIN_TRADE_TYPE.IZUMI]: {
-    name: 'Izumi',
-    image: `${imageBasePath}izumi.svg`,
-    color: '#7E49FC'
-  },
-  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: {
-    name: 'Algebra',
-    image: `${imageBasePath}algebra.svg`,
-    color: '#00CAB2'
-  },
-  [ON_CHAIN_TRADE_TYPE.XY_DEX]: {
-    name: 'XY',
-    image: 'assets/images/icons/providers/bridge/xy.svg',
-    color: '#1f4d96'
-  },
-  [ON_CHAIN_TRADE_TYPE.FUSIONX]: {
-    name: 'FusionX',
-    image: `${imageBasePath}fusionx.webp`,
-    color: '#b0b3b7'
-  },
-  [ON_CHAIN_TRADE_TYPE.AERODROME]: {
-    name: 'Aerodrome',
-    image: `${imageBasePath}aerodrome.png`,
-    color: '#2A54F3'
   }
 };
 

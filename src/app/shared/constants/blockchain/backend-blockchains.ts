@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
+const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -92,9 +92,10 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.RAVENCOIN]: 'ravencoin',
   [BLOCKCHAIN_NAME.SIA]: 'sia',
   [BLOCKCHAIN_NAME.SECRET]: 'secret',
+  [BLOCKCHAIN_NAME.STACKS]: 'stacks',
+  [BLOCKCHAIN_NAME.STARKNET]: 'starknet',
   [BLOCKCHAIN_NAME.STEEM]: 'steem',
   [BLOCKCHAIN_NAME.STRATIS]: 'stratis',
-  [BLOCKCHAIN_NAME.STACKS]: 'stacks',
   [BLOCKCHAIN_NAME.SOLAR]: 'solar',
   [BLOCKCHAIN_NAME.TON]: 'ton',
   [BLOCKCHAIN_NAME.VE_CHAIN]: 'vechain',

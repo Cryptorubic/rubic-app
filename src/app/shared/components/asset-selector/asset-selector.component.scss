@@ -27,6 +27,7 @@
   &__labels {
     display: flex;
     flex-direction: column;
+    gap: var(--tui-padding-s);
     justify-content: center;
   }
 

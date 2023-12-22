@@ -6,6 +6,7 @@ import {
   distinctUntilChanged,
   filter,
   map,
+  pairwise,
   startWith,
   switchMap
 } from 'rxjs/operators';
@@ -49,7 +50,7 @@ export class SwapsStateService {
    */
   private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
-  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
+  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(0));
 
   public get tradeState(): SelectedTrade {
     return this._tradeState$.value;
@@ -346,11 +347,15 @@ export class SwapsStateService {
       combineLatestWith(
         this.swapsFormService.isFilled$.pipe(distinctUntilChanged()),
         this.tradesStore$,
-        this.calculationProgress$
+        this.calculationProgress$,
+        this.tradePageService.formContent$.pipe(
+          pairwise(),
+          map(([oldContent, newContent]) => oldContent === newContent || newContent !== 'form'),
+          startWith(false)
+        )
       ),
-      debounceTime(50),
       map(options => this.getCalculationStatus(options)),
-      debounceTime(100),
+      debounceTime(50),
       distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
       shareReplay(shareReplayConfig),
       startWith(defaultCalculationStatus)
@@ -358,9 +363,9 @@ export class SwapsStateService {
   }
 
   private getCalculationStatus(
-    options: [boolean, boolean, TradeState[], CalculationProgress]
+    options: [boolean, boolean, TradeState[], CalculationProgress, boolean]
   ): CalculationStatus {
-    const [timerEmit, formFilled, trades, progress] = options;
+    const [timerEmit, formFilled, trades, progress, forceExit] = options;
     const { fromToken, toToken } = this.swapsFormService.inputValue;
     const wrapTrade =
       trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
@@ -375,7 +380,7 @@ export class SwapsStateService {
       calculationProgress: progress
     };
 
-    if (!formFilled || wrapTrade) {
+    if (!formFilled || wrapTrade || forceExit) {
       return { ...calculationResult, showSidebar: false };
     }
 

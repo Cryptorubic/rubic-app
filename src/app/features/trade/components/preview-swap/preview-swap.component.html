@@ -6,14 +6,15 @@
   } as state"
 >
   <ng-container header>
-    <span class="back-button" (click)="backToForm()">
-      <img class="back-button__image" src="/assets/images/icons/arrow-back.svg" alt="" />
+    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
+    <span class="back-button__text">
       <ng-container *ngIf="state.transaction.step === 'idle'">Preview Swap</ng-container>
       <ng-container *ngIf="state.transaction.step === 'success'">Success Swap</ng-container>
       <ng-container
         *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
-        >Swap</ng-container
       >
+        Swap
+      </ng-container>
     </span>
   </ng-container>
   <ng-container>
@@ -232,6 +233,15 @@
       </div>
     </div>
 
+    <app-mev-bot
+      *ngIf="
+        state.transaction.step !== 'success' && state.tradeState?.trade?.from.blockchain === 'ETH'
+      "
+      [tradePrice]="
+        state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
+      "
+    ></app-mev-bot>
+
     <div class="preview__action-container">
       <button
         class="preview__action-button"
@@ -240,10 +250,10 @@
         appearance="primary"
         type="button"
         size="m"
-        (click)="buttonState.action()"
-        [disabled]="buttonState.disabled"
+        (click)="buttonState?.action()"
+        [disabled]="buttonState?.disabled"
       >
-        {{ buttonState.label }}
+        {{ buttonState?.label }}
       </button>
       <button
         *ngIf="state.transaction.step === 'destinationPending'"

@@ -103,6 +103,13 @@ export const airdropRounds: ClaimRound[] = [
   {
     roundNumber: 15,
     claimDate: '05.04.2023 - 30.11.2023',
+    status: 'closed',
+    claimName: 'airdrop',
+    ...defaultRoundInfo
+  },
+  {
+    roundNumber: 16,
+    claimDate: '05.04.2023 - 14.12.2023',
     status: 'active',
     claimName: 'airdrop',
     ...defaultRoundInfo
