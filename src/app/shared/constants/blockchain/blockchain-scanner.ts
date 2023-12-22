@@ -738,6 +738,22 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.STACKS]: {
+    baseUrl: 'https://explorer.stacks.co/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: '',
+    [ADDRESS_TYPE.TRANSACTION]: 'txid/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.STARKNET]: {
+    baseUrl: 'https://starkscan.co/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'contract/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.STEEM]: {
     baseUrl: 'https://steemscan.com/',
     nativeCoinUrl: '',
@@ -754,14 +770,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.STACKS]: {
-    baseUrl: 'https://explorer.stacks.co/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'txid/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
+
   [BLOCKCHAIN_NAME.SOLAR]: {
     baseUrl: 'https://explorer.solar.org/',
     nativeCoinUrl: '',

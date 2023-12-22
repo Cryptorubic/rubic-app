@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-back-button',
@@ -9,5 +9,5 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 export class BackButtonComponent {
   @Output() onClick = new EventEmitter<void>();
 
-  constructor() {}
+  @Input({ required: true }) isMobile: boolean;
 }

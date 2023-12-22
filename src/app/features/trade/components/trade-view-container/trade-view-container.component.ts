@@ -11,6 +11,7 @@ import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-u
 import { TradeState } from '@features/trade/models/trade-state';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { firstValueFrom } from 'rxjs';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -42,13 +43,16 @@ export class TradeViewContainerComponent {
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
+  public readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
     public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
@@ -60,15 +64,15 @@ export class TradeViewContainerComponent {
     // Handle ChangeNow Non EVM trade
     if (isAddressRequired) {
       const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
-      const isCnFromEvm =
+      const isCnFromNonEvm =
         currentTrade.trade instanceof ChangenowCrossChainTrade &&
-        BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+        !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
       if (isAddressValid) {
-        if (isCnFromEvm) {
-          this.tradePageService.setState('preview');
-        } else {
+        if (isCnFromNonEvm) {
           this.tradePageService.setState('cnPreview');
+        } else {
+          this.tradePageService.setState('preview');
         }
       }
     } else {
