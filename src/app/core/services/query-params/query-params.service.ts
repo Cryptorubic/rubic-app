@@ -8,8 +8,8 @@ import {
   LIFI_BRIDGE_TYPES,
   ON_CHAIN_TRADE_TYPE,
   OnChainTradeType,
-  RubicTradeTypeForRango,
-  rangoTradeTypes
+  rangoTradeTypes,
+  RubicTradeTypeForRango
 } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -97,8 +97,8 @@ export class QueryParamsService {
 
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
       const urlParams = new URLSearchParams(this.window.location.search);
-      const whitelistOnChain = urlParams.getAll('whitelistOnChain');
-      const blacklistOnChain = urlParams.getAll('blacklistOnChain');
+      const whitelistOnChain = this.parseStringQuery(urlParams.get('whitelistOnChain'));
+      const blacklistOnChain = this.parseStringQuery(urlParams.get('blacklistOnChain'));
 
       this.setOnChainProviders(
         whitelistOnChain.map(provider => provider.toLowerCase()),
@@ -108,8 +108,8 @@ export class QueryParamsService {
 
     if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
       const urlParams = new URLSearchParams(this.window.location.search);
-      const whitelistCrossChain = urlParams.getAll('whitelistCrossChain');
-      const blacklistCrossChain = urlParams.getAll('blacklistCrossChain');
+      const whitelistCrossChain = this.parseStringQuery(urlParams.get('whitelistCrossChain'));
+      const blacklistCrossChain = this.parseStringQuery(urlParams.get('blacklistCrossChain'));
 
       this.setCrossChainProviders(
         whitelistCrossChain.map(provider => provider.toLowerCase()),
@@ -257,5 +257,17 @@ export class QueryParamsService {
   private setLanguage(queryParams: QueryParams): void {
     const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
     this.translateService.use(language);
+  }
+
+  private parseStringQuery(value: string): string[] {
+    if (value) {
+      try {
+        return JSON.parse(value.replace(/'/g, '"'));
+      } catch {
+        return [];
+      }
+    }
+
+    return [];
   }
 }
