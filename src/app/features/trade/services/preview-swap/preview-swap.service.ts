@@ -21,7 +21,6 @@ import { SwapsControllerService } from '@features/trade/services/swaps-controlle
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
@@ -39,6 +38,11 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  mevBotRpcAddresses,
+  MevBotSupportedBlockchain,
+  mevBotSupportedBlockchains
+} from './models/mevbot-data';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -54,12 +58,6 @@ interface TradeInfo {
 
 @Injectable()
 export class PreviewSwapService {
-  public mevBotProtectedChains: BlockchainName[] = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.POLYGON
-  ];
-
   private readonly _transactionState$ = new BehaviorSubject<TransactionState>({
     step: 'inactive',
     data: {}
@@ -347,20 +345,12 @@ export class PreviewSwapService {
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
-    if (useCustomRpc) {
-      let rpc: string;
+    const isMevBotSupported = mevBotSupportedBlockchains.some(
+      mevBotChain => mevBotChain === fromBlockchain
+    );
 
-      switch (fromBlockchain) {
-        case BLOCKCHAIN_NAME.ETHEREUM:
-          rpc = 'https://rubic-eth.rpc.blxrbdn.com';
-          break;
-        case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
-          rpc = 'https://rubic-bnb.rpc.blxrbdn.com';
-          break;
-        case BLOCKCHAIN_NAME.POLYGON:
-          rpc = 'https://rubic-polygon.rpc.blxrbdn.com';
-          break;
-      }
+    if (useCustomRpc && isMevBotSupported) {
+      const rpc = mevBotRpcAddresses[fromBlockchain as MevBotSupportedBlockchain];
 
       try {
         await this.walletConnectorService.addChain(fromBlockchain, rpc);
@@ -369,6 +359,7 @@ export class PreviewSwapService {
         return false;
       }
     }
+
     return true;
   }
 
