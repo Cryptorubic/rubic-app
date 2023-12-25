@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TransactionStep, transactionStep } from '@features/trade/models/transaction-steps';
-
-type StepState = 'fullfilled' | 'pending' | '';
+import { StepsType } from './models/types';
 
 @Component({
   selector: 'app-transaction-state',
@@ -10,27 +9,12 @@ type StepState = 'fullfilled' | 'pending' | '';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransactionStateComponent {
-  public steps: { key: TransactionStep; value: string }[];
+  public steps: StepsType[];
 
   public type: 'bridge' | 'swap';
 
-  public stepsStates: StepState[] = [];
-
   @Input({ required: true }) set state(value: TransactionStep) {
-    const stateIndex = this.steps.findIndex(el => el.key === value);
-    this.stepsStates = this.steps.map((_, index) => {
-      if (
-        index < stateIndex ||
-        value === transactionStep.success ||
-        value === transactionStep.error
-      ) {
-        return 'fullfilled';
-      }
-      if (index === stateIndex) {
-        return 'pending';
-      }
-      return '';
-    });
+    this.setStepStates(value);
   }
 
   @Input({ required: true }) set transactionData(value: {
@@ -53,6 +37,7 @@ export class TransactionStateComponent {
     }
     steps.push(transactionStep.success);
     this.steps = steps.map(el => ({
+      status: 'default',
       key: el,
       value: TransactionStateComponent.getLabel(el, this.type)
     }));
@@ -73,5 +58,24 @@ export class TransactionStateComponent {
       inactive: 'Inactive'
     };
     return map[state];
+  }
+
+  private setStepStates(value: TransactionStep): void {
+    const stateIndex = this.steps.findIndex(el => el.key === value);
+    this.steps = this.steps.map((step, index) => {
+      if (
+        index < stateIndex ||
+        value === transactionStep.success ||
+        value === transactionStep.error
+      ) {
+        return { ...step, status: 'fullfilled' };
+      }
+
+      if (index === stateIndex) {
+        return { ...step, status: 'pending' };
+      }
+
+      return { ...step, status: 'default' };
+    });
   }
 }
