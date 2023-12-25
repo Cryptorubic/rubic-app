@@ -33,10 +33,7 @@ import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName
-} from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -51,12 +48,6 @@ import { tuiIsPresent } from '@taiga-ui/cdk';
 export class PreviewSwapComponent {
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
-  public mevBotProtectedChains: BlockchainName[] = [
-    BLOCKCHAIN_NAME.ETHEREUM,
-    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-    BLOCKCHAIN_NAME.POLYGON
-  ];
-
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
   public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
@@ -67,7 +58,7 @@ export class PreviewSwapComponent {
 
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
-      map(chain => this.mevBotProtectedChains.includes(chain))
+      map(chain => this.previewSwapService.mevBotProtectedChains.includes(chain))
     );
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =

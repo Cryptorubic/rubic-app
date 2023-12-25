@@ -54,6 +54,12 @@ interface TradeInfo {
 
 @Injectable()
 export class PreviewSwapService {
+  public mevBotProtectedChains: BlockchainName[] = [
+    BLOCKCHAIN_NAME.ETHEREUM,
+    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    BLOCKCHAIN_NAME.POLYGON
+  ];
+
   private readonly _transactionState$ = new BehaviorSubject<TransactionState>({
     step: 'inactive',
     data: {}
@@ -341,8 +347,21 @@ export class PreviewSwapService {
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
-    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
-      const rpc = 'https://rubic-eth.rpc.blxrbdn.com';
+    if (useCustomRpc) {
+      let rpc: string;
+
+      switch (fromBlockchain) {
+        case BLOCKCHAIN_NAME.ETHEREUM:
+          rpc = 'https://rubic-eth.rpc.blxrbdn.com';
+          break;
+        case BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN:
+          rpc = 'https://rubic-bnb.rpc.blxrbdn.com';
+          break;
+        case BLOCKCHAIN_NAME.POLYGON:
+          rpc = 'https://rubic-polygon.rpc.blxrbdn.com';
+          break;
+      }
+
       try {
         await this.walletConnectorService.addChain(fromBlockchain, rpc);
         return true;
