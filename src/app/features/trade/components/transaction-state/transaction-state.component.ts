@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TransactionStep, transactionStep } from '@features/trade/models/transaction-steps';
+import { StepsType } from './models/types';
 
 @Component({
   selector: 'app-transaction-state',
@@ -8,14 +9,12 @@ import { TransactionStep, transactionStep } from '@features/trade/models/transac
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TransactionStateComponent {
-  public steps: { key: TransactionStep; value: string }[];
+  public steps: StepsType[];
 
   public type: 'bridge' | 'swap';
 
-  public stateIndex: number = 0;
-
   @Input({ required: true }) set state(value: TransactionStep) {
-    this.stateIndex = this.steps.findIndex(el => el.key === value);
+    this.setStepStates(value);
   }
 
   @Input({ required: true }) set transactionData(value: {
@@ -36,7 +35,9 @@ export class TransactionStateComponent {
         transactionStep.destinationPending
       );
     }
+    steps.push(transactionStep.success);
     this.steps = steps.map(el => ({
+      status: 'default',
       key: el,
       value: TransactionStateComponent.getLabel(el, this.type)
     }));
@@ -57,5 +58,24 @@ export class TransactionStateComponent {
       inactive: 'Inactive'
     };
     return map[state];
+  }
+
+  private setStepStates(value: TransactionStep): void {
+    const stateIndex = this.steps.findIndex(el => el.key === value);
+    this.steps = this.steps.map((step, index) => {
+      if (
+        index < stateIndex ||
+        value === transactionStep.success ||
+        value === transactionStep.error
+      ) {
+        return { ...step, status: 'fullfilled' };
+      }
+
+      if (index === stateIndex) {
+        return { ...step, status: 'pending' };
+      }
+
+      return { ...step, status: 'default' };
+    });
   }
 }
