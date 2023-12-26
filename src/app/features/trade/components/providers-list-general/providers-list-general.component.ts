@@ -64,7 +64,6 @@ export class ProvidersListGeneralComponent {
 
   public readonly calculationText$ = this.calculationProcess$.pipe(
     map(time => {
-      console.log(time.current);
       return time.current <= 50
         ? 'Calculating providers...'
         : 'More providers can get close, but they are delaying the answer...';
