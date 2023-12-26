@@ -58,8 +58,8 @@ export class ProvidersListGeneralComponent {
 
   public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
     switchMap(() => interval(100)),
-    takeWhile(el => el < 150),
-    map(time => ({ total: 150, current: time }))
+    takeWhile(el => el < 250),
+    map(time => ({ total: 250, current: time }))
   );
 
   public readonly calculationText$ = this.calculationProcess$.pipe(
