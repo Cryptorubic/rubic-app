@@ -9,9 +9,13 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { FormType } from '@features/trade/models/form-type';
 import { Asset, AssetType } from '@features/trade/models/asset';
 import { SelectorListType } from '@features/trade/components/assets-selector/models/selector-list-type';
-import { notEvmChangeNowBlockchainsList } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import {
+  blockchainsList,
+  notEvmChangeNowBlockchainsList
+} from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -54,7 +58,8 @@ export class AssetsSelectorService {
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -83,11 +88,24 @@ export class AssetsSelectorService {
       'blockchain' in this.swapFormService.inputValue.fromToken
         ? this.swapFormService.inputValue.fromToken.blockchain
         : null;
+    const userBlockchainName = this.walletConnectorService.network;
+    const userAvailableBlockchainName = blockchainsList.find(
+      chain => chain.name === userBlockchainName
+    )?.name;
+    const isToTokenSelected = this.swapFormService.inputValue.toToken;
 
     if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
-      this.assetType = assetType;
+      if (isToTokenSelected) {
+        this.assetType = assetType;
+      } else {
+        this.assetType = assetType || userAvailableBlockchainName;
+      }
     } else {
-      this.assetType = fromBlockchain;
+      if (isToTokenSelected) {
+        this.assetType = fromBlockchain;
+      } else {
+        this.assetType = fromBlockchain || userAvailableBlockchainName;
+      }
     }
 
     this.selectorListType = 'tokens';

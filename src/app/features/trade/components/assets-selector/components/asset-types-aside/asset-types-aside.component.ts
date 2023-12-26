@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Input, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { map } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import { AvailableBlockchain } from '@features/trade/components/assets-selector/
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -55,6 +56,7 @@ export class AssetTypesAsideComponent {
     private readonly windowWidthService: WindowWidthService,
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
+    private readonly walletConnectorService: WalletConnectorService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
@@ -90,10 +92,21 @@ export class AssetTypesAsideComponent {
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
+    const userBlockchainName = this.walletConnectorService.network;
+    const userBlockchain = this.blockchainsListService.availableBlockchains.find(
+      chain => chain.name === userBlockchainName
+    );
+
     let slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
       0,
       shownBlockchainsAmount
     );
+
+    if (userBlockchain && !slicedBlockchains.includes(userBlockchain)) {
+      slicedBlockchains.pop();
+      slicedBlockchains.unshift(userBlockchain);
+    }
+
     const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
     const isSelectedToBlockchainIncluded = this.isSelectedBlockchainIncluded(
       slicedBlockchains,
@@ -123,7 +136,9 @@ export class AssetTypesAsideComponent {
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
     if (hiddenBlockchain) {
-      slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
+      slicedBlockchains.pop();
+      slicedBlockchains.unshift(hiddenBlockchain);
+      // slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
     }
 
     return slicedBlockchains.map(blockchain => ({
