@@ -25,12 +25,6 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}widget.svg`
   },
   {
-    translateKey: 'navigation.faq',
-    type: 'internal',
-    link: 'faq',
-    imagePath: `${defaultSrc}faq.svg`
-  },
-  {
     translateKey: 'navigation.about',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
@@ -116,11 +110,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'About',
       type: 'external',
       link: EXTERNAL_LINKS.LANDING
-    },
-    {
-      translateKey: 'FAQ',
-      type: 'external',
-      link: ROUTE_PATH.FAQ
     },
     {
       translateKey: 'Testnet App',
