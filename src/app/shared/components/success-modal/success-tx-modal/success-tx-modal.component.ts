@@ -18,6 +18,7 @@ import {
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { map } from 'rxjs';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 
 @Component({
@@ -47,7 +48,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
-  public readonly bonusPoints$ = this.airdropPointsService.pointsAmount$;
+  public readonly bonusPoints$ = this.airdropPointsService.points$.pipe(
+    map(points => this.getBonusPoints(points.participant))
+  );
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
@@ -106,5 +109,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
     await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });
 
     this.context.completeWith(null);
+  }
+
+  public getBonusPoints(isParticipant: boolean): number {
+    return isParticipant ? 12 : 25;
   }
 }
