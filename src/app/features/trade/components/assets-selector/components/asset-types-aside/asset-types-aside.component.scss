@@ -48,12 +48,18 @@
     flex-wrap: wrap;
     gap: 10px;
 
-    li {
-      margin: 0 5px;
+    &-element {
+      //margin: 0 5px;
 
-      &.disabled {
+      &._disabled {
         cursor: not-allowed !important;
-        opacity: 0.5;
+
+        ::ng-deep {
+          .t-wrapper {
+            background: var(--tui-secondary-hover) !important;
+            opacity: 1 !important;
+          }
+        }
       }
     }
   }
