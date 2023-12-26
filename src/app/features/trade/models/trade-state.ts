@@ -22,4 +22,11 @@ export type TradeState = (TradefullState | TradelessState) & {
   };
   needApprove: boolean;
   routes: RubicStep[];
+  promotion?: PromotionType;
 };
+
+export interface PromotionType {
+  hint: string;
+  label: string;
+  href?: string;
+}

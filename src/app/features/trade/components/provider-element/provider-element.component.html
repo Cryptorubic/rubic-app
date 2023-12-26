@@ -37,6 +37,10 @@
             ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
+            <app-promotion-badge
+              *ngIf="tradeState?.promotion"
+              [data]="tradeState.promotion"
+            ></app-promotion-badge>
             <tui-tag
               *ngIf="isBest"
               class="element__best-badge"
