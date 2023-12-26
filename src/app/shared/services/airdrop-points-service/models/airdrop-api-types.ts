@@ -4,12 +4,12 @@ import { BackendBlockchain } from '@app/shared/constants/blockchain/backend-bloc
 
 export interface OnChainRewardResponse {
   amount: number;
-  contract_address: string;
+  integrator_address: string;
 }
 
 export interface CrossChainRewardResponse {
   amount: number;
-  contract_address: string;
+  integrator_address: string;
 }
 
 export interface CrossChainRewardRequestParams {

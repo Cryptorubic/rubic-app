@@ -38,6 +38,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
 
 @Component({
   selector: 'app-preview-swap',
@@ -55,6 +56,11 @@ export class PreviewSwapComponent {
       this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
     )
   );
+
+  public readonly isMevBotProtectedChains$: Observable<boolean> =
+    this.swapsFormService.fromBlockchain$.pipe(
+      map(chain => mevBotSupportedBlockchains.some(mevBotChain => mevBotChain === chain))
+    );
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(

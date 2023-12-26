@@ -21,7 +21,6 @@ import { SwapsControllerService } from '@features/trade/services/swaps-controlle
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
@@ -39,6 +38,11 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  mevBotRpcAddresses,
+  MevBotSupportedBlockchain,
+  mevBotSupportedBlockchains
+} from './models/mevbot-data';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -341,8 +345,13 @@ export class PreviewSwapService {
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
-    if (fromBlockchain === BLOCKCHAIN_NAME.ETHEREUM && useCustomRpc) {
-      const rpc = 'https://rubic-eth.rpc.blxrbdn.com';
+    const isMevBotSupported = mevBotSupportedBlockchains.some(
+      mevBotChain => mevBotChain === fromBlockchain
+    );
+
+    if (useCustomRpc && isMevBotSupported) {
+      const rpc = mevBotRpcAddresses[fromBlockchain as MevBotSupportedBlockchain];
+
       try {
         await this.walletConnectorService.addChain(fromBlockchain, rpc);
         return true;
@@ -350,6 +359,7 @@ export class PreviewSwapService {
         return false;
       }
     }
+
     return true;
   }
 
