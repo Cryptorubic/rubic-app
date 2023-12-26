@@ -17,8 +17,7 @@ import {
   Token as SdkToken,
   BlockchainsInfo,
   Web3PublicService,
-  isAddressCorrect,
-  BLOCKCHAIN_NAME
+  isAddressCorrect
 } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
@@ -273,10 +272,6 @@ export class TokensService {
     query: string,
     blockchain: BlockchainName
   ): Observable<List<TokenAmount>> {
-    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
-      query = query.toLowerCase();
-    }
-
     return from(isAddressCorrect(query, blockchain)).pipe(
       catchError(() => of(false)),
       switchMap(isAddress => {
@@ -289,8 +284,8 @@ export class TokensService {
                 token.blockchain === blockchain &&
                 ((isAddress && compareAddresses(token.address, query)) ||
                   (!isAddress &&
-                    (token.name.toLowerCase().includes(query) ||
-                      token.symbol.toLowerCase().includes(query))))
+                    (token.name.toLowerCase().includes(query.toLowerCase()) ||
+                      token.symbol.toLowerCase().includes(query.toLowerCase()))))
             )
           );
         } else {
