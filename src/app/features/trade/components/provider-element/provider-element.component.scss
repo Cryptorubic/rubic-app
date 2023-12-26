@@ -120,6 +120,13 @@
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
   }
 
+  &__gas-refund-badge {
+    font-weight: 700 !important;
+
+    background: linear-gradient(90deg, rgb(188, 45, 255) 0%, rgb(0, 102, 255) 99.18%);
+    cursor: pointer;
+  }
+
   ::ng-deep &__expander {
     display: flex;
     align-items: center;

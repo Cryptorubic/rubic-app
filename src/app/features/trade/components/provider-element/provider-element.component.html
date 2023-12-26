@@ -37,6 +37,24 @@
             ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
+            <a
+              *ngIf="
+                tradeState.trade.type === 'OPEN_OCEAN' &&
+                tradeState.trade.from.blockchain === 'ARBITRUM'
+              "
+              (click)="$event.stopPropagation()"
+              href="https://app.openocean.finance/portfolio/campaigns"
+              target="_blank"
+            >
+              <tui-tag
+                class="element__gas-refund-badge"
+                size="s"
+                status="custom"
+                value="50% gas refund"
+                [tuiHint]="'Click to check additional info'"
+              >
+              </tui-tag>
+            </a>
             <tui-tag
               *ngIf="isBest"
               class="element__best-badge"
