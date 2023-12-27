@@ -91,7 +91,7 @@ export class SettingsService {
       slippageTolerance:
         this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
       showReceiverAddress: false,
-      useMevBotProtection: false
+      useMevBotProtection: true
     };
   }
 
