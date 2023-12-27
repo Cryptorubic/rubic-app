@@ -7,6 +7,10 @@ interface DefaultBlockchainData {
 
 // TODO: remove Partial
 export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlockchainData>> = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: {
+    name: 'Ethereum Mainnet',
+    rpc: 'https://rpc.ankr.com/eth'
+  },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     name: 'Binance Smart Chain Mainnet',
     rpc: 'https://bsc-dataseed1.binance.org'

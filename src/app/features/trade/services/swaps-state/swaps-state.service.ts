@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { TradeState } from '@features/trade/models/trade-state';
+import { PromotionType, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -11,11 +11,13 @@ import {
   switchMap
 } from 'rxjs/operators';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
   EvmWrapTrade,
   nativeTokensList,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   Token,
   WrappedCrossChainTradeOrNull
@@ -50,7 +52,7 @@ export class SwapsStateService {
    */
   private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
-  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
+  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(0));
 
   public get tradeState(): SelectedTrade {
     return this._tradeState$.value;
@@ -157,7 +159,8 @@ export class SwapsStateService {
           needApprove,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: trade.getTradeInfo().routePath || []
+          routes: trade.getTradeInfo().routePath || [],
+          ...(this.setPromotion(trade) && { promotion: this.setPromotion(trade) })
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -403,5 +406,21 @@ export class SwapsStateService {
       map(() => true),
       startWith(false)
     );
+  }
+
+  private setPromotion(trade: OnChainTrade | CrossChainTrade): PromotionType | null {
+    if (
+      trade instanceof OnChainTrade &&
+      trade.type === ON_CHAIN_TRADE_TYPE.OPEN_OCEAN &&
+      trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
+    ) {
+      return {
+        hint: 'Click to check additional info',
+        label: '50% gas refund',
+        href: 'https://app.openocean.finance/portfolio/campaigns'
+      };
+    }
+
+    return null;
   }
 }
