@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
+import { TokenAmountDirective } from '@shared/directives/token-amount/token-amount.directive';
 
 @Component({
   selector: 'app-amount-transput',
@@ -38,6 +39,8 @@ export class AmountTransputComponent {
         newAmount = value?.actualValue
           ? shortenPipe.transform(value?.visibleValue, 12, 6, true)
           : '';
+
+        newAmount = TokenAmountDirective.getNewValue(newAmount);
       }
       this.amount.setValue(newAmount, { emitViewToModelChange: false });
     }

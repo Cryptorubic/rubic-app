@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Output, EventEmitter, Input } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import BigNumber from 'bignumber.js';
 import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 
@@ -7,7 +7,7 @@ import { BIG_NUMBER_FORMAT } from '@shared/constants/formats/big-number-format';
 })
 export class TokenAmountDirective {
   @Input() set decimals(value: number) {
-    this._decimals = value;
+    TokenAmountDirective._decimals = value;
     setTimeout(() => this.onChange());
   }
 
@@ -15,7 +15,7 @@ export class TokenAmountDirective {
 
   private readonly amountRegex = /^([0-9]+\.?[0-9]*|[0-9]*\.?[0-9]+)?$/;
 
-  private _decimals: number;
+  private static _decimals: number;
 
   private prevValue = '';
 
@@ -46,7 +46,7 @@ export class TokenAmountDirective {
     }
 
     if (this.amountRegex.test(value)) {
-      value = this.getNewValue(value);
+      value = TokenAmountDirective.getNewValue(value);
       if (value === this.prevValue) {
         caretPosition = this.prevCaretPosition;
       } else {
@@ -67,7 +67,7 @@ export class TokenAmountDirective {
     this.prevCaretPosition = caretPosition;
   }
 
-  private getNewValue(value: string): string {
+  public static getNewValue(value: string): string {
     if (value.includes('.')) {
       const decimalsStartIndex = value.indexOf('.') + 1;
       value = value.slice(0, decimalsStartIndex + this._decimals);
