@@ -66,6 +66,7 @@ import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-sw
 import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
+import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +96,8 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
     PriceImpactFormatPipe,
     CnPreviewSwapComponent,
     CnTradeInfoComponent,
-    MevBotComponent
+    MevBotComponent,
+    PromotionBadgeComponent
   ],
   exports: [],
   imports: [
