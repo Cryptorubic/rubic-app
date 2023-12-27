@@ -46,7 +46,7 @@ export class TokenAmountDirective {
     }
 
     if (this.amountRegex.test(value)) {
-      value = TokenAmountDirective.getNewValue(value, this._decimals);
+      value = TokenAmountDirective.transformValue(value, this._decimals);
       if (value === this.prevValue) {
         caretPosition = this.prevCaretPosition;
       } else {
@@ -67,7 +67,7 @@ export class TokenAmountDirective {
     this.prevCaretPosition = caretPosition;
   }
 
-  public static getNewValue(value: string, decimals: number): string {
+  public static transformValue(value: string, decimals: number): string {
     if (value.includes('.')) {
       const decimalsStartIndex = value.indexOf('.') + 1;
       value = value.slice(0, decimalsStartIndex + decimals);
