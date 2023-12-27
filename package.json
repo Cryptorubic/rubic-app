@@ -61,6 +61,7 @@
     "@tinkoff/ng-polymorpheus": "4.1.0",
     "@walletconnect/ethereum-provider": "^2.8.6",
     "@walletconnect/modal": "^2.5.9",
+    "@web3-name-sdk/core": "^0.1.13",
     "bignumber.js": "9.1.0",
     "browserify-zlib": "^0.2.0",
     "date-and-time": "^0.14.2",

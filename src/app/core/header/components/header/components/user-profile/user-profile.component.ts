@@ -3,10 +3,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  QueryList,
-  Self,
-  TemplateRef,
-  ViewChildren
+  OnInit,
+  Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -20,6 +18,7 @@ import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { SpaceIdData } from '@app/core/services/auth/models/space-id-types';
 
 @Component({
   selector: 'app-user-profile',
@@ -28,7 +27,7 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit {
+export class UserProfileComponent implements AfterViewInit, OnInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -49,8 +48,6 @@ export class UserProfileComponent implements AfterViewInit {
     this.currentUser$ = this.authService.currentUser$;
   }
 
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
-
   public readonly isConfirmModalOpened$: Observable<boolean>;
 
   public readonly isMobile$: Observable<boolean>;
@@ -63,7 +60,11 @@ export class UserProfileComponent implements AfterViewInit {
 
   public dropdownIsOpened = false;
 
-  @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
+  public spaceIdData: SpaceIdData;
+
+  async ngOnInit(): Promise<void> {
+    this.spaceIdData = await this.getSpaceIdData();
+  }
 
   ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$
@@ -87,5 +88,9 @@ export class UserProfileComponent implements AfterViewInit {
 
   public openProfileModal(): void {
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
+  }
+
+  private async getSpaceIdData(): Promise<SpaceIdData | null> {
+    return this.authService.getSpaceIdData();
   }
 }

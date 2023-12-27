@@ -1,19 +1,47 @@
-<ng-container>
+<ng-container *ngLet="(currentUser$ | async)?.address as userAddress">
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-          <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="24" height="24" />
-        </div>
+        <ng-container *ngIf="spaceIdData; else withoutSpaceId">
+          <ng-container
+            *ngTemplateOutlet="
+              userProfile;
+              context: {
+                avatarSrc: spaceIdData.avatar ? spaceIdData.avatar : currentBlockchainIcon,
+                avatarAlt: spaceIdData.avatar ? 'User avatar' : currentBlockchainName,
+                text: spaceIdData.name
+              }
+            "
+          ></ng-container>
+        </ng-container>
 
-        <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
-          {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}
-        </div>
+        <ng-template #withoutSpaceId>
+          <ng-container
+            *ngTemplateOutlet="
+              userProfile;
+              context: {
+                avatarSrc: currentBlockchainIcon,
+                avatarAlt: currentBlockchainName,
+                text: userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress
+              }
+            "
+          ></ng-container>
+        </ng-template>
 
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>
     </div>
   </tui-hosted-dropdown>
+
+  <ng-template #userProfile let-avatarSrc="avatarSrc" let-avatarAlt="avatarAlt" let-text="text">
+    <div class="user-profile__avatar" *ngIf="currentBlockchainIcon">
+      <img [src]="avatarSrc" [alt]="avatarAlt" width="24" height="24" />
+    </div>
+
+    <div class="user-profile__text">
+      {{ text }}
+    </div>
+  </ng-template>
 
   <ng-template #dropdown let-activeZone>
     <tui-data-list class="data-list" size="m" role="menu">

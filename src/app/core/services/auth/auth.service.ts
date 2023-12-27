@@ -8,6 +8,9 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ChainType } from 'rubic-sdk';
+import { HttpService } from '../http/http.service';
+import { SpaceIdData, SpaceIdSupportedBlockchain, spaceIdDomains } from './models/space-id-types';
+import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -16,6 +19,8 @@ import { ChainType } from 'rubic-sdk';
   providedIn: 'root'
 })
 export class AuthService {
+  private web3Name = createWeb3Name();
+
   private readonly _currentUser$ = new BehaviorSubject<UserInterface>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();
@@ -36,7 +41,8 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly http: HttpService
   ) {
     this.initSubscriptions();
   }
@@ -97,5 +103,31 @@ export class AuthService {
   public disconnectWallet(): void {
     this.walletConnectorService.deactivate();
     this._currentUser$.next(null);
+  }
+
+  public async getSpaceIdData(): Promise<SpaceIdData | null> {
+    const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
+      id => this.walletConnectorService.network === id
+    );
+
+    if (isSupportedSpaceId) {
+      const spaceIdName = await this.web3Name.getDomainName({
+        address: this.walletConnectorService.address,
+        queryTldList: [
+          spaceIdDomains[this.walletConnectorService.network as SpaceIdSupportedBlockchain]
+        ]
+      });
+
+      if (!spaceIdName) return null;
+
+      const avatar = await this.web3Name.getDomainRecord({
+        name: spaceIdName,
+        key: 'avatar'
+      });
+
+      return { avatar: avatar ?? null, name: spaceIdName };
+    } else {
+      return null;
+    }
   }
 }
