@@ -456,7 +456,8 @@ export class CrossChainService {
       fromToken.symbol,
       toToken.symbol,
       fee,
-      fromAmount.multipliedBy(fromToken.price)
+      fromAmount.multipliedBy(fromToken.price),
+      'crosschain'
     );
   }
 }

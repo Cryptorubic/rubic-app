@@ -1,10 +1,11 @@
 <div class="rubic-volume" *ngLet="volume$ | async as volume">
   <div class="rubic-volume__title">
-    <!--    <img class="rubic-volume__icon" [src]="icon[theme$ | async]" alt="Dollar" />-->
-    Swap crypto effortlessly on Rubic, aggregating 70+ blockchains, 220+ DEXs, and cross-chain
-    bridges to get you the best rates possible. Exchange now!
+    <img class="rubic-volume__icon" [src]="icon[theme$ | async]" alt="Dollar" />
+    {{ 'volume.title' | translate }}:
+    <!--    Swap crypto effortlessly on Rubic, aggregating 70+ blockchains, 220+ DEXs, and cross-chain-->
+    <!--    bridges to get you the best rates possible. Exchange now!-->
   </div>
-  <!--  <div class="rubic-volume__value" [class.tui-skeleton]="!volume">-->
-  <!--    ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat : 0 }}-->
-  <!--  </div>-->
+  <div class="rubic-volume__value" [class.tui-skeleton]="!volume">
+    ${{ volume?.instantTrades.plus(volume.bridges) | bigNumberFormat : 0 }}
+  </div>
 </div>

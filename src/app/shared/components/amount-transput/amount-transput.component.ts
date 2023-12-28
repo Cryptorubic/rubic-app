@@ -48,7 +48,7 @@ export class AmountTransputComponent {
 
       newAmount = value?.actualValue ? shortenPipe.transform(value?.visibleValue, 12, 6, true) : '';
 
-      newAmount = TokenAmountDirective.transformValue(newAmount, this.selectedToken.decimals);
+      newAmount = TokenAmountDirective.transformValue(newAmount, this.selectedToken?.decimals);
     }
     this.amount.setValue(newAmount, { emitViewToModelChange: false });
   }
