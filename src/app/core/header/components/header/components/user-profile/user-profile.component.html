@@ -5,7 +5,7 @@
         <ng-container *ngIf="spaceIdData; else withoutSpaceId">
           <ng-container
             *ngTemplateOutlet="
-              userProfile;
+              userProfileContent;
               context: {
                 avatarSrc: spaceIdData.avatar ? spaceIdData.avatar : currentBlockchainIcon,
                 avatarAlt: spaceIdData.avatar ? 'User avatar' : currentBlockchainName,
@@ -18,7 +18,7 @@
         <ng-template #withoutSpaceId>
           <ng-container
             *ngTemplateOutlet="
-              userProfile;
+              userProfileContent;
               context: {
                 avatarSrc: currentBlockchainIcon,
                 avatarAlt: currentBlockchainName,
@@ -33,7 +33,12 @@
     </div>
   </tui-hosted-dropdown>
 
-  <ng-template #userProfile let-avatarSrc="avatarSrc" let-avatarAlt="avatarAlt" let-text="text">
+  <ng-template
+    #userProfileContent
+    let-avatarSrc="avatarSrc"
+    let-avatarAlt="avatarAlt"
+    let-text="text"
+  >
     <div class="user-profile__avatar" *ngIf="currentBlockchainIcon">
       <img [src]="avatarSrc" [alt]="avatarAlt" width="24" height="24" />
     </div>

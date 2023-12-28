@@ -9,7 +9,7 @@ import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ChainType } from 'rubic-sdk';
 import { HttpService } from '../http/http.service';
-import { SpaceIdData, SpaceIdSupportedBlockchain, spaceIdDomains } from './models/space-id-types';
+import { SpaceIdData, SpaceIdGetMetadataResponse } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
@@ -106,28 +106,16 @@ export class AuthService {
   }
 
   public async getSpaceIdData(): Promise<SpaceIdData | null> {
-    const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
-      id => this.walletConnectorService.network === id
-    );
+    const spaceIdName = await this.web3Name.getDomainName({
+      address: this.walletConnectorService.address
+    });
 
-    if (isSupportedSpaceId) {
-      const spaceIdName = await this.web3Name.getDomainName({
-        address: this.walletConnectorService.address,
-        queryTldList: [
-          spaceIdDomains[this.walletConnectorService.network as SpaceIdSupportedBlockchain]
-        ]
-      });
+    if (!spaceIdName) return null;
 
-      if (!spaceIdName) return null;
+    const { image, name } = (await this.web3Name.getMetadata({
+      name: spaceIdName
+    })) as SpaceIdGetMetadataResponse;
 
-      const avatar = await this.web3Name.getDomainRecord({
-        name: spaceIdName,
-        key: 'avatar'
-      });
-
-      return { avatar: avatar ?? null, name: spaceIdName };
-    } else {
-      return null;
-    }
+    return { avatar: image ?? null, name };
   }
 }

@@ -63,7 +63,8 @@ export class UserProfileComponent implements AfterViewInit, OnInit {
   public spaceIdData: SpaceIdData;
 
   async ngOnInit(): Promise<void> {
-    this.spaceIdData = await this.getSpaceIdData();
+    this.spaceIdData = await this.authService.getSpaceIdData();
+    this.cdr.markForCheck();
   }
 
   ngAfterViewInit(): void {
@@ -88,9 +89,5 @@ export class UserProfileComponent implements AfterViewInit, OnInit {
 
   public openProfileModal(): void {
     this.modalService.openUserProfile(TradesHistory.CROSS_CHAIN).subscribe();
-  }
-
-  private async getSpaceIdData(): Promise<SpaceIdData | null> {
-    return this.authService.getSpaceIdData();
   }
 }
