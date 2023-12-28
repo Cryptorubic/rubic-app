@@ -98,13 +98,13 @@ export class AssetsSelectorService {
       if (isToTokenSelected) {
         this.assetType = assetType;
       } else {
-        this.assetType = assetType || userAvailableBlockchainName;
+        this.assetType = userAvailableBlockchainName || assetType;
       }
     } else {
       if (isToTokenSelected) {
         this.assetType = fromBlockchain;
       } else {
-        this.assetType = fromBlockchain || userAvailableBlockchainName;
+        this.assetType = userAvailableBlockchainName || fromBlockchain;
       }
     }
 
