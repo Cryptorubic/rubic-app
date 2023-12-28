@@ -243,11 +243,11 @@
   },
   "crossChainPage": {
     "targetAddress": {
-      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens in this wallet.",
       "placeholder": "Enter or paste address"
     },
     "swapInfo": {
-      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "title": "Estimated time to receive tokens on the Ethereum blockchain depends on the current Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
       "maximumSentHint": "Maximum amount of tokens to be sent\n",
       "minimumReceived": "Minimum received",

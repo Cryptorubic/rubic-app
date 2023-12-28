@@ -238,15 +238,15 @@
     "progressMessage": "You accepted the transaction and the exchange has started. Please wait until the trade is complete.",
     "successMessage": "The process of cross-chain swapping has started. Please wait until the trade is completed by both blockchains.",
     "approveProgressMessage": "You accepted the approve transaction and the exchange has started. Please wait until the trade is complete.",
-    "approveSuccessMessage": "You have approved tokens. Press swap button to continue trade."
+    "approveSuccessMessage": "You have approved tokens. Press the swap button to continue the trade."
   },
   "crossChainPage": {
     "targetAddress": {
-      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens in this wallet.",
       "placeholder": "Enter or paste address"
     },
     "swapInfo": {
-      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "title": "Estimated time to receive tokens on the Ethereum blockchain depends on the current Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
       "maximumSentHint": "Maximum amount of tokens to be sent\n",
       "minimumReceived": "Minimum received",
