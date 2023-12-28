@@ -93,6 +93,7 @@ export class AssetsSelectorService {
       chain => chain.name === userBlockchainName
     )?.name;
     const isToTokenSelected = this.swapFormService.inputValue.toToken;
+    const isFromTokenSelected = this.swapFormService.inputValue.fromToken;
 
     if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
       if (isToTokenSelected) {
@@ -101,7 +102,7 @@ export class AssetsSelectorService {
         this.assetType = userAvailableBlockchainName || assetType;
       }
     } else {
-      if (isToTokenSelected) {
+      if (isToTokenSelected || isFromTokenSelected) {
         this.assetType = fromBlockchain;
       } else {
         this.assetType = userAvailableBlockchainName || fromBlockchain;
