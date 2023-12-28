@@ -1,0 +1,10 @@
+<a (click)="$event.stopPropagation()" [href]="data?.href" target="_blank">
+  <tui-tag
+    class="element__gas-refund-badge"
+    size="s"
+    status="custom"
+    [value]="data.label"
+    [tuiHint]="data.hint"
+  >
+  </tui-tag>
+</a>
