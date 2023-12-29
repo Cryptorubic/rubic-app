@@ -41,7 +41,7 @@ export class StakingNotificationService {
   }
 
   public showNftLockedError(lockedUntil: string): void {
-    this.notificationsService.show(`Nft is locked until ${lockedUntil}`, {
+    this.notificationsService.show(`NFT is locked until ${lockedUntil}`, {
       autoClose: 5000,
       status: TuiNotification.Error,
       data: null,
