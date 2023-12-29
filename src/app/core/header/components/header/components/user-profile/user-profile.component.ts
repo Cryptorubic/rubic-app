@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
@@ -10,7 +9,6 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
-import { BlockchainName } from 'rubic-sdk';
 
 @Component({
   selector: 'app-user-profile',
@@ -41,7 +39,6 @@ export class UserProfileComponent {
     this.walletConnectorService.networkChange$
       .pipe(takeUntil(this.destroy$))
       .subscribe(async blockchainName => {
-        this.currentBlockchainName = blockchainName;
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
 
         await this.authService.setSpaceIdData();
@@ -59,10 +56,6 @@ export class UserProfileComponent {
   public readonly isConfirmModalOpened$: Observable<boolean>;
 
   public readonly isMobile$: Observable<boolean>;
-
-  public currentUser$: Observable<UserInterface> = this.authService.currentUser$;
-
-  public currentBlockchainName: BlockchainName;
 
   public currentBlockchainIcon: string;
 
