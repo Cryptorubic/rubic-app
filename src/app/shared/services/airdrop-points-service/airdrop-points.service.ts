@@ -1,4 +1,4 @@
-import { BehaviorSubject, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
@@ -64,6 +64,26 @@ export class AirdropPointsService {
         })
       )
       .subscribe();
+  }
+
+  /**
+   * @deprecated
+   * @temporary
+   * @remove
+   * @todo remove after backend update
+   */
+  public getSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
+    const address = this.authService.user.address;
+
+    if (type === 'on-chain') {
+      return this.apiService
+        .getOnChainPoints(address)
+        .pipe(tap(points => this._pointsAmount$.next(points)));
+    }
+
+    return this.apiService
+      .getCrossChainPoints(address)
+      .pipe(tap(points => this._pointsAmount$.next(points)));
   }
 
   public async getSwapAndEarnPointsAmount(

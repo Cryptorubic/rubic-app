@@ -81,7 +81,8 @@ export class OnChainService {
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
       PriceToken.createToken(fromToken),
       this.tokensService.getAndUpdateTokenPrice(toToken, true),
-      PriceToken.createToken(toToken)
+      PriceToken.createToken(toToken),
+      this.airdropPointsService.getSeNPointsTemp('on-chain')
     ]).pipe(
       switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
         forkJoin([

@@ -89,7 +89,8 @@ export class CrossChainService {
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getAndUpdateTokenPrice(toToken, true),
+      this.airdropPointsService.getSeNPointsTemp('cross-chain')
     ]).pipe(
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({
