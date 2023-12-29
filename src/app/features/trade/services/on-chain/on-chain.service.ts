@@ -81,8 +81,7 @@ export class OnChainService {
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
       PriceToken.createToken(fromToken),
       this.tokensService.getAndUpdateTokenPrice(toToken, true),
-      PriceToken.createToken(toToken),
-      this.airdropPointsService.getSeNPointsTemp('on-chain')
+      PriceToken.createToken(toToken)
     ]).pipe(
       switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
         forkJoin([
@@ -179,6 +178,8 @@ export class OnChainService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
     );
+
+    this.airdropPointsService.setSeNPointsTemp('on-chain').subscribe();
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');

@@ -72,7 +72,7 @@ export class AirdropPointsService {
    * @remove
    * @todo remove after backend update
    */
-  public getSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
+  public setSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
     const address = this.authService.user.address;
 
     if (type === 'on-chain') {
