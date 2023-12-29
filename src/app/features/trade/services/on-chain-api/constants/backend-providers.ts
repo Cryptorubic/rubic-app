@@ -123,7 +123,7 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango'
 } as const;
 
-export const FROM_BACKEND_ON_CHAIN_PORVIDERS = {
+export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
   ...Object.entries(TO_BACKEND_ON_CHAIN_PROVIDERS).reduce(
     (acc, [clientName, backendName]) => ({
       ...acc,
@@ -134,7 +134,7 @@ export const FROM_BACKEND_ON_CHAIN_PORVIDERS = {
 } as const;
 
 export type FromBackendOnChainProvider =
-  (typeof FROM_BACKEND_ON_CHAIN_PORVIDERS)[keyof typeof FROM_BACKEND_ON_CHAIN_PORVIDERS];
+  (typeof FROM_BACKEND_ON_CHAIN_PROVIDERS)[keyof typeof FROM_BACKEND_ON_CHAIN_PROVIDERS];
 
 export type ToBackendOnChainProvider =
   (typeof TO_BACKEND_ON_CHAIN_PROVIDERS)[keyof typeof TO_BACKEND_ON_CHAIN_PROVIDERS];

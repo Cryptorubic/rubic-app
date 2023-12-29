@@ -9,7 +9,7 @@ import {
 import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { CrossChainTradeType } from 'rubic-sdk';
 import {
-  FROM_BACKEND_ON_CHAIN_PORVIDERS,
+  FROM_BACKEND_ON_CHAIN_PROVIDERS,
   FromBackendOnChainProvider,
   ToBackendOnChainProvider
 } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
@@ -37,7 +37,7 @@ export class AirdropUtils {
 
     Object.entries(data).forEach(
       ([providerNameOnBackend, rewardData]: [ToBackendOnChainProvider, ProviderRewardData]) => {
-        const providerNameOnClient = FROM_BACKEND_ON_CHAIN_PORVIDERS[
+        const providerNameOnClient = FROM_BACKEND_ON_CHAIN_PROVIDERS[
           providerNameOnBackend
         ] as FromBackendOnChainProvider;
         converted[providerNameOnClient] = rewardData;
