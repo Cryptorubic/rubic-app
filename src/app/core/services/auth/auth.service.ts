@@ -8,7 +8,6 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ChainType, blockchainId } from 'rubic-sdk';
-import { HttpService } from '../http/http.service';
 import { SpaceIdData, SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
 
@@ -45,8 +44,7 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
-    private readonly gtmService: GoogleTagManagerService,
-    private readonly http: HttpService
+    private readonly gtmService: GoogleTagManagerService
   ) {
     this.initSubscriptions();
   }
