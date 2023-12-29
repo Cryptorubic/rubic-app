@@ -132,6 +132,7 @@ export class GoogleTagManagerService {
    * @param toToken End Token.
    * @param revenue System commission in USD.
    * @param price The actual cost of the sent volume of tokens.
+   * @param swapType Type of swap.
    */
   public fireTxSignedEvent(
     eventCategory: SupportedSwapProviderType,
@@ -139,17 +140,21 @@ export class GoogleTagManagerService {
     fromToken: string,
     toToken: string,
     revenue: BigNumber,
-    price: BigNumber
+    price: BigNumber,
+    swapType: 'crosschain' | 'onchain'
   ): void {
     this.forms[eventCategory].next(formStepsInitial);
     const item = [
       {
-        item_name: `${fromToken}_to_${toToken}`, //начальные и конечные токены
-        item_category: 'swap_success',
-        price: price.toFixed(), //общая сумма операции в USD
+        item_id: swapType === 'crosschain' ? '00002' : '00001', // ID продукта
+        item_name: `${swapType}_swap`, // Название свапа
+        item_category: fromToken, // Начальный токен
+        item_category2: toToken, // Конечный токен
+        price: price.toFixed(), // общая сумма операции в USD
         quantity: 1
       }
     ];
+
     const options = {
       transaction_id: txId, //id транзакции в системе
       value: revenue.toFixed(), //комиссия системы в USD
