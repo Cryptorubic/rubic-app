@@ -18,13 +18,13 @@
     "close": "Close",
     "send": "Send",
     "left": "Left",
-    "checkOnScanner": "Check on scanner",
+    "checkOnScanner": "Check on Scanner",
     "cancel": "Cancel",
     "add": "Add",
     "via": "Via ",
     "address": "address",
     "chooseToken": "Select Token",
-    "clearToken": "Clear token",
+    "clearToken": "Clear Token",
     "warning": "Warning",
     "customerSupport": "customer support",
     "OK": "OK",
@@ -35,7 +35,7 @@
     "switchTo": "Switch to {{ networkName }} network",
     "tradeVia": "Trade Via ",
     "bridge": "Bridge",
-    "transactionDetails": "Transaction details",
+    "transactionDetails": "Transaction Details",
     "approveToken": "Approve {{symbol}}",
     "tagline": {
       "firstText": "Cross-Chain Swaps",
@@ -43,7 +43,7 @@
       "secondText": "Assets"
     },
     "revert": "Revert",
-    "refreshTrade": "Refresh trade",
+    "refreshTrade": "Refresh Trade",
     "complete": "Complete"
   },
   "errors": {
@@ -315,13 +315,13 @@
       },
       "2": {
         "label": "Avalanche gas refund",
-        "description": "To celebrate the launch of Rubic Multi-Chain routing on the Avalanche network our project is starting a new Gas Refund Campaign! Starting from Oct, 19 to Nov,2  our users will be able to complete swap using their favorite tokens on the Avalanche network using Rubic Multi-Chain Routing and get GAS refunded."
+        "description": "To celebrate the launch of Rubic Multi-Chain routing on the Avalanche network, our project is starting a new Gas Refund Campaign! Starting from Oct. 19 to Nov. 2  our users will be able to complete swaps using their favorite tokens on the Avalanche network while using Rubic Multi-Chain Routing, and get their gas refunded."
       }
     },
     "notifications": {
       "progress": {
         "label": "Gas refund is in progress",
-        "message": "Rubic is completing a gas refund. Please wait until it will be completed."
+        "message": "Rubic is completing a gas refund. Please wait until it is complete."
       },
       "complete": {
         "label": "Gas refund is completed!",
@@ -381,7 +381,7 @@
     "acquireBoth": "Acquire Both BRBC and USDC Tokens",
     "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
     "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
-    "depositFunds": "Deposit funds",
+    "depositFunds": "Deposit Funds",
     "initiateDeposit": "Initiate Deposit",
     "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
     "requestWithdraw": "Request Withdraw",
@@ -390,26 +390,26 @@
     "yourDeposits": "Your Deposits",
     "newDeposit": "+ Initiate Deposit",
     "transferToken": "Transfer LP Token",
-    "collectRewards": "Collect rewards $ {{amount}}",
+    "collectRewards": "Collect Rewards $ {{amount}}",
     "balance": "Balance",
     "endOfRound": "End of Round {{round}}",
     "poolIsFull": "Pool is Full",
     "lpRoundEnded": "LP Round Ended",
     "returnAfterDay": "Return after 24H",
-    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate of 800 USDC & 3200 BRBC will be available during 24 hours",
+    "whitelistInfo": "If you participated in the 1st round of Staking, then you have the option to allocate up to 800 USDC & 3200 BRBC, and the offer will be available for 24 hours",
     "ifDidNotParticipate": "If you did not participate, you will be able to enter the round after",
-    "notWhitelistUser": "Your address is not whitelist",
+    "notWhitelistUser": "Your address is not Whitelisted",
     "initiateDepositWithWhitelist": "Initiate Deposit with Whitelist",
     "emptyAmount": "Empty amount",
-    "depositLimitMax": "Current max limit is {{max}} BRBC",
-    "depositLimitMin": "Current min limit is {{min}} BRBC"
+    "depositLimitMax": "Current max. limit is {{max}} BRBC",
+    "depositLimitMin": "Current min. limit is {{min}} BRBC"
   },
   "staking": {
     "common": {
       "months": "months",
       "rules": "Complete Staking Rules",
       "connectWallet": "Connect Wallet",
-      "switchNetworkToArbitrum": "Switch to ARBITRUM network"
+      "switchNetworkToArbitrum": "Switch to the Arbitrum network"
     },
     "overview": {
       "title": "Overview",
@@ -453,7 +453,7 @@
       "hint": {
         "lockedRBCExpiresIn": "locked RBC expires in",
         "lockedUntil": "Locked until",
-        "fullText": "10 locked RBC expires in 12 months. Locked until 23.05.2024"
+        "fullText": "10 locked RBC expires in 12 months. Locked until 05/23/2024"
       },
       "button": {
         "entryIsClosed": "Entry is Closed",
@@ -489,7 +489,7 @@
     },
     "bridge": {
       "receiveWarning": "This bridge consists of two transactions. If you initiate the transaction, you will not be able to cancel it.",
-      "trackTrx": "Track the transaction status in  and tap «Receive» when appears to claim tokens in Ethereum network."
+      "trackTrx": "Track the transaction status in and tap «Receive» when it appears to claim tokens on the Ethereum network."
     },
     "tokensListModal": {
       "defaultTitle": "Tokens List",
@@ -498,9 +498,9 @@
       "clearParamsHint": "Clear other form parameters to select this token",
       "searchPlaceholder": "Search name or paste address",
       "noSearchData": "Nothing to show",
-      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "noFavoriteData": "You don't have favorite tokens in the selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to choose token favorite."
     },
     "walletsModal": {
       "title": "Connect Wallet",
@@ -514,7 +514,7 @@
     "successTxModal": {
       "see": "See ",
       "transactionDetailsLink": "transaction details",
-      "itWillAppearsIn": ". It will appears in ",
+      "itWillAppearsIn": ". It will appear in ",
       "myTradesLink": "My trades",
       "pageSoon": " page soon.",
       "title": "The transaction was successfully sent!",
@@ -546,7 +546,7 @@
       "multihopsTitle": "Disable multihops",
       "multihops": "Your swap will be completed only with direct pairs.",
       "rubicOptimisationTitle": "Use Rubic Optimization",
-      "rubicOptimisation": "Rubic optimization is enabled by default. However, you can disable it so that the optimal trade route is executed without taking the cost of gas into account.",
+      "rubicOptimisation": "Rubic Optimization is enabled by default. However, you can disable it so that the optimal trade route is executed without taking the cost of gas into account.",
       "deadlineTitle": "Transaction deadline",
       "deadline": "Your transaction will revert if it remains pending for more than this period of time.",
       "autoRefreshTitle": "Auto-refresh",
@@ -555,7 +555,7 @@
       "showReceiverAddress": "Enter wallet address of the Recipient"
     },
     "bridge": {
-      "walletAddress": "The wallet address in TRON blockchain, on which the tokens will be provided."
+      "walletAddress": "The wallet address in the TRON blockchain, on which the tokens will be provided."
     },
     "crossChainRouting": {
       "autoRefreshTitle": "Auto-refresh",
@@ -566,7 +566,7 @@
       "slippage": "Your transaction will be canceled if the price changes unfavorably by more than the entered percentage (a lower percentage decreases the chances of your transaction being front-run).",
       "promoCodeTitle": "Promo Code",
       "promoCodeHint": "Enter the promo code here to have a gas refund for the trade.",
-      "promoCodeLoginRequired": "To use promo code you need to connect your wallet.",
+      "promoCodeLoginRequired": "To use a promo code, you need to connect your wallet.",
       "promoCode": {
         "accepted": {
           "usesLeft": "Uses left",
@@ -576,14 +576,14 @@
           "text": "Your promo code is not valid.",
           "reason": {
             "4000": "You have already used the promo code before. You can only use this promo code once.",
-            "4001": "The promo code have reached the maximum numbers of use."
+            "4001": "The promo code has reached the maximum numbers of use."
           }
         },
         "outdated": {
           "text": "This promo code has expired."
         },
         "wrong": {
-          "text": "The promo code is entered incorrectly or it does not exist."
+          "text": "The promo code was entered incorrectly or it does not exist."
         }
       }
     },
@@ -613,7 +613,7 @@
       "link": "Try it today!"
     },
     "external": {
-      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of the Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
@@ -623,7 +623,7 @@
   },
   "referralBanner": {
     "text": "",
-    "link": "Claim New RBC Token!"
+    "link": "Claim the New RBC Token!"
   },
   "volume": {
     "title": "Accumulated Transaction Volume",
@@ -633,7 +633,7 @@
     "description": "All Time"
   },
   "notifications": {
-    "tradeInProgress": "Trade in progress",
+    "tradeInProgress": "Trade in Progress",
     "successfulTradeTitle": "Successful trade",
     "successfulCCRTradeTitle": "Successful trade in source network",
     "successfullySentTransaction": "The transaction was successfully sent!",
@@ -687,7 +687,7 @@
   },
   "airdrop": {
     "title": "Rubic Token Claim",
-    "description": "Using this website, you can check if any of your addresses are eligible to withdraw RUBIC Tokens (RBC).",
+    "description": "Using this website, you can check if any of your addresses are eligible to withdraw Rubic Tokens (RBC).",
     "enterAddress": "Enter your Ethereum address",
     "goodAddress": "Yes, this address is eligible for a token claim",
     "claimedTokens": "tokens are claimable",
@@ -709,7 +709,7 @@
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
       "progress": "Claim in progress",
-      "success": "Claim is success",
+      "success": "Claim is successful",
       "paused": "The token claim is temporarily unavailable. Please try again later",
       "claimed": "Tokens are claimed already, please check your wallet",
       "unknown": "Oops, something went wrong, please try again later",

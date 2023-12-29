@@ -146,7 +146,7 @@ export class GoogleTagManagerService {
     this.forms[eventCategory].next(formStepsInitial);
     const item = [
       {
-        item_id: '00001', // ID продукта
+        item_id: swapType === 'crosschain' ? '00002' : '00001', // ID продукта
         item_name: `${swapType}_swap`, // Название свапа
         item_category: fromToken, // Начальный токен
         item_category2: toToken, // Конечный токен
