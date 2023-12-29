@@ -50,6 +50,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 
 @Injectable()
 export class CrossChainService {
@@ -77,7 +78,8 @@ export class CrossChainService {
     @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly airdropPointsService: AirdropPointsService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -258,6 +260,8 @@ export class CrossChainService {
     // }
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     this.checkBlockchainsAvailable(trade);
+
+    this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),

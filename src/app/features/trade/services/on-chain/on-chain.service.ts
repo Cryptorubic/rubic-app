@@ -43,6 +43,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 
 @Injectable()
 export class OnChainService {
@@ -69,7 +70,8 @@ export class OnChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly onChainApiService: OnChainApiService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly sessionStorage: SessionStorageService
+    private readonly sessionStorage: SessionStorageService,
+    private readonly airdropPointsService: AirdropPointsService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -176,6 +178,8 @@ export class OnChainService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       blockchain
     );
+
+    this.airdropPointsService.setSeNPointsTemp('on-chain').subscribe();
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');
