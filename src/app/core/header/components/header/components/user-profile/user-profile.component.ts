@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
@@ -37,19 +37,16 @@ export class UserProfileComponent {
     });
 
     this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async blockchainName => {
-        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-
-        await this.authService.setSpaceIdData();
-
+      .pipe(
+        combineLatestWith(this.walletConnectorService.addressChange$),
+        tap(([blockchainName, _]) => {
+          this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+        }),
+        switchMap(() => this.authService.setUserData()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
         this.cdr.markForCheck();
-      });
-
-    this.walletConnectorService.addressChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async () => {
-        await this.authService.setSpaceIdData();
       });
   }
 
@@ -61,18 +58,13 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
-  public spaceIdData$ = this.authService.spaceIdData$;
-
-  public profileText$: Observable<string> = combineLatest([
-    this.authService.spaceIdData$,
-    this.authService.currentUser$
-  ]).pipe(
-    map(([spaceIdData, user]) => (spaceIdData?.name ? spaceIdData.name : user.address)),
+  public profileText$: Observable<string> = this.authService.currentUser$.pipe(
+    map(user => (user?.spaceIdName ? user.spaceIdName : user.address)),
     startWith(this.authService.userAddress)
   );
 
-  public avatar$ = this.authService.spaceIdData$.pipe(
-    map(spaceIdData => (spaceIdData?.avatar ? spaceIdData.avatar : this.currentBlockchainIcon))
+  public avatar$ = this.authService.currentUser$.pipe(
+    map(user => (user?.spaceIdAvatar ? user.spaceIdAvatar : this.currentBlockchainIcon))
   );
 
   public logout(): void {

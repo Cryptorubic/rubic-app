@@ -8,7 +8,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ChainType, blockchainId } from 'rubic-sdk';
-import { SpaceIdData, SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
+import { SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
@@ -23,10 +23,6 @@ export class AuthService {
   private readonly _currentUser$ = new BehaviorSubject<UserInterface>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();
-
-  private readonly _spaceIdData$ = new BehaviorSubject<SpaceIdData | null>(null);
-
-  public readonly spaceIdData$ = this._spaceIdData$.asObservable();
 
   get user(): UserInterface {
     return this._currentUser$.getValue();
@@ -107,7 +103,7 @@ export class AuthService {
     this._currentUser$.next(null);
   }
 
-  public async setSpaceIdData(): Promise<void> {
+  public async setUserData(): Promise<void> {
     const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
       id => this.walletConnectorService.network === id
     );
@@ -120,16 +116,28 @@ export class AuthService {
       });
 
       if (!spaceIdName) {
-        this._spaceIdData$.next(null);
+        this._currentUser$.next({
+          ...this._currentUser$.value,
+          spaceIdAvatar: null,
+          spaceIdName: null
+        });
       }
 
       const { image, name } = (await this.web3Name.getMetadata({
         name: spaceIdName
       })) as SpaceIdGetMetadataResponse;
 
-      this._spaceIdData$.next({ avatar: image ?? null, name });
+      this._currentUser$.next({
+        ...this._currentUser$.value,
+        spaceIdAvatar: image ?? null,
+        spaceIdName: name
+      });
     } else {
-      this._spaceIdData$.next(null);
+      this._currentUser$.next({
+        ...this._currentUser$.value,
+        spaceIdAvatar: null,
+        spaceIdName: null
+      });
     }
   }
 }
