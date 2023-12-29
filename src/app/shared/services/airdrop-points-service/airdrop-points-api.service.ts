@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, of } from 'rxjs';
+import { Observable, firstValueFrom, of } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { HttpService } from '@core/services/http/http.service';
 import {
@@ -20,15 +20,17 @@ export class AirdropPointsApiService {
     return this.httpService.get<AirdropUserPointsInfo>(`rewards/?address=${address}`);
   }
 
-  public getOnChainSeNPoints(params: OnChainRewardRequestParams): Observable<number> {
-    return this.httpService
-      .get<OnChainRewardResponse>(`v2/rewards/onchain_reward_amount`, params)
-      .pipe(map(res => res.amount));
+  public getOnChainRewardData(params: OnChainRewardRequestParams): Promise<OnChainRewardResponse> {
+    return firstValueFrom(
+      this.httpService.get<OnChainRewardResponse>(`v2/rewards/onchain_reward_amount`, params)
+    );
   }
 
-  public getCrossChainSeNPoints(params: CrossChainRewardRequestParams): Observable<number> {
-    return this.httpService
-      .get<CrossChainRewardResponse>(`v2/rewards/crosschain_reward_amount`, params)
-      .pipe(map(res => res.amount));
+  public getCrossChainRewardData(
+    params: CrossChainRewardRequestParams
+  ): Promise<CrossChainRewardResponse> {
+    return firstValueFrom(
+      this.httpService.get<CrossChainRewardResponse>(`v2/rewards/crosschain_reward_amount`, params)
+    );
   }
 }

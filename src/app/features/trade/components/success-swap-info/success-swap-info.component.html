@@ -2,7 +2,8 @@
   <div class="info__title">Yahoo!</div>
   <ng-container *ngIf="showPoints">
     <div class="info__description">
-      You will be credited with {{ points }} points when the transaction is successful
+      You will be credited with {{ pointsAmount$ | async }} points when the transaction is
+      successful
     </div>
     <div class="info__bottom">
       Points can be seen

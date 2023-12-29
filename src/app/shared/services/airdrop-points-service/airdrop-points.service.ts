@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
@@ -8,12 +8,14 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { OnChainTrade } from 'rubic-sdk';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { BlockchainName } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
-import { BACKEND_PROVIDERS } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
-import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
+import {
+  CrossChainRewardConvertedData,
+  OnChainRewardConvertedData
+} from './models/airdrop-api-types';
+import { AirdropUtils } from './utils/airdrop-utils';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropPointsService {
@@ -33,6 +35,10 @@ export class AirdropPointsService {
   private readonly _pointsAmount$ = new BehaviorSubject<number>(0);
 
   public readonly pointsAmount$ = this._pointsAmount$.asObservable();
+
+  public providersCrossChainRewardData: CrossChainRewardConvertedData;
+
+  public providersOnChainRewardData: OnChainRewardConvertedData;
 
   constructor(
     private readonly httpService: HttpService,
@@ -60,39 +66,42 @@ export class AirdropPointsService {
       .subscribe();
   }
 
-  public getSwapAndEarnPointsAmount(tradeType: CrossChainTrade | OnChainTrade): Observable<number> {
+  public async getSwapAndEarnPointsAmount(
+    fromTokenAddress: string,
+    fromTokenBlockchain: BlockchainName,
+    toTokenAddress: string,
+    toTokenBlockchain: BlockchainName
+  ): Promise<void> {
     const address = this.authService.user.address;
-    const from_token = tradeType.from.address;
-    const to_token = tradeType.to.address;
+    const from_token = fromTokenAddress;
+    const to_token = toTokenAddress;
+    const type = fromTokenBlockchain === toTokenBlockchain ? 'on-chain' : 'cross-chain';
 
-    if (tradeType instanceof OnChainTrade) {
-      const provider = BACKEND_PROVIDERS[tradeType.type];
-      const network = TO_BACKEND_BLOCKCHAINS[tradeType.from.blockchain];
+    if (type === 'on-chain') {
+      const network = TO_BACKEND_BLOCKCHAINS[fromTokenBlockchain];
+      //SET PROVIDER_ADDRESS AND POINTS IN SWAP
 
-      return this.apiService
-        .getOnChainSeNPoints({
-          address,
-          from_token,
-          to_token,
-          network,
-          provider
-        })
-        .pipe(tap(points => this._pointsAmount$.next(points)));
+      const res = await this.apiService.getOnChainRewardData({
+        address,
+        from_token,
+        to_token,
+        network
+      });
+
+      this.providersOnChainRewardData = AirdropUtils.convertOnChainRewardData(res);
     } else {
-      const provider = TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType.type];
-      const from_network = TO_BACKEND_BLOCKCHAINS[tradeType.from.blockchain];
-      const to_network = TO_BACKEND_BLOCKCHAINS[tradeType.to.blockchain];
+      const from_network = TO_BACKEND_BLOCKCHAINS[fromTokenBlockchain];
+      const to_network = TO_BACKEND_BLOCKCHAINS[toTokenBlockchain];
 
-      return this.apiService
-        .getCrossChainSeNPoints({
-          address,
-          from_token,
-          to_token,
-          from_network,
-          to_network,
-          provider
-        })
-        .pipe(tap(points => this._pointsAmount$.next(points)));
+      const res = await this.apiService.getCrossChainRewardData({
+        address,
+        from_token,
+        to_token,
+        from_network,
+        to_network
+      });
+
+      this.providersCrossChainRewardData = AirdropUtils.convertCrosschainRewardData(res);
     }
   }
 

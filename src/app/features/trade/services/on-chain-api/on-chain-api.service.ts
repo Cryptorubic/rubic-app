@@ -14,7 +14,7 @@ import {
   OnChainTradeType,
   Web3Pure
 } from 'rubic-sdk';
-import { BACKEND_PROVIDERS } from './constants/backend-providers';
+import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
 import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -83,7 +83,7 @@ export class OnChainApiService {
       toAddress: toAddress,
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
-    let backendProvider = BACKEND_PROVIDERS[provider];
+    let backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
 
     const tradeInfo: InstantTradesPostApi = {
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],

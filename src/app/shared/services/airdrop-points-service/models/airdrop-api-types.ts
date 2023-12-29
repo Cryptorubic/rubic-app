@@ -1,13 +1,28 @@
 import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
-import { ToBackendOnChainProviders } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
+import {
+  FromBackendOnChainProvider,
+  ToBackendOnChainProvider
+} from './../../../../features/trade/services/on-chain-api/constants/backend-providers';
 import { BackendBlockchain } from '@app/shared/constants/blockchain/backend-blockchains';
+import { CrossChainTradeType } from 'rubic-sdk';
 
-export interface OnChainRewardResponse {
-  amount: number;
-  integrator_address: string;
-}
+export type OnChainRewardResponse = {
+  [key in ToBackendOnChainProvider]: ProviderRewardData;
+};
 
-export interface CrossChainRewardResponse {
+export type CrossChainRewardResponse = {
+  [key in ToBackendCrossChainProviders]: ProviderRewardData;
+};
+
+export type OnChainRewardConvertedData = {
+  [key in FromBackendOnChainProvider]: ProviderRewardData;
+};
+
+export type CrossChainRewardConvertedData = {
+  [key in CrossChainTradeType]: ProviderRewardData;
+};
+
+export interface ProviderRewardData {
   amount: number;
   integrator_address: string;
 }
@@ -17,10 +32,6 @@ export interface CrossChainRewardRequestParams {
    * user wallet address
    */
   address: string;
-  /**
-   * backend provider name
-   */
-  provider: ToBackendCrossChainProviders;
   from_network: BackendBlockchain;
   to_network: BackendBlockchain;
   /**
@@ -35,7 +46,6 @@ export interface CrossChainRewardRequestParams {
 
 export interface OnChainRewardRequestParams {
   address: string;
-  provider: ToBackendOnChainProviders;
   network: BackendBlockchain;
   from_token: string;
   to_token: string;

@@ -1,6 +1,6 @@
-import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 
-export const BACKEND_PROVIDERS = {
+export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: 'unknown',
@@ -123,4 +123,18 @@ export const BACKEND_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango'
 } as const;
 
-export type ToBackendOnChainProviders = (typeof BACKEND_PROVIDERS)[keyof typeof BACKEND_PROVIDERS];
+export const FROM_BACKEND_ON_CHAIN_PORVIDERS = {
+  ...Object.entries(TO_BACKEND_ON_CHAIN_PROVIDERS).reduce(
+    (acc, [clientName, backendName]) => ({
+      ...acc,
+      [backendName]: clientName
+    }),
+    {} as Record<ToBackendOnChainProvider, OnChainTradeType>
+  )
+} as const;
+
+export type FromBackendOnChainProvider =
+  (typeof FROM_BACKEND_ON_CHAIN_PORVIDERS)[keyof typeof FROM_BACKEND_ON_CHAIN_PORVIDERS];
+
+export type ToBackendOnChainProvider =
+  (typeof TO_BACKEND_ON_CHAIN_PROVIDERS)[keyof typeof TO_BACKEND_ON_CHAIN_PROVIDERS];

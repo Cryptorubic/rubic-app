@@ -164,14 +164,8 @@ export class PreviewSwapService {
         filter(state => state.step !== 'inactive'),
         debounceTime(10),
         switchMap(state => forkJoin([this.selectedTradeState$.pipe(first()), of(state)])),
-        switchMap(([tradeState, txState]) =>
-          forkJoin([
-            of(tradeState),
-            of(txState),
-            this.airdropPointsService.getSwapAndEarnPointsAmount(tradeState.trade).pipe(first())
-          ])
-        ),
-        switchMap(([tradeState, txState, points]) => {
+        switchMap(([tradeState, txState]) => forkJoin([of(tradeState), of(txState)])),
+        switchMap(([tradeState, txState]) => {
           switch (txState.step) {
             case 'approvePending': {
               return this.swapsControllerService.approve(tradeState, {
@@ -202,7 +196,7 @@ export class PreviewSwapService {
                           txHash = hash;
                           this._transactionState$.next({
                             step: 'sourcePending',
-                            data: { ...this.transactionState.data, points }
+                            data: { ...this.transactionState.data }
                           });
                         },
                         onSwap: (additionalInfo: {
@@ -212,22 +206,20 @@ export class PreviewSwapService {
                           if (tradeState.trade instanceof CrossChainTrade) {
                             this._transactionState$.next({
                               step: 'destinationPending',
-                              data: { ...this.transactionState.data, points }
+                              data: { ...this.transactionState.data }
                             });
                             this.initDstTxStatusPolling(
                               txHash,
                               Date.now(),
                               tradeState.trade.to.blockchain,
-                              additionalInfo,
-                              points
+                              additionalInfo
                             );
                           } else {
                             this._transactionState$.next({
                               step: 'success',
                               data: {
                                 hash: txHash,
-                                toBlockchain: tradeState.trade.to.blockchain,
-                                points
+                                toBlockchain: tradeState.trade.to.blockchain
                               }
                             });
                           }
@@ -257,8 +249,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string; rangoRequestId?: string },
-    points: number
+    additionalInfo: { changenowId?: string; rangoRequestId?: string }
   ): void {
     interval(30_000)
       .pipe(
@@ -292,8 +283,7 @@ export class PreviewSwapService {
               step: 'success',
               data: {
                 hash: crossChainStatus.dstTxHash,
-                toBlockchain,
-                points
+                toBlockchain
               }
             });
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
