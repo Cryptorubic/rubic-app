@@ -67,24 +67,12 @@ export class UserProfileComponent {
     this.authService.spaceIdData$,
     this.authService.currentUser$
   ]).pipe(
-    map(([spaceIdData, user]) => {
-      if (spaceIdData?.name) {
-        return spaceIdData.name;
-      }
-
-      return user.address;
-    }),
+    map(([spaceIdData, user]) => (spaceIdData?.name ? spaceIdData.name : user.address)),
     startWith(this.authService.userAddress)
   );
 
   public avatar$ = this.authService.spaceIdData$.pipe(
-    map(spaceIdData => {
-      if (spaceIdData?.avatar) {
-        return spaceIdData.avatar;
-      }
-
-      return this.currentBlockchainIcon;
-    })
+    map(spaceIdData => (spaceIdData?.avatar ? spaceIdData.avatar : this.currentBlockchainIcon))
   );
 
   public logout(): void {
