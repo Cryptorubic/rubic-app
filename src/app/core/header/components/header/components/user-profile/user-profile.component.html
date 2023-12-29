@@ -2,13 +2,15 @@
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-          <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="24" height="24" />
-        </div>
+        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
+          <div class="user-profile__avatar">
+            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
+          </div>
 
-        <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
-          {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}
-        </div>
+          <div class="user-profile__text">
+            {{ profile.text?.length > 20 ? (profile.text | shortAddress : 5 : 3) : profile.text }}
+          </div>
+        </ng-container>
 
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>

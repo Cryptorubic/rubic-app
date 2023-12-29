@@ -95,6 +95,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
   [BLOCKCHAIN_NAME.TRON]: [
     {
+      fullHost: 'https://api.trongrid.io'
+    },
+    {
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
     }
