@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
+import { TokenAmountDirective } from '@shared/directives/token-amount/token-amount.directive';
 
 @Component({
   selector: 'app-amount-transput',
@@ -30,16 +31,7 @@ export class AmountTransputComponent {
 
   @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
     if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
-      let newAmount = value?.actualValue ? value.visibleValue : '';
-
-      if (this.inputMode !== 'input') {
-        const shortenPipe = new ShortenAmountPipe();
-
-        newAmount = value?.actualValue
-          ? shortenPipe.transform(value?.visibleValue, 12, 6, true)
-          : '';
-      }
-      this.amount.setValue(newAmount, { emitViewToModelChange: false });
+      this.updateAmountValue(value);
     }
   }
 
@@ -47,6 +39,19 @@ export class AmountTransputComponent {
     visibleValue: string;
     actualValue: BigNumber;
   }>();
+
+  private updateAmountValue(value: { visibleValue: string; actualValue: BigNumber } | null): void {
+    let newAmount = value?.actualValue ? value.visibleValue : '';
+
+    if (this.inputMode !== 'input') {
+      const shortenPipe = new ShortenAmountPipe();
+
+      newAmount = value?.actualValue ? shortenPipe.transform(value?.visibleValue, 12, 6, true) : '';
+
+      newAmount = TokenAmountDirective.transformValue(newAmount, this.selectedToken?.decimals);
+    }
+    this.amount.setValue(newAmount, { emitViewToModelChange: false });
+  }
 
   private get formattedAmount(): string {
     return this.amount?.value.split(',').join('');

@@ -17,10 +17,6 @@ const routes: Routes = [
       import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
   },
   {
-    path: ROUTE_PATH.FAQ,
-    loadChildren: () => import('./features/faq-page-old/faq-page.module').then(m => m.FaqPageModule)
-  },
-  {
     path: ROUTE_PATH.AIRDROP,
     loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
   },

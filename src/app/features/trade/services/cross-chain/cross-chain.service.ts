@@ -53,7 +53,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 
 @Injectable()
 export class CrossChainService {
-  private readonly defaultTimeout = 25_000;
+  private readonly defaultTimeout = 15_000;
 
   private get receiverAddress(): string | null {
     if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
@@ -456,7 +456,8 @@ export class CrossChainService {
       fromToken.symbol,
       toToken.symbol,
       fee,
-      fromAmount.multipliedBy(fromToken.price)
+      fromAmount.multipliedBy(fromToken.price),
+      'crosschain'
     );
   }
 }
