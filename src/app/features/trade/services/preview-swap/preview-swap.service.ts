@@ -301,7 +301,10 @@ export class PreviewSwapService {
 
   private subscribeOnFormChange(): void {
     this.tradePageService.formContent$
-      .pipe(filter(content => content === 'preview'))
+      .pipe(
+        filter(content => content === 'preview'),
+        debounceTime(10)
+      )
       .subscribe(() => {
         this.checkAddress();
         this.checkNetwork();
@@ -328,7 +331,7 @@ export class PreviewSwapService {
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
-    state.data.wrongNetwork = network !== tokenBlockchain;
+    state.data.wrongNetwork = Boolean(tokenBlockchain) && network !== tokenBlockchain;
     this._transactionState$.next(state);
   }
 
