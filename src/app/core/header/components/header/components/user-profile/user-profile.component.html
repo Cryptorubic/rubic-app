@@ -2,51 +2,28 @@
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <ng-container *ngIf="spaceIdData$ | async as spaceIdData; else withoutSpaceId">
-          <ng-container
-            *ngTemplateOutlet="
-              userProfileContent;
-              context: {
-                avatarSrc: spaceIdData.avatar ? spaceIdData.avatar : currentBlockchainIcon,
-                avatarAlt: spaceIdData.avatar ? 'User avatar' : currentBlockchainName,
-                text: spaceIdData.name
-              }
-            "
-          ></ng-container>
-        </ng-container>
+        <ng-container *ngLet="spaceIdData$ | async as spaceIdData">
+          <div class="user-profile__avatar">
+            <img
+              [src]="spaceIdData?.avatar ?? currentBlockchainIcon"
+              alt="User avatar"
+              width="24"
+              height="24"
+            />
+          </div>
 
-        <ng-template #withoutSpaceId>
-          <ng-container
-            *ngTemplateOutlet="
-              userProfileContent;
-              context: {
-                avatarSrc: currentBlockchainIcon,
-                avatarAlt: currentBlockchainName,
-                text: userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress
-              }
-            "
-          ></ng-container>
-        </ng-template>
+          <div class="user-profile__text">
+            {{
+              spaceIdData?.name ||
+                (userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress)
+            }}
+          </div>
+        </ng-container>
 
         <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
       </button>
     </div>
   </tui-hosted-dropdown>
-
-  <ng-template
-    #userProfileContent
-    let-avatarSrc="avatarSrc"
-    let-avatarAlt="avatarAlt"
-    let-text="text"
-  >
-    <div class="user-profile__avatar" *ngIf="currentBlockchainIcon">
-      <img [src]="avatarSrc" [alt]="avatarAlt" width="24" height="24" />
-    </div>
-
-    <div class="user-profile__text">
-      {{ text }}
-    </div>
-  </ng-template>
 
   <ng-template #dropdown let-activeZone>
     <tui-data-list class="data-list" size="m" role="menu">

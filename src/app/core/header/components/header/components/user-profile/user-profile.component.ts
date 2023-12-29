@@ -1,10 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Self
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
@@ -13,10 +7,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { takeUntil } from 'rxjs/operators';
-import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { BlockchainName } from 'rubic-sdk';
 
 @Component({
   selector: 'app-user-profile',
@@ -25,7 +19,7 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit {
+export class UserProfileComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -43,6 +37,24 @@ export class UserProfileComponent implements AfterViewInit {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
+
+    this.walletConnectorService.networkChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async blockchainName => {
+        this.currentBlockchainName = blockchainName;
+        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+
+        await this.authService.setSpaceIdData();
+
+        this.cdr.markForCheck();
+      });
+
+    this.walletConnectorService.addressChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async () => {
+        await this.authService.setSpaceIdData();
+      });
+
     this.currentUser$ = this.authService.currentUser$;
   }
 
@@ -50,7 +62,7 @@ export class UserProfileComponent implements AfterViewInit {
 
   public readonly isMobile$: Observable<boolean>;
 
-  public readonly currentUser$: Observable<UserInterface>;
+  public currentUser$: Observable<UserInterface>;
 
   public currentBlockchainName: BlockchainName;
 
@@ -59,17 +71,6 @@ export class UserProfileComponent implements AfterViewInit {
   public dropdownIsOpened = false;
 
   public spaceIdData$ = this.authService.spaceIdData$;
-
-  ngAfterViewInit(): void {
-    this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async blockchainName => {
-        this.currentBlockchainName = blockchainName;
-        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        await this.authService.setSpaceIdData();
-        this.cdr.markForCheck();
-      });
-  }
 
   public logout(): void {
     this.authService.disconnectWallet();
