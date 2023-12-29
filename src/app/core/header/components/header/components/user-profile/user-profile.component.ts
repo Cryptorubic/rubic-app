@@ -3,7 +3,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnInit,
   Self
 } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
@@ -18,7 +17,6 @@ import { BlockchainName } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
-import { SpaceIdData } from '@app/core/services/auth/models/space-id-types';
 
 @Component({
   selector: 'app-user-profile',
@@ -27,7 +25,7 @@ import { SpaceIdData } from '@app/core/services/auth/models/space-id-types';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit, OnInit {
+export class UserProfileComponent implements AfterViewInit {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -60,20 +58,16 @@ export class UserProfileComponent implements AfterViewInit, OnInit {
 
   public dropdownIsOpened = false;
 
-  public spaceIdData: SpaceIdData;
-
-  async ngOnInit(): Promise<void> {
-    this.spaceIdData = await this.authService.getSpaceIdData();
-    this.cdr.markForCheck();
-  }
+  public spaceIdData$ = this.authService.spaceIdData$;
 
   ngAfterViewInit(): void {
     this.walletConnectorService.networkChange$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(blockchainName => {
+      .subscribe(async blockchainName => {
         this.currentBlockchainName = blockchainName;
         this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        this.cdr.detectChanges();
+        await this.authService.setSpaceIdData();
+        this.cdr.markForCheck();
       });
   }
 

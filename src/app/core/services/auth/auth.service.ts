@@ -7,9 +7,9 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { ChainType } from 'rubic-sdk';
+import { ChainType, blockchainId } from 'rubic-sdk';
 import { HttpService } from '../http/http.service';
-import { SpaceIdData, SpaceIdGetMetadataResponse } from './models/space-id-types';
+import { SpaceIdData, SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
@@ -24,6 +24,10 @@ export class AuthService {
   private readonly _currentUser$ = new BehaviorSubject<UserInterface>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();
+
+  private readonly _spaceIdData$ = new BehaviorSubject<SpaceIdData | null>(null);
+
+  public readonly spaceIdData$ = this._spaceIdData$.asObservable();
 
   get user(): UserInterface {
     return this._currentUser$.getValue();
@@ -105,17 +109,29 @@ export class AuthService {
     this._currentUser$.next(null);
   }
 
-  public async getSpaceIdData(): Promise<SpaceIdData | null> {
-    const spaceIdName = await this.web3Name.getDomainName({
-      address: this.walletConnectorService.address
-    });
+  public async setSpaceIdData(): Promise<void> {
+    const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
+      id => this.walletConnectorService.network === id
+    );
 
-    if (!spaceIdName) return null;
+    if (isSupportedSpaceId) {
+      const chainId = blockchainId[this.walletConnectorService.network];
+      const spaceIdName = await this.web3Name.getDomainName({
+        address: this.walletConnectorService.address,
+        queryChainIdList: [chainId]
+      });
 
-    const { image, name } = (await this.web3Name.getMetadata({
-      name: spaceIdName
-    })) as SpaceIdGetMetadataResponse;
+      if (!spaceIdName) {
+        this._spaceIdData$.next(null);
+      }
 
-    return { avatar: image ?? null, name };
+      const { image, name } = (await this.web3Name.getMetadata({
+        name: spaceIdName
+      })) as SpaceIdGetMetadataResponse;
+
+      this._spaceIdData$.next({ avatar: image ?? null, name });
+    } else {
+      this._spaceIdData$.next(null);
+    }
   }
 }

@@ -2,7 +2,7 @@
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <ng-container *ngIf="spaceIdData; else withoutSpaceId">
+        <ng-container *ngIf="spaceIdData$ | async as spaceIdData; else withoutSpaceId">
           <ng-container
             *ngTemplateOutlet="
               userProfileContent;
