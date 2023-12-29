@@ -92,17 +92,17 @@ export class AssetsSelectorService {
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
     )?.name;
-    const isToTokenSelected = this.swapFormService.inputValue.toToken;
-    const isFromTokenSelected = this.swapFormService.inputValue.fromToken;
+    const toTokenSelected = this.swapFormService.inputValue.toToken;
+    const fromTokenSelected = this.swapFormService.inputValue.fromToken;
 
     if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
-      if (isToTokenSelected) {
+      if (toTokenSelected) {
         this.assetType = assetType;
       } else {
         this.assetType = userAvailableBlockchainName || assetType;
       }
     } else {
-      if (isToTokenSelected || isFromTokenSelected) {
+      if (toTokenSelected || fromTokenSelected) {
         this.assetType = fromBlockchain;
       } else {
         this.assetType = userAvailableBlockchainName || fromBlockchain;

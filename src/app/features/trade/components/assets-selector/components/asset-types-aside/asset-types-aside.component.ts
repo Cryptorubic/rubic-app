@@ -6,7 +6,6 @@ import { WindowWidthService } from '@core/services/widnow-width-service/window-w
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
-import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -60,8 +59,7 @@ export class AssetTypesAsideComponent {
     @Inject(WINDOW) private readonly window: Window,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
-    @Inject(Injector) private readonly injector: Injector,
-    private readonly mobileNativeService: MobileNativeModalService
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
@@ -135,10 +133,10 @@ export class AssetTypesAsideComponent {
     }
 
     const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
+
     if (hiddenBlockchain) {
       slicedBlockchains.pop();
       slicedBlockchains.unshift(hiddenBlockchain);
-      // slicedBlockchains[slicedBlockchains.length - 1] = hiddenBlockchain;
     }
 
     return slicedBlockchains.map(blockchain => ({
