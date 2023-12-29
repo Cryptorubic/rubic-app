@@ -1,22 +1,14 @@
-<ng-container *ngLet="(currentUser$ | async)?.address as userAddress">
+<ng-container>
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <ng-container *ngLet="spaceIdData$ | async as spaceIdData">
+        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
           <div class="user-profile__avatar">
-            <img
-              [src]="spaceIdData?.avatar ?? currentBlockchainIcon"
-              alt="User avatar"
-              width="24"
-              height="24"
-            />
+            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
           </div>
 
           <div class="user-profile__text">
-            {{
-              spaceIdData?.name ||
-                (userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress)
-            }}
+            {{ profile.text?.length > 20 ? (profile.text | shortAddress : 5 : 3) : profile.text }}
           </div>
         </ng-container>
 
