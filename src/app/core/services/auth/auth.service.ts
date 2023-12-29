@@ -118,8 +118,8 @@ export class AuthService {
       if (!spaceIdName) {
         this._currentUser$.next({
           ...this._currentUser$.value,
-          spaceIdAvatar: null,
-          spaceIdName: null
+          avatar: null,
+          name: null
         });
       }
 
@@ -129,14 +129,14 @@ export class AuthService {
 
       this._currentUser$.next({
         ...this._currentUser$.value,
-        spaceIdAvatar: image ?? null,
-        spaceIdName: name
+        avatar: image ?? null,
+        name: name
       });
     } else {
       this._currentUser$.next({
         ...this._currentUser$.value,
-        spaceIdAvatar: null,
-        spaceIdName: null
+        avatar: null,
+        name: null
       });
     }
   }

@@ -13,8 +13,8 @@ export interface WalletLoginInterface {
 export interface UserInterface {
   address: string;
   chainType: ChainType;
-  spaceIdAvatar?: string;
-  spaceIdName?: string;
+  avatar?: string;
+  name?: string;
 }
 
 export interface AuthUserInterface {

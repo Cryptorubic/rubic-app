@@ -39,7 +39,7 @@ export class UserProfileComponent {
     this.walletConnectorService.networkChange$
       .pipe(
         combineLatestWith(this.walletConnectorService.addressChange$),
-        tap(([blockchainName, _]) => {
+        tap(([blockchainName]) => {
           this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
         }),
         switchMap(() => this.authService.setUserData()),
@@ -59,12 +59,12 @@ export class UserProfileComponent {
   public dropdownIsOpened = false;
 
   public profileText$: Observable<string> = this.authService.currentUser$.pipe(
-    map(user => (user?.spaceIdName ? user.spaceIdName : user.address)),
+    map(user => (user?.name ? user.name : user.address)),
     startWith(this.authService.userAddress)
   );
 
   public avatar$ = this.authService.currentUser$.pipe(
-    map(user => (user?.spaceIdAvatar ? user.spaceIdAvatar : this.currentBlockchainIcon))
+    map(user => (user?.avatar ? user.avatar : this.currentBlockchainIcon))
   );
 
   public logout(): void {
