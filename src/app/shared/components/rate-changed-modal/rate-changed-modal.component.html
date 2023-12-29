@@ -16,12 +16,12 @@
 
         <div>
           <span>Quoted amount:</span>
-          <span>{{ oldAmount | bigNumberFormat | shortenAmount : 6 : 4 }} {{ tokenSymbol }}</span>
+          <span>{{ oldAmount | bigNumberFormat | shortenAmount : 8 : 6 }} {{ tokenSymbol }}</span>
         </div>
 
         <div>
           <span>Current amount:</span>
-          <span>{{ newAmount | bigNumberFormat | shortenAmount : 6 : 4 }} {{ tokenSymbol }}</span>
+          <span>{{ newAmount | bigNumberFormat | shortenAmount : 8 : 6 }} {{ tokenSymbol }}</span>
         </div>
 
         <div>
