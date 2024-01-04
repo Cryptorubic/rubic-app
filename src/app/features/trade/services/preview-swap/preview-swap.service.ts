@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, from, interval, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  forkJoin,
+  from,
+  interval,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -8,6 +17,7 @@ import {
   map,
   startWith,
   switchMap,
+  takeUntil,
   takeWhile,
   tap
 } from 'rxjs/operators';
@@ -63,6 +73,8 @@ export class PreviewSwapService {
     data: {}
   });
 
+  private readonly destroy$ = new Subject<void>();
+
   public get transactionState(): TransactionState {
     return this._transactionState$.getValue();
   }
@@ -116,7 +128,6 @@ export class PreviewSwapService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
   ) {
-    this.handleTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
     this.subscribeOnFormChange();
@@ -158,7 +169,14 @@ export class PreviewSwapService {
   }
 
   public activatePage(): void {
+    this.handleTransactionState();
     this._transactionState$.next({ step: 'idle', data: {} });
+    this.tradePageService.formContent$.pipe(debounceTime(10)).subscribe(el => {
+      if (el !== 'preview') {
+        this.destroy$.next();
+        this.destroy$.complete();
+      }
+    });
   }
 
   private handleTransactionState(): void {
@@ -168,7 +186,6 @@ export class PreviewSwapService {
         filter(state => state.step !== 'inactive'),
         debounceTime(10),
         switchMap(state => forkJoin([this.selectedTradeState$.pipe(first()), of(state)])),
-        switchMap(([tradeState, txState]) => forkJoin([of(tradeState), of(txState)])),
         switchMap(([tradeState, txState]) => {
           switch (txState.step) {
             case 'approvePending': {
@@ -244,7 +261,8 @@ export class PreviewSwapService {
               return of(null);
             }
           }
-        })
+        }),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
