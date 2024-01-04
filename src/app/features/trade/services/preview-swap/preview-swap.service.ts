@@ -119,7 +119,6 @@ export class PreviewSwapService {
     this.handleTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
-    this.subscribeOnFormChange();
   }
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -159,6 +158,8 @@ export class PreviewSwapService {
 
   public activatePage(): void {
     this._transactionState$.next({ step: 'idle', data: {} });
+    this.checkAddress();
+    this.checkNetwork();
   }
 
   private handleTransactionState(): void {
@@ -297,18 +298,6 @@ export class PreviewSwapService {
         takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
       )
       .subscribe();
-  }
-
-  private subscribeOnFormChange(): void {
-    this.tradePageService.formContent$
-      .pipe(
-        filter(content => content === 'preview'),
-        debounceTime(10)
-      )
-      .subscribe(() => {
-        this.checkAddress();
-        this.checkNetwork();
-      });
   }
 
   private subscribeOnNetworkChange(): void {
