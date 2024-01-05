@@ -2,29 +2,23 @@
 
 :host {
   display: block;
-  padding-bottom: 32px;
 }
 
 .modal {
   &__content {
-    padding: 35px 20px 0;
-
     text-align: center;
-
-    @include b($tablet) {
-      padding: 10px;
-    }
   }
 
   &__footer {
-    margin-top: 20px;
+    margin-top: var(--tui-padding-xl);
 
     &-text {
-      @include font(24px, 32px, 500, var(--primary-text));
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 18px;
+      margin-bottom: var(--tui-padding-xl);
+
+      font-size: 16px;
 
       @include b($tablet) {
         font-size: 16px;
@@ -39,11 +33,11 @@
 
     &-actions {
       display: flex;
-      gap: 16px;
-      padding-top: 16px;
+      gap: var(--tui-padding-xl);
+      padding-top: var(--tui-padding-xl);
 
-      app-rubic-button {
-        width: 100%;
+      button {
+        flex: 0 50%;
       }
     }
   }
