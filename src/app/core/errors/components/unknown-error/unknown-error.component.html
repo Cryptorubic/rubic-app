@@ -1,6 +1,7 @@
 <div class="content">
-  Oops, something went wrong
+  Oops, something went wrong, please, try another provider.
   <span
+    *ngIf="error"
     class="content__icon"
     [inlineSVG]="'assets/images/icons/copy.svg'"
     (click)="copyToClipboard()"
@@ -8,7 +9,7 @@
     [tuiHintManual]="hintShown"
   ></span>
   <br />
-  Please, try another provider.
+  If the error occurs again, contact technical support.
 </div>
 
 <ng-template #template>Error copied on clipboard. Please, send it to our support!</ng-template>

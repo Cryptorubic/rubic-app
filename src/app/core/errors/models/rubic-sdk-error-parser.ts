@@ -123,7 +123,7 @@ export class RubicSdkErrorParser {
     }
     if (err.message.includes('Request failed with status code 400')) {
       return new RubicError(
-        'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
+        'Provider is unavailable. Try to choose another or wait a few minutes.'
       );
     }
     if (err.message.includes('max fee per gas less than block base fee')) {
@@ -148,6 +148,10 @@ export class RubicSdkErrorParser {
 
     if (err.message.includes('price change more than your slippage!')) {
       return new RubicError('Please, increase the slippage and try again!');
+    }
+
+    if (err instanceof RubicSdkError && 'message' in err) {
+      return new RubicError(err.message);
     }
 
     return new ExecutionRevertedError(err.message);

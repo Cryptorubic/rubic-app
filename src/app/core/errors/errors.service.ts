@@ -68,18 +68,10 @@ export class ErrorsService {
       defaultAutoCloseTime: 0
     };
 
-    if (this.isCustomRPCError(error)) {
-      const errorComponent = new PolymorpheusComponent(
-        error.component || UnknownErrorComponent,
-        this.injector
-      );
-      this.notificationsService.show(errorComponent, options);
-      return;
-    }
-
     if (
-      error?.type === ERROR_TYPE.COMPONENT ||
+      this.isCustomRPCError(error) ||
       error?.type === ERROR_TYPE.RAW_MESSAGE ||
+      error?.type === ERROR_TYPE.COMPONENT ||
       this.isRPCError(error)
     ) {
       const errorComponent = new PolymorpheusComponent(

@@ -383,7 +383,6 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     onError?: () => void
   ): void {
-    console.error(err);
     const parsedError = this.parseCalculationError(err);
     if (this.isExecutionCriticalError(parsedError)) {
       if (tradeState.trade instanceof CrossChainTrade) {
