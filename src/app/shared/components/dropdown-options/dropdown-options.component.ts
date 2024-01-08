@@ -96,9 +96,7 @@ export class DropdownOptionsComponent {
   }
 
   public toggleFavorite(): void {
-    if (!this.token) return;
-
-    if (this.loadingFavoriteToken) {
+    if (!this.token || this.loadingFavoriteToken) {
       return;
     }
 
