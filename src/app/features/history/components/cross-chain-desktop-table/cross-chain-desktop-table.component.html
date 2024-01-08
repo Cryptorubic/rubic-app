@@ -82,20 +82,40 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'statusFrom'" tuiTd>
-            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
-              <app-rubic-badge
-                *ngIf="item?.fromTx?.status"
-                [status]="item.fromTx.status.appearance"
-                [label]="item.fromTx.status.label"
-              >
-              </app-rubic-badge>
-              <img
-                *ngIf="item.fromTx.explorerLink"
-                class="status-from-link-arrow"
-                src="assets/images/icons/arrow/link-arrow.svg"
-                alt="link-arrow"
-              />
-            </a>
+            <ng-container *ngIf="item.provider?.name !== 'ChangeNOW'; else dropdownOptions">
+              <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
+                <app-rubic-badge
+                  *ngIf="item?.fromTx?.status"
+                  [status]="item.fromTx.status.appearance"
+                  [label]="item.fromTx.status.label"
+                >
+                </app-rubic-badge>
+
+                <img
+                  *ngIf="item.fromTx.explorerLink"
+                  class="status-from-link-arrow"
+                  src="assets/images/icons/arrow/link-arrow.svg"
+                  alt="link-arrow"
+                />
+              </a>
+            </ng-container>
+
+            <ng-template #dropdownOptions>
+              <div class="statusFrom-dropdown">
+                <app-rubic-badge
+                  *ngIf="item?.fromTx?.status"
+                  [status]="item.fromTx.status.appearance"
+                  [label]="item.fromTx.status.label"
+                >
+                </app-rubic-badge>
+
+                <app-dropdown-options
+                  *ngIf="item.provider?.name === 'ChangeNOW'"
+                  [openButtonSize]="'xs'"
+                  [copyValue]="item.fromTx.hash"
+                ></app-dropdown-options>
+              </div>
+            </ng-template>
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
             <ng-container *ngIf="item.toTx.status">

@@ -1,0 +1,53 @@
+@use 'src/scss/core' as *;
+
+.dropdown-open-button {
+  color: red !important;
+}
+
+.token-card-wrapper {
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+}
+
+.token-card {
+  display: flex;
+  gap: var(--tui-padding-m);
+  align-items: center;
+  width: 100%;
+  padding: var(--tui-padding-xs) var(--tui-padding-s);
+
+  &:hover {
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+  }
+
+  &__favorite {
+    &_active {
+      ::ng-deep path {
+        stroke: var(--tui-primary);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 5px;
+
+    &_clickable {
+      > * {
+        cursor: pointer;
+      }
+    }
+
+    > * {
+      width: 16px;
+      height: 16px;
+
+      ::ng-deep * {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
