@@ -178,8 +178,8 @@ export class SettingsService {
     const priceImpact = trade.getTradeInfo().priceImpact;
 
     const settingsChecks = {
-      highSlippage: slippage > 10 ? slippage : false,
-      highPriceImpact: priceImpact > 30 ? priceImpact : false
+      highSlippage: slippage >= 10 ? slippage : false,
+      highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
     if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
