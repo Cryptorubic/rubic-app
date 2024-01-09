@@ -80,6 +80,8 @@ import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.compon
 import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
 import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-copy-btn/rubic-badge-with-copy-btn.component';
 import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.component';
+import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
+import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 
 @NgModule({
   declarations: [
@@ -137,7 +139,9 @@ import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.
     RubicBadgeComponent,
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
-    Layer3WidgetComponent
+    Layer3WidgetComponent,
+    PriceImpactFormatPipe,
+    SlippageFormatPipe
   ],
   imports: [
     CommonModule,
@@ -220,7 +224,9 @@ import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.
     RubicBadgeComponent,
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
-    Layer3WidgetComponent
+    Layer3WidgetComponent,
+    PriceImpactFormatPipe,
+    SlippageFormatPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
