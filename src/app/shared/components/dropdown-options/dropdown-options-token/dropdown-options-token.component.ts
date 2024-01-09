@@ -2,59 +2,46 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  EventEmitter,
   Inject,
-  Input,
-  Output
+  Input
 } from '@angular/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
+import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
+import { AssetsSelectorService } from '@app/features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
   ETHEREUM_PLATFORM_TOKEN_ADDRESS
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { EXTERNAL_LINKS } from '@app/shared/constants/common/links';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { TokenSecurityStatus, securityMessages } from '@app/shared/models/tokens/token-security';
-import { compareAddresses } from '@app/shared/utils/utils';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import {
   BLOCKCHAIN_NAME,
   EvmBlockchainName,
   blockchainId,
+  compareAddresses,
   wrappedNativeTokensList
 } from 'rubic-sdk';
 
 @Component({
-  selector: 'app-dropdown-options',
-  templateUrl: './dropdown-options.component.html',
-  styleUrls: ['./dropdown-options.component.scss'],
+  selector: 'app-dropdown-options-token',
+  templateUrl: './dropdown-options-token.component.html',
+  styleUrls: ['./dropdown-options-token.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DropdownOptionsComponent {
-  @Input() openButtonSize: 'xs' | 's' | 'm' | 'l' | 'xl' = 'm';
+export class DropdownOptionsTokenComponent {
+  @Input({ required: true }) token: AvailableTokenAmount;
 
-  @Input() copyValue: string = '';
-
-  @Input() hasSecurityStatus: boolean = false;
-
-  @Input() hasFavoriteToken: boolean = false;
-
-  /**
-   * for SecurityStatus and FavoriteToken options
-   */
-  @Input() token?: TokenAmount;
-
-  @Input() securityStatus?: TokenSecurityStatus;
-
-  @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
+  @Input({ required: true }) securityStatus: TokenSecurityStatus;
 
   public isDropdownOpen: boolean = false;
 
-  public isHintShown: boolean = true;
+  public isCopyClicked: boolean = false;
 
   public loadingFavoriteToken = false;
 
@@ -62,27 +49,21 @@ export class DropdownOptionsComponent {
 
   public readonly securityMessages = securityMessages;
 
-  public get showCopyToClipboardOption(): boolean {
-    return !!this.copyValue;
-  }
-
-  public get showSecurityStatusOption(): boolean {
-    return (
-      this.hasSecurityStatus && this.securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
-    );
-  }
-
-  public get showFavoriteTokenOption(): boolean {
-    return this.hasFavoriteToken;
-  }
-
   constructor(
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    private cdr: ChangeDetectorRef,
     private readonly tokensStoreService: TokensStoreService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly mobileNativeService: MobileNativeModalService,
+    private readonly assetsSelectorService: AssetsSelectorService
   ) {}
+
+  public get showCopyToClipboardOption(): boolean {
+    return (
+      this.token.address && this.token.address !== '0x0000000000000000000000000000000000000000'
+    );
+  }
 
   public get isNativeToken(): boolean {
     return this.token?.address === NATIVE_TOKEN_ADDRESS;
@@ -90,8 +71,8 @@ export class DropdownOptionsComponent {
 
   public get isPlatformToken(): boolean {
     return (
-      compareAddresses(this.token?.address, ETHEREUM_PLATFORM_TOKEN_ADDRESS) ||
-      compareAddresses(this.token?.address, ARBITRUM_PLATFORM_TOKEN_ADDRESS)
+      compareAddresses(this.token.address, ETHEREUM_PLATFORM_TOKEN_ADDRESS) ||
+      compareAddresses(this.token.address, ARBITRUM_PLATFORM_TOKEN_ADDRESS)
     );
   }
 
@@ -118,7 +99,7 @@ export class DropdownOptionsComponent {
         this.loadingFavoriteToken = false;
         this.token.favorite = !this.token.favorite;
         this.cdr.detectChanges();
-        this.toggleFavoriteToken.emit();
+        this.addTokenToFavoriteList();
       }
     });
   }
@@ -133,18 +114,21 @@ export class DropdownOptionsComponent {
     return `${EXTERNAL_LINKS.GO_PLUS_LABS}/${goPlusChainID}/${goPlusTokenAddress || ''}`;
   }
 
-  public copyToClipboard(event: MouseEvent): void {
-    event.stopPropagation();
-    this.showHint();
-    this.navigator.clipboard.writeText(this.copyValue);
-  }
-
-  private showHint(): void {
-    this.isHintShown = false;
+  public copyToClipboard(): void {
+    this.isCopyClicked = true;
+    this.navigator.clipboard.writeText(this.token.address);
 
     setTimeout(() => {
-      this.isHintShown = true;
+      this.isCopyClicked = false;
       this.cdr.markForCheck();
-    }, 1500);
+    }, 500);
+  }
+
+  private addTokenToFavoriteList(): void {
+    this.mobileNativeService.forceClose();
+
+    if (this.token.available) {
+      this.assetsSelectorService.onAssetSelect(this.token);
+    }
   }
 }

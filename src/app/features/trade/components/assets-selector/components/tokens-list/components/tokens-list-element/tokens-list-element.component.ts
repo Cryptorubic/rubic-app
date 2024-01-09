@@ -1,12 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  Output
-} from '@angular/core';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+// import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/token-security';
@@ -18,6 +11,7 @@ import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
   ETHEREUM_PLATFORM_TOKEN_ADDRESS
 } from '@app/shared/constants/blockchain/platform-token-address';
+import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -26,13 +20,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
-  @Input() token: TokenAmount;
+  @Input() token: AvailableTokenAmount;
 
   @Input() balanceLoading = false;
-
-  @Output() toggleFavoriteToken: EventEmitter<void> = new EventEmitter<void>();
-
-  @Output() selectToken = new EventEmitter<void>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 

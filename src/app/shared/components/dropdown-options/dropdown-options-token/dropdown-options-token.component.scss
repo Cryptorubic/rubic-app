@@ -1,12 +1,12 @@
 @use 'src/scss/core' as *;
 
-.token-card-wrapper {
+.dropdown-content-wrapper {
   display: flex;
   gap: 8px;
   padding: 8px;
 }
 
-.token-card {
+.dropdown-content {
   display: flex;
   gap: var(--tui-padding-m);
   align-items: center;
@@ -30,15 +30,11 @@
     display: flex;
     gap: 5px;
 
-    &_clickable {
-      > * {
-        cursor: pointer;
-      }
-    }
-
     > * {
       width: 16px;
       height: 16px;
+
+      cursor: pointer;
 
       ::ng-deep * {
         width: 100%;

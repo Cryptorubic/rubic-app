@@ -1,5 +1,5 @@
 <div class="token-card-container">
-  <div class="token-card" (click)="selectToken.emit()">
+  <div class="token-card">
     <div class="token-card__image-container">
       <img
         [src]="token.image || DEFAULT_TOKEN_IMAGE"
@@ -47,12 +47,8 @@
     </div>
   </div>
 
-  <app-dropdown-options
-    [copyValue]="token.address"
-    [hasSecurityStatus]="true"
-    [hasFavoriteToken]="true"
+  <app-dropdown-options-token
     [token]="token"
     [securityStatus]="securityStatus"
-    (toggleFavoriteToken)="toggleFavoriteToken.emit()"
-  ></app-dropdown-options>
+  ></app-dropdown-options-token>
 </div>

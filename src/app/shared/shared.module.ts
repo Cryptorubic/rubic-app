@@ -80,7 +80,8 @@ import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.compon
 import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
 import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-copy-btn/rubic-badge-with-copy-btn.component';
 import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.component';
-import { DropdownOptionsComponent } from './components/dropdown-options/dropdown-options.component';
+import { DropdownOptionsTokenComponent } from './components/dropdown-options/dropdown-options-token/dropdown-options-token.component';
+import { DropdownOptionsTableItemComponent } from './components/dropdown-options/dropdown-options-table-item/dropdown-options-table-item.component';
 
 @NgModule({
   declarations: [
@@ -139,7 +140,8 @@ import { DropdownOptionsComponent } from './components/dropdown-options/dropdown
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
     Layer3WidgetComponent,
-    DropdownOptionsComponent
+    DropdownOptionsTokenComponent,
+    DropdownOptionsTableItemComponent
   ],
   imports: [
     CommonModule,
@@ -223,7 +225,8 @@ import { DropdownOptionsComponent } from './components/dropdown-options/dropdown
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
     Layer3WidgetComponent,
-    DropdownOptionsComponent
+    DropdownOptionsTokenComponent,
+    DropdownOptionsTableItemComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

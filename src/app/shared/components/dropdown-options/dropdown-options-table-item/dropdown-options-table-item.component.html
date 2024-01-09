@@ -1,0 +1,44 @@
+<tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen">
+  <button
+    appearance="flat"
+    icon="tuiIconMoreVertical"
+    tuiIconButton
+    type="button"
+    [size]="'xs'"
+    [pseudoHover]="dropdown.open || null"
+  ></button>
+</tui-hosted-dropdown>
+
+<ng-template #content let-activeZone>
+  <tui-data-list tuiDataListDropdownManager size="l" [tuiActiveZoneParent]="activeZone">
+    <div class="dropdown-content-wrapper">
+      <div class="dropdown-content__actions">
+        <ng-container *ngIf="!isCopyClicked; else copyClicked">
+          <span
+            class="dropdown-content__name-container-copy-icon"
+            [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+            (click)="copyToClipboard()"
+            [tuiHint]="copyHint"
+            tuiHintAppearance="onDark"
+            [tuiHintShowDelay]="50"
+            tuiHintDirection="top-right"
+            [tuiHintHideDelay]="100"
+          ></span>
+
+          <ng-template #copyHint>
+            <span class="dropdown-content__name-container-address-hint">{{ copyValue }}</span>
+          </ng-template>
+        </ng-container>
+
+        <ng-template #copyClicked>
+          <span class="dropdown-content__name-container-copied-container">
+            <span
+              class="dropdown-content__name-container-copied-icon"
+              [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+            ></span>
+          </span>
+        </ng-template>
+      </div>
+    </div>
+  </tui-data-list>
+</ng-template>
