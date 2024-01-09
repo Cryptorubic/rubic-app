@@ -23,7 +23,6 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'boba-bsc',
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'boba-avalanche',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'astar-evm',
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
