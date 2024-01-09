@@ -158,8 +158,10 @@ export class PreviewSwapService {
 
   public activatePage(): void {
     this._transactionState$.next({ step: 'idle', data: {} });
-    this.checkAddress();
-    this.checkNetwork();
+    this.selectedTradeState$.pipe(startWith()).subscribe(() => {
+      this.checkAddress();
+      this.checkNetwork();
+    });
   }
 
   private handleTransactionState(): void {
