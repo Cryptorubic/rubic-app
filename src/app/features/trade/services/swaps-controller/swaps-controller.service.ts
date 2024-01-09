@@ -248,17 +248,14 @@ export class SwapsControllerService {
       }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
-        let allowSwap = false;
+        const allowSwap = await firstValueFrom(
+          this.modalService.openRateChangedModal(
+            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
+            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
+            tradeState.trade.to.symbol
+          )
+        );
 
-        try {
-          allowSwap = await firstValueFrom(
-            this.modalService.openRateChangedModal(
-              Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
-              Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
-              tradeState.trade.to.symbol
-            )
-          );
-        } catch {}
         if (allowSwap) {
           try {
             const additionalData: { changenowId?: string; rangoRequestId?: string } = {
