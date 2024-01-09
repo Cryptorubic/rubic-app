@@ -85,11 +85,9 @@
             <ng-container *ngIf="item.provider?.name !== 'ChangeNOW'; else dropdownOptions">
               <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
                 <app-rubic-badge
-                  *ngIf="item?.fromTx?.status"
                   [status]="item.fromTx.status.appearance"
                   [label]="item.fromTx.status.label"
-                >
-                </app-rubic-badge>
+                ></app-rubic-badge>
 
                 <img
                   *ngIf="item.fromTx.explorerLink"
@@ -103,14 +101,11 @@
             <ng-template #dropdownOptions>
               <div class="statusFrom-dropdown">
                 <app-rubic-badge
-                  *ngIf="item?.fromTx?.status"
                   [status]="item.fromTx.status.appearance"
                   [label]="item.fromTx.status.label"
-                >
-                </app-rubic-badge>
+                ></app-rubic-badge>
 
                 <app-dropdown-options
-                  *ngIf="item.provider?.name === 'ChangeNOW'"
                   [openButtonSize]="'xs'"
                   [copyValue]="item.fromTx.hash"
                 ></app-dropdown-options>
