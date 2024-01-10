@@ -8,6 +8,7 @@ export interface ItSettingsForm {
   disableMultihops: boolean;
   autoRefresh: boolean;
   showReceiverAddress: boolean;
+  useMevBotProtection: boolean;
 }
 
 export type ItSettingsFormControls = FormControlType<ItSettingsForm>;

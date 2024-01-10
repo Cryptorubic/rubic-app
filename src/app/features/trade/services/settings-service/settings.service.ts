@@ -81,7 +81,8 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       autoRefresh: Boolean(this.authService?.user?.address),
-      showReceiverAddress: false
+      showReceiverAddress: false,
+      useMevBotProtection: true
     };
   }
 
@@ -112,7 +113,8 @@ export class SettingsService {
         deadline: new FormControl<number>(this.defaultItSettings.deadline),
         disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
-        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
+        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress),
+        useMevBotProtection: new FormControl<boolean>(this.defaultItSettings.useMevBotProtection)
       }),
       [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsFormControls>({
         autoSlippageTolerance: new FormControl<boolean>(

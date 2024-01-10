@@ -234,9 +234,7 @@
 
     <app-mev-bot
       *ngIf="state.transaction.step !== 'success' && isMevBotProtectedChains$ | async"
-      [tradePrice]="
-        state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
-      "
+      [tradePrice]="state.tradeState?.trade"
     ></app-mev-bot>
 
     <div class="preview__action-container">
