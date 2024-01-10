@@ -7,7 +7,7 @@ import {
   interval,
   Observable,
   of,
-  Subject
+  Subscription
 } from 'rxjs';
 import {
   combineLatestWith,
@@ -18,7 +18,6 @@ import {
   map,
   startWith,
   switchMap,
-  takeUntil,
   takeWhile,
   tap
 } from 'rxjs/operators';
@@ -75,7 +74,9 @@ export class PreviewSwapService {
     data: {}
   });
 
-  private destroy$: Subject<void>;
+  private readonly subscriptions$: Subscription[] = [];
+
+  private useCallback = false;
 
   public get transactionState(): TransactionState {
     return this._transactionState$.getValue();
@@ -129,11 +130,7 @@ export class PreviewSwapService {
     private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
-  ) {
-    this.subscribeOnNetworkChange();
-    this.subscribeOnAddressChange();
-    this.subscribeOnFormChange();
-  }
+  ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
@@ -171,19 +168,22 @@ export class PreviewSwapService {
   }
 
   public activatePage(): void {
-    this.destroy$ = new Subject<void>();
+    this.subscribeOnNetworkChange();
+    this.subscribeOnAddressChange();
+    this.subscribeOnFormChange();
+
     this._transactionState$.next({ step: 'idle', data: {} });
     this.handleTransactionState();
-    this.tradePageService.formContent$.pipe(debounceTime(10)).subscribe(el => {
-      if (el !== 'preview') {
-        this.destroy$.next();
-        this.destroy$.complete();
-      }
-    });
+  }
+
+  public deactivatePage(): void {
+    this.subscriptions$.forEach(sub => sub?.unsubscribe());
+    this.subscriptions$.length = 0;
+    this.useCallback = false;
   }
 
   private handleTransactionState(): void {
-    this.transactionState$
+    const transactionStateSubscription$ = this.transactionState$
       .pipe(
         filter(state => state.step !== 'inactive'),
         combineLatestWith(this.selectedTradeState$.pipe(first())),
@@ -200,10 +200,11 @@ export class PreviewSwapService {
             return this.makeSwapRequest(tradeState);
           }
           return of(null);
-        }),
-        takeUntil(this.destroy$)
+        })
       )
       .subscribe();
+
+    this.subscriptions$.push(transactionStateSubscription$);
   }
 
   public initDstTxStatusPolling(
@@ -212,7 +213,7 @@ export class PreviewSwapService {
     toBlockchain: BlockchainName,
     additionalInfo: { changenowId?: string; rangoRequestId?: string }
   ): void {
-    interval(30_000)
+    const pollingSubscription$ = interval(30_000)
       .pipe(
         startWith(-1),
         switchMap(() => this.selectedTradeState$.pipe(first())),
@@ -254,10 +255,11 @@ export class PreviewSwapService {
         takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
       )
       .subscribe();
+    this.subscriptions$.push(pollingSubscription$);
   }
 
   private subscribeOnFormChange(): void {
-    this.tradePageService.formContent$
+    const formChangeSubscription$ = this.tradePageService.formContent$
       .pipe(
         filter(content => content === 'preview'),
         debounceTime(10)
@@ -266,14 +268,21 @@ export class PreviewSwapService {
         this.checkAddress();
         this.checkNetwork();
       });
+    this.subscriptions$.push(formChangeSubscription$);
   }
 
   private subscribeOnNetworkChange(): void {
-    this.walletConnectorService.networkChange$.subscribe(() => this.checkNetwork());
+    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(() =>
+      this.checkNetwork()
+    );
+    this.subscriptions$.push(networkChangeSubscription$);
   }
 
   private subscribeOnAddressChange(): void {
-    this.walletConnectorService.addressChange$.subscribe(() => this.checkAddress());
+    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(() =>
+      this.checkAddress()
+    );
+    this.subscriptions$.push(addressChangeSubscription$);
   }
 
   private checkAddress(): void {
@@ -331,6 +340,7 @@ export class PreviewSwapService {
 
   private makeSwapRequest(tradeState: SelectedTrade): Observable<void> {
     let txHash: string;
+    this.useCallback = true;
     const useMevProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
 
     return from(this.loadRpcParams(useMevProtection)).pipe(
@@ -338,40 +348,46 @@ export class PreviewSwapService {
         return rpcChanged
           ? this.swapsControllerService.swap(tradeState, {
               onHash: (hash: string) => {
-                txHash = hash;
-                this._transactionState$.next({
-                  step: 'sourcePending',
-                  data: { ...this.transactionState.data }
-                });
-              },
-              onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
-                if (tradeState.trade instanceof CrossChainTrade) {
+                if (this.useCallback) {
+                  txHash = hash;
                   this._transactionState$.next({
-                    step: 'destinationPending',
+                    step: 'sourcePending',
                     data: { ...this.transactionState.data }
                   });
-                  this.initDstTxStatusPolling(
-                    txHash,
-                    Date.now(),
-                    tradeState.trade.to.blockchain,
-                    additionalInfo
-                  );
-                } else {
-                  this._transactionState$.next({
-                    step: 'success',
-                    data: {
-                      hash: txHash,
-                      toBlockchain: tradeState.trade.to.blockchain
-                    }
-                  });
                 }
+              },
+              onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
+                if (this.useCallback) {
+                  if (tradeState.trade instanceof CrossChainTrade) {
+                    this._transactionState$.next({
+                      step: 'destinationPending',
+                      data: { ...this.transactionState.data }
+                    });
+                    this.initDstTxStatusPolling(
+                      txHash,
+                      Date.now(),
+                      tradeState.trade.to.blockchain,
+                      additionalInfo
+                    );
+                  } else {
+                    this._transactionState$.next({
+                      step: 'success',
+                      data: {
+                        hash: txHash,
+                        toBlockchain: tradeState.trade.to.blockchain
+                      }
+                    });
+                  }
 
-                this.airdropPointsService.updateSwapToEarnUserPointsInfo();
-                this.recentTradesStoreService.updateUnreadTrades();
+                  this.airdropPointsService.updateSwapToEarnUserPointsInfo();
+                  this.recentTradesStoreService.updateUnreadTrades();
+                }
               },
               onError: () => {
-                this._transactionState$.next({ step: 'inactive', data: {} });
-                this.tradePageService.setState('form');
+                if (this.useCallback) {
+                  this._transactionState$.next({ step: 'inactive', data: {} });
+                  this.tradePageService.setState('form');
+                }
               }
             })
           : this.catchSwitchCancel();
@@ -380,18 +396,23 @@ export class PreviewSwapService {
   }
 
   private handleApprove(tradeState: SelectedTrade): Promise<void> {
+    this.useCallback = true;
     return this.swapsControllerService.approve(tradeState, {
       onSwap: () => {
-        this._transactionState$.next({
-          step: 'swapRequest',
-          data: this.transactionState.data
-        });
+        if (this.useCallback) {
+          this._transactionState$.next({
+            step: 'swapRequest',
+            data: this.transactionState.data
+          });
+        }
       },
       onError: () => {
-        this._transactionState$.next({
-          step: 'approveReady',
-          data: this.transactionState.data
-        });
+        if (this.useCallback) {
+          this._transactionState$.next({
+            step: 'approveReady',
+            data: this.transactionState.data
+          });
+        }
       }
     });
   }
