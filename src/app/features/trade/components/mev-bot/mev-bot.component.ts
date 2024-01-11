@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import BigNumber from 'bignumber.js';
+import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-mev-bot',
@@ -13,9 +13,18 @@ export class MevBotComponent {
 
   public displayMev: boolean = false;
 
-  @Input() set tradePrice(value: BigNumber | undefined) {
-    const minDollarAmountToDisplay = 999;
-    this.displayMev = value ? value.gt(minDollarAmountToDisplay) : false;
+  //state.tradeState?.trade?.from.price.multipliedBy(state.tradeState?.trade?.from.tokenAmount)
+  @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
+    const minDollarAmountToDisplay = 100;
+    const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
+    const isOnChainSwap = trade?.from.blockchain === trade?.to.blockchain;
+
+    if (isOnChainSwap) {
+      this.displayMev = false;
+    } else {
+      this.displayMev = amount ? amount.gt(minDollarAmountToDisplay) : false;
+    }
+
     if (!this.displayMev) {
       this.settingsService.crossChainRouting.patchValue({
         useMevBotProtection: false
