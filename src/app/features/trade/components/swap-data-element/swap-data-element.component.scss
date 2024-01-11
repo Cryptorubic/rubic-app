@@ -20,3 +20,18 @@
     }
   }
 }
+
+@media (min-width: 2560px) {
+  .provider-info {
+    padding: var(--tui-padding-xl);
+
+    &__element {
+      font-size: 18px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}

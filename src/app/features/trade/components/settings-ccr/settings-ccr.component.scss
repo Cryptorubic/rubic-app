@@ -37,6 +37,48 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .settings {
+    &__form {
+      gap: var(--tui-padding-l);
+
+      font-size: 18px;
+      letter-spacing: 0.03rem;
+    }
+
+    &__row {
+      ::ng-deep {
+        button {
+          font-size: 18px !important;
+        }
+
+        tui-toggle {
+          width: 2.5rem !important;
+          height: 1.25rem !important;
+          
+          .t-toggle {
+            width: 3.5rem !important;
+            height: 1.25rem !important;
+          }
+        }
+      }
+    }
+
+    &__slippage-input {
+      ::ng-deep input {
+        font-size: 18px !important;
+      }
+    }
+
+    &__hint {
+      ::ng-deep svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .settings {
     &__form {

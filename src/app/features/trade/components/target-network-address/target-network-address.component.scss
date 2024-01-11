@@ -16,3 +16,25 @@
     border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   }
 }
+
+//@media (min-width: 2560px) {
+//  .network-container {
+//    height: 80px;
+//
+//    &__row {
+//      font-size: 20px !important;
+//    }
+//
+//    ::ng-deep {
+//      tui-input {
+//        .tui-autofill {
+//          height: 80px !important;
+//        }
+//
+//        .t-input {
+//          padding-top: var(--tui-padding-m);
+//        }
+//      }
+//    }
+//  }
+//}

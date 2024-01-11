@@ -19,3 +19,12 @@
 
   cursor: pointer;
 }
+
+@media (min-width: 2560px) {
+  .image {
+    ::ng-deep svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}

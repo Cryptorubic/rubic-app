@@ -29,3 +29,28 @@
   width: 24px;
   height: 24px;
 }
+
+@media (min-width: 2560px) {
+  :host ::ng-deep .tui-group {
+    width: 50px !important;
+  }
+
+  .active-lang {
+    width: 30px;
+    height: 30px;
+  }
+
+  .languages {
+    gap: 15px;
+    max-width: 370px;
+
+    &__element-icon {
+      width: 30px;
+      height: 30px;
+    }
+
+    &__element-label {
+      font-size: 21px;
+    }
+  }
+}

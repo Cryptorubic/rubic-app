@@ -47,6 +47,14 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .transaction-details {
+    &__label {
+      font-size: 20px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .transaction-details {
     &__label {

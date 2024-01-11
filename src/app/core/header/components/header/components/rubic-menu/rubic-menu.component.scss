@@ -64,16 +64,25 @@
   }
 }
 
-.image {
-  width: 24px;
-  height: 24px;
-
-  ::ng-deep svg {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 a {
   display: flex;
+}
+
+@media (min-width: 2560px) {
+  .image {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .data-list {
+    &__element-container {
+      font-size: 21px;
+    }
+  }
 }

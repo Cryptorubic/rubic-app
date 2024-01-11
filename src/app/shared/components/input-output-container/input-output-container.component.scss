@@ -43,6 +43,22 @@
   align-items: center;
 }
 
+@media (min-width: 2560px) {
+  .io-container {
+    padding: var(--tui-padding-xl);
+
+    &_round {
+      &-top {
+        padding-bottom: var(--tui-padding-m);
+      }
+
+      &-bottom {
+        padding-top: var(--tui-padding-m);
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .io-container {
     flex-direction: column;

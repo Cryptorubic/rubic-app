@@ -35,6 +35,13 @@ app-search-bar {
   width: 100%;
 }
 
+@media (min-width: 2560px) {
+  .token-list-container {
+    min-height: 530px;
+    max-height: 530px;
+  }
+}
+
 @include b($mobile-md) {
   .assets-selector {
     padding-top: var(--tui-padding-l);

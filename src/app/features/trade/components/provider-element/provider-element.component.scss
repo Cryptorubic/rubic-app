@@ -158,6 +158,59 @@
 app-route-element {
   display: block;
   margin-top: var(--tui-padding-l);
+  margin-left: var(--tui-padding-l);
+}
+
+@media (min-width: 2560px) {
+  .element {
+    &__token {
+      gap: var(--tui-padding-m);
+    }
+
+    &__token-amount {
+      max-width: 200px;
+
+      font-size: 24px;
+    }
+
+    &__token-symbol {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__token-image {
+      width: 30px;
+      height: 30px;
+    }
+
+    &__provider-container {
+      padding: var(--tui-padding-xl);
+    }
+
+    &__amount-price {
+      font-size: 16px;
+    }
+
+    &__best-badge {
+      font-size: 16px !important;
+    }
+
+    &__right {
+      gap: var(--tui-padding-m);
+    }
+
+    ::ng-deep &__expander {
+      width: 25px;
+      height: 25px;
+
+      svg {
+        width: 15px;
+        height: 10px;
+
+        transition: 0.2s ease-in-out;
+      }
+    }
+  }
 }
 
 @include b($mobile-md) {

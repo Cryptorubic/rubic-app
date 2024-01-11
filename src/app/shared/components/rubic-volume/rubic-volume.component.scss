@@ -26,6 +26,27 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .rubic-volume {
+    margin-bottom: 21px;
+
+    font-size: 21px;
+
+    &__icon {
+      width: 25px;
+      margin-right: 15px;
+    }
+
+    &__title {
+      font-size: 21px;
+    }
+
+    &__value {
+      font-size: 21px;
+    }
+  }
+}
+
 @include b($mobile-sm) {
   .rubic-volume {
     flex-direction: column;

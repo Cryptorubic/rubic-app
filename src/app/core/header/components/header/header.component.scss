@@ -30,6 +30,17 @@
   height: 100%;
 }
 
+@media (min-width: 2560px) {
+  .rubic-header {
+    ::ng-deep button {
+      height: 50px;
+
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .rubic-header {
     justify-content: space-between;

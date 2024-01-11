@@ -50,7 +50,7 @@ export class RouteElementComponent {
         amounts: route.path.map(el => {
           const tokenAmountString =
             'tokenAmount' in el && el.tokenAmount.gt(0)
-              ? amountFormat.transform(bnFormat.transform(el.tokenAmount), 8, 6) + ' '
+              ? amountFormat.transform(bnFormat.transform(el.tokenAmount), 8, 2) + ' '
               : '';
           return `${tokenAmountString}${el.symbol}`;
         })

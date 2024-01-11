@@ -68,3 +68,15 @@
 //  }
 //}
 //
+
+@media (min-width: 2560px) {
+  :host ::ng-deep tui-input {
+    input {
+      font-size: 21px !important;
+    }
+
+    .t-placeholder {
+      font-size: 18px !important;
+    }
+  }
+}

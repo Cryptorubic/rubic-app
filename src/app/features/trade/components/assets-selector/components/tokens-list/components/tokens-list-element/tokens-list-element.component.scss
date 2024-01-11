@@ -88,6 +88,48 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .token-card {
+    &__symbol,
+    &__amount {
+      font-size: 18px;
+    }
+
+    &__amount-container,
+    &__symbol-name-container {
+      gap: 8px;
+    }
+
+    &__image-container {
+      img {
+        width: 37px;
+        height: 37px;
+      }
+    }
+
+    &__symbol-container {
+      gap: 15px;
+      align-items: center;
+    }
+
+    &__name,
+    &__dollar-amount {
+      font-size: 16px;
+      line-height: 16px;
+    }
+
+    &__actions {
+      display: flex;
+      gap: 12px;
+
+      > * {
+        width: 21px;
+        height: 21px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .token-card {
     gap: var(--tui-padding-l);

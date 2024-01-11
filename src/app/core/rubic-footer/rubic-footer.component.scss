@@ -51,3 +51,26 @@
     white-space: nowrap;
   }
 }
+
+@media (min-width: 2560px) {
+  .rubic-footer {
+    &__link {
+      margin-right: 21px;
+      margin-bottom: 21px;
+
+      img {
+        display: block;
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    &__copyright {
+      font-size: 21px;
+    }
+
+    &__policy {
+      font-size: 21px;
+    }
+  }
+}

@@ -46,6 +46,16 @@ app-form-switcher {
   background: linear-gradient(90deg, var(--io-background) 0%, rgba(0, 0, 0, 0) 50%, var(--io-background) 100%);
 }
 
+@media (min-width: 2560px) {
+  app-action-button {
+    ::ng-deep button {
+      height: var(--tui-height-l) !important;
+
+      font-size: 20px !important;
+    }
+  }
+}
+
 @include b($mobile-md) {
   :host ::ng-deep {
     .window-container {

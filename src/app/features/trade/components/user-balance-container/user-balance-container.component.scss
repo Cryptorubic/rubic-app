@@ -40,11 +40,26 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .user-balance-container {
+    &__balance {
+      margin-right: var(--tui-padding-m);
+
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__max-button {
+      font-size: 16px !important;
+    }
+  }
+}
+
 @include b($mobile-md) {
   :host {
     width: 100%;
   }
-  
+
   .user-balance-container {
     justify-content: space-between;
     width: 100%;

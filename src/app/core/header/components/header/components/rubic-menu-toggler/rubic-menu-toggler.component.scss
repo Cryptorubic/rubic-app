@@ -35,3 +35,9 @@
     }
   }
 }
+
+@media (min-width: 2560px) {
+  :host button {
+    width: 50px !important;
+  }
+}

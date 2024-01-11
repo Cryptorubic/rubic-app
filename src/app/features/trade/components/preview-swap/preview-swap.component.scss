@@ -124,6 +124,56 @@ app-swap-data-element ::ng-deep {
   }
 }
 
+@media (min-width: 2560px) {
+  .preview {
+    &__data-container {
+      gap: var(--tui-padding-l);
+    }
+
+    &__token-container {
+      height: auto;
+    }
+
+    &__amount-container {
+      gap: 8px;
+    }
+
+    &__token-amount {
+      font-size: 18px;
+    }
+
+    &__token-info {
+      font-size: 16px;
+    }
+
+    &__main-image {
+      width: 45px;
+      height: 45px;
+      margin-left: -25px;
+    }
+
+    &__second-image-container {
+      display: flex;
+      align-items: center;
+      width: 55px;
+      height: 45px;
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    &__action-container {
+      ::ng-deep button {
+        height: var(--tui-height-l) !important;
+
+        font-size: 20px !important;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   app-route-element {
     z-index: 1;

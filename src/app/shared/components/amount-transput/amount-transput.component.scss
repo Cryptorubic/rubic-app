@@ -30,6 +30,16 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .amount-transput {
+    &__input {
+      height: auto;
+
+      font-size: 28px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .amount-transput {
     &__input {

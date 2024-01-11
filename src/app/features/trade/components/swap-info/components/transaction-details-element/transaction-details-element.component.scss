@@ -26,3 +26,25 @@
     white-space: nowrap;
   }
 }
+
+@media (min-width: 2560px) {
+  .details-element {
+    margin-bottom: 6px;
+
+    &__value {
+      font-size: 18px;
+    }
+
+    &__text {
+      &-title {
+        font-size: 18px;
+      }
+
+      &-icon {
+        width: 20px;
+        height: 18px;
+        margin-right: var(--tui-padding-m);
+      }
+    }
+  }
+}

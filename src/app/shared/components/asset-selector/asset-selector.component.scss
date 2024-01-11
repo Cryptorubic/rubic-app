@@ -96,6 +96,54 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .selector {
+    align-items: center;
+    height: auto;
+
+    &__empty {
+      width: 190px;
+      padding: 15px 0 15px 25px;
+
+      font-size: 21px;
+    }
+
+    &__empty-container {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    &__labels {
+      gap: var(--tui-padding-m);
+      margin: -8px 0 0 8px;
+    }
+
+    &__second-label {
+      font-size: 20px;
+    }
+
+    &__main-label {
+      font-size: 28px;
+    }
+
+    &__main-image {
+      width: 70px;
+      height: 70px;
+    }
+
+    &__second-image-container {
+      width: 70px;
+      height: 70px;
+    }
+
+    &__second-image {
+      width: 50px;
+      height: 50px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .selector {
     height: 40px;

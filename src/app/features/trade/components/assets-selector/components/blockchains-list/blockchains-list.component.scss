@@ -62,6 +62,31 @@ app-no-result {
   width: 100%;
 }
 
+@media (min-width: 2560px) {
+  .list {
+    gap: 10px;
+    
+    &__label {
+      font-size: 21px;
+    }
+
+    &__element {
+      min-width: 160px;
+      max-width: 194px;
+    }
+
+    &__element-container {
+      gap: 15px;
+      align-items: center;
+    }
+
+    &__image-container {
+      width: 35px;
+      height: 35px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .scrollbar {
     max-height: fit-content;

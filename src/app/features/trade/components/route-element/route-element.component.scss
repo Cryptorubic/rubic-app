@@ -36,3 +36,33 @@
     font-size: 15px;
   }
 }
+
+@media (min-width: 2560px) {
+  .element {
+    &__provider-data {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+
+  .route-element {
+    gap: 16px;
+
+    &__provider-name {
+      font-size: 18px;
+    }
+
+    &__provider-icon {
+      width: 30px;
+      height: 30px;
+      margin-right: var(--tui-padding-m);
+    }
+
+    &__provider-rate {
+      gap: var(--tui-padding-s);
+
+      font-size: 15px;
+    }
+  }
+}

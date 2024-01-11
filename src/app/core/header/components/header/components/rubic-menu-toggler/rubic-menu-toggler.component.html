@@ -1,4 +1,9 @@
-<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+<tui-hosted-dropdown
+  [content]="dropdown"
+  tuiDropdownAlign="right"
+  [(open)]="isOpened"
+  [tuiDropdownOffset]="10"
+>
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
       <div class="burger-menu" [class.burger-menu_opened]="this.isOpened">

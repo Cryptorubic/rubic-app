@@ -100,6 +100,39 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .asset-types-aside {
+    width: 230px;
+
+    &__list-element {
+      height: 80px;
+    }
+  }
+
+  .open-selector {
+    width: 110px;
+    height: 80px;
+
+    font-size: 21px;
+  }
+
+  .icon-container {
+    width: 100px;
+    height: 70px;
+    padding: 5px;
+  }
+
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .icon-label {
+    font-size: 18px;
+    line-height: 1;
+  }
+}
+
 @include b($tablet) {
   .asset-types-aside {
     border-radius: 0 10px 0 0;

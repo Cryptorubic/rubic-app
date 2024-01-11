@@ -29,6 +29,18 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .tokens-rate {
+    height: 20px;
+
+    &__amounts {
+
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
 @include b($mobile-sm) {
   .tokens-rate {
     justify-content: start;
