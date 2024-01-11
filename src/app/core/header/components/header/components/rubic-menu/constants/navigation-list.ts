@@ -186,9 +186,9 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       link: 'https://rubic.exchange/pdf/privacy-policy.pdf'
     },
     {
-      translateKey: 'Terms of Service',
+      translateKey: 'Terms of Use',
       type: 'external',
-      link: 'https://rubic.exchange/pdf/terms-of-service.pdf'
+      link: 'https://rubic.exchange/pdf/terms-of-use.pdf'
     }
   ]
 };
