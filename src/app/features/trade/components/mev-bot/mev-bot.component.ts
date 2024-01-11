@@ -16,13 +16,9 @@ export class MevBotComponent {
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
     const minDollarAmountToDisplay = 999;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
-    const isOnChainSwap = trade?.from.blockchain === trade?.to.blockchain;
+    const isCrossChain = trade?.from.blockchain !== trade?.to.blockchain;
 
-    if (isOnChainSwap) {
-      this.displayMev = false;
-    } else {
-      this.displayMev = amount ? amount.gt(minDollarAmountToDisplay) : false;
-    }
+    this.displayMev = amount && isCrossChain ? amount.gt(minDollarAmountToDisplay) : false;
 
     if (!this.displayMev) {
       this.settingsService.crossChainRouting.patchValue({
