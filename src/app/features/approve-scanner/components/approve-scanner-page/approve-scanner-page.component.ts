@@ -9,7 +9,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiIsPresent } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-approve-scanner-page',
@@ -22,7 +22,7 @@ export class ApproveScannerPageComponent {
   public readonly address$ = this.walletConnectorService.addressChange$;
 
   public readonly userBalance$ = this.service.selectedBlockchain$.pipe(
-    combineLatestWith(this.address$, this.tokensStoreService.tokens$.pipe(first(Boolean))),
+    combineLatestWith(this.address$, this.tokensStoreService.tokens$.pipe(first(tuiIsPresent))),
     switchMap(([blockchain]) =>
       forkJoin([
         of(blockchain),

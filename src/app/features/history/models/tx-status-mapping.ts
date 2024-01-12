@@ -11,7 +11,7 @@ export const txStatusMapping: Record<SourceTxStatus | DestinationTxStatus, TxSta
   pending: { appearance: 'info', label: 'Pending' },
   success: { appearance: 'success', label: 'Success' },
   completed: { appearance: 'success', label: 'Success' },
-  'not found': { appearance: 'warning', label: 'Not Found' },
+  not_found: { appearance: 'warning', label: 'Not Found' },
   fail: { appearance: 'error', label: 'Failed' },
   revert: { appearance: 'primary', label: 'Revert' },
   reverted: { appearance: 'success', label: 'Reverted' },

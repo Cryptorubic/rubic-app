@@ -40,8 +40,9 @@
                   </div>
                   <img
                     class="token-images__main-image"
-                    [src]="item.fromToken.image"
+                    [src]="item.fromToken.image || DEFAULT_TOKEN_IMAGE"
                     [alt]="item.fromToken.symbol"
+                    (error)="onImageError($event)"
                   />
                 </div>
                 {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
@@ -61,8 +62,9 @@
                   </div>
                   <img
                     class="token-images__main-image"
-                    [src]="item.toToken.image"
+                    [src]="item.toToken.image || DEFAULT_TOKEN_IMAGE"
                     [alt]="item.toToken.symbol"
+                    (error)="onImageError($event)"
                   />
                 </div>
                 <div class="asset__asset-type">

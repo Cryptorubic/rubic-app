@@ -20,7 +20,7 @@ export class MevBotComponent {
   public displayMev: boolean = false;
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 1;
+    const minDollarAmountToDisplay = 1000;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     this.routingForm =
@@ -28,7 +28,7 @@ export class MevBotComponent {
         ? this.settingsService.instantTrade
         : this.settingsService.crossChainRouting;
 
-    this.displayMev = amount ? amount.gt(minDollarAmountToDisplay) : false;
+    this.displayMev = amount ? amount.gte(minDollarAmountToDisplay) : false;
 
     this.patchUseMevBotProtection(true);
 
