@@ -1,9 +1,17 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, filter, skip, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  skip,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
-import { isNil } from '@app/shared/utils/utils';
+import { compareTokens, isNil } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
@@ -66,6 +74,12 @@ export class TargetNetworkAddressComponent implements OnInit {
           );
         }),
         filter(form => !isNil(form.fromBlockchain) && !isNil(form.toToken)),
+        distinctUntilChanged((prev, curr) => {
+          return (
+            compareTokens(prev.fromToken, curr.fromToken) &&
+            compareTokens(prev.toToken, curr.toToken)
+          );
+        }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
@@ -75,9 +89,16 @@ export class TargetNetworkAddressComponent implements OnInit {
 
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(100),
+        tap(() => {
+          this.address.updateValueAndValidity({ emitEvent: false });
+          this.targetNetworkAddressService.setIsAddressValid(false);
+        }),
+        delay(250),
+        takeUntil(this.destroy$)
+      )
       .subscribe(address => {
-        this.address.updateValueAndValidity();
         this.checkValidation(address);
       });
   }
