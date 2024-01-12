@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy } from '@angular/core';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import {
   CcrSettingsFormControls,
@@ -13,7 +13,7 @@ import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
   styleUrls: ['./mev-bot.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MevBotComponent {
+export class MevBotComponent implements OnDestroy {
   public routingForm: FormGroup<ItSettingsFormControls> | FormGroup<CcrSettingsFormControls> =
     this.settingsService.crossChainRouting;
 
@@ -38,4 +38,10 @@ export class MevBotComponent {
   }
 
   constructor(private readonly settingsService: SettingsService) {}
+
+  ngOnDestroy(): void {
+    this.routingForm.patchValue({
+      useMevBotProtection: true
+    });
+  }
 }
