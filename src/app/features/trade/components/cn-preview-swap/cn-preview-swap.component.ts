@@ -104,7 +104,7 @@ export class CnPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.previewSwapService.getSelectedProvider();
+    this.previewSwapService.setSelectedProvider();
     this.setupTrade();
   }
 

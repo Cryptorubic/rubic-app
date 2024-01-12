@@ -54,6 +54,7 @@ import {
   mevBotSupportedBlockchains
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -160,18 +161,18 @@ export class PreviewSwapService {
   }
 
   public startSwap(): void {
-    this._transactionState$.next({ step: 'swapRequest', data: this.transactionState.data });
+    this.setNextTxState({ step: 'swapRequest', data: this.transactionState.data });
   }
 
   public startApprove(): void {
-    this._transactionState$.next({ step: 'approvePending', data: this.transactionState.data });
+    this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
   }
 
   public activatePage(): void {
+    this.resetTransactionState();
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
     this.subscribeOnValidation();
-    this.resetTransactionState();
     this.handleTransactionState();
   }
 
@@ -179,13 +180,14 @@ export class PreviewSwapService {
     this.subscriptions$.forEach(sub => sub?.unsubscribe());
     this.subscriptions$.length = 0;
     this.useCallback = false;
+    this._selectedTradeState$.next(null);
   }
 
   private handleTransactionState(): void {
     const transactionStateSubscription$ = this.transactionState$
       .pipe(
         filter(state => state.step !== 'inactive'),
-        combineLatestWith(this.selectedTradeState$.pipe(first(Boolean))),
+        combineLatestWith(this.selectedTradeState$.pipe(first(tuiIsPresent))),
         distinctUntilChanged(
           ([prevTxState, prevTradeState], [nextTxState, nextTradeState]) =>
             prevTxState.step === nextTxState.step && compareObjects(prevTradeState, nextTradeState)
@@ -240,7 +242,7 @@ export class PreviewSwapService {
         }),
         tap(crossChainStatus => {
           if (crossChainStatus.dstTxStatus === TX_STATUS.SUCCESS) {
-            this._transactionState$.next({
+            this.setNextTxState({
               step: 'success',
               data: {
                 hash: crossChainStatus.dstTxHash,
@@ -248,7 +250,7 @@ export class PreviewSwapService {
               }
             });
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
-            this._transactionState$.next({ step: 'error', data: this.transactionState.data });
+            this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }
         }),
         takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
@@ -275,7 +277,7 @@ export class PreviewSwapService {
     const address = this.walletConnectorService.address;
     const state = this._transactionState$.getValue();
     state.data.activeWallet = Boolean(address);
-    this._transactionState$.next(state);
+    this.setNextTxState(state);
   }
 
   private checkNetwork(): void {
@@ -284,7 +286,7 @@ export class PreviewSwapService {
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
     state.data.wrongNetwork = Boolean(tokenBlockchain) && network !== tokenBlockchain;
-    this._transactionState$.next(state);
+    this.setNextTxState(state);
   }
 
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
@@ -308,7 +310,7 @@ export class PreviewSwapService {
     return true;
   }
 
-  public getSelectedProvider(): void {
+  public setSelectedProvider(): void {
     this._selectedTradeState$.next(this.swapsStateService.tradeState);
   }
 
@@ -340,7 +342,7 @@ export class PreviewSwapService {
               onHash: (hash: string) => {
                 if (this.useCallback) {
                   txHash = hash;
-                  this._transactionState$.next({
+                  this.setNextTxState({
                     step: 'sourcePending',
                     data: { ...this.transactionState.data }
                   });
@@ -349,7 +351,7 @@ export class PreviewSwapService {
               onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
                 if (this.useCallback) {
                   if (tradeState.trade instanceof CrossChainTrade) {
-                    this._transactionState$.next({
+                    this.setNextTxState({
                       step: 'destinationPending',
                       data: { ...this.transactionState.data }
                     });
@@ -360,7 +362,7 @@ export class PreviewSwapService {
                       additionalInfo
                     );
                   } else {
-                    this._transactionState$.next({
+                    this.setNextTxState({
                       step: 'success',
                       data: {
                         hash: txHash,
@@ -375,7 +377,7 @@ export class PreviewSwapService {
               },
               onError: () => {
                 if (this.useCallback) {
-                  this._transactionState$.next({ step: 'inactive', data: {} });
+                  this.setNextTxState({ step: 'inactive', data: {} });
                   this.tradePageService.setState('form');
                 }
               }
@@ -390,7 +392,7 @@ export class PreviewSwapService {
     return this.swapsControllerService.approve(tradeState, {
       onSwap: () => {
         if (this.useCallback) {
-          this._transactionState$.next({
+          this.setNextTxState({
             step: 'swapRequest',
             data: this.transactionState.data
           });
@@ -398,7 +400,7 @@ export class PreviewSwapService {
       },
       onError: () => {
         if (this.useCallback) {
-          this._transactionState$.next({
+          this.setNextTxState({
             step: 'approveReady',
             data: this.transactionState.data
           });
@@ -416,6 +418,6 @@ export class PreviewSwapService {
   }
 
   private resetTransactionState(): void {
-    this._transactionState$.next({ step: 'idle', data: {} });
+    this.setNextTxState({ step: 'idle', data: {} });
   }
 }

@@ -105,7 +105,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService
   ) {
-    this.previewSwapService.getSelectedProvider();
+    this.previewSwapService.setSelectedProvider();
+    this.previewSwapService.activatePage();
   }
 
   public backToForm(): void {
