@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { TuiDestroyService } from '@taiga-ui/cdk';
+import { TuiDestroyService, tuiIsPresent } from '@taiga-ui/cdk';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ROUTE_PATH } from '@shared/constants/common/links';
@@ -45,7 +45,7 @@ export class OverviewPageComponent {
   private handleWalletChange(): void {
     this.walletConnectorService.addressChange$
       .pipe(
-        first(Boolean),
+        first(tuiIsPresent),
         takeUntil(this.destroy$),
         switchMap(() => this.router.navigateByUrl(`${ROUTE_PATH.REVOKE_APPROVAL}/revoke`))
       )

@@ -242,22 +242,6 @@ export class CrossChainService {
       return 'reject';
     }
 
-    const isHighSlippageOrPriceImpact = !(await this.settingsService.checkSlippageAndPriceImpact(
-      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-      trade
-    ));
-
-    if (isHighSlippageOrPriceImpact) {
-      return 'reject';
-    }
-    // @TODO
-    // if (
-    //   this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-    //   !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
-    // ) {
-    //   await this.getChangenowPaymentInfo();
-    //   return;
-    // }
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);

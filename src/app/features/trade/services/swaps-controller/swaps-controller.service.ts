@@ -38,6 +38,7 @@ import { SettingsService } from '@features/trade/services/settings-service/setti
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @Injectable()
@@ -232,6 +233,18 @@ export class SwapsControllerService {
       const additionalData: { changenowId?: string; rangoRequestId?: string } = {
         changenowId: undefined
       };
+      const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
+        tradeState.trade instanceof CrossChainTrade
+          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        tradeState.trade
+      );
+
+      if (!allowSlippageAndPI) {
+        callback.onError?.();
+        return;
+      }
+
       if (tradeState.trade instanceof CrossChainTrade) {
         const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
         if (status === 'success') {
@@ -251,22 +264,20 @@ export class SwapsControllerService {
       }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
-        let allowSwap = false;
+        const allowSwap = await firstValueFrom(
+          this.modalService.openRateChangedModal(
+            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
+            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
+            tradeState.trade.to.symbol
+          )
+        );
 
-        try {
-          allowSwap = await firstValueFrom(
-            this.modalService.openRateChangedModal(
-              Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
-              Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
-              tradeState.trade.to.symbol
-            )
-          );
-        } catch {}
         if (allowSwap) {
           try {
             const additionalData: { changenowId?: string; rangoRequestId?: string } = {
               changenowId: undefined
             };
+
             if (tradeState.trade instanceof CrossChainTrade) {
               await this.crossChainService.swapTrade(
                 tradeState.trade as CrossChainTrade,
@@ -304,7 +315,7 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     callback?: {
       onHash?: (hash: string) => void;
-      onSwap?: () => void;
+      onSwap?: (...args: unknown[]) => void;
       onError?: () => void;
     }
   ): Promise<void> {
