@@ -55,6 +55,25 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .user-balance-container {
+    &__balance {
+      margin-right: var(--tui-padding-l);
+
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__max-button {
+      font-size: 22px !important;
+
+      ::ng-deep .t-tag {
+        height: 30px !important;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   :host {
     width: 100%;

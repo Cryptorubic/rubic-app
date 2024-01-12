@@ -55,8 +55,8 @@
 @media (min-width: 2560px) {
   .rubic-footer {
     &__link {
-      margin-right: 21px;
-      margin-bottom: 21px;
+      margin-right: 20px;
+      margin-bottom: 20px;
 
       img {
         display: block;
@@ -66,11 +66,32 @@
     }
 
     &__copyright {
-      font-size: 21px;
+      font-size: 20px;
     }
 
     &__policy {
-      font-size: 21px;
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .rubic-footer {
+    &__link {
+      margin-right: 30px;
+      margin-bottom: 30px;
+
+      img {
+        display: block;
+        width: 35px;
+        height: 35px;
+      }
+    }
+
+    &__copyright,
+    &__policy {
+      font-size: 30px;
+      letter-spacing: 2px;
     }
   }
 }

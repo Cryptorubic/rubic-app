@@ -41,6 +41,111 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .settings {
+    &__form {
+      gap: var(--tui-padding-l);
+
+      font-size: 18px;
+      letter-spacing: 0.03rem;
+    }
+
+    &__row {
+      ::ng-deep {
+        button {
+          font-size: 18px !important;
+        }
+
+        tui-toggle {
+          width: 2.5rem !important;
+          height: 1.25rem !important;
+
+          .t-toggle {
+            width: 3.5rem !important;
+            height: 1.25rem !important;
+          }
+        }
+      }
+    }
+
+    &__slippage-input {
+      ::ng-deep input {
+        font-size: 18px !important;
+      }
+    }
+
+    &__hint {
+      ::ng-deep svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .settings {
+    &__form {
+      gap: var(--tui-padding-xxl);
+
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    &__row {
+      gap: var(--tui-padding-l);
+
+      ::ng-deep {
+        button {
+          height: var(--tui-height-l);
+
+          font-size: 26px !important;
+        }
+
+        tui-toggle {
+          width: 3rem !important;
+          height: 1.75rem !important;
+
+          .t-toggle {
+            width: 4rem !important;
+            height: 1.75rem !important;
+
+            .t-circle {
+              width: 1.25rem !important;
+              height: 1.25rem !important;
+            }
+          }
+        }
+      }
+    }
+
+    &__slippage-input {
+      min-width: 95px;
+      height: var(--tui-height-l);
+
+      ::ng-deep {
+        .tui-autofill {
+          height: var(--tui-height-l);
+        }
+
+        input {
+          height: var(--tui-height-l);
+          padding-right: 18px !important;
+
+          font-size: 26px !important;
+        }
+      }
+    }
+
+    &__hint {
+      ::ng-deep svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .settings {
     &__form {

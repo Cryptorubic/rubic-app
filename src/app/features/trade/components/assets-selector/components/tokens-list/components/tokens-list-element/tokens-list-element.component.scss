@@ -97,7 +97,7 @@
 
     &__amount-container,
     &__symbol-name-container {
-      gap: 8px;
+      gap: var(--tui-padding-s);
     }
 
     &__image-container {
@@ -108,7 +108,7 @@
     }
 
     &__symbol-container {
-      gap: 15px;
+      gap: var(--tui-padding-l);
       align-items: center;
     }
 
@@ -120,11 +120,53 @@
 
     &__actions {
       display: flex;
-      gap: 12px;
+      gap: var(--tui-padding-m);
 
       > * {
         width: 21px;
         height: 21px;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .token-card {
+    &__symbol,
+    &__amount {
+      font-size: 26px;
+    }
+
+    &__amount-container,
+    &__symbol-name-container {
+      gap: var(--tui-padding-s);
+    }
+
+    &__image-container {
+      img {
+        width: 47px;
+        height: 47px;
+      }
+    }
+
+    &__symbol-container {
+      gap: var(--tui-padding-xl);
+      align-items: center;
+    }
+
+    &__name,
+    &__dollar-amount {
+      font-size: 22px;
+      line-height: 22px;
+    }
+
+    &__actions {
+      display: flex;
+      gap: var(--tui-padding-xl);
+
+      > * {
+        width: 31px;
+        height: 31px;
       }
     }
   }

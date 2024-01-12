@@ -34,3 +34,18 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  :host ::ng-deep button {
+    width: 70px !important;
+  }
+
+  .history-button {
+    &__container {
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+  }
+}

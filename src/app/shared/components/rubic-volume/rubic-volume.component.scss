@@ -28,21 +28,37 @@
 
 @media (min-width: 2560px) {
   .rubic-volume {
-    margin-bottom: 21px;
+    margin-bottom: 20px;
 
-    font-size: 21px;
+    font-size: 20px;
 
     &__icon {
       width: 25px;
       margin-right: 15px;
     }
 
-    &__title {
-      font-size: 21px;
+    &__title,
+    &__value {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .rubic-volume {
+    margin-bottom: 30px;
+
+    font-size: 30px;
+
+    &__icon {
+      width: 35px;
+      margin-right: 20px;
     }
 
+    &__title,
     &__value {
-      font-size: 21px;
+      font-size: 30px;
+      letter-spacing: 2px;
     }
   }
 }

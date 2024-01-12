@@ -82,7 +82,32 @@ a {
 
   .data-list {
     &__element-container {
-      font-size: 21px;
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .image {
+    width: 45px;
+    height: 45px;
+    margin-right: 20px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .data-list {
+    &__element-container {
+      font-weight: 400;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    &__element {
+      margin-bottom: 21px !important;
     }
   }
 }

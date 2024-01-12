@@ -133,6 +133,39 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .asset-types-aside {
+    width: 260px;
+
+    &__list-element {
+      height: 100px;
+    }
+  }
+
+  .open-selector {
+    width: 125px;
+    height: 100px;
+
+    font-size: 26px;
+  }
+
+  .icon-container {
+    width: 120px;
+    height: 100px;
+    padding: 5px;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .icon-label {
+    font-size: 22px;
+    line-height: 22px;
+  }
+}
+
 @include b($tablet) {
   .asset-types-aside {
     border-radius: 0 10px 0 0;

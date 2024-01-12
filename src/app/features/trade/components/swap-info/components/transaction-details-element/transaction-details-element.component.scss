@@ -48,3 +48,25 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .details-element {
+    margin-bottom: 14px;
+
+    &__value {
+      font-size: 26px;
+    }
+
+    &__text {
+      &-title {
+        font-size: 26px;
+      }
+
+      &-icon {
+        width: 25px;
+        height: 26px;
+        margin-right: var(--tui-padding-l);
+      }
+    }
+  }
+}

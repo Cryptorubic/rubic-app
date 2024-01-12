@@ -41,6 +41,27 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .tokens-rate {
+    height: 28px;
+
+    &__amounts {
+
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__direction-button {
+      width: 25px;
+
+      ::ng-deep svg {
+        width: 25px;
+        height: 25px;
+      }
+    }
+  }
+}
+
 @include b($mobile-sm) {
   .tokens-rate {
     justify-content: start;

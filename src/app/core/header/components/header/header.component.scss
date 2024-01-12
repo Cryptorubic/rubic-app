@@ -35,8 +35,23 @@
     ::ng-deep button {
       height: 50px;
 
-      font-size: 20px;
-      line-height: 20px;
+      font-size: 20px !important;
+      line-height: 20px !important;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .rubic-header {
+    gap: 20px;
+    
+    ::ng-deep button {
+      height: 70px;
+
+      font-size: 26px !important;
+      line-height: 26px !important;
+
+      border-radius: 24px;
     }
   }
 }

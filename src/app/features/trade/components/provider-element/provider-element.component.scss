@@ -214,6 +214,64 @@ app-route-element {
   }
 }
 
+@media (min-width: 3840px) {
+  .element {
+    &__token {
+      gap: var(--tui-padding-l);
+    }
+
+    &__token-amount {
+      max-width: 260px;
+
+      font-size: 34px;
+      line-height: 34px;
+    }
+
+    &__token-symbol {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__token-image {
+      width: 40px;
+      height: 40px;
+    }
+
+    &__provider-container {
+      padding: var(--tui-padding-xxl);
+    }
+
+    &__amount-price {
+      font-size: 22px;
+    }
+
+    &__best-badge,
+    &__warning-badge {
+      font-size: 22px !important;
+    }
+
+    &__right {
+      ::ng-deep .t-tag {
+        height: 30px !important;
+      }
+    }
+
+    &__right {
+      gap: var(--tui-padding-l);
+    }
+
+    ::ng-deep &__expander {
+      width: 30px;
+      height: 30px;
+
+      svg {
+        width: 20px;
+        height: 15px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   .element {
     &_shorted {

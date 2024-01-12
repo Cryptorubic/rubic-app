@@ -50,7 +50,33 @@
     }
 
     &__element-label {
-      font-size: 21px;
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  :host ::ng-deep .tui-group {
+    width: 70px !important;
+  }
+
+  .active-lang {
+    width: 45px;
+    height: 45px;
+  }
+
+  .languages {
+    gap: 25px;
+    max-width: 450px;
+    padding: 25px 5px;
+
+    &__element-icon {
+      width: 45px;
+      height: 45px;
+    }
+
+    &__element-label {
+      font-size: 26px;
     }
   }
 }

@@ -56,6 +56,16 @@ app-form-switcher {
   }
 }
 
+@media (min-width: 3840px) {
+  app-action-button {
+    ::ng-deep button {
+      height: var(--tui-height-l) !important;
+
+      font-size: 28px !important;
+    }
+  }
+}
+
 @include b($mobile-md) {
   :host ::ng-deep {
     .window-container {

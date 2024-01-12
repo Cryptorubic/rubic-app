@@ -51,3 +51,24 @@ header {
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .window-container {
+    padding: var(--tui-padding-xxl) var(--tui-padding-xl) var(--tui-padding-xl) var(--tui-padding-xl);
+
+    border-radius: 34px;
+
+    ::ng-deep & > footer > *:first-child {
+      margin-top: var(--tui-padding-xxl);
+    }
+  }
+
+  header {
+    padding: var(--tui-padding-xxl);
+    padding-top: 0;
+
+    h5 {
+      font-size: 28px;
+    }
+  }
+}

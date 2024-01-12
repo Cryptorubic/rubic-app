@@ -40,6 +40,16 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .amount-transput {
+    &__input {
+      height: auto;
+
+      font-size: 38px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .amount-transput {
     &__input {

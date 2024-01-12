@@ -73,3 +73,15 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .refresh-button {
+    width: 30px;
+    height: 30px;
+
+    &__icon {
+      width: 30px;
+      height: 28px;
+    }
+  }
+}

@@ -66,3 +66,39 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .element {
+    &__provider-data {
+      gap: 12px;
+    }
+  }
+
+  .route-element {
+    gap: 20px;
+
+    &__provider-name {
+      font-size: 26px;
+    }
+
+    &__provider-icon {
+      width: 35px;
+      height: 35px;
+      margin-right: var(--tui-padding-l);
+    }
+
+    &__provider-rate {
+      gap: var(--tui-padding-m);
+
+      font-size: 22px;
+
+      > div {
+        gap: var(--tui-padding-m);
+      }
+
+      img {
+        height: 15px;
+      }
+    }
+  }
+}

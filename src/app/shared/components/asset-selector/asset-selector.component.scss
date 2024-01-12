@@ -144,6 +144,63 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .selector {
+    &__empty {
+      width: 240px;
+
+      font-weight: 400;
+      font-size: 26px;
+      letter-spacing: 2px;
+
+      &::after {
+        right: -24px;
+      }
+    }
+
+    &__empty-container {
+      gap: 15px;
+
+      img {
+        width: 20px;
+      }
+    }
+
+    &__labels {
+      gap: var(--tui-padding-xl);
+    }
+
+    &__second-label {
+      font-size: 28px;
+    }
+
+    &__main-label {
+      gap: var(--tui-padding-l);
+
+      font-size: 38px;
+
+      img {
+        width: 20px;
+      }
+    }
+
+    &__main-image {
+      width: 80px;
+      height: 80px;
+    }
+
+    &__second-image-container {
+      width: 80px;
+      height: 80px;
+    }
+
+    &__second-image {
+      width: 60px;
+      height: 60px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .selector {
     height: 40px;

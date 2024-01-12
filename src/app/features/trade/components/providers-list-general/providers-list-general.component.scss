@@ -21,11 +21,22 @@ h5 {
       line-height: 18px;
     }
   }
+
+  @media (min-width: 3840px) {
+    ::ng-deep h5 {
+      font-size: 22px;
+      line-height: 22px;
+    }
+  }
 }
 
 .providers-list {
   max-height: 455px;
   margin-right: -10px;
+
+  @media (min-width: 3840px) {
+    max-height: 570px;
+  }
 }
 
 .other-providers {

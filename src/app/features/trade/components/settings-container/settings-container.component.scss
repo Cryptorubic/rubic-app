@@ -28,3 +28,12 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .image {
+    ::ng-deep svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

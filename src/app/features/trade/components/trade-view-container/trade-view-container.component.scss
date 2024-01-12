@@ -85,6 +85,27 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .swap-container {
+    .form {
+      width: 800px;
+
+      &_tokens {
+        width: 800px;
+      }
+
+      &_small {
+        width: 600px;
+      }
+    }
+
+    app-providers-list-general {
+      width: 500px;
+      height: 660px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .swap-container {
     display: flex;

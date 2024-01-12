@@ -64,8 +64,9 @@ app-no-result {
 
 @media (min-width: 2560px) {
   .list {
-    gap: 10px;
-    
+    gap: var(--tui-padding-m);
+    padding: var(--tui-padding-xl) var(--tui-padding-xs);
+
     &__label {
       font-size: 21px;
     }
@@ -76,13 +77,39 @@ app-no-result {
     }
 
     &__element-container {
-      gap: 15px;
+      gap: var(--tui-padding-l);
       align-items: center;
     }
 
     &__image-container {
       width: 35px;
       height: 35px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .list {
+    gap: var(--tui-padding-xxl);
+    padding: var(--tui-padding-xxl) var(--tui-padding-xs);
+
+    &__label {
+      font-size: 26px;
+    }
+
+    &__element {
+      min-width: 230px;
+      max-width: 230px;
+    }
+
+    &__element-container {
+      gap: var(--tui-padding-l);
+      align-items: center;
+    }
+
+    &__image-container {
+      width: 45px;
+      height: 45px;
     }
   }
 }

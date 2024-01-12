@@ -55,6 +55,25 @@
   }
 }
 
+@media (min-width: 3840px) {
+  .transaction-details {
+    padding: var(--tui-padding-xxl);
+
+    &__label {
+      font-size: 28px;
+    }
+  }
+
+  .image {
+    width: 23px;
+    height: 23px;
+  }
+
+  .receiver-container {
+    gap: var(--tui-padding-m);
+  }
+}
+
 @include b($mobile-md) {
   .transaction-details {
     &__label {
