@@ -327,7 +327,10 @@ export class PreviewSwapService {
   private makeSwapRequest(tradeState: SelectedTrade): Observable<void> {
     let txHash: string;
     this.useCallback = true;
-    const useMevProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
+    const useMevProtection =
+      tradeState.trade.from.blockchain === tradeState.trade.to.blockchain
+        ? this.settingsService.instantTradeValue.useMevBotProtection
+        : this.settingsService.crossChainRoutingValue.useMevBotProtection;
 
     return from(this.loadRpcParams(useMevProtection)).pipe(
       switchMap(rpcChanged => {

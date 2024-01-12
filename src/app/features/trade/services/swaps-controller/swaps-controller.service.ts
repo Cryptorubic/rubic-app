@@ -39,6 +39,7 @@ import { onChainBlacklistProviders } from '@features/trade/services/on-chain/con
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -67,13 +68,15 @@ export class SwapsControllerService {
     private readonly tradePageService: TradePageService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
     this.subscribeOnAddressChange();
     this.subscribeOnSettings();
+    this.subscribeOnReceiverChange();
   }
 
   /**
@@ -420,6 +423,16 @@ export class SwapsControllerService {
       )
       .subscribe(() => {
         this.startRecalculation(true);
+      });
+  }
+
+  private subscribeOnReceiverChange(): void {
+    this.targetNetworkAddressService.address$
+      .pipe(combineLatestWith(this.targetNetworkAddressService.isAddressValid$), debounceTime(50))
+      .subscribe(([address, isValid]) => {
+        if (address === '' || (address && isValid)) {
+          this.startRecalculation(true);
+        }
       });
   }
 }
