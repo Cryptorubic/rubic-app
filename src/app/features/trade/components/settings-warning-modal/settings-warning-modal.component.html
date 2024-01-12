@@ -27,12 +27,26 @@
       </div>
 
       <div class="modal__footer-actions">
-        <app-rubic-button appearance="secondary" (onClick)="confirm()">
+        <button
+          class="swap-button"
+          tuiButton
+          appearance="outline"
+          type="button"
+          size="m"
+          (click)="confirm()"
+        >
           {{ 'common.complete' | translate }}
-        </app-rubic-button>
-        <app-rubic-button appearance="primary" (onClick)="cancel()">
+        </button>
+        <button
+          class="swap-button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="cancel()"
+        >
           {{ 'common.cancel' | translate }}
-        </app-rubic-button>
+        </button>
       </div>
     </div>
   </div>

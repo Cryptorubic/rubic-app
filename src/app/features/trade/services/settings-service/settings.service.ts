@@ -178,8 +178,8 @@ export class SettingsService {
     const priceImpact = trade.getTradeInfo().priceImpact;
 
     const settingsChecks = {
-      highSlippage: slippage > 5 && slippage,
-      highPriceImpact: priceImpact > 30 && priceImpact
+      highSlippage: slippage >= 10 ? slippage : false,
+      highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
     if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
@@ -188,7 +188,7 @@ export class SettingsService {
           SettingsWarningModalComponent,
           {
             data: settingsChecks,
-            size: 'l',
+            size: 's',
             fitContent: true
           }
         )

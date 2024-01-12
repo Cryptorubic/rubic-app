@@ -38,6 +38,7 @@ import { SettingsService } from '@features/trade/services/settings-service/setti
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Injectable()
 export class SwapsControllerService {
@@ -229,6 +230,18 @@ export class SwapsControllerService {
       const additionalData: { changenowId?: string; rangoRequestId?: string } = {
         changenowId: undefined
       };
+      const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
+        tradeState.trade instanceof CrossChainTrade
+          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        tradeState.trade
+      );
+
+      if (!allowSlippageAndPI) {
+        callback.onError?.();
+        return;
+      }
+
       if (tradeState.trade instanceof CrossChainTrade) {
         const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
         if (status === 'success') {
@@ -261,6 +274,7 @@ export class SwapsControllerService {
             const additionalData: { changenowId?: string; rangoRequestId?: string } = {
               changenowId: undefined
             };
+
             if (tradeState.trade instanceof CrossChainTrade) {
               await this.crossChainService.swapTrade(
                 tradeState.trade as CrossChainTrade,
