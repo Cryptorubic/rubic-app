@@ -185,7 +185,7 @@ export class PreviewSwapService {
     const transactionStateSubscription$ = this.transactionState$
       .pipe(
         filter(state => state.step !== 'inactive'),
-        combineLatestWith(this.selectedTradeState$.pipe(first())),
+        combineLatestWith(this.selectedTradeState$.pipe(first(Boolean))),
         distinctUntilChanged(
           ([prevTxState, prevTradeState], [nextTxState, nextTradeState]) =>
             prevTxState.step === nextTxState.step && compareObjects(prevTradeState, nextTradeState)
