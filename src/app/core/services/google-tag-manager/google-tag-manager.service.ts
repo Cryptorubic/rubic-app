@@ -133,6 +133,7 @@ export class GoogleTagManagerService {
    * @param revenue System commission in USD.
    * @param price The actual cost of the sent volume of tokens.
    * @param swapType Type of swap.
+   * @param useMevBotProtection Is MEV-bot protection used.
    */
   public fireTxSignedEvent(
     eventCategory: SupportedSwapProviderType,
@@ -141,7 +142,8 @@ export class GoogleTagManagerService {
     toToken: string,
     revenue: BigNumber,
     price: BigNumber,
-    swapType: 'crosschain' | 'onchain'
+    swapType: 'crosschain' | 'onchain',
+    useMevBotProtection?: boolean
   ): void {
     this.forms[eventCategory].next(formStepsInitial);
     const item = [
@@ -159,6 +161,7 @@ export class GoogleTagManagerService {
       transaction_id: txId, //id транзакции в системе
       value: revenue.toFixed(), //комиссия системы в USD
       currency: 'USD',
+      ...(useMevBotProtection && { use_mev_bot_protection: useMevBotProtection }),
       items: JSON.stringify(item)
     };
 
