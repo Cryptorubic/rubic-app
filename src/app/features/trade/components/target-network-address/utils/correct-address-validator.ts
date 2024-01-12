@@ -11,7 +11,8 @@ export function correctAddressValidator(
   return async (control: AbstractControl): Promise<ValidationErrors | null> => {
     const address = control.value;
 
-    const isAddressCorrectValue = await Web3Pure[toChainType].isAddressCorrect(address);
+    const isAddressCorrectValue =
+      address === '' || (await Web3Pure[toChainType].isAddressCorrect(address));
 
     if (toChainType && !isAddressCorrectValue) {
       let fromChainType: ChainType;
