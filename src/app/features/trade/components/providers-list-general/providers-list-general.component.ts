@@ -43,7 +43,7 @@ export class ProvidersListGeneralComponent {
 
   @Input({ required: true }) set calculationStatus(value: CalculationStatus) {
     this._calculationStatus = value;
-    if (value.calculationProgress.current === 1) {
+    if (value.calculationProgress.current === 0 && value.calculationProgress.total === 1) {
       this._triggerCalculation$.next();
     }
   }

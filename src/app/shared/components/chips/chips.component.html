@@ -1,8 +1,0 @@
-<div
-  class="chip"
-  *ngFor="let chip of chips"
-  [class.chip_selected]="isSelected(chip.value)"
-  (click)="select(chip.value)"
->
-  {{ chip.label }}
-</div>
