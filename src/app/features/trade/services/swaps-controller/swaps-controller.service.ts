@@ -298,7 +298,7 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     callback?: {
       onHash?: (hash: string) => void;
-      onSwap?: () => void;
+      onSwap?: (...args: unknown[]) => void;
       onError?: () => void;
     }
   ): Promise<void> {
