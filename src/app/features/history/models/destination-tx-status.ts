@@ -1,7 +1,7 @@
 export type DestinationTxStatus =
   | 'pending'
   | 'success'
-  | 'not found'
+  | 'not_found'
   | 'fail'
   | 'revert'
   | 'reverted'

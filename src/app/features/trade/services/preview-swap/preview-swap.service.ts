@@ -170,9 +170,11 @@ export class PreviewSwapService {
   public activatePage(): void {
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
-    this.subscribeOnFormChange();
-
     this._transactionState$.next({ step: 'idle', data: {} });
+    this.selectedTradeState$.pipe(startWith()).subscribe(() => {
+      this.checkAddress();
+      this.checkNetwork();
+    });
     this.handleTransactionState();
   }
 
@@ -256,19 +258,6 @@ export class PreviewSwapService {
       )
       .subscribe();
     this.subscriptions$.push(pollingSubscription$);
-  }
-
-  private subscribeOnFormChange(): void {
-    const formChangeSubscription$ = this.tradePageService.formContent$
-      .pipe(
-        filter(content => content === 'preview'),
-        debounceTime(10)
-      )
-      .subscribe(() => {
-        this.checkAddress();
-        this.checkNetwork();
-      });
-    this.subscriptions$.push(formChangeSubscription$);
   }
 
   private subscribeOnNetworkChange(): void {

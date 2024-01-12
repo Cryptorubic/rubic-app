@@ -11,7 +11,7 @@
     </div>
     <img
       class="selector__main-image"
-      [src]="visibleAsset.mainImage"
+      [src]="visibleAsset.mainImage || DEFAULT_TOKEN_IMAGE"
       width="50"
       height="50"
       [alt]="visibleAsset.mainLabel"

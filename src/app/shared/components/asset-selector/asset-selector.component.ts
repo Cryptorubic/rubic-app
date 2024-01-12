@@ -16,6 +16,7 @@ import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 
 @Component({
   selector: 'app-asset-selector',
@@ -40,6 +41,8 @@ export class AssetSelectorComponent {
       this.visibleAsset = null;
     }
   }
+
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   constructor(
     private readonly queryParamsService: QueryParamsService,
