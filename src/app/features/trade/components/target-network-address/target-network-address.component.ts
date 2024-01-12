@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, skip, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, filter, skip, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
-import { compareTokens, isNil } from '@app/shared/utils/utils';
+import { isNil } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
@@ -66,15 +66,10 @@ export class TargetNetworkAddressComponent implements OnInit {
           );
         }),
         filter(form => !isNil(form.fromBlockchain) && !isNil(form.toToken)),
-        distinctUntilChanged((prev, curr) => {
-          return (
-            compareTokens(prev.fromToken, curr.toToken) && compareTokens(prev.toToken, curr.toToken)
-          );
-        }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.address.patchValue(null);
+        this.checkValidation(this.address.value);
       });
   }
 
@@ -82,9 +77,14 @@ export class TargetNetworkAddressComponent implements OnInit {
     this.address.valueChanges
       .pipe(debounceTime(200), takeUntil(this.destroy$))
       .subscribe(address => {
-        const isValid = this.address.valid;
-        this.targetNetworkAddressService.setIsAddressValid(isValid);
-        this.targetNetworkAddressService.setAddress(isValid ? address : null);
+        this.address.updateValueAndValidity();
+        this.checkValidation(address);
       });
+  }
+
+  private checkValidation(address: string): void {
+    const isValid = this.address.valid;
+    this.targetNetworkAddressService.setIsAddressValid(isValid);
+    this.targetNetworkAddressService.setAddress(isValid ? address : null);
   }
 }
