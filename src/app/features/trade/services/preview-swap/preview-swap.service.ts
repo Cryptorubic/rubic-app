@@ -170,11 +170,8 @@ export class PreviewSwapService {
   public activatePage(): void {
     this.subscribeOnNetworkChange();
     this.subscribeOnAddressChange();
-    this._transactionState$.next({ step: 'idle', data: {} });
-    this.selectedTradeState$.pipe(startWith()).subscribe(() => {
-      this.checkAddress();
-      this.checkNetwork();
-    });
+    this.subscribeOnValidation();
+    this.resetTransactionState();
     this.handleTransactionState();
   }
 
@@ -324,7 +321,7 @@ export class PreviewSwapService {
       icon: '',
       defaultAutoCloseTime: 0
     });
-    this._transactionState$.next({ step: 'idle', data: {} });
+    this.resetTransactionState();
   }
 
   private makeSwapRequest(tradeState: SelectedTrade): Observable<void> {
@@ -404,5 +401,17 @@ export class PreviewSwapService {
         }
       }
     });
+  }
+
+  private subscribeOnValidation(): void {
+    const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
+      this.checkAddress();
+      this.checkNetwork();
+    });
+    this.subscriptions$.push(validationSubscription$);
+  }
+
+  private resetTransactionState(): void {
+    this._transactionState$.next({ step: 'idle', data: {} });
   }
 }
