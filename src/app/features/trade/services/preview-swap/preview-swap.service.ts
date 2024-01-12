@@ -333,6 +333,7 @@ export class PreviewSwapService {
         : this.settingsService.crossChainRoutingValue.useMevBotProtection;
 
     return from(this.loadRpcParams(useMevProtection)).pipe(
+      debounceTime(50),
       switchMap(rpcChanged => {
         return rpcChanged
           ? this.swapsControllerService.swap(tradeState, {
