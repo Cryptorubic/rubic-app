@@ -190,7 +190,9 @@ export class PreviewSwapService {
             case 'swapRequest': {
               let txHash: string;
               const useMevProtection =
-                this.settingsService.crossChainRoutingValue.useMevBotProtection;
+                tradeState.trade.from.blockchain === tradeState.trade.to.blockchain
+                  ? this.settingsService.instantTradeValue.useMevBotProtection
+                  : this.settingsService.crossChainRoutingValue.useMevBotProtection;
 
               return from(this.loadRpcParams(useMevProtection)).pipe(
                 switchMap(rpcChanged => {
