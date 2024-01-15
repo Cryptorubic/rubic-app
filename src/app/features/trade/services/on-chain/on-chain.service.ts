@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, interval, Observable, of, Subscription, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, Subscription, timer } from 'rxjs';
 
 import { filter, map, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -217,7 +217,7 @@ export class OnChainService {
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(
-          interval(7_000).pipe(
+          timer(7_000).pipe(
             switchMap(() =>
               this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
             ),
