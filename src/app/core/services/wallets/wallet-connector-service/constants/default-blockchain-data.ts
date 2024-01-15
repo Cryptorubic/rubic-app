@@ -142,5 +142,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SCROLL]: {
     name: 'Scroll',
     rpc: 'https://rpc.scroll.io/'
+  },
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: {
+    name: 'Horizen EON',
+    rpc: 'https://eon-rpc.horizenlabs.io/ethv1'
   }
 };

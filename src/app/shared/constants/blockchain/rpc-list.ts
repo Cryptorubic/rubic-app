@@ -219,5 +219,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.public.blastapi.io',
     'https://data.voyager.online/',
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
+  ],
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: [
+    'https://rpc.ankr.com/horizen_eon',
+    'https://eon-rpc.horizenlabs.io/ethv1'
   ]
 };
