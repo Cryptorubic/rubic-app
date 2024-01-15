@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-settings-warning-modal',
@@ -31,4 +32,6 @@ export class SettingsWarningModalComponent {
   public cancel(): void {
     this.context.completeWith(false);
   }
+
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

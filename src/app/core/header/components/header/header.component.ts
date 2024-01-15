@@ -21,7 +21,6 @@ import { QueryParamsService } from 'src/app/core/services/query-params/query-par
 import { WINDOW } from '@ng-web-apis/common';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BuyTokenComponent } from '@shared/components/buy-token/buy-token.component';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -37,8 +36,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 })
 export class HeaderComponent implements AfterViewInit {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
-
-  @ViewChild(BuyTokenComponent) public buyTokenComponent: BuyTokenComponent;
 
   /**
    * Rubic advertisement type. Renders different components based on type.

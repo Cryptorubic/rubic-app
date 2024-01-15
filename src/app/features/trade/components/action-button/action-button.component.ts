@@ -133,7 +133,6 @@ export class ActionButtonComponent {
   ) {}
 
   private swap(): void {
-    this.previewSwapService.activatePage();
     this.tradePageService.setState('preview');
   }
 

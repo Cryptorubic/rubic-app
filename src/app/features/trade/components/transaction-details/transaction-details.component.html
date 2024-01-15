@@ -24,7 +24,7 @@
     [title]="text.slippage.label"
     [description]="text.slippage.description"
   >
-    {{ state.details.slippage }} %
+    {{ state.details.slippage | slippageFormat }} %
   </app-transaction-details-element>
 
   <app-transaction-details-element
