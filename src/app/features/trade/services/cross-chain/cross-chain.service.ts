@@ -242,23 +242,8 @@ export class CrossChainService {
       return 'reject';
     }
 
-    const isHighSlippageOrPriceImpact = !(await this.settingsService.checkSlippageAndPriceImpact(
-      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-      trade
-    ));
-
-    if (isHighSlippageOrPriceImpact) {
-      return 'reject';
-    }
-    // @TODO
-    // if (
-    //   this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-    //   !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
-    // ) {
-    //   await this.getChangenowPaymentInfo();
-    //   return;
-    // }
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
+    const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
 
     this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
@@ -270,13 +255,18 @@ export class CrossChainService {
     await this.handlePreSwapModal(trade);
 
     let transactionHash: string;
-
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
 
-      this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
+      this.notifyGtmAfterSignTx(
+        txHash,
+        fromToken,
+        toToken,
+        trade.from.tokenAmount,
+        useMevBotProtection
+      );
     };
 
     const blockchain = trade.from.blockchain;
@@ -449,7 +439,8 @@ export class CrossChainService {
     txHash: string,
     fromToken: TokenAmount,
     toToken: TokenAmount,
-    fromAmount: BigNumber
+    fromAmount: BigNumber,
+    useMevBotProtection: boolean
   ): void {
     // @TODO remove hardcode
     const fee = new BigNumber(2);
@@ -461,7 +452,8 @@ export class CrossChainService {
       toToken.symbol,
       fee,
       fromAmount.multipliedBy(fromToken.price),
-      'crosschain'
+      'crosschain',
+      fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
   }
 }

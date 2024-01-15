@@ -219,12 +219,6 @@ a {
   }
 }
 
-@include b($mobile-md) {
-  tui-dropdown {
-    min-width: 155px;
-  }
-}
-
 [id^='tui-hint_price-impact'] {
   color: var(--tui-text-01) !important;
 

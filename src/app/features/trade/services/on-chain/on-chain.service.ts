@@ -183,6 +183,7 @@ export class OnChainService {
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');
+    const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
 
     const options: SwapTransactionOptions = {
@@ -194,7 +195,8 @@ export class OnChainService {
           transactionHash,
           fromSymbol,
           toSymbol,
-          fromAmount.multipliedBy(fromPrice)
+          fromAmount.multipliedBy(fromPrice),
+          useMevBotProtection
         );
 
         this.postTrade(hash, trade, isSwapAndEarnTrade);
@@ -283,7 +285,8 @@ export class OnChainService {
     transactionHash: string,
     fromToken: string,
     toToken: string,
-    price: BigNumber
+    price: BigNumber,
+    useMevBotProtection: boolean
   ): void {
     this.gtmService.fireTxSignedEvent(
       SWAP_PROVIDER_TYPE.INSTANT_TRADE,
@@ -292,7 +295,8 @@ export class OnChainService {
       toToken,
       new BigNumber(1),
       price,
-      'onchain'
+      'onchain',
+      price.gt(1000) ? useMevBotProtection : null
     );
   }
 

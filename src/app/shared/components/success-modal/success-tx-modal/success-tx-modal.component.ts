@@ -8,7 +8,6 @@ import {
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
@@ -20,6 +19,7 @@ import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { map } from 'rxjs';
 import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { SuccessTxModalType } from '@app/shared/models/modals/modal-type';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',

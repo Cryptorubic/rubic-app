@@ -150,7 +150,6 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.FANTOM, rank: 0, tags: ['FTM'] },
   { name: BLOCKCHAIN_NAME.BOBA, rank: 0, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [] },
-  { name: BLOCKCHAIN_NAME.BOBA_AVALANCHE, rank: 0, tags: [] },
   { name: BLOCKCHAIN_NAME.TELOS, rank: 0, tags: ['TLOS'] },
   { name: BLOCKCHAIN_NAME.KAVA, rank: 0, tags: [] },
   { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0, tags: [] },

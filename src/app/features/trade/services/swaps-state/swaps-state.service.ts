@@ -178,8 +178,8 @@ export class SwapsStateService {
             ...currentTrades[providerIndex],
             trade: defaultState.trade!,
             needApprove: defaultState.needApprove,
-            tags: { isBest: false, cheap: false },
-            error: null
+            error: defaultState.error,
+            routes: defaultState.routes
           };
         } else {
           currentTrades.push(defaultState);

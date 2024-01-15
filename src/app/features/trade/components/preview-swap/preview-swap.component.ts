@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
 import { combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
@@ -46,7 +46,7 @@ import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/m
   styleUrls: ['./preview-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PreviewSwapComponent {
+export class PreviewSwapComponent implements OnDestroy {
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
@@ -105,7 +105,8 @@ export class PreviewSwapComponent {
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService
   ) {
-    this.previewSwapService.getSelectedProvider();
+    this.previewSwapService.setSelectedProvider();
+    this.previewSwapService.activatePage();
   }
 
   public backToForm(): void {
@@ -284,5 +285,9 @@ export class PreviewSwapComponent {
       state.label = 'Wrap';
     }
     return state;
+  }
+
+  public ngOnDestroy() {
+    this.previewSwapService.deactivatePage();
   }
 }
