@@ -75,7 +75,6 @@ export class TradeViewContainerComponent {
         !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
       if (isAddressValid) {
-        this.previewSwapService.activatePage();
         if (isCnFromNonEvm) {
           this.tradePageService.setState('cnPreview');
         } else {
@@ -83,7 +82,6 @@ export class TradeViewContainerComponent {
         }
       }
     } else {
-      this.previewSwapService.activatePage();
       this.tradePageService.setState('preview');
     }
   }

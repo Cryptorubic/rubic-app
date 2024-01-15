@@ -62,16 +62,6 @@
     }
   }
 
-  &__fiats {
-    ::ng-deep app-icon-button {
-      svg {
-        path {
-          fill: var(--form-background-transparent);
-        }
-      }
-    }
-  }
-
   &__blockchain-header {
     display: none;
   }
@@ -228,29 +218,6 @@
 }
 
 @include b($mobile-sm-middle) {
-  .asset-types-aside {
-    li {
-      ::ng-deep app-icon-button {
-        button {
-          width: 57px !important;
-          height: 52px !important;
-
-          .t-content {
-            justify-content: center;
-
-            .image {
-              margin: 0;
-            }
-
-            .label-container {
-              display: none;
-            }
-          }
-        }
-      }
-    }
-  }
-
   .open-selector {
     width: 57px;
 

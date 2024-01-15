@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, distinctUntilChanged, filter, skip, takeUntil, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  skip,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { FormControl } from '@angular/forms';
@@ -68,23 +76,36 @@ export class TargetNetworkAddressComponent implements OnInit {
         filter(form => !isNil(form.fromBlockchain) && !isNil(form.toToken)),
         distinctUntilChanged((prev, curr) => {
           return (
-            compareTokens(prev.fromToken, curr.toToken) && compareTokens(prev.toToken, curr.toToken)
+            compareTokens(prev.fromToken, curr.fromToken) &&
+            compareTokens(prev.toToken, curr.toToken)
           );
         }),
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.address.patchValue(null);
+        this.checkValidation(this.address.value);
       });
   }
 
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(100),
+        tap(() => {
+          this.address.updateValueAndValidity({ emitEvent: false });
+          this.targetNetworkAddressService.setIsAddressValid(false);
+        }),
+        delay(250),
+        takeUntil(this.destroy$)
+      )
       .subscribe(address => {
-        const isValid = this.address.valid;
-        this.targetNetworkAddressService.setIsAddressValid(isValid);
-        this.targetNetworkAddressService.setAddress(isValid ? address : null);
+        this.checkValidation(address);
       });
+  }
+
+  private checkValidation(address: string): void {
+    const isValid = this.address.valid;
+    this.targetNetworkAddressService.setIsAddressValid(isValid);
+    this.targetNetworkAddressService.setAddress(isValid ? address : null);
   }
 }

@@ -8,6 +8,8 @@ import { tableRowsWithActionButtons } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ActionButtonLoadingStatus } from './model/types';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -21,6 +23,8 @@ export class CrossChainDesktopTableComponent {
   @Input({ required: true }) device: 'mobile' | 'desktop' | 'tablet';
 
   public readonly BLOCKCHAIN_NAME = BLOCKCHAIN_NAME;
+
+  public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
   public readonly columns = crossChainCols;
 
@@ -42,7 +46,8 @@ export class CrossChainDesktopTableComponent {
     private readonly crossChainTableSrvice: CrossChainTableService,
     private readonly commonTableService: CommonTableService,
     private readonly walletConnector: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly tokensService: TokensService
   ) {}
 
   public changeDirection(direction: 1 | -1): void {
@@ -97,6 +102,10 @@ export class CrossChainDesktopTableComponent {
 
   public isLoadingActionButton(fromTxHash: string): boolean {
     return !!this.actionButtonsStatuses.find(status => status.fromTxHash === fromTxHash)?.isLoading;
+  }
+
+  public onImageError($event: Event): void {
+    this.tokensService.onTokenImageError($event);
   }
 
   private startLoadingOnAction(item: CrossChainTableData): ActionButtonLoadingStatus {

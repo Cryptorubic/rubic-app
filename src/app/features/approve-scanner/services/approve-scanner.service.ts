@@ -40,6 +40,7 @@ import { debounceTime } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -212,7 +213,7 @@ export class ApproveScannerService {
       .get<ScannerResponse>(blockchainAddressMapper[blockchain.key as SupportedBlockchain])
       .pipe(
         map(response => this.handleScannerResponse(response)),
-        switchTap(() => this.tokensStoreService.tokens$.pipe(first(Boolean))),
+        switchTap(() => this.tokensStoreService.tokens$.pipe(first(tuiIsPresent))),
         switchMap(approves => this.findTokensForApproves(approves)),
         switchMap(approves => this.fetchLastAllowance(approves, blockchain)),
         map(approves => approves.filter(approve => approve.value !== '0')),
