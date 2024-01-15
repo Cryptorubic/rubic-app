@@ -20,6 +20,7 @@ import {
   DefaultParametersFrom,
   DefaultParametersTo
 } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
+import { tuiIsPresent } from '@taiga-ui/cdk';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -99,7 +100,7 @@ export class SwapFormQueryService {
 
   private subscribeOnQueryParams(): void {
     this.tokensStoreService.tokens$
-      .pipe(first(Boolean))
+      .pipe(first(tuiIsPresent))
       .pipe(
         switchMap(tokens => {
           const queryParams = this.queryParamsService.queryParams;

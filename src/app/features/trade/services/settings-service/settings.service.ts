@@ -81,7 +81,8 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       autoRefresh: Boolean(this.authService?.user?.address),
-      showReceiverAddress: false
+      showReceiverAddress: false,
+      useMevBotProtection: true
     };
   }
 
@@ -112,7 +113,8 @@ export class SettingsService {
         deadline: new FormControl<number>(this.defaultItSettings.deadline),
         disableMultihops: new FormControl<boolean>(this.defaultItSettings.disableMultihops),
         autoRefresh: new FormControl<boolean>(this.defaultItSettings.autoRefresh),
-        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress)
+        showReceiverAddress: new FormControl<boolean>(this.defaultItSettings.showReceiverAddress),
+        useMevBotProtection: new FormControl<boolean>(this.defaultItSettings.useMevBotProtection)
       }),
       [SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING]: new FormGroup<CcrSettingsFormControls>({
         autoSlippageTolerance: new FormControl<boolean>(
@@ -178,8 +180,8 @@ export class SettingsService {
     const priceImpact = trade.getTradeInfo().priceImpact;
 
     const settingsChecks = {
-      highSlippage: slippage > 5 && slippage,
-      highPriceImpact: priceImpact > 30 && priceImpact
+      highSlippage: slippage >= 10 ? slippage : false,
+      highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
     if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
@@ -188,7 +190,7 @@ export class SettingsService {
           SettingsWarningModalComponent,
           {
             data: settingsChecks,
-            size: 'l',
+            size: 's',
             fitContent: true
           }
         )
