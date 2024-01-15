@@ -24,7 +24,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `${basePath}bnb.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: `${basePath}bnb.svg`,
   [BLOCKCHAIN_NAME.BOBA]: `${basePath}boba.svg`,
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: `${basePath}boba-avalanche.svg`,
   [BLOCKCHAIN_NAME.BOBA_BSC]: `${basePath}boba-bsc.svg`,
   [BLOCKCHAIN_NAME.BSV]: `${basePath}bsv.svg`,
   [BLOCKCHAIN_NAME.CARDANO]: `${basePath}cardano.svg`,
