@@ -120,7 +120,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: 'xy_dex',
   [ON_CHAIN_TRADE_TYPE.FUSIONX]: 'fusionx',
   [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
-  [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango'
+  [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
+  [ON_CHAIN_TRADE_TYPE.ASCENT]: 'ascent'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
