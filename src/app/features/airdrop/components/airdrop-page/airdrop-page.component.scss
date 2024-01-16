@@ -2,7 +2,10 @@
 
 :host {
   display: block;
-  max-width: 540px;
+  width: fit-content;
+  min-width: 540px;
+
+  transition: width 0.1s ease-in-out;
 
   ::ng-deep {
     &:nth-child(2) {

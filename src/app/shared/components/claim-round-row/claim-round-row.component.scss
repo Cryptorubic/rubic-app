@@ -53,7 +53,7 @@
     &-date {
       position: relative;
 
-      width: 235px;
+      width: 175px;
       min-width: 182px;
 
       white-space: nowrap;
@@ -146,8 +146,12 @@
 
       font-size: 20px;
 
-      &-date::after {
-        right: -25px;
+      &-date {
+        width: 235px;
+        
+        &::after {
+          right: -25px;
+        }
       }
 
       &-amount {
