@@ -85,7 +85,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://lightning-replica.boba.network'
   ],
   [BLOCKCHAIN_NAME.BOBA_BSC]: ['https://bnb.boba.network'],
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: ['https://avax.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
     'https://astar.public.blastapi.io',
