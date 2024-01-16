@@ -53,8 +53,10 @@
     &-date {
       position: relative;
 
-      width: 100%;
-      max-width: 190px;
+      width: 235px;
+      min-width: 182px;
+
+      white-space: nowrap;
 
       &::after {
         position: absolute;
@@ -75,6 +77,8 @@
       display: flex;
       gap: var(--tui-padding-m);
       align-items: center;
+
+      white-space: nowrap;
 
       &-icon {
         width: 25px;
@@ -111,6 +115,132 @@
     &-icon {
       width: 25px;
       margin-left: var(--tui-padding-xs);
+    }
+  }
+}
+
+@media (min-width: 2560px) {
+  .round {
+    &__container {
+      padding: var(--tui-padding-s);
+    }
+
+    &__header {
+      font-size: 20px;
+    }
+
+    &__footer {
+      gap: var(--tui-padding-s);
+    }
+
+    &__number {
+      font-size: 20px;
+    }
+
+    &__info {
+      gap: 50px;
+      max-width: 100%;
+      height: 60px;
+
+      padding: var(--tui-padding-s) var(--tui-padding-l);
+
+      font-size: 20px;
+
+      &-date::after {
+        right: -25px;
+      }
+
+      &-amount {
+        gap: var(--tui-padding-m);
+
+        &-icon {
+          width: 30px;
+        }
+      }
+    }
+
+    &__button {
+      width: 130px;
+      height: 60px;
+
+      line-height: 1;
+
+      &-icon {
+        width: 30px;
+        margin-left: var(--tui-padding-s);
+      }
+
+      ::ng-deep {
+        .t-wrapper {
+          padding: 0 10px !important;
+
+          font-size: 20px !important;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .round {
+    &__container {
+      padding: var(--tui-padding-xl);
+    }
+
+    &__header {
+      padding: 0 0 20px var(--tui-padding-l);
+
+      font-size: 28px;
+    }
+
+    &__footer {
+      gap: var(--tui-padding-xl);
+    }
+
+    &__number {
+      font-size: 28px;
+    }
+
+    &__info {
+      height: 70px;
+
+      padding: var(--tui-padding-xl) var(--tui-padding-xxl);
+
+      font-size: 28px;
+
+      &-date {
+        width: 320px;
+
+        &::after {
+          right: -25px;
+        }
+      }
+
+      &-amount {
+        gap: var(--tui-padding-xl);
+
+        &-icon {
+          width: 40px;
+        }
+      }
+    }
+
+    &__button {
+      width: 170px;
+      height: 70px;
+
+      &-icon {
+        width: 40px;
+        margin-left: var(--tui-padding-s);
+      }
+
+      ::ng-deep {
+        .t-wrapper {
+          padding: 0 10px !important;
+
+          font-size: 28px !important;
+        }
+      }
     }
   }
 }

@@ -16,6 +16,17 @@
     }
   }
 
+  &__body-text {
+    @media (min-width: 2560px) {
+      font-size: 24px;
+    }
+
+    @media (min-width: 3840px) {
+      font-size: 38px;
+      line-height: 45px;
+    }
+  }
+
   &__footer {
     margin-top: 20px;
 
@@ -39,6 +50,18 @@
 
       app-rubic-button {
         width: 100%;
+
+        @media (min-width: 2560px) {
+          ::ng-deep button {
+            font-size: 24px;
+          }
+        }
+
+        @media (min-width: 3840px) {
+          ::ng-deep button {
+            font-size: 38px;
+          }
+        }
       }
     }
   }
