@@ -1,0 +1,40 @@
+@use 'src/scss/core' as *;
+
+.dropdown-content__wrapper {
+  display: flex;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-xs);
+}
+
+.dropdown-content {
+  display: flex;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  width: 100%;
+  padding: var(--tui-padding-xs) var(--tui-padding-xs);
+
+  > * {
+    width: 16px;
+    height: 16px;
+
+    cursor: pointer;
+
+    ::ng-deep * {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &:hover {
+    background: var(--tui-secondary);
+    border-radius: var(--tui-radius-m);
+  }
+
+  &__favorite {
+    &_active {
+      ::ng-deep path {
+        stroke: var(--tui-primary);
+      }
+    }
+  }
+}
