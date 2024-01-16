@@ -102,13 +102,16 @@
 
             <ng-template #dropdownOptions>
               <div class="statusFrom-dropdown">
-                <app-rubic-badge
-                  [status]="item.fromTx.status.appearance"
-                  [label]="item.fromTx.status.label"
-                ></app-rubic-badge>
+                <a [safetyLink]="item.fromTx.explorerLink">
+                  <app-rubic-badge
+                    [status]="item.fromTx.status.appearance"
+                    [label]="item.fromTx.status.label"
+                  ></app-rubic-badge>
+                </a>
 
                 <app-dropdown-options-table-item
                   [copyValue]="item.changenowId"
+                  [link]="item.fromTx.explorerLink"
                 ></app-dropdown-options-table-item>
               </div>
             </ng-template>

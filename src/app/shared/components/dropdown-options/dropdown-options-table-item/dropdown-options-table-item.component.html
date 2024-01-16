@@ -10,34 +10,44 @@
 </tui-hosted-dropdown>
 
 <ng-template #content let-activeZone>
-  <tui-data-list tuiDataListDropdownManager size="l" [tuiActiveZoneParent]="activeZone">
+  <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
     <div class="dropdown-content-wrapper">
       <div class="dropdown-content__actions">
-        <ng-container *ngIf="!isCopyClicked; else copyClicked">
-          <span
-            class="dropdown-content__name-container-copy-icon"
-            [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-            (click)="copyToClipboard()"
-            [tuiHint]="copyHint"
-            tuiHintAppearance="onDark"
-            [tuiHintShowDelay]="50"
-            tuiHintDirection="top-right"
-            [tuiHintHideDelay]="100"
-          ></span>
+        <ng-container>
+          <ng-container *ngIf="!isCopyClicked; else copyClicked">
+            <span
+              class="dropdown-content__actions-copy-icon"
+              [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+              (click)="copyToClipboard()"
+              [tuiHint]="copyHint"
+              [tuiHintShowDelay]="50"
+              tuiHintDirection="top-right"
+              [tuiHintHideDelay]="100"
+            ></span>
 
-          <ng-template #copyHint>
-            <span class="dropdown-content__name-container-address-hint">{{ copyValue }}</span>
+            <ng-template #copyHint>
+              <span class="dropdown-content__actions-address-hint">Copy ChangeNOW ID</span>
+            </ng-template>
+          </ng-container>
+
+          <ng-template #copyClicked>
+            <span class="dropdown-content__actions-copied-container">
+              <span
+                class="dropdown-content__actions-copied-icon"
+                [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+              ></span>
+            </span>
           </ng-template>
         </ng-container>
 
-        <ng-template #copyClicked>
-          <span class="dropdown-content__name-container-copied-container">
-            <span
-              class="dropdown-content__name-container-copied-icon"
-              [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
-            ></span>
-          </span>
-        </ng-template>
+        <ng-container *ngIf="link">
+          <img
+            class="dropdown-content__actions-link-arrow"
+            src="assets/images/icons/arrow/link-arrow.svg"
+            alt="link-arrow"
+            (click)="onLinkClick()"
+          />
+        </ng-container>
       </div>
     </div>
   </tui-data-list>

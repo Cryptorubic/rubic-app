@@ -16,6 +16,8 @@ import { NAVIGATOR } from '@ng-web-apis/common';
 export class DropdownOptionsTableItemComponent {
   @Input() copyValue: string = '';
 
+  @Input() link: string = '';
+
   public isDropdownOpen: boolean = false;
 
   public isCopyClicked: boolean = false;
@@ -33,5 +35,10 @@ export class DropdownOptionsTableItemComponent {
       this.isCopyClicked = false;
       this.cdr.markForCheck();
     }, 500);
+  }
+
+  public onLinkClick(): void {
+    window.open(this.link, '_blank');
+    this.isDropdownOpen = false;
   }
 }
