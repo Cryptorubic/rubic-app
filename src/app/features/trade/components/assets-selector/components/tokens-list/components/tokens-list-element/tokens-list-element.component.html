@@ -1,5 +1,5 @@
 <div class="token-card-container">
-  <div class="token-card">
+  <div class="token-card" (click)="selectToken.emit(token)">
     <div class="token-card__image-container">
       <img
         [src]="token.image || DEFAULT_TOKEN_IMAGE"

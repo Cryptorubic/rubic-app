@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Output
+} from '@angular/core';
 // import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
@@ -23,6 +30,8 @@ export class TokensListElementComponent {
   @Input() token: AvailableTokenAmount;
 
   @Input() balanceLoading = false;
+
+  @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 

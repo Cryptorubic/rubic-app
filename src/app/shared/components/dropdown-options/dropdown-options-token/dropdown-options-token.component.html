@@ -11,12 +11,12 @@
 
 <ng-template #content let-activeZone>
   <tui-data-list tuiDataListDropdownManager size="l" [tuiActiveZoneParent]="activeZone">
-    <div class="dropdown-content-wrapper">
-      <div class="dropdown-content__actions">
+    <div class="dropdown-content__wrapper">
+      <div class="dropdown-content">
         <ng-container *ngIf="showCopyToClipboardOption">
           <ng-container *ngIf="!isCopyClicked; else copyClicked">
             <span
-              class="dropdown-content__name-container-copy-icon"
+              class="dropdown-content__copy-icon"
               [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
               (click)="copyToClipboard()"
               [tuiHint]="copyHint"
@@ -27,14 +27,14 @@
             ></span>
 
             <ng-template #copyHint>
-              <span class="dropdown-content__name-container-address-hint">{{ token.address }}</span>
+              <span class="dropdown-content__container-address-hint">{{ token.address }}</span>
             </ng-template>
           </ng-container>
 
           <ng-template #copyClicked>
-            <span class="dropdown-content__name-container-copied-container">
+            <span class="dropdown-content__container-copied-container">
               <span
-                class="dropdown-content__name-container-copied-icon"
+                class="dropdown-content__container-copied-icon"
                 [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
               ></span>
             </span>
@@ -44,7 +44,7 @@
         <ng-container>
           <div class="dropdown-content__security-container">
             <a
-              class="dropdown-content__security-container-security-icon"
+              class="dropdown-content__security-container-icon"
               [inlineSVG]="
                 'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
               "
@@ -60,11 +60,11 @@
             ></a>
 
             <ng-template #tokenSecurityHint>
-              <span class="dropdown-content__security-container-security-hint">
+              <span class="dropdown-content__security-container-hint">
                 {{ securityMessages[securityStatus] }}
               </span>
               <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
-                <span class="dropdown-content__security-container-security-hint-powered-by"
+                <span class="dropdown-content__security-container--hint-powered-by"
                   >Powered by Go+</span
                 >
               </ng-container>

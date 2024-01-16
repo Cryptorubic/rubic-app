@@ -8,8 +8,8 @@ $transition: all 0.1s ease-in-out;
 
   display: flex;
   gap: var(--tui-padding-s);
+  align-items: baseline;
   padding: var(--tui-padding-s);
-  // margin-top: -8px;
   overflow-y: hidden;
 }
 

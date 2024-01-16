@@ -5,6 +5,8 @@ import { BehaviorSubject, of, switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
+import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -41,7 +43,9 @@ export class TokensListComponent {
 
   constructor(
     private readonly tokensListService: TokensListService,
-    private readonly tokensListStoreService: TokensListStoreService
+    private readonly tokensListStoreService: TokensListStoreService,
+    private readonly mobileNativeService: MobileNativeModalService,
+    private readonly assetsSelectorService: AssetsSelectorService
   ) {}
 
   /**
@@ -52,5 +56,13 @@ export class TokensListComponent {
    */
   public trackByFn(_index: number, tokenListElement: AvailableTokenAmount): string {
     return `${tokenListElement.blockchain}_${tokenListElement.address}`;
+  }
+
+  public onTokenSelect(token: AvailableTokenAmount): void {
+    this.mobileNativeService.forceClose();
+
+    if (token.available) {
+      this.assetsSelectorService.onAssetSelect(token);
+    }
   }
 }
