@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, combineLatestWith, Observable } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
-import { debounceTime, filter, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiControlValue, tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { CrossChainTableResponse } from '@features/history/models/cross-chain-table-response';
 import { HttpService } from '@core/services/http/http.service';
@@ -59,7 +59,6 @@ export class CrossChainTableService extends TableService<
   public readonly data$: Observable<CrossChainTableData[]> = this.request$.pipe(
     filter(tuiIsPresent),
     map(response => response.data.filter(tuiIsPresent)),
-    tap(i => console.log('DATA$', i)),
     startWith([])
   );
 

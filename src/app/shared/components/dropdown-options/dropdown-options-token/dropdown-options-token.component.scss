@@ -2,8 +2,8 @@
 
 .dropdown-content-wrapper {
   display: flex;
-  gap: 8px;
-  padding: 8px;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-s);
 }
 
 .dropdown-content {

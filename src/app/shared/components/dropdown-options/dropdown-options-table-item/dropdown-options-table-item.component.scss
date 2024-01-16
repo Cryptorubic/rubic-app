@@ -5,8 +5,8 @@
   z-index: 1000000000000000;
 
   display: flex;
-  gap: 8px;
-  padding: 8px;
+  gap: var(--tui-padding-s);
+  padding: var(--tui-padding-s);
 }
 
 .dropdown-content {

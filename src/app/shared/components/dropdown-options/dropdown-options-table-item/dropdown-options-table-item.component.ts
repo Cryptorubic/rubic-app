@@ -22,7 +22,7 @@ export class DropdownOptionsTableItemComponent {
 
   constructor(
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    private cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public copyToClipboard(): void {
