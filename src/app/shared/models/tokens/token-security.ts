@@ -28,3 +28,14 @@ export enum TokenSecurityStatus {
   /** Token is Platform Token */
   PLATFORM_TOKEN = 'platform-token'
 }
+
+export const securityMessages: Record<TokenSecurityStatus, string> = {
+  [TokenSecurityStatus.TRUST_LIST]: 'Token is in the Go+ Trust List',
+  [TokenSecurityStatus.SCAM_LIST]: 'Token is in the Scam List',
+  [TokenSecurityStatus.SECURED]: 'Token code has no elements of concern',
+  [TokenSecurityStatus.LOW_RISK]: 'Token code contains some low risk elements of concern',
+  [TokenSecurityStatus.HIGH_RISK]: 'Token code contains some high risk elements of concern',
+  [TokenSecurityStatus.NO_INFO]: 'No information',
+  [TokenSecurityStatus.PLATFORM_TOKEN]: 'Platform Token',
+  [TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN]: 'Unsupported blockchain'
+};
