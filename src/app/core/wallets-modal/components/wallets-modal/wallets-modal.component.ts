@@ -4,10 +4,10 @@ import {
   Component,
   Inject,
   Injector,
-  OnInit
+  OnInit,
+  Self
 } from '@angular/core';
 import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
-import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -23,18 +23,20 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { firstValueFrom, from, of } from 'rxjs';
-import { catchError, switchMap, timeout } from 'rxjs/operators';
-import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { BehaviorSubject, firstValueFrom, from, of } from 'rxjs';
+import { catchError, switchMap, takeUntil, timeout } from 'rxjs/operators';
+import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { FormControl } from '@angular/forms';
+import { StoreService } from '@core/services/store/store.service';
 
 @Component({
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -42,6 +44,12 @@ export class WalletsModalComponent implements OnInit {
   private readonly allProviders = PROVIDERS_LIST;
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
+
+  public readonly rulesCheckbox = new FormControl<boolean>(false);
+
+  private readonly _enableWallets$ = new BehaviorSubject<boolean>(false);
+
+  public readonly enableWallets$ = this._enableWallets$.asObservable();
 
   public get isChromium(): boolean {
     if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
@@ -83,16 +91,20 @@ export class WalletsModalComponent implements OnInit {
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly translateService: TranslateService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
-    private readonly queryParamsService: QueryParamsService,
-    private readonly gtmService: GoogleTagManagerService
-  ) {}
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly storeService: StoreService,
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {
+    this.subscribeOnFormValueChange();
+  }
 
   ngOnInit() {
+    this.rulesCheckbox.patchValue(this.storeService.getItem('RUBIC_AGREEMENT_WITH_RULES') || false);
+
     if (this.browserService.currentBrowser === BROWSER.METAMASK) {
       this.connectProvider(WALLET_NAME.METAMASK);
       return;
@@ -101,6 +113,13 @@ export class WalletsModalComponent implements OnInit {
     if (this.browserService.currentBrowser === BROWSER.COINBASE) {
       this.connectProvider(WALLET_NAME.WALLET_LINK);
     }
+  }
+
+  private subscribeOnFormValueChange(): void {
+    this.rulesCheckbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      this._enableWallets$.next(value);
+      this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES', value);
+    });
   }
 
   private async deepLinkRedirectIfSupported(provider: WALLET_NAME): Promise<boolean> {
@@ -132,65 +151,67 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    this.gtmService.fireClickOnWalletProviderEvent(provider);
+    if (this.rulesCheckbox.value) {
+      this.gtmService.fireClickOnWalletProviderEvent(provider);
 
-    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-      const redirected = await this.deepLinkRedirectIfSupported(provider);
-      if (redirected) {
+      if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+        const redirected = await this.deepLinkRedirectIfSupported(provider);
+        if (redirected) {
+          return;
+        }
+      }
+
+      this.headerStore.setWalletsLoadingStatus(true);
+
+      // desktop coinbase
+      if (
+        this.browserService.currentBrowser === BROWSER.DESKTOP &&
+        provider === WALLET_NAME.WALLET_LINK
+      ) {
+        this.dialogService
+          .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
+            CoinbaseConfirmModalComponent,
+            {
+              dismissible: true,
+              label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
+              size: 'm',
+              fitContent: true
+            },
+            this.injector
+          )
+          .pipe(
+            switchMap(blockchainName => {
+              if (blockchainName) {
+                this.close();
+                return this.authService.connectWallet({
+                  walletName: provider,
+                  chainId: blockchainId[blockchainName]
+                });
+              }
+              return of(null);
+            }),
+            catchError(() => {
+              return of(null);
+            })
+          )
+          .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
         return;
       }
-    }
 
-    this.headerStore.setWalletsLoadingStatus(true);
-
-    // desktop coinbase
-    if (
-      this.browserService.currentBrowser === BROWSER.DESKTOP &&
-      provider === WALLET_NAME.WALLET_LINK
-    ) {
-      this.dialogService
-        .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
-          CoinbaseConfirmModalComponent,
-          {
-            dismissible: true,
-            label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
-            size: 'm',
-            fitContent: true
-          },
-          this.injector
-        )
-        .pipe(
-          switchMap(blockchainName => {
-            if (blockchainName) {
-              this.close();
-              return this.authService.connectWallet({
-                walletName: provider,
-                chainId: blockchainId[blockchainName]
-              });
-            }
-            return of(null);
-          }),
-          catchError(() => {
-            return of(null);
-          })
-        )
-        .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
-      return;
-    }
-
-    try {
-      const connectionTime = 15_000;
-      await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider })).pipe(
-          timeout(connectionTime),
-          catchError(() => of(`Request timed out after: ${connectionTime}`))
-        )
-      );
-    } catch (e) {
+      try {
+        const connectionTime = 15_000;
+        await firstValueFrom(
+          from(this.authService.connectWallet({ walletName: provider })).pipe(
+            timeout(connectionTime),
+            catchError(() => of(`Request timed out after: ${connectionTime}`))
+          )
+        );
+      } catch (e) {
+        this.headerStore.setWalletsLoadingStatus(false);
+      }
       this.headerStore.setWalletsLoadingStatus(false);
+      this.close();
     }
-    this.headerStore.setWalletsLoadingStatus(false);
-    this.close();
   }
 
   public close(): void {
