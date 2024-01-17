@@ -76,7 +76,8 @@
   position: relative;
 
   display: block;
-  max-width: 540px;
+  width: fit-content;
+  min-width: 540px;
   margin: 0 auto;
 
   &__title {
@@ -123,6 +124,128 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@media (min-width: 2560px) {
+  :host {
+    ::ng-deep {
+      app-login-button button {
+        font-size: 20px !important;
+      }
+
+      app-rotating-icon {
+        width: 23px;
+        height: 23px;
+
+        svg {
+          width: 23px;
+          height: 23px;
+        }
+      }
+
+      app-locked-rbc,
+      app-locked-rbc-in-dollars,
+      app-locked-rbc-in-percent,
+      app-average-lock-time,
+      app-reward-per-week,
+      app-average-apr {
+        .element {
+          &__label {
+            font-size: 16px;
+            line-height: 16px;
+
+            &-hint {
+              width: 18px;
+              height: 18px;
+              margin-top: -1px;
+              margin-left: 5px;
+            }
+
+            &-btn {
+              img {
+                width: 15px;
+                height: 9px;
+              }
+            }
+          }
+
+          &__value {
+            font-size: 20px;
+            line-height: 20px;
+          }
+        }
+      }
+    }
+  }
+
+  .statistics {
+    width: auto;
+
+    &__title {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__info {
+      grid-column-gap: 20px;
+    }
+
+    &__actions {
+      button {
+        font-size: 20px !important;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  :host {
+    ::ng-deep {
+      app-login-button button {
+        height: var(--tui-height-l) !important;
+
+        font-size: 28px !important;
+      }
+
+      app-locked-rbc,
+      app-locked-rbc-in-dollars,
+      app-locked-rbc-in-percent,
+      app-average-lock-time,
+      app-reward-per-week,
+      app-average-apr {
+        .element {
+          &__label {
+            font-size: 23px;
+            line-height: 23px;
+          }
+
+          &__value {
+            font-size: 28px;
+            line-height: 28px;
+          }
+        }
+      }
+    }
+  }
+
+  .statistics {
+    &__title {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__info {
+      grid-column-gap: 20px;
+    }
+
+    &__actions {
+      button {
+        height: var(--tui-height-l) !important;
+
+        font-size: 28px !important;
+      }
+    }
   }
 }
 

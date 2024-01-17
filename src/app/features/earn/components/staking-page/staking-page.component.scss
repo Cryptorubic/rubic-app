@@ -6,6 +6,12 @@
   margin: 0 auto;
   padding-top: 38px;
 
+  @media (min-width: 3840px) {
+    width: fit-content;
+    min-width: 802px;
+    max-width: none;
+  }
+
   @include b($tablet) {
     padding-top: 3px;
   }
@@ -68,6 +74,15 @@ app-deposits {
     align-items: center;
     justify-content: center;
     margin: 0 auto 30px;
+
+    @media (min-width: 2560px) {
+      font-size: 20px;
+      line-height: 20px;
+    }
+    @media (min-width: 3840px) {
+      font-size: 28px;
+      line-height: 28px;
+    }
   }
 
   &__icon {

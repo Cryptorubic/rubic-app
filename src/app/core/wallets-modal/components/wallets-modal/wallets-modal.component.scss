@@ -68,6 +68,54 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .modal {
+    &__footer {
+      font-size: 20px;
+      line-height: 26px;
+    }
+
+    &__provider-icon {
+      width: 25px;
+      height: 25px;
+    }
+
+    &__button {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__link {
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .modal {
+    &__footer {
+      font-size: 28px;
+      line-height: 34px;
+    }
+
+    &__provider-icon {
+      width: 32px;
+      height: 32px;
+    }
+
+    &__button {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__link {
+      font-size: 28px;
+      line-height: 28px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .modal {
     ::ng-deep .window-container {

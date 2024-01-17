@@ -7,6 +7,15 @@
   background: var(--tui-base-01);
   border-radius: var(--tui-radius-m);
 
+  @media (min-width: 2560px) {
+    font-size: 20px;
+  }
+  @media (min-width: 3840px) {
+    height: var(--tui-height-l);
+
+    font-size: 28px;
+  }
+
   @include b($mobile-sm-middle) {
     justify-content: space-around;
     width: 100%;
@@ -28,6 +37,15 @@
     &:not(:first-child) {
       border-left: 1px solid var(--secondary-background);
     }
+
+    ::ng-deep .t-highlight {
+      @media (min-width: 2560px) {
+        align-items: initial;
+      }
+      @media (min-width: 3840px) {
+        align-items: center;
+      }
+    }
   }
 
   .icon {
@@ -35,10 +53,21 @@
     align-items: center;
     margin-right: var(--tui-padding-s);
 
-    ::ng-deep svg path {
-      transition: 0.3s ease-in-out;
+    ::ng-deep svg {
+      path {
+        transition: 0.3s ease-in-out;
 
-      fill: var(--tui-text-03);
+        fill: var(--tui-text-03);
+      }
+
+      @media (min-width: 2560px) {
+        width: 25px;
+        height: 25px;
+      }
+      @media (min-width: 3840px) {
+        width: 35px;
+        height: 35px;
+      }
     }
   }
 }

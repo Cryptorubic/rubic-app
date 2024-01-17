@@ -309,6 +309,265 @@
   }
 }
 
+@media (min-width: 2560px) {
+  .form-container {
+    width: fit-content;
+    min-width: 490px;
+    max-width: none;
+  }
+
+  .title {
+    &__back {
+      ::ng-deep span svg {
+        height: 15px;
+      }
+    }
+
+    &__text {
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+
+  .token {
+    &__footer {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__logo {
+      &-icon {
+        width: 25px;
+        height: 25px;
+        margin-right: var(--tui-padding-s);
+      }
+    }
+
+    &__amount-input {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__max {
+      font-size: 14px;
+      line-height: 14px;
+    }
+
+    &__price {
+      max-width: 100px;
+    }
+  }
+
+  .duration {
+    &__title {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__common {
+      margin-top: var(--tui-padding-l);
+
+      &-chip {
+        font-size: 18px;
+        line-height: 18px;
+
+        &-label,
+        &-rate {
+          font-size: 18px;
+          line-height: 18px;
+        }
+
+        &-rate {
+          &-end {
+            font-size: 18px;
+            line-height: 18px;
+
+            &-hint {
+              font-size: 18px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        &-label {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  }
+
+  .hint {
+    font-size: 20px;
+    line-height: 20px;
+  }
+
+  .button-container {
+    ::ng-deep button {
+      font-size: 20px;
+      line-height: 20px;
+    }
+  }
+
+  .rules {
+    &__link {
+      gap: 8px;
+
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__icon {
+      ::ng-deep svg {
+        width: 15px;
+        height: 15px;
+      }
+    }
+  }
+
+  ::placeholder {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+@media (min-width: 3840px) {
+  :host {
+    ::ng-deep {
+      app-window-container {
+        header {
+          padding: 0 0 var(--tui-padding-xxl) var(--tui-padding-m);
+        }
+      }
+    }
+  }
+
+  ::placeholder {
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .stake-form {
+    padding: var(--tui-padding-xxl);
+  }
+
+  .title {
+    &__back {
+      ::ng-deep span svg {
+        height: 20px;
+      }
+    }
+
+    &__text {
+      font-size: 28px;
+      line-height: 28px;
+    }
+  }
+
+  .token {
+    &__header {
+      margin-bottom: var(--tui-padding-xxl);
+    }
+
+    &__footer {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__logo {
+      font-size: 28px;
+      line-height: 28px;
+
+      &-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: var(--tui-padding-s);
+      }
+    }
+
+    &__amount-input {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__max {
+      font-size: 20px;
+      line-height: 20px;
+    }
+
+    &__price {
+      max-width: 100px;
+    }
+  }
+
+  .duration {
+    &__title {
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__common {
+      margin-top: var(--tui-padding-xxl);
+
+      &-chip {
+        font-size: 23px;
+        line-height: 23px;
+
+        &-label,
+        &-rate {
+          font-size: 23px;
+          line-height: 23px;
+        }
+
+        &-rate {
+          &-end {
+            font-size: 23px;
+            line-height: 23px;
+
+            &-hint {
+              font-size: 23px;
+              line-height: 23px;
+            }
+          }
+        }
+
+        &-label {
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  .hint {
+    padding: var(--tui-padding-m) var(--tui-padding-xxl);
+
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .button-container {
+    ::ng-deep button {
+      font-size: 28px;
+      line-height: 28px;
+    }
+  }
+
+  .rules {
+    &__link {
+      gap: 12px;
+
+      font-size: 28px;
+      line-height: 28px;
+    }
+
+    &__icon {
+      ::ng-deep svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
 @include b($mobile-md) {
   ::ng-deep {
     app-window-container {

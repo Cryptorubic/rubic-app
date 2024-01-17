@@ -32,3 +32,39 @@
   display: block;
   width: 100%;
 }
+
+@media (min-width: 2560px) {
+  .title {
+    font-size: 20px;
+    line-height: 20px;
+  }
+
+  .text {
+    font-size: 20px;
+    line-height: 20px;
+  }
+
+  .agree {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+@media (min-width: 3840px) {
+  .title {
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .text {
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .agree {
+    height: var(--tui-height-l);
+
+    font-size: 28px;
+    line-height: 28px;
+  }
+}

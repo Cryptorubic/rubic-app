@@ -15,6 +15,13 @@
       img {
         height: 100%;
       }
+
+      @media (min-width: 2560px) {
+        width: 34px;
+      }
+      @media (min-width: 3840px) {
+        width: 44px;
+      }
     }
 
     &__main-image {
@@ -25,6 +32,22 @@
 
       border-radius: 100%;
       outline: 1px solid var(--primary-background);
+
+      @media (min-width: 2560px) {
+        width: 26px;
+        height: 100%;
+      }
+      @media (min-width: 3840px) {
+        width: 36px;
+        height: 100%;
+      }
+    }
+
+    @media (min-width: 2560px) {
+      height: 26px;
+    }
+    @media (min-width: 3840px) {
+      height: 36px;
     }
   }
 
@@ -33,6 +56,13 @@
 
     img {
       transition: all 0.1s ease-in-out;
+
+      @media (min-width: 2560px) {
+        height: 12px;
+      }
+      @media (min-width: 3840px) {
+        height: 18px;
+      }
     }
 
     &:hover {
@@ -76,6 +106,19 @@
     &__image {
       width: 16px;
       height: 16px;
+
+      @media (min-width: 2560px) {
+        width: 26px;
+        height: 26px;
+      }
+      @media (min-width: 3840px) {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (min-width: 3840px) {
+      gap: var(--tui-padding-l);
     }
   }
 
@@ -92,9 +135,38 @@
       }
     }
 
+    td {
+      @media (min-width: 3840px) {
+        padding: 15px 0.75rem;
+
+        ::ng-deep .badge {
+          padding: 20px var(--tui-padding-xl);
+
+          &__dot {
+            width: 10px;
+            height: 10px;
+          }
+        }
+      }
+    }
+
     td,
     th {
       border: none;
+
+      @media (min-width: 2560px) {
+        font-size: 20px;
+      }
+      @media (min-width: 3840px) {
+        font-size: 28px;
+      }
+    }
+
+    @media (min-width: 2560px) {
+      padding: 10px 15px;
+    }
+    @media (min-width: 3840px) {
+      padding: 15px 20px;
     }
   }
 
