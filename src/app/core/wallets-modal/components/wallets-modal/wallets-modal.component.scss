@@ -120,6 +120,19 @@
       grid-template-columns: repeat(3, calc(100% / 3));
     }
 
+    &__provider-icon {
+      width: 64px;
+      height: 64px;
+
+      img {
+        width: 43px;
+      }
+
+      &:hover {
+        background-color: var(--tui-secondary);
+      }
+    }
+
     &__form {
       width: fit-content;
       margin: 0 auto var(--tui-padding-4xl) auto;
