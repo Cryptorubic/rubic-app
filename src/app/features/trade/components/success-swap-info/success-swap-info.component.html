@@ -1,13 +1,20 @@
 <div class="info">
   <div class="info__title">Yahoo!</div>
-  <ng-container *ngIf="showPoints">
-    <div class="info__description">
-      You will be credited with {{ pointsAmount$ | async }} points when the transaction is
-      successful
-    </div>
-    <div class="info__bottom">
-      Points can be seen
-      <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
-    </div>
+  <ng-container *ngLet="pointsAmount$ | async as pointsAmount">
+    <ng-container *ngIf="showPoints && pointsAmount; else pointsUndefined">
+      <div class="info__description">
+        You will be credited with
+        {{ pointsAmount }}
+        points when the transaction is successful
+      </div>
+      <div class="info__bottom">
+        Points can be seen
+        <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
+      </div>
+    </ng-container>
+
+    <ng-template #pointsUndefined>
+      Calculation will be made later, the result will be displayed in your personal account.
+    </ng-template>
   </ng-container>
 </div>
