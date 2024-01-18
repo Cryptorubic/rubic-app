@@ -5,10 +5,20 @@ import { WalletsModalComponent } from 'src/app/core/wallets-modal/components/wal
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { TuiButtonModule, TuiScrollbarModule } from '@taiga-ui/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TuiCheckboxModule } from '@taiga-ui/kit';
 
 @NgModule({
   declarations: [WalletsModalComponent, CoinbaseConfirmModalComponent],
-  imports: [CommonModule, SharedModule, TuiScrollbarModule, TuiButtonModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    TuiScrollbarModule,
+    TuiButtonModule,
+    FormsModule,
+    TuiCheckboxModule,
+    ReactiveFormsModule
+  ],
   providers: [WalletsModalService]
 })
 export class WalletsModalModule {}
