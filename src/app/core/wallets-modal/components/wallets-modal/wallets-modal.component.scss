@@ -116,12 +116,21 @@
     }
 
     &__body {
-      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, calc(100% / 3));
     }
 
     &__form {
       width: fit-content;
       margin: 0 auto var(--tui-padding-4xl) auto;
+
+      span {
+        font-size: 13px;
+      }
+
+      tui-checkbox {
+        margin-top: 1px;
+      }
     }
   }
 }
