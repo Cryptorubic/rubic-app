@@ -12,12 +12,7 @@
     padding: 0;
 
     header {
-      padding-bottom: 32px;
-    }
-
-    footer > *:first-child {
-      margin-top: 32px;
-      margin-left: 16px;
+      padding-bottom: var(--tui-padding-l);
     }
   }
 
@@ -25,9 +20,11 @@
     margin-right: 40px;
   }
 
-  &__footer {
+  &__form {
     display: flex;
     gap: var(--tui-padding-m);
+    margin-bottom: var(--tui-padding-4xl);
+    margin-left: var(--tui-padding-l);
 
     tui-checkbox {
       margin-top: 3px;
@@ -36,7 +33,7 @@
 
   &__body {
     display: grid;
-    grid-row-gap: 32px;
+    grid-row-gap: var(--tui-padding-4xl);
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
@@ -60,14 +57,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 50px;
-    height: 50px;
+    width: 44px;
+    height: 44px;
 
     background-color: var(--primary-background);
-    border-radius: 12px;
+    border-radius: var(--tui-radius-s);
 
     img {
-      width: 32px;
+      width: 28px;
     }
 
     &:hover {
@@ -99,7 +96,7 @@
       .t-content {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: var(--tui-padding-s);
         justify-content: center;
 
         white-space: nowrap;
@@ -122,26 +119,9 @@
       grid-template-columns: 1fr 1fr;
     }
 
-    //&__button {
-    //  ::ng-deep .t-content {
-    //    @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
-    //    flex-direction: row-reverse;
-    //    gap: var(--tui-padding-l);
-    //    justify-content: flex-end;
-    //  }
-    //}
-    //
-    //&__provider-icon {
-    //  img {
-    //    width: 30px;
-    //  }
-    //}
-    //
-    //&__footer {
-    //  width: 100%;
-    //  margin-top: var(--tui-padding-l);
-    //
-    //  text-align: center;
-    //}
+    &__form {
+      width: fit-content;
+      margin: 0 auto var(--tui-padding-4xl) auto;
+    }
   }
 }

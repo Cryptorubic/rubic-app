@@ -2,17 +2,30 @@
   <ng-container header *ngIf="!isMobile">
     {{ 'modals.walletsModal.title' | translate }}
   </ng-container>
-  <main class="modal__body">
+  <form class="modal__form">
+    <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
+    <span
+      >I read and accept
+      <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">
+        Terms of Use
+      </a>
+      and
+      <a class="modal__link" href="https://rubic.exchange/pdf/privacy-policy.pdf" target="_blank">
+        Privacy Policy.
+      </a></span
+    >
+  </form>
+  <main class="modal__body" *ngLet="enableWallets$ | async as enableWallets">
     <ng-container *ngFor="let provider of providers">
       <ng-container *ngIf="provider.display">
-        <div class="modal__provider" [ngClass]="{ disabled: (enableWallets$ | async) === false }">
+        <div class="modal__provider" [ngClass]="{ disabled: !enableWallets }">
           <button
             tuiButton
             appearance="secondary"
             type="button"
             size="xl"
             *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
-            [disabled]="(walletsLoading$ | async) || provider.disabled"
+            [disabled]="(walletsLoading$ | async) || provider.disabled || !enableWallets"
             (click)="connectProvider(provider.value)"
             class="modal__button"
           >
@@ -39,19 +52,4 @@
       </ng-container>
     </ng-container>
   </main>
-  <ng-container footer>
-    <form class="modal__footer">
-      <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
-      <span
-        >I read and accept
-        <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">
-          Terms of Use
-        </a>
-        and
-        <a class="modal__link" href="https://rubic.exchange/pdf/privacy-policy.pdf" target="_blank">
-          Privacy Policy.
-        </a></span
-      >
-    </form>
-  </ng-container>
 </app-window-container>

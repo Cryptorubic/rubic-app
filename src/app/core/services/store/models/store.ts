@@ -38,7 +38,7 @@ export type Store = {
   /**
    * User agreement to the Terms of Use and Privacy Policy.
    */
-  RUBIC_AGREEMENT_WITH_RULES: boolean;
+  RUBIC_AGREEMENT_WITH_RULES_V1: boolean;
 
   /**
    * User favorite tokens.
@@ -86,5 +86,5 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_OPTIONS_INSTANT_TRADE: null,
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,
   RUBIC_TRADES_INSTANT_TRADE: null,
-  RUBIC_AGREEMENT_WITH_RULES: null
+  RUBIC_AGREEMENT_WITH_RULES_V1: null
 };

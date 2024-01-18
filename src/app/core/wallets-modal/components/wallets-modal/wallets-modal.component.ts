@@ -4,8 +4,7 @@ import {
   Component,
   Inject,
   Injector,
-  OnInit,
-  Self
+  OnInit
 } from '@angular/core';
 import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
 import { AsyncPipe } from '@angular/common';
@@ -23,8 +22,8 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { BehaviorSubject, firstValueFrom, from, of } from 'rxjs';
-import { catchError, switchMap, takeUntil, timeout } from 'rxjs/operators';
+import { firstValueFrom, from, of, startWith } from 'rxjs';
+import { catchError, switchMap, tap, timeout } from 'rxjs/operators';
 import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -44,12 +43,6 @@ export class WalletsModalComponent implements OnInit {
   private readonly allProviders = PROVIDERS_LIST;
 
   private readonly mobileDisplayStatus$ = this.headerStore.getMobileDisplayStatus();
-
-  public readonly rulesCheckbox = new FormControl<boolean>(false);
-
-  private readonly _enableWallets$ = new BehaviorSubject<boolean>(false);
-
-  public readonly enableWallets$ = this._enableWallets$.asObservable();
 
   public get isChromium(): boolean {
     if (tuiIsEdge(this.userAgent) || tuiIsEdgeOlderThan(13, this.userAgent)) {
@@ -84,6 +77,13 @@ export class WalletsModalComponent implements OnInit {
     return provider === WALLET_NAME.WALLET_LINK;
   };
 
+  public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
+
+  public enableWallets$ = this.rulesCheckbox.valueChanges.pipe(
+    startWith(this.rulesCheckbox.value),
+    tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
+  );
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
     private readonly dialogService: ModalService,
@@ -96,14 +96,11 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly storeService: StoreService,
-    @Self() private readonly destroy$: TuiDestroyService
-  ) {
-    this.subscribeOnFormValueChange();
-  }
+    private readonly storeService: StoreService
+  ) {}
 
   ngOnInit() {
-    this.rulesCheckbox.patchValue(this.storeService.getItem('RUBIC_AGREEMENT_WITH_RULES') || false);
+    this.rulesCheckbox.patchValue(this.getStorageValue());
 
     if (this.browserService.currentBrowser === BROWSER.METAMASK) {
       this.connectProvider(WALLET_NAME.METAMASK);
@@ -115,11 +112,8 @@ export class WalletsModalComponent implements OnInit {
     }
   }
 
-  private subscribeOnFormValueChange(): void {
-    this.rulesCheckbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this._enableWallets$.next(value);
-      this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES', value);
-    });
+  private getStorageValue(): boolean {
+    return this.storeService.getItem('RUBIC_AGREEMENT_WITH_RULES_V1') || false;
   }
 
   private async deepLinkRedirectIfSupported(provider: WALLET_NAME): Promise<boolean> {
