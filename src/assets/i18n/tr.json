@@ -199,11 +199,7 @@
           "quarter": "Q2. 2021",
           "month": "April",
           "done": true,
-          "data": [
-            "Özel Token Desteği",
-            "Özel Köprüler Özelliği",
-            "Özel Yönlendirme Sistemi"
-          ]
+          "data": ["Özel Token Desteği", "Özel Köprüler Özelliği", "Özel Yönlendirme Sistemi"]
         },
         "2": {
           "quarter": "Q2. 2021",
@@ -248,10 +244,7 @@
           "quarter": "Q3. 2021",
           "month": "August",
           "done": true,
-          "data": [
-            "Commission In RBC - stage 2",
-            "Anonymizer V1 - Polygon"
-          ]
+          "data": ["Commission In RBC - stage 2", "Anonymizer V1 - Polygon"]
         },
         "6": {
           "quarter": "Q3. 2021",
@@ -869,7 +862,13 @@
     },
     "modals": {
       "success": "Your tokens are on the way!",
-      "explorerLink": "Check the transaction on explorer."
+      "explorerLink": "Check the transaction on explorer.",
+      "rubicPointsModal": {
+        "description": "You will be credited with {{ pointsAmount }} points when the transaction is successful",
+        "infoText": "Points can be seen",
+        "infoLink": "here",
+        "pointsUndefined": "Calculation will be made later, the result will be displayed in your personal account."
+      }
     }
   },
   "retrodrop": {
