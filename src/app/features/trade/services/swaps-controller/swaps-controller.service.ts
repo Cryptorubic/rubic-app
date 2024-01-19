@@ -273,12 +273,8 @@ export class SwapsControllerService {
                 callback.onHash,
                 err.transaction
               );
-
-              await this.handleCrossChainSwapResponse(trade, txHash, callback.onSwap);
             } else {
               txHash = await this.onChainService.swapTrade(trade, callback.onHash, err.transaction);
-
-              await this.handleOnChainSwapResponse(txHash, callback.onSwap);
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
