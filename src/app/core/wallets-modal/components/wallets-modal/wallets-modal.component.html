@@ -2,57 +2,54 @@
   <ng-container header *ngIf="!isMobile">
     {{ 'modals.walletsModal.title' | translate }}
   </ng-container>
-  <main class="modal__body">
+  <form class="modal__form">
+    <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
+    <span
+      >I read and accept
+      <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">
+        Terms of Use
+      </a>
+      and
+      <a class="modal__link" href="https://rubic.exchange/pdf/privacy-policy.pdf" target="_blank">
+        Privacy Policy.
+      </a></span
+    >
+  </form>
+  <main class="modal__body" *ngLet="enableWallets$ | async as enableWallets">
     <ng-container *ngFor="let provider of providers">
       <ng-container *ngIf="provider.display">
-        <button
-          tuiButton
-          appearance="secondary"
-          type="button"
-          size="m"
-          *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
-          [disabled]="(walletsLoading$ | async) || provider.disabled"
-          (click)="connectProvider(provider.value)"
-          class="modal__button"
-        >
-          {{ provider.name }}
-          <span class="modal__provider-icon">
-            <img src="{{ provider.img }}" alt="{{ provider.name }} provider" />
-          </span>
-        </button>
-        <ng-template #deepLink>
-          <a
+        <div class="modal__provider" [ngClass]="{ disabled: !enableWallets }">
+          <button
             tuiButton
             appearance="secondary"
             type="button"
-            size="m"
-            [href]="coinbaseDeeplink"
+            size="xl"
+            *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
+            [disabled]="(walletsLoading$ | async) || provider.disabled || !enableWallets"
+            (click)="connectProvider(provider.value)"
             class="modal__button"
-            >{{ provider.name }}
-            <span class="modal__provider-icon"
-              ><img src="{{ provider.img }}" alt="{{ provider.name }} provider"
-            /></span>
-          </a>
-        </ng-template>
+          >
+            <span class="modal__provider-icon">
+              <img src="{{ provider.img }}" alt="{{ provider.name }} provider" />
+            </span>
+          </button>
+          <ng-template #deepLink>
+            <a
+              tuiButton
+              appearance="secondary"
+              type="button"
+              size="xl"
+              [href]="coinbaseDeeplink"
+              class="modal__button"
+            >
+              <span class="modal__provider-icon"
+                ><img src="{{ provider.img }}" alt="{{ provider.name }} provider"
+              /></span>
+            </a>
+          </ng-template>
+          <span class="modal__provider-name">{{ provider.name }}</span>
+        </div>
       </ng-container>
     </ng-container>
   </main>
-  <ng-container footer>
-    <footer class="modal__footer">
-      <div class="modal__privacy-policy" *ngIf="!isMobile">
-        By connecting to the wallet, you automatically agree to our
-        <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">
-          Terms of Use
-        </a>
-        and
-        <a class="modal__link" href="https://rubic.exchange/pdf/privacy-policy.pdf" target="_blank">
-          Privacy Policy.
-        </a>
-      </div>
-      <span>{{ 'modals.walletsModal.new' | translate }} </span>
-      <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">{{
-        'modals.walletsModal.learnMore' | translate
-      }}</a>
-    </footer>
-  </ng-container>
 </app-window-container>

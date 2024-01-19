@@ -1,5 +1,9 @@
 @use 'src/scss/core' as *;
 
+:host ::ng-deep tui-dialog {
+  width: 568px;
+}
+
 .modal {
   --tui-secondary: var(--tui-secondary-hover);
   position: relative;
@@ -7,8 +11,8 @@
   ::ng-deep .window-container {
     padding: 0;
 
-    header h5 {
-      justify-content: center;
+    header {
+      padding-bottom: var(--tui-padding-l);
     }
   }
 
@@ -16,30 +20,55 @@
     margin-right: 40px;
   }
 
-  &__footer {
-    display: inline-block !important;
+  &__form {
+    display: flex;
+    gap: var(--tui-padding-m);
+    margin-bottom: var(--tui-padding-4xl);
+    margin-left: var(--tui-padding-l);
 
-    text-align: center;
+    tui-checkbox {
+      margin-top: 3px;
+    }
   }
 
   &__body {
+    display: grid;
+    grid-row-gap: var(--tui-padding-4xl);
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  &__provider {
     display: flex;
     flex-direction: column;
-    flex-wrap: nowrap;
-    gap: var(--tui-padding-l);
+    gap: var(--tui-padding-xs);
+    align-items: center;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+
+      user-select: none;
+      pointer-events: none;
+    }
   }
 
   &__provider-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 44px;
+    height: 44px;
 
-    white-space: nowrap;
+    background-color: var(--primary-background);
+    border-radius: var(--tui-radius-s);
 
     img {
-      width: 100%;
+      width: 28px;
+    }
+
+    &:hover {
+      background-color: var(--tui-secondary);
     }
   }
 
@@ -55,11 +84,23 @@
     }
 
 
-    ::ng-deep .t-content {
-      gap: var(--tui-padding-s);
-      padding: var(--tui-padding-m) 0;
+    ::ng-deep {
+      .t-wrapper {
+        background: none;
 
-      white-space: nowrap;
+        &:hover {
+          background: none;
+        }
+      }
+
+      .t-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tui-padding-s);
+        justify-content: center;
+
+        white-space: nowrap;
+      }
     }
   }
 
@@ -74,26 +115,35 @@
       padding: 0 var(--tui-padding-l);
     }
 
-    &__button {
-      ::ng-deep .t-content {
-        @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
-        flex-direction: row-reverse;
-        gap: var(--tui-padding-l);
-        justify-content: flex-end;
-      }
+    &__body {
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, calc(100% / 3));
     }
 
     &__provider-icon {
+      width: 64px;
+      height: 64px;
+
       img {
-        width: 30px;
+        width: 43px;
+      }
+
+      &:hover {
+        background-color: var(--tui-secondary);
       }
     }
 
-    &__footer {
-      width: 100%;
-      margin-top: var(--tui-padding-l);
+    &__form {
+      width: fit-content;
+      margin: 0 auto var(--tui-padding-4xl) auto;
 
-      text-align: center;
+      span {
+        font-size: 13px;
+      }
+
+      tui-checkbox {
+        margin-top: 1px;
+      }
     }
   }
 }
