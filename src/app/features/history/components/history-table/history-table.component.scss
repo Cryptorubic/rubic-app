@@ -111,7 +111,7 @@
   }
 
   .statusTo {
-    &-actionButton__wrapper {
+    &-action-button__wrapper {
       width: 87.4px;
     }
   }
@@ -173,6 +173,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &-value {
+        &-dropdown {
+          position: relative;
+          left: var(--tui-padding-s);
+        }
+
+        &-action-button__wrapper {
+          width: 87.4px;
+        }
+      }
     }
   }
 }
