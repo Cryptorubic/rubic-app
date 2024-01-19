@@ -179,7 +179,7 @@ export class OnChainService {
       blockchain
     );
 
-    await this.airdropPointsService.setSeNPointsTemp('on-chain');
+    this.airdropPointsService.setSeNPointsTemp('on-chain').subscribe();
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');

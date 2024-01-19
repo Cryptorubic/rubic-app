@@ -1,4 +1,4 @@
-import { BehaviorSubject, firstValueFrom, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
 import { tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
@@ -72,22 +72,18 @@ export class AirdropPointsService {
    * @remove
    * @todo remove after backend update
    */
-  public setSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Promise<number> {
+  public setSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
     const address = this.authService.user.address;
 
     if (type === 'on-chain') {
-      return firstValueFrom(
-        this.apiService
-          .getOnChainPoints(address)
-          .pipe(tap(points => this._pointsAmount$.next(points)))
-      );
+      return this.apiService
+        .getOnChainPoints(address)
+        .pipe(tap(points => this._pointsAmount$.next(points)));
     }
 
-    return firstValueFrom(
-      this.apiService
-        .getCrossChainPoints(address)
-        .pipe(tap(points => this._pointsAmount$.next(points)))
-    );
+    return this.apiService
+      .getCrossChainPoints(address)
+      .pipe(tap(points => this._pointsAmount$.next(points)));
   }
 
   public async getSwapAndEarnPointsAmount(

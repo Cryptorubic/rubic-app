@@ -246,7 +246,7 @@ export class CrossChainService {
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
 
-    await this.airdropPointsService.setSeNPointsTemp('cross-chain');
+    this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),
