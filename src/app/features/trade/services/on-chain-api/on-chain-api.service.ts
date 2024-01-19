@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
@@ -111,14 +111,14 @@ export class OnChainApiService {
    * @param success If true status is `completed`, otherwise `cancelled`.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public patchTrade(hash: string, success: boolean): Observable<InstantTradesResponseApi> {
+  public patchTrade(hash: string, success: boolean): Promise<InstantTradesResponseApi> {
     const body = {
       success,
       hash,
       user: this.authService.userAddress
     };
     const url = onChainApiRoutes.editData(toBackendWallet);
-    return this.httpService.patch(url, body);
+    return firstValueFrom(this.httpService.patch(url, body));
   }
 
   public saveNotWhitelistedProvider(
