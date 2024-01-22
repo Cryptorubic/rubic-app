@@ -68,12 +68,12 @@ export class CnPreviewSwapComponent {
   );
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
-    this.previewSwapService.tradeState$.pipe(
+    this.previewSwapService.selectedTradeState$.pipe(
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
         return {
           ...tradeState,
-          feeInfo: info.feeInfo
+          feeInfo: info?.feeInfo
         };
       })
     );
@@ -104,17 +104,15 @@ export class CnPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef
   ) {
+    this.previewSwapService.setSelectedProvider();
     this.setupTrade();
   }
 
   public backToForm(): void {
     this.tradePageService.setState('form');
     this.previewSwapService.setNextTxState({
-      step: 'idle',
-      data: {
-        wrongNetwork: this.previewSwapService.transactionState.data?.wrongNetwork,
-        activeWallet: this.previewSwapService.transactionState.data?.activeWallet
-      }
+      step: 'inactive',
+      data: {}
     });
   }
 

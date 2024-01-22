@@ -85,7 +85,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://lightning-replica.boba.network'
   ],
   [BLOCKCHAIN_NAME.BOBA_BSC]: ['https://bnb.boba.network'],
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: ['https://avax.boba.network'],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
     'https://astar.public.blastapi.io',
@@ -94,6 +93,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
   [BLOCKCHAIN_NAME.TRON]: [
+    {
+      fullHost: 'https://api.trongrid.io'
+    },
     {
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'

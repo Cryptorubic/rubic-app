@@ -19,6 +19,7 @@ import {
   TuiHostedDropdownModule,
   TuiLoaderModule,
   TuiNotificationModule,
+  TuiModeModule,
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
@@ -60,10 +61,11 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
-import { PriceImpactFormatPipe } from './pipes/price-impact-format.pipe';
 import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
 import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
+import { MevBotComponent } from './components/mev-bot/mev-bot.component';
+import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 
 @NgModule({
   declarations: [
@@ -90,9 +92,10 @@ import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.c
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    PriceImpactFormatPipe,
     CnPreviewSwapComponent,
-    CnTradeInfoComponent
+    CnTradeInfoComponent,
+    MevBotComponent,
+    PromotionBadgeComponent
   ],
   exports: [],
   imports: [
@@ -116,7 +119,8 @@ import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.c
     TuiProgressModule,
     TuiLoaderModule,
     AssetsSelectorModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiModeModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

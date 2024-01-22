@@ -25,12 +25,6 @@ export const NAVIGATION_LIST = [
     imagePath: `${defaultSrc}widget.svg`
   },
   {
-    translateKey: 'navigation.faq',
-    type: 'internal',
-    link: 'faq',
-    imagePath: `${defaultSrc}faq.svg`
-  },
-  {
     translateKey: 'navigation.about',
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
@@ -118,11 +112,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       link: EXTERNAL_LINKS.LANDING
     },
     {
-      translateKey: 'FAQ',
-      type: 'external',
-      link: ROUTE_PATH.FAQ
-    },
-    {
       translateKey: 'Testnet App',
       type: 'external',
       link: EXTERNAL_LINKS.TESTNET_APP
@@ -194,12 +183,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Privacy Policy',
       type: 'external',
-      link: 'https://rubic.exchange/pdf/RubicPrivacyPolicy.pdf'
+      link: 'https://rubic.exchange/pdf/privacy-policy.pdf'
     },
     {
-      translateKey: 'Terms of Service',
+      translateKey: 'Terms of Use',
       type: 'external',
-      link: 'https://rubic.exchange/pdf/TermsOfService.pdf'
+      link: 'https://rubic.exchange/pdf/terms-of-use.pdf'
     }
   ]
 };

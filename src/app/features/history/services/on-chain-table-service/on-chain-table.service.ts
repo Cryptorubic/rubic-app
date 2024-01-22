@@ -17,7 +17,7 @@ import { OnChainTableData } from '@features/history/models/on-chain-table-data';
 import { OnChainTableResponse } from '@features/history/models/on-chain-table-response';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
 import { TableService } from '@features/history/models/table-service';
-import { BACKEND_PROVIDERS } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
+import { TO_BACKEND_ON_CHAIN_PROVIDERS } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
 
 @Injectable()
 export class OnChainTableService extends TableService<
@@ -119,7 +119,7 @@ export class OnChainTableService extends TableService<
           explorerLink: backendData.transaction.explorer_url
         };
 
-        const searchedProvider = Object.entries(BACKEND_PROVIDERS).find(
+        const searchedProvider = Object.entries(TO_BACKEND_ON_CHAIN_PROVIDERS).find(
           ([, value]) => value === backendData.provider
         )?.[0];
 

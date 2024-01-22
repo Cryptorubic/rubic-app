@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { TradeState } from '@features/trade/models/trade-state';
+import { PromotionType, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -50,7 +50,7 @@ export class SwapsStateService {
    */
   private readonly _tradeState$ = new BehaviorSubject<SelectedTrade>(this.defaultState);
 
-  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(10));
+  public readonly tradeState$ = this._tradeState$.asObservable().pipe(debounceTime(0));
 
   public get tradeState(): SelectedTrade {
     return this._tradeState$.value;
@@ -157,7 +157,8 @@ export class SwapsStateService {
           needApprove,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: trade.getTradeInfo().routePath || []
+          routes: trade.getTradeInfo().routePath || [],
+          ...(this.setPromotion() && { promotion: this.setPromotion() })
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -175,8 +176,8 @@ export class SwapsStateService {
             ...currentTrades[providerIndex],
             trade: defaultState.trade!,
             needApprove: defaultState.needApprove,
-            tags: { isBest: false, cheap: false },
-            error: null
+            error: defaultState.error,
+            routes: defaultState.routes
           };
         } else {
           currentTrades.push(defaultState);
@@ -403,5 +404,9 @@ export class SwapsStateService {
       map(() => true),
       startWith(false)
     );
+  }
+
+  private setPromotion(): PromotionType | null {
+    return null;
   }
 }

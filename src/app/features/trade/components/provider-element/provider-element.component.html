@@ -14,9 +14,9 @@
         <div class="element__amount">
           <div class="element__token">
             <div class="element__token-amount">
-              {{
-                trade.to.tokenAmount | bigNumberFormat | shortenAmount : 6 : 4 : false : true
-              }}&nbsp;{{ trade.to.symbol }}
+              {{ trade.to.tokenAmount | bigNumberFormat | shortenAmount : 7 : 5 : true }}&nbsp;{{
+                trade.to.symbol
+              }}
             </div>
             <div class="element__token-provider">Provider</div>
             <div class="element__token-info">
@@ -30,10 +30,17 @@
           </div>
         </div>
         <div class="element__right">
-          <div class="element__amount-price">
+          <div
+            *ngIf="trade?.to?.tokenAmount?.isFinite && trade?.to?.price?.gt(0)"
+            class="element__amount-price"
+          >
             ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
+            <app-promotion-badge
+              *ngIf="tradeState?.promotion"
+              [data]="tradeState.promotion"
+            ></app-promotion-badge>
             <tui-tag
               *ngIf="isBest"
               class="element__best-badge"

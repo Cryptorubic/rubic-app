@@ -8,6 +8,7 @@ export interface ItSettingsForm {
   disableMultihops: boolean;
   autoRefresh: boolean;
   showReceiverAddress: boolean;
+  useMevBotProtection: boolean;
 }
 
 export type ItSettingsFormControls = FormControlType<ItSettingsForm>;
@@ -16,6 +17,7 @@ export interface CcrSettingsForm {
   autoSlippageTolerance: boolean;
   slippageTolerance: number;
   showReceiverAddress: boolean;
+  useMevBotProtection: boolean;
 }
 
 export type CcrSettingsFormControls = FormControlType<CcrSettingsForm>;

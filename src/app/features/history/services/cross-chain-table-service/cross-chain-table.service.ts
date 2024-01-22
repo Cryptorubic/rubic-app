@@ -158,7 +158,8 @@ export class CrossChainTableService extends TableService<
           fromTx,
           toTx,
           date: backendData.created_at,
-          provider
+          provider,
+          ...(backendData.changenow_id && { changenowId: backendData.changenow_id })
         };
       }),
       total: response.count

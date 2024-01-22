@@ -22,6 +22,7 @@ import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 
 @Injectable()
 export class CrossChainApiService {
@@ -125,11 +126,17 @@ export class CrossChainApiService {
    * @return InstantTradesResponseApi Instant trade object.
    */
   public async patchTrade(hash: string, success: boolean): Promise<void> {
-    const body = {
-      success,
-      hash,
-      user: this.authService.userAddress
-    };
-    await firstValueFrom(this.httpService.patch(this.apiEndpoint, body));
+    try {
+      const body = {
+        success,
+        hash,
+        user: this.authService.userAddress
+      };
+      const res = await firstValueFrom(this.httpService.patch<void>(this.apiEndpoint, body));
+
+      return res;
+    } catch (err) {
+      throw new RubicError(err);
+    }
   }
 }

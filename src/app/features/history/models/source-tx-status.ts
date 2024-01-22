@@ -1,1 +1,1 @@
-export type SourceTxStatus = 'pending' | 'success' | 'not found' | 'failed' | 'completed';
+export type SourceTxStatus = 'pending' | 'success' | 'not_found' | 'failed' | 'completed';

@@ -7,7 +7,9 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { ChainType } from 'rubic-sdk';
+import { ChainType, blockchainId } from 'rubic-sdk';
+import { SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
+import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -16,6 +18,8 @@ import { ChainType } from 'rubic-sdk';
   providedIn: 'root'
 })
 export class AuthService {
+  private web3Name = createWeb3Name();
+
   private readonly _currentUser$ = new BehaviorSubject<UserInterface>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();
@@ -97,5 +101,43 @@ export class AuthService {
   public disconnectWallet(): void {
     this.walletConnectorService.deactivate();
     this._currentUser$.next(null);
+  }
+
+  public async setUserData(): Promise<void> {
+    const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
+      id => this.walletConnectorService.network === id
+    );
+
+    if (isSupportedSpaceId) {
+      const chainId = blockchainId[this.walletConnectorService.network];
+      const spaceIdName = await this.web3Name.getDomainName({
+        address: this.walletConnectorService.address,
+        queryChainIdList: [chainId]
+      });
+
+      if (!spaceIdName) {
+        this._currentUser$.next({
+          ...this._currentUser$.value,
+          avatar: null,
+          name: null
+        });
+      }
+
+      const { image, name } = (await this.web3Name.getMetadata({
+        name: spaceIdName
+      })) as SpaceIdGetMetadataResponse;
+
+      this._currentUser$.next({
+        ...this._currentUser$.value,
+        avatar: image ?? null,
+        name: name
+      });
+    } else {
+      this._currentUser$.next({
+        ...this._currentUser$.value,
+        avatar: null,
+        name: null
+      });
+    }
   }
 }

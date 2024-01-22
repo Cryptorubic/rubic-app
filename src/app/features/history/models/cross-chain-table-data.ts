@@ -13,4 +13,7 @@ export interface CrossChainTableData {
 
   date: string;
   provider: ProviderInfo;
+
+  /* used to copy transaction id in table */
+  changenowId?: string;
 }

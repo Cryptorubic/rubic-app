@@ -50,6 +50,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 
 @Injectable()
 export class CrossChainService {
@@ -77,7 +78,8 @@ export class CrossChainService {
     @Inject(INJECTOR) private readonly injector: Injector,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly airdropPointsService: AirdropPointsService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -228,36 +230,22 @@ export class CrossChainService {
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
    * @param directTransaction Transaction config to execute forced
-   * @returns 'success' - on successfull swap, 'reject' - on any error
+   * @returns transactionHash - on successfull swap
    */
-
   public async swapTrade(
     trade: CrossChainTrade,
     callbackOnHash?: (hash: string) => void,
     directTransaction?: EvmEncodeConfig
-  ): Promise<'success' | 'reject'> {
+  ): Promise<string> {
     if (!this.isSlippageCorrect(trade)) {
       return 'reject';
     }
 
-    const isHighSlippageOrPriceImpact = !(await this.settingsService.checkSlippageAndPriceImpact(
-      SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
-      trade
-    ));
-
-    if (isHighSlippageOrPriceImpact) {
-      return 'reject';
-    }
-    // @TODO
-    // if (
-    //   this.selectedTrade.trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW &&
-    //   !BlockchainsInfo.isEvmBlockchainName(this.selectedTrade.trade.from.blockchain)
-    // ) {
-    //   await this.getChangenowPaymentInfo();
-    //   return;
-    // }
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
+    const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
+
+    this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),
@@ -266,13 +254,18 @@ export class CrossChainService {
     await this.handlePreSwapModal(trade);
 
     let transactionHash: string;
-
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
       this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
 
-      this.notifyGtmAfterSignTx(txHash, fromToken, toToken, trade.from.tokenAmount);
+      this.notifyGtmAfterSignTx(
+        txHash,
+        fromToken,
+        toToken,
+        trade.from.tokenAmount,
+        useMevBotProtection
+      );
     };
 
     const blockchain = trade.from.blockchain;
@@ -296,8 +289,7 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
-      await this.crossChainApiService.patchTrade(transactionHash, true);
-      return 'success';
+      return transactionHash;
     } catch (error) {
       if (
         transactionHash &&
@@ -445,7 +437,8 @@ export class CrossChainService {
     txHash: string,
     fromToken: TokenAmount,
     toToken: TokenAmount,
-    fromAmount: BigNumber
+    fromAmount: BigNumber,
+    useMevBotProtection: boolean
   ): void {
     // @TODO remove hardcode
     const fee = new BigNumber(2);
@@ -456,7 +449,9 @@ export class CrossChainService {
       fromToken.symbol,
       toToken.symbol,
       fee,
-      fromAmount.multipliedBy(fromToken.price)
+      fromAmount.multipliedBy(fromToken.price),
+      'crosschain',
+      fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
   }
 }

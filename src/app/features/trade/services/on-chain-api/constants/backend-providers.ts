@@ -1,6 +1,6 @@
-import { OnChainTradeType, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 
-export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
+export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes
   [ON_CHAIN_TRADE_TYPE['10K_SWAP']]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ACRYPTOS]: 'unknown',
@@ -96,7 +96,7 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.PEGASYS]: 'pegasys',
   [ON_CHAIN_TRADE_TYPE.CRO_SWAP]: 'croswap',
   [ON_CHAIN_TRADE_TYPE.MUTE_SWAP]: 'muteswap',
-  [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: 'symbiosis',
   [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: 'syncswap',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: 'pulsex_v1',
   [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: 'pulsex_v2',
@@ -122,4 +122,20 @@ export const BACKEND_PROVIDERS: Record<OnChainTradeType, string> = {
   [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos'
-};
+} as const;
+
+export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
+  ...Object.entries(TO_BACKEND_ON_CHAIN_PROVIDERS).reduce(
+    (acc, [clientName, backendName]) => ({
+      ...acc,
+      [backendName]: clientName
+    }),
+    {} as Record<ToBackendOnChainProvider, OnChainTradeType>
+  )
+} as const;
+
+export type FromBackendOnChainProvider =
+  (typeof FROM_BACKEND_ON_CHAIN_PROVIDERS)[keyof typeof FROM_BACKEND_ON_CHAIN_PROVIDERS];
+
+export type ToBackendOnChainProvider =
+  (typeof TO_BACKEND_ON_CHAIN_PROVIDERS)[keyof typeof TO_BACKEND_ON_CHAIN_PROVIDERS];

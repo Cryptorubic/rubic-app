@@ -1,22 +1,11 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  QueryList,
-  Self,
-  TemplateRef,
-  ViewChildren
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Self } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
-import { BlockchainName } from 'rubic-sdk';
+import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
@@ -28,7 +17,7 @@ import { TradesHistory } from '@core/header/components/header/components/mobile-
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class UserProfileComponent implements AfterViewInit {
+export class UserProfileComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly router: Router,
@@ -46,34 +35,42 @@ export class UserProfileComponent implements AfterViewInit {
         this.headerStore.setConfirmModalOpeningStatus(false);
       }
     });
-    this.currentUser$ = this.authService.currentUser$;
-  }
 
-  @ViewChildren('dropdownOptionTemplate') dropdownOptionsTemplates: QueryList<TemplateRef<unknown>>;
+    this.walletConnectorService.networkChange$
+      .pipe(
+        combineLatestWith(this.walletConnectorService.addressChange$),
+        tap(([blockchainName]) => {
+          this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+        }),
+        switchMap(() => this.authService.setUserData()),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.cdr.markForCheck();
+      });
+  }
 
   public readonly isConfirmModalOpened$: Observable<boolean>;
 
   public readonly isMobile$: Observable<boolean>;
 
-  public readonly currentUser$: Observable<UserInterface>;
-
-  public currentBlockchainName: BlockchainName;
-
   public currentBlockchainIcon: string;
 
   public dropdownIsOpened = false;
 
-  @ViewChildren('dropdownOptionTemplate') public dropdownItems: QueryList<TemplateRef<unknown>>;
+  public profileText$: Observable<string> = this.authService.currentUser$.pipe(
+    map(user => (user?.name ? user.name : user.address)),
+    startWith(this.authService.userAddress)
+  );
 
-  ngAfterViewInit(): void {
-    this.walletConnectorService.networkChange$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(blockchainName => {
-        this.currentBlockchainName = blockchainName;
-        this.currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
-        this.cdr.detectChanges();
-      });
-  }
+  public avatar$ = this.authService.currentUser$.pipe(
+    combineLatestWith(this.walletConnectorService.networkChange$),
+    map(([user, blockchainName]) => {
+      const currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+
+      return user?.avatar ? user.avatar : currentBlockchainIcon;
+    })
+  );
 
   public logout(): void {
     this.authService.disconnectWallet();
