@@ -288,6 +288,8 @@ export class SwapsControllerService {
       }
     }
 
+    if (!txHash) return;
+
     if (trade instanceof CrossChainTrade) {
       await this.handleCrossChainSwapResponse(trade, txHash, callback.onSwap);
     } else {
