@@ -1,0 +1,17 @@
+<div
+  class="io-container"
+  [ngClass]="{
+    'io-container_round-top': round === 'top',
+    'io-container_round-bottom': round === 'bottom',
+    'io-container_round-all': round === 'all',
+    'io-container_round-none': round === 'none',
+    'io-container_margin-top': marginTop
+  }"
+>
+  <div class="io-left">
+    <ng-content select="[left]"></ng-content>
+  </div>
+  <div class="io-right">
+    <ng-content select="[right]"></ng-content>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 :host {
   position: relative;
 
@@ -11,8 +13,7 @@
   width: 100%;
   padding: 1rem 1.5rem;
 
-  background-color: var(--form-background);
-  border: 1px solid var(--transparent-line);
+  background-color: var(--secondary-background);
   border-radius: 12px 12px 0 0;
 
   &__item {
@@ -20,5 +21,20 @@
     height: 42px;
 
     border-radius: 50%;
+  }
+}
+
+@include b($mobile-md) {
+  :host {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99999;
+
+    display: flex;
+
+    background: var(--secondary-background);
+    border-radius: 12px 12px 0 0;
   }
 }

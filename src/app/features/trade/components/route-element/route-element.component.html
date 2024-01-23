@@ -1,0 +1,24 @@
+<div class="route-element">
+  <div *ngFor="let step of steps" class="route-element__provider-row">
+    <div class="route-element__provider-data-info">
+      <img
+        class="route-element__provider-icon"
+        [src]="step.provider.image"
+        [alt]="step.provider.label"
+      />
+      <div class="element__provider-data">
+        <div class="route-element__provider-name">{{ step.provider.label }}</div>
+        <div class="route-element__provider-rate">
+          <div *ngFor="let amount of step.amounts; index as i">
+            {{ amount }}
+            <img
+              *ngIf="i !== step.amounts.length - 1"
+              src="assets/images/icons/arrow/arrow-right.svg"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

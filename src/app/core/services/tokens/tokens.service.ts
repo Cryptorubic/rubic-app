@@ -17,8 +17,7 @@ import {
   Token as SdkToken,
   BlockchainsInfo,
   Web3PublicService,
-  isAddressCorrect,
-  BLOCKCHAIN_NAME
+  isAddressCorrect
 } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
@@ -172,19 +171,28 @@ export class TokensService {
     });
   }
 
-  public async updateTokenBalanceAfterCcrSwap(token: {
-    address: string;
-    blockchain: BlockchainName;
-  }): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(token.blockchain);
-    if (Web3Pure[chainType].isNativeAddress(token.address)) {
-      await this.getAndUpdateTokenBalance(token);
+  public async updateTokenBalanceAfterCcrSwap(
+    fromToken: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    toToken: {
+      address: string;
+      blockchain: BlockchainName;
+    }
+  ): Promise<void> {
+    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+
+    if (Web3Pure[chainType].isNativeAddress(fromToken.address)) {
+      await this.getAndUpdateTokenBalance(fromToken);
+      await this.getAndUpdateTokenBalance(toToken);
     } else {
       await Promise.all([
-        this.getAndUpdateTokenBalance(token),
+        this.getAndUpdateTokenBalance(fromToken),
+        this.getAndUpdateTokenBalance(toToken),
         this.getAndUpdateTokenBalance({
           address: Web3Pure[chainType].nativeTokenAddress,
-          blockchain: token.blockchain
+          blockchain: fromToken.blockchain
         })
       ]);
     }
@@ -264,10 +272,6 @@ export class TokensService {
     query: string,
     blockchain: BlockchainName
   ): Observable<List<TokenAmount>> {
-    if (blockchain !== BLOCKCHAIN_NAME.TRON) {
-      query = query.toLowerCase();
-    }
-
     return from(isAddressCorrect(query, blockchain)).pipe(
       catchError(() => of(false)),
       switchMap(isAddress => {
@@ -280,8 +284,8 @@ export class TokensService {
                 token.blockchain === blockchain &&
                 ((isAddress && compareAddresses(token.address, query)) ||
                   (!isAddress &&
-                    (token.name.toLowerCase().includes(query) ||
-                      token.symbol.toLowerCase().includes(query))))
+                    (token.name.toLowerCase().includes(query.toLowerCase()) ||
+                      token.symbol.toLowerCase().includes(query.toLowerCase()))))
             )
           );
         } else {

@@ -70,14 +70,14 @@ export class LiveChatService {
     );
   }
 
-  public toggleLiveChatContainerHeight(action: 'hide' | 'show'): void {
+  public toggleLiveChatContainerHeight(action: 'hide' | 'show', customPosition?: boolean): void {
     const livechat = this.window.document.getElementById('live-chat-iframe') as HTMLIFrameElement;
 
     if (action === 'hide') {
       this.closeLiveChat(livechat);
     }
     if (action === 'show') {
-      this.openLiveChat(livechat);
+      this.openLiveChat(livechat, customPosition);
     }
   }
 
@@ -93,17 +93,28 @@ export class LiveChatService {
     this._isIframeOpened = false;
   }
 
-  private openLiveChat(liveChat: HTMLIFrameElement): void {
-    liveChat.style.opacity = '1';
+  private openLiveChat(liveChat: HTMLIFrameElement, customPosition?: boolean): void {
     const windowHeight = this.window.document.body.scrollHeight;
-    liveChat.height = `${windowHeight - 76}px`;
+    let bottom = 'auto';
+    let top = '0';
+    let height = `${windowHeight - 76}px`;
+
+    if (customPosition) {
+      bottom = '0';
+      top = 'auto';
+      height = '100%';
+    }
+    liveChat.style.opacity = '1';
+    liveChat.height = height;
     liveChat.width = '100%';
-    liveChat.style.top = '0';
+    liveChat.style.top = top;
+    liveChat.style.bottom = bottom;
     liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'maximize' }, '*');
     setTimeout(() => {
-      liveChat.height = `${windowHeight - 76}px`;
+      liveChat.height = height;
       liveChat.width = '100%';
-      liveChat.style.top = '0';
+      liveChat.style.top = top;
+      liveChat.style.bottom = bottom;
     }, 100);
     this._isIframeOpened = true;
   }

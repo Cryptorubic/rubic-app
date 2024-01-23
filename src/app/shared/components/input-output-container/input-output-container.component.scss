@@ -1,0 +1,73 @@
+@use 'src/scss/core' as *;
+
+.io-container {
+  display: flex;
+  gap: var(--tui-padding-m);
+  justify-content: center;
+  padding: var(--tui-padding-l);
+
+  background: var(--io-background);
+  border-radius: var(--tui-radius-m);
+
+  transition: 0.2s ease-in-out;
+
+  &_round {
+    &-top {
+      padding-bottom: var(--tui-padding-s);
+
+      border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+    }
+
+    &-bottom {
+      padding-top: var(--tui-padding-s);
+
+      border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+    }
+
+    &-all {
+      border-radius: var(--tui-radius-s);
+    }
+
+    &-none {
+      padding-top: var(--tui-padding-s);
+
+      border-radius: 0;
+    }
+  }
+}
+
+.io-left,
+.io-right {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+@include b($mobile-md) {
+  .io-container {
+    flex-direction: column;
+    gap: 0;
+    justify-content: flex-start;
+
+    &_round {
+      &-none,
+      &-bottom {
+        padding-top: var(--tui-padding-xl);
+      }
+    }
+
+    &_margin-top {
+      margin-top: 2px;
+    }
+  }
+
+  .io-left {
+    margin-bottom: var(--tui-padding-m);
+  }
+
+  .io-right {
+    flex: none;
+    align-items: flex-start;
+    height: 60px;
+  }
+}

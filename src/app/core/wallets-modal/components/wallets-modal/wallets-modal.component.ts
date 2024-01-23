@@ -6,8 +6,7 @@ import {
   Injector,
   OnInit
 } from '@angular/core';
-import { USER_AGENT } from '@ng-web-apis/common';
-import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -15,27 +14,28 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
 import { blockchainId, BlockchainName } from 'rubic-sdk';
-import { WINDOW } from '@ng-web-apis/common';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
 import { HeaderStore } from 'src/app/core/header/services/header.store';
-import { IframeWalletsWarningComponent } from 'src/app/core/wallets-modal/components/iframe-wallets-warning/iframe-wallets-warning.component';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { firstValueFrom, from, of } from 'rxjs';
-import { catchError, switchMap, timeout } from 'rxjs/operators';
-import { tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { firstValueFrom, from, of, startWith } from 'rxjs';
+import { catchError, switchMap, tap, timeout } from 'rxjs/operators';
+import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { FormControl } from '@angular/forms';
+import { StoreService } from '@core/services/store/store.service';
 
 @Component({
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -57,20 +57,11 @@ export class WalletsModalComponent implements OnInit {
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
-    const deviceFiltered =
-      this.isMobile && !this.iframeService.isIframe
-        ? isChromiumProviders.filter(
-            provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-          )
-        : isChromiumProviders.filter(provider => !provider.mobileOnly);
-
-    if (this.queryParamsService.hideUnusedUI && !this.queryParamsService.isDesktop) {
-      return deviceFiltered.filter(provider => provider.supportsInIframe);
-    } else {
-      return this.iframeService.isIframe && this.iframeService.device === 'mobile'
-        ? deviceFiltered.filter(provider => provider.supportsInVerticalMobileIframe)
-        : deviceFiltered;
-    }
+    return this.isMobile
+      ? isChromiumProviders.filter(
+          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
+        )
+      : isChromiumProviders.filter(provider => !provider.mobileOnly);
   }
 
   public get isMobile(): boolean {
@@ -83,12 +74,15 @@ export class WalletsModalComponent implements OnInit {
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
-    return (
-      this.iframeService.isIframe &&
-      this.iframeService.device === 'mobile' &&
-      provider === WALLET_NAME.WALLET_LINK
-    );
+    return provider === WALLET_NAME.WALLET_LINK;
   };
+
+  public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
+
+  public enableWallets$ = this.rulesCheckbox.valueChanges.pipe(
+    startWith(this.rulesCheckbox.value),
+    tap(value => this.storeService.setItem('RUBIC_AGREEMENT_WITH_RULES_V1', value))
+  );
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
@@ -97,16 +91,17 @@ export class WalletsModalComponent implements OnInit {
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
     private readonly translateService: TranslateService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
-    private readonly iframeService: IframeService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly storeService: StoreService
   ) {}
 
   ngOnInit() {
+    this.rulesCheckbox.patchValue(this.getStorageValue());
+
     if (this.browserService.currentBrowser === BROWSER.METAMASK) {
       this.connectProvider(WALLET_NAME.METAMASK);
       return;
@@ -115,6 +110,10 @@ export class WalletsModalComponent implements OnInit {
     if (this.browserService.currentBrowser === BROWSER.COINBASE) {
       this.connectProvider(WALLET_NAME.WALLET_LINK);
     }
+  }
+
+  private getStorageValue(): boolean {
+    return this.storeService.getItem('RUBIC_AGREEMENT_WITH_RULES_V1') || false;
   }
 
   private async deepLinkRedirectIfSupported(provider: WALLET_NAME): Promise<boolean> {
@@ -146,75 +145,67 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public async connectProvider(provider: WALLET_NAME): Promise<void> {
-    const providerInfo = this.allProviders.find(elem => elem.value === provider);
-    if (
-      (this.iframeService.iframeAppearance === 'horizontal' &&
-        !providerInfo.supportsInHorizontalIframe) ||
-      (this.iframeService.iframeAppearance === 'vertical' && !providerInfo.supportsInVerticalIframe)
-    ) {
-      if (this.iframeService.device === 'desktop') {
-        this.openIframeWarning();
+    if (this.rulesCheckbox.value) {
+      this.gtmService.fireClickOnWalletProviderEvent(provider);
+
+      if (this.browserService.currentBrowser === BROWSER.MOBILE) {
+        const redirected = await this.deepLinkRedirectIfSupported(provider);
+        if (redirected) {
+          return;
+        }
+      }
+
+      this.headerStore.setWalletsLoadingStatus(true);
+
+      // desktop coinbase
+      if (
+        this.browserService.currentBrowser === BROWSER.DESKTOP &&
+        provider === WALLET_NAME.WALLET_LINK
+      ) {
+        this.dialogService
+          .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
+            CoinbaseConfirmModalComponent,
+            {
+              dismissible: true,
+              label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
+              size: 'm',
+              fitContent: true
+            },
+            this.injector
+          )
+          .pipe(
+            switchMap(blockchainName => {
+              if (blockchainName) {
+                this.close();
+                return this.authService.connectWallet({
+                  walletName: provider,
+                  chainId: blockchainId[blockchainName]
+                });
+              }
+              return of(null);
+            }),
+            catchError(() => {
+              return of(null);
+            })
+          )
+          .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
         return;
       }
-    }
 
-    if (this.browserService.currentBrowser === BROWSER.MOBILE) {
-      const redirected = await this.deepLinkRedirectIfSupported(provider);
-      if (redirected) {
-        return;
+      try {
+        const connectionTime = 15_000;
+        await firstValueFrom(
+          from(this.authService.connectWallet({ walletName: provider })).pipe(
+            timeout(connectionTime),
+            catchError(() => of(`Request timed out after: ${connectionTime}`))
+          )
+        );
+      } catch (e) {
+        this.headerStore.setWalletsLoadingStatus(false);
       }
-    }
-
-    this.headerStore.setWalletsLoadingStatus(true);
-
-    // desktop coinbase
-    if (
-      this.browserService.currentBrowser === BROWSER.DESKTOP &&
-      provider === WALLET_NAME.WALLET_LINK
-    ) {
-      this.dialogService
-        .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
-          CoinbaseConfirmModalComponent,
-          {
-            dismissible: true,
-            label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
-            size: 'm',
-            fitContent: true
-          },
-          this.injector
-        )
-        .pipe(
-          switchMap(blockchainName => {
-            if (blockchainName) {
-              this.close();
-              return this.authService.connectWallet({
-                walletName: provider,
-                chainId: blockchainId[blockchainName]
-              });
-            }
-            return of(null);
-          }),
-          catchError(() => {
-            return of(null);
-          })
-        )
-        .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
-      return;
-    }
-
-    try {
-      const connectionTime = 15_000;
-      await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider })).pipe(
-          timeout(connectionTime),
-          catchError(() => of(`Request timed out after: ${connectionTime}`))
-        )
-      );
-    } catch (e) {
       this.headerStore.setWalletsLoadingStatus(false);
+      this.close();
     }
-    this.headerStore.setWalletsLoadingStatus(false);
-    this.close();
   }
 
   public close(): void {
@@ -222,20 +213,5 @@ export class WalletsModalComponent implements OnInit {
     this.context.completeWith();
   }
 
-  private openIframeWarning(): void {
-    this.dialogService
-      .showDialog<IframeWalletsWarningComponent, boolean>(
-        IframeWalletsWarningComponent,
-        {
-          size: 'fullscreen',
-          fitContent: true
-        },
-        this.injector
-      )
-      .subscribe(confirm => {
-        if (confirm) {
-          this.connectProvider(WALLET_NAME.METAMASK);
-        }
-      });
-  }
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

@@ -21,7 +21,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CELO]: 'Celo',
   [BLOCKCHAIN_NAME.BOBA]: 'Boba',
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'Boba BNB',
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'Boba Avalanche',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'Astar EVM',
   [BLOCKCHAIN_NAME.ASTAR]: 'Astar',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'Eth PoW',
@@ -92,9 +91,10 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.RAVENCOIN]: 'Ravencoin',
   [BLOCKCHAIN_NAME.SIA]: 'Sia',
   [BLOCKCHAIN_NAME.SECRET]: 'Secret',
+  [BLOCKCHAIN_NAME.STACKS]: 'Stacks',
+  [BLOCKCHAIN_NAME.STARKNET]: 'Starknet',
   [BLOCKCHAIN_NAME.STEEM]: 'Steem',
   [BLOCKCHAIN_NAME.STRATIS]: 'Stratis',
-  [BLOCKCHAIN_NAME.STACKS]: 'Stacks',
   [BLOCKCHAIN_NAME.SOLAR]: 'Solar',
   [BLOCKCHAIN_NAME.TON]: 'Ton',
   [BLOCKCHAIN_NAME.VE_CHAIN]: 'VeChain',
@@ -116,6 +116,8 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_SYNC]: 'zkSync Era',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'Pulsechain',
   [BLOCKCHAIN_NAME.LINEA]: 'Linea',
+  [BLOCKCHAIN_NAME.BASE]: 'Base',
+  [BLOCKCHAIN_NAME.MANTLE]: 'Mantle',
   [BLOCKCHAIN_NAME.GOERLI]: 'Goerli',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'BNB',
   [BLOCKCHAIN_NAME.MUMBAI]: 'Mumbai',
@@ -125,6 +127,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'Zetachain',
   [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
-  [BLOCKCHAIN_NAME.BASE]: 'Base',
-  [BLOCKCHAIN_NAME.MANTLE]: 'Mantle'
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
+  [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain'
 };

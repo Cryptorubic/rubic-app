@@ -1,4 +1,4 @@
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
@@ -23,7 +23,6 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'boba-bsc',
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'boba-avalanche',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'astar-evm',
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
@@ -92,9 +91,10 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.RAVENCOIN]: 'ravencoin',
   [BLOCKCHAIN_NAME.SIA]: 'sia',
   [BLOCKCHAIN_NAME.SECRET]: 'secret',
+  [BLOCKCHAIN_NAME.STACKS]: 'stacks',
+  [BLOCKCHAIN_NAME.STARKNET]: 'starknet',
   [BLOCKCHAIN_NAME.STEEM]: 'steem',
   [BLOCKCHAIN_NAME.STRATIS]: 'stratis',
-  [BLOCKCHAIN_NAME.STACKS]: 'stacks',
   [BLOCKCHAIN_NAME.SOLAR]: 'solar',
   [BLOCKCHAIN_NAME.TON]: 'ton',
   [BLOCKCHAIN_NAME.VE_CHAIN]: 'vechain',
@@ -116,6 +116,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
   [BLOCKCHAIN_NAME.LINEA]: 'linea',
+  [BLOCKCHAIN_NAME.BASE]: 'base',
+  [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
   [BLOCKCHAIN_NAME.MUMBAI]: 'polygon-mumbai',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: 'binance-smart-chain-testnet',
   [BLOCKCHAIN_NAME.GOERLI]: 'goerli',
@@ -125,8 +127,9 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain-evm-athens-testnet',
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
-  [BLOCKCHAIN_NAME.BASE]: 'base',
-  [BLOCKCHAIN_NAME.MANTLE]: 'mantle'
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
+  [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

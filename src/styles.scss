@@ -1,6 +1,6 @@
 /* Variables and mixins */
 @use 'scss/core' as *;
-@use 'scss/dark-theme' as *;
+@use 'scss/light-theme' as *;
 
 /* Global scss */
 @use 'scss/fonts' as *;
@@ -37,6 +37,10 @@ html {
   height: auto !important;
   overflow-x: hidden;
 
+  &.iframe {
+    width: 400px;
+  }
+
   body {
     position: relative;
 
@@ -46,7 +50,9 @@ html {
     padding: 0;
     overflow-x: hidden;
 
-    background: var(--primary-background);
+    background: var(--app-background);
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
 
     main,
     input,
@@ -62,6 +68,10 @@ html.is-locked,
 html.is-locked body {
   height: calc(var(--window-inner-height) - 1px);
   overflow: hidden;
+}
+
+html.scroll-y body {
+  overflow-y: visible;
 }
 
 input::-webkit-outer-spin-button,
@@ -83,15 +93,6 @@ button {
   border: none;
   cursor: pointer;
 
-}
-
-mainiframeSettingsFormcontent {
-  display: flex;
-  justify-content: center;
-
-  width: 100%;
-  max-width: 1440px;
-  padding: 0 20px 60px;
 }
 
 .noscroll {
@@ -134,51 +135,47 @@ a {
   }
 }
 
-tui-dropdown {
-  min-width: 185px;
-  max-height: 560px !important;
-
-  tui-data-list-wrapper {
-    backdrop-filter: blur(24px);
-
-    tui-data-list {
-      button[role='option'] {
-        margin: 4px 0;
-        padding: 0 8px;
-
-        border: 0;
-
-        &:hover {
-          background-color: transparent;
-        }
-
-        tui-select-option {
-          display: block;
-
-          font-weight: 600;
-          font-size: 18px;
-          line-height: 21px;
-
-          border-radius: 100px;
-
-          transition: background-color 0.1s ease;
-
-          &:hover {
-            background-color: rgba(74, 169, 86, 0.15);
-          }
-
-          tui-svg {
-            display: none;
-          }
-        }
-      }
-    }
-  }
-}
-
-body.default-iframe-background {
-  background: linear-gradient(45deg, var(--primary-color) 20%, white);
-}
+//tui-dropdown {
+//  min-width: 185px;
+//  max-height: 560px !important;
+//
+//  tui-data-list-wrapper {
+//    backdrop-filter: blur(24px);
+//
+//    tui-data-list {
+//      button[role='option'] {
+//        margin: 4px 0;
+//        padding: 0 8px;
+//
+//        border: 0;
+//
+//        &:hover {
+//          background-color: transparent;
+//        }
+//
+//        tui-select-option {
+//          display: block;
+//
+//          font-weight: 600;
+//          font-size: 18px;
+//          line-height: 21px;
+//
+//          border-radius: 100px;
+//
+//          transition: background-color 0.1s ease;
+//
+//          &:hover {
+//            background-color: rgba(74, 169, 86, 0.15);
+//          }
+//
+//          tui-svg {
+//            display: none;
+//          }
+//        }
+//      }
+//    }
+//  }
+//}
 
 #loader {
   position: fixed;
@@ -192,7 +189,7 @@ body.default-iframe-background {
   align-items: center;
   justify-content: center;
 
-  background-color: #181a19;
+  background-color: #282935;
   opacity: 1;
 
   transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
@@ -219,12 +216,6 @@ body.default-iframe-background {
 
   100% {
     opacity: 1;
-  }
-}
-
-@include b($mobile-md) {
-  tui-dropdown {
-    min-width: 155px;
   }
 }
 

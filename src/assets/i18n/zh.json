@@ -14,7 +14,7 @@
     "accept": "接受",
     "copyright": "版权",
     "privacyPolicy": "隐私政策",
-    "termsOfService": "Terms of Service",
+    "termsOfUse": "Terms of Use",
     "close": "关闭",
     "send": "发送",
     "left": "离开",
@@ -50,8 +50,8 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "您还没有给我们访问您的MetaMask账户的权限。为了进行交易，我们需要您的签名。如果您想继续交易，请点击签名。",
     "noMetamaskInstalled": "请确保您已安装并解锁metamask插件。\n你可以下载它",
-    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
-    "removeCoinbaseExtension": "Coinbase 浏览器扩展与 Metamask 扩展冲突。 请禁用或删除 Conibase 扩展以继续，或选择另一个钱包进行连接。",
+    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
+    "removeCoinbaseExtension": "Coinbase 浏览器扩展与 MetaMask 扩展冲突。 请禁用或删除 Conibase 扩展以继续，或选择另一个钱包进行连接。",
     "wrongNetwork": "您选择了错误的网络，请从MetaMask中选择{{ networkToChoose }}。",
     "OverQueryLimit": "您尝试在短时间内执行了太多的交易。请稍后再试，如果您仍有问题，",
     "userReject": "您拒绝执行交易。请先确认，以便完成交易。",
@@ -59,7 +59,7 @@
     "insufficientFunds": "你没有足够的 {{ tokenSymbol }}. 您的余额是 {{balance}} {{tokenSymbol}}, 但 {{requiredBalance}} {{tokenSymbol}} 是必需的。",
     "insufficientFunds1inch": "您沒有足夠的 {{ nativeToken }} 用於轉賬和 gas 費用。 對於交易，輸入較少的金額或充值您的 {{ nativeToken }}餘額。",
     "noQrCode": "請確保您有掃描二維碼",
-    "walletlinkWrongNetwork": "请确保在 Coinbase 应用程序中选择了 {{ networkToChoose }} 网络。 要更改 coinbase 应用程序中的网络，请转到底部面板中的设置并选择“Active Network”选项卡。",
+    "walletlinkWrongNetwork": "请确保在 Coinbase 应用程序中选择了 {{ networkToChoose }} 网络。 要更改 Coinbase 应用程序中的网络，请转到底部面板中的设置并选择“Active Network”选项卡。",
     "noWallet": "您尚未連接任何錢包",
     "retrievingTokensError": "檢索令牌時出錯",
     "wrongToken": "Rubic 橋僅支持 rubic 令牌。",
@@ -72,7 +72,7 @@
     "notSupportedBridge": "不支持選擇的網橋。 請更改順序或選擇其他網絡。",
     "insufficientLiquidityCCR": "這筆交易的流動性不足",
     "insufficientLiquidityIT": "這筆交易的流動性不足。",
-    "oneinchRefreshError":  "1inch 目前不可用。 請嘗試刷新交易。",
+    "oneinchRefreshError": "1inch 目前不可用。 請嘗試刷新交易。",
     "1inchNotSupportedToken": "1inch 不支持所選代幣之一。",
     "cancelDeadline": "由於交易截止日期已過，您的交易已被還原。 請盡量增加交易截止時間或gas數量。",
     "chooseSupportedBridge": "選擇支持的網橋",
@@ -81,10 +81,10 @@
     "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
-    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
-    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again",
+    "maxGasPriceOverflow": "The gas price on {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try again later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on the Ethereum network",
+    "unknown": "Oops, something went wrong. Please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
     "rubicOptimisation": "这笔交易的流动性不足。 尝试禁用Rubic优化。",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
@@ -101,7 +101,8 @@
     "noSelectedToken": "选择令牌",
     "wrongSourceNetwork": "目前不支持來自 {{ network }} 的交換。"
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "关于",
@@ -116,7 +117,7 @@
     "logout": "注销",
     "logoutMessage": "你真的想注销吗？",
     "notAvailable": "建設中 - 用戶體驗重新設計。",
-    "merch": "Merch shop",
+    "merch": "Merch Shop",
     "stakingLp": "Earn",
     "staking": "Staking",
     "promotion": "促銷"
@@ -242,11 +243,11 @@
   },
   "crossChainPage": {
     "targetAddress": {
-      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens in this wallet.",
       "placeholder": "Enter or paste address"
     },
     "swapInfo": {
-      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "title": "Estimated time to receive tokens on the Ethereum blockchain depends on the current Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
       "maximumSentHint": "Maximum amount of tokens to be sent\n",
       "minimumReceived": "Minimum received",
@@ -292,10 +293,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "gasRefund": {
@@ -382,7 +382,7 @@
     "acquireBoth": "Acquire Both BRBC and USDC Tokens",
     "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
     "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
-    "depositFunds": "Deposit funds",
+    "depositFunds": "Deposit Funds",
     "initiateDeposit": "Initiate Deposit",
     "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
     "requestWithdraw": "Request Withdraw",
@@ -391,7 +391,7 @@
     "yourDeposits": "Your Deposits",
     "newDeposit": "+ Initiate Deposit",
     "transferToken": "Transfer LP Token",
-    "collectRewards": "Collect rewards $ {{amount}}",
+    "collectRewards": "Collect Rewards $ {{amount}}",
     "balance": "Balance",
     "endOfRound": "End of Round {{round}}",
     "poolIsFull": "Pool is Full",
@@ -472,6 +472,7 @@
       "rewards": "Rewards",
       "endDate": "End Date",
       "claimRewards": "Claim Rewards",
+      "claim": "Claim",
       "total": "TOTAL",
       "totalRBC": "TOTAL RBC:",
       "totalRewards": "TOTAL REWARDS:",
@@ -498,9 +499,9 @@
       "clearParamsHint": "清除其他表單參數以選擇此令牌",
       "searchPlaceholder": "搜索姓名或粘貼地址",
       "noSearchData": "沒什麼可顯示的",
-      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "noFavoriteData": "You don't have favorite tokens in the selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to choose token favorite."
     },
     "walletsModal": {
       "title": "連接錢包",
@@ -515,7 +516,7 @@
       "see": "看 ",
       "transactionDetailsLink": "交易明細",
       "itWillAppearsIn": ". 它會出現在 ",
-      "myTradesLink":"很快頁面",
+      "myTradesLink": "很快頁面",
       "pageSoon": " 我的交易.",
       "title": "The transaction was successfully sent!",
       "ccrTitle": "Successful swap in source network!",
@@ -613,7 +614,7 @@
       "link": "今天試試!"
     },
     "external": {
-      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of the Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
@@ -623,7 +624,7 @@
   },
   "referralBanner": {
     "text": "",
-    "link": "Claim New RBC Token!"
+    "link": "Claim the New RBC Token!"
   },
   "volume": {
     "title": "累計交易量",
@@ -648,7 +649,8 @@
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",
-    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
+    "openMobileWallet": "Please, open mobile wallet application to sign transaction",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "購買 RBC",
@@ -659,7 +661,7 @@
   },
   "airdrop": {
     "title": "Rubic Token Claim",
-    "description": "Using this website, you can check if any of your addresses are eligible to withdraw RUBIC Tokens (RBC).",
+    "description": "Using this website, you can check if any of your addresses are eligible to withdraw Rubic Tokens (RBC).",
     "enterAddress": "Enter your Ethereum address",
     "goodAddress": "Yes, this address is eligible for a token claim",
     "claimedTokens": "tokens are claimable",
@@ -667,16 +669,21 @@
     "button": {
       "login": "Connect Wallet",
       "claim": "Claim",
+      "stake": "Stake",
       "claimed": "Claimed",
-      "wrongAddressError": "Enter another address",
+      "staked": "Staked",
+      "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
-      "incorrectAddressError": "Entered address is incorrect"
+      "changeNetwork": "Change Network",
+      "incorrectAddressError": "Entered address is incorrect",
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
       "progress": "Claim in progress",
-      "success": "Claim is success",
+      "success": "Claim is successful",
       "paused": "The token claim is temporarily unavailable. Please try again later",
       "claimed": "Tokens are claimed already, please check your wallet",
       "unknown": "Oops, something went wrong, please try again later",
@@ -686,7 +693,25 @@
     },
     "modals": {
       "success": "Your tokens are on the way!",
-      "explorerLink": "Check the transaction on explorer."
+      "explorerLink": "Check the transaction on explorer.",
+      "rubicPointsModal": {
+        "description": "You will be credited with {{ pointsAmount }} points when the transaction is successful",
+        "infoText": "Points can be seen",
+        "infoLink": "here",
+        "pointsUndefined": "Calculation will be made later, the result will be displayed in your personal account."
+      }
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }

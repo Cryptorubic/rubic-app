@@ -1,19 +1,26 @@
-import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, LIFI_BRIDGE_TYPES } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  LIFI_BRIDGE_TYPES,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType,
+  rangoTradeTypes,
+  RubicTradeTypeForRango
+} from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
-import { ThemeService } from 'src/app/core/services/theme/theme.service';
 import { TranslateService } from '@ngx-translate/core';
-import { AdditionalTokens, QueryParams } from './models/query-params';
+import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { BlockchainName } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
-import { WINDOW } from '@ng-web-apis/common';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
+import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { WINDOW } from '@ng-web-apis/common';
+import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +49,6 @@ export class QueryParamsService {
 
   public get noFrameLink(): string {
     const urlTree = this.router.parseUrl(this.router.url);
-    delete urlTree.queryParams.iframe;
     return urlTree.toString();
   }
 
@@ -52,25 +58,23 @@ export class QueryParamsService {
 
   public domain: string;
 
-  public disabledProviders: CrossChainTradeType[] | undefined;
-
   public disabledLifiBridges: LifiBridgeTypes[] | undefined;
 
-  public enabledProviders: CrossChainTradeType[] | undefined;
+  public disabledRangoBridges: RubicTradeTypeForRango[] | undefined;
+
+  public disabledCrossChainProviders: CrossChainTradeType[] = [];
+
+  public disabledOnChainProviders: OnChainTradeType[] = [];
 
   public enabledBlockchains: BlockchainName[];
 
-  public backgroundColor: string;
-
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
-    @Inject(DOCUMENT) private document: Document,
     private readonly router: Router,
-    private readonly iframeService: IframeService,
-    private readonly themeService: ThemeService,
     private readonly translateService: TranslateService,
+    private readonly iframeService: IframeService,
+    private readonly sessionStorage: SessionStorageService,
     @Inject(WINDOW) private readonly window: Window
   ) {}
 
@@ -84,16 +88,45 @@ export class QueryParamsService {
     this.isDesktop = queryParams.isDesktop === 'true';
     this.domain = queryParams.domain;
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
+    this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
 
-    if (queryParams.enabledProviders || queryParams.enabledBlockchains) {
-      this.setEnabledProviders(queryParams.enabledProviders);
-      this.setDisabledProviders(queryParams.enabledProviders);
+    if (queryParams?.referral) {
+      this.sessionStorage.setItem('referral', queryParams?.referral);
+    }
+
+    if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
+      const urlParams = new URLSearchParams(this.window.location.search);
+      const whitelistOnChain = this.parseStringQuery(urlParams.get('whitelistOnChain'));
+      const blacklistOnChain = this.parseStringQuery(urlParams.get('blacklistOnChain'));
+
+      this.setOnChainProviders(
+        whitelistOnChain.map(provider => provider.toLowerCase()),
+        blacklistOnChain.map(provider => provider.toLowerCase())
+      );
+    }
+
+    if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
+      const urlParams = new URLSearchParams(this.window.location.search);
+      const whitelistCrossChain = this.parseStringQuery(urlParams.get('whitelistCrossChain'));
+      const blacklistCrossChain = this.parseStringQuery(urlParams.get('blacklistCrossChain'));
+
+      this.setCrossChainProviders(
+        whitelistCrossChain.map(provider => provider.toLowerCase()),
+        blacklistCrossChain.map(provider => provider.toLowerCase())
+      );
+    }
+
+    if (queryParams.enabledBlockchains) {
       this.enabledBlockchains = queryParams.enabledBlockchains;
     }
 
     if (queryParams.disabledLifiBridges) {
       this.setDisabledLifiBridges(queryParams.disabledLifiBridges);
+    }
+
+    if (queryParams.disabledRangoBridges) {
+      this.setDisabledRangoBridges(queryParams.disabledRangoBridges);
     }
 
     this.queryParams = queryParams;
@@ -110,25 +143,6 @@ export class QueryParamsService {
     });
   }
 
-  private setDisabledLifiBridges(disabledBridges: string[]): void {
-    const bridges = Object.values(LIFI_BRIDGE_TYPES) || [];
-    this.disabledLifiBridges = bridges.filter(bridge =>
-      disabledBridges.includes(bridge.toLowerCase())
-    );
-  }
-
-  private setDisabledProviders(enabledProviders: string[]): void {
-    this.disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
-      provider => !enabledProviders.includes(provider.toLowerCase())
-    );
-  }
-
-  private setEnabledProviders(enabledProviders: string[]): void {
-    this.enabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
-      enabledProviders.includes(provider.toLowerCase())
-    );
-  }
-
   private setIframeInfo(queryParams: QueryParams): void {
     if (queryParams.hideUnusedUI) {
       this.setLanguage(queryParams);
@@ -141,44 +155,95 @@ export class QueryParamsService {
     }
 
     const { iframe } = queryParams;
-    if (iframe !== 'vertical' && iframe !== 'horizontal') {
+    if (iframe !== 'true') {
       this.iframeService.setIframeFalse();
       return;
     }
 
     this.iframeService.setIframeInfo({
-      iframeAppearance: queryParams.iframe,
+      iframe: true,
       device: queryParams.device,
       providerAddress: queryParams.feeTarget || queryParams.providerAddress,
-      tokenSearch: queryParams.tokenSearch === 'true',
-      rubicLink: queryParams.rubicLink === undefined || queryParams.rubicLink === 'true'
+      tokenSearch: queryParams.tokenSearch === 'true'
     });
 
-    this.setBackgroundStatus(queryParams);
     this.setHideSelectionStatus(queryParams);
     this.setAdditionalIframeTokens(queryParams);
-    this.setThemeStatus(queryParams);
     this.setLanguage(queryParams);
   }
 
-  private setBackgroundStatus(queryParams: QueryParams): void {
+  private setAdditionalIframeTokens(queryParams: QueryParams): void {
     if (!this.iframeService.isIframe) {
       return;
     }
 
-    const { background } = queryParams;
-    if (this.isBackgroundValid(background)) {
-      this.backgroundColor = background;
-      return;
+    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME).map(el => el.toLowerCase());
+
+    const tokensQueryParams = Object.fromEntries(
+      Object.entries(queryParams).filter(([key]) =>
+        tokensFilterKeys.includes(key as BlockchainName)
+      )
+    );
+
+    if (Object.keys(tokensQueryParams).length !== 0) {
+      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
     }
-    this.document.body.classList.add('default-iframe-background');
+  }
+
+  private setDisabledLifiBridges(disabledBridges: string[]): void {
+    const bridges = Object.values(LIFI_BRIDGE_TYPES) || [];
+    this.disabledLifiBridges = bridges.filter(bridge =>
+      disabledBridges.includes(bridge.toLowerCase())
+    );
+  }
+
+  private setDisabledRangoBridges(disabledBridges: string[]): void {
+    const bridges = Object.keys(rangoTradeTypes) || [];
+    this.disabledRangoBridges = bridges.filter(bridge =>
+      disabledBridges.includes(bridge)
+    ) as RubicTradeTypeForRango[];
+  }
+
+  private setCrossChainProviders(
+    whitelistCrossChain: string[],
+    blacklistCrossChain: string[]
+  ): void {
+    if (whitelistCrossChain?.length) {
+      this.disabledCrossChainProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
+        provider => !whitelistCrossChain.includes(provider.toLowerCase())
+      );
+    }
+
+    if (blacklistCrossChain?.length) {
+      const disabledProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(provider =>
+        blacklistCrossChain.includes(provider.toLowerCase())
+      );
+
+      this.disabledCrossChainProviders = Array.from(
+        new Set<CrossChainTradeType>([...this.disabledCrossChainProviders, ...disabledProviders])
+      );
+    }
+  }
+
+  private setOnChainProviders(whitelistOnChain: string[], blacklistOnChain: string[]): void {
+    if (whitelistOnChain?.length) {
+      this.disabledOnChainProviders = Object.values(ON_CHAIN_TRADE_TYPE).filter(
+        provider => !whitelistOnChain.includes(provider.toLowerCase())
+      );
+    }
+
+    if (blacklistOnChain?.length) {
+      const disabledProviders = Object.values(ON_CHAIN_TRADE_TYPE).filter(provider =>
+        blacklistOnChain.includes(provider.toLowerCase())
+      );
+
+      this.disabledOnChainProviders = Array.from(
+        new Set<OnChainTradeType>([...this.disabledOnChainProviders, ...disabledProviders])
+      );
+    }
   }
 
   private setHideSelectionStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe && queryParams.hideUnusedUI !== 'true') {
-      return;
-    }
-
     const tokensSelectionDisabled: [boolean, boolean] = [
       queryParams.hideSelectionFrom === 'true',
       queryParams.hideSelectionTo === 'true'
@@ -189,66 +254,20 @@ export class QueryParamsService {
     }
   }
 
-  private setAdditionalIframeTokens(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const tokensFilterKeys: Readonly<Array<keyof QueryParams>> = [
-      'eth_tokens',
-      'bsc_tokens',
-      'polygon_tokens',
-      'harmony_tokens',
-      'avalanche_tokens',
-      'fantom_tokens',
-      'moonriver_tokens'
-    ] as const;
-    const tokensQueryParams = Object.fromEntries(
-      Object.entries(queryParams).filter(([key]) =>
-        tokensFilterKeys.includes(key as AdditionalTokens)
-      )
-    );
-
-    if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
-    }
-  }
-
-  private setThemeStatus(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const { theme } = queryParams;
-    if (theme && (theme === 'dark' || theme === 'light')) {
-      this.themeService.setTheme(theme);
-    }
-  }
-
   private setLanguage(queryParams: QueryParams): void {
     const language = isSupportedLanguage(queryParams.language) ? queryParams.language : 'en';
     this.translateService.use(language);
   }
 
-  private isBackgroundValid(stringToTest: string): boolean {
-    if (stringToTest === '') {
-      return false;
-    }
-    if (stringToTest === 'inherit') {
-      return false;
-    }
-    if (stringToTest === 'transparent') {
-      return false;
+  private parseStringQuery(value: string): string[] {
+    if (value) {
+      try {
+        return JSON.parse(value.replace(/'/g, '"'));
+      } catch {
+        return [];
+      }
     }
 
-    const image = document.createElement('img');
-    image.style.background = 'rgb(0, 0, 0)';
-    image.style.background = stringToTest;
-    if (image.style.background !== 'rgb(0, 0, 0)') {
-      return true;
-    }
-    image.style.background = 'rgb(255, 255, 255)';
-    image.style.background = stringToTest;
-    return image.style.background !== 'rgb(255, 255, 255)';
+    return [];
   }
 }

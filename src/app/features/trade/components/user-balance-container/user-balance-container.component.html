@@ -1,0 +1,23 @@
+<div class="user-balance-container" *ngLet="token$ | async as token">
+  <ng-container *ngIf="token?.amount?.gt(0)">
+    <span class="user-balance-container__balance" *ngIf="hide !== 'balance'"
+      >Balance:
+      <span
+        class="user-balance-container__balance_amount"
+        (click)="isMobile ? maxButtonClickEvent.emit() : null"
+      >
+        {{ token?.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }}
+      </span>
+    </span>
+
+    <tui-tag
+      *ngIf="hide !== 'maxButton'"
+      size="s"
+      status="custom"
+      value="MAX"
+      class="user-balance-container__max-button"
+      (click)="maxButtonClickEvent.emit()"
+    >
+    </tui-tag>
+  </ng-container>
+</div>

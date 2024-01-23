@@ -1,0 +1,70 @@
+@use 'src/scss/core' as *;
+
+app-action-button {
+  width: 100%;
+}
+
+.form-links {
+  display: flex;
+  gap: var(--tui-padding-s);
+
+  span:last-child {
+    color: var(--tui-text-03);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: auto;
+}
+
+app-target-network-address {
+  display: block;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-s);
+  align-items: flex-end;
+  width: 100%;
+}
+
+.buttons-container {
+  display: flex;
+  gap: var(--tui-padding-l);
+  margin-top: var(--tui-padding-l);
+}
+
+app-form-switcher {
+  display: flex;
+  justify-content: center;
+  height: 2px;
+
+  background: linear-gradient(90deg, var(--io-background) 0%, rgba(0, 0, 0, 0) 50%, var(--io-background) 100%);
+}
+
+@include b($mobile-md) {
+  :host ::ng-deep {
+    .window-container {
+      padding: 0 !important;
+
+      background: none !important;
+      border-radius: 0 !important;
+
+      header {
+        padding: var(--tui-padding-l) !important;
+
+        background: var(--io-background);
+        border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+      }
+    }
+  }
+
+  .input-container {
+    gap: var(--tui-padding-xs);
+    align-items: flex-start;
+  }
+}

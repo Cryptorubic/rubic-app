@@ -1,0 +1,78 @@
+@use 'src/scss/core' as *;
+
+.settings {
+  flex-wrap: wrap;
+  padding: var(--tui-padding-l);
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-s);
+  }
+
+  &__row {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+    width: 100%;
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+  }
+
+  &__slippage-input {
+    min-width: 75px;
+
+    ::ng-deep input {
+      padding-right: 25px !important;
+    }
+  }
+
+  &__deadline-input {
+    min-width: 50px;
+  }
+
+  &__toggle {
+    --tui-secondary: var(--tui-secondary-hover);
+
+    margin-left: auto;
+  }
+}
+
+@include b($mobile-md) {
+  .settings {
+    &__form {
+      gap: var(--tui-padding-m);
+    }
+
+    &__row {
+      font-size: 16px;
+
+      button {
+        font-size: 15px;
+      }
+
+      ::ng-deep {
+        tui-input-number {
+          &#deadline {
+            text-align: center;
+          }
+
+          &#slippage {
+            margin-left: auto;
+          }
+
+          tui-primitive-textfield {
+            font-size: 15px;
+          }
+        }
+      }
+    }
+
+    &__toggle {
+      transform: scale(1.25);
+    }
+  }
+}

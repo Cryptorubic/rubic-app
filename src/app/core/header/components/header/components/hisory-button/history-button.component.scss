@@ -1,0 +1,21 @@
+:host {
+  position: relative;
+}
+
+.history-button {
+  &__container {
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: -8px;
+    right: -5px;
+  }
+}

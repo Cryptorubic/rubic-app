@@ -2,18 +2,19 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { LocalToken } from 'src/app/shared/models/tokens/local-token';
 import { RecentTrade } from '@shared/models/recent-trades/recent-trade';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { ChangenowPostTrade } from '@features/swaps/core/services/changenow-post-trade-service/models/changenow-post-trade';
-import { SWAP_PROVIDER_TYPE } from '@features/swaps/features/swap-form/models/swap-provider-type';
+
+import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import {
   CcrSettingsForm,
   ItSettingsForm
-} from '@features/swaps/core/services/settings-service/models/settings-form-controls';
-import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+} from '@features/trade/services/settings-service/models/settings-form-controls';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 
 export type Store = {
-  [key in `RUBIC_SETTINGS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
+  [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
 } & {
-  [key in `RUBIC_SETTINGS_${SWAP_PROVIDER_TYPE.INSTANT_TRADE}`]: ItSettingsForm;
+  [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.INSTANT_TRADE}`]: ItSettingsForm;
 } & {
   [key in `RUBIC_TRADES_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: FormSteps;
 } & {
@@ -33,6 +34,11 @@ export type Store = {
    * Current wallet chain id.
    */
   RUBIC_CHAIN_ID: number;
+
+  /**
+   * User agreement to the Terms of Use and Privacy Policy.
+   */
+  RUBIC_AGREEMENT_WITH_RULES_V1: boolean;
 
   /**
    * User favorite tokens.
@@ -81,9 +87,10 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_TOKENS: null,
   RUBIC_CHANGENOW_POST_TRADE: null,
   RUBIC_CHANGENOW_RECENT_TRADE: null,
-  RUBIC_SETTINGS_CROSS_CHAIN_ROUTING: null,
-  RUBIC_SETTINGS_INSTANT_TRADE: null,
+  RUBIC_OPTIONS_CROSS_CHAIN_ROUTING: null,
+  RUBIC_OPTIONS_INSTANT_TRADE: null,
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,
   RUBIC_TRADES_INSTANT_TRADE: null,
+  RUBIC_AGREEMENT_WITH_RULES_V1: null,
   RUBIC_ENABLE_TESTNET: null
 };

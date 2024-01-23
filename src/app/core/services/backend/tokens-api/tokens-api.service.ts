@@ -7,8 +7,7 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from '@shared/constants/blockchain/backend-blockchains';
 import { Token } from '@shared/models/tokens/token';
-import { catchError, debounceTime, map, switchMap, tap } from 'rxjs/operators';
-import { IframeService } from 'src/app/core/services/iframe/iframe.service';
+import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
   DEFAULT_PAGE_SIZE,
@@ -27,11 +26,7 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
-import {
-  blockchainsToFetch,
-  blockchainsWithOnePage,
-  iframeBlockchainsToFetch
-} from './constants/fetch-blockchains';
+import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -46,7 +41,6 @@ export class TokensApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly iframeService: IframeService,
     private readonly authService: AuthService
   ) {}
 
@@ -77,22 +71,13 @@ export class TokensApiService {
 
   /**
    * Fetch specific tokens from backend.
-   * @param params Request params.
    * @param tokensNetworkState$ Tokens pagination state.
    * @return Observable<List<Token>> Tokens list.
    */
   public getTokensList(
-    params: { [p: string]: unknown },
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
-    return this.iframeService.isIframe$.pipe(
-      debounceTime(50),
-      switchMap(isIframe => {
-        return isIframe
-          ? this.fetchIframeTokens(params)
-          : this.fetchBasicTokens(tokensNetworkState$);
-      })
-    );
+    return this.fetchBasicTokens(tokensNetworkState$);
   }
 
   /**
@@ -141,34 +126,13 @@ export class TokensApiService {
   }
 
   /**
-   * Fetches iframe tokens from backend.
-   * @param params Request params.
-   * @return Observable<List<Token>> Tokens list.
-   */
-  private fetchIframeTokens(params: { [p: string]: unknown }): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendToken[]>(ENDPOINTS.IFRAME_TOKENS, params, this.tokensApiUrl)
-      .pipe(
-        map(backendTokens =>
-          backendTokens.filter(token => {
-            const network = FROM_BACKEND_BLOCKCHAINS?.[token.blockchainNetwork];
-            return iframeBlockchainsToFetch.includes(network);
-          })
-        ),
-        map(backendTokens => TokensApiService.prepareTokens(backendTokens))
-      );
-  }
-
-  /**
    * Fetches basic tokens from backend.
    */
   private fetchBasicTokens(
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchains = [...blockchainsToFetch].map(
-      blockchain => TO_BACKEND_BLOCKCHAINS[blockchain]
-    );
+    const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
 
     const requests$ = blockchains.map((network: BackendBlockchain) =>
       this.httpService
@@ -201,7 +165,7 @@ export class TokensApiService {
           return List(
             blockchainsToFetch
               .map(blockchain => defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]])
-              .filter(tokens => tokens.length > 0)
+              .filter(tokens => tokens?.length > 0)
               .flat()
           );
         }

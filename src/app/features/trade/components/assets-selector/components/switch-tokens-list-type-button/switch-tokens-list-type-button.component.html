@@ -1,0 +1,10 @@
+<button
+  tuiIconButton
+  size="m"
+  appearance="secondary"
+  type="button"
+  *ngLet="buttonData$ | async as buttonData"
+  (click)="switchMode()"
+>
+  <img class="image" [src]="'assets/images/icons/' + buttonData.icon" [alt]="'Switch list'" />
+</button>

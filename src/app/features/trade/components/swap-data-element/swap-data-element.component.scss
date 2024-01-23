@@ -1,0 +1,22 @@
+@use 'src/scss/core' as *;
+
+.provider-info {
+  display: flex;
+  gap: var(--tui-padding-l);
+  justify-content: space-between;
+  padding: var(--tui-padding-l);
+
+  &__element {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+
+    img {
+      height: 0.75rem;
+    }
+
+    &.time {
+      margin-left: auto;
+    }
+  }
+}

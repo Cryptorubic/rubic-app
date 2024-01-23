@@ -1,0 +1,44 @@
+@use 'src/scss/core' as *;
+
+:host {
+  display: block;
+}
+
+.modal {
+  &__content {
+    text-align: center;
+  }
+
+  &__footer {
+    margin-top: var(--tui-padding-xl);
+
+    &-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--tui-padding-xl);
+
+      font-size: 16px;
+
+      @include b($tablet) {
+        font-size: 16px;
+        line-height: 24px;
+      }
+      
+      img {
+        margin-left: 8px;
+      }
+
+    }
+
+    &-actions {
+      display: flex;
+      gap: var(--tui-padding-xl);
+      padding-top: var(--tui-padding-xl);
+
+      button {
+        flex: 0 50%;
+      }
+    }
+  }
+}

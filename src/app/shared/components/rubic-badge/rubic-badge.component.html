@@ -1,0 +1,12 @@
+<div
+  class="badge"
+  [ngClass]="{
+    badge_error: status === 'error',
+    badge_warning: status === 'warning',
+    badge_success: status === 'success',
+    badge_info: status === 'info'
+  }"
+>
+  <span class="badge__dot"></span>
+  <span class="badge__label">{{ label }}</span>
+</div>

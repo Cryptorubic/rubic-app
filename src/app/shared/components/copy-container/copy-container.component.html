@@ -1,16 +1,9 @@
-<button class="container" (click)="copyToClipboard()">
-  <ng-container *ngIf="!loading; else loader">
-    <tui-svg
-      class="icon"
-      src="tuiIconCopyLarge"
-      [tuiHint]="tooltip"
-      [tuiHintManual]="hintShown"
-    ></tui-svg>
-    <span>{{ text }}</span>
-  </ng-container>
-  <ng-template #loader>
-    <tui-loader></tui-loader>
-  </ng-template>
-</button>
+<button
+  class="button-container"
+  (click)="copyToClipboard()"
+  inlineSVG="assets/images/icons/copy.svg"
+  [tuiHint]="tooltip"
+  [tuiHintManual]="hintShown"
+></button>
 
 <ng-template #tooltip> Copied! </ng-template>

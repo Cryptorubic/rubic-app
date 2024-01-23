@@ -1,76 +1,38 @@
-<ng-container *noFrame>
-  <ng-container *ngIf="isMobile$ | async; then profileMobile; else profileDesktop"></ng-container>
-</ng-container>
+<ng-container>
+  <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
+    <div tuiGroup>
+      <button tuiButton appearance="secondary" type="button" size="m">
+        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
+          <div class="user-profile__avatar">
+            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
+          </div>
 
-<ng-template #profileDesktop>
-  <app-dropdown-selector
-    *noFrame
-    (opened)="getDropdownStatus($event)"
-    [dropdownButtonTemplate]="dropdownButtonTemplate"
-    [dropdownOptionsTemplates]="dropdownItems"
-  ></app-dropdown-selector>
-</ng-template>
+          <div class="user-profile__text">
+            {{ profile.text?.length > 20 ? (profile.text | shortAddress : 5 : 3) : profile.text }}
+          </div>
+        </ng-container>
 
-<ng-template #profileMobile>
-  <button (click)="openProfileModal()">
-    <ng-container *ngTemplateOutlet="dropdownButtonTemplate"></ng-container>
-  </button>
-</ng-template>
-
-<ng-template #dropdownButtonTemplate>
-  <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-      <img [src]="currentBlockchainIcon" [alt]="currentBlockchainName" width="25" height="25" />
+        <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
+      </button>
     </div>
+  </tui-hosted-dropdown>
 
-    <div *ngLet="(currentUser$ | async)?.address as userAddress" class="user-profile__address">
-      {{ userAddress.length > 20 ? (userAddress | shortAddress : 5 : 3) : userAddress }}
-    </div>
-
-    <app-notification-badge
-      class="notification-counter notification-counter_profile"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-      size="xs"
-      color="red"
-      [value]="unreadTrades$ | async"
-    ></app-notification-badge>
-
-    <div class="arrow" inlineSVG="assets/images/icons/arrow-down.svg"></div>
-  </div>
-</ng-template>
-
-<!--<ng-template #dropdownOptionTemplate>-->
-<!--  <a class="user-profile__dropdown-item" routerLink="revoke-approval">-->
-<!--    {{ 'Revoke Approval' }}-->
-<!--  </a>-->
-<!--</ng-template>-->
-
-<ng-template #dropdownOptionTemplate>
-  <div *noFrame class="user-profile__dropdown-item button-link" (click)="openRecentTradesModal()">
-    {{ 'navigation.recentTrades' | translate }}
-    <app-notification-badge
-      class="notification-counter notification-counter_menu"
-      *ngIf="(unreadTrades$ | async) && (currentUser$ | async) && !dropdownIsOpened"
-      size="xs"
-      color="red"
-      [value]="unreadTrades$ | async"
-    ></app-notification-badge>
-  </div>
-</ng-template>
-
-<ng-template #dropdownOptionTemplate>
-  <button class="user-profile__dropdown-item user-profile__logout" (click)="logout()">
-    {{ 'navigation.logout' | translate }}
-  </button>
-</ng-template>
-
-<ng-container *onlyFrame>
-  <div class="user-profile">
-    <div class="user-profile__chain-icon" *ngIf="currentBlockchainIcon">
-      <img [src]="currentBlockchainIcon" alt="Current blockchain" width="25" height="25" />
-    </div>
-    <div class="user-profile__address">
-      {{ (currentUser$ | async)?.address | shortAddress : 5 : 3 }}
-    </div>
-  </div>
+  <ng-template #dropdown let-activeZone>
+    <tui-data-list class="data-list" size="m" role="menu">
+      <tui-opt-group>
+        <button
+          tuiButton
+          class="data-list__element user-profile__logout"
+          appearance="secondary"
+          type="button"
+          size="m"
+          (click)="logout()"
+        >
+          <div class="data-list__link-container">
+            {{ 'navigation.logout' | translate }}
+          </div>
+        </button>
+      </tui-opt-group>
+    </tui-data-list>
+  </ng-template>
 </ng-container>

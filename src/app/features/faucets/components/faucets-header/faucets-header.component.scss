@@ -1,6 +1,7 @@
 ul {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: var(--tui-padding-l);
 }
 
 li.tui-skeleton {
@@ -19,4 +20,54 @@ header {
 
   font-weight: 600;
   font-size: 16px;
+}
+
+.faucets {
+  &__element {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    transition: transform 0.1s ease-in-out;
+
+    ::ng-deep {
+      height: auto !important;
+
+      .t-wrapper {
+        padding: 0 !important;
+      }
+    }
+
+    &.active {
+      transition: transform 0.1s ease-in-out;
+
+      .icon-container {
+        border: 2px solid var(--tui-secondary-active);
+      }
+    }
+
+    img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .icon-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+      align-items: center;
+      justify-content: center;
+      width: 75px;
+      padding: 5px;
+      overflow: hidden;
+
+      background-color: var(--primary-background);
+      border-radius: var(--tui-radius-m);
+
+      .icon-label {
+        font-size: 12px;
+      }
+    }
+  }
 }

@@ -14,10 +14,6 @@
     padding: 44px 20px;
 
     text-align: center;
-
-    @include iframe-vertical {
-      padding-top: 52px;
-    }
   }
 
   &__title {
@@ -28,6 +24,7 @@
 
     &-points {
       margin: 30px auto 19px;
+
       color: var(--primary-color);
     }
   }
@@ -64,39 +61,5 @@
     display: block;
 
     margin-top: 25px;
-  }
-
-  /* stylelint-disable */
-  @include iframe-horizontal {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-
-    &__content {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: $iframe-horizontal-height;
-      padding-top: 0;
-    }
-
-    &__body {
-      margin-right: 80px;
-      height: 100%;
-      display: flex;
-      align-items: center;
-    }
-
-    h3 {
-      text-align: left;
-      font-size: 18px;
-      margin: 0 0 20px;
-    }
-
-    ::ng-deep app-rubic-button button {
-      width: 150px;
-      float: left;
-    }
   }
 }

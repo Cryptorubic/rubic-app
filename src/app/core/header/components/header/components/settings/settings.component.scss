@@ -1,5 +1,50 @@
 @use 'src/scss/core' as *;
 
+.settings {
+  &__theme,
+  &__language {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 0 var(--tui-padding-m) var(--tui-padding-xs) var(--tui-padding-m);
+    padding: var(--tui-padding-s) var(--tui-padding-m);
+
+    background: var(--io-background);
+
+    border-radius: 20px;
+
+    &-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+      margin-left: var(--tui-padding-l);
+    }
+
+    &-title {
+      @include font(16px, 16px, 500, var(--tui-text-01), 0.45px);
+    }
+
+    &-subtitle {
+      @include font(14px, 14px, 400, var(--tui-text-03), 0.45px);
+    }
+  }
+
+  &__theme {
+    &-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 100%;
+    }
+  }
+
+  &__language {
+    margin-bottom: var(--tui-padding-m);
+  }
+}
+
 .header-settings {
   transition: 300ms;
 
@@ -54,33 +99,6 @@
 
     &::first-letter {
       text-transform: uppercase;
-    }
-  }
-}
-
-@include b($tablet) {
-  .header-settings {
-    min-width: 250px;
-  }
-}
-
-@include b($tablet) {
-  .header-settings {
-    width: auto;
-
-    &__icon {
-      width: 20px;
-    }
-  }
-}
-
-.settings-icon ::ng-deep {
-  svg {
-    width: 24px;
-    height: 24px;
-
-    path {
-      fill: var(--secondary-text);
     }
   }
 }

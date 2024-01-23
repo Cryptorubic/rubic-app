@@ -5,22 +5,26 @@ import {
   BackendBlockchain,
   FROM_BACKEND_BLOCKCHAINS
 } from '@app/shared/constants/blockchain/backend-blockchains';
-import { BehaviorSubject, catchError, forkJoin, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, retry, map, Observable, of, tap } from 'rxjs';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   LifiBridgeTypes,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  RubicTradeTypeForRango
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
+import { timeout } from 'rxjs/operators';
+import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled-providers';
 
 interface DisabledBridgeTypes {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RubicTradeTypeForRango[];
 }
 
 interface ProvidersConfiguration {
@@ -47,11 +51,24 @@ const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
 })
 export class PlatformConfigurationService {
   private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
-    disabledBridgeTypes: undefined,
+    disabledBridgeTypes: {
+      [CROSS_CHAIN_TRADE_TYPE.LIFI]: [],
+      [CROSS_CHAIN_TRADE_TYPE.RANGO]: RANGO_CROSS_CHAIN_DISABLED_PROVIDERS
+    },
     disabledCrossChainTradeTypes: undefined
   });
 
   public readonly disabledProviders$ = this._disabledProviders$.asObservable();
+
+  private readonly _providersAverageTime$ = new BehaviorSubject<
+    Record<CrossChainTradeType, number>
+  >(undefined);
+
+  public readonly providersAverageTime$ = this._providersAverageTime$.asObservable();
+
+  public get providersAverageTime(): Record<CrossChainTradeType, number> {
+    return this._providersAverageTime$.getValue();
+  }
 
   public get disabledProviders(): ProvidersConfiguration {
     return this._disabledProviders$.getValue();
@@ -97,7 +114,10 @@ export class PlatformConfigurationService {
         .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`)
         .pipe(catchError(() => of(defaultConfig)))
     ];
+
     return forkJoin(responses).pipe(
+      timeout(5_000),
+      retry(1),
       map(([mainResponse, testnetResponse]) => ({
         server_is_active: mainResponse.server_is_active,
         cross_chain_providers: {
@@ -116,6 +136,9 @@ export class PlatformConfigurationService {
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
           this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
+          this._providersAverageTime$.next(
+            this.mapAverageProvidersTime(response.cross_chain_providers)
+          );
           this.handleCrossChainProxyProviders(response.cross_chain_providers);
         }
       }),
@@ -163,7 +186,7 @@ export class PlatformConfigurationService {
     ][];
 
     if (!crossChainProvidersEntries.length) {
-      return { disabledBridgeTypes: undefined, disabledCrossChainTradeTypes: undefined };
+      return this._disabledProviders$.getValue();
     }
 
     const disabledCrossChainProviders = crossChainProvidersEntries
@@ -178,9 +201,46 @@ export class PlatformConfigurationService {
           acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiBridgeTypes[];
         }
 
+        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
+          acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = this.getRangoDisabledProviders(
+            disabledProviders as RubicTradeTypeForRango[]
+          );
+        }
+
         return acc;
       }, {} as DisabledBridgeTypes);
 
     return { disabledBridgeTypes, disabledCrossChainTradeTypes: disabledCrossChainProviders };
+  }
+
+  /**
+   * Combine disabled providers from server and client
+   */
+  private getRangoDisabledProviders(
+    disabledFromServer: RubicTradeTypeForRango[]
+  ): RubicTradeTypeForRango[] {
+    const disabledProviders = this._disabledProviders$.getValue();
+    const disabledFromClient =
+      disabledProviders.disabledBridgeTypes[CROSS_CHAIN_TRADE_TYPE.RANGO] ?? [];
+    return [...disabledFromClient, ...disabledFromServer];
+  }
+
+  private mapAverageProvidersTime(crossChainProviders: {
+    [k in string]: CrossChainProviderStatus;
+  }): Record<CrossChainTradeType, number> {
+    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+      ToBackendCrossChainProviders,
+      CrossChainProviderStatus
+    ][];
+    if (!crossChainProvidersEntries.length) {
+      return;
+    }
+
+    return Object.fromEntries(
+      crossChainProvidersEntries.map(([provider, status]) => [
+        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
+        status.average_execution_time
+      ])
+    ) as Record<CrossChainTradeType, number>;
   }
 }

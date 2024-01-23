@@ -1,7 +1,7 @@
 import { Token } from '@app/shared/models/tokens/token';
 import {
-  BlockchainName,
   BLOCKCHAIN_NAME,
+  BlockchainName,
   nativeTokensList,
   wrappedNativeTokensList
 } from 'rubic-sdk';
@@ -503,7 +503,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.FUSE],
       ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/fuse.png'
+      image: 'assets/images/icons/default-tokens/fuse.svg'
     } as Token,
     {
       ...wrappedNativeTokensList[BLOCKCHAIN_NAME.FUSE],
@@ -650,7 +650,6 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
     }
   ],
   [BLOCKCHAIN_NAME.BOBA_BSC]: [],
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: [],
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ASTAR_EVM], ...defaultTokenParams } as Token,
     { ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ASTAR_EVM], ...defaultTokenParams } as Token,
@@ -970,6 +969,36 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.LINEA]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.LINEA], ...defaultTokenParams } as Token
   ],
+  [BLOCKCHAIN_NAME.BASE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BASE], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MANTLE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MANTLE], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ARTHERA]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/arthera.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/waa.png'
+    } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/zetachain.png'
+    } as Token
+  ],
   [BLOCKCHAIN_NAME.GOERLI]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.GOERLI],
@@ -1012,30 +1041,6 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
-  [BLOCKCHAIN_NAME.ARTHERA]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/arthera.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ARTHERA],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/waa.png'
-    } as Token
-  ],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/zetachain.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ZETACHAIN],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/zetachain.png'
-    } as Token
-  ],
   [BLOCKCHAIN_NAME.TAIKO]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.TAIKO],
@@ -1059,5 +1064,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/weth.png'
     } as Token
+  ],
+  [BLOCKCHAIN_NAME.BERACHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
   ]
 };

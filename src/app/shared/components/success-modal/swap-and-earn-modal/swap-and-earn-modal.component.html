@@ -11,7 +11,7 @@
         "
         alt="Success"
       />
-      <h3 *noFrame="'horizontal'" class="modal__title">
+      <h3 class="modal__title">
         {{
           (type === 'on-chain'
             ? 'notifications.successfullySentTransaction'
@@ -24,7 +24,7 @@
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
         <ng-container *ngIf="ccrProviderType !== CROSS_CHAIN_PROVIDER.SYMBIOSIS">
           <ng-container class="modal__footer-text" *ngIf="type === 'cross-chain-routing'">
-            <div *noFrame>
+            <div>
               {{
                 'modals.successTxModal.seeDetailsCCR'
                   | translate
@@ -33,7 +33,7 @@
             </div>
           </ng-container>
           <ng-container *ngIf="type === 'on-chain' && blockchain === BLOCKCHAIN_NAME.TRON">
-            <div *noFrame class="modal__footer-text && modal__footer-text_warning">
+            <div class="modal__footer-text && modal__footer-text_warning">
               Transaction can take up to 5 minutes.
             </div>
           </ng-container>
@@ -55,7 +55,7 @@
           </div>
         </ng-container>
       </ng-container>
-      <h3 *onlyFrame="'horizontal'" class="modal__title">
+      <h3 class="modal__title">
         {{
           (type === 'on-chain' ? 'modals.successTxModal.title' : 'modals.successTxModal.ccrTitle')
             | translate

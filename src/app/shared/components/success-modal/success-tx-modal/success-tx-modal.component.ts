@@ -1,21 +1,20 @@
 import {
-  Component,
-  ChangeDetectionStrategy,
-  Inject,
   AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
   OnDestroy
 } from '@angular/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
+import { SuccessTxModalType } from '@app/shared/models/modals/modal-type';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from 'rubic-sdk';
-import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
@@ -58,8 +57,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
         ccrProviderType: CrossChainTradeType;
         isSwapAndEarnSwap?: boolean;
       }
-    >,
-    private readonly router: Router
+    >
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;

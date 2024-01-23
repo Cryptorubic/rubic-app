@@ -15,6 +15,7 @@ import { ModalService } from '../../services/modal.service';
 import { IMobileNativeOptions } from '../../models/mobile-native-options';
 import { animationTimeout } from '../../utils/animation-timeout';
 import { DOCUMENT } from '@angular/common';
+import { IframeService } from '@core/services/iframe-service/iframe.service';
 
 @Component({
   selector: 'app-mobile-native-modal',
@@ -28,13 +29,16 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
 
   public state: ModalStates;
 
+  public readonly isIframe$ = this.iframeService.isIframe$;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     readonly context: TuiDialog<IMobileNativeOptions, void>,
     private readonly destroy$: TuiDestroyService,
     private readonly modalService: ModalService,
     private readonly el: ElementRef<HTMLElement>,
-    @Inject(DOCUMENT) private readonly document: Document
+    @Inject(DOCUMENT) private readonly document: Document,
+    private readonly iframeService: IframeService
   ) {
     this.subscribeOnModal();
   }

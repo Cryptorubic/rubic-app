@@ -1,77 +1,18 @@
 @use 'src/scss/core' as *;
 
+:host ::ng-deep tui-dialog {
+  width: 568px;
+}
+
 .modal {
+  --tui-secondary: var(--tui-secondary-hover);
   position: relative;
 
-  padding: 40px 20px 20px;
+  ::ng-deep .window-container {
+    padding: 0;
 
-  font-weight: 300;
-
-  border-radius: 10px;
-
-  @include hide-unused-ui {
-    padding: 0 20px 20px;
-  }
-
-  @include iframe-horizontal {
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    margin: 0 auto;
-    padding: 0 20px;
-
-    background: var(--tui-base-01);
-  }
-
-  @include iframe-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    height: 560px;
-    margin: 0 auto;
-
-    @include b($mobile-md) {
-      height: auto;
-    }
-  }
-
-  @include b($mobile-md) {
-    padding: 0 20px;
-  }
-
-  &__privacy-policy {
-    margin-bottom: 10px;
-  }
-
-  &__content {
-    @include iframe-horizontal {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      width: 100%;
-      height: 180px;
-      max-height: 180px;
-      padding: 0 30px;
-    }
-  }
-
-  &__title {
-    margin-top: 0;
-    margin-bottom: 0;
-
-    color: $rubic-base-11;
-    font-weight: 300;
-    font-size: 24px;
-    line-height: 29px;
-
-    @include b($mobile-md) {
-      display: none;
+    header {
+      padding-bottom: var(--tui-padding-l);
     }
   }
 
@@ -79,39 +20,36 @@
     margin-right: 40px;
   }
 
-  &__header,
-  &__body {
-    margin-bottom: 30px;
+  &__form {
+    display: flex;
+    gap: var(--tui-padding-m);
+    margin-bottom: var(--tui-padding-4xl);
+    margin-left: var(--tui-padding-l);
 
-    @include hide-unused-ui {
-      margin-bottom: 5px;
+    tui-checkbox {
+      margin-top: 3px;
     }
   }
 
   &__body {
-    @include iframe-vertical {
-      margin-bottom: 11px;
-    }
+    display: grid;
+    grid-row-gap: var(--tui-padding-4xl);
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 
-  &__footer {
-    font-size: 15px;
-    text-align: center;
-  }
-
-  &__body {
+  &__provider {
     display: flex;
     flex-direction: column;
+    gap: var(--tui-padding-xs);
     align-items: center;
 
-    padding: 10px 37px 0;
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
 
-    @include iframe-horizontal {
-      flex-direction: row;
-      justify-content: center;
-
-      margin-bottom: 15px;
-      padding: 0;
+      user-select: none;
+      pointer-events: none;
     }
   }
 
@@ -119,54 +57,93 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 25px;
+    width: 44px;
+    height: 44px;
+
+    background-color: var(--primary-background);
+    border-radius: var(--tui-radius-s);
 
     img {
-      width: 100%;
+      width: 28px;
+    }
+
+    &:hover {
+      background-color: var(--tui-secondary);
+    }
+  }
+
+  &__button {
+    flex: 1;
+
+    text-decoration: none;
+
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      scale: 1.05;
+    }
+
+
+    ::ng-deep {
+      .t-wrapper {
+        background: none;
+
+        &:hover {
+          background: none;
+        }
+      }
+
+      .t-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tui-padding-s);
+        justify-content: center;
+
+        white-space: nowrap;
+      }
     }
   }
 
   &__link {
-    color: var(--primary-color);
+    color: var(--tui-primary);
   }
+}
 
-  &__provider-button {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    height: 50px;
-    padding: 10px 20px;
-
-    font-size: 18px;
-
-    background: rgba(white, 0.1);
-    border-radius: 10px;
-    cursor: pointer;
-
-    transition: 0.2s ease-in-out;
-
-    @include iframe-horizontal {
-      max-width: 240px;
+@include b($mobile-md) {
+  .modal {
+    ::ng-deep .window-container {
+      padding: 0 var(--tui-padding-l);
     }
 
-    &[disabled] {
-      cursor: not-allowed;
-      opacity: 0.5;
+    &__body {
+      grid-template-rows: auto;
+      grid-template-columns: repeat(3, calc(100% / 3));
     }
 
-    &:not(:last-child) {
-      margin-bottom: 15px;
+    &__provider-icon {
+      width: 64px;
+      height: 64px;
 
-      @include iframe-horizontal {
-        margin-right: 20px;
-        margin-bottom: 0;
+      img {
+        width: 43px;
+      }
+
+      &:hover {
+        background-color: var(--tui-secondary);
       }
     }
 
-    &:not([disabled]):hover {
-      transform: scale(1.03);
+    &__form {
+      width: fit-content;
+      margin: 0 auto var(--tui-padding-4xl) auto;
+
+      span {
+        font-size: 13px;
+      }
+
+      tui-checkbox {
+        margin-top: 1px;
+      }
     }
   }
 }

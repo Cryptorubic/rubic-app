@@ -2,30 +2,38 @@
   <ng-container *ngIf="isMobile; then mobileMenu; else desktopMenu"></ng-container>
 
   <ng-template #desktopMenu>
-    <tui-data-list class="data-list">
+    <tui-data-list class="data-list" size="m" role="menu" [emptyContent]="empty">
       <tui-opt-group>
         <ng-container *ngFor="let item of navigationList">
-          <a
+          <button
+            tuiButton
+            appearance="secondary"
+            type="button"
+            size="m"
             *ngIf="item.type === 'internal'"
-            (click)="onClose.emit()"
-            routerLinkActive="data-list__link_active"
-            class="data-list__link"
+            class="data-list__element"
+            (click)="handleButtonClick(item)"
           >
-            <button tuiOption class="data-list__option" (click)="handleButtonClick(item)">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+            <div class="data-list__element-container">
+              <div class="image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
-            </button>
-          </a>
+            </div>
+          </button>
+
           <a
+            tuiButton
             *ngIf="item.type === 'external'"
+            appearance="secondary"
+            class="data-list__element"
+            type="button"
+            size="m"
             [href]="item.link"
             target="_blank"
-            class="data-list__link"
           >
-            <button tuiOption class="data-list__option" (click)="handleButtonClick()">
-              <div class="data-list__option-image" [inlineSVG]="item.imagePath"></div>
+            <div class="data-list__element-container">
+              <div class="image" [inlineSVG]="item.imagePath"></div>
               {{ item.translateKey | translate }}
-            </button>
+            </div>
           </a>
         </ng-container>
       </tui-opt-group>
@@ -50,7 +58,10 @@
 
             <ng-template #external>
               <a
-                class="data-list__link"
+                tuiButton
+                appearance="secondary"
+                type="button"
+                size="m"
                 [href]="menu.link"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -63,10 +74,13 @@
 
             <ng-template #internal>
               <a
-                class="data-list__link"
+                tuiButton
+                appearance="secondary"
+                type="button"
+                size="m"
                 (click)="mobileClose()"
                 [routerLink]="menu.link"
-                routerLinkActive="data-list__link_active"
+                routerLinkActive="data-list__element_active"
               >
                 <button class="data-list__option">
                   {{ menu.translateKey | translate }}
@@ -78,4 +92,5 @@
       </tui-accordion-item>
     </tui-accordion>
   </ng-template>
+  <ng-template #empty></ng-template>
 </div>

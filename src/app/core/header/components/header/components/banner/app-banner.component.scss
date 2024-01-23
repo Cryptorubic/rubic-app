@@ -5,44 +5,17 @@
 
   display: flex;
   justify-content: center;
-  max-height: 38px;
+  height: 57px;
+  max-height: 57px;
   overflow: hidden;
 
   text-decoration: none;
 
-  background: linear-gradient(275deg, #33db9c 30.29%, #8b5195 80.27%), linear-gradient(90deg, #4aa956 0%, #00a2fe 100%);
+  background: linear-gradient(90deg, #36ffb4 0.03%, #41ffff 20.41%, #f7f4ff 39.47%, #fffbed 66.86%, #d4ef66 80.77%, #efd166 93.08%, #ee8f37 102.37%);
+  cursor: pointer;
 
   @include hide-unused-ui {
     display: none;
-  }
-
-  &__background-img {
-    &_1,
-    &_2,
-    &_3 {
-      position: absolute;
-    }
-
-    &_1 {
-      top: -11px;
-      left: 0;
-
-      transform: rotate(326deg);
-    }
-
-    &_2 {
-      top: -15px;
-      left: 226px;
-
-      transform: rotate(291deg) scale(0.7);
-    }
-
-    &_3 {
-      top: 10px;
-      left: 116px;
-
-      transform: rotate(267deg) scale(1.2);
-    }
   }
 
   &__container {
@@ -59,7 +32,7 @@
   }
 
   &__text {
-    @include font(25px, 1, 400, #ffffff);
+    @include font(25px, 1, 300, #000000);
     margin: 0;
 
     letter-spacing: 1px;
@@ -69,8 +42,22 @@
       font-weight: bold;
     }
 
-    &.mobile {
-      display: none;
+    &_link {
+      position: relative;
+
+      &::after {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        width: 100%;
+        height: 2px;
+
+        background: #fff;
+
+        content: '';
+      }
     }
   }
 
@@ -103,9 +90,9 @@
 
 @include b($laptop-xl) {
   .banner {
-    &__text {
-      @include font(20px, 1, 400, #ffffff);
-    }
+    //&__text {
+    //  @include font(20px, 1, 400, #ffffff);
+    //}
 
     &__link {
       @include font(15px, 1, 400, #C3FFDB);
@@ -113,36 +100,11 @@
   }
 }
 
-@include b(1000) {
-  .banner {
-    &__background-img_right,
-    &__background-img_left {
-      display: none;
-    }
-  }
-}
-
 @include b($tablet) {
   .banner {
-    &__text {
-      @include font(18px, 1, 400, #ffffff);
-
-      &.mobile {
-        display: inline;
-      }
-
-      &.desktop {
-        display: none;
-      }
-    }
-
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 0.4;
-      }
-    }
+    //&__text {
+    //  @include font(18px, 1, 400, #ffffff);
+    //}
 
     &__link {
       @include font(13px, 1, 400, #C3FFDB);
@@ -152,15 +114,13 @@
 
 @include b($mobile-md) {
   .banner {
-    justify-content: left;
-
     &__container {
       gap: 10px;
       width: 100%;
     }
 
     &__text {
-      @include font(15px, 1, 400, #ffffff);
+      @include font(18px, 1, 400, #000000);
       text-align: left;
     }
 
@@ -187,34 +147,10 @@
 
 @include b(420) {
   .banner {
-    &__background-img {
-      &_1,
-      &_2,
-      &_3 {
-        opacity: 1;
-      }
-
-      &_1 {
-        top: -3px;
-        left: -20px;
-
-        transform: rotate(326deg) scale(0.7);
-      }
-
-      &_2 {
-        top: -16px;
-        left: 175px;
-
-        transform: rotate(291deg) scale(0.5);
-      }
-
-      &_3 {
-        display: none;
-      }
-    }
+    height: 31px;
 
     &__text {
-      @include font(13px, 1, 400, #ffffff);
+      @include font(13px, 1, 400, #000000);
     }
 
     &__link {
@@ -227,6 +163,10 @@
         height: 20px;
         margin-top: 0;
       }
+    }
+
+    &__background-img {
+      height: 27px;
     }
   }
 }

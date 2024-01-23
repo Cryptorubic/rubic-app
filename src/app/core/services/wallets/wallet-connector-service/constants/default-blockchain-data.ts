@@ -7,6 +7,10 @@ interface DefaultBlockchainData {
 
 // TODO: remove Partial
 export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlockchainData>> = {
+  [BLOCKCHAIN_NAME.ETHEREUM]: {
+    name: 'Ethereum Mainnet',
+    rpc: 'https://rpc.ankr.com/eth'
+  },
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: {
     name: 'Binance Smart Chain Mainnet',
     rpc: 'https://bsc-dataseed1.binance.org'
@@ -49,7 +53,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
-    rpc: 'https://mainnet.optimism.io'
+    rpc: 'https://rpc.ankr.com/optimism'
   },
   [BLOCKCHAIN_NAME.CRONOS]: {
     name: 'Cronos Mainnet Beta',
@@ -97,7 +101,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.KLAYTN]: {
     name: 'Klaytn',
-    rpc: 'https://rpc.ankr.com/klaytn/a8bbc9d3f69cf00657231179b7006f784b86dd0eb67aec90116347d32c10867d'
+    rpc: 'https://public-en-cypress.klaytn.net/'
   },
   [BLOCKCHAIN_NAME.VELAS]: {
     name: 'Velas',
@@ -118,5 +122,25 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.LINEA]: {
     name: 'Linea',
     rpc: 'https://linea-mainnet.infura.io/v3'
+  },
+  [BLOCKCHAIN_NAME.BASE]: {
+    name: 'Base',
+    rpc: 'https://mainnet.base.org'
+  },
+  [BLOCKCHAIN_NAME.MANTLE]: {
+    name: 'Mantle',
+    rpc: 'https://rpc.mantle.xyz/'
+  },
+  [BLOCKCHAIN_NAME.ZK_SYNC]: {
+    name: 'zkSync Era',
+    rpc: 'https://mainnet.era.zksync.io'
+  },
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: {
+    name: 'Manta Pacific',
+    rpc: 'https://pacific-rpc.manta.network/http'
+  },
+  [BLOCKCHAIN_NAME.SCROLL]: {
+    name: 'Scroll',
+    rpc: 'https://rpc.scroll.io/'
   }
 };

@@ -1,18 +1,16 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { IframeService } from '@core/services/iframe/iframe.service';
-import { SuccessTxModalType } from '@shared/components/success-trx-notification/models/modal-type';
 import { Observable, Subscription } from 'rxjs';
 import { BlockchainName, CrossChainTradeType } from 'rubic-sdk';
 import { SuccessOrderModalComponent } from '@shared/components/success-modal/success-order-modal/success-order-modal.component';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { SuccessTxModalComponent } from '@shared/components/success-modal/success-tx-modal/success-tx-modal.component';
+import { SuccessTxModalType } from '@app/shared/models/modals/modal-type';
 
 @Injectable()
 export class SuccessTxModalService {
   constructor(
     @Inject(INJECTOR) private readonly injector: Injector,
-    private readonly dialogService: ModalService,
-    private readonly iframeService: IframeService
+    private readonly dialogService: ModalService
   ) {}
 
   /**
@@ -32,12 +30,11 @@ export class SuccessTxModalService {
     callback: () => Observable<void>,
     isSwapAndEarnSwap: boolean = false
   ): Subscription {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     this.dialogService
       .showDialog(
         SuccessTxModalComponent,
         {
-          size,
+          size: 's',
           data: {
             idPrefix: '',
             type,
@@ -55,12 +52,11 @@ export class SuccessTxModalService {
   }
 
   public openLimitOrderModal(): Subscription {
-    const size = this.iframeService.isIframe ? 'fullscreen' : 's';
     return this.dialogService
       .showDialog(
         SuccessOrderModalComponent,
         {
-          size,
+          size: 's',
           fitContent: true
         },
         this.injector

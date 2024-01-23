@@ -1,0 +1,44 @@
+@use 'src/scss/core' as *;
+
+.amount-transput {
+  width: 100%;
+  height: 35px;
+
+  ::placeholder {
+    letter-spacing: 0.6px;
+  }
+
+  &__input {
+    width: 100%;
+    height: 21px;
+
+    padding: 0;
+
+    color: var(--tui-text-01);
+    font-weight: 400;
+    font-size: 21px;
+    letter-spacing: 0.1em;
+    text-align: right;
+
+    background-color: transparent;
+
+    border: none;
+
+    &::-webkit-input-placeholder {
+      color: var(--tui-text-03);
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .amount-transput {
+    &__input {
+      @include font(25px, 35px, 500, var(--tui-text-01), 0.25px);
+      text-align: left;
+
+      &::placeholder {
+        @include font(18px, 18px, 500, var(--tui-text-03), 0.54px);
+      }
+    }
+  }
+}
