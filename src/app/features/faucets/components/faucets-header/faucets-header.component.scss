@@ -1,5 +1,6 @@
 ul {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--tui-padding-l);
 }
 
@@ -30,8 +31,12 @@ header {
 
     transition: transform 0.1s ease-in-out;
 
-    ::ng-deep .t-wrapper {
-      padding: 0 !important;
+    ::ng-deep {
+      height: auto !important;
+
+      .t-wrapper {
+        padding: 0 !important;
+      }
     }
 
     &.active {

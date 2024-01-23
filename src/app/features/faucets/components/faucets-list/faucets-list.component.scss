@@ -27,10 +27,14 @@
     font-size: 12px;
   }
 
+  &__token-name {
+    white-space: nowrap;
+  }
+
   &__token-name-link {
     margin-left: 3px;
   }
-  
+
   &:hover {
     background: var(--primary-background);
   }
