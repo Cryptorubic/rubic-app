@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, interval, Observable, of, Subscription, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
 import { filter, map, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -150,11 +150,14 @@ export class OnChainService {
     );
   }
 
+  /**
+   * @returns transactionHash on successful swap
+   */
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
     directTransaction?: EvmEncodeConfig
-  ): Promise<void> {
+  ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
@@ -215,7 +218,7 @@ export class OnChainService {
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(
-          interval(7_000).pipe(
+          timer(7_000).pipe(
             switchMap(() =>
               this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
             ),
@@ -230,7 +233,7 @@ export class OnChainService {
         }
       }
 
-      this.updateTrade(transactionHash, true);
+      return transactionHash;
     } catch (err) {
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
@@ -241,7 +244,7 @@ export class OnChainService {
       }
 
       if (transactionHash && !this.isNotMinedError(err)) {
-        this.updateTrade(transactionHash, false);
+        await this.onChainApiService.patchTrade(transactionHash, false);
       }
 
       throw RubicSdkErrorParser.parseError(err);
@@ -321,12 +324,6 @@ export class OnChainService {
         )
       )
     );
-  }
-
-  private updateTrade(hash: string, success: boolean): Subscription {
-    return this.onChainApiService.patchTrade(hash, success).subscribe({
-      error: err => console.debug('IT patch request is failed', err)
-    });
   }
 
   public saveNotWhitelistedProvider(
