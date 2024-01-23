@@ -1,4 +1,4 @@
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
@@ -128,7 +128,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
-  [BLOCKCHAIN_NAME.SCROLL]: 'scroll'
+  [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

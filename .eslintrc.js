@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['custom-webpack.config.ts'],
   overrides: [
     {
       files: ['*.ts'],
