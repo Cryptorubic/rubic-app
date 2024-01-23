@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, timer } from 'rxjs';
+import { BehaviorSubject, Observable, of, timer } from 'rxjs';
 import { HttpService } from 'src/app/core/services/http/http.service';
-import { map, pluck, switchMap } from 'rxjs/operators';
+import { catchError, map, pluck, switchMap } from 'rxjs/operators';
 import { TradeVolume } from '@core/services/backend/volume-api/models/trade-volume';
 import { TradeVolumeRequest } from '@core/services/backend/volume-api/models/trade-volume-request';
 import { BigNumber } from 'bignumber.js';
-import { TradeVolumeByPeriod } from './models/trade-volume-by-period';
 import { LpReward } from './models/lp-rewards';
 
 @Injectable({
@@ -37,14 +36,6 @@ export class VolumeApiService {
   }
 
   /**
-   * Makes request for trade volume mapped by period.
-   * @return Observable trade volume by period.
-   */
-  public fetchVolumesByPeriod(): Observable<TradeVolumeByPeriod> {
-    return this.httpService.get('total_values/stats/crosschain-lp');
-  }
-
-  /**
    * Makes request for trade volumes.
    * @return Observable trade volume.
    */
@@ -53,7 +44,13 @@ export class VolumeApiService {
       map((volume: TradeVolumeRequest) => ({
         instantTrades: new BigNumber(volume.instant_trades_amount),
         bridges: new BigNumber(volume.bridges_amount)
-      }))
+      })),
+      catchError(() =>
+        of({
+          instantTrades: new BigNumber('324814342.3677585'),
+          bridges: new BigNumber('187153996')
+        })
+      )
     );
   }
 

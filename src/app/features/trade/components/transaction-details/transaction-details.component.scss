@@ -1,0 +1,56 @@
+@use 'src/scss/core' as *;
+
+.transaction-details {
+  padding: var(--tui-padding-l);
+
+  background: var(--primary-background);
+  border-radius: var(--tui-radius-m);
+
+  &__label {
+    margin-top: 0;
+    margin-bottom: var(--tui-padding-l);
+
+    font-size: 15px;
+    text-align: center;
+  }
+
+  &__priceImpact-low {
+    color: var(--tui-success-fill);
+  }
+
+  &__priceImpact-medium {
+    color: var(--tui-warning-fill);
+  }
+
+  &__priceImpact-high {
+    color: var(--tui-error-fill);
+  }
+}
+
+.image {
+  width: 13px;
+  height: 13px;
+
+  ::ng-deep svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.receiver-container {
+  display: flex;
+  gap: var(--tui-padding-xs);
+  align-items: center;
+
+  a {
+    display: flex;
+  }
+}
+
+@include b($mobile-md) {
+  .transaction-details {
+    &__label {
+      font-size: 18px;
+    }
+  }
+}

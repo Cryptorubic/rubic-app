@@ -12,11 +12,24 @@
 }
 
 app-faucets-header {
-  display: block;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
+  position: relative;
 
-  border-bottom: 1px solid var(--transparent-line);
+  display: block;
+  margin-bottom: 40px;
+
+  &::after {
+    position: absolute;
+    right: 0;
+    bottom: -30px;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background: radial-gradient(circle, rgba(34, 35, 49, 1) 0%, rgba(34, 35, 49, 0) 100%);
+
+    content: '';
+  }
 }
 
 

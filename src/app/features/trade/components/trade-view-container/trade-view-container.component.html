@@ -1,0 +1,38 @@
+<div
+  class="swap-container"
+  *ngLet="{
+    content: formContent$ | async,
+    providers: providers$ | async,
+    calculationStatus: calculationStatus$ | async
+  } as state"
+>
+  <div
+    class="form"
+    [ngClass]="{
+      form_small: state.content === 'preview',
+      form_tokens: state.content === 'fromSelector' || state.content === 'toSelector'
+    }"
+    [ngSwitch]="state.content"
+  >
+    <app-token-selector-page *ngSwitchCase="'fromSelector'" type="from"></app-token-selector-page>
+    <app-token-selector-page *ngSwitchCase="'toSelector'" type="to"></app-token-selector-page>
+    <app-swap-form-page
+      [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
+    ></app-swap-form-page>
+    <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
+  </div>
+
+  <app-providers-list-general
+    *ngIf="
+      state.calculationStatus && state.calculationStatus.showSidebar && state.content === 'form'
+    "
+    @inOutAnimation
+    [states]="state.providers"
+    [selectedTradeType]="selectedTradeType$ | async"
+    (selectTrade)="selectTrade($event)"
+    [calculationStatus]="calculationStatus$ | async"
+    [showCalculation]="true"
+  ></app-providers-list-general>
+
+  <app-cn-trade-info *ngIf="state.content === 'cnPreview'"></app-cn-trade-info>
+</div>

@@ -7,9 +7,21 @@
     }
   }
 
-  &__arrow {
+  &__container {
+    position: relative;
+
     width: 16px;
-    height: 15px;
+    height: 16px;
+  }
+
+  &__arrow {
+    position: absolute;
+    top: -12px;
+    left: -12px;
+
+    width: 38px;
+    height: 38px;
+    padding: 12px;
 
     transform: rotate(90deg);
 
@@ -18,7 +30,7 @@
       height: 100%;
 
       path {
-        fill: var(--primary-text);
+        fill: var(--tui-text-01);
       }
     }
   }

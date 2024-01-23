@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, Observable, of, timer, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, from, Observable, of, timer } from 'rxjs';
 import { catchError, map, switchMap, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BlockchainName, BLOCKCHAIN_NAME, Injector, GasPrice, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
@@ -24,7 +24,12 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.OPTIMISM,
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.ZK_SYNC,
-  BLOCKCHAIN_NAME.LINEA
+  BLOCKCHAIN_NAME.LINEA,
+  BLOCKCHAIN_NAME.BASE,
+  BLOCKCHAIN_NAME.MANTLE,
+  BLOCKCHAIN_NAME.POLYGON_ZKEVM,
+  BLOCKCHAIN_NAME.SCROLL,
+  BLOCKCHAIN_NAME.MANTA_PACIFIC
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -75,7 +80,12 @@ export class GasService {
       [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.LINEA]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.LINEA]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.BASE]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.MANTLE]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.SCROLL]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -88,7 +98,12 @@ export class GasService {
       [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
       [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
       [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
-      [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this)
+      [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this),
+      [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this),
+      [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
+      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
+      [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -182,7 +197,7 @@ export class GasService {
     const requestTimeout = 2000;
 
     const oneInchEstimation$ = this.httpClient
-      .get<OneInchGasResponse>('https://gas-price-api.1inch.io/v1.2/1')
+      .get<OneInchGasResponse>('https://x-api.rubic.exchange/api/gas-price/v1.4/1')
       .pipe(
         timeout(requestTimeout),
         map(response => ({
@@ -376,6 +391,97 @@ export class GasService {
         maxFeePerGas: new BigNumber(gasOptions.maxFeePerGas).multipliedBy(1.3).toFixed()
       })),
       catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Base gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchBaseGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BASE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Mantle gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMantleGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MANTLE);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Manta Pacific gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMantaPacificGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.MANTA_PACIFIC
+    );
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Scroll gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchScrollGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SCROLL);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Polygon-zkEVM gas from blockchain.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchPolygonZkEvmGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.POLYGON_ZKEVM
+    );
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
     );
   }
 

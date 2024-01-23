@@ -186,14 +186,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: {
-    baseUrl: 'https://blockexplorer.avax.boba.network/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.ASTAR_EVM]: {
     baseUrl: 'https://blockscout.com/astar/',
     nativeCoinUrl: '',
@@ -738,6 +730,22 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.STACKS]: {
+    baseUrl: 'https://explorer.stacks.co/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: '',
+    [ADDRESS_TYPE.TRANSACTION]: 'txid/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.STARKNET]: {
+    baseUrl: 'https://starkscan.co/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'contract/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.STEEM]: {
     baseUrl: 'https://steemscan.com/',
     nativeCoinUrl: '',
@@ -930,6 +938,22 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.BASE]: {
+    baseUrl: 'https://basescan.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.MANTLE]: {
+    baseUrl: 'https://explorer.mantle.xyz/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.GOERLI]: {
     baseUrl: 'https://goerli.etherscan.io//',
     nativeCoinUrl: 'stat/supply/',
@@ -1002,19 +1026,19 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.BASE]: {
-    baseUrl: 'https://basescan.org/',
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: {
+    baseUrl: 'https://pacific-explorer.manta.network/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.MANTLE]: {
-    baseUrl: 'https://explorer.mantle.xyz/',
+  [BLOCKCHAIN_NAME.SCROLL]: {
+    baseUrl: 'https://scrollscan.com/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   }

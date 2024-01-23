@@ -1,0 +1,17 @@
+<div class="details-element">
+  <div class="details-element__text">
+    <img
+      *ngIf="description"
+      class="details-element__text-icon"
+      src="assets/images/icons/hint.svg"
+      [alt]="title"
+      [tuiHint]="description"
+    />
+
+    <span class="details-element__text-title">{{ title }}</span>
+  </div>
+
+  <div class="details-element__value">
+    <ng-content></ng-content>
+  </div>
+</div>

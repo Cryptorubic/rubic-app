@@ -1,0 +1,163 @@
+@use 'src/scss/core' as *;
+
+:host {
+  --tui-secondary: var(--tui-base-01);
+  --tui-padding: 0;
+  --tui-height-l: 60px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-label {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-xs);
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 60px;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.asset-types-aside {
+  display: flex;
+
+  width: 160px;
+  height: 100%;
+
+  &__scroll {
+    max-height: 100%;
+  }
+
+  &__list-element {
+    flex: 1;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &-element {
+      &._disabled {
+        cursor: not-allowed !important;
+
+        ::ng-deep {
+          .t-wrapper {
+            background: var(--tui-secondary-hover) !important;
+            opacity: 1 !important;
+          }
+        }
+      }
+    }
+  }
+
+  &__blockchain-header {
+    display: none;
+  }
+}
+
+.open-selector {
+  width: 75px;
+
+  ::ng-deep app-rubic-button {
+    [tuiButton] {
+      height: 68px;
+
+      border-radius: var(--tui-radius-m);
+
+      &._pressed,
+      &:focus,
+      &:hover {
+        background: transparent;
+        box-shadow: none;
+      }
+    }
+
+    .t-wrapper {
+      padding: 0 !important;
+    }
+  }
+}
+
+@include b($tablet) {
+  .asset-types-aside {
+    border-radius: 0 10px 0 0;
+
+    @include hide-unused-ui {
+      border-radius: 0 10px 0 20px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .asset-types-aside {
+    display: flex;
+    flex-direction: column;
+    align-items: unset;
+    justify-content: center;
+    width: 100%;
+
+    height: 100%;
+
+    padding: 0;
+
+    background-color: unset;
+
+    border-radius: unset;
+
+    &__list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+
+      padding-left: 1rem;
+    }
+
+    &__blockchain-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding: 0 1rem;
+
+      &-label {
+        @include font(18px, 18px, 400, var(--tui-text-01), 0.54px);
+      }
+
+      &-expand {
+        color: var(--tui-primary);
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
+
+    &__scroll {
+      ::ng-deep tui-scroll-controls {
+        display: none;
+      }
+    }
+  }
+}
+
+@include b($mobile-sm-middle) {
+  .open-selector {
+    width: 57px;
+
+    ::ng-deep app-rubic-button {
+      [tuiButton] {
+        height: 52px;
+      }
+    }
+  }
+}

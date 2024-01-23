@@ -7,15 +7,21 @@
   </ng-container>
   <ng-template #icon>
     <li *ngFor="let chain of shownBlockchains" [class.tui-skeleton]="loading">
-      <app-icon-button
+      <button
+        class="faucets__element"
+        [ngClass]="{ active: selectedBlockchain === chain.name }"
+        [id]="'Network_' + chain.name"
+        tuiButton
+        size="l"
+        type="button"
         appearance="secondary"
-        [icon]="chain.icon"
-        [border]="selectedBlockchain === chain.name"
-        [borderRadiusPercent]="50"
-        [label]="chain.label"
-        (iconButtonClick)="handleBlockhainSelection.emit(chain.name)"
+        (click)="handleBlockhainSelection.emit(chain.name)"
       >
-      </app-icon-button>
+        <div class="icon-container">
+          <img class="icon" [src]="chain.icon" [alt]="chain.label" />
+          <span class="icon-label">{{ chain.label }}</span>
+        </div>
+      </button>
     </li>
   </ng-template>
 </ul>

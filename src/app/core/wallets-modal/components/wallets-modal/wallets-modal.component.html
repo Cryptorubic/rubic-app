@@ -1,58 +1,55 @@
-<div class="modal">
-  <tui-scrollbar>
-    <div class="modal__content">
-      <header class="modal__header" *noFrame>
-        <h1 class="modal__title">{{ 'modals.walletsModal.title' | translate }}</h1>
-      </header>
-      <main class="modal__body">
-        <ng-container *ngFor="let provider of providers">
-          <ng-container *ngIf="provider.display">
-            <button
-              *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
-              [disabled]="(walletsLoading$ | async) || provider.disabled ? 'disabled' : false"
-              class="modal__provider-button"
-              (click)="connectProvider(provider.value)"
+<app-window-container class="modal">
+  <ng-container header *ngIf="!isMobile">
+    {{ 'modals.walletsModal.title' | translate }}
+  </ng-container>
+  <form class="modal__form">
+    <tui-checkbox [formControl]="rulesCheckbox" class="modal__checkbox"></tui-checkbox>
+    <span
+      >I read and accept
+      <a class="modal__link" href="https://rubic.exchange/pdf/terms-of-use.pdf" target="_blank">
+        Terms of Use
+      </a>
+      and
+      <a class="modal__link" href="https://rubic.exchange/pdf/privacy-policy.pdf" target="_blank">
+        Privacy Policy.
+      </a></span
+    >
+  </form>
+  <main class="modal__body" *ngLet="enableWallets$ | async as enableWallets">
+    <ng-container *ngFor="let provider of providers">
+      <ng-container *ngIf="provider.display">
+        <div class="modal__provider" [ngClass]="{ disabled: !enableWallets }">
+          <button
+            tuiButton
+            appearance="secondary"
+            type="button"
+            size="xl"
+            *ngIf="!(provider.value | functionCall : shouldRenderAsLink); else deepLink"
+            [disabled]="(walletsLoading$ | async) || provider.disabled || !enableWallets"
+            (click)="connectProvider(provider.value)"
+            class="modal__button"
+          >
+            <span class="modal__provider-icon">
+              <img src="{{ provider.img }}" alt="{{ provider.name }} provider" />
+            </span>
+          </button>
+          <ng-template #deepLink>
+            <a
+              tuiButton
+              appearance="secondary"
+              type="button"
+              size="xl"
+              [href]="coinbaseDeeplink"
+              class="modal__button"
             >
-              {{ provider.name }}
               <span class="modal__provider-icon"
                 ><img src="{{ provider.img }}" alt="{{ provider.name }} provider"
               /></span>
-            </button>
-            <ng-template #deepLink>
-              <a class="modal__provider-button" [href]="coinbaseDeeplink"
-                >{{ provider.name }}
-                <span class="modal__provider-icon"
-                  ><img src="{{ provider.img }}" alt="{{ provider.name }} provider"
-                /></span>
-              </a>
-            </ng-template>
-          </ng-container>
-        </ng-container>
-      </main>
-      <footer class="modal__footer">
-        <div class="modal__privacy-policy">
-          By connecting to the wallet, you automatically agree to our
-          <a
-            class="modal__link"
-            href="https://rubic.exchange/pdf/TermsOfService.pdf"
-            target="_blank"
-          >
-            Terms of Service
-          </a>
-          and
-          <a
-            class="modal__link"
-            href="https://rubic.exchange/pdf/RubicPrivacyPolicy.pdf"
-            target="_blank"
-          >
-            Privacy Policy.
-          </a>
+            </a>
+          </ng-template>
+          <span class="modal__provider-name">{{ provider.name }}</span>
         </div>
-        <span>{{ 'modals.walletsModal.new' | translate }} </span>
-        <a target="_blank" class="modal__link" href="https://ethereum.org/en/wallets/">{{
-          'modals.walletsModal.learnMore' | translate
-        }}</a>
-      </footer>
-    </div>
-  </tui-scrollbar>
-</div>
+      </ng-container>
+    </ng-container>
+  </main>
+</app-window-container>

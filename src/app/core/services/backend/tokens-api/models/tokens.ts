@@ -7,7 +7,6 @@ import { BackendPagination } from '@shared/models/backend/backend-pagination';
 
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',
-  IFRAME_TOKENS = 'v1/tokens/iframe/',
   FAVORITE_TOKENS = 'v1/tokens/favorite/',
   TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
 }

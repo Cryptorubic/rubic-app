@@ -14,11 +14,11 @@
     "accept": "동의하기",
     "copyright": "저작권",
     "privacyPolicy": "개인 정보 정책",
-    "termsOfService": "Terms of Service",
+    "termsOfUse": "Terms of Use",
     "close": "닫기",
     "send": "보내다",
     "left": "왼쪽",
-    "checkOnScanner": "Check on scanner",
+    "checkOnScanner": "Check on Scanner",
     "cancel": "취소",
     "add": "더하다",
     "via": "통하다",
@@ -50,8 +50,8 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
     "noMetamaskInstalled": "메타 마스크 플러그인이 설치 및 잠금 해제되어 있는지 확인하십시오. 에서 다운로드 할 수 있습니다.",
-    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
-    "removeCoinbaseExtension": "Coinbase 브라우저 확장이 Metamask 확장과 충돌합니다. 계속하려면 Conibase 확장을 비활성화하거나 제거하거나 연결할 다른 지갑을 선택하십시오.",
+    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
+    "removeCoinbaseExtension": "Coinbase 브라우저 확장이 MetaMask 확장과 충돌합니다. 계속하려면 Coinbase 확장을 비활성화하거나 제거하거나 연결할 다른 지갑을 선택하십시오.",
     "wrongNetwork": "잘못된 네트워크를 선택했습니다. 메타 마스크에서 {{ networkToChoose }}를 선택하십시오.",
     "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기",
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
@@ -72,7 +72,7 @@
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
     "insufficientLiquidityCCR": "이 거래에 대한 유동성이 충분하지 않습니다",
     "insufficientLiquidityIT": "이 거래에 대한 유동성이 충분하지 않습니다.",
-    "1inchRefreshError":  "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
+    "1inchRefreshError": "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
     "1inchNotSupportedToken": "1INCH는 선택한 토큰 중 하나를 지원하지 않습니다.",
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",
     "chooseSupportedBridge": "지원되는 브리지 선택",
@@ -81,15 +81,15 @@
     "noEnteredAmount": "Enter an Amount",
     "minimumAmount": "Minimum amount is ≈{{amount}} {{token}}",
     "maximumAmount": "Maximum amount is ≈{{amount}} {{token}}",
-    "maxGasPriceOverflow": "Gas price in {{toBlockchain}} is too high. Please wait and try later.",
-    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try later.",
-    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on Ethereum network",
-    "unknown": "Oops, something went wrong, please try again",
+    "maxGasPriceOverflow": "The gas price on {{toBlockchain}} is too high. Please wait and try later.",
+    "crossChainIsUnavailable": "Cross-Chain is currently unavailable. Please wait and try again later.",
+    "multichainWallet": "Rubic does not support multi-chain wallets yet. Currently, you can trade only on the Ethereum network",
+    "unknown": "Oops, something went wrong. Please try again",
     "insufficientFoundsGasPriceValue": "Insufficient funds for Gas and Network Fees. Please increase your {{nativeToken}} balance.",
     "rubicOptimisation": "이 거래에 대한 유동성이 충분하지 않습니다. 루빅 최적화를 비활성화하십시오.",
     "partialTradesData": "We are faced with the problem of getting transactions data from the server. Please reload the page or contact support if the problem remains.",
     "tradingIsNotAvailable": "거래 불가",
-    "wrongWallet": "Please log in with wallet that supports {{network}} network",
+    "wrongWallet": "Please log in with a wallet that supports the {{network}} network",
     "invalidTargetAddress": "Invalid target network address",
     "solSwap": "Unwrap SOL token to swap. Choose SOL as the second token.",
     "unsupportedTokenCCR": "트랜잭션을 보내는 동안 오류가 발생했습니다.\n현재 멀티체인에서 지원되지 않는 토큰을 판매하려고 할 수 있습니다. 자세한 내용은 링크를 참조하세요.",
@@ -101,7 +101,8 @@
     "noSelectedToken": "토큰 선택",
     "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다."
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "소개",
@@ -116,7 +117,7 @@
     "logout": "로그 아웃",
     "logoutMessage": "정말 로그 아웃 하시겠습니까?",
     "notAvailable": "공사중-UX 재 설계.",
-    "merch": "Merch shop",
+    "merch": "Merch Shop",
     "stakingLp": "Earn",
     "staking": "Staking",
     "promotion": "프로모션"
@@ -242,11 +243,11 @@
   },
   "crossChainPage": {
     "targetAddress": {
-      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens on this wallet.",
+      "hint": "Enter the wallet address that supports {{network}}. You‘ll receive your tokens in this wallet.",
       "placeholder": "Enter or paste address"
     },
     "swapInfo": {
-      "title": "Estimation time to receive tokens in Ethereum blockchain depends on Gas price and could be up to 10 min\n",
+      "title": "Estimated time to receive tokens on the Ethereum blockchain depends on the current Gas price and could be up to 10 min\n",
       "maximumSent": "Maximum sent",
       "maximumSentHint": "Maximum amount of tokens to be sent\n",
       "minimumReceived": "Minimum received",
@@ -292,10 +293,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "gasRefund": {
@@ -382,7 +382,7 @@
     "acquireBoth": "Acquire Both BRBC and USDC Tokens",
     "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
     "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
-    "depositFunds": "Deposit funds",
+    "depositFunds": "Deposit Funds",
     "initiateDeposit": "Initiate Deposit",
     "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
     "requestWithdraw": "Request Withdraw",
@@ -391,7 +391,7 @@
     "yourDeposits": "Your Deposits",
     "newDeposit": "+ Initiate Deposit",
     "transferToken": "Transfer LP Token",
-    "collectRewards": "Collect rewards $ {{amount}}",
+    "collectRewards": "Collect Rewards $ {{amount}}",
     "balance": "Balance",
     "endOfRound": "End of Round {{round}}",
     "poolIsFull": "Pool is Full",
@@ -472,6 +472,7 @@
       "rewards": "Rewards",
       "endDate": "End Date",
       "claimRewards": "Claim Rewards",
+      "claim": "Claim",
       "total": "TOTAL",
       "totalRBC": "TOTAL RBC:",
       "totalRewards": "TOTAL REWARDS:",
@@ -498,9 +499,9 @@
       "clearParamsHint": "이 토큰을 선택하려면 다른 양식 매개 변수를 지우십시오.",
       "searchPlaceholder": "이름 검색 또는 주소 붙여 넣기",
       "noSearchData": "표시 할 내용 없음",
-      "noFavoriteData": "You don't have favorite tokens in selected network, ",
+      "noFavoriteData": "You don't have favorite tokens in the selected network, ",
       "backToTokens": "back to whole tokens list",
-      "unauthorized": "User is not authorized. Please log in to make tokens favorite."
+      "unauthorized": "User is not authorized. Please log in to choose token favorite."
     },
     "walletsModal": {
       "title": "지갑 연결",
@@ -613,7 +614,7 @@
       "link": "더 알아보기!"
     },
     "external": {
-      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of the Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
@@ -623,7 +624,7 @@
   },
   "referralBanner": {
     "text": "",
-    "link": "Claim New RBC Token!"
+    "link": "Claim the New RBC Token!"
   },
   "volume": {
     "title": "누적 거래량",
@@ -648,7 +649,8 @@
     "successfulStake": "Successful stake",
     "successfulWithdraw": "Successful withdraw",
     "withdrawInProgress": "Withdraw in progress",
-    "openMobileWallet": "Please, open mobile wallet application to sign transaction"
+    "openMobileWallet": "Please, open mobile wallet application to sign transaction",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "RBC 구매",
@@ -659,7 +661,7 @@
   },
   "airdrop": {
     "title": "Rubic Token Claim",
-    "description": "Using this website, you can check if any of your addresses are eligible to withdraw RUBIC Tokens (RBC).",
+    "description": "Using this website, you can check if any of your addresses are eligible to withdraw Rubic Tokens (RBC).",
     "enterAddress": "Enter your Ethereum address",
     "goodAddress": "Yes, this address is eligible for a token claim",
     "claimedTokens": "tokens are claimable",
@@ -667,16 +669,21 @@
     "button": {
       "login": "Connect Wallet",
       "claim": "Claim",
+      "stake": "Stake",
       "claimed": "Claimed",
-      "wrongAddressError": "Enter another address",
+      "staked": "Staked",
+      "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
-      "incorrectAddressError": "Entered address is incorrect"
+      "changeNetwork": "Change Network",
+      "incorrectAddressError": "Entered address is incorrect",
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
       "progress": "Claim in progress",
-      "success": "Claim is success",
+      "success": "Claim is successful",
       "paused": "The token claim is temporarily unavailable. Please try again later",
       "claimed": "Tokens are claimed already, please check your wallet",
       "unknown": "Oops, something went wrong, please try again later",
@@ -687,6 +694,18 @@
     "modals": {
       "success": "Your tokens are on the way!",
       "explorerLink": "Check the transaction on explorer."
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }

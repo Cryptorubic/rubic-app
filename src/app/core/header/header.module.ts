@@ -8,42 +8,38 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
+  TuiButtonModule,
   TuiDataListModule,
+  TuiDialogModule,
+  TuiDropdownModule,
   TuiGroupModule,
   TuiHintModule,
   TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiDropdownModule,
-  TuiDialogModule
+  TuiLoaderModule
 } from '@taiga-ui/core';
-import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
+import { TuiAccordionModule, TuiBadgeModule, TuiToggleModule } from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { HeaderSettingsComponent } from './components/header/components/header-settings/header-settings.component';
-import { SettingsElementComponent } from './components/header/components/settings-element/settings-element.component';
-import { SettingsListComponent } from './components/header/components/settings-list/settings-list.component';
-import { SettingsComponent } from './components/header/components/settings/settings.component';
-import { CurrentLanguageComponent } from './components/header/components/current-language/current-language.component';
-import { TutorialsComponent } from './components/header/components/tutorials/tutorials.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
-import { TradingBannerComponent } from '@core/header/components/header/components/trading-banner/trading-banner.component';
 import { BannerComponent } from './components/header/components/banner/app-banner.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
-import { SettingsTogglerComponent } from './components/header/components/settings-toggler/settings-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
-import { RecentTradesModule } from '../recent-trades/recent-trades.module';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { InstantTradeModule } from '@app/features/swaps/features/instant-trade/instant-trade.module';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
+import { LogoComponent } from './components/header/components/logo/logo.component';
+import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
+import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
+import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
+import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 
 @NgModule({
   declarations: [
@@ -51,22 +47,19 @@ import { MobileNavigationMenuComponent } from './components/header/components/mo
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    HeaderSettingsComponent,
-    SettingsElementComponent,
-    SettingsListComponent,
-    SettingsComponent,
-    CurrentLanguageComponent,
-    TutorialsComponent,
     ThemeSwitcherComponent,
-    TradingBannerComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
     BannerComponent,
     MobileMenuComponent,
     RubicMenuTogglerComponent,
-    SettingsTogglerComponent,
     MobileUserProfileComponent,
-    MobileNavigationMenuComponent
+    MobileNavigationMenuComponent,
+    LogoComponent,
+    LanguageSelectorComponent,
+    SettingsComponent,
+    ProfileMenuTogglerComponent,
+    HistoryButtonComponent
   ],
   imports: [
     CommonModule,
@@ -88,11 +81,10 @@ import { MobileNavigationMenuComponent } from './components/header/components/mo
     FormsModule,
     TuiLoaderModule,
     ModalsModule,
-    RecentTradesModule,
     ClipboardModule,
-    InstantTradeModule,
     TuiAccordionModule,
-    TuiDialogModule
+    TuiDialogModule,
+    TuiButtonModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

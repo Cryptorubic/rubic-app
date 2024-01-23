@@ -1,0 +1,70 @@
+<div
+  class="transaction-details"
+  *ngLet="{
+    details: details$ | async,
+    trade: trade$ | async,
+    wallet: walletAddress$ | async
+  } as state"
+>
+  <h5 class="transaction-details__label">Transaction details</h5>
+
+  <app-transaction-details-element
+    [title]="text.priceImpact.label"
+    [description]="text.priceImpact.description"
+  >
+    <ng-container *ngLet="priceImpactCssClass$ | async as priceImpactCssClass">
+      <span [ngClass]="[priceImpactCssClass]">
+        {{ state.details?.priceImpact | priceImpactFormat }}
+      </span>
+    </ng-container>
+  </app-transaction-details-element>
+
+  <app-transaction-details-element
+    *ngIf="state.details?.slippage"
+    [title]="text.slippage.label"
+    [description]="text.slippage.description"
+  >
+    {{ state.details.slippage | slippageFormat }} %
+  </app-transaction-details-element>
+
+  <app-transaction-details-element
+    *ngIf="state.trade?.toTokenAmountMin as minAmount"
+    [title]="text.minReceived.label"
+    [description]="text.minReceived.description"
+  >
+    <ng-container *ngIf="minAmount?.tokenAmount || minAmount as amount">{{
+      amount | bigNumberFormat | shortenAmount : 10 : 8
+    }}</ng-container>
+  </app-transaction-details-element>
+
+  <app-transaction-details-element
+    *ngIf="state.wallet && state.trade?.to"
+    [title]="text.receiver.label"
+    [description]="text.receiver.description"
+  >
+    <div class="receiver-container">
+      {{ state.wallet | shortAddress : 5 : 5 }}
+
+      <a
+        [safetyLink]="state.wallet | scannerLink : state.trade.to.blockchain : ADDRESS_TYPE.WALLET"
+      >
+        <img
+          class="image"
+          src="assets/images/icons/scanner.svg"
+          [alt]="'common.checkOnScanner' | translate"
+        />
+      </a>
+
+      <button [cdkCopyToClipboard]="state.wallet" (cdkCopyToClipboardCopied)="copyToClipboard()">
+        <div
+          class="image"
+          [inlineSVG]="
+            isWalletCopied
+              ? 'assets/images/swaps/swaps-info/tick.svg'
+              : 'assets/images/swaps/swaps-info/copy-icon.svg'
+          "
+        ></div>
+      </button>
+    </div>
+  </app-transaction-details-element>
+</div>

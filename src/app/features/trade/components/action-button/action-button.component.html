@@ -1,0 +1,12 @@
+<ng-container *ngIf="buttonState$ | async as state">
+  <button
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    [disabled]="state.type === 'error'"
+    (click)="state.action()"
+  >
+    {{ state.text }}
+  </button>
+</ng-container>

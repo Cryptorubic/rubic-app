@@ -1,0 +1,40 @@
+@use 'src/scss/core' as *;
+
+.tokens-rate {
+  display: flex;
+  gap: var(--tui-padding-xs);
+  justify-content: end;
+  height: 15px;
+
+  &__amounts {
+    overflow: hidden;
+
+    color: var(--tui-text-03);
+    font-size: 15px;
+    line-height: 15px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  &__direction-button {
+    display: flex;
+    align-items: center;
+    width: 15px;
+
+    cursor: pointer;
+
+    ::ng-deep svg path {
+      fill: var(--tui-text-03);
+    }
+  }
+}
+
+@include b($mobile-sm) {
+  .tokens-rate {
+    justify-content: start;
+
+    &__direction-button {
+      display: none;
+    }
+  }
+}

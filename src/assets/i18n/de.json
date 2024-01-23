@@ -14,7 +14,7 @@
     "accept": "Akzeptieren",
     "copyright": "Copyright",
     "privacyPolicy": "Datenschutzbestimmungen",
-    "termsOfService": "Terms of Service",
+    "termsOfUse": "Terms of Use",
     "close": "Schließen",
     "send": "Senden",
     "left": "Verbleibend",
@@ -49,7 +49,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",
     "noMetamaskInstalled": "Bitte prüfe, ob Du das MetaMask Plugin installiert und entsperrt hast. \nDu kannst es hier herunterladen",
-    "noBitKeepInstalled": "Please make sure that you have bitKeep plugin installed and unlocked.\nYou can download it on",
+    "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Die Coinbase Browsererweiterung verursacht Kompatibilitätsprobleme mit der MetaMask Erweiterung. Bitte deaktiviere/entferne die Coinbase Browsererweiterung oder wähle ein anderes Wallet.",
     "wrongNetwork": "Du befindest Dich gerade im falschen Netzwerk. Bitte wähle {{ networkToChoose }} in Deinem MetaMask aus.",
     "OverQueryLimit": "Deine Transaktionsanfragen wurden über die Binance Bridge abgewickelt. Diese erlaubt maximal 3 Transaktionen innerhalb von 30 Minuten. Du hast die Anzahl für den Moment leider überschritten.\nBitte versuche es zu einem späteren Zeitpunkt erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren",
@@ -100,7 +100,8 @@
     "noSelectedToken": "Token Auswählen",
     "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt."
   },
-  "navigation": { 
+  "navigation": {
+    "retrodrop": "Retrodrop",
     "recentTrades": "Recent Trades",
     "changeNowRecentTrades": "ChangeNow Tx",
     "about": "Über Rubic",
@@ -290,10 +291,9 @@
     "success": "Success",
     "fallback": "Fallback",
     "unknown": "Unknown",
-
-    "waiting":"Waiting",
+    "waiting": "Waiting",
     "confirming": "Confirming",
-    "exchanging":"Exchanging",
+    "exchanging": "Exchanging",
     "sending": "Sending"
   },
   "gasRefund": {
@@ -380,7 +380,7 @@
     "acquireBoth": "Acquire Both BRBC and USDC Tokens",
     "provideLiquidity": "Provide Liquidity by Locking your BRBC and USDC",
     "earlyWithdrawHint": "If you withdraw early, you will be fined with a penalty of 10% from the original amount of BRBC and USDC provided.",
-    "depositFunds": "Deposit funds",
+    "depositFunds": "Deposit Funds",
     "initiateDeposit": "Initiate Deposit",
     "initiateDepositModalText": "Attention: You are depositing {{brbcAmount}} BRBC and {{usdcAmount}} USDC for a max period of 2 months. In the case of early withdrawal of your deposit, a penalty of 10% will be imposed on your BRBC and USDC deposit.",
     "requestWithdraw": "Request Withdraw",
@@ -389,7 +389,7 @@
     "yourDeposits": "Your Deposits",
     "newDeposit": "+ Initiate Deposit",
     "transferToken": "Transfer LP Token",
-    "collectRewards": "Collect rewards $ {{amount}}",
+    "collectRewards": "Collect Rewards $ {{amount}}",
     "balance": "Balance",
     "endOfRound": "End of Round {{round}}",
     "poolIsFull": "Pool is Full",
@@ -470,6 +470,7 @@
       "rewards": "Rewards",
       "endDate": "End Date",
       "claimRewards": "Claim Rewards",
+      "claim": "Claim",
       "total": "TOTAL",
       "totalRBC": "TOTAL RBC:",
       "totalRewards": "TOTAL REWARDS:",
@@ -511,9 +512,9 @@
     },
     "successTxModal": {
       "see": "Ansehen ",
-      "transactionDetailsLink":"Transaktionsdetails",
+      "transactionDetailsLink": "Transaktionsdetails",
       "itWillAppearsIn": ". Wird in Kürze auf der ",
-      "myTradesLink":"Meine Transaktionen",
+      "myTradesLink": "Meine Transaktionen",
       "pageSoon": " -Seite sichtbar sein.",
       "title": "Die Transaktion wurde erfolgreich gestartet!",
       "ccrTitle": "Transaktion wurde erfolgreich im Ursprungsnetzwerk durchgeführt!",
@@ -611,7 +612,7 @@
       "link": "Teste es noch heute"
     },
     "external": {
-      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of Arbitrum Odyssey with Rubic!"
+      "text": "Complete a Cross-Chain swap to ETH on Arbitrum and get a free NFT. Become a part of the Arbitrum Odyssey with Rubic!"
     },
     "zeroFees": {
       "zeroFee": "Cross-Chain Swaps with 0% Protocol Fee",
@@ -621,7 +622,7 @@
   },
   "referralBanner": {
     "text": "",
-    "link": "Claim New RBC Token!"
+    "link": "Claim the New RBC Token!"
   },
   "volume": {
     "title": "Gesamtes Transaktionsvolumen",
@@ -646,7 +647,8 @@
     "successfulStake": "Staking war erfolgreich",
     "successfulWithdraw": "Auszahlung erfolgreich",
     "withdrawInProgress": "Auszahlung in Arbeit",
-    "openMobileWallet": "Öffne bitte die Wallet-App auf Deinem Gerät und bestätige die Transaktion"
+    "openMobileWallet": "Öffne bitte die Wallet-App auf Deinem Gerät und bestätige die Transaktion",
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
   },
   "buyTokens": {
     "default": "RBC kaufen",
@@ -657,7 +659,7 @@
   },
   "airdrop": {
     "title": "Rubic Token Claim",
-    "description": "Using this website, you can check if any of your addresses are eligible to withdraw RUBIC Tokens (RBC).",
+    "description": "Using this website, you can check if any of your addresses are eligible to withdraw Rubic Tokens (RBC).",
     "enterAddress": "Enter your Ethereum address",
     "goodAddress": "Yes, this address is eligible for a token claim",
     "claimedTokens": "tokens are claimable",
@@ -665,16 +667,21 @@
     "button": {
       "login": "Connect Wallet",
       "claim": "Claim",
+      "stake": "Stake",
       "claimed": "Claimed",
-      "wrongAddressError": "Enter another address",
+      "staked": "Staked",
+      "wrongAddressError": "Wrong address",
       "emptyError": "Enter holder address",
-      "changeNetwork": "Change Network to Arbitrum",
-      "incorrectAddressError": "Entered address is incorrect"
+      "changeNetwork": "Change Network",
+      "incorrectAddressError": "Entered address is incorrect",
+      "notParticipant": "You are not a member",
+      "closed": "Closed",
+      "soon": "Soon"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {
       "progress": "Claim in progress",
-      "success": "Claim is success",
+      "success": "Claim is successful",
       "paused": "The token claim is temporarily unavailable. Please try again later",
       "claimed": "Tokens are claimed already, please check your wallet",
       "unknown": "Oops, something went wrong, please try again later",
@@ -685,6 +692,18 @@
     "modals": {
       "success": "Your tokens are on the way!",
       "explorerLink": "Check the transaction on explorer."
+    }
+  },
+  "retrodrop": {
+    "notification": {
+      "progress": "Stake in progress",
+      "success": "Stake is success",
+      "paused": "The token stake is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully staked. Please review the Staking tab for further details.",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the stake",
+      "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
     }
   }
 }

@@ -4,16 +4,6 @@
   }
 }
 
-html.iframe-vertical #walletconnect-wrapper .walletconnect-modal__header {
-  top: 10px !important;
-  left: -10px !important;
-
-  > img,
-  > p {
-    display: none;
-  }
-}
-
 .-walletlink-css-reset .-walletlink-extension-dialog-box-top-description-text,
 .-walletlink-css-reset .-walletlink-extension-dialog-box-bottom-description {
   background: transparent;

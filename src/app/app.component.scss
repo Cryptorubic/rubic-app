@@ -25,11 +25,6 @@
   > :last-child {
     flex: 0;
   }
-
-  :host-context(html.iframe-horizontal) & {
-    width: 1000px;
-    margin: 0 auto;
-  }
 }
 
 .main-content {
@@ -47,54 +42,16 @@
 
       @include b($mobile-md) {
         margin: 0 auto 40px;
-
-        @include iframe {
-          margin: 0 auto;
-        }
       }
     }
   }
 }
 
-.iframe-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: $iframe-horizontal-width;
-  min-height: 100vh;
-  margin: 0 auto;
-}
-
-.iframe-content {
-  position: relative;
-
-  width: 100%;
-
-  @include iframe-vertical {
-    width: $iframe-vertical-width;
-  }
-
-  main {
-    padding: 0 !important;
-  }
-
-  app-header {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 2;
-
-    padding: 15px 20px;
-
-    @include iframe-vertical {
-      width: $iframe-vertical-width;
-      padding: 26px 25px 15px;
-    }
-  }
-}
-
 @include b($mobile-md) {
+  .main-content {
+    padding: 0 var(--tui-padding-l) 60px;
+  }
+
   .footer {
     display: none;
   }

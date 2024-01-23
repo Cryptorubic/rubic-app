@@ -20,10 +20,8 @@ import {
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
-import { SwapFormService } from '@core/services/swaps/swap-form.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { IframeService } from '@core/services/iframe/iframe.service';
 
 @Injectable({
   providedIn: 'root'
@@ -81,42 +79,24 @@ export class TokensStoreService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly storeService: StoreService,
-    private readonly swapFormService: SwapFormService,
-    private readonly iframeService: IframeService
+    private readonly storeService: StoreService
   ) {
     this.setupStorageTokens();
-
     this.setupSubscriptions();
   }
 
   public setupStorageTokens(): void {
-    this.iframeService.isIframe$.pipe(first(v => v !== undefined)).subscribe(isIframe => {
-      if (!isIframe) {
-        this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
-        if (this.storageTokens.length) {
-          const tokens = this.getDefaultTokenAmounts(
-            List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
-            false
-          );
-          this._tokens$.next(tokens);
-        }
-      }
-    });
+    this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
+    if (this.storageTokens.length) {
+      const tokens = this.getDefaultTokenAmounts(
+        List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
+        false
+      );
+      this._tokens$.next(tokens);
+    }
   }
 
   private setupSubscriptions(): void {
-    this.swapFormService.fromBlockchain$.subscribe(blockchain => {
-      if (blockchain) {
-        this.startBalanceCalculating(blockchain);
-      }
-    });
-    this.swapFormService.toBlockchain$.subscribe(blockchain => {
-      if (blockchain) {
-        this.startBalanceCalculating(blockchain);
-      }
-    });
-
     this.authService.currentUser$
       .pipe(
         switchMap(user => {
@@ -383,13 +363,13 @@ export class TokensStoreService {
    */
   public addFavoriteToken(favoriteToken: TokenAmount): Observable<unknown> {
     return this.tokensApiService.addFavoriteToken(favoriteToken).pipe(
-      switchMap(() => {
-        return from(
+      switchMap(() =>
+        from(
           Injector.web3PublicService
             .getWeb3Public(favoriteToken.blockchain as Web3PublicSupportedBlockchain)
             .getBalance(this.walletConnectorService.address, favoriteToken.address)
-        );
-      }),
+        )
+      ),
       tap((favoriteTokenBalance: BigNumber) => {
         const tokenBalance = Web3Pure.fromWei(favoriteTokenBalance, favoriteToken.decimals);
         if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {

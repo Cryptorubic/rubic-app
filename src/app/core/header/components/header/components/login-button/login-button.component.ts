@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, Input, Injector, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-login-button',
@@ -17,10 +18,12 @@ export class LoginButtonComponent {
   constructor(
     private readonly authService: AuthService,
     private readonly modalService: ModalService,
+    private readonly gtmService: GoogleTagManagerService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public showModal(): void {
+    this.gtmService.fireClickOnConnectWalletButtonEvent();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

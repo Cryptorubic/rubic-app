@@ -1,0 +1,25 @@
+<ng-container *ngIf="!noRoutes; else emptyContent">
+  <div class="list" [ngClass]="{ list_padding: isModal }">
+    <app-provider-element
+      *ngFor="let state of states; index as i"
+      [isBest]="i === 0"
+      [tradeState]="state"
+      [shortedInfo]="shortedInfo"
+      [toToken]="toToken$ | async"
+      [selectedTradeType]="selectedTradeType"
+      (click)="handleTradeSelection($event, state.tradeType, state.error)"
+      [nativeToken]="nativeToken$ | async"
+    ></app-provider-element>
+  </div>
+</ng-container>
+
+<ng-template #emptyContent>
+  <div class="empty-list">
+    <div class="empty-list__content">
+      <app-no-result
+        label="No routes available"
+        description="Please try another token combination."
+      ></app-no-result>
+    </div>
+  </div>
+</ng-template>

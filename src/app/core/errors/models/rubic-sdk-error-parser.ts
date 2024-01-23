@@ -38,14 +38,14 @@ import { ExecutionRevertedError } from '@core/errors/models/common/execution-rev
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
-import CrossChainAmountChangeWarning from '@core/errors/models/cross-chain/cross-chain-amount-change-warning';
+import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
     if (err instanceof UpdatedRatesError) {
-      return new CrossChainAmountChangeWarning(err.trade);
+      return new AmountChangeWarning(err.transaction);
     }
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
@@ -113,6 +113,7 @@ export class RubicSdkErrorParser {
       return new TokenWithFeeError();
     }
     if (
+      err.message.includes('Make sure you have at least') ||
       err.stack?.includes('InsufficientFundsGasPriceValueError') ||
       err instanceof InsufficientFundsGasPriceValueError
     ) {
@@ -144,6 +145,11 @@ export class RubicSdkErrorParser {
         'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
       );
     }
+
+    if (err.message.includes('price change more than your slippage!')) {
+      return new RubicError('Please, increase the slippage and try again!');
+    }
+
     return new ExecutionRevertedError(err.message);
   }
 

@@ -1,12 +1,32 @@
-<ng-container *ngLet="_currentComponent$ | async as currentComponentData">
-  <aside class="header-settings">
-    <app-header-settings
-      [title]="currentComponentData.titleKey"
-      [haveBackButton]="!this.isDefaultComponent"
-      (closeClick)="closeSettings()"
-      (backClick)="backToSettings()"
-    ></app-header-settings>
+<div class="settings">
+  <div class="settings__theme">
+    <div class="settings__theme-text">
+      <span class="settings__theme-title">
+        {{ 'settings.header.switchTheme.title' | translate }}
+      </span>
+      <span class="settings__theme-subtitle">
+        {{ 'settings.header.switchTheme.desc' | translate }}
+      </span>
+    </div>
+    <button tuiIconButton appearance="secondary" type="button" size="m" (click)="switchTheme()">
+      <span
+        class="settings__theme-image"
+        [inlineSVG]="
+          (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
+        "
+      ></span>
+    </button>
+  </div>
 
-    <div *polymorpheusOutlet="currentComponentData.component; context: _currentComponent$"></div>
-  </aside>
-</ng-container>
+  <div class="settings__language">
+    <div class="settings__theme-text">
+      <span class="settings__theme-title">
+        {{ 'settings.header.language.title' | translate }}
+      </span>
+      <span class="settings__theme-subtitle">
+        {{ 'settings.header.language.desc' | translate }}
+      </span>
+    </div>
+    <app-language-selector></app-language-selector>
+  </div>
+</div>

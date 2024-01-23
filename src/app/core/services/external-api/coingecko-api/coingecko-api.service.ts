@@ -27,7 +27,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ZK_SYNC,
   BLOCKCHAIN_NAME.OPTIMISM,
   BLOCKCHAIN_NAME.PULSECHAIN,
-  BLOCKCHAIN_NAME.LINEA
+  BLOCKCHAIN_NAME.LINEA,
+  BLOCKCHAIN_NAME.MANTLE,
+  BLOCKCHAIN_NAME.BASE
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -57,15 +59,17 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis',
+      [BLOCKCHAIN_NAME.METIS]: 'metis-token',
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
       [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
-      [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
+      [BLOCKCHAIN_NAME.ZK_SYNC]: 'ethereum',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-      [BLOCKCHAIN_NAME.LINEA]: 'linea'
+      [BLOCKCHAIN_NAME.LINEA]: 'linea',
+      [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
+      [BLOCKCHAIN_NAME.BASE]: 'ethereum'
     };
 
     this.tokenBlockchainId = {
@@ -82,7 +86,7 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow-iou',
       [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
       [BLOCKCHAIN_NAME.OASIS]: 'oasis',
-      [BLOCKCHAIN_NAME.METIS]: 'metis',
+      [BLOCKCHAIN_NAME.METIS]: 'metis-andromeda',
       [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
       [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
       [BLOCKCHAIN_NAME.VELAS]: 'velas',
@@ -90,7 +94,9 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.ZK_SYNC]: 'zksync',
       [BLOCKCHAIN_NAME.OPTIMISM]: 'ethereum',
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
-      [BLOCKCHAIN_NAME.LINEA]: 'linea'
+      [BLOCKCHAIN_NAME.LINEA]: 'linea',
+      [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
+      [BLOCKCHAIN_NAME.BASE]: 'base'
     };
   }
 

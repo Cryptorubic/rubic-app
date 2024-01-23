@@ -1,0 +1,24 @@
+.component-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+
+  &__label {
+    color: var(--tui-text-01);
+    font-size: 21px;
+  }
+
+  &__description {
+    margin-bottom: 10px;
+
+    color: var(--tui-text-03);
+    font-size: 15px;
+  }
+
+  &__img {
+    width: 120px;
+  }
+}

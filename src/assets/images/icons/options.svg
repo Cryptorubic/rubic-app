@@ -1,8 +1,15 @@
-<svg width="35" height="35" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M17.5 10.2083H29.1667" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
-<path d="M5.83334 10.2083H11.6667" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
-<path d="M24.7917 24.7917H29.1667" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
-<path d="M5.83334 24.7917H17.5" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
-<path d="M14.5833 13.125C16.1942 13.125 17.5 11.8192 17.5 10.2083C17.5 8.59751 16.1942 7.29167 14.5833 7.29167C12.9725 7.29167 11.6667 8.59751 11.6667 10.2083C11.6667 11.8192 12.9725 13.125 14.5833 13.125Z" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
-<path d="M21.875 27.7083C23.4858 27.7083 24.7917 26.4025 24.7917 24.7917C24.7917 23.1808 23.4858 21.875 21.875 21.875C20.2642 21.875 18.9583 23.1808 18.9583 24.7917C18.9583 26.4025 20.2642 27.7083 21.875 27.7083Z" stroke="#00e28e" stroke-width="2" stroke-linecap="round"/>
+<svg width="27" height="23" viewBox="0 0 27 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1626_154)">
+<path d="M13.5 4.2085H25.1667" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+<path d="M1.83325 4.2085H7.66661" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+<path d="M20.7917 18.7915H25.1667" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+<path d="M1.83325 18.7915H13.4999" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+<path d="M10.5833 7.12483C12.1942 7.12483 13.5 5.81903 13.5 4.20813C13.5 2.59734 12.1942 1.2915 10.5833 1.2915C8.97255 1.2915 7.66675 2.59734 7.66675 4.20813C7.66675 5.81903 8.97255 7.12483 10.5833 7.12483Z" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+<path d="M17.875 21.7083C19.4858 21.7083 20.7917 20.4025 20.7917 18.7917C20.7917 17.1808 19.4858 15.875 17.875 15.875C16.2642 15.875 14.9583 17.1808 14.9583 18.7917C14.9583 20.4025 16.2642 21.7083 17.875 21.7083Z" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
+</g>
+<defs>
+<clipPath id="clip0_1626_154">
+<rect width="27" height="23" fill="var(--tui-text-03)"/>
+</clipPath>
+</defs>
 </svg>
