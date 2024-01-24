@@ -168,6 +168,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.OKE_X_CHAIN, rank: 0, tags: ['OKT'] },
   { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: ['XDAI'] },
   { name: BLOCKCHAIN_NAME.CRONOS, rank: 0, tags: ['CRO'] },
+  { name: BLOCKCHAIN_NAME.BLAST, rank: 0, tags: ['ETH'] },
   // BLOCKCHAIN_NAME.BITGERT,
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,

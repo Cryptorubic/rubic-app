@@ -987,5 +987,17 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/zetachain.png'
     } as Token
+  ],
+  [BLOCKCHAIN_NAME.BLAST]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.BLAST],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/eth.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BLAST],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/weth.png'
+    } as Token
   ]
 };
