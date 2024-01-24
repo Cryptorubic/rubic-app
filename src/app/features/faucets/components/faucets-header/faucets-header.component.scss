@@ -1,7 +1,8 @@
 ul {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--tui-padding-l);
+  gap: var(--tui-padding-m);
+  justify-content: space-between;
 }
 
 li.tui-skeleton {
