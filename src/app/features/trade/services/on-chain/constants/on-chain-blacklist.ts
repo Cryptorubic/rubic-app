@@ -64,7 +64,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: [],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [],
   [BLOCKCHAIN_NAME.SCROLL]: [],
-  [BLOCKCHAIN_NAME.STARKNET]: []
+  [BLOCKCHAIN_NAME.STARKNET]: [],
+  [BLOCKCHAIN_NAME.BERACHAIN]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
