@@ -14674,10 +14674,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.51.0-alpha-symbiosys-bitcoin.0:
-  version "4.51.0-alpha-symbiosys-bitcoin.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.51.0-alpha-symbiosys-bitcoin.0.tgz#c1d5547260783d85538343ebde81d72b4f17845b"
-  integrity sha512-Pokpmq1PQQvnHJXtCouta8GNcNq8RYe1c/es8lTHW1A4wdhcRSiqRWHuiFdTC11J7zciTC9afoiU93CUrFqG6A==
+rubic-sdk@4.51.0-alpha-symbiosys-bitcoin.1:
+  version "4.51.0-alpha-symbiosys-bitcoin.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.51.0-alpha-symbiosys-bitcoin.1.tgz#17d06222d4eba54a84aaee72b953a4d641d557d4"
+  integrity sha512-UXXnSpjgcq3xgAAUBiP5YCsQ5kmhGt8c4yWmArzZI9YXcuVYdkOAIETrmZzSLbLFjjcQ/Jj2p+hPvSxCAK32Bw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"

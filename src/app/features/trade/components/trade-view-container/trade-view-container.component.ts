@@ -69,7 +69,9 @@ export class TradeViewContainerComponent {
     );
     // Handle ChangeNow Non EVM trade
     if (isAddressRequired) {
-      const isAddressValid = await firstValueFrom(this.targetNetworkAddressService.isAddressValid$);
+      const isAddressValid =
+        (await firstValueFrom(this.targetNetworkAddressService.isAddressValid$)) &&
+        Boolean(this.targetNetworkAddressService.address);
       const isCnFromNonEvm =
         currentTrade.trade instanceof ChangenowCrossChainTrade &&
         !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
