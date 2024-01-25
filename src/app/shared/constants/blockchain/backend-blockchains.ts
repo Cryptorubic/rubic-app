@@ -129,7 +129,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
-  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain'
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
+  [BLOCKCHAIN_NAME.BLAST]: 'blast'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
