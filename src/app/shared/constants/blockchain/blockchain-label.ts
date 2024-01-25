@@ -129,5 +129,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
-  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain'
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  [BLOCKCHAIN_NAME.BLAST]: 'Blast'
 };
