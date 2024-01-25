@@ -220,5 +220,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://data.voyager.online/',
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
-  [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/']
+  [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
+  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io']
 };
