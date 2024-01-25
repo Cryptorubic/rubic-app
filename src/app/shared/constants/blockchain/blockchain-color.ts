@@ -129,5 +129,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: '#ffffff',
   [BLOCKCHAIN_NAME.SCROLL]: '#ffffff',
   [BLOCKCHAIN_NAME.SEPOLIA]: '#627DEA',
-  [BLOCKCHAIN_NAME.BERACHAIN]: '#FB7C15'
+  [BLOCKCHAIN_NAME.BERACHAIN]: '#FB7C15',
+  [BLOCKCHAIN_NAME.BLAST]: '#FCFC03'
 };
