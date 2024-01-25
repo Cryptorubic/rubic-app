@@ -19,9 +19,9 @@ export class SwapDataElementComponent {
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
 
-    const sum = new BigNumber(0)
-      .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
-      .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
+    const sum = new BigNumber(this.feeInfo?.rubicProxy?.fixedFee?.amount || 0).plus(
+      this.feeInfo?.provider?.cryptoFee?.amount || 0
+    );
 
     if (value?.nativeToken?.price && sum.gt(0)) {
       this.displayAmount = `~ $${sum.multipliedBy(value.nativeToken.price).toFixed(2)}`;
