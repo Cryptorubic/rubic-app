@@ -7,10 +7,6 @@ app-action-button {
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
-
-  span:last-child {
-    color: var(--tui-text-03);
-  }
 }
 
 .actions {
