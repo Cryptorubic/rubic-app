@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { combineLatestWith } from 'rxjs';
+import { combineLatestWith, Observable } from 'rxjs';
 import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
@@ -15,6 +15,9 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
+import { Router } from '@angular/router';
+import { WINDOW } from '@ng-web-apis/common';
+import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -53,6 +56,8 @@ export class SwapFormPageComponent {
 
   public readonly currentUser$ = this.authService.currentUser$;
 
+  public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
+
   public readonly displayTargetAddressInput$ = this.fromAsset$.pipe(
     combineLatestWith(
       this.toAsset$,
@@ -84,7 +89,9 @@ export class SwapFormPageComponent {
     private readonly headerStore: HeaderStore,
     private readonly modalService: ModalService,
     private readonly authService: AuthService,
-    @Inject(Injector) private readonly injector: Injector
+    private readonly router: Router,
+    @Inject(Injector) private readonly injector: Injector,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -176,4 +183,14 @@ export class SwapFormPageComponent {
       )
       .subscribe();
   }
+
+  public get isFaucetsPage(): boolean {
+    return this.window.location.pathname === '/faucets';
+  }
+
+  public async navigateToSwaps(): Promise<void> {
+    await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
+  }
+
+  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

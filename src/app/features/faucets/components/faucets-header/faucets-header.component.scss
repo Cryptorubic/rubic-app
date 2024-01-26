@@ -18,9 +18,30 @@ li.tui-skeleton {
 
 header {
   margin-bottom: 20px;
+  padding: 0 8px;
 
-  font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
+}
+
+.form-links {
+  display: flex;
+  gap: var(--tui-padding-s);
+
+  .swap-button,
+  .faucets-button {
+    color: var(--tui-text-03);
+    text-decoration: none;
+
+    cursor: pointer;
+
+    &.active {
+      color: #fff;
+
+      cursor: default;
+
+      pointer-events: none;
+    }
+  }
 }
 
 .faucets {

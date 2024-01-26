@@ -7,6 +7,22 @@ app-action-button {
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
+
+  .swap-button,
+  .faucets-button {
+    color: var(--tui-text-03);
+    text-decoration: none;
+
+    cursor: pointer;
+
+    &.active {
+      color: #fff;
+
+      cursor: default;
+
+      pointer-events: none;
+    }
+  }
 }
 
 .actions {
