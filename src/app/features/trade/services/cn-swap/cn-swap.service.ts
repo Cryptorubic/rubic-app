@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import {
   CHANGENOW_API_STATUS,
   changenowApiKey,
-  ChangenowApiResponse,
   ChangenowApiStatus,
   ChangenowPaymentInfo,
+  ChangenowStatusResponse,
   RubicSdkError
 } from 'rubic-sdk';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
@@ -65,7 +65,7 @@ export class CnSwapService {
 
     try {
       const response = await firstValueFrom(
-        this.httpClient.get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
+        this.httpClient.get<ChangenowStatusResponse>('https://api.changenow.io/v2/exchange/by-id', {
           params: { id: id },
           headers: { 'x-changenow-api-key': changenowApiKey }
         })

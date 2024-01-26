@@ -9,10 +9,10 @@ import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
 import {
   CHANGENOW_API_STATUS,
-  changenowApiKey,
-  ChangenowApiResponse,
+  ChangenowStatusResponse,
   ChangenowApiStatus,
-  RubicSdkError
+  RubicSdkError,
+  changenowApiKey
 } from 'rubic-sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -141,7 +141,7 @@ export class CnTableService extends TableService<'date', ChangenowPostTrade, CnT
 
     try {
       return this.httpClient
-        .get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
+        .get<ChangenowStatusResponse>('https://api.changenow.io/v2/exchange/by-id', {
           params: { id: id },
           headers: { 'x-changenow-api-key': changenowApiKey }
         })
