@@ -28,6 +28,10 @@
 
     tui-checkbox {
       margin-top: 3px;
+
+      ::ng-deep [tuiWrapper][data-appearance='outline']::after {
+        color: white;
+      }
     }
   }
 

@@ -29,7 +29,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.PULSECHAIN,
   BLOCKCHAIN_NAME.LINEA,
   BLOCKCHAIN_NAME.MANTLE,
-  BLOCKCHAIN_NAME.BASE
+  BLOCKCHAIN_NAME.BASE,
+  BLOCKCHAIN_NAME.BITCOIN
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -69,7 +70,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
       [BLOCKCHAIN_NAME.LINEA]: 'linea',
       [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
-      [BLOCKCHAIN_NAME.BASE]: 'ethereum'
+      [BLOCKCHAIN_NAME.BASE]: 'ethereum',
+      [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin'
     };
 
     this.tokenBlockchainId = {
@@ -96,7 +98,8 @@ export class CoingeckoApiService {
       [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
       [BLOCKCHAIN_NAME.LINEA]: 'linea',
       [BLOCKCHAIN_NAME.MANTLE]: 'mantle',
-      [BLOCKCHAIN_NAME.BASE]: 'base'
+      [BLOCKCHAIN_NAME.BASE]: 'base',
+      [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin'
     };
   }
 

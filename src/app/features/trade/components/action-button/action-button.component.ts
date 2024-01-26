@@ -67,7 +67,9 @@ export class ActionButtonComponent {
         ) {
           // Handle Non EVM trade
           if (isAddressRequired) {
-            if (isReceiverValid) {
+            const trulyAddress = Boolean(this.targetNetworkAddressService.address);
+
+            if (isReceiverValid && trulyAddress) {
               if (isCnFromNonEvm) {
                 return {
                   type: 'action',
