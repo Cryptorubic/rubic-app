@@ -265,4 +265,16 @@
   justify-content: center;
   width: 100%;
   margin-top: var(--tui-padding-l);
+
+  @media (min-width: 2560px) {
+    button {
+      font-size: 20px !important;
+    }
+  }
+
+  @media (min-width: 3840px) {
+    button {
+      font-size: 28px !important;
+    }
+  }
 }

@@ -115,22 +115,63 @@
 
 @media (min-width: 2560px) {
   .modal {
+    &__body {
+      column-gap: 35px;
+    }
+
     &__footer {
       font-size: 20px;
       line-height: 26px;
     }
 
+    &__form {
+      ::ng-deep {
+        tui-checkbox,
+        tui-primitive-checkbox {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+
+        tui-checkbox {
+          margin-top: 0 !important;
+        }
+
+        tui-primitive-checkbox {
+          border-radius: var(--tui-radius-xs);
+        }
+      }
+    }
+
+    &__provider-name {
+      font-size: 20px;
+      white-space: nowrap;
+    }
+
     &__provider-icon {
-      width: 25px;
-      height: 25px;
+      width: 68px;
+      height: 68px;
+
+      img {
+        width: 48px;
+      }
     }
 
     &__button {
+      width: 48px;
+      height: 48px;
+
       font-size: 20px;
       line-height: 20px;
+
+      ::ng-deep {
+        .t-wrapper {
+          padding: 0 !important;
+        }
+      }
     }
 
-    &__link {
+    &__link,
+    &__form span {
       font-size: 20px;
       line-height: 20px;
     }
@@ -139,22 +180,67 @@
 
 @media (min-width: 3840px) {
   .modal {
+    &__body {
+      column-gap: 35px;
+    }
+
     &__footer {
       font-size: 28px;
-      line-height: 34px;
+      line-height: 232px;
+    }
+
+    &__form {
+      ::ng-deep {
+        tui-checkbox,
+        tui-primitive-checkbox {
+          width: 2rem;
+          height: 2rem;
+        }
+
+        tui-checkbox {
+          margin-top: 0 !important;
+        }
+
+        tui-primitive-checkbox {
+          border-radius: var(--tui-radius-m);
+        }
+      }
+    }
+
+    &__provider {
+      gap: var(--tui-padding-l);
+    }
+
+    &__provider-name {
+      font-size: 28px;
+      white-space: nowrap;
     }
 
     &__provider-icon {
-      width: 32px;
-      height: 32px;
+      width: 88px;
+      height: 88px;
+
+      img {
+        width: 58px;
+      }
     }
 
     &__button {
+      width: 68px;
+      height: 68px;
+
       font-size: 28px;
       line-height: 28px;
+
+      ::ng-deep {
+        .t-wrapper {
+          padding: 0 !important;
+        }
+      }
     }
 
-    &__link {
+    &__link,
+    &__form span {
       font-size: 28px;
       line-height: 28px;
     }

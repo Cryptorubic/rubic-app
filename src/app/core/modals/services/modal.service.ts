@@ -23,12 +23,14 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class ModalService {
   constructor(
     private readonly modalService: AbstractModalService,
     private readonly mobileModalService$: MobileNativeModalService,
+    private readonly headerStore: HeaderStore,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -188,9 +190,11 @@ export class ModalService {
    * @param injector Injector
    */
   public openWalletModal(injector: Injector): Observable<void> {
+    const size = this.headerStore.isQHDResolution || this.headerStore.isUHDResolution ? 'l' : 'm';
+
     return this.showDialog(
       WalletsModalComponent,
-      { title: 'Connect wallet', size: 'm', fitContent: true },
+      { title: 'Connect wallet', size, fitContent: true },
       injector
     );
   }
