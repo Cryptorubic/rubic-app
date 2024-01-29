@@ -84,54 +84,14 @@
             {{ ' at ' + (item?.date | date : 'h:mm') }}
           </td>
           <td *tuiCell="'statusFrom'" tuiTd>
-            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
-              <app-rubic-badge
-                *ngIf="item?.fromTx?.status"
-                [status]="item.fromTx.status.appearance"
-                [label]="item.fromTx.status.label"
-              >
-              </app-rubic-badge>
-              <img
-                *ngIf="item.fromTx.explorerLink"
-                class="status-from-link-arrow"
-                src="assets/images/icons/arrow/link-arrow.svg"
-                alt="link-arrow"
-              />
-            </a>
+            <ng-container
+              *ngTemplateOutlet="statusFromFieldContent; context: { item: item, isMobile: false }"
+            ></ng-container>
           </td>
           <td *tuiCell="'statusTo'" tuiTd>
-            <ng-container *ngIf="item.toTx.status">
-              <a
-                *ngIf="!shouldShowActionButton(item); else statusToActionButton"
-                class="token-container__inner"
-                [safetyLink]="item.toTx.explorerLink"
-              >
-                <app-rubic-badge
-                  [status]="item.toTx.status.appearance"
-                  [label]="item.toTx.status.label"
-                >
-                </app-rubic-badge>
-                <img
-                  *ngIf="item.toTx.explorerLink"
-                  class="status-to-link-arrow"
-                  src="assets/images/icons/arrow/link-arrow.svg"
-                  alt="link-arrow"
-                />
-              </a>
-              <ng-template #statusToActionButton>
-                <div class="statusTo-actionButton__wrapper">
-                  <app-rubic-button
-                    [size]="'xs'"
-                    [loading]="isLoadingActionButton(item.fromTx.hash)"
-                    [disabled]="isLoadingActionButton(item.fromTx.hash)"
-                    fullWidth
-                    (onClick)="handleStatusToItemClick(item)"
-                  >
-                    {{ item.toTx.status.label }}
-                  </app-rubic-button>
-                </div>
-              </ng-template>
-            </ng-container>
+            <ng-container
+              *ngTemplateOutlet="statusToFieldContent; context: { item: item, isMobile: false }"
+            ></ng-container>
           </td>
           <td *tuiCell="'provider'" tuiTd>
             <div class="provider-container" *ngIf="item?.provider?.name">
@@ -200,40 +160,18 @@
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.statusFrom' | translate }}</div>
           <div class="mobile-view__row-value">
-            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
-              <app-rubic-badge
-                *ngIf="item?.fromTx?.status"
-                [status]="item.fromTx.status.appearance"
-                [label]="item.fromTx.status.label"
-              >
-              </app-rubic-badge>
-              <img
-                *ngIf="item?.fromTx?.explorerLink"
-                class="status-from-link-arrow"
-                src="assets/images/icons/arrow/link-arrow.svg"
-                alt="link-arrow"
-              />
-            </a>
+            <ng-container
+              *ngTemplateOutlet="statusFromFieldContent; context: { item: item, isMobile: true }"
+            ></ng-container>
           </div>
         </div>
 
         <div class="mobile-view__row">
           <div class="mobile-view__row-key">{{ 'recentTrades.statusTo' | translate }}</div>
           <div class="mobile-view__row-value">
-            <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">
-              <app-rubic-badge
-                *ngIf="item?.toTx?.status"
-                [status]="item.toTx.status.appearance"
-                [label]="item.toTx.status.label"
-              >
-              </app-rubic-badge>
-              <img
-                *ngIf="item?.toTx?.explorerLink"
-                class="status-from-link-arrow"
-                src="assets/images/icons/arrow/link-arrow.svg"
-                alt="link-arrow"
-              />
-            </a>
+            <ng-container
+              *ngTemplateOutlet="statusToFieldContent; context: { item: item, isMobile: true }"
+            ></ng-container>
           </div>
         </div>
 
@@ -260,3 +198,76 @@
   [length]="(totalPages$ | async) || 0"
   (indexChange)="changePage($event)"
 ></tui-pagination>
+
+<ng-template #statusFromFieldContent let-item="item" let-isMobile="isMobile">
+  <ng-container *ngIf="item.provider?.name !== 'ChangeNOW'; else dropdownOptions">
+    <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">
+      <app-rubic-badge
+        [status]="item.fromTx.status.appearance"
+        [label]="item.fromTx.status.label"
+      ></app-rubic-badge>
+
+      <img
+        *ngIf="item.fromTx.explorerLink"
+        class="status-from-link-arrow"
+        src="assets/images/icons/arrow/link-arrow.svg"
+        alt="link-arrow"
+      />
+    </a>
+  </ng-container>
+
+  <ng-template #dropdownOptions>
+    <div
+      [ngClass]="{ 'statusFrom-dropdown': !isMobile, 'mobile-view__row-value-dropdown': isMobile }"
+    >
+      <a [safetyLink]="item.fromTx.explorerLink">
+        <app-rubic-badge
+          [status]="item.fromTx.status.appearance"
+          [label]="item.fromTx.status.label"
+        ></app-rubic-badge>
+      </a>
+
+      <app-dropdown-options-table-item
+        [copyValue]="item.changenowId"
+        [link]="item.fromTx.explorerLink"
+      ></app-dropdown-options-table-item>
+    </div>
+  </ng-template>
+</ng-template>
+
+<ng-template #statusToFieldContent let-item="item" let-isMobile="isMobile">
+  <ng-container *ngIf="item.toTx.status">
+    <a
+      *ngIf="!shouldShowActionButton(item); else statusToActionButton"
+      class="token-container__inner"
+      [safetyLink]="item.toTx.explorerLink"
+    >
+      <app-rubic-badge [status]="item.toTx.status.appearance" [label]="item.toTx.status.label">
+      </app-rubic-badge>
+      <img
+        *ngIf="item.toTx.explorerLink"
+        class="status-to-link-arrow"
+        src="assets/images/icons/arrow/link-arrow.svg"
+        alt="link-arrow"
+      />
+    </a>
+    <ng-template #statusToActionButton>
+      <div
+        [ngClass]="{
+          'statusTo-action-button__wrapper': !isMobile,
+          'mobile-view__row-value-action-button__wrapper': isMobile
+        }"
+      >
+        <app-rubic-button
+          [size]="'xs'"
+          [loading]="isLoadingActionButton(item.fromTx.hash)"
+          [disabled]="isLoadingActionButton(item.fromTx.hash)"
+          fullWidth
+          (onClick)="handleStatusToItemClick(item)"
+        >
+          {{ item.toTx.status.label }}
+        </app-rubic-button>
+      </div>
+    </ng-template>
+  </ng-container>
+</ng-template>

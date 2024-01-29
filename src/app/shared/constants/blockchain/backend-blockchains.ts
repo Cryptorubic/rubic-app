@@ -23,7 +23,6 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CELO]: 'celo',
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'boba-bsc',
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'boba-avalanche',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'astar-evm',
   [BLOCKCHAIN_NAME.ASTAR]: 'astar',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
@@ -129,7 +128,9 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
-  [BLOCKCHAIN_NAME.SCROLL]: 'scroll'
+  [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
+  [BLOCKCHAIN_NAME.BLAST]: 'blast'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

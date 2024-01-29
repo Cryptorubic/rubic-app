@@ -1,11 +1,5 @@
 @use 'src/scss/core' as *;
 
-.token-card-wrapper {
-  display: flex;
-  gap: 8px;
-  padding: 8px;
-}
-
 .token-card-container {
   display: flex;
   gap: var(--tui-padding-s);
@@ -21,14 +15,6 @@
   &:hover {
     background: var(--tui-secondary);
     border-radius: var(--tui-radius-m);
-  }
-
-  &__favorite {
-    &_active {
-      ::ng-deep path {
-        stroke: var(--tui-primary);
-      }
-    }
   }
 
   &__image-container {
@@ -206,4 +192,3 @@
     }
   }
 }
-

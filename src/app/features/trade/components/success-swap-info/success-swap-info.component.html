@@ -1,13 +1,22 @@
 <div class="info">
   <div class="info__title">Yahoo!</div>
   <ng-container *ngIf="showPoints">
-    <div class="info__description">
-      You will be credited with {{ pointsAmount$ | async }} points when the transaction is
-      successful
-    </div>
-    <div class="info__bottom">
-      Points can be seen
-      <span class="highlight_green" (click)="navigateToSwapAndEarn()">here</span>
-    </div>
+    <ng-container *ngIf="pointsAmount$ | async as pointsAmount; else pointsUndefined">
+      <div class="info__description">
+        {{
+          'airdrop.modals.rubicPointsModal.description' | translate : { pointsAmount: pointsAmount }
+        }}
+      </div>
+      <div class="info__bottom">
+        {{ 'airdrop.modals.rubicPointsModal.infoText' | translate }}
+        <span class="highlight_green" (click)="navigateToSwapAndEarn()">
+          {{ 'airdrop.modals.rubicPointsModal.infoLink' | translate }}
+        </span>
+      </div>
+    </ng-container>
+
+    <ng-template #pointsUndefined>
+      {{ 'airdrop.modals.rubicPointsModal.pointsUndefined' | translate }}
+    </ng-template>
   </ng-container>
 </div>

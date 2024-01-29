@@ -24,5 +24,6 @@ export interface CrossChainTableResponse {
     created_at: string;
     via_rubic_proxy: true;
     status: DestinationTxStatus;
+    changenow_id: string;
   }[];
 }

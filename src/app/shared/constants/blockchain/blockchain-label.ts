@@ -21,7 +21,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CELO]: 'Celo',
   [BLOCKCHAIN_NAME.BOBA]: 'Boba',
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'Boba BNB',
-  [BLOCKCHAIN_NAME.BOBA_AVALANCHE]: 'Boba Avalanche',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'Astar EVM',
   [BLOCKCHAIN_NAME.ASTAR]: 'Astar',
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'Eth PoW',
@@ -129,5 +128,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
-  [BLOCKCHAIN_NAME.SCROLL]: 'Scroll'
+  [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  [BLOCKCHAIN_NAME.BLAST]: 'Blast'
 };

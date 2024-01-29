@@ -66,6 +66,8 @@ import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.compon
 import { GetUsdPricePipe } from './pipes/get-usd-price.pipe';
 import { RubicBadgeWithCopyBtnComponent } from './components/rubic-badge-with-copy-btn/rubic-badge-with-copy-btn.component';
 import { Layer3WidgetComponent } from './components/layer3-widget/layer3-widget.component';
+import { DropdownOptionsTokenComponent } from './components/dropdown-options/dropdown-options-token/dropdown-options-token.component';
+import { DropdownOptionsTableItemComponent } from './components/dropdown-options/dropdown-options-table-item/dropdown-options-table-item.component';
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
@@ -112,6 +114,8 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
     Layer3WidgetComponent,
+    DropdownOptionsTokenComponent,
+    DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe
   ],
@@ -184,6 +188,8 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     GetUsdPricePipe,
     RubicBadgeWithCopyBtnComponent,
     Layer3WidgetComponent,
+    DropdownOptionsTokenComponent,
+    DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe
   ],

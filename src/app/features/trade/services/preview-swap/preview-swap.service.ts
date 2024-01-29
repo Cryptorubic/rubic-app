@@ -55,6 +55,7 @@ import {
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -348,7 +349,7 @@ export class PreviewSwapService {
                   });
                 }
               },
-              onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
+              onSwap: (additionalInfo?: CrossChainSwapAdditionalParams) => {
                 if (this.useCallback) {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this.setNextTxState({
