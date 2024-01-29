@@ -10,7 +10,7 @@ import { StoreService } from '@core/services/store/store.service';
 import {
   CHANGENOW_API_STATUS,
   changenowApiKey,
-  ChangenowStatusResponse,
+  ChangenowApiResponse,
   ChangenowApiStatus,
   RubicSdkError
 } from 'rubic-sdk';
@@ -141,7 +141,7 @@ export class CnTableService extends TableService<'date', ChangenowPostTrade, CnT
 
     try {
       return this.httpClient
-        .get<ChangenowStatusResponse>('https://api.changenow.io/v2/exchange/by-id', {
+        .get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
           params: { id: id },
           headers: { 'x-changenow-api-key': changenowApiKey }
         })
