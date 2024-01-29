@@ -14,7 +14,6 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
-  CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
   LowSlippageError,
@@ -272,7 +271,7 @@ export class SwapsControllerService {
               txHash = await this.crossChainService.swapTrade(
                 trade as CrossChainTrade,
                 callback.onHash,
-                trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW ? undefined : err.transaction
+                err.transaction
               );
             } else {
               txHash = await this.onChainService.swapTrade(trade, callback.onHash, err.transaction);
