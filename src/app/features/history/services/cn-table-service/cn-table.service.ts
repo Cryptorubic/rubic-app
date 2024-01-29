@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatestWith, forkJoin, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, forkJoin, from, Observable, of } from 'rxjs';
 import { filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -9,10 +9,9 @@ import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
 import {
   CHANGENOW_API_STATUS,
-  ChangenowStatusResponse,
   ChangenowApiStatus,
   RubicSdkError,
-  changenowApiKey
+  ChangeNowCrossChainApiService
 } from 'rubic-sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -140,12 +139,7 @@ export class CnTableService extends TableService<'date', ChangenowPostTrade, CnT
     }
 
     try {
-      return this.httpClient
-        .get<ChangenowStatusResponse>('https://api.changenow.io/v2/exchange/by-id', {
-          params: { id: id },
-          headers: { 'x-changenow-api-key': changenowApiKey }
-        })
-        .pipe(map(el => el.status));
+      return from(ChangeNowCrossChainApiService.getTxStatus(id)).pipe(map(el => el.status));
     } catch {
       return of(CHANGENOW_API_STATUS.WAITING);
     }
