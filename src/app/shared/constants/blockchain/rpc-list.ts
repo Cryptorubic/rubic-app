@@ -229,5 +229,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
     'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
+  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io']
 };

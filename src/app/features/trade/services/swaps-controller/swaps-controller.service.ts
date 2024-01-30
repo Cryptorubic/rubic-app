@@ -40,6 +40,9 @@ import DelayedApproveError from '@core/errors/models/common/delayed-approve.erro
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
+import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
+import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
 
 @Injectable()
 export class SwapsControllerService {
@@ -69,7 +72,9 @@ export class SwapsControllerService {
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
     private readonly settingsService: SettingsService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly crossChainApiService: CrossChainApiService,
+    private readonly onChainApiService: OnChainApiService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -225,19 +230,19 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     callback?: {
       onHash?: (hash: string) => void;
-      onSwap?: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => void;
+      onSwap?: (additionalInfo: CrossChainSwapAdditionalParams) => void;
       onError?: () => void;
     }
   ): Promise<void> {
+    const trade = tradeState.trade;
+    let txHash: string;
+
     try {
-      const additionalData: { changenowId?: string; rangoRequestId?: string } = {
-        changenowId: undefined
-      };
       const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
-        tradeState.trade instanceof CrossChainTrade
+        trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-        tradeState.trade
+        trade
       );
 
       if (!allowSlippageAndPI) {
@@ -245,59 +250,32 @@ export class SwapsControllerService {
         return;
       }
 
-      if (tradeState.trade instanceof CrossChainTrade) {
-        const status = await this.crossChainService.swapTrade(tradeState.trade, callback.onHash);
-        if (status === 'success') {
-          if ('id' in tradeState.trade) {
-            additionalData.changenowId = tradeState.trade.id as string;
-          }
-          if ('rangoRequestId' in tradeState.trade) {
-            additionalData.rangoRequestId = tradeState.trade.rangoRequestId as string;
-          }
-          callback?.onSwap(additionalData);
-        } else {
-          callback.onError?.();
-        }
+      if (trade instanceof CrossChainTrade) {
+        txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
       } else {
-        await this.onChainService.swapTrade(tradeState.trade, callback.onHash);
-        callback?.onSwap(additionalData);
+        txHash = await this.onChainService.swapTrade(trade, callback.onHash);
       }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
         const allowSwap = await firstValueFrom(
           this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.transaction.oldAmount, tradeState.trade.to.decimals),
-            Web3Pure.fromWei(err.transaction.newAmount, tradeState.trade.to.decimals),
-            tradeState.trade.to.symbol
+            Web3Pure.fromWei(err.transaction.oldAmount, trade.to.decimals),
+            Web3Pure.fromWei(err.transaction.newAmount, trade.to.decimals),
+            trade.to.symbol
           )
         );
 
         if (allowSwap) {
           try {
-            const additionalData: { changenowId?: string; rangoRequestId?: string } = {
-              changenowId: undefined
-            };
-
-            if (tradeState.trade instanceof CrossChainTrade) {
-              await this.crossChainService.swapTrade(
-                tradeState.trade as CrossChainTrade,
+            if (trade instanceof CrossChainTrade) {
+              txHash = await this.crossChainService.swapTrade(
+                trade as CrossChainTrade,
                 callback.onHash,
                 err.transaction
               );
             } else {
-              await this.onChainService.swapTrade(
-                tradeState.trade,
-                callback.onHash,
-                err.transaction
-              );
+              txHash = await this.onChainService.swapTrade(trade, callback.onHash, err.transaction);
             }
-            if ('id' in tradeState.trade) {
-              additionalData.changenowId = tradeState.trade.id as string;
-            }
-            if ('rangoRequestId' in tradeState.trade) {
-              additionalData.rangoRequestId = tradeState.trade.rangoRequestId as string;
-            }
-            callback?.onSwap(additionalData);
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
@@ -308,6 +286,14 @@ export class SwapsControllerService {
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
       }
+    }
+
+    if (!txHash) return;
+
+    if (trade instanceof CrossChainTrade) {
+      await this.handleCrossChainSwapResponse(trade, txHash, callback.onSwap);
+    } else {
+      await this.handleOnChainSwapResponse(txHash, callback.onSwap);
     }
   }
 
@@ -390,6 +376,36 @@ export class SwapsControllerService {
       UnsupportedDeflationTokenWarning,
       ExecutionRevertedError
     ].some(CriticalError => error instanceof CriticalError);
+  }
+
+  private async handleCrossChainSwapResponse(
+    trade: CrossChainTrade,
+    txHash?: string,
+    onSwap?: (params?: CrossChainSwapAdditionalParams) => void
+  ): Promise<void> {
+    if (txHash) {
+      const params: CrossChainSwapAdditionalParams = {};
+
+      if ('id' in trade) {
+        params.changenowId = trade.id as string;
+      }
+      if ('rangoRequestId' in trade) {
+        params.rangoRequestId = trade.rangoRequestId as string;
+      }
+
+      onSwap?.(params);
+      await this.crossChainApiService.patchTrade(txHash, true);
+    }
+  }
+
+  private async handleOnChainSwapResponse(
+    txHash?: string,
+    onSwap?: (params?: CrossChainSwapAdditionalParams) => void
+  ): Promise<void> {
+    if (txHash) {
+      onSwap?.();
+      await this.onChainApiService.patchTrade(txHash, true);
+    }
   }
 
   private catchSwapError(

@@ -233,16 +233,15 @@ export class CrossChainService {
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
    * @param directTransaction Transaction config to execute forced
-   * @returns 'success' - on successfull swap, 'reject' - on any error
+   * @returns transactionHash - on successfull swap
    */
-
   public async swapTrade(
     trade: CrossChainTrade,
     callbackOnHash?: (hash: string) => void,
     directTransaction?: EvmEncodeConfig
-  ): Promise<'success' | 'reject'> {
+  ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
-      return 'reject';
+      return null;
     }
 
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
@@ -293,8 +292,7 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
-      await this.crossChainApiService.patchTrade(transactionHash, true);
-      return 'success';
+      return transactionHash;
     } catch (error) {
       if (
         transactionHash &&

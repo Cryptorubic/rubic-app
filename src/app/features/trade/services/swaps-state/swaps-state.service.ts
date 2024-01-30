@@ -11,13 +11,11 @@ import {
   switchMap
 } from 'rxjs/operators';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
   EvmWrapTrade,
   nativeTokensList,
-  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   Token,
   WrappedCrossChainTradeOrNull
@@ -162,7 +160,7 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          ...(this.setPromotion(trade) && { promotion: this.setPromotion(trade) })
+          ...(this.setPromotion() && { promotion: this.setPromotion() })
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -410,19 +408,7 @@ export class SwapsStateService {
     );
   }
 
-  private setPromotion(trade: OnChainTrade | CrossChainTrade): PromotionType | null {
-    if (
-      trade instanceof OnChainTrade &&
-      trade.type === ON_CHAIN_TRADE_TYPE.OPEN_OCEAN &&
-      trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
-    ) {
-      return {
-        hint: 'Click to check additional info',
-        label: '50% gas refund',
-        href: 'https://app.openocean.finance/portfolio/campaigns'
-      };
-    }
-
+  private setPromotion(): PromotionType | null {
     return null;
   }
 }

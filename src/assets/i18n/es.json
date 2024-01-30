@@ -692,7 +692,13 @@
     },
     "modals": {
       "success": "Your tokens are on the way!",
-      "explorerLink": "Check the transaction on explorer."
+      "explorerLink": "Check the transaction on explorer.",
+      "rubicPointsModal": {
+        "description": "You will be credited with {{ pointsAmount }} points when the transaction is successful",
+        "infoText": "Points can be seen",
+        "infoLink": "here",
+        "pointsUndefined": "Calculation will be made later, the result will be displayed in your personal account."
+      }
     }
   },
   "retrodrop": {
