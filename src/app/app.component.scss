@@ -28,23 +28,31 @@
 }
 
 @media (min-width: 2560px) {
-  :host ::ng-deep tui-alert {
-    width: fit-content;
-    max-width: 400px;
+  :host ::ng-deep {
+    tui-dropdown tui-data-list tui-select-option {
+      font-size: 20px !important;
+      line-height: 25px !important;
+      white-space: nowrap;
+    }
 
-    tui-notification[data-status='error'],
-    tui-notification[data-status='warning'] {
-      .t-content {
-        label {
-          display: block;
-          margin-bottom: 10px;
+    tui-alert {
+      width: fit-content;
+      max-width: 400px;
 
-          font-size: 20px !important;
-        }
-
+      tui-notification[data-status='error'],
+      tui-notification[data-status='warning'] {
         .t-content {
-          font-size: 20px;
-          line-height: 25px;
+          label {
+            display: block;
+            margin-bottom: 10px;
+
+            font-size: 20px !important;
+          }
+
+          .t-content {
+            font-size: 20px;
+            line-height: 25px;
+          }
         }
       }
     }
@@ -52,27 +60,34 @@
 }
 
 @media (min-width: 3840px) {
-  :host ::ng-deep tui-alert {
-    max-width: 500px;
+  :host ::ng-deep {
+    tui-dropdown tui-data-list tui-select-option {
+      font-size: 28px !important;
+      line-height: 32px !important;
+    }
 
-    border-radius: 25px;
-
-    tui-notification[data-status='error'],
-    tui-notification[data-status='warning'] {
-      padding: 1rem 1.75rem;
+    tui-alert {
+      max-width: 500px;
 
       border-radius: 25px;
 
-      .t-content {
-        label {
-          margin-bottom: 20px;
+      tui-notification[data-status='error'],
+      tui-notification[data-status='warning'] {
+        padding: 1rem 1.75rem;
 
-          font-size: 28px !important;
-        }
+        border-radius: 25px;
 
         .t-content {
-          font-size: 28px;
-          line-height: 32px;
+          label {
+            margin-bottom: 20px;
+
+            font-size: 28px !important;
+          }
+
+          .t-content {
+            font-size: 28px;
+            line-height: 32px;
+          }
         }
       }
     }

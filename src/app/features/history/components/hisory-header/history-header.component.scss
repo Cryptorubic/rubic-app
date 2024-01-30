@@ -8,10 +8,14 @@
   border-radius: var(--tui-radius-m);
 
   @media (min-width: 2560px) {
+    height: var(--tui-height-l);
+
     font-size: 20px;
   }
+
   @media (min-width: 3840px) {
-    height: var(--tui-height-l);
+    height: 80px;
+    margin-bottom: var(--tui-padding-xxl);
 
     font-size: 28px;
   }
@@ -88,5 +92,71 @@
 
   &__select {
     width: 120px;
+  }
+}
+
+//tui-select tui-hosted-dropdown t-wrapper tui-primitive-textfield t-value
+@media (min-width: 2560px) {
+  :host ::ng-deep {
+    tui-select {
+      tui-primitive-textfield {
+        --tui-height: var(--tui-height-l) !important;
+        height: var(--tui-height-l) !important;
+
+        .t-placeholder.t-placeholder_raised {
+          font: var(--tui-font-text-m) !important;
+
+          transform: translateY(-14px) !important;
+        }
+      }
+
+      .t-value {
+        font-size: 20px !important;
+        line-height: 25px !important;
+      }
+    }
+  }
+
+  .filter {
+    &__select {
+      width: 160px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  :host ::ng-deep {
+    tui-select {
+      tui-primitive-textfield {
+        --tui-height: 80px !important;
+        height: 80px !important;
+
+        .t-placeholder.t-placeholder_raised {
+          font-size: 24px !important;
+          line-height: 30px !important;
+
+          transform: translateY(-20px) !important;
+        }
+      }
+
+      .t-input {
+        padding: 0 var(--tui-padding-xl) !important;
+      }
+
+      .t-value {
+        padding-top: 16px !important;
+
+        font-size: 28px !important;
+        line-height: 32px !important;
+      }
+    }
+  }
+
+  .filter {
+    margin-bottom: var(--tui-padding-xxl);
+    
+    &__select {
+      width: 200px;
+    }
   }
 }
