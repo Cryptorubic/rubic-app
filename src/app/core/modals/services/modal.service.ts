@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap, timeout } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -248,6 +248,6 @@ export class ModalService {
       size: 's',
       data: { oldAmount, newAmount, tokenSymbol },
       required: true
-    });
+    }).pipe(switchMap(() => of(false).pipe(timeout({ first: 15_000 }))));
   }
 }
