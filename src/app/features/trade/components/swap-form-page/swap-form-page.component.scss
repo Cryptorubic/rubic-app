@@ -10,13 +10,14 @@ app-action-button {
 
   .swap-button,
   .faucets-button {
-    color: var(--tui-text-03);
+    color: #fff;
     text-decoration: none;
 
     cursor: pointer;
 
     &.active {
-      color: #fff;
+      color: var(--tui-primary-active);
+      font-weight: 500;
 
       cursor: default;
 

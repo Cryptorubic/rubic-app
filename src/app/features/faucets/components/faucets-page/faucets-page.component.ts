@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { Observable, of, retry } from 'rxjs';
 import { catchError, first, map, startWith, tap, timeout } from 'rxjs/operators';
@@ -16,10 +16,11 @@ export class FaucetsPageComponent {
   public selectedBlockchain: BlockchainName = BLOCKCHAIN_NAME.GOERLI;
 
   public readonly faucetsData$ = this.getData().pipe(
-    first(),
+    first(faucets => Object.keys(faucets).length > 0),
     tap(faucets => {
       this.loading = false;
       this.selectedBlockchain = Object.keys(faucets)[0] as BlockchainName;
+      this.cdr.detectChanges();
     })
   );
 
@@ -32,10 +33,13 @@ export class FaucetsPageComponent {
 
   public loading: boolean = true;
 
-  constructor(private readonly faucetsApiService: FaucetsApiService) {}
+  constructor(
+    private readonly faucetsApiService: FaucetsApiService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   private getData(): Observable<Partial<Record<BlockchainName, Faucet[]>>> {
-    return this.faucetsApiService.fetchFaucets().pipe(
+    return this.faucetsApiService.getFaucets().pipe(
       timeout(2_000),
       retry({ count: 1, delay: 2_000 }),
       timeout(2_000),

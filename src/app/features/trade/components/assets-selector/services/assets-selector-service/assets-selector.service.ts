@@ -88,7 +88,7 @@ export class AssetsSelectorService {
       'blockchain' in this.swapFormService.inputValue.fromToken
         ? this.swapFormService.inputValue.fromToken.blockchain
         : null;
-    const userBlockchainName = this.walletConnectorService.network;
+    const userBlockchainName = this.walletConnectorService.network || blockchainsList[0].name;
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
     )?.name;

@@ -11,6 +11,7 @@ import { map } from 'rxjs/operators';
 import { BackendPagination } from '@shared/models/backend/backend-pagination';
 import { BackendFaucet } from '@features/faucets/models/backend-faucet';
 import { Faucet } from '@features/faucets/models/faucet';
+import { Cacheable } from 'ts-cacheable';
 
 @Injectable()
 export class FaucetsApiService {
@@ -24,10 +25,19 @@ export class FaucetsApiService {
       .pipe(map(blockchains => blockchains.map(chain => FROM_BACKEND_BLOCKCHAINS[chain])));
   }
 
-  public fetchFaucets(): Observable<Partial<Record<BlockchainName, Faucet[]>>> {
-    return this.httpClient
-      .get<BackendPagination<BackendFaucet>>(`${this.tokensApiUrl}token_sources/faucets`)
-      .pipe(map(faucetsResponse => this.castFromBackendFaucets(faucetsResponse.results)));
+  public getFaucets(): Observable<Partial<Record<BlockchainName, Faucet[]>>> {
+    return this.fetchFaucets().pipe(
+      map(faucetsResponse => this.castFromBackendFaucets(faucetsResponse.results))
+    );
+  }
+
+  @Cacheable({
+    maxAge: 60_000
+  })
+  private fetchFaucets(): Observable<BackendPagination<BackendFaucet>> {
+    return this.httpClient.get<BackendPagination<BackendFaucet>>(
+      `${this.tokensApiUrl}token_sources/faucets`
+    );
   }
 
   private castFromBackendFaucets(

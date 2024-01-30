@@ -2,9 +2,9 @@
 
 .form {
   display: block;
-  max-width: 565px;
+  max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: var(--tui-padding-m);
 
   background: var(--tui-secondary);
   border: 1px solid var(--transparent-line);
