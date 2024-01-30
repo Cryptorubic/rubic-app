@@ -64,5 +64,23 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     mobileOnly: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Solflare',
+    value: WALLET_NAME.SOLFLARE,
+    img: './assets/images/icons/wallets/solflare.svg',
+    desktopOnly: false,
+    mobileOnly: false,
+    display: true,
+    disabled: false
   }
 ];

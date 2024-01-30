@@ -40,10 +40,13 @@ export class SdkLoaderService {
         tap(address => {
           const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
           const provider = this.walletConnectorService.provider;
-          const walletProviderCore: WalletProviderCore = {
-            address,
-            core: chainType === CHAIN_TYPE.EVM ? provider.wallet : provider.wallet.tronWeb
+          const chainTypeMap = {
+            [CHAIN_TYPE.EVM]: provider.wallet,
+            [CHAIN_TYPE.TRON]: provider.wallet.tronWeb,
+            [CHAIN_TYPE.SOLANA]: provider.wallet
           };
+          const core = chainTypeMap?.[chainType];
+          const walletProviderCore: WalletProviderCore = { address, core };
           this.sdkService.updateWallet(chainType, walletProviderCore);
         })
       )

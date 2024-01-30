@@ -40,6 +40,7 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -130,7 +131,8 @@ export class SwapsStateService {
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensService: TokensService
   ) {
     this.subscribeOnTradeChange();
   }

@@ -188,7 +188,10 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy
+      useProxy: {
+        ...this.platformConfigurationService.useCrossChainChainProxy,
+        dln: false
+      }
     };
   }
 

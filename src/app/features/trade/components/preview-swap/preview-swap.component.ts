@@ -12,7 +12,6 @@ import {
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
-  EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
@@ -51,11 +50,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
-    switchMap(blockchain =>
-      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
-    )
-  );
+  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
