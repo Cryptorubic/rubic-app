@@ -22,3 +22,40 @@
     width: 120px;
   }
 }
+
+@media (min-width: 2560px) {
+  .component-container {
+    gap: 10px;
+
+    &__label {
+      font-size: 21px;
+    }
+
+    &__description {
+      font-size: 20px;
+    }
+
+    &__img {
+      width: 140px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .component-container {
+    gap: 20px;
+    padding: 20px 10px;
+
+    &__label {
+      font-size: 28px;
+    }
+
+    &__description {
+      font-size: 28px;
+    }
+
+    &__img {
+      width: 190px;
+    }
+  }
+}

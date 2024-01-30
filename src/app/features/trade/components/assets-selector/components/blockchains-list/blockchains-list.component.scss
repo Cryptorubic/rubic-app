@@ -62,6 +62,58 @@ app-no-result {
   width: 100%;
 }
 
+@media (min-width: 2560px) {
+  .list {
+    gap: var(--tui-padding-m);
+    padding: var(--tui-padding-xl) var(--tui-padding-xs);
+
+    &__label {
+      font-size: 21px;
+    }
+
+    &__element {
+      min-width: 160px;
+      max-width: 194px;
+    }
+
+    &__element-container {
+      gap: var(--tui-padding-l);
+      align-items: center;
+    }
+
+    &__image-container {
+      width: 35px;
+      height: 35px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .list {
+    gap: var(--tui-padding-xxl);
+    padding: var(--tui-padding-xxl) var(--tui-padding-xs);
+
+    &__label {
+      font-size: 26px;
+    }
+
+    &__element {
+      min-width: 230px;
+      max-width: 230px;
+    }
+
+    &__element-container {
+      gap: var(--tui-padding-l);
+      align-items: center;
+    }
+
+    &__image-container {
+      width: 45px;
+      height: 45px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .scrollbar {
     max-height: fit-content;

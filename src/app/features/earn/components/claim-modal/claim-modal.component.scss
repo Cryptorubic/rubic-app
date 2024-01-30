@@ -42,7 +42,7 @@
 }
 
 .text {
-  @include font(24px, 29px, 600,var(--secondary-text));
+  @include font(24px, 29px, 600, var(--secondary-text));
   margin: 0 auto 48px;
 
   color: var(--primary-color);
@@ -62,6 +62,38 @@
   ::ng-deep {
     button {
       font-size: 15px !important;
+    }
+  }
+}
+
+@media (min-width: 2560px) {
+  .action-btn {
+    ::ng-deep {
+      button {
+        font-size: 20px !important;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .title {
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .text {
+    font-size: 28px;
+    line-height: 28px;
+  }
+
+  .action-btn {
+    ::ng-deep {
+      button {
+        height: var(--tui-height-m);
+
+        font-size: 28px !important;
+      }
     }
   }
 }

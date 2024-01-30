@@ -4,7 +4,8 @@
   position: relative;
 
   display: block;
-  max-width: 540px;
+  width: fit-content;
+  min-width: 540px;
   margin: 0 auto;
 
   &__head {
@@ -91,6 +92,74 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@media (min-width: 2560px) {
+  .deposits {
+    width: auto;
+
+    &__head {
+      &-btn {
+        height: 40px;
+
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+
+    &__title {
+      gap: 16px;
+
+      &-text {
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+
+    &__refresh-btn-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .no-deposits {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+@media (min-width: 3840px) {
+  .deposits {
+    &__head {
+      margin-bottom: var(--tui-padding-xxl);
+
+      &-btn {
+        height: 50px;
+
+        font-size: 28px;
+        line-height: 28px;
+      }
+    }
+
+    &__title {
+      gap: 16px;
+
+      &-text {
+        font-size: 28px;
+        line-height: 28px;
+      }
+    }
+
+    &__refresh-btn-icon {
+      width: 23px;
+      height: 23px;
+    }
+  }
+
+  .no-deposits {
+    font-size: 28px;
+    line-height: 28px;
   }
 }
 

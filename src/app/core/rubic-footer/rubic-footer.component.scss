@@ -51,3 +51,47 @@
     white-space: nowrap;
   }
 }
+
+@media (min-width: 2560px) {
+  .rubic-footer {
+    &__link {
+      margin-right: 20px;
+      margin-bottom: 20px;
+
+      img {
+        display: block;
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    &__copyright {
+      font-size: 20px;
+    }
+
+    &__policy {
+      font-size: 20px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .rubic-footer {
+    &__link {
+      margin-right: 30px;
+      margin-bottom: 30px;
+
+      img {
+        display: block;
+        width: 35px;
+        height: 35px;
+      }
+    }
+
+    &__copyright,
+    &__policy {
+      font-size: 30px;
+      letter-spacing: 2px;
+    }
+  }
+}

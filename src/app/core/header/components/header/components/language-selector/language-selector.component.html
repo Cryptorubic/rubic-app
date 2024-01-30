@@ -1,4 +1,9 @@
-<tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="isOpened">
+<tui-hosted-dropdown
+  [tuiDropdownOffset]="10"
+  [content]="dropdown"
+  tuiDropdownAlign="right"
+  [(open)]="isOpened"
+>
   <div tuiGroup>
     <button tuiIconButton appearance="secondary" type="button" size="m">
       <img

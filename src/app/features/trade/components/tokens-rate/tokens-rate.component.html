@@ -3,7 +3,12 @@
     <div class="tokens-rate__amounts" *ngIf="rateDirection === 'from'">
       1 {{ tokensRate.from.symbol }} =
       <ng-container
-        *ngLet="tokensRate.to.amount | bigNumberFormat | withRound : 'toClosestValue' as amount"
+        *ngLet="
+          tokensRate.to.amount
+            | bigNumberFormat
+            | withRound : 'toClosestValue'
+            | shortenAmount : 6 : 4 as amount
+        "
       >
         <ng-container *ngIf="amount.length <= 15">{{ amount }}</ng-container>
         <span

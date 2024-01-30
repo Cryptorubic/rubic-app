@@ -26,3 +26,47 @@
     white-space: nowrap;
   }
 }
+
+@media (min-width: 2560px) {
+  .details-element {
+    margin-bottom: 6px;
+
+    &__value {
+      font-size: 18px;
+    }
+
+    &__text {
+      &-title {
+        font-size: 18px;
+      }
+
+      &-icon {
+        width: 20px;
+        height: 18px;
+        margin-right: var(--tui-padding-m);
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .details-element {
+    margin-bottom: 14px;
+
+    &__value {
+      font-size: 26px;
+    }
+
+    &__text {
+      &-title {
+        font-size: 26px;
+      }
+
+      &-icon {
+        width: 25px;
+        height: 26px;
+        margin-right: var(--tui-padding-l);
+      }
+    }
+  }
+}

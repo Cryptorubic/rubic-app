@@ -30,6 +30,32 @@
   height: 100%;
 }
 
+@media (min-width: 2560px) {
+  .rubic-header {
+    ::ng-deep button {
+      height: 50px;
+
+      font-size: 20px !important;
+      line-height: 20px !important;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .rubic-header {
+    gap: 20px;
+    
+    ::ng-deep button {
+      height: 70px;
+
+      font-size: 26px !important;
+      line-height: 26px !important;
+
+      border-radius: 24px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   .rubic-header {
     justify-content: space-between;

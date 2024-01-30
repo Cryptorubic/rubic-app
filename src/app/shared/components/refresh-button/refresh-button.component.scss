@@ -61,3 +61,27 @@
     stroke-dashoffset: 0;
   }
 }
+
+@media (min-width: 2560px) {
+  .refresh-button {
+    width: 23px;
+    height: 23px;
+
+    &__icon {
+      width: 23px;
+      height: 21px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .refresh-button {
+    width: 30px;
+    height: 30px;
+
+    &__icon {
+      width: 30px;
+      height: 28px;
+    }
+  }
+}

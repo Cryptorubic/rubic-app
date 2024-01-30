@@ -58,6 +58,34 @@
   }
 }
 
+
+@media (min-width: 3840px) {
+  .user-profile {
+    &__avatar {
+      width: 40px;
+      height: 40px;
+
+      margin-right: 25px;
+
+      img {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    &__logout {
+      font-size: 26px;
+    }
+  }
+
+  .arrow {
+    ::ng-deep svg {
+      width: 20px;
+      height: 15px;
+    }
+  }
+}
+
 @include b($mobile-md) {
   ::ng-deep {
     tui-hosted-dropdown .tui-group .t-wrapper {

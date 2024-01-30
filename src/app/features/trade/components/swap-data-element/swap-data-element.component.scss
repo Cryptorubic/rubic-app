@@ -20,3 +20,33 @@
     }
   }
 }
+
+@media (min-width: 2560px) {
+  .provider-info {
+    padding: var(--tui-padding-xl);
+
+    &__element {
+      font-size: 18px;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .provider-info {
+    padding: var(--tui-padding-xxl);
+
+    &__element {
+      font-size: 22px;
+
+      img {
+        width: 25px;
+        height: 25px;
+      }
+    }
+  }
+}

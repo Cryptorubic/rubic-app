@@ -35,3 +35,26 @@
     }
   }
 }
+
+@media (min-width: 3840px) {
+  .burger-menu {
+    width: 30px;
+    height: 24px;
+
+    &__line {
+      height: 4px;
+    }
+
+    &_opened {
+      .burger-menu__line {
+        &:first-child {
+          transform: translateY(10px) rotate(45deg);
+        }
+
+        &:last-child {
+          transform: translateY(-10px) rotate(-45deg);
+        }
+      }
+    }
+  }
+}

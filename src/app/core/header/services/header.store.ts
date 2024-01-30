@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { WINDOW } from '@ng-web-apis/common';
 
 /**
  * Data store to use inside header module.
@@ -33,6 +34,11 @@ export class HeaderStore {
    */
   public readonly mobileWidth: number;
 
+  public readonly isQHDResolution =
+    this.window.innerWidth >= 2560 && this.window.innerWidth <= 3840;
+
+  public readonly isUHDResolution = this.window.innerWidth >= 3840;
+
   /**
    * Returns true if current window width is similar to mobile synchronously.
    */
@@ -42,7 +48,7 @@ export class HeaderStore {
 
   private _forceDesktopResolution: boolean;
 
-  constructor() {
+  constructor(@Inject(WINDOW) private readonly window: Window) {
     this.walletsLoadingStatusSubject$ = new BehaviorSubject<boolean>(false);
     this.mobileWidth = 651;
     this.isConfirmModalOpened$ = new BehaviorSubject<boolean>(false);

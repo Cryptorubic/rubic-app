@@ -4,3 +4,15 @@
   height: 24px;
   margin-right: 10px;
 }
+
+@media (min-width: 2560px) {
+  .image {
+    height: 30px;
+  }
+}
+
+@media (min-width: 3840px) {
+  .image {
+    height: 40px;
+  }
+}

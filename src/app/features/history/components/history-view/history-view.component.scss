@@ -2,7 +2,8 @@
 
 :host {
   display: block;
-  width: 900px;
+  width: fit-content;
+  min-width: 900px;
   margin: 0 auto;
 
   @include b($tablet-plus) {

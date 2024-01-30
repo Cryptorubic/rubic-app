@@ -15,10 +15,34 @@
       &_green {
         color: $primary-color;
       }
+
+      @media (min-width: 2560px) {
+        font-size: 20px;
+      }
+
+      @media (min-width: 3840px) {
+        font-size: 28px;
+      }
     }
   }
 
   &__footer {
     margin-bottom: 25px;
+
+    @media (min-width: 2560px) {
+      ::ng-deep button {
+        width: 100%;
+
+        font-size: 20px;
+      }
+    }
+
+    @media (min-width: 3840px) {
+      ::ng-deep button {
+        width: 100%;
+
+        font-size: 28px;
+      }
+    }
   }
 }

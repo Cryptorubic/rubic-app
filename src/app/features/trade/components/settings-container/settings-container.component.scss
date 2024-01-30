@@ -19,3 +19,21 @@
 
   cursor: pointer;
 }
+
+@media (min-width: 2560px) {
+  .image {
+    ::ng-deep svg {
+      width: 25px;
+      height: 25px;
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  .image {
+    ::ng-deep svg {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}

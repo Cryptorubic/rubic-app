@@ -19,3 +19,33 @@
     right: -5px;
   }
 }
+
+@media (min-width: 2560px) {
+  :host ::ng-deep button {
+    width: 50px !important;
+  }
+
+  .history-button {
+    &__container {
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+}
+
+@media (min-width: 3840px) {
+  :host ::ng-deep button {
+    width: 70px !important;
+  }
+
+  .history-button {
+    &__container {
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+  }
+}

@@ -39,3 +39,14 @@
     background: transparent !important;
   }
 }
+
+@media (min-width: 3840px) {
+  .back-button {
+    &__arrow {
+      left: -22px;
+
+      width: 48px;
+      height: 48px;
+    }
+  }
+}

@@ -64,16 +64,50 @@
   }
 }
 
-.image {
-  width: 24px;
-  height: 24px;
+a {
+  display: flex;
+}
 
-  ::ng-deep svg {
-    width: 100%;
-    height: 100%;
+@media (min-width: 2560px) {
+  .image {
+    width: 30px;
+    height: 30px;
+    margin-right: 15px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .data-list {
+    &__element-container {
+      font-size: 20px;
+    }
   }
 }
 
-a {
-  display: flex;
+@media (min-width: 3840px) {
+  .image {
+    width: 45px;
+    height: 45px;
+    margin-right: 20px;
+
+    ::ng-deep svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .data-list {
+    &__element-container {
+      font-weight: 400;
+      font-size: 26px;
+      letter-spacing: 2px;
+    }
+
+    &__element {
+      margin-bottom: 21px !important;
+    }
+  }
 }
