@@ -236,9 +236,9 @@ export class CrossChainService {
     trade: CrossChainTrade,
     callbackOnHash?: (hash: string) => void,
     directTransaction?: EvmEncodeConfig
-  ): Promise<string> {
+  ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
-      return 'reject';
+      return null;
     }
 
     const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
