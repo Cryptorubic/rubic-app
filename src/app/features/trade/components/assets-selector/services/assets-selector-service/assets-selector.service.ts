@@ -11,6 +11,7 @@ import { Asset, AssetType } from '@features/trade/models/asset';
 import { SelectorListType } from '@features/trade/components/assets-selector/models/selector-list-type';
 import {
   blockchainsList,
+  defaultBlockchainsList,
   notEvmChangeNowBlockchainsList
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
@@ -88,7 +89,9 @@ export class AssetsSelectorService {
       'blockchain' in this.swapFormService.inputValue.fromToken
         ? this.swapFormService.inputValue.fromToken.blockchain
         : null;
-    const userBlockchainName = this.walletConnectorService.network || blockchainsList[0].name;
+    const userBlockchainName = defaultBlockchainsList.includes(this.walletConnectorService.network)
+      ? this.walletConnectorService.network
+      : blockchainsList[0].name;
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
     )?.name;
