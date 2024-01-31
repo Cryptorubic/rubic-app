@@ -14,7 +14,7 @@ export interface ChangenowPostTrade {
   timestamp: number;
 
   extraField?: {
-    name: string;
-    value: string;
+    name?: string;
+    value?: string;
   };
 }
