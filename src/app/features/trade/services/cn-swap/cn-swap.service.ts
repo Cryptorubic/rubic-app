@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import {
   CHANGENOW_API_STATUS,
-  changenowApiKey,
-  ChangenowApiResponse,
   ChangenowApiStatus,
+  ChangeNowCrossChainApiService,
   ChangenowPaymentInfo,
   RubicSdkError
 } from 'rubic-sdk';
-import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
+import { BehaviorSubject, interval } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { HttpClient } from '@angular/common/http';
 import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
@@ -64,12 +63,7 @@ export class CnSwapService {
     }
 
     try {
-      const response = await firstValueFrom(
-        this.httpClient.get<ChangenowApiResponse>('https://api.changenow.io/v2/exchange/by-id', {
-          params: { id: id },
-          headers: { 'x-changenow-api-key': changenowApiKey }
-        })
-      );
+      const response = await ChangeNowCrossChainApiService.getTxStatus(id);
 
       return response.status;
     } catch {
