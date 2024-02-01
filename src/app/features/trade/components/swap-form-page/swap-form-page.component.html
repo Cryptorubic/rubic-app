@@ -1,8 +1,18 @@
 <app-window-container *ngLet="displayTargetAddressInput$ | async as displayReceiver">
   <ng-container header>
     <div class="form-links">
-      <span>Swap</span>
-      <span>Gas</span>
+      <a
+        class="swap-button"
+        [ngClass]="{
+          active: !isFaucetsPage
+        }"
+        (click)="navigateToSwaps()"
+      >
+        Swaps
+      </a>
+      <a class="faucets-button" [ngClass]="{ active: isFaucetsPage }" routerLink="/faucets">
+        Faucet
+      </a>
     </div>
     <div class="actions">
       <app-refresh-button

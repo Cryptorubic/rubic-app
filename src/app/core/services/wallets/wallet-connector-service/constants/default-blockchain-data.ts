@@ -142,5 +142,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SCROLL]: {
     name: 'Scroll',
     rpc: 'https://rpc.scroll.io/'
+  },
+  [BLOCKCHAIN_NAME.ZETACHAIN]: {
+    name: 'Zetachain',
+    rpc: 'https://zetachain-evm.blockpi.network/v1/rpc/public/'
   }
 };

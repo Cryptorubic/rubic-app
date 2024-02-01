@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Self } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { takeUntil, timer } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-rate-changed-modal',
   templateUrl: './rate-changed-modal.component.html',
   styleUrls: ['./rate-changed-modal.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class RateChangedModalComponent {
   public readonly oldAmount: BigNumber;
@@ -24,7 +27,8 @@ export class RateChangedModalComponent {
     private readonly context: TuiDialogContext<
       boolean,
       { oldAmount: BigNumber; newAmount: BigNumber; tokenSymbol: string }
-    >
+    >,
+    @Self() private readonly destroyed$: TuiDestroyService
   ) {
     this.oldAmount = context.data.oldAmount;
     this.newAmount = context.data.newAmount;
@@ -33,6 +37,10 @@ export class RateChangedModalComponent {
       .dividedBy(this.oldAmount)
       .multipliedBy(-100);
     this.tokenSymbol = context.data.tokenSymbol;
+
+    timer(15_000)
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(() => this.onCancel());
   }
 
   public onConfirm(): void {

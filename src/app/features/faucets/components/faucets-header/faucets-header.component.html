@@ -1,4 +1,19 @@
-<header>Available blockchains</header>
+<header>
+  <div class="form-links">
+    <a
+      class="swap-button"
+      [ngClass]="{
+        active: !isFaucetsPage
+      }"
+      (click)="navigateToSwaps()"
+    >
+      Swaps
+    </a>
+    <a class="faucets-button" [ngClass]="{ active: isFaucetsPage }" routerLink="/faucets">
+      Faucet
+    </a>
+  </div>
+</header>
 <ul>
   <ng-container *ngIf="loading; else icon">
     <li *ngFor="let el of [1, 2, 3]" class="tui-skeleton">

@@ -9,6 +9,7 @@ import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rx
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-user-profile',
@@ -66,7 +67,9 @@ export class UserProfileComponent {
   public avatar$ = this.authService.currentUser$.pipe(
     combineLatestWith(this.walletConnectorService.networkChange$),
     map(([user, blockchainName]) => {
-      const currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+      const currentBlockchainIcon = blockchainName
+        ? blockchainIcon[blockchainName]
+        : blockchainIcon[BLOCKCHAIN_NAME.ETHEREUM];
 
       return user?.avatar ? user.avatar : currentBlockchainIcon;
     })

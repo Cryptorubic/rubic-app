@@ -202,11 +202,17 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: ['https://rpc-test.arthera.net'],
   [BLOCKCHAIN_NAME.ZETACHAIN]: [
-    'https://zetachain-athens-evm.blockpi.network/v1/rpc/public',
-    'https://rpc.ankr.com/zetachain_evm_athens_testnet'
+    // 'https://api.mainnet.zetachain.com/evm',
+    'https://zetachain-evm.blockpi.network/v1/rpc/public/'
   ],
-  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.jolnir.taiko.xyz'],
-  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
+  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
+  [BLOCKCHAIN_NAME.SEPOLIA]: [
+    'https://rpc.ankr.com/eth_sepolia',
+    'https://ethereum-sepolia.publicnode.com',
+    'https://endpoints.omniatech.io/v1/eth/sepolia/public',
+    'https://1rpc.io/sepolia',
+    'wss://ethereum-sepolia.publicnode.com'
+  ],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
   [BLOCKCHAIN_NAME.SCROLL]: [
     'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
