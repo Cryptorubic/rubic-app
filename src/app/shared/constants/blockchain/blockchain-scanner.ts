@@ -1004,7 +1004,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.TAIKO]: {
-    baseUrl: 'https://explorer.jolnir.taiko.xyz/',
+    baseUrl: 'https://explorer.katla.taiko.xyz/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
