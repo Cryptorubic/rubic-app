@@ -213,7 +213,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string; rangoRequestId?: string }
+    additionalInfo: CrossChainSwapAdditionalParams
   ): void {
     const pollingSubscription$ = interval(30_000)
       .pipe(
