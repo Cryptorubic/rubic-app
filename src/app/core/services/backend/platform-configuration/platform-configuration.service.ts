@@ -195,7 +195,7 @@ export class PlatformConfigurationService {
       .filter(provider => Boolean(provider));
 
     const disabledBridgeTypes = crossChainProvidersEntries
-      .filter(([_, { disabledProviders, active }]) => Boolean(disabledProviders.length && active))
+      .filter(([_, { active }]) => Boolean(active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
           acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiBridgeTypes[];

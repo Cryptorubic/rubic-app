@@ -124,7 +124,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.FUJI]: 'avalanche-fuji',
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet',
   [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
-  [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain-evm-athens-testnet',
+  [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain',
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-katla',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
