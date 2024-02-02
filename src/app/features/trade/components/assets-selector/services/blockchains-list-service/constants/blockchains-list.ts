@@ -15,7 +15,8 @@ export const defaultBlockchainsList: BlockchainName[] = [
   BLOCKCHAIN_NAME.TAIKO,
   BLOCKCHAIN_NAME.SCROLL_SEPOLIA,
   BLOCKCHAIN_NAME.ARTHERA,
-  BLOCKCHAIN_NAME.GOERLI
+  BLOCKCHAIN_NAME.GOERLI,
+  BLOCKCHAIN_NAME.HOLESKY
 ];
 
 export const blockchainsList: RankedBlockchain[] = defaultBlockchainsList.map(chain => {
