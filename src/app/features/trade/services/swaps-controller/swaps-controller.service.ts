@@ -279,7 +279,6 @@ export class SwapsControllerService {
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
-          return;
         } else {
           this.catchSwapError(new UserRejectError(), tradeState, callback?.onError);
         }
