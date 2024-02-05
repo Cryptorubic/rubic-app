@@ -220,6 +220,8 @@ export class PreviewSwapComponent implements OnDestroy {
       this.swapsFormService.inputValue.toBlockchain;
 
     const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+    const fromBlockchainType = BlockchainsInfo.getChainType(fromBlockchain);
+
     const state = {
       action: (): void => {},
       label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
@@ -244,9 +246,10 @@ export class PreviewSwapComponent implements OnDestroy {
     }
 
     if (
-      el.data.wrongNetwork &&
-      !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
-      el.step !== transactionStep.success
+      (el.data.wrongNetwork &&
+        !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+        el.step !== transactionStep.success) ||
+      fromBlockchainType !== this.walletConnector.chainType
     ) {
       state.disabled = false;
       state.action = () => this.logoutAndChangeWallet();
@@ -256,7 +259,8 @@ export class PreviewSwapComponent implements OnDestroy {
     if (
       el.data?.wrongNetwork &&
       el.step !== transactionStep.success &&
-      BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
+      BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+      fromBlockchainType === this.walletConnector.chainType
     ) {
       state.disabled = false;
       state.action = () => this.switchChain();

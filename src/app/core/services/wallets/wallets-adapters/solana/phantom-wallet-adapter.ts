@@ -2,9 +2,9 @@ import { CommonSolanaWalletAdapter } from '@core/services/wallets/wallets-adapte
 import { PhantomWallet } from '@core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { BehaviorSubject } from 'rxjs';
-import { Connection, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { ErrorsService } from '@core/errors/errors.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';
@@ -20,22 +20,24 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow,
-    connection: Connection
+    window: RubicWindow
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window, connection);
+    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
 
   public async activate(): Promise<void> {
-    const wallet = typeof window !== 'undefined' && window.solana;
+    const wallet = typeof this.window !== 'undefined' && this.window.solana;
     await this.checkErrors(wallet);
     const publicKey = new PublicKey(wallet.publicKey.toBytes());
     this.isEnabled = true;
-    wallet.on('disconnect', this.deactivate);
 
     this.wallet = wallet;
     this.selectedAddress = publicKey.toBase58();
     this.selectedChain = BLOCKCHAIN_NAME.SOLANA;
+
+    this.handleEvmWallet();
+    this.handleDeactivation();
+    this.handleAccountChange();
 
     this.onNetworkChanges$.next(this.selectedChain);
     this.onAddressChanges$.next(this.selectedAddress);
@@ -77,11 +79,8 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
   }
 
   private async checkErrors(wallet: PhantomWallet): Promise<void> {
-    if (!wallet) {
+    if (!wallet || !wallet?.isPhantom) {
       throw new WalletNotInstalledError();
-    }
-    if (!wallet.isPhantom) {
-      throw new CustomError('Phantom is not installed');
     }
 
     if (!wallet.isConnected) {
@@ -91,5 +90,41 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
     if (!wallet.publicKey) {
       throw new CustomError('Connection error');
     }
+  }
+
+  private handleAccountChange(): void {
+    this.wallet.on('accountChanged', (address: PublicKey) => {
+      this.selectedAddress = address.toBase58();
+      this.zone.run(() => {
+        this.onAddressChanges$.next(this.selectedAddress);
+      });
+    });
+  }
+
+  private handleNetworkChange(chainId: string): void {
+    if (chainId) {
+      this.selectedChain =
+        (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
+      this.zone.run(() => {
+        this.onNetworkChanges$.next(this.selectedChain);
+      });
+    }
+  }
+
+  private handleEvmWallet(): void {
+    const ethereum = this.window?.phantom?.ethereum;
+    const solana = this.window?.phantom?.solana;
+    if (ethereum && !solana) {
+      ethereum.on('chainChanged', () => {
+        this.errorsService.catch(new CustomError('EVM network change is not supported'));
+      });
+      ethereum.on('accountsChanged', () => {
+        this.errorsService.catch(new CustomError('EVM network change is not supported'));
+      });
+    }
+  }
+
+  private handleDeactivation(): void {
+    this.wallet.on('deactivate', () => this.deactivate());
   }
 }

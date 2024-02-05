@@ -36,7 +36,7 @@ import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm
 import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
-import { Connection } from '@solana/web3.js';
+import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -136,8 +136,11 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.PHANTOM) {
-      const connection = new Connection(rpcList[BLOCKCHAIN_NAME.SOLANA][0]!, 'confirmed');
-      return new PhantomWalletAdapter(...defaultConstructorParameters, connection);
+      return new PhantomWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.SOLFLARE) {
+      return new SolflareWalletAdapter(...defaultConstructorParameters);
     }
     this.errorService.catch(new WalletNotInstalledError());
   }
@@ -177,7 +180,7 @@ export class WalletConnectorService {
     customRpcUrl?: string
   ): Promise<boolean> {
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
-    const provider = this.provider as EvmWalletAdapter;
+    const provider = this.provider;
     try {
       await provider.switchChain(chainId);
       return true;

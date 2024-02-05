@@ -21,7 +21,7 @@ export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
   connect(): Promise<boolean>;
   disconnect(): Promise<boolean>;
   signAndSendTransaction(transaction: Transaction): Promise<{ signature: string }>;
-  on: (event: string, callback: () => void) => unknown;
+  on: (event: string, callback: (...args: unknown[]) => void) => unknown;
   off: (event: string, callback: () => void) => unknown;
 }
 
