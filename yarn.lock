@@ -14837,10 +14837,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.55.0-alpha-holesky.0:
-  version "4.55.0-alpha-holesky.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.55.0-alpha-holesky.0.tgz#9efe2949422f069ef1869d335b20352ffc34cff6"
-  integrity sha512-fh+Do103p/V3w4RKtCVlpyquep+ZaezSKvg3dE8tvI+0IUIBlZhLwj1GVkiLjJWzc82tv4sCRu5KJL2Y5/NGZg==
+rubic-sdk@4.55.0-alpha-holesky.1:
+  version "4.55.0-alpha-holesky.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.55.0-alpha-holesky.1.tgz#02a5f8e8b7f3a1c3a310e24469db679f372d50ff"
+  integrity sha512-ZbWhAl4YR8pjqC2tl7PopRkjGSXsyfhZlZuxWX7ogzA/dLlBfqoN/bhm0UlmLzCiEwoifdKY0rsAVhyzHPUZAA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
