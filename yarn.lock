@@ -16025,7 +16025,7 @@ rpc-websockets@^7.5.1:
     utf-8-validate "^5.0.2"
 
 "rubic-sdk@file:../rubic-sdk":
-  version "4.55.0-alpha.orbiter.0ss"
+  version "4.55.0-alpha.orbiter.4s"
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
