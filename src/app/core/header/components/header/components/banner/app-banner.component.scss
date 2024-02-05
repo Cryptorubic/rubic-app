@@ -11,8 +11,8 @@
 
   text-decoration: none;
 
-  background: linear-gradient(90deg, #36ffb4 0.03%, #41ffff 20.41%, #f7f4ff 39.47%, #fffbed 66.86%, #d4ef66 80.77%, #efd166 93.08%, #ee8f37 102.37%);
-  cursor: pointer;
+  background: linear-gradient(89.67deg, #391446 -16.66%, #6526ed 49.79%, #00e28d 105.12%);
+  cursor: default;
 
   @include hide-unused-ui {
     display: none;
@@ -23,7 +23,6 @@
     z-index: 1;
 
     display: flex;
-    gap: 24px;
     align-items: center;
     justify-content: center;
 
@@ -32,11 +31,10 @@
   }
 
   &__text {
-    @include font(25px, 1, 300, #000000);
-    margin: 0;
+    @include font(20px, 28px, 400, #ffffff);
+    margin: 0 0 0 24px;
 
-    letter-spacing: 1px;
-    white-space: nowrap;
+    text-align: left;
 
     &_bold {
       font-weight: bold;
@@ -90,10 +88,6 @@
 
 @include b($laptop-xl) {
   .banner {
-    //&__text {
-    //  @include font(20px, 1, 400, #ffffff);
-    //}
-
     &__link {
       @include font(15px, 1, 400, #C3FFDB);
     }
@@ -102,10 +96,6 @@
 
 @include b($tablet) {
   .banner {
-    //&__text {
-    //  @include font(18px, 1, 400, #ffffff);
-    //}
-
     &__link {
       @include font(13px, 1, 400, #C3FFDB);
     }
@@ -120,7 +110,9 @@
     }
 
     &__text {
-      @include font(18px, 1, 400, #000000);
+      @include font(18px, 1, 400, #ffffff);
+      margin-left: 0;
+
       text-align: left;
     }
 
@@ -134,13 +126,21 @@
         transition: 100ms ease-in;
       }
     }
+
+    &__background-img {
+      width: 60px;
+    }
   }
 }
 
 @include b(490) {
   .banner {
     &__text {
-      white-space: initial;
+      @include font(13px, 1, 400, #ffffff);
+    }
+
+    &__background-img {
+      width: 50px;
     }
   }
 }
@@ -150,7 +150,7 @@
     height: 31px;
 
     &__text {
-      @include font(13px, 1, 400, #000000);
+      @include font(10px, 1, 400, #ffffff);
     }
 
     &__link {
@@ -166,7 +166,7 @@
     }
 
     &__background-img {
-      height: 27px;
+      width: 35px;
     }
   }
 }
