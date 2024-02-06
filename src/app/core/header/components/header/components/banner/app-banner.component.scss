@@ -12,7 +12,7 @@
   text-decoration: none;
 
   background: linear-gradient(89.67deg, #391446 -16.66%, #6526ed 49.79%, #00e28d 105.12%);
-  cursor: default;
+  cursor: pointer;
 
   @include hide-unused-ui {
     display: none;
