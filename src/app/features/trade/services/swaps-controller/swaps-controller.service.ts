@@ -391,9 +391,6 @@ export class SwapsControllerService {
       if ('rangoRequestId' in trade) {
         params.rangoRequestId = trade.rangoRequestId as string;
       }
-      if ('amountOutMin' in trade) {
-        params.amountOutMin = trade.amountOutMin as string;
-      }
 
       onSwap?.(params);
       await this.crossChainApiService.patchTrade(txHash, true);

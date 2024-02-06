@@ -232,9 +232,6 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
-                }),
-                ...(additionalInfo.amountOutMin && {
-                  amountOutMin: additionalInfo.amountOutMin
                 })
               },
               tradeState.tradeType as CrossChainTradeType
