@@ -69,7 +69,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Phantom',
     value: WALLET_NAME.PHANTOM,
     img: './assets/images/icons/wallets/phantom.svg',
-    desktopOnly: false,
+    desktopOnly: true,
     mobileOnly: false,
     display: true,
     disabled: false
@@ -78,7 +78,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Solflare',
     value: WALLET_NAME.SOLFLARE,
     img: './assets/images/icons/wallets/solflare.svg',
-    desktopOnly: false,
+    desktopOnly: true,
     mobileOnly: false,
     display: true,
     disabled: false
