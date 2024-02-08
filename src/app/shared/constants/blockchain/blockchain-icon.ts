@@ -58,6 +58,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HARMONY]: `${basePath}harmony.svg`,
   [BLOCKCHAIN_NAME.HEDERA]: `${basePath}hedera.svg`,
   [BLOCKCHAIN_NAME.HELIUM]: `${basePath}helium.svg`,
+  [BLOCKCHAIN_NAME.HOLESKY]: `${basePath}eth-contrast.svg`,
   [BLOCKCHAIN_NAME.HORIZEN]: `${basePath}horizen.svg`,
   [BLOCKCHAIN_NAME.ICON]: `${basePath}icon.svg`,
   [BLOCKCHAIN_NAME.ICP]: `${basePath}icp.svg`,

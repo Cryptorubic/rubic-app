@@ -201,10 +201,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: ['https://rpc-test.arthera.net'],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: [
-    // 'https://api.mainnet.zetachain.com/evm',
-    'https://zetachain-evm.blockpi.network/v1/rpc/public/'
-  ],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: ['https://zetachain-mainnet-archive.allthatnode.com:8545'],
   [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
   [BLOCKCHAIN_NAME.SEPOLIA]: [
     'https://rpc.ankr.com/eth_sepolia',
@@ -227,5 +224,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io']
+  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io'],
+  [BLOCKCHAIN_NAME.HOLESKY]: [
+    'https://ethereum-holesky.publicnode.com',
+    'https://1rpc.io/holesky',
+    'https://holesky-rpc.nocturnode.tech'
+  ]
 };

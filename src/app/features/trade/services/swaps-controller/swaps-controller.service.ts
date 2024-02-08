@@ -14,6 +14,8 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
+  ALGB_TOKEN,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
   LowSlippageError,
@@ -134,7 +136,22 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { toBlockchain, fromToken } = this.swapFormService.inputValue;
+          const { fromToken, toToken, toBlockchain } = this.swapFormService.inputValue;
+
+          const isAlgebraWrap =
+            Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
+            Object.values(ALGB_TOKEN).includes(toToken.address.toLowerCase());
+
+          if (isAlgebraWrap) {
+            this.disabledTradesTypes.crossChain = [
+              ...Object.values(CROSS_CHAIN_TRADE_TYPE).filter(type => type !== 'layerzero')
+            ];
+          } else {
+            this.disabledTradesTypes.crossChain = [
+              ...this.disabledTradesTypes.crossChain,
+              'layerzero'
+            ];
+          }
 
           if (fromToken.blockchain === toBlockchain) {
             return this.onChainService
