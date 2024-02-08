@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -38,6 +38,7 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -72,7 +73,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   public readonly buttonState$ = this.transactionState$.pipe(
-    combineLatestWith(this.tradeState$.pipe(first())),
+    combineLatestWith(this.tradeState$.pipe(first()), this.swapsStateService.notEnoughBalance$),
     switchMap(states => this.getState(...states)),
     startWith({
       action: () => {},
@@ -98,7 +99,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly swapsStateService: SwapsStateService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
@@ -151,8 +153,12 @@ export class PreviewSwapComponent implements OnDestroy {
     this.modalService
       .openWalletModal(this.injector)
       .pipe(
-        switchMap(() => this.walletConnector.addressChange$),
-        switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
+        switchMap(() =>
+          forkJoin([this.walletConnector.addressChange$, this.swapsStateService.notEnoughBalance$])
+        ),
+        switchMap(([address, balanceError]) =>
+          Boolean(address) && !balanceError ? this.previewSwapService.requestTxSign() : of(null)
+        )
       )
       .subscribe();
   }
@@ -211,9 +217,11 @@ export class PreviewSwapComponent implements OnDestroy {
     };
   }
 
+  // eslint-disable-next-line complexity
   private async getState(
     el: TransactionState,
-    tradeState: SelectedTrade
+    tradeState: SelectedTrade,
+    balanceError: boolean
   ): Promise<{ action: () => void; label: string; disabled: boolean }> {
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
@@ -275,6 +283,11 @@ export class PreviewSwapComponent implements OnDestroy {
       state.disabled = true;
       state.action = () => {};
       state.label = tradeState.error.message;
+    }
+    if (balanceError) {
+      state.disabled = true;
+      state.action = () => {};
+      state.label = 'Insufficient funds';
     }
     if (
       (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&
