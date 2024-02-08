@@ -145,6 +145,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.ZETACHAIN]: {
     name: 'Zetachain',
-    rpc: 'https://zetachain-evm.blockpi.network/v1/rpc/public/'
+    rpc: 'https://zetachain-mainnet-archive.allthatnode.com:8545'
   }
 };

@@ -120,6 +120,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5
   },
   //LLLLLLLLLLLLLLLLL
+  [BRIDGE_TYPE.LAYERZERO]: {
+    name: 'LayerZero',
+    image: `${imageBasePath}layerzero.svg`,
+    color: '#999999',
+    averageTime: 5
+  },
   [BRIDGE_TYPE.LIFI]: {
     name: 'LiFi',
     image: `${imageBasePath}lifi.svg`,
