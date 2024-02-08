@@ -211,7 +211,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string; rangoRequestId?: string }
+    additionalInfo: CrossChainSwapAdditionalParams
   ): void {
     const pollingSubscription$ = interval(30_000)
       .pipe(
@@ -230,9 +230,6 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
-                }),
-                ...('amountOutMin' in tradeState.trade && {
-                  amountOutMin: tradeState.trade.amountOutMin as string
                 })
               },
               tradeState.tradeType as CrossChainTradeType
