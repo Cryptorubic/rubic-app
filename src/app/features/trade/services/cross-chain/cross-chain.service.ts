@@ -407,7 +407,7 @@ export class CrossChainService {
   }
 
   private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
-    const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0);
+    const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
 
     return (trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW && swapWithProxy) || swapWithProxy;
   }
