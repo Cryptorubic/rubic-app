@@ -75,44 +75,16 @@ export class TokensListService {
     this.listScrollSubject$
       .pipe(
         filter(value => Boolean(value)),
-        switchMap(scroll =>
-          scroll.renderedRangeStream.pipe(
-            filter(renderedRange => {
-              const blockchain = this.assetsSelectorService.assetType;
-              if (!BlockchainsInfo.isBlockchainName(blockchain)) {
-                return false;
-              }
-              const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
-              if (
-                this.loading ||
-                this.searchQueryService.query ||
-                this.listType === 'favorite' ||
-                !tokensNetworkState ||
-                tokensNetworkState.maxPage === tokensNetworkState.page
-              ) {
-                return false;
-              }
-
-              const bigVirtualElementsAmount = 3;
-              return (
-                this.tokensToShow.length > bigVirtualElementsAmount &&
-                renderedRange.end > this.tokensToShow.length - bigVirtualElementsAmount
-              );
-            })
-          )
-        ),
+        switchMap(sub => sub.renderedRangeStream),
+        filter(range => !this.skipTokensFetching(range.end)),
         takeUntil(this.destroy$)
       )
-      .subscribe(shouldUpdate => {
-        if (shouldUpdate) {
-          this._listUpdating$.next(true);
-          this.tokensNetworkService.fetchNetworkTokens(
-            this.assetsSelectorService.assetType as BlockchainName,
-            () => {
-              this._listUpdating$.next(false);
-            }
-          );
-        }
+      .subscribe(() => {
+        this._listUpdating$.next(true);
+        this.tokensNetworkService.fetchNetworkTokens(
+          this.assetsSelectorService.assetType as BlockchainName,
+          () => this._listUpdating$.next(false)
+        );
       });
   }
 
@@ -147,5 +119,31 @@ export class TokensListService {
           prevSearchQuery = this.searchQueryService.query;
         }
       });
+  }
+
+  private skipTokensFetching(currentIndex: number): boolean {
+    const blockchain = this.assetsSelectorService.assetType;
+    if (!BlockchainsInfo.isBlockchainName(blockchain)) {
+      return true;
+    }
+    const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
+
+    if (
+      Boolean(
+        this.loading ||
+          this.searchQueryService.query ||
+          this.listType === 'favorite' ||
+          !tokensNetworkState ||
+          tokensNetworkState.maxPage === tokensNetworkState.page
+      )
+    ) {
+      return true;
+    }
+
+    const maxBufferToEnd = 10;
+    const listSize = this.tokensToShow.length;
+    const shouldSkip = listSize - currentIndex > maxBufferToEnd;
+
+    return shouldSkip;
   }
 }
