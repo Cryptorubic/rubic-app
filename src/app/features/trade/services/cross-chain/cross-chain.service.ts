@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -291,6 +291,7 @@ export class CrossChainService {
 
     try {
       await trade.swap(swapOptions);
+      await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       return transactionHash;
     } catch (error) {
@@ -408,8 +409,9 @@ export class CrossChainService {
 
   private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
     const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
+    const isCnTrade = trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW;
 
-    return (trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW && swapWithProxy) || swapWithProxy;
+    return isCnTrade || swapWithProxy;
   }
 
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
@@ -456,5 +458,12 @@ export class CrossChainService {
       'crosschain',
       fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
+  }
+
+  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
+    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+      const waitTime = 3_000;
+      await firstValueFrom(timer(waitTime));
+    }
   }
 }
