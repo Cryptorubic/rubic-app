@@ -14674,10 +14674,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@4.55.3:
-  version "4.55.3"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.55.3.tgz#9615d1109ee380d32ca85c4aacfe912ca18816b2"
-  integrity sha512-Z4VrWWjJTZ8Ae9u411CZp3WJDcI74U8H9kL/F5qsoL+7kOt1+SVVBBSCYehmtyvQsDf6jwRvvGKdIjd33COzdw==
+rubic-sdk@4.55.5-alpha.rango-contract.1:
+  version "4.55.5-alpha.rango-contract.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-4.55.5-alpha.rango-contract.1.tgz#020e17ef04c8d34ed50673cb6ff1df87e09079e8"
+  integrity sha512-jfPHLweUTjwIaiMK4xEK1YeHCj9Pcss5oiB2d/cWs/fiZ1uM8w7Ev5iZyUYtwiyJGxA/o/pYZTVQOr+8YZH1zQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
