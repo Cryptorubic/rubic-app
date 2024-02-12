@@ -6,12 +6,18 @@ import { TradeVolume } from '@core/services/backend/volume-api/models/trade-volu
 import { TradeVolumeRequest } from '@core/services/backend/volume-api/models/trade-volume-request';
 import { BigNumber } from 'bignumber.js';
 import { LpReward } from './models/lp-rewards';
+import { StoreService } from '@core/services/store/store.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VolumeApiService {
   private tradeVolume$: BehaviorSubject<TradeVolume>;
+
+  private readonly defaultTradeVolumes = {
+    instantTrades: new BigNumber('324814342.3677585'),
+    bridges: new BigNumber('187153996')
+  };
 
   /**
    * Returns trading volumes data as observable
@@ -21,7 +27,7 @@ export class VolumeApiService {
     return this.tradeVolume$.asObservable();
   }
 
-  constructor(private httpService: HttpService) {
+  constructor(private httpService: HttpService, private storeService: StoreService) {
     this.tradeVolume$ = new BehaviorSubject(undefined);
     this.setTradeVolumeInterval();
   }
@@ -41,16 +47,20 @@ export class VolumeApiService {
    */
   private fetchVolume(): Observable<TradeVolume> {
     return this.httpService.get('total_values/').pipe(
-      map((volume: TradeVolumeRequest) => ({
-        instantTrades: new BigNumber(volume.instant_trades_amount),
-        bridges: new BigNumber(volume.bridges_amount)
-      })),
-      catchError(() =>
-        of({
-          instantTrades: new BigNumber('324814342.3677585'),
-          bridges: new BigNumber('187153996')
-        })
-      )
+      map((volume: TradeVolumeRequest) => {
+        const values = {
+          instantTrades: new BigNumber(volume.instant_trades_amount),
+          bridges: new BigNumber(volume.bridges_amount)
+        };
+
+        this.storeService.setItem('RUBIC_TOTAL_VALUES', values);
+        return values;
+      }),
+      catchError(() => {
+        const values = this.storeService.getItem('RUBIC_TOTAL_VALUES') || this.defaultTradeVolumes;
+
+        return of(values);
+      })
     );
   }
 
