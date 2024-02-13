@@ -14,7 +14,9 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { HttpService } from '@app/core/services/http/http.service';
 import { getSignature } from '@app/shared/utils/get-signature';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CommonTableService {
   private readonly _activeItemIndex$ = new BehaviorSubject<0 | 1 | 2>(0);
 
@@ -22,6 +24,10 @@ export class CommonTableService {
 
   public set activeItemIndex(value: 0 | 1 | 2) {
     this._activeItemIndex$.next(value);
+  }
+
+  public get activeItemIndex(): 0 | 1 | 2 {
+    return this._activeItemIndex$.value;
   }
 
   constructor(

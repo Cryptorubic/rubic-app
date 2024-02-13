@@ -29,6 +29,10 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
+import { Router } from '@angular/router';
+import { CrossChainTableService } from '@app/features/history/services/cross-chain-table-service/cross-chain-table.service';
+import { OnChainTableService } from '@app/features/history/services/on-chain-table-service/on-chain-table.service';
+import { CommonTableService } from '@app/features/history/services/common-table-service/common-table.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -96,7 +100,11 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly router: Router,
+    private readonly crossChainTableService: CrossChainTableService,
+    private readonly onChainTableService: OnChainTableService,
+    private readonly commonTableService: CommonTableService
   ) {}
 
   ngOnInit() {
@@ -200,6 +208,17 @@ export class WalletsModalComponent implements OnInit {
             catchError(() => of(`Request timed out after: ${connectionTime}`))
           )
         );
+
+        const isHistoryPage = this.router.url.includes('history');
+        if (isHistoryPage) {
+          const isCCTableOpen = this.commonTableService.activeItemIndex === 0;
+
+          if (isCCTableOpen) {
+            this.crossChainTableService.onPage(0);
+          } else {
+            this.onChainTableService.onPage(0);
+          }
+        }
       } catch (e) {
         this.headerStore.setWalletsLoadingStatus(false);
       }
