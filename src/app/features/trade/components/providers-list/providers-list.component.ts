@@ -10,8 +10,6 @@ import {
 import { TradeState } from '@features/trade/models/trade-state';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { switchMap } from 'rxjs/operators';
-import { EvmWeb3Pure } from 'rubic-sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -53,11 +51,7 @@ export class ProvidersListComponent {
 
   public readonly toToken$ = this.swapsFormService.toToken$;
 
-  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
-    switchMap(blockchain =>
-      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
-    )
-  );
+  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
   public handleTradeSelection(
     event: MouseEvent,

@@ -62,29 +62,28 @@ export class BlockchainsListService {
         this.queryParamsService.enabledBlockchains.includes(blockchain.name)
       );
     }
+    const availableBlockchains = blockchains.map(blockchain => {
+      const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
+        blockchain.name
+      );
+      const disabledFrom = !this.iframeService.isIframe
+        ? disabledFromBlockchains.includes(blockchain.name)
+        : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
+            blockchain.name
+          );
 
-    this._availableBlockchains = blockchains
-      .map(blockchain => {
-        const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
-          blockchain.name
-        );
-        const disabledFrom = !this.iframeService.isIframe
-          ? disabledFromBlockchains.includes(blockchain.name)
-          : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
-              blockchain.name
-            );
+      return {
+        name: blockchain.name,
+        rank: blockchain.rank,
+        icon: blockchainIcon[blockchain.name],
+        label: blockchainLabel[blockchain.name],
+        tags: blockchain.tags,
+        disabledConfiguration,
+        disabledFrom
+      };
+    });
 
-        return {
-          name: blockchain.name,
-          rank: blockchain.rank,
-          icon: blockchainIcon[blockchain.name],
-          label: blockchainLabel[blockchain.name],
-          tags: blockchain.tags,
-          disabledConfiguration,
-          disabledFrom
-        };
-      })
-      .sort((a, b) => b.rank - a.rank);
+    this._availableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
   }
 
   private subscribeOnSearchQuery(): void {

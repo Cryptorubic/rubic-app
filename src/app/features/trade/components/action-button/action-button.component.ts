@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { debounceTime, map, startWith } from 'rxjs/operators';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -23,8 +23,10 @@ export class ActionButtonComponent {
       this.tradeState.notEnoughBalance$,
       this.walletConnector.addressChange$,
       this.targetNetworkAddressService.isAddressValid$,
-      this.targetNetworkAddressService.isAddressRequired$
+      this.targetNetworkAddressService.isAddressRequired$,
+      this.targetNetworkAddressService.address$
     ),
+    debounceTime(25),
     map(
       ([
         currentTrade,
@@ -32,7 +34,8 @@ export class ActionButtonComponent {
         notEnoughBalance,
         address,
         isReceiverValid,
-        isAddressRequired
+        isAddressRequired,
+        receiverAddress
       ]) => {
         if (currentTrade.error) {
           return {
@@ -67,7 +70,7 @@ export class ActionButtonComponent {
         ) {
           // Handle Non EVM trade
           if (isAddressRequired) {
-            const trulyAddress = Boolean(this.targetNetworkAddressService.address);
+            const trulyAddress = Boolean(receiverAddress);
 
             if (isReceiverValid && trulyAddress) {
               if (isCnFromNonEvm) {
