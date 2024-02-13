@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { WalletConnectorService } from 'src/app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -10,6 +10,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { ChainType, blockchainId } from 'rubic-sdk';
 import { SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
+import { Router } from '@angular/router';
+import { WINDOW } from '@ng-web-apis/common';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -40,7 +42,9 @@ export class AuthService {
     private readonly headerStore: HeaderStore,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly errorService: ErrorsService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly router: Router,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.initSubscriptions();
   }
@@ -84,6 +88,11 @@ export class AuthService {
       await this.walletConnectorService.activate();
       const { address, chainType } = this.walletConnectorService;
       this.setCurrentUser(address, chainType);
+
+      const isHistoryPage = this.router.url.includes('history');
+      if (isHistoryPage) {
+        this.window.location.reload();
+      }
 
       if (walletName) {
         this.gtmService.fireConnectWalletEvent(walletName);
