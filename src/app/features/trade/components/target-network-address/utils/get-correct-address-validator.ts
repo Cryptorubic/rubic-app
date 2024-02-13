@@ -10,5 +10,5 @@ export function getCorrectAddressValidator(inputForm: {
   if (inputForm.toBlockchain) {
     return correctAddressValidator(inputForm.fromAssetType, inputForm.toBlockchain);
   }
-  return () => null;
+  return () => new Promise(resolve => resolve(null));
 }

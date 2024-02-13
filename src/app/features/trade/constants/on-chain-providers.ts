@@ -173,6 +173,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}dfyn.svg`,
     color: '#828CBE'
   },
+  [ON_CHAIN_TRADE_TYPE.DLN]: {
+    name: 'DLN',
+    image: `${imageBasePath}dln.svg`,
+    color: '#9C6FC7'
+  },
   [ON_CHAIN_TRADE_TYPE.DODO]: {
     name: 'Dodo',
     image: `${imageBasePath}dodo.png`,

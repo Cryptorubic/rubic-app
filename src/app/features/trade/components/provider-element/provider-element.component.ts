@@ -62,8 +62,9 @@ export class ProviderElementComponent {
   }
 
   public getFeeInfo(): { fee: FeeInfo; nativeToken: Token } {
+    const tradeInfo = this.tradeState.trade.getTradeInfo();
     return {
-      fee: this.tradeState.trade.getTradeInfo().feeInfo,
+      fee: tradeInfo.feeInfo,
       nativeToken: this.nativeToken
     };
   }
