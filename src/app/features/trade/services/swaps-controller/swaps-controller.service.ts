@@ -185,7 +185,6 @@ export class SwapsControllerService {
               .pipe(
                 tap(([trade, needApprove, type]) => {
                   try {
-                    console.log(trade);
                     this.swapsState.updateTrade(trade, type, needApprove);
                     this.swapsState.pickProvider(isCalculationEnd);
                     this.swapsState.setCalculationProgress(
