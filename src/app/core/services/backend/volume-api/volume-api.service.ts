@@ -57,9 +57,13 @@ export class VolumeApiService {
         return values;
       }),
       catchError(() => {
-        const values = this.storeService.getItem('RUBIC_TOTAL_VALUES') || this.defaultTradeVolumes;
+        const storedValues = this.storeService.getItem('RUBIC_TOTAL_VALUES');
+        const normalizeValues = {
+          instantTrades: new BigNumber(storedValues.instantTrades),
+          bridges: new BigNumber(storedValues.bridges)
+        };
 
-        return of(values);
+        return of(normalizeValues || this.defaultTradeVolumes);
       })
     );
   }
