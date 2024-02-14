@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, OnDestroy } from '@angular/core';
-import { combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -12,7 +12,6 @@ import {
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
-  EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
@@ -39,6 +38,7 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
+import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -51,11 +51,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
-    switchMap(blockchain =>
-      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
-    )
-  );
+  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
@@ -77,7 +73,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   public readonly buttonState$ = this.transactionState$.pipe(
-    combineLatestWith(this.tradeState$.pipe(first())),
+    combineLatestWith(this.tradeState$.pipe(first()), this.swapsStateService.notEnoughBalance$),
     switchMap(states => this.getState(...states)),
     startWith({
       action: () => {},
@@ -103,7 +99,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
-    private readonly gtmService: GoogleTagManagerService
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly swapsStateService: SwapsStateService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
@@ -156,8 +153,12 @@ export class PreviewSwapComponent implements OnDestroy {
     this.modalService
       .openWalletModal(this.injector)
       .pipe(
-        switchMap(() => this.walletConnector.addressChange$),
-        switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
+        switchMap(() =>
+          forkJoin([this.walletConnector.addressChange$, this.swapsStateService.notEnoughBalance$])
+        ),
+        switchMap(([address, balanceError]) =>
+          Boolean(address) && !balanceError ? this.previewSwapService.requestTxSign() : of(null)
+        )
       )
       .subscribe();
   }
@@ -216,15 +217,19 @@ export class PreviewSwapComponent implements OnDestroy {
     };
   }
 
+  // eslint-disable-next-line complexity
   private async getState(
     el: TransactionState,
-    tradeState: SelectedTrade
+    tradeState: SelectedTrade,
+    balanceError: boolean
   ): Promise<{ action: () => void; label: string; disabled: boolean }> {
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
       this.swapsFormService.inputValue.toBlockchain;
 
     const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+    const fromBlockchainType = BlockchainsInfo.getChainType(fromBlockchain);
+
     const state = {
       action: (): void => {},
       label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
@@ -249,9 +254,10 @@ export class PreviewSwapComponent implements OnDestroy {
     }
 
     if (
-      el.data.wrongNetwork &&
-      !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
-      el.step !== transactionStep.success
+      (el.data.wrongNetwork &&
+        !BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+        el.step !== transactionStep.success) ||
+      fromBlockchainType !== this.walletConnector.chainType
     ) {
       state.disabled = false;
       state.action = () => this.logoutAndChangeWallet();
@@ -261,7 +267,8 @@ export class PreviewSwapComponent implements OnDestroy {
     if (
       el.data?.wrongNetwork &&
       el.step !== transactionStep.success &&
-      BlockchainsInfo.isEvmBlockchainName(fromBlockchain)
+      BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+      fromBlockchainType === this.walletConnector.chainType
     ) {
       state.disabled = false;
       state.action = () => this.switchChain();
@@ -276,6 +283,11 @@ export class PreviewSwapComponent implements OnDestroy {
       state.disabled = true;
       state.action = () => {};
       state.label = tradeState.error.message;
+    }
+    if (balanceError) {
+      state.disabled = true;
+      state.action = () => {};
+      state.label = 'Insufficient funds';
     }
     if (
       (el.step === transactionStep.idle || el.step === transactionStep.swapReady) &&

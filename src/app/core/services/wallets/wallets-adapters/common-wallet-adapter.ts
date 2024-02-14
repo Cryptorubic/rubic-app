@@ -5,6 +5,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 
 export abstract class CommonWalletAdapter<T = RubicAny> {
   public abstract readonly chainType: ChainType;
@@ -15,7 +16,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected selectedChain: BlockchainName | null;
 
-  protected isEnabled: boolean;
+  protected isEnabled: boolean = false;
 
   public wallet: T = null;
 
@@ -54,9 +55,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     protected readonly errorsService: ErrorsService,
     protected readonly zone: NgZone,
     protected readonly window: RubicWindow
-  ) {
-    this.isEnabled = false;
-  }
+  ) {}
 
   public abstract activate(): Promise<void>;
 
@@ -67,4 +66,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;
   }
+
+  public abstract switchChain(chainId: string): Promise<void | never>;
+
+  public abstract addChain(params: AddEvmChainParams): Promise<void | never>;
 }

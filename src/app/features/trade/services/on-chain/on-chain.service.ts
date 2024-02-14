@@ -55,7 +55,7 @@ export class OnChainService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0);
+    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0) || false;
   }
 
   constructor(
@@ -218,6 +218,8 @@ export class OnChainService {
         this.tokensService.findToken(trade.from),
         this.tokensService.findToken(trade.to)
       ]);
+
+      await this.conditionalAwait(fromBlockchain);
       await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
@@ -345,5 +347,12 @@ export class OnChainService {
         'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
       )
     );
+  }
+
+  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
+    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+      const waitTime = 3_000;
+      await firstValueFrom(timer(waitTime));
+    }
   }
 }
