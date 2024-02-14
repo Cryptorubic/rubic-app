@@ -68,6 +68,10 @@ export class QueryParamsService {
 
   public enabledBlockchains: BlockchainName[];
 
+  public slippageIt: number;
+
+  public slippageCcr: number;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensNetworkService: TokensNetworkService,
@@ -87,6 +91,8 @@ export class QueryParamsService {
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
     this.isDesktop = queryParams.isDesktop === 'true';
     this.domain = queryParams.domain;
+    this.slippageCcr = parseFloat(queryParams.slippageCcr);
+    this.slippageIt = parseFloat(queryParams.slippageIt);
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
