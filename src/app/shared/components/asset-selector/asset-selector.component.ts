@@ -4,6 +4,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnInit,
   Output,
   Self
 } from '@angular/core';
@@ -25,7 +26,7 @@ import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class AssetSelectorComponent {
+export class AssetSelectorComponent implements OnInit {
   public visibleAsset: AssetSelector | null = null;
 
   @Output() public handleAssetSelection = new EventEmitter<void>();
@@ -49,7 +50,9 @@ export class AssetSelectorComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef,
     private readonly tokenService: TokensService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.queryParamsService.tokensSelectionDisabled$
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
