@@ -59,11 +59,13 @@ export class VolumeApiService {
       catchError(() => {
         const storedValues = this.storeService.getItem('RUBIC_TOTAL_VALUES');
         const normalizedValues = {
-          instantTrades: new BigNumber(storedValues.instantTrades),
-          bridges: new BigNumber(storedValues.bridges)
+          instantTrades: new BigNumber(
+            storedValues?.instantTrades || this.defaultTradeVolumes.instantTrades
+          ),
+          bridges: new BigNumber(storedValues?.bridges || this.defaultTradeVolumes.bridges)
         };
 
-        return of(normalizedValues || this.defaultTradeVolumes);
+        return of(normalizedValues);
       })
     );
   }
