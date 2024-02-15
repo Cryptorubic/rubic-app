@@ -10,7 +10,7 @@ import {
 } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BlockchainName, BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
@@ -244,9 +244,13 @@ export class TokensListStoreService {
   private async tryParseQueryAsCustomToken(): Promise<AvailableTokenAmount> {
     try {
       if (this.searchQuery && this.blockchain) {
+        const address =
+          this.blockchain === BLOCKCHAIN_NAME.SOLANA
+            ? this.searchQuery
+            : this.searchQuery.toLowerCase();
         const token = await SdkToken.createToken({
           blockchain: this.blockchain,
-          address: this.searchQuery.toLowerCase()
+          address
         });
 
         if (token?.name && token?.symbol && token?.decimals) {

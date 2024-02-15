@@ -212,12 +212,16 @@ export class TokensService {
       this.getAndUpdateTokenBalance(fromToken),
       this.getAndUpdateTokenBalance(toToken)
     ];
-
     const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    if (!Web3Pure[fromChainType].isNativeAddress(fromToken.address)) {
+    const web3Pure = Web3Pure[fromChainType];
+
+    if (
+      !web3Pure.isNativeAddress(fromToken.address) &&
+      !web3Pure.isNativeAddress(toToken.address)
+    ) {
       balancePromises.concat(
         this.getAndUpdateTokenBalance({
-          address: Web3Pure[fromChainType].nativeTokenAddress,
+          address: web3Pure.nativeTokenAddress,
           blockchain: fromToken.blockchain
         })
       );
