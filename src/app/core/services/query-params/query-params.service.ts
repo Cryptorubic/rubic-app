@@ -54,6 +54,8 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public hideTokenSwitcher: boolean;
+
   public isDesktop: boolean;
 
   public domain: string;
@@ -94,6 +96,7 @@ export class QueryParamsService {
     this.slippageCcr = parseFloat(queryParams.slippageCcr);
     this.slippageIt = parseFloat(queryParams.slippageIt);
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
+    this.hideTokenSwitcher = queryParams.hideTokenSwitcher === 'true';
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
 
