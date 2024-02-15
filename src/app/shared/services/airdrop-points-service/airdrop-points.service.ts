@@ -56,7 +56,7 @@ export class AirdropPointsService {
     this.authService.currentUser$
       .pipe(
         switchMap(currentUser => {
-          return this.apiService.fetchAirdropUserPointsInfo(currentUser.address);
+          return this.apiService.fetchAirdropUserPointsInfo(currentUser?.address);
         }),
         tap(points => {
           this._points$.next(points);

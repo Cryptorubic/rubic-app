@@ -16,7 +16,6 @@ import {
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
-  EvmWeb3Pure,
   FeeInfo,
   nativeTokensList,
   OnChainTrade,
@@ -61,11 +60,7 @@ export class CnPreviewSwapComponent {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.fromBlockchain$.pipe(
-    switchMap(blockchain =>
-      this.tokensService.findToken({ address: EvmWeb3Pure.EMPTY_ADDRESS, blockchain })
-    )
-  );
+  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(

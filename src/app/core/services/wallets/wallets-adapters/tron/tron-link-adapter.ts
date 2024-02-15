@@ -17,6 +17,7 @@ import { mainnetNodes } from '@core/services/wallets/wallets-adapters/tron/const
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { filter, map } from 'rxjs/operators';
 import { switchTap } from '@shared/utils/utils';
+import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 
 export class TronLinkAdapter extends CommonWalletAdapter {
   public readonly chainType = CHAIN_TYPE.TRON;
@@ -101,5 +102,13 @@ export class TronLinkAdapter extends CommonWalletAdapter {
           this.onNetworkChanges$.next(this.selectedChain);
         });
       });
+  }
+
+  public async switchChain(_chainId: string): Promise<void | never> {
+    throw new Error('Method is not supported by wallet');
+  }
+
+  public async addChain(_params: AddEvmChainParams): Promise<void | never> {
+    throw new Error('Method is not supported by wallet');
   }
 }
