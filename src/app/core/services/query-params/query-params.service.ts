@@ -54,6 +54,8 @@ export class QueryParamsService {
 
   public hideUnusedUI: boolean;
 
+  public hideTokenSwitcher: boolean;
+
   public isDesktop: boolean;
 
   public domain: string;
@@ -67,6 +69,10 @@ export class QueryParamsService {
   public disabledOnChainProviders: OnChainTradeType[] = [];
 
   public enabledBlockchains: BlockchainName[];
+
+  public slippageIt: number;
+
+  public slippageCcr: number;
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -87,7 +93,10 @@ export class QueryParamsService {
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
     this.isDesktop = queryParams.isDesktop === 'true';
     this.domain = queryParams.domain;
+    this.slippageCcr = parseFloat(queryParams.slippageCcr);
+    this.slippageIt = parseFloat(queryParams.slippageIt);
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
+    this.hideTokenSwitcher = queryParams.hideTokenSwitcher === 'true';
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
 
