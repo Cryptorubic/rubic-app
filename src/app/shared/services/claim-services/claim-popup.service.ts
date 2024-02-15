@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
-import { UserRejectError } from 'rubic-sdk';
+import {
+  InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError,
+  UserRejectError
+} from 'rubic-sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -54,6 +57,7 @@ export class ClaimPopupService {
     if (err instanceof Error) {
       let label: string;
       let status: TuiNotification;
+
       if (err.message === 'paused') {
         label = this.translateService.instant('airdrop.notification.paused');
         status = TuiNotification.Warning;
@@ -70,6 +74,11 @@ export class ClaimPopupService {
 
       if (err instanceof UserRejectError) {
         label = this.translateService.instant('airdrop.notification.reject');
+        status = TuiNotification.Error;
+      }
+
+      if (err instanceof SdkInsufficientFundsGasPriceValueError) {
+        label = this.translateService.instant('airdrop.notification.notEnoughBalance');
         status = TuiNotification.Error;
       }
 

@@ -8,15 +8,16 @@ import {
   SwapFormOutputControl
 } from '../../models/swap-form-controls';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { compareAssets } from '@features/trade/utils/compare-assets';
+import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Injectable()
 export class SwapsFormService {
@@ -62,6 +63,15 @@ export class SwapsFormService {
     map(inputValue => inputValue.fromBlockchain),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)
+  );
+
+  public readonly nativeToken$ = this.fromBlockchain$.pipe(
+    switchMap(blockchain => {
+      const chainType = BlockchainsInfo.getChainType(blockchain);
+      const address = Web3Pure[chainType].nativeTokenAddress;
+
+      return this.tokensService.findToken({ address, blockchain });
+    })
   );
 
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
@@ -134,7 +144,7 @@ export class SwapsFormService {
     return this._isFilled$.getValue();
   }
 
-  constructor() {
+  constructor(private readonly tokensService: TokensService) {
     this.subscribeOnFormValueChange();
   }
 
