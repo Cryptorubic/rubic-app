@@ -26,10 +26,6 @@ export class CommonTableService {
     this._activeItemIndex$.next(value);
   }
 
-  public get activeItemIndex(): 0 | 1 | 2 {
-    return this._activeItemIndex$.value;
-  }
-
   constructor(
     private readonly errorService: ErrorsService,
     private readonly notificationsService: NotificationsService,

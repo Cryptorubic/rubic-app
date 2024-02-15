@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, combineLatestWith, Observable } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
-import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -27,7 +27,10 @@ export class OnChainTableService extends TableService<
   OnChainTableResponse,
   OnChainTableData
 > {
+  public readonly addressChange$ = this.walletConnector.addressChange$;
+
   public readonly request$ = combineLatest([
+    this.addressChange$,
     this.sorter$,
     this.direction$,
     this.page$,
@@ -35,7 +38,8 @@ export class OnChainTableService extends TableService<
   ]).pipe(
     // zero time debounce for a case when both key and direction change
     debounceTime(50),
-    switchMap(query => this.getData(...query).pipe(startWith(null)))
+    switchMap(([_, ...query]) => this.getData(...query).pipe(startWith(null))),
+    share()
   );
 
   public readonly loading$ = this.request$.pipe(map(tuiIsFalsy));

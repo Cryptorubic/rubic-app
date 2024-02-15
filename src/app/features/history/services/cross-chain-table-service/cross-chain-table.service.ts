@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { combineLatest, combineLatestWith, Observable } from 'rxjs';
 import { TableKey } from '@features/history/models/table-key';
-import { debounceTime, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiControlValue, tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { CrossChainTableResponse } from '@features/history/models/cross-chain-table-response';
 import { HttpService } from '@core/services/http/http.service';
@@ -32,7 +32,10 @@ export class CrossChainTableService extends TableService<
 > {
   public readonly statusFilter = new FormControl<string>('All');
 
+  public readonly addressChange$ = this.walletConnector.addressChange$;
+
   public readonly request$ = combineLatest([
+    this.addressChange$,
     this.sorter$,
     this.direction$,
     this.page$,
@@ -41,7 +44,8 @@ export class CrossChainTableService extends TableService<
     this.activeItemIndex$
   ]).pipe(
     debounceTime(50),
-    switchMap(query => this.getData(...query).pipe(startWith(null)))
+    switchMap(([_, ...query]) => this.getData(...query).pipe(startWith(null))),
+    share()
   );
 
   public readonly loading$ = this.request$.pipe(map(tuiIsFalsy));
