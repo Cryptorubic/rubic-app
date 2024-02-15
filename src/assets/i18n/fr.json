@@ -248,7 +248,10 @@
           "quarter": "Q3. 2021",
           "month": "Août",
           "done": "1",
-          "data": ["Commission en RBC - étape 2", "Anonymizer V1 - Polygon"]
+          "data": [
+            "Commission en RBC - étape 2",
+            "Anonymizer V1 - Polygon"
+          ]
         },
         "6": {
           "quarter": "Q3. 2021",
@@ -862,7 +865,8 @@
       "unknown": "Oops, something went wrong, please try again later",
       "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the claim",
       "modalDescription": "The address in your wallet and the address to claim tokens are different. Do you agree to claim tokens at a different address?",
-      "unauthorized": "You have to be logged in to add the Token"
+      "unauthorized": "You have to be logged in to add the Token",
+      "notEnoughBalance": "You don't have enough native tokens for gas. Please refill and try again later!"
     },
     "modals": {
       "success": "Your tokens are on the way!",
