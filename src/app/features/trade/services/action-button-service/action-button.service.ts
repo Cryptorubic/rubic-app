@@ -22,6 +22,7 @@ export class ActionButtonService {
       this.targetNetworkAddressService.isAddressRequired$,
       this.targetNetworkAddressService.address$
     ),
+    debounceTime(10),
     share()
   );
 
@@ -31,8 +32,7 @@ export class ActionButtonService {
       type: 'error',
       text: 'Select tokens',
       action: () => {}
-    }),
-    debounceTime(10)
+    })
   );
 
   constructor(
