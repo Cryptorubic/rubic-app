@@ -128,18 +128,18 @@ export const notEvmChangeNowBlockchainsList = {
 const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlockchainsList).map(
   blockchain => ({
     name: blockchain,
-    rank: 0,
+    rank: blockchain === BLOCKCHAIN_NAME.SOLANA ? 1 : 0,
     tags: notEvmChangeNowBlockchainsTagsList[blockchain]
   })
 );
 
 export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.ETHEREUM, rank: 1, tags: ['ETH'] },
-  { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 1, tags: ['BNB'] },
-  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 1, tags: ['AVAX'] },
-  { name: BLOCKCHAIN_NAME.POLYGON, rank: 1, tags: ['MATIC'] },
-  { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 1, tags: ['ETH'] },
-  { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 1, tags: ['ETH'] },
+  { name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN, rank: 0.75, tags: ['BNB'] },
+  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX'] },
+  { name: BLOCKCHAIN_NAME.POLYGON, rank: 0.75, tags: ['MATIC'] },
+  { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 0.75, tags: ['ETH'] },
+  { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 0.75, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.LINEA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.SCROLL, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.ZETACHAIN, rank: 0.5, tags: ['ZETA'] },
