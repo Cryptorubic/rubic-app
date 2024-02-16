@@ -22,9 +22,7 @@ import { OnChainTableRequest } from '@features/history/models/on-chain-table-req
 import { TableService } from '@features/history/models/table-service';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CrossChainTableService extends TableService<
   'created_at',
   CrossChainTableResponse,

@@ -19,9 +19,7 @@ import { OnChainTableRequest } from '@features/history/models/on-chain-table-req
 import { TableService } from '@features/history/models/table-service';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from '@app/features/trade/services/on-chain-api/constants/backend-providers';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class OnChainTableService extends TableService<
   'created_at',
   OnChainTableResponse,
