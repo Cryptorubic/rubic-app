@@ -22,24 +22,17 @@ export class ActionButtonService {
       this.targetNetworkAddressService.isAddressRequired$,
       this.targetNetworkAddressService.address$
     ),
-    startWith(this.getDefaultParams()),
     share()
   );
 
-  public readonly buttonState$ = this.tradeState.tradeState$.pipe(
-    startWith(null),
-    combineLatestWith(this.stateParams$),
-    debounceTime(10),
-    map(([, params]) => {
-      if (params[0]) {
-        return this.getState(...params);
-      }
-      return {
-        type: 'error',
-        text: 'Select tokens',
-        action: () => {}
-      };
-    })
+  public readonly buttonState$ = this.stateParams$.pipe(
+    map(params => this.getState(...params)),
+    startWith({
+      type: 'error',
+      text: 'Select tokens',
+      action: () => {}
+    }),
+    debounceTime(10)
   );
 
   constructor(
@@ -168,6 +161,6 @@ export class ActionButtonService {
   }
 
   private getDefaultParams(): [SelectedTrade, boolean, boolean, string, boolean, boolean, string] {
-    return [null, false, false, '', false, false, ''];
+    return [null, false, false, '', true, false, ''];
   }
 }
