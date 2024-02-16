@@ -5,6 +5,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   pairwise,
   startWith,
@@ -356,9 +357,10 @@ export class SwapsStateService {
         this.tradePageService.formContent$.pipe(
           pairwise(),
           map(([oldContent, newContent]) => oldContent === newContent || newContent !== 'form'),
-          startWith(false)
-        ),
-        this.headerStore.getMobileDisplayStatus()
+          startWith(false),
+          combineLatestWith(this.headerStore.getMobileDisplayStatus().pipe(first())),
+          map(([forceExit, isMobile]) => forceExit && !isMobile)
+        )
       ),
       map(options => this.getCalculationStatus(options)),
       debounceTime(50),
@@ -369,9 +371,9 @@ export class SwapsStateService {
   }
 
   private getCalculationStatus(
-    options: [boolean, boolean, TradeState[], CalculationProgress, boolean, boolean]
+    options: [boolean, boolean, TradeState[], CalculationProgress, boolean]
   ): CalculationStatus {
-    const [timerEmit, formFilled, trades, progress, forceExit, isMobile] = options;
+    const [timerEmit, formFilled, trades, progress, forceExit] = options;
     const { fromToken, toToken } = this.swapsFormService.inputValue;
     const wrapTrade =
       trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
@@ -386,7 +388,7 @@ export class SwapsStateService {
       calculationProgress: progress
     };
 
-    if (!formFilled || wrapTrade || (forceExit && !isMobile)) {
+    if (!formFilled || wrapTrade || forceExit) {
       return { ...calculationResult, showSidebar: false };
     }
 
