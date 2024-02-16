@@ -39,6 +39,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class SwapsStateService {
@@ -130,7 +131,8 @@ export class SwapsStateService {
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly headerStore: HeaderStore
   ) {
     this.subscribeOnTradeChange();
   }
@@ -355,7 +357,8 @@ export class SwapsStateService {
           pairwise(),
           map(([oldContent, newContent]) => oldContent === newContent || newContent !== 'form'),
           startWith(false)
-        )
+        ),
+        this.headerStore.getMobileDisplayStatus()
       ),
       map(options => this.getCalculationStatus(options)),
       debounceTime(50),
@@ -366,9 +369,9 @@ export class SwapsStateService {
   }
 
   private getCalculationStatus(
-    options: [boolean, boolean, TradeState[], CalculationProgress, boolean]
+    options: [boolean, boolean, TradeState[], CalculationProgress, boolean, boolean]
   ): CalculationStatus {
-    const [timerEmit, formFilled, trades, progress, forceExit] = options;
+    const [timerEmit, formFilled, trades, progress, forceExit, isMobile] = options;
     const { fromToken, toToken } = this.swapsFormService.inputValue;
     const wrapTrade =
       trades.some(el => el.trade instanceof EvmWrapTrade) || this.checkWrap(fromToken, toToken);
@@ -383,7 +386,7 @@ export class SwapsStateService {
       calculationProgress: progress
     };
 
-    if (!formFilled || wrapTrade || forceExit) {
+    if (!formFilled || wrapTrade || (forceExit && !isMobile)) {
       return { ...calculationResult, showSidebar: false };
     }
 
