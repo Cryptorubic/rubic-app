@@ -13,7 +13,7 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 
 @Injectable()
 export class ActionButtonService {
-  private readonly stateParams$ = this.tradeState.tradeState$.pipe(
+  public readonly buttonState$ = this.tradeState.tradeState$.pipe(
     combineLatestWith(
       this.tradeState.wrongBlockchain$,
       this.tradeState.notEnoughBalance$,
@@ -23,16 +23,9 @@ export class ActionButtonService {
       this.targetNetworkAddressService.address$
     ),
     debounceTime(10),
-    share()
-  );
-
-  public readonly buttonState$ = this.stateParams$.pipe(
-    map(params => this.getState(...params)),
-    startWith({
-      type: 'error',
-      text: 'Select tokens',
-      action: () => {}
-    })
+    startWith(this.getDefaultParams()),
+    share(),
+    map(params => this.getState(...params))
   );
 
   constructor(
@@ -70,6 +63,13 @@ export class ActionButtonService {
     text: string;
     action: () => void;
   } {
+    if (!currentTrade) {
+      return {
+        type: 'error',
+        text: 'Select tokens',
+        action: () => {}
+      };
+    }
     if (currentTrade.error) {
       return {
         type: 'error',
