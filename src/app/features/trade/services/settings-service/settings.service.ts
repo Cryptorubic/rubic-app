@@ -66,8 +66,8 @@ export class SettingsService {
     private readonly queryParamsService: QueryParamsService,
     private readonly dialogService: ModalService
   ) {
-    this.defaultItSettings = this.getDefaultITSettings();
-    this.defaultCcrSettings = this.getDefaultCCRSettings();
+    this.defaultItSettings = this.getDefaultITSettings(this.queryParamsService.slippageIt);
+    this.defaultCcrSettings = this.getDefaultCCRSettings(this.queryParamsService.slippageCcr);
 
     this.createForm();
     this.initSubscriptions();
