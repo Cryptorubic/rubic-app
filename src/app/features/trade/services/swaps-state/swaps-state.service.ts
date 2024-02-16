@@ -340,7 +340,6 @@ export class SwapsStateService {
   }
 
   private initCalculationStatus(): Observable<CalculationStatus> {
-    // @ts-ignore
     return this.swapsFormService.fromToken$.pipe(
       distinctUntilChanged(this.shouldEmitToken),
       combineLatestWith(
