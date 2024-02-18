@@ -25,7 +25,10 @@ export class OnChainTableService extends TableService<
   OnChainTableResponse,
   OnChainTableData
 > {
+  public readonly addressChange$ = this.walletConnector.addressChange$;
+
   public readonly request$ = combineLatest([
+    this.addressChange$,
     this.sorter$,
     this.direction$,
     this.page$,
@@ -33,7 +36,7 @@ export class OnChainTableService extends TableService<
   ]).pipe(
     // zero time debounce for a case when both key and direction change
     debounceTime(50),
-    switchMap(query => this.getData(...query).pipe(startWith(null))),
+    switchMap(([_, ...query]) => this.getData(...query).pipe(startWith(null))),
     share()
   );
 
