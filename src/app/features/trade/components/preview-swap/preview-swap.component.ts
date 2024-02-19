@@ -306,4 +306,8 @@ export class PreviewSwapComponent implements OnDestroy {
   public ngOnDestroy() {
     this.previewSwapService.deactivatePage();
   }
+
+  public onImageError($event: Event): void {
+    this.tokensService.onTokenImageError($event);
+  }
 }
