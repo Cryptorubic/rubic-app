@@ -3,6 +3,7 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { OnChainTableService } from '@features/history/services/on-chain-table-service/on-chain-table.service';
 import { OnChainTableData } from '@features/history/models/on-chain-table-data';
 import { Observable } from 'rxjs';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 const onChinCols = ['from', 'to', 'blockchain', 'date', 'status', 'provider'] as const;
 
@@ -29,7 +30,10 @@ export class OnChainDesktopTableComponent {
 
   public readonly totalPages$ = this.tableService.totalPages$;
 
-  constructor(private readonly tableService: OnChainTableService) {}
+  constructor(
+    private readonly tableService: OnChainTableService,
+    private readonly tokensService: TokensService
+  ) {}
 
   public changeDirection(direction: 1 | -1): void {
     this.tableService.onDirection(direction);
@@ -48,5 +52,9 @@ export class OnChainDesktopTableComponent {
 
   public getItem(innerItem: Partial<Record<keyof OnChainTableData, RubicAny>>): OnChainTableData {
     return innerItem as unknown as OnChainTableData;
+  }
+
+  public onImageError($event: Event): void {
+    this.tokensService.onTokenImageError($event);
   }
 }
