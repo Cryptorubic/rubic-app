@@ -284,7 +284,11 @@ export class PreviewSwapComponent implements OnDestroy {
       state.action = () => {};
       state.label = tradeState.error.message;
     }
-    if (balanceError) {
+    if (
+      balanceError &&
+      el.step !== transactionStep.success &&
+      el.step !== transactionStep.destinationPending
+    ) {
       state.disabled = true;
       state.action = () => {};
       state.label = 'Insufficient funds';
