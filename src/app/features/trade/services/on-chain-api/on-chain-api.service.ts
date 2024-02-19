@@ -102,7 +102,7 @@ export class OnChainApiService {
 
     const url = onChainApiRoutes.createData(toBackendWallet);
     return this.httpService
-      .post<InstantTradesResponseApi>(`${url}?valid=${isSwapAndEarnSwap}`, tradeInfo)
+      .post<InstantTradesResponseApi>(`${url}?valid=${isSwapAndEarnSwap ?? false}`, tradeInfo)
       .pipe(delay(1000));
   }
 

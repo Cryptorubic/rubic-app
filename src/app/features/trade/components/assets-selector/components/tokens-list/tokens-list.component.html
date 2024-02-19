@@ -4,28 +4,20 @@
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
         <!--standard mode -->
         <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
-          <div class="tokens-container__empty-list_metis" *ngIf="metisText$ | async">
-            {{ metisText$ | async }}
-          </div>
-          <app-empty-list *ngIf="(metisText$ | async) === ''"></app-empty-list>
+          <app-empty-list></app-empty-list>
         </div>
 
         <ng-template #tokenList>
           <ul class="tokens-list" [@listAnimation]="listAnimationState$ | async">
             <cdk-virtual-scroll-viewport
               tuiScrollable
-              itemSize="37.5"
+              itemSize="50"
               class="tokens-scrollbar tui-zero-scrollbar"
               [ngClass]="{ 'tokens-scrollbar__empty': !tokensToShow?.length }"
               [style.overflow]="loading ? 'hidden' : 'auto'"
             >
               <li
-                *cdkVirtualFor="
-                  let token of tokensToShow;
-                  let i = index;
-                  templateCacheSize: 0;
-                  trackBy: trackByFn
-                "
+                *cdkVirtualFor="let token of tokensToShow; let i = index; trackBy: trackByFn"
                 class="tokens-list__item"
                 [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
                 [tuiHint]="!token.available ? disabledTokenHint : null"

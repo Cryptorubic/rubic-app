@@ -1,7 +1,14 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName, TronWebProvider } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  EvmBlockchainName,
+  SolanaBlockchainName,
+  TronBlockchainName,
+  TronWebProvider
+} from 'rubic-sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
-  Record<TronBlockchainName, TronWebProvider[]> = {
+  Record<TronBlockchainName, TronWebProvider[]> &
+  Record<SolanaBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
@@ -201,10 +208,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: [],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: [
-    // 'https://api.mainnet.zetachain.com/evm',
-    'https://zetachain-evm.blockpi.network/v1/rpc/public/'
-  ],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: ['https://zetachain-mainnet-archive.allthatnode.com:8545'],
   [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
   [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
@@ -220,6 +224,15 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://data.voyager.online/',
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
+  [BLOCKCHAIN_NAME.SOLANA]: [
+    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280',
+    'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+  ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io']
+  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io'],
+  [BLOCKCHAIN_NAME.HOLESKY]: [
+    'https://ethereum-holesky.publicnode.com',
+    'https://1rpc.io/holesky',
+    'https://holesky-rpc.nocturnode.tech'
+  ]
 };

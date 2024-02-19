@@ -11,11 +11,8 @@
       <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="'idPrefix'"></app-asset-types-aside>
 
-        <ng-container>
-          <app-search-bar
-            *ngIf="selectorListType === 'fiats'"
-            class="vertical-iframe-token-search"
-          ></app-search-bar>
+        <ng-container *ngIf="selectorListType === 'fiats'">
+          <app-search-bar class="vertical-iframe-token-search"></app-search-bar>
         </ng-container>
 
         <ng-container *ngIf="isMobile; then searchBar"></ng-container>
