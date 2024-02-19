@@ -41,7 +41,7 @@
           </ng-template>
         </ng-container>
 
-        <ng-container>
+        <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
           <div class="dropdown-content__security-container">
             <a
               class="dropdown-content__security-container-icon"
