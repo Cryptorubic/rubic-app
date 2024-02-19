@@ -73,7 +73,7 @@ export class TradeViewContainerComponent {
     const buttonStatus = await firstValueFrom(this.buttonState$);
     if (buttonStatus.text === 'Preview swap') {
       buttonStatus.action();
-    } else if (buttonStatus.type === 'error') {
+    } else if (buttonStatus.type === 'error' || buttonStatus.text === 'Connect wallet') {
       this.notificationsService.show(buttonStatus.text, {
         status: TuiNotification.Warning,
         autoClose: 5_000,
