@@ -143,6 +143,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.LINEA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.SCROLL, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.ZETACHAIN, rank: 0.5, tags: ['ZETA'] },
+  { name: BLOCKCHAIN_NAME.KROMA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.MANTLE, rank: 0, tags: ['MNT'] },
   { name: BLOCKCHAIN_NAME.MANTA_PACIFIC, rank: 0, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.POLYGON_ZKEVM, rank: 0, tags: ['ETH'] },
