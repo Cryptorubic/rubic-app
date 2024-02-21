@@ -688,11 +688,18 @@
       "unknown": "Oops, something went wrong, please try again later",
       "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the claim",
       "modalDescription": "The address in your wallet and the address to claim tokens are different. Do you agree to claim tokens at a different address?",
-      "unauthorized": "You have to be logged in to add the Token"
+      "unauthorized": "You have to be logged in to add the Token",
+      "notEnoughBalance": "You don't have enough native tokens for gas. Please refill and try again later!"
     },
     "modals": {
       "success": "Your tokens are on the way!",
-      "explorerLink": "Check the transaction on explorer."
+      "explorerLink": "Check the transaction on explorer.",
+      "rubicPointsModal": {
+        "description": "You will be credited with {{ pointsAmount }} points when the transaction is successful",
+        "infoText": "Points can be seen",
+        "infoLink": "here",
+        "pointsUndefined": "Calculation will be made later, the result will be displayed in your personal account."
+      }
     }
   },
   "retrodrop": {

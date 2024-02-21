@@ -143,6 +143,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Scroll',
     rpc: 'https://rpc.scroll.io/'
   },
+  [BLOCKCHAIN_NAME.ZETACHAIN]: {
+    name: 'Zetachain',
+    rpc: 'https://zetachain-mainnet-archive.allthatnode.com:8545'
+  },
   [BLOCKCHAIN_NAME.HORIZEN_EON]: {
     name: 'Horizen EON',
     rpc: 'https://eon-rpc.horizenlabs.io/ethv1'

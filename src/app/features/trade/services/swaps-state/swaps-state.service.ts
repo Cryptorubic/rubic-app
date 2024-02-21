@@ -5,19 +5,18 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   pairwise,
   startWith,
   switchMap
 } from 'rxjs/operators';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
   EvmWrapTrade,
   nativeTokensList,
-  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   Token,
   WrappedCrossChainTradeOrNull
@@ -40,6 +39,8 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
+import { TokensService } from '@core/services/tokens/tokens.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class SwapsStateService {
@@ -130,7 +131,9 @@ export class SwapsStateService {
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly tokensService: TokensService,
+    private readonly headerStore: HeaderStore
   ) {
     this.subscribeOnTradeChange();
   }
@@ -160,7 +163,7 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          ...(this.setPromotion(trade) && { promotion: this.setPromotion(trade) })
+          ...(this.setPromotion() && { promotion: this.setPromotion() })
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -340,7 +343,6 @@ export class SwapsStateService {
   }
 
   private initCalculationStatus(): Observable<CalculationStatus> {
-    // @ts-ignore
     return this.swapsFormService.fromToken$.pipe(
       distinctUntilChanged(this.shouldEmitToken),
       combineLatestWith(
@@ -354,7 +356,9 @@ export class SwapsStateService {
         this.tradePageService.formContent$.pipe(
           pairwise(),
           map(([oldContent, newContent]) => oldContent === newContent || newContent !== 'form'),
-          startWith(false)
+          startWith(false),
+          combineLatestWith(this.headerStore.getMobileDisplayStatus().pipe(first())),
+          map(([forceExit, isMobile]) => forceExit && !isMobile)
         )
       ),
       map(options => this.getCalculationStatus(options)),
@@ -408,19 +412,7 @@ export class SwapsStateService {
     );
   }
 
-  private setPromotion(trade: OnChainTrade | CrossChainTrade): PromotionType | null {
-    if (
-      trade instanceof OnChainTrade &&
-      trade.type === ON_CHAIN_TRADE_TYPE.OPEN_OCEAN &&
-      trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
-    ) {
-      return {
-        hint: 'Click to check additional info',
-        label: '50% gas refund',
-        href: 'https://app.openocean.finance/portfolio/campaigns'
-      };
-    }
-
+  private setPromotion(): PromotionType | null {
     return null;
   }
 }

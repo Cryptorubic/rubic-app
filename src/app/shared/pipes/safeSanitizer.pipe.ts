@@ -16,7 +16,7 @@ export class SafeSanitizerPipe implements PipeTransform {
 
   transform(
     value: string,
-    type: string
+    type: string = 'html'
   ): SafeHtml | SafeStyle | SafeScript | SafeUrl | SafeResourceUrl {
     switch (type) {
       case 'html':

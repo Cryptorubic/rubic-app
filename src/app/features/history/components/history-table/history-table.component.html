@@ -1,4 +1,4 @@
-<tui-loader [overlay]="true" [showLoader]="!!(loading$ | async)">
+<tui-loader [overlay]="true" [showLoader]="loading$ | async">
   <ng-container
     *ngLet="{
       device: device$ | async,

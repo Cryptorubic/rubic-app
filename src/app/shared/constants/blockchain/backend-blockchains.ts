@@ -124,11 +124,14 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.FUJI]: 'avalanche-fuji',
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet',
   [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
-  [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain-evm-athens-testnet',
+  [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain',
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko-jolnir',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
+  [BLOCKCHAIN_NAME.BLAST]: 'blast',
+  [BLOCKCHAIN_NAME.HOLESKY]: 'holesky',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: 'horizen-eon'
 } as const;
 
