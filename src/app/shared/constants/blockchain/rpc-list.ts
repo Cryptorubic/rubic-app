@@ -48,7 +48,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/avalanche'
   ],
   [BLOCKCHAIN_NAME.MOONRIVER]: [
-    'https://moonriver.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://moonriver.public.blastapi.io',
     'https://moonriver.unitedbloc.com:2000'
   ],
@@ -80,8 +79,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/optimism'
   ],
   [BLOCKCHAIN_NAME.CRONOS]: [
-    'https://evm-cronos.crypto.org',
-    'https://go.getblock.io/4d913910a05d47ad8a77845b06cb7c84'
+    'https://go.getblock.io/4d913910a05d47ad8a77845b06cb7c84',
+    'https://evm-cronos.crypto.org'
   ],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
   [BLOCKCHAIN_NAME.GNOSIS]: [
@@ -111,14 +110,14 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.TRON]: [
     {
-      fullHost: 'https://api.trongrid.io'
-    },
-    {
       fullHost:
         'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
     },
     {
       fullHost: 'https://go.getblock.io/adeeade0e28e4b879ac4340637e0946d'
+    },
+    {
+      fullHost: 'https://api.trongrid.io'
     }
   ],
   /*
