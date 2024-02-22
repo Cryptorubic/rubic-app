@@ -11,6 +11,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<SolanaBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/6326fdfd6393406ebdab0a38119b4a55',
     'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
     'https://eth.llamarpc.com',
     'https://rpc.ankr.com/eth'
@@ -36,7 +37,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/polygon/zkevm',
     'https://polygon-zkevm-mainnet.public.blastapi.io'
   ],
-  [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
+  [BLOCKCHAIN_NAME.HARMONY]: [
+    'https://rpc.ankr.com/harmony/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://api.harmony.one',
+    'https://api.s0.t.hmny.io/'
+  ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/60b585dee7e84d18800f6a25ad3b5d9e',
@@ -101,7 +106,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.astar.network:8545'
   ],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
-  [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
+  [BLOCKCHAIN_NAME.KAVA]: [
+    'https://rpc.ankr.com/premium-http/kava_api/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://evm.kava.io'
+  ],
   [BLOCKCHAIN_NAME.TRON]: [
     {
       fullHost: 'https://api.trongrid.io'
@@ -121,6 +129,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
    */
   [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://go.getblock.io/6e4887d81fd043c0b2fc8aa1f338fa2d',
     'https://serverrpc.com',
     'https://dedicated.brisescan.com/',
     'https://rpc-bitgert-vefi.com',
@@ -150,12 +159,20 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://klaytn05.fandom.finance'
   ],
   [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
-  [BLOCKCHAIN_NAME.SYSCOIN]: ['https://rpc.syscoin.org', 'https://rpc.ankr.com/syscoin'],
+  [BLOCKCHAIN_NAME.SYSCOIN]: [
+    'https://rpc.ankr.com/syscoin/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/8c1c028216e54c68b56b208984d3454c',
+    'https://rpc.syscoin.org',
+    'https://rpc.ankr.com/syscoin'
+  ],
   [BLOCKCHAIN_NAME.ETHEREUM_CLASSIC]: [
     'https://besu-at.etc-network.info',
     'https://geth-at.etc-network.info'
   ],
-  [BLOCKCHAIN_NAME.FLARE]: ['https://flare-api.flare.network/ext/C/rpc'],
+  [BLOCKCHAIN_NAME.FLARE]: [
+    'https://rpc.ankr.com/flare/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://flare-api.flare.network/ext/C/rpc'
+  ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
   [BLOCKCHAIN_NAME.THETA]: ['https://eth-rpc-api.thetatoken.org/rpc'],
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: [
@@ -225,6 +242,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/scroll'
   ],
   [BLOCKCHAIN_NAME.STARKNET]: [
+    'https://go.getblock.io/14ebd349dcf64729af79d82209705e46',
     'https://rpc.starknet.lava.build',
     'https://starknet-mainnet.public.blastapi.io',
     'https://data.voyager.online/',
