@@ -5,7 +5,7 @@ import { filter, tap } from 'rxjs/operators';
 import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { OnChainProviderAddress } from '@core/services/sdk/constants/provider-addresses';
+import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
 
 @Injectable()
 export class SdkLoaderService {
@@ -32,7 +32,7 @@ export class SdkLoaderService {
     const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
     const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
     const referral = urlParams.get('referral');
-    const onChainProviderAddress = OnChainProviderAddress[referral?.toLowerCase()];
+    const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
 
     return {
       crossChainIntegratorAddress: crossChainProvider,
