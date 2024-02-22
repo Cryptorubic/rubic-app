@@ -109,10 +109,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://evm.kava.io'
   ],
   [BLOCKCHAIN_NAME.TRON]: [
-    {
-      fullHost:
-        'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
-    },
+    // {
+    //   fullHost:
+    //     'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    // },
     {
       fullHost: 'https://go.getblock.io/adeeade0e28e4b879ac4340637e0946d'
     },
