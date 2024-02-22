@@ -5,6 +5,7 @@ import { filter, tap } from 'rxjs/operators';
 import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from 'rubic-sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
+import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
 
 @Injectable()
 export class SdkLoaderService {
@@ -17,16 +18,26 @@ export class SdkLoaderService {
 
   public async initSdk(): Promise<void> {
     this.subscribeOnAddressChange();
+
+    await this.sdkService.initSDK(this.getProviderAddresses());
+    await this.loadUser();
+  }
+
+  private getProviderAddresses(): {
+    crossChainIntegratorAddress: string;
+    onChainIntegratorAddress: string;
+  } {
     const urlParams = new URLSearchParams(this.window.location.search);
     const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
     const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
     const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+    const referral = urlParams.get('referral');
+    const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
 
-    await this.sdkService.initSDK({
+    return {
       crossChainIntegratorAddress: crossChainProvider,
-      onChainIntegratorAddress: onChainProvider
-    });
-    await this.loadUser();
+      onChainIntegratorAddress: onChainProvider || onChainProviderAddress
+    };
   }
 
   private async loadUser(): Promise<void> {
