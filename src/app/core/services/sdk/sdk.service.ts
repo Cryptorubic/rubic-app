@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import {
+  CHAIN_TYPE,
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
+  CrossChainSymbiosisManager,
+  DeflationTokenManager,
+  LimitOrderManager,
   OnChainManager,
   OnChainStatusManager,
   SDK,
   WalletProvider,
-  WalletProviderCore,
-  CHAIN_TYPE,
-  CrossChainSymbiosisManager,
-  LimitOrderManager,
-  DeflationTokenManager
+  WalletProviderCore
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
@@ -84,6 +84,10 @@ export class SdkService {
       crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
+    console.log('Provider Addresses: ', {
+      crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
+      onChain: params?.onChainIntegratorAddress || defaultProvidersAddresses.onChain
+    });
     this.currentConfig = {
       ...this.defaultConfig,
       providerAddress: {
