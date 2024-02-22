@@ -49,7 +49,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MOONRIVER]: [
     'https://moonriver.public.blastapi.io',
-    'https://moonriver.unitedbloc.com:2000'
+    'https://moonriver.unitedbloc.com:2000',
+    'https://moonriver-rpc.publicnode.com',
+    'https://moonriver.api.onfinality.io/public'
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
     'https://rpc.ankr.com/fantom/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -88,7 +90,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.FUSE]: ['https://fuse-pokt.nodies.app', 'https://rpc.fuse.io'],
   [BLOCKCHAIN_NAME.MOONBEAM]: [
-    'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://moonbeam.publicnode.com',
+    'https://1rpc.io/glmr',
+    'https://rpc.ankr.com/moonbeam'
   ],
   [BLOCKCHAIN_NAME.CELO]: [
     'https://rpc.ankr.com/celo/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
