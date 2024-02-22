@@ -252,9 +252,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280',
     'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://go.getblock.io/63e2f3a12930427dac486ea6cc1f8238'
+    'https://go.getblock.io/63e2f3a12930427dac486ea6cc1f8238',
+    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280'
   ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io'],
