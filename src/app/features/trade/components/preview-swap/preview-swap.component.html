@@ -39,6 +39,7 @@
                 class="preview__main-image"
                 [src]="state.tradeInfo.fromAsset.mainImage"
                 [alt]="state.tradeInfo.fromAsset.mainLabel"
+                (error)="onImageError($event)"
               />
             </div>
             <div class="preview__amount-container">
@@ -77,6 +78,7 @@
                   class="preview__main-image"
                   [src]="state.tradeInfo.fromAsset.mainImage"
                   [alt]="state.tradeInfo.fromAsset.mainLabel"
+                  (error)="onImageError($event)"
                 />
               </div>
               <div class="preview__token-amount">
@@ -133,6 +135,7 @@
                 class="preview__main-image"
                 [src]="state.tradeInfo.toAsset.mainImage"
                 [alt]="state.tradeInfo.toAsset.mainLabel"
+                (error)="onImageError($event)"
               />
             </div>
             <div class="preview__amount-container">
@@ -168,6 +171,7 @@
                   class="preview__main-image"
                   [src]="state.tradeInfo.toAsset.mainImage"
                   [alt]="state.tradeInfo.toAsset.mainLabel"
+                  (error)="onImageError($event)"
                 />
               </div>
               <div class="preview__token-amount">

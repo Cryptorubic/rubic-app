@@ -31,6 +31,7 @@
                   class="token-container__main-image"
                   [src]="item.fromToken.image"
                   [alt]="item.fromToken.symbol"
+                  (error)="onImageError($event)"
                 />
 
                 {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
@@ -45,6 +46,7 @@
                   class="token-container__main-image"
                   [src]="item.toToken.image"
                   [alt]="item.toToken.symbol"
+                  (error)="onImageError($event)"
                 />
                 {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
                 {{ item.toToken.symbol }}
@@ -110,6 +112,7 @@
                 class="token-container__main-image"
                 [src]="item.fromToken.image"
                 [alt]="item.fromToken.symbol"
+                (error)="onImageError($event)"
               />
 
               {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
@@ -122,6 +125,7 @@
                 class="token-container__main-image"
                 [src]="item.toToken.image"
                 [alt]="item.toToken.symbol"
+                (error)="onImageError($event)"
               />
 
               {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
