@@ -29,7 +29,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MANTLE,
   BLOCKCHAIN_NAME.POLYGON_ZKEVM,
   BLOCKCHAIN_NAME.SCROLL,
-  BLOCKCHAIN_NAME.MANTA_PACIFIC
+  BLOCKCHAIN_NAME.MANTA_PACIFIC,
+  BLOCKCHAIN_NAME.ROOTSTOCK
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -85,7 +86,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.MANTLE]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: new BehaviorSubject(null),
       [BLOCKCHAIN_NAME.SCROLL]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: new BehaviorSubject(null)
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: new BehaviorSubject(null),
+      [BLOCKCHAIN_NAME.ROOTSTOCK]: new BehaviorSubject(null)
     };
     this.gasPriceFunctions = {
       [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
@@ -103,7 +105,8 @@ export class GasService {
       [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
       [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
       [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
-      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this)
+      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
+      [BLOCKCHAIN_NAME.ROOTSTOCK]: this.fetchRootstockGas.bind(this)
     };
 
     this.setIntervalOnGasPriceRefreshing();
@@ -343,6 +346,17 @@ export class GasService {
   })
   private fetchOptimismGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.OPTIMISM);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchRootstockGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ROOTSTOCK);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))

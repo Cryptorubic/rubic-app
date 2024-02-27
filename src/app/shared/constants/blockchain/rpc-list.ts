@@ -262,5 +262,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://ethereum-holesky.publicnode.com',
     'https://1rpc.io/holesky',
     'https://holesky-rpc.nocturnode.tech'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co']
 };

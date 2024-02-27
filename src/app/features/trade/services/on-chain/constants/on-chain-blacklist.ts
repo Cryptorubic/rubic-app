@@ -67,7 +67,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.STARKNET]: [],
   [BLOCKCHAIN_NAME.BERACHAIN]: [],
   [BLOCKCHAIN_NAME.BLAST]: [],
-  [BLOCKCHAIN_NAME.HOLESKY]: []
+  [BLOCKCHAIN_NAME.HOLESKY]: [],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
