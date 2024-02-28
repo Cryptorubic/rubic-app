@@ -4,8 +4,8 @@ export interface WalletProvider {
   name: string;
   value: WALLET_NAME;
   img: string;
-  desktopOnly: boolean;
-  mobileOnly: boolean;
+  supportsDesktop: boolean;
+  supportsMobile: boolean;
   display: boolean;
   disabled: boolean;
 }
