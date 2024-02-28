@@ -45,7 +45,7 @@ export class RubicSdkErrorParser {
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
     if (err instanceof UpdatedRatesError) {
-      return new AmountChangeWarning(err.transaction);
+      return new AmountChangeWarning(err.oldAmount, err.newAmount);
     }
     if (err instanceof SdkTransactionRevertedError) {
       return new TransactionRevertedError();
