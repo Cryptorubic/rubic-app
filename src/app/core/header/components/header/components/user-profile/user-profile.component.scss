@@ -18,14 +18,16 @@
 
 .user-profile {
   &__avatar {
-    width: 30px;
+    width: 24px;
     margin-right: 10px;
 
     img {
       display: block;
       height: auto;
 
-      border-radius: 50%;
+      &.rounded {
+        border-radius: 50%;
+      }
     }
   }
 

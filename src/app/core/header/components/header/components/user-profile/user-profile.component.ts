@@ -6,7 +6,10 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import {
+  basePathBlockchainIcon,
+  blockchainIcon
+} from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
@@ -68,10 +71,14 @@ export class UserProfileComponent {
     map(([user, blockchainName]) => {
       const currentBlockchainIcon = blockchainName
         ? blockchainIcon[blockchainName]
-        : 'assets/images/icons/coins/default-chain.svg';
+        : `${basePathBlockchainIcon}default-chain.svg`;
 
       return user?.avatar ? user.avatar : currentBlockchainIcon;
     })
+  );
+
+  public hasSpaceIdAvatar$ = this.avatar$.pipe(
+    map(src => src.search(basePathBlockchainIcon) === -1)
   );
 
   public logout(): void {
