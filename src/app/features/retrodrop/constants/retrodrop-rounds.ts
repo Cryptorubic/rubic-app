@@ -52,7 +52,7 @@ export const retrodropRounds: ClaimRound[] = [
   },
   {
     roundNumber: 7,
-    claimDate: '24.02.2024 - 24.08.2024',
+    claimDate: '29.02.2024 - 29.08.2024',
     status: 'active',
     claimName: 'retrodrop',
     isParticipantOfPrevRounds: false,
