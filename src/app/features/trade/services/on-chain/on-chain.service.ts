@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, interval, Observable, of, Subscription, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
 import { filter, map, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -55,7 +55,7 @@ export class OnChainService {
   }
 
   private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0);
+    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0) || false;
   }
 
   constructor(
@@ -152,11 +152,14 @@ export class OnChainService {
     );
   }
 
+  /**
+   * @returns transactionHash on successful swap
+   */
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
     directTransaction?: EvmEncodeConfig
-  ): Promise<void> {
+  ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
@@ -215,11 +218,13 @@ export class OnChainService {
         this.tokensService.findToken(trade.from),
         this.tokensService.findToken(trade.to)
       ]);
+
+      await this.conditionalAwait(fromBlockchain);
       await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
         const txStatusData = await firstValueFrom(
-          interval(7_000).pipe(
+          timer(7_000).pipe(
             switchMap(() =>
               this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
             ),
@@ -234,7 +239,7 @@ export class OnChainService {
         }
       }
 
-      this.updateTrade(transactionHash, true);
+      return transactionHash;
     } catch (err) {
       if (err instanceof NotWhitelistedProviderError) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
@@ -245,7 +250,7 @@ export class OnChainService {
       }
 
       if (transactionHash && !this.isNotMinedError(err)) {
-        this.updateTrade(transactionHash, false);
+        await this.onChainApiService.patchTrade(transactionHash, false);
       }
 
       throw RubicSdkErrorParser.parseError(err);
@@ -327,12 +332,6 @@ export class OnChainService {
     );
   }
 
-  private updateTrade(hash: string, success: boolean): Subscription {
-    return this.onChainApiService.patchTrade(hash, success).subscribe({
-      error: err => console.debug('IT patch request is failed', err)
-    });
-  }
-
   public saveNotWhitelistedProvider(
     error: NotWhitelistedProviderError,
     blockchain: BlockchainName,
@@ -348,5 +347,12 @@ export class OnChainService {
         'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
       )
     );
+  }
+
+  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
+    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+      const waitTime = 3_000;
+      await firstValueFrom(timer(waitTime));
+    }
   }
 }

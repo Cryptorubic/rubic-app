@@ -30,7 +30,10 @@ export class CrossChainTableService extends TableService<
 > {
   public readonly statusFilter = new FormControl<string>('All');
 
+  public readonly addressChange$ = this.walletConnector.addressChange$;
+
   public readonly request$ = combineLatest([
+    this.addressChange$,
     this.sorter$,
     this.direction$,
     this.page$,
@@ -39,7 +42,7 @@ export class CrossChainTableService extends TableService<
     this.activeItemIndex$
   ]).pipe(
     debounceTime(50),
-    switchMap(query => this.getData(...query).pipe(startWith(null))),
+    switchMap(([_, ...query]) => this.getData(...query).pipe(startWith(null))),
     share()
   );
 
@@ -158,7 +161,8 @@ export class CrossChainTableService extends TableService<
           fromTx,
           toTx,
           date: backendData.created_at,
-          provider
+          provider,
+          ...(backendData.changenow_id && { changenowId: backendData.changenow_id })
         };
       }),
       total: response.count

@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import {
+  CHAIN_TYPE,
   Configuration,
   CrossChainManager,
   CrossChainStatusManager,
+  CrossChainSymbiosisManager,
+  DeflationTokenManager,
+  LimitOrderManager,
   OnChainManager,
   OnChainStatusManager,
   SDK,
   WalletProvider,
-  WalletProviderCore,
-  CHAIN_TYPE,
-  CrossChainSymbiosisManager,
-  LimitOrderManager,
-  DeflationTokenManager
+  WalletProviderCore
 } from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';

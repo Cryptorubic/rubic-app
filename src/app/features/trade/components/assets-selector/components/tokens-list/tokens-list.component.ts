@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { BehaviorSubject, of, switchMap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
-import { MobileNativeModalService } from '@core/modals/services/mobile-native-modal.service';
+import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
+import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -35,17 +35,13 @@ export class TokensListComponent {
     })
   );
 
-  private readonly _metisText$ = new BehaviorSubject<string>('');
-
-  public readonly metisText$ = this._metisText$.asObservable();
-
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
   constructor(
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly tokensListService: TokensListService,
     private readonly tokensListStoreService: TokensListStoreService,
-    private readonly mobileNativeService: MobileNativeModalService
+    private readonly mobileNativeService: MobileNativeModalService,
+    private readonly assetsSelectorService: AssetsSelectorService
   ) {}
 
   /**
@@ -58,10 +54,6 @@ export class TokensListComponent {
     return `${tokenListElement.blockchain}_${tokenListElement.address}`;
   }
 
-  /**
-   * Selects token.
-   * @param token Selected token.
-   */
   public onTokenSelect(token: AvailableTokenAmount): void {
     this.mobileNativeService.forceClose();
 

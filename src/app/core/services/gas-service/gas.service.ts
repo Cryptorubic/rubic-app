@@ -197,7 +197,9 @@ export class GasService {
     const requestTimeout = 2000;
 
     const oneInchEstimation$ = this.httpClient
-      .get<OneInchGasResponse>('https://x-api.rubic.exchange/api/gas-price/v1.4/1')
+      .get<OneInchGasResponse>('https://x-api.rubic.exchange/api/gas-price/v1.4/1', {
+        headers: { apikey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4' }
+      })
       .pipe(
         timeout(requestTimeout),
         map(response => ({

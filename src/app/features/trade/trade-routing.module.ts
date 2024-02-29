@@ -6,8 +6,6 @@ import { PreviewSwapComponent } from '@features/trade/components/preview-swap/pr
 const routes: Routes = [
   { path: '', component: TradeViewContainerComponent },
   { path: 'preview', component: PreviewSwapComponent, pathMatch: 'full' }
-  // { path: 'fiat', component: FiatPageComp}
-  // { path: 'changenow-post', component: ChangenowPostFormComponent }
 ];
 
 @NgModule({

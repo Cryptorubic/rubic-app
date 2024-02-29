@@ -32,6 +32,10 @@
     gap: var(--tui-padding-xs);
     align-items: center;
     justify-content: space-between;
+
+    tui-loader {
+      overflow: inherit;
+    }
   }
 
   &__info {

@@ -55,6 +55,7 @@ import {
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -212,7 +213,7 @@ export class PreviewSwapService {
     srcHash: string,
     timestamp: number,
     toBlockchain: BlockchainName,
-    additionalInfo: { changenowId?: string; rangoRequestId?: string }
+    additionalInfo: CrossChainSwapAdditionalParams
   ): void {
     const pollingSubscription$ = interval(30_000)
       .pipe(
@@ -231,9 +232,6 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
-                }),
-                ...('amountOutMin' in tradeState.trade && {
-                  amountOutMin: tradeState.trade.amountOutMin as string
                 })
               },
               tradeState.tradeType as CrossChainTradeType
@@ -260,28 +258,26 @@ export class PreviewSwapService {
   }
 
   private subscribeOnNetworkChange(): void {
-    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(() =>
-      this.checkNetwork()
+    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(
+      network => this.checkNetwork(network)
     );
     this.subscriptions$.push(networkChangeSubscription$);
   }
 
   private subscribeOnAddressChange(): void {
-    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(() =>
-      this.checkAddress()
+    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(
+      address => this.checkAddress(address)
     );
     this.subscriptions$.push(addressChangeSubscription$);
   }
 
-  private checkAddress(): void {
-    const address = this.walletConnectorService.address;
+  private checkAddress(address: string = this.walletConnectorService.address): void {
     const state = this._transactionState$.getValue();
     state.data.activeWallet = Boolean(address);
     this.setNextTxState(state);
   }
 
-  private checkNetwork(): void {
-    const network = this.walletConnectorService.network;
+  private checkNetwork(network: BlockchainName = this.walletConnectorService.network): void {
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();
@@ -348,7 +344,7 @@ export class PreviewSwapService {
                   });
                 }
               },
-              onSwap: (additionalInfo: { changenowId?: string; rangoRequestId?: string }) => {
+              onSwap: (additionalInfo?: CrossChainSwapAdditionalParams) => {
                 if (this.useCallback) {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this.setNextTxState({

@@ -29,6 +29,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#1275b7',
     averageTime: 5
   },
+  // @TODO HORIZON
+  [BRIDGE_TYPE.ARCHON_BRIDGE]: {
+    name: 'Archon bridge',
+    image: `assets/images/icons/coins/pulsechain.svg`,
+    color: '#fff',
+    averageTime: 5
+  },
   [BRIDGE_TYPE.AVALANCHE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,
@@ -120,6 +127,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5
   },
   //LLLLLLLLLLLLLLLLL
+  [BRIDGE_TYPE.LAYERZERO]: {
+    name: 'LayerZero',
+    image: `${imageBasePath}layerzero.svg`,
+    color: '#999999',
+    averageTime: 5
+  },
   [BRIDGE_TYPE.LIFI]: {
     name: 'LiFi',
     image: `${imageBasePath}lifi.svg`,

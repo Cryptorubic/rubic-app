@@ -55,11 +55,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}astroswap.png`,
     color: '#adaaaa'
   },
-  [ON_CHAIN_TRADE_TYPE.ASCENT]: {
-    name: 'Ascent',
-    image: `${imageBasePath}ascent.svg`,
-    color: '#24D399'
-  },
+  // [ON_CHAIN_TRADE_TYPE.ASCENT]: {
+  //   name: 'Ascent',
+  //   image: `${imageBasePath}ascent.svg`,
+  //   color: '#24D399'
+  // },
   [ON_CHAIN_TRADE_TYPE.AURORA_SWAP]: {
     name: 'AuroraSwap',
     image: `${imageBasePath}auroraswap.svg`,
@@ -177,6 +177,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Dfyn',
     image: `${imageBasePath}dfyn.svg`,
     color: '#828CBE'
+  },
+  [ON_CHAIN_TRADE_TYPE.DLN]: {
+    name: 'DLN',
+    image: `${imageBasePath}dln.svg`,
+    color: '#9C6FC7'
   },
   [ON_CHAIN_TRADE_TYPE.DODO]: {
     name: 'Dodo',
@@ -306,6 +311,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //OOOOOOOOOOOOOOOOOOOOOOO
+  [ON_CHAIN_TRADE_TYPE.ODOS]: {
+    name: 'Odos',
+    image: `${imageBasePath}odos.svg`,
+    color: 'brown'
+  },
   [ON_CHAIN_TRADE_TYPE.OKC_SWAP]: {
     name: 'OkcSwap',
     image: `${imageBasePath}okcswap.png`,

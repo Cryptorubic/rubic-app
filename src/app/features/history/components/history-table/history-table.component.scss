@@ -105,12 +105,22 @@
 
   .status-from-link-arrow,
   .status-to-link-arrow {
-    margin-left: var(--tui-padding-xs);
+    margin-left: var(--tui-padding-s);
+
+    color: var(--tui-link);
   }
 
   .statusTo {
-    &-actionButton__wrapper {
+    &-action-button__wrapper {
       width: 87.4px;
+    }
+  }
+
+  .statusFrom {
+    &-dropdown {
+      app-dropdown-options-table-item {
+        margin-left: 1px;
+      }
     }
   }
 
@@ -163,6 +173,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &-value {
+        &-dropdown {
+          position: relative;
+          left: var(--tui-padding-s);
+        }
+
+        &-action-button__wrapper {
+          width: 87.4px;
+        }
+      }
     }
   }
 }

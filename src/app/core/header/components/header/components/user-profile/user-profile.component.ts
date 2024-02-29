@@ -66,7 +66,9 @@ export class UserProfileComponent {
   public avatar$ = this.authService.currentUser$.pipe(
     combineLatestWith(this.walletConnectorService.networkChange$),
     map(([user, blockchainName]) => {
-      const currentBlockchainIcon = blockchainName ? blockchainIcon[blockchainName] : '';
+      const currentBlockchainIcon = blockchainName
+        ? blockchainIcon[blockchainName]
+        : 'assets/images/icons/coins/default-chain.svg';
 
       return user?.avatar ? user.avatar : currentBlockchainIcon;
     })
