@@ -25,7 +25,11 @@ export class ActionButtonService {
     debounceTime(10),
     startWith(this.getDefaultParams()),
     share(),
-    map(params => this.getState(...params))
+    map(params =>
+      this.getState(
+        ...(params as [SelectedTrade, boolean, boolean, string, boolean, boolean, string])
+      )
+    )
   );
 
   constructor(
