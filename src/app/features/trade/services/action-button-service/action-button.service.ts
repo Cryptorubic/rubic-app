@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { combineLatestWith } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { debounceTime, map, share, startWith } from 'rxjs/operators';
 import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
@@ -13,23 +13,19 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 
 @Injectable()
 export class ActionButtonService {
-  public readonly buttonState$ = this.tradeState.tradeState$.pipe(
-    combineLatestWith(
-      this.tradeState.wrongBlockchain$,
-      this.tradeState.notEnoughBalance$,
-      this.walletConnector.addressChange$,
-      this.targetNetworkAddressService.isAddressValid$,
-      this.targetNetworkAddressService.isAddressRequired$,
-      this.targetNetworkAddressService.address$
-    ),
+  public readonly buttonState$ = combineLatest([
+    this.tradeState.tradeState$,
+    this.tradeState.wrongBlockchain$,
+    this.tradeState.notEnoughBalance$,
+    this.walletConnector.addressChange$,
+    this.targetNetworkAddressService.isAddressValid$,
+    this.targetNetworkAddressService.isAddressRequired$,
+    this.targetNetworkAddressService.address$
+  ]).pipe(
     debounceTime(10),
     startWith(this.getDefaultParams()),
     share(),
-    map(params =>
-      this.getState(
-        ...(params as [SelectedTrade, boolean, boolean, string, boolean, boolean, string])
-      )
-    )
+    map(params => this.getState(...params))
   );
 
   constructor(
@@ -55,7 +51,7 @@ export class ActionButtonService {
   }
 
   private getState(
-    currentTrade: SelectedTrade | null,
+    currentTrade: SelectedTrade,
     wrongBlockchain: boolean,
     notEnoughBalance: boolean,
     address: string,
