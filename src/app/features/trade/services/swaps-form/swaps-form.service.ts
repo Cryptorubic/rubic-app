@@ -105,7 +105,7 @@ export class SwapsFormService {
   public readonly outputControl = this.form.controls.output;
 
   public get outputValue(): SwapFormOutput {
-    return this.outputControl.value as SwapFormOutput;
+    return this.outputControl.getRawValue();
   }
 
   private readonly _outputValue$ = new BehaviorSubject<SwapFormOutput>(this.outputValue);
