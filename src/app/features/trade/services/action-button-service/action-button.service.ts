@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { debounceTime, map, share, startWith } from 'rxjs/operators';
+import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
 import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
@@ -13,20 +12,24 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 
 @Injectable()
 export class ActionButtonService {
-  public readonly buttonState$ = combineLatest([
-    this.tradeState.tradeState$,
-    this.tradeState.wrongBlockchain$,
-    this.tradeState.notEnoughBalance$,
-    this.walletConnector.addressChange$,
-    this.targetNetworkAddressService.isAddressValid$,
-    this.targetNetworkAddressService.isAddressRequired$,
-    this.targetNetworkAddressService.address$
-  ]).pipe(
-    debounceTime(10),
-    startWith(this.getDefaultParams()),
-    share(),
-    map(params => this.getState(...params))
-  );
+  public readonly buttonState$ = this.tradeState.tradeState$
+    .pipe(
+      combineLatestWith([
+        this.tradeState.wrongBlockchain$,
+        this.tradeState.notEnoughBalance$,
+        this.walletConnector.addressChange$,
+        this.targetNetworkAddressService.isAddressValid$,
+        this.targetNetworkAddressService.isAddressRequired$,
+        this.targetNetworkAddressService.address$
+      ])
+    )
+    .pipe(
+      debounceTime(10),
+      startWith(this.getDefaultParams()),
+      share(),
+      //@ts-ignore
+      map(params => this.getState(...params))
+    );
 
   constructor(
     private readonly tradeState: SwapsStateService,
