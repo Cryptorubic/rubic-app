@@ -10,6 +10,8 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 
+type StateOptions = [SelectedTrade, boolean, boolean, string, boolean, boolean, string];
+
 @Injectable()
 export class ActionButtonService {
   public readonly buttonState$ = this.tradeState.tradeState$
@@ -27,8 +29,7 @@ export class ActionButtonService {
       debounceTime(10),
       startWith(this.getDefaultParams()),
       share(),
-      //@ts-ignore
-      map(params => this.getState(...params))
+      map((params: StateOptions) => this.getState(...params))
     );
 
   constructor(
