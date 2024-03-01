@@ -146,7 +146,10 @@ export class RubicSdkErrorParser {
       );
     }
 
-    if (err.message.includes('price change more than your slippage!')) {
+    if (
+      err.message.includes('price change more than your slippage!') ||
+      err.message.includes('Return amount is not enough')
+    ) {
       return new RubicError('Please, increase the slippage and try again!');
     }
 
