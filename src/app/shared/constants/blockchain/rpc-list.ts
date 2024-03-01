@@ -259,9 +259,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: ['https://sepolia.blast.io'],
   [BLOCKCHAIN_NAME.BLAST]: [
+    'https://rpc.ankr.com/blast',
     'https://rpc.ankr.com/blast/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.blast.io',
-    'https://rpc.ankr.com/blast',
     'https://blast.din.dev/rpc',
     'https://blastl2-mainnet.public.blastapi.io',
     'https://blast.blockpi.network/v1/rpc/public'
