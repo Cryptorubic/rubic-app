@@ -61,12 +61,12 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
-  public profileText$: Observable<string> = this.authService.currentUser$.pipe(
+  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
     map(user => (user?.name ? user.name : user.address)),
     startWith(this.authService.userAddress)
   );
 
-  public avatar$ = this.authService.currentUser$.pipe(
+  public readonly avatar$ = this.authService.currentUser$.pipe(
     combineLatestWith(this.walletConnectorService.networkChange$),
     map(([user, blockchainName]) => {
       const currentBlockchainIcon = blockchainName
@@ -77,8 +77,8 @@ export class UserProfileComponent {
     })
   );
 
-  public hasSpaceIdAvatar$ = this.avatar$.pipe(
-    map(src => src.search(basePathBlockchainIcon) === -1)
+  public readonly hasSpaceIdAvatar$ = this.avatar$.pipe(
+    map(src => !src.includes(basePathBlockchainIcon))
   );
 
   public logout(): void {

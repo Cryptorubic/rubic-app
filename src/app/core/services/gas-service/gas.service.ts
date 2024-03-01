@@ -349,17 +349,6 @@ export class GasService {
     );
   }
 
-  // @Cacheable({
-  //   maxAge: GasService.requestInterval
-  // })
-  // private fetchRootstockGas(): Observable<GasPrice> {
-  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ROOTSTOCK);
-  //   return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-  //     map(formatEIP1559Gas),
-  //     catchError(() => of(null))
-  //   );
-  // }
-
   /**
    * Gets Arbitrum gas from blockchain.
    * @return Observable<number> Average gas price in Gwei.
