@@ -409,12 +409,11 @@ export class GasService {
   @Cacheable({
     maxAge: GasService.requestInterval
   })
-  private fetchBlastGas(): Observable<GasPrice> {
+  private fetchBlastGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map(gasPriceInWei => {
-        return { gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 15).toFixed() };
-      })
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 
