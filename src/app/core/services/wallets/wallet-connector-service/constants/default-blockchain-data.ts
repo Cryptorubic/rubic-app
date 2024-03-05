@@ -153,6 +153,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
     name: 'Blast Testnet',
-    rpc: 'https://rpc.ankr.com/blast_testnet_sepolia/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    rpc: 'https://sepolia.blast.io'
   }
 };
