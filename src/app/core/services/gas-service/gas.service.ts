@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, of } from 'rxjs';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -409,12 +409,11 @@ export class GasService {
   @Cacheable({
     maxAge: GasService.requestInterval
   })
-  private fetchBlastGas(): Observable<GasPrice> {
+  private fetchBlastGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      switchMap(gasPriceInWei =>
-        of({ gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed() })
-      )
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 
