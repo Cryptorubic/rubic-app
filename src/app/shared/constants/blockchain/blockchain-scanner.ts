@@ -762,14 +762,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.STACKS]: {
-    baseUrl: 'https://explorer.stacks.co/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'txid/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.SOLAR]: {
     baseUrl: 'https://explorer.solar.org/',
     nativeCoinUrl: '',
