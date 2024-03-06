@@ -149,6 +149,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.BLAST]: {
     name: 'Blast',
-    rpc: ' https://rpc.ankr.com/blast'
+    rpc: 'https://rpc.ankr.com/blast'
+  },
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
+    name: 'Blast Testnet',
+    rpc: 'https://sepolia.blast.io'
   }
 };
