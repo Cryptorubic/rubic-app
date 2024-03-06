@@ -35,6 +35,8 @@ import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
+import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
+import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -133,6 +135,13 @@ export class WalletConnectorService {
       return new TronLinkAdapter(...defaultConstructorParameters);
     }
 
+    if (walletName === WALLET_NAME.PHANTOM) {
+      return new PhantomWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.SOLFLARE) {
+      return new SolflareWalletAdapter(...defaultConstructorParameters);
+    }
     this.errorService.catch(new WalletNotInstalledError());
   }
 
@@ -151,8 +160,13 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.EVM) {
       return Object.values(EVM_BLOCKCHAIN_NAME);
     }
-    // chainType === CHAIN_TYPE.TRON
-    return [BLOCKCHAIN_NAME.TRON];
+    if (this.chainType === CHAIN_TYPE.TRON) {
+      return [BLOCKCHAIN_NAME.TRON];
+    }
+    if (this.chainType === CHAIN_TYPE.SOLANA) {
+      return [BLOCKCHAIN_NAME.SOLANA];
+    }
+    throw new Error('Blockchain is not supported');
   }
 
   /**
@@ -166,7 +180,7 @@ export class WalletConnectorService {
     customRpcUrl?: string
   ): Promise<boolean> {
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
-    const provider = this.provider as EvmWalletAdapter;
+    const provider = this.provider;
     try {
       await provider.switchChain(chainId);
       return true;
@@ -211,7 +225,7 @@ export class WalletConnectorService {
     const icon = blockchainIcon[evmBlockchainName];
 
     let chainName = blockchainLabel[evmBlockchainName];
-    let rpcUrl = rpcList[evmBlockchainName][0];
+    let rpcUrl: string;
     const defaultData = defaultBlockchainData[evmBlockchainName];
 
     if (customRpcUrl) {
@@ -220,6 +234,8 @@ export class WalletConnectorService {
     } else if (defaultData) {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
+    } else {
+      rpcUrl = rpcList[evmBlockchainName][0];
     }
 
     return {

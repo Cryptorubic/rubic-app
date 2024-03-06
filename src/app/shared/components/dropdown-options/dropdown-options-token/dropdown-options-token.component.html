@@ -41,6 +41,37 @@
           </ng-template>
         </ng-container>
 
+        <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
+          <div class="dropdown-content__security-container">
+            <a
+              class="dropdown-content__security-container-icon"
+              [inlineSVG]="
+                'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
+              "
+              [tuiHint]="tokenSecurityHint"
+              tuiHintAppearance="onDark"
+              [tuiHintShowDelay]="50"
+              tuiHintDirection="top-right"
+              [tuiHintHideDelay]="100"
+              [href]="goPlusLabsLink"
+              rel="noopener noreferrer"
+              target="_blank"
+              (click)="$event.stopPropagation()"
+            ></a>
+
+            <ng-template #tokenSecurityHint>
+              <span class="dropdown-content__security-container-hint">
+                {{ securityMessages[securityStatus] }}
+              </span>
+              <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
+                <span class="dropdown-content__security-container--hint-powered-by"
+                  >Powered by Go+</span
+                >
+              </ng-container>
+            </ng-template>
+          </div>
+        </ng-container>
+
         <ng-container>
           <tui-loader
             class="dropdown-content__favorite-container"

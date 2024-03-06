@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, forkJoin, from, Observable, of, timer } from 'rxjs';
-import { catchError, map, switchMap, timeout } from 'rxjs/operators';
+import { forkJoin, from, Observable, of } from 'rxjs';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
 import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -29,7 +29,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MANTLE,
   BLOCKCHAIN_NAME.POLYGON_ZKEVM,
   BLOCKCHAIN_NAME.SCROLL,
-  BLOCKCHAIN_NAME.MANTA_PACIFIC
+  BLOCKCHAIN_NAME.MANTA_PACIFIC,
+  BLOCKCHAIN_NAME.BLAST
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -48,17 +49,25 @@ export class GasService {
   /**
    * Gas price functions for different networks.
    */
-  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<GasPrice | null>>;
-
-  /**
-   * Gas price in Gwei subject.
-   */
-  private readonly networkGasPrice$: NetworksGasPrice<BehaviorSubject<GasPrice | null>>;
-
-  /**
-   * Gas price update interval in seconds.
-   */
-  private readonly updateInterval: number;
+  private readonly gasPriceFunctions: NetworksGasPrice<() => Observable<GasPrice | null>> = {
+    [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
+    [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
+    [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this),
+    [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this),
+    [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
+    [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
+    [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
+    [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
+    [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
+    [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
+    [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this),
+    [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this),
+    [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
+    [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
+    [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
+    [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
+    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this)
+  };
 
   private static isSupportedBlockchain(
     blockchain: BlockchainName
@@ -66,59 +75,7 @@ export class GasService {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
-  constructor(private readonly httpClient: HttpClient) {
-    this.updateInterval = 15_000;
-
-    this.networkGasPrice$ = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.POLYGON]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.AVALANCHE]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.TELOS]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.FANTOM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.ETHEREUM_POW]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.OPTIMISM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.ARBITRUM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.ZK_SYNC]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.LINEA]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.BASE]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.MANTLE]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.SCROLL]: new BehaviorSubject(null),
-      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: new BehaviorSubject(null)
-    };
-    this.gasPriceFunctions = {
-      [BLOCKCHAIN_NAME.ETHEREUM]: this.fetchEthGas.bind(this),
-      [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: this.fetchBscGas.bind(this),
-      [BLOCKCHAIN_NAME.POLYGON]: this.fetchPolygonGas.bind(this),
-      [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this),
-      [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
-      [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
-      [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
-      [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
-      [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
-      [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
-      [BLOCKCHAIN_NAME.LINEA]: this.fetchLineaGas.bind(this),
-      [BLOCKCHAIN_NAME.BASE]: this.fetchBaseGas.bind(this),
-      [BLOCKCHAIN_NAME.MANTLE]: this.fetchMantleGas.bind(this),
-      [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
-      [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
-      [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this)
-    };
-
-    this.setIntervalOnGasPriceRefreshing();
-  }
-
-  /**
-   * Gas price in Gwei for selected blockchain as observable.
-   * @param blockchain Blockchain to get gas price from.
-   */
-  public getGasPrice$(blockchain: BlockchainName): Observable<GasPrice | null> {
-    if (!GasService.isSupportedBlockchain(blockchain)) {
-      throw Error('Not supported blockchain');
-    }
-    return this.networkGasPrice$[blockchain].asObservable();
-  }
+  constructor(private readonly httpClient: HttpClient) {}
 
   /**
    * Gas price in Eth units for selected blockchain.
@@ -168,24 +125,6 @@ export class GasService {
   }
 
   /**
-   * Updates gas price in interval.
-   */
-  private setIntervalOnGasPriceRefreshing(): void {
-    const timer$ = timer(0, this.updateInterval);
-    timer$
-      .pipe(
-        switchMap(() => {
-          return this.gasPriceFunctions[BLOCKCHAIN_NAME.ETHEREUM]();
-        })
-      )
-      .subscribe((ethGasPrice: GasPrice | null) => {
-        if (ethGasPrice) {
-          this.networkGasPrice$[BLOCKCHAIN_NAME.ETHEREUM].next(ethGasPrice);
-        }
-      });
-  }
-
-  /**
    * Gets ETH gas from different APIs, sorted by priority, in case of errors.
    * @return Observable<number> Average gas price in Gwei.
    */
@@ -197,7 +136,9 @@ export class GasService {
     const requestTimeout = 2000;
 
     const oneInchEstimation$ = this.httpClient
-      .get<OneInchGasResponse>('https://x-api.rubic.exchange/api/gas-price/v1.4/1')
+      .get<OneInchGasResponse>('https://x-api.rubic.exchange/api/gas-price/v1.4/1', {
+        headers: { apikey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4' }
+      })
       .pipe(
         timeout(requestTimeout),
         map(response => ({
@@ -462,6 +403,17 @@ export class GasService {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchBlastGas(): Observable<GasPrice | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 

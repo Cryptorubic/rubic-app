@@ -256,28 +256,26 @@ export class PreviewSwapService {
   }
 
   private subscribeOnNetworkChange(): void {
-    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(() =>
-      this.checkNetwork()
+    const networkChangeSubscription$ = this.walletConnectorService.networkChange$.subscribe(
+      network => this.checkNetwork(network)
     );
     this.subscriptions$.push(networkChangeSubscription$);
   }
 
   private subscribeOnAddressChange(): void {
-    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(() =>
-      this.checkAddress()
+    const addressChangeSubscription$ = this.walletConnectorService.addressChange$.subscribe(
+      address => this.checkAddress(address)
     );
     this.subscriptions$.push(addressChangeSubscription$);
   }
 
-  private checkAddress(): void {
-    const address = this.walletConnectorService.address;
+  private checkAddress(address: string = this.walletConnectorService.address): void {
     const state = this._transactionState$.getValue();
     state.data.activeWallet = Boolean(address);
     this.setNextTxState(state);
   }
 
-  private checkNetwork(): void {
-    const network = this.walletConnectorService.network;
+  private checkNetwork(network: BlockchainName = this.walletConnectorService.network): void {
     const selectedTrade = this._selectedTradeState$.value;
     const tokenBlockchain = selectedTrade?.trade?.from?.blockchain;
     const state = this._transactionState$.getValue();

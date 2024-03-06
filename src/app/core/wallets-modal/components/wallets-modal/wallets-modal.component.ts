@@ -58,10 +58,8 @@ export class WalletsModalComponent implements OnInit {
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
 
     return this.isMobile
-      ? isChromiumProviders.filter(
-          provider => !provider.desktopOnly && provider.value !== WALLET_NAME.BITKEEP
-        )
-      : isChromiumProviders.filter(provider => !provider.mobileOnly);
+      ? isChromiumProviders.filter(provider => provider.supportsMobile)
+      : isChromiumProviders.filter(provider => provider.supportsDesktop);
   }
 
   public get isMobile(): boolean {
@@ -131,13 +129,7 @@ export class WalletsModalComponent implements OnInit {
 
   private async redirectToMetamaskBrowser(): Promise<void> {
     const queryUrl = `${this.window.location.host}${this.window.location.search}`;
-    this.window.location.assign(`https://metamask.app.link/dapp/${queryUrl}`);
-    await new Promise<void>(resolve => {
-      setTimeout(() => {
-        this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
-      }, 5000);
-      resolve();
-    });
+    this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
   }
 
   private redirectToCoinbaseBrowser(): void {
@@ -192,18 +184,17 @@ export class WalletsModalComponent implements OnInit {
         return;
       }
 
-      try {
-        const connectionTime = 15_000;
-        await firstValueFrom(
-          from(this.authService.connectWallet({ walletName: provider })).pipe(
-            timeout(connectionTime),
-            catchError(() => of(`Request timed out after: ${connectionTime}`))
-          )
-        );
-      } catch (e) {
-        this.headerStore.setWalletsLoadingStatus(false);
-      }
-      this.headerStore.setWalletsLoadingStatus(false);
+      const connectionTime = 15_000;
+      await firstValueFrom(
+        from(this.authService.connectWallet({ walletName: provider })).pipe(
+          timeout(connectionTime),
+          catchError(() => {
+            this.headerStore.setWalletsLoadingStatus(false);
+            return of(`Request timed out after: ${connectionTime}`);
+          })
+        )
+      );
+
       this.close();
     }
   }

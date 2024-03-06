@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -47,7 +47,6 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 
@@ -98,7 +97,7 @@ export class CrossChainService {
           ...toToken,
           price: new BigNumber(toPrice as number | null)
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain);
+        const options = this.getOptions(disabledTradeTypes);
 
         const calculationStartTime = Date.now();
 
@@ -148,8 +147,7 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName
+    disabledTradeTypes: CrossChainTradeType[]
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -167,7 +165,7 @@ export class CrossChainService {
         ...(queryDisabledTradeTypes || [])
       ])
     );
-    const calculateGas = shouldCalculateGas[fromBlockchain] && this.authService.userAddress;
+    const calculateGas = this.authService.userAddress;
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -186,7 +184,10 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: this.platformConfigurationService.useCrossChainChainProxy
+      useProxy: {
+        ...this.platformConfigurationService.useCrossChainChainProxy
+        // dln: false
+      }
     };
   }
 
@@ -284,6 +285,7 @@ export class CrossChainService {
 
     try {
       await trade.swap(swapOptions);
+      await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       return transactionHash;
     } catch (error) {
@@ -401,8 +403,9 @@ export class CrossChainService {
 
   private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
     const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
+    const isCnTrade = trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW;
 
-    return (trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW && swapWithProxy) || swapWithProxy;
+    return isCnTrade || swapWithProxy;
   }
 
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
@@ -449,5 +452,12 @@ export class CrossChainService {
       'crosschain',
       fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
+  }
+
+  private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
+    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+      const waitTime = 3_000;
+      await firstValueFrom(timer(waitTime));
+    }
   }
 }
