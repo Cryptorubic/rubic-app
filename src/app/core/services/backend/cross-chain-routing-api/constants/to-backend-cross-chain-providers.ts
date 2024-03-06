@@ -16,6 +16,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.TAIKO_BRIDGE]: 'taiko_bridge',
   [CROSS_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [CROSS_CHAIN_TRADE_TYPE.PULSE_CHAIN_BRIDGE]: 'pulsechain_bridge',
+  [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE]: 'orbiter_bridge',
   [CROSS_CHAIN_TRADE_TYPE.LAYERZERO]: 'layerzero'
 } as const;
 

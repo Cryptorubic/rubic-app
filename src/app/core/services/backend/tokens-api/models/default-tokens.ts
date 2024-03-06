@@ -1068,14 +1068,14 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.BLAST]: [
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
     {
-      ...nativeTokensList[BLOCKCHAIN_NAME.BLAST],
+      ...nativeTokensList[BLOCKCHAIN_NAME.BLAST_TESTNET],
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/eth.png'
     } as Token,
     {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BLAST],
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BLAST_TESTNET],
       ...defaultTokenParams,
       image: 'assets/images/icons/default-tokens/weth.png'
     } as Token

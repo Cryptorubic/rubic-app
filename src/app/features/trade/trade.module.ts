@@ -65,6 +65,7 @@ import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service'
 import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
+import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 
 @NgModule({
   declarations: [
@@ -159,7 +160,8 @@ import { PromotionBadgeComponent } from './components/provider-element/promotion
     OnChainApiService,
     SwapTokensUpdaterService,
     TradePageService,
-    CnSwapService
+    CnSwapService,
+    ActionButtonService
     // SettingsService,
     // RefreshService,
     // TradeService,

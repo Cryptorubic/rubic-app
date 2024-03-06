@@ -1,22 +1,29 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName, TronWebProvider } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  EvmBlockchainName,
+  SolanaBlockchainName,
+  TronBlockchainName,
+  TronWebProvider
+} from 'rubic-sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
-  Record<TronBlockchainName, TronWebProvider[]> = {
+  Record<TronBlockchainName, TronWebProvider[]> &
+  Record<SolanaBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://eth.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
     'https://eth.llamarpc.com',
     'https://rpc.ankr.com/eth'
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
     'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://bsc.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://go.getblock.io/734bf9d3bd634a7db4b6900fd5fbf8bb',
     'https://binance.llamarpc.com',
     'https://rpc.ankr.com/bsc'
   ],
   [BLOCKCHAIN_NAME.POLYGON]: [
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://matic.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://go.getblock.io/2f5bb74f58cc442bab974615fa00a167',
     'https://polygon.llamarpc.com',
     'https://1rpc.io/matic',
     'https://rpc.ankr.com/polygon'
@@ -24,32 +31,37 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
     'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     // 'https://nd-286-108-077.p2pify.com/2bf96e69ad7bef27f9598f04c61ed737',
-    'https://go.getblock.io/dc26bc690261423eba3ddcf356fcda2c',
+    'https://go.getblock.io/709661d31f3d436bb87a56de04bb4116',
     'https://zkevm-rpc.com',
     'https://1rpc.io/polygon/zkevm',
     'https://polygon-zkevm-mainnet.public.blastapi.io'
   ],
-  [BLOCKCHAIN_NAME.HARMONY]: ['https://api.harmony.one', 'https://api.s0.t.hmny.io/'],
+  [BLOCKCHAIN_NAME.HARMONY]: [
+    'https://rpc.ankr.com/harmony/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://api.harmony.one',
+    'https://api.s0.t.hmny.io/'
+  ],
   [BLOCKCHAIN_NAME.AVALANCHE]: [
     'https://rpc.ankr.com/avalanche/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://avax.getblock.io/mainnet/ext/bc/C/rpc?api_key=02530958-c8c4-4297-974c-66203e79800d',
+    'https://go.getblock.io/60b585dee7e84d18800f6a25ad3b5d9e',
     'https://1rpc.io/avax/c',
     'https://rpc.ankr.com/avalanche'
   ],
   [BLOCKCHAIN_NAME.MOONRIVER]: [
-    'https://moonriver.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
     'https://moonriver.public.blastapi.io',
-    'https://moonriver.unitedbloc.com:2000'
+    'https://moonriver.unitedbloc.com:2000',
+    'https://moonriver-rpc.publicnode.com',
+    'https://moonriver.api.onfinality.io/public'
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
     'https://rpc.ankr.com/fantom/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://ftm.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/52285c25185c43f9ad989b38327160bf',
     'https://rpc.ankr.com/fantom',
     'https://1rpc.io/ftm'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://arb.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8',
     'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.llamarpc.com',
     'https://rpc.ankr.com/arbitrum'
@@ -64,18 +76,24 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.OPTIMISM]: [
     'https://rpc.ankr.com/optimism/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://op.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/99bd76f5d52249f4b394ca5cd69b2043',
     'https://optimism.llamarpc.com',
     'https://rpc.ankr.com/optimism'
   ],
-  [BLOCKCHAIN_NAME.CRONOS]: ['https://evm-cronos.crypto.org'],
+  [BLOCKCHAIN_NAME.CRONOS]: [
+    'https://go.getblock.io/4d913910a05d47ad8a77845b06cb7c84',
+    'https://evm-cronos.crypto.org'
+  ],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
   [BLOCKCHAIN_NAME.GNOSIS]: [
     'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
   ],
   [BLOCKCHAIN_NAME.FUSE]: ['https://fuse-pokt.nodies.app', 'https://rpc.fuse.io'],
   [BLOCKCHAIN_NAME.MOONBEAM]: [
-    'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    'https://rpc.ankr.com/moonbeam/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://moonbeam.publicnode.com',
+    'https://1rpc.io/glmr',
+    'https://rpc.ankr.com/moonbeam'
   ],
   [BLOCKCHAIN_NAME.CELO]: [
     'https://rpc.ankr.com/celo/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
@@ -91,14 +109,20 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.astar.network:8545'
   ],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
-  [BLOCKCHAIN_NAME.KAVA]: ['https://evm.kava.io'],
+  [BLOCKCHAIN_NAME.KAVA]: [
+    'https://rpc.ankr.com/premium-http/kava_api/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://evm.kava.io'
+  ],
   [BLOCKCHAIN_NAME.TRON]: [
+    // {
+    //   fullHost:
+    //     'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    // },
+    // {
+    //   fullHost: 'https://go.getblock.io/adeeade0e28e4b879ac4340637e0946d'
+    // },
     {
       fullHost: 'https://api.trongrid.io'
-    },
-    {
-      fullHost:
-        'https://rpc.ankr.com/premium-http/tron/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
     }
   ],
   /*
@@ -108,6 +132,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
    */
   [BLOCKCHAIN_NAME.BITGERT]: [
+    'https://go.getblock.io/6e4887d81fd043c0b2fc8aa1f338fa2d',
     'https://serverrpc.com',
     'https://dedicated.brisescan.com/',
     'https://rpc-bitgert-vefi.com',
@@ -137,12 +162,20 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://klaytn05.fandom.finance'
   ],
   [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
-  [BLOCKCHAIN_NAME.SYSCOIN]: ['https://rpc.syscoin.org', 'https://rpc.ankr.com/syscoin'],
+  [BLOCKCHAIN_NAME.SYSCOIN]: [
+    'https://rpc.ankr.com/syscoin/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/8c1c028216e54c68b56b208984d3454c',
+    'https://rpc.syscoin.org',
+    'https://rpc.ankr.com/syscoin'
+  ],
   [BLOCKCHAIN_NAME.ETHEREUM_CLASSIC]: [
     'https://besu-at.etc-network.info',
     'https://geth-at.etc-network.info'
   ],
-  [BLOCKCHAIN_NAME.FLARE]: ['https://flare-api.flare.network/ext/C/rpc'],
+  [BLOCKCHAIN_NAME.FLARE]: [
+    'https://rpc.ankr.com/flare/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://flare-api.flare.network/ext/C/rpc'
+  ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
   [BLOCKCHAIN_NAME.THETA]: ['https://eth-rpc-api.thetatoken.org/rpc'],
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: [
@@ -151,21 +184,21 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ZK_SYNC]: [
     'https://rpc.ankr.com/zksync_era/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://zksync.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/5289e86fa1494ed4881580da533933e2',
     'https://rpc.ankr.com/zksync_era',
     'https://mainnet.era.zksync.io'
   ],
   [BLOCKCHAIN_NAME.PULSECHAIN]: ['https://rpc.pulsechain.com', 'https://pulsechain.publicnode.com'],
   [BLOCKCHAIN_NAME.LINEA]: [
     'https://rpc.ankr.com/linea/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://linea.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/04e7d39b26b44db1b3bc5d580b51dd55',
     'https://linea-mainnet.infura.io/v3/30f7c1536c48439b834bb59e7dfe7d71',
     'https://linea.drpc.org',
     'https://linea.blockpi.network/v1/rpc/public'
   ],
   [BLOCKCHAIN_NAME.BASE]: [
     'https://rpc.ankr.com/base/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://base.getblock.io/02530958-c8c4-4297-974c-66203e79800d/mainnet/',
+    'https://go.getblock.io/292a9cecd3e345168aae8ee66b1d1336',
     'https://mainnet.base.org',
     'https://1rpc.io/base',
     'https://base.blockpi.network/v1/rpc/public',
@@ -218,13 +251,29 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/scroll'
   ],
   [BLOCKCHAIN_NAME.STARKNET]: [
+    'https://go.getblock.io/14ebd349dcf64729af79d82209705e46',
     'https://rpc.starknet.lava.build',
     'https://starknet-mainnet.public.blastapi.io',
     'https://data.voyager.online/',
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
+  [BLOCKCHAIN_NAME.SOLANA]: [
+    'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/63e2f3a12930427dac486ea6cc1f8238',
+    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280'
+  ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io'],
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
+    'https://rpc.ankr.com/blast_testnet_sepolia/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://sepolia.blast.io'
+  ],
+  [BLOCKCHAIN_NAME.BLAST]: [
+    'https://rpc.ankr.com/blast/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.blast.io',
+    'https://blast.din.dev/rpc',
+    'https://blastl2-mainnet.public.blastapi.io',
+    'https://blast.blockpi.network/v1/rpc/public'
+  ],
   [BLOCKCHAIN_NAME.HOLESKY]: [
     'https://ethereum-holesky.publicnode.com',
     'https://1rpc.io/holesky',

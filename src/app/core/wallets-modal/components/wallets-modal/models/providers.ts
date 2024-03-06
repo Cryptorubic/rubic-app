@@ -6,8 +6,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'MetaMask',
     value: WALLET_NAME.METAMASK,
     img: './assets/images/icons/wallets/metamask.svg',
-    desktopOnly: false,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -15,8 +15,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'TronLink',
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',
-    desktopOnly: true,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: false,
     display: true,
     disabled: false
   },
@@ -24,8 +24,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Trust Wallet',
     value: WALLET_NAME.TRUST_WALLET,
     img: './assets/images/icons/wallets/trust.svg',
-    desktopOnly: false,
-    mobileOnly: true,
+    supportsDesktop: false,
+    supportsMobile: false,
     display: true,
     disabled: false
   },
@@ -33,8 +33,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Coinbase Wallet',
     value: WALLET_NAME.WALLET_LINK,
     img: './assets/images/icons/wallets/coinbase.png',
-    desktopOnly: false,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: false,
     display: true,
     disabled: false
   },
@@ -42,8 +42,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'WalletConnect',
     value: WALLET_NAME.WALLET_CONNECT,
     img: './assets/images/icons/wallets/walletconnect.svg',
-    desktopOnly: false,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -51,8 +51,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Argent',
     value: WALLET_NAME.ARGENT,
     img: './assets/images/icons/wallets/argent.svg',
-    desktopOnly: false,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: false,
     display: true,
     disabled: false
   },
@@ -60,8 +60,26 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'BitKeep',
     value: WALLET_NAME.BITKEEP,
     img: './assets/images/icons/wallets/bitkeep.svg',
-    desktopOnly: false,
-    mobileOnly: false,
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Solflare',
+    value: WALLET_NAME.SOLFLARE,
+    img: './assets/images/icons/wallets/solflare.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
     display: true,
     disabled: false
   }

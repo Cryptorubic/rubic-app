@@ -5,11 +5,15 @@ import { map, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { BlockchainsInfo, ChangenowCrossChainTrade, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
+import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TuiNotification } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -43,12 +47,17 @@ export class TradeViewContainerComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  public readonly buttonState$ = this.actionButtonService.buttonState$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
     public readonly swapFormService: SwapsFormService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly actionButtonService: ActionButtonService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
@@ -57,28 +66,17 @@ export class TradeViewContainerComponent {
   }
 
   public async getSwapPreview(): Promise<void> {
-    const currentTrade = this.swapsState.tradeState;
-    const isAddressRequired = await firstValueFrom(
-      this.targetNetworkAddressService.isAddressRequired$
-    );
-    // Handle ChangeNow Non EVM trade
-    if (isAddressRequired) {
-      const isAddressValid =
-        (await firstValueFrom(this.targetNetworkAddressService.isAddressValid$)) &&
-        Boolean(this.targetNetworkAddressService.address);
-      const isCnFromNonEvm =
-        currentTrade.trade instanceof ChangenowCrossChainTrade &&
-        !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
-
-      if (isAddressValid) {
-        if (isCnFromNonEvm) {
-          this.tradePageService.setState('cnPreview');
-        } else {
-          this.tradePageService.setState('preview');
-        }
-      }
-    } else {
-      this.tradePageService.setState('preview');
+    const buttonStatus = await firstValueFrom(this.buttonState$);
+    if (buttonStatus.text === 'Preview swap') {
+      buttonStatus.action();
+    } else if (buttonStatus.type === 'error' || buttonStatus.text === 'Connect wallet') {
+      this.notificationsService.show(buttonStatus.text, {
+        status: TuiNotification.Warning,
+        autoClose: 5_000,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      });
     }
   }
 

@@ -16,7 +16,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.AVALANCHE]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.BAND_PROTOCOL]: `${basePath}band-protocol.svg`,
   [BLOCKCHAIN_NAME.BASE]: `${basePath}base.svg`,
-  [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}berachain.png`,
+  [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}default-chain.png`,
   [BLOCKCHAIN_NAME.BITCOIN]: `${basePath}bitcoin.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: `${basePath}bitcoin-cash.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_DIAMOND]: `${basePath}bitcoin-diamond.svg`,
@@ -25,6 +25,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `${basePath}bnb.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: `${basePath}bnb.svg`,
   [BLOCKCHAIN_NAME.BLAST]: `${basePath}blast.svg`,
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: `${basePath}blast.svg`,
   [BLOCKCHAIN_NAME.BOBA]: `${basePath}boba.svg`,
   [BLOCKCHAIN_NAME.BOBA_BSC]: `${basePath}boba-bsc.svg`,
   [BLOCKCHAIN_NAME.BSV]: `${basePath}bsv.svg`,
@@ -130,8 +131,8 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZETACHAIN]: `${basePath}zetachain.svg`,
   [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
-  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
-  [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}sepolia.svg`,
+  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}default-chain.svg`,
+  [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}default-chain.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
   [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`
 };

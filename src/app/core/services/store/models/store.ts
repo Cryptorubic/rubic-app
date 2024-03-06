@@ -10,6 +10,7 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
+import BigNumber from 'bignumber.js';
 
 export type Store = {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -39,6 +40,11 @@ export type Store = {
    * User agreement to the Terms of Use and Privacy Policy.
    */
   RUBIC_AGREEMENT_WITH_RULES_V1: boolean;
+
+  /**
+   * Trade volumes.
+   */
+  RUBIC_TOTAL_VALUES: { instantTrades: BigNumber; bridges: BigNumber };
 
   /**
    * User favorite tokens.
@@ -92,5 +98,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,
   RUBIC_TRADES_INSTANT_TRADE: null,
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
-  RUBIC_ENABLE_TESTNET: null
+  RUBIC_ENABLE_TESTNET: null,
+  RUBIC_TOTAL_VALUES: null
 };
