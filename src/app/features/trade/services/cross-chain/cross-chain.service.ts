@@ -189,8 +189,7 @@ export class CrossChainService {
       changenowFullyEnabled: true,
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: {
-        ...this.platformConfigurationService.useCrossChainChainProxy,
-        archon_bridge: false
+        ...this.platformConfigurationService.useCrossChainChainProxy
       }
     };
   }
