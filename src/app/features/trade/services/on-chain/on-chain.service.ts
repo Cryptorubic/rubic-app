@@ -182,6 +182,7 @@ export class OnChainService {
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');
+    const swapId = this.sessionStorage.getItem('swapId');
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
 
@@ -204,7 +205,8 @@ export class OnChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
       ...(directTransaction && { directTransaction }),
-      ...(referrer && { referrer })
+      ...(referrer && { referrer }),
+      ...(swapId && { swap_id: swapId })
     };
 
     try {
