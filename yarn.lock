@@ -3532,11 +3532,6 @@
   resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.1.tgz#b251c70f824ce3ca7f8dc3df08d58f005cc0507c"
   integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
 
-"@noble/secp256k1@^1.7.1":
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.1.tgz#b251c70f824ce3ca7f8dc3df08d58f005cc0507c"
-  integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -16446,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.4.0-alpha.rootstock.4:
-  version "5.4.0-alpha.rootstock.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.0-alpha.rootstock.4.tgz#3ebebdd9bf68ff4057d8f04ff41f12faadfa13be"
-  integrity sha512-HrisBiei0LLFyJ1pvZOen1R4xxklSZxH3ji1QrhDc7wdOwyAer+kde0G9/O6NcZwpS8C+Iv3l5Wd0HYidI8MOA==
+rubic-sdk@5.4.3-alpha.rootstock-oku.3:
+  version "5.4.3-alpha.rootstock-oku.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.3-alpha.rootstock-oku.3.tgz#5cbbc493dc98da55436c1d29d9f5c610d0af747c"
+  integrity sha512-hTBQlq+Qj0/GfdN789+RDPXPOIE16VnFsXcnH9xv42CGa2HQA84hjp1JgE5IAHNoJXSnLa4DBfBsHbhzzC45Eg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
