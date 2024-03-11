@@ -122,7 +122,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos',
-  [ON_CHAIN_TRADE_TYPE.DLN]: 'dln'
+  [ON_CHAIN_TRADE_TYPE.DLN]: 'dln',
+  [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: 'okuswap'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

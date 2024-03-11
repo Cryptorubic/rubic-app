@@ -24,7 +24,8 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITGERT]: `${basePathBlockchainIcon}bitgert.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: `${basePathBlockchainIcon}bnb.svg`,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN_TESTNET]: `${basePathBlockchainIcon}bnb.svg`,
-  [BLOCKCHAIN_NAME.BLAST]: `${basePathBlockchainIcon}default-chain.svg`,
+  [BLOCKCHAIN_NAME.BLAST]: `${basePathBlockchainIcon}blast.svg`,
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: `${basePathBlockchainIcon}default-chain.svg`,
   [BLOCKCHAIN_NAME.BOBA]: `${basePathBlockchainIcon}boba.svg`,
   [BLOCKCHAIN_NAME.BOBA_BSC]: `${basePathBlockchainIcon}boba-bsc.svg`,
   [BLOCKCHAIN_NAME.BSV]: `${basePathBlockchainIcon}bsv.svg`,
@@ -100,6 +101,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.QTUM]: `${basePathBlockchainIcon}qtum.svg`,
   [BLOCKCHAIN_NAME.RAVENCOIN]: `${basePathBlockchainIcon}ravencoin.svg`,
   [BLOCKCHAIN_NAME.RIPPLE]: `${basePathBlockchainIcon}ripple.svg`,
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: `${basePathBlockchainIcon}rootstock.svg`,
   [BLOCKCHAIN_NAME.SECRET]: `${basePathBlockchainIcon}secret.svg`,
   [BLOCKCHAIN_NAME.SIA]: `${basePathBlockchainIcon}sia.svg`,
   [BLOCKCHAIN_NAME.SOLANA]: `${basePathBlockchainIcon}solana.svg`,
@@ -133,6 +135,5 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: `${basePathBlockchainIcon}default-chain.svg`,
   [BLOCKCHAIN_NAME.SEPOLIA]: `${basePathBlockchainIcon}default-chain.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePathBlockchainIcon}manta-pacific.svg`,
-  [BLOCKCHAIN_NAME.SCROLL]: `${basePathBlockchainIcon}scroll.svg`,
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: `${basePathBlockchainIcon}rootstock.svg`
+  [BLOCKCHAIN_NAME.SCROLL]: `${basePathBlockchainIcon}scroll.svg`
 };

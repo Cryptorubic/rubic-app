@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { combineLatestWith, firstValueFrom, forkJoin, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { catchError, debounceTime, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  filter,
+  map,
+  pairwise,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
@@ -45,6 +54,7 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
+import { compareObjects } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SwapsControllerService {
@@ -451,7 +461,9 @@ export class SwapsControllerService {
             startWith(this.settingsService.instantTradeValue)
           )
         ),
-        debounceTime(10)
+        debounceTime(10),
+        pairwise(),
+        filter(([prev, next]) => !compareObjects(prev, next))
       )
       .subscribe(() => {
         this.startRecalculation(true);
