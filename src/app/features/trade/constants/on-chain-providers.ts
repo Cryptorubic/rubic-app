@@ -318,8 +318,8 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: {
     name: 'OkuSwap',
-    image: `assets/images/icons/coins/default-chain.svg`,
-    color: 'white'
+    image: `${imageBasePath}okuswap.png`,
+    color: '#323332'
   },
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
     name: 'Omnidex',
