@@ -146,5 +146,13 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.ZETACHAIN]: {
     name: 'Zetachain',
     rpc: 'https://zetachain-mainnet-archive.allthatnode.com:8545'
+  },
+  [BLOCKCHAIN_NAME.BLAST]: {
+    name: 'Blast',
+    rpc: 'https://rpc.ankr.com/blast'
+  },
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
+    name: 'Blast Testnet',
+    rpc: 'https://sepolia.blast.io'
   }
 };
