@@ -4,12 +4,15 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class SeoService {
-  constructor() {
-    this.addNoIndexTag();
-  }
+  constructor() {}
 
-  private addNoIndexTag(): void {
-    const head = document.getElementsByTagName('head')[0];
-    console.log(head);
+  public updMetaTagRobots(): void {
+    const metaTagRobots = Array.from(document.getElementsByTagName('meta')).filter(
+      meta => meta.name === 'robots'
+    )[0];
+
+    if (metaTagRobots) {
+      metaTagRobots.content = 'noindex';
+    }
   }
 }
