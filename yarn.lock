@@ -16441,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.4.4-alpha-pls-onchain.0:
-  version "5.4.4-alpha-pls-onchain.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.4-alpha-pls-onchain.0.tgz#4623355389cb1ab7490322dececaf2b10bbe9cef"
-  integrity sha512-xvXVSEXSQAvEc4foTpJ/OQuwB/VEmMVAeN19unzGhq1L3rPXlQyDsUiDd/K245UP+rtxInlZsUSFTvey9b1AYQ==
+rubic-sdk@5.4.4-alpha-pls-onchain.1:
+  version "5.4.4-alpha-pls-onchain.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.4-alpha-pls-onchain.1.tgz#4803d9c5ff07e7f805b38a8d2e207e30d07c7623"
+  integrity sha512-AQslIekhLijX3/0n3i+tAwL0XJBb3Gr8Bcgv/FAXP1Zjdrr1E9PUvNVrhzh1AVtvAWIZo1rqn++AidZvVYAyJA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
