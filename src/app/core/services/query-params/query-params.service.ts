@@ -92,7 +92,7 @@ export class QueryParamsService {
       return;
     }
 
-    this.updMetaTagRobots();
+    this.updateMetaTagRobots();
 
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
@@ -146,14 +146,11 @@ export class QueryParamsService {
     this.queryParams = queryParams;
   }
 
-  private updMetaTagRobots(): void {
+  private updateMetaTagRobots(): void {
     this.queryParams$
       .pipe(
         pairwise(),
-        filter(queries => {
-          const prev = queries[0];
-          const curr = queries[1];
-
+        filter(([prev, curr]) => {
           return (
             prev.from !== curr.from ||
             prev.to !== curr.to ||
@@ -162,9 +159,7 @@ export class QueryParamsService {
           );
         })
       )
-      .subscribe(() => {
-        this.seoService.updMetaTagRobots();
-      });
+      .subscribe(() => this.seoService.updateMetaTagRobots());
   }
 
   public patchQueryParams(params: Partial<QueryParams>): void {

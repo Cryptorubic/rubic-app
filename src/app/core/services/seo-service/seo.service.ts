@@ -1,18 +1,27 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SeoService {
-  constructor() {}
+  private renderer: Renderer2;
 
-  public updMetaTagRobots(): void {
-    const metaTagRobots = Array.from(document.getElementsByTagName('meta')).filter(
+  constructor(
+    rendererFactory: RendererFactory2,
+    @Inject(DOCUMENT) private readonly document: Document
+  ) {
+    this.renderer = rendererFactory.createRenderer(null, null);
+  }
+
+  public updateMetaTagRobots(): void {
+    const metaTagRobots = Array.from(this.document.getElementsByTagName('meta')).filter(
       meta => meta.name === 'robots'
     )[0];
 
     if (metaTagRobots) {
-      metaTagRobots.content = 'noindex';
+      this.renderer.removeAttribute(metaTagRobots, 'content');
+      this.renderer.setAttribute(metaTagRobots, 'content', 'noindex');
     }
   }
 }
