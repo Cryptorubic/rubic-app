@@ -21,6 +21,7 @@ import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { filter, pairwise } from 'rxjs/operators';
 import { SeoService } from '@core/services/seo-service/seo.service';
 
 @Injectable({
@@ -91,7 +92,7 @@ export class QueryParamsService {
       return;
     }
 
-    this.seoService.updMetaTagRobots();
+    this.updMetaTagRobots();
 
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
@@ -143,6 +144,27 @@ export class QueryParamsService {
     }
 
     this.queryParams = queryParams;
+  }
+
+  private updMetaTagRobots(): void {
+    this.queryParams$
+      .pipe(
+        pairwise(),
+        filter(queries => {
+          const prev = queries[0];
+          const curr = queries[1];
+
+          return (
+            prev.from !== curr.from ||
+            prev.to !== curr.to ||
+            prev.fromChain !== curr.fromChain ||
+            prev.toChain !== curr.toChain
+          );
+        })
+      )
+      .subscribe(() => {
+        this.seoService.updMetaTagRobots();
+      });
   }
 
   public patchQueryParams(params: Partial<QueryParams>): void {
