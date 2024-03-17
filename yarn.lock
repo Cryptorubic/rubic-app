@@ -342,10 +342,10 @@
   resolved "https://registry.yarnpkg.com/@angular/core/-/core-9.0.0.tgz#227dc53e1ac81824f998c6e76000b7efc522641e"
   integrity sha512-6Pxgsrf0qF9iFFqmIcWmjJGkkCaCm6V5QNnxMy2KloO3SDq6QuMVRbN9RtC8Urmo25LP+eZ6ZgYqFYpdD8Hd9w==
 
-"@angular/core@^17.0.2":
-  version "17.0.2"
-  resolved "https://registry.yarnpkg.com/@angular/core/-/core-17.0.2.tgz#25ffd19bbca4771a42097ae2cf859d44a3c2d14e"
-  integrity sha512-MjDxWeyn3Txi0qo/V/I+B/gndh0uptQ0XWgBRwOx6Wcr5zRGeZIFlXBxPpyXnGTlJkeyErsTN7FfFCZ4C3kCPA==
+"@angular/core@^17.0.3":
+  version "17.0.3"
+  resolved "https://registry.yarnpkg.com/@angular/core/-/core-17.0.3.tgz#3d784008184212a96838240f356edcba9bf90624"
+  integrity sha512-zY4yhPiphuktrodaM+GiP8G07qnUlmwKElLjYazeIR8A+kF51RQRpSf/pWe5M0uJIn5Oja+RdO9kzhDI9QvOcA==
   dependencies:
     tslib "^2.3.0"
 
@@ -10547,9 +10547,9 @@ flatted@^3.2.7, flatted@^3.2.9:
   integrity sha512-36yxDn5H7OFZQla0/jFJmbIKTdZAQHngCedGxiMmpNfEZM0sdEeT+WczLQrjK6D7o2aiyLYDnkw0R3JK0Qv1RQ==
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.0, follow-redirects@^1.14.7, follow-redirects@^1.14.8, follow-redirects@^1.14.9, follow-redirects@^1.15.0:
-  version "1.15.5"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.5.tgz#54d4d6d062c0fa7d9d17feb008461550e3ba8020"
-  integrity sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw==
+  version "1.15.6"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.6.tgz#7f815c0cda4249c74ff09e95ef97c23b5fd0399b"
+  integrity sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
 
 for-each@^0.3.3:
   version "0.3.3"
