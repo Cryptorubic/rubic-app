@@ -42,7 +42,8 @@ export const blockchainsToFetch = [
   BLOCKCHAIN_NAME.BASE,
   BLOCKCHAIN_NAME.MANTLE,
   BLOCKCHAIN_NAME.ZETACHAIN,
-  BLOCKCHAIN_NAME.BLAST
+  BLOCKCHAIN_NAME.BLAST,
+  BLOCKCHAIN_NAME.KROMA
 ];
 
 export const blockchainsWithOnePage = [

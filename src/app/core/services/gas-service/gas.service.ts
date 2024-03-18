@@ -30,7 +30,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.POLYGON_ZKEVM,
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
-  BLOCKCHAIN_NAME.BLAST
+  BLOCKCHAIN_NAME.BLAST,
+  BLOCKCHAIN_NAME.KROMA
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -66,7 +67,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
-    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this)
+    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
+    [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -298,6 +300,26 @@ export class GasService {
   private fetchArbitrumGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchKromaGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.KROMA);
+    const multiplyX100 = (amount: string): string => {
+      return new BigNumber(amount).multipliedBy(10 ** 2).toFixed();
+    };
+
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(fees => ({
+        baseFee: multiplyX100(fees.baseFee),
+        maxFeePerGas: multiplyX100(fees.maxFeePerGas),
+        maxPriorityFeePerGas: multiplyX100(fees.maxPriorityFeePerGas)
+      })),
       map(formatEIP1559Gas),
       catchError(() => of(null))
     );
