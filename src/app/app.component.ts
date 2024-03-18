@@ -13,6 +13,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-root',
@@ -111,13 +112,14 @@ export class AppComponent implements AfterViewInit {
    * Inits site query params subscription.
    */
   private initQueryParamsSubscription(): Observable<void> {
-    const questionMarkIndex = this.window.location.href.indexOf('?');
-    if (questionMarkIndex === -1 || questionMarkIndex === this.window.location.href.length - 1) {
-      return of(null);
-    }
-
     return this.activatedRoute.queryParams.pipe(
-      first(queryParams => Boolean(Object.keys(queryParams).length)),
+      first(queryParams => {
+        let query: QueryParams = {
+          fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+          toChain: BLOCKCHAIN_NAME.ETHEREUM
+        };
+        return Boolean(Object.keys(queryParams).length ? queryParams : query);
+      }),
       map((queryParams: QueryParams) => {
         this.queryParamsService.setupQueryParams({
           ...queryParams,
