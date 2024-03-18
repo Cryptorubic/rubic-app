@@ -314,9 +314,8 @@ export class GasService {
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       map(v => ({
-        baseFee: mutliply(v.baseFee),
-        maxFeePerGas: mutliply(v.maxFeePerGas),
-        maxPriorityFeePerGas: mutliply(v.maxPriorityFeePerGas)
+        ...v,
+        maxFeePerGas: mutliply(v.maxFeePerGas)
       })),
       catchError(() => of(null))
     );
