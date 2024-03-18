@@ -16441,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.4.5-alpha.orbiter-kroma.2:
-  version "5.4.5-alpha.orbiter-kroma.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.5-alpha.orbiter-kroma.2.tgz#970f6e0d6eb8d7ff3e7ac72b7f47f8e5bae91253"
-  integrity sha512-KvVZWV2iYTKF8aST1Po72UChxTFQ9U7pjZXxoakjlZpMQqTaISFK60hWkcVhDnoHQsvza6CM0lTEviL3Ei955Q==
+rubic-sdk@5.4.5-alpha.orbiter-kroma.3:
+  version "5.4.5-alpha.orbiter-kroma.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.5-alpha.orbiter-kroma.3.tgz#65e29781c966a7292afc0bca7970a29a5a1a8411"
+  integrity sha512-J6DnsULabSCjdv8yAV4c7AdEw1TMfCXE6mZCML2dmSSeJFrsxtXxVnwAEK8KVNyVgCh4kGxygU9UwZ0iO/lBjA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
