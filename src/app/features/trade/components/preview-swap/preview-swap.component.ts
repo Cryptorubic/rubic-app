@@ -298,7 +298,10 @@ export class PreviewSwapComponent implements OnDestroy {
       !isCrossChain &&
       tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
     ) {
-      state.label = 'Wrap';
+      const fromTokenAddress = this.swapsFormService.inputValue.fromToken.address;
+      const nativeTokenAddress = nativeTokensList[fromBlockchain].address;
+      const isWrap = fromTokenAddress === nativeTokenAddress;
+      state.label = isWrap ? 'Wrap' : 'Unwrap';
     }
     return state;
   }
