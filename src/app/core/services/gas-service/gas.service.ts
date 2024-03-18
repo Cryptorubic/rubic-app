@@ -309,9 +309,17 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchKromaGas(): Observable<GasPrice> {
-    return of({
-      gasPrice: new BigNumber(0.00045).toFixed()
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    const mutliply = (v: string): string => new BigNumber(2.5).multipliedBy(v).toFixed();
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      map(v => ({
+        baseFee: mutliply(v.baseFee),
+        maxFeePerGas: mutliply(v.maxFeePerGas),
+        maxPriorityFeePerGas: mutliply(v.maxPriorityFeePerGas)
+      })),
+      catchError(() => of(null))
+    );
   }
 
   /**
