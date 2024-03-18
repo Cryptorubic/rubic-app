@@ -16441,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.4.3-alpha.orbiter-proxy.17:
-  version "5.4.3-alpha.orbiter-proxy.17"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.3-alpha.orbiter-proxy.17.tgz#ec14eaa76a988c3bbe5c65d7ef5d067c43eb4b32"
-  integrity sha512-Vl0V/iDgcKzS8oIRq03rBCoxk75TiCWM0Rvk6Oo41/VgFGkTFGR/DU6+0QjsRTp74kD80F5XiXQpEH/sjYiCpw==
+rubic-sdk@5.4.3-alpha.orbiter-proxy.18:
+  version "5.4.3-alpha.orbiter-proxy.18"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.4.3-alpha.orbiter-proxy.18.tgz#99d921bc936ea3e092c2e2ba9ce7cfa4c71026c1"
+  integrity sha512-chdRxQTInvGJDvwdcISBiEBEl5l0lHCb4z8jyrQPvC1yO5ZyM4AtyiATIoMQlPQlQvcbYeNGpygkk4WrhJHgTg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
