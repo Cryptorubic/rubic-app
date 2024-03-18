@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
@@ -77,6 +77,7 @@ export class OnChainApiService {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
+    const swapId = this.sessionStorage.getItem('swapId');
     const options = {
       blockchain: blockchain,
       fromAddress: fromAddress,
@@ -97,7 +98,8 @@ export class OnChainApiService {
       fee,
       promocode: promoCode,
       hash,
-      ...(referral && { influencer: referral })
+      ...(referral && { influencer: referral }),
+      ...(swapId && { swap_id: swapId })
     };
 
     const url = onChainApiRoutes.createData(toBackendWallet);
