@@ -310,12 +310,11 @@ export class GasService {
   })
   private fetchKromaGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
-    const mutliply = (v: string): string => new BigNumber(2.5).multipliedBy(v).toFixed();
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
-      map(v => ({
-        ...v,
-        maxFeePerGas: mutliply(v.maxFeePerGas)
+      map(gasInfo => ({
+        ...gasInfo,
+        maxFeePerGas: new BigNumber(2.5).multipliedBy(gasInfo.maxFeePerGas).toFixed()
       })),
       catchError(() => of(null))
     );
