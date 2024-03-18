@@ -132,7 +132,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'blast',
   [BLOCKCHAIN_NAME.BLAST]: 'blast',
-  [BLOCKCHAIN_NAME.HOLESKY]: 'holesky'
+  [BLOCKCHAIN_NAME.HOLESKY]: 'holesky',
+  [BLOCKCHAIN_NAME.KROMA]: 'kroma'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
