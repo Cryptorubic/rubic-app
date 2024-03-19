@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 import { BlockchainsInfo, ChainType } from 'rubic-sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { FormControl } from '@angular/forms';
 
 @Injectable()
 export class TargetNetworkAddressService {
   private readonly _address$ = new BehaviorSubject<string | null>(null);
+
+  public readonly addressControl = new FormControl<string>(this.address);
 
   public readonly address$ = this._address$.asObservable();
 
@@ -17,9 +20,9 @@ export class TargetNetworkAddressService {
 
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
-  private readonly _isAddressValid$ = new BehaviorSubject<boolean>(true);
-
-  public readonly isAddressValid$ = this._isAddressValid$.asObservable();
+  public readonly isAddressValid$ = this.addressControl.statusChanges.pipe(
+    map(status => status === 'VALID')
+  );
 
   constructor(private readonly swapFormService: SwapsFormService) {
     this.watchIsAddressRequired();
@@ -46,9 +49,5 @@ export class TargetNetworkAddressService {
 
   public setAddress(value: string): void {
     this._address$.next(value);
-  }
-
-  public setIsAddressValid(value: boolean): void {
-    this._isAddressValid$.next(value);
   }
 }

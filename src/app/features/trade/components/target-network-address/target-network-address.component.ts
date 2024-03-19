@@ -1,13 +1,10 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Self } from '@angular/core';
-import { debounceTime, skip, takeUntil } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnInit, Self } from '@angular/core';
+import { combineLatestWith, debounceTime, filter, skip, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { WINDOW } from '@ng-web-apis/common';
-import { FormControl } from '@angular/forms';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { getCorrectAddressValidator } from '@features/trade/components/target-network-address/utils/get-correct-address-validator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { combineLatestWith } from 'rxjs';
 
 @Component({
   selector: 'app-target-network-address',
@@ -24,7 +21,7 @@ import { combineLatestWith } from 'rxjs';
   ]
 })
 export class TargetNetworkAddressComponent implements OnInit {
-  public readonly address = new FormControl<string>(this.targetNetworkAddressService.address);
+  public readonly address = this.targetNetworkAddressService.addressControl;
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 
@@ -33,7 +30,6 @@ export class TargetNetworkAddressComponent implements OnInit {
   constructor(
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly swapFormService: SwapsFormService,
-    @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
@@ -49,7 +45,7 @@ export class TargetNetworkAddressComponent implements OnInit {
     );
   }
 
-  public onInputClick(isFocused: boolean): void {
+  public onFocusChange(isFocused: boolean): void {
     this.isActiveInput = isFocused || !!this.address.value;
   }
 
@@ -70,17 +66,17 @@ export class TargetNetworkAddressComponent implements OnInit {
   private subscribeOnTargetAddress(): void {
     this.address.valueChanges
       .pipe(
-        combineLatestWith(this.address.statusChanges),
+        combineLatestWith(this.targetNetworkAddressService.isAddressValid$),
+        filter(([_, isValid]) => isValid),
         debounceTime(100),
         takeUntil(this.destroy$)
       )
-      .subscribe(([address, status]) => {
-        this.checkValidation(address, status === 'VALID');
+      .subscribe(([address]) => {
+        this.checkValidation(address);
       });
   }
 
-  private checkValidation(address: string, isValid: boolean): void {
-    this.targetNetworkAddressService.setIsAddressValid(isValid);
-    this.targetNetworkAddressService.setAddress(isValid ? address : null);
+  private checkValidation(address: string): void {
+    this.targetNetworkAddressService.setAddress(address);
   }
 }
