@@ -291,7 +291,7 @@ export class SwapsControllerService {
                 true
               );
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash);
+              txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
