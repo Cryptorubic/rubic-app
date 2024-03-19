@@ -32,7 +32,7 @@
   }
 
   &__text {
-    @include font(25px, 1, 300, #ffffff);
+    @include font(20px, 1, 300, #ffffff);
     margin: 0;
 
     letter-spacing: 1px;
@@ -69,20 +69,8 @@
   }
 }
 
-@include b(810) {
-  .banner {
-    &__text {
-      font-size: 20px;
-    }
-  }
-}
-
 @include b($tablet) {
   .banner {
-    //&__text {
-    //  @include font(18px, 1, 400, #ffffff);
-    //}
-
     &__text {
       font-size: 18px;
       text-align: left;
