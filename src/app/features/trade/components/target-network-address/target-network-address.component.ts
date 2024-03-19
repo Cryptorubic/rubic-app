@@ -72,11 +72,7 @@ export class TargetNetworkAddressComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(([address]) => {
-        this.checkValidation(address);
+        this.targetNetworkAddressService.setAddress(address);
       });
-  }
-
-  private checkValidation(address: string): void {
-    this.targetNetworkAddressService.setAddress(address);
   }
 }
