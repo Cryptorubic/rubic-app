@@ -1,19 +1,31 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  skip,
+  tap
+} from 'rxjs';
 import { BlockchainsInfo, ChainType } from 'rubic-sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
+import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 
 @Injectable()
 export class TargetNetworkAddressService {
-  private readonly _address$ = new BehaviorSubject<string | null>(null);
+  public readonly addressControl = new FormControl<string>('');
 
-  public readonly addressControl = new FormControl<string>(this.address);
-
-  public readonly address$ = this._address$.asObservable();
+  public readonly address$ = this.addressControl.valueChanges.pipe(
+    tap(() => this.addressControl.clearAsyncValidators()),
+    debounceTime(300),
+    distinctUntilChanged(),
+    tap(() => this.setCorrectAddressValidator())
+  );
 
   public get address(): string | null {
-    return this._address$.getValue();
+    return this.addressControl.value;
   }
 
   private readonly _isAddressRequired$ = new BehaviorSubject<boolean>(false);
@@ -21,11 +33,15 @@ export class TargetNetworkAddressService {
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
   public readonly isAddressValid$ = this.addressControl.statusChanges.pipe(
+    debounceTime(300),
+    distinctUntilChanged(),
     map(status => status === 'VALID')
   );
 
   constructor(private readonly swapFormService: SwapsFormService) {
+    this.setCorrectAddressValidator();
     this.watchIsAddressRequired();
+    this.subscribeOnFormValueChanges();
   }
 
   private watchIsAddressRequired(): void {
@@ -47,7 +63,20 @@ export class TargetNetworkAddressService {
     });
   }
 
-  public setAddress(value: string): void {
-    this._address$.next(value);
+  private subscribeOnFormValueChanges(): void {
+    this.swapFormService.inputValue$.pipe(skip(1)).subscribe(() => {
+      this.setCorrectAddressValidator();
+    });
+  }
+
+  private setCorrectAddressValidator(): void {
+    const input = this.swapFormService.inputValue;
+    this.addressControl.setAsyncValidators(
+      getCorrectAddressValidator({
+        fromAssetType: input.fromBlockchain,
+        toBlockchain: input.toBlockchain
+      })
+    );
+    this.addressControl.updateValueAndValidity();
   }
 }
