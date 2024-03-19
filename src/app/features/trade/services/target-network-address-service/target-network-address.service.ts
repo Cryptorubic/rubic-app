@@ -19,7 +19,7 @@ export class TargetNetworkAddressService {
 
   public readonly address$ = this.addressControl.valueChanges.pipe(
     tap(() => this.addressControl.clearAsyncValidators()),
-    debounceTime(300),
+    debounceTime(100),
     distinctUntilChanged(),
     tap(() => this.setCorrectAddressValidator())
   );
@@ -33,7 +33,7 @@ export class TargetNetworkAddressService {
   public readonly isAddressRequired$ = this._isAddressRequired$.asObservable();
 
   public readonly isAddressValid$ = this.addressControl.statusChanges.pipe(
-    debounceTime(300),
+    debounceTime(100),
     distinctUntilChanged(),
     map(status => status === 'VALID')
   );
