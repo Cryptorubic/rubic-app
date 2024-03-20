@@ -133,5 +133,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'Blast Testnet',
   [BLOCKCHAIN_NAME.BLAST]: 'Blast',
   [BLOCKCHAIN_NAME.HOLESKY]: 'Holesky',
-  [BLOCKCHAIN_NAME.KROMA]: 'Kroma'
+  [BLOCKCHAIN_NAME.KROMA]: 'Kroma',
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: 'Horizen EON'
 };

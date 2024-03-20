@@ -975,6 +975,9 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.MANTLE]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MANTLE], ...defaultTokenParams } as Token
   ],
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.HORIZEN_EON], ...defaultTokenParams } as Token
+  ],
   [BLOCKCHAIN_NAME.ARTHERA]: [],
   [BLOCKCHAIN_NAME.ZETACHAIN]: [
     {
