@@ -29,7 +29,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#1275b7',
     averageTime: 5
   },
-  // @TODO HORIZON
   [BRIDGE_TYPE.ARCHON_BRIDGE]: {
     name: 'Archon bridge',
     image: `${imageBasePath}archon.svg`,
