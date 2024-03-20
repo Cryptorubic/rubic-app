@@ -30,7 +30,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
-import { compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { AuthService } from '@app/core/services/auth/auth.service';
@@ -298,7 +298,10 @@ export class PreviewSwapComponent implements OnDestroy {
       !isCrossChain &&
       tradeState?.trade?.type === ON_CHAIN_TRADE_TYPE.WRAPPED
     ) {
-      state.label = 'Wrap';
+      const fromTokenAddress = this.swapsFormService.inputValue.fromToken.address;
+      const nativeTokenAddress = nativeTokensList[fromBlockchain].address;
+      const isWrap = compareAddresses(fromTokenAddress, nativeTokenAddress);
+      state.label = isWrap ? 'Wrap' : 'Unwrap';
     }
     return state;
   }

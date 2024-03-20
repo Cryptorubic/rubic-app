@@ -104,6 +104,10 @@ export class QueryParamsService {
       this.sessionStorage.setItem('referral', queryParams?.referral);
     }
 
+    if (queryParams?.swapId) {
+      this.sessionStorage.setItem('swapId', queryParams?.swapId);
+    }
+
     if (queryParams?.whitelistOnChain || queryParams?.blacklistOnChain) {
       const urlParams = new URLSearchParams(this.window.location.search);
       const whitelistOnChain = this.parseStringQuery(urlParams.get('whitelistOnChain'));
