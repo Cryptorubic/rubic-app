@@ -257,12 +257,23 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280'
   ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.BLAST]: ['https://sepolia.blast.io'],
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
+    'https://rpc.ankr.com/blast_testnet_sepolia/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://sepolia.blast.io'
+  ],
+  [BLOCKCHAIN_NAME.BLAST]: [
+    'https://rpc.ankr.com/blast/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.blast.io',
+    'https://blast.din.dev/rpc',
+    'https://blastl2-mainnet.public.blastapi.io',
+    'https://blast.blockpi.network/v1/rpc/public'
+  ],
   [BLOCKCHAIN_NAME.HOLESKY]: [
     'https://ethereum-holesky.publicnode.com',
     'https://1rpc.io/holesky',
     'https://holesky-rpc.nocturnode.tech'
   ],
+  [BLOCKCHAIN_NAME.KROMA]: ['https://api.kroma.network/', 'https://1rpc.io/kroma'],
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [
     'https://rpc.ankr.com/horizen_eon',
     'https://eon-rpc.horizenlabs.io/ethv1'
