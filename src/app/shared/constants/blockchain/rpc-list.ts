@@ -273,5 +273,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/holesky',
     'https://holesky-rpc.nocturnode.tech'
   ],
-  [BLOCKCHAIN_NAME.KROMA]: ['https://api.kroma.network/', 'https://1rpc.io/kroma']
+  [BLOCKCHAIN_NAME.KROMA]: ['https://api.kroma.network/', 'https://1rpc.io/kroma'],
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: [
+    'https://rpc.ankr.com/horizen_eon',
+    'https://eon-rpc.horizenlabs.io/ethv1'
+  ]
 };
