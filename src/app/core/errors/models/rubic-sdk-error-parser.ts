@@ -17,7 +17,8 @@ import {
   TooLowAmountError as SdkTooLowAmountError,
   UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
   InsufficientFundsGasPriceValueError,
-  UpdatedRatesError
+  UpdatedRatesError,
+  SdkSwapErrorOnProviderSide
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -39,6 +40,7 @@ import UnsupportedReceiverAddressError from '@core/errors/models/common/unsuppor
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
+import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -95,6 +97,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkUnsupportedReceiverAddressError) {
       return new UnsupportedReceiverAddressError();
+    }
+    if (err instanceof SdkSwapErrorOnProviderSide) {
+      return new SwapErorOnProviderSide();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
