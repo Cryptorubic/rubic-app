@@ -993,5 +993,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.BLAST]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.BLAST], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MERLIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MERLIN], ...defaultTokenParams } as Token
   ]
 };
