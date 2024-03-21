@@ -104,6 +104,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //CCCCCCCCCCCCCCCCCCCC
+  [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
+    name: 'Camelot',
+    image: `${imageBasePath}camelot.png`,
+    color: '#FFAF1D'
+  },
   [ON_CHAIN_TRADE_TYPE.CHERRY_SWAP]: {
     name: 'Cherry Swap',
     image: `${imageBasePath}cherryswap.svg`,
