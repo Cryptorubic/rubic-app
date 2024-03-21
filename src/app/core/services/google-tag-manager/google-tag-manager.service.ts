@@ -68,6 +68,15 @@ export class GoogleTagManagerService {
   }
 
   /**
+   * Fires click on banner GTM event.
+   */
+  public fireClickOnBannerEvent(banner_type: string): void {
+    this.angularGtmService.gtag('event', 'click_banner', {
+      banner_type
+    });
+  }
+
+  /**
    * Fires click on swap button GTM event.
    */
   public fireClickOnSwapButtonEvent(tokenInName: string, tokenOutName: string): void {
