@@ -130,8 +130,11 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
   [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
+  [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'blast',
   [BLOCKCHAIN_NAME.BLAST]: 'blast',
-  [BLOCKCHAIN_NAME.HOLESKY]: 'holesky'
+  [BLOCKCHAIN_NAME.HOLESKY]: 'holesky',
+  [BLOCKCHAIN_NAME.KROMA]: 'kroma',
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: 'horizen-eon'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

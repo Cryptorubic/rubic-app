@@ -37,7 +37,6 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TransactionFailedError } from '@core/errors/models/common/transaction-failed-error';
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
-import { shouldCalculateGas } from '@features/trade/constants/should-calculate-gas';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -109,10 +108,7 @@ export class OnChainService {
           toSdkToken,
           isAddressCorrectValue
         ]) => {
-          const calculateGas =
-            shouldCalculateGas[fromToken.blockchain] &&
-            this.authService.userAddress &&
-            isAddressCorrectValue;
+          const calculateGas = this.authService.userAddress && isAddressCorrectValue;
 
           const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
           const disabledTradeTypes = Array.from(

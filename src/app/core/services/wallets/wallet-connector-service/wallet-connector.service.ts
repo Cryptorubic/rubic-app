@@ -225,7 +225,7 @@ export class WalletConnectorService {
     const icon = blockchainIcon[evmBlockchainName];
 
     let chainName = blockchainLabel[evmBlockchainName];
-    let rpcUrl = rpcList[evmBlockchainName][0];
+    let rpcUrl: string;
     const defaultData = defaultBlockchainData[evmBlockchainName];
 
     if (customRpcUrl) {
@@ -234,6 +234,8 @@ export class WalletConnectorService {
     } else if (defaultData) {
       chainName = defaultData.name;
       rpcUrl = defaultData.rpc;
+    } else {
+      rpcUrl = rpcList[evmBlockchainName][0];
     }
 
     return {

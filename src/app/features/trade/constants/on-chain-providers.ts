@@ -50,6 +50,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}arth.png`,
     color: '#00C6EE'
   },
+  [ON_CHAIN_TRADE_TYPE.ASCENT]: {
+    name: 'Ascent',
+    image: `${imageBasePath}ascent.svg`,
+    color: '#1aa96b'
+  },
   [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: {
     name: 'AstroSwap',
     image: `${imageBasePath}astroswap.png`,
@@ -99,6 +104,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //CCCCCCCCCCCCCCCCCCCC
+  [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
+    name: 'Camelot',
+    image: `${imageBasePath}camelot.png`,
+    color: '#FFAF1D'
+  },
   [ON_CHAIN_TRADE_TYPE.CHERRY_SWAP]: {
     name: 'Cherry Swap',
     image: `${imageBasePath}cherryswap.svg`,
