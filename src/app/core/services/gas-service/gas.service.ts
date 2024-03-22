@@ -31,7 +31,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
   BLOCKCHAIN_NAME.BLAST,
-  BLOCKCHAIN_NAME.KROMA
+  BLOCKCHAIN_NAME.KROMA,
+  BLOCKCHAIN_NAME.MERLIN
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -68,7 +69,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
     [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
-    [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this)
+    [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
+    [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -452,6 +454,15 @@ export class GasService {
         };
       })
     );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMerlinGas(): Observable<GasPrice> {
+    return of({
+      gasPrice: new BigNumber(0.5).dividedBy(10 ** 18).toFixed()
+    });
   }
 
   /**
