@@ -287,6 +287,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}mdex.svg`,
     color: '#50B0E4'
   },
+  [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: {
+    name: 'MerlinSwap',
+    image: `${imageBasePath}merlinswap.png`,
+    color: '#CF8D39'
+  },
   [ON_CHAIN_TRADE_TYPE.MESH_SWAP]: {
     name: 'MeshSwap',
     image: `${imageBasePath}meshswap.svg`,

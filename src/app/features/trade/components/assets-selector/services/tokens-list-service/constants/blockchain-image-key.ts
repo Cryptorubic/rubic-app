@@ -44,5 +44,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain',
   [BLOCKCHAIN_NAME.BLAST]: 'blast',
-  [BLOCKCHAIN_NAME.KROMA]: 'kroma'
+  [BLOCKCHAIN_NAME.KROMA]: 'kroma',
+  [BLOCKCHAIN_NAME.MERLIN]: 'merlin'
 };
