@@ -461,7 +461,7 @@ export class GasService {
   })
   private fetchMerlinGas(): Observable<GasPrice> {
     return of({
-      gasPrice: new BigNumber(0.5).dividedBy(10 ** 18).toFixed()
+      gasPrice: new BigNumber(0.65).dividedBy(10 ** 18).toFixed()
     });
   }
 
