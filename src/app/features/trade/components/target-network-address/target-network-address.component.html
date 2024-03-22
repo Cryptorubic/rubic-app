@@ -7,7 +7,7 @@
     [pseudoInvalid]="address.invalid"
     [tuiTextfieldCleaner]="!!address.value"
     [tuiTextfieldLabelOutside]="false"
-    (focusedChange)="onInputClick($event)"
+    (focusedChange)="onFocusChange($event)"
   >
     <div [@moveLabel]="isActiveInput" class="network-container__row">
       <label class="network-container__label">Wallet address or ENS name in target network</label>
