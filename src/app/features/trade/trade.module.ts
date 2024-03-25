@@ -67,6 +67,7 @@ import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.c
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
+import { FormHeaderComponent } from './components/form-header/form-header.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +97,8 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
     CnPreviewSwapComponent,
     CnTradeInfoComponent,
     MevBotComponent,
-    PromotionBadgeComponent
+    PromotionBadgeComponent,
+    FormHeaderComponent
   ],
   exports: [],
   imports: [

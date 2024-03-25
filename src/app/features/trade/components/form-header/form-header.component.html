@@ -1,0 +1,22 @@
+<div *ngLet="selectedForm$ | async as selectedForm" class="form-header">
+  <div class="form-header_links">
+    <ng-container
+      *ngTemplateOutlet="formTypeSelector; context: { type: 'swapForm', text: 'Swap' }"
+    ></ng-container>
+    <ng-container
+      *ngTemplateOutlet="formTypeSelector; context: { type: 'gasForm', text: 'Gas' }"
+    ></ng-container>
+  </div>
+
+  <div class="form-header_actions">
+    <app-refresh-button [isRotating$]="isRefreshRotating$" (onRefresh)="refreshTrades()">
+    </app-refresh-button>
+    <app-settings-container></app-settings-container>
+  </div>
+
+  <ng-template #formTypeSelector let-type="type" let-text="text">
+    <span [class.selected]="selectedForm === type" (click)="toggleForm(type)">
+      {{ text }}
+    </span>
+  </ng-template>
+</div>

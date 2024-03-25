@@ -9,8 +9,19 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
+import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
+import { MainFormType } from '../forms-toggler/models';
 
-type StateOptions = [SelectedTrade, boolean, boolean, string, boolean, boolean, string];
+type StateOptions = [
+  SelectedTrade,
+  boolean,
+  boolean,
+  string,
+  boolean,
+  boolean,
+  string,
+  MainFormType
+];
 
 @Injectable()
 export class ActionButtonService {
@@ -22,7 +33,8 @@ export class ActionButtonService {
         this.walletConnector.addressChange$,
         this.targetNetworkAddressService.isAddressValid$,
         this.targetNetworkAddressService.isAddressRequired$,
-        this.targetNetworkAddressService.address$
+        this.targetNetworkAddressService.address$,
+        this.formsTogglerService.selectedForm$
       ])
     )
     .pipe(
@@ -39,7 +51,8 @@ export class ActionButtonService {
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   private swap(): void {
@@ -61,7 +74,8 @@ export class ActionButtonService {
     address: string,
     isReceiverValid: boolean,
     isAddressRequired: boolean,
-    receiverAddress: string
+    receiverAddress: string,
+    selectedForm: MainFormType
   ): {
     type: 'error' | 'action';
     text: string;
@@ -129,6 +143,14 @@ export class ActionButtonService {
           action: () => {}
         };
       } else {
+        // check if Get Gas form selected
+        if (selectedForm === 'gasForm') {
+          return {
+            type: 'action',
+            text: 'Get Gas',
+            action: () => {}
+          };
+        }
         if (!isReceiverValid) {
           return {
             type: 'error',
@@ -164,7 +186,16 @@ export class ActionButtonService {
     };
   }
 
-  private getDefaultParams(): [SelectedTrade, boolean, boolean, string, boolean, boolean, string] {
-    return [null, false, false, '', true, false, ''];
+  private getDefaultParams(): [
+    SelectedTrade,
+    boolean,
+    boolean,
+    string,
+    boolean,
+    boolean,
+    string,
+    MainFormType
+  ] {
+    return [null, false, false, '', true, false, '', 'swapForm'];
   }
 }
