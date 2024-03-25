@@ -408,6 +408,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}polydex.svg`,
     color: '#0D2866'
   },
+  [ON_CHAIN_TRADE_TYPE.PITEAS]: {
+    name: 'Piteas',
+    image: `${imageBasePath}piteas.png`,
+    color: '#DF145E'
+  },
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
     name: 'PulseX V1',
     image: `${imageBasePath}pulsex.png`,
