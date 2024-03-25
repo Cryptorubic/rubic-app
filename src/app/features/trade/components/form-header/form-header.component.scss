@@ -1,0 +1,35 @@
+@use 'src/scss/core' as *;
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  padding: 0 var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+
+  font-weight: bold;
+  font-size: 15px;
+
+  &_links {
+    display: flex;
+    gap: var(--tui-padding-s);
+
+    color: var(--tui-text-03);
+
+    span {
+      cursor: pointer;
+
+      &.selected {
+        color: var(--tui-text-01);
+      }
+    }
+  }
+
+  &_actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+  }
+}

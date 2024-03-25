@@ -6,15 +6,13 @@ import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
-import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { REFRESH_STATUS } from '@features/trade/models/refresh-status';
 import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -35,9 +33,7 @@ import { compareTokens } from '@shared/utils/utils';
   ]
 })
 export class SwapFormPageComponent {
-  public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
-    map(status => status !== REFRESH_STATUS.STOPPED)
-  );
+  public selectedForm$ = this.formsTogglerService.selectedForm$;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
@@ -78,13 +74,12 @@ export class SwapFormPageComponent {
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
-    private readonly refreshService: RefreshService,
-    private readonly swapsControllerService: SwapsControllerService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly modalService: ModalService,
     private readonly authService: AuthService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -149,10 +144,6 @@ export class SwapFormPageComponent {
     this.swapFormService.outputControl.patchValue({
       toAmount: null
     });
-  }
-
-  public refreshTrades(): void {
-    this.refreshService.onButtonClick();
   }
 
   public handleMaxButton(): void {
