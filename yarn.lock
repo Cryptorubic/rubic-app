@@ -16441,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.8.2-alpha-camelot-transit-tokens.1:
-  version "5.8.2-alpha-camelot-transit-tokens.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.8.2-alpha-camelot-transit-tokens.1.tgz#56a1cee80e17a934d79246bc16d9fd1cd9aa3df0"
-  integrity sha512-zA5yrYL7dqfzzJnOuufmjL1c/1pPoF09Iubm0hD78CZh7OQgQgXgzyqcp6OInK3ozFtST6+C4LqpQvIp653foA==
+rubic-sdk@5.8.2:
+  version "5.8.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.8.2.tgz#bf5f657d0648c96dcdebffd7b031a0ba38305c01"
+  integrity sha512-KJ8INHrPs9RinM1IeM3rsueVaIjc4onL9wDY2Vo0VkFfra1NRnexPhro3Z6GYxJFcZa+ssb3g2FypOtvaN2YzQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
