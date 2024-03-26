@@ -123,7 +123,10 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos',
   [ON_CHAIN_TRADE_TYPE.DLN]: 'dln',
-  [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: 'okuswap'
+  [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: 'okuswap',
+  [ON_CHAIN_TRADE_TYPE.ASCENT]: 'ascent',
+  [ON_CHAIN_TRADE_TYPE.CAMELOT]: 'camelot',
+  [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: 'merlinswap'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

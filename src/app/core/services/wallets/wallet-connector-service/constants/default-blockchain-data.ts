@@ -155,6 +155,14 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Blast Testnet',
     rpc: 'https://sepolia.blast.io'
   },
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: {
+    name: 'Horizen EON',
+    rpc: 'https://eon-rpc.horizenlabs.io/ethv1'
+  },
+  [BLOCKCHAIN_NAME.MERLIN]: {
+    name: 'Merlin',
+    rpc: 'https://rpc.merlinchain.io'
+  },
   [BLOCKCHAIN_NAME.ROOTSTOCK]: {
     name: 'Rootstock',
     rpc: 'https://public-node.rsk.co'
