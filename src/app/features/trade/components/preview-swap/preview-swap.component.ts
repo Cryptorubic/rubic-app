@@ -149,6 +149,13 @@ export class PreviewSwapComponent implements OnDestroy {
     }
   }
 
+  private isTradeWithPermit2Approve(tradeState: SelectedTrade): boolean {
+    return (
+      'permit2ApproveConfig' in tradeState.trade &&
+      tradeState.trade.permit2ApproveConfig.usePermit2Approve
+    );
+  }
+
   private connectWallet(): void {
     this.modalService
       .openWalletModal(this.injector)
@@ -243,6 +250,7 @@ export class PreviewSwapComponent implements OnDestroy {
       state.action = this.swap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
+      state.label = this.isTradeWithPermit2Approve(tradeState) ? 'Permit and Swap' : state.label;
       state.action = this.startTrade.bind(this);
     } else if (
       el.step === transactionStep.success ||
