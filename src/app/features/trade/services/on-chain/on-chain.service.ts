@@ -43,7 +43,6 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
-import { APPROVE_TYPE, ApproveType } from '../preview-swap/models/swap-controller-service-types';
 
 @Injectable()
 export class OnChainService {
@@ -254,11 +253,7 @@ export class OnChainService {
     }
   }
 
-  public async approveTrade(
-    trade: OnChainTrade,
-    approveType: ApproveType,
-    callback?: (hash: string) => void
-  ): Promise<void> {
+  public async approveTrade(trade: OnChainTrade, callback?: (hash: string) => void): Promise<void> {
     if (!this.platformConfigurationService.isAvailableBlockchain(trade.from.blockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[trade.from.blockchain]);
     }
@@ -279,11 +274,7 @@ export class OnChainService {
     try {
       const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
 
-      if (approveType === APPROVE_TYPE.DEFAULT) {
-        await trade.approve(transactionOptions, true, amount);
-      } else {
-        await trade.approveOnPermit2(transactionOptions, true, amount);
-      }
+      await trade.approve(transactionOptions, true, amount);
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {
         return;

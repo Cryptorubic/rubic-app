@@ -53,10 +53,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
-import {
-  ApproveType,
-  CrossChainSwapAdditionalParams
-} from '../preview-swap/models/swap-controller-service-types';
+import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
 import { compareObjects } from '@app/shared/utils/utils';
 
 @Injectable()
@@ -328,7 +325,6 @@ export class SwapsControllerService {
 
   public async approve(
     tradeState: SelectedTrade,
-    approveType: ApproveType,
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: (...args: unknown[]) => void;
@@ -339,7 +335,7 @@ export class SwapsControllerService {
       if (tradeState.trade instanceof CrossChainTrade) {
         await this.crossChainService.approveTrade(tradeState.trade, callback.onHash);
       } else {
-        await this.onChainService.approveTrade(tradeState.trade, approveType, callback.onHash);
+        await this.onChainService.approveTrade(tradeState.trade, callback.onHash);
       }
       callback?.onSwap();
     } catch (err) {

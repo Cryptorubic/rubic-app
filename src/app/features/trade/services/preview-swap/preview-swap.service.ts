@@ -55,10 +55,7 @@ import {
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
-import {
-  APPROVE_TYPE,
-  CrossChainSwapAdditionalParams
-} from './models/swap-controller-service-types';
+import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -160,7 +157,7 @@ export class PreviewSwapService {
       tradeState.trade.permit2ApproveConfig.usePermit2Approve;
 
     if (needPermit2Approve) {
-      this.startPermit2Approve();
+      this.startApproveWithPermit2();
     } else if (tradeState.needApprove) {
       this.startApprove();
     } else {
@@ -176,8 +173,8 @@ export class PreviewSwapService {
     this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
   }
 
-  public startPermit2Approve(): void {
-    this.setNextTxState({ step: 'approveOnPermit2', data: this.transactionState.data });
+  public startApproveWithPermit2(): void {
+    this.setNextTxState({ step: 'approveWithPermit2', data: this.transactionState.data });
   }
 
   public activatePage(): void {
@@ -206,10 +203,7 @@ export class PreviewSwapService {
         ),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
-          if (txState.step === 'approveOnPermit2') {
-            return this.handlePermit2Approve(tradeState);
-          }
-          if (txState.step === 'approvePending') {
+          if (txState.step === 'approvePending' || txState.step === 'approveWithPermit2') {
             return this.handleApprove(tradeState);
           }
           if (txState.step === 'swapRequest') {
@@ -397,31 +391,9 @@ export class PreviewSwapService {
     );
   }
 
-  private handlePermit2Approve(tradeState: SelectedTrade): Promise<void> {
-    this.useCallback = true;
-    return this.swapsControllerService.approve(tradeState, APPROVE_TYPE.PERMIT_2, {
-      onSwap: () => {
-        if (!this.useCallback) return;
-        if (tradeState.needApprove) {
-          this.startApprove();
-        } else {
-          this.startSwap();
-        }
-      },
-      onError: () => {
-        if (this.useCallback) {
-          this.setNextTxState({
-            step: 'error',
-            data: this.transactionState.data
-          });
-        }
-      }
-    });
-  }
-
   private handleApprove(tradeState: SelectedTrade): Promise<void> {
     this.useCallback = true;
-    return this.swapsControllerService.approve(tradeState, APPROVE_TYPE.DEFAULT, {
+    return this.swapsControllerService.approve(tradeState, {
       onSwap: () => {
         if (this.useCallback) {
           this.startSwap();

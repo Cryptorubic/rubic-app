@@ -25,9 +25,9 @@ export class TransactionStateComponent {
     const steps: TransactionStep[] = [];
     this.type = value.type;
     if (value.needPermit2Approve) {
-      steps.push(transactionStep.approveOnPermit2);
+      steps.push(transactionStep.approveWithPermit2);
     }
-    if (value.needApprove) {
+    if (value.needApprove && !value.needPermit2Approve) {
       steps.push(transactionStep.approvePending);
     }
     if (value.type === 'swap') {
@@ -51,7 +51,7 @@ export class TransactionStateComponent {
     const map: Record<TransactionStep, string> = {
       idle: 'Swap',
       error: 'Error',
-      approveOnPermit2: 'Manage permit approve',
+      approveWithPermit2: 'Manage allowance and permit',
       approveReady: 'Approve',
       approvePending: 'Manage allowance',
       swapReady: 'Swap',
