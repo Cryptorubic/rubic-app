@@ -133,6 +133,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'blast',
   [BLOCKCHAIN_NAME.BLAST]: 'blast',
   [BLOCKCHAIN_NAME.HOLESKY]: 'holesky',
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: 'rootstock',
   [BLOCKCHAIN_NAME.KROMA]: 'kroma',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: 'horizen-eon',
   [BLOCKCHAIN_NAME.MERLIN]: 'merlin'

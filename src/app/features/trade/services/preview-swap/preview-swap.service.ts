@@ -34,6 +34,7 @@ import {
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
+  EvmOnChainTrade,
   TX_STATUS,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -45,7 +46,6 @@ import { AirdropPointsService } from '@shared/services/airdrop-points-service/ai
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
-import { ErrorsService } from '@core/errors/errors.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -55,7 +55,10 @@ import {
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
-import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
+import {
+  APPROVE_TYPE,
+  CrossChainSwapAdditionalParams
+} from './models/swap-controller-service-types';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -129,7 +132,6 @@ export class PreviewSwapService {
     private readonly airdropPointsService: AirdropPointsService,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
-    private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
   ) {}
@@ -153,8 +155,13 @@ export class PreviewSwapService {
 
   public async requestTxSign(): Promise<void> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
+    const needPermit2Approve =
+      tradeState.trade instanceof EvmOnChainTrade &&
+      tradeState.trade.permit2ApproveConfig.usePermit2Approve;
 
-    if (tradeState.needApprove) {
+    if (needPermit2Approve) {
+      this.startPermit2Approve();
+    } else if (tradeState.needApprove) {
       this.startApprove();
     } else {
       this.startSwap();
@@ -167,6 +174,10 @@ export class PreviewSwapService {
 
   public startApprove(): void {
     this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
+  }
+
+  public startPermit2Approve(): void {
+    this.setNextTxState({ step: 'approveOnPermit2', data: this.transactionState.data });
   }
 
   public activatePage(): void {
@@ -195,6 +206,9 @@ export class PreviewSwapService {
         ),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
+          if (txState.step === 'approveOnPermit2') {
+            return this.handlePermit2Approve(tradeState);
+          }
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
@@ -383,15 +397,34 @@ export class PreviewSwapService {
     );
   }
 
-  private handleApprove(tradeState: SelectedTrade): Promise<void> {
+  private handlePermit2Approve(tradeState: SelectedTrade): Promise<void> {
     this.useCallback = true;
-    return this.swapsControllerService.approve(tradeState, {
+    return this.swapsControllerService.approve(tradeState, APPROVE_TYPE.PERMIT_2, {
       onSwap: () => {
+        if (!this.useCallback) return;
+        if (tradeState.needApprove) {
+          this.startApprove();
+        } else {
+          this.startSwap();
+        }
+      },
+      onError: () => {
         if (this.useCallback) {
           this.setNextTxState({
-            step: 'swapRequest',
+            step: 'error',
             data: this.transactionState.data
           });
+        }
+      }
+    });
+  }
+
+  private handleApprove(tradeState: SelectedTrade): Promise<void> {
+    this.useCallback = true;
+    return this.swapsControllerService.approve(tradeState, APPROVE_TYPE.DEFAULT, {
+      onSwap: () => {
+        if (this.useCallback) {
+          this.startSwap();
         }
       },
       onError: () => {

@@ -6,7 +6,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { HeaderStore } from '../../../../services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { combineLatestWith, map, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 
@@ -58,21 +58,23 @@ export class UserProfileComponent {
 
   public dropdownIsOpened = false;
 
-  public profileText$: Observable<string> = this.authService.currentUser$.pipe(
+  public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
     map(user => (user?.name ? user.name : user.address)),
     startWith(this.authService.userAddress)
   );
 
-  public avatar$ = this.authService.currentUser$.pipe(
+  public readonly avatar$ = this.authService.currentUser$.pipe(
     combineLatestWith(this.walletConnectorService.networkChange$),
     map(([user, blockchainName]) => {
       const currentBlockchainIcon = blockchainName
         ? blockchainIcon[blockchainName]
-        : 'assets/images/icons/coins/default-chain.svg';
+        : `${basePath}default-chain.svg`;
 
       return user?.avatar ? user.avatar : currentBlockchainIcon;
     })
   );
+
+  public readonly hasSpaceIdAvatar$ = this.avatar$.pipe(map(src => !src.includes(basePath)));
 
   public logout(): void {
     this.authService.disconnectWallet();

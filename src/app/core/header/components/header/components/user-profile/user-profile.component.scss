@@ -24,7 +24,9 @@
     img {
       display: block;
       height: auto;
+    }
 
+    &-rounded {
       border-radius: 50%;
     }
   }
