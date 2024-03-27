@@ -34,6 +34,7 @@ import {
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
+  EvmOnChainTrade,
   TX_STATUS,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -154,8 +155,11 @@ export class PreviewSwapService {
 
   public async requestTxSign(): Promise<void> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
+    const needPermit2Approve =
+      tradeState.trade instanceof EvmOnChainTrade &&
+      tradeState.trade.permit2ApproveConfig.usePermit2Approve;
 
-    if ('permit2ApproveConfig' in tradeState.trade) {
+    if (needPermit2Approve) {
       this.startPermit2Approve();
     } else if (tradeState.needApprove) {
       this.startApprove();

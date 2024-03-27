@@ -353,8 +353,6 @@ export class SwapsControllerService {
     }
   }
 
-  // public async approveOnPermit2(trade)
-
   private subscribeOnAddressChange(): void {
     this.authService.currentUser$
       .pipe(

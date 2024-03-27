@@ -151,7 +151,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   private isTradeWithPermit2Approve(tradeState: SelectedTrade): boolean {
     return (
-      'permit2ApproveConfig' in tradeState.trade &&
+      tradeState.trade instanceof EvmOnChainTrade &&
       tradeState.trade.permit2ApproveConfig.usePermit2Approve
     );
   }

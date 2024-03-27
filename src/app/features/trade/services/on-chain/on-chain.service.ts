@@ -127,7 +127,7 @@ export class OnChainService {
               : this.platformConfigurationService.useOnChainProxy;
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: 20000,
+            timeout: 30_000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
@@ -282,7 +282,7 @@ export class OnChainService {
       if (approveType === APPROVE_TYPE.DEFAULT) {
         await trade.approve(transactionOptions, true, amount);
       } else {
-        await trade.approveOnPermit2(transactionOptions);
+        await trade.approveOnPermit2(transactionOptions, true, amount);
       }
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {
