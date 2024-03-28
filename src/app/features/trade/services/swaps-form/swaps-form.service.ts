@@ -19,7 +19,9 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
@@ -156,5 +158,10 @@ export class SwapsFormService {
     this.form.get('output').valueChanges.subscribe(outputValue => {
       this._outputValue$.next(outputValue);
     });
+  }
+
+  public clearForm(): void {
+    this.form.reset();
+    this.form.updateValueAndValidity();
   }
 }

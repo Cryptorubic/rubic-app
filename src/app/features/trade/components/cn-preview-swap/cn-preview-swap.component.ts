@@ -36,6 +36,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @Component({
   selector: 'app-cn-preview-swap',
@@ -44,6 +45,8 @@ import { NAVIGATOR } from '@ng-web-apis/common';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CnPreviewSwapComponent {
+  public selectedForm$ = this.formsTogglerService.selectedForm$;
+
   public readonly status$ = this.cnSwapService.status$;
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
@@ -97,7 +100,8 @@ export class CnPreviewSwapComponent {
     private readonly cnSwapService: CnSwapService,
     private readonly targetAddressService: TargetNetworkAddressService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTrade();

@@ -21,7 +21,8 @@ import {
   TuiNotificationModule,
   TuiModeModule,
   TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiTooltipModule
 } from '@taiga-ui/core';
 import {
   TuiInputModule,
@@ -68,6 +69,7 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
+import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { FormHeaderComponent } from './components/form-header/form-header.compon
     CnTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
-    FormHeaderComponent
+    FormHeaderComponent,
+    GasFormHintComponent
   ],
   exports: [],
   imports: [
@@ -113,6 +116,7 @@ import { FormHeaderComponent } from './components/form-header/form-header.compon
     ClipboardModule,
     ReactiveFormsModule,
     TuiHintModule,
+    TuiTooltipModule,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,

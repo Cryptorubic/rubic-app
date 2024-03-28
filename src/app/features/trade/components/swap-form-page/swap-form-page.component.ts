@@ -11,8 +11,9 @@ import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { compareTokens } from '@shared/utils/utils';
+import { compareTokens, isNil } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/models';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -70,6 +71,18 @@ export class SwapFormPageComponent {
     distinctUntilChanged()
   );
 
+  public readonly showGasFormHint$ = this.selectedForm$.pipe(
+    combineLatestWith(this.tradePageService.formContent$, this.isMobile$, this.toAsset$),
+    map(([selectedForm, formState, isMobile, toAsset]) => {
+      return (
+        selectedForm === MAIN_FORM_TYPE.GAS_FORM &&
+        formState === 'form' &&
+        !isMobile &&
+        isNil(toAsset)
+      );
+    })
+  );
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
@@ -93,11 +106,13 @@ export class SwapFormPageComponent {
     });
   }
 
-  public openTokensSelect(formType: FormType, isMobile: boolean): void {
-    if (isMobile) {
-      this.modalService.openAssetsSelector(formType, this.injector).subscribe();
+  public openSelector(inputType: FormType, mainFormType: MainFormType, isMobile: boolean): void {
+    if (isMobile && mainFormType === MAIN_FORM_TYPE.SWAP_FORM) {
+      this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
+    } else if (isMobile && inputType === 'to' && mainFormType === MAIN_FORM_TYPE.GAS_FORM) {
+      this.modalService.openBlockchainList(this.injector);
     } else {
-      this.tradePageService.setState(formType === 'from' ? 'fromSelector' : 'toSelector');
+      this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
     }
   }
 

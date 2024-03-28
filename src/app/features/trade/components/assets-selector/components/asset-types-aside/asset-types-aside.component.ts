@@ -37,10 +37,6 @@ export class AssetTypesAsideComponent {
       if (windowSize >= WindowSize.MOBILE_MD) {
         return 11;
       }
-
-      if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return this.blockchainsAmount;
-      }
       return this.blockchainsAmount;
     })
   );

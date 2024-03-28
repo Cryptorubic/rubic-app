@@ -8,7 +8,6 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { FiatAsset } from '@shared/models/fiats/fiat-asset';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { AssetSelector } from '@shared/models/asset-selector';
@@ -18,6 +17,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
+import { MAIN_FORM_TYPE, MainFormType } from '@app/features/trade/services/forms-toggler/models';
 
 @Component({
   selector: 'app-asset-selector',
@@ -32,6 +32,8 @@ export class AssetSelectorComponent implements OnInit {
   @Output() public handleAssetSelection = new EventEmitter<void>();
 
   @Input({ required: true }) selectorType: 'from' | 'to';
+
+  @Input({ required: true }) mainFormType: MainFormType = MAIN_FORM_TYPE.SWAP_FORM;
 
   public disableSelection: boolean = false;
 
@@ -78,22 +80,21 @@ export class AssetSelectorComponent implements OnInit {
     };
   }
 
-  private getFiatAsset(fiat: FiatAsset): AssetSelector {
-    // @TODO NEW DESIGN
-    return {
-      secondImage: '',
-      secondLabel: 'Fiat currency',
-      mainImage: fiat.image,
-      mainLabel: fiat.name,
-      secondColor: 'white'
-    };
-  }
-
   public handleSelection(): void {
     if (this.disableSelection) {
       return;
     }
     this.handleAssetSelection.emit();
+  }
+
+  public getEmptySelectorText(): string {
+    if (this.mainFormType === MAIN_FORM_TYPE.GAS_FORM && this.selectorType === 'from') {
+      return 'Select Source Chain';
+    }
+    if (this.mainFormType === MAIN_FORM_TYPE.GAS_FORM && this.selectorType === 'to') {
+      return 'Select Target Chain';
+    }
+    return 'Select Token';
   }
 
   /**
