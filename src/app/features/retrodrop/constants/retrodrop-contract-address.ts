@@ -5,5 +5,6 @@ export const retrodropContractAddress = [
   '0x5c8fa3AF6F3864AdcE42d1c5B163190b4761101F',
   '0x353e2abbc8e40b0bee6d554995cc741690da8ade',
   '0x847Fdf8eE1260895697061B6ea823eE76caE92df',
-  '0x7f36c5b74a017d15297bc8cb5cd7a6bd3a4db1f4'
+  '0x7f36c5b74a017d15297bc8cb5cd7a6bd3a4db1f4',
+  '0x936c440F54Ff630aC8FD08F09ae61f0b6839cD4c'
 ];
