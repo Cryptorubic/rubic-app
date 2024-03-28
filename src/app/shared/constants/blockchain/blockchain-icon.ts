@@ -134,5 +134,8 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
   [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}sepolia.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
-  [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`
+  [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
+  [BLOCKCHAIN_NAME.KROMA]: `${basePath}kroma.svg`,
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen-eon.svg`,
+  [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`
 };

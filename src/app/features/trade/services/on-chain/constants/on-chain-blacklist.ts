@@ -68,7 +68,10 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: [],
   [BLOCKCHAIN_NAME.BLAST]: [],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [],
-  [BLOCKCHAIN_NAME.HOLESKY]: []
+  [BLOCKCHAIN_NAME.HOLESKY]: [],
+  [BLOCKCHAIN_NAME.KROMA]: [],
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: [],
+  [BLOCKCHAIN_NAME.MERLIN]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

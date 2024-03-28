@@ -1,4 +1,4 @@
-import { OnChainTradeType, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 
 export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes
@@ -123,7 +123,10 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos',
-  [ON_CHAIN_TRADE_TYPE.DLN]: 'dln'
+  [ON_CHAIN_TRADE_TYPE.DLN]: 'dln',
+  [ON_CHAIN_TRADE_TYPE.ASCENT]: 'ascent',
+  [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: 'merlinswap',
+  [ON_CHAIN_TRADE_TYPE.CAMELOT]: 'camelot'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

@@ -278,5 +278,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://ethereum-holesky.publicnode.com',
     'https://1rpc.io/holesky',
     'https://holesky-rpc.nocturnode.tech'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.KROMA]: [],
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: [],
+  [BLOCKCHAIN_NAME.MERLIN]: []
 };
