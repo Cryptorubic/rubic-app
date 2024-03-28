@@ -80,6 +80,10 @@
     background: var(--tui-secondary);
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
 
+    &-gas-form {
+      width: 200px;
+    }
+
     &::after {
       position: absolute;
       right: -25px;

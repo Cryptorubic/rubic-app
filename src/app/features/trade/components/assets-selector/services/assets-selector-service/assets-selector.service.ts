@@ -16,6 +16,8 @@ import {
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -59,7 +61,8 @@ export class AssetsSelectorService {
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -109,7 +112,10 @@ export class AssetsSelectorService {
       }
     }
 
-    this.selectorListType = 'tokens';
+    this.selectorListType =
+      this._formType === 'to' && this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM
+        ? 'blockchains'
+        : 'tokens';
   }
 
   private subscribeOnAssetChange(): void {

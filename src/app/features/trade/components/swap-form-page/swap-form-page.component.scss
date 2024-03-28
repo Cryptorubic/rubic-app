@@ -4,6 +4,12 @@ app-action-button {
   width: 100%;
 }
 
+app-gas-form-hint {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+}
+
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
