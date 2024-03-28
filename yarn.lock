@@ -16441,10 +16441,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.9.0-alpha-piteas.6:
-  version "5.9.0-alpha-piteas.6"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.9.0-alpha-piteas.6.tgz#eebbc2af32f0bb2bd3a1d0372edc44b85fe6edb9"
-  integrity sha512-R0zhBDUvzKyChbypYHHNev4LY86ub3L0JW10KDnK13tgi/h9qqydzFSFoIub2b/GtDC9ngJrad81WI5d4u5gsw==
+rubic-sdk@5.9.0-alpha-piteas.7:
+  version "5.9.0-alpha-piteas.7"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.9.0-alpha-piteas.7.tgz#cb09d6c7d07479329b9a189bcf8d0907d2c538d8"
+  integrity sha512-4zqHNBj0FgQejm0aHD1yjGFM5kgrkhsEtpBRPhx7lLAZN+/2HZCACq3LCIzSQ7aW7k6OcMyn3CSXxERhzTU0hA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
