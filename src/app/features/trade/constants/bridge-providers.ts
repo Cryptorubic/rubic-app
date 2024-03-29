@@ -35,6 +35,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#1275b7',
     averageTime: 5
   },
+  [BRIDGE_TYPE.ARCHON_BRIDGE]: {
+    name: 'Archon bridge',
+    image: `${imageBasePath}archon.svg`,
+    color: '#000',
+    averageTime: 5
+  },
   [BRIDGE_TYPE.AVALANCHE]: {
     name: 'Avalanche Bridge',
     image: `${imageBasePath}avalanche-bridge.svg`,

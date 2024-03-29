@@ -52,8 +52,8 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.ASCENT]: {
     name: 'Ascent',
-    image: `${imageBasePath}ascent.png`,
-    color: '#adaaaa'
+    image: `${imageBasePath}ascent.svg`,
+    color: '#1aa96b'
   },
   [ON_CHAIN_TRADE_TYPE.ASTRO_SWAP]: {
     name: 'AstroSwap',
@@ -106,8 +106,8 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   //CCCCCCCCCCCCCCCCCCCC
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
     name: 'Camelot',
-    image: `${imageBasePath}camelot.svg`,
-    color: '#ffffff'
+    image: `${imageBasePath}camelot.png`,
+    color: '#FFAF1D'
   },
   [ON_CHAIN_TRADE_TYPE.CHERRY_SWAP]: {
     name: 'Cherry Swap',
@@ -287,6 +287,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}mdex.svg`,
     color: '#50B0E4'
   },
+  [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: {
+    name: 'MerlinSwap',
+    image: `${imageBasePath}merlinswap.png`,
+    color: '#CF8D39'
+  },
   [ON_CHAIN_TRADE_TYPE.MESH_SWAP]: {
     name: 'MeshSwap',
     image: `${imageBasePath}meshswap.svg`,
@@ -306,11 +311,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'MuteSwap',
     image: `${imageBasePath}muteswap.webp`,
     color: 'white'
-  },
-  [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: {
-    name: 'MerlinSwap',
-    image: `${imageBasePath}merliswap.webp`,
-    color: '#ffffff'
   },
 
   //NNNNNNNNNNNNNNNNNNNNNNNNN
@@ -407,6 +407,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Polydex',
     image: `${imageBasePath}polydex.svg`,
     color: '#0D2866'
+  },
+  [ON_CHAIN_TRADE_TYPE.PITEAS]: {
+    name: 'Piteas',
+    image: `${imageBasePath}piteas.png`,
+    color: '#DF145E'
   },
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
     name: 'PulseX V1',
@@ -667,28 +672,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
     color: '#34A5F5'
-  },
-
-  [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: {
-    name: 'YuzuSwap',
-    image: `${imageBasePath}yuzuswap.png`,
-    color: '#EE5466'
-  },
-
-  [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
-    name: 'PulseX V1',
-    image: `${imageBasePath}pulsex.png`,
-    color: '#00ff73'
-  },
-  [ON_CHAIN_TRADE_TYPE.PULSEX_V2]: {
-    name: 'PulseX V2',
-    image: `${imageBasePath}pulsex.png`,
-    color: '#ff0006'
-  },
-  [ON_CHAIN_TRADE_TYPE.HORIZONDEX]: {
-    name: 'HorizonDEX',
-    image: `${imageBasePath}horixondex.png`,
-    color: '#444391'
   }
 };
 

@@ -3,9 +3,11 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { map, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
+import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { firstValueFrom } from 'rxjs';
@@ -52,7 +54,9 @@ export class TradeViewContainerComponent {
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
+    public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
+    public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly headerStore: HeaderStore,
     private readonly previewSwapService: PreviewSwapService,
