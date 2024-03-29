@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -18,6 +18,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
+import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -62,7 +63,8 @@ export class AssetsSelectorService {
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly tradePageService: TradePageService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -156,9 +158,17 @@ export class AssetsSelectorService {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    this.assetType = blockchainName;
-    this.tokensStoreService.startBalanceCalculating(blockchainName);
-    this.selectorListType = 'tokens';
+    const isGasFormTargetAssetSelect =
+      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this._formType === 'to';
+
+    if (isGasFormTargetAssetSelect) {
+      this.setNativeTargetTokenInGasForm(blockchainName);
+      this.tradePageService.setState('form');
+    } else {
+      this.assetType = blockchainName;
+      this.tokensStoreService.startBalanceCalculating(blockchainName);
+      this.selectorListType = 'tokens';
+    }
   }
 
   public onAssetSelect(asset: Asset): void {
@@ -174,5 +184,16 @@ export class AssetsSelectorService {
   public getAssetType(formType: FormType): AssetType {
     const assetTypeKey = formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     return this.swapFormService.inputValue[assetTypeKey];
+  }
+
+  private setNativeTargetTokenInGasForm(blockchainName: BlockchainName): void {
+    const chainType = BlockchainsInfo.getChainType(blockchainName);
+    const nativeToken = this.tokensStoreService.tokens.find(
+      t => t.blockchain === blockchainName && Web3Pure[chainType].isNativeAddress(t.address)
+    );
+    this.swapFormService.inputControl.patchValue({
+      toToken: nativeToken,
+      toBlockchain: blockchainName
+    });
   }
 }

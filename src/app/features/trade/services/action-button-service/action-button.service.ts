@@ -6,7 +6,6 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { ModalService } from '@core/modals/services/modal.service';
-import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
@@ -50,7 +49,6 @@ export class ActionButtonService {
     private readonly tradePageService: TradePageService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly previewSwapService: PreviewSwapService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly formsTogglerService: FormsTogglerService
   ) {}

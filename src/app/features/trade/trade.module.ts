@@ -70,6 +70,7 @@ import { PromotionBadgeComponent } from './components/provider-element/promotion
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
 import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
+import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 
 @NgModule({
   declarations: [
@@ -169,7 +170,8 @@ import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.c
     SwapTokensUpdaterService,
     TradePageService,
     CnSwapService,
-    ActionButtonService
+    ActionButtonService,
+    FormsTogglerService
     // SettingsService,
     // RefreshService,
     // TradeService,
