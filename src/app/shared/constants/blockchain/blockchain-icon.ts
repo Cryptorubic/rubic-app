@@ -70,6 +70,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KAVA]: `${basePath}kava.svg`,
   [BLOCKCHAIN_NAME.KLAYTN]: `${basePath}klaytn.svg`,
   [BLOCKCHAIN_NAME.KOMODO]: `${basePath}komodo.svg`,
+  [BLOCKCHAIN_NAME.KROMA]: `${basePath}kroma.svg`,
   [BLOCKCHAIN_NAME.KUSAMA]: `${basePath}kusama.svg`,
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: `${basePath}kava.svg`,
   [BLOCKCHAIN_NAME.LINEA]: `${basePath}linea.svg`,
@@ -134,5 +135,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
   [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}sepolia.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
-  [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`
+  [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen.svg`,
+  [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`
 };

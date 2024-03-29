@@ -30,7 +30,10 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.POLYGON_ZKEVM,
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
-  BLOCKCHAIN_NAME.BLAST
+  BLOCKCHAIN_NAME.BLAST,
+  BLOCKCHAIN_NAME.KROMA,
+  BLOCKCHAIN_NAME.MERLIN,
+  BLOCKCHAIN_NAME.BERACHAIN
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -66,7 +69,10 @@ export class GasService {
     [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: this.fetchPolygonZkEvmGas.bind(this),
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
-    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this)
+    [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
+    [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
+    [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
+    [BLOCKCHAIN_NAME.BERACHAIN]: this.fetchBerachainGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -303,6 +309,21 @@ export class GasService {
     );
   }
 
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchKromaGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      map(gasInfo => ({
+        ...gasInfo,
+        maxFeePerGas: new BigNumber(2.5).multipliedBy(gasInfo.maxFeePerGas).toFixed()
+      })),
+      catchError(() => of(null))
+    );
+  }
+
   /**
    * Gets ZkSync gas.
    * @return Observable<number> Average gas price in Gwei.
@@ -434,6 +455,30 @@ export class GasService {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMerlinGas(): Observable<GasPrice> {
+    return of({
+      gasPrice: new BigNumber(0.065).dividedBy(10 ** 9).toFixed()
+    });
+  }
+
+  /**
+   * Gets Berachain gas from gas station api.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchBerachainGas(): Observable<GasPrice | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BERACHAIN);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 
