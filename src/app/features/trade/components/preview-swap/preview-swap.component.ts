@@ -267,6 +267,8 @@ export class PreviewSwapComponent implements OnDestroy {
     if (
       el.data?.wrongNetwork &&
       el.step !== transactionStep.success &&
+      el.step !== transactionStep.sourcePending &&
+      (el.step === transactionStep.approvePending || el.step === transactionStep.swapRequest) &&
       BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
       fromBlockchainType === this.walletConnector.chainType
     ) {
