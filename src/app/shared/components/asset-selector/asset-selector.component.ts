@@ -27,15 +27,20 @@ import { MAIN_FORM_TYPE, MainFormType } from '@app/features/trade/services/forms
   providers: [TuiDestroyService]
 })
 export class AssetSelectorComponent implements OnInit {
-  public visibleAsset: AssetSelector | null = null;
+  private _mainFormType: MainFormType = MAIN_FORM_TYPE.SWAP_FORM;
 
-  @Output() public handleAssetSelection = new EventEmitter<void>();
+  @Input() isDisabled?: boolean = false;
 
   @Input({ required: true }) selectorType: 'from' | 'to';
 
-  @Input({ required: true }) mainFormType: MainFormType = MAIN_FORM_TYPE.SWAP_FORM;
+  @Input({ required: true }) set mainFormType(type: MainFormType) {
+    this._mainFormType = type;
+    this.onAssetAndMainFormTypeChange();
+  }
 
-  public disableSelection: boolean = false;
+  public get mainFormType(): MainFormType {
+    return this._mainFormType;
+  }
 
   @Input() set asset(value: TokenAmount | null) {
     if (value) {
@@ -43,7 +48,14 @@ export class AssetSelectorComponent implements OnInit {
     } else {
       this.visibleAsset = null;
     }
+    this.onAssetAndMainFormTypeChange();
   }
+
+  @Output() public handleAssetSelection = new EventEmitter<void>();
+
+  public visibleAsset: AssetSelector | null = null;
+
+  public emptySelectorText: string = '';
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
@@ -54,14 +66,24 @@ export class AssetSelectorComponent implements OnInit {
     private readonly tokenService: TokensService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.subOnHideSelectorQueryParamsChange();
+  }
+
+  private onAssetAndMainFormTypeChange(): void {
+    // this.isDisabledSelector = this.needDisableSourceSelector();
+    this.emptySelectorText = this.getEmptySelectorText();
+    this.cdr.markForCheck();
+  }
+
+  private subOnHideSelectorQueryParamsChange(): void {
     this.queryParamsService.tokensSelectionDisabled$
       .pipe(takeUntil(this.destroy$))
       .subscribe(([hideSelectionFrom, hideSelectionTo]) => {
         if (this.selectorType === 'from') {
-          this.disableSelection = hideSelectionFrom;
+          this.isDisabled = hideSelectionFrom;
         } else {
-          this.disableSelection = hideSelectionTo;
+          this.isDisabled = hideSelectionTo;
         }
         this.cdr.markForCheck();
       });
@@ -81,13 +103,15 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   public handleSelection(): void {
-    if (this.disableSelection) {
-      return;
-    }
+    if (this.isDisabled) return;
     this.handleAssetSelection.emit();
   }
 
-  public getEmptySelectorText(): string {
+  public onTokenImageError($event: Event): void {
+    this.tokenService.onTokenImageError($event);
+  }
+
+  private getEmptySelectorText(): string {
     if (this.mainFormType === MAIN_FORM_TYPE.GAS_FORM && this.selectorType === 'from') {
       return 'Select Source Chain';
     }
@@ -95,13 +119,5 @@ export class AssetSelectorComponent implements OnInit {
       return 'Select Target Chain';
     }
     return 'Select Token';
-  }
-
-  /**
-   * Sets default image to token, in case original image has thrown error.
-   * @param $event Img error event.
-   */
-  public onTokenImageError($event: Event): void {
-    this.tokenService.onTokenImageError($event);
   }
 }

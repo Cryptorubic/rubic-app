@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  Injector
+} from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
@@ -71,6 +77,11 @@ export class SwapFormPageComponent {
     distinctUntilChanged()
   );
 
+  public readonly isDisabledFromSelector$ = this.selectedForm$.pipe(
+    combineLatestWith(this.toAsset$),
+    map(([selectedForm, toAsset]) => selectedForm === MAIN_FORM_TYPE.GAS_FORM && isNil(toAsset))
+  );
+
   public readonly showGasFormHint$ = this.selectedForm$.pipe(
     combineLatestWith(this.tradePageService.formContent$, this.isMobile$, this.toAsset$),
     map(([selectedForm, formState, isMobile, toAsset]) => {
@@ -92,7 +103,8 @@ export class SwapFormPageComponent {
     private readonly modalService: ModalService,
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {

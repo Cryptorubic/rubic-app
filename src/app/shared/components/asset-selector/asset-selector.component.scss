@@ -82,6 +82,10 @@
 
     &-gas-form {
       width: 200px;
+
+      &__disabled {
+        color: var(--tui-text-03);
+      }
     }
 
     &::after {

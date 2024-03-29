@@ -13,9 +13,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { FormControl } from '@angular/forms';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TargetNetworkAddressService {
   public readonly addressControl = new FormControl<string>('');
 

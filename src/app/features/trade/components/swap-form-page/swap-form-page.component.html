@@ -1,7 +1,7 @@
 <app-window-container
   *ngLet="{
     displayReceiver: displayTargetAddressInput$ | async,
-    selectedForm: selectedForm$ | async,
+    mainFormType: selectedForm$ | async,
     isMobile: isMobile$ | async,
     showGasHint: showGasFormHint$ | async,
     fromAsset: fromAsset$ | async,
@@ -19,9 +19,10 @@
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openSelector('from', state.selectedForm, state.isMobile)"
+        (handleAssetSelection)="openSelector('from', state.mainFormType, state.isMobile)"
         [asset]="state.fromAsset"
-        [mainFormType]="state.selectedForm"
+        [mainFormType]="state.mainFormType"
+        [isDisabled]="isDisabledFromSelector$ | async"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -41,9 +42,9 @@
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openSelector('to', state.selectedForm, state.isMobile)"
+        (handleAssetSelection)="openSelector('to', state.mainFormType, state.isMobile)"
         [asset]="state.toAsset"
-        [mainFormType]="state.selectedForm"
+        [mainFormType]="state.mainFormType"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -58,7 +59,7 @@
   </div>
 
   <app-target-network-address
-    *ngIf="state.displayReceiver && state.selectedForm === 'swapForm'"
+    *ngIf="state.displayReceiver && state.mainFormType === 'swapForm'"
     @receiverAnimation
   ></app-target-network-address>
 
@@ -66,7 +67,7 @@
     <div class="buttons-container">
       <app-action-button></app-action-button>
       <app-receiver-address-button
-        *ngIf="state.selectedForm === 'swapForm'"
+        *ngIf="state.mainFormType === 'swapForm'"
         (handleClick)="toggleReceiver()"
       ></app-receiver-address-button>
     </div>
