@@ -20,14 +20,10 @@ export class TransactionStateComponent {
   @Input({ required: true }) set transactionData(value: {
     type: 'bridge' | 'swap';
     needApprove: boolean;
-    needPermit2Approve: boolean;
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
-    if (value.needPermit2Approve) {
-      steps.push(transactionStep.approveWithPermit2);
-    }
-    if (value.needApprove && !value.needPermit2Approve) {
+    if (value.needApprove) {
       steps.push(transactionStep.approvePending);
     }
     if (value.type === 'swap') {
@@ -51,7 +47,6 @@ export class TransactionStateComponent {
     const map: Record<TransactionStep, string> = {
       idle: 'Swap',
       error: 'Error',
-      approveWithPermit2: 'Manage allowance and permit',
       approveReady: 'Approve',
       approvePending: 'Manage allowance',
       swapReady: 'Swap',

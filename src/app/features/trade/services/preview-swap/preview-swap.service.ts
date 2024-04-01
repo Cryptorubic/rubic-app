@@ -34,7 +34,6 @@ import {
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
-  EvmOnChainTrade,
   TX_STATUS,
   Web3PublicSupportedBlockchain
 } from 'rubic-sdk';
@@ -152,13 +151,8 @@ export class PreviewSwapService {
 
   public async requestTxSign(): Promise<void> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
-    const needPermit2Approve =
-      tradeState.trade instanceof EvmOnChainTrade &&
-      tradeState.trade.permit2ApproveConfig.usePermit2Approve;
 
-    if (needPermit2Approve) {
-      this.startApproveWithPermit2();
-    } else if (tradeState.needApprove) {
+    if (tradeState.needApprove) {
       this.startApprove();
     } else {
       this.startSwap();
@@ -171,10 +165,6 @@ export class PreviewSwapService {
 
   public startApprove(): void {
     this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
-  }
-
-  public startApproveWithPermit2(): void {
-    this.setNextTxState({ step: 'approveWithPermit2', data: this.transactionState.data });
   }
 
   public activatePage(): void {
@@ -203,7 +193,7 @@ export class PreviewSwapService {
         ),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
-          if (txState.step === 'approvePending' || txState.step === 'approveWithPermit2') {
+          if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
           if (txState.step === 'swapRequest') {

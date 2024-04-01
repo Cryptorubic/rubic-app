@@ -114,8 +114,7 @@
               state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
                 ? 'swap'
                 : 'bridge',
-            needApprove: state.tradeState?.needApprove,
-            needPermit2Approve: state.tradeState?.trade.permit2ApproveConfig?.usePermit2Approve
+            needApprove: state.tradeState?.needApprove
           }"
           [state]="state.transaction.step"
         ></app-transaction-state>

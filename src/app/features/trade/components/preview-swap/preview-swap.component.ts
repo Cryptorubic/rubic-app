@@ -244,6 +244,9 @@ export class PreviewSwapComponent implements OnDestroy {
     };
     if (el.step === transactionStep.approveReady) {
       state.disabled = false;
+      state.label = this.isTradeWithPermit2Approve(tradeState)
+        ? 'Manage allowance and permit'
+        : state.label;
       state.action = this.approve.bind(this);
     } else if (el.step === transactionStep.swapReady) {
       state.disabled = false;
