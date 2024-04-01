@@ -8,6 +8,8 @@ import { Asset } from '@features/trade/models/asset';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
+import { AssetsSelectorService } from '../assets-selector/services/assets-selector-service/assets-selector.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-token-selector-page',
@@ -20,6 +22,16 @@ export class TokenSelectorPageComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
+  public readonly headerText$ = this.assetsSelectorService.selectorListType$.pipe(
+    map(type => {
+      console.log('headerText$ - ', type);
+      if (type === 'blockchains') {
+        return 'Blockchains List';
+      }
+      return 'Tokens List';
+    })
+  );
+
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -27,7 +39,8 @@ export class TokenSelectorPageComponent {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly swapFormService: SwapsFormService,
     private readonly tradePageService: TradePageService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly assetsSelectorService: AssetsSelectorService
   ) {
     this.formType = this.context?.data?.formType;
   }

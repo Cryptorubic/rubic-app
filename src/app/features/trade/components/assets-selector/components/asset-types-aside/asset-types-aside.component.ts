@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { WINDOW } from '@ng-web-apis/common';
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -52,8 +50,6 @@ export class AssetTypesAsideComponent {
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
-    @Inject(WINDOW) private readonly window: Window,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
