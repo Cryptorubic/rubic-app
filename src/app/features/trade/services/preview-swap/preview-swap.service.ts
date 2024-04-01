@@ -45,7 +45,6 @@ import { AirdropPointsService } from '@shared/services/airdrop-points-service/ai
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
-import { ErrorsService } from '@core/errors/errors.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -129,7 +128,6 @@ export class PreviewSwapService {
     private readonly airdropPointsService: AirdropPointsService,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
-    private readonly errorsService: ErrorsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService
   ) {}
@@ -388,10 +386,7 @@ export class PreviewSwapService {
     return this.swapsControllerService.approve(tradeState, {
       onSwap: () => {
         if (this.useCallback) {
-          this.setNextTxState({
-            step: 'swapRequest',
-            data: this.transactionState.data
-          });
+          this.startSwap();
         }
       },
       onError: () => {

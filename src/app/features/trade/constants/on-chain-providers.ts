@@ -331,6 +331,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}okcswap.png`,
     color: '#511785'
   },
+  [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: {
+    name: 'OkuSwap',
+    image: `${imageBasePath}okuswap.png`,
+    color: '#323332'
+  },
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: {
     name: 'Omnidex',
     image: `${imageBasePath}omnidex.png`,
@@ -407,6 +412,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Polydex',
     image: `${imageBasePath}polydex.svg`,
     color: '#0D2866'
+  },
+  [ON_CHAIN_TRADE_TYPE.PITEAS]: {
+    name: 'Piteas',
+    image: `${imageBasePath}piteas.png`,
+    color: '#DF145E'
   },
   [ON_CHAIN_TRADE_TYPE.PULSEX_V1]: {
     name: 'PulseX V1',
