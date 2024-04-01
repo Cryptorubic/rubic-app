@@ -142,6 +142,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 0.75, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.BLAST, rank: 0.75, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.KROMA, rank: 0.75, tags: ['ETH'] },
+  { name: BLOCKCHAIN_NAME.ROOTSTOCK, rank: 0.75, tags: ['RBTC'] },
   { name: BLOCKCHAIN_NAME.LINEA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.SCROLL, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.ZETACHAIN, rank: 0.5, tags: ['ZETA'] },
