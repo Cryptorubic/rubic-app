@@ -253,7 +253,6 @@ export class PreviewSwapComponent implements OnDestroy {
       state.action = this.swap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
-      state.label = this.isTradeWithPermit2Approve(tradeState) ? 'Permit and Swap' : state.label;
       state.action = this.startTrade.bind(this);
     } else if (
       el.step === transactionStep.success ||
