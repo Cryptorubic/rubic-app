@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-gas-form-hint',
@@ -6,4 +6,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrls: ['./gas-form-hint.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GasFormHintComponent {}
+export class GasFormHintComponent {
+  @Input({ required: true }) text: string;
+}

@@ -82,7 +82,7 @@ export class SwapFormPageComponent {
     map(([selectedForm, toAsset]) => selectedForm === MAIN_FORM_TYPE.GAS_FORM && isNil(toAsset))
   );
 
-  public readonly showGasFormHint$ = this.selectedForm$.pipe(
+  public readonly showGasTargetChainHint$ = this.selectedForm$.pipe(
     combineLatestWith(this.tradePageService.formContent$, this.isMobile$, this.toAsset$),
     map(([selectedForm, formState, isMobile, toAsset]) => {
       return (
@@ -90,6 +90,24 @@ export class SwapFormPageComponent {
         formState === 'form' &&
         !isMobile &&
         isNil(toAsset)
+      );
+    })
+  );
+
+  public readonly showGasSourceChainHint$ = this.selectedForm$.pipe(
+    combineLatestWith(
+      this.tradePageService.formContent$,
+      this.isMobile$,
+      this.toAsset$,
+      this.fromAsset$
+    ),
+    map(([selectedForm, formState, isMobile, toAsset, fromAsset]) => {
+      return (
+        selectedForm === MAIN_FORM_TYPE.GAS_FORM &&
+        formState === 'form' &&
+        !isMobile &&
+        !isNil(toAsset) &&
+        isNil(fromAsset)
       );
     })
   );

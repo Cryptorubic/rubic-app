@@ -3,7 +3,8 @@
     displayReceiver: displayTargetAddressInput$ | async,
     mainFormType: selectedForm$ | async,
     isMobile: isMobile$ | async,
-    showGasHint: showGasFormHint$ | async,
+    showGasTargetChainHint: showGasTargetChainHint$ | async,
+    showGasSourceChainHint: showGasSourceChainHint$ | async,
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
@@ -73,5 +74,16 @@
     </div>
   </ng-container>
 
-  <app-gas-form-hint *ngIf="state.showGasHint"> </app-gas-form-hint>
+  <app-gas-form-hint
+    *ngIf="state.showGasSourceChainHint"
+    class="source-chain"
+    text="Select a source chain and token you want to exchange on gas!"
+  >
+  </app-gas-form-hint>
+  <app-gas-form-hint
+    *ngIf="state.showGasTargetChainHint"
+    class="target-chain"
+    text="Select a target chain, where you want to get the gas token!"
+  >
+  </app-gas-form-hint>
 </app-window-container>

@@ -6,8 +6,15 @@ app-action-button {
 
 app-gas-form-hint {
   position: absolute;
-  bottom: 100px;
   left: 0;
+
+  &.source-chain {
+    top: 85px;
+  }
+
+  &.target-chain {
+    bottom: 110px;
+  }
 }
 
 .form-links {

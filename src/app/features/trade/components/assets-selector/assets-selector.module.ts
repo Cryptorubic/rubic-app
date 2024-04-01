@@ -19,7 +19,6 @@ import { SharedModule } from '@shared/shared.module';
 import { TuiActiveZoneModule, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { AssetTypesAsideComponent } from '@features/trade/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
-import { AssetsSelectorComponent } from '@features/trade/components/assets-selector/components/assets-selector/assets-selector.component';
 import { SearchBarComponent } from '@features/trade/components/assets-selector/components/search-bar/search-bar.component';
 import { TokensListComponent } from '@features/trade/components/assets-selector/components/tokens-list/tokens-list.component';
 import { TokensListElementComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/tokens-list-element/tokens-list-element.component';
@@ -28,10 +27,10 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
+import { TradePageService } from '../../services/trade-page/trade-page.service';
 
 @NgModule({
   declarations: [
-    AssetsSelectorComponent,
     AssetTypesAsideComponent,
     SearchBarComponent,
     TokensListComponent,
@@ -64,6 +63,7 @@ import { AssetsSelectorPageComponent } from '@features/trade/components/assets-s
     TuiDropdownModule,
     TuiDataListModule
   ],
-  exports: [AssetsSelectorPageComponent]
+  exports: [AssetsSelectorPageComponent],
+  providers: [TradePageService]
 })
 export class AssetsSelectorModule {}

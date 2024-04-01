@@ -71,6 +71,7 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { FormHeaderComponent } from './components/form-header/form-header.component';
 import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
+import { AssetsSelectorServices } from './components/assets-selector/constants/assets-selector-services';
 
 @NgModule({
   declarations: [
@@ -171,7 +172,8 @@ import { FormsTogglerService } from './services/forms-toggler/forms-toggler.serv
     TradePageService,
     CnSwapService,
     ActionButtonService,
-    FormsTogglerService
+    FormsTogglerService,
+    [AssetsSelectorServices]
     // SettingsService,
     // RefreshService,
     // TradeService,
