@@ -35,7 +35,7 @@ export class AssetSelectorComponent implements OnInit {
 
   @Input({ required: true }) set mainFormType(type: MainFormType) {
     this._mainFormType = type;
-    this.onAssetAndMainFormTypeChange();
+    this.emptySelectorText = this.getEmptySelectorText();
   }
 
   public get mainFormType(): MainFormType {
@@ -48,7 +48,7 @@ export class AssetSelectorComponent implements OnInit {
     } else {
       this.visibleAsset = null;
     }
-    this.onAssetAndMainFormTypeChange();
+    this.emptySelectorText = this.getEmptySelectorText();
   }
 
   @Output() public handleAssetSelection = new EventEmitter<void>();
@@ -68,11 +68,6 @@ export class AssetSelectorComponent implements OnInit {
 
   ngOnInit(): void {
     this.subOnHideSelectorQueryParamsChange();
-  }
-
-  private onAssetAndMainFormTypeChange(): void {
-    this.emptySelectorText = this.getEmptySelectorText();
-    this.cdr.markForCheck();
   }
 
   private subOnHideSelectorQueryParamsChange(): void {
