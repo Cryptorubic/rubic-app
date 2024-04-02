@@ -1,14 +1,15 @@
 <app-window-container
   *ngLet="{
     displayReceiver: displayTargetAddressInput$ | async,
-    mainFormType: selectedForm$ | async,
+    selectedForm: selectedForm$ | async,
     isMobile: isMobile$ | async,
     showGasTargetChainHint: showGasTargetChainHint$ | async,
     showGasSourceChainHint: showGasSourceChainHint$ | async,
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async
+    toAmount: toAmount$ | async,
+    calculationStatus: calculationStatus$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -20,9 +21,9 @@
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openSelector('from', state.mainFormType, state.isMobile)"
+        (handleAssetSelection)="openSelector('from', state.selectedForm, state.isMobile)"
         [asset]="state.fromAsset"
-        [mainFormType]="state.mainFormType"
+        [mainFormType]="state.selectedForm"
         [isDisabled]="isDisabledFromSelector$ | async"
       ></app-asset-selector>
       <div right class="input-container">
@@ -39,13 +40,15 @@
       </div>
     </app-input-output-container>
     <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-    <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
+    <app-input-output-container
+      [round]="state.displayReceiver || state.selectedForm === 'gasForm' ? 'none' : 'bottom'"
+    >
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openSelector('to', state.mainFormType, state.isMobile)"
+        (handleAssetSelection)="openSelector('to', state.selectedForm, state.isMobile)"
         [asset]="state.toAsset"
-        [mainFormType]="state.mainFormType"
+        [mainFormType]="state.selectedForm"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -60,15 +63,25 @@
   </div>
 
   <app-target-network-address
-    *ngIf="state.displayReceiver && state.mainFormType === 'swapForm'"
+    *ngIf="state.displayReceiver && state.selectedForm === 'swapForm'"
     @receiverAnimation
   ></app-target-network-address>
+
+  <app-gas-form-trade-calculation
+    *ngIf="state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar"
+    [isCalculation]="state.calculationStatus.activeCalculation"
+  ></app-gas-form-trade-calculation>
+
+  <!-- <app-gas-form-trade-calculation
+    *ngIf="state.selectedForm === 'gasForm'"
+    [isCalculation]="state.calculationStatus.activeCalculation"
+  ></app-gas-form-trade-calculation> -->
 
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
       <app-receiver-address-button
-        *ngIf="state.mainFormType === 'swapForm'"
+        *ngIf="state.selectedForm === 'swapForm'"
         (handleClick)="toggleReceiver()"
       ></app-receiver-address-button>
     </div>
