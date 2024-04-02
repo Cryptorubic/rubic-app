@@ -20,5 +20,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: true,
   [BLOCKCHAIN_NAME.FANTOM]: true,
   [BLOCKCHAIN_NAME.BLAST]: true,
-  [BLOCKCHAIN_NAME.KROMA]: true
+  [BLOCKCHAIN_NAME.KROMA]: true,
+  [BLOCKCHAIN_NAME.MERLIN]: true
 };

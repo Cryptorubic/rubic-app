@@ -277,5 +277,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [
     'https://rpc.ankr.com/horizen_eon',
     'https://eon-rpc.horizenlabs.io/ethv1'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.MERLIN]: ['https://rpc.merlinchain.io'],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co']
 };

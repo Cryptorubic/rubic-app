@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-const basePath = 'assets/images/icons/coins/';
+export const basePath = 'assets/images/icons/coins/';
 
 export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.AION]: `${basePath}aion.svg`,
@@ -102,6 +102,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.QTUM]: `${basePath}qtum.svg`,
   [BLOCKCHAIN_NAME.RAVENCOIN]: `${basePath}ravencoin.svg`,
   [BLOCKCHAIN_NAME.RIPPLE]: `${basePath}ripple.svg`,
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: `${basePath}rootstock.svg`,
   [BLOCKCHAIN_NAME.SECRET]: `${basePath}secret.svg`,
   [BLOCKCHAIN_NAME.SIA]: `${basePath}sia.svg`,
   [BLOCKCHAIN_NAME.SOLANA]: `${basePath}solana.svg`,
@@ -136,5 +137,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}default-chain.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
   [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
-  [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen.svg`
+  [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen.svg`,
+  [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`
 };
