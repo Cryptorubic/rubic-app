@@ -162,5 +162,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MERLIN]: {
     name: 'Merlin',
     rpc: 'https://rpc.merlinchain.io'
+  },
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: {
+    name: 'Rootstock',
+    rpc: 'https://public-node.rsk.co'
   }
 };
