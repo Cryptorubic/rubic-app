@@ -49,10 +49,11 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
+import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 
 @Injectable()
 export class CrossChainService {
-  private readonly defaultTimeout = 15_000;
+  private readonly defaultTimeout = CALCULATION_TIMEOUT_MS;
 
   private get receiverAddress(): string | null {
     if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {

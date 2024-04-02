@@ -24,13 +24,7 @@ import {
   TuiTextfieldControllerModule,
   TuiTooltipModule
 } from '@taiga-ui/core';
-import {
-  TuiInputModule,
-  TuiInputNumberModule,
-  TuiProgressModule,
-  TuiTagModule,
-  TuiToggleModule
-} from '@taiga-ui/kit';
+import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -71,7 +65,8 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { FormHeaderComponent } from './components/form-header/form-header.component';
 import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
-import { AssetsSelectorServices } from './components/assets-selector/constants/assets-selector-services';
+import { GasFormTradeCalculationComponent } from './components/gas-form-trade-calculation/gas-form-trade-calculation.component';
+import { GasFormService } from './services/gas-form/gas-form.service';
 
 @NgModule({
   declarations: [
@@ -103,7 +98,8 @@ import { AssetsSelectorServices } from './components/assets-selector/constants/a
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
-    GasFormHintComponent
+    GasFormHintComponent,
+    GasFormTradeCalculationComponent
   ],
   exports: [],
   imports: [
@@ -125,7 +121,6 @@ import { AssetsSelectorServices } from './components/assets-selector/constants/a
     TuiToggleModule,
     TuiHostedDropdownModule,
     TuiInputModule,
-    TuiProgressModule,
     TuiLoaderModule,
     AssetsSelectorModule,
     TuiNotificationModule,
@@ -173,7 +168,7 @@ import { AssetsSelectorServices } from './components/assets-selector/constants/a
     CnSwapService,
     ActionButtonService,
     FormsTogglerService,
-    [AssetsSelectorServices]
+    GasFormService
     // SettingsService,
     // RefreshService,
     // TradeService,

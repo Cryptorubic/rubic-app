@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import {
   SwapForm,
@@ -18,6 +18,7 @@ import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { TokensService } from '@core/services/tokens/tokens.service';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class SwapsFormService {
@@ -144,7 +145,10 @@ export class SwapsFormService {
     return this._isFilled$.getValue();
   }
 
-  constructor(private readonly tokensService: TokensService) {
+  constructor(
+    private readonly tokensService: TokensService,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     this.subscribeOnFormValueChange();
   }
 
@@ -161,5 +165,10 @@ export class SwapsFormService {
   public clearForm(): void {
     this.form.reset();
     this.form.updateValueAndValidity();
+
+    const inputAmountEl = this.document.getElementById(
+      'token-amount-input-element'
+    ) as HTMLInputElement;
+    inputAmountEl.value = '';
   }
 }

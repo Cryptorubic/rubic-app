@@ -71,7 +71,6 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   private onAssetAndMainFormTypeChange(): void {
-    // this.isDisabledSelector = this.needDisableSourceSelector();
     this.emptySelectorText = this.getEmptySelectorText();
     this.cdr.markForCheck();
   }

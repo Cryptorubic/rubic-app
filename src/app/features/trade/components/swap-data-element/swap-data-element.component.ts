@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
+import { AppGasData } from '../../models/gas-types';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -37,11 +38,7 @@ export class SwapDataElementComponent {
     }
   }
 
-  @Input({ required: true }) gasInfo: {
-    amount: BigNumber;
-    amountInUsd: BigNumber;
-    symbol: string;
-  } | null;
+  @Input({ required: true }) gasInfo: AppGasData | null;
 
   @Input({ required: true }) time: string | number;
 

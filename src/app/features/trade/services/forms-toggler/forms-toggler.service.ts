@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 import { MAIN_FORM_TYPE, MainFormType } from './models';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
@@ -32,7 +32,7 @@ export class FormsTogglerService {
   }
 
   private subscribeOnMainFormTypeChange(): void {
-    this.selectedForm$.subscribe(() => {
+    this.selectedForm$.pipe(distinctUntilChanged()).subscribe(() => {
       this.swapsFormService.clearForm();
       this.targetNetworkAddressService.clearReceiverAddress();
       this.queryParamsService.clearQueryParams();

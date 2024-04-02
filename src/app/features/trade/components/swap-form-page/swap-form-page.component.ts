@@ -20,6 +20,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens, isNil } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/models';
+import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -41,6 +42,8 @@ import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/model
 })
 export class SwapFormPageComponent {
   public selectedForm$ = this.formsTogglerService.selectedForm$;
+
+  public readonly calculationStatus$ = this.swapsStateService.calculationStatus$;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
@@ -122,7 +125,8 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly swapsStateService: SwapsStateService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {

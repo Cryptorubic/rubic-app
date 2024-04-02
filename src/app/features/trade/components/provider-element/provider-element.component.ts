@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
-import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import {
   CrossChainTradeType,
@@ -19,6 +18,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
+import { AppGasData } from '../../models/gas-types';
 
 @Component({
   selector: 'app-provider-element',
@@ -81,7 +81,7 @@ export class ProviderElementComponent {
     };
   }
 
-  public getGasData(): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
+  public getGasData(): AppGasData | null {
     const trade = this.tradeState.trade;
     let gasData = null;
     let gasPrice = null;
