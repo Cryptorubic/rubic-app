@@ -3,7 +3,7 @@
   *ngLet="{
     details: details$ | async,
     trade: trade$ | async,
-    wallet: walletAddress$ | async
+    wallet: walletAddress
   } as state"
 >
   <h5 class="transaction-details__label">Transaction details</h5>
@@ -38,7 +38,7 @@
   </app-transaction-details-element>
 
   <app-transaction-details-element
-    *ngIf="state.wallet && state.trade?.to"
+    *ngIf="state.wallet"
     [title]="text.receiver.label"
     [description]="text.receiver.description"
   >
@@ -46,6 +46,7 @@
       {{ state.wallet | shortAddress : 5 : 5 }}
 
       <a
+        *ngIf="state.trade?.to"
         [safetyLink]="state.wallet | scannerLink : state.trade.to.blockchain : ADDRESS_TYPE.WALLET"
       >
         <img
