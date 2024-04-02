@@ -33,20 +33,27 @@ export class GasFormTradeCalculationComponent {
   @Input() max: number = 100;
 
   @Input({ required: true }) set isCalculation(bool: boolean) {
-    this._isCalculation$.next(bool);
+    this._isCalculation = bool;
+    if (bool) {
+      this._isCalculation$.next(bool);
+    }
+  }
+
+  private _isCalculation: boolean = false;
+
+  public get isCalculation(): boolean {
+    return this._isCalculation;
   }
 
   public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
-  private readonly _isCalculation$ = new BehaviorSubject(false);
-
-  public readonly isCalculation$ = this._isCalculation$.asObservable();
+  private readonly _isCalculation$ = new BehaviorSubject(true);
 
   private readonly ratio: number = 100;
 
-  public percentsDone$ = this.isCalculation$.pipe(
+  public percentsDone$ = this._isCalculation$.pipe(
     switchMap(() => interval(this.ratio)),
-    takeWhile(val => val >= CALCULATION_TIMEOUT_MS / this.ratio),
+    takeWhile(val => val <= CALCULATION_TIMEOUT_MS / this.ratio),
     map(val => this.convertIntervalValueToPercents(val))
   );
 
@@ -136,7 +143,6 @@ export class GasFormTradeCalculationComponent {
   }
 
   private getProviderInfo(trade: CrossChainTrade): ProviderInfo {
-    console.log('getProviderInfo', trade.type);
     const provider = TRADES_PROVIDERS[trade.type];
     const providerAverageTime = this.platformConfigurationService.providersAverageTime;
     const currentProviderTime = providerAverageTime?.[trade.type];
@@ -148,6 +154,7 @@ export class GasFormTradeCalculationComponent {
   }
 
   private convertIntervalValueToPercents(val: number): number {
+    console.log(val);
     return val * ((this.max * this.ratio) / CALCULATION_TIMEOUT_MS);
   }
 }

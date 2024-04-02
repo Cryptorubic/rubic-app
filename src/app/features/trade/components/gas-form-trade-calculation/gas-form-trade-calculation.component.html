@@ -1,15 +1,11 @@
 <div
-  *ngLet="{ isCalculation: isCalculation$ | async, progress: percentsDone$ | async } as state"
+  *ngLet="{ progress: percentsDone$ | async } as state"
   class="gas-form-trade"
   [class.gas-form-trade__calculation]="isCalculation"
 >
-  <app-progress-bar
-    *ngIf="state.isCalculation"
-    [value]="state.progress"
-    [max]="max"
-  ></app-progress-bar>
+  <app-progress-bar *ngIf="isCalculation" [value]="state.progress" [max]="max"></app-progress-bar>
 
-  <ng-container *ngIf="!state.isCalculation; else calculatingText">
+  <ng-container *ngIf="!isCalculation; else calculatingText">
     <div class="gas-form-trade__path" [tuiHint]="pathHint">
       <img [src]="providerInfo?.image" width="22" height="22" alt="Provider Logo" />
     </div>
@@ -20,7 +16,7 @@
     ></app-swap-data-element>
   </ng-container>
   <ng-template #calculatingText>
-    <span>Finding best route...</span>
+    <span class="gas-form-trade__calculating-text">Finding best route...</span>
   </ng-template>
 </div>
 

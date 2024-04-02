@@ -198,7 +198,6 @@ export class SwapsStateService {
     }
     this.swapType = type;
     this._tradesStore$.next(currentTrades);
-    console.log('TRADE_LIST', currentTrades);
   }
 
   public clearProviders(): void {
