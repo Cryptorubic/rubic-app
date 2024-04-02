@@ -258,6 +258,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //KKKKKKKKKKKKKKKKKKKKKK
+  [ON_CHAIN_TRADE_TYPE.KIM]: {
+    name: 'Kim',
+    image: `${imageBasePath}kim.png`,
+    color: '#FF4500'
+  },
   [ON_CHAIN_TRADE_TYPE.KYBER_SWAP]: {
     name: 'KyberSwap',
     image: `${imageBasePath}kyberswap.svg`,

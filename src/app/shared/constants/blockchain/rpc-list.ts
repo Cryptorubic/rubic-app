@@ -279,5 +279,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://eon-rpc.horizenlabs.io/ethv1'
   ],
   [BLOCKCHAIN_NAME.MERLIN]: ['https://rpc.merlinchain.io'],
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co']
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.MODE]: [
+    'https://mainnet.mode.network',
+    'https://1rpc.io/mode',
+    'https://mode.drpc.org'
+  ]
 };
