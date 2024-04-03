@@ -12,6 +12,7 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
 import { compareAddresses } from '@app/shared/utils/utils';
+import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
 
 @Component({
   selector: 'app-tokens-list',
@@ -82,11 +83,7 @@ export class TokensListComponent {
     const isNative = Web3Pure[chainType].isNativeAddress(t.address);
     const wrappedAddress = wrappedNativeTokensList[t.blockchain as EvmBlockchainName]?.address;
     const isWrapped = compareAddresses(wrappedAddress, t.address);
-    const nameToLowerCase = t.name.toLowerCase();
-    const isStable =
-      nameToLowerCase.includes('usdt') ||
-      nameToLowerCase.includes('usdc') ||
-      nameToLowerCase.includes('dai');
+    const isStable = STABLE_TOKENS_NAMES.some(name => new RegExp(name, 'i').test(t.name));
 
     return isNative || isWrapped || isStable;
   }

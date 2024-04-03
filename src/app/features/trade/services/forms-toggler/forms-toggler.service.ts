@@ -4,6 +4,7 @@ import { MAIN_FORM_TYPE, MainFormType } from './models';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { BlockchainName } from 'rubic-sdk';
 
 @Injectable({ providedIn: 'root' })
 export class FormsTogglerService {
@@ -13,6 +14,10 @@ export class FormsTogglerService {
 
   public get selectedForm(): MainFormType {
     return this._selectedForm$.getValue();
+  }
+
+  public get targetBlockchain(): BlockchainName | null {
+    return this.swapsFormService.inputValue.toBlockchain;
   }
 
   constructor(
