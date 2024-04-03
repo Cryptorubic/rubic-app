@@ -246,7 +246,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://x-api.rubic.exchange/sol_rpc?api_key=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+    'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://rpc.ankr.com/solana',
     'https://api.mainnet-beta.solana.com'
   ],
