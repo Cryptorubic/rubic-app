@@ -21,8 +21,7 @@ import {
   TuiNotificationModule,
   TuiModeModule,
   TuiScrollbarModule,
-  TuiTextfieldControllerModule,
-  TuiTooltipModule
+  TuiTextfieldControllerModule
 } from '@taiga-ui/core';
 import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -116,7 +115,6 @@ import { AssetsSelectorService } from './components/assets-selector/services/ass
     ClipboardModule,
     ReactiveFormsModule,
     TuiHintModule,
-    TuiTooltipModule,
     FormsModule,
     TuiTextfieldControllerModule,
     TuiInputNumberModule,

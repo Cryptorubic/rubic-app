@@ -146,7 +146,7 @@ export class ActionButtonService {
           return {
             type: 'action',
             text: 'Get Gas',
-            action: () => {}
+            action: this.swap.bind(this)
           };
         }
         if (!isReceiverValid) {
