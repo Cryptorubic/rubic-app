@@ -999,5 +999,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ROOTSTOCK], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_FAIR], ...defaultTokenParams } as Token
   ]
 };

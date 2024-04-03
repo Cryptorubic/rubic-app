@@ -166,5 +166,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.ROOTSTOCK]: {
     name: 'Rootstock',
     rpc: 'https://public-node.rsk.co'
+  },
+  [BLOCKCHAIN_NAME.ZK_FAIR]: {
+    name: 'zkFair',
+    rpc: 'https://rpc.zkfair.io'
   }
 };

@@ -1098,5 +1098,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.ZK_FAIR]: {
+    baseUrl: 'https://scan.zkfair.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };
