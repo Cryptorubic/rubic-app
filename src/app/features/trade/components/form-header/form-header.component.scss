@@ -11,22 +11,43 @@
   font-weight: bold;
   font-size: 15px;
 
-  &_links {
+  &__links {
     display: flex;
     gap: var(--tui-padding-s);
 
     color: var(--tui-text-03);
+  }
 
-    span {
+  &__link {
+    position: relative;
+
+    &-new {
+      position: absolute;
+      top: -7px;
+      right: -17px;
+
+      padding: 0 3px;
+
+      color: white;
+      font-size: 9px;
+      line-height: 12px;
+
+      background: var(--tui-primary-active);
+      border-radius: 5px;
+
+      pointer-events: none;
+    }
+
+    &-title {
       cursor: pointer;
+    }
 
-      &.selected {
-        color: var(--tui-text-01);
-      }
+    &.selected {
+      color: var(--tui-text-01);
     }
   }
 
-  &_actions {
+  &__actions {
     display: flex;
     gap: 10px;
     align-items: center;
