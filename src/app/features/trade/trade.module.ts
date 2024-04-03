@@ -67,6 +67,8 @@ import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.c
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { GasFormTradeCalculationComponent } from './components/gas-form-trade-calculation/gas-form-trade-calculation.component';
 import { GasFormService } from './services/gas-form/gas-form.service';
+import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
+import { AssetsSelectorService } from './components/assets-selector/services/assets-selector-service/assets-selector.service';
 
 @NgModule({
   declarations: [
@@ -168,7 +170,9 @@ import { GasFormService } from './services/gas-form/gas-form.service';
     CnSwapService,
     ActionButtonService,
     FormsTogglerService,
-    GasFormService
+    GasFormService,
+    TradeInfoManager,
+    AssetsSelectorService
     // SettingsService,
     // RefreshService,
     // TradeService,

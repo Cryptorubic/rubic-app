@@ -1,26 +1,14 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Self } from '@angular/core';
 import { TradeState } from '../../models/trade-state';
-import {
-  BLOCKCHAIN_NAME,
-  CrossChainTrade,
-  EvmCrossChainTrade,
-  EvmOnChainTrade,
-  FeeInfo,
-  OnChainTrade,
-  RubicStep,
-  Web3Pure,
-  nativeTokensList
-} from 'rubic-sdk';
-import { ProviderInfo } from '../../models/provider-info';
-import { TRADES_PROVIDERS } from '../../constants/trades-providers';
-import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
-import { AppGasData } from '../../models/gas-types';
+import { FeeInfo, RubicStep } from 'rubic-sdk';
+import { AppGasData, ProviderInfo } from '../../models/provider-info';
 import { BehaviorSubject, interval, map, switchMap, takeUntil, takeWhile } from 'rxjs';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { GasFormService } from '../../services/gas-form/gas-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { Token } from '@app/shared/models/tokens/token';
+import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 
 @Component({
   selector: 'app-gas-form-trade-calculation',
@@ -34,9 +22,7 @@ export class GasFormTradeCalculationComponent {
 
   @Input({ required: true }) set isCalculation(bool: boolean) {
     this._isCalculation = bool;
-    if (bool) {
-      this._isCalculation$.next(bool);
-    }
+    this._isCalculation$.next(bool);
   }
 
   private _isCalculation: boolean = false;
@@ -57,6 +43,10 @@ export class GasFormTradeCalculationComponent {
     map(val => this.convertIntervalValueToPercents(val))
   );
 
+  public calculationText$ = this.percentsDone$.pipe(
+    map(percents => this.getCalcTextForDifferentPercentsRange(percents))
+  );
+
   public gasData: AppGasData | null;
 
   public feeInfo: {
@@ -69,9 +59,9 @@ export class GasFormTradeCalculationComponent {
   public routePath: RubicStep[];
 
   constructor(
-    private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly gasFormService: GasFormService,
     private readonly swapsFormService: SwapsFormService,
+    private readonly tradeInfoManager: TradeInfoManager,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly cdr: ChangeDetectorRef
   ) {
@@ -88,73 +78,22 @@ export class GasFormTradeCalculationComponent {
   private async onBestTradeUpdate(state: TradeState): Promise<void> {
     const trade = state.trade;
     this.routePath = state.routes;
-    this.feeInfo = this.getFeeInfo(trade);
-    this.gasData = this.getGasData(trade);
-    this.providerInfo = this.getProviderInfo(trade as CrossChainTrade);
-  }
-
-  private getFeeInfo(trade: CrossChainTrade | OnChainTrade): {
-    fee: FeeInfo | null;
-    nativeToken: Token;
-  } {
-    const nativeToken = this.gasFormService.getNativeToken(trade.from.blockchain);
-    return {
-      fee: trade.feeInfo,
-      nativeToken: nativeToken
-    };
-  }
-
-  private getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData {
-    let gasData = null;
-    let gasPrice = null;
-    if (trade instanceof EvmCrossChainTrade) {
-      gasData = trade.gasData;
-
-      if (
-        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
-        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
-      ) {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? Web3Pure.fromWei(gasData.gasPrice)
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      } else {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? gasData.gasPrice
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      }
-    } else if (trade instanceof EvmOnChainTrade) {
-      gasData = trade.gasFeeInfo;
-      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
-    }
-
-    if (!gasData || !gasData.gasLimit) {
-      return null;
-    }
-    const blockchain = trade.from.blockchain;
-    const nativeToken = nativeTokensList[blockchain];
-    const nativeTokenPrice = this.gasFormService.getNativeToken(trade.from.blockchain)?.price || 0;
-    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
-
-    return {
-      amount: gasLimit,
-      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
-      symbol: nativeToken.symbol
-    };
-  }
-
-  private getProviderInfo(trade: CrossChainTrade): ProviderInfo {
-    const provider = TRADES_PROVIDERS[trade.type];
-    const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-    const currentProviderTime = providerAverageTime?.[trade.type];
-
-    return {
-      ...provider,
-      averageTime: currentProviderTime ? currentProviderTime : provider.averageTime
-    };
+    this.feeInfo = this.tradeInfoManager.getFeeInfo(trade);
+    this.gasData = this.tradeInfoManager.getGasData(trade);
+    this.providerInfo = this.tradeInfoManager.getProviderInfo(trade.type);
   }
 
   private convertIntervalValueToPercents(val: number): number {
-    console.log(val);
     return val * ((this.max * this.ratio) / CALCULATION_TIMEOUT_MS);
+  }
+
+  private getCalcTextForDifferentPercentsRange(percentsDone: number): string {
+    if (percentsDone < 33) {
+      return 'Finding best route...';
+    }
+    if (percentsDone < 67) {
+      return 'Calculating providers...';
+    }
+    return 'A bit more...';
   }
 }

@@ -11,6 +11,7 @@ import { BlockchainsListService } from '@features/trade/components/assets-select
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -51,6 +52,7 @@ export class AssetTypesAsideComponent {
     private readonly queryParamsService: QueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
+    private readonly formsTogglerService: FormsTogglerService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -79,6 +81,24 @@ export class AssetTypesAsideComponent {
     selectedBlockchain: BlockchainName
   ): AvailableBlockchain {
     return slicedBlockchains.find(blockchain => blockchain.name === selectedBlockchain);
+  }
+
+  private handleAssideBlockchainsInFromSelectorGasForm(
+    assideBlockchains: AvailableBlockchain[],
+    shownBlockchainsAmount: number
+  ): AvailableBlockchain[] {
+    const lengthBeforeFilter = assideBlockchains.length;
+    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
+    const filteredBlockchains = assideBlockchains.filter(chain => chain.name !== toBlockchain);
+
+    if (lengthBeforeFilter > filteredBlockchains.length) {
+      const newLastIndexInFilteredChains = shownBlockchainsAmount;
+      filteredBlockchains.push(
+        this.blockchainsListService.availableBlockchains[newLastIndexInFilteredChains]
+      );
+    }
+
+    return filteredBlockchains;
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -112,23 +132,33 @@ export class AssetTypesAsideComponent {
       return this.getBlockchainsListForLandingIframe();
     }
 
-    if (toBlockchain && fromBlockchain) {
-      if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
+    const hideSelectedTargetBlockchain =
+      this.formsTogglerService.selectedForm === 'gasForm' && this.formType === 'from';
+
+    if (hideSelectedTargetBlockchain) {
+      slicedBlockchains = this.handleAssideBlockchainsInFromSelectorGasForm(
+        slicedBlockchains,
+        shownBlockchainsAmount
+      );
+    } else {
+      if (toBlockchain && fromBlockchain) {
+        if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
+          this.setLastSelectedHiddenBlockchain(fromBlockchain);
+        } else if (!isSelectedToBlockchainIncluded) {
+          this.setLastSelectedHiddenBlockchain(toBlockchain);
+        }
+      } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(fromBlockchain);
-      } else if (!isSelectedToBlockchainIncluded) {
+      } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(toBlockchain);
       }
-    } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(fromBlockchain);
-    } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(toBlockchain);
-    }
 
-    const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
+      const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
 
-    if (hiddenBlockchain) {
-      slicedBlockchains.pop();
-      slicedBlockchains.unshift(hiddenBlockchain);
+      if (hiddenBlockchain) {
+        slicedBlockchains.pop();
+        slicedBlockchains.unshift(hiddenBlockchain);
+      }
     }
 
     return slicedBlockchains.map(blockchain => ({

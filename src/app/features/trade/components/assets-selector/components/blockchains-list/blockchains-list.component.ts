@@ -6,6 +6,8 @@ import { BlockchainsListService } from '@features/trade/components/assets-select
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -15,16 +17,29 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 })
 export class BlockchainsListComponent implements OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    map(blockchains => [
-      ...blockchains.slice(0, 8),
-      ...blockchains.slice(8, blockchains.length - 1).sort((a, b) => a.name.localeCompare(b.name))
-    ])
+    map(blockchains => {
+      const sortedList = [
+        ...blockchains.slice(0, 8),
+        ...blockchains.slice(8, blockchains.length - 1).sort((a, b) => a.name.localeCompare(b.name))
+      ];
+
+      if (
+        this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM &&
+        this.assetsSelectorService.formType === 'from'
+      ) {
+        const toBlockchain = this.formsTogglerService.targetBlockchain;
+        return sortedList.filter(chain => chain.name !== toBlockchain);
+      }
+
+      return sortedList;
+    })
   );
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly mobileNativeService: MobileNativeModalService
+    private readonly mobileNativeService: MobileNativeModalService,
+    public readonly formsTogglerService: FormsTogglerService
   ) {}
 
   ngOnDestroy(): void {
