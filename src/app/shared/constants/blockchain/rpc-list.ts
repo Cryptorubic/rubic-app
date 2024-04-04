@@ -125,12 +125,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
       fullHost: 'https://api.trongrid.io'
     }
   ],
-  /*
-  [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
-  ],
-  [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
-   */
   [BLOCKCHAIN_NAME.BITGERT]: [
     'https://go.getblock.io/6e4887d81fd043c0b2fc8aa1f338fa2d',
     'https://serverrpc.com',
@@ -252,9 +246,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://go.getblock.io/63e2f3a12930427dac486ea6cc1f8238',
-    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280'
+    'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+    'https://rpc.ankr.com/solana',
+    'https://api.mainnet-beta.solana.com'
   ],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
@@ -280,5 +274,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MERLIN]: ['https://rpc.merlinchain.io'],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.MODE]: [
+    'https://mainnet.mode.network',
+    'https://1rpc.io/mode',
+    'https://mode.drpc.org'
+  ],
   [BLOCKCHAIN_NAME.ZK_FAIR]: ['https://rpc.zkfair.io']
 };

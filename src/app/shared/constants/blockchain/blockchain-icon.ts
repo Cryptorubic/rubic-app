@@ -139,5 +139,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
   [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen.svg`,
   [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`,
+  [BLOCKCHAIN_NAME.MODE]: `${basePath}mode.svg`,
   [BLOCKCHAIN_NAME.ZK_FAIR]: `${basePath}zkfair.svg`
 };
