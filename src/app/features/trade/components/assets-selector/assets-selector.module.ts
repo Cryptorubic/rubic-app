@@ -28,6 +28,9 @@ import { BlockchainsListComponent } from '@features/trade/components/assets-sele
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
+import { GasFormService } from '../../services/gas-form/gas-form.service';
+import { BlockchainsListService } from './services/blockchains-list-service/blockchains-list.service';
+import { SearchQueryService } from './services/search-query-service/search-query.service';
 
 @NgModule({
   declarations: [
@@ -64,6 +67,6 @@ import { TradePageService } from '../../services/trade-page/trade-page.service';
     TuiDataListModule
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [TradePageService]
+  providers: [TradePageService, GasFormService, BlockchainsListService, SearchQueryService]
 })
 export class AssetsSelectorModule {}

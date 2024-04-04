@@ -12,6 +12,8 @@ import { AssetsSelectorService } from '@features/trade/components/assets-selecto
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
+import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -22,8 +24,6 @@ import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
 
-  public readonly blockchainsAmount = this.blockchainsListService.availableBlockchains.length;
-
   public readonly selectedAssetType$ = this.assetsSelectorService.assetType$;
 
   public readonly formType = this.assetsSelectorService.formType;
@@ -33,12 +33,19 @@ export class AssetTypesAsideComponent {
    */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
-      if (windowSize >= WindowSize.MOBILE_MD) {
+      if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
         return 11;
       }
+
       return this.blockchainsAmount;
     })
   );
+
+  public get blockchainsAmount(): number {
+    return this.isSourceSelectorGasFormOpened()
+      ? this.gasFormService.gasFormBlockchainsAmount
+      : this.blockchainsListService.availableBlockchains.length;
+  }
 
   public get showFiats(): boolean {
     return this.formType === 'from' && !this.queryParamsService.hideUnusedUI;
@@ -53,6 +60,7 @@ export class AssetTypesAsideComponent {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly formsTogglerService: FormsTogglerService,
+    private readonly gasFormService: GasFormService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -83,22 +91,20 @@ export class AssetTypesAsideComponent {
     return slicedBlockchains.find(blockchain => blockchain.name === selectedBlockchain);
   }
 
-  private handleAssideBlockchainsInFromSelectorGasForm(
-    assideBlockchains: AvailableBlockchain[],
-    shownBlockchainsAmount: number
+  private isSourceSelectorGasFormOpened(): boolean {
+    return (
+      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'from'
+    );
+  }
+
+  private getAssideBlockchainsInSourceSelectorGasForm(
+    amountInAssideList: number
   ): AvailableBlockchain[] {
-    const lengthBeforeFilter = assideBlockchains.length;
-    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
-    const filteredBlockchains = assideBlockchains.filter(chain => chain.name !== toBlockchain);
-
-    if (lengthBeforeFilter > filteredBlockchains.length) {
-      const newLastIndexInFilteredChains = shownBlockchainsAmount;
-      filteredBlockchains.push(
-        this.blockchainsListService.availableBlockchains[newLastIndexInFilteredChains]
-      );
-    }
-
-    return filteredBlockchains;
+    const assideChains = this.gasFormService.gasFormAvailableBlockchains.slice(
+      0,
+      amountInAssideList
+    );
+    return assideChains;
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -132,14 +138,8 @@ export class AssetTypesAsideComponent {
       return this.getBlockchainsListForLandingIframe();
     }
 
-    const hideSelectedTargetBlockchain =
-      this.formsTogglerService.selectedForm === 'gasForm' && this.formType === 'from';
-
-    if (hideSelectedTargetBlockchain) {
-      slicedBlockchains = this.handleAssideBlockchainsInFromSelectorGasForm(
-        slicedBlockchains,
-        shownBlockchainsAmount
-      );
+    if (this.isSourceSelectorGasFormOpened()) {
+      slicedBlockchains = this.getAssideBlockchainsInSourceSelectorGasForm(shownBlockchainsAmount);
     } else {
       if (toBlockchain && fromBlockchain) {
         if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
@@ -188,6 +188,6 @@ export class AssetTypesAsideComponent {
   }
 
   public toggleBlockchainList(): void {
-    this.modalService.openBlockchainList(this.injector);
+    this.modalService.openBlockchainList(this.formType, this.injector);
   }
 }

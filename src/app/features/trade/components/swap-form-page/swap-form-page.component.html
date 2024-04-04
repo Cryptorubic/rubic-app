@@ -21,7 +21,7 @@
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openSelector('from', state.selectedForm, state.isMobile)"
+        (handleAssetSelection)="openSelector('from', state.isMobile)"
         [asset]="state.fromAsset"
         [mainFormType]="state.selectedForm"
         [isDisabled]="isDisabledFromSelector$ | async"
@@ -46,7 +46,7 @@
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openSelector('to', state.selectedForm, state.isMobile)"
+        (handleAssetSelection)="openSelector('to', state.isMobile)"
         [asset]="state.toAsset"
         [mainFormType]="state.selectedForm"
       ></app-asset-selector>

@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Self } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeState } from '../../models/trade-state';
 import { FeeInfo, RubicStep } from 'rubic-sdk';
-import { AppGasData, ProviderInfo } from '../../models/provider-info';
-import { BehaviorSubject, interval, map, switchMap, takeUntil, takeWhile } from 'rxjs';
+import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
+import { BehaviorSubject, interval, map, switchMap, takeWhile } from 'rxjs';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { GasFormService } from '../../services/gas-form/gas-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -37,15 +37,17 @@ export class GasFormTradeCalculationComponent {
 
   private readonly ratio: number = 100;
 
-  public percentsDone$ = this._isCalculation$.pipe(
+  public readonly percentsDone$ = this._isCalculation$.pipe(
     switchMap(() => interval(this.ratio)),
     takeWhile(val => val <= CALCULATION_TIMEOUT_MS / this.ratio),
     map(val => this.convertIntervalValueToPercents(val))
   );
 
-  public calculationText$ = this.percentsDone$.pipe(
+  public readonly calculationText$ = this.percentsDone$.pipe(
     map(percents => this.getCalcTextForDifferentPercentsRange(percents))
   );
+
+  public readonly bestTrade$ = this.gasFormService.bestTrade$;
 
   public gasData: AppGasData | null;
 
@@ -61,26 +63,19 @@ export class GasFormTradeCalculationComponent {
   constructor(
     private readonly gasFormService: GasFormService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tradeInfoManager: TradeInfoManager,
-    @Self() private readonly destroy$: TuiDestroyService,
-    private readonly cdr: ChangeDetectorRef
-  ) {
-    this.subOnBestTradeUpdate();
+    private readonly tradeInfoManager: TradeInfoManager
+  ) {}
+
+  public getGasData(state: TradeState): AppGasData | null {
+    return this.tradeInfoManager.getGasData(state.trade);
   }
 
-  private subOnBestTradeUpdate(): void {
-    this.gasFormService.bestTrade$.pipe(takeUntil(this.destroy$)).subscribe(tradeState => {
-      this.onBestTradeUpdate(tradeState);
-      this.cdr.markForCheck();
-    });
+  public getFeeInfo(state: TradeState): AppFeeInfo {
+    return this.tradeInfoManager.getFeeInfo(state.trade);
   }
 
-  private async onBestTradeUpdate(state: TradeState): Promise<void> {
-    const trade = state.trade;
-    this.routePath = state.routes;
-    this.feeInfo = this.tradeInfoManager.getFeeInfo(trade);
-    this.gasData = this.tradeInfoManager.getGasData(trade);
-    this.providerInfo = this.tradeInfoManager.getProviderInfo(trade.type);
+  public getProviderInfo(state: TradeState): ProviderInfo {
+    return this.tradeInfoManager.getProviderInfo(state.tradeType);
   }
 
   private convertIntervalValueToPercents(val: number): number {
