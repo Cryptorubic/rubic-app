@@ -1,10 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Injector
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { combineLatestWith } from 'rxjs';
@@ -19,7 +13,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens, isNil } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/models';
+import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 
 @Component({
@@ -125,7 +119,6 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly cdr: ChangeDetectorRef,
     private readonly swapsStateService: SwapsStateService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
@@ -140,11 +133,13 @@ export class SwapFormPageComponent {
     });
   }
 
-  public openSelector(inputType: FormType, mainFormType: MainFormType, isMobile: boolean): void {
-    if (isMobile && mainFormType === MAIN_FORM_TYPE.SWAP_FORM) {
-      this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
-    } else if (isMobile && inputType === 'to' && mainFormType === MAIN_FORM_TYPE.GAS_FORM) {
-      this.modalService.openBlockchainList(this.injector);
+  public openSelector(inputType: FormType, isMobile: boolean): void {
+    if (isMobile) {
+      if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && inputType === 'to') {
+        this.modalService.openBlockchainList(inputType, this.injector).subscribe();
+      } else {
+        this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
+      }
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
     }

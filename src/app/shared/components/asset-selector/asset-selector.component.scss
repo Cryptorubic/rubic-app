@@ -60,6 +60,8 @@
   &__empty-container {
     position: relative;
     z-index: 1;
+
+    display: flex;
   }
 
   &__empty {
