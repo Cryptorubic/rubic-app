@@ -999,5 +999,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ROOTSTOCK], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MODE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MODE], ...defaultTokenParams } as Token
   ]
 };
