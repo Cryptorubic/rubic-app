@@ -9,7 +9,8 @@
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
     toAmount: toAmount$ | async,
-    calculationStatus: calculationStatus$ | async
+    calculationStatus: calculationStatus$ | async,
+    isDisabledFromSelector: isDisabledFromSelector$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -24,7 +25,7 @@
         (handleAssetSelection)="openSelector('from', state.isMobile)"
         [asset]="state.fromAsset"
         [mainFormType]="state.selectedForm"
-        [isDisabled]="isDisabledFromSelector$ | async"
+        [isDisabled]="state.isDisabledFromSelector"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -71,11 +72,6 @@
     *ngIf="state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar"
     [isCalculation]="state.calculationStatus.activeCalculation"
   ></app-gas-form-trade-calculation>
-
-  <!-- <app-gas-form-trade-calculation
-    *ngIf="state.selectedForm === 'gasForm'"
-    [isCalculation]="state.calculationStatus.activeCalculation"
-  ></app-gas-form-trade-calculation> -->
 
   <ng-container footer>
     <div class="buttons-container">

@@ -5,7 +5,7 @@ import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable()
 export class FormsTogglerService {
   private _selectedForm$ = new BehaviorSubject<MainFormType>(MAIN_FORM_TYPE.SWAP_FORM);
 

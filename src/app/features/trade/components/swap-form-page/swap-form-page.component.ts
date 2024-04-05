@@ -35,7 +35,7 @@ import { SwapsStateService } from '../../services/swaps-state/swaps-state.servic
   ]
 })
 export class SwapFormPageComponent {
-  public selectedForm$ = this.formsTogglerService.selectedForm$;
+  public readonly selectedForm$ = this.formsTogglerService.selectedForm$;
 
   public readonly calculationStatus$ = this.swapsStateService.calculationStatus$;
 
