@@ -22,7 +22,7 @@ export class FormSwitcherComponent {
   );
 
   constructor(
-    private queryParamsService: QueryParamsService,
+    private readonly queryParamsService: QueryParamsService,
     private readonly formsTogglerService: FormsTogglerService
   ) {}
 }

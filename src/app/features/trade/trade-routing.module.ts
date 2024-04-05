@@ -5,7 +5,8 @@ import { PreviewSwapComponent } from '@features/trade/components/preview-swap/pr
 
 const routes: Routes = [
   { path: '', component: TradeViewContainerComponent },
-  { path: 'preview', component: PreviewSwapComponent, pathMatch: 'full' }
+  { path: 'preview', component: PreviewSwapComponent, pathMatch: 'full' },
+  { path: 'get-gas', component: PreviewSwapComponent, pathMatch: 'full' }
 ];
 
 @NgModule({

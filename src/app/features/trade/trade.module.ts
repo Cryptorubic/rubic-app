@@ -172,7 +172,8 @@ import { BlockchainsListService } from './components/assets-selector/services/bl
     GasFormService,
     TradeInfoManager,
     AssetsSelectorService,
-    BlockchainsListService
+    BlockchainsListService,
+    FormsTogglerService
     // SettingsService,
     // RefreshService,
     // TradeService,

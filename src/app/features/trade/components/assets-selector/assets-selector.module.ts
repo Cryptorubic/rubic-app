@@ -31,6 +31,7 @@ import { TradePageService } from '../../services/trade-page/trade-page.service';
 import { GasFormService } from '../../services/gas-form/gas-form.service';
 import { BlockchainsListService } from './services/blockchains-list-service/blockchains-list.service';
 import { SearchQueryService } from './services/search-query-service/search-query.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,12 @@ import { SearchQueryService } from './services/search-query-service/search-query
     TuiDataListModule
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [TradePageService, GasFormService, BlockchainsListService, SearchQueryService]
+  providers: [
+    TradePageService,
+    GasFormService,
+    BlockchainsListService,
+    SearchQueryService,
+    FormsTogglerService
+  ]
 })
 export class AssetsSelectorModule {}

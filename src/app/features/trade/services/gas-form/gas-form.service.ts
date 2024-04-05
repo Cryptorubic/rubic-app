@@ -40,7 +40,6 @@ export class GasFormService {
     const gasFormBlockchains = allAvailableBlockchains.filter(chain =>
       this.isGasFormSupportedSourceChain(chain.name, toBlockchain)
     );
-    console.log('GAS_FORM', gasFormBlockchains);
     this._gasFormAvailableBlockchains$.next(gasFormBlockchains);
   }
 
