@@ -41,6 +41,8 @@ import { defaultCalculationStatus } from '@features/trade/services/swaps-state/c
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '../forms-toggler/models';
 
 @Injectable()
 export class SwapsStateService {
@@ -97,7 +99,7 @@ export class SwapsStateService {
     })
   );
 
-  public set currentTrade(state: SelectedTrade) {
+  private set currentTrade(state: SelectedTrade) {
     this._tradeState$.next(state);
   }
 
@@ -133,7 +135,8 @@ export class SwapsStateService {
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensService: TokensService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -223,10 +226,12 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
+      const status = this.getTradeStatusOnPickingProvider(isCalculationEnd);
+
       const trade: SelectedTrade = {
         ...bestTrade,
         selectedByUser: false,
-        status: TRADE_STATUS.READY_TO_SWAP
+        status
       };
       if (trade.error) {
         trade.status = TRADE_STATUS.DISABLED;
@@ -242,6 +247,14 @@ export class SwapsStateService {
         ...this.defaultState,
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
+    }
+  }
+
+  private getTradeStatusOnPickingProvider(isCalculationEnd: boolean): TRADE_STATUS {
+    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && !isCalculationEnd) {
+      return TRADE_STATUS.LOADING;
+    } else {
+      return TRADE_STATUS.READY_TO_SWAP;
     }
   }
 

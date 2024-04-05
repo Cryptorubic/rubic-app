@@ -193,7 +193,7 @@ export class GoogleTagManagerService {
 
   public fireGasFormGtm(config: GasFormAnalytic): void {
     if (config.visitedFrom) {
-      this.angularGtmService.gtag('event', 'visit', { visited_from: config.visitedFrom });
+      this.angularGtmService.gtag('event', 'gas_form_visit', { visited_from: config.visitedFrom });
     }
     if ('leaveGasFormInfo' in config) {
       this.angularGtmService.gtag('event', 'leave_after_target_selected', {

@@ -42,7 +42,12 @@
     </app-input-output-container>
     <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
     <app-input-output-container
-      [round]="state.displayReceiver || state.selectedForm === 'gasForm' ? 'none' : 'bottom'"
+      [round]="
+        state.displayReceiver ||
+        (state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar)
+          ? 'none'
+          : 'bottom'
+      "
     >
       <app-asset-selector
         left
