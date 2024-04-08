@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TradeState } from '@features/trade/models/trade-state';
+import { PromotionType, TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import {
@@ -39,6 +39,12 @@ export class ProviderElementComponent {
   @Input({ required: true }) nativeToken: Token;
 
   public expanded = false;
+
+  public symbiosisMantlePromoData: PromotionType = {
+    hint: '',
+    label: '+ 1.3 MNT *',
+    href: 'https://x.com/symbiosis_fi/status/1775894610101096816'
+  };
 
   constructor(
     private readonly platformConfigurationService: PlatformConfigurationService,
