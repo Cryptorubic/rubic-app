@@ -93,11 +93,11 @@ export class CrossChainService {
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({
           ...fromToken,
-          price: new BigNumber(fromPrice as number | null)
+          price: fromPrice
         });
         const toSdkCompatibleToken = new PriceToken({
           ...toToken,
-          price: new BigNumber(toPrice as number | null)
+          price: toPrice
         });
         const options = this.getOptions(disabledTradeTypes);
 
