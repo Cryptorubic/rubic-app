@@ -17,6 +17,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { GasFormAnalyticService } from '../../services/gas-form/gas-form-analytic.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -65,7 +66,8 @@ export class TradeViewContainerComponent {
     private readonly previewSwapService: PreviewSwapService,
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly gasFormAnalyticService: GasFormAnalyticService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {

@@ -195,7 +195,7 @@ export class GoogleTagManagerService {
     if (config.visitedFrom) {
       this.angularGtmService.gtag('event', 'gas_form_visit', { visited_from: config.visitedFrom });
     }
-    if ('leaveGasFormInfo' in config) {
+    if (config.leaveGasFormInfo) {
       this.angularGtmService.gtag('event', 'leave_after_target_selected', {
         to_blockchain: config.leaveGasFormInfo.toBlockchain,
         to_token: config.leaveGasFormInfo.toToken,
@@ -207,7 +207,7 @@ export class GoogleTagManagerService {
         is_swap_success: config.isSuccessfullSwap
       });
     }
-    if ('isSuccessfullCalculation' in config) {
+    if (config.isSuccessfullCalculation) {
       this.angularGtmService.gtag('event', 'calculation', {
         is_calculation_success: config.isSuccessfullCalculation
       });

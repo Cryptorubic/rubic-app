@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { SwapsStateService } from '../swaps-state/swaps-state.service';
-import { BehaviorSubject, map, of, startWith } from 'rxjs';
+import { BehaviorSubject, map, of, startWith, tap } from 'rxjs';
 import { BlockchainName } from 'rubic-sdk';
 import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain-supported-chains';
 import { switchIif } from '@app/shared/utils/utils';
 import { AvailableBlockchain } from '../../components/assets-selector/services/blockchains-list-service/models/available-blockchain';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable()
 export class GasFormService {
@@ -20,6 +21,11 @@ export class GasFormService {
       trade => of(trade),
       () => of(null)
     ),
+    tap(trade => {
+      if (!trade) {
+        this.fireGtmServiceOnNullableTrade();
+      }
+    }),
     startWith(null)
   );
 
@@ -31,7 +37,10 @@ export class GasFormService {
     return this.gasFormAvailableBlockchains.length;
   }
 
-  constructor(private readonly swapsStateService: SwapsStateService) {}
+  constructor(
+    private readonly swapsStateService: SwapsStateService,
+    private readonly gtmService: GoogleTagManagerService
+  ) {}
 
   public setGasFormSourceAvailableBlockchains(
     toBlockchain: BlockchainName,
@@ -54,5 +63,9 @@ export class GasFormService {
           supportedChains.includes(toBlockchain) && supportedChains.includes(fromBlockchain)
       )
     );
+  }
+
+  private fireGtmServiceOnNullableTrade(): void {
+    this.gtmService.fireGasFormGtm({ isSuccessfullCalculation: false });
   }
 }

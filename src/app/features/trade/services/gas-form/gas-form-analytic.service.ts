@@ -1,38 +1,45 @@
 import { Injectable } from '@angular/core';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { filter } from 'rxjs';
-import { MAIN_FORM_TYPE } from '../forms-toggler/models';
+import { pairwise } from 'rxjs';
+import { MAIN_FORM_TYPE, MainFormType } from '../forms-toggler/models';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
-import { NavigationEnd, Router } from '@angular/router';
+import { SwapsFormService } from '../swaps-form/swaps-form.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Injectable()
 export class GasFormAnalyticService {
   constructor(
     private readonly formsTogglerService: FormsTogglerService,
-    private gtmService: GoogleTagManagerService,
-    private readonly router: Router
+    private readonly gtmService: GoogleTagManagerService,
+    private readonly swapsFormService: SwapsFormService,
+    private readonly authService: AuthService
   ) {
-    console.log('[GasFormAnalyticService] INIT');
     this.subOnGasFormSelect();
-    this.subOnGetGasRouteActivate();
   }
 
   private subOnGasFormSelect(): void {
-    this.formsTogglerService.selectedForm$
-      .pipe(filter(form => form === MAIN_FORM_TYPE.GAS_FORM))
-      .subscribe(() => {
+    this.formsTogglerService.selectedForm$.pipe(pairwise()).subscribe(([prev, current]) => {
+      if (prev === MAIN_FORM_TYPE.SWAP_FORM && current === MAIN_FORM_TYPE.GAS_FORM) {
         this.gtmService.fireGasFormGtm({ visitedFrom: 'fromSwapForm' });
-      });
+      }
+      if (this.isGasFormLeftAfterSelectionTargetAsset(prev)) {
+        this.gtmService.fireGasFormGtm({
+          leaveGasFormInfo: {
+            walletAddress: this.authService.userAddress,
+            toBlockchain: this.swapsFormService.inputValue.toBlockchain,
+            toToken: this.swapsFormService.inputValue.toToken.name
+          }
+        });
+      }
+    });
   }
 
-  private subOnGetGasRouteActivate(): void {
-    this.router.events
-      .pipe(filter(e => e instanceof NavigationEnd))
-      .subscribe((e: NavigationEnd) => {
-        console.log('subOnGetGasRouteActivate', e);
-        if (e.urlAfterRedirects === '/get-gas') {
-          console.log('urlAfterRedirects === /get-gas');
-        }
-      });
+  private isGasFormLeftAfterSelectionTargetAsset(prevForm: MainFormType): boolean {
+    return (
+      prevForm === MAIN_FORM_TYPE.GAS_FORM &&
+      !!this.swapsFormService.inputValue.toBlockchain &&
+      !!this.swapsFormService.inputValue.toToken &&
+      !Boolean(this.swapsFormService.inputValue.fromBlockchain)
+    );
   }
 }
