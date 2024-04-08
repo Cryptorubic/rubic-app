@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SwapsStateService } from '../swaps-state/swaps-state.service';
-import { BehaviorSubject, map, of, startWith, tap } from 'rxjs';
+import { BehaviorSubject, map, of, share, startWith, tap } from 'rxjs';
 import { BlockchainName } from 'rubic-sdk';
 import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain-supported-chains';
 import { switchIif } from '@app/shared/utils/utils';
@@ -26,6 +26,7 @@ export class GasFormService {
         this.fireGtmServiceOnNullableTrade();
       }
     }),
+    share(),
     startWith(null)
   );
 
