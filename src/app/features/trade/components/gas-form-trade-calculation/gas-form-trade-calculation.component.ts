@@ -38,7 +38,7 @@ export class GasFormTradeCalculationComponent {
   private readonly ratio: number = 100;
 
   public readonly percentsDone$ = this._isCalculation$.pipe(
-    switchMap(() => interval(this.ratio)),
+    switchMap(bool => interval(this.ratio).pipe(takeWhile(() => bool))),
     takeWhile(val => val <= CALCULATION_TIMEOUT_MS / this.ratio),
     map(val => this.convertIntervalValueToPercents(val))
   );
