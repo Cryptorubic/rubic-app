@@ -6,6 +6,8 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { ModalService } from '@core/modals/services/modal.service';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
   selector: 'app-mev-bot',
@@ -19,8 +21,12 @@ export class MevBotComponent {
 
   public displayMev: boolean = false;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
+  public hintShownOnMobile = false;
+
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 1000;
+    const minDollarAmountToDisplay = 0.01;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     this.routingForm =
@@ -28,20 +34,39 @@ export class MevBotComponent {
         ? this.settingsService.instantTrade
         : this.settingsService.crossChainRouting;
 
-    this.displayMev = amount ? amount.gte(minDollarAmountToDisplay) : false;
+    this.initSubscription();
 
-    this.patchUseMevBotProtection(true);
+    this.displayMev = amount ? amount.gte(minDollarAmountToDisplay) : false;
 
     if (!this.displayMev) {
       this.patchUseMevBotProtection(false);
     }
   }
 
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly modalService: ModalService,
+    private readonly headerStore: HeaderStore
+  ) {}
 
-  private patchUseMevBotProtection(value: boolean): void {
+  private initSubscription(): void {
+    this.routingForm.valueChanges.subscribe(form => {
+      if (form.useMevBotProtection) {
+        this.hintShownOnMobile = false;
+        this.modalService.openMevBotModal().subscribe();
+      }
+    });
+  }
+
+  public patchUseMevBotProtection(value: boolean): void {
     this.routingForm.patchValue({
       useMevBotProtection: value
     });
+  }
+
+  public showHint(): void {
+    if (!this.routingForm.value.useMevBotProtection) {
+      this.hintShownOnMobile = !this.hintShownOnMobile;
+    }
   }
 }

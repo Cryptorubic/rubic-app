@@ -23,6 +23,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
+import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-modal.component';
 
 @Injectable()
 export class ModalService {
@@ -248,6 +249,14 @@ export class ModalService {
       size: 's',
       data: { oldAmount, newAmount, tokenSymbol },
       required: true
+    });
+  }
+
+  public openMevBotModal(): Observable<boolean> {
+    return this.showDialog(MevBotModalComponent, {
+      title: 'Warning',
+      size: 's',
+      fitContent: true
     });
   }
 }
