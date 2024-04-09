@@ -38,7 +38,7 @@ export class RateChangedModalComponent {
       .multipliedBy(-100);
     this.tokenSymbol = context.data.tokenSymbol;
 
-    timer(15_000)
+    timer(60_000)
       .pipe(takeUntil(this.destroyed$))
       .subscribe(() => this.onCancel());
   }

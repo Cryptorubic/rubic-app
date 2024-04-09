@@ -49,12 +49,6 @@
               value="Best"
               [tuiHint]="'The most profitable trade according to our calculations'"
             ></tui-tag>
-            <app-promotion-badge
-              *ngIf="
-                tradeState.tradeType === 'symbiosis' && tradeState.trade.to.blockchain === 'MANTLE'
-              "
-              [data]="symbiosisMantlePromoData"
-            ></app-promotion-badge>
             <tui-tag
               *ngIf="tradeState?.error"
               class="element__warning-badge"

@@ -6,7 +6,6 @@ import {
   CrossChainStatusManager,
   CrossChainSymbiosisManager,
   DeflationTokenManager,
-  LimitOrderManager,
   OnChainManager,
   OnChainStatusManager,
   SDK,
@@ -55,10 +54,6 @@ export class SdkService {
 
   public get crossChainStatusManager(): CrossChainStatusManager {
     return this.SDK.crossChainStatusManager;
-  }
-
-  public get limitOrderManager(): LimitOrderManager {
-    return this.SDK.limitOrderManager;
   }
 
   private set SDK(value: SDK) {

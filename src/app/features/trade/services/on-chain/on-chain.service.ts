@@ -9,7 +9,6 @@ import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
-  EvmEncodeConfig,
   Injector,
   NotWhitelistedProviderError,
   OnChainTrade,
@@ -154,7 +153,7 @@ export class OnChainService {
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
-    directTransaction?: EvmEncodeConfig
+    useCacheData?: boolean
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
 
@@ -203,7 +202,7 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
-      ...(directTransaction && { directTransaction }),
+      useCacheData: useCacheData || false,
       ...(referrer && { referrer })
     };
 
