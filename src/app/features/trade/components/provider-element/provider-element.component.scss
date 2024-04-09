@@ -107,6 +107,9 @@
   }
 
   &__best-badge {
+    display: flex;
+    align-items: center;
+    
     font-weight: 700 !important;
     text-transform: uppercase;
 
