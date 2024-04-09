@@ -41,6 +41,7 @@ import { defaultCalculationStatus } from '@features/trade/services/swaps-state/c
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { crossChainPromotions } from '@features/trade/services/swaps-state/constants/promotions';
 
 @Injectable()
 export class SwapsStateService {
@@ -163,7 +164,8 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          ...(this.setPromotion() && { promotion: this.setPromotion() })
+          ...(trade instanceof CrossChainTrade &&
+            trade?.promotions?.length && { promotion: this.setPromotion(trade.promotions) })
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -412,7 +414,9 @@ export class SwapsStateService {
     );
   }
 
-  private setPromotion(): PromotionType | null {
-    return null;
+  private setPromotion(promotions: string[]): PromotionType | null {
+    return promotions
+      .map(promo => crossChainPromotions[promo])
+      .filter(elem => elem !== undefined)[0];
   }
 }
