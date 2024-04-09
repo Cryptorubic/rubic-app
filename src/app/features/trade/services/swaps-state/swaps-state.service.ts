@@ -415,8 +415,6 @@ export class SwapsStateService {
   }
 
   private setPromotion(promotions: string[]): PromotionType | null {
-    return promotions
-      .map(promo => crossChainPromotions[promo])
-      .filter(elem => elem !== undefined)[0];
+    return promotions.map(promo => crossChainPromotions[promo]).filter(Boolean)[0];
   }
 }
