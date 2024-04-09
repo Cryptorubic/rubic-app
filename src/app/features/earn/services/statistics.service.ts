@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, Web3Pure, Injector, EvmWeb3Public } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, from, Observable, switchMap } from 'rxjs';
+import { BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from 'rubic-sdk';
+import { BehaviorSubject, combineLatest, from, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
-import { CoingeckoApiService } from '@core/services/external-api/coingecko-api/coingecko-api.service';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
+import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 
 @Injectable()
 export class StatisticsService {
@@ -18,7 +18,7 @@ export class StatisticsService {
 
   public readonly lockedRBCInDollars$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.lockedRBC$, this.getRBCPrice()]).pipe(
+      combineLatest([this.lockedRBC$, from(this.getRBCPrice())]).pipe(
         map(([lockedRbcAmount, rbcPrice]) => lockedRbcAmount.multipliedBy(rbcPrice))
       )
     )
@@ -40,7 +40,7 @@ export class StatisticsService {
 
   public readonly apr$ = this.updateStatistics$.pipe(
     switchMap(() =>
-      combineLatest([this.lockedRBCInDollars$, this.getETHPrice(), this.rewardPerWeek$]).pipe(
+      combineLatest([this.lockedRBCInDollars$, from(this.getETHPrice()), this.rewardPerWeek$]).pipe(
         map(([lockedRbcInDollars, ethPrice, rewardPerWeek]) => {
           const rewardPerYear = rewardPerWeek
             .dividedBy(this.numberOfSecondsPerWeek)
@@ -63,7 +63,7 @@ export class StatisticsService {
     )
   );
 
-  constructor(private readonly coingeckoApiService: CoingeckoApiService) {}
+  constructor() {}
 
   private static get blockchainAdapter(): EvmWeb3Public {
     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
@@ -108,15 +108,18 @@ export class StatisticsService {
     });
   }
 
-  public getRBCPrice(): Observable<number> {
-    return this.coingeckoApiService.getCommonTokenPrice(
-      BLOCKCHAIN_NAME.ETHEREUM,
-      '0x3330bfb7332ca23cd071631837dc289b09c33333'
-    );
+  public async getRBCPrice(): Promise<BigNumber> {
+    return Injector.coingeckoApi.getTokenPrice({
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: '0x3330bfb7332ca23cd071631837dc289b09c33333'
+    });
   }
 
-  public getETHPrice(): Observable<number> {
-    return this.coingeckoApiService.getNativeCoinPrice(BLOCKCHAIN_NAME.ETHEREUM);
+  public async getETHPrice(): Promise<BigNumber> {
+    return Injector.coingeckoApi.getTokenPrice({
+      blockchain: BLOCKCHAIN_NAME.ETHEREUM,
+      address: NATIVE_TOKEN_ADDRESS
+    });
   }
 
   public updateStatistics(): void {
