@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
+const BLOCKCHAINS_MAPPING = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'binance-smart-chain',
   [BLOCKCHAIN_NAME.POLYGON]: 'polygon',
@@ -142,7 +142,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
   ...BLOCKCHAINS_MAPPING
-};
+} as const;
 
 export type BackendBlockchain = (typeof BLOCKCHAINS_MAPPING)[keyof typeof BLOCKCHAINS_MAPPING];
 
