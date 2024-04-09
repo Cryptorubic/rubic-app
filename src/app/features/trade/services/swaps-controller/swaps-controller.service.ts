@@ -286,8 +286,8 @@ export class SwapsControllerService {
       if (err instanceof AmountChangeWarning) {
         const allowSwap = await firstValueFrom(
           this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.transaction.oldAmount, trade.to.decimals),
-            Web3Pure.fromWei(err.transaction.newAmount, trade.to.decimals),
+            Web3Pure.fromWei(err.oldAmount, trade.to.decimals),
+            Web3Pure.fromWei(err.newAmount, trade.to.decimals),
             trade.to.symbol
           )
         );
@@ -298,10 +298,10 @@ export class SwapsControllerService {
               txHash = await this.crossChainService.swapTrade(
                 trade as CrossChainTrade,
                 callback.onHash,
-                err.transaction
+                true
               );
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash, err.transaction);
+              txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
