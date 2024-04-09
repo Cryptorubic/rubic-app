@@ -7,9 +7,11 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { ChainType, blockchainId } from 'rubic-sdk';
+import { BlockchainsInfo, ChainType, Injector, blockchainId } from 'rubic-sdk';
 import { SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
+import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
+import { OneID } from '@oneid-xyz/inspect';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -104,23 +106,42 @@ export class AuthService {
   }
 
   public async setUserData(): Promise<void> {
-    const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
-      id => this.walletConnectorService.network === id
-    );
+    const [hasOneIdName, hasSpaceIdName] = await Promise.all([
+      this.checkOneIdNameAndSetIfExists(),
+      this.checkSpaceIdNameAndSetIfExists()
+    ]);
 
-    if (isSupportedSpaceId) {
+    if (hasSpaceIdName || hasOneIdName) return;
+
+    this._currentUser$.next({
+      ...this._currentUser$.value,
+      avatar: null,
+      name: null
+    });
+  }
+
+  /**
+   * Checks, does address have SpaceID name, and sets in currentUser$ if true.
+   * If name exists - return true, otherwise - false
+   */
+  private async checkSpaceIdNameAndSetIfExists(): Promise<boolean> {
+    try {
+      const isSupportedSpaceId = Object.keys(spaceIdDomains).some(
+        id => this.walletConnectorService.network === id
+      );
+
+      if (!isSupportedSpaceId) {
+        return false;
+      }
+
       const chainId = blockchainId[this.walletConnectorService.network];
       const spaceIdName = await this.web3Name.getDomainName({
-        address: this.walletConnectorService.address,
+        address: this.userAddress,
         queryChainIdList: [chainId]
       });
 
       if (!spaceIdName) {
-        this._currentUser$.next({
-          ...this._currentUser$.value,
-          avatar: null,
-          name: null
-        });
+        return false;
       }
 
       const { image, name } = (await this.web3Name.getMetadata({
@@ -132,12 +153,42 @@ export class AuthService {
         avatar: image ?? null,
         name: name
       });
-    } else {
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Checks, does address have OneID name, and sets in currentUser$ if true.
+   * If name exists - return true, otherwise - false
+   */
+  private async checkOneIdNameAndSetIfExists(): Promise<boolean> {
+    try {
+      const currentBlockchain = this.walletConnectorService.network;
+      if (!BlockchainsInfo.isEvmBlockchainName(currentBlockchain)) {
+        return false;
+      }
+
+      const web3 = Injector.web3PublicService.getWeb3Public(currentBlockchain).web3Provider;
+      const [rpcUrl] = rpcList[currentBlockchain];
+      const oneID = new OneID({ provider: web3.currentProvider, ...(rpcUrl && { rpcUrl }) });
+      const name = await oneID.getPrimaryName(this.userAddress);
+
+      if (!name) {
+        return false;
+      }
+
       this._currentUser$.next({
         ...this._currentUser$.value,
-        avatar: null,
-        name: null
+        avatar: 'assets/images/icons/collaborations/oneid-logo.svg',
+        name
       });
+
+      return true;
+    } catch {
+      return false;
     }
   }
 }
