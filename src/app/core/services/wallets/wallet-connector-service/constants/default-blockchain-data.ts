@@ -166,5 +166,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.ROOTSTOCK]: {
     name: 'Rootstock',
     rpc: 'https://public-node.rsk.co'
+  },
+  [BLOCKCHAIN_NAME.MODE]: {
+    name: 'Mode',
+    rpc: 'https://mainnet.mode.network'
   }
 };

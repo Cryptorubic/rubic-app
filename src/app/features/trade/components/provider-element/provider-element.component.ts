@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TradeState } from '@features/trade/models/trade-state';
+import { PromotionType, TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/provider-info';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
@@ -20,6 +20,12 @@ export class ProviderElementComponent {
   @Input({ required: true }) shortedInfo: boolean = false;
 
   public expanded = false;
+
+  public symbiosisMantlePromoData: PromotionType = {
+    hint: 'Swap $100+ & get up to 1.3 $MNT!',
+    label: '+ 1.3 MNT *',
+    href: 'https://x.com/symbiosis_fi/status/1775894610101096816'
+  };
 
   constructor(private readonly tradeInfoManager: TradeInfoManager) {}
 
