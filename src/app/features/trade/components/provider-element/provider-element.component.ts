@@ -3,6 +3,7 @@ import { TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import {
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -48,6 +49,24 @@ export class ProviderElementComponent {
   public toggleExpand(event: Event): void {
     event.preventDefault();
     this.expanded = !this.expanded;
+  }
+
+  public getAverageTimeString(): string {
+    const trade = this.tradeState.trade;
+    if (
+      trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
+      trade.from.symbol.toLowerCase() === 'rbc' &&
+      trade.to.symbol.toLowerCase() === 'rbc' &&
+      trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
+      trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
+    ) {
+      return '10 D';
+    }
+
+    const info = this.getProviderInfo(this.tradeState.tradeType);
+    const time = `${info?.averageTime || 3} M`;
+
+    return time;
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
