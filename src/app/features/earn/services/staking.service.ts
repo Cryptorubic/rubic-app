@@ -9,7 +9,6 @@ import {
   catchError,
   combineLatest,
   filter,
-  firstValueFrom,
   forkJoin,
   from,
   map,
@@ -115,7 +114,7 @@ export class StakingService {
     this.watchUserBalanceAndAllowance();
   }
 
-  public getRbcAmountPrice(): Observable<number> {
+  public getRbcAmountPrice(): Observable<BigNumber> {
     return from(
       this.tokensService.getAndUpdateTokenPrice(
         {
@@ -344,8 +343,8 @@ export class StakingService {
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
 
-                const RBCPrice = await firstValueFrom(this.statisticsService.getRBCPrice());
-                const ethPrice = await firstValueFrom(this.statisticsService.getETHPrice());
+                const RBCPrice = await this.statisticsService.getRBCPrice();
+                const ethPrice = await this.statisticsService.getETHPrice();
                 const amountInDollars = nftInfo.amount.multipliedBy(RBCPrice);
                 const amountInETH = amountInDollars.dividedBy(ethPrice);
                 const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH

@@ -8,17 +8,17 @@ import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
-  tap,
-  zip,
-  of,
-  map,
-  switchMap,
-  startWith,
-  from,
-  catchError,
   BehaviorSubject,
+  catchError,
   filter,
-  takeUntil
+  from,
+  map,
+  of,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+  zip
 } from 'rxjs';
 import { StakeButtonError } from '../../models/stake-button-error.enum';
 import { StakingModalService } from '../../services/staking-modal.service';
@@ -78,7 +78,7 @@ export class StakeFormComponent implements OnInit {
 
   public selectedAmount: string;
 
-  public rbcUsdPrice: number;
+  public rbcUsdPrice: BigNumber;
 
   public amountError = StakeButtonError.EMPTY_AMOUNT;
 
