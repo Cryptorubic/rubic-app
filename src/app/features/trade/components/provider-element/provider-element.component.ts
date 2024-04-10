@@ -60,7 +60,7 @@ export class ProviderElementComponent {
       trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
       trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
     ) {
-      return '10 D';
+      return '7 D';
     }
 
     const info = this.getProviderInfo(this.tradeState.tradeType);
