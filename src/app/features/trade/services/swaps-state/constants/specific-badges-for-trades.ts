@@ -13,8 +13,6 @@ function showNoSlippageLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade
 
 function showAttentionLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade): boolean {
   return (
-    trade.from.symbol.toLowerCase() === 'rbc' &&
-    trade.to.symbol.toLowerCase() === 'rbc' &&
     trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
     trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
   );

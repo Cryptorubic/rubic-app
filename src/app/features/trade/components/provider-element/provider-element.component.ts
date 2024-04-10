@@ -55,8 +55,6 @@ export class ProviderElementComponent {
     const trade = this.tradeState.trade;
     if (
       trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
-      trade.from.symbol.toLowerCase() === 'rbc' &&
-      trade.to.symbol.toLowerCase() === 'rbc' &&
       trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
       trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
     ) {
