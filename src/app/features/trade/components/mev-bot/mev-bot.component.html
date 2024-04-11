@@ -5,7 +5,7 @@
   [tuiHint]="
     'You can turn on the MEV-bot protection, this will ensure better security of your trade.'
   "
-  [tuiHintManual]="(isMobile$ | async) ? hintShownOnMobile : !routingForm.value.useMevBotProtection"
+  [tuiHintManual]="showHint$ | async"
   tuiHintDirection="right"
   (click)="showHint()"
 >
