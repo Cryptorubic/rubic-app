@@ -15,6 +15,8 @@ import { compareTokens, isNil } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
+import { GasFormService } from '../../services/gas-form/gas-form.service';
+import { BlockchainsListService } from '../assets-selector/services/blockchains-list-service/blockchains-list.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -119,7 +121,9 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly swapsStateService: SwapsStateService,
+    private readonly gasFormService: GasFormService,
+    private readonly blockchainsListService: BlockchainsListService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -134,6 +138,11 @@ export class SwapFormPageComponent {
   }
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
+    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
+      this.gasFormService.setGasFormTargetAvailableBlockchains(
+        this.blockchainsListService.availableBlockchains
+      );
+    }
     if (isMobile) {
       if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && inputType === 'to') {
         this.modalService.openBlockchainList(inputType, this.injector).subscribe();

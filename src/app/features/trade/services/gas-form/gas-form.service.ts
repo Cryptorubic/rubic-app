@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SwapsStateService } from '../swaps-state/swaps-state.service';
 import { BehaviorSubject, map, of, share, startWith, tap } from 'rxjs';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain-supported-chains';
 import { switchIif } from '@app/shared/utils/utils';
 import { AvailableBlockchain } from '../../components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -9,9 +9,12 @@ import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/g
 
 @Injectable()
 export class GasFormService {
-  private _gasFormAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+  private _gasFormSourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
-  public readonly gasFormAvailableBlockchains$ = this._gasFormAvailableBlockchains$.asObservable();
+  public readonly gasFormSourceAvailableBlockchains$ =
+    this._gasFormSourceAvailableBlockchains$.asObservable();
+
+  private _gasFormTargetAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
   public readonly bestTrade$ = this.swapsStateService.tradesStore$.pipe(
     map(trades => trades.filter(t => t.trade && !t.error)),
@@ -30,12 +33,16 @@ export class GasFormService {
     startWith(null)
   );
 
-  public get gasFormAvailableBlockchains(): AvailableBlockchain[] {
-    return this._gasFormAvailableBlockchains$.getValue();
+  public get gasFormSourceAvailableBlockchains(): AvailableBlockchain[] {
+    return this._gasFormSourceAvailableBlockchains$.getValue();
+  }
+
+  public get gasFormTargetAvailableBlockchains(): AvailableBlockchain[] {
+    return this._gasFormTargetAvailableBlockchains$.getValue();
   }
 
   public get gasFormBlockchainsAmount(): number {
-    return this.gasFormAvailableBlockchains.length;
+    return this.gasFormSourceAvailableBlockchains.length;
   }
 
   constructor(
@@ -47,10 +54,19 @@ export class GasFormService {
     toBlockchain: BlockchainName,
     allAvailableBlockchains: AvailableBlockchain[]
   ): void {
-    const gasFormBlockchains = allAvailableBlockchains.filter(chain =>
+    const gasFormSourceChains = allAvailableBlockchains.filter(chain =>
       this.isGasFormSupportedSourceChain(chain.name, toBlockchain)
     );
-    this._gasFormAvailableBlockchains$.next(gasFormBlockchains);
+    this._gasFormSourceAvailableBlockchains$.next(gasFormSourceChains);
+  }
+
+  public setGasFormTargetAvailableBlockchains(
+    allAvailableBlockchains: AvailableBlockchain[]
+  ): void {
+    const gasFormTargetChains = allAvailableBlockchains.filter(chain =>
+      BlockchainsInfo.isEvmBlockchainName(chain.name)
+    );
+    this._gasFormTargetAvailableBlockchains$.next(gasFormTargetChains);
   }
 
   private isGasFormSupportedSourceChain(
@@ -59,6 +75,7 @@ export class GasFormService {
   ): boolean {
     return (
       toBlockchain !== fromBlockchain &&
+      BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
       !!Object.values(CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG).find(
         supportedChains =>
           supportedChains.includes(toBlockchain) && supportedChains.includes(fromBlockchain)

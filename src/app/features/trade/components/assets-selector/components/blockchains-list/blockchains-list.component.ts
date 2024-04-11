@@ -22,11 +22,11 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 })
 export class BlockchainsListComponent implements OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    combineLatestWith(this.gasFormService.gasFormAvailableBlockchains$),
+    combineLatestWith(this.gasFormService.gasFormSourceAvailableBlockchains$),
     switchIif(
       () => this.isSourceSelectorGasFormOpened(),
-      ([_, gasFormBlockchains]) => of(gasFormBlockchains),
-      ([allAvailableChains, _]) => of(allAvailableChains)
+      ([_, gasFormSourceChains]) => of(gasFormSourceChains),
+      () => of(this.targetAvailableBlockchains)
     ),
     map(blockchains => [
       ...blockchains.slice(0, 8),
@@ -63,6 +63,12 @@ export class BlockchainsListComponent implements OnDestroy {
     return (
       this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'to'
     );
+  }
+
+  private get targetAvailableBlockchains(): AvailableBlockchain[] {
+    return this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.SWAP_FORM
+      ? this.blockchainsListService.availableBlockchains
+      : this.gasFormService.gasFormTargetAvailableBlockchains;
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
