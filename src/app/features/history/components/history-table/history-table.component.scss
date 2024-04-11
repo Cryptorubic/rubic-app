@@ -123,6 +123,9 @@
 
   .statusFrom {
     &-dropdown {
+      display: flex;
+      align-items: center;
+      
       app-dropdown-options-table-item {
         margin-left: 1px;
       }

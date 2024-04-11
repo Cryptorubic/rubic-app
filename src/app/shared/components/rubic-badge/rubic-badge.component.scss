@@ -10,6 +10,10 @@
 
   border-radius: var(--tui-radius-m);
 
+  &__label {
+    white-space: nowrap;
+  }
+
   &_error {
     background: var(--tui-error-bg);
 
