@@ -6,6 +6,7 @@ import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain
 import { switchIif } from '@app/shared/utils/utils';
 import { AvailableBlockchain } from '../../components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
+import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-from-disabled-chains';
 
 @Injectable()
 export class GasFormService {
@@ -63,8 +64,10 @@ export class GasFormService {
   public setGasFormTargetAvailableBlockchains(
     allAvailableBlockchains: AvailableBlockchain[]
   ): void {
-    const gasFormTargetChains = allAvailableBlockchains.filter(chain =>
-      BlockchainsInfo.isEvmBlockchainName(chain.name)
+    const gasFormTargetChains = allAvailableBlockchains.filter(
+      chain =>
+        BlockchainsInfo.isEvmBlockchainName(chain.name) &&
+        !GAS_FORM_DISABLED_CHAINS.includes(chain.name)
     );
     this._gasFormTargetAvailableBlockchains$.next(gasFormTargetChains);
   }
@@ -76,6 +79,7 @@ export class GasFormService {
     return (
       toBlockchain !== fromBlockchain &&
       BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
+      !GAS_FORM_DISABLED_CHAINS.includes(fromBlockchain) &&
       !!Object.values(CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG).find(
         supportedChains =>
           supportedChains.includes(toBlockchain) && supportedChains.includes(fromBlockchain)
