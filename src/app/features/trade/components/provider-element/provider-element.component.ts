@@ -3,7 +3,6 @@ import { TradeState } from '@features/trade/models/trade-state';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import {
-  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -19,6 +18,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { compareTokens } from '@shared/utils/utils';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
+import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 
 @Component({
   selector: 'app-provider-element',
@@ -52,12 +52,7 @@ export class ProviderElementComponent {
   }
 
   public getAverageTimeString(): string {
-    const trade = this.tradeState.trade;
-    if (
-      trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
-      trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
-      trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
-    ) {
+    if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) {
       return '7 D';
     }
 

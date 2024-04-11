@@ -2,6 +2,7 @@ import { BadgeInfo } from '@features/trade/models/trade-state';
 import {
   BLOCKCHAIN_NAME,
   BRIDGE_TYPE,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
   OnChainTrade
@@ -13,6 +14,7 @@ function showNoSlippageLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade
 
 function showAttentionLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade): boolean {
   return (
+    trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
     trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM &&
     trade.to.blockchain === BLOCKCHAIN_NAME.ETHEREUM
   );

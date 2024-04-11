@@ -71,6 +71,7 @@ import { DropdownOptionsTableItemComponent } from './components/dropdown-options
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
+import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 
 @NgModule({
   declarations: [
@@ -117,7 +118,8 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     DropdownOptionsTokenComponent,
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
-    SlippageFormatPipe
+    SlippageFormatPipe,
+    SkipDefaultDirective
   ],
   imports: [
     CommonModule,
@@ -191,7 +193,8 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     DropdownOptionsTokenComponent,
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
-    SlippageFormatPipe
+    SlippageFormatPipe,
+    SkipDefaultDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
