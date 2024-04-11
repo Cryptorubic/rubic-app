@@ -53,7 +53,7 @@ export class MevBotComponent {
     this.routingForm.valueChanges.subscribe(form => {
       if (form.useMevBotProtection) {
         this.hintShownOnMobile = false;
-        this.modalService.openMevBotModal().subscribe();
+        // this.modalService.openMevBotModal().subscribe();
       }
     });
   }
