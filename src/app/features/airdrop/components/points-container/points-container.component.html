@@ -21,14 +21,7 @@
               class="points__confirmed-rbc-logo"
               src="/assets/images/rbc-white.png"
               alt="Confirmed RBC"
-            />{{ points.confirmed }} RBC
-            <img
-              class="points__confirmed-about-icon"
-              src="assets/images/icons/exclamation-grey.svg"
-              alt="Hint"
-              [tuiHint]="about"
-              tuiHintAppearance="onDark"
-            />
+            />{{ points.confirmed + points?.requested_to_withdraw }} points
           </span>
           <span
             class="points__confirmed-background"
@@ -36,37 +29,6 @@
           ></span>
         </div>
       </div>
-      <ng-container *ngIf="isLoggedIn$ | async; else loginButton">
-        <ng-container *ngLet="points.confirmed >= 300 as allowWithdraw">
-          <button
-            tuiButton
-            appearance="primary"
-            [disabled]="!allowWithdraw"
-            type="button"
-            size="m"
-            class="points__button"
-            [ngClass]="{ points__button_disabled: showButtons || !allowWithdraw }"
-            [tuiHint]="buttonHint$ | async"
-            tuiHintAppearance="onDark"
-            (click)="handleWithdraw(points, currentUser.address)"
-          >
-            {{ buttonText$ | async }}
-          </button>
-        </ng-container>
-      </ng-container>
-      <ng-template #loginButton>
-        <app-login-button></app-login-button>
-      </ng-template>
-      <ng-template #about>
-        <span>Pending: {{ points.pending }}</span
-        ><br />
-        <span>Confirmed: {{ points.confirmed }}</span
-        ><br />
-        <span
-          >Requested to Withdraw:
-          {{ points.requested_to_withdraw > 0 ? points.requested_to_withdraw : 0 }}</span
-        >
-      </ng-template>
     </div>
   </ng-container>
 </ng-container>

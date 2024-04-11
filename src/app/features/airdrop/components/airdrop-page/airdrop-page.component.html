@@ -10,27 +10,9 @@
   </app-window-container>
   <app-window-container *ngIf="isAuth$ | async">
     <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
-      <ng-container *ngIf="(airdropUserInfo$ | async)?.is_participant; else notMember">
-        <tui-loader [showLoader]="loadingClaim$ | async" [overlay]="true">
-          <div class="drops__container">
-            <tui-scrollbar>
-              <app-claim-container></app-claim-container>
-              <ng-container *ngIf="isMobile$ | async">
-                <div
-                  class="old-claims"
-                  *ngIf="(rounds$ | async)?.length > 1"
-                  (click)="openOldClaims()"
-                >
-                  <span class="old-claims__text">Old Claims</span>
-                  <span
-                    class="old-claims__arrow"
-                    [inlineSVG]="'assets/images/icons/arrow-down.svg'"
-                  ></span>
-                </div>
-              </ng-container>
-            </tui-scrollbar>
-          </div>
-        </tui-loader>
+      <ng-container
+        *ngIf="(airdropUserInfo$ | async)?.is_participant; then stopSen; else notMember"
+      >
       </ng-container>
     </ng-container>
   </app-window-container>
@@ -40,6 +22,18 @@
   <p class="swap-and-earn__not-member">
     You are not currently a member of the SwapToEarn program. You can read more about the program
     here:
+    <a
+      class="swap-and-earn__not-member-link"
+      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
+      target="_blank"
+      rel="noreferrer"
+      >Link</a
+    >
+  </p>
+</ng-template>
+<ng-template #stopSen>
+  <p class="swap-and-earn__not-member">
+    The program is being relaunched and is currently on hold. You can read more here:
     <a
       class="swap-and-earn__not-member-link"
       href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
