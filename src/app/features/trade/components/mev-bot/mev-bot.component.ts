@@ -6,7 +6,6 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
-import { ModalService } from '@core/modals/services/modal.service';
 import { HeaderStore } from '@core/header/services/header.store';
 
 @Component({
@@ -26,7 +25,7 @@ export class MevBotComponent {
   public hintShownOnMobile = false;
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 0.01;
+    const minDollarAmountToDisplay = 1000;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     this.routingForm =
@@ -45,7 +44,6 @@ export class MevBotComponent {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore
   ) {}
 
