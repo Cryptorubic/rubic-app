@@ -100,7 +100,7 @@ export class AssetTypesAsideComponent {
   private getAssideBlockchainsInSourceSelectorGasForm(
     amountInAssideList: number
   ): AvailableBlockchain[] {
-    const assideChains = this.gasFormService.gasFormAvailableBlockchains.slice(
+    const assideChains = this.gasFormService.gasFormSourceAvailableBlockchains.slice(
       0,
       amountInAssideList
     );
