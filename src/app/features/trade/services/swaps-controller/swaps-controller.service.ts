@@ -4,6 +4,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import {
   catchError,
   debounceTime,
+  distinctUntilChanged,
   filter,
   map,
   pairwise,
@@ -58,18 +59,23 @@ import { compareObjects } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SwapsControllerService {
-  private readonly _calculateTrade$ = new Subject<{ isForced?: boolean; stop?: boolean }>();
+  private readonly _calculateTrade$ = new Subject<{
+    isForced?: boolean;
+    stop?: boolean;
+  }>();
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
 
   /**
    * Contains trades types, which were disabled due to critical errors.
    */
-  private disabledTradesTypes: { crossChain: CrossChainTradeType[]; onChain: OnChainTradeType[] } =
-    {
-      crossChain: [],
-      onChain: []
-    };
+  private disabledTradesTypes: {
+    crossChain: CrossChainTradeType[];
+    onChain: OnChainTradeType[];
+  } = {
+    crossChain: [],
+    onChain: []
+  };
 
   constructor(
     private readonly swapFormService: SwapsFormService,
@@ -455,9 +461,13 @@ export class SwapsControllerService {
     this.settingsService.crossChainRoutingValueChanges
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
+        distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
         combineLatestWith(
           this.settingsService.instantTradeValueChanges.pipe(
-            startWith(this.settingsService.instantTradeValue)
+            startWith(this.settingsService.instantTradeValue),
+            distinctUntilChanged(
+              (prev, next) => prev.useMevBotProtection !== next.useMevBotProtection
+            )
           )
         ),
         debounceTime(10),

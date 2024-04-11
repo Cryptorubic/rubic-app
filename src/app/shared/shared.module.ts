@@ -74,6 +74,7 @@ import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
+import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { SkipDefaultDirective } from './directives/skip-default/skip-default.dir
     PriceImpactFormatPipe,
     SlippageFormatPipe,
     ProgressBarComponent,
-    SkipDefaultDirective
+    SkipDefaultDirective,
+    MevBotModalComponent
   ],
   imports: [
     CommonModule,
