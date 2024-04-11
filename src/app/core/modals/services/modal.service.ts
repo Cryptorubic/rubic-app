@@ -23,6 +23,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
+import { FormType } from '@app/features/trade/models/form-type';
 import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-modal.component';
 
 @Injectable()
@@ -36,7 +37,7 @@ export class ModalService {
   /**
    * Show tokens dialog.
    */
-  public openAssetsSelector(formType: 'from' | 'to', injector: Injector): Observable<void> {
+  public openAssetsSelector(formType: FormType, injector: Injector): Observable<void> {
     return this.showDialog<TokenSelectorPageComponent, void>(
       TokenSelectorPageComponent,
       {
@@ -173,12 +174,14 @@ export class ModalService {
    * Show Blockchain List dialog.
    * @param _injector Injector.
    */
-  public openBlockchainList(_injector: Injector): void {
-    this.mobileModalService$.openNextModal(
+  public openBlockchainList(formType: FormType, _injector: Injector): Observable<void> {
+    return this.showDialog<BlockchainsListComponent, void>(
       BlockchainsListComponent,
       {
         title: 'Select Blockchain',
-        scrollableContent: true
+        scrollableContent: true,
+        size: 'l',
+        data: { formType }
       },
       _injector
     );

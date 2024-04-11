@@ -1,5 +1,11 @@
 <div class="provider-info">
-  <div *ngIf="gasInfo?.amountInUsd?.gt(0)" class="provider-info__element" [tuiHint]="gasTooltip">
+  <div
+    *ngIf="gasInfo?.amountInUsd?.gt(0)"
+    class="provider-info__element"
+    [tuiHint]="gasTooltip"
+    [tuiHintAppearance]="hintAppearance"
+    [tuiHintDirection]="hintDirection"
+  >
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
     <div *ngIf="gasInfo.amountInUsd.gt(0.01)">
@@ -8,11 +14,23 @@
     </div>
   </div>
 
-  <div *ngIf="displayAmount" class="provider-info__element" [tuiHint]="feeData">
+  <div
+    *ngIf="displayAmount"
+    class="provider-info__element"
+    [tuiHint]="feeData"
+    [tuiHintAppearance]="hintAppearance"
+    [tuiHintDirection]="hintDirection"
+  >
     <img src="assets/images/icons/money.svg" alt="Fee" />
     {{ displayAmount }}
   </div>
-  <div class="provider-info__element time" [tuiHint]="timeTooltip">
+
+  <div
+    class="provider-info__element time"
+    [tuiHint]="timeTooltip"
+    [tuiHintAppearance]="hintAppearance"
+    [tuiHintDirection]="hintDirection"
+  >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>
   </div>

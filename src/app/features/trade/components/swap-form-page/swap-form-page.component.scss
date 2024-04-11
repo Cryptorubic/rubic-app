@@ -4,12 +4,27 @@ app-action-button {
   width: 100%;
 }
 
+app-gas-form-hint {
+  position: absolute;
+  left: 0;
+
+  &.source-chain {
+    top: 85px;
+  }
+
+  &.target-chain {
+    bottom: 110px;
+  }
+}
+
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
 
-  span:last-child {
-    color: var(--tui-text-03);
+  color: var(--tui-text-03);
+
+  &_selected {
+    color: var(--tui-text-01);
   }
 }
 
