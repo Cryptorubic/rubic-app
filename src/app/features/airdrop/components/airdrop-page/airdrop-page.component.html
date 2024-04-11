@@ -8,40 +8,43 @@
       <app-points-container></app-points-container>
     </tui-loader>
   </app-window-container>
-  <app-window-container *ngIf="isAuth$ | async">
+  <ng-container *ngIf="isAuth$ | async; else stopSen">
     <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
       <ng-container
         *ngIf="(airdropUserInfo$ | async)?.is_participant; then stopSen; else notMember"
       >
       </ng-container>
     </ng-container>
-  </app-window-container>
+  </ng-container>
 </div>
-
 <ng-template #notMember>
-  <p class="swap-and-earn__not-member">
-    You are not currently a member of the SwapToEarn program. You can read more about the program
-    here:
-    <a
-      class="swap-and-earn__not-member-link"
-      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
-      target="_blank"
-      rel="noreferrer"
-      >Link</a
-    >
-  </p>
+  <app-window-container>
+    <p class="swap-and-earn__not-member">
+      You are not currently a member of the SwapToEarn program. You can read more about the program
+      here:
+      <a
+        class="swap-and-earn__not-member-link"
+        href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
+        target="_blank"
+        rel="noreferrer"
+        >Link</a
+      >
+    </p>
+  </app-window-container>
 </ng-template>
 <ng-template #stopSen>
-  <p class="swap-and-earn__not-member">
-    The program is being relaunched and is currently on hold. You can read more here:
-    <a
-      class="swap-and-earn__not-member-link"
-      href="https://cryptorubic.medium.com/introducing-swap-to-earn-the-innovative-way-to-earn-crypto-tokens-8aaaa6a73341"
-      target="_blank"
-      rel="noreferrer"
-      >Link</a
-    >
-  </p>
+  <app-window-container>
+    <p class="swap-and-earn__not-member">
+      The program is being relaunched and is currently on hold. You can read more
+      <a
+        class="swap-and-earn__not-member-link"
+        href="https://docs.rubic.finance/rubic/swap-to-earn-program-on-rubic"
+        target="_blank"
+        rel="noreferrer"
+        >here</a
+      >.
+    </p>
+  </app-window-container>
 </ng-template>
 <ng-template #serverRequestFailed>
   <app-no-result
