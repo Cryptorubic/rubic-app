@@ -73,7 +73,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [],
   [BLOCKCHAIN_NAME.MERLIN]: [],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [],
-  [BLOCKCHAIN_NAME.MODE]: []
+  [BLOCKCHAIN_NAME.MODE]: [],
+  [BLOCKCHAIN_NAME.ZK_FAIR]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

@@ -137,7 +137,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KROMA]: 'kroma',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: 'horizen-eon',
   [BLOCKCHAIN_NAME.MERLIN]: 'merlin',
-  [BLOCKCHAIN_NAME.MODE]: 'mode'
+  [BLOCKCHAIN_NAME.MODE]: 'mode',
+  [BLOCKCHAIN_NAME.ZK_FAIR]: 'zkfair'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
