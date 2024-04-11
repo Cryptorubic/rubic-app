@@ -72,6 +72,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
+import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 
 @NgModule({
   declarations: [
@@ -119,7 +120,8 @@ import { SkipDefaultDirective } from './directives/skip-default/skip-default.dir
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe,
-    SkipDefaultDirective
+    SkipDefaultDirective,
+    MevBotModalComponent
   ],
   imports: [
     CommonModule,
