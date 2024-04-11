@@ -73,6 +73,7 @@ import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SkipDefaultDirective
   ],
   imports: [
     CommonModule,
@@ -196,7 +198,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SkipDefaultDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

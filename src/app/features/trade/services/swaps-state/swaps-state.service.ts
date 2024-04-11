@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { PromotionType, TradeState } from '@features/trade/models/trade-state';
+import { BadgeInfo, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -15,6 +15,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
+  CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
   nativeTokensList,
   OnChainTrade,
@@ -43,6 +44,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
+import { SPECIFIC_BADGES } from './constants/specific-badges-for-trades';
 
 @Injectable()
 export class SwapsStateService {
@@ -166,7 +168,7 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          ...(this.setPromotion() && { promotion: this.setPromotion() })
+          badges: this.setSpecificBadges(trade)
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -270,14 +272,27 @@ export class SwapsStateService {
         ? this.getNativeTokenPrice(prevTrade.trade.from.blockchain)
         : new BigNumber(0);
 
-      return compareCrossChainTrades(
-        nextTrade,
-        prevTrade,
-        nativePriceForNextTrade,
-        nativePriceForPrevTrade,
-        isThereTokenWithoutPrice
-      );
+      // Raises RBC-RBC via Arbitrum_Bridge in top
+      if (this.isArbitrumBridgeForRBCTokens(nextTrade?.trade)) {
+        return -1;
+      } else {
+        return compareCrossChainTrades(
+          nextTrade,
+          prevTrade,
+          nativePriceForNextTrade,
+          nativePriceForPrevTrade,
+          isThereTokenWithoutPrice
+        );
+      }
     }) as TradeState[];
+  }
+
+  private isArbitrumBridgeForRBCTokens(trade: CrossChainTrade): boolean {
+    return (
+      trade.to.symbol.toLowerCase() === 'rbc' &&
+      trade.from.symbol.toLowerCase() === 'rbc' &&
+      trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
   }
 
   private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
@@ -425,7 +440,26 @@ export class SwapsStateService {
     );
   }
 
-  private setPromotion(): PromotionType | null {
-    return null;
+  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
+    const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
+
+    if (!badgesConfig) {
+      return [];
+    }
+
+    const [, badges] = badgesConfig;
+
+    const tradeSpecificBadges = badges.filter(info => {
+      if (!info.showLabel(trade)) {
+        return false;
+      }
+      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions.length)) {
+        return true;
+      }
+
+      return false;
+    });
+
+    return tradeSpecificBadges;
   }
 }

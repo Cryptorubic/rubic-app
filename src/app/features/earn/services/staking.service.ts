@@ -9,7 +9,6 @@ import {
   catchError,
   combineLatest,
   filter,
-  firstValueFrom,
   forkJoin,
   from,
   map,
@@ -34,14 +33,15 @@ import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THRE
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
 
-const STAKING_END_TIMESTAMP = new Date(2024, 6, 10).getTime();
+const STAKING_END_TIMESTAMP = new Date(2024, 6, 13).getTime();
 
 @Injectable()
 export class StakingService {
   public readonly MIN_STAKE_AMOUNT = 1;
 
-  public readonly MAX_LOCK_TIME =
-    Math.floor(Math.trunc((STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH) / 3) * 3;
+  public readonly MAX_LOCK_TIME = Math.floor(
+    Math.trunc((STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH)
+  );
 
   public readonly user$ = this.authService.currentUser$;
 
@@ -115,7 +115,7 @@ export class StakingService {
     this.watchUserBalanceAndAllowance();
   }
 
-  public getRbcAmountPrice(): Observable<number> {
+  public getRbcAmountPrice(): Observable<BigNumber> {
     return from(
       this.tokensService.getAndUpdateTokenPrice(
         {
@@ -344,8 +344,8 @@ export class StakingService {
                 const nftInfo = await this.getNftInfo(id);
                 const nftRewards = await this.getNftRewardsInfo(id);
 
-                const RBCPrice = await firstValueFrom(this.statisticsService.getRBCPrice());
-                const ethPrice = await firstValueFrom(this.statisticsService.getETHPrice());
+                const RBCPrice = await this.statisticsService.getRBCPrice();
+                const ethPrice = await this.statisticsService.getETHPrice();
                 const amountInDollars = nftInfo.amount.multipliedBy(RBCPrice);
                 const amountInETH = amountInDollars.dividedBy(ethPrice);
                 const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH

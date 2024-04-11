@@ -37,32 +37,29 @@
             ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
-            <app-promotion-badge
-              *ngIf="tradeState?.promotion"
-              [data]="tradeState.promotion"
-            ></app-promotion-badge>
-            <tui-tag
-              *ngIf="isBest"
-              class="element__best-badge"
-              size="s"
-              status="custom"
-              value="Best"
-              [tuiHint]="'The most profitable trade according to our calculations'"
-            ></tui-tag>
-            <app-promotion-badge
-              *ngIf="
-                tradeState.tradeType === 'symbiosis' && tradeState.trade.to.blockchain === 'MANTLE'
-              "
-              [data]="symbiosisMantlePromoData"
-            ></app-promotion-badge>
-            <tui-tag
-              *ngIf="tradeState?.error"
-              class="element__warning-badge"
-              size="s"
-              status="custom"
-              value="Warn"
-              [tuiHint]="tradeState.error?.message"
-            ></tui-tag>
+            <div class="element__row-badges">
+              <tui-tag
+                *ngIf="isBest"
+                class="element__best-badge"
+                size="s"
+                status="custom"
+                value="Best"
+                [tuiHint]="'The most profitable trade according to our calculations'"
+              ></tui-tag>
+              <app-promotion-badge
+                *ngFor="let badge of tradeState.badges"
+                [data]="badge"
+              ></app-promotion-badge>
+              <tui-tag
+                *ngIf="tradeState?.error"
+                class="element__warning-badge"
+                size="s"
+                status="custom"
+                value="Warn"
+                [tuiHint]="tradeState.error?.message"
+              ></tui-tag>
+            </div>
+
             <div
               (click)="toggleExpand($event)"
               inlineSVG="assets/images/icons/arrow-down.svg"
@@ -82,7 +79,7 @@
     <app-swap-data-element
       [gasInfo]="getGasData()"
       [feeInfoChange]="getFeeInfo()"
-      [time]="(providerInfo.averageTime || 3) + ' M'"
+      [time]="getAverageTimeString()"
     ></app-swap-data-element>
   </div>
 </ng-container>

@@ -15,7 +15,6 @@ import {
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
-  EvmEncodeConfig,
   NotWhitelistedProviderError,
   PriceToken,
   SwapTransactionOptions,
@@ -97,11 +96,11 @@ export class CrossChainService {
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({
           ...fromToken,
-          price: new BigNumber(fromPrice as number | null)
+          price: fromPrice
         });
         const toSdkCompatibleToken = new PriceToken({
           ...toToken,
-          price: new BigNumber(toPrice as number | null)
+          price: toPrice
         });
         const options = this.getOptions(disabledTradeTypes);
 
@@ -233,13 +232,13 @@ export class CrossChainService {
    *
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
-   * @param directTransaction Transaction config to execute forced
+   * @param useCacheData Use cached data or not
    * @returns transactionHash - on successfull swap
    */
   public async swapTrade(
-    trade: CrossChainTrade,
+    trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
-    directTransaction?: EvmEncodeConfig
+    useCacheData?: boolean
   ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
       return null;
@@ -286,8 +285,8 @@ export class CrossChainService {
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
-      ...(directTransaction && { directTransaction }),
-      ...(referrer && { referrer })
+      ...(referrer && { referrer }),
+      useCacheData: useCacheData || false
     };
 
     try {
@@ -326,7 +325,7 @@ export class CrossChainService {
   }
 
   public async approveTrade(
-    trade: CrossChainTrade,
+    trade: CrossChainTrade<unknown>,
     _callback?: (hash: string) => void
   ): Promise<void> {
     this.checkBlockchainsAvailable(trade);

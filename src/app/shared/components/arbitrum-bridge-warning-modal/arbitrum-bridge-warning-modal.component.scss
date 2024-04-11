@@ -2,8 +2,6 @@
 
 .modal {
   &__content {
-    padding: 35px 20px 0;
-
     text-align: center;
 
     @include b($tablet) {
@@ -11,58 +9,35 @@
     }
   }
 
-  &__footer {
-    margin-top: 20px;
-
-    &-text {
-      margin-bottom: 18px;
-
-      @include b($tablet) {
-        font-size: 16px;
-        line-height: 24px;
-      }
-
-      img {
-        margin-left: 8px;
-      }
-
-    }
-
-    &-actions {
-      display: flex;
-      gap: 16px;
-      padding-top: 16px;
-
-      app-rubic-button {
-        width: 100%;
-      }
-    }
+  &__title {
+    font-size: 18px;
+    text-align: left;
   }
 
   &__body {
     display: flex;
+    gap: 20px;
     align-items: center;
+    justify-content: center;
     height: 100%;
     margin-right: 80px;
 
     img {
-      width: 120px;
+      width: 80px;
     }
   }
 
   &__footer {
-    &-text {
-      @include font(20px, 32px, 500, var(--primary-text));
+    margin-top: 20px;
 
-      img {
-        margin-left: 4px;
+    &-text {
+      @include font(16px, 32px, 500, var(--primary-text));
+      margin-bottom: 16px;
+
+      @include b($tablet) {
+        line-height: 24px;
       }
     }
-  }
-
-  h3 {
-    font-size: 18px;
-    text-align: left;
   }
 
   ::ng-deep app-rubic-button button {
