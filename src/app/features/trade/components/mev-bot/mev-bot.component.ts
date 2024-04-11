@@ -56,7 +56,7 @@ export class MevBotComponent {
     });
   }
 
-  public patchUseMevBotProtection(value: boolean): void {
+  private patchUseMevBotProtection(value: boolean): void {
     this.routingForm.patchValue({
       useMevBotProtection: value
     });
