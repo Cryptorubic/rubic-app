@@ -82,7 +82,7 @@ export class SettingsService {
       disableMultihops: false,
       autoRefresh: Boolean(this.authService?.user?.address),
       showReceiverAddress: false,
-      useMevBotProtection: true
+      useMevBotProtection: false
     };
   }
 
@@ -92,7 +92,7 @@ export class SettingsService {
       slippageTolerance:
         this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
       showReceiverAddress: false,
-      useMevBotProtection: true
+      useMevBotProtection: false
     };
   }
 
