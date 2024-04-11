@@ -18,6 +18,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { compareTokens } from '@shared/utils/utils';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { Web3Pure } from 'rubic-sdk/lib/core/blockchain/web3-pure/web3-pure';
+import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 
 @Component({
   selector: 'app-provider-element',
@@ -48,6 +49,17 @@ export class ProviderElementComponent {
   public toggleExpand(event: Event): void {
     event.preventDefault();
     this.expanded = !this.expanded;
+  }
+
+  public getAverageTimeString(): string {
+    if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) {
+      return '7 D';
+    }
+
+    const info = this.getProviderInfo(this.tradeState.tradeType);
+    const time = `${info?.averageTime || 3} M`;
+
+    return time;
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
