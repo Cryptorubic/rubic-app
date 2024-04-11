@@ -137,5 +137,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.KROMA]: 'Kroma',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: 'Horizen EON',
   [BLOCKCHAIN_NAME.MERLIN]: 'Merlin',
-  [BLOCKCHAIN_NAME.MODE]: 'Mode'
+  [BLOCKCHAIN_NAME.MODE]: 'Mode',
+  [BLOCKCHAIN_NAME.ZK_FAIR]: 'zkFair'
 };
