@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { WINDOW } from '@ng-web-apis/common';
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -13,6 +11,9 @@ import { BlockchainsListService } from '@features/trade/components/assets-select
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
+import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -23,8 +24,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
 
-  public readonly blockchainsAmount = this.blockchainsListService.availableBlockchains.length;
-
   public readonly selectedAssetType$ = this.assetsSelectorService.assetType$;
 
   public readonly formType = this.assetsSelectorService.formType;
@@ -34,16 +33,19 @@ export class AssetTypesAsideComponent {
    */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
-      if (windowSize >= WindowSize.MOBILE_MD) {
+      if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
         return 11;
       }
 
-      if (windowSize === WindowSize.MOBILE_MD_MINUS) {
-        return this.blockchainsAmount;
-      }
       return this.blockchainsAmount;
     })
   );
+
+  public get blockchainsAmount(): number {
+    return this.isSourceSelectorGasFormOpened()
+      ? this.gasFormService.gasFormBlockchainsAmount
+      : this.blockchainsListService.availableBlockchains.length;
+  }
 
   public get showFiats(): boolean {
     return this.formType === 'from' && !this.queryParamsService.hideUnusedUI;
@@ -56,9 +58,9 @@ export class AssetTypesAsideComponent {
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
     private readonly walletConnectorService: WalletConnectorService,
-    @Inject(WINDOW) private readonly window: Window,
-    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     private readonly modalService: ModalService,
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly gasFormService: GasFormService,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -87,6 +89,22 @@ export class AssetTypesAsideComponent {
     selectedBlockchain: BlockchainName
   ): AvailableBlockchain {
     return slicedBlockchains.find(blockchain => blockchain.name === selectedBlockchain);
+  }
+
+  private isSourceSelectorGasFormOpened(): boolean {
+    return (
+      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'from'
+    );
+  }
+
+  private getAssideBlockchainsInSourceSelectorGasForm(
+    amountInAssideList: number
+  ): AvailableBlockchain[] {
+    const assideChains = this.gasFormService.gasFormSourceAvailableBlockchains.slice(
+      0,
+      amountInAssideList
+    );
+    return assideChains;
   }
 
   public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
@@ -120,23 +138,27 @@ export class AssetTypesAsideComponent {
       return this.getBlockchainsListForLandingIframe();
     }
 
-    if (toBlockchain && fromBlockchain) {
-      if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
+    if (this.isSourceSelectorGasFormOpened()) {
+      slicedBlockchains = this.getAssideBlockchainsInSourceSelectorGasForm(shownBlockchainsAmount);
+    } else {
+      if (toBlockchain && fromBlockchain) {
+        if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
+          this.setLastSelectedHiddenBlockchain(fromBlockchain);
+        } else if (!isSelectedToBlockchainIncluded) {
+          this.setLastSelectedHiddenBlockchain(toBlockchain);
+        }
+      } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(fromBlockchain);
-      } else if (!isSelectedToBlockchainIncluded) {
+      } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
         this.setLastSelectedHiddenBlockchain(toBlockchain);
       }
-    } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(fromBlockchain);
-    } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
-      this.setLastSelectedHiddenBlockchain(toBlockchain);
-    }
 
-    const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
+      const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
 
-    if (hiddenBlockchain) {
-      slicedBlockchains.pop();
-      slicedBlockchains.unshift(hiddenBlockchain);
+      if (hiddenBlockchain) {
+        slicedBlockchains.pop();
+        slicedBlockchains.unshift(hiddenBlockchain);
+      }
     }
 
     return slicedBlockchains.map(blockchain => ({
@@ -166,6 +188,6 @@ export class AssetTypesAsideComponent {
   }
 
   public toggleBlockchainList(): void {
-    this.modalService.openBlockchainList(this.injector);
+    this.modalService.openBlockchainList(this.formType, this.injector);
   }
 }

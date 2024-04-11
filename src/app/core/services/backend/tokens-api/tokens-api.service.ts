@@ -165,7 +165,7 @@ export class TokensApiService {
           this.needRefetchTokens = true;
           return List(
             blockchainsToFetch
-              .map(blockchain => defaultTokens[FROM_BACKEND_BLOCKCHAINS[blockchain]])
+              .map(blockchain => defaultTokens[blockchain])
               .filter(tokens => tokens?.length > 0)
               .flat()
           );
