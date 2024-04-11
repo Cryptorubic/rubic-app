@@ -31,11 +31,10 @@
     margin-top: 20px;
 
     &-text {
-
-      @include font(20px, 32px, 500, var(--primary-text));
+      @include font(16px, 32px, 500, var(--primary-text));
       margin-bottom: 16px;
+
       @include b($tablet) {
-        font-size: 16px;
         line-height: 24px;
       }
     }
