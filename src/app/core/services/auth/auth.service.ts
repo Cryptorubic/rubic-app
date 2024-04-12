@@ -182,7 +182,7 @@ export class AuthService {
 
       this._currentUser$.next({
         ...this._currentUser$.value,
-        avatar: 'assets/images/icons/collaborations/oneid-logo.svg',
+        avatar: null,
         name
       });
 
