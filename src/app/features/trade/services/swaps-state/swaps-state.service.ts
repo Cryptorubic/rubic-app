@@ -440,7 +440,7 @@ export class SwapsStateService {
       if (!info.showLabel(trade)) {
         return false;
       }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions.length)) {
+      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
         return true;
       }
 
