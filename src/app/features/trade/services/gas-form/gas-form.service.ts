@@ -10,19 +10,19 @@ import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-from-disabled-chains';
 
 @Injectable()
 export class GasFormService {
-  private _searchQuery$ = new BehaviorSubject<string>('');
+  private readonly _searchQuery$ = new BehaviorSubject<string>('');
 
-  private _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+  private readonly _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
   public readonly sourceAvailableBlockchains$ = this._sourceAvailableBlockchains$.asObservable();
 
-  private _targetAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+  private readonly _targetAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
-  public targetBlockchainsToShow$ = this._searchQuery$.pipe(
+  public readonly targetBlockchainsToShow$ = this._searchQuery$.pipe(
     map(query => this.targetAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
   );
 
-  public sourceBlockchainsToShow$ = this._searchQuery$.pipe(
+  public readonly sourceBlockchainsToShow$ = this._searchQuery$.pipe(
     map(query => this.sourceAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
   );
 
