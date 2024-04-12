@@ -54,3 +54,10 @@
     margin-left: auto;
   }
 }
+
+@include b($mobile-md) {
+  .form-header {
+    background: var(--tui-base-01);
+    border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+  }
+}

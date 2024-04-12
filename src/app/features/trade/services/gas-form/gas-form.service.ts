@@ -10,12 +10,21 @@ import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-from-disabled-chains';
 
 @Injectable()
 export class GasFormService {
-  private _gasFormSourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+  private _searchQuery$ = new BehaviorSubject<string>('');
 
-  public readonly gasFormSourceAvailableBlockchains$ =
-    this._gasFormSourceAvailableBlockchains$.asObservable();
+  private _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
-  private _gasFormTargetAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+  public readonly sourceAvailableBlockchains$ = this._sourceAvailableBlockchains$.asObservable();
+
+  private _targetAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+
+  public targetBlockchainsToShow$ = this._searchQuery$.pipe(
+    map(query => this.targetAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
+  );
+
+  public sourceBlockchainsToShow$ = this._searchQuery$.pipe(
+    map(query => this.sourceAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
+  );
 
   public readonly bestTrade$ = this.swapsStateService.tradesStore$.pipe(
     map(trades => trades.filter(t => t.trade && !t.error)),
@@ -34,22 +43,26 @@ export class GasFormService {
     startWith(null)
   );
 
-  public get gasFormSourceAvailableBlockchains(): AvailableBlockchain[] {
-    return this._gasFormSourceAvailableBlockchains$.getValue();
+  public get sourceAvailableBlockchains(): AvailableBlockchain[] {
+    return this._sourceAvailableBlockchains$.getValue();
   }
 
-  public get gasFormTargetAvailableBlockchains(): AvailableBlockchain[] {
-    return this._gasFormTargetAvailableBlockchains$.getValue();
+  public get targetAvailableBlockchains(): AvailableBlockchain[] {
+    return this._targetAvailableBlockchains$.getValue();
   }
 
-  public get gasFormBlockchainsAmount(): number {
-    return this.gasFormSourceAvailableBlockchains.length;
+  public get availableBlockchainsAmount(): number {
+    return this.sourceAvailableBlockchains.length;
   }
 
   constructor(
     private readonly swapsStateService: SwapsStateService,
     private readonly gtmService: GoogleTagManagerService
   ) {}
+
+  public updateSearchQuery(value: string): void {
+    this._searchQuery$.next(value);
+  }
 
   public setGasFormSourceAvailableBlockchains(
     toBlockchain: BlockchainName,
@@ -58,18 +71,23 @@ export class GasFormService {
     const gasFormSourceChains = allAvailableBlockchains.filter(chain =>
       this.isGasFormSupportedSourceChain(chain.name, toBlockchain)
     );
-    this._gasFormSourceAvailableBlockchains$.next(gasFormSourceChains);
+    this._sourceAvailableBlockchains$.next(gasFormSourceChains);
   }
 
   public setGasFormTargetAvailableBlockchains(
     allAvailableBlockchains: AvailableBlockchain[]
   ): void {
-    const gasFormTargetChains = allAvailableBlockchains.filter(
-      chain =>
-        BlockchainsInfo.isEvmBlockchainName(chain.name) &&
-        !GAS_FORM_DISABLED_CHAINS.includes(chain.name)
+    const gasFormTargetChains = allAvailableBlockchains.filter(chain =>
+      this.isGasFormSupportedTargetChain(chain.name)
     );
-    this._gasFormTargetAvailableBlockchains$.next(gasFormTargetChains);
+    this._targetAvailableBlockchains$.next(gasFormTargetChains);
+  }
+
+  private isGasFormSupportedTargetChain(blockchain: BlockchainName): boolean {
+    return (
+      BlockchainsInfo.isEvmBlockchainName(blockchain) &&
+      !GAS_FORM_DISABLED_CHAINS.includes(blockchain)
+    );
   }
 
   private isGasFormSupportedSourceChain(
@@ -84,6 +102,14 @@ export class GasFormService {
         supportedChains =>
           supportedChains.includes(toBlockchain) && supportedChains.includes(fromBlockchain)
       )
+    );
+  }
+
+  private showBlockchain(blockchain: AvailableBlockchain, query: string): boolean {
+    return (
+      blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
+      (blockchain.tags.length &&
+        blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
     );
   }
 
