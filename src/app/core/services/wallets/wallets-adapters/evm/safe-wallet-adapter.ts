@@ -24,31 +24,33 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
+      console.info('activate safe wallet');
       const sdk = new SafeAppsSDK({
         allowedDomains: [
           /(http|https)(:\/\/)local.rubic.exchange(.*)$/,
           /(http|https)(:\/\/)blockscout.com(.*)$/,
-          /(http|https)(:\/\/)app.safe.global(.*)$/
+          /(http|https)(:\/\/)app.safe.global(.*)$/,
+          /.*/
         ],
-        debug: false
+        debug: true
       });
-      // const defaultSafe: SafeInfo = {
-      //   safeAddress: '',
-      //   chainId: 1,
-      //   threshold: 1,
-      //   owners: [],
-      //   isReadOnly: true
-      // };
+      console.info('sdk: ', sdk);
 
       const safe = await sdk.safe.getInfo();
+      console.info('safe: ', safe);
 
       const provider = new SafeAppProvider(safe, sdk);
+
+      console.info('provider: ', provider);
       this.wallet = provider;
 
       const accounts = this.wallet.request({
         method: 'eth_accounts'
       });
+      console.info('accounts: ', accounts);
       const chain = await this.wallet.request({ method: 'eth_chainId' });
+
+      console.info('chain: ', chain);
       this.isEnabled = true;
 
       [this.selectedAddress] = accounts;

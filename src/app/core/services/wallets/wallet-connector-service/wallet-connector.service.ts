@@ -89,6 +89,7 @@ export class WalletConnectorService {
    */
   public async setupProvider(): Promise<boolean> {
     const isSafeEnv = this.checkIfSafeEnv();
+    console.info('isSafeEnv: ', isSafeEnv);
     const provider = this.storeService.getItem('RUBIC_PROVIDER');
     if (!provider && !isSafeEnv) {
       return false;
