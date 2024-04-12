@@ -1,0 +1,25 @@
+<div class="modal">
+  <div class="modal__content">
+    <h3 class="modal__title">Warning</h3>
+    <main class="modal__body">
+      <img class="modal__success-image" src="assets/images/mm-info.png" alt="" />
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text">
+        <img src="assets/images/icons/hint-with-stick.svg" alt="" />
+        <p>
+          Metamask will now open a window warning you about adding some strange new network.
+          Everything is fine! <br />
+          For them, protection from MEV bots looks like an strange custom network. We hope that in
+          the future the fox will distinguish protection from threat by smell.
+        </p>
+      </div>
+
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="primary" type="button" size="m" (click)="onConfirm()">
+          Oh, good...
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

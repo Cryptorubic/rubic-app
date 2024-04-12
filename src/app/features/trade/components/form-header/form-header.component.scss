@@ -1,0 +1,56 @@
+@use 'src/scss/core' as *;
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  padding: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+
+  font-weight: bold;
+  font-size: 15px;
+
+  &__links {
+    display: flex;
+    gap: var(--tui-padding-s);
+
+    color: var(--tui-text-03);
+  }
+
+  &__link {
+    position: relative;
+
+    &-new {
+      position: absolute;
+      top: -7px;
+      right: -17px;
+
+      padding: 0 3px;
+
+      color: white;
+      font-size: 9px;
+      line-height: 12px;
+
+      background: var(--tui-primary-active);
+      border-radius: 5px;
+
+      pointer-events: none;
+    }
+
+    &-title {
+      cursor: pointer;
+    }
+
+    &.selected {
+      color: var(--tui-text-01);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
+  }
+}

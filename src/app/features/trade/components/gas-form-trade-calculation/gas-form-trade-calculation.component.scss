@@ -1,0 +1,46 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .gas-form-trade {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: 56px;
+    padding: var(--tui-padding-l);
+
+    background-color: var(--primary-background);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+    &__calculation {
+      justify-content: flex-end;
+    }
+
+    app-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+    }
+
+    &__path {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+
+      img {
+        border-radius: 50%;
+      }
+    }
+
+    &__text {
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+  }
+}

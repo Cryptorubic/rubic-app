@@ -8,17 +8,17 @@ import { MILLISECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TuiDestroyService, tuiWatch } from '@taiga-ui/cdk';
 import BigNumber from 'bignumber.js';
 import {
-  tap,
-  zip,
-  of,
-  map,
-  switchMap,
-  startWith,
-  from,
-  catchError,
   BehaviorSubject,
+  catchError,
   filter,
-  takeUntil
+  from,
+  map,
+  of,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap,
+  zip
 } from 'rxjs';
 import { StakeButtonError } from '../../models/stake-button-error.enum';
 import { StakingModalService } from '../../services/staking-modal.service';
@@ -37,10 +37,10 @@ import { HeaderStore } from '@core/header/services/header.store';
 })
 export class StakeFormComponent implements OnInit {
   public readonly DURATIONS = [
+    { value: 1, label: '1', rewardRate: '1.0' },
     { value: 3, label: '3', rewardRate: '1.0' },
     { value: 6, label: '6', rewardRate: '1.2' },
-    { value: 9, label: '9', rewardRate: '1.5' },
-    { value: 12, label: '12', rewardRate: '2.0' }
+    { value: 9, label: '9', rewardRate: '1.5' }
   ];
 
   public readonly MAX_LOCK_TIME = this.stakingService.MAX_LOCK_TIME;
@@ -78,7 +78,7 @@ export class StakeFormComponent implements OnInit {
 
   public selectedAmount: string;
 
-  public rbcUsdPrice: number;
+  public rbcUsdPrice: BigNumber;
 
   public amountError = StakeButtonError.EMPTY_AMOUNT;
 
@@ -164,7 +164,7 @@ export class StakeFormComponent implements OnInit {
   }
 
   public handleDurationError(): void {
-    this.lockTimeExceededError = this.MAX_LOCK_TIME < 3;
+    this.lockTimeExceededError = this.MAX_LOCK_TIME < 1;
   }
 
   public setMaxAmount(amount: BigNumber): void {

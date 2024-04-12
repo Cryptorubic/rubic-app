@@ -2,6 +2,12 @@
   *ngIf="displayMev"
   [status]="routingForm.value.useMevBotProtection ? 'success' : 'warning'"
   class="mev-bot"
+  [tuiHint]="
+    'You can turn on the MEV-bot protection, this will ensure better security of your trade.'
+  "
+  [tuiHintManual]="showHint$ | async"
+  tuiHintDirection="right"
+  (click)="showHint()"
 >
   <div class="tui-text_body-l-2">
     <strong>MEV bot protection</strong>
