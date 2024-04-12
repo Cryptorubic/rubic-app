@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Optional, Self } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { map, startWith } from 'rxjs/operators';
+import { startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { TuiDialogContext } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-settings-ccr',
@@ -23,13 +24,13 @@ export class SettingsCcrComponent {
     startWith(this.crossChainRoutingForm.value)
   );
 
-  public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
-    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
-  );
-
   constructor(
+    @Optional()
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<void, {}>,
     private readonly settingsService: SettingsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public toggleAutoSlippageTolerance(): void {

@@ -397,14 +397,4 @@ export class TokensStoreService {
       })
     );
   }
-
-  /**
-   * Find native token from storage with price by blockchain
-   */
-  public getNativeToken(blockchain: BlockchainName): Token {
-    const chainType = BlockchainsInfo.getChainType(blockchain);
-    const address = Web3Pure[chainType].nativeTokenAddress;
-
-    return this.tokens.find(t => compareTokens(t, { address, blockchain }));
-  }
 }

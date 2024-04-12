@@ -80,9 +80,10 @@ export class SwapsControllerService {
   constructor(
     private readonly swapFormService: SwapsFormService,
     private readonly sdkService: SdkService,
+    private readonly swapsState: SwapsStateService,
     private readonly crossChainService: CrossChainService,
     private readonly onChainService: OnChainService,
-    private readonly swapsStateService: SwapsStateService,
+    private readonly swapStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tradePageService: TradePageService,
@@ -139,11 +140,11 @@ export class SwapsControllerService {
         tap(calculateData => {
           if (!calculateData.stop) {
             this.refreshService.setRefreshing();
-            this.swapsStateService.setCalculationProgress(1, 0);
+            this.swapsState.setCalculationProgress(1, 0);
             if (calculateData.isForced) {
-              this.swapsStateService.clearProviders();
+              this.swapStateService.clearProviders();
             }
-            this.swapsStateService.patchCalculationState();
+            this.swapStateService.patchCalculationState();
           }
         }),
         switchMap(calculateData => {
@@ -200,9 +201,9 @@ export class SwapsControllerService {
               .pipe(
                 tap(([trade, needApprove, type]) => {
                   try {
-                    this.swapsStateService.updateTrade(trade, type, needApprove);
-                    this.swapsStateService.pickProvider(isCalculationEnd);
-                    this.swapsStateService.setCalculationProgress(
+                    this.swapsState.updateTrade(trade, type, needApprove);
+                    this.swapsState.pickProvider(isCalculationEnd);
+                    this.swapsState.setCalculationProgress(
                       container.value.total,
                       container.value.calculated
                     );
@@ -217,17 +218,17 @@ export class SwapsControllerService {
               )
               .pipe(
                 catchError(() => {
-                  // this.swapsStateService.updateTrade(trade, type, needApprove);
-                  this.swapsStateService.pickProvider(isCalculationEnd);
+                  // this.swapsState.updateTrade(trade, type, needApprove);
+                  this.swapsState.pickProvider(isCalculationEnd);
                   return of(null);
                 })
               );
           }
           if (!container?.value) {
             this.refreshService.setStopped();
-            this.swapsStateService.clearProviders();
+            this.swapStateService.clearProviders();
           } else {
-            this.swapsStateService.setCalculationProgress(
+            this.swapsState.setCalculationProgress(
               container.value.total,
               container.value.calculated
             );
@@ -236,7 +237,7 @@ export class SwapsControllerService {
         }),
         catchError((_err: unknown) => {
           this.refreshService.setStopped();
-          this.swapsStateService.pickProvider(true);
+          this.swapsState.pickProvider(true);
           return of(null);
         })
       )
@@ -250,7 +251,7 @@ export class SwapsControllerService {
   }
 
   private setTradeAmount(): void {
-    const trade = this.swapsStateService.tradeState?.trade;
+    const trade = this.swapsState.tradeState?.trade;
     if (trade) {
       this.swapFormService.outputControl.patchValue({
         toAmount: trade.to.tokenAmount

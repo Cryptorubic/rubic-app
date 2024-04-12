@@ -5,8 +5,10 @@
       [isBest]="i === 0"
       [tradeState]="state"
       [shortedInfo]="shortedInfo"
+      [toToken]="toToken$ | async"
       [selectedTradeType]="selectedTradeType"
       (click)="handleTradeSelection($event, state.tradeType, state.error)"
+      [nativeToken]="nativeToken$ | async"
     ></app-provider-element>
   </div>
 </ng-container>
