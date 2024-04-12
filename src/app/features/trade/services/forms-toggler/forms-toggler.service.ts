@@ -39,7 +39,6 @@ export class FormsTogglerService {
     this.selectedForm$.pipe(distinctUntilChanged(), delay(50)).subscribe(() => {
       this.swapsFormService.clearForm();
       this.targetNetworkAddressService.clearReceiverAddress();
-      this.queryParamsService.clearQueryParams();
     });
   }
 }
