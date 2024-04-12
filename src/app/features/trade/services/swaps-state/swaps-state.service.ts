@@ -197,7 +197,6 @@ export class SwapsStateService {
       currentTrades.push(defaultState);
     }
     this.swapType = type;
-    console.log('CURRENT_TRADES', currentTrades);
     this._tradesStore$.next(currentTrades);
   }
 
