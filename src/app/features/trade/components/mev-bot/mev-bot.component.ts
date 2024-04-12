@@ -8,6 +8,7 @@ import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { combineLatestWith, map, startWith } from 'rxjs/operators';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-mev-bot',
@@ -43,7 +44,7 @@ export class MevBotComponent {
   );
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 1000;
+    const minDollarAmountToDisplay = 0.01;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     this.routingForm = (trade?.from.blockchain === trade?.to.blockchain
@@ -61,8 +62,15 @@ export class MevBotComponent {
 
   constructor(
     private readonly settingsService: SettingsService,
+    private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore
-  ) {}
+  ) {
+    this.routingForm.valueChanges.subscribe(settings => {
+      if (settings.useMevBotProtection) {
+        this.modalService.openMevBotModal().subscribe();
+      }
+    });
+  }
 
   private patchUseMevBotProtection(value: boolean): void {
     this.routingForm.patchValue({
