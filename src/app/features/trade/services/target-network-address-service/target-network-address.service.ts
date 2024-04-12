@@ -79,8 +79,4 @@ export class TargetNetworkAddressService {
     );
     this.addressControl.updateValueAndValidity();
   }
-
-  public clearReceiverAddress(): void {
-    this.addressControl.setValue(null);
-  }
 }

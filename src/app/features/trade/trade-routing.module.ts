@@ -1,16 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GasFormActivationGuard } from '@app/shared/guards/gas-form-activation.guard';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
+import { PreviewSwapComponent } from '@features/trade/components/preview-swap/preview-swap.component';
 
 const routes: Routes = [
-  {
-    path: 'get-gas',
-    canActivate: [GasFormActivationGuard],
-    component: TradeViewContainerComponent
-  },
-  { path: 'preview', redirectTo: '' },
-  { path: '', component: TradeViewContainerComponent }
+  { path: '', component: TradeViewContainerComponent },
+  { path: 'preview', component: PreviewSwapComponent, pathMatch: 'full' }
 ];
 
 @NgModule({

@@ -60,8 +60,6 @@
   &__empty-container {
     position: relative;
     z-index: 1;
-
-    display: flex;
   }
 
   &__empty {
@@ -81,14 +79,6 @@
 
     background: var(--tui-secondary);
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
-
-    &-gas-form {
-      width: 200px;
-
-      &__disabled {
-        color: var(--tui-text-03);
-      }
-    }
 
     &::after {
       position: absolute;

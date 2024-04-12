@@ -16,14 +16,20 @@ import { HeaderStore } from '@core/header/services/header.store';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokenSelectorPageComponent {
-  @Input({ required: true }) formType: FormType = 'from';
+  public formType: 'from' | 'to';
+
+  @Input({ required: true }) set type(value: 'from' | 'to') {
+    this.formType = value || 'from';
+  }
+
+  private selectedAsset: TokenAmount;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, { formType: FormType }>,
+    private readonly context: TuiDialogContext<void, { formType: 'from' | 'to' }>,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly swapFormService: SwapsFormService,
     private readonly tradePageService: TradePageService,
@@ -32,9 +38,10 @@ export class TokenSelectorPageComponent {
     this.formType = this.context?.data?.formType;
   }
 
-  public handleTokenSelect(asset: Asset): void {
+  public handleTokenSelect(formType: FormType, asset: Asset): void {
     const token = asset as TokenAmount;
     if (token) {
+      this.selectedAsset = token;
       const inputElement = this.document.getElementById('token-amount-input-element');
       const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.actualValue.isFinite();
 
@@ -44,7 +51,7 @@ export class TokenSelectorPageComponent {
         }, 0);
       }
 
-      if (this.formType === 'from') {
+      if (formType === 'from') {
         this.swapFormService.inputControl.patchValue({
           fromBlockchain: token.blockchain,
           fromToken: token

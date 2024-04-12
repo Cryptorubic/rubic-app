@@ -9,15 +9,13 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
+import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
-import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
-import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { GasFormAnalyticService } from '../../services/gas-form/gas-form-analytic.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -38,8 +36,6 @@ import { GasFormAnalyticService } from '../../services/gas-form/gas-form-analyti
   ]
 })
 export class TradeViewContainerComponent {
-  public readonly selectedForm$ = this.formsTogglerService.selectedForm$;
-
   public readonly formContent$ = this.tradePageService.formContent$;
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
@@ -65,9 +61,7 @@ export class TradeViewContainerComponent {
     private readonly headerStore: HeaderStore,
     private readonly previewSwapService: PreviewSwapService,
     private readonly actionButtonService: ActionButtonService,
-    private readonly notificationsService: NotificationsService,
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormAnalyticService: GasFormAnalyticService
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
