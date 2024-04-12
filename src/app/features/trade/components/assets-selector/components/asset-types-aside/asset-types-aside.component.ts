@@ -43,7 +43,7 @@ export class AssetTypesAsideComponent {
 
   public get blockchainsAmount(): number {
     return this.isSourceSelectorGasFormOpened()
-      ? this.gasFormService.gasFormBlockchainsAmount
+      ? this.gasFormService.availableBlockchainsAmount
       : this.blockchainsListService.availableBlockchains.length;
   }
 
@@ -100,7 +100,7 @@ export class AssetTypesAsideComponent {
   private getAssideBlockchainsInSourceSelectorGasForm(
     amountInAssideList: number
   ): AvailableBlockchain[] {
-    const assideChains = this.gasFormService.gasFormSourceAvailableBlockchains.slice(
+    const assideChains = this.gasFormService.sourceAvailableBlockchains.slice(
       0,
       amountInAssideList
     );

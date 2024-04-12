@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { combineLatestWith, map, of } from 'rxjs';
+import { Observable, combineLatestWith, map, of } from 'rxjs';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -22,11 +22,14 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 })
 export class BlockchainsListComponent implements OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    combineLatestWith(this.gasFormService.gasFormSourceAvailableBlockchains$),
+    combineLatestWith(
+      this.gasFormService.sourceBlockchainsToShow$,
+      this.gasFormService.targetBlockchainsToShow$
+    ),
     switchIif(
-      () => this.isSourceSelectorGasFormOpened(),
-      ([_, gasFormSourceChains]) => of(gasFormSourceChains),
-      () => of(this.targetAvailableBlockchains)
+      () => this.formsTogglerService.isGasFormOpened(),
+      () => this.gasFormBlockchainsToShow$,
+      ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
     ),
     map(blockchains => [
       ...blockchains.slice(0, 8),
@@ -53,22 +56,16 @@ export class BlockchainsListComponent implements OnDestroy {
     this.assetsSelectorService.setSelectorListTypeByAssetType();
   }
 
-  private isSourceSelectorGasFormOpened(): boolean {
-    return (
-      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'from'
-    );
-  }
-
   private isTargetSelectorGasFormOpened(): boolean {
     return (
       this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'to'
     );
   }
 
-  private get targetAvailableBlockchains(): AvailableBlockchain[] {
-    return this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.SWAP_FORM
-      ? this.blockchainsListService.availableBlockchains
-      : this.gasFormService.gasFormTargetAvailableBlockchains;
+  private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
+    return this.formType === 'to'
+      ? this.gasFormService.targetBlockchainsToShow$
+      : this.gasFormService.sourceBlockchainsToShow$;
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
