@@ -21,6 +21,7 @@ import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,8 @@ export class QueryParamsService {
 
   public slippageCcr: number;
 
+  public useSafe: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensNetworkService: TokensNetworkService,
@@ -81,7 +84,8 @@ export class QueryParamsService {
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
     private readonly sessionStorage: SessionStorageService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public setupQueryParams(queryParams: QueryParams): void {

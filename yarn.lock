@@ -3935,6 +3935,27 @@
   dependencies:
     "@randlabs/communication-bridge" "1.0.1"
 
+"@safe-global/safe-apps-provider@^0.18.2":
+  version "0.18.2"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-provider/-/safe-apps-provider-0.18.2.tgz#336f3f4bb6ebbad9354e6551687491efc73991bc"
+  integrity sha512-yHHAcppwE7aIUWEeZiYAClQzZCdP5l0Kbd0CBlhKAsTcqZnx4Gh3G3G3frY5LlWcGzp9qmQ5jv+J1GBpaZLDgw==
+  dependencies:
+    "@safe-global/safe-apps-sdk" "^9.0.0"
+    events "^3.3.0"
+
+"@safe-global/safe-apps-sdk@^9.0.0":
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-apps-sdk/-/safe-apps-sdk-9.0.0.tgz#56635663f5a73773c5929d9c45ffea2b75dab69b"
+  integrity sha512-fEqmQBU3JqTjORSl3XYrcaxdxkUqeeM39qsQjqCzzTHioN8DEfg3JCLq6EBoXzcKTVOYi8SPzLV7KJccdDw+4w==
+  dependencies:
+    "@safe-global/safe-gateway-typescript-sdk" "^3.5.3"
+    viem "^1.6.0"
+
+"@safe-global/safe-gateway-typescript-sdk@^3.5.3":
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/@safe-global/safe-gateway-typescript-sdk/-/safe-gateway-typescript-sdk-3.19.0.tgz#18637c205c83bfc0a6be5fddbf202d6bb4927302"
+  integrity sha512-TRlP05KY6t3wjLJ74FiirWlEt3xTclnUQM2YdYto1jx5G1o0meMnugIUZXhzm7Bs3rDEDNhz/aDf2KMSZtoCFg==
+
 "@schematics/angular@16.2.10":
   version "16.2.10"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-16.2.10.tgz#1407a471367f0b7e1c37f9280a5756696ed8cffe"
@@ -19027,6 +19048,20 @@ viem@^1.21.1:
   version "1.21.1"
   resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.1.tgz#f0996347fd339b1590dd82e379f18e1ae96bbcf5"
   integrity sha512-4Tb2f73FTGN+6PRPmgmKmlIfy/ENS4iU1KKfOPhUA37pZMmVw2rxN0QXMHB4OMa1ZVBlbpde1eG33vyj0L8YeQ==
+  dependencies:
+    "@adraffy/ens-normalize" "1.10.0"
+    "@noble/curves" "1.2.0"
+    "@noble/hashes" "1.3.2"
+    "@scure/bip32" "1.3.2"
+    "@scure/bip39" "1.2.1"
+    abitype "0.9.8"
+    isows "1.0.3"
+    ws "8.13.0"
+
+viem@^1.6.0:
+  version "1.21.4"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.21.4.tgz#883760e9222540a5a7e0339809202b45fe6a842d"
+  integrity sha512-BNVYdSaUjeS2zKQgPs+49e5JKocfo60Ib2yiXOWBT6LuVxY1I/6fFX3waEtpXvL1Xn4qu+BVitVtMh9lyThyhQ==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
