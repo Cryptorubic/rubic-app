@@ -1,13 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TradeState } from '../../models/trade-state';
-import { FeeInfo, RubicStep } from 'rubic-sdk';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
 import { BehaviorSubject, interval, map, switchMap, takeWhile } from 'rxjs';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { GasFormService } from '../../services/gas-form/gas-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
-import { Token } from '@app/shared/models/tokens/token';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 
 @Component({
@@ -31,8 +28,6 @@ export class GasFormTradeCalculationComponent {
     return this._isCalculation;
   }
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
-
   private readonly _isCalculation$ = new BehaviorSubject(true);
 
   private readonly ratio: number = 100;
@@ -49,20 +44,8 @@ export class GasFormTradeCalculationComponent {
 
   public readonly bestTrade$ = this.gasFormService.bestTrade$;
 
-  public gasData: AppGasData | null;
-
-  public feeInfo: {
-    fee: FeeInfo | null;
-    nativeToken: Token;
-  };
-
-  public providerInfo: ProviderInfo;
-
-  public routePath: RubicStep[];
-
   constructor(
     private readonly gasFormService: GasFormService,
-    private readonly swapsFormService: SwapsFormService,
     private readonly tradeInfoManager: TradeInfoManager
   ) {}
 

@@ -3,7 +3,6 @@ import { BehaviorSubject, delay, distinctUntilChanged } from 'rxjs';
 import { MAIN_FORM_TYPE, MainFormType } from './models';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
-import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Injectable()
 export class FormsTogglerService {
@@ -17,8 +16,7 @@ export class FormsTogglerService {
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly targetNetworkAddressService: TargetNetworkAddressService
   ) {
     this.subscribeOnMainFormTypeChange();
   }
