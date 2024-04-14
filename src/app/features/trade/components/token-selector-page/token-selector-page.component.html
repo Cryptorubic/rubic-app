@@ -1,8 +1,4 @@
 <app-window-container>
-  <!-- <ng-container header *ngIf="(isMobile$ | async) === false">
-    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-    <span class="back-button__text">{{ headerText$ | async }}</span>
-  </ng-container> -->
   <app-assets-selector-page
     [type]="formType"
     (tokenSelect)="handleTokenSelect($event)"

@@ -22,7 +22,6 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
-import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -56,8 +55,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly tradePageService: TradePageService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly tradePageService: TradePageService
   ) {
     this.assetsSelectorService.initParameters({ formType: this.type });
     this.subscribeOnAssetsSelect();
