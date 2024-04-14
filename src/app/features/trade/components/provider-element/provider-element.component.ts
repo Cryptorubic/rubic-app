@@ -3,6 +3,7 @@ import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/provider-info';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
+import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 
 @Component({
   selector: 'app-provider-element',
@@ -26,6 +27,17 @@ export class ProviderElementComponent {
   public toggleExpand(event: Event): void {
     event.preventDefault();
     this.expanded = !this.expanded;
+  }
+
+  public getAverageTimeString(): string {
+    if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) {
+      return '7 D';
+    }
+
+    const info = this.getProviderInfo(this.tradeState.tradeType);
+    const time = `${info?.averageTime || 3} M`;
+
+    return time;
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
