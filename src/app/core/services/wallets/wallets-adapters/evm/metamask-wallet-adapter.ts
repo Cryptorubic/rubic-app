@@ -55,7 +55,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 
-      setTimeout(() => this.initSubscriptionsOnChanges(), 1000);
+      this.initSubscriptionsOnChanges();
     } catch (error) {
       if (
         error.code === 4001 ||
