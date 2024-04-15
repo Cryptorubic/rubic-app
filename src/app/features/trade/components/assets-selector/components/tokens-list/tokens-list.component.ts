@@ -8,7 +8,6 @@ import { TokensListStoreService } from '@features/trade/components/assets-select
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
 import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
 import { compareAddresses } from '@app/shared/utils/utils';
@@ -42,9 +41,9 @@ export class TokensListComponent {
   );
 
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$.pipe(
-    combineLatestWith(this.formsTogglerService.selectedForm$, this.tradePageService.formContent$),
-    map(([tokens, mainFormType, formContent]) => {
-      if (mainFormType === MAIN_FORM_TYPE.GAS_FORM && formContent === 'fromSelector') {
+    combineLatestWith(this.formsTogglerService.selectedForm$),
+    map(([tokens, mainFormType]) => {
+      if (mainFormType === MAIN_FORM_TYPE.GAS_FORM) {
         return tokens.filter(t => this.isGasExchangeableToken(t));
       }
       return tokens;
@@ -56,8 +55,7 @@ export class TokensListComponent {
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly tradePageService: TradePageService
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   /**
