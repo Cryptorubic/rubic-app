@@ -5,12 +5,8 @@
 }
 
 .custom-token {
-  padding-left: 24px;
-
   &__element {
-    padding: 5px 10px;
-
-    border-radius: 15px;
+    padding: 5px 0;
 
     cursor: default;
 
@@ -26,6 +22,19 @@
 
   &__button {
     display: block;
+    width: 100%;
     margin-top: 15px;
+
+    ::ng-deep {
+      .t-wrapper {
+        background-color: var(--tui-primary);
+
+        span {
+          height: 100%;
+
+          font-size: 14px;
+        }
+      }
+    }
   }
 }

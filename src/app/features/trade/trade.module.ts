@@ -23,7 +23,13 @@ import {
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import {
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiProgressModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -61,15 +67,6 @@ import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.c
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
-import { FormHeaderComponent } from './components/form-header/form-header.component';
-import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
-import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
-import { GasFormTradeCalculationComponent } from './components/gas-form-trade-calculation/gas-form-trade-calculation.component';
-import { GasFormService } from './services/gas-form/gas-form.service';
-import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
-import { AssetsSelectorService } from './components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
-import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.service';
 
 @NgModule({
   declarations: [
@@ -99,10 +96,7 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     CnPreviewSwapComponent,
     CnTradeInfoComponent,
     MevBotComponent,
-    PromotionBadgeComponent,
-    FormHeaderComponent,
-    GasFormHintComponent,
-    GasFormTradeCalculationComponent
+    PromotionBadgeComponent
   ],
   exports: [],
   imports: [
@@ -123,6 +117,7 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     TuiToggleModule,
     TuiHostedDropdownModule,
     TuiInputModule,
+    TuiProgressModule,
     TuiLoaderModule,
     AssetsSelectorModule,
     TuiNotificationModule,
@@ -168,14 +163,7 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     SwapTokensUpdaterService,
     TradePageService,
     CnSwapService,
-    ActionButtonService,
-    FormsTogglerService,
-    GasFormService,
-    GasFormAnalyticService,
-    TradeInfoManager,
-    AssetsSelectorService,
-    BlockchainsListService,
-    FormsTogglerService
+    ActionButtonService
     // SettingsService,
     // RefreshService,
     // TradeService,

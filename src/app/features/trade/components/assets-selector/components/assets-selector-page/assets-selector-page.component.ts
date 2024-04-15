@@ -23,7 +23,7 @@ import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 
 @Component({
-  selector: 'app-assets-selector-page',
+  selector: ' app-assets-selector-page',
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

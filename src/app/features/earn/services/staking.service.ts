@@ -40,7 +40,7 @@ export class StakingService {
   public readonly MIN_STAKE_AMOUNT = 1;
 
   public readonly MAX_LOCK_TIME = Math.floor(
-    Math.trunc((STAKING_END_TIMESTAMP - Date.now()) / MILLISECONDS_IN_MONTH)
+    Math.trunc((STAKING_END_TIMESTAMP - Date.now() - MILLISECONDS_IN_MONTH) / MILLISECONDS_IN_MONTH)
   );
 
   public readonly user$ = this.authService.currentUser$;

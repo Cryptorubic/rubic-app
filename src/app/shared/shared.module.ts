@@ -10,7 +10,6 @@ import {
   TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
-  TuiProgressModule,
   TuiTabsModule,
   TuiTagModule,
   TuiToggleModule
@@ -72,7 +71,6 @@ import { DropdownOptionsTableItemComponent } from './components/dropdown-options
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
-import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 
@@ -122,7 +120,6 @@ import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.c
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe,
-    ProgressBarComponent,
     SkipDefaultDirective,
     MevBotModalComponent
   ],
@@ -144,7 +141,6 @@ import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.c
     TuiDropdownModule,
     TuiHostedDropdownModule,
     TuiToggleModule,
-    TuiProgressModule,
     TuiSvgModule,
     TuiHintModule,
     TuiToggleModule,
@@ -200,7 +196,6 @@ import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.c
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
     SlippageFormatPipe,
-    ProgressBarComponent,
     SkipDefaultDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
