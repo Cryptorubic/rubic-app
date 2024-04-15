@@ -1008,5 +1008,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ZK_FAIR]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_FAIR], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZK_LINK]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_LINK], ...defaultTokenParams } as Token
   ]
 };

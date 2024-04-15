@@ -279,5 +279,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/mode',
     'https://mode.drpc.org'
   ],
-  [BLOCKCHAIN_NAME.ZK_FAIR]: ['https://rpc.zkfair.io']
+  [BLOCKCHAIN_NAME.ZK_FAIR]: ['https://rpc.zkfair.io'],
+  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network']
 };
