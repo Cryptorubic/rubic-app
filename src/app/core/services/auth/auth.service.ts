@@ -106,10 +106,12 @@ export class AuthService {
   }
 
   public async setUserData(): Promise<void> {
-    const [hasOneIdName, hasSpaceIdName] = await Promise.all([
-      this.checkOneIdNameAndSetIfExists(),
-      this.checkSpaceIdNameAndSetIfExists()
-    ]);
+    // OneId name has priority over spaceId name
+    const hasOneIdName = await this.checkOneIdNameAndSetIfExists();
+    if (hasOneIdName) return;
+
+    const hasSpaceIdName = await this.checkSpaceIdNameAndSetIfExists();
+    if (hasSpaceIdName) return;
 
     if (hasSpaceIdName || hasOneIdName) return;
 
