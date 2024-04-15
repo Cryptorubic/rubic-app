@@ -34,28 +34,20 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
         ],
         debug: true
       });
-      console.info('sdk: ', sdk);
-
       const safe = await sdk.safe.getInfo();
-      console.info('safe: ', safe);
+      this.wallet = new SafeAppProvider(safe, sdk);
 
-      const provider = new SafeAppProvider(safe, sdk);
-
-      console.info('provider: ', provider);
-      this.wallet = provider;
-
-      const accounts = this.wallet.request({
+      const accounts = await this.wallet.request({
         method: 'eth_accounts'
       });
-      console.info('accounts: ', accounts);
       const chain = await this.wallet.request({ method: 'eth_chainId' });
 
-      console.info('chain: ', chain);
       this.isEnabled = true;
 
       [this.selectedAddress] = accounts;
       this.selectedChain =
         (BlockchainsInfo.getBlockchainNameById(chain) as EvmBlockchainName) ?? null;
+      console.info(this.selectedChain, this.selectedAddress);
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
 
