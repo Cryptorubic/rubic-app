@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import {
   CcrSettingsFormControls,
@@ -8,9 +8,7 @@ import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import {
-  combineLatestWith,
   distinctUntilChanged,
-  map,
   pairwise,
   startWith,
   switchMap,
@@ -40,30 +38,6 @@ export class MevBotComponent {
 
   public displayMev: boolean = false;
 
-  public readonly hintEmitter$ = new EventEmitter();
-
-  private showHintOnMobile = false;
-
-  public readonly showHint$ = this.headerStore.getMobileDisplayStatus().pipe(
-    combineLatestWith(
-      this.routingForm$.pipe(
-        switchMap(settings => settings.valueChanges),
-        startWith(this.settingsService.crossChainRouting.value)
-      ),
-      this.hintEmitter$.pipe(startWith(undefined))
-    ),
-    map(([isMobile, settings]) => {
-      if (isMobile && !settings.useMevBotProtection) {
-        this.showHintOnMobile = !this.showHintOnMobile;
-        return this.showHintOnMobile;
-      }
-
-      if (!isMobile) {
-        return !settings.useMevBotProtection;
-      }
-    })
-  );
-
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
     // TODO: set 1000 for production
     const minDollarAmountToDisplay = 0.01;
@@ -79,7 +53,9 @@ export class MevBotComponent {
       this._routingForm$.next(this.settingsService.crossChainRouting);
     }
 
-    this.displayMev = amount ? amount.gte(minDollarAmountToDisplay) : false;
+    this.displayMev = amount
+      ? amount.gte(minDollarAmountToDisplay) && !this.headerStore.isMobile
+      : false;
 
     if (!this.displayMev) {
       this.patchUseMevBotProtection(false);
@@ -115,9 +91,5 @@ export class MevBotComponent {
         });
       })
     );
-  }
-
-  public showHint(): void {
-    this.hintEmitter$.emit();
   }
 }
