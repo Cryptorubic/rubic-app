@@ -1,18 +1,11 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { combineLatestWith, map, of } from 'rxjs';
+import { map } from 'rxjs';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
-import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
-import { switchIif } from '@app/shared/utils/utils';
-import { FormType } from '@app/features/trade/models/form-type';
-import { TuiDialogContext } from '@taiga-ui/core';
-import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -22,53 +15,20 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 })
 export class BlockchainsListComponent implements OnDestroy {
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    combineLatestWith(this.gasFormService.gasFormSourceAvailableBlockchains$),
-    switchIif(
-      () => this.isSourceSelectorGasFormOpened(),
-      ([_, gasFormSourceChains]) => of(gasFormSourceChains),
-      () => of(this.targetAvailableBlockchains)
-    ),
     map(blockchains => [
       ...blockchains.slice(0, 8),
-      ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
+      ...blockchains.slice(8, blockchains.length - 1).sort((a, b) => a.name.localeCompare(b.name))
     ])
   );
 
   constructor(
-    @Optional()
-    @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<void, { formType: FormType }>,
     private readonly blockchainsListService: BlockchainsListService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly mobileNativeService: MobileNativeModalService,
-    public readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormService: GasFormService
+    private readonly mobileNativeService: MobileNativeModalService
   ) {}
-
-  public get formType(): FormType {
-    return this.context?.data?.formType || this.assetsSelectorService.formType;
-  }
 
   ngOnDestroy(): void {
     this.assetsSelectorService.setSelectorListTypeByAssetType();
-  }
-
-  private isSourceSelectorGasFormOpened(): boolean {
-    return (
-      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'from'
-    );
-  }
-
-  private isTargetSelectorGasFormOpened(): boolean {
-    return (
-      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'to'
-    );
-  }
-
-  private get targetAvailableBlockchains(): AvailableBlockchain[] {
-    return this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.SWAP_FORM
-      ? this.blockchainsListService.availableBlockchains
-      : this.gasFormService.gasFormTargetAvailableBlockchains;
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
@@ -84,14 +44,7 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    if (this.isTargetSelectorGasFormOpened()) {
-      this.assetsSelectorService.onTargetBlockchainsSelectGasForm(
-        blockchainName,
-        this.blockchainsListService.availableBlockchains
-      );
-    } else {
-      this.assetsSelectorService.onBlockchainSelect(blockchainName);
-    }
+    this.assetsSelectorService.onBlockchainSelect(blockchainName);
     this.mobileNativeService.forceClose();
   }
 
