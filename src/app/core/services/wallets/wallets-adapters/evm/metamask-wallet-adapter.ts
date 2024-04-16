@@ -8,6 +8,7 @@ import { NgZone } from '@angular/core';
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -37,13 +38,14 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
   }
 
   public async activate(): Promise<void> {
-    this.wallet = this.window.ethereum;
-    this.checkErrors();
-
     try {
-      const accounts = await this.wallet.request({
+      const accounts = (await this.window.ethereum?.request({
         method: 'eth_requestAccounts'
-      });
+      })) as RubicAny;
+
+      this.wallet = this.window.ethereum;
+      this.checkErrors();
+
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
 
