@@ -188,6 +188,6 @@ export class AssetTypesAsideComponent {
   }
 
   public toggleBlockchainList(): void {
-    this.modalService.openBlockchainList(this.injector);
+    this.modalService.openMobileBlockchainList(this.injector);
   }
 }
