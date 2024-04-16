@@ -20,6 +20,19 @@
     }
   }
 
+  &__image-wrapper {
+    position: relative;
+
+    width: fit-content;
+    max-height: 530px;
+
+    .modal__success-image-hint {
+      position: absolute;
+      bottom: -32px;
+      left: 5px;
+    }
+  }
+
   &__footer {
     margin-top: var(--tui-padding-l);
 
@@ -36,16 +49,6 @@
 
       @include b($mobile-md) {
         padding: 0 40px;
-
-        img {
-          left: 18px;
-        }
-      }
-
-      img {
-        position: absolute;
-        top: -30px;
-        left: 8px;
       }
     }
 

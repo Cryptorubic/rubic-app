@@ -11,6 +11,7 @@ import {
   combineLatestWith,
   distinctUntilChanged,
   map,
+  pairwise,
   startWith,
   switchMap,
   takeUntil,
@@ -93,13 +94,14 @@ export class MevBotComponent {
   ) {
     this.routingForm$
       .pipe(
-        startWith(this.settingsService.crossChainRouting),
         switchMap(settings => settings.valueChanges),
+        startWith(this.settingsService.crossChainRouting.value),
         distinctUntilChanged(),
+        pairwise(),
         takeUntil(this.destroy$)
       )
-      .subscribe(settings => {
-        if (settings.useMevBotProtection) {
+      .subscribe(([prev, curr]) => {
+        if (prev.useMevBotProtection !== curr.useMevBotProtection && curr.useMevBotProtection) {
           this.modalService.openMevBotModal().subscribe();
         }
       });
