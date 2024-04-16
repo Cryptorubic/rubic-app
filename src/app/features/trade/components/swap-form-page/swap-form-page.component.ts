@@ -145,7 +145,7 @@ export class SwapFormPageComponent {
     }
     if (isMobile) {
       if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && inputType === 'to') {
-        this.modalService.openBlockchainList(inputType, this.injector).subscribe();
+        this.modalService.openBlockchainList(this.injector);
       } else {
         this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
       }
