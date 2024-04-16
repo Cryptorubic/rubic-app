@@ -3,6 +3,7 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
   BlockchainName,
+  ChangenowCrossChainTrade,
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
@@ -107,7 +108,8 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...('id' in trade && { changenow_id: trade.id }),
+      ...(trade instanceof ChangenowCrossChainTrade &&
+        'id' in trade.paymentInfo && { changenow_id: trade.paymentInfo.id }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
       ...(referral && { influencer: referral })
     };
