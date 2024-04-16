@@ -25,6 +25,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   ALGB_TOKEN,
+  ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -418,8 +419,8 @@ export class SwapsControllerService {
     if (txHash) {
       const params: CrossChainSwapAdditionalParams = {};
 
-      if ('id' in trade) {
-        params.changenowId = trade.id as string;
+      if (trade instanceof ChangenowCrossChainTrade) {
+        params.changenowId = trade.changenowId as string;
       }
       if ('rangoRequestId' in trade) {
         params.rangoRequestId = trade.rangoRequestId as string;
