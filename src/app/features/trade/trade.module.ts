@@ -69,7 +69,6 @@ import { GasFormService } from './services/gas-form/gas-form.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.service';
-import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @NgModule({
   declarations: [
@@ -174,8 +173,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
     GasFormAnalyticService,
     TradeInfoManager,
     BlockchainsListService,
-    FormsTogglerService,
-    QueryParamsService
+    FormsTogglerService
     // SettingsService,
     // RefreshService,
     // TradeService,
