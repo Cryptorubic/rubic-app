@@ -15,15 +15,16 @@ import { DOCUMENT } from '@angular/common';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
+import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 
 @Component({
-  selector: ' app-assets-selector-page',
+  selector: 'app-assets-selector-page',
   templateUrl: './assets-selector-page.component.html',
   styleUrls: ['./assets-selector-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +41,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
 
+  public readonly headerText$ = this.selectorListType$.pipe(
+    map(type => (type === 'blockchains' ? 'Blockchains List' : 'Tokens List'))
+  );
+
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
@@ -49,7 +54,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly tradePageService: TradePageService
   ) {
     this.assetsSelectorService.initParameters({ formType: this.type });
     this.subscribeOnAssetsSelect();
@@ -61,6 +67,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.resetWindowHeight();
+  }
+
+  public backToForm(): void {
+    this.tradePageService.setState('form');
   }
 
   /**
