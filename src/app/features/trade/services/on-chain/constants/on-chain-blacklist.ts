@@ -74,7 +74,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.MERLIN]: [],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [],
   [BLOCKCHAIN_NAME.MODE]: [],
-  [BLOCKCHAIN_NAME.ZK_FAIR]: []
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [],
+  [BLOCKCHAIN_NAME.ZK_LINK]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
