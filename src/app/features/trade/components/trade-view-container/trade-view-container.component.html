@@ -3,6 +3,7 @@
   *ngLet="{
     content: formContent$ | async,
     providers: providers$ | async,
+    selectedForm: selectedForm$ | async,
     calculationStatus: calculationStatus$ | async
   } as state"
 >
@@ -14,8 +15,11 @@
     }"
     [ngSwitch]="state.content"
   >
-    <app-token-selector-page *ngSwitchCase="'fromSelector'" type="from"></app-token-selector-page>
-    <app-token-selector-page *ngSwitchCase="'toSelector'" type="to"></app-token-selector-page>
+    <app-token-selector-page
+      *ngSwitchCase="'fromSelector'"
+      formType="from"
+    ></app-token-selector-page>
+    <app-token-selector-page *ngSwitchCase="'toSelector'" formType="to"> </app-token-selector-page>
     <app-swap-form-page
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
@@ -25,7 +29,10 @@
 
   <app-providers-list-general
     *ngIf="
-      state.calculationStatus && state.calculationStatus.showSidebar && state.content === 'form'
+      state.calculationStatus &&
+      state.calculationStatus.showSidebar &&
+      state.selectedForm === 'swapForm' &&
+      state.content === 'form'
     "
     @inOutAnimation
     [states]="state.providers"

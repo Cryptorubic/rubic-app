@@ -4,7 +4,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -33,6 +33,10 @@ export class BlockchainsListService {
 
   private set blockchainsToShow(value: AvailableBlockchain[]) {
     this._blockchainsToShow$.next(value);
+  }
+
+  public get blockchainsToShow(): AvailableBlockchain[] {
+    return this._blockchainsToShow$.getValue();
   }
 
   /**
@@ -90,6 +94,7 @@ export class BlockchainsListService {
     combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
       .pipe(
         filter(([_, selectorListType]) => selectorListType === 'blockchains'),
+        debounceTime(200),
         map(([query]) => query),
         takeUntil(this.destroy$)
       )

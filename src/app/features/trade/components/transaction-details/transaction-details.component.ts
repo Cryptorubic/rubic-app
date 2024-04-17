@@ -20,7 +20,7 @@ export class TransactionDetailsComponent {
   public readonly text = transactionInfoText;
 
   public readonly trade$: Observable<CrossChainTrade | OnChainTrade> =
-    this.tradeStateService.currentTrade$.pipe(first());
+    this.swapsStateService.currentTrade$.pipe(first());
 
   public readonly details$: Observable<TradeInfo> = this.trade$.pipe(map(el => el.getTradeInfo()));
 
@@ -35,7 +35,7 @@ export class TransactionDetailsComponent {
   public isWalletCopied = false;
 
   constructor(
-    private readonly tradeStateService: SwapsStateService,
+    private readonly swapsStateService: SwapsStateService,
     private readonly walletConnector: WalletConnectorService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly cdr: ChangeDetectorRef
