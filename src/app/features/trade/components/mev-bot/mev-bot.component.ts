@@ -31,9 +31,8 @@ export class MevBotComponent {
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
     const minDollarAmountToDisplay = 1000;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
-    const isCrossChainSwap = trade?.from.blockchain !== trade?.to.blockchain;
 
-    if (isCrossChainSwap) {
+    if (trade?.from.blockchain !== trade?.to.blockchain) {
       this._routingForm$.next(this.settingsService.crossChainRouting);
     } else {
       this._routingForm$.next(
@@ -48,8 +47,12 @@ export class MevBotComponent {
       : false;
 
     if (!this.displayMev) {
-      this.disabledUseMevBotProtection(false, isCrossChainSwap);
+      this.settings.patchValue({ useMevBotProtection: false });
     }
+  }
+
+  private get settings(): FormGroup {
+    return this._routingForm$.getValue();
   }
 
   constructor(
@@ -75,13 +78,5 @@ export class MevBotComponent {
           this.modalService.openMevBotModal().subscribe();
         }
       });
-  }
-
-  private disabledUseMevBotProtection(value: boolean, isCrossChainSwap: boolean): void {
-    if (isCrossChainSwap) {
-      this.settingsService.crossChainRouting.patchValue({ useMevBotProtection: value });
-    } else {
-      this.settingsService.instantTrade.patchValue({ useMevBotProtection: value });
-    }
   }
 }
