@@ -7,14 +7,7 @@ import {
 import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { HeaderStore } from '@core/header/services/header.store';
-import {
-  distinctUntilChanged,
-  pairwise,
-  startWith,
-  switchMap,
-  takeUntil,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';
 import { BehaviorSubject } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -36,17 +29,18 @@ export class MevBotComponent {
   public displayMev: boolean = false;
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    const minDollarAmountToDisplay = 1000;
+    const minDollarAmountToDisplay = 0.01;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
+    const isCrossChainSwap = trade?.from.blockchain !== trade?.to.blockchain;
 
-    if (trade?.from.blockchain === trade?.to.blockchain) {
+    if (isCrossChainSwap) {
+      this._routingForm$.next(this.settingsService.crossChainRouting);
+    } else {
       this._routingForm$.next(
         this.settingsService.instantTrade as unknown as FormGroup<
           ItSettingsFormControls | CcrSettingsFormControls
         >
       );
-    } else {
-      this._routingForm$.next(this.settingsService.crossChainRouting);
     }
 
     this.displayMev = amount
@@ -54,7 +48,7 @@ export class MevBotComponent {
       : false;
 
     if (!this.displayMev) {
-      this.patchUseMevBotProtection(false);
+      this.disabledUseMevBotProtection(false, isCrossChainSwap);
     }
   }
 
@@ -83,13 +77,11 @@ export class MevBotComponent {
       });
   }
 
-  private patchUseMevBotProtection(value: boolean): void {
-    this._routingForm$.pipe(
-      tap(settings => {
-        settings.patchValue({
-          useMevBotProtection: value
-        });
-      })
-    );
+  private disabledUseMevBotProtection(value: boolean, isCrossChainSwap: boolean): void {
+    if (isCrossChainSwap) {
+      this.settingsService.crossChainRouting.patchValue({ useMevBotProtection: value });
+    } else {
+      this.settingsService.instantTrade.patchValue({ useMevBotProtection: value });
+    }
   }
 }
