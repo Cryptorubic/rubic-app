@@ -51,7 +51,7 @@ export class MevBotComponent {
     }
   }
 
-  private get settings(): FormGroup {
+  private get settings(): FormGroup<ItSettingsFormControls | CcrSettingsFormControls> {
     return this._routingForm$.getValue();
   }
 
