@@ -24,12 +24,14 @@ import { CalculationProgress } from '@features/trade/models/calculationProgress'
 import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-modal.component';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class ModalService {
   constructor(
     private readonly modalService: AbstractModalService,
     private readonly mobileModalService$: MobileNativeModalService,
+    private readonly headerStore: HeaderStore,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
@@ -254,9 +256,8 @@ export class ModalService {
 
   public openMevBotModal(): Observable<boolean> {
     return this.showDialog(MevBotModalComponent, {
-      title: 'Warning',
       size: 's',
-      fitContent: true
+      scrollableContent: true
     });
   }
 }
