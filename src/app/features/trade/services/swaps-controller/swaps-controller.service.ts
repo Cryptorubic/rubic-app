@@ -25,6 +25,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   ALGB_TOKEN,
+  BLOCKCHAIN_NAME,
   ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
@@ -166,6 +167,13 @@ export class SwapsControllerService {
             this.disabledTradesTypes.crossChain = [
               ...this.disabledTradesTypes.crossChain,
               'layerzero'
+            ];
+          }
+
+          if (fromToken.blockchain === BLOCKCHAIN_NAME.ZK_LINK) {
+            this.disabledTradesTypes.crossChain = [
+              ...this.disabledTradesTypes.crossChain,
+              'symbiosis'
             ];
           }
 
