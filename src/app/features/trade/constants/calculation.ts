@@ -1,0 +1,1 @@
+export const CALCULATION_TIMEOUT_MS = 15_000;

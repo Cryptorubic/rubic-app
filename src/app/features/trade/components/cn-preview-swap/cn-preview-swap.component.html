@@ -5,7 +5,7 @@
     transaction: transactionState$ | async,
     status: status$ | async,
     cnTrade: cnTrade$ | async,
-    isMobile: isMobile$ | async
+    isMobile: isMobile$ | async,
   } as state"
 >
   <ng-container header>
@@ -20,7 +20,12 @@
           [marginTop]="state.isMobile"
           *ngLet="fromAsset$ | async as fromAsset"
         >
-          <app-asset-selector left selectorType="from" [asset]="fromAsset"></app-asset-selector>
+          <app-asset-selector
+            left
+            selectorType="from"
+            [asset]="fromAsset"
+            [mainFormType]="'swapForm'"
+          ></app-asset-selector>
           <div right class="input-container">
             <app-amount-transput
               formType="from"
@@ -36,6 +41,7 @@
             left
             selectorType="to"
             [asset]="toAsset$ | async"
+            [mainFormType]="'swapForm'"
           ></app-asset-selector>
           <div right class="input-container">
             <app-amount-transput

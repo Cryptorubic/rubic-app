@@ -294,5 +294,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.zkfair.io',
     'https://zkfair.blockpi.network/v1/rpc/public',
     'https://endpoints.omniatech.io/v1/zkfair/mainnet/public'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network']
 };
