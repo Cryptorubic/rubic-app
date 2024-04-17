@@ -170,13 +170,6 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken.blockchain === BLOCKCHAIN_NAME.ZK_LINK) {
-            this.disabledTradesTypes.crossChain = [
-              ...this.disabledTradesTypes.crossChain,
-              'symbiosis'
-            ];
-          }
-
           if (fromToken.blockchain === toBlockchain) {
             return this.onChainService
               .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
@@ -187,12 +180,19 @@ export class SwapsControllerService {
                 })
               );
           } else {
-            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
-              catchError(err => {
-                console.debug(err);
-                return of(null);
-              })
-            );
+            return this.crossChainService
+              .calculateTrades([
+                ...this.disabledTradesTypes.crossChain,
+                ...(fromToken.blockchain === BLOCKCHAIN_NAME.ZK_LINK
+                  ? [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]
+                  : [])
+              ])
+              .pipe(
+                catchError(err => {
+                  console.debug(err);
+                  return of(null);
+                })
+              );
           }
         }),
         catchError(err => {
