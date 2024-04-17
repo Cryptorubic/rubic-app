@@ -64,6 +64,10 @@ export class MevBotComponent {
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore
   ) {
+    this.subscribeOnRoutingForm();
+  }
+
+  private subscribeOnRoutingForm(): void {
     this.routingForm$
       .pipe(
         switchMap(settings => settings.valueChanges),
