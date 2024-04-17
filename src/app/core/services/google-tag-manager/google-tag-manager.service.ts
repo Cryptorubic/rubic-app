@@ -4,7 +4,10 @@ import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
-import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
+import {
+  FormSteps,
+  GasFormAnalytic
+} from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
 
@@ -186,5 +189,28 @@ export class GoogleTagManagerService {
       output_token: tokenOutName,
       error_code: errorCode || 'Nan'
     });
+  }
+
+  public fireGasFormGtm(config: GasFormAnalytic): void {
+    if (config.visitedFrom) {
+      this.angularGtmService.gtag('event', 'gas_form_visit', { visited_from: config.visitedFrom });
+    }
+    if (config.leaveGasFormInfo) {
+      this.angularGtmService.gtag('event', 'leave_after_target_selected', {
+        to_blockchain: config.leaveGasFormInfo.toBlockchain,
+        to_token: config.leaveGasFormInfo.toToken,
+        wallet_address: config.leaveGasFormInfo.walletAddress
+      });
+    }
+    if (config.isSuccessfullSwap) {
+      this.angularGtmService.gtag('event', 'successfull_swap', {
+        is_swap_success: config.isSuccessfullSwap
+      });
+    }
+    if (config.isSuccessfullCalculation) {
+      this.angularGtmService.gtag('event', 'calculation', {
+        is_calculation_success: config.isSuccessfullCalculation
+      });
+    }
   }
 }

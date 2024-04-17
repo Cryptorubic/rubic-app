@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 
 @Injectable()
 export class SearchQueryService {
@@ -19,18 +21,25 @@ export class SearchQueryService {
 
   public set query(value: string) {
     this._query$.next(value);
+    this.gasFormService.updateSearchQuery(value);
   }
 
   constructor(
     public readonly assetsSelectorService: AssetsSelectorService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly gasFormService: GasFormService
   ) {
     this.subscribeOnSelectorListTypeChange();
   }
 
   private subscribeOnSelectorListTypeChange(): void {
     this.assetsSelectorService.selectorListType$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        combineLatestWith(this.formsTogglerService.selectedForm$),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.query = '';
       });
