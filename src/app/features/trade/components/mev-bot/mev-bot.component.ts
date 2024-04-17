@@ -27,9 +27,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   providers: [TuiDestroyService]
 })
 export class MevBotComponent {
-  // public routingForm: FormGroup<ItSettingsFormControls | CcrSettingsFormControls> =
-  //   this.settingsService.crossChainRouting;
-
   private readonly _routingForm$ = new BehaviorSubject<
     FormGroup<ItSettingsFormControls | CcrSettingsFormControls>
   >(this.settingsService.crossChainRouting);
@@ -39,8 +36,7 @@ export class MevBotComponent {
   public displayMev: boolean = false;
 
   @Input() set trade(trade: CrossChainTrade | OnChainTrade) {
-    // TODO: set 1000 for production
-    const minDollarAmountToDisplay = 0.01;
+    const minDollarAmountToDisplay = 1000;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
     if (trade?.from.blockchain === trade?.to.blockchain) {
