@@ -25,6 +25,8 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   ALGB_TOKEN,
+  BLOCKCHAIN_NAME,
+  ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -80,10 +82,9 @@ export class SwapsControllerService {
   constructor(
     private readonly swapFormService: SwapsFormService,
     private readonly sdkService: SdkService,
-    private readonly swapsState: SwapsStateService,
     private readonly crossChainService: CrossChainService,
     private readonly onChainService: OnChainService,
-    private readonly swapStateService: SwapsStateService,
+    private readonly swapsStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tradePageService: TradePageService,
@@ -140,11 +141,11 @@ export class SwapsControllerService {
         tap(calculateData => {
           if (!calculateData.stop) {
             this.refreshService.setRefreshing();
-            this.swapsState.setCalculationProgress(1, 0);
+            this.swapsStateService.setCalculationProgress(1, 0);
             if (calculateData.isForced) {
-              this.swapStateService.clearProviders();
+              this.swapsStateService.clearProviders();
             }
-            this.swapStateService.patchCalculationState();
+            this.swapsStateService.patchCalculationState();
           }
         }),
         switchMap(calculateData => {
@@ -179,12 +180,19 @@ export class SwapsControllerService {
                 })
               );
           } else {
-            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
-              catchError(err => {
-                console.debug(err);
-                return of(null);
-              })
-            );
+            return this.crossChainService
+              .calculateTrades([
+                ...this.disabledTradesTypes.crossChain,
+                ...(fromToken.blockchain === BLOCKCHAIN_NAME.ZK_LINK
+                  ? [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]
+                  : [])
+              ])
+              .pipe(
+                catchError(err => {
+                  console.debug(err);
+                  return of(null);
+                })
+              );
           }
         }),
         catchError(err => {
@@ -201,9 +209,9 @@ export class SwapsControllerService {
               .pipe(
                 tap(([trade, needApprove, type]) => {
                   try {
-                    this.swapsState.updateTrade(trade, type, needApprove);
-                    this.swapsState.pickProvider(isCalculationEnd);
-                    this.swapsState.setCalculationProgress(
+                    this.swapsStateService.updateTrade(trade, type, needApprove);
+                    this.swapsStateService.pickProvider(isCalculationEnd);
+                    this.swapsStateService.setCalculationProgress(
                       container.value.total,
                       container.value.calculated
                     );
@@ -218,17 +226,17 @@ export class SwapsControllerService {
               )
               .pipe(
                 catchError(() => {
-                  // this.swapsState.updateTrade(trade, type, needApprove);
-                  this.swapsState.pickProvider(isCalculationEnd);
+                  // this.swapsStateService.updateTrade(trade, type, needApprove);
+                  this.swapsStateService.pickProvider(isCalculationEnd);
                   return of(null);
                 })
               );
           }
           if (!container?.value) {
             this.refreshService.setStopped();
-            this.swapStateService.clearProviders();
+            this.swapsStateService.clearProviders();
           } else {
-            this.swapsState.setCalculationProgress(
+            this.swapsStateService.setCalculationProgress(
               container.value.total,
               container.value.calculated
             );
@@ -237,7 +245,7 @@ export class SwapsControllerService {
         }),
         catchError((_err: unknown) => {
           this.refreshService.setStopped();
-          this.swapsState.pickProvider(true);
+          this.swapsStateService.pickProvider(true);
           return of(null);
         })
       )
@@ -251,7 +259,7 @@ export class SwapsControllerService {
   }
 
   private setTradeAmount(): void {
-    const trade = this.swapsState.tradeState?.trade;
+    const trade = this.swapsStateService.tradeState?.trade;
     if (trade) {
       this.swapFormService.outputControl.patchValue({
         toAmount: trade.to.tokenAmount
@@ -418,8 +426,8 @@ export class SwapsControllerService {
     if (txHash) {
       const params: CrossChainSwapAdditionalParams = {};
 
-      if ('id' in trade) {
-        params.changenowId = trade.id as string;
+      if (trade instanceof ChangenowCrossChainTrade) {
+        params.changenowId = trade.changenowId as string;
       }
       if ('rangoRequestId' in trade) {
         params.rangoRequestId = trade.rangoRequestId as string;

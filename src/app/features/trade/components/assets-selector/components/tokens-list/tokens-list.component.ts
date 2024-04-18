@@ -1,12 +1,17 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { of, switchMap } from 'rxjs';
+import { combineLatestWith, map, of, switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
+import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
+import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
+import { compareAddresses } from '@app/shared/utils/utils';
+import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
 
 @Component({
   selector: 'app-tokens-list',
@@ -35,13 +40,22 @@ export class TokensListComponent {
     })
   );
 
-  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
+  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$.pipe(
+    combineLatestWith(this.formsTogglerService.selectedForm$),
+    map(([tokens, mainFormType]) => {
+      if (mainFormType === MAIN_FORM_TYPE.GAS_FORM) {
+        return tokens.filter(t => this.isGasExchangeableToken(t));
+      }
+      return tokens;
+    })
+  );
 
   constructor(
     private readonly tokensListService: TokensListService,
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
-    private readonly assetsSelectorService: AssetsSelectorService
+    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly formsTogglerService: FormsTogglerService
   ) {}
 
   /**
@@ -60,5 +74,15 @@ export class TokensListComponent {
     if (token.available) {
       this.assetsSelectorService.onAssetSelect(token);
     }
+  }
+
+  public isGasExchangeableToken(t: AvailableTokenAmount): boolean {
+    const chainType = BlockchainsInfo.getChainType(t.blockchain);
+    const isNative = Web3Pure[chainType].isNativeAddress(t.address);
+    const wrappedAddress = wrappedNativeTokensList[t.blockchain as EvmBlockchainName]?.address;
+    const isWrapped = compareAddresses(wrappedAddress, t.address);
+    const isStable = STABLE_TOKENS_NAMES.some(name => new RegExp(name, 'i').test(t.name));
+
+    return isNative || isWrapped || isStable;
   }
 }

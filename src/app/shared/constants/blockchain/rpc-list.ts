@@ -228,10 +228,17 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: [],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: ['https://zetachain-mainnet-archive.allthatnode.com:8545'],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    'https://zetachain-mainnet-archive.allthatnode.com:8545',
+    'https://zetachain-evm.blockpi.network/v1/rpc/public'
+  ],
   [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
   [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
-  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
+    'https://pacific-rpc.manta.network/http',
+    'https://1rpc.io/manta',
+    'https://pacific-rpc.manta.network/http'
+  ],
   [BLOCKCHAIN_NAME.SCROLL]: [
     'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/scroll',
@@ -269,15 +276,24 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.KROMA]: ['https://api.kroma.network/', 'https://1rpc.io/kroma'],
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [
+    'https://rpc.ankr.com/horizen_eon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/horizen_eon',
     'https://eon-rpc.horizenlabs.io/ethv1'
   ],
-  [BLOCKCHAIN_NAME.MERLIN]: ['https://rpc.merlinchain.io'],
+  [BLOCKCHAIN_NAME.MERLIN]: [
+    'https://rpc.merlinchain.io',
+    'https://merlin.blockpi.network/v1/rpc/public'
+  ],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
   [BLOCKCHAIN_NAME.MODE]: [
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
     'https://mode.drpc.org'
   ],
-  [BLOCKCHAIN_NAME.ZK_FAIR]: ['https://rpc.zkfair.io']
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [
+    'https://rpc.zkfair.io',
+    'https://zkfair.blockpi.network/v1/rpc/public',
+    'https://endpoints.omniatech.io/v1/zkfair/mainnet/public'
+  ],
+  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network']
 };

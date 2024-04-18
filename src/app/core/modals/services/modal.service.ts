@@ -24,19 +24,22 @@ import { CalculationProgress } from '@features/trade/models/calculationProgress'
 import { TokenSelectorPageComponent } from '@features/trade/components/token-selector-page/token-selector-page.component';
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-modal.component';
+import { FormType } from '@app/features/trade/models/form-type';
+import { HeaderStore } from '@core/header/services/header.store';
 
 @Injectable()
 export class ModalService {
   constructor(
     private readonly modalService: AbstractModalService,
     private readonly mobileModalService$: MobileNativeModalService,
+    private readonly headerStore: HeaderStore,
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
   /**
    * Show tokens dialog.
    */
-  public openAssetsSelector(formType: 'from' | 'to', injector: Injector): Observable<void> {
+  public openAssetsSelector(formType: FormType, injector: Injector): Observable<void> {
     return this.showDialog<TokenSelectorPageComponent, void>(
       TokenSelectorPageComponent,
       {
@@ -173,7 +176,27 @@ export class ModalService {
    * Show Blockchain List dialog.
    * @param _injector Injector.
    */
-  public openBlockchainList(_injector: Injector): void {
+  public openTargetBlockchainListInGasForm(
+    formType: FormType,
+    _injector: Injector
+  ): Observable<void> {
+    return this.showDialog<BlockchainsListComponent, void>(
+      BlockchainsListComponent,
+      {
+        title: 'Select Blockchain',
+        scrollableContent: true,
+        size: 'l',
+        data: { formType }
+      },
+      _injector
+    );
+  }
+
+  /**
+   * Show Blockchain List dialog.
+   * @param _injector Injector.
+   */
+  public openMobileBlockchainList(_injector: Injector): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
       {
@@ -254,9 +277,8 @@ export class ModalService {
 
   public openMevBotModal(): Observable<boolean> {
     return this.showDialog(MevBotModalComponent, {
-      title: 'Warning',
       size: 's',
-      fitContent: true
+      scrollableContent: true
     });
   }
 }

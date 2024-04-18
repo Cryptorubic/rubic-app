@@ -37,13 +37,10 @@
     <!-- Loading text -->
     <h5>{{ calculationText$ | async }}</h5>
     <!-- Progress bar -->
-    <progress
+    <app-progress-bar
       *ngIf="calculationProcess$ | async as progress"
       [max]="progress.total"
-      new
-      size="xs"
-      tuiProgressBar
       [value]="progress.current"
-    ></progress>
+    ></app-progress-bar>
   </div>
 </ng-template>

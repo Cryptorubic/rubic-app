@@ -1,10 +1,6 @@
 <app-window-container>
-  <ng-container header *ngIf="(isMobile$ | async) === false">
-    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-    <span class="back-button__text">Tokens List</span>
-  </ng-container>
   <app-assets-selector-page
     [type]="formType"
-    (tokenSelect)="handleTokenSelect(formType, $event)"
+    (tokenSelect)="handleTokenSelect($event)"
   ></app-assets-selector-page>
 </app-window-container>

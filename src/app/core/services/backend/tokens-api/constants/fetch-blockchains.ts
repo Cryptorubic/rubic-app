@@ -48,7 +48,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.ROOTSTOCK,
   BLOCKCHAIN_NAME.MODE,
-  BLOCKCHAIN_NAME.ZK_FAIR
+  BLOCKCHAIN_NAME.ZK_FAIR,
+  BLOCKCHAIN_NAME.ZK_LINK
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [

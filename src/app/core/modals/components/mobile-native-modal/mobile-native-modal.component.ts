@@ -76,7 +76,6 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
 
   private subscribeOnNextModal(): void {
     this.context.nextModal$
-      .pipe(takeUntil(this.destroy$))
       .pipe(
         tap(() => {
           this.state = ModalStates.HIDDEN;
@@ -95,7 +94,8 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
             nextModal.injector
           )
         ),
-        tap(() => this.show())
+        tap(() => this.show()),
+        takeUntil(this.destroy$)
       )
       .subscribe();
   }
