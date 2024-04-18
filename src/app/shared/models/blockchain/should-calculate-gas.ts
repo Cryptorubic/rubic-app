@@ -7,7 +7,7 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   ),
   [BLOCKCHAIN_NAME.AVALANCHE]: true,
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: true,
-  [BLOCKCHAIN_NAME.ETHEREUM]: true,
+  // [BLOCKCHAIN_NAME.ETHEREUM]: true,
   [BLOCKCHAIN_NAME.POLYGON]: true,
   [BLOCKCHAIN_NAME.ARBITRUM]: true,
   [BLOCKCHAIN_NAME.ZK_SYNC]: true,

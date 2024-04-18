@@ -24,7 +24,6 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      console.info('activate safe wallet');
       const sdk = new SafeAppsSDK({
         allowedDomains: [
           /(http|https)(:\/\/)local.rubic.exchange(.*)$/,
