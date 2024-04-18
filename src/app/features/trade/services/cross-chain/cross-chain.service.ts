@@ -18,6 +18,7 @@ import {
   NotWhitelistedProviderError,
   PriceToken,
   SwapTransactionOptions,
+  TO_BACKEND_BLOCKCHAINS,
   Token,
   UnapprovedContractError,
   UnnecessaryApproveError,
@@ -32,7 +33,6 @@ import { CrossChainApiService } from '@features/trade/services/cross-chain-routi
 
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';

@@ -7,10 +7,10 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   Web3Pure
 } from 'rubic-sdk';
-import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';

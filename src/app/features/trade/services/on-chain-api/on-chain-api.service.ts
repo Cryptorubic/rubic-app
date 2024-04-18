@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
@@ -12,6 +11,7 @@ import {
   NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeType,
+  TO_BACKEND_BLOCKCHAINS,
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';

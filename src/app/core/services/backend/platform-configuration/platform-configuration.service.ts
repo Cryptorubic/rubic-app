@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
-import {
-  BackendBlockchain,
-  FROM_BACKEND_BLOCKCHAINS
-} from '@app/shared/constants/blockchain/backend-blockchains';
+
 import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
 import {
   BlockchainName,
@@ -12,7 +9,9 @@ import {
   CrossChainTradeType,
   LifiBridgeTypes,
   BLOCKCHAIN_NAME,
-  RubicTradeTypeForRango
+  RubicTradeTypeForRango,
+  FROM_BACKEND_BLOCKCHAINS,
+  BackendBlockchain
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
