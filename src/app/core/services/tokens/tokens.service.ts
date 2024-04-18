@@ -15,13 +15,13 @@ import {
   Injector,
   isAddressCorrect,
   Token as SdkToken,
+  TO_BACKEND_BLOCKCHAINS,
   Web3PublicService,
   Web3Pure
 } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { TO_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 
 /**
