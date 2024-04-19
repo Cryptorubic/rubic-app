@@ -1,6 +1,6 @@
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-export const blockchainsToFetch = [
+export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
@@ -47,10 +47,12 @@ export const blockchainsToFetch = [
   BLOCKCHAIN_NAME.HORIZEN_EON,
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.ROOTSTOCK,
-  BLOCKCHAIN_NAME.MODE
+  BLOCKCHAIN_NAME.MODE,
+  BLOCKCHAIN_NAME.ZK_FAIR,
+  BLOCKCHAIN_NAME.ZK_LINK
 ];
 
-export const blockchainsWithOnePage = [
+export const blockchainsWithOnePage: BlockchainName[] = [
   BLOCKCHAIN_NAME.ASTAR,
   BLOCKCHAIN_NAME.EOS,
   BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,

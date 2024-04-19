@@ -1,11 +1,6 @@
 // ****** mixins ******
 
-@mixin font-face(
-  $font-family,
-  $file-path,
-  $weight,
-  $style: normal
-) {
+@mixin font-face($font-family, $file-path, $weight, $style: normal) {
   @font-face {
     font-weight: $weight;
     font-family: $font-family;
@@ -39,9 +34,7 @@
 }
 
 @mixin ios {
-
   @content;
-
 }
 
 @mixin bh($point) {
@@ -81,7 +74,6 @@
     @content;
   }
 }
-
 
 @mixin before-img($display, $width, $height, $position) {
   @at-root #{&}:before {
@@ -171,10 +163,10 @@
   }
 
   @if $type==m {
-    font-size: var(--tui-font-text-m);;
+    font-size: var(--tui-font-text-m);
   }
 
   @if $type==l {
-    font-size: var(--tui-font-text-l);;
+    font-size: var(--tui-font-text-l);
   }
 }

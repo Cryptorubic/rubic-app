@@ -3,13 +3,14 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
   BlockchainName,
+  ChangenowCrossChainTrade,
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   Web3Pure
 } from 'rubic-sdk';
-import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -107,7 +108,7 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...('id' in trade && { changenow_id: trade.id }),
+      ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
       ...(referral && { influencer: referral })
     };

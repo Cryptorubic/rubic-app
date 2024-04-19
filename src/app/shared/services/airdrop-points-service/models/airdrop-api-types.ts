@@ -3,8 +3,7 @@ import {
   FromBackendOnChainProvider,
   ToBackendOnChainProvider
 } from './../../../../features/trade/services/on-chain-api/constants/backend-providers';
-import { BackendBlockchain } from '@app/shared/constants/blockchain/backend-blockchains';
-import { CrossChainTradeType } from 'rubic-sdk';
+import { BackendBlockchain, CrossChainTradeType } from 'rubic-sdk';
 
 export type OnChainRewardResponse = {
   [key in ToBackendOnChainProvider]: ProviderRewardData;

@@ -34,7 +34,7 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   ],
   [BLOCKCHAIN_NAME.CRONOS]: [],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: [ON_CHAIN_TRADE_TYPE.DODO],
-  [BLOCKCHAIN_NAME.GNOSIS]: [ON_CHAIN_TRADE_TYPE.CURVE],
+  [BLOCKCHAIN_NAME.GNOSIS]: [ON_CHAIN_TRADE_TYPE.CURVE, ON_CHAIN_TRADE_TYPE.ONE_INCH],
   [BLOCKCHAIN_NAME.FUSE]: [],
   [BLOCKCHAIN_NAME.MOONBEAM]: [],
   [BLOCKCHAIN_NAME.CELO]: [ON_CHAIN_TRADE_TYPE.CURVE],
@@ -73,7 +73,9 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [],
   [BLOCKCHAIN_NAME.MERLIN]: [],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [],
-  [BLOCKCHAIN_NAME.MODE]: []
+  [BLOCKCHAIN_NAME.MODE]: [],
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [],
+  [BLOCKCHAIN_NAME.ZK_LINK]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

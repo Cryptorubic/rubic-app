@@ -111,20 +111,12 @@ export class WalletConnectorService {
       this.window
     ] as const;
 
-    if (walletName === WALLET_NAME.ARGENT) {
-      return new ArgentWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.TRUST_WALLET) {
-      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
+    if (walletName === WALLET_NAME.METAMASK) {
+      return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
       return new WalletConnectAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.BITKEEP) {
@@ -137,6 +129,14 @@ export class WalletConnectorService {
         this.storeService,
         chainId!
       );
+    }
+
+    if (walletName === WALLET_NAME.ARGENT) {
+      return new ArgentWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.TRUST_WALLET) {
+      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
     }
 
     if (walletName === WALLET_NAME.TRON_LINK) {
