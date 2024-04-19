@@ -114,7 +114,13 @@ export class GasService {
   public async getGasInfo(blockchain: BlockchainName): Promise<GasInfo> {
     const isSafeSdk = this.walletConnectorService.checkIfSafeEnv();
     if (isSafeSdk) {
-      return { shouldCalculateGasPrice: false, gasPriceOptions: {} };
+      return {
+        shouldCalculateGasPrice: false,
+        gasPriceOptions: {
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined
+        }
+      };
     }
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
