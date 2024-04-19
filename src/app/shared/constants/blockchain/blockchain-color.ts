@@ -136,8 +136,7 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ROOTSTOCK]: 'rgba(255, 145, 0, 1)',
   [BLOCKCHAIN_NAME.KROMA]: '#ffffff',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: '#041742',
-  [BLOCKCHAIN_NAME.MERLIN]:
-    'linear-gradient(90deg, #2A2CBF -14.02%, #6335FF 33.09%, #BD89FF 77.44%)',
+  [BLOCKCHAIN_NAME.MERLIN]: '#7438ff',
   [BLOCKCHAIN_NAME.MODE]: '#000000',
   [BLOCKCHAIN_NAME.ZK_FAIR]: '#000000',
   [BLOCKCHAIN_NAME.ZK_LINK]: '#000000'

@@ -18,7 +18,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { MAIN_FORM_TYPE, MainFormType } from '@app/features/trade/services/forms-toggler/models';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-asset-selector',
@@ -87,13 +86,9 @@ export class AssetSelectorComponent implements OnInit {
   private getTokenAsset(token: TokenAmount): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
     const color = blockchainColor[token.blockchain];
-    const secondImage =
-      token.blockchain === BLOCKCHAIN_NAME.MERLIN
-        ? 'assets/images/icons/coins/merlin-second.svg'
-        : blockchain.img;
 
     return {
-      secondImage,
+      secondImage: blockchain.img,
       secondLabel: blockchain.name,
       mainImage: token.image,
       mainLabel: token.symbol,
