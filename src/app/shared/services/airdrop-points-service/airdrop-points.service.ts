@@ -8,9 +8,8 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
-import { TO_BACKEND_BLOCKCHAINS } from '@app/shared/constants/blockchain/backend-blockchains';
 import {
   CrossChainRewardConvertedData,
   OnChainRewardConvertedData

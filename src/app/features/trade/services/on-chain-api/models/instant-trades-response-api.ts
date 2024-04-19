@@ -1,7 +1,6 @@
 import InputToken from '@shared/models/tokens/input-token';
 import { TRANSACTION_STATUS } from '@shared/models/blockchain/transaction-status';
-import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
-import { OnChainTradeType } from 'rubic-sdk';
+import { BackendBlockchain, OnChainTradeType } from 'rubic-sdk';
 
 interface InstantTradesBlockchainNetwork {
   title: string;
