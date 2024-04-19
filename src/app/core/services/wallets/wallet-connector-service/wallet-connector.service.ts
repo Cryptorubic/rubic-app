@@ -79,7 +79,7 @@ export class WalletConnectorService {
     private readonly zone: NgZone
   ) {}
 
-  private checkIfSafeEnv(): boolean {
+  public checkIfSafeEnv(): boolean {
     const params = new URLSearchParams(this.window.location.search);
     return params.has('useSafe') ? params.get('useSafe') === 'true' : false;
   }
