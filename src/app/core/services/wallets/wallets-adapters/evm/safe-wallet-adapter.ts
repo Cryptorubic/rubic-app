@@ -38,7 +38,7 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
         ],
         debug: true
       });
-      this.overrideSetFunction(sdk);
+      this.overrideSendFunction(sdk);
       const safe = await sdk.safe.getInfo();
       this.wallet = new SafeAppProvider(safe, sdk);
 
@@ -69,7 +69,11 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
     }
   }
 
-  private overrideSetFunction(sdk: SafeAppsSDK): void {
+  /**
+   * Hack to override the send function in the SafeAppsSDK.
+   * It is needed because safe sdk does not support maxFeePerGas and maxPriorityFeePerGas properly.
+   */
+  private overrideSendFunction(sdk: SafeAppsSDK): void {
     sdk.txs.send = async ({
       txs,
       params
