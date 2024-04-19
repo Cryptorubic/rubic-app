@@ -155,7 +155,8 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "rubic:build"
+            "browserTarget": "rubic:build",
+            "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
