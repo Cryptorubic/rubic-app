@@ -3,11 +3,17 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { SafeAppProvider } from '@safe-global/safe-apps-provider';
 import SafeAppsSDK from '@safe-global/safe-apps-sdk';
+import {
+  Communicator,
+  SendTransactionsParams,
+  SendTransactionsResponse
+} from '@safe-global/safe-apps-sdk/src/types';
+import { Methods } from '@safe-global/safe-apps-sdk/src/communication/methods';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName, EvmEncodeConfig } from 'rubic-sdk';
 
 export class SafeWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.SAFE;
@@ -33,6 +39,7 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
         ],
         debug: true
       });
+      this.overrideSetFunction(sdk);
       const safe = await sdk.safe.getInfo();
       this.wallet = new SafeAppProvider(safe, sdk);
 
@@ -61,5 +68,37 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
       }
       throw new Error('Unknown wallet error');
     }
+  }
+
+  private overrideSetFunction(sdk: SafeAppsSDK): void {
+    sdk.txs.send = async ({
+      txs,
+      params
+    }: SendTransactionsParams): Promise<SendTransactionsResponse> => {
+      if (!txs || !txs.length) {
+        throw new Error('No transactions were passed');
+      }
+      const newTxs = txs.map(tx => {
+        // eslint-disable-next-line unused-imports/no-unused-vars
+        const { maxFeePerGas, maxPriorityFeePerGas, ...newTx } = tx as unknown as EvmEncodeConfig;
+        return newTx;
+      });
+
+      const messagePayload = {
+        txs: newTxs,
+        params
+      };
+      const sdkWithCommunicator = sdk as unknown as Omit<typeof SafeAppsSDK, 'communicator'> & {
+        communicator: Communicator;
+      };
+
+      const response = await sdkWithCommunicator.communicator.send<
+        Methods.sendTransactions,
+        SendTransactionsParams,
+        SendTransactionsResponse
+      >(Methods.sendTransactions, messagePayload);
+
+      return response.data;
+    };
   }
 }
