@@ -33,7 +33,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.BLAST,
   BLOCKCHAIN_NAME.KROMA,
   BLOCKCHAIN_NAME.MERLIN,
-  BLOCKCHAIN_NAME.MODE
+  BLOCKCHAIN_NAME.MODE,
+  BLOCKCHAIN_NAME.ZK_LINK
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -72,7 +73,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
     [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
-    [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this)
+    [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
+    [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -472,6 +474,21 @@ export class GasService {
   })
   private fetchModeGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MODE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets ZkLink gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchZkLinkGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZK_LINK);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
