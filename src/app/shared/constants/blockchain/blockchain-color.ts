@@ -139,5 +139,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MERLIN]: '#7438ff',
   [BLOCKCHAIN_NAME.MODE]: '#000000',
   [BLOCKCHAIN_NAME.ZK_FAIR]: '#000000',
-  [BLOCKCHAIN_NAME.ZK_LINK]: '#000000'
+  [BLOCKCHAIN_NAME.ZK_LINK]: '#000000',
+  [BLOCKCHAIN_NAME.XLAYER]: '#000000'
 };
