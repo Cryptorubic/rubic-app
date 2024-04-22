@@ -295,5 +295,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://zkfair.blockpi.network/v1/rpc/public',
     'https://endpoints.omniatech.io/v1/zkfair/mainnet/public'
   ],
-  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network']
+  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network'],
+  [BLOCKCHAIN_NAME.XLAYER]: [
+    'https://rpc.ankr.com/xlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.xlayer.tech',
+    'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
+    'https://xlayerrpc.okx.com'
+  ]
 };
