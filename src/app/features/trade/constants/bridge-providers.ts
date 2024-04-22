@@ -194,11 +194,23 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#5E12A0',
     averageTime: 5
   },
+  [BRIDGE_TYPE.OWL_TO_BRIDGE]: {
+    name: 'OwlTo',
+    image: `${imageBasePath}owlto.svg`,
+    color: 'white',
+    averageTime: 5
+  },
   //PPPPPPPPPPPPPPP
   [BRIDGE_TYPE.POLYGON]: {
     name: 'Polygon bridge',
     image: `${imageBasePath}polygon-bridge.png`,
     color: '#5d25ba',
+    averageTime: 5
+  },
+  [BRIDGE_TYPE.PULSE_CHAIN_BRIDGE]: {
+    name: 'Pulsechain bridge',
+    image: `assets/images/icons/coins/pulsechain.svg`,
+    color: '#fff',
     averageTime: 5
   },
   //RRRRRRRRRRRRRRRRRRRR
@@ -296,12 +308,6 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'YPool',
     image: `${imageBasePath}ypool.svg`,
     color: '#15D9E1',
-    averageTime: 5
-  },
-  [BRIDGE_TYPE.PULSE_CHAIN_BRIDGE]: {
-    name: 'Pulsechain bridge',
-    image: `assets/images/icons/coins/pulsechain.svg`,
-    color: '#fff',
     averageTime: 5
   }
 };
