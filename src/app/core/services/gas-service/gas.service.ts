@@ -315,7 +315,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchKromaGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.KROMA);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       map(gasInfo => ({
@@ -488,7 +488,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchZkLinkGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZK_LINK);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MODE);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
