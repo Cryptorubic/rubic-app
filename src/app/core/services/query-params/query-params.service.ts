@@ -74,6 +74,8 @@ export class QueryParamsService {
 
   public slippageCcr: number;
 
+  public useSafe: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensNetworkService: TokensNetworkService,

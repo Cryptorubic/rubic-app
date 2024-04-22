@@ -12,6 +12,7 @@ import { shouldCalculateGas } from '@app/shared/models/blockchain/should-calcula
 import { GasInfo } from './models/gas-info';
 import { MetaMaskGasResponse } from './models/metamask-gas-response';
 import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas-price-deviation';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -83,7 +84,10 @@ export class GasService {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly walletConnectorService: WalletConnectorService
+  ) {}
 
   /**
    * Gas price in Eth units for selected blockchain.
@@ -110,6 +114,16 @@ export class GasService {
    * @param blockchain Blockchain to get gas info.
    */
   public async getGasInfo(blockchain: BlockchainName): Promise<GasInfo> {
+    const isSafeSdk = this.walletConnectorService.checkIfSafeEnv();
+    if (isSafeSdk) {
+      return {
+        shouldCalculateGasPrice: false,
+        gasPriceOptions: {
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined
+        }
+      };
+    }
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     if (!shouldCalculateGasPrice) {
