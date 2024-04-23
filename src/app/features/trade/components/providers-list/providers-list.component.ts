@@ -15,7 +15,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
-import { TradePageService } from '../../services/trade-page/trade-page.service';
 
 @Component({
   selector: 'app-providers-list',
@@ -49,10 +48,6 @@ export class ProvidersListComponent {
   calculationProgress: CalculationProgress = this.context?.data?.calculationProgress;
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
-
-  public get showRoutes(): boolean {
-    return !this.noRoutes && this.tradePageService.showProviders;
-  }
 
   public readonly toToken$ = this.swapsFormService.toToken$;
 
@@ -97,7 +92,6 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
-    private readonly tradePageService: TradePageService
+    private readonly tokensService: TokensService
   ) {}
 }

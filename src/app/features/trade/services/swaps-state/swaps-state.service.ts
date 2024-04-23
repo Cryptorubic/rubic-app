@@ -206,7 +206,7 @@ export class SwapsStateService {
   public clearProviders(): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
-    this.setCalculationProgress(0, 0);
+    this.setCalculationProgress(1, 1);
     this.tradePageService.setProvidersVisibility(false);
   }
 
