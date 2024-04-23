@@ -25,7 +25,6 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   ALGB_TOKEN,
-  BLOCKCHAIN_NAME,
   ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
@@ -180,19 +179,12 @@ export class SwapsControllerService {
                 })
               );
           } else {
-            return this.crossChainService
-              .calculateTrades([
-                ...this.disabledTradesTypes.crossChain,
-                ...(fromToken.blockchain === BLOCKCHAIN_NAME.ZK_LINK
-                  ? [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]
-                  : [])
-              ])
-              .pipe(
-                catchError(err => {
-                  console.debug(err);
-                  return of(null);
-                })
-              );
+            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
+              catchError(err => {
+                console.debug(err);
+                return of(null);
+              })
+            );
           }
         }),
         catchError(err => {

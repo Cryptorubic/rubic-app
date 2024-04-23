@@ -37,6 +37,7 @@ import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/ev
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
+import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -78,15 +79,22 @@ export class WalletConnectorService {
     private readonly zone: NgZone
   ) {}
 
+  public checkIfSafeEnv(): boolean {
+    const params = new URLSearchParams(this.window.location.search);
+    return params.has('useSafe') ? params.get('useSafe') === 'true' : false;
+  }
+
   /**
    * Setups provider based on local storage.
    */
   public async setupProvider(): Promise<boolean> {
+    const isSafeEnv = this.checkIfSafeEnv();
+    console.info('isSafeEnv: ', isSafeEnv);
     const provider = this.storeService.getItem('RUBIC_PROVIDER');
-    if (!provider) {
+    if (!provider && !isSafeEnv) {
       return false;
     }
-    this.connectProvider(provider);
+    this.connectProvider(isSafeEnv ? WALLET_NAME.SAFE : provider);
     return true;
   }
 
@@ -142,12 +150,19 @@ export class WalletConnectorService {
     if (walletName === WALLET_NAME.SOLFLARE) {
       return new SolflareWalletAdapter(...defaultConstructorParameters);
     }
+
+    if (walletName === WALLET_NAME.SAFE) {
+      return new SafeWalletAdapter(...defaultConstructorParameters);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
+    if (this.provider.walletName !== WALLET_NAME.SAFE) {
+      this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
+    }
   }
 
   public deactivate(): void {

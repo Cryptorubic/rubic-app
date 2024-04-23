@@ -1,8 +1,7 @@
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BackendBlockchain } from '@shared/constants/blockchain/backend-blockchains';
-import { BlockchainName } from 'rubic-sdk';
+import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
   TOKENS = 'v1/tokens/',

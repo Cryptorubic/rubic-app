@@ -49,5 +49,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ROOTSTOCK]: 'rootstock',
   [BLOCKCHAIN_NAME.MODE]: 'mode',
   [BLOCKCHAIN_NAME.ZK_FAIR]: 'zkfair',
-  [BLOCKCHAIN_NAME.ZK_LINK]: 'zklink'
+  [BLOCKCHAIN_NAME.ZK_LINK]: 'zklink',
+  [BLOCKCHAIN_NAME.XLAYER]: 'xlayer'
 };

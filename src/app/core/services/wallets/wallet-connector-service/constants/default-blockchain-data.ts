@@ -178,5 +178,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.ZK_FAIR]: {
     name: 'zkLink',
     rpc: 'https://rpc.zklink.io'
+  },
+  [BLOCKCHAIN_NAME.XLAYER]: {
+    name: 'X Layer',
+    rpc: 'https://rpc.xlayer.tech'
   }
 };

@@ -8,9 +8,8 @@ import { HttpService } from '@core/services/http/http.service';
 import { CrossChainTableRequest } from '@features/history/models/cross-chain-table-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
-import { Web3Pure } from 'rubic-sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
@@ -120,7 +119,8 @@ export class CrossChainTableService extends TableService<
           amount: Web3Pure.fromWei(backendData.to_amount, backendData.to_token.decimals)
         };
 
-        const fromBlockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.from_network];
+        const fromBlockchainName =
+          FROM_BACKEND_BLOCKCHAINS[backendData.from_network as BackendBlockchain];
         const fromBlockchain = {
           name: fromBlockchainName,
           label: blockchainLabel[fromBlockchainName],
@@ -128,7 +128,8 @@ export class CrossChainTableService extends TableService<
           image: blockchainIcon[fromBlockchainName]
         };
 
-        const toBlockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.to_network];
+        const toBlockchainName =
+          FROM_BACKEND_BLOCKCHAINS[backendData.to_network as BackendBlockchain];
         const toBlockchain = {
           name: toBlockchainName,
           label: blockchainLabel[toBlockchainName],
