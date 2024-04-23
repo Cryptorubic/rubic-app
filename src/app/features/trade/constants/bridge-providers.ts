@@ -195,7 +195,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5
   },
   [BRIDGE_TYPE.OWL_TO_BRIDGE]: {
-    name: 'OwlTo',
+    name: 'Owlto',
     image: `${imageBasePath}owlto.svg`,
     color: 'white',
     averageTime: 5
