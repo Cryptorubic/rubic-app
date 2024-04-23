@@ -1011,5 +1011,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.ZK_LINK]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_LINK], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.XLAYER]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.XLAYER], ...defaultTokenParams } as Token
   ]
 };
