@@ -14,10 +14,6 @@ export class TradePageService {
 
   public readonly showProviders$ = this._showProviders$.asObservable().pipe(debounceTime(50));
 
-  public get showProviders(): boolean {
-    return this._showProviders$.getValue();
-  }
-
   constructor() {}
 
   public setState(value: FormType): void {
