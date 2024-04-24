@@ -182,6 +182,7 @@ export class SwapFormPageComponent {
     const { fromBlockchain, toBlockchain, fromToken, toToken } = this.swapFormService.inputValue;
     const { toAmount } = this.swapFormService.outputValue;
 
+    this.swapsStateService.setCalculationProgress(0, 0);
     this.swapFormService.inputControl.patchValue({
       fromBlockchain: toBlockchain,
       fromToken: toToken,
