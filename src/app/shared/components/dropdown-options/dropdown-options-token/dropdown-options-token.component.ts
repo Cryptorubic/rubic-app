@@ -7,10 +7,8 @@ import {
 } from '@angular/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
-import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
-import { AssetsSelectorService } from '@app/features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
@@ -18,13 +16,13 @@ import {
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { EXTERNAL_LINKS } from '@app/shared/constants/common/links';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
-import { TokenSecurityStatus, securityMessages } from '@app/shared/models/tokens/token-security';
+import { securityMessages, TokenSecurityStatus } from '@app/shared/models/tokens/token-security';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import {
   BLOCKCHAIN_NAME,
-  EvmBlockchainName,
   blockchainId,
   compareAddresses,
+  EvmBlockchainName,
   wrappedNativeTokensList
 } from 'rubic-sdk';
 
@@ -54,9 +52,7 @@ export class DropdownOptionsTokenComponent {
     private cdr: ChangeDetectorRef,
     private readonly tokensStoreService: TokensStoreService,
     private readonly errorsService: ErrorsService,
-    private readonly authService: AuthService,
-    private readonly mobileNativeService: MobileNativeModalService,
-    private readonly assetsSelectorService: AssetsSelectorService
+    private readonly authService: AuthService
   ) {}
 
   public get showCopyToClipboardOption(): boolean {
@@ -99,7 +95,6 @@ export class DropdownOptionsTokenComponent {
         this.loadingFavoriteToken = false;
         this.token.favorite = !this.token.favorite;
         this.cdr.detectChanges();
-        this.addTokenToFavoriteList();
       }
     });
   }
@@ -122,13 +117,5 @@ export class DropdownOptionsTokenComponent {
       this.isCopyClicked = false;
       this.cdr.markForCheck();
     }, 500);
-  }
-
-  private addTokenToFavoriteList(): void {
-    this.mobileNativeService.forceClose();
-
-    if (this.token.available) {
-      this.assetsSelectorService.onAssetSelect(this.token);
-    }
   }
 }
