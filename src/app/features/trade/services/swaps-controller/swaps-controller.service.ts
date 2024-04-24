@@ -140,7 +140,7 @@ export class SwapsControllerService {
         tap(calculateData => {
           if (!calculateData.stop) {
             this.refreshService.setRefreshing();
-            this.swapsStateService.setCalculationProgress(1, 0);
+            this.swapsStateService.setCalculationProgress(0, 0);
             if (calculateData.isForced) {
               this.swapsStateService.clearProviders();
             }
