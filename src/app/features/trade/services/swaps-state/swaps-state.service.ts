@@ -203,11 +203,15 @@ export class SwapsStateService {
     this._tradesStore$.next(currentTrades);
   }
 
-  public clearProviders(): void {
+  public clearProviders(isTradeError: boolean = false): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
-    this.setCalculationProgress(0, 0);
     this.tradePageService.setProvidersVisibility(false);
+    if (isTradeError) {
+      this.setCalculationProgress(1, 1);
+    } else {
+      this.setCalculationProgress(0, 0);
+    }
   }
 
   public pickProvider(isCalculationEnd: boolean): void {
