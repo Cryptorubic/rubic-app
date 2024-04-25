@@ -45,6 +45,7 @@ export class UserBalanceContainerComponent {
         tap(([_, state]) => {
           if (state.step === 'success') {
             const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+            // Solana balance updates longer then EVM-chains
             const delay = fromBlockchain === BLOCKCHAIN_NAME.SOLANA ? 5_000 : 0;
             setTimeout(
               () => this.tokensStoreService.startBalanceCalculating(fromBlockchain),
