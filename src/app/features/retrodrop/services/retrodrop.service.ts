@@ -97,9 +97,9 @@ export class RetrodropService extends ClaimService {
                 account: userAddress
               }
             },
-            ...(claim.already_claimed_from_old_contract && { isAlreadyClaimed: true }),
-            ...(claim.already_claimed_from_old_contract && { isParticipantOfPrevRounds: true }),
             ...(claim.already_claimed_from_old_contract && {
+              isAlreadyClaimed: true,
+              isParticipantOfPrevRounds: true,
               isParticipantOfCurrentRound: claim.is_participant
             })
           })
