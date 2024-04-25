@@ -57,7 +57,7 @@ export class RetrodropService extends ClaimService {
     const promisesRounds = retrodropUserInfo.map(claim => {
       const contractAddress = retrodropContractAddress[claim.round - 1];
 
-      if (claim.is_participant && contractAddress) {
+      if (claim.is_participant && contractAddress && claim.index) {
         const amount = Web3Pure.fromWei(claim.amount);
 
         return this.claimWeb3Service
@@ -96,7 +96,12 @@ export class RetrodropService extends ClaimService {
                 ...searchedRound.claimData.node,
                 account: userAddress
               }
-            }
+            },
+            ...(claim.already_claimed_from_old_contract && {
+              isAlreadyClaimed: true,
+              isParticipantOfPrevRounds: true,
+              isParticipantOfCurrentRound: claim.is_participant
+            })
           })
         );
       }
