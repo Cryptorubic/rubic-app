@@ -6,6 +6,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -44,7 +45,11 @@ export class UserBalanceContainerComponent {
         tap(([_, state]) => {
           if (state.step === 'success') {
             const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
-            this.tokensStoreService.startBalanceCalculating(fromBlockchain);
+            const delay = fromBlockchain === BLOCKCHAIN_NAME.SOLANA ? 5_000 : 0;
+            setTimeout(
+              () => this.tokensStoreService.startBalanceCalculating(fromBlockchain),
+              delay
+            );
           }
           this._triggerRefresh$.next(null);
         })
