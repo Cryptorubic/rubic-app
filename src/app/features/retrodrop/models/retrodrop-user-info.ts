@@ -7,6 +7,7 @@ export interface RetrodropUserClaimInfo {
   index: number;
   amount: string;
   proof: string[];
+  already_claimed_from_old_contract: boolean;
 }
 
 export type RetrodropUserInfo = RetrodropUserClaimInfo[];
