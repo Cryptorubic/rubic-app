@@ -42,16 +42,11 @@ export class UserBalanceContainerComponent {
         distinctUntilChanged(),
         debounceTime(20),
         filter(([_, state]) => state.step === 'success' || state.step === 'inactive'),
-        tap(([_, state]) => {
-          if (state.step === 'success') {
-            const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
-            // Solana balance updates longer then EVM-chains
-            const delay = fromBlockchain === BLOCKCHAIN_NAME.SOLANA ? 5_000 : 0;
-            setTimeout(
-              () => this.tokensStoreService.startBalanceCalculating(fromBlockchain),
-              delay
-            );
-          }
+        tap(() => {
+          const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+          // Solana balance updates longer then EVM-chains
+          const delay = fromBlockchain === BLOCKCHAIN_NAME.SOLANA ? 5_000 : 0;
+          setTimeout(() => this.tokensStoreService.startBalanceCalculating(fromBlockchain), delay);
           this._triggerRefresh$.next(null);
         })
       )
