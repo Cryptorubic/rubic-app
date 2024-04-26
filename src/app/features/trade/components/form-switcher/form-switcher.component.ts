@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Output
+} from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { combineLatestWith, map } from 'rxjs';
@@ -21,8 +27,20 @@ export class FormSwitcherComponent {
     )
   );
 
+  public disabled: boolean = false;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
+
+  public onClick(): void {
+    this.disabled = true;
+    this.switcherClick.emit();
+    setTimeout(() => {
+      this.disabled = false;
+      this.cdr.markForCheck();
+    }, 2000);
+  }
 }
