@@ -184,7 +184,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#828CBE'
   },
   [ON_CHAIN_TRADE_TYPE.DLN]: {
-    name: 'DLN',
+    name: 'deBridge',
     image: `${imageBasePath}dln.svg`,
     color: '#9C6FC7'
   },
