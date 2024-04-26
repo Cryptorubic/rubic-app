@@ -93,7 +93,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
   //DDDDDDDDDDDDDDDD
   [BRIDGE_TYPE.DEBRIDGE]: {
-    name: 'DLN',
+    name: 'deBridge',
     image: `${imageBasePath}debridge.svg`,
     color: '#bf38ee',
     averageTime: 5
