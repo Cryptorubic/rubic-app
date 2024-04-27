@@ -157,7 +157,7 @@ export class CrossChainService {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
-    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
+    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledSubProviders } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
     const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
@@ -178,12 +178,12 @@ export class CrossChainService {
       slippageTolerance,
       timeout: this.defaultTimeout,
       disabledProviders: disabledProviders,
-      lifiDisabledBridgeTypes: [
-        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
+      lifiDisabledProviders: [
+        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
       ],
       rangoDisabledProviders: [
-        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
+        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
         ...(queryRangoDisabledBridges || [])
       ],
       ...(receiverAddress && { receiverAddress }),

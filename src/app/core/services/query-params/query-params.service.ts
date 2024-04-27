@@ -5,7 +5,7 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
-  LIFI_BRIDGE_TYPES,
+  LIFI_SUB_PROVIDERS,
   ON_CHAIN_TRADE_TYPE,
   OnChainTradeType,
   rangoTradeTypes,
@@ -17,7 +17,7 @@ import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
-import { LifiBridgeTypes } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
+import { LifiSubProvider } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
@@ -60,7 +60,7 @@ export class QueryParamsService {
 
   public domain: string;
 
-  public disabledLifiBridges: LifiBridgeTypes[] | undefined;
+  public disabledLifiBridges: LifiSubProvider[] | undefined;
 
   public disabledRangoBridges: RubicTradeTypeForRango[] | undefined;
 
@@ -212,7 +212,7 @@ export class QueryParamsService {
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {
-    const bridges = Object.values(LIFI_BRIDGE_TYPES) || [];
+    const bridges = Object.values(LIFI_SUB_PROVIDERS) || [];
     this.disabledLifiBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge.toLowerCase())
     );
