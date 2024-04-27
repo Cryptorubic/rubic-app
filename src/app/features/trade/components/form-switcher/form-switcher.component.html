@@ -1,4 +1,10 @@
-<button *ngIf="showTokenSwitcher$ | async" class="switcher" (click)="switcherClick.emit()">
+<button
+  *ngIf="showTokenSwitcher$ | async"
+  class="switcher"
+  [class.disabled]="disabled"
+  [disabled]="disabled"
+  (click)="onClick()"
+>
   <div class="switcher__img-container">
     <img src="assets/images/icons/chevron.svg" alt="Switch swaps" />
     <img src="assets/images/icons/chevron.svg" alt="Switch swaps" />
