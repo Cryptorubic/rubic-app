@@ -64,17 +64,16 @@ export class RetrodropService extends ClaimService {
           .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
           .then(isAlreadyClaimed => {
             const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
+            const isRoundExpired = this.isRoundExpired(
+              isAlreadyClaimed,
+              claim.already_claimed_from_old_contract,
+              searchedRound.roundNumber
+            );
 
             return {
               ...searchedRound,
               network,
-              status: this.isRoundExpired(
-                isAlreadyClaimed,
-                claim.already_claimed_from_old_contract,
-                searchedRound.roundNumber
-              )
-                ? 'expired'
-                : searchedRound.status,
+              status: isRoundExpired ? 'expired' : searchedRound.status,
               claimData: {
                 contractAddress,
                 node: {
