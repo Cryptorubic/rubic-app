@@ -68,6 +68,13 @@ export class RetrodropService extends ClaimService {
             return {
               ...searchedRound,
               network,
+              status: this.isRoundExpired(
+                isAlreadyClaimed,
+                claim.already_claimed_from_old_contract,
+                searchedRound.roundNumber
+              )
+                ? 'expired'
+                : searchedRound.status,
               claimData: {
                 contractAddress,
                 node: {
@@ -80,7 +87,7 @@ export class RetrodropService extends ClaimService {
               claimAmount: amount?.gt(0) ? amount : new BigNumber(0),
               isParticipantOfPrevRounds: true,
               isParticipantOfCurrentRound: claim.is_participant,
-              isAlreadyClaimed
+              isAlreadyClaimed: claim.already_claimed_from_old_contract || isAlreadyClaimed
             };
           });
       } else {
@@ -109,5 +116,17 @@ export class RetrodropService extends ClaimService {
 
     const formattedRounds = await Promise.all(promisesRounds);
     this._rounds$.next(formattedRounds);
+  }
+
+  private isRoundExpired(
+    isAlreadyClaimedOnCurrentContract: boolean,
+    isAlreadyClaimedOnOldContract: boolean,
+    roundNumber: number
+  ): boolean {
+    return (
+      !isAlreadyClaimedOnCurrentContract &&
+      !isAlreadyClaimedOnOldContract &&
+      [1, 2, 3].includes(roundNumber)
+    );
   }
 }
