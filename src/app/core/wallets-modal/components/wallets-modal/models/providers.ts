@@ -89,7 +89,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     img: './assets/images/icons/wallets/solflare.svg',
     supportsDesktop: true,
     supportsMobile: true,
-    display: true,
+    display: false,
     disabled: false
   }
 ];

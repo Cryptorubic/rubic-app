@@ -3,7 +3,6 @@ name: Check code quality
 on:
   pull_request:
     branches:
-      - master
       - develop
 
 jobs:
@@ -34,3 +33,6 @@ jobs:
 
       - name: Run compile
         run: yarn run compile
+
+      - name: Run tests
+        run: yarn run test:ci
