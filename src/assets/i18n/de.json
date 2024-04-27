@@ -676,7 +676,8 @@
       "incorrectAddressError": "Entered address is incorrect",
       "notParticipant": "You are not a member",
       "closed": "Closed",
-      "soon": "Soon"
+      "soon": "Soon",
+      "expired": "Expired"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {

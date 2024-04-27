@@ -12,6 +12,7 @@ const buttonStateNameMap: Record<ButtonLabel, string> = {
   staked: 'airdrop.button.staked',
   closed: 'airdrop.button.closed',
   soon: 'airdrop.button.soon',
+  expired: 'airdrop.button.expired',
   emptyError: 'airdrop.button.emptyError',
   changeNetwork: 'airdrop.button.changeNetwork',
   notParticipant: 'airdrop.button.notParticipant',
