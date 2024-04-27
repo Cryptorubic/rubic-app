@@ -56,3 +56,6 @@ Thumbs.db
 
 # Rubic SDK
 /rubic-sdk/
+
+# Test
+/src/coverage/*
