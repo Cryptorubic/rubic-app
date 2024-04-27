@@ -3,7 +3,7 @@ import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { ClaimName } from '@shared/services/claim-services/models/claim-name';
 import { BlockchainName } from 'rubic-sdk';
 
-export type ClaimStatus = 'closed' | 'soon' | 'active';
+export type ClaimStatus = 'closed' | 'soon' | 'active' | 'expired';
 
 export interface DefaultRoundInfo {
   isAlreadyClaimed?: boolean;

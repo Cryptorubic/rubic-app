@@ -1,4 +1,4 @@
-<ng-container *ngLet="round.status === 'closed' || round.status === 'soon' as setDisabled">
+<ng-container *ngLet="round.status !== 'active' as setDisabled">
   <div class="round round_desktop" *ngIf="(isMobile$ | async) === false">
     <div
       class="round__container"
