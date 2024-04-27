@@ -196,7 +196,10 @@ export class SwapsControllerService {
 
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const needApprove$ =
+              wrappedTrade.tradeType !== CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+                ? wrappedTrade?.trade?.needApprove().catch(() => false)
+                : of(true);
             return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
               .pipe(
                 tap(([trade, needApprove, type]) => {
