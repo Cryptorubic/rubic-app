@@ -10,7 +10,8 @@ export type ButtonLabel =
   | 'incorrectAddressError'
   | 'notParticipant'
   | 'closed'
-  | 'soon';
+  | 'soon'
+  | 'expired';
 
 export interface ButtonState {
   label: ButtonLabel;

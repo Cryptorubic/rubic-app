@@ -73,7 +73,7 @@ export class ClaimRoundRowComponent {
   }
 
   private setClaimAmountValue(status: ClaimStatus, claimAmount: BigNumber): void {
-    if (status === 'soon') {
+    if (status === 'soon' || status === 'expired') {
       this.claimAmountValue = '-.-';
     } else if (status === 'closed') {
       this.claimAmountValue = '0';
