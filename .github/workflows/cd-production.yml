@@ -1,14 +1,14 @@
-name: Update production server
+name: Update testnets production server
 
 on:
   workflow_dispatch:
   push:
     branches:
-      - master
+      - testnets
 
 jobs:
   deploy:
-    name: Deploy on production server
+    name: Deploy on testnets production server
     runs-on: ubuntu-latest
 
     steps:
@@ -70,13 +70,13 @@ jobs:
       - name: Upload to storage
         uses: actions/upload-artifact@v3
         with:
-          name: Build
+          name: Build-Testnets
           path: dist/
-        
+
       - name: Get branch names.
         id: branch-names
         uses: tj-actions/branch-names@v6
-      
+
       - name: Retreive merge title
         uses: actions-ecosystem/action-regex-match@v2
         id: regex-match
@@ -84,7 +84,7 @@ jobs:
           text: ${{ github.event.head_commit.message }}
           regex: '.*$'
           flags: 'm'
-        
+
       - name: Notify bot
         uses: fjogeleit/http-request-action@v1
         with:
