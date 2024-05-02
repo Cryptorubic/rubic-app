@@ -91,4 +91,4 @@ jobs:
           url: '${{ secrets.deploy_url}}'
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
-          data: '{"targetServer": "TestnetProduction", "initiator": "${{ github.actor }}", "feature": "${{steps.regex-match.outputs.match }}"}'
+          data: '{"targetServer": "Testnet-production", "initiator": "${{ github.actor }}", "feature": "${{steps.regex-match.outputs.match }}"}'
