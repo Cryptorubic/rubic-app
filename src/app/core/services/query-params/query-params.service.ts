@@ -8,8 +8,8 @@ import {
   LIFI_SUB_PROVIDERS,
   ON_CHAIN_TRADE_TYPE,
   OnChainTradeType,
-  rangoTradeTypes,
-  RubicTradeTypeForRango
+  RANGO_TO_RUBIC_PROVIDERS,
+  RangoTradeType
 } from 'rubic-sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +62,7 @@ export class QueryParamsService {
 
   public disabledLifiBridges: LifiSubProvider[] | undefined;
 
-  public disabledRangoBridges: RubicTradeTypeForRango[] | undefined;
+  public disabledRangoBridges: RangoTradeType[] | undefined;
 
   public disabledCrossChainProviders: CrossChainTradeType[] = [];
 
@@ -219,10 +219,10 @@ export class QueryParamsService {
   }
 
   private setDisabledRangoBridges(disabledBridges: string[]): void {
-    const bridges = Object.keys(rangoTradeTypes) || [];
+    const bridges = Object.keys(RANGO_TO_RUBIC_PROVIDERS) || [];
     this.disabledRangoBridges = bridges.filter(bridge =>
       disabledBridges.includes(bridge)
-    ) as RubicTradeTypeForRango[];
+    ) as RangoTradeType[];
   }
 
   private setCrossChainProviders(

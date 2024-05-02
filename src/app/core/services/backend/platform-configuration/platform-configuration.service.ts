@@ -9,9 +9,9 @@ import {
   CrossChainTradeType,
   LifiSubProvider,
   BLOCKCHAIN_NAME,
-  RubicTradeTypeForRango,
   FROM_BACKEND_BLOCKCHAINS,
-  BackendBlockchain
+  BackendBlockchain,
+  RangoTradeType
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
@@ -23,7 +23,7 @@ import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled
 
 interface DisabledSubProvidersType {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiSubProvider[];
-  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RubicTradeTypeForRango[];
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoTradeType[];
 }
 
 interface ProvidersConfiguration {
@@ -89,14 +89,14 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
-  private readonly _useCrossChainChainProxy$ = new BehaviorSubject<
-    Record<CrossChainTradeType, boolean>
-  >(undefined);
+  private readonly _useCrossChainProxy$ = new BehaviorSubject<Record<CrossChainTradeType, boolean>>(
+    undefined
+  );
 
   public readonly useCrossChainChainProxy$ = this._useOnChainProxy$.asObservable();
 
   public get useCrossChainChainProxy(): Record<CrossChainTradeType, boolean> {
-    return this._useCrossChainChainProxy$.getValue();
+    return this._useCrossChainProxy$.getValue();
   }
 
   constructor(private httpClient: HttpClient) {
@@ -154,7 +154,7 @@ export class PlatformConfigurationService {
         status.useProxy
       ])
     ) as Record<CrossChainTradeType, boolean>;
-    this._useCrossChainChainProxy$.next(providers);
+    this._useCrossChainProxy$.next(providers);
   }
 
   private mapDisabledProviders(crossChainProviders: {
@@ -183,7 +183,7 @@ export class PlatformConfigurationService {
 
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
           acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = this.getRangoDisabledProviders(
-            disabledProviders as RubicTradeTypeForRango[]
+            disabledProviders as RangoTradeType[]
           );
         }
 
@@ -196,9 +196,7 @@ export class PlatformConfigurationService {
   /**
    * Combine disabled providers from server and client
    */
-  private getRangoDisabledProviders(
-    disabledFromServer: RubicTradeTypeForRango[]
-  ): RubicTradeTypeForRango[] {
+  private getRangoDisabledProviders(disabledFromServer: RangoTradeType[]): RangoTradeType[] {
     const disabledProviders = this._disabledProviders$.getValue();
     const disabledFromClient =
       disabledProviders.disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] ?? [];
