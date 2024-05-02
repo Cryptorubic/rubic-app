@@ -178,7 +178,7 @@ export class CrossChainService {
       slippageTolerance,
       timeout: this.defaultTimeout,
       disabledProviders: disabledProviders,
-      lifiDisabledProviders: [
+      lifiDisabledBridgeTypes: [
         ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
       ],
