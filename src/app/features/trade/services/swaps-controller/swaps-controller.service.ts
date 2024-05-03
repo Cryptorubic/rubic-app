@@ -196,10 +196,53 @@ export class SwapsControllerService {
 
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
-            const needApprove$ =
-              wrappedTrade.tradeType !== CROSS_CHAIN_TRADE_TYPE.ARBITRUM
-                ? wrappedTrade?.trade?.needApprove().catch(() => false)
-                : of(true);
+
+            // const needApprove$ = timer(ms).pipe(
+            //   first(),
+            //   defaultIfEmpty(true),
+            //   switchMap(() => wrappedTrade?.trade?.needApprove()),
+            //   catchError(() => of(false))
+            //   // timeout({
+            //   //   first: 1000,
+            //   //   with: () => of(true)
+            //   // })
+            // );
+            // const needApprove$ = timer(0).pipe(
+            //   switchMap(() =>
+            //     from(wrappedTrade.trade?.needApprove()).pipe(
+            //       timeout({
+            //         first: 2000,
+            //         with: () => of(true)
+            //       }),
+            //       startWith(true),
+            //       defaultIfEmpty(true)
+            //     )
+            //   ),
+            //   catchError(() => of(true))
+            // );
+            // const needApprove$ = wrappedTrade?.trade?.needApprove();
+            // const needApprove$ = timer(ms).pipe(
+            //   delay(ms),
+            //   switchMap(() => wrappedTrade.trade?.needApprove()),
+            //   catchError(() => of(true)),
+            //   switchIif(
+            //     Boolean,
+            //     v => of(v as boolean),
+            //     () => of(true)
+            //   ),
+            //   startWith(true)
+            // );
+            // const needApprove$ = from(wrappedTrade?.trade?.needApprove()).pipe(
+            //   first(),
+            //   switchIif(
+            //     Boolean,
+            //     v => of(v),
+            //     () => of(true)
+            //   ),
+            //   timeout(1_000),
+            //   catchError(() => of(true))
+            // );
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false);
             return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
               .pipe(
                 tap(([trade, needApprove, type]) => {
