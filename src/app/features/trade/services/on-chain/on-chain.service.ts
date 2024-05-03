@@ -42,6 +42,7 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 @Injectable()
 export class OnChainService {
@@ -246,6 +247,13 @@ export class OnChainService {
 
       if (transactionHash && !this.isNotMinedError(err)) {
         await this.onChainApiService.patchTrade(transactionHash, false);
+      }
+
+      if (
+        err?.message?.includes('execution reverted') &&
+        this.settingsService.instantTradeValue.slippageTolerance < 0.5
+      ) {
+        throw new RubicError('Please, increase the slippage and try again!');
       }
 
       throw RubicSdkErrorParser.parseError(err);
