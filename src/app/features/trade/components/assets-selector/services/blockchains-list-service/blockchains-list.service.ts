@@ -101,7 +101,7 @@ export class BlockchainsListService {
       .subscribe(query => {
         this.blockchainsToShow = this.availableBlockchains.filter(blockchain => {
           return (
-            blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
+            blockchain.label.toLowerCase().includes(query.toLowerCase()) ||
             (blockchain.tags.length &&
               blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
           );
