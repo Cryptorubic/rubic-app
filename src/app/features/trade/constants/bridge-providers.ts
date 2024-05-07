@@ -157,6 +157,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: 'white',
     averageTime: 5
   },
+  [BRIDGE_TYPE.MESON]: {
+    averageTime: 5,
+    color: '#29d5b0',
+    image: `${imageBasePath}meson.svg`,
+    name: 'Meson'
+  },
   [BRIDGE_TYPE.MULTICHAIN]: {
     name: 'Multichain',
     image: `${imageBasePath}multichain.png`,
