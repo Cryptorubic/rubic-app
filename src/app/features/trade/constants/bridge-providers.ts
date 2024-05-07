@@ -1,313 +1,314 @@
-import { BRIDGE_TYPE, BridgeType } from 'rubic-sdk';
+import { BridgeType } from 'rubic-sdk';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
 
 export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   //AAAAAAAAAAAAAAAAAAAA
-  [BRIDGE_TYPE.ACROSS]: {
-    name: 'Across',
-    image: `${imageBasePath}across.svg`,
+  across: {
+    averageTime: 5,
     color: '#6CF9D8',
-    averageTime: 5
+    image: `${imageBasePath}across.svg`,
+    name: 'Across'
   },
-  [BRIDGE_TYPE.ALLBRIDGE]: {
-    name: 'Allbridge',
-    image: `${imageBasePath}allbridge.png`,
+  allbridge: {
+    averageTime: 5,
     color: '#5B978E',
-    averageTime: 5
+    image: `${imageBasePath}allbridge.png`,
+    name: 'Allbridge'
   },
-  [BRIDGE_TYPE.ANY_SWAP]: {
-    name: 'AnySwap',
-    image: `${imageBasePath}anyswap.svg`,
+  amarok: {
+    averageTime: 5,
+    color: '#5B76FD',
+    image: `${imageBasePath}connext.svg`,
+    name: 'Connext'
+  },
+  anyswap: {
+    averageTime: 5,
     color: '#5F6BFB',
-    averageTime: 5
+    image: `${imageBasePath}anyswap.svg`,
+    name: 'AnySwap'
   },
-  [BRIDGE_TYPE.ARBITRUM]: {
-    name: 'Arbitrum Bridge',
-    image: `${imageBasePath}arbitrum-bridge.svg`,
+  arbitrum: {
+    averageTime: 5,
     color: '#1275b7',
-    averageTime: 5
+    image: `${imageBasePath}arbitrum-bridge.svg`,
+    name: 'Arbitrum Bridge'
   },
-  [BRIDGE_TYPE.ARCHON_BRIDGE]: {
-    name: 'Archon bridge',
-    image: `${imageBasePath}archon.svg`,
+  archon_bridge: {
+    averageTime: 5,
     color: '#000',
-    averageTime: 5
+    image: `${imageBasePath}archon.svg`,
+    name: 'Archon bridge'
   },
-  [BRIDGE_TYPE.AVALANCHE]: {
-    name: 'Avalanche Bridge',
-    image: `${imageBasePath}avalanche-bridge.svg`,
+
+  avalanche: {
+    averageTime: 5,
     color: '#c2c2c2',
-    averageTime: 5
+    image: `${imageBasePath}avalanche-bridge.svg`,
+    name: 'Avalanche Bridge'
   },
   //BBBBBBBBBBBBBBB
-  [BRIDGE_TYPE.BRIDGERS]: {
-    name: 'Bridgers',
-    image: `${imageBasePath}bridgers.png`,
+  bridgers: {
+    averageTime: 5,
     color: '#E6F3FF',
-    averageTime: 5
+    image: `${imageBasePath}bridgers.png`,
+    name: 'Bridgers'
   },
   //CCCCCCCCCCCCCCCCCCCC
-  [BRIDGE_TYPE.CBRIDGE]: {
-    name: 'cBridge',
+  cbridge: {
+    averageTime: 5,
+    color: '#008aff',
     image: `${imageBasePath}celer.svg`,
-    color: '#008aff',
-    averageTime: 5
+    name: 'cBridge'
   },
-  [BRIDGE_TYPE.CELER_BRIDGE]: {
-    name: 'cBridge',
+  celer_bridge: {
+    averageTime: 5,
+    color: '#008aff',
     image: `${imageBasePath}cbridge.svg`,
-    color: '#008aff',
-    averageTime: 5
+    name: 'cBridge'
   },
-  [BRIDGE_TYPE.CELERIM]: {
-    name: 'Celerim',
-    image: `${imageBasePath}celerim.png`,
-    color: '#1682dc',
-    averageTime: 5
-  },
-  [BRIDGE_TYPE.CHANGENOW]: {
-    name: 'ChangeNOW',
-    image: `${imageBasePath}changenow.png`,
-    color: '#8888bb',
-    averageTime: 5
-  },
-  [BRIDGE_TYPE.CONNEXT_AMAROK]: {
-    name: 'Connext',
-    image: `${imageBasePath}connext.svg`,
-    color: '#5B76FD',
-    averageTime: 5
-  },
-  [BRIDGE_TYPE.CIRCLE_CELER_BRIDGE]: {
-    name: 'CelerCircle',
-    image: `${imageBasePath}celercircle.png`,
+  celercircle: {
+    averageTime: 5,
     color: '#77E9C9',
-    averageTime: 5
+    image: `${imageBasePath}celercircle.png`,
+    name: 'CelerCircle'
   },
-  [BRIDGE_TYPE.CONNEXT]: {
-    name: 'Connext',
-    image: `${imageBasePath}connext.svg`,
+  celerim: {
+    averageTime: 5,
+    color: '#1682dc',
+    image: `${imageBasePath}celerim.png`,
+    name: 'Celerim'
+  },
+  changenow: {
+    averageTime: 5,
+    color: '#8888bb',
+    image: `${imageBasePath}changenow.png`,
+    name: 'ChangeNOW'
+  },
+  connext: {
+    averageTime: 5,
     color: '#8e28fe',
-    averageTime: 5
+    image: `${imageBasePath}connext.svg`,
+    name: 'Connext'
   },
   //DDDDDDDDDDDDDDDD
-  [BRIDGE_TYPE.DEBRIDGE]: {
-    name: 'deBridge',
-    image: `${imageBasePath}debridge.svg`,
+  dln: {
+    averageTime: 5,
     color: '#bf38ee',
-    averageTime: 5
+    image: `${imageBasePath}debridge.svg`,
+    name: 'deBridge'
   },
   //GGGGGGGGGGGGGGGGG
-  [BRIDGE_TYPE.GNOSIS_BRIDGE]: {
-    name: 'Gnosis Bridge',
-    image: `${imageBasePath}gnosisbridge.png`,
+  gnosis: {
+    averageTime: 5,
     color: '#7F38A9',
-    averageTime: 5
+    image: `${imageBasePath}gnosisbridge.png`,
+    name: 'Gnosis Bridge'
   },
   //HHHHHHHHHH
-  [BRIDGE_TYPE.HOP]: {
-    name: 'Hop',
-    image: `${imageBasePath}hop.svg`,
+  hop: {
+    averageTime: 5,
     color: '#de7fb8',
-    averageTime: 5
+    image: `${imageBasePath}hop.svg`,
+    name: 'Hop'
   },
-  [BRIDGE_TYPE.HYPHEN]: {
-    name: 'Hyphen',
-    image: `${imageBasePath}hyphen.svg`,
+  hyphen: {
+    averageTime: 5,
     color: '#353392',
-    averageTime: 5
+    image: `${imageBasePath}hyphen.svg`,
+    name: 'Hyphen'
   },
   //IIIIIIIIIIIIII
-  [BRIDGE_TYPE.IBC]: {
-    name: 'IBC',
-    image: `${imageBasePath}ibc.png`,
+  ibc: {
+    averageTime: 5,
     color: '#152042',
-    averageTime: 5
+    image: `${imageBasePath}ibc.png`,
+    name: 'IBC'
   },
   //LLLLLLLLLLLLLLLLL
-  [BRIDGE_TYPE.LAYERZERO]: {
-    name: 'LayerZero',
-    image: `${imageBasePath}layerzero.svg`,
+  layerzero: {
+    averageTime: 5,
     color: '#999999',
-    averageTime: 5
+    image: `${imageBasePath}layerzero.svg`,
+    name: 'LayerZero'
   },
-  [BRIDGE_TYPE.LIFI]: {
-    name: 'LiFi',
+  lifi: {
+    averageTime: 5,
+    color: '#bf38ee',
     image: `${imageBasePath}lifi.svg`,
-    color: '#bf38ee',
-    averageTime: 5
+    name: 'LiFi'
   },
-  [BRIDGE_TYPE.LI_FUEL]: {
-    name: 'Li Fuel',
-    image: `${imageBasePath}lifuel.png`,
+  lifuel: {
+    averageTime: 5,
     color: '#bf38ee',
-    averageTime: 5
+    image: `${imageBasePath}lifuel.png`,
+    name: 'Li Fuel'
   },
   //MMMMMMMMMMMMMMMMMMM
-  [BRIDGE_TYPE.MAKERS_WORMHOLE]: {
-    name: `Maker's wormhole`,
+  maker: {
+    averageTime: 5,
+    color: 'white',
     image: `${imageBasePath}wormhole.svg`,
-    color: 'white',
-    averageTime: 5
+    name: `Maker's wormhole`
   },
-  [BRIDGE_TYPE.MAYA_PROTOCOL]: {
-    name: 'Maya Protocol',
+  mayaprotocol: {
+    averageTime: 5,
+    color: 'white',
     image: `${imageBasePath}mayaprotocol.svg`,
-    color: 'white',
-    averageTime: 5
+    name: 'Maya Protocol'
   },
-  [BRIDGE_TYPE.MESON]: {
+  meson: {
     averageTime: 5,
     color: '#29d5b0',
     image: `${imageBasePath}meson.svg`,
     name: 'Meson'
   },
-  [BRIDGE_TYPE.MULTICHAIN]: {
-    name: 'Multichain',
-    image: `${imageBasePath}multichain.png`,
+  multichain: {
+    averageTime: 5,
     color: '#452fbf',
-    averageTime: 5
+    image: `${imageBasePath}multichain.png`,
+    name: 'Multichain'
   },
   //OOOOOOOOOOOOOOOOOO
-  [BRIDGE_TYPE.OMNI_BRIDGE]: {
-    name: 'Omni Bridge',
-    image: `${imageBasePath}omnibridge.png`,
+  omni: {
+    averageTime: 5,
     color: '#5CAAE8',
-    averageTime: 5
+    image: `${imageBasePath}omnibridge.png`,
+    name: 'Omni Bridge'
   },
-  [BRIDGE_TYPE.OPEN_OCEAN]: {
-    name: 'Open Ocean',
-    image: `${imageBasePath}openocean.png`,
+  openocean: {
+    averageTime: 5,
     color: '#15D9E1',
-    averageTime: 5
+    image: `${imageBasePath}openocean.png`,
+    name: 'Open Ocean'
   },
-  [BRIDGE_TYPE.OPTIMISM_GATEWAY]: {
-    name: 'Optimism Gateway',
-    image: `${imageBasePath}optimism-gateway.svg`,
+  optimism: {
+    averageTime: 5,
     color: '#FF0420',
-    averageTime: 5
+    image: `${imageBasePath}optimism-gateway.svg`,
+    name: 'Optimism Gateway'
   },
-  [BRIDGE_TYPE.ORBITER_BRIDGE]: {
-    name: 'Orbiter',
-    image: `${imageBasePath}orbiter.png`,
+  orbiter_bridge: {
+    averageTime: 5,
     color: 'white',
-    averageTime: 5
+    image: `${imageBasePath}orbiter.png`,
+    name: 'Orbiter'
   },
-  [BRIDGE_TYPE.OSMOSIS_BRIDGE]: {
-    name: 'Osmosis Bridge',
-    image: `${imageBasePath}osmosis.svg`,
+  osmosis: {
+    averageTime: 5,
     color: '#5E12A0',
-    averageTime: 5
+    image: `${imageBasePath}osmosis.svg`,
+    name: 'Osmosis Bridge'
   },
   //PPPPPPPPPPPPPPP
-  [BRIDGE_TYPE.POLYGON]: {
-    name: 'Polygon bridge',
-    image: `${imageBasePath}polygon-bridge.png`,
+  polygon: {
+    averageTime: 5,
     color: '#5d25ba',
-    averageTime: 5
+    image: `${imageBasePath}polygon-bridge.png`,
+    name: 'Polygon bridge'
+  },
+  pulsechain_bridge: {
+    averageTime: 5,
+    color: '#fff',
+    image: `assets/images/icons/coins/pulsechain.svg`,
+    name: 'Pulsechain bridge'
   },
   //RRRRRRRRRRRRRRRRRRRR
-  [BRIDGE_TYPE.RAINBOW]: {
-    name: 'Rainbow Bridge',
-    image: `${imageBasePath}rainbow.svg`,
+  rainbow: {
+    averageTime: 5,
     color: 'white',
-    averageTime: 5
+    image: `${imageBasePath}rainbow.svg`,
+    name: 'Rainbow Bridge'
   },
-  [BRIDGE_TYPE.RANGO]: {
-    name: 'Rango',
-    image: `${imageBasePath}rango.png`,
+  rango: {
+    averageTime: 5,
     color: 'blue',
-    averageTime: 5
+    image: `${imageBasePath}rango.png`,
+    name: 'Rango'
   },
-  [BRIDGE_TYPE.REFUEL]: {
-    name: 'Refuel',
-    image: `${imageBasePath}refuel.png`,
+  refuel: {
+    averageTime: 5,
     color: '#FEA700',
-    averageTime: 5
+    image: `${imageBasePath}refuel.png`,
+    name: 'Refuel'
   },
   //SSSSSSSSSSSSSSSSSSS
-  [BRIDGE_TYPE.SATELLITE]: {
-    name: 'Satellite',
-    image: `${imageBasePath}satellite.svg`,
+  satellite: {
+    averageTime: 5,
     color: '#3C82F9',
-    averageTime: 5
+    image: `${imageBasePath}satellite.svg`,
+    name: 'Satellite'
   },
-  [BRIDGE_TYPE.SCROLL_BRIDGE]: {
-    name: 'Scroll bridge',
-    image: `${imageBasePath}scroll.svg`,
+  scroll_bridge: {
+    averageTime: 5,
     color: '#fff0de',
-    averageTime: 5
+    image: `${imageBasePath}scroll.svg`,
+    name: 'Scroll bridge'
   },
-  [BRIDGE_TYPE.SQUIDROUTER]: {
-    name: 'Squid Router',
-    image: `${imageBasePath}squidrouter.svg`,
+  squidrouter: {
+    averageTime: 5,
     color: '#e6f936',
-    averageTime: 5
+    image: `${imageBasePath}squidrouter.svg`,
+    name: 'Squid Router'
   },
-  [BRIDGE_TYPE.STARGATE]: {
-    name: 'Stargate',
-    image: `${imageBasePath}stargate.svg`,
+  stargate: {
+    averageTime: 5,
     color: '#999999',
-    averageTime: 5
+    image: `${imageBasePath}stargate.svg`,
+    name: 'Stargate'
   },
-  [BRIDGE_TYPE.SYMBIOSIS]: {
-    name: 'Symbiosis',
-    image: `${imageBasePath}symbiosis.png`,
+  symbiosis: {
+    averageTime: 5,
     color: '#0dc449',
-    averageTime: 5
+    image: `${imageBasePath}symbiosis.png`,
+    name: 'Symbiosis'
   },
-  [BRIDGE_TYPE.SYNAPSE]: {
-    name: 'Synapse',
-    image: `${imageBasePath}synapse.svg`,
+  synapse: {
+    averageTime: 5,
     color: '#b90aba',
-    averageTime: 5
+    image: `${imageBasePath}synapse.svg`,
+    name: 'Synapse'
   },
   //TTTTTTTTTTTTTTTTT
-  [BRIDGE_TYPE.TAIKO_BRIDGE]: {
-    name: 'Taiko bridge',
-    image: `${imageBasePath}taiko.svg`,
+  taiko_bridge: {
+    averageTime: 5,
     color: '#e81899',
-    averageTime: 5
+    image: `${imageBasePath}taiko.svg`,
+    name: 'Taiko bridge'
   },
-  [BRIDGE_TYPE.THORCHAIN]: {
-    name: 'Thorchain',
-    image: `${imageBasePath}thorchain.svg`,
+  thorchain: {
+    averageTime: 5,
     color: '#33FF99',
-    averageTime: 5
+    image: `${imageBasePath}thorchain.svg`,
+    name: 'Thorchain'
   },
   //VVVVVVVVVVVVVVVVVVVVV
-  [BRIDGE_TYPE.VOYAGER]: {
-    name: 'Voyager',
-    image: `${imageBasePath}voyager.svg`,
+  voyager: {
+    averageTime: 5,
     color: 'white',
-    averageTime: 5
+    image: `${imageBasePath}voyager.svg`,
+    name: 'Voyager'
   },
   //WWWWWWWWWWWWWWWWWWWW
-  [BRIDGE_TYPE.WORMHOLE]: {
-    name: 'Wormhole',
-    image: `${imageBasePath}wormhole.svg`,
+  wormhole: {
+    averageTime: 5,
     color: 'white',
-    averageTime: 5
+    image: `${imageBasePath}wormhole.svg`,
+    name: 'Wormhole'
   },
   //XXXXXXXXXXXXXXXXXX
-  [BRIDGE_TYPE.XY]: {
-    name: 'XY',
-    image: `${imageBasePath}xy.svg`,
+  xy: {
+    averageTime: 5,
     color: '#1687ee',
-    averageTime: 5
+    image: `${imageBasePath}xy.svg`,
+    name: 'XY'
   },
   //YYYYYYYYYYYYYYYYYYY
-  [BRIDGE_TYPE.YPOOL]: {
-    name: 'YPool',
-    image: `${imageBasePath}ypool.svg`,
+  ypool: {
+    averageTime: 5,
     color: '#15D9E1',
-    averageTime: 5
-  },
-  [BRIDGE_TYPE.PULSE_CHAIN_BRIDGE]: {
-    name: 'Pulsechain bridge',
-    image: `assets/images/icons/coins/pulsechain.svg`,
-    color: '#fff',
-    averageTime: 5
+    image: `${imageBasePath}ypool.svg`,
+    name: 'YPool'
   }
 };
