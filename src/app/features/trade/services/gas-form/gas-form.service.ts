@@ -107,6 +107,7 @@ export class GasFormService {
 
   private showBlockchain(blockchain: AvailableBlockchain, query: string): boolean {
     return (
+      blockchain.label.toLowerCase().includes(query.toLowerCase()) ||
       blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
       (blockchain.tags.length &&
         blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
