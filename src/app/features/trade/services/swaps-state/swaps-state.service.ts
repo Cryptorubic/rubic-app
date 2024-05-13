@@ -445,25 +445,30 @@ export class SwapsStateService {
   }
 
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
+    const amount = trade instanceof CrossChainTrade ? trade.promotions[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-
-    if (!badgesConfig) {
+    if (!badgesConfig || !amount) {
       return [];
     }
 
     const [, badges] = badgesConfig;
 
-    const tradeSpecificBadges = badges.filter(info => {
-      if (!info.showLabel(trade)) {
-        return false;
-      }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-        return true;
-      }
+    // const tradeSpecificBadges = badges.filter(info => {
+    //   if (!info.showLabel(trade)) {
+    //     return false;
+    //   }
+    //   if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+    //     return true;
+    //   }
 
-      return false;
+    //   return false;
+    // });
+    return badges.map(badge => {
+      return {
+        ...badge,
+        hint: `Swap $100+ & get up to ${amount} $MNT!`,
+        label: `+ ${amount} MNT *`
+      };
     });
-
-    return tradeSpecificBadges;
   }
 }
