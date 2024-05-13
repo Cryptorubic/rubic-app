@@ -16946,10 +16946,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.18.0-alpha.meson.1:
-  version "5.18.0-alpha.meson.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.18.0-alpha.meson.1.tgz#559da8572f2b73341cab2dcd51496edead6650ea"
-  integrity sha512-2BS9m7/qSqF+nKr6Fym3T1vHg5imPz2NrQNCE/aeMWv7NCtVlNT//LlWe0OHhunsNz9zs8Cko9dgHDGnRTS6Mg==
+rubic-sdk@5.18.0-alpha.meson.8:
+  version "5.18.0-alpha.meson.8"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.18.0-alpha.meson.8.tgz#2bf6e7eccd78e73250f0989a543d156523499f85"
+  integrity sha512-DJ6N+0uCx6zRsfsbPCwxWlW1imnT0c/Kr6ZCUVsn4BdumzuglBPWAeElrCV7C7svDHLYQbEiF6aknHMIqakHAA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
