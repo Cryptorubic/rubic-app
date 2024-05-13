@@ -455,21 +455,27 @@ export class SwapsStateService {
     const [symbol, amount] = symbol_amount.split('_');
     const [bridgeType, badges] = badgesConfig;
 
-    const tradeSpecificBadges = badges.filter(info => {
-      if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
-        info.hint = `Swap $100+ & get up to ${amount} ${symbol}!`;
-        info.label = `+ ${amount} ${symbol} *`;
-        return true;
-      }
-      if (!info.showLabel(trade)) {
-        return false;
-      }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-        return true;
-      }
+    const tradeSpecificBadges = badges
+      .map(info => {
+        if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
+          return {
+            ...info,
+            hint: `Swap $100+ & get up to ${amount} ${symbol}!`,
+            label: `+ ${amount} ${symbol} *`
+          };
+          return info;
+        }
+      })
+      .filter(info => {
+        if (!info.showLabel(trade)) {
+          return false;
+        }
+        if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+          return true;
+        }
 
-      return false;
-    });
+        return false;
+      });
     return tradeSpecificBadges;
   }
 }
