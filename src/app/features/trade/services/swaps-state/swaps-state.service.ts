@@ -14,6 +14,7 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
+  BRIDGE_TYPE,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
@@ -445,30 +446,30 @@ export class SwapsStateService {
   }
 
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
-    const amount = trade instanceof CrossChainTrade ? trade.promotions[0] : null;
+    const symbol_amount = trade instanceof CrossChainTrade ? trade.promotions[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-    if (!badgesConfig || !amount) {
+
+    if (!badgesConfig) {
       return [];
     }
+    const [symbol, amount] = symbol_amount.split('_');
+    const [bridgeType, badges] = badgesConfig;
 
-    const [, badges] = badgesConfig;
+    const tradeSpecificBadges = badges.filter(info => {
+      if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
+        info.hint = `Swap $100+ & get up to ${amount} ${symbol}!`;
+        info.label = `+ ${amount} ${symbol} *`;
+        return true;
+      }
+      if (!info.showLabel(trade)) {
+        return false;
+      }
+      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+        return true;
+      }
 
-    // const tradeSpecificBadges = badges.filter(info => {
-    //   if (!info.showLabel(trade)) {
-    //     return false;
-    //   }
-    //   if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-    //     return true;
-    //   }
-
-    //   return false;
-    // });
-    return badges.map(badge => {
-      return {
-        ...badge,
-        hint: `Swap $100+ & get up to ${amount} $MNT!`,
-        label: `+ ${amount} MNT *`
-      };
+      return false;
     });
+    return tradeSpecificBadges;
   }
 }
