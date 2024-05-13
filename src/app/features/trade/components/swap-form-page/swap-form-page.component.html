@@ -36,7 +36,7 @@
           [amountValue]="state.fromAmount"
         ></app-amount-transput>
         <app-user-balance-container
-          (maxButtonClickEvent)="handleMaxButton()"
+          (maxButtonClickEvent)="handleMaxButton($event)"
         ></app-user-balance-container>
       </div>
     </app-input-output-container>
