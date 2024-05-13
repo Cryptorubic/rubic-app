@@ -24,7 +24,13 @@ const positiveBadgeColor =
   'linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%)';
 const warningBadgeColor =
   'linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%)';
-
+export const SYMBIOSIS_REWARD_PRICE = new Map([
+  ['1.2', '$50'],
+  ['1.5', '$250'],
+  ['2.5', '$1000'],
+  ['5', '$2.500'],
+  ['6.5', '$10.000']
+]);
 export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> = {
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {

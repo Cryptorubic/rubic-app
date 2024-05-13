@@ -45,7 +45,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { SPECIFIC_BADGES } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES, SYMBIOSIS_REWARD_PRICE } from './constants/specific-badges-for-trades';
 
 @Injectable()
 export class SwapsStateService {
@@ -470,7 +470,7 @@ export class SwapsStateService {
         if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
           return {
             ...info,
-            hint: `Swap $100+ & get up to ${amount} ${symbol}!`,
+            hint: `Swap ${SYMBIOSIS_REWARD_PRICE.get(amount)}+ & get up to ${amount} ${symbol}!`,
             label: `+ ${amount} ${symbol} *`
           };
           return info;
