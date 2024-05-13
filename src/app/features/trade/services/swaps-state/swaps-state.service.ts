@@ -470,7 +470,7 @@ export class SwapsStateService {
         if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
           return {
             ...info,
-            hint: `Swap ${SYMBIOSIS_REWARD_PRICE.get(amount)}+ & get up to ${amount} ${symbol}!`,
+            hint: `Swap ${SYMBIOSIS_REWARD_PRICE.get(amount)}+ & get ${amount} ${symbol}!`,
             label: `+ ${amount} ${symbol} *`
           };
           return info;
