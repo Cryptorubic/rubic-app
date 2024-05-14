@@ -47,6 +47,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       label: 'Get Blast Points!',
       fromSdk: true,
       bgColor: positiveBadgeColor,
+      href: 'https://twitter.com/xyfinance/status/1788862005736288497',
       showLabel: () => true
     }
   ],

@@ -1,4 +1,4 @@
-<ng-container *ngIf="data">
+<ng-container *ngIf="data?.href">
   <a [skipDefault]="!!data.href === false" [href]="data.href" target="_blank">
     <tui-tag
       class="element__gas-refund-badge"
