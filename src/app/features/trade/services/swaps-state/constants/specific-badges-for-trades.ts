@@ -57,7 +57,6 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       fromSdk: false,
       showLabel: showNoSlippageLabelArbitrumBridge
     },
-
     {
       label: 'ATTENTION',
       hint: 'Waiting funds in target chain for 7 days',

@@ -474,9 +474,7 @@ export class SwapsStateService {
           tradeBridgeType === BRIDGE_TYPE.YPOOL &&
           trade.to.blockchain === BLOCKCHAINS.BLAST.key
         ) {
-          return {
-            ...info
-          };
+          return info;
         }
         if (bridgeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
           const [symbol, amount] = symbolAmount.split('_');
