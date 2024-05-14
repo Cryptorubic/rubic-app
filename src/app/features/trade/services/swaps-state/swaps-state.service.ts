@@ -449,7 +449,7 @@ export class SwapsStateService {
     const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
 
-    if (!badgesConfig) {
+    if (!badgesConfig || !symbolAmount) {
       return [];
     }
     const [symbol, amount] = symbolAmount.split('_');
