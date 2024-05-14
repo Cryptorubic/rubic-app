@@ -38,7 +38,15 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       hint: 'Swap $100+ & get up to 1.3 $MNT!',
       label: '+ 1.3 MNT *',
       href: 'https://twitter.com/symbiosis_fi/status/1785996599564382501',
+      fromSdk: false,
+      showLabel: () => true
+    }
+  ],
+  [BRIDGE_TYPE.XY]: [
+    {
+      label: 'Get Blast Points!',
       fromSdk: true,
+      bgColor: positiveBadgeColor,
       showLabel: () => true
     }
   ],
@@ -49,6 +57,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       fromSdk: false,
       showLabel: showNoSlippageLabelArbitrumBridge
     },
+
     {
       label: 'ATTENTION',
       hint: 'Waiting funds in target chain for 7 days',
