@@ -24,6 +24,7 @@
     margin-top: -2px;
 
     background: linear-gradient(90deg, #209e62 0%, #0fa4ad 91.5%);
+    cursor: pointer;
     //border-radius: var(--tui-radius-s);
 
     transition: 0.2s ease-in-out;
@@ -44,7 +45,7 @@
   :host {
     width: 100%;
   }
-  
+
   .user-balance-container {
     justify-content: space-between;
     width: 100%;

@@ -9,6 +9,8 @@ import { PreviewSwapService } from '../../services/preview-swap/preview-swap.ser
 import BigNumber from 'bignumber.js';
 import { SelectedTrade } from '../../models/selected-trade';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -20,13 +22,14 @@ export class UserBalanceContainerComponent {
   private readonly _triggerRefresh$ = new BehaviorSubject(null);
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
-    combineLatestWith(this.swapsStateService.tradeState$, this._triggerRefresh$.pipe(startWith())),
-    map(([fromToken, tradeState]) => {
-      const token = this.tokensStoreService.tokens.find(t => compareTokens(fromToken, t));
-      if (!tradeState.trade || !tradeState.trade.from.isNative) {
-        return token;
-      }
-      return { ...token, amount: this.getNativeTokenMaxAmount(token.amount, tradeState) };
+    combineLatestWith(
+      this.swapsFormService.fromAmount$,
+      this.swapsStateService.tradeState$,
+      this._triggerRefresh$.pipe(startWith())
+    ),
+    map(([fromToken]) => this.tokensStoreService.tokens.find(t => compareTokens(fromToken, t))),
+    tap(token => {
+      this.setAvailableMaxAmount(this.swapsStateService.tradeState, token?.amount);
     })
   );
 
@@ -36,12 +39,16 @@ export class UserBalanceContainerComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  private availableMaxAmount: BigNumber = new BigNumber(0);
+
   constructor(
     private readonly swapsStateService: SwapsStateService,
     private readonly headerStore: HeaderStore,
     private readonly tokensStoreService: TokensStoreService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly notificationsService: NotificationsService,
+    private readonly translateService: TranslateService
   ) {
     this.tokensStoreService.tokens$
       .pipe(
@@ -60,19 +67,44 @@ export class UserBalanceContainerComponent {
       .subscribe();
   }
 
-  private getNativeTokenMaxAmount(amount: BigNumber, tradeState: SelectedTrade): BigNumber {
-    const trade = tradeState.trade;
-    const gas = trade.getTradeInfo().estimatedGas;
-    const fee = trade.feeInfo;
-    let totalFee = new BigNumber(0);
+  private setAvailableMaxAmount(
+    tradeState: SelectedTrade,
+    amount: BigNumber = new BigNumber(0)
+  ): void {
+    if (!tradeState.trade || !tradeState.trade.from.isNative) {
+      this.availableMaxAmount = amount;
+    } else {
+      const trade = tradeState.trade;
+      const gas = trade.getTradeInfo().estimatedGas || 0;
+      const fee = trade.feeInfo;
+      let totalFee = new BigNumber(0);
 
-    if (fee.provider?.cryptoFee) {
-      totalFee = totalFee.plus(fee.provider.cryptoFee.amount);
-    }
-    if (fee.rubicProxy?.fixedFee) {
-      totalFee = totalFee.plus(fee.rubicProxy.fixedFee.amount);
-    }
+      if (fee.provider?.cryptoFee) {
+        totalFee = totalFee.plus(fee.provider.cryptoFee.amount);
+      }
+      if (fee.rubicProxy?.fixedFee) {
+        totalFee = totalFee.plus(fee.rubicProxy.fixedFee.amount);
+      }
 
-    return amount.minus(totalFee).minus(gas);
+      const result = amount.minus(totalFee).minus(gas);
+      this.availableMaxAmount = result.isLessThanOrEqualTo(0) ? new BigNumber(0) : result;
+    }
+  }
+
+  public onMaxButtonClick(symbol: string): void {
+    if (this.availableMaxAmount.isZero()) {
+      const message = this.translateService.instant('errors.insufficientFoundsGasPriceValue', {
+        nativeToken: symbol
+      });
+      this.notificationsService.show(message, {
+        status: 'warning',
+        autoClose: true,
+        icon: '',
+        data: null,
+        defaultAutoCloseTime: 0
+      });
+    } else {
+      this.maxButtonClickEvent.emit(this.availableMaxAmount);
+    }
   }
 }

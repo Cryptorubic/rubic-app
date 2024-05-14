@@ -4,7 +4,7 @@
       >Balance:
       <span
         class="user-balance-container__balance_amount"
-        (click)="isMobile ? maxButtonClickEvent.emit(token.amount) : null"
+        (click)="isMobile ? onMaxButtonClick(token.symbol) : null"
       >
         {{ token?.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }}
       </span>
@@ -16,7 +16,7 @@
       status="custom"
       value="MAX"
       class="user-balance-container__max-button"
-      (click)="maxButtonClickEvent.emit(token.amount)"
+      (click)="onMaxButtonClick(token.symbol)"
     >
     </tui-tag>
   </ng-container>
