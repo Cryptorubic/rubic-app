@@ -16922,10 +16922,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.18.0-alpha-izumi-mode.1:
-  version "5.18.0-alpha-izumi-mode.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.18.0-alpha-izumi-mode.1.tgz#948de1c053d5eba10731a05bd0b2ae3905cccc14"
-  integrity sha512-VxODRoJkHR5xKzHEQvZq9YvLBSQ4QbGLRAuMt5rUI/OP17gJ6WoYM6nEkGpadt3g6LyEcz7Jmu6GRv7ysMSXsw==
+rubic-sdk@5.18.0:
+  version "5.18.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.18.0.tgz#f6343bf40e7457f04395fcb99bb7203d6dfdd9a8"
+  integrity sha512-2BN2QvzK1eiP8jsnzhnR6lF2FmoylrqjHvVLRp4biCZua9e395JAnM/qv2pNua473EhSGiSnBQ/BlZ2++LkDvQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
