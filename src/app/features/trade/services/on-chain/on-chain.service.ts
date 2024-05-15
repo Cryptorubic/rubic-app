@@ -20,7 +20,8 @@ import {
   UnnecessaryApproveError,
   UserRejectError,
   Web3Public,
-  Web3Pure
+  Web3Pure,
+  UnapprovedContractError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -337,11 +338,15 @@ export class OnChainService {
   }
 
   public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
+    error: NotWhitelistedProviderError | UnapprovedContractError,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
-    this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    if (error instanceof NotWhitelistedProviderError) {
+      this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    } else {
+      this.onChainApiService.saveNotWhitelistedCcrProvider(error, blockchain, tradeType);
+    }
   }
 
   private isNotMinedError(err: Error): boolean {
