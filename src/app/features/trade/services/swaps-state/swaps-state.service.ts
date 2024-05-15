@@ -14,6 +14,7 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
+  BRIDGE_TYPE,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
@@ -44,7 +45,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { SPECIFIC_BADGES } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES, SYMBIOSIS_REWARD_PRICE } from './constants/specific-badges-for-trades';
 
 @Injectable()
 export class SwapsStateService {
@@ -445,25 +446,36 @@ export class SwapsStateService {
   }
 
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
+    const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
 
-    if (!badgesConfig) {
+    if (!badgesConfig || !symbolAmount) {
       return [];
     }
+    const [symbol, amount] = symbolAmount.split('_');
+    const [bridgeType, badges] = badgesConfig;
 
-    const [, badges] = badgesConfig;
+    const tradeSpecificBadges = badges
+      .filter(info => {
+        if (!info.showLabel(trade)) {
+          return false;
+        }
+        if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+          return true;
+        }
 
-    const tradeSpecificBadges = badges.filter(info => {
-      if (!info.showLabel(trade)) {
         return false;
-      }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-        return true;
-      }
-
-      return false;
-    });
-
+      })
+      .map(info => {
+        if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
+          return {
+            ...info,
+            hint: `Swap ${SYMBIOSIS_REWARD_PRICE[amount]}+ & get ${amount} ${symbol}!`,
+            label: `+ ${amount} ${symbol} *`
+          };
+          return info;
+        }
+      });
     return tradeSpecificBadges;
   }
 }
