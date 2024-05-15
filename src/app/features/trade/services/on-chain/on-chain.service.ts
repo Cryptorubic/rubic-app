@@ -345,7 +345,9 @@ export class OnChainService {
     if (error instanceof NotWhitelistedProviderError) {
       this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
     } else {
-      this.onChainApiService.saveNotWhitelistedCcrProvider(error, blockchain, tradeType);
+      this.onChainApiService
+        .saveNotWhitelistedOnChainProvider(error, blockchain, tradeType)
+        .subscribe();
     }
   }
 

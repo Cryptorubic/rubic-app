@@ -145,7 +145,7 @@ export class OnChainApiService {
     });
   }
 
-  public saveNotWhitelistedCcrProvider(
+  public saveNotWhitelistedOnChainProvider(
     error: UnapprovedContractError,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
