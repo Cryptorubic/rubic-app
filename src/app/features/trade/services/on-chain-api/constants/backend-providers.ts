@@ -128,7 +128,9 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: 'camelot',
   [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: 'merlinswap',
   [ON_CHAIN_TRADE_TYPE.PITEAS]: 'piteas',
-  [ON_CHAIN_TRADE_TYPE.KIM]: 'kim'
+  [ON_CHAIN_TRADE_TYPE.KIM]: 'kim',
+  [ON_CHAIN_TRADE_TYPE.FENIX_V2]: 'fenix_v2',
+  [ON_CHAIN_TRADE_TYPE.FENIX_V3]: 'fenix_v3'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
