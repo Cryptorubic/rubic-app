@@ -72,7 +72,7 @@ export class WalletsModalComponent implements OnInit {
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
-    return provider === WALLET_NAME.WALLET_LINK;
+    return this.isMobile && provider === WALLET_NAME.WALLET_LINK;
   };
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());

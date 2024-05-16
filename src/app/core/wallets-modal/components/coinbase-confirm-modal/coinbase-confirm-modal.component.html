@@ -3,7 +3,7 @@
   <ul class="networks">
     <li
       class="networks__item"
-      [class.networks__item_selected]="blockchain === selectedBlockchain"
+      [ngClass]="{ networks__item_selected: blockchain === selectedBlockchain }"
       *ngFor="let blockchain of availableBlockchains"
       (click)="selectedBlockchain = blockchain"
     >
@@ -18,11 +18,11 @@
     </li>
   </ul>
   <div class="buttons-container">
-    <app-rubic-button appearance="secondary" fullWidth bordered (click)="onDecline()">{{
-      'common.cancel' | translate
-    }}</app-rubic-button>
-    <app-rubic-button fullWidth appearance="primary" (click)="onConfirm()">{{
-      'common.OK' | translate
-    }}</app-rubic-button>
+    <button tuiButton type="button" size="m" appearance="outline" (click)="onDecline()">
+      {{ 'common.cancel' | translate }}
+    </button>
+    <button tuiButton type="button" size="m" appearance="primary" (click)="onConfirm()">
+      {{ 'common.OK' | translate }}
+    </button>
   </div>
 </section>

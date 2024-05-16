@@ -49,7 +49,7 @@
     }
 
     &_selected {
-      border: 2px solid var(--primary-color);
+      border: 2px solid var(--tui-primary);
     }
   }
 }
@@ -60,7 +60,7 @@
 
   margin-bottom: 1.5em;
 
-  app-rubic-button {
+  button {
     width: 250px;
   }
 }
