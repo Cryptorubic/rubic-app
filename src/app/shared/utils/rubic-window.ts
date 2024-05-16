@@ -1,6 +1,7 @@
 import Process = NodeJS.Process;
 import { WalletLinkProvider } from 'walletlink';
 import { PhantomWallet } from '@core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
+
 // Included with Angular CLI.
 
 /**
@@ -18,4 +19,5 @@ export interface RubicWindow extends Window {
   };
   bitkeep?: { ethereum?: WalletLinkProvider };
   phantom?: { ethereum?: WalletLinkProvider; solana: PhantomWallet };
+  ethereum?: WalletLinkProvider & { isTokenPocket?: boolean };
 }
