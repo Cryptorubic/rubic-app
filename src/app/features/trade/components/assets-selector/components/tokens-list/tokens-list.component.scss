@@ -19,7 +19,8 @@ $token-card-height: 55px;
   padding: 10px;
 
   background: var(--io-background);
-  border-radius: var(--tui-radius-m);
+  border-bottom-right-radius: var(--tui-radius-m);
+  border-bottom-left-radius: var(--tui-radius-m);
 
   @include b($mobile-md) {
     height: 54vh;

@@ -1,7 +1,7 @@
 @use 'src/scss/core' as *;
 
 :host {
-  --tui-secondary: var(--tui-base-01);
+  --tui-secondary: var(--io-background);
   --tui-padding: 0;
   --tui-height-l: 60px;
 }
@@ -18,11 +18,9 @@
 
 .icon-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: var(--tui-padding-xs);
   align-items: center;
-  justify-content: center;
-  width: 75px;
   height: 60px;
   padding: 5px;
   overflow: hidden;
@@ -31,22 +29,29 @@
 .asset-types-aside {
   display: flex;
   align-items: center;
-
-  width: 160px;
+  width: 191px;
   height: 100%;
+  padding: 10px;
+
+  background: var(--io-background);
+  border-bottom-right-radius: var(--tui-radius-m);
+  border-bottom-left-radius: var(--tui-radius-m);
 
   &__scroll {
     max-height: 100%;
   }
 
   &__list-element {
-    flex: 1;
+    width: 169px;
+    height: 41px;
+
+    border-radius: 8px;
   }
 
   &__list {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    justify-content: center;
 
     &-element {
       &._disabled {
@@ -57,6 +62,12 @@
             background: var(--tui-secondary-hover) !important;
             opacity: 1 !important;
           }
+        }
+      }
+
+      ::ng-deep {
+        .t-content {
+          justify-content: start;
         }
       }
     }
