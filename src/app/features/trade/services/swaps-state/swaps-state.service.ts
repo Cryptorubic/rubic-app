@@ -446,7 +446,6 @@ export class SwapsStateService {
   }
 
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
-    const tradeBridgeType = trade instanceof CrossChainTrade ? trade?.bridgeType : null;
     const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
     if (!badgesConfig) {
@@ -461,9 +460,6 @@ export class SwapsStateService {
           return false;
         }
         if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-          return true;
-        }
-        if (tradeBridgeType && tradeBridgeType === 'ypool') {
           return true;
         }
         return false;

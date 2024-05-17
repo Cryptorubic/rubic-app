@@ -18,6 +18,10 @@ function showAttentionLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade)
   );
 }
 
+function showXyBlastPromoLabel(trade: CrossChainTrade): boolean {
+  return trade.to.blockchain === BLOCKCHAIN_NAME.BLAST && trade.bridgeType === 'ypool';
+}
+
 const POSITIVE_COLOR =
   'linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%)';
 const WARNING_COLOR =
@@ -47,8 +51,8 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       label: 'Get Blast Points!',
       href: 'https://twitter.com/xyfinance/status/1788862005736288497',
       bgColor: POSITIVE_COLOR,
-      fromSdk: true,
-      showLabel: () => true
+      fromSdk: false,
+      showLabel: showXyBlastPromoLabel
     }
   ],
   [BRIDGE_TYPE.MESON]: [
