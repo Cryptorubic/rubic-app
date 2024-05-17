@@ -46,7 +46,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
 import { SPECIFIC_BADGES, SYMBIOSIS_REWARD_PRICE } from './constants/specific-badges-for-trades';
-import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 
 @Injectable()
 export class SwapsStateService {
@@ -454,7 +453,7 @@ export class SwapsStateService {
       return [];
     }
 
-    const [bridgeType, badges] = badgesConfig;
+    const [tradeType, badges] = badgesConfig;
 
     const tradeSpecificBadges = badges
       .filter(info => {
@@ -470,13 +469,7 @@ export class SwapsStateService {
         return false;
       })
       .map(info => {
-        if (
-          tradeBridgeType === BRIDGE_TYPE.YPOOL &&
-          trade.to.blockchain === BLOCKCHAINS.BLAST.key
-        ) {
-          return info;
-        }
-        if (bridgeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
+        if (tradeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
           const [symbol, amount] = symbolAmount.split('_');
           return {
             ...info,
@@ -484,7 +477,9 @@ export class SwapsStateService {
             label: `+ ${amount} ${symbol} *`
           };
         }
+        return info;
       });
+
     return tradeSpecificBadges;
   }
 }
