@@ -14,6 +14,7 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
+  BRIDGE_TYPE,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
@@ -44,7 +45,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { SPECIFIC_BADGES } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES, SYMBIOSIS_REWARD_PRICE } from './constants/specific-badges-for-trades';
+import { BLOCKCHAINS } from '@app/shared/constants/blockchain/ui-blockchains';
 
 @Injectable()
 export class SwapsStateService {
@@ -445,25 +447,44 @@ export class SwapsStateService {
   }
 
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
+    const tradeBridgeType = trade instanceof CrossChainTrade ? trade?.bridgeType : null;
+    const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-
     if (!badgesConfig) {
       return [];
     }
 
-    const [, badges] = badgesConfig;
+    const [bridgeType, badges] = badgesConfig;
 
-    const tradeSpecificBadges = badges.filter(info => {
-      if (!info.showLabel(trade)) {
+    const tradeSpecificBadges = badges
+      .filter(info => {
+        if (!info.showLabel(trade)) {
+          return false;
+        }
+        if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+          return true;
+        }
+        if (tradeBridgeType && tradeBridgeType === 'ypool') {
+          return true;
+        }
         return false;
-      }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-        return true;
-      }
-
-      return false;
-    });
-
+      })
+      .map(info => {
+        if (
+          tradeBridgeType === BRIDGE_TYPE.YPOOL &&
+          trade.to.blockchain === BLOCKCHAINS.BLAST.key
+        ) {
+          return info;
+        }
+        if (bridgeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
+          const [symbol, amount] = symbolAmount.split('_');
+          return {
+            ...info,
+            hint: `Swap ${SYMBIOSIS_REWARD_PRICE[amount]}+ & get ${amount} ${symbol}!`,
+            label: `+ ${amount} ${symbol} *`
+          };
+        }
+      });
     return tradeSpecificBadges;
   }
 }
