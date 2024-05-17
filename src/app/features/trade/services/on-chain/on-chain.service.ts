@@ -16,6 +16,7 @@ import {
   PriceToken,
   SwapTransactionOptions,
   Token,
+  TokenAmount,
   TX_STATUS,
   UnnecessaryApproveError,
   UserRejectError,
@@ -136,9 +137,23 @@ export class OnChainService {
             disabledProviders: disabledTradeTypes
           };
 
+          let fromTokenAmount = fromAmount.actualValue.toFixed();
+
+          if (fromToken.blockchain === BLOCKCHAIN_NAME.ZETACHAIN && !fromSdkToken.isNative) {
+            const fromTokenStruct = new TokenAmount({
+              ...fromSdkToken.asStruct,
+              tokenAmount: fromAmount.actualValue
+            });
+
+            fromTokenAmount = Web3Pure.fromWei(
+              fromTokenStruct.weiAmount.minus(1),
+              fromSdkToken.decimals
+            ).toFixed();
+          }
+
           return this.sdkService.instantTrade.calculateTradeReactively(
             fromSdkToken,
-            fromAmount.actualValue.toFixed(),
+            fromTokenAmount,
             toSdkToken,
             options
           );
