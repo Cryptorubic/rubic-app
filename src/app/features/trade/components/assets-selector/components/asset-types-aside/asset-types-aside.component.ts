@@ -1,6 +1,14 @@
-import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Injector,
+  Input,
+  Self,
+  SkipSelf
+} from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { map } from 'rxjs/operators';
+import { combineLatestWith, map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
@@ -14,12 +22,16 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
+import { SearchQueryService } from '../../services/search-query-service/search-query.service';
+import { Observable, of } from 'rxjs';
+import { switchIif } from '@app/shared/utils/utils';
 
 @Component({
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService]
 })
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
@@ -28,15 +40,36 @@ export class AssetTypesAsideComponent {
 
   public readonly formType = this.assetsSelectorService.formType;
 
+  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
+    combineLatestWith(
+      this.gasFormService.sourceBlockchainsToShow$,
+      this.gasFormService.targetBlockchainsToShow$
+    ),
+    switchIif(
+      () => this.formsTogglerService.isGasFormOpened(),
+      () => this.gasFormBlockchainsToShow$,
+      ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
+    ),
+    map(blockchains => [
+      ...blockchains.slice(0, 8),
+      ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
+    ])
+  );
+
+  private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
+    return this.formType === 'to'
+      ? this.gasFormService.targetBlockchainsToShow$
+      : this.gasFormService.sourceBlockchainsToShow$;
+  }
+
   /**
    * Returns amount of blockchains to show, depending on window width and height.
    */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
       if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
-        return 11;
+        return 68;
       }
-
       return this.blockchainsAmount;
     })
   );
@@ -53,7 +86,8 @@ export class AssetTypesAsideComponent {
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
-    private readonly assetsSelectorService: AssetsSelectorService,
+    @Self() private readonly assetsAsideSelectorService: AssetsSelectorService,
+    @SkipSelf() private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
@@ -62,7 +96,9 @@ export class AssetTypesAsideComponent {
     private readonly formsTogglerService: FormsTogglerService,
     private readonly gasFormService: GasFormService,
     @Inject(Injector) private readonly injector: Injector
-  ) {}
+  ) {
+    this.openBlockchainsList();
+  }
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
     const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
@@ -180,7 +216,7 @@ export class AssetTypesAsideComponent {
   }
 
   public openBlockchainsList(): void {
-    this.assetsSelectorService.openBlockchainsList();
+    this.assetsAsideSelectorService.openBlockchainsList();
   }
 
   public openFiatsList(): void {

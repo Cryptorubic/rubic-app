@@ -4,10 +4,11 @@
       <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
       <span class="back-button__text">{{ headerText$ | async }}</span>
     </div>
+    <app-blockchains-filter-list></app-blockchains-filter-list>
   </ng-container>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <ng-container *ngIf="!isMobile; then searchBar"></ng-container>
+    <ng-container *ngIf="!isMobile && selectorListType === 'blockchains' then searchBar"></ng-container>
     <div class="assets-selector__row">
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
@@ -17,7 +18,6 @@
 
       <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="'idPrefix'"></app-asset-types-aside>
-
         <ng-container *ngIf="selectorListType === 'fiats'">
           <app-search-bar class="vertical-iframe-token-search"></app-search-bar>
         </ng-container>
@@ -40,8 +40,8 @@
         <app-search-bar></app-search-bar>
 
         <app-switch-list-type-button
-          *ngIf="selectorListType === 'tokens'"
-        ></app-switch-list-type-button>
+        *ngIf="selectorListType === 'tokens'">
+        </app-switch-list-type-button>
       </div>
     </ng-template>
   </ng-container>

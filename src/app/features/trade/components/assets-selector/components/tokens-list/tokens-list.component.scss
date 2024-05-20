@@ -15,7 +15,7 @@ $token-card-height: 55px;
 .tokens-container {
   position: relative;
 
-  height: 100%;
+  height: 469px;
   padding: 10px;
 
   background: var(--io-background);
@@ -61,6 +61,19 @@ tui-loader {
 
   @include b($mobile-md) {
     padding: 0;
+  }
+
+  &__search-bar {
+    margin-bottom: 2px;
+
+    ::ng-deep {
+      .tui-autofill {
+        background-color: var(--io-background);
+        border-radius: 0;
+        border-top-left-radius: var(--tui-radius-m);
+        border-top-right-radius: var(--tui-radius-m);
+      }
+    }
   }
 
   &__item {

@@ -1,0 +1,25 @@
+@use 'src/scss/core' as *;
+
+
+.filter-list-element {
+  ::ng-deep {
+    .t-wrapper {
+      width: 90px;
+
+      background: var(--tui-base-01);
+    }
+
+  }
+
+  &__clicked-element {
+    ::ng-deep {
+      .t-wrapper {
+        color: black;
+
+        background: var(--tui-primary);
+      }
+
+    }
+  }
+}
+

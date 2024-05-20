@@ -4,7 +4,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, filter, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -18,6 +18,8 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { BlockchainName } from 'rubic-sdk';
+import { FilterQueryService } from '../filter-query-service/filter-query.service';
+import { BlockchainFilters } from '../../components/blockchains-filter-list/models/BlockchainFilters';
 
 @Injectable()
 export class BlockchainsListService {
@@ -51,12 +53,14 @@ export class BlockchainsListService {
     private readonly searchQueryService: SearchQueryService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly filterQueryService: FilterQueryService
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
 
     this.subscribeOnSearchQuery();
+    this.subscribeOnFilterQuery();
   }
 
   private setAvailableBlockchains(): void {
@@ -82,6 +86,7 @@ export class BlockchainsListService {
         icon: blockchainIcon[blockchain.name],
         label: blockchainLabel[blockchain.name],
         tags: blockchain.tags,
+        tag: blockchain.tag,
         disabledConfiguration,
         disabledFrom
       };
@@ -108,6 +113,24 @@ export class BlockchainsListService {
           );
         });
       });
+  }
+
+  private subscribeOnFilterQuery(): void {
+    combineLatest([this.filterQueryService.filterQuery$])
+      .pipe(
+        map(([filterQuery]) => filterQuery),
+        tap(filterQuery => {
+          if (filterQuery === BlockchainFilters.ALL) {
+            this.blockchainsToShow = this.availableBlockchains;
+          } else {
+            this.blockchainsToShow = this.availableBlockchains.filter(
+              blockchain => blockchain.tag === filterQuery
+            );
+          }
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {

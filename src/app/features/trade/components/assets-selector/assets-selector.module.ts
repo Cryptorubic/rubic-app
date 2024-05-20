@@ -33,6 +33,9 @@ import { BlockchainsListService } from './services/blockchains-list-service/bloc
 import { SearchQueryService } from './services/search-query-service/search-query.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { AssetsSelectorService } from './services/assets-selector-service/assets-selector.service';
+import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
+import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
+import { FilterQueryService } from './services/filter-query-service/filter-query.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,9 @@ import { AssetsSelectorService } from './services/assets-selector-service/assets
     BlockchainsListComponent,
     SwitchTokensListTypeButtonComponent,
     EmptyListComponent,
-    AssetsSelectorPageComponent
+    AssetsSelectorPageComponent,
+    BlockchainsFilterListComponent,
+    FilterListElementComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +80,8 @@ import { AssetsSelectorService } from './services/assets-selector-service/assets
     BlockchainsListService,
     SearchQueryService,
     FormsTogglerService,
-    AssetsSelectorService
+    AssetsSelectorService,
+    FilterQueryService
   ]
 })
 export class AssetsSelectorModule {}
