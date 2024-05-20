@@ -1,5 +1,19 @@
+@use 'src/scss/core' as *;
+
 .blockchains-filter-list {
   display: flex;
   justify-content: space-between;
   margin-top: 12px;
+}
+
+@include b($mobile-sm-middle) {
+  .blockchains-filter-list {
+    gap: 12px;
+    align-items: unset;
+    overflow-x: auto;
+  }
+
+  .blockchains-filter-list::-webkit-scrollbar {
+    display: none;
+  }
 }

@@ -25,6 +25,7 @@ import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/model
 import { SearchQueryService } from '../../services/search-query-service/search-query.service';
 import { Observable, of } from 'rxjs';
 import { switchIif } from '@app/shared/utils/utils';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -39,6 +40,8 @@ export class AssetTypesAsideComponent {
   public readonly selectedAssetType$ = this.assetsSelectorService.assetType$;
 
   public readonly formType = this.assetsSelectorService.formType;
+
+  public readonly isMobile = this.headerStore.isMobile;
 
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
     combineLatestWith(
@@ -95,6 +98,7 @@ export class AssetTypesAsideComponent {
     private readonly modalService: ModalService,
     private readonly formsTogglerService: FormsTogglerService,
     private readonly gasFormService: GasFormService,
+    private readonly headerStore: HeaderStore,
     @Inject(Injector) private readonly injector: Injector
   ) {
     this.openBlockchainsList();

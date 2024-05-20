@@ -20,7 +20,9 @@ export class SearchBarComponent {
 
   public readonly searchBarText$ = this.assetsSelectorService.selectorListType$.pipe(
     map(selectorListType =>
-      selectorListType === 'tokens' ? 'modals.tokensListModal.searchPlaceholder' : 'Search name'
+      selectorListType === 'tokens'
+        ? 'modals.tokensListModal.searchPlaceholder'
+        : 'Search among 78 Chains'
     )
   );
 

@@ -51,8 +51,16 @@ app-search-bar {
     &__row {
       > .assets-selector__row {
         margin: var(--tui-padding-l) 0;
+        margin-bottom: 0;
         padding: 0 var(--tui-padding-l);
       }
+    }
+
+    &__h-line {
+      margin: var(--tui-padding-l);
+      margin-bottom: 0;
+
+      border: 2px solid var(--tui-base-01);
     }
 
     > .assets-selector__row {

@@ -31,7 +31,8 @@
   align-items: start;
   width: 191px;
   height: 469px;
-  padding: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 
   background: var(--tui-secondary);
   border-bottom-right-radius: var(--tui-radius-m);
@@ -52,6 +53,10 @@
         border-top-left-radius: var(--tui-radius-m);
         border-top-right-radius: var(--tui-radius-m);
       }
+    }
+
+    &-mobile {
+      padding: 0 16px;
     }
   }
 
@@ -126,27 +131,46 @@
 }
 
 @include b($mobile-md) {
+  .icon-container {
+    flex-direction: column;
+    justify-content: center;
+  }
+
   .asset-types-aside {
     display: flex;
     flex-direction: column;
-    align-items: unset;
+    align-items: flex-start;
     justify-content: center;
     width: 100%;
 
     height: 100%;
 
     padding: 0;
+    overflow-x: auto;
 
     background-color: unset;
 
     border-radius: unset;
 
+    &__list-element {
+      width: 80px;
+      height: 62px;
+
+      border-radius: 16px;
+
+      ::ng-deep {
+        .t-content {
+          justify-content: center;
+        }
+      }
+    }
+
     &__list {
       display: flex;
       flex-direction: row;
       flex-wrap: nowrap;
+      gap: 12px;
       align-items: center;
-
       padding-left: 1rem;
     }
 
@@ -173,6 +197,10 @@
         display: none;
       }
     }
+  }
+
+  .asset-types-aside::-webkit-scrollbar {
+    display: none;
   }
 }
 

@@ -8,9 +8,10 @@
 
 .dropdown-content {
   display: flex;
+  flex-direction: column;
   gap: var(--tui-padding-s);
-  align-items: center;
-  width: 100%;
+  width: 249px;
+  height: 130px;
   padding: var(--tui-padding-xs) var(--tui-padding-xs);
 
   > * {
@@ -28,6 +29,10 @@
   &:hover {
     background: var(--tui-secondary);
     border-radius: var(--tui-radius-m);
+  }
+
+  &__element {
+    display: inline-flex;
   }
 
   &__favorite {
