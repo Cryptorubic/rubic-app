@@ -68,7 +68,7 @@ export class AssetTypesAsideComponent {
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
     map(windowSize => {
       if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
-        return 68;
+        return 11;
       }
       return this.blockchainsAmount;
     })

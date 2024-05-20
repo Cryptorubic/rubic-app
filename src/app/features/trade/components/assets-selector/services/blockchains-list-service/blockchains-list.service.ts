@@ -86,7 +86,6 @@ export class BlockchainsListService {
         icon: blockchainIcon[blockchain.name],
         label: blockchainLabel[blockchain.name],
         tags: blockchain.tags,
-        tag: blockchain.tag,
         disabledConfiguration,
         disabledFrom
       };
@@ -123,8 +122,8 @@ export class BlockchainsListService {
           if (filterQuery === BlockchainFilters.ALL) {
             this.blockchainsToShow = this.availableBlockchains;
           } else {
-            this.blockchainsToShow = this.availableBlockchains.filter(
-              blockchain => blockchain.tag === filterQuery
+            this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>
+              blockchain.tags.includes(filterQuery)
             );
           }
         }),
