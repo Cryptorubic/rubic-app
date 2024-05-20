@@ -58,9 +58,9 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
   [BRIDGE_TYPE.MESON]: [
     {
       label: 'INFO',
-      hint: `Meson supports only amount with 6 or less decimals.
-          If input amount contains more then 6 decimals - transaction will spend only amount with 6 digits after comma.
-          Example: 6.9999999999ETH -> 6.999999ETH.`,
+      hint: `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
+      If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
+      Example: 0.99999999999 ETH -> 0.999999 ETH`,
       bgColor: INFO_COLOR,
       fromSdk: false,
       showLabel: () => true
