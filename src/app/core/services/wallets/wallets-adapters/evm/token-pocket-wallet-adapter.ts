@@ -23,12 +23,12 @@ export class TokenPocketWalletAdapter extends EvmWalletAdapter {
   }
 
   public async activate(): Promise<void> {
-    if (typeof this.window.ethereum?.isTokenPocket === 'undefined') {
+    if (typeof this.window.tokenpocket.ethereum?.isTokenPocket === 'undefined') {
       throw new TokenPocketError();
     }
 
     try {
-      const accounts = (await this.window.ethereum?.request({
+      const accounts = (await this.window.tokenpocket.ethereum?.request({
         method: 'eth_requestAccounts'
       })) as RubicAny;
 

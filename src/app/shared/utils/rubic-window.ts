@@ -18,6 +18,7 @@ export interface RubicWindow extends Window {
     tronWeb: unknown;
   };
   bitkeep?: { ethereum?: WalletLinkProvider };
+  tokenpocket?: { ethereum?: WalletLinkProvider & { isTokenPocket?: boolean } };
   phantom?: { ethereum?: WalletLinkProvider; solana: PhantomWallet };
-  ethereum?: WalletLinkProvider & { isTokenPocket?: boolean };
+  ethereum?: WalletLinkProvider;
 }
