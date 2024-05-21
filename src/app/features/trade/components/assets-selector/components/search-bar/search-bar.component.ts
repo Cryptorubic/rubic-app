@@ -4,6 +4,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
+import { BlockchainsListService } from '../../services/blockchains-list-service/blockchains-list.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -22,7 +23,7 @@ export class SearchBarComponent {
     map(selectorListType =>
       selectorListType === 'tokens'
         ? 'modals.tokensListModal.searchPlaceholder'
-        : 'Search among 78 Chains'
+        : `Search among ${this.blockchainListService.availableBlockchains.length} Chains`
     )
   );
 
@@ -31,7 +32,8 @@ export class SearchBarComponent {
   constructor(
     private readonly searchQueryService: SearchQueryService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly blockchainListService: BlockchainsListService
   ) {}
 
   /**

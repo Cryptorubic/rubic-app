@@ -1,9 +1,10 @@
 <div class="blockchains-filter-list">
-  <ng-container *ngFor="let filter of BLOCKCHAIN_FILTERS; let i = index">
+  <ng-container *ngFor="let filter of BLOCKCHAIN_FILTERS">
     <app-filter-list-element
+      *ngLet="currentFilter$ | async as currentFilter"
       [blockchainFilter]="filter"
-      (click)="onSelectFilter(filter, i)"
-      [isClicked]="isSelectedFilter(i)"
+      (click)="onSelectFilter(filter)"
+      [isSelected]="currentFilter === filter"
     ></app-filter-list-element>
   </ng-container>
 </div>

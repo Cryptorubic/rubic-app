@@ -43,7 +43,7 @@
                 </div>
                 <div
                   class="badge-container"
-                  *ngIf="!isMobile && isBlockchainBadge(blockchainItem) as tag"
+                  *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag"
                 >
                   <span>{{ tag }}</span>
                 </div>

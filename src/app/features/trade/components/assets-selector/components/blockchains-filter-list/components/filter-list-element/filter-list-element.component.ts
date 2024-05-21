@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BlockchainFilter } from '../../models/BlockchainFilters';
+import { BlockchainFilters } from '../../models/BlockchainFilters';
 
 @Component({
   selector: 'app-filter-list-element',
@@ -8,7 +8,7 @@ import { BlockchainFilter } from '../../models/BlockchainFilters';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FilterListElementComponent {
-  @Input({ required: true }) blockchainFilter!: BlockchainFilter;
+  @Input({ required: true }) blockchainFilter!: BlockchainFilters;
 
-  @Input({ required: true }) isClicked: boolean;
+  @Input({ required: true }) isSelected: boolean;
 }

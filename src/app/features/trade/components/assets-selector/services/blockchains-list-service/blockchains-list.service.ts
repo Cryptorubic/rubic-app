@@ -19,7 +19,7 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 import { FilterQueryService } from '../filter-query-service/filter-query.service';
-import { BlockchainFilters } from '../../components/blockchains-filter-list/models/BlockchainFilters';
+import { BlockchainTags } from '../../components/blockchains-filter-list/models/BlockchainFilters';
 
 @Injectable()
 export class BlockchainsListService {
@@ -115,11 +115,10 @@ export class BlockchainsListService {
   }
 
   private subscribeOnFilterQuery(): void {
-    combineLatest([this.filterQueryService.filterQuery$])
+    this.filterQueryService.filterQuery$
       .pipe(
-        map(([filterQuery]) => filterQuery),
         tap(filterQuery => {
-          if (filterQuery === BlockchainFilters.ALL) {
+          if (filterQuery === BlockchainTags.ALL) {
             this.blockchainsToShow = this.availableBlockchains;
           } else {
             this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>

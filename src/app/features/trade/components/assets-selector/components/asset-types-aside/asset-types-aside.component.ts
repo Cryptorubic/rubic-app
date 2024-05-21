@@ -26,14 +26,14 @@ import { SearchQueryService } from '../../services/search-query-service/search-q
 import { Observable, of } from 'rxjs';
 import { switchIif } from '@app/shared/utils/utils';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { BlockchainFilters } from '../blockchains-filter-list/models/BlockchainFilters';
+import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 
 @Component({
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService]
+  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService, GasFormService]
 })
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
@@ -208,17 +208,14 @@ export class AssetTypesAsideComponent {
     }));
   }
 
-  // public isBlockchainBadge(blockchain: AvailableBlockchain ): boolean{
-  //    return blockchain.tags.includes(BlockchainFilters.PROMO) ||
-  //           blockchain.tags.includes('new');
-  // }
-  public isBlockchainBadge(blockchain: AvailableBlockchain): string {
-    return blockchain.tags.reduce((accum, item) => {
-      if (item === BlockchainFilters.PROMO || item === 'new') {
+  public getBlockchainTag(blockchain: AvailableBlockchain): string | null {
+    const tag = blockchain.tags.reduce((accum, item) => {
+      if (item === BlockchainTags.PROMO || item === BlockchainTags.NEW) {
         accum += item;
       }
       return accum;
     }, '');
+    return tag || null;
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {

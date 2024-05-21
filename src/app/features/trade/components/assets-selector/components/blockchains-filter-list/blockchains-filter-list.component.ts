@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
-import { BlockchainFilter, BlockchainFilters } from './models/BlockchainFilters';
+import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters';
 @Component({
   selector: 'app-blockchains-filter-list',
   templateUrl: './blockchains-filter-list.component.html',
@@ -8,18 +8,13 @@ import { BlockchainFilter, BlockchainFilters } from './models/BlockchainFilters'
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsFilterListComponent {
-  public readonly BLOCKCHAIN_FILTERS = Object.values(BlockchainFilters);
+  public readonly BLOCKCHAIN_FILTERS = blockchainFilters;
 
-  private readonly filterQueryService = inject(FilterQueryService);
+  public readonly currentFilter$ = this.filterQueryService.filterQuery$;
 
-  public selectedFilterIndex: number | null = null;
+  constructor(private readonly filterQueryService: FilterQueryService) {}
 
-  public onSelectFilter(filter: BlockchainFilter, index: number): void {
-    this.selectedFilterIndex = index;
+  public onSelectFilter(filter: BlockchainFilters): void {
     this.filterQueryService.filterQuery = filter;
-  }
-
-  isSelectedFilter(index: number): boolean {
-    return this.selectedFilterIndex === index;
   }
 }
