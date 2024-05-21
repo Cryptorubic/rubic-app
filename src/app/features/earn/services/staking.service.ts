@@ -33,7 +33,7 @@ import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THRE
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
 
-const STAKING_END_TIMESTAMP = new Date(2024, 7, 13).getTime();
+const STAKING_END_TIMESTAMP = new Date(2024, 7, 14).getTime();
 
 @Injectable()
 export class StakingService {
