@@ -26,6 +26,20 @@
   overflow: hidden;
 }
 
+.badge-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 15px;
+  margin-right: 8px;
+
+  font-size: 55%;
+
+  background: linear-gradient(120deg, #23dca4 8%, #377fec 60%, #7e1dca 90%);
+  border-radius: 4px;
+}
+
 .asset-types-aside {
   display: flex;
   align-items: start;
@@ -86,7 +100,7 @@
 
       ::ng-deep {
         .t-content {
-          justify-content: start;
+          justify-content: space-between;
         }
       }
     }

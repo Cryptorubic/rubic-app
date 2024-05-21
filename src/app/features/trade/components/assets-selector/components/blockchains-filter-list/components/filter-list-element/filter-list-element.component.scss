@@ -5,10 +5,16 @@
   ::ng-deep {
     .t-wrapper {
       width: 90px;
+      padding: 0 !important;
 
       background: var(--tui-base-01);
     }
+  }
 
+  ::ng-deep {
+    .t-content {
+      font-size: 12px;
+    }
   }
 
   &__clicked-element {

@@ -26,6 +26,7 @@ import { SearchQueryService } from '../../services/search-query-service/search-q
 import { Observable, of } from 'rxjs';
 import { switchIif } from '@app/shared/utils/utils';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { BlockchainFilters } from '../blockchains-filter-list/models/BlockchainFilters';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -205,6 +206,19 @@ export class AssetTypesAsideComponent {
       ...blockchain,
       label: blockchainShortLabel[blockchain.name]
     }));
+  }
+
+  // public isBlockchainBadge(blockchain: AvailableBlockchain ): boolean{
+  //    return blockchain.tags.includes(BlockchainFilters.PROMO) ||
+  //           blockchain.tags.includes('new');
+  // }
+  public isBlockchainBadge(blockchain: AvailableBlockchain): string {
+    return blockchain.tags.reduce((accum, item) => {
+      if (item === BlockchainFilters.PROMO || item === 'new') {
+        accum += item;
+      }
+      return accum;
+    }, '');
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {

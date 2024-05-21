@@ -39,6 +39,9 @@
                     <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
                     <span class="icon-label">{{ blockchainItem.label }}</span>
                   </div>
+                  <div class="badge-container" *ngIf="!isMobile && isBlockchainBadge(blockchainItem) as tag">
+                   <span>{{tag}}</span>
+                  </div>
                 </button>
               </ng-container>
             </ng-container>
