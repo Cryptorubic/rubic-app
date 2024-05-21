@@ -136,11 +136,9 @@ export class OnChainService {
             disabledProviders: disabledTradeTypes
           };
 
-          let fromTokenAmount = fromAmount.actualValue.toFixed();
-
           return this.sdkService.instantTrade.calculateTradeReactively(
             fromSdkToken,
-            fromTokenAmount,
+            fromAmount.actualValue.toFixed(),
             toSdkToken,
             options
           );
