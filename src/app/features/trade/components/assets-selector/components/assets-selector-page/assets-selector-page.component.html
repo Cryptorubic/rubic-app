@@ -7,8 +7,12 @@
   </ng-container>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-     <app-blockchains-filter-list *ngIf="!isMobile && selectorListType !=='blockchains'"></app-blockchains-filter-list>
-    <ng-container *ngIf="!isMobile && selectorListType === 'blockchains' then searchBar"></ng-container>
+    <app-blockchains-filter-list
+      *ngIf="!isMobile && selectorListType !== 'blockchains'"
+    ></app-blockchains-filter-list>
+    <ng-container
+      *ngIf="!isMobile && selectorListType === 'blockchains'; then searchBar"
+    ></ng-container>
     <div class="assets-selector__row">
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
@@ -18,7 +22,7 @@
 
       <ng-container *ngIf="selectorListType !== 'blockchains'">
         <app-asset-types-aside [idPrefix]="'idPrefix'">
-        <app-blockchains-filter-list *ngIf="isMobile"></app-blockchains-filter-list>
+          <app-blockchains-filter-list *ngIf="isMobile"></app-blockchains-filter-list>
         </app-asset-types-aside>
         <ng-container *ngIf="selectorListType === 'fiats'">
           <app-search-bar class="vertical-iframe-token-search"></app-search-bar>
@@ -38,11 +42,10 @@
     </div>
 
     <ng-template #searchBar>
-      <hr class="assets-selector__h-line">
+      <hr class="assets-selector__h-line" />
       <div class="assets-selector__row">
         <app-search-bar></app-search-bar>
-        <app-switch-list-type-button
-        *ngIf="selectorListType === 'tokens'">
+        <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
         </app-switch-list-type-button>
       </div>
     </ng-template>

@@ -1,6 +1,6 @@
 <ng-container *ngLet="tokensToShow$ | async as tokensToShow">
   <div *ngIf="!isMobile" class="tokens-list__search-bar">
-   <app-search-bar></app-search-bar>
+    <app-search-bar></app-search-bar>
   </div>
   <tui-scrollbar class="tokens-container">
     <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
