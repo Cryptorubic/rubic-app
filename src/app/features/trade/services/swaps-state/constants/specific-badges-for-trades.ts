@@ -26,6 +26,7 @@ const POSITIVE_COLOR =
   'linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%)';
 const WARNING_COLOR =
   'linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%)';
+const INFO_COLOR = 'linear-gradient(to bottom, #49c0f0 0%,#2cafe3 100%)';
 
 export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '1.2': '$50',
@@ -52,6 +53,17 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> 
       bgColor: POSITIVE_COLOR,
       fromSdk: false,
       showLabel: showXyBlastPromoLabel
+    }
+  ],
+  [BRIDGE_TYPE.MESON]: [
+    {
+      label: 'INFO',
+      hint: `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
+      If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
+      Example: 0.99999999999 ETH -> 0.999999 ETH`,
+      bgColor: INFO_COLOR,
+      fromSdk: false,
+      showLabel: () => true
     }
   ],
   [BRIDGE_TYPE.ARBITRUM]: [
