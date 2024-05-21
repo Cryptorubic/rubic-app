@@ -17,6 +17,8 @@ import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { GasFormService } from '../../services/gas-form/gas-form.service';
 import { BlockchainsListService } from '../assets-selector/services/blockchains-list-service/blockchains-list.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { StoreService } from '@core/services/store/store.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -123,7 +125,9 @@ export class SwapFormPageComponent {
     private readonly formsTogglerService: FormsTogglerService,
     private readonly swapsStateService: SwapsStateService,
     private readonly gasFormService: GasFormService,
-    private readonly blockchainsListService: BlockchainsListService
+    private readonly blockchainsListService: BlockchainsListService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
+    private readonly store: StoreService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -175,6 +179,14 @@ export class SwapFormPageComponent {
           : this.settingsService.crossChainRouting;
     }
     const oldValue = settings.controls.showReceiverAddress.value;
+
+    if (oldValue) {
+      this.targetNetworkAddressService.addressControl.patchValue('');
+    } else {
+      const receiverAddress = this.store.getItem('RUBIC_TARGET_ADDRESS');
+      this.targetNetworkAddressService.addressControl.patchValue(receiverAddress);
+    }
+
     settings.patchValue({ showReceiverAddress: !oldValue });
   }
 
