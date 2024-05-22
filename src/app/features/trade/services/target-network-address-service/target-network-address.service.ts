@@ -12,7 +12,6 @@ import { BlockchainsInfo, ChainType } from 'rubic-sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
-import { StoreService } from '@core/services/store/store.service';
 
 @Injectable()
 export class TargetNetworkAddressService {
@@ -22,13 +21,7 @@ export class TargetNetworkAddressService {
     tap(() => this.addressControl.clearAsyncValidators()),
     debounceTime(100),
     distinctUntilChanged(),
-    tap(address => {
-      this.setCorrectAddressValidator();
-
-      if (address) {
-        this.store.setItem('RUBIC_TARGET_ADDRESS', address);
-      }
-    })
+    tap(() => this.setCorrectAddressValidator())
   );
 
   public get address(): string | null {
@@ -45,10 +38,7 @@ export class TargetNetworkAddressService {
     map(status => status === 'VALID')
   );
 
-  constructor(
-    private readonly swapFormService: SwapsFormService,
-    private readonly store: StoreService
-  ) {
+  constructor(private readonly swapFormService: SwapsFormService) {
     this.setCorrectAddressValidator();
     this.watchIsAddressRequired();
     this.subscribeOnFormValueChanges();
