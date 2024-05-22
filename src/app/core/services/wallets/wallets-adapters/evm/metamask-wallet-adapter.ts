@@ -32,7 +32,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       throw new MetamaskError();
     }
 
-    if (typeof this.window.tokenpocket.ethereum?.isTokenPocket !== 'undefined') {
+    if (typeof this.window?.tokenpocket?.ethereum?.isTokenPocket !== 'undefined') {
       throw new Error('TokenPocket Enabled');
     }
 
@@ -44,11 +44,11 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      const accounts = (await this.window.ethereum?.request({
+      const accounts = (await this.window?.ethereum?.request({
         method: 'eth_requestAccounts'
       })) as RubicAny;
 
-      this.wallet = this.window.ethereum;
+      this.wallet = this.window?.ethereum;
       this.checkErrors();
 
       const chain = await this.wallet.request({ method: 'eth_chainId' });
