@@ -71,8 +71,6 @@ export class WalletsModalComponent implements OnInit {
 
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
-  private readonly tokenPocketAppLink = 'tpoutside://pull.activity?param={}';
-
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
     return provider === WALLET_NAME.WALLET_LINK;
   };
@@ -121,9 +119,6 @@ export class WalletsModalComponent implements OnInit {
       case WALLET_NAME.METAMASK:
         await this.redirectToMetamaskBrowser();
         return true;
-      case WALLET_NAME.TOKEN_POCKET:
-        await this.redirectToTokenPocketBrowser();
-        return true;
       case WALLET_NAME.WALLET_LINK:
         this.redirectToCoinbaseBrowser();
         return true;
@@ -135,10 +130,6 @@ export class WalletsModalComponent implements OnInit {
   private async redirectToMetamaskBrowser(): Promise<void> {
     const queryUrl = `${this.window.location.host}${this.window.location.search}`;
     this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
-  }
-
-  private async redirectToTokenPocketBrowser(): Promise<void> {
-    this.window.location.assign(this.tokenPocketAppLink);
   }
 
   private redirectToCoinbaseBrowser(): void {

@@ -6,7 +6,6 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { TokenPocketError } from '@core/errors/models/provider/token-pocket-error';
 
 export class TokenPocketWalletAdapter extends EvmWalletAdapter {
@@ -44,14 +43,7 @@ export class TokenPocketWalletAdapter extends EvmWalletAdapter {
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();
-    } catch (error) {
-      if (
-        error.code === 4001 ||
-        // metamask browser
-        error.message?.toLowerCase().includes('user denied message signature')
-      ) {
-        throw new SignRejectError();
-      }
+    } catch {
       throw new TokenPocketError();
     }
   }
