@@ -103,7 +103,7 @@ export class SwapTokensUpdaterService {
         switchMap(() => {
           const { fromToken, toToken } = this.swapsFormService.inputValue;
 
-          if (!fromToken && !toToken) {
+          if ((!fromToken && !toToken) || !fromToken || !toToken) {
             return of(null);
           }
 
