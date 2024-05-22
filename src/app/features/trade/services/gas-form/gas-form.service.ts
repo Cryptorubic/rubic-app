@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
 import { SwapsStateService } from '../swaps-state/swaps-state.service';
-import { BehaviorSubject, map, of, share, startWith, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, of, share, tap, startWith } from 'rxjs';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain-supported-chains';
 import { switchIif } from '@app/shared/utils/utils';
 import { AvailableBlockchain } from '../../components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-from-disabled-chains';
+import {
+  BlockchainFilters,
+  BlockchainTags
+} from '../../components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 
 @Injectable()
 export class GasFormService {
   private readonly _searchQuery$ = new BehaviorSubject<string>('');
+
+  private readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>('All');
 
   private readonly _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -22,8 +28,15 @@ export class GasFormService {
     map(query => this.targetAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
   );
 
-  public readonly sourceBlockchainsToShow$ = this._searchQuery$.pipe(
-    map(query => this.sourceAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
+  public readonly sourceBlockchainsToShow$ = combineLatest([
+    this._filterQuery$,
+    this._searchQuery$
+  ]).pipe(
+    map(([filterQuery, searchQuery]) => {
+      return this.sourceAvailableBlockchains.filter(chain => {
+        return this.setFilter(chain, filterQuery) || this.showBlockchain(chain, searchQuery);
+      });
+    })
   );
 
   public readonly bestTrade$ = this.swapsStateService.tradesStore$.pipe(
@@ -62,6 +75,10 @@ export class GasFormService {
 
   public updateSearchQuery(value: string): void {
     this._searchQuery$.next(value);
+  }
+
+  public updateFilterQuery(filter: BlockchainFilters): void {
+    this._filterQuery$.next(filter);
   }
 
   public setGasFormSourceAvailableBlockchains(
@@ -112,6 +129,13 @@ export class GasFormService {
       (blockchain.tags.length &&
         blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
     );
+  }
+
+  private setFilter(blockchain: AvailableBlockchain, filter: BlockchainFilters): boolean {
+    if (filter === BlockchainTags.ALL) {
+      return true;
+    }
+    return blockchain.tags.includes(filter);
   }
 
   private fireGtmServiceOnNullableTrade(): void {

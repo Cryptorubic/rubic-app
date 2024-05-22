@@ -10,9 +10,9 @@ export const BlockchainTags = {
 export const blockchainFilters = [
   BlockchainTags.POPULAR,
   BlockchainTags.PROMO,
+  BlockchainTags.LAYER_2,
   BlockchainTags.EVM,
   BlockchainTags.NON_EVM,
-  BlockchainTags.LAYER_2,
   BlockchainTags.ALL
 ];
 export type BlockchainTag = (typeof BlockchainTags)[keyof typeof BlockchainTags];

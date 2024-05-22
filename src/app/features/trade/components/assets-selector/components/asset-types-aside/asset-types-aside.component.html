@@ -41,12 +41,13 @@
                   <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
                   <span class="icon-label">{{ blockchainItem.label }}</span>
                 </div>
-                <div
-                  class="badge-container"
-                  *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag"
-                >
-                  <span>{{ tag }}</span>
-                </div>
+                <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tags">
+                  <ng-container *ngFor="let tag of tags">
+                    <div class="badge-container">
+                      <span>{{ tag }}</span>
+                    </div>
+                  </ng-container>
+                </ng-container>
               </button>
             </ng-container>
           </ng-container>

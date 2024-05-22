@@ -33,7 +33,7 @@ import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilt
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService, GasFormService]
+  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService]
 })
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
@@ -208,14 +208,10 @@ export class AssetTypesAsideComponent {
     }));
   }
 
-  public getBlockchainTag(blockchain: AvailableBlockchain): string | null {
-    const tag = blockchain.tags.reduce((accum, item) => {
-      if (item === BlockchainTags.PROMO || item === BlockchainTags.NEW) {
-        accum += item;
-      }
-      return accum;
-    }, '');
-    return tag || null;
+  public getBlockchainTag(blockchain: AvailableBlockchain): string[] {
+    return blockchain.tags.filter(
+      tag => tag === BlockchainTags.PROMO || tag === BlockchainTags.NEW
+    );
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {
