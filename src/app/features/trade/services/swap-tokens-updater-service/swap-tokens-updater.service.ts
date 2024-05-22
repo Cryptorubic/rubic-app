@@ -103,13 +103,13 @@ export class SwapTokensUpdaterService {
         switchMap(() => {
           const { fromToken, toToken } = this.swapsFormService.inputValue;
 
-          if ((!fromToken && !toToken) || !fromToken || !toToken) {
+          if (!fromToken && !toToken) {
             return of(null);
           }
 
           return forkJoin([
-            ...(fromToken && [this.tokensService.getAndUpdateTokenBalance(fromToken)]),
-            ...(toToken && [this.tokensService.getAndUpdateTokenBalance(toToken)])
+            ...(fromToken ? [this.tokensService.getAndUpdateTokenBalance(fromToken)] : []),
+            ...(toToken ? [this.tokensService.getAndUpdateTokenBalance(toToken)] : [])
           ]);
         })
       )
