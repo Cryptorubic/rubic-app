@@ -3,7 +3,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { debounceTime, distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { BehaviorSubject, combineLatestWith, EMPTY } from 'rxjs';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 
@@ -18,12 +18,10 @@ export class UserBalanceContainerComponent {
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
     combineLatestWith(this._triggerRefresh$.pipe(startWith())),
-    map(([fromToken]) => {
-      if (!this.tokensStoreService.tokens) {
-        return EMPTY;
-      }
-      return this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token));
-    })
+    filter(() => !!this.tokensStoreService.tokens),
+    map(([fromToken]) =>
+      this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
+    )
   );
 
   @Input() public hide: 'maxButton' | 'balance';
