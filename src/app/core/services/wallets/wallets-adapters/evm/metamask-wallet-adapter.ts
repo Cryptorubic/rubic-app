@@ -71,7 +71,9 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       }
 
       if (error.message?.toLowerCase().includes('tokenpocket enabled')) {
-        throw new RubicError('Disable all wallets except MetaMask and reload the page.');
+        throw new RubicError(
+          'To proceed with using MetaMask wallet on our app, please disable all other wallets and reload the page.'
+        );
       }
 
       throw new MetamaskError();
