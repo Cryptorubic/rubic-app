@@ -49,6 +49,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "Damit Du über Rubic handeln kannst, benötigen wir Zugriff auf Dein Metamask Wallet. Wenn Du fortfahren möchtest, bestätige bitte den Zugriff.",
     "noMetamaskInstalled": "Bitte prüfe, ob Du das MetaMask Plugin installiert und entsperrt hast. \nDu kannst es hier herunterladen",
+    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
     "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Die Coinbase Browsererweiterung verursacht Kompatibilitätsprobleme mit der MetaMask Erweiterung. Bitte deaktiviere/entferne die Coinbase Browsererweiterung oder wähle ein anderes Wallet.",
     "wrongNetwork": "Du befindest Dich gerade im falschen Netzwerk. Bitte wähle {{ networkToChoose }} in Deinem MetaMask aus.",
