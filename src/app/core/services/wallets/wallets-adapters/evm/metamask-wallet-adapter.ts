@@ -9,6 +9,7 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { RubicError } from '@core/errors/models/rubic-error';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -29,6 +30,10 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
   private checkErrors(): void {
     if (!this.wallet?.isMetaMask) {
       throw new MetamaskError();
+    }
+
+    if (typeof this.window.tokenpocket.ethereum?.isTokenPocket !== 'undefined') {
+      throw new Error('TokenPocket Enabled');
     }
 
     // installed coinbase Chrome extension
@@ -64,6 +69,13 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       ) {
         throw new SignRejectError();
       }
+
+      if (error.message?.toLowerCase().includes('tokenpocket enabled')) {
+        throw new RubicError(
+          'To proceed with using MetaMask wallet on our app, please disable all other wallets and reload the page.'
+        );
+      }
+
       throw new MetamaskError();
     }
   }
