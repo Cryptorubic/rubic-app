@@ -1,13 +1,11 @@
-<ng-container *ngIf="data?.href">
-  <a [skipDefault]="!!data.href === false" [href]="data.href" target="_blank">
-    <tui-tag
-      class="element__gas-refund-badge"
-      [style.background]="data.bgColor && data.bgColor"
-      size="s"
-      status="custom"
-      [value]="data.label"
-      [tuiHint]="data?.hint || null"
-    >
-    </tui-tag>
-  </a>
-</ng-container>
+<a [skipDefault]="!!data.href === false" [href]="data?.href" target="_blank">
+  <tui-tag
+    class="element__gas-refund-badge"
+    [style.background]="data.bgColor && data.bgColor"
+    size="s"
+    status="custom"
+    [value]="data.label"
+    [tuiHint]="data?.hint || null"
+  >
+  </tui-tag>
+</a>
