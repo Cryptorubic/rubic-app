@@ -44,7 +44,15 @@
                 <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tags">
                   <ng-container *ngFor="let tag of tags">
                     <div class="badge-container">
-                      <span>{{ tag }}</span>
+                      <div
+                        class="badge-container__element"
+                        [ngClass]="{
+                          promo: tag === blockchainTags.PROMO,
+                          new: tag === blockchainTags.NEW
+                        }"
+                      >
+                        <span>{{ tag | uppercase }}</span>
+                      </div>
                     </div>
                   </ng-container>
                 </ng-container>

@@ -13,8 +13,16 @@
 
   ::ng-deep {
     .t-content {
+      gap: 8px;
+
       font-size: 12px;
     }
+  }
+
+  &__icon {
+    filter: invert(0);
+
+    transition: filter var(--tui-duration, 300ms) ease-in-out;
   }
 
   &__clicked-element {
@@ -24,7 +32,10 @@
 
         background: var(--tui-primary);
       }
+    }
 
+    .filter-list-element__icon {
+      filter: invert(1);
     }
   }
 }

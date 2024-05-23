@@ -7,4 +7,9 @@
   size="m"
 >
   {{ blockchainFilter }}
+  <img
+    *ngIf="blockchainFilter !== 'All'"
+    [src]="'assets/images/icons/blockchain-filters/' + (blockchainFilter | lowercase) + '.svg'"
+    class="filter-list-element__icon"
+  />
 </button>

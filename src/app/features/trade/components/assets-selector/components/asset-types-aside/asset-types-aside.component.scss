@@ -28,16 +28,30 @@
 
 .badge-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 15px;
-  margin-right: 8px;
+  flex-direction: column;
+  gap: 2px;
 
-  font-size: 55%;
+  &__element {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 15px;
+    margin-right: 8px;
 
-  background: linear-gradient(120deg, #23dca4 8%, #377fec 60%, #7e1dca 90%);
-  border-radius: 4px;
+    font-size: 55%;
+
+    border-radius: 4px;
+  }
+
+}
+
+.promo {
+  background: linear-gradient(150deg, #23dca4 8%, #377fec 60%, #7e1dca 90%);
+}
+
+.new {
+  background: linear-gradient(160deg, #fab2ff 10%, #1904e5 90%);
 }
 
 .asset-types-aside {

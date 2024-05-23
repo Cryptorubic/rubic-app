@@ -44,6 +44,8 @@ export class AssetTypesAsideComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  public readonly blockchainTags = BlockchainTags;
+
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
     combineLatestWith(
       this.gasFormService.sourceBlockchainsToShow$,
@@ -210,7 +212,7 @@ export class AssetTypesAsideComponent {
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string[] {
     return blockchain.tags.filter(
-      tag => tag === BlockchainTags.PROMO || tag === BlockchainTags.NEW
+      tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW
     );
   }
 
