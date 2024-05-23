@@ -108,8 +108,8 @@ export class SwapTokensUpdaterService {
           }
 
           return forkJoin([
-            ...(fromToken && [this.tokensService.getAndUpdateTokenBalance(fromToken)]),
-            ...(toToken && [this.tokensService.getAndUpdateTokenBalance(toToken)])
+            ...(fromToken ? [this.tokensService.getAndUpdateTokenBalance(fromToken)] : []),
+            ...(toToken ? [this.tokensService.getAndUpdateTokenBalance(toToken)] : [])
           ]);
         })
       )
