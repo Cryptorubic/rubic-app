@@ -16946,10 +16946,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.21.0-alpha-eddy-finance.0:
-  version "5.21.0-alpha-eddy-finance.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.21.0-alpha-eddy-finance.0.tgz#618488885430c0c451e4effe7dadadcae990c0d7"
-  integrity sha512-nhXgX9P4pKgdDdqPQX3/heZI+GAZEoPcRTRP/YuO+a/GHOMXQloiTRi1w7na36ZROjY58pu+OxFtVZusONdyug==
+rubic-sdk@5.21.0-alpha-eddy-finance.4:
+  version "5.21.0-alpha-eddy-finance.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.21.0-alpha-eddy-finance.4.tgz#4647a66b2385bdca8af587e54d104f34c15a6fd3"
+  integrity sha512-LvdJF1JEG54lLGmCmXfpAR5Erz1OCbaWr+svZ8OsnChTFm97g+U81RLa1Tq3/L6uocHvk8fNBp44DrxhyLvA3Q==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
