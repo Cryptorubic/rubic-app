@@ -184,7 +184,7 @@ export class SettingsService {
       highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
-    if ((settingsChecks.highSlippage || settingsChecks.highPriceImpact) && tradeSlippage) {
+    if ((settingsChecks.highSlippage || settingsChecks.highPriceImpact) && tradeSlippage > 0) {
       return firstValueFrom(
         this.dialogService.showDialog<SettingsWarningModalComponent, boolean>(
           SettingsWarningModalComponent,
