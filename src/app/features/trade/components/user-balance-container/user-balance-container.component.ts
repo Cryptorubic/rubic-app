@@ -18,6 +18,7 @@ export class UserBalanceContainerComponent {
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
     combineLatestWith(this._triggerRefresh$.pipe(startWith())),
+    filter(() => !!this.tokensStoreService.tokens),
     map(([fromToken]) =>
       this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
     )
