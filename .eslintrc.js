@@ -129,6 +129,13 @@ module.exports = {
       rules: {
         '@typescript-eslint/no-unused-vars': 'off'
       }
+    },
+    {
+      files: ['src/app/features/trade/constants/bridge-providers.ts'],
+      plugins: ['sort-keys-fix'],
+      rules: {
+        'sort-keys-fix/sort-keys-fix': 'error'
+      }
     }
   ],
   parserOptions: {

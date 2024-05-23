@@ -49,6 +49,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "Vous ne nous avez pas autorisé à accéder à votre portefeuille MetaMask. Pour autoriser la transaction, vous devez la signer. Veuillez cliquer sur \"Connecter\" si vous souhaitez poursuivre.",
     "noMetamaskInstalled": "Veuillez vous assurer que le plugin MetaMask est installé et connecté. Vous pouvez le télécharger sur",
+    "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
     "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "L'extension de navigateur Coinbase est en conflit avec l'extension Metamask. Veuillez désactiver ou supprimer l'extension Coinbase pour continuer, ou choisir un autre portefeuille pour vous connecter.",
     "wrongNetwork": "Vous avez sélectionné le mauvais réseau. Veuillez choisir {{ networkToChoose }} dans MetaMask.",

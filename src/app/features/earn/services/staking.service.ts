@@ -26,22 +26,20 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
 import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
-import { MILLISECONDS_IN_MONTH, SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
+import { SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
 import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
 
-const STAKING_END_TIMESTAMP = new Date(2024, 6, 13).getTime();
+// const STAKING_END_TIMESTAMP = new Date(2024, 7, 14).getTime();
 
 @Injectable()
 export class StakingService {
   public readonly MIN_STAKE_AMOUNT = 1;
 
-  public readonly MAX_LOCK_TIME = Math.floor(
-    Math.trunc((STAKING_END_TIMESTAMP - Date.now() - MILLISECONDS_IN_MONTH) / MILLISECONDS_IN_MONTH)
-  );
+  public readonly MAX_LOCK_TIME = 1;
 
   public readonly user$ = this.authService.currentUser$;
 
