@@ -91,5 +91,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: false,
     disabled: false
+  },
+  {
+    name: 'TokenPocket',
+    value: WALLET_NAME.TOKEN_POCKET,
+    img: './assets/images/icons/wallets/tokenpocket.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];
