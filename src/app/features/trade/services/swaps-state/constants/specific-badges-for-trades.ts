@@ -46,14 +46,12 @@ export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '6.5': '$10.000'
 };
 
-const getBlastGoldPromoInfo = (): BadgeInfo => {
-  return {
-    label: '+Gold',
-    hint: 'You will recieve Blast Gold from Rubic team for this transaction!',
-    bgColor: GOLD_COLOR,
-    fromSdk: false,
-    showLabel: showBlastGoldPromoLabel
-  };
+const blastGoldPromoInfo = {
+  label: '+Gold',
+  hint: 'You will recieve Blast Gold from Rubic team for this transaction!',
+  bgColor: GOLD_COLOR,
+  fromSdk: false,
+  showLabel: showBlastGoldPromoLabel
 };
 
 export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>> =
@@ -67,7 +65,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: true,
         showLabel: () => true
       },
-      getBlastGoldPromoInfo()
+      blastGoldPromoInfo
     ],
     [BRIDGE_TYPE.XY]: [
       {
@@ -77,7 +75,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: false,
         showLabel: showXyBlastPromoLabel
       },
-      getBlastGoldPromoInfo()
+      blastGoldPromoInfo
     ],
     [BRIDGE_TYPE.MESON]: [
       {
@@ -89,7 +87,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: false,
         showLabel: () => true
       },
-      getBlastGoldPromoInfo()
+      blastGoldPromoInfo
     ],
     [BRIDGE_TYPE.ARBITRUM]: [
       {
@@ -106,13 +104,13 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         showLabel: showAttentionLabelArbitrumBridge
       }
     ],
-    [BRIDGE_TYPE.ORBITER_BRIDGE]: [getBlastGoldPromoInfo()],
-    [BRIDGE_TYPE.SQUIDROUTER]: [getBlastGoldPromoInfo()],
+    [BRIDGE_TYPE.ORBITER_BRIDGE]: [blastGoldPromoInfo],
+    [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo],
     // ON-CHAIN
-    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [getBlastGoldPromoInfo()],
-    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [getBlastGoldPromoInfo()],
-    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [getBlastGoldPromoInfo()],
-    [ON_CHAIN_TRADE_TYPE.IZUMI]: [getBlastGoldPromoInfo()],
-    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [getBlastGoldPromoInfo()],
-    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [getBlastGoldPromoInfo()]
+    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.IZUMI]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [blastGoldPromoInfo]
   };
