@@ -4,7 +4,9 @@ import {
   BRIDGE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
-  OnChainTrade
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTrade,
+  OnChainTradeType
 } from 'rubic-sdk';
 
 function showNoSlippageLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade): boolean {
@@ -22,6 +24,10 @@ function showXyBlastPromoLabel(trade: CrossChainTrade): boolean {
   return trade.to.blockchain === BLOCKCHAIN_NAME.BLAST && trade.bridgeType === 'ypool';
 }
 
+function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
+  return trade.to.blockchain === BLOCKCHAIN_NAME.BLAST;
+}
+
 const POSITIVE_COLOR =
   'linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%)';
 const WARNING_COLOR =
@@ -36,49 +42,73 @@ export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '6.5': '$10.000'
 };
 
-export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType, BadgeInfo[]>> = {
-  [BRIDGE_TYPE.SYMBIOSIS]: [
-    {
-      label: '+ 1.3 MNT *',
-      hint: 'Swap $100+ & get up to 1.3 $MNT!',
-      href: 'https://twitter.com/symbiosis_fi/status/1785996599564382501',
-      fromSdk: true,
-      showLabel: () => true
-    }
-  ],
-  [BRIDGE_TYPE.XY]: [
-    {
-      label: 'Get Blast Points!',
-      href: 'https://twitter.com/xyfinance/status/1788862005736288497',
-      bgColor: POSITIVE_COLOR,
-      fromSdk: false,
-      showLabel: showXyBlastPromoLabel
-    }
-  ],
-  [BRIDGE_TYPE.MESON]: [
-    {
-      label: 'INFO',
-      hint: `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
+const getBlastGoldPromoInfo = (): BadgeInfo => {
+  return {
+    label: '+Gold',
+    hint: 'You will recieve Blast Gold from Rubic team for this transaction!',
+    bgColor: POSITIVE_COLOR,
+    fromSdk: false,
+    showLabel: showBlastGoldPromoLabel
+  };
+};
+
+export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>> =
+  {
+    // CROSS-CHAIN
+    [BRIDGE_TYPE.SYMBIOSIS]: [
+      {
+        label: '+ 1.3 MNT *',
+        hint: 'Swap $100+ & get up to 1.3 $MNT!',
+        href: 'https://twitter.com/symbiosis_fi/status/1785996599564382501',
+        fromSdk: true,
+        showLabel: () => true
+      },
+      getBlastGoldPromoInfo()
+    ],
+    [BRIDGE_TYPE.XY]: [
+      {
+        label: 'Get Blast Points!',
+        href: 'https://twitter.com/xyfinance/status/1788862005736288497',
+        bgColor: POSITIVE_COLOR,
+        fromSdk: false,
+        showLabel: showXyBlastPromoLabel
+      },
+      getBlastGoldPromoInfo()
+    ],
+    [BRIDGE_TYPE.MESON]: [
+      {
+        label: 'INFO',
+        hint: `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
       If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
       Example: 0.99999999999 ETH -> 0.999999 ETH`,
-      bgColor: INFO_COLOR,
-      fromSdk: false,
-      showLabel: () => true
-    }
-  ],
-  [BRIDGE_TYPE.ARBITRUM]: [
-    {
-      label: 'NO SLIPPAGE',
-      bgColor: POSITIVE_COLOR,
-      fromSdk: false,
-      showLabel: showNoSlippageLabelArbitrumBridge
-    },
-    {
-      label: 'ATTENTION',
-      hint: 'Waiting funds in target chain for 7 days',
-      bgColor: WARNING_COLOR,
-      fromSdk: false,
-      showLabel: showAttentionLabelArbitrumBridge
-    }
-  ]
-};
+        bgColor: INFO_COLOR,
+        fromSdk: false,
+        showLabel: () => true
+      },
+      getBlastGoldPromoInfo()
+    ],
+    [BRIDGE_TYPE.ARBITRUM]: [
+      {
+        label: 'NO SLIPPAGE',
+        bgColor: POSITIVE_COLOR,
+        fromSdk: false,
+        showLabel: showNoSlippageLabelArbitrumBridge
+      },
+      {
+        label: 'ATTENTION',
+        hint: 'Waiting funds in target chain for 7 days',
+        bgColor: WARNING_COLOR,
+        fromSdk: false,
+        showLabel: showAttentionLabelArbitrumBridge
+      }
+    ],
+    [BRIDGE_TYPE.ORBITER_BRIDGE]: [getBlastGoldPromoInfo()],
+    [BRIDGE_TYPE.SQUIDROUTER]: [getBlastGoldPromoInfo()],
+    // ON-CHAIN
+    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [getBlastGoldPromoInfo()],
+    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [getBlastGoldPromoInfo()],
+    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [getBlastGoldPromoInfo()],
+    [ON_CHAIN_TRADE_TYPE.IZUMI]: [getBlastGoldPromoInfo()],
+    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [getBlastGoldPromoInfo()],
+    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [getBlastGoldPromoInfo()]
+  };
