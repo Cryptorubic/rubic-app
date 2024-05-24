@@ -10,8 +10,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--tui-padding-s);
-  width: 249px;
-  height: 130px;
+  width: 100%;
+  height: 100%;
   padding: var(--tui-padding-xs) var(--tui-padding-xs);
 
   > * {
