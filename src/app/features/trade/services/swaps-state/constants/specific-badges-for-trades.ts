@@ -25,7 +25,10 @@ function showXyBlastPromoLabel(trade: CrossChainTrade): boolean {
 }
 
 function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
-  return trade.to.blockchain === BLOCKCHAIN_NAME.BLAST;
+  return (
+    trade.to.blockchain === BLOCKCHAIN_NAME.BLAST &&
+    trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)
+  );
 }
 
 const POSITIVE_COLOR =
@@ -33,6 +36,7 @@ const POSITIVE_COLOR =
 const WARNING_COLOR =
   'linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%)';
 const INFO_COLOR = 'linear-gradient(to bottom, #49c0f0 0%,#2cafe3 100%)';
+const GOLD_COLOR = 'linear-gradient(90deg, rgb(211 191 19) 0%, rgb(251 155 36 / 71%) 99.18%)';
 
 export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '1.2': '$50',
@@ -46,7 +50,7 @@ const getBlastGoldPromoInfo = (): BadgeInfo => {
   return {
     label: '+Gold',
     hint: 'You will recieve Blast Gold from Rubic team for this transaction!',
-    bgColor: POSITIVE_COLOR,
+    bgColor: GOLD_COLOR,
     fromSdk: false,
     showLabel: showBlastGoldPromoLabel
   };
