@@ -12,6 +12,7 @@ import {
   OnChainTrade,
   OnChainTradeType,
   TO_BACKEND_BLOCKCHAINS,
+  UnapprovedContractError,
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
@@ -141,6 +142,20 @@ export class OnChainApiService {
       title: tradeType,
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
       cause: error.cause
+    });
+  }
+
+  public saveNotWhitelistedOnChainProvider(
+    error: UnapprovedContractError,
+    blockchain: BlockchainName,
+    tradeType: OnChainTradeType
+  ): Observable<void> {
+    return this.httpService.post(`info/new_provider`, {
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
+      title: tradeType,
+      address: error.contract,
+      cause: error.cause,
+      selector: error.method
     });
   }
 }
