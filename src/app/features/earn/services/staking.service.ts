@@ -130,9 +130,8 @@ export class StakingService {
     const routerEvents$ = this.router.events.pipe(filter(event => event instanceof NavigationEnd));
     const userBalanceAndAllowance$ = this.user$.pipe(
       filter(user => Boolean(user?.address)),
-      switchMap(() =>
-        this.getAllowance().pipe(tap((allowance: BigNumber) => this.setAllowance(allowance)))
-      ),
+      switchMap(() => this.getAllowance()),
+      tap((allowance: BigNumber) => this.setAllowance(allowance)),
       switchMap(() => this.getRbcTokenBalance())
     );
     combineLatest([routerEvents$, userBalanceAndAllowance$])
