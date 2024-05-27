@@ -9,6 +9,7 @@ import {
   catchError,
   combineLatest,
   filter,
+  firstValueFrom,
   forkJoin,
   from,
   map,
@@ -130,6 +131,7 @@ export class StakingService {
     const userBalanceAndAllowance$ = this.user$.pipe(
       filter(user => Boolean(user?.address)),
       switchMap(() => this.getAllowance()),
+      tap((allowance: BigNumber) => this.setAllowance(allowance)),
       switchMap(() => this.getRbcTokenBalance())
     );
     combineLatest([routerEvents$, userBalanceAndAllowance$])
@@ -148,10 +150,7 @@ export class StakingService {
         this.walletAddress,
         STAKING_ROUND_THREE.NFT.address
       )
-    ).pipe(
-      map((allowance: BigNumber) => Web3Pure.fromWei(allowance)),
-      tap((allowance: BigNumber) => this.setAllowance(allowance))
-    );
+    ).pipe(map((allowance: BigNumber) => Web3Pure.fromWei(allowance)));
   }
 
   public setAllowance(allowance: BigNumber | 'Infinity'): void {
@@ -213,8 +212,10 @@ export class StakingService {
         );
 
       if (receipt && receipt.status) {
+        const allowance = await firstValueFrom(this.getAllowance());
+
         this.stakingNotificationService.showSuccessApproveNotification();
-        this.setAllowance('Infinity');
+        this.setAllowance(allowance);
       }
 
       return receipt;
