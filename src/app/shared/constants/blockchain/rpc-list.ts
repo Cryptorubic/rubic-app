@@ -303,6 +303,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
     'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
     'wss://ws.taiko.xyz'
   ]
