@@ -133,7 +133,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZETACHAIN]: `${basePath}zetachain.svg`,
   [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
-  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}default-chain.svg`,
   [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}default-chain.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
   [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
@@ -142,5 +141,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MODE]: `${basePath}mode.svg`,
   [BLOCKCHAIN_NAME.ZK_FAIR]: `${basePath}zkfair.svg`,
   [BLOCKCHAIN_NAME.ZK_LINK]: `${basePath}zklink.svg`,
-  [BLOCKCHAIN_NAME.XLAYER]: `${basePath}xlayer.svg`
+  [BLOCKCHAIN_NAME.XLAYER]: `${basePath}xlayer.svg`,
+  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`
 };
