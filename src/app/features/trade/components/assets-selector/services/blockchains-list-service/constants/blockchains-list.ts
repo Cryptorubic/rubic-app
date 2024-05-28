@@ -146,6 +146,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.LINEA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.SCROLL, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.ZETACHAIN, rank: 0.5, tags: ['ZETA'] },
+  { name: BLOCKCHAIN_NAME.TAIKO, rank: 0, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.MODE, rank: 0, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.BLAST, rank: 0, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.MERLIN, rank: 0, tags: ['BTC'] },
