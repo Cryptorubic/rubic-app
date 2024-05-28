@@ -118,7 +118,7 @@ export class BlockchainsListService {
     this.filterQueryService.filterQuery$
       .pipe(
         tap(filterQuery => {
-          if (filterQuery === BlockchainTags.ALL) {
+          if (filterQuery === BlockchainTags.ALL || !filterQuery) {
             this.blockchainsToShow = this.availableBlockchains;
           } else {
             this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>

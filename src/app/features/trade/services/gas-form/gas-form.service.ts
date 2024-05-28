@@ -132,7 +132,7 @@ export class GasFormService {
   }
 
   private setFilter(blockchain: AvailableBlockchain, filter: BlockchainFilters): boolean {
-    if (filter === BlockchainTags.ALL) {
+    if (filter === BlockchainTags.ALL || !filter) {
       return true;
     }
     return blockchain.tags.includes(filter);

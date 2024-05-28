@@ -12,7 +12,11 @@ export class FilterQueryService {
   constructor(private readonly gasFormService: GasFormService) {}
 
   public set filterQuery(filter: BlockchainFilters) {
-    this._filterQuery$.next(filter);
-    this.gasFormService.updateFilterQuery(filter);
+    if (filter === this._filterQuery$.getValue()) {
+      this._filterQuery$.next(null);
+    } else {
+      this._filterQuery$.next(filter);
+      this.gasFormService.updateFilterQuery(filter);
+    }
   }
 }
