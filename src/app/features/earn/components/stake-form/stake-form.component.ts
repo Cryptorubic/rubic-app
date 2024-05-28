@@ -154,7 +154,7 @@ export class StakeFormComponent implements OnInit {
 
     if (
       this.stakingService.rbcAllowance.isFinite() &&
-      this.stakingService.rbcAllowance.lt(this.rbcAmountCtrl.value)
+      this.stakingService.rbcAllowance.lt(rbcAmount)
     ) {
       this.amountError = StakeButtonError.NEED_APPROVE;
       return;
