@@ -71,7 +71,7 @@ const scrollMarksPromoInfo: BadgeInfo = {
   label: '+Marks!',
   href: 'https://scroll.io/sessions',
   hint: 'You will recieve Marks from Scroll for completing this swap and holding this token!',
-  bgColor: POSITIVE_COLOR,
+  bgColor: '#BDA584',
   fromSdk: false,
   showLabel: showScrollMarksPromoLabel
 };
