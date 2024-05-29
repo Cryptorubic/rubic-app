@@ -84,7 +84,48 @@
     }
 
     &-mobile {
+      display: flex;
+      flex-direction: column;
       padding: 0 16px;
+
+      &__search-bar-container {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+
+        app-filter-list-element {
+          ::ng-deep {
+            .t-wrapper {
+              width: 51px;
+              height: 51px;
+            }
+
+            .t-content {
+              color: var(--tui-text-02);
+            }
+          }
+
+          ::ng-deep .filter-list-element__clicked-element {
+            .t-content {
+              color: black;
+            }
+          }
+        }
+
+        app-search-bar {
+          flex: 1;
+        }
+
+        ::ng-deep {
+          .tui-autofill {
+            height: 51px;
+          }
+
+          .t-wrapper {
+            background: var(--tui-base-01);
+          }
+        }
+      }
     }
   }
 

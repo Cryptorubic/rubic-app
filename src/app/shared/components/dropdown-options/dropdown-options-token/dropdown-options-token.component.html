@@ -63,9 +63,9 @@
         </ng-container>
         <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
           <div class="dropdown-content__security-container">
-            <a class="dropdown-content__element" [href]="goPlusLabsLink">
+            <a class="dropdown-content__element security-content" [href]="goPlusLabsLink">
               <span
-                class="dropdown-content__security-container-icon"
+                class="dropdown-content__security-container-icon auto-height"
                 [inlineSVG]="
                   'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
                 "
@@ -76,14 +76,14 @@
                 (click)="$event.stopPropagation()"
               >
               </span>
-              <div>
-                <span class="dropdown-content__security-container-label">
-                  <span class="auto-height">{{ securityMessages[securityStatus] }}</span>
-                  <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
-                    <span class="dropdown-content__security-label-powered-by"> Powered by Go+</span>
-                  </ng-container>
-                </span>
-              </div>
+              <span class="dropdown-content__security-container-label">
+                <span class="auto-height">{{ securityMessages[securityStatus] }}</span>
+                <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
+                  <span class="dropdown-content__security-label-powered-by auto-height">
+                    Powered by Go+</span
+                  >
+                </ng-container>
+              </span>
             </a>
           </div>
         </ng-container>

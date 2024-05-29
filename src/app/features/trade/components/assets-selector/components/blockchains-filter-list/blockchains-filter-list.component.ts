@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { HeaderStore } from '@app/core/header/services/header.store';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
 import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters';
 @Component({
@@ -12,7 +13,12 @@ export class BlockchainsFilterListComponent {
 
   public readonly currentFilter$ = this.filterQueryService.filterQuery$;
 
-  constructor(private readonly filterQueryService: FilterQueryService) {}
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(
+    private readonly filterQueryService: FilterQueryService,
+    private readonly headerStore: HeaderStore
+  ) {}
 
   public onSelectFilter(filter: BlockchainFilters): void {
     this.filterQueryService.filterQuery = filter;

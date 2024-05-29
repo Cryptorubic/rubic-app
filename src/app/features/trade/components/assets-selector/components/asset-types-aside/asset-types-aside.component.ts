@@ -27,6 +27,7 @@ import { Observable, of } from 'rxjs';
 import { switchIif } from '@app/shared/utils/utils';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
+import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -45,6 +46,8 @@ export class AssetTypesAsideComponent {
   public readonly isMobile = this.headerStore.isMobile;
 
   public readonly blockchainTags = BlockchainTags;
+
+  public readonly selectedFilter$ = this.filterQueryService.filterQuery$;
 
   public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
     combineLatestWith(
@@ -102,6 +105,7 @@ export class AssetTypesAsideComponent {
     private readonly formsTogglerService: FormsTogglerService,
     private readonly gasFormService: GasFormService,
     private readonly headerStore: HeaderStore,
+    private readonly filterQueryService: FilterQueryService,
     @Inject(Injector) private readonly injector: Injector
   ) {
     this.openBlockchainsList();
@@ -214,6 +218,10 @@ export class AssetTypesAsideComponent {
     return blockchain.tags.filter(
       tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW
     );
+  }
+
+  public setBlockchainFilterAll(): void {
+    this.filterQueryService.filterQuery = BlockchainTags.ALL;
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {

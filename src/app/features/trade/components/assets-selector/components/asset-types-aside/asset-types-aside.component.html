@@ -4,7 +4,15 @@
     'asset-types-aside__search-bar-mobile': isMobile
   }"
 >
-  <app-search-bar></app-search-bar>
+  <div *ngIf="isMobile" class="asset-types-aside__search-bar-mobile__search-bar-container">
+    <app-search-bar></app-search-bar>
+    <app-filter-list-element
+      [blockchainFilter]="'All'"
+      [isSelected]="(selectedFilter$ | async) === 'All'"
+      (click)="setBlockchainFilterAll()"
+    ></app-filter-list-element>
+  </div>
+  <app-search-bar *ngIf="!isMobile"></app-search-bar>
   <ng-content></ng-content>
 </div>
 <aside class="asset-types-aside">
