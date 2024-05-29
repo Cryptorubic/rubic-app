@@ -31,6 +31,19 @@ function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
   );
 }
 
+function showScrollMarksPromoLabel(trade: CrossChainTrade): boolean {
+  const isPromoToken =
+    trade.to.isNative ||
+    trade.to.symbol.toLowerCase() === 'wsteth' ||
+    trade.to.symbol.toLowerCase() === 'stone';
+
+  return (
+    trade.to.blockchain === BLOCKCHAIN_NAME.SCROLL &&
+    trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) &&
+    isPromoToken
+  );
+}
+
 const POSITIVE_COLOR =
   'linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%)';
 const WARNING_COLOR =
@@ -46,12 +59,21 @@ export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '6.5': '$10.000'
 };
 
-const blastGoldPromoInfo = {
+const blastGoldPromoInfo: BadgeInfo = {
   label: '+Gold',
   hint: 'You will recieve Blast Gold from Rubic team for this transaction!',
   bgColor: GOLD_COLOR,
   fromSdk: false,
   showLabel: showBlastGoldPromoLabel
+};
+
+const scrollMarksPromoInfo: BadgeInfo = {
+  label: '+Marks!',
+  href: 'https://scroll.io/sessions',
+  hint: 'You will recieve Marks from Scroll for completing this swap and holding this token!',
+  bgColor: POSITIVE_COLOR,
+  fromSdk: false,
+  showLabel: showScrollMarksPromoLabel
 };
 
 export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>> =
@@ -75,7 +97,8 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: false,
         showLabel: showXyBlastPromoLabel
       },
-      blastGoldPromoInfo
+      blastGoldPromoInfo,
+      scrollMarksPromoInfo
     ],
     [BRIDGE_TYPE.MESON]: [
       {
@@ -87,7 +110,8 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: false,
         showLabel: () => true
       },
-      blastGoldPromoInfo
+      blastGoldPromoInfo,
+      scrollMarksPromoInfo
     ],
     [BRIDGE_TYPE.ARBITRUM]: [
       {
@@ -104,13 +128,16 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         showLabel: showAttentionLabelArbitrumBridge
       }
     ],
-    [BRIDGE_TYPE.ORBITER_BRIDGE]: [blastGoldPromoInfo],
-    [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo],
+    [BRIDGE_TYPE.ORBITER_BRIDGE]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [BRIDGE_TYPE.SCROLL_BRIDGE]: [scrollMarksPromoInfo],
     // ON-CHAIN
-    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [ON_CHAIN_TRADE_TYPE.IZUMI]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [blastGoldPromoInfo]
+    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: [scrollMarksPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: [scrollMarksPromoInfo]
   };
