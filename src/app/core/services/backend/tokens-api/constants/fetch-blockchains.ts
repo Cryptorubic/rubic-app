@@ -50,7 +50,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_FAIR,
   BLOCKCHAIN_NAME.ZK_LINK,
-  BLOCKCHAIN_NAME.XLAYER
+  BLOCKCHAIN_NAME.XLAYER,
+  BLOCKCHAIN_NAME.TAIKO
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [
