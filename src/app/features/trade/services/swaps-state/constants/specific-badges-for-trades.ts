@@ -87,7 +87,8 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
         fromSdk: true,
         showLabel: () => true
       },
-      blastGoldPromoInfo
+      blastGoldPromoInfo,
+      scrollMarksPromoInfo
     ],
     [BRIDGE_TYPE.XY]: [
       {
