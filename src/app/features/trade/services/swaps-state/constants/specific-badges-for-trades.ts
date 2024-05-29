@@ -133,12 +133,10 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
     [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [BRIDGE_TYPE.SCROLL_BRIDGE]: [scrollMarksPromoInfo],
     // ON-CHAIN
-    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo, scrollMarksPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo, scrollMarksPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [blastGoldPromoInfo, scrollMarksPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.XY_DEX]: [blastGoldPromoInfo],
     [ON_CHAIN_TRADE_TYPE.IZUMI]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [blastGoldPromoInfo, scrollMarksPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [blastGoldPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP]: [scrollMarksPromoInfo],
-    [ON_CHAIN_TRADE_TYPE.SYNC_SWAP]: [scrollMarksPromoInfo]
+    [ON_CHAIN_TRADE_TYPE.UNISWAP_V2]: [blastGoldPromoInfo],
+    [ON_CHAIN_TRADE_TYPE.FENIX_V3]: [blastGoldPromoInfo]
   };
