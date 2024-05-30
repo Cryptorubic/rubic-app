@@ -48,11 +48,32 @@ app-search-bar {
 
     border-top: 1px solid var(--tui-base-04);
 
+
     &__row {
       > .assets-selector__row {
+        gap: 12px;
         margin: var(--tui-padding-l) 0;
         margin-bottom: 0;
         padding: 0 var(--tui-padding-l);
+
+        ::ng-deep app-search-bar {
+          .tui-autofill {
+            height: 51px;
+          }
+        }
+
+        ::ng-deep app-switch-list-type-button {
+          height: 51px;
+
+          .t-wrapper {
+            width: 51px;
+            height: 51px;
+          }
+
+          button {
+            width: auto;
+          }
+        }
       }
     }
 

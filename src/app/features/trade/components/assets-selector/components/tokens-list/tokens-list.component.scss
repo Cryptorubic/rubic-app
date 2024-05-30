@@ -63,14 +63,28 @@ tui-loader {
     padding: 0;
   }
 
-  &__search-bar {
+  &__search-bar-container {
+    display: flex;
+    justify-content: space-between;
+
     margin-bottom: 2px;
+
+    app-search-bar {
+      flex: 1;
+    }
 
     ::ng-deep {
       .tui-autofill {
         background-color: var(--io-background);
         border-radius: 0;
         border-top-left-radius: var(--tui-radius-m);
+      }
+    }
+
+    ::ng-deep button {
+      .t-wrapper {
+        background-color: var(--io-background);
+        border-radius: 0;
         border-top-right-radius: var(--tui-radius-m);
       }
     }

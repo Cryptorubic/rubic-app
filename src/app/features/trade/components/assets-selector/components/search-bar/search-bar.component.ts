@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Injector, Input } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
@@ -14,6 +14,8 @@ import { BlockchainsListService } from '../../services/blockchains-list-service/
 })
 export class SearchBarComponent {
   @Input() expandableField: boolean = false;
+
+  @Input() injector: Injector;
 
   public isExpanded = false;
 

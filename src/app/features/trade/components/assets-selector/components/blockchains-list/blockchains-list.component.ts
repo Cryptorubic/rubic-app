@@ -13,6 +13,7 @@ import { switchIif } from '@app/shared/utils/utils';
 import { FormType } from '@app/features/trade/models/form-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -37,6 +38,8 @@ export class BlockchainsListComponent implements OnDestroy {
     ])
   );
 
+  private readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -45,7 +48,8 @@ export class BlockchainsListComponent implements OnDestroy {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
     public readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormService: GasFormService
+    private readonly gasFormService: GasFormService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   public get formType(): FormType {
@@ -53,7 +57,7 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.assetsSelectorService.setSelectorListTypeByAssetType();
+    this.closeBlockchainsList();
   }
 
   private isTargetSelectorGasFormOpened(): boolean {
@@ -77,7 +81,9 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public closeBlockchainsList(): void {
-    this.assetsSelectorService.setSelectorListTypeByAssetType();
+    if (!this.isMobile) {
+      this.assetsSelectorService.setSelectorListTypeByAssetType();
+    }
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {

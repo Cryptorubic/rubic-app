@@ -9,7 +9,7 @@
 .dropdown-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   width: 229px;
   padding: var(--tui-padding-xs) var(--tui-padding-xs);
 
@@ -37,12 +37,20 @@
     display: flex;
     gap: 16px;
     align-items: center;
+    padding: 5px;
 
     color: white;
     font-size: 13px;
 
+    &:active {
+      padding: 5px;
+    }
+
     &:hover {
       text-decoration: none;
+
+      background: var(--tui-base-01);
+      border-radius: var(--tui-radius-s);
     }
 
     ::ng-deep svg {
@@ -80,12 +88,9 @@
   &__security-container-label {
     display: flex !important;
     flex-direction: column;
-    justify-content: flex-end;
+    justify-content: center;
 
     line-height: 1.2;
   }
 }
 
-.security-content {
-  height: 40px !important;
-}

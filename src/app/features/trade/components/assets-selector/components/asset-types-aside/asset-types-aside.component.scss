@@ -86,12 +86,13 @@
     &-mobile {
       display: flex;
       flex-direction: column;
-      padding: 0 16px;
+      gap: 16px;
 
       &__search-bar-container {
         display: flex;
         gap: 12px;
         justify-content: space-between;
+        height: 51px;
 
         app-filter-list-element {
           ::ng-deep {
@@ -200,6 +201,13 @@
 }
 
 @include b($mobile-md) {
+  :host {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
   .icon-container {
     flex-direction: column;
     justify-content: center;
@@ -208,17 +216,15 @@
   .asset-types-aside {
     display: flex;
     flex-direction: column;
+    gap: 16px;
     align-items: flex-start;
     justify-content: center;
     width: 100%;
-
     height: 100%;
-
     padding: 0;
     overflow-x: auto;
 
     background-color: unset;
-
     border-radius: unset;
 
     &__list-element {
@@ -240,7 +246,6 @@
       flex-wrap: nowrap;
       gap: 12px;
       align-items: center;
-      padding-left: 1rem;
     }
 
     &__blockchain-header {

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { ModalService } from '@app/core/modals/services/modal.service';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
 import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters';
 @Component({
@@ -17,10 +18,13 @@ export class BlockchainsFilterListComponent {
 
   constructor(
     private readonly filterQueryService: FilterQueryService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   public onSelectFilter(filter: BlockchainFilters): void {
     this.filterQueryService.filterQuery = filter;
+    // this.modalService.openMobileBlockchainList(this.injector)
   }
 }
