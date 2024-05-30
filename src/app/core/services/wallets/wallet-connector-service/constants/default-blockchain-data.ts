@@ -129,7 +129,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.mantle.xyz/'
+    rpc: 'https://rpc.ankr.com/mantle'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',

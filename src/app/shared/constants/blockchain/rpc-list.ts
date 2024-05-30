@@ -200,8 +200,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/mantle',
     'https://mantle-mainnet.public.blastapi.io',
-    'https://rpc.mantle.xyz',
     'https://mantle.publicnode.com'
   ],
   [BLOCKCHAIN_NAME.FUJI]: [
