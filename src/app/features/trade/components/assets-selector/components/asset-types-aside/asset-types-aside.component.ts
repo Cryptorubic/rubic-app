@@ -34,8 +34,7 @@ import { FilterQueryService } from '../../services/filter-query-service/filter-q
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  viewProviders: [AssetsSelectorService, SearchQueryService, BlockchainsListService],
-  providers: []
+  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService]
 })
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;

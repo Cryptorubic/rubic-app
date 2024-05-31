@@ -278,7 +278,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0,
     tags: ['MOVR', BlockchainTags.PROMO, BlockchainTags.EVM]
   },
-  { name: BLOCKCHAIN_NAME.TRON, rank: 0, tags: ['TRX', BlockchainTags.PROMO, BlockchainTags.EVM] },
+  {
+    name: BLOCKCHAIN_NAME.TRON,
+    rank: 0,
+    tags: ['TRX', BlockchainTags.PROMO, BlockchainTags.NON_EVM]
+  },
   {
     name: BLOCKCHAIN_NAME.ASTAR_EVM,
     rank: 0,

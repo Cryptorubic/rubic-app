@@ -1,4 +1,13 @@
-<tui-hosted-dropdown #dropdown [content]="content" [(open)]="isDropdownOpen">
+<tui-hosted-dropdown
+  #dropdown
+  [content]="content"
+  [(open)]="isDropdownOpen"
+  *ngIf="
+    token.favorite ||
+    showCopyToClipboardOption ||
+    securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
+  "
+>
   <button
     appearance="flat"
     icon="tuiIconMoreVertical"
@@ -41,7 +50,7 @@
             </span>
           </ng-template>
         </ng-container>
-        <ng-container>
+        <ng-container *ngIf="token.favorite">
           <tui-loader
             (click.stop)="toggleFavorite()"
             class="dropdown-content__favorite-container"

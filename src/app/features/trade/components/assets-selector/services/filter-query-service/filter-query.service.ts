@@ -20,9 +20,9 @@ export class FilterQueryService {
     if (filter === this._filterQuery$.getValue()) {
       this._filterQuery$.next(null);
     } else {
-      this.modalService.openMobileBlockchainList(this.injector);
       this._filterQuery$.next(filter);
       this.gasFormService.updateFilterQuery(filter);
+      this.modalService.openMobileBlockchainList(this.injector);
     }
   }
 }
