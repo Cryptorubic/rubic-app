@@ -4,7 +4,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -19,7 +19,10 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { BlockchainName } from 'rubic-sdk';
 import { FilterQueryService } from '../filter-query-service/filter-query.service';
-import { BlockchainTags } from '../../components/blockchains-filter-list/models/BlockchainFilters';
+import {
+  BlockchainFilters,
+  BlockchainTags
+} from '../../components/blockchains-filter-list/models/BlockchainFilters';
 
 @Injectable()
 export class BlockchainsListService {
@@ -95,20 +98,24 @@ export class BlockchainsListService {
   }
 
   private subscribeOnSearchQuery(): void {
-    combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
+    combineLatest([
+      this.filterQueryService.filterQuery$,
+      this.searchQueryService.query$,
+      this.assetsSelectorService.selectorListType$
+    ])
       .pipe(
-        filter(([_, selectorListType]) => selectorListType === 'blockchains'),
+        filter(([_, __, selectorListType]) => selectorListType === 'blockchains'),
         debounceTime(200),
-        map(([query]) => query),
+        // map(([query]) => query),
         takeUntil(this.destroy$)
       )
-      .subscribe(query => {
-        this.blockchainsToShow = this.availableBlockchains.filter(blockchain => {
+      .subscribe(([filterQuery, searchQuery]) => {
+        this.blockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
           return (
-            blockchain.label.toLowerCase().includes(query.toLowerCase()) ||
-            blockchain.name.toLowerCase().includes(query.toLowerCase()) ||
+            blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            blockchain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             (blockchain.tags.length &&
-              blockchain.tags.join(' ').toLowerCase().includes(query.toLowerCase()))
+              blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
           );
         });
       });
@@ -129,6 +136,14 @@ export class BlockchainsListService {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  private filterBlockchains(filterQuery: BlockchainFilters): AvailableBlockchain[] {
+    if (filterQuery === BlockchainTags.ALL || !filterQuery) {
+      return this.availableBlockchains;
+    } else {
+      return this.availableBlockchains.filter(blockchain => blockchain.tags.includes(filterQuery));
+    }
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
