@@ -76,7 +76,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.MODE]: [],
   [BLOCKCHAIN_NAME.ZK_FAIR]: [],
   [BLOCKCHAIN_NAME.ZK_LINK]: [],
-  [BLOCKCHAIN_NAME.XLAYER]: []
+  [BLOCKCHAIN_NAME.XLAYER]: [],
+  [BLOCKCHAIN_NAME.TAIKO]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

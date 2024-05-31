@@ -129,7 +129,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.mantle.xyz/'
+    rpc: 'https://rpc.ankr.com/mantle'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
@@ -182,5 +182,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.XLAYER]: {
     name: 'X Layer',
     rpc: 'https://rpc.xlayer.tech'
+  },
+  [BLOCKCHAIN_NAME.TAIKO]: {
+    name: 'Taiko',
+    rpc: 'https://rpc.mainnet.taiko.xyz'
   }
 };
