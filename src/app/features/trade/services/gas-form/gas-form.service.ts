@@ -16,7 +16,7 @@ import {
 export class GasFormService {
   private readonly _searchQuery$ = new BehaviorSubject<string>('');
 
-  private readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>('All');
+  private readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>(null);
 
   private readonly _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -33,9 +33,9 @@ export class GasFormService {
     this._searchQuery$
   ]).pipe(
     map(([filterQuery, searchQuery]) => {
-      return this.sourceAvailableBlockchains.filter(chain => {
-        return this.setFilter(chain, filterQuery) || this.showBlockchain(chain, searchQuery);
-      });
+      return this.setFilter(this.sourceAvailableBlockchains, filterQuery).filter(chain =>
+        this.showBlockchain(chain, searchQuery)
+      );
     })
   );
 
@@ -131,11 +131,14 @@ export class GasFormService {
     );
   }
 
-  private setFilter(blockchain: AvailableBlockchain, filter: BlockchainFilters): boolean {
+  private setFilter(
+    blockchains: AvailableBlockchain[],
+    filter: BlockchainFilters
+  ): AvailableBlockchain[] {
     if (filter === BlockchainTags.ALL || !filter) {
-      return true;
+      return blockchains;
     }
-    return blockchain.tags.includes(filter);
+    return blockchains.filter(chain => chain.tags.includes(filter));
   }
 
   private fireGtmServiceOnNullableTrade(): void {

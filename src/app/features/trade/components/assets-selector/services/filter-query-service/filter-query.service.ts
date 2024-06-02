@@ -19,6 +19,7 @@ export class FilterQueryService {
   public set filterQuery(filter: BlockchainFilters) {
     if (filter === this._filterQuery$.getValue()) {
       this._filterQuery$.next(null);
+      this.gasFormService.updateFilterQuery(null);
     } else {
       this._filterQuery$.next(filter);
       this.gasFormService.updateFilterQuery(filter);
