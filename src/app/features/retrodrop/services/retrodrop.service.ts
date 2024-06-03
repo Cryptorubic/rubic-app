@@ -19,6 +19,8 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4];
+
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
     this.subscribeOnWalletChange();
@@ -125,7 +127,7 @@ export class RetrodropService extends ClaimService {
     return (
       !isAlreadyClaimedOnCurrentContract &&
       !isAlreadyClaimedOnOldContract &&
-      [1, 2, 3].includes(roundNumber)
+      this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber)
     );
   }
 }

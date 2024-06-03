@@ -200,8 +200,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/mantle',
     'https://mantle-mainnet.public.blastapi.io',
-    'https://rpc.mantle.xyz',
     'https://mantle.publicnode.com'
   ],
   [BLOCKCHAIN_NAME.FUJI]: [
@@ -232,7 +232,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://zetachain-mainnet-archive.allthatnode.com:8545',
     'https://zetachain-evm.blockpi.network/v1/rpc/public'
   ],
-  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
   [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
     'https://pacific-rpc.manta.network/http',
@@ -301,5 +300,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.xlayer.tech',
     'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
     'https://xlayerrpc.okx.com'
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.mainnet.taiko.xyz',
+    'https://rpc.taiko.xyz',
+    'wss://ws.taiko.xyz'
   ]
 };
