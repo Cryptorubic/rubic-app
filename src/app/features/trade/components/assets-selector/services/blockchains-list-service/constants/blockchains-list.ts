@@ -141,7 +141,8 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.ARBITRUM, rank: 0.75, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.XLAYER, rank: 0.75, tags: ['OKB'] },
   { name: BLOCKCHAIN_NAME.ZK_SYNC, rank: 0.75, tags: ['ETH'] },
-  { name: BLOCKCHAIN_NAME.ROOTSTOCK, rank: 0.75, tags: ['RBTC'] },
+  { name: BLOCKCHAIN_NAME.SEI, rank: 0.75, tags: ['ETH'] },
+  { name: BLOCKCHAIN_NAME.ROOTSTOCK, rank: 0, tags: ['RBTC'] },
   { name: BLOCKCHAIN_NAME.TAIKO, rank: 0.75, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.LINEA, rank: 0.5, tags: ['ETH'] },
   { name: BLOCKCHAIN_NAME.SCROLL, rank: 0.5, tags: ['ETH'] },
@@ -179,6 +180,7 @@ export const blockchainsList: RankedBlockchain[] = [
   { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: ['XDAI'] },
   { name: BLOCKCHAIN_NAME.CRONOS, rank: 0, tags: ['CRO'] },
   { name: BLOCKCHAIN_NAME.HORIZEN_EON, rank: 0, tags: ['ZEN'] },
+
   // BLOCKCHAIN_NAME.BITGERT,
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,

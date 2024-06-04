@@ -140,5 +140,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_FAIR]: 'ZKFair',
   [BLOCKCHAIN_NAME.ZK_LINK]: 'zkLink',
   [BLOCKCHAIN_NAME.XLAYER]: 'X Layer',
-  [BLOCKCHAIN_NAME.TAIKO]: 'Taiko'
+  [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
+  [BLOCKCHAIN_NAME.SEI]: 'Sei'
 };

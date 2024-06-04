@@ -142,5 +142,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_FAIR]: `${basePath}zkfair.svg`,
   [BLOCKCHAIN_NAME.ZK_LINK]: `${basePath}zklink.svg`,
   [BLOCKCHAIN_NAME.XLAYER]: `${basePath}xlayer.svg`,
-  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`
+  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
+  [BLOCKCHAIN_NAME.SEI]: `${basePath}sei.svg`
 };
