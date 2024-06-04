@@ -1017,5 +1017,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.TAIKO], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.SEI]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SEI], ...defaultTokenParams } as Token
   ]
 };
