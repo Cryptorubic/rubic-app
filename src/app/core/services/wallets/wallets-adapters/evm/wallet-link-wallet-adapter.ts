@@ -7,7 +7,6 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { StoreService } from '@core/services/store/store.service';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
-import { WalletlinkWrongNetwork } from '@core/errors/models/provider/walletlink-wrong-network';
 import { NgZone } from '@angular/core';
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -41,8 +40,8 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
     }
 
     this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
-
     const provider = this.window.ethereum as WalletLinkProvider;
+
     if (provider?.isCoinbaseWallet === true) {
       // Handle mobile coinbase browser.
       this.isMobileMode = true;
@@ -66,13 +65,6 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<WalletLinkProvider
       this.isEnabled = true;
 
       const chainName = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
-
-      // in desktop version selected into modal chain should match mobile app selected chain
-      if (!this.isMobileMode) {
-        if (chainName !== this.selectedChain) {
-          throw new WalletlinkWrongNetwork(this.selectedChain);
-        }
-      }
 
       this.selectedAddress = address;
       this.selectedChain = chainName;

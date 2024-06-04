@@ -11,9 +11,7 @@ import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { CoinbaseConfirmModalComponent } from 'src/app/core/wallets-modal/components/coinbase-confirm-modal/coinbase-confirm-modal.component';
 import { TranslateService } from '@ngx-translate/core';
-import { blockchainId, BlockchainName } from 'rubic-sdk';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
@@ -23,19 +21,21 @@ import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/mod
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
-import { catchError, switchMap, tap, timeout } from 'rxjs/operators';
+import { catchError, tap, timeout } from 'rxjs/operators';
 import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { blockchainId } from 'rubic-sdk';
 
 @Component({
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService]
+  providers: [TuiDestroyService, SwapsFormService]
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -72,7 +72,7 @@ export class WalletsModalComponent implements OnInit {
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
-    return provider === WALLET_NAME.WALLET_LINK;
+    return this.isMobile && provider === WALLET_NAME.WALLET_LINK;
   };
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
@@ -94,7 +94,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly swapFormService: SwapsFormService
   ) {}
 
   ngOnInit() {
@@ -149,44 +150,11 @@ export class WalletsModalComponent implements OnInit {
 
       this.headerStore.setWalletsLoadingStatus(true);
 
-      // desktop coinbase
-      if (
-        this.browserService.currentBrowser === BROWSER.DESKTOP &&
-        provider === WALLET_NAME.WALLET_LINK
-      ) {
-        this.dialogService
-          .showDialog<CoinbaseConfirmModalComponent, BlockchainName>(
-            CoinbaseConfirmModalComponent,
-            {
-              dismissible: true,
-              label: this.translateService.instant('modals.coinbaseSelectNetworkModal.title'),
-              size: 'm',
-              fitContent: true
-            },
-            this.injector
-          )
-          .pipe(
-            switchMap(blockchainName => {
-              if (blockchainName) {
-                this.close();
-                return this.authService.connectWallet({
-                  walletName: provider,
-                  chainId: blockchainId[blockchainName]
-                });
-              }
-              return of(null);
-            }),
-            catchError(() => {
-              return of(null);
-            })
-          )
-          .subscribe(() => this.headerStore.setWalletsLoadingStatus(false));
-        return;
-      }
-
       const connectionTime = 15_000;
+      const chainId = blockchainId[this.swapFormService.inputValue.fromToken?.blockchain] || 1;
+
       await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider })).pipe(
+        from(this.authService.connectWallet({ walletName: provider, chainId })).pipe(
           timeout(connectionTime),
           catchError(() => {
             this.headerStore.setWalletsLoadingStatus(false);
