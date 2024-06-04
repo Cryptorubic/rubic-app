@@ -16931,6 +16931,10 @@ rubic-sdk@5.22.3:
   resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.22.3.tgz#433523cf50d31125b8203228db69ccc72aca5d0d"
   integrity sha512-/qnVVBGNAyZ7xzZEQU+tLytA0XbannHJJJSKRk/zFyDxGSUgn1IG4Oq/UwsDPevzVhSDhFtN3xZlA1R1DGqgnQ==
 
+rubic-sdk@5.22.3:
+  version "5.22.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.22.3.tgz#433523cf50d31125b8203228db69ccc72aca5d0d"
+  integrity sha512-/qnVVBGNAyZ7xzZEQU+tLytA0XbannHJJJSKRk/zFyDxGSUgn1IG4Oq/UwsDPevzVhSDhFtN3xZlA1R1DGqgnQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
