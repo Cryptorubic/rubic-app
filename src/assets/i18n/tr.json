@@ -49,6 +49,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "Bize MetaMask hesabınıza erişim izni vermediniz. İşlem yapabilmek için imzanız istenmektedir. Devam etmek istiyorsanız lütfen İmzala'ya tıklayın.",
     "noMetamaskInstalled": "Lütfen metamask eklentisinin kurulu ve kilidinin açık olduğundan emin olun.\n İndirebilirsiniz",
+    "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
     "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
     "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase tarayıcı uzantısı MetaMask uzantısıyla çakışıyor. Devam etmek için lütfen Coinbase uzantısını devre dışı bırakın veya kaldırın veya bağlanmak için başka bir cüzdan seçin.",
