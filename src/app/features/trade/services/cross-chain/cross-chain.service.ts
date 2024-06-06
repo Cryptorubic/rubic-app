@@ -52,6 +52,7 @@ import { AirdropPointsService } from '@app/shared/services/airdrop-points-servic
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
+import { handleTaikoIntegratorAddress } from '../../utils/handle-taiko-integrator-address';
 
 @Injectable()
 export class CrossChainService {
@@ -103,6 +104,7 @@ export class CrossChainService {
           price: toPrice
         });
         const options = this.getOptions(disabledTradeTypes);
+        handleTaikoIntegratorAddress(options, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -248,7 +250,9 @@ export class CrossChainService {
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
 
-    this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
+    this.airdropPointsService
+      .setSeNPointsTemp('cross-chain', trade.from.blockchain, trade.to.blockchain)
+      .subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),

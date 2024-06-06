@@ -44,6 +44,7 @@ import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser'
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { handleTaikoIntegratorAddress } from '../../utils/handle-taiko-integrator-address';
 
 @Injectable()
 export class OnChainService {
@@ -136,6 +137,7 @@ export class OnChainService {
             useProxy,
             disabledProviders: disabledTradeTypes
           };
+          handleTaikoIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
           return this.sdkService.instantTrade.calculateTradeReactively(
             fromSdkToken,
@@ -158,6 +160,7 @@ export class OnChainService {
     useCacheData?: boolean
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
+    const toBlockchain = trade.to.blockchain;
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
@@ -179,7 +182,9 @@ export class OnChainService {
       blockchain
     );
 
-    this.airdropPointsService.setSeNPointsTemp('on-chain').subscribe();
+    this.airdropPointsService
+      .setSeNPointsTemp('on-chain', fromBlockchain, toBlockchain)
+      .subscribe();
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');

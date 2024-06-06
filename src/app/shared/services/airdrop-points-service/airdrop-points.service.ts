@@ -8,7 +8,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import {
   CrossChainRewardConvertedData,
@@ -71,18 +71,28 @@ export class AirdropPointsService {
    * @remove
    * @todo remove after backend update
    */
-  public setSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
+  public setSeNPointsTemp(
+    type: 'cross-chain' | 'on-chain',
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): Observable<number> {
     const address = this.authService.user.address;
+    const calcPoints = (points: number): number => {
+      if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
+        return Math.floor(points / 2);
+      }
+      return points;
+    };
 
     if (type === 'on-chain') {
       return this.apiService
         .getOnChainPoints(address)
-        .pipe(tap(points => this._pointsAmount$.next(points)));
+        .pipe(tap(points => this._pointsAmount$.next(calcPoints(points))));
     }
 
     return this.apiService
       .getCrossChainPoints(address)
-      .pipe(tap(points => this._pointsAmount$.next(points)));
+      .pipe(tap(points => this._pointsAmount$.next(calcPoints(points))));
   }
 
   public async getSwapAndEarnPointsAmount(
