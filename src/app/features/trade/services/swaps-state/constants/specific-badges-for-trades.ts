@@ -32,10 +32,8 @@ function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
 }
 
 function showScrollMarksPromoLabel(trade: CrossChainTrade): boolean {
-  const isPromoToken =
-    trade.to.isNative ||
-    trade.to.symbol.toLowerCase() === 'wsteth' ||
-    trade.to.symbol.toLowerCase() === 'stone';
+  const promoTokens = ['weth', 'usdt', 'usdc', 'wsteth', 'wrseth', 'stone'];
+  const isPromoToken = trade.to.isNative || promoTokens.includes(trade.to.symbol.toLowerCase());
 
   return (
     trade.to.blockchain === BLOCKCHAIN_NAME.SCROLL &&
@@ -132,6 +130,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
     [BRIDGE_TYPE.ORBITER_BRIDGE]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [BRIDGE_TYPE.SCROLL_BRIDGE]: [scrollMarksPromoInfo],
+    [BRIDGE_TYPE.LIFI]: [scrollMarksPromoInfo],
     // ON-CHAIN
     [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo],
     [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo],
