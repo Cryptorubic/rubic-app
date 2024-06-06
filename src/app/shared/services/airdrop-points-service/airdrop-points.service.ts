@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -72,27 +72,30 @@ export class AirdropPointsService {
    * @todo remove after backend update
    */
   public setSeNPointsTemp(
-    type: 'cross-chain' | 'on-chain',
     fromBlockchain: BlockchainName,
     toBlockchain: BlockchainName
   ): Observable<number> {
     const address = this.authService.user.address;
-    const calcPoints = (points: number): number => {
-      if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
-        return Math.floor(points / 2);
-      }
-      return points;
-    };
+    const request$ =
+      fromBlockchain === toBlockchain
+        ? this.apiService.getOnChainPoints(address)
+        : this.apiService.getCrossChainPoints(address);
 
-    if (type === 'on-chain') {
-      return this.apiService
-        .getOnChainPoints(address)
-        .pipe(tap(points => this._pointsAmount$.next(calcPoints(points))));
+    return request$.pipe(
+      map(points => this.calcSeNPoints(fromBlockchain, toBlockchain, points)),
+      tap(points => this._pointsAmount$.next(points))
+    );
+  }
+
+  private calcSeNPoints(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    points: number
+  ): number {
+    if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
+      return Math.floor(points / 2);
     }
-
-    return this.apiService
-      .getCrossChainPoints(address)
-      .pipe(tap(points => this._pointsAmount$.next(calcPoints(points))));
+    return points;
   }
 
   public async getSwapAndEarnPointsAmount(
