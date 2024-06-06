@@ -130,6 +130,7 @@ export const SPECIFIC_BADGES: Partial<Record<CrossChainTradeType | OnChainTradeT
     [BRIDGE_TYPE.ORBITER_BRIDGE]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [BRIDGE_TYPE.SQUIDROUTER]: [blastGoldPromoInfo, scrollMarksPromoInfo],
     [BRIDGE_TYPE.SCROLL_BRIDGE]: [scrollMarksPromoInfo],
+    [BRIDGE_TYPE.LIFI]: [scrollMarksPromoInfo],
     // ON-CHAIN
     [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [blastGoldPromoInfo],
     [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: [blastGoldPromoInfo],
