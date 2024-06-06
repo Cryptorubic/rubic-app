@@ -186,5 +186,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.TAIKO]: {
     name: 'Taiko',
     rpc: 'https://rpc.mainnet.taiko.xyz'
+  },
+  [BLOCKCHAIN_NAME.SEI]: {
+    name: 'Sei',
+    rpc: 'https://evm-rpc.sei-apis.com'
   }
 };

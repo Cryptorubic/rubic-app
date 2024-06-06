@@ -306,5 +306,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
     'wss://ws.taiko.xyz'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.SEI]: ['https://evm-rpc.sei-apis.com']
 };
