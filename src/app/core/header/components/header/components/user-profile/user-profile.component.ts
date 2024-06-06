@@ -59,7 +59,7 @@ export class UserProfileComponent {
   public dropdownIsOpened = false;
 
   public readonly profileText$: Observable<string> = this.authService.currentUser$.pipe(
-    map(user => (user?.name ? user.name : user.address)),
+    map(user => (user?.name ? user.name : user?.address)),
     startWith(this.authService.userAddress)
   );
 
