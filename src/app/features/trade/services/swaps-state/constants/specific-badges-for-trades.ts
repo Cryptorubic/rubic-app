@@ -32,10 +32,8 @@ function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
 }
 
 function showScrollMarksPromoLabel(trade: CrossChainTrade): boolean {
-  const isPromoToken =
-    trade.to.isNative ||
-    trade.to.symbol.toLowerCase() === 'wsteth' ||
-    trade.to.symbol.toLowerCase() === 'stone';
+  const promoTokens = ['weth', 'usdt', 'usdc', 'wsteth', 'wrseth', 'stone'];
+  const isPromoToken = trade.to.isNative || promoTokens.includes(trade.to.symbol.toLowerCase());
 
   return (
     trade.to.blockchain === BLOCKCHAIN_NAME.SCROLL &&
