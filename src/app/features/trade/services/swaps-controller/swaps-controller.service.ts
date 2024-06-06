@@ -301,11 +301,7 @@ export class SwapsControllerService {
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(
-                trade as CrossChainTrade,
-                callback.onHash,
-                true
-              );
+              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, true);
             } else {
               txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
             }

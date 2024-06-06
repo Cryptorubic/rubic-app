@@ -66,7 +66,7 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.SCROLL]: [],
   [BLOCKCHAIN_NAME.STARKNET]: [],
   [BLOCKCHAIN_NAME.BERACHAIN]: [],
-  [BLOCKCHAIN_NAME.BLAST]: [],
+  [BLOCKCHAIN_NAME.BLAST]: [ON_CHAIN_TRADE_TYPE.FENIX_V2],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [],
   [BLOCKCHAIN_NAME.HOLESKY]: [],
   [BLOCKCHAIN_NAME.KROMA]: [],
@@ -76,7 +76,9 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.MODE]: [],
   [BLOCKCHAIN_NAME.ZK_FAIR]: [],
   [BLOCKCHAIN_NAME.ZK_LINK]: [],
-  [BLOCKCHAIN_NAME.XLAYER]: []
+  [BLOCKCHAIN_NAME.XLAYER]: [],
+  [BLOCKCHAIN_NAME.TAIKO]: [],
+  [BLOCKCHAIN_NAME.SEI]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

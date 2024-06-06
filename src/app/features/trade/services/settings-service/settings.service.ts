@@ -178,13 +178,13 @@ export class SettingsService {
     }
 
     const priceImpact = trade.getTradeInfo().priceImpact;
-
+    const tradeSlippage = trade.getTradeInfo().slippage;
     const settingsChecks = {
       highSlippage: slippage >= 10 ? slippage : false,
       highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
-    if (settingsChecks.highSlippage || settingsChecks.highPriceImpact) {
+    if ((settingsChecks.highSlippage || settingsChecks.highPriceImpact) && tradeSlippage > 0) {
       return firstValueFrom(
         this.dialogService.showDialog<SettingsWarningModalComponent, boolean>(
           SettingsWarningModalComponent,

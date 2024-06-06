@@ -448,12 +448,11 @@ export class SwapsStateService {
   private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
     const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
     const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-
-    if (!badgesConfig || !symbolAmount) {
+    if (!badgesConfig) {
       return [];
     }
-    const [symbol, amount] = symbolAmount.split('_');
-    const [bridgeType, badges] = badgesConfig;
+
+    const [tradeType, badges] = badgesConfig;
 
     const tradeSpecificBadges = badges
       .filter(info => {
@@ -463,19 +462,20 @@ export class SwapsStateService {
         if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
           return true;
         }
-
         return false;
       })
       .map(info => {
-        if (bridgeType === BRIDGE_TYPE.SYMBIOSIS) {
+        if (tradeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
+          const [symbol, amount] = symbolAmount.split('_');
           return {
             ...info,
             hint: `Swap ${SYMBIOSIS_REWARD_PRICE[amount]}+ & get ${amount} ${symbol}!`,
             label: `+ ${amount} ${symbol} *`
           };
-          return info;
         }
+        return info;
       });
+
     return tradeSpecificBadges;
   }
 }
