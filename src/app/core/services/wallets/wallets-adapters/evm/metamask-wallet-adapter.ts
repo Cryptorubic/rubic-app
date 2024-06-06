@@ -38,19 +38,30 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      let provider = this.window.ethereum;
+      const commonProvider = this.window?.ethereum;
 
-      if (this.window.ethereum.providers?.length) {
-        this.window.ethereum.providers.forEach(async p => {
-          if (p.isMetaMask) provider = p;
-        });
+      if (!commonProvider) {
+        throw new MetamaskError();
       }
 
-      const accounts = (await provider.request({
+      if (commonProvider.providers?.length) {
+        const providers = await Promise.all(
+          commonProvider.providers.filter(provider => provider.isMetaMask)
+        );
+        const metamaskProvider = providers[0];
+
+        if (!metamaskProvider) {
+          throw new MetamaskError();
+        }
+
+        this.wallet = metamaskProvider;
+      } else {
+        this.wallet = commonProvider;
+      }
+
+      const accounts = (await this.wallet.request({
         method: 'eth_requestAccounts'
       })) as RubicAny;
-
-      this.wallet = provider;
       this.checkErrors();
 
       const chain = await this.wallet.request({ method: 'eth_chainId' });

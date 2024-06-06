@@ -27,15 +27,13 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { blockchainId } from 'rubic-sdk';
 
 @Component({
   selector: 'app-wallets-modal',
   templateUrl: './wallets-modal.component.html',
   styleUrls: ['./wallets-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService, SwapsFormService]
+  providers: [TuiDestroyService]
 })
 export class WalletsModalComponent implements OnInit {
   public readonly walletsLoading$ = this.headerStore.getWalletsLoadingStatus();
@@ -94,8 +92,7 @@ export class WalletsModalComponent implements OnInit {
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly storeService: StoreService,
-    private readonly swapFormService: SwapsFormService
+    private readonly storeService: StoreService
   ) {}
 
   ngOnInit() {
@@ -151,10 +148,9 @@ export class WalletsModalComponent implements OnInit {
       this.headerStore.setWalletsLoadingStatus(true);
 
       const connectionTime = 15_000;
-      const chainId = blockchainId[this.swapFormService.inputValue.fromToken?.blockchain] || 1;
 
       await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider, chainId })).pipe(
+        from(this.authService.connectWallet({ walletName: provider, chainId: 1 })).pipe(
           timeout(connectionTime),
           catchError(() => {
             this.headerStore.setWalletsLoadingStatus(false);
