@@ -45,10 +45,7 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
       }
 
       if (commonProvider.providers?.length) {
-        const providers = await Promise.all(
-          commonProvider.providers.filter(provider => provider.isMetaMask)
-        );
-        const metamaskProvider = providers[0];
+        const metamaskProvider = commonProvider.providers.find(provider => provider?.isMetaMask);
 
         if (!metamaskProvider) {
           throw new MetamaskError();
