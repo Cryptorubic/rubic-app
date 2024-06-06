@@ -9,7 +9,7 @@ export function handleIntegratorAddress(
   fromBlockchain: BlockchainName,
   toBlockchain: BlockchainName
 ): void {
-  const urlParams = new URLSearchParams(this.window.location.search);
+  const urlParams = new URLSearchParams(window.location.search);
   const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
   const crossChainIntegrator = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
   const onChainIntegrator = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
