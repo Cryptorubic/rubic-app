@@ -334,6 +334,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}netswap.png`,
     color: '#257AF1'
   },
+  [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: {
+    name: 'NativeRouter',
+    image: `${imageBasePath}native.svg`,
+    color: '#34A5F5'
+  },
 
   //OOOOOOOOOOOOOOOOOOOOOOO
   [ON_CHAIN_TRADE_TYPE.ODOS]: {
@@ -691,6 +696,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: {
+    name: 'ZetaSwap',
+    image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
   }
 };
