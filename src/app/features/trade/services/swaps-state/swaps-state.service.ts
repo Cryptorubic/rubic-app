@@ -456,8 +456,8 @@ export class SwapsStateService {
       return [];
     }
 
-    const providerBadges = badgesByProvider[1];
-    const chainBadges = badgesByChain[1];
+    const providerBadges = badgesByProvider?.[1] || [];
+    const chainBadges = badgesByChain?.[1] || [];
     const allBadges = [...providerBadges, ...chainBadges];
 
     const tradeSpecificBadges = allBadges
