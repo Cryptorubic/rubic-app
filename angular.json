@@ -32,6 +32,7 @@
               "src/favicon.ico",
               "src/manifest.json",
               "src/robots.txt",
+              "src/sitemap.xml",
               {
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
