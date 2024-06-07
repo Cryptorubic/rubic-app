@@ -42,7 +42,13 @@
           <ng-container>
             <div class="modal__point-link" *ngIf="isSwapAndEarnSwap">
               <span>Points can be seen </span>
-              <a href="/airdrop" target="_blank" rel="noreferrer" *ngIf="hideUnusedUI">here</a>
+              <a
+                href="https://app.rubic.exchange/airdrop"
+                target="_blank"
+                rel="noreferrer"
+                *ngIf="hideUnusedUI"
+                >here</a
+              >
               <span *ngIf="!hideUnusedUI" class="highlight_green" (click)="navigateToSwapAndEarn()"
                 >here</span
               >
