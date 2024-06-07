@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://app.rubic.exchange
+Host: https://widgets.rubic.exchange
