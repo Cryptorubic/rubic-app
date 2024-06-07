@@ -93,7 +93,7 @@ export class AirdropPointsService {
     points: number
   ): number {
     if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
-      return Math.floor(points / 2);
+      return points * 2;
     }
     return points;
   }
