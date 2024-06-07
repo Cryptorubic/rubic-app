@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { BadgeInfo, TradeState } from '@features/trade/models/trade-state';
+import { BadgeInfoForComponent, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -14,7 +14,6 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
-  BRIDGE_TYPE,
   compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
@@ -45,7 +44,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { SPECIFIC_BADGES, SYMBIOSIS_REWARD_PRICE } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 
 @Injectable()
 export class SwapsStateService {
@@ -445,16 +445,22 @@ export class SwapsStateService {
     );
   }
 
-  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
-    const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
-    const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-    if (!badgesConfig) {
+  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfoForComponent[] {
+    const badgesByProvider = Object.entries(SPECIFIC_BADGES_FOR_PROVIDERS).find(
+      ([key]) => key === trade.type
+    );
+    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS).find(
+      ([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain
+    );
+    if (!badgesByProvider || !badgesByChain) {
       return [];
     }
 
-    const [tradeType, badges] = badgesConfig;
+    const providerBadges = badgesByProvider[1];
+    const chainBadges = badgesByChain[1];
+    const allBadges = [...providerBadges, ...chainBadges];
 
-    const tradeSpecificBadges = badges
+    const tradeSpecificBadges = allBadges
       .filter(info => {
         if (!info.showLabel(trade)) {
           return false;
@@ -464,17 +470,12 @@ export class SwapsStateService {
         }
         return false;
       })
-      .map(info => {
-        if (tradeType === BRIDGE_TYPE.SYMBIOSIS && symbolAmount) {
-          const [symbol, amount] = symbolAmount.split('_');
-          return {
-            ...info,
-            hint: `Swap ${SYMBIOSIS_REWARD_PRICE[amount]}+ & get ${amount} ${symbol}!`,
-            label: `+ ${amount} ${symbol} *`
-          };
-        }
-        return info;
-      });
+      .map(info => ({
+        bgColor: info.bgColor,
+        label: info.getLabel(trade),
+        hint: info.getHint(trade),
+        href: info.href
+      }));
 
     return tradeSpecificBadges;
   }
