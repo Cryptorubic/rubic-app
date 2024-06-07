@@ -4,3 +4,6 @@ Allow: /
 
 # Host
 Host: https://testnet.rubic.exchange
+
+# Sitemaps
+Sitemap: https://testnet.rubic.exchange/sitemap.xml
