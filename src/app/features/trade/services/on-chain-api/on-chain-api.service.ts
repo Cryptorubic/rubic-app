@@ -16,19 +16,12 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
-import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
-
-const onChainApiRoutes = {
-  createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  editData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
-};
 
 @Injectable()
 export class OnChainApiService {
@@ -107,7 +100,7 @@ export class OnChainApiService {
 
     return this.httpService
       .post<InstantTradesResponseApi>(
-        `v2/onchain/new_extended?valid=${isSwapAndEarnSwap ?? false}`,
+        `v2/trades/onchain/new_extended?valid=${isSwapAndEarnSwap ?? false}`,
         tradeInfo
       )
       .pipe(delay(1000));
@@ -127,8 +120,9 @@ export class OnChainApiService {
         user: this.authService.userAddress
       };
 
-      const url = onChainApiRoutes.editData(toBackendWallet);
-      const res = await firstValueFrom(this.httpService.patch<InstantTradesResponseApi>(url, body));
+      const res = await firstValueFrom(
+        this.httpService.patch<InstantTradesResponseApi>('v2/trades/onchain/new_extended', body)
+      );
 
       return res;
     } catch (err) {

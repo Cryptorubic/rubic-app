@@ -28,7 +28,7 @@ import { SettingsService } from '../settings-service/settings.service';
 
 @Injectable()
 export class CrossChainApiService {
-  private readonly apiEndpoint = 'crosschain_trades/trade';
+  private readonly apiEndpoint = 'v2/trades/crosschain/new_extended';
 
   constructor(
     private readonly httpService: HttpService,
