@@ -1,4 +1,6 @@
 export interface OnChainTradeCreationToBackend {
+  walletName: string;
+  deviceType: string;
   user: string;
   network: string;
   provider: string;

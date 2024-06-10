@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { OnChainTradeCreationToBackend } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
@@ -22,6 +22,7 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Injectable()
 export class OnChainApiService {
@@ -30,7 +31,8 @@ export class OnChainApiService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
     private readonly sessionStorage: SessionStorageService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
   ) {}
 
   public notifyInstantTradesBot(body: {
@@ -82,6 +84,8 @@ export class OnChainApiService {
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
 
     const tradeInfo: OnChainTradeCreationToBackend = {
+      walletName: this.walletConnectorService.provider.walletName,
+      deviceType: this.isMobile ? 'mobile' : 'desktop',
       slippage: trade.slippageTolerance,
       expected_amount: options.toAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
