@@ -99,6 +99,8 @@ export class CrossChainApiService {
 
     const tradeInfo = {
       slippage,
+      wallet_name: this.walletConnectorService.provider.walletName,
+      device_type: this.isMobile ? 'mobile' : 'desktop',
       expected_amount: Web3Pure.toWei(toAmount, toDecimals),
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
       to_amount_min: trade.to.weiAmountMinusSlippage(slippage),
