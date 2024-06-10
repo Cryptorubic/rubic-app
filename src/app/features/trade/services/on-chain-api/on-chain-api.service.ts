@@ -90,7 +90,7 @@ export class OnChainApiService {
       slippage: trade.slippageTolerance,
       expected_amount: options.toAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
-      to_amount_min: trade.toTokenAmountMin.stringWeiAmount,
+      to_amount_min: trade.toTokenAmountMin.weiAmount.abs().toFixed(),
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
       provider: backendProvider,
       from_token: options.fromAddress,
