@@ -84,6 +84,7 @@ export class OnChainApiService {
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
 
     const tradeInfo: OnChainTradeCreationToBackend = {
+      price_impact: trade.getTradeInfo().priceImpact,
       walletName: this.walletConnectorService.provider.walletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop',
       slippage: trade.slippageTolerance,

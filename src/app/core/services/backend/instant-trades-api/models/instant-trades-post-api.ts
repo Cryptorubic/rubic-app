@@ -1,4 +1,5 @@
 export interface OnChainTradeCreationToBackend {
+  price_impact: number;
   walletName: string;
   deviceType: string;
   user: string;

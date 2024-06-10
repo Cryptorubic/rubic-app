@@ -98,6 +98,7 @@ export class CrossChainApiService {
     const slippage = trade.getTradeInfo().slippage;
 
     const tradeInfo = {
+      price_impact: trade.getTradeInfo().priceImpact,
       slippage,
       wallet_name: this.walletConnectorService.provider.walletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
