@@ -318,8 +318,6 @@ export class OnChainService {
     trade: OnChainTrade,
     isSwapAndEarnSwap: boolean
   ): Promise<void> {
-    let fee: number;
-    let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
@@ -327,14 +325,7 @@ export class OnChainService {
     await firstValueFrom(
       timer(waitTime).pipe(
         switchMap(() =>
-          this.onChainApiService.createTrade(
-            transactionHash,
-            trade.type,
-            trade,
-            isSwapAndEarnSwap,
-            fee,
-            promoCode
-          )
+          this.onChainApiService.createTrade(transactionHash, trade.type, trade, isSwapAndEarnSwap)
         )
       )
     );
