@@ -142,7 +142,7 @@ export class SwapsControllerService {
             this.refreshService.setRefreshing();
             this.swapsStateService.setCalculationProgress(1, 0);
             if (calculateData.isForced) {
-              this.swapsStateService.clearProviders();
+              this.swapsStateService.clearProviders(false);
             }
             this.swapsStateService.patchCalculationState();
           }
@@ -152,7 +152,7 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { fromToken, toToken, toBlockchain } = this.swapFormService.inputValue;
+          const { fromToken, toToken } = this.swapFormService.inputValue;
 
           const isAlgebraWrap =
             Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
@@ -169,7 +169,7 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken.blockchain === toBlockchain) {
+          if (fromToken.blockchain === toToken.blockchain) {
             return this.onChainService
               .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
               .pipe(
@@ -226,7 +226,7 @@ export class SwapsControllerService {
           }
           if (!container?.value) {
             this.refreshService.setStopped();
-            this.swapsStateService.clearProviders();
+            this.swapsStateService.clearProviders(true);
           } else {
             this.swapsStateService.setCalculationProgress(
               container.value.total,
@@ -301,11 +301,7 @@ export class SwapsControllerService {
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(
-                trade as CrossChainTrade,
-                callback.onHash,
-                true
-              );
+              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, true);
             } else {
               txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
             }

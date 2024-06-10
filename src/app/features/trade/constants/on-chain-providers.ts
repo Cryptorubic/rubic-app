@@ -184,7 +184,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#828CBE'
   },
   [ON_CHAIN_TRADE_TYPE.DLN]: {
-    name: 'DLN',
+    name: 'deBridge',
     image: `${imageBasePath}dln.svg`,
     color: '#9C6FC7'
   },
@@ -200,6 +200,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //FFFFFFFFFFFFFFFFFFFFFFF
+  [ON_CHAIN_TRADE_TYPE.FENIX_V2]: {
+    name: 'Fenix V2',
+    image: `${imageBasePath}fenix.svg`,
+    color: '#F5710A'
+  },
+  [ON_CHAIN_TRADE_TYPE.FENIX_V3]: {
+    name: 'Fenix V3',
+    image: `${imageBasePath}fenix.svg`,
+    color: '#F5710A'
+  },
   [ON_CHAIN_TRADE_TYPE.FINKUJIRA]: {
     name: 'Finkujira',
     image: `${imageBasePath}finkujira.svg`,

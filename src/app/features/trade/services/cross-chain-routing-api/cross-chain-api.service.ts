@@ -24,16 +24,18 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { SettingsService } from '../settings-service/settings.service';
 
 @Injectable()
 export class CrossChainApiService {
-  private readonly apiEndpoint = 'crosschain_trades/trade';
+  private readonly apiEndpoint = 'v2/trades/crosschain/new_extended';
 
   constructor(
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly sessionStorage: SessionStorageService,
+    private readonly settingsService: SettingsService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
@@ -93,8 +95,16 @@ export class CrossChainApiService {
       toAddress
     } = TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
+    const slippage = trade.getTradeInfo().slippage;
 
     const tradeInfo = {
+      price_impact: trade.getTradeInfo().priceImpact,
+      slippage,
+      wallet_name: this.walletConnectorService.provider.walletName,
+      device_type: this.isMobile ? 'mobile' : 'desktop',
+      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
+      to_amount_min: trade.to.weiAmountMinusSlippage(slippage),
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
       provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],

@@ -13,6 +13,6 @@ export class BannerComponent {
   constructor(private googleTagManagerService: GoogleTagManagerService) {}
 
   public fireClickOnBannerEvent(): void {
-    this.googleTagManagerService.fireClickOnBannerEvent('snap');
+    this.googleTagManagerService.fireClickOnBannerEvent('zklink_point');
   }
 }

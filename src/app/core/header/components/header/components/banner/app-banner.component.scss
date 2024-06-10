@@ -11,8 +11,9 @@
 
   text-decoration: none;
 
-  background-image: url('/assets/banner/background.png');
+  background-image: url('/assets/banner/zklink-desk.png');
   background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
   cursor: pointer;
 
@@ -25,48 +26,20 @@
     z-index: 1;
 
     display: flex;
-    gap: 24px;
     align-items: center;
     justify-content: center;
 
     width: fit-content;
-    padding: 8px;
   }
 
   &__text {
-    @include font(20px, 1, 300, #ffffff);
-    margin: 0;
+    @include font(20px, 140%, 300, #ffffff);
 
     letter-spacing: 1px;
-
-    &_bold {
-      font-weight: bold;
-    }
   }
 
-  &__link {
-    display: flex;
-    padding: 6px 10px;
-
-    color: white;
-    font-weight: 400;
-
-    font-size: 20px;
-    line-height: 1;
-
-    white-space: nowrap;
-    text-decoration: none;
-
-    background-color: var(--tui-primary);
-    border-radius: 10px;
-
-    &:hover {
-      box-shadow: 0 0 15px var(--tui-primary);
-    }
-
-    img {
-      display: none;
-    }
+  &__mobile-br {
+    display: none;
   }
 }
 
@@ -74,28 +47,26 @@
   .banner {
     &__text {
       font-size: 18px;
-      text-align: left;
-    }
-
-    &__link {
-      font-size: 15px;
     }
   }
 }
 
 @include b($mobile-md) {
   .banner {
-    background-image: url('/assets/banner/background-mobile.png');
+    background-image: url('/assets/banner/zklink-mobile.png');
 
     &__container {
-      gap: 10px;
       width: 100%;
     }
 
     &__text {
-      @include font(18px, 1, 400, #ffffff);
-      letter-spacing: 1px;
-      text-align: left;
+      @include font(16px, 1, 400, #ffffff);
+
+      display: flex;
+      max-width: 280px;
+
+      letter-spacing: 0.5px;
+      text-align: center;
     }
   }
 }
@@ -104,20 +75,12 @@
   .banner {
     height: 49px;
 
-    &__container {
-      gap: 5px;
-    }
-
     &__text {
       font-size: 12px;
     }
 
-    &__link {
-      padding: 6px 8px;
-
-      font-size: 12px;
-
-      border-radius: 7px;
+    &__mobile-br {
+      display: block;
     }
   }
 }

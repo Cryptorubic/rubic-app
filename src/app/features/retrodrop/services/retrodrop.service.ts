@@ -19,6 +19,8 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4];
+
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
     this.subscribeOnWalletChange();
@@ -57,17 +59,23 @@ export class RetrodropService extends ClaimService {
     const promisesRounds = retrodropUserInfo.map(claim => {
       const contractAddress = retrodropContractAddress[claim.round - 1];
 
-      if (claim.is_participant && contractAddress) {
+      if (claim.is_participant && contractAddress && claim.index) {
         const amount = Web3Pure.fromWei(claim.amount);
 
         return this.claimWeb3Service
           .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
           .then(isAlreadyClaimed => {
             const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
+            const isRoundExpired = this.isRoundExpired(
+              isAlreadyClaimed,
+              claim.already_claimed_from_old_contract,
+              searchedRound.roundNumber
+            );
 
             return {
               ...searchedRound,
               network,
+              status: isRoundExpired ? 'expired' : searchedRound.status,
               claimData: {
                 contractAddress,
                 node: {
@@ -80,7 +88,7 @@ export class RetrodropService extends ClaimService {
               claimAmount: amount?.gt(0) ? amount : new BigNumber(0),
               isParticipantOfPrevRounds: true,
               isParticipantOfCurrentRound: claim.is_participant,
-              isAlreadyClaimed
+              isAlreadyClaimed: claim.already_claimed_from_old_contract || isAlreadyClaimed
             };
           });
       } else {
@@ -96,7 +104,12 @@ export class RetrodropService extends ClaimService {
                 ...searchedRound.claimData.node,
                 account: userAddress
               }
-            }
+            },
+            ...(claim.already_claimed_from_old_contract && {
+              isAlreadyClaimed: true,
+              isParticipantOfPrevRounds: true,
+              isParticipantOfCurrentRound: claim.is_participant
+            })
           })
         );
       }
@@ -104,5 +117,17 @@ export class RetrodropService extends ClaimService {
 
     const formattedRounds = await Promise.all(promisesRounds);
     this._rounds$.next(formattedRounds);
+  }
+
+  private isRoundExpired(
+    isAlreadyClaimedOnCurrentContract: boolean,
+    isAlreadyClaimedOnOldContract: boolean,
+    roundNumber: number
+  ): boolean {
+    return (
+      !isAlreadyClaimedOnCurrentContract &&
+      !isAlreadyClaimedOnOldContract &&
+      this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber)
+    );
   }
 }

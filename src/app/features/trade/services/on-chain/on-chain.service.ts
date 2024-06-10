@@ -20,7 +20,8 @@ import {
   UnnecessaryApproveError,
   UserRejectError,
   Web3Public,
-  Web3Pure
+  Web3Pure,
+  UnapprovedContractError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -42,6 +43,8 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
+import { RubicError } from '@core/errors/models/rubic-error';
+import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 
 @Injectable()
 export class OnChainService {
@@ -134,6 +137,7 @@ export class OnChainService {
             useProxy,
             disabledProviders: disabledTradeTypes
           };
+          handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
           return this.sdkService.instantTrade.calculateTradeReactively(
             fromSdkToken,
@@ -156,6 +160,7 @@ export class OnChainService {
     useCacheData?: boolean
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
+    const toBlockchain = trade.to.blockchain;
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
@@ -177,7 +182,7 @@ export class OnChainService {
       blockchain
     );
 
-    this.airdropPointsService.setSeNPointsTemp('on-chain').subscribe();
+    this.airdropPointsService.setSeNPointsTemp(fromBlockchain, toBlockchain).subscribe();
 
     const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');
@@ -248,6 +253,13 @@ export class OnChainService {
         await this.onChainApiService.patchTrade(transactionHash, false);
       }
 
+      if (
+        err?.message?.includes('execution reverted') &&
+        this.settingsService.instantTradeValue.slippageTolerance < 0.5
+      ) {
+        throw new RubicError('Please, increase the slippage and try again!');
+      }
+
       throw RubicSdkErrorParser.parseError(err);
     }
   }
@@ -306,8 +318,6 @@ export class OnChainService {
     trade: OnChainTrade,
     isSwapAndEarnSwap: boolean
   ): Promise<void> {
-    let fee: number;
-    let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
@@ -315,25 +325,24 @@ export class OnChainService {
     await firstValueFrom(
       timer(waitTime).pipe(
         switchMap(() =>
-          this.onChainApiService.createTrade(
-            transactionHash,
-            trade.type,
-            trade,
-            isSwapAndEarnSwap,
-            fee,
-            promoCode
-          )
+          this.onChainApiService.createTrade(transactionHash, trade.type, trade, isSwapAndEarnSwap)
         )
       )
     );
   }
 
   public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError,
+    error: NotWhitelistedProviderError | UnapprovedContractError,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
-    this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    if (error instanceof NotWhitelistedProviderError) {
+      this.onChainApiService.saveNotWhitelistedProvider(error, blockchain, tradeType).subscribe();
+    } else {
+      this.onChainApiService
+        .saveNotWhitelistedOnChainProvider(error, blockchain, tradeType)
+        .subscribe();
+    }
   }
 
   private isNotMinedError(err: Error): boolean {

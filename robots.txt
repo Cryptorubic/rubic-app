@@ -1,6 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://app.rubic.exchange

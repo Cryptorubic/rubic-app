@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://app.rubic.exchange
+
+# Sitemaps
+Sitemap: https://app.rubic.exchange/sitemap.xml

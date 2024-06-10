@@ -22,14 +22,21 @@ export type TradeState = (TradefullState | TradelessState) & {
   };
   needApprove: boolean;
   routes: RubicStep[];
-  badges?: BadgeInfo[];
+  badges?: BadgeInfoForComponent[];
 };
 
 export interface BadgeInfo {
-  label: string;
   fromSdk: boolean;
   bgColor?: string;
   showLabel: (trade: CrossChainTrade | OnChainTrade) => boolean;
+  getLabel: (trade: CrossChainTrade | OnChainTrade) => string;
+  getHint?: (trade: CrossChainTrade | OnChainTrade) => string;
+  href?: string;
+}
+
+export interface BadgeInfoForComponent {
+  label: string;
+  bgColor?: string;
   hint?: string;
   href?: string;
 }

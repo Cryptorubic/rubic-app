@@ -60,11 +60,6 @@ export class SdkService {
     this._SDK = value;
   }
 
-  public readonly defaultConfig = {
-    ...rubicSdkDefaultConfig,
-    httpClient: new SdkHttpClient(this.angularHttpClient)
-  };
-
   private currentConfig: Configuration;
 
   constructor(private readonly angularHttpClient: HttpClient) {
@@ -75,12 +70,21 @@ export class SdkService {
     crossChainIntegratorAddress?: string;
     onChainIntegratorAddress?: string;
   }): Promise<void> {
+    this.currentConfig = this.getConfig(params);
+    this.SDK = await SDK.createSDK(this.currentConfig);
+  }
+
+  public getConfig(params: {
+    crossChainIntegratorAddress?: string;
+    onChainIntegratorAddress?: string;
+  }): Configuration {
     const defaultProvidersAddresses = {
       crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
-    this.currentConfig = {
-      ...this.defaultConfig,
+    return {
+      ...rubicSdkDefaultConfig,
+      httpClient: new SdkHttpClient(this.angularHttpClient),
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
           crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
@@ -88,7 +92,6 @@ export class SdkService {
         }
       }
     };
-    this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
   public async patchConfig(config: Partial<Configuration>): Promise<void> {

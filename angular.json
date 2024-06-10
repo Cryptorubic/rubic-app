@@ -31,6 +31,8 @@
               "src/assets",
               "src/favicon.ico",
               "src/manifest.json",
+              "src/robots.txt",
+              "src/sitemap.xml",
               {
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
@@ -101,7 +103,9 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": ["src/assets/analytics/google-analytics.js"],
+              "scripts": [
+                "src/assets/analytics/google-analytics.js"
+              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -188,13 +192,19 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "codeCoverage": true,
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss"
+            ],
             "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ]
           }
         },
         "lint": {

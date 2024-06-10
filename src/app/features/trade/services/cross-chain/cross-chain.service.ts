@@ -52,6 +52,7 @@ import { AirdropPointsService } from '@app/shared/services/airdrop-points-servic
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
+import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 
 @Injectable()
 export class CrossChainService {
@@ -103,6 +104,7 @@ export class CrossChainService {
           price: toPrice
         });
         const options = this.getOptions(disabledTradeTypes);
+        handleIntegratorAddress(options, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
 
@@ -157,7 +159,7 @@ export class CrossChainService {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
-    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledBridgeTypes } =
+    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledSubProviders } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
     const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
@@ -179,11 +181,11 @@ export class CrossChainService {
       timeout: this.defaultTimeout,
       disabledProviders: disabledProviders,
       lifiDisabledBridgeTypes: [
-        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
+        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
         ...(queryLifiDisabledBridges || [])
       ],
       rangoDisabledProviders: [
-        ...(disabledBridgeTypes?.[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
+        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
         ...(queryRangoDisabledBridges || [])
       ],
       ...(receiverAddress && { receiverAddress }),
@@ -248,7 +250,9 @@ export class CrossChainService {
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
 
-    this.airdropPointsService.setSeNPointsTemp('cross-chain').subscribe();
+    this.airdropPointsService
+      .setSeNPointsTemp(trade.from.blockchain, trade.to.blockchain)
+      .subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),

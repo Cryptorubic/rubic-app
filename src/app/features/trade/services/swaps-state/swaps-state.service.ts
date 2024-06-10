@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { BadgeInfo, TradeState } from '@features/trade/models/trade-state';
+import { BadgeInfoForComponent, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -44,7 +44,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { SPECIFIC_BADGES } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 
 @Injectable()
 export class SwapsStateService {
@@ -203,11 +204,15 @@ export class SwapsStateService {
     this._tradesStore$.next(currentTrades);
   }
 
-  public clearProviders(): void {
+  public clearProviders(isTradeError: boolean = false): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
-    this.setCalculationProgress(0, 0);
     this.tradePageService.setProvidersVisibility(false);
+    if (isTradeError) {
+      this.setCalculationProgress(1, 1);
+    } else {
+      this.setCalculationProgress(0, 0);
+    }
   }
 
   public pickProvider(isCalculationEnd: boolean): void {
@@ -440,25 +445,37 @@ export class SwapsStateService {
     );
   }
 
-  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfo[] {
-    const badgesConfig = Object.entries(SPECIFIC_BADGES).find(([key]) => key === trade.type);
-
-    if (!badgesConfig) {
+  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfoForComponent[] {
+    const badgesByProvider = Object.entries(SPECIFIC_BADGES_FOR_PROVIDERS).find(
+      ([key]) => key === trade.type
+    );
+    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS).find(
+      ([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain
+    );
+    if (!badgesByProvider && !badgesByChain) {
       return [];
     }
 
-    const [, badges] = badgesConfig;
+    const providerBadges = badgesByProvider?.[1] || [];
+    const chainBadges = badgesByChain?.[1] || [];
+    const allBadges = [...providerBadges, ...chainBadges];
 
-    const tradeSpecificBadges = badges.filter(info => {
-      if (!info.showLabel(trade)) {
+    const tradeSpecificBadges = allBadges
+      .filter(info => {
+        if (!info.showLabel(trade)) {
+          return false;
+        }
+        if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
+          return true;
+        }
         return false;
-      }
-      if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-        return true;
-      }
-
-      return false;
-    });
+      })
+      .map(info => ({
+        bgColor: info.bgColor,
+        label: info.getLabel(trade),
+        hint: info.getHint(trade),
+        href: info.href
+      }));
 
     return tradeSpecificBadges;
   }
