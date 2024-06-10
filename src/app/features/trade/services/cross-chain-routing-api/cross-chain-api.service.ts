@@ -104,7 +104,7 @@ export class CrossChainApiService {
       device_type: this.isMobile ? 'mobile' : 'desktop',
       expected_amount: Web3Pure.toWei(toAmount, toDecimals),
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
-      to_amount_min: trade.to.weiAmountMinusSlippage(slippage).abs().toFixed(),
+      to_amount_min: trade.toTokenAmountMin.toFixed(),
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
       provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],
