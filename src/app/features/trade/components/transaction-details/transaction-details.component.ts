@@ -68,11 +68,10 @@ export class TransactionDetailsComponent {
   }
 
   private getWalletAddress(): string {
-    let settings = this.settingsService.crossChainRoutingValue;
-
-    if (this.swapsStateService.currentTrade.trade instanceof OnChainTrade) {
-      settings = this.settingsService.instantTradeValue;
-    }
+    const settings =
+      this.swapsStateService.currentTrade.trade instanceof OnChainTrade
+        ? this.settingsService.instantTradeValue
+        : this.settingsService.crossChainRoutingValue;
 
     return settings.showReceiverAddress && this.targetAddressService.address
       ? this.targetAddressService.address
