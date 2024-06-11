@@ -21,3 +21,10 @@ export function showScrollMarksPromoLabel(trade: CrossChainTrade): boolean {
 export function showZkLinkPointsLabel(trade: OnChainTrade | CrossChainTrade): boolean {
   return trade.to.blockchain === BLOCKCHAIN_NAME.ZK_LINK;
 }
+
+export function showMerlinLabel(trade: OnChainTrade | CrossChainTrade): boolean {
+  return (
+    trade.to.blockchain === BLOCKCHAIN_NAME.MERLIN ||
+    trade.from.blockchain === BLOCKCHAIN_NAME.MERLIN
+  );
+}
