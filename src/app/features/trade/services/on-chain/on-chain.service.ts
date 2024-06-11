@@ -126,9 +126,12 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
+          const isMerlinChain =
+            fromToken.blockchain === BLOCKCHAIN_NAME.MERLIN ||
+            toToken.blockchain === BLOCKCHAIN_NAME.MERLIN;
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: 18_000,
+            timeout: isMerlinChain ? 18_000 : 10_000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
