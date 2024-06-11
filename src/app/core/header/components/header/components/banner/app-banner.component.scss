@@ -11,7 +11,7 @@
 
   text-decoration: none;
 
-  background-image: url('/assets/banner/desktop-bg.png');
+  background-image: url('/assets/banner/zklink-desk.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -53,7 +53,7 @@
 
 @include b($mobile-md) {
   .banner {
-    background-image: url('/assets/banner/mobile-bg.png');
+    background-image: url('/assets/banner/zklink-mobile.png');
 
     &__container {
       width: 100%;

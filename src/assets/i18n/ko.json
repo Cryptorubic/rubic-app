@@ -50,6 +50,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "메타마스크의 계정에 대한 액세스 권한을 부여하지 않았습니다. 거래하기 위해 서명이 요청됩니다. 계속하려면 사인을 클릭하십시오.",
     "noMetamaskInstalled": "메타 마스크 플러그인이 설치 및 잠금 해제되어 있는지 확인하십시오. 에서 다운로드 할 수 있습니다.",
+    "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
     "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
     "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "Coinbase 브라우저 확장이 MetaMask 확장과 충돌합니다. 계속하려면 Coinbase 확장을 비활성화하거나 제거하거나 연결할 다른 지갑을 선택하십시오.",

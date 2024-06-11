@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BadgeInfo } from '@app/features/trade/models/trade-state';
+import { BadgeInfoForComponent } from '@app/features/trade/models/trade-state';
 
 @Component({
   selector: 'app-promotion-badge',
@@ -8,5 +8,5 @@ import { BadgeInfo } from '@app/features/trade/models/trade-state';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PromotionBadgeComponent {
-  @Input() data: BadgeInfo;
+  @Input() data: BadgeInfoForComponent;
 }
