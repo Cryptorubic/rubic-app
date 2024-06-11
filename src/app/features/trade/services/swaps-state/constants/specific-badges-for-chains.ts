@@ -3,6 +3,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
   showBlastGoldPromoLabel,
   showScrollMarksPromoLabel,
+  showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
 import { GOLD_COLOR } from './common/badges-ui';
@@ -37,6 +38,16 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       getHint: () => 'You will recieve Blast Gold from Rubic team for this transaction!',
       getLabel: () => '+Gold',
       showLabel: showBlastGoldPromoLabel
+    }
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    {
+      bgColor: '#d112c5',
+      fromSdk: false,
+      getHint: () =>
+        'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
+      getLabel: () => '+Points!',
+      showLabel: showTaikoPointsPromoLabel
     }
   ]
 };
