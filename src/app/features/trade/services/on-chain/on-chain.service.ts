@@ -128,7 +128,7 @@ export class OnChainService {
               : this.platformConfigurationService.useOnChainProxy;
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: 10_000,
+            timeout: 18_000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
