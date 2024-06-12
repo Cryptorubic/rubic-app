@@ -4,6 +4,7 @@ import {
   showBlastGoldPromoLabel,
   showMerlinLabel,
   showScrollMarksPromoLabel,
+  showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
 import { GOLD_COLOR, PURPLE_COLOR } from './common/badges-ui';
@@ -47,6 +48,16 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       getHint: () => 'Swap to/from/on Merlin with zero Rubic fees!',
       getLabel: () => '0 fees',
       showLabel: showMerlinLabel
+    }
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    {
+      bgColor: '#d112c5',
+      fromSdk: false,
+      getHint: () =>
+        'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
+      getLabel: () => '+Points!',
+      showLabel: showTaikoPointsPromoLabel
     }
   ]
 };

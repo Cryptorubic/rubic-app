@@ -1,7 +1,18 @@
-<app-banner
-  href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"
-  *noFrame
-></app-banner>
+<tui-carousel [duration]="20000">
+  <ng-container *tuiItem>
+    <app-banner-zk-link
+      href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"
+      *noFrame
+    ></app-banner-zk-link>
+  </ng-container>
+  <ng-container *tuiItem>
+    <app-banner-taiko
+      href="https://rubic.exchange/blog/how-to-bridge-to-and-from-taiko-and-get-taiko-airdrop/"
+      *noFrame
+    ></app-banner-taiko>
+  </ng-container>
+</tui-carousel>
+
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
   <app-logo
     [currentUser]="!!currentUser"
