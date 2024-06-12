@@ -39,6 +39,7 @@
 
     &_bold {
       font-weight: bold;
+      white-space: nowrap;
     }
   }
 
@@ -66,7 +67,7 @@
     &__text {
       @include font(16px, 1, 400, #ffffff);
 
-      max-width: 280px;
+      max-width: 310px;
 
       letter-spacing: 0.5px;
       text-align: center;
