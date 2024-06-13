@@ -156,6 +156,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //EEEEEEEEEEEEEEEEEEEE
+  [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {
+    name: 'Eddy Finance',
+    image: `${imageBasePath}eddyfinance.ico`,
+    color: 'black'
+  },
   [ON_CHAIN_TRADE_TYPE.ECHO_DEX]: {
     name: 'Echo',
     image: `${imageBasePath}ecodex.svg`,

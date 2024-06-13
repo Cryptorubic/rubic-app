@@ -175,7 +175,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'zkFair',
     rpc: 'https://rpc.zkfair.io'
   },
-  [BLOCKCHAIN_NAME.ZK_FAIR]: {
+  [BLOCKCHAIN_NAME.ZK_LINK]: {
     name: 'zkLink',
     rpc: 'https://rpc.zklink.io'
   },
