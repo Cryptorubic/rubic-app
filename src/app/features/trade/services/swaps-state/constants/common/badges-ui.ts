@@ -5,6 +5,7 @@ export const WARNING_COLOR =
 export const INFO_COLOR = 'linear-gradient(to bottom, #49c0f0 0%,#2cafe3 100%)';
 export const GOLD_COLOR =
   'linear-gradient(90deg, rgb(211 191 19) 0%, rgb(251 155 36 / 71%) 99.18%)';
+export const PURPLE_COLOR = 'linear-gradient(0deg, rgba(172,34,206,1) 0%, rgba(166,27,186,1) 100%)';
 
 export const SYMBIOSIS_REWARD_PRICE: { [key: string]: string } = {
   '1.2': '$50',
