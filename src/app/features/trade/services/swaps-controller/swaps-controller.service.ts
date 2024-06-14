@@ -35,7 +35,8 @@ import {
   RubicSdkError,
   UnsupportedReceiverAddressError,
   UserRejectError,
-  Web3Pure
+  Web3Pure,
+  NoLinkedAccountError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -195,6 +196,9 @@ export class SwapsControllerService {
           const wrappedTrade = container?.value?.wrappedTrade;
 
           if (wrappedTrade) {
+            if (!wrappedTrade.trade && wrappedTrade.error instanceof NoLinkedAccountError) {
+              this.errorsService.catch(wrappedTrade.error);
+            }
             const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
