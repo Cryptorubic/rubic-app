@@ -141,5 +141,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: '#000000',
   [BLOCKCHAIN_NAME.XLAYER]: '#000000',
   [BLOCKCHAIN_NAME.TAIKO]: '#FFFFFF',
-  [BLOCKCHAIN_NAME.SEI]: '#000000'
+  [BLOCKCHAIN_NAME.SEI]: '#000000',
+  [BLOCKCHAIN_NAME.CORE]: '#FF9211'
 };
