@@ -16944,10 +16944,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.25.0-alpha-sushi-swap.0:
-  version "5.25.0-alpha-sushi-swap.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.25.0-alpha-sushi-swap.0.tgz#a9b9a9952c3561f48d6c5f2d1cf30da6a1379095"
-  integrity sha512-o2IJryFZwRktIbxExMv9PlQnv408OVmiJgC/3Ta7m6qI9n405YhCRgpLPPq57lOT8mxt6wnZvGRL+22CeP49Gg==
+rubic-sdk@5.25.0-alpha-sushi-swap.1:
+  version "5.25.0-alpha-sushi-swap.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.25.0-alpha-sushi-swap.1.tgz#7025ef756943b51d44ab8b5a1fb9dae911427273"
+  integrity sha512-bb3w6iLn5qImlVOUSI5Vm6BXQFD/dU9inTNKpFnLqJ37N6wexgCLM7qqWOuODW46VRxoOlyUDc874Ioyh51Q/g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
