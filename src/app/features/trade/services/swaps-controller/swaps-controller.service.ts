@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, firstValueFrom, forkJoin, of, Subject } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, from, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -36,7 +36,9 @@ import {
   UnsupportedReceiverAddressError,
   UserRejectError,
   Web3Pure,
-  NoLinkedAccountError
+  NoLinkedAccountError,
+  SymbiosisCrossChainTrade,
+  BLOCKCHAIN_NAME
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -196,15 +198,28 @@ export class SwapsControllerService {
           const wrappedTrade = container?.value?.wrappedTrade;
 
           if (wrappedTrade) {
-            if (!wrappedTrade.trade && wrappedTrade.error instanceof NoLinkedAccountError) {
-              this.errorsService.catch(wrappedTrade.error);
-            }
             const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
+            const isNotLinkedAccount$ =
+              wrappedTrade.error instanceof NoLinkedAccountError
+                ? of(true)
+                : wrappedTrade.trade instanceof SymbiosisCrossChainTrade &&
+                  wrappedTrade.trade.to.blockchain === BLOCKCHAIN_NAME.SEI
+                ? from(wrappedTrade.trade.checkBlockchainRequirements())
+                : of(false);
+            return forkJoin([
+              of(wrappedTrade),
+              needApprove$,
+              of(container.type),
+              isNotLinkedAccount$
+            ])
               .pipe(
-                tap(([trade, needApprove, type]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
                   try {
+                    if (isNotLinkedAccount) {
+                      this.errorsService.catch(new NoLinkedAccountError());
+                      trade.trade = null;
+                    }
                     this.swapsStateService.updateTrade(trade, type, needApprove);
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
