@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -8,7 +8,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import {
   CrossChainRewardConvertedData,
@@ -71,18 +71,33 @@ export class AirdropPointsService {
    * @remove
    * @todo remove after backend update
    */
-  public setSeNPointsTemp(type: 'cross-chain' | 'on-chain'): Observable<number> {
+  public setSeNPointsTemp(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
+  ): Observable<number> {
     const address = this.authService.user.address;
+    const request$ =
+      fromBlockchain === toBlockchain
+        ? this.apiService.getOnChainPoints(address)
+        : this.apiService.getCrossChainPoints(address);
 
-    if (type === 'on-chain') {
-      return this.apiService
-        .getOnChainPoints(address)
-        .pipe(tap(points => this._pointsAmount$.next(points)));
+    return request$.pipe(
+      map(points => this.calcSeNPoints(fromBlockchain, toBlockchain, points)),
+      tap(points => this._pointsAmount$.next(points))
+    );
+  }
+
+  private calcSeNPoints(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    points: number
+  ): number {
+    if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
+      return Math.floor(points / 2);
+    } else if (toBlockchain === BLOCKCHAIN_NAME.ZK_LINK) {
+      return points * 2;
     }
-
-    return this.apiService
-      .getCrossChainPoints(address)
-      .pipe(tap(points => this._pointsAmount$.next(points)));
+    return points;
   }
 
   public async getSwapAndEarnPointsAmount(

@@ -156,7 +156,7 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { fromToken, toToken, toBlockchain } = this.swapFormService.inputValue;
+          const { fromToken, toToken } = this.swapFormService.inputValue;
 
           const isAlgebraWrap =
             Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
@@ -173,7 +173,7 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken.blockchain === toBlockchain) {
+          if (fromToken.blockchain === toToken.blockchain) {
             return this.onChainService
               .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
               .pipe(
