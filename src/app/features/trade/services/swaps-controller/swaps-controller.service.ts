@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, firstValueFrom, forkJoin, from, of, Subject } from 'rxjs';
+import { combineLatestWith, firstValueFrom, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -38,7 +38,8 @@ import {
   Web3Pure,
   NoLinkedAccountError,
   SymbiosisCrossChainTrade,
-  BLOCKCHAIN_NAME
+  BLOCKCHAIN_NAME,
+  OnChainTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -200,13 +201,10 @@ export class SwapsControllerService {
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const isNotLinkedAccount$ =
-              wrappedTrade.error instanceof NoLinkedAccountError
-                ? of(true)
-                : wrappedTrade.trade instanceof SymbiosisCrossChainTrade &&
-                  wrappedTrade.trade.to.blockchain === BLOCKCHAIN_NAME.SEI
-                ? from(wrappedTrade.trade.checkBlockchainRequirements())
-                : of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
+            );
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
@@ -423,6 +421,19 @@ export class SwapsControllerService {
       UnsupportedDeflationTokenWarning,
       ExecutionRevertedError
     ].some(CriticalError => error instanceof CriticalError);
+  }
+
+  private checkIsNotLinkedAccount(
+    trade: CrossChainTrade | OnChainTrade,
+    error: RubicSdkError | undefined
+  ): Observable<boolean> {
+    if (error && error instanceof NoLinkedAccountError) {
+      return of(true);
+    }
+    if (trade instanceof SymbiosisCrossChainTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
+      return from(trade.checkBlockchainRequirements());
+    }
+    return of(false);
   }
 
   private async handleCrossChainSwapResponse(
