@@ -154,7 +154,7 @@ export class CrossChainApiService {
 
   public sendMesonSwapId(dstStatusInfo: CrossChainStatus, srcTxHash: string): void {
     this.httpService
-      .post('v2/trades/crosschain/new_meson_swap_id', {
+      .post('v2/trades/crosschain/new_via_meson_trade', {
         source_tx_hash: srcTxHash,
         swap_id: dstStatusInfo.extraInfo?.mesonSwapId
       })
