@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { InstantTradesPostApi } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
+import { OnChainTradeCreationToBackend } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -16,18 +16,13 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
-import { toBackendWallet } from '@core/services/backend/instant-trades-api/constants/to-backend-wallet';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-
-const onChainApiRoutes = {
-  createData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  editData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`,
-  getData: (networkType: string) => `instant_trades/${networkType.toLowerCase()}`
-};
+import { SettingsService } from '../settings-service/settings.service';
+import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 
 @Injectable()
 export class OnChainApiService {
@@ -35,7 +30,9 @@ export class OnChainApiService {
     private readonly httpService: HttpService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly authService: AuthService,
-    private readonly sessionStorage: SessionStorageService
+    private readonly sessionStorage: SessionStorageService,
+    private readonly settingsService: SettingsService,
+    @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
   ) {}
 
   public notifyInstantTradesBot(body: {
@@ -71,9 +68,7 @@ export class OnChainApiService {
     hash: string,
     provider: OnChainTradeType,
     trade: OnChainTrade,
-    isSwapAndEarnSwap: boolean,
-    fee?: number,
-    promoCode?: string
+    isSwapAndEarnSwap: boolean
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
@@ -86,9 +81,16 @@ export class OnChainApiService {
       toAddress: toAddress,
       toAmount: Web3Pure.toWei(toAmount, toDecimals)
     };
-    let backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
+    const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
 
-    const tradeInfo: InstantTradesPostApi = {
+    const tradeInfo: OnChainTradeCreationToBackend = {
+      price_impact: trade.getTradeInfo().priceImpact,
+      walletName: this.walletConnectorService.provider.walletName,
+      deviceType: this.isMobile ? 'mobile' : 'desktop',
+      slippage: trade.slippageTolerance,
+      expected_amount: options.toAmount,
+      mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
+      to_amount_min: trade.toTokenAmountMin.stringWeiAmount,
       network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
       provider: backendProvider,
       from_token: options.fromAddress,
@@ -96,16 +98,16 @@ export class OnChainApiService {
       from_amount: options.fromAmount,
       to_amount: options.toAmount,
       user: this.authService.userAddress,
-      fee,
-      promocode: promoCode,
       hash,
       ...(referral && { influencer: referral }),
       ...(swapId && { swap_id: swapId })
     };
 
-    const url = onChainApiRoutes.createData(toBackendWallet);
     return this.httpService
-      .post<InstantTradesResponseApi>(`${url}?valid=${isSwapAndEarnSwap ?? false}`, tradeInfo)
+      .post<InstantTradesResponseApi>(
+        `v2/trades/onchain/new_extended?valid=${isSwapAndEarnSwap ?? false}`,
+        tradeInfo
+      )
       .pipe(delay(1000));
   }
 
@@ -123,8 +125,9 @@ export class OnChainApiService {
         user: this.authService.userAddress
       };
 
-      const url = onChainApiRoutes.editData(toBackendWallet);
-      const res = await firstValueFrom(this.httpService.patch<InstantTradesResponseApi>(url, body));
+      const res = await firstValueFrom(
+        this.httpService.patch<InstantTradesResponseApi>('v2/trades/onchain/new_extended', body)
+      );
 
       return res;
     } catch (err) {
