@@ -228,7 +228,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
   [BLOCKCHAIN_NAME.ARTHERA]: [],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: ['https://zetachain-evm.blockpi.network/v1/rpc/public'],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    'https://zetachain-evm.blockpi.network/v1/rpc/public',
+    'https://zetachain-mainnet-archive.allthatnode.com:8545'
+  ],
   [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
     'https://pacific-rpc.manta.network/http',
