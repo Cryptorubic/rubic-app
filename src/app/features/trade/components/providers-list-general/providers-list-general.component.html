@@ -39,8 +39,8 @@
     <!-- Progress bar -->
     <app-progress-bar
       *ngIf="calculationProcess$ | async as progress"
-      [max]="progress.total"
-      [value]="progress.current"
+      [max]="100"
+      [value]="progress"
     ></app-progress-bar>
   </div>
 </ng-template>
