@@ -131,7 +131,7 @@ export class OnChainService {
             toToken.blockchain === BLOCKCHAIN_NAME.MERLIN;
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: isMerlinChain ? 18_000 : 10_000,
+            timeout: isMerlinChain ? 30_000 : 10_000,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
