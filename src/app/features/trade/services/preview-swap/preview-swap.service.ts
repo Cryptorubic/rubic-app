@@ -55,6 +55,7 @@ import {
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
+import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -129,7 +130,8 @@ export class PreviewSwapService {
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly ccrApiService: CrossChainApiService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -245,6 +247,9 @@ export class PreviewSwapService {
                 toBlockchain
               }
             });
+            if (crossChainStatus.extraInfo?.mesonSwapId) {
+              this.ccrApiService.sendMesonSwapId(crossChainStatus, srcHash);
+            }
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }

@@ -4,6 +4,7 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 import {
   BlockchainName,
   ChangenowCrossChainTrade,
+  CrossChainStatus,
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
@@ -149,5 +150,14 @@ export class CrossChainApiService {
     } catch (err) {
       throw new RubicError(err);
     }
+  }
+
+  public sendMesonSwapId(dstStatusInfo: CrossChainStatus, srcTxHash: string): void {
+    this.httpService
+      .post('v2/trades/crosschain/new_via_meson_trade', {
+        source_tx_hash: srcTxHash,
+        swap_id: dstStatusInfo.extraInfo?.mesonSwapId
+      })
+      .subscribe();
   }
 }
