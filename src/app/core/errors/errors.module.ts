@@ -21,6 +21,7 @@ import { RpcErrorComponent } from './components/rpc-error/rpc-error.component';
 import { TransactionFailedErrorComponent } from '@core/errors/components/transaction-failed-error/transaction-failed-error.component';
 import { BitKeepErrorComponent } from '@core/errors/components/bitkeep-error/bitkeep-error.component';
 import { TokenPocketErrorComponent } from './components/token-pocket-error/token-pocket-error.component';
+import { NoLinkedAccountErrorComponent } from './components/no-linked-account-error/no-linked-account-error.component';
 import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-error.component';
 
 @NgModule({
@@ -42,6 +43,7 @@ import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-err
     RpcErrorComponent,
     TransactionFailedErrorComponent,
     TokenPocketErrorComponent,
+    NoLinkedAccountErrorComponent,
     CoinbaseErrorComponent
   ],
   imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
