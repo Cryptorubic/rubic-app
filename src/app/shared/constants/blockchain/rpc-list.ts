@@ -281,6 +281,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://eon-rpc.horizenlabs.io/ethv1'
   ],
   [BLOCKCHAIN_NAME.MERLIN]: [
+    'https://merlin.blockpi.network/v1/rpc/aa364c7e72eeaaf93c1a4c288928298c5895aec4',
     'https://rpc.merlinchain.io',
     'https://merlin.blockpi.network/v1/rpc/public'
   ],

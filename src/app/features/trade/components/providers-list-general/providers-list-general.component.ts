@@ -15,6 +15,9 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { BehaviorSubject, interval, map } from 'rxjs';
 import { switchMap, takeWhile } from 'rxjs/operators';
+import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
+import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -56,15 +59,22 @@ export class ProvidersListGeneralComponent {
 
   private readonly _triggerCalculation$ = new BehaviorSubject<void>(null);
 
+  private readonly ratio: number = 100;
+
   public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
-    switchMap(() => interval(100)),
-    takeWhile(el => el < 150),
-    map(time => ({ total: 150, current: time }))
+    switchMap(() => interval(this.ratio)),
+    takeWhile(val => {
+      if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+        return val <= 30_000 / this.ratio;
+      }
+      return val <= CALCULATION_TIMEOUT_MS / this.ratio;
+    }),
+    map(time => this.convertIntervalValueToPercents(time))
   );
 
   public readonly calculationText$ = this.calculationProcess$.pipe(
     map(time => {
-      return time.current <= 50
+      return time <= 50
         ? 'Calculating providers...'
         : 'More providers can get close, but they are delaying the answer...';
     })
@@ -77,7 +87,8 @@ export class ProvidersListGeneralComponent {
   constructor(
     @Inject(Injector) private readonly injector: Injector,
     private readonly modalService: ModalService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly swapsFormService: SwapsFormService
   ) {}
 
   public handleTradeSelection(tradeType: TradeProvider): void {
@@ -99,5 +110,12 @@ export class ProvidersListGeneralComponent {
           this.handleTradeSelection(tradeType);
         }
       });
+  }
+
+  private convertIntervalValueToPercents(val: number): number {
+    if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+      return val * ((100 * this.ratio) / 30_000);
+    }
+    return val * ((100 * this.ratio) / CALCULATION_TIMEOUT_MS);
   }
 }
