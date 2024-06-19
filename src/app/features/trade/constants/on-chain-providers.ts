@@ -198,6 +198,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}dodo.png`,
     color: '#efc20b'
   },
+  [ON_CHAIN_TRADE_TYPE.DRAGON_SWAP]: {
+    name: 'DragonSwap',
+    image: `${imageBasePath}dragonswap.svg`,
+    color: '#A855F7'
+  },
   [ON_CHAIN_TRADE_TYPE.DYSTOPIA]: {
     name: 'Dystopia',
     image: `${imageBasePath}dystopia.png`,
