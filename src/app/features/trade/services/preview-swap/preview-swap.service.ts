@@ -59,6 +59,7 @@ import { tuiIsPresent } from '@taiga-ui/cdk';
 import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
+import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -134,7 +135,8 @@ export class PreviewSwapService {
     private readonly settingsService: SettingsService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly ccrApiService: CrossChainApiService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -272,6 +274,9 @@ export class PreviewSwapService {
               this.setNextTxState({ step: 'error', data: this.transactionState.data });
             }
             this.errorService.catch(new FallbackSwapError());
+            if (crossChainStatus.extraInfo?.mesonSwapId) {
+              this.ccrApiService.sendMesonSwapId(crossChainStatus, srcHash);
+            }
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }
