@@ -259,8 +259,7 @@ export class PreviewSwapService {
                 toBlockchain
               }
             });
-          }
-          if (crossChainStatus.dstTxStatus === TX_STATUS.FALLBACK) {
+          } else if (crossChainStatus.dstTxStatus === TX_STATUS.FALLBACK) {
             if (crossChainStatus.dstTxHash) {
               this.setNextTxState({
                 step: 'success',
