@@ -125,7 +125,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'Scroll',
   [BLOCKCHAIN_NAME.ARTHERA]: 'Arthera',
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'Zetachain',
-  [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
@@ -140,5 +139,8 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MODE]: 'Mode',
   [BLOCKCHAIN_NAME.ZK_FAIR]: 'ZKFair',
   [BLOCKCHAIN_NAME.ZK_LINK]: 'zkLink',
-  [BLOCKCHAIN_NAME.XLAYER]: 'X Layer'
+  [BLOCKCHAIN_NAME.XLAYER]: 'X Layer',
+  [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
+  [BLOCKCHAIN_NAME.SEI]: 'Sei',
+  [BLOCKCHAIN_NAME.CORE]: 'CORE'
 };

@@ -1,7 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { CoinbaseExtensionError } from '@core/errors/models/provider/coinbase-extension-error';
 import { MetamaskError } from '@core/errors/models/provider/metamask-error';
 import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
 import { NgZone } from '@angular/core';
@@ -35,20 +34,31 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     if (typeof this.window?.tokenpocket?.ethereum?.isTokenPocket !== 'undefined') {
       throw new Error('TokenPocket Enabled');
     }
-
-    // installed coinbase Chrome extension
-    if (this.wallet.hasOwnProperty('overrideIsMetaMask')) {
-      throw new CoinbaseExtensionError();
-    }
   }
 
   public async activate(): Promise<void> {
     try {
-      const accounts = (await this.window?.ethereum?.request({
+      const commonProvider = this.window?.ethereum;
+
+      if (!commonProvider) {
+        throw new MetamaskError();
+      }
+
+      if (commonProvider.providers?.length) {
+        const metamaskProvider = commonProvider.providers.find(provider => provider?.isMetaMask);
+
+        if (!metamaskProvider) {
+          throw new MetamaskError();
+        }
+
+        this.wallet = metamaskProvider;
+      } else {
+        this.wallet = commonProvider;
+      }
+
+      const accounts = (await this.wallet.request({
         method: 'eth_requestAccounts'
       })) as RubicAny;
-
-      this.wallet = this.window?.ethereum;
       this.checkErrors();
 
       const chain = await this.wallet.request({ method: 'eth_chainId' });

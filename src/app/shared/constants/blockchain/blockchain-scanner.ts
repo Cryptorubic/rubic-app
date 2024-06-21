@@ -1003,14 +1003,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.TAIKO]: {
-    baseUrl: 'https://explorer.katla.taiko.xyz/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.SEPOLIA]: {
     baseUrl: 'https://sepolia.etherscan.io/',
     nativeCoinUrl: '',
@@ -1128,6 +1120,30 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.TAIKO]: {
+    baseUrl: 'https://taikoscan.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.SEI]: {
+    baseUrl: 'https://seitrace.com/?chain=pacific-1/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.CORE]: {
+    baseUrl: 'https://scan.coredao.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   }

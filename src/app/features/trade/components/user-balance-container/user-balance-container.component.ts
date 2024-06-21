@@ -6,6 +6,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -17,8 +18,9 @@ export class UserBalanceContainerComponent {
   private readonly _triggerRefresh$ = new BehaviorSubject(null);
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
-    combineLatestWith(this._triggerRefresh$.pipe(startWith())),
+    combineLatestWith(this._triggerRefresh$.pipe(startWith()), this.tokensStoreService.tokens$),
     filter(() => !!this.tokensStoreService.tokens),
+    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
     map(([fromToken]) =>
       this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
     )
@@ -34,7 +36,8 @@ export class UserBalanceContainerComponent {
     private readonly headerStore: HeaderStore,
     private readonly tokensStoreService: TokensStoreService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.tokensStoreService.tokens$
       .pipe(
@@ -51,5 +54,10 @@ export class UserBalanceContainerComponent {
         })
       )
       .subscribe();
+
+    this.walletConnectorService.addressChange$.subscribe(() => {
+      const fromBlockchain = this.swapsFormService.inputValue.fromBlockchain;
+      this.tokensStoreService.startBalanceCalculating(fromBlockchain);
+    });
   }
 }
