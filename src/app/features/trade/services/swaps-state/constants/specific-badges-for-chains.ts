@@ -66,7 +66,7 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       bgColor: 'rgb(187 77 33)',
       fromSdk: false,
       href: 'https://rubic.exchange/blog/bridge-to-and-from-x-layer-with-rubic-reduced-fees-and-seamless-swaps/',
-      getHint: () => 'Swap with 50% reduced fees on/to XLayer!',
+      getHint: () => 'Swap with 50% reduced fees on/to X Layer!',
       getLabel: () => '-50% fees',
       showLabel: showXLayerPromoLabel
     }
