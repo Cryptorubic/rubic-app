@@ -449,15 +449,15 @@ export class SwapsStateService {
     const badgesByProvider = Object.entries(SPECIFIC_BADGES_FOR_PROVIDERS).find(
       ([key]) => key === trade.type
     );
-    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS).find(
-      ([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain
-    );
+    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS)
+      .filter(([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain)
+      .map(([_, badgeInfo]) => badgeInfo?.[0]);
     if (!badgesByProvider && !badgesByChain) {
       return [];
     }
 
     const providerBadges = badgesByProvider?.[1] || [];
-    const chainBadges = badgesByChain?.[1] || [];
+    const chainBadges = badgesByChain || [];
     const allBadges = [...providerBadges, ...chainBadges];
 
     const tradeSpecificBadges = allBadges
