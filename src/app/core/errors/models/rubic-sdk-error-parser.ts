@@ -18,7 +18,8 @@ import {
   UnsupportedReceiverAddressError as SdkUnsupportedReceiverAddressError,
   InsufficientFundsGasPriceValueError,
   UpdatedRatesError,
-  SdkSwapErrorOnProviderSide
+  SdkSwapErrorOnProviderSide,
+  NoLinkedAccountError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -41,6 +42,8 @@ import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
+import { FallbackSwapError } from './provider/fallback-swap-error';
+import { NotLinkedAddressError } from './provider/not-linked-address-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -100,6 +103,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkSwapErrorOnProviderSide) {
       return new SwapErorOnProviderSide();
+    }
+    if (err instanceof NoLinkedAccountError) {
+      return new NotLinkedAddressError();
     }
 
     return RubicSdkErrorParser.parseErrorByMessage(err);
@@ -164,6 +170,9 @@ export class RubicSdkErrorParser {
   public static parseError(
     err: RubicError<ERROR_TYPE> | RubicSdkError | Error
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof FallbackSwapError) {
+      return new FallbackSwapError();
+    }
     if (err instanceof RubicError) {
       return err;
     }
