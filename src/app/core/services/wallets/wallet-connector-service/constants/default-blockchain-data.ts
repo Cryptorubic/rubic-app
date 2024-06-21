@@ -175,7 +175,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'zkFair',
     rpc: 'https://rpc.zkfair.io'
   },
-  [BLOCKCHAIN_NAME.ZK_FAIR]: {
+  [BLOCKCHAIN_NAME.ZK_LINK]: {
     name: 'zkLink',
     rpc: 'https://rpc.zklink.io'
   },
@@ -190,5 +190,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SEI]: {
     name: 'Sei',
     rpc: 'https://evm-rpc.sei-apis.com'
+  },
+  [BLOCKCHAIN_NAME.CORE]: {
+    name: 'CORE',
+    rpc: 'https://rpc.coredao.org'
   }
 };

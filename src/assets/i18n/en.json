@@ -51,6 +51,7 @@
     "rejectedNetworkSwitch": "You rejected the network switch.",
     "noMetamaskAccess": "You have not given us access to your MetaMask’s account. In order to trade, your signature is being requested. Please click on Sign if you wish to proceed.",
     "noMetamaskInstalled": "Please make sure that you have the MetaMask plugin installed and unlocked.\nYou can download it on",
+    "noCoinBaseInstalled": "Please make sure that you have the CoinBase plugin installed and unlocked.\nYou can download it on",
     "noTokenPocketInstalled": "Please make sure that you have the TokenPocket Extension installed and unlocked.\nYou can download it on",
     "noBitKeepInstalled": "Please make sure that you have BitKeep plugin installed and unlocked.\nYou can download it on",
     "removeCoinbaseExtension": "The Coinbase browser extension conflicts with the Metamask extension. Please disable or remove the Coinbase extension to continue, or choose another wallet to connect.",
@@ -101,7 +102,8 @@
     "walletNotInstalled": "Wallet is not installed.",
     "crossChainSwapUnavailable": "Unfortunately, using the calculated provider is currently unavailable with this swap. Rubic will recalculate the route for your swap.",
     "noSelectedToken": "Select Token",
-    "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported."
+    "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported.",
+    "fallbackSwap": "Swap ended with the error, transit tokens have been returned to you."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

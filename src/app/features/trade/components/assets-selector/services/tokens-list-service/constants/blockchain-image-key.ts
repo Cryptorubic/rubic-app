@@ -52,5 +52,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: 'zklink',
   [BLOCKCHAIN_NAME.XLAYER]: 'xlayer',
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko',
-  [BLOCKCHAIN_NAME.SEI]: 'sei'
+  [BLOCKCHAIN_NAME.SEI]: 'sei',
+  [BLOCKCHAIN_NAME.CORE]: 'core'
 };
