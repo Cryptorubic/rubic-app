@@ -200,6 +200,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}osmosis.svg`,
     name: 'Osmosis Bridge'
   },
+  owl_to_bridge: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}owlto.svg`,
+    name: 'Owlto'
+  },
   //PPPPPPPPPPPPPPP
   polygon: {
     averageTime: 5,
