@@ -6,7 +6,7 @@ import { CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG } from '../../constants/cross-chain
 import { switchIif } from '@app/shared/utils/utils';
 import { AvailableBlockchain } from '../../components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
-import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-from-disabled-chains';
+import { GAS_FORM_DISABLED_CHAINS } from './constants/gas-form-disabled-chains';
 
 @Injectable()
 export class GasFormService {

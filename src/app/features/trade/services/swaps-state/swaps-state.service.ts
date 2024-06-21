@@ -465,15 +465,15 @@ export class SwapsStateService {
         if (!info.showLabel(trade)) {
           return false;
         }
-        if (!info.fromSdk || (info.fromSdk && 'promotions' in trade && trade.promotions?.length)) {
-          return true;
-        }
-        return false;
+        return !!(
+          !info.fromSdk ||
+          (info.fromSdk && 'promotions' in trade && trade.promotions?.length)
+        );
       })
       .map(info => ({
         bgColor: info.bgColor,
         label: info.getLabel(trade),
-        hint: info.getHint(trade),
+        hint: info?.getHint?.(trade),
         href: info.href
       }));
 
