@@ -35,7 +35,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.KROMA,
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.MODE,
-  BLOCKCHAIN_NAME.ZK_LINK
+  BLOCKCHAIN_NAME.ZK_LINK,
+  BLOCKCHAIN_NAME.TAIKO
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -75,7 +76,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
-    [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this)
+    [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
+    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -503,6 +505,24 @@ export class GasService {
   })
   private fetchZkLinkGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZK_LINK);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Taiko gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchTaikoGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.TAIKO);
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {

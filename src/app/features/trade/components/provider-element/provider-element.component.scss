@@ -30,6 +30,7 @@
 
   &__row-badges {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--tui-padding-s);
     justify-content: flex-end;
   }

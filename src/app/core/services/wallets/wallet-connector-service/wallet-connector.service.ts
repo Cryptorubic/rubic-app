@@ -38,6 +38,7 @@ import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet
 import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
+import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -153,6 +154,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.SAFE) {
       return new SafeWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.TOKEN_POCKET) {
+      return new TokenPocketWalletAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
