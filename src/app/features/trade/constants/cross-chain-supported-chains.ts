@@ -12,6 +12,7 @@ import {
   lifiCrossChainSupportedBlockchains,
   mesonCrossChainSupportedChains,
   orbiterSupportedBlockchains,
+  owlToSupportedBlockchains,
   pulseChainSupportedBlockchains,
   rangoSupportedBlockchains,
   scrollBridgeSupportedBlockchains,
@@ -43,5 +44,6 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE]: orbiterSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.LAYERZERO]: layerZeroBridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ARCHON_BRIDGE]: archonBridgeSupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.MESON]: mesonCrossChainSupportedChains
+  [CROSS_CHAIN_TRADE_TYPE.MESON]: mesonCrossChainSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: owlToSupportedBlockchains
 } as const;
