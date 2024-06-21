@@ -42,6 +42,7 @@ import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
+import { FallbackSwapError } from './provider/fallback-swap-error';
 import { NotLinkedAddressError } from './provider/not-linked-address-error';
 
 export class RubicSdkErrorParser {
@@ -169,6 +170,9 @@ export class RubicSdkErrorParser {
   public static parseError(
     err: RubicError<ERROR_TYPE> | RubicSdkError | Error
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof FallbackSwapError) {
+      return new FallbackSwapError();
+    }
     if (err instanceof RubicError) {
       return err;
     }

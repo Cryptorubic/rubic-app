@@ -190,5 +190,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SEI]: {
     name: 'Sei',
     rpc: 'https://evm-rpc.sei-apis.com'
+  },
+  [BLOCKCHAIN_NAME.CORE]: {
+    name: 'CORE',
+    rpc: 'https://rpc.coredao.org'
   }
 };
