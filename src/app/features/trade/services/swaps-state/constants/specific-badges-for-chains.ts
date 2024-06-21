@@ -5,6 +5,7 @@ import {
   showMerlinLabel,
   showScrollMarksPromoLabel,
   showTaikoPointsPromoLabel,
+  showXLayerPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
 import { GOLD_COLOR, PURPLE_COLOR } from './common/badges-ui';
@@ -58,6 +59,16 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
         'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
       getLabel: () => '+Points!',
       showLabel: showTaikoPointsPromoLabel
+    }
+  ],
+  [BLOCKCHAIN_NAME.XLAYER]: [
+    {
+      bgColor: 'rgb(187 77 33)',
+      fromSdk: false,
+      href: 'https://rubic.exchange/blog/bridge-to-and-from-x-layer-with-rubic-reduced-fees-and-seamless-swaps/',
+      getHint: () => 'Swap with 50% reduced fees on/to XLayer!',
+      getLabel: () => '-50% fees',
+      showLabel: showXLayerPromoLabel
     }
   ]
 };
