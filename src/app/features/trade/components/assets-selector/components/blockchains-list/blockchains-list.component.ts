@@ -31,6 +31,7 @@ export class BlockchainsListComponent implements OnDestroy {
       () => this.gasFormBlockchainsToShow$,
       ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
     ),
+
     map(blockchains => [
       ...blockchains.slice(0, 8),
       ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
