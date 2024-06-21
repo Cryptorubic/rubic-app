@@ -50,19 +50,14 @@
                   <span class="icon-label">{{ blockchainItem.label }}</span>
                 </div>
                 <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tags">
-                  <ng-container *ngFor="let tag of tags">
-                    <div class="badge-container">
-                      <div
-                        class="badge-container__element"
-                        [ngClass]="{
-                          promo: tag === blockchainTags.PROMO,
-                          new: tag === blockchainTags.NEW
-                        }"
-                      >
-                        <span>{{ tag | uppercase }}</span>
-                      </div>
-                    </div>
-                  </ng-container>
+                  <div class="badge-container">
+                    <ng-container *ngFor="let tag of tags">
+                      <app-blockchains-promo-badge
+                        [tag]="tag"
+                        [blockchain]="blockchainItem.name"
+                      ></app-blockchains-promo-badge>
+                    </ng-container>
+                  </div>
                 </ng-container>
               </button>
             </ng-container>

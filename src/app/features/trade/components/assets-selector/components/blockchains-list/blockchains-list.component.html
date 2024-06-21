@@ -19,10 +19,22 @@
             [disabled]="disabled"
           >
             <div class="list__element-container">
-              <div class="list__image-container">
-                <img [src]="blockchain.icon" [alt]="blockchain.label" />
+              <div class="list__element-wrapper">
+                <div class="list__image-container">
+                  <img [src]="blockchain.icon" [alt]="blockchain.label" />
+                </div>
+                <span class="list__label">{{ blockchain.label }}</span>
               </div>
-              <span class="list__label">{{ blockchain.label }}</span>
+              <ng-container *ngIf="isMobile && !isGasForm && getBlockchainTag(blockchain) as tags">
+                <div class="list__badge-container">
+                  <ng-container *ngFor="let tag of tags">
+                    <app-blockchains-promo-badge
+                      [tag]="tag"
+                      [blockchain]="blockchain.name"
+                    ></app-blockchains-promo-badge>
+                  </ng-container>
+                </div>
+              </ng-container>
             </div>
           </button>
         </ng-container>

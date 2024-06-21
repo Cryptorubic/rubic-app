@@ -14,6 +14,7 @@ import { FormType } from '@app/features/trade/models/form-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -38,7 +39,11 @@ export class BlockchainsListComponent implements OnDestroy {
     ])
   );
 
-  private readonly isMobile = this.headerStore.isMobile;
+  public readonly isMobile = this.headerStore.isMobile;
+
+  public readonly isGasForm = this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM;
+
+  private readonly blockchainsTags = BlockchainTags;
 
   constructor(
     @Optional()
@@ -63,6 +68,12 @@ export class BlockchainsListComponent implements OnDestroy {
   private isTargetSelectorGasFormOpened(): boolean {
     return (
       this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'to'
+    );
+  }
+
+  public getBlockchainTag(blockchain: AvailableBlockchain): string[] {
+    return blockchain.tags.filter(
+      tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW
     );
   }
 

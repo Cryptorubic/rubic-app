@@ -42,7 +42,7 @@
     </div>
 
     <ng-template #searchBar>
-      <hr class="assets-selector__horizontal-line" />
+      <hr *ngIf="isMobile" class="assets-selector__horizontal-line" />
       <div class="assets-selector__row">
         <app-search-bar></app-search-bar>
         <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
