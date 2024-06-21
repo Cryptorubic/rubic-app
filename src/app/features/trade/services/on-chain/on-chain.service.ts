@@ -21,7 +21,8 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  ON_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -138,7 +139,7 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: disabledTradeTypes
+            disabledProviders: [...disabledTradeTypes, ON_CHAIN_TRADE_TYPE.OKU_SWAP]
           };
           handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
