@@ -244,7 +244,7 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError) {
+      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
