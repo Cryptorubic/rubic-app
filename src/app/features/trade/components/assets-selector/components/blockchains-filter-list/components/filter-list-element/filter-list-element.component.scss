@@ -31,6 +31,10 @@
         color: black;
 
         background: var(--tui-primary);
+
+        &:hover {
+          background-color: var(--tui-primary);
+        }
       }
     }
 

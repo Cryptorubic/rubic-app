@@ -1,5 +1,5 @@
 <ng-container *ngIf="tag === blockchainTags.PROMO; else newBlockchainBadge">
-  <a [href]="blockchainPromoLinks[blockchain]" class="badge-element promo">
+  <a [href]="blockchainPromoLinks[blockchain]" class="badge-element promo" target="_blank">
     <span>{{ tag | uppercase }}</span>
     <img src="assets/images/icons/promo-link.svg" />
   </a>

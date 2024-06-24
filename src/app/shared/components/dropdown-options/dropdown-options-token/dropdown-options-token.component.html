@@ -23,16 +23,19 @@
     <div class="dropdown-content__wrapper">
       <div class="dropdown-content">
         <ng-container *ngIf="showCopyToClipboardOption">
-          <div class="dropdown-content__element" (click)="copyToClipboard()">
+          <div
+            class="dropdown-content__element"
+            (click)="copyToClipboard()"
+            [tuiHint]="copyHint"
+            tuiHintAppearance="onDark"
+            [tuiHintShowDelay]="50"
+            tuiHintDirection="top-right"
+            [tuiHintHideDelay]="100"
+          >
             <ng-container *ngIf="!isCopyClicked; else copyClicked">
               <span
                 class="dropdown-content__copy-icon"
                 [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-                [tuiHint]="copyHint"
-                tuiHintAppearance="onDark"
-                [tuiHintShowDelay]="50"
-                tuiHintDirection="top-right"
-                [tuiHintHideDelay]="100"
               ></span>
             </ng-container>
             <span class="auto-height">Copy address</span>
@@ -72,7 +75,11 @@
         </ng-container>
         <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
           <div class="dropdown-content__security-container">
-            <a class="dropdown-content__element security-content" [href]="goPlusLabsLink">
+            <a
+              class="dropdown-content__element security-content"
+              [href]="goPlusLabsLink"
+              target="_blank"
+            >
               <span
                 class="dropdown-content__security-container-icon"
                 [inlineSVG]="
