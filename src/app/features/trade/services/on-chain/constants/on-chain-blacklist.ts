@@ -77,7 +77,6 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ZK_FAIR]: [],
   [BLOCKCHAIN_NAME.ZK_LINK]: [],
   [BLOCKCHAIN_NAME.XLAYER]: [],
-  [BLOCKCHAIN_NAME.TAIKO]: [],
   [BLOCKCHAIN_NAME.SEI]: [],
   [BLOCKCHAIN_NAME.CORE]: []
 };
@@ -85,7 +84,7 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
 export const onChainBlacklistProviders: OnChainTradeType[] = [
   ...new Set(
     Object.values(onChainBlacklist)
-      .filter(blockchain => blockchain.length)
+      .filter(providersPerChain => providersPerChain.length)
       .flat()
   )
 ];
