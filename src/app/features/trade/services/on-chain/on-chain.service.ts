@@ -127,12 +127,10 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const isMerlinChain =
-            fromToken.blockchain === BLOCKCHAIN_NAME.MERLIN ||
-            toToken.blockchain === BLOCKCHAIN_NAME.MERLIN;
+          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: isMerlinChain ? 30_000 : 10_000,
+            timeout,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
@@ -363,5 +361,16 @@ export class OnChainService {
       const waitTime = 3_000;
       await firstValueFrom(timer(waitTime));
     }
+  }
+
+  private calculateTimeoutForChains(
+    blockchainFrom: BlockchainName,
+    blockchainTo: BlockchainName
+  ): number {
+    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
+    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+      return 30_000;
+    }
+    return 10_000;
   }
 }

@@ -103,7 +103,7 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(disabledTradeTypes);
+        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
         handleIntegratorAddress(options, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
@@ -154,7 +154,9 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[]
+    disabledTradeTypes: CrossChainTradeType[],
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -173,12 +175,13 @@ export class CrossChainService {
       ])
     );
     const calculateGas = this.authService.userAddress;
+    const timeout = this.calculateTimeoutForChains(fromBlockchain, toBlockchain);
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
-      timeout: this.defaultTimeout,
+      timeout,
       disabledProviders: disabledProviders,
       lifiDisabledBridgeTypes: [
         ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
@@ -476,5 +479,16 @@ export class CrossChainService {
       const waitTime = 3_000;
       await firstValueFrom(timer(waitTime));
     }
+  }
+
+  private calculateTimeoutForChains(
+    blockchainFrom: BlockchainName,
+    blockchainTo: BlockchainName
+  ): number {
+    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.XLAYER];
+    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+      return 25_000;
+    }
+    return this.defaultTimeout;
   }
 }
