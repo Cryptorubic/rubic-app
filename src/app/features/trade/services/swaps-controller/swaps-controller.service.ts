@@ -61,6 +61,7 @@ import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
 import { compareObjects } from '@app/shared/utils/utils';
+import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 
 @Injectable()
 export class SwapsControllerService {
@@ -419,7 +420,8 @@ export class SwapsControllerService {
     return [
       NotWhitelistedProviderWarning,
       UnsupportedDeflationTokenWarning,
-      ExecutionRevertedError
+      ExecutionRevertedError,
+      CrossChainSwapUnavailableWarning
     ].some(CriticalError => error instanceof CriticalError);
   }
 
