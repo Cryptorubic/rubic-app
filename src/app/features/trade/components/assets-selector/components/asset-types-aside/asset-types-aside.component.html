@@ -49,14 +49,12 @@
                   <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
                   <span class="icon-label">{{ blockchainItem.label }}</span>
                 </div>
-                <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tags">
+                <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
                   <div class="badge-container">
-                    <ng-container *ngFor="let tag of tags">
-                      <app-blockchains-promo-badge
-                        [tag]="tag"
-                        [blockchain]="blockchainItem.name"
-                      ></app-blockchains-promo-badge>
-                    </ng-container>
+                    <app-blockchains-promo-badge
+                      [tag]="tag"
+                      [blockchain]="blockchainItem.name"
+                    ></app-blockchains-promo-badge>
                   </div>
                 </ng-container>
               </button>

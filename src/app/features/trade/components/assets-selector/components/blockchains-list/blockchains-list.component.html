@@ -25,14 +25,12 @@
                 </div>
                 <span class="list__label">{{ blockchain.label }}</span>
               </div>
-              <ng-container *ngIf="isMobile && !isGasForm && getBlockchainTag(blockchain) as tags">
+              <ng-container *ngIf="isMobile && !isGasForm && getBlockchainTag(blockchain) as tag">
                 <div class="list__badge-container">
-                  <ng-container *ngFor="let tag of tags">
-                    <app-blockchains-promo-badge
-                      [tag]="tag"
-                      [blockchain]="blockchain.name"
-                    ></app-blockchains-promo-badge>
-                  </ng-container>
+                  <app-blockchains-promo-badge
+                    [tag]="tag"
+                    [blockchain]="blockchain.name"
+                  ></app-blockchains-promo-badge>
                 </div>
               </ng-container>
             </div>

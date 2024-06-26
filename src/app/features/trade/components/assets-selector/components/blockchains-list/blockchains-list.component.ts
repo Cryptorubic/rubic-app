@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { Observable, combineLatestWith, map, of } from 'rxjs';
+import { Observable, combineLatestWith, of } from 'rxjs';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -32,11 +32,11 @@ export class BlockchainsListComponent implements OnDestroy {
       () => this.formsTogglerService.isGasFormOpened(),
       () => this.gasFormBlockchainsToShow$,
       ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
-    ),
-    map(blockchains => [
-      ...blockchains.slice(0, 8),
-      ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
-    ])
+    )
+    // map(blockchains => [
+    //   ...blockchains.slice(0, 8),
+    //   ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
+    // ])
   );
 
   public readonly isMobile = this.headerStore.isMobile;
@@ -71,10 +71,11 @@ export class BlockchainsListComponent implements OnDestroy {
     );
   }
 
-  public getBlockchainTag(blockchain: AvailableBlockchain): string[] {
-    return blockchain.tags.filter(
+  public getBlockchainTag(blockchain: AvailableBlockchain): string {
+    const tags = blockchain.tags.filter(
       tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW
     );
+    return tags.length > 1 ? this.blockchainsTags.PROMO : tags[0];
   }
 
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {

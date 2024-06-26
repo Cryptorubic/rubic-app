@@ -58,11 +58,11 @@ export class AssetTypesAsideComponent {
       () => this.formsTogglerService.isGasFormOpened(),
       () => this.gasFormBlockchainsToShow$,
       ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
-    ),
-    map(blockchains => [
-      ...blockchains.slice(0, 8),
-      ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
-    ])
+    )
+    // map(blockchains => [
+    //   ...blockchains.slice(0, 8),
+    //   ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
+    // ])
   );
 
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
@@ -214,10 +214,11 @@ export class AssetTypesAsideComponent {
     }));
   }
 
-  public getBlockchainTag(blockchain: AvailableBlockchain): string[] {
-    return blockchain.tags.filter(
+  public getBlockchainTag(blockchain: AvailableBlockchain): string {
+    const tags = blockchain.tags.filter(
       tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW
     );
+    return tags.length > 1 ? this.blockchainTags.PROMO : tags[0];
   }
 
   public setBlockchainFilterAll(): void {
