@@ -149,6 +149,8 @@ export class SwapsControllerService {
             this.swapsStateService.setCalculationProgress(1, 0);
             if (calculateData.isForced) {
               this.swapsStateService.clearProviders(false);
+              this.disabledTradesTypes.crossChain = [];
+              this.disabledTradesTypes.onChain = [];
             }
             this.swapsStateService.patchCalculationState();
           }
