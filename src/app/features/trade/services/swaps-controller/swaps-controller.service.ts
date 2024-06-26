@@ -62,6 +62,7 @@ import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
+import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 
 @Injectable()
 export class SwapsControllerService {
@@ -301,11 +302,13 @@ export class SwapsControllerService {
         return;
       }
 
-      if (trade instanceof CrossChainTrade) {
-        txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
-      } else {
-        txHash = await this.onChainService.swapTrade(trade, callback.onHash);
-      }
+      throw new RubicSdkError('Rubic proxy does not support non proxy Rango routers');
+      //
+      // if (trade instanceof CrossChainTrade) {
+      //   txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
+      // } else {
+      //   txHash = await this.onChainService.swapTrade(trade, callback.onHash);
+      // }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
         const allowSwap = await firstValueFrom(
@@ -481,6 +484,18 @@ export class SwapsControllerService {
       } else {
         this.disabledTradesTypes.onChain.push(tradeState.trade.type);
       }
+      this.swapsStateService.updateTrade(
+        {
+          trade: null,
+          error: parsedError,
+          tradeType: tradeState.tradeType
+        } as WrappedSdkTrade,
+        tradeState.trade instanceof CrossChainTrade
+          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        false
+      );
+      this.swapsStateService.pickProvider(true);
     }
     onError?.();
     this.errorsService.catch(err);
