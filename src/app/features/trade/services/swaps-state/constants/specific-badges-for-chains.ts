@@ -1,14 +1,13 @@
 import { BadgeInfo } from '@app/features/trade/models/trade-state';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
-  showBlastGoldPromoLabel,
   showMerlinLabel,
   showScrollMarksPromoLabel,
   showTaikoPointsPromoLabel,
   showXLayerPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
-import { GOLD_COLOR, PURPLE_COLOR } from './common/badges-ui';
+import { PURPLE_COLOR } from './common/badges-ui';
 
 export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInfo[]>> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [
@@ -33,15 +32,7 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       showLabel: showScrollMarksPromoLabel
     }
   ],
-  [BLOCKCHAIN_NAME.BLAST]: [
-    {
-      bgColor: GOLD_COLOR,
-      fromSdk: false,
-      getHint: () => 'You will recieve Blast Gold from Rubic team for this transaction!',
-      getLabel: () => '+Gold',
-      showLabel: showBlastGoldPromoLabel
-    }
-  ],
+  [BLOCKCHAIN_NAME.BLAST]: [],
   [BLOCKCHAIN_NAME.MERLIN]: [
     {
       bgColor: PURPLE_COLOR,
