@@ -459,6 +459,7 @@ export class SwapsStateService {
     const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS)
       .filter(([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain)
       .map(([_, badgeInfo]) => badgeInfo?.[0]);
+
     if (!badgesByProvider && !badgesByChain) {
       return [];
     }
@@ -468,6 +469,7 @@ export class SwapsStateService {
     const allBadges = [...providerBadges, ...chainBadges];
 
     const tradeSpecificBadges = allBadges
+      .filter(Boolean)
       .filter(info => {
         if (!info.showLabel(trade)) {
           return false;
