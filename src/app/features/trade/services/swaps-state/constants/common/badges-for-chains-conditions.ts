@@ -1,12 +1,5 @@
 import { BlockchainName, BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 
-export function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
-  return (
-    trade.to.blockchain === BLOCKCHAIN_NAME.BLAST &&
-    trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)
-  );
-}
-
 export function showTaikoPointsPromoLabel(trade: CrossChainTrade): boolean {
   return (
     (trade.to.blockchain === BLOCKCHAIN_NAME.TAIKO ||
