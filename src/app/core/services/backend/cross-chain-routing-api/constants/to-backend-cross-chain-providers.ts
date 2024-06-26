@@ -10,6 +10,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: 'celer_bridge',
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: 'changenow',
   [CROSS_CHAIN_TRADE_TYPE.STARGATE]: 'stargate',
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: 'stargate_v2',
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: 'rbc_arbitrum_bridge',
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter',
   [CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE]: 'scroll_sepolia',

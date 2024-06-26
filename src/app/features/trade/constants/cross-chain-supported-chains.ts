@@ -20,7 +20,8 @@ import {
   stargateCrossChainSupportedBlockchains,
   symbiosisCrossChainSupportedBlockchains,
   taikoBridgeSupportedBlockchains,
-  xySupportedBlockchains
+  xySupportedBlockchains,
+  stargateV2SupportedBlockchains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
@@ -34,6 +35,7 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.XY]: xySupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: cbridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: changenowProxySupportedBlockchains,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.STARGATE]: stargateCrossChainSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: arbitrumRbcBridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: squidrouterCrossChainSupportedBlockchains,
