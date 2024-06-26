@@ -302,13 +302,11 @@ export class SwapsControllerService {
         return;
       }
 
-      throw new RubicSdkError('Rubic proxy does not support non proxy Rango routers');
-      //
-      // if (trade instanceof CrossChainTrade) {
-      //   txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
-      // } else {
-      //   txHash = await this.onChainService.swapTrade(trade, callback.onHash);
-      // }
+      if (trade instanceof CrossChainTrade) {
+        txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
+      } else {
+        txHash = await this.onChainService.swapTrade(trade, callback.onHash);
+      }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
         const allowSwap = await firstValueFrom(
