@@ -9,6 +9,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
+import { TokensListTypeService } from '@app/features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
@@ -52,7 +53,8 @@ export class DropdownOptionsTokenComponent {
     private cdr: ChangeDetectorRef,
     private readonly tokensStoreService: TokensStoreService,
     private readonly errorsService: ErrorsService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly tokensListTypeService: TokensListTypeService
   ) {}
 
   public get showCopyToClipboardOption(): boolean {
@@ -94,6 +96,8 @@ export class DropdownOptionsTokenComponent {
       complete: () => {
         this.loadingFavoriteToken = false;
         this.token.favorite = !this.token.favorite;
+        this.isDropdownOpen =
+          this.tokensListTypeService.listType === 'favorite' ? false : this.isDropdownOpen;
         this.cdr.detectChanges();
       }
     });
