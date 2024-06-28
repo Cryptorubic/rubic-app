@@ -44,6 +44,7 @@ import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-w
 import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
 import { FallbackSwapError } from './provider/fallback-swap-error';
 import { NotLinkedAddressError } from './provider/not-linked-address-error';
+import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -162,6 +163,9 @@ export class RubicSdkErrorParser {
       err.message.includes('Return amount is not enough')
     ) {
       return new RubicError('Please, increase the slippage and try again!');
+    }
+    if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
+      return new CrossChainSwapUnavailableWarning();
     }
 
     return new ExecutionRevertedError(err.message);

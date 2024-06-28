@@ -21,7 +21,8 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  ON_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -126,19 +127,17 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const isMerlinChain =
-            fromToken.blockchain === BLOCKCHAIN_NAME.MERLIN ||
-            toToken.blockchain === BLOCKCHAIN_NAME.MERLIN;
+          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: isMerlinChain ? 30_000 : 10_000,
+            timeout,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: disabledTradeTypes
+            disabledProviders: [...disabledTradeTypes, ON_CHAIN_TRADE_TYPE.OKU_SWAP]
           };
           handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
@@ -244,7 +243,7 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError) {
+      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
@@ -362,5 +361,16 @@ export class OnChainService {
       const waitTime = 3_000;
       await firstValueFrom(timer(waitTime));
     }
+  }
+
+  private calculateTimeoutForChains(
+    blockchainFrom: BlockchainName,
+    blockchainTo: BlockchainName
+  ): number {
+    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
+    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+      return 30_000;
+    }
+    return 10_000;
   }
 }

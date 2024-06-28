@@ -1,11 +1,4 @@
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
-
-export function showBlastGoldPromoLabel(trade: CrossChainTrade): boolean {
-  return (
-    trade.to.blockchain === BLOCKCHAIN_NAME.BLAST &&
-    trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)
-  );
-}
+import { BlockchainName, BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 
 export function showTaikoPointsPromoLabel(trade: CrossChainTrade): boolean {
   return (
@@ -34,5 +27,14 @@ export function showMerlinLabel(trade: OnChainTrade | CrossChainTrade): boolean 
   return (
     trade.to.blockchain === BLOCKCHAIN_NAME.MERLIN ||
     trade.from.blockchain === BLOCKCHAIN_NAME.MERLIN
+  );
+}
+
+export function showXLayerPromoLabel(trade: OnChainTrade | CrossChainTrade): boolean {
+  return (
+    trade.to.blockchain === BLOCKCHAIN_NAME.XLAYER ||
+    trade.from.blockchain === BLOCKCHAIN_NAME.XLAYER ||
+    (trade instanceof OnChainTrade &&
+      (trade.from.blockchain as BlockchainName) === BLOCKCHAIN_NAME.XLAYER)
   );
 }

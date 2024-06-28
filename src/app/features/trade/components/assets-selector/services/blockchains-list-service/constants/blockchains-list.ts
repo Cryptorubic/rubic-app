@@ -285,7 +285,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.PROMO]
   },
   {
     name: BLOCKCHAIN_NAME.PULSECHAIN,
@@ -335,7 +335,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.XLAYER,
     rank: 0.4,
-    tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
+    tags: [
+      'OKB',
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW,
+      BlockchainTags.PROMO
+    ]
   },
   { name: BLOCKCHAIN_NAME.SEI, rank: 0.4, tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW] },
   {

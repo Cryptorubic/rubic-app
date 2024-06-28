@@ -298,12 +298,14 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network'],
   [BLOCKCHAIN_NAME.XLAYER]: [
-    'https://rpc.ankr.com/xlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.xlayer.tech',
+    'https://rpc.ankr.com/xlayer',
     'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
+    'https://rpc.ankr.com/xlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://xlayerrpc.okx.com'
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
+    'https://taiko.blockpi.network/v1/rpc/fc222c6da14117b3d1c6f1b2a1ad25484162854b',
     'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
