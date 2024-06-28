@@ -313,7 +313,8 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.NEW
+      BlockchainTags.NEW,
+      BlockchainTags.PROMO
     ]
   },
   {
@@ -408,7 +409,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.CORE,
     rank: 0,
-    tags: ['CORE', BlockchainTags.EVM]
+    tags: ['CORE', BlockchainTags.EVM, BlockchainTags.NEW]
   },
 
   { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2] },

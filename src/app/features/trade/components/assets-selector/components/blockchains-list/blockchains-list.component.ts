@@ -72,10 +72,15 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
-    const tags = blockchain.tags.filter(
-      tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW
-    );
-    return tags.length > 1 ? this.blockchainsTags.PROMO : tags[0];
+    const tags = blockchain.tags
+      .filter(tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW)
+      .sort((a, b) => {
+        if (a === this.blockchainsTags.PROMO) return -1;
+        if (b === this.blockchainsTags.PROMO) return 1;
+        return 0;
+      });
+
+    return tags[0];
   }
 
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {

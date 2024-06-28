@@ -215,10 +215,14 @@ export class AssetTypesAsideComponent {
   }
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
-    const tags = blockchain.tags.filter(
-      tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW
-    );
-    return tags.length > 1 ? this.blockchainTags.PROMO : tags[0];
+    const tags = blockchain.tags
+      .filter(tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW)
+      .sort((a, b) => {
+        if (a === this.blockchainTags.PROMO) return -1;
+        if (b === this.blockchainTags.PROMO) return 1;
+        return 0;
+      });
+    return tags[0];
   }
 
   public setBlockchainFilterAll(): void {
