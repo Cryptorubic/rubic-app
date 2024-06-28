@@ -37,6 +37,7 @@ import { BlockchainsFilterListComponent } from './components/blockchains-filter-
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
 import { FilterQueryService } from './services/filter-query-service/filter-query.service';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
+import { AssetsSearchQueryService } from './services/assets-search-query-service/assets-search-query.service';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-b
     SearchQueryService,
     FormsTogglerService,
     AssetsSelectorService,
-    FilterQueryService
+    FilterQueryService,
+    AssetsSearchQueryService
   ]
 })
 export class AssetsSelectorModule {}

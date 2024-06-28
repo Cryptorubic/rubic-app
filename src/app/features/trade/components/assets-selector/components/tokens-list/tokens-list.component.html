@@ -1,6 +1,6 @@
 <ng-container *ngLet="tokensToShow$ | async as tokensToShow">
   <div *ngIf="!isMobile" class="tokens-list__search-bar-container">
-    <app-search-bar></app-search-bar>
+    <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
   <tui-scrollbar class="tokens-container">

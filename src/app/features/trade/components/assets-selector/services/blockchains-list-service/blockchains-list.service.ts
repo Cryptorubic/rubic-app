@@ -4,11 +4,10 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, filter, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, takeUntil, tap } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import {
   blockchainsList,
   notEvmChangeNowBlockchainsList,
@@ -23,6 +22,8 @@ import {
   BlockchainFilters,
   BlockchainTags
 } from '../../components/blockchains-filter-list/models/BlockchainFilters';
+import { AssetsSearchQueryService } from '../assets-search-query-service/assets-search-query.service';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Injectable()
 export class BlockchainsListService {
@@ -34,7 +35,11 @@ export class BlockchainsListService {
 
   private readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
+  private readonly _assetsBlockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+
   public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable();
+
+  public readonly assetsBlockchainsToShow$ = this._assetsBlockchainsToShow$.asObservable();
 
   private set blockchainsToShow(value: AvailableBlockchain[]) {
     this._blockchainsToShow$.next(value);
@@ -44,20 +49,31 @@ export class BlockchainsListService {
     return this._blockchainsToShow$.getValue();
   }
 
+  private set assetsBlockchainsToShow(value: AvailableBlockchain[]) {
+    this._assetsBlockchainsToShow$.next(value);
+  }
+
+  public get assetsBlockchainsToShow(): AvailableBlockchain[] {
+    return this._assetsBlockchainsToShow$.getValue();
+  }
+
   /**
    * Contains last selected blockchain, which is not included by default in blockchains-aside list.
    */
   public lastSelectedHiddenBlockchain: AvailableBlockchain | undefined;
 
+  private readonly isMobile = this.headerStore.isMobile;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly searchQueryService: SearchQueryService,
+    private readonly assetsSearchQueryService: AssetsSearchQueryService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
-    private readonly filterQueryService: FilterQueryService
+    private readonly filterQueryService: FilterQueryService,
+    private readonly headerStore: HeaderStore
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
@@ -100,17 +116,12 @@ export class BlockchainsListService {
   private subscribeOnSearchQuery(): void {
     combineLatest([
       this.filterQueryService.filterQuery$,
-      this.searchQueryService.query$,
-      this.assetsSelectorService.selectorListType$
+      this.assetsSearchQueryService.assetsQuery$
     ])
-      .pipe(
-        filter(([_, __, selectorListType]) => selectorListType === 'blockchains'),
-        debounceTime(200),
-        // map(([query]) => query),
-        takeUntil(this.destroy$)
-      )
+      .pipe(debounceTime(200), takeUntil(this.destroy$))
       .subscribe(([filterQuery, searchQuery]) => {
-        this.blockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
+        this.blockchainsToShow = this.filterBlockchains(filterQuery);
+        this.assetsBlockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
           return (
             blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
             blockchain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -118,6 +129,9 @@ export class BlockchainsListService {
               blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
           );
         });
+        if (!this.isMobile) {
+          this.blockchainsToShow = this.assetsBlockchainsToShow;
+        }
       });
   }
 

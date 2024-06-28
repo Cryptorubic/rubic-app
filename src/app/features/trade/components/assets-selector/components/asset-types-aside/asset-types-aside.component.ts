@@ -1,17 +1,8 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Inject,
-  Injector,
-  Input,
-  Self,
-  SkipSelf
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { combineLatestWith, map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
-import { blockchainShortLabel } from '@shared/constants/blockchain/blockchain-short-label';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -22,7 +13,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
-import { SearchQueryService } from '../../services/search-query-service/search-query.service';
 import { Observable, of } from 'rxjs';
 import { switchIif } from '@app/shared/utils/utils';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -33,8 +23,7 @@ import { FilterQueryService } from '../../services/filter-query-service/filter-q
   selector: 'app-asset-types-aside',
   templateUrl: './asset-types-aside.component.html',
   styleUrls: ['./asset-types-aside.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [AssetsSelectorService, SearchQueryService, BlockchainsListService]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssetTypesAsideComponent {
   @Input() idPrefix: string;
@@ -49,7 +38,7 @@ export class AssetTypesAsideComponent {
 
   public readonly selectedFilter$ = this.filterQueryService.filterQuery$;
 
-  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
+  public readonly blockchainsToShow$ = this.blockchainsListService.assetsBlockchainsToShow$.pipe(
     combineLatestWith(
       this.gasFormService.sourceBlockchainsToShow$,
       this.gasFormService.targetBlockchainsToShow$
@@ -59,10 +48,6 @@ export class AssetTypesAsideComponent {
       () => this.gasFormBlockchainsToShow$,
       ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
     )
-    // map(blockchains => [
-    //   ...blockchains.slice(0, 8),
-    //   ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
-    // ])
   );
 
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
@@ -95,8 +80,7 @@ export class AssetTypesAsideComponent {
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
-    @Self() private readonly assetsAsideSelectorService: AssetsSelectorService,
-    @SkipSelf() private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly windowWidthService: WindowWidthService,
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService,
@@ -108,7 +92,7 @@ export class AssetTypesAsideComponent {
     private readonly filterQueryService: FilterQueryService,
     @Inject(Injector) private readonly injector: Injector
   ) {
-    this.openBlockchainsList();
+    // this.openBlockchainsList();
   }
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
@@ -154,66 +138,6 @@ export class AssetTypesAsideComponent {
     return assideChains;
   }
 
-  public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
-    const userBlockchainName = this.walletConnectorService.network;
-    const userBlockchain = this.blockchainsListService.availableBlockchains.find(
-      chain => chain.name === userBlockchainName
-    );
-
-    let slicedBlockchains = this.blockchainsListService.availableBlockchains.slice(
-      0,
-      shownBlockchainsAmount
-    );
-
-    if (userBlockchain && !slicedBlockchains.includes(userBlockchain)) {
-      slicedBlockchains.pop();
-      slicedBlockchains.unshift(userBlockchain);
-    }
-
-    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
-    const isSelectedToBlockchainIncluded = this.isSelectedBlockchainIncluded(
-      slicedBlockchains,
-      toBlockchain
-    );
-    const fromBlockchain = this.swapFormService.inputValue.fromBlockchain;
-    const isSelectedFromBlockchainIncluded = this.isSelectedBlockchainIncluded(
-      slicedBlockchains,
-      fromBlockchain
-    );
-
-    if (this.queryParamsService.domain === 'rubic.exchange/zkSync_Era') {
-      return this.getBlockchainsListForLandingIframe();
-    }
-
-    if (this.isSourceSelectorGasFormOpened()) {
-      slicedBlockchains = this.getAssideBlockchainsInSourceSelectorGasForm(shownBlockchainsAmount);
-    } else {
-      if (toBlockchain && fromBlockchain) {
-        if (this.formType === 'from' && !isSelectedFromBlockchainIncluded) {
-          this.setLastSelectedHiddenBlockchain(fromBlockchain);
-        } else if (!isSelectedToBlockchainIncluded) {
-          this.setLastSelectedHiddenBlockchain(toBlockchain);
-        }
-      } else if (fromBlockchain && !isSelectedFromBlockchainIncluded) {
-        this.setLastSelectedHiddenBlockchain(fromBlockchain);
-      } else if (toBlockchain && !isSelectedToBlockchainIncluded) {
-        this.setLastSelectedHiddenBlockchain(toBlockchain);
-      }
-
-      const hiddenBlockchain = this.blockchainsListService.lastSelectedHiddenBlockchain;
-
-      if (hiddenBlockchain) {
-        slicedBlockchains.pop();
-        slicedBlockchains.unshift(hiddenBlockchain);
-      }
-    }
-
-    return slicedBlockchains.map(blockchain => ({
-      ...blockchain,
-      label: blockchainShortLabel[blockchain.name]
-    }));
-  }
-
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
     const tags = blockchain.tags
       .filter(tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW)
@@ -241,9 +165,9 @@ export class AssetTypesAsideComponent {
     this.assetsSelectorService.onBlockchainSelect(blockchainName);
   }
 
-  public openBlockchainsList(): void {
-    this.assetsAsideSelectorService.openBlockchainsList();
-  }
+  // public openBlockchainsList(): void {
+  //   this.assetsAsideSelectorService.openBlockchainsList();
+  // }
 
   public openFiatsList(): void {
     this.assetsSelectorService.openFiatsList();

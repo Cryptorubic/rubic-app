@@ -25,7 +25,10 @@
           <app-blockchains-filter-list *ngIf="isMobile"></app-blockchains-filter-list>
         </app-asset-types-aside>
         <ng-container *ngIf="selectorListType === 'fiats'">
-          <app-search-bar class="vertical-iframe-token-search"></app-search-bar>
+          <app-search-bar
+            class="vertical-iframe-token-search"
+            [searchBarType]="'tokens'"
+          ></app-search-bar>
         </ng-container>
 
         <ng-container *ngIf="isMobile; then searchBar"></ng-container>
@@ -44,7 +47,7 @@
     <ng-template #searchBar>
       <hr *ngIf="isMobile" class="assets-selector__horizontal-line" />
       <div class="assets-selector__row">
-        <app-search-bar></app-search-bar>
+        <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
         <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
         </app-switch-list-type-button>
       </div>

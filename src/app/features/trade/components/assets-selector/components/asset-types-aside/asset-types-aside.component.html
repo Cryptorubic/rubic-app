@@ -5,31 +5,21 @@
   }"
 >
   <div *ngIf="isMobile" class="asset-types-aside__search-bar-mobile__search-bar-container">
-    <app-search-bar></app-search-bar>
+    <app-search-bar [searchBarType]="'blockchains'"></app-search-bar>
     <app-filter-list-element
       [blockchainFilter]="'All'"
       [isSelected]="(selectedFilter$ | async) === 'All'"
       (click)="setBlockchainFilterAll()"
     ></app-filter-list-element>
   </div>
-  <app-search-bar *ngIf="!isMobile"></app-search-bar>
+  <app-search-bar *ngIf="!isMobile" [searchBarType]="'blockchains'"></app-search-bar>
   <ng-content></ng-content>
 </div>
 <aside class="asset-types-aside">
-  <!-- <div class="asset-types-aside__blockchain-header">
-    <div class="asset-types-aside__blockchain-header-label">Blockchains</div>
-      <button class="asset-types-aside__blockchain-header-expand" (click)="toggleBlockchainList()">
-        View all
-      </button>
-  </div> -->
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
       <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
-        <ng-container
-          *ngLet="
-            shownBlockchainsAmount | functionCall : getBlockchainsList : this as blockchainsList
-          "
-        >
+        <ng-container>
           <ng-container *ngFor="let blockchainItem of blockchainsToShow$ | async">
             <ng-container
               *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
@@ -60,19 +50,6 @@
               </button>
             </ng-container>
           </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="blockchainsAmount - shownBlockchainsAmount > 0">
-          <!-- <button
-              class="open-selector"
-              tuiButton
-              size="l"
-              type="button"
-              appearance="secondary"
-              (click)="openBlockchainsList()"
-            >
-              +{{ blockchainsAmount - shownBlockchainsAmount }}
-            </button> -->
         </ng-container>
       </ng-container>
     </ul>
