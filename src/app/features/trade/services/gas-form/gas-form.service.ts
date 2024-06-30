@@ -16,7 +16,7 @@ import {
 export class GasFormService {
   private readonly _searchQuery$ = new BehaviorSubject<string>('');
 
-  private readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>(null);
+  private readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>('All');
 
   private readonly _sourceAvailableBlockchains$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -28,7 +28,13 @@ export class GasFormService {
     map(query => this.targetAvailableBlockchains.filter(chain => this.showBlockchain(chain, query)))
   );
 
-  public readonly sourceBlockchainsToShow$ = combineLatest([
+  public readonly sourceBlockchainsToShow$ = this._filterQuery$.pipe(
+    map(filterQuery => {
+      return this.setFilter(this.sourceAvailableBlockchains, filterQuery);
+    })
+  );
+
+  public readonly sourceAssetsBlockchainsToShow$ = combineLatest([
     this._filterQuery$,
     this._searchQuery$
   ]).pipe(

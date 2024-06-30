@@ -84,9 +84,13 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
-    return this.formType === 'to'
-      ? this.gasFormService.targetBlockchainsToShow$
-      : this.gasFormService.sourceBlockchainsToShow$;
+    if (this.formType === 'to') {
+      return this.gasFormService.targetBlockchainsToShow$;
+    } else if (this.formType === 'from' && !this.isMobile) {
+      return this.gasFormService.sourceAssetsBlockchainsToShow$;
+    } else {
+      return this.gasFormService.sourceBlockchainsToShow$;
+    }
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {

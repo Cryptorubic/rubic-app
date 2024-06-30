@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
-import { combineLatestWith, map } from 'rxjs/operators';
+import { combineLatestWith } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
-import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
@@ -53,20 +52,8 @@ export class AssetTypesAsideComponent {
   private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
     return this.formType === 'to'
       ? this.gasFormService.targetBlockchainsToShow$
-      : this.gasFormService.sourceBlockchainsToShow$;
+      : this.gasFormService.sourceAssetsBlockchainsToShow$;
   }
-
-  /**
-   * Returns amount of blockchains to show, depending on window width and height.
-   */
-  public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
-    map(windowSize => {
-      if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
-        return 11;
-      }
-      return this.blockchainsAmount;
-    })
-  );
 
   public get blockchainsAmount(): number {
     return this.isSourceSelectorGasFormOpened()
@@ -91,9 +78,7 @@ export class AssetTypesAsideComponent {
     private readonly headerStore: HeaderStore,
     private readonly filterQueryService: FilterQueryService,
     @Inject(Injector) private readonly injector: Injector
-  ) {
-    // this.openBlockchainsList();
-  }
+  ) {}
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
     const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;

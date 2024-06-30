@@ -21,29 +21,30 @@ export class SearchBarComponent {
 
   public isExpanded = false;
 
-  public searchQuery$: Observable<string>;
+  public readonly searchQuery$: Observable<string>;
 
   public searchBarText: string;
 
+  public readonly searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
+
   ngOnInit(): void {
-    this.searchQuery$ =
-      this.searchBarType === 'blockchains'
-        ? this.assetsSearchQueryService.assetsQuery$
-        : this.searchQueryService.query$;
     this.searchBarText =
       this.searchBarType === 'blockchains'
         ? `Search among ${this.blockchainListService.availableBlockchains.length} Chains`
         : 'modals.tokensListModal.searchPlaceholder';
   }
 
-  public readonly searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
-
   constructor(
     private readonly searchQueryService: SearchQueryService,
     private readonly assetsSearchQueryService: AssetsSearchQueryService,
     private readonly headerStore: HeaderStore,
     private readonly blockchainListService: BlockchainsListService
-  ) {}
+  ) {
+    this.searchQuery$ =
+      this.searchBarType === 'blockchains'
+        ? this.assetsSearchQueryService.assetsQuery$
+        : this.searchQueryService.query$;
+  }
 
   /**
    * Handles input query change.
