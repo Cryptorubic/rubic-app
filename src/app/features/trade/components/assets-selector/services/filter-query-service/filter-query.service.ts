@@ -17,7 +17,9 @@ export class FilterQueryService {
     private readonly gasFormService: GasFormService,
     private readonly modalService: ModalService,
     @Inject(Injector) private readonly injector: Injector
-  ) {}
+  ) {
+    this.gasFormService.updateFilterQuery(this._filterQuery$.getValue());
+  }
 
   public set filterQuery(filter: BlockchainFilters) {
     if (filter === this._filterQuery$.getValue() && filter !== BlockchainTags.ALL) {

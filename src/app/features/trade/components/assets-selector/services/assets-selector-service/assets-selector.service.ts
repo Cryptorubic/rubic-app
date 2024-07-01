@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -111,13 +111,13 @@ export class AssetsSelectorService {
       if (toTokenSelected) {
         this.assetType = assetType;
       } else {
-        this.assetType = userAvailableBlockchainName || assetType;
+        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
       }
     } else {
       if (toTokenSelected || fromTokenSelected) {
         this.assetType = fromBlockchain;
       } else {
-        this.assetType = userAvailableBlockchainName || fromBlockchain;
+        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
       }
     }
 

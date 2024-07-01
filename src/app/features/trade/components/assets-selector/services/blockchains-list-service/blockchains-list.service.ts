@@ -24,6 +24,7 @@ import {
 } from '../../components/blockchains-filter-list/models/BlockchainFilters';
 import { AssetsSearchQueryService } from '../assets-search-query-service/assets-search-query.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -73,7 +74,8 @@ export class BlockchainsListService {
     private readonly destroy$: TuiDestroyService,
     private readonly iframeService: IframeService,
     private readonly filterQueryService: FilterQueryService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
@@ -109,8 +111,14 @@ export class BlockchainsListService {
         disabledFrom
       };
     });
-
-    this._availableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
+    const userBlockchain = this.walletConnectorService.network;
+    // const userBlockchainIndex = availableBlockchains.findIndex(blockchain=>blockchain.name === userBlockchain)
+    const sortedAvailableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
+    this._availableBlockchains = sortedAvailableBlockchains.sort((a, b) => {
+      if (a.name.includes(userBlockchain)) return -1;
+      if (b.name.includes(userBlockchain)) return 1;
+      return 0;
+    });
   }
 
   private subscribeOnSearchQuery(): void {

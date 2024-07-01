@@ -21,7 +21,7 @@ export class SearchBarComponent {
 
   public isExpanded = false;
 
-  public readonly searchQuery$: Observable<string>;
+  public searchQuery$: Observable<string>;
 
   public searchBarText: string;
 
@@ -32,6 +32,11 @@ export class SearchBarComponent {
       this.searchBarType === 'blockchains'
         ? `Search among ${this.blockchainListService.availableBlockchains.length} Chains`
         : 'modals.tokensListModal.searchPlaceholder';
+
+    this.searchQuery$ =
+      this.searchBarType === 'blockchains'
+        ? this.assetsSearchQueryService.assetsQuery$
+        : this.searchQueryService.query$;
   }
 
   constructor(
@@ -39,12 +44,7 @@ export class SearchBarComponent {
     private readonly assetsSearchQueryService: AssetsSearchQueryService,
     private readonly headerStore: HeaderStore,
     private readonly blockchainListService: BlockchainsListService
-  ) {
-    this.searchQuery$ =
-      this.searchBarType === 'blockchains'
-        ? this.assetsSearchQueryService.assetsQuery$
-        : this.searchQueryService.query$;
-  }
+  ) {}
 
   /**
    * Handles input query change.
