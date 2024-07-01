@@ -1,0 +1,15 @@
+<button
+  class="filter-list-element"
+  [ngClass]="{ 'filter-list-element__clicked-element': isSelected }"
+  tuiButton
+  type="button"
+  appearance="secondary"
+  size="m"
+>
+  {{ blockchainFilter }}
+  <img
+    *ngIf="blockchainFilter !== 'All'"
+    [src]="'assets/images/icons/blockchain-filters/' + (blockchainFilter | lowercase) + '.svg'"
+    class="filter-list-element__icon"
+  />
+</button>

@@ -301,7 +301,14 @@ export class TokensService {
 
           return this.tokensApiService.fetchQueryTokens(params).pipe(
             switchMap(backendTokens => {
-              return this.tokensStoreService.getTokensWithBalance(backendTokens);
+              const filteredTokens = backendTokens.filter(
+                token =>
+                  !(
+                    token.name.toLowerCase().includes('tether') &&
+                    query.toLowerCase().includes('eth')
+                  )
+              );
+              return this.tokensStoreService.getTokensWithBalance(filteredTokens);
             })
           );
         }

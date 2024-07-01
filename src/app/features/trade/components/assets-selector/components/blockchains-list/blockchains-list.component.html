@@ -1,6 +1,6 @@
 <div class="list-container">
   <div class="list-container__search">
-    <app-search-bar></app-search-bar>
+    <app-search-bar [searchBarType]="'blockchains'"></app-search-bar>
   </div>
 
   <tui-scrollbar class="scrollbar">
@@ -19,10 +19,20 @@
             [disabled]="disabled"
           >
             <div class="list__element-container">
-              <div class="list__image-container">
-                <img [src]="blockchain.icon" [alt]="blockchain.label" />
+              <div class="list__element-wrapper">
+                <div class="list__image-container">
+                  <img [src]="blockchain.icon" [alt]="blockchain.label" />
+                </div>
+                <span class="list__label">{{ blockchain.label }}</span>
               </div>
-              <span class="list__label">{{ blockchain.label }}</span>
+              <ng-container *ngIf="isMobile && !isGasForm && getBlockchainTag(blockchain) as tag">
+                <div class="list__badge-container">
+                  <app-blockchains-promo-badge
+                    [tag]="tag"
+                    [blockchain]="blockchain.name"
+                  ></app-blockchains-promo-badge>
+                </div>
+              </ng-container>
             </div>
           </button>
         </ng-container>
