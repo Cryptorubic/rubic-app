@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -21,6 +21,7 @@ import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/model
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { AvailableBlockchain } from '../blockchains-list-service/models/available-blockchain';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -50,6 +51,8 @@ export class AssetsSelectorService {
 
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
+  private readonly isMobile = this.headerStore.isMobile;
+
   public get selectorListType(): SelectorListType {
     return this._selectorListType$.value;
   }
@@ -67,7 +70,8 @@ export class AssetsSelectorService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly formsTogglerService: FormsTogglerService,
     private readonly tradePageService: TradePageService,
-    private readonly gasFormService: GasFormService
+    private readonly gasFormService: GasFormService,
+    private readonly headerStore: HeaderStore
   ) {
     this.subscribeOnAssetChange();
   }
@@ -107,13 +111,13 @@ export class AssetsSelectorService {
       if (toTokenSelected) {
         this.assetType = assetType;
       } else {
-        this.assetType = userAvailableBlockchainName || assetType;
+        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
       }
     } else {
       if (toTokenSelected || fromTokenSelected) {
         this.assetType = fromBlockchain;
       } else {
-        this.assetType = userAvailableBlockchainName || fromBlockchain;
+        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
       }
     }
 
@@ -163,7 +167,9 @@ export class AssetsSelectorService {
   public onBlockchainSelect(blockchainName: BlockchainName): void {
     this.assetType = blockchainName;
     this.tokensStoreService.startBalanceCalculating(blockchainName);
-    this.selectorListType = 'tokens';
+    if (!this.isMobile) {
+      this.selectorListType = 'tokens';
+    }
   }
 
   public onTargetBlockchainsSelectGasForm(

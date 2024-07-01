@@ -1,29 +1,23 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { TuiDestroyService } from '@taiga-ui/cdk';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { BehaviorSubject, combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs';
+import { AssetsSelectorService } from '../assets-selector-service/assets-selector.service';
 
 @Injectable()
-export class SearchQueryService {
-  /**
-   * Contains string in search bar.
-   */
-  private readonly _query$ = new BehaviorSubject<string>('');
+export class AssetsSearchQueryService {
+  private readonly _assetsQuery$ = new BehaviorSubject<string>('');
 
-  public readonly query$ = this._query$.asObservable();
+  public readonly assetsQuery$ = this._assetsQuery$.asObservable();
 
-  public get query(): string {
-    return this._query$.value;
+  public get assetsQuery(): string {
+    return this._assetsQuery$.value;
   }
 
-  public set query(value: string) {
-    this._query$.next(value.trim());
-    if (this.assetsSelectorService.selectorListType !== 'tokens') {
-      this.gasFormService.updateSearchQuery(value.trim());
-    }
+  public set assetsQuery(value: string) {
+    this._assetsQuery$.next(value.trim());
+    this.gasFormService.updateSearchQuery(value.trim());
   }
 
   constructor(
@@ -43,7 +37,7 @@ export class SearchQueryService {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this.query = '';
+        this.assetsQuery = '';
       });
   }
 }
