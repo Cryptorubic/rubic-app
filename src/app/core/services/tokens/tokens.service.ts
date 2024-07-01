@@ -304,7 +304,7 @@ export class TokensService {
               const filteredTokens = backendTokens.filter(
                 token =>
                   !(
-                    token.name.toLowerCase().includes('tether usd') &&
+                    token.name.toLowerCase().includes('tether') &&
                     query.toLowerCase().includes('eth')
                   )
               );

@@ -112,7 +112,6 @@ export class BlockchainsListService {
       };
     });
     const userBlockchain = this.walletConnectorService.network;
-    // const userBlockchainIndex = availableBlockchains.findIndex(blockchain=>blockchain.name === userBlockchain)
     const sortedAvailableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
     this._availableBlockchains = sortedAvailableBlockchains.sort((a, b) => {
       if (a.name.includes(userBlockchain)) return -1;
