@@ -184,6 +184,10 @@ export class SettingsService {
       highPriceImpact: priceImpact >= 30 ? priceImpact : false
     };
 
+    if (trade.type === 'eddy_bridge') {
+      console.log('EDDY_BRIDGE_PRICE_IMPACT =====> ', priceImpact);
+    }
+
     if ((settingsChecks.highSlippage || settingsChecks.highPriceImpact) && tradeSlippage > 0) {
       return firstValueFrom(
         this.dialogService.showDialog<SettingsWarningModalComponent, boolean>(
