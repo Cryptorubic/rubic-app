@@ -16944,10 +16944,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.30.0-alpha.eddy-bridge.19:
-  version "5.30.0-alpha.eddy-bridge.19"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.0-alpha.eddy-bridge.19.tgz#ebe64dc7441d3210726845e86271cf13d36d0a4d"
-  integrity sha512-lGqXgjCnM2zr4MthtGbw8R6cWEzRZTdyzygEhyEYo6cFvvFfiXz5E3wfb3EkV6WuF0ULL1HTX5rU7SQFCrjkLg==
+rubic-sdk@5.30.0-alpha.eddy-bridge.20:
+  version "5.30.0-alpha.eddy-bridge.20"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.0-alpha.eddy-bridge.20.tgz#d89bef1d8872f230d60bb30dada3f22df459d8b8"
+  integrity sha512-NbAz0nopzATiFgyaDd4wlbMePP6G7c3/tmSsmc8eBGAqXqgNS+LIO4IiJ6ZZEwEQj//UnqX2y+/Z2oBWDB5zYw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
