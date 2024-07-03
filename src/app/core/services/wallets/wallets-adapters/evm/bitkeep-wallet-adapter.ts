@@ -54,7 +54,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
    * @param ethereum Global ethereum object.
    */
   private static checkErrors(ethereum: RubicAny): void {
-    if (!ethereum?.isBitKeep) {
+    if (!ethereum?.isBitKeep && !ethereum?.isBitKeepChrome) {
       throw new BitKeepError();
     }
 
