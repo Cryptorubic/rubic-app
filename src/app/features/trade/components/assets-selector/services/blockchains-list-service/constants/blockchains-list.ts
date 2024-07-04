@@ -175,6 +175,11 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   {
+    name: BLOCKCHAIN_NAME.BAHAMUT,
+    rank: 1,
+    tags: ['FTN', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
+  },
+  {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
     tags: [
