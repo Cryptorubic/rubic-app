@@ -100,5 +100,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'TonConnect',
+    value: WALLET_NAME.TON_CONNECT,
+    img: './assets/images/icons/wallets/tonconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];

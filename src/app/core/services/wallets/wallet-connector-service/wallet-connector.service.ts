@@ -39,6 +39,7 @@ import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/so
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
+import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -160,6 +161,10 @@ export class WalletConnectorService {
       return new TokenPocketWalletAdapter(...defaultConstructorParameters);
     }
 
+    if (walletName === WALLET_NAME.TON_CONNECT) {
+      return new TonConnectAdapter(...defaultConstructorParameters);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
@@ -200,7 +205,7 @@ export class WalletConnectorService {
     customRpcUrl?: string
   ): Promise<boolean> {
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
-    const provider = this.provider;
+    const provider = this.provider as EvmWalletAdapter;
     try {
       await provider.switchChain(chainId);
       return true;
