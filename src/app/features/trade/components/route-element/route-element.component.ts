@@ -30,6 +30,15 @@ export class RouteElementComponent {
     return routes.map(route => {
       if (route.type === 'on-chain') {
         const provider = ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType];
+        if (route.path?.[0].blockchain === 'BAHAMUT') {
+          return {
+            provider: {
+              label: `Swap Via ${provider.name}`,
+              image: 'assets/images/icons/coins/bahamut.svg'
+            },
+            amounts: route.path.map(el => el.symbol)
+          };
+        }
         return {
           provider: {
             label: `Swap Via ${provider.name}`,

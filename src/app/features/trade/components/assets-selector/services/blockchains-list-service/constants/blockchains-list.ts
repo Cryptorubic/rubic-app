@@ -175,11 +175,6 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   {
-    name: BLOCKCHAIN_NAME.BAHAMUT,
-    rank: 1,
-    tags: ['FTN', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
-  },
-  {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
     tags: [
@@ -383,6 +378,11 @@ export const blockchainsList: RankedBlockchain[] = [
     name: BLOCKCHAIN_NAME.ZETACHAIN,
     rank: 0.4,
     tags: ['ZETA', BlockchainTags.POPULAR, BlockchainTags.EVM]
+  },
+  {
+    name: BLOCKCHAIN_NAME.BAHAMUT,
+    rank: 0.4,
+    tags: ['FTN', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
   },
   { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
   { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },
