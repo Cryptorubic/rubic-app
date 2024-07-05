@@ -15,14 +15,12 @@ import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
 import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
-import { SwapsFormService } from '../swaps-form/swaps-form.service';
 
 @Injectable()
 export class TradeInfoManager {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
-    private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly swapsFormService: SwapsFormService
+    private readonly platformConfigurationService: PlatformConfigurationService
   ) {}
 
   public getFeeInfo(trade: CrossChainTrade | OnChainTrade): AppFeeInfo {
@@ -37,18 +35,6 @@ export class TradeInfoManager {
     const provider = TRADES_PROVIDERS[tradeType];
     const providerAverageTime = this.platformConfigurationService.providersAverageTime;
     const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
-    const { fromToken, toToken } = this.swapsFormService.inputValue;
-    if (
-      tradeType === 'UNISWAP_V2' &&
-      fromToken.blockchain === toToken.blockchain &&
-      fromToken.blockchain === 'BAHAMUT'
-    ) {
-      return {
-        ...provider,
-        image: 'assets/images/icons/coins/bahamut.svg',
-        averageTime: currentProviderTime ? currentProviderTime : provider.averageTime
-      };
-    }
     return {
       ...provider,
       averageTime: currentProviderTime ? currentProviderTime : provider.averageTime
