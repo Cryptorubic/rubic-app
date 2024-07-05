@@ -54,7 +54,13 @@
   <div>
     <span> Estimated Gas: </span>
     <br />
-    <span>
+    <span *ngIf="gasInfo.amountInUsd.lt(0.01)">
+      {{ gasInfo.amount | bigNumberFormat : 20 : false | shortenAmount : 20 : 10 : false }}
+      {{ gasInfo.symbol }} ~
+      {{ gasInfo.amountInUsd | bigNumberFormat : 20 : false | shortenAmount : 20 : 10 : false }}
+      $
+    </span>
+    <span *ngIf="gasInfo.amountInUsd.gt(0.01)">
       {{ gasInfo.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
       {{ gasInfo.symbol }} ~
       {{ gasInfo.amountInUsd | bigNumberFormat | shortenAmount : 8 : 8 }}
