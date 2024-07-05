@@ -305,6 +305,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://xlayerrpc.okx.com'
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
+    'https://taiko.blockpi.network/v1/rpc/fc222c6da14117b3d1c6f1b2a1ad25484162854b',
     'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
