@@ -20,7 +20,7 @@ export class SwapDataElementComponent {
 
   @Input() hintAppearance: HintAppearance = '';
 
-  @Input() hintDirection: HintDirection = 'bottom-left';
+  @Input() hintDirection: HintDirection = 'bottom-right';
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;

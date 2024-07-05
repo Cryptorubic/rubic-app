@@ -317,5 +317,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/core',
     'https://1rpc.io/core',
     'https://core.public.infstones.com'
+  ],
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    'https://rpc.ankr.com/bahamut/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc1.bahamut.io',
+    'https://rpc2.bahamut.io',
+    'wss://ws2.sahara.bahamutchain.com',
+    'wss://bahamut-rpc.publicnode.com'
   ]
 };
