@@ -24,7 +24,11 @@ export class TransactionDetailsComponent {
     this.swapsStateService.currentTrade$.pipe(first());
 
   public readonly details$: Observable<TradeInfo> = this.trade$.pipe(
-    tap(el => console.log('DETAILS ===> ', { el, getTradeInfo: el.getTradeInfo() })),
+    tap(el => {
+      if (el?.type === 'eddy_bridge') {
+        console.log('DETAILS ===> ', { el, getTradeInfo: el.getTradeInfo() });
+      }
+    }),
     map(el => el.getTradeInfo())
   );
 
