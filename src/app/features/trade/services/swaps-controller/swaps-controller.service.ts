@@ -222,11 +222,8 @@ export class SwapsControllerService {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-                    if (trade.tradeType === 'eddy_bridge') {
-                      console.log(
-                        'EDDY_BRIDGE_PRICE_IMPACT ===> ',
-                        trade.trade?.getTradeInfo()?.priceImpact
-                      );
+                    if (trade?.tradeType === 'eddy_bridge') {
+                      console.log('eddy');
                     }
                     this.swapsStateService.updateTrade(trade, type, needApprove);
                     this.swapsStateService.pickProvider(isCalculationEnd);
