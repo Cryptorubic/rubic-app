@@ -6,16 +6,25 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
 import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { HeaderStore } from '@core/header/services/header.store';
+import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ModalService } from '@core/modals/services/modal.service';
+import { BehaviorSubject } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-mev-bot',
   templateUrl: './mev-bot.component.html',
   styleUrls: ['./mev-bot.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class MevBotComponent {
-  public routingForm: FormGroup<ItSettingsFormControls> | FormGroup<CcrSettingsFormControls> =
-    this.settingsService.crossChainRouting;
+  private readonly _routingForm$ = new BehaviorSubject<
+    FormGroup<ItSettingsFormControls | CcrSettingsFormControls>
+  >(this.settingsService.crossChainRouting);
+
+  public readonly routingForm$ = this._routingForm$.asObservable();
 
   public displayMev: boolean = false;
 
@@ -23,25 +32,51 @@ export class MevBotComponent {
     const minDollarAmountToDisplay = 1000;
     const amount = trade?.from.price.multipliedBy(trade?.from.tokenAmount);
 
-    this.routingForm =
-      trade?.from.blockchain === trade?.to.blockchain
-        ? this.settingsService.instantTrade
-        : this.settingsService.crossChainRouting;
+    if (trade?.from.blockchain !== trade?.to.blockchain) {
+      this._routingForm$.next(this.settingsService.crossChainRouting);
+    } else {
+      this._routingForm$.next(
+        this.settingsService.instantTrade as unknown as FormGroup<
+          ItSettingsFormControls | CcrSettingsFormControls
+        >
+      );
+    }
 
-    this.displayMev = amount ? amount.gte(minDollarAmountToDisplay) : false;
-
-    this.patchUseMevBotProtection(true);
+    this.displayMev = amount
+      ? amount.gte(minDollarAmountToDisplay) && !this.headerStore.isMobile
+      : false;
 
     if (!this.displayMev) {
-      this.patchUseMevBotProtection(false);
+      this.settings.patchValue({ useMevBotProtection: false });
     }
   }
 
-  constructor(private readonly settingsService: SettingsService) {}
+  private get settings(): FormGroup<ItSettingsFormControls | CcrSettingsFormControls> {
+    return this._routingForm$.getValue();
+  }
 
-  private patchUseMevBotProtection(value: boolean): void {
-    this.routingForm.patchValue({
-      useMevBotProtection: value
-    });
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly destroy$: TuiDestroyService,
+    private readonly modalService: ModalService,
+    private readonly headerStore: HeaderStore
+  ) {
+    this.subscribeOnRoutingForm();
+  }
+
+  private subscribeOnRoutingForm(): void {
+    this.routingForm$
+      .pipe(
+        switchMap(settings => settings.valueChanges),
+        startWith(this.settingsService.crossChainRouting.value),
+        distinctUntilChanged(),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(([prev, curr]) => {
+        if (prev.useMevBotProtection !== curr.useMevBotProtection && curr.useMevBotProtection) {
+          this.modalService.openMevBotModal().subscribe();
+        }
+      });
   }
 }

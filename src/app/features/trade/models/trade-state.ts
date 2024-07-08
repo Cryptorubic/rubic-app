@@ -1,5 +1,5 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
-import { RubicStep } from 'rubic-sdk';
+import { CrossChainTrade, OnChainTrade, RubicStep } from 'rubic-sdk';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
@@ -22,11 +22,21 @@ export type TradeState = (TradefullState | TradelessState) & {
   };
   needApprove: boolean;
   routes: RubicStep[];
-  promotion?: PromotionType;
+  badges?: BadgeInfoForComponent[];
 };
 
-export interface PromotionType {
-  hint: string;
+export interface BadgeInfo {
+  fromSdk: boolean;
+  bgColor?: string;
+  showLabel: (trade: CrossChainTrade | OnChainTrade) => boolean;
+  getLabel: (trade: CrossChainTrade | OnChainTrade) => string;
+  getHint?: (trade: CrossChainTrade | OnChainTrade) => string;
+  href?: string;
+}
+
+export interface BadgeInfoForComponent {
   label: string;
+  bgColor?: string;
+  hint?: string;
   href?: string;
 }

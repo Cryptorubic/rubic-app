@@ -129,7 +129,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.mantle.xyz/'
+    rpc: 'https://rpc.ankr.com/mantle'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
@@ -162,5 +162,41 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MERLIN]: {
     name: 'Merlin',
     rpc: 'https://rpc.merlinchain.io'
+  },
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: {
+    name: 'Rootstock',
+    rpc: 'https://public-node.rsk.co'
+  },
+  [BLOCKCHAIN_NAME.MODE]: {
+    name: 'Mode',
+    rpc: 'https://mainnet.mode.network'
+  },
+  [BLOCKCHAIN_NAME.ZK_FAIR]: {
+    name: 'zkFair',
+    rpc: 'https://rpc.zkfair.io'
+  },
+  [BLOCKCHAIN_NAME.ZK_LINK]: {
+    name: 'zkLink',
+    rpc: 'https://rpc.zklink.io'
+  },
+  [BLOCKCHAIN_NAME.XLAYER]: {
+    name: 'X Layer',
+    rpc: 'https://rpc.xlayer.tech'
+  },
+  [BLOCKCHAIN_NAME.TAIKO]: {
+    name: 'Taiko',
+    rpc: 'https://rpc.mainnet.taiko.xyz'
+  },
+  [BLOCKCHAIN_NAME.SEI]: {
+    name: 'Sei',
+    rpc: 'https://evm-rpc.sei-apis.com'
+  },
+  [BLOCKCHAIN_NAME.CORE]: {
+    name: 'CORE',
+    rpc: 'https://rpc.coredao.org'
+  },
+  [BLOCKCHAIN_NAME.BAHAMUT]: {
+    name: 'Bahamut',
+    rpc: 'https://rpc1.bahamut.io'
   }
 };

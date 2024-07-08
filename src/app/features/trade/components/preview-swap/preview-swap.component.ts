@@ -39,6 +39,7 @@ import { TransactionState } from '@features/trade/models/transaction-state';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
+import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 
 @Component({
   selector: 'app-preview-swap',
@@ -149,6 +150,13 @@ export class PreviewSwapComponent implements OnDestroy {
     }
   }
 
+  private isTradeWithPermit2Approve(tradeState: SelectedTrade): boolean {
+    return (
+      tradeState.trade instanceof EvmOnChainTrade &&
+      tradeState.trade.permit2ApproveConfig.usePermit2Approve
+    );
+  }
+
   private connectWallet(): void {
     this.modalService
       .openWalletModal(this.injector)
@@ -163,15 +171,19 @@ export class PreviewSwapComponent implements OnDestroy {
       .subscribe();
   }
 
-  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
-    if (trade?.tradeType) {
-      const provider = TRADES_PROVIDERS[trade.tradeType];
+  public getAverageTime(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
+    if (tradeState?.tradeType) {
+      if (isArbitrumBridgeRbcTrade(tradeState.trade)) {
+        return '7 D';
+      }
+      const provider = TRADES_PROVIDERS[tradeState.tradeType];
       const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
+      const currentProviderTime =
+        providerAverageTime?.[tradeState.tradeType as CrossChainTradeType];
 
       return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
     } else {
-      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
+      return tradeState instanceof CrossChainTrade ? '30 M' : '3 M';
     }
   }
 
@@ -237,6 +249,7 @@ export class PreviewSwapComponent implements OnDestroy {
     };
     if (el.step === transactionStep.approveReady) {
       state.disabled = false;
+      state.label = this.isTradeWithPermit2Approve(tradeState) ? 'Approve and Permit' : state.label;
       state.action = this.approve.bind(this);
     } else if (el.step === transactionStep.swapReady) {
       state.disabled = false;
@@ -266,7 +279,11 @@ export class PreviewSwapComponent implements OnDestroy {
 
     if (
       el.data?.wrongNetwork &&
-      el.step !== transactionStep.success &&
+      (el.step === transactionStep.approvePending ||
+        el.step === transactionStep.approveReady ||
+        el.step === transactionStep.swapRequest ||
+        el.step === transactionStep.swapReady ||
+        el.step === transactionStep.idle) &&
       BlockchainsInfo.isEvmBlockchainName(fromBlockchain) &&
       fromBlockchainType === this.walletConnector.chainType
     ) {

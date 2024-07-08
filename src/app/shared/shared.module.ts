@@ -10,6 +10,7 @@ import {
   TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
+  TuiProgressModule,
   TuiTabsModule,
   TuiTagModule,
   TuiToggleModule
@@ -69,6 +70,9 @@ import { DropdownOptionsTableItemComponent } from './components/dropdown-options
 import { SymbiosisWarningTxModalComponent } from './components/symbiosis-warning-tx-modal/symbiosis-warning-tx-modal.component';
 import { PriceImpactFormatPipe } from '@shared/pipes/price-impact-format.pipe';
 import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
+import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
+import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
+import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 
 @NgModule({
   declarations: [
@@ -113,7 +117,10 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     DropdownOptionsTokenComponent,
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
-    SlippageFormatPipe
+    SlippageFormatPipe,
+    SkipDefaultDirective,
+    MevBotModalComponent,
+    ProgressBarComponent
   ],
   imports: [
     CommonModule,
@@ -133,6 +140,7 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     TuiDropdownModule,
     TuiHostedDropdownModule,
     TuiToggleModule,
+    TuiProgressModule,
     TuiSvgModule,
     TuiHintModule,
     TuiToggleModule,
@@ -185,7 +193,9 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
     DropdownOptionsTokenComponent,
     DropdownOptionsTableItemComponent,
     PriceImpactFormatPipe,
-    SlippageFormatPipe
+    SlippageFormatPipe,
+    SkipDefaultDirective,
+    ProgressBarComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

@@ -124,10 +124,19 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.RANGO]: 'rango',
   [ON_CHAIN_TRADE_TYPE.ODOS]: 'odos',
   [ON_CHAIN_TRADE_TYPE.DLN]: 'dln',
+  [ON_CHAIN_TRADE_TYPE.OKU_SWAP]: 'okuswap',
   [ON_CHAIN_TRADE_TYPE.ASCENT]: 'ascent',
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: 'camelot',
   [ON_CHAIN_TRADE_TYPE.MERLIN_SWAP]: 'merlinswap',
-  [ON_CHAIN_TRADE_TYPE.PITEAS]: 'piteas'
+  [ON_CHAIN_TRADE_TYPE.PITEAS]: 'piteas',
+  [ON_CHAIN_TRADE_TYPE.KIM]: 'kim',
+  [ON_CHAIN_TRADE_TYPE.FENIX_V2]: 'fenix_v2',
+  [ON_CHAIN_TRADE_TYPE.FENIX_V3]: 'fenix_v3',
+  [ON_CHAIN_TRADE_TYPE.DRAGON_SWAP]: 'dragonswap',
+  [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: 'eddy_finance',
+  [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: 'native_router',
+  [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: 'zeta_swap',
+  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

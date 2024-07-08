@@ -1,0 +1,57 @@
+<div
+  *ngLet="{
+    bestTradeState: bestTrade$ | async,
+    percentsDone: percentsDone$ | async,
+    calculationText: calculationText$ | async
+  } as state"
+  class="gas-form-trade"
+  [class.gas-form-trade__calculation]="isCalculation"
+>
+  <app-progress-bar
+    *ngIf="isCalculation"
+    [value]="state.percentsDone"
+    [max]="max"
+  ></app-progress-bar>
+
+  <ng-container *ngIf="!isCalculation; else calculatingText">
+    <ng-container *ngIf="state.bestTradeState; else noRoutesAvailable">
+      <ng-container
+        *ngLet="{
+          feeInfo: getFeeInfo(state.bestTradeState),
+          gasInfo: getGasData(state.bestTradeState),
+          providerInfo: getProviderInfo(state.bestTradeState),
+          routePath: state.bestTradeState.routes || []
+        } as tradeData"
+      >
+        <div
+          class="gas-form-trade__path"
+          [tuiHint]="pathHint"
+          tuiHintAppearance="onDark"
+          tuiHintDirection="bottom-right"
+        >
+          <img [src]="tradeData.providerInfo?.image" width="22" height="22" alt="Provider Logo" />
+          <ng-template #pathHint>
+            <app-route-element [routes]="tradeData.routePath"></app-route-element>
+          </ng-template>
+        </div>
+
+        <app-swap-data-element
+          [gasInfo]="tradeData.gasInfo"
+          [feeInfoChange]="tradeData.feeInfo"
+          [time]="(tradeData.providerInfo?.averageTime || 3) + ' M'"
+          [hintAppearance]="'onDark'"
+          [hintDirection]="'bottom-right'"
+        ></app-swap-data-element>
+      </ng-container>
+    </ng-container>
+    <ng-template #noRoutesAvailable>
+      <span class="gas-form-trade__calculation gas-form-trade__text">No routes available!</span>
+    </ng-template>
+  </ng-container>
+
+  <ng-template #calculatingText>
+    <span class="gas-form-trade__calculation gas-form-trade__text">{{
+      state.calculationText
+    }}</span>
+  </ng-template>
+</div>

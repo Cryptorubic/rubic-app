@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
-const basePath = 'assets/images/icons/coins/';
+export const basePath = 'assets/images/icons/coins/';
 
 export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.AION]: `${basePath}aion.svg`,
@@ -102,6 +102,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.QTUM]: `${basePath}qtum.svg`,
   [BLOCKCHAIN_NAME.RAVENCOIN]: `${basePath}ravencoin.svg`,
   [BLOCKCHAIN_NAME.RIPPLE]: `${basePath}ripple.svg`,
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: `${basePath}rootstock.svg`,
   [BLOCKCHAIN_NAME.SECRET]: `${basePath}secret.svg`,
   [BLOCKCHAIN_NAME.SIA]: `${basePath}sia.svg`,
   [BLOCKCHAIN_NAME.SOLANA]: `${basePath}solana.svg`,
@@ -132,10 +133,17 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ZETACHAIN]: `${basePath}zetachain.svg`,
   [BLOCKCHAIN_NAME.ZILLIQA]: `${basePath}zilliqa.svg`,
   [BLOCKCHAIN_NAME.ZK_SYNC]: `${basePath}zksync.svg`,
-  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
-  [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}sepolia.svg`,
+  [BLOCKCHAIN_NAME.SEPOLIA]: `${basePath}default-chain.svg`,
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: `${basePath}manta-pacific.svg`,
   [BLOCKCHAIN_NAME.SCROLL]: `${basePath}scroll.svg`,
   [BLOCKCHAIN_NAME.HORIZEN_EON]: `${basePath}horizen.svg`,
-  [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`
+  [BLOCKCHAIN_NAME.MERLIN]: `${basePath}merlin.svg`,
+  [BLOCKCHAIN_NAME.MODE]: `${basePath}mode.svg`,
+  [BLOCKCHAIN_NAME.ZK_FAIR]: `${basePath}zkfair.svg`,
+  [BLOCKCHAIN_NAME.ZK_LINK]: `${basePath}zklink.svg`,
+  [BLOCKCHAIN_NAME.XLAYER]: `${basePath}xlayer.svg`,
+  [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
+  [BLOCKCHAIN_NAME.SEI]: `${basePath}sei.svg`,
+  [BLOCKCHAIN_NAME.CORE]: `${basePath}core.svg`,
+  [BLOCKCHAIN_NAME.BAHAMUT]: `${basePath}bahamut.svg`
 };

@@ -25,45 +25,20 @@
     ],
     "skipLibCheck": true,
     "paths": {
-      "stream": [
-        "./node_modules/stream-browserify"
-      ],
-      "assert": [
-        "./node_modules/assert"
-      ],
-      "https": [
-        "./node_modules/https-browserify"
-      ],
-      "os": [
-        "./node_modules/os-browserify"
-      ],
-      "http": [
-        "./node_modules/stream-http"
-      ],
-      "crypto": [
-        "./node_modules/crypto-browserify"
-      ],
-      "querystring": [
-        "./node_modules/querystring-es3"
-      ],
-      "url": [
-        "./node_modules/url"
-      ],
-      "@app/*": [
-        "./src/app/*"
-      ],
-      "@core/*": [
-        "./src/app/core/*"
-      ],
-      "@features/*": [
-        "./src/app/features/*"
-      ],
-      "@shared/*": [
-        "./src/app/shared/*"
-      ],
-      "zlib": [
-        "node_modules/browserify-zlib"
-      ]
+      "stream": ["./node_modules/stream-browserify"],
+      "assert": ["./node_modules/assert"],
+      "https": ["./node_modules/https-browserify"],
+      "os": ["./node_modules/os-browserify"],
+      "http": ["./node_modules/stream-http"],
+      "crypto": ["./node_modules/crypto-browserify"],
+      "querystring": ["./node_modules/querystring-es3"],
+      "url": ["./node_modules/url"],
+      "@app/*": ["./src/app/*"],
+      "@core/*": ["./src/app/core/*"],
+      "@features/*": ["./src/app/features/*"],
+      "@shared/*": ["./src/app/shared/*"],
+      "zlib": ["node_modules/browserify-zlib"],
+
     },
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true

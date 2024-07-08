@@ -40,6 +40,7 @@ interface AllQueryParams {
   onChainIntegratorAddress: string;
   referral: string;
   swapId: string;
+  useSafe: string;
 }
 
 export type QueryParams = {

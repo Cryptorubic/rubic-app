@@ -4,8 +4,8 @@
       <img
         class="selector__second-image"
         [src]="visibleAsset.secondImage"
-        width="40"
-        height="40"
+        width="35"
+        height="35"
         [alt]="visibleAsset.secondLabel"
       />
     </div>
@@ -28,10 +28,23 @@
   </ng-container>
 
   <ng-template #emptySelector>
-    <div class="selector__empty">
+    <div
+      class="selector__empty"
+      [class.selector__empty-gas-form]="mainFormType === 'gasForm'"
+      [class.selector__empty-gas-form__disabled]="isDisabled"
+    >
       <div class="selector__empty-container">
-        Select Token
-        <img src="assets/images/icons/arrow/arrow-down-white.svg" alt="Select token" />
+        {{ emptySelectorText }}
+        <img
+          *ngIf="isDisabled"
+          src="assets/images/icons/arrow/arrow-down-grey.svg"
+          alt="Select token"
+        />
+        <img
+          *ngIf="!isDisabled"
+          src="assets/images/icons/arrow/arrow-down-white.svg"
+          alt="Select token"
+        />
       </div>
     </div>
   </ng-template>

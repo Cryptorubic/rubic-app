@@ -24,6 +24,19 @@
       <ng-container *ngIf="idPrefix !== 'crypto_tap_'">
         <ng-container *ngIf="ccrProviderType !== CROSS_CHAIN_PROVIDER.SYMBIOSIS">
           <ng-container>
+            <div class="modal__point-link" *ngIf="isSwapAndEarnSwap">
+              <span>Points can be seen </span>
+              <a
+                href="https://app.rubic.exchange/airdrop"
+                target="_blank"
+                rel="noreferrer"
+                *ngIf="hideUnusedUI"
+                >here</a
+              >
+              <span *ngIf="!hideUnusedUI" class="highlight_green" (click)="navigateToSwapAndEarn()"
+                >here</span
+              >
+            </div>
             <ng-container class="modal__footer-text" *ngIf="type === 'cross-chain-routing'">
               <div>
                 {{

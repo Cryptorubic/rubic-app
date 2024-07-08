@@ -5,9 +5,8 @@ import { debounceTime, filter, map, share, startWith, switchMap } from 'rxjs/ope
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { Web3Pure } from 'rubic-sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from 'rubic-sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
-import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
@@ -108,7 +107,7 @@ export class OnChainTableService extends TableService<
           amount: Web3Pure.fromWei(backendData.to_amount, backendData.to_token.decimals)
         };
 
-        const blockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.network];
+        const blockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.network as BackendBlockchain];
         const blockchain = {
           name: blockchainName,
           label: blockchainLabel[blockchainName],

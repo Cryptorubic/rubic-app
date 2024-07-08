@@ -22,5 +22,7 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.BLAST]: true,
   [BLOCKCHAIN_NAME.KROMA]: true,
   [BLOCKCHAIN_NAME.MERLIN]: true,
-  [BLOCKCHAIN_NAME.BERACHAIN]: true
+  [BLOCKCHAIN_NAME.MODE]: true,
+  [BLOCKCHAIN_NAME.ZK_LINK]: true,
+  [BLOCKCHAIN_NAME.TAIKO]: true
 };

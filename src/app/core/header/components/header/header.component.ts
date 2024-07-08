@@ -1,15 +1,15 @@
 import {
-  Component,
-  Inject,
-  PLATFORM_ID,
-  ViewChild,
-  HostListener,
-  TemplateRef,
+  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  AfterViewInit,
+  Component,
+  HostListener,
+  Inject,
+  NgZone,
+  PLATFORM_ID,
   Self,
-  NgZone
+  TemplateRef,
+  ViewChild
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';

@@ -1,7 +1,15 @@
 export enum ROUTE_PATH {
   NONE = '',
   FAUCETS = 'faucets',
+  LIMIT_ORDER = 'limit-order',
   HISTORY = 'history',
+  BYT_CRYPTO = 'buy-crypto',
+  ABOUT = 'about',
+  REVOKE_APPROVAL = 'revoke-approval',
+  CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
+  AIRDROP = 'airdrop',
+  RETRODROP = 'retrodrop',
+  STAKING = 'staking',
   REST = '**'
 }
 
@@ -14,5 +22,5 @@ export enum EXTERNAL_LINKS {
   SDK = 'https://docs.rubic.finance/rubic-sdk/sdk-integrations?_ga=2.66724845.2127003169.1647858642-998064740.1646059970',
   AIRDROP = 'https://claim.rubic.exchange',
   GO_PLUS_LABS = 'https://gopluslabs.io/token-security',
-  MAINNET_APP = 'https://app.rubic.exchange'
+  TESTNET_APP = 'https://testnet.rubic.exchange/'
 }

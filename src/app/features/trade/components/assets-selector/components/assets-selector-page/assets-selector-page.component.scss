@@ -9,6 +9,13 @@
       margin-top: 10px;
     }
   }
+
+  &__header {
+    display: flex;
+
+    font-weight: bold;
+    font-size: 15px;
+  }
 }
 
 app-search-bar {

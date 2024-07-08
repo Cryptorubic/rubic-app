@@ -1,12 +1,32 @@
 @use 'src/scss/core' as *;
 
+:host {
+  span {
+    display: block;
+    width: 100%;
+
+    text-align: center;
+  }
+}
 
 .buttons-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   margin-top: 15px;
 
   app-rubic-button {
     width: 150px;
+  }
+}
+
+@include b($mobile-md) {
+  :host {
+    span {
+      padding: 0 25px;
+    }
+  }
+
+  .buttons-container {
+    padding: 0 25px;
   }
 }

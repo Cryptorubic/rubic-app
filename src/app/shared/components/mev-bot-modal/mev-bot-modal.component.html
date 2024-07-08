@@ -1,0 +1,29 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <div class="modal__image-wrapper">
+        <img class="modal__success-image" src="assets/images/mev-bot-modal.png" alt="" />
+        <img
+          class="modal__success-image-hint"
+          src="assets/images/icons/hint-with-stick.svg"
+          alt=""
+        />
+      </div>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text">
+        <p>
+          When you enable protection against MEV bots, MetaMask may show warnings. <br />
+          Don't worry, this is standard. Review the details and confirm adding the new network, it
+          incorporates a secure MEV Bot Protection RPC
+        </p>
+      </div>
+
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="primary" type="button" size="m" (click)="onConfirm()">
+          Ok
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

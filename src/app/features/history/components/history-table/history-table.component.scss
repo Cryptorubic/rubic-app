@@ -6,19 +6,24 @@
     height: 16px;
 
     &__second-container {
-      width: 24px;
-      height: 100%;
+      display: flex;
+      align-items: center;
+      width: 26px;
+      height: 17px;
+      padding-left: 2px;
       overflow: hidden;
 
       border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
 
       img {
-        height: 100%;
+        width: 15px;
+        height: 15px;
       }
     }
 
     &__main-image {
-      width: 16px;
+      width: 17px;
+      height: 17px;
       margin-left: -8px;
 
       background: var(--primary-background);
@@ -76,6 +81,8 @@
     &__image {
       width: 16px;
       height: 16px;
+
+      border-radius: 50%;
     }
   }
 
@@ -118,6 +125,9 @@
 
   .statusFrom {
     &-dropdown {
+      display: flex;
+      align-items: center;
+
       app-dropdown-options-table-item {
         margin-left: 1px;
       }

@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .window-container {
   padding: var(--tui-padding-m);
 
@@ -28,5 +30,10 @@ header {
     &:empty {
       display: none;
     }
+  }
+}
+@include b($mobile-md) {
+  .window-container {
+    padding-top: 0;
   }
 }

@@ -135,7 +135,16 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HOLESKY]: 'holesky',
   [BLOCKCHAIN_NAME.KROMA]: 'kroma',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: 'horizen-eon',
-  [BLOCKCHAIN_NAME.MERLIN]: 'merlin'
+  [BLOCKCHAIN_NAME.MERLIN]: 'merlin',
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: 'rootstock',
+  [BLOCKCHAIN_NAME.MODE]: 'mode',
+  [BLOCKCHAIN_NAME.ZK_FAIR]: 'zk-fair',
+  [BLOCKCHAIN_NAME.ZK_LINK]: 'zk-link',
+  [BLOCKCHAIN_NAME.SEI]: 'sei',
+  [BLOCKCHAIN_NAME.BAHAMUT]: 'bahamut',
+  [BLOCKCHAIN_NAME.TAIKO]: 'taiko',
+  [BLOCKCHAIN_NAME.CORE]: 'core',
+  [BLOCKCHAIN_NAME.XLAYER]: 'xlayer'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

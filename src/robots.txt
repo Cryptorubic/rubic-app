@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://testnet.rubic.exchange
+Host: https://app.rubic.exchange
 
 # Sitemaps
-Sitemap: https://testnet.rubic.exchange/sitemap.xml
+Sitemap: https://app.rubic.exchange/sitemap.xml

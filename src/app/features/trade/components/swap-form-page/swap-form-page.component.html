@@ -1,48 +1,39 @@
-<app-window-container *ngLet="displayTargetAddressInput$ | async as displayReceiver">
-  <ng-container header>
-    <div class="form-links">
-      <a
-        class="swap-button"
-        [ngClass]="{
-          active: !isFaucetsPage
-        }"
-        (click)="navigateToSwaps()"
-      >
-        Swaps
-      </a>
-      <a class="faucets-button" [ngClass]="{ active: isFaucetsPage }" routerLink="/faucets">
-        Faucet
-      </a>
-    </div>
-    <div class="actions">
-      <app-refresh-button
-        [isRotating$]="isRefreshRotating$"
-        (onRefresh)="refreshTrades()"
-        class="swap-form__refresh"
-      >
-      </app-refresh-button>
-      <app-settings-container class="swap-form__settings"></app-settings-container>
-    </div>
-  </ng-container>
-  <div class="form__container" *ngLet="isMobile$ | async as isMobile">
+<app-window-container
+  *ngLet="{
+    displayReceiver: displayTargetAddressInput$ | async,
+    selectedForm: selectedForm$ | async,
+    isMobile: isMobile$ | async,
+    showGasTargetChainHint: showGasTargetChainHint$ | async,
+    showGasSourceChainHint: showGasSourceChainHint$ | async,
+    fromAsset: fromAsset$ | async,
+    fromAmount: fromAmount$ | async,
+    toAsset: toAsset$ | async,
+    toAmount: toAmount$ | async,
+    calculationStatus: calculationStatus$ | async,
+    isDisabledFromSelector: isDisabledFromSelector$ | async
+  } as state"
+>
+  <app-form-header></app-form-header>
+  <div class="form__container">
     <app-input-output-container
-      [round]="!isMobile ? 'top' : 'none'"
-      [marginTop]="isMobile"
-      *ngLet="fromAsset$ | async as fromAsset"
+      [round]="!state.isMobile ? 'top' : 'none'"
+      [marginTop]="state.isMobile"
     >
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openTokensSelect('from', isMobile)"
-        [asset]="fromAsset"
+        (handleAssetSelection)="openSelector('from', state.isMobile)"
+        [asset]="state.fromAsset"
+        [mainFormType]="state.selectedForm"
+        [isDisabled]="state.isDisabledFromSelector"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
           formType="from"
-          [selectedToken]="fromAsset"
+          [selectedToken]="state.fromAsset"
           inputMode="input"
           (amountUpdated)="updateInputValue($event)"
-          [amountValue]="fromAmount$ | async"
+          [amountValue]="state.fromAmount"
         ></app-amount-transput>
         <app-user-balance-container
           (maxButtonClickEvent)="handleMaxButton()"
@@ -50,19 +41,27 @@
       </div>
     </app-input-output-container>
     <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-    <app-input-output-container [round]="displayReceiver ? 'none' : 'bottom'">
+    <app-input-output-container
+      [round]="
+        state.displayReceiver ||
+        (state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar)
+          ? 'none'
+          : 'bottom'
+      "
+    >
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openTokensSelect('to', isMobile)"
-        [asset]="toAsset$ | async"
+        (handleAssetSelection)="openSelector('to', state.isMobile)"
+        [asset]="state.toAsset"
+        [mainFormType]="state.selectedForm"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
           formType="to"
-          [selectedToken]="toAsset$ | async"
+          [selectedToken]="state.toAsset"
           inputMode="output"
-          [amountValue]="toAmount$ | async"
+          [amountValue]="state.toAmount"
         ></app-amount-transput>
         <app-tokens-rate></app-tokens-rate>
       </div>
@@ -70,14 +69,35 @@
   </div>
 
   <app-target-network-address
-    *ngIf="displayReceiver"
+    *ngIf="state.displayReceiver && state.selectedForm === 'swapForm'"
     @receiverAnimation
   ></app-target-network-address>
+
+  <app-gas-form-trade-calculation
+    *ngIf="state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar"
+    [isCalculation]="state.calculationStatus.activeCalculation"
+  ></app-gas-form-trade-calculation>
 
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
-      <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+      <app-receiver-address-button
+        *ngIf="state.selectedForm === 'swapForm'"
+        (handleClick)="toggleReceiver()"
+      ></app-receiver-address-button>
     </div>
   </ng-container>
+
+  <app-gas-form-hint
+    *ngIf="state.showGasSourceChainHint"
+    class="source-chain"
+    text="Select a source chain and token you want to exchange on gas!"
+  >
+  </app-gas-form-hint>
+  <app-gas-form-hint
+    *ngIf="state.showGasTargetChainHint"
+    class="target-chain"
+    text="Select a target chain, where you want to get the gas token!"
+  >
+  </app-gas-form-hint>
 </app-window-container>

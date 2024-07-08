@@ -12,6 +12,7 @@ import { shouldCalculateGas } from '@app/shared/models/blockchain/should-calcula
 import { GasInfo } from './models/gas-info';
 import { MetaMaskGasResponse } from './models/metamask-gas-response';
 import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas-price-deviation';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -33,7 +34,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.BLAST,
   BLOCKCHAIN_NAME.KROMA,
   BLOCKCHAIN_NAME.MERLIN,
-  BLOCKCHAIN_NAME.BERACHAIN
+  BLOCKCHAIN_NAME.MODE,
+  BLOCKCHAIN_NAME.ZK_LINK,
+  BLOCKCHAIN_NAME.TAIKO
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -72,7 +75,9 @@ export class GasService {
     [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
     [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
-    [BLOCKCHAIN_NAME.BERACHAIN]: this.fetchBerachainGas.bind(this)
+    [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
+    [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
+    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -81,7 +86,10 @@ export class GasService {
     return supportedBlockchains.some(supBlockchain => supBlockchain === blockchain);
   }
 
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly walletConnectorService: WalletConnectorService
+  ) {}
 
   /**
    * Gas price in Eth units for selected blockchain.
@@ -108,6 +116,16 @@ export class GasService {
    * @param blockchain Blockchain to get gas info.
    */
   public async getGasInfo(blockchain: BlockchainName): Promise<GasInfo> {
+    const isSafeSdk = this.walletConnectorService.checkIfSafeEnv();
+    if (isSafeSdk) {
+      return {
+        shouldCalculateGasPrice: false,
+        gasPriceOptions: {
+          maxFeePerGas: undefined,
+          maxPriorityFeePerGas: undefined
+        }
+      };
+    }
     const shouldCalculateGasPrice = shouldCalculateGas[blockchain];
 
     if (!shouldCalculateGasPrice) {
@@ -313,7 +331,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchKromaGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BLAST);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.KROMA);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       map(gasInfo => ({
@@ -467,18 +485,50 @@ export class GasService {
     });
   }
 
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchModeGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MODE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
   /**
-   * Gets Berachain gas from gas station api.
+   * Gets ZkLink gas.
    * @return Observable<number> Average gas price in Gwei.
    */
   @Cacheable({
     maxAge: GasService.requestInterval
   })
-  private fetchBerachainGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BERACHAIN);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+  private fetchZkLinkGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZK_LINK);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Taiko gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchTaikoGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.TAIKO);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
     );
   }
 
