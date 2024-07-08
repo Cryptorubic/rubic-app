@@ -78,7 +78,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [],
   [BLOCKCHAIN_NAME.XLAYER]: [],
   [BLOCKCHAIN_NAME.SEI]: [],
-  [BLOCKCHAIN_NAME.CORE]: []
+  [BLOCKCHAIN_NAME.CORE]: [],
+  [BLOCKCHAIN_NAME.BAHAMUT]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
