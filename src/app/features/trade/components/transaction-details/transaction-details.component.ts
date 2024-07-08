@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith } from 'rxjs/operators';
 import { OnChainTrade, TradeInfo } from 'rubic-sdk';
 import { Observable } from 'rxjs';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
@@ -23,14 +23,7 @@ export class TransactionDetailsComponent {
   public readonly trade$: Observable<CrossChainTrade | OnChainTrade> =
     this.swapsStateService.currentTrade$.pipe(first());
 
-  public readonly details$: Observable<TradeInfo> = this.trade$.pipe(
-    tap(el => {
-      if (el?.type === 'eddy_bridge') {
-        console.log('DETAILS ===> ', { el, getTradeInfo: el.getTradeInfo() });
-      }
-    }),
-    map(el => el.getTradeInfo())
-  );
+  public readonly details$: Observable<TradeInfo> = this.trade$.pipe(map(el => el.getTradeInfo()));
 
   public readonly priceImpactCssClass$: Observable<string> = this.details$.pipe(
     map(trade => this.getPriceImpactCssClass(trade.priceImpact)),
