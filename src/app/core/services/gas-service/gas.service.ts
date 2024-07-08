@@ -36,8 +36,7 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_LINK,
-  BLOCKCHAIN_NAME.TAIKO,
-  BLOCKCHAIN_NAME.ZETACHAIN
+  BLOCKCHAIN_NAME.TAIKO
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -78,8 +77,7 @@ export class GasService {
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
-    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this),
-    [BLOCKCHAIN_NAME.ZETACHAIN]: this.fetchZetachainGas.bind(this)
+    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -339,21 +337,6 @@ export class GasService {
       map(gasInfo => ({
         ...gasInfo,
         maxFeePerGas: new BigNumber(2.5).multipliedBy(gasInfo.maxFeePerGas).toFixed()
-      })),
-      catchError(() => of(null))
-    );
-  }
-
-  @Cacheable({
-    maxAge: GasService.requestInterval
-  })
-  private fetchZetachainGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ZETACHAIN);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      map(gasInfo => ({
-        ...gasInfo,
-        maxFeePerGas: new BigNumber(2).multipliedBy(gasInfo.maxFeePerGas).toFixed()
       })),
       catchError(() => of(null))
     );
