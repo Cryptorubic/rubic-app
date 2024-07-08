@@ -29,7 +29,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<ProviderInterface>
     this.wallet = this.getWallet(chainId);
   }
 
-  public getWallet(chainId: number): ProviderInterface {
+  private getWallet(chainId: number): ProviderInterface {
     if (!chainId) {
       console.error('Desktop walletLink works only with predefined chainId');
       throw new UndefinedError();

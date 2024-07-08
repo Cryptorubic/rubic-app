@@ -20,8 +20,10 @@ export class SearchQueryService {
   }
 
   public set query(value: string) {
-    this._query$.next(value);
-    this.gasFormService.updateSearchQuery(value);
+    this._query$.next(value.trim());
+    if (this.assetsSelectorService.selectorListType !== 'tokens') {
+      this.gasFormService.updateSearchQuery(value.trim());
+    }
   }
 
   constructor(

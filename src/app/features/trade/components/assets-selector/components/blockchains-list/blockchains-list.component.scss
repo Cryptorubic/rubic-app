@@ -31,6 +31,13 @@
     max-width: 184px;
   }
 
+  &__element-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+  }
+
   &__element-container {
     display: flex;
     gap: 10px;
@@ -71,7 +78,7 @@ app-no-result {
     padding: var(--tui-padding-l);
 
     background: none;
-    border-top: 1px solid var(--tui-base-04);
+    border-top: 3px solid var(--io-background);
     border-radius: 0;
 
     &__image-container {
@@ -81,9 +88,21 @@ app-no-result {
 
     &__element-container {
       align-items: center;
+      justify-content: space-between;
+    }
+
+    &__badge-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     &__element {
+      flex: unset;
+      width: 100%;
+      max-width: unset;
+      height: 56px;
+
       background: var(--tui-base-01);
 
       ::ng-deep .t-wrapper {
