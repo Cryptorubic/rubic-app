@@ -1,14 +1,14 @@
 import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { CommonWalletAdapter } from '../common-wallet-adapter';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
-import { THEME, TonConnectUI, WalletsModalState } from '@tonconnect/ui';
+import { THEME, TonConnectUI } from '@tonconnect/ui';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { ENVIRONMENT } from 'src/environments/environment';
 
-export class TonConnectAdapter extends CommonWalletAdapter {
+export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   public chainType = CHAIN_TYPE.TON;
 
   public walletName = WALLET_NAME.TON_CONNECT;
@@ -46,6 +46,7 @@ export class TonConnectAdapter extends CommonWalletAdapter {
       this.selectedAddress = this.tonConnect.account?.address;
 
       this.isEnabled = true;
+      this.wallet = this.tonConnect;
 
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
@@ -56,15 +57,11 @@ export class TonConnectAdapter extends CommonWalletAdapter {
   }
 
   private listenEvents(): void {
-    const unsubscribeModal = this.tonConnect.onModalStateChange((state: WalletsModalState) => {
-      console.log('listenModalChanges =====> ', state);
-    });
     const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndwalletInfo => {
       this.onAddressChanges$.next(walletAndwalletInfo.account.address);
-      console.log('listenStatusChange =====> ', walletAndwalletInfo.account.address);
     });
 
-    this.listeners.push(unsubscribeModal, unsubscribeStatus);
+    this.listeners.push(unsubscribeStatus);
   }
 
   public async deactivate(): Promise<void> {
