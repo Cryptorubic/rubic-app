@@ -4,7 +4,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -181,7 +181,7 @@ export class SettingsService {
     const tradeSlippage = trade.getTradeInfo().slippage;
     const settingsChecks = {
       highSlippage: slippage >= 10 ? slippage : false,
-      highPriceImpact: priceImpact >= 30 ? priceImpact : false
+      highPriceImpact: this.isHighPriceImpact(trade) ? priceImpact : false
     };
 
     if ((settingsChecks.highSlippage || settingsChecks.highPriceImpact) && tradeSlippage > 0) {
@@ -198,6 +198,17 @@ export class SettingsService {
     }
 
     return true;
+  }
+
+  private isHighPriceImpact(trade: CrossChainTrade<unknown> | OnChainTrade): boolean {
+    const priceImpact = trade.getTradeInfo().priceImpact;
+    if (
+      trade.from.blockchain === BLOCKCHAIN_NAME.ZETACHAIN ||
+      trade.to.blockchain === BLOCKCHAIN_NAME.ZETACHAIN
+    ) {
+      return priceImpact >= 15;
+    }
+    return priceImpact >= 30;
   }
 
   public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {
