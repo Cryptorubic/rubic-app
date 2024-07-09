@@ -198,5 +198,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.BAHAMUT]: {
     name: 'Bahamut',
     rpc: 'https://rpc1.bahamut.io'
+  },
+  [BLOCKCHAIN_NAME.BERACHAIN]: {
+    name: 'Berachain Bartio',
+    rpc: 'https://bartio.rpc.b-harvest.io'
   }
 };
