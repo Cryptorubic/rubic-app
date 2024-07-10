@@ -210,7 +210,44 @@ export class SwapsControllerService {
             if (wrappedTrade.tradeType === 'eddy_bridge') {
               console.log('WRAPPED_TRADE_2 ===> ', wrappedTrade);
             }
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            // const needApprove$ =
+            //   from(wrappedTrade?.trade?.needApprove?.() || of(true)).pipe(
+            //     delay(5_000),
+            //     timeout({
+            //       each: 4_000,
+            //       with: () => {
+            //         console.log('TIMEOUT_ERROR');
+            //         return throwError(() => new Error('EDDY_TIMEOUT_ERROR'));
+            //       }
+            //     }),
+            //     retry(2)
+            //   ) || of(false);
+            // const needApprove$ = of(true).pipe(
+            //   switchMap(() => wrappedTrade?.trade?.needApprove()),
+            //   catchError(() => of(true))
+            // );
+
+            // const needApprove$: Promise<boolean> = new Promise(res => {
+            //   setTimeout(() => {
+            //     wrappedTrade?.trade
+            //       ?.needApprove()
+            //       .then(needApprove => res(needApprove))
+            //       .catch(() => res(false));
+            //   }, 3_000);
+            // });
+            // let need: boolean;
+            // const needApproveSubject$ = new BehaviorSubject<boolean>(false);
+            // const needApprove$ = needApproveSubject$.asObservable();
+            // if (!wrappedTrade?.trade) {
+            //   needApproveSubject$.complete();
+            // } else {
+            //   wrappedTrade?.trade?.needApprove?.().then(needAprove => {
+            //     console.log('SET_TIMEOUNT_NEED_APPROVE', needAprove);
+            //     needApproveSubject$.next(needAprove);
+            //     needApproveSubject$.complete();
+            //   });
+            // }
+
             if (wrappedTrade.tradeType === 'eddy_bridge') {
               console.log('WRAPPED_TRADE_3 ===> ', wrappedTrade);
             }
@@ -221,15 +258,27 @@ export class SwapsControllerService {
             if (wrappedTrade.tradeType === 'eddy_bridge') {
               console.log('WRAPPED_TRADE_4 ===> ', wrappedTrade);
             }
+
+            let needApprove$: boolean;
+            (async function (): Promise<void> {
+              needApprove$ = await wrappedTrade?.trade?.needApprove();
+              await new Promise(res => {
+                setTimeout(() => {
+                  res(1);
+                }, 300);
+              });
+            })();
+
             return forkJoin([
               of(wrappedTrade),
-              needApprove$,
+              of(needApprove$),
               of(container.type),
               isNotLinkedAccount$
             ])
               .pipe(
                 tap(([trade, needApprove, type, isNotLinkedAccount]) => {
                   try {
+                    console.log('NEED_AAPROVE ===>', needApprove);
                     if (wrappedTrade.tradeType === 'eddy_bridge') {
                       console.log('WRAPPED_TRADE_4.1 ===> ', trade);
                     }
