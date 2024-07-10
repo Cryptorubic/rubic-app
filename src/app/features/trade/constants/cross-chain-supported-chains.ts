@@ -8,6 +8,7 @@ import {
   cbridgeSupportedBlockchains,
   changenowProxySupportedBlockchains,
   deBridgeCrossChainSupportedBlockchains,
+  eddyBridgeSupportedChains,
   layerZeroBridgeSupportedBlockchains,
   lifiCrossChainSupportedBlockchains,
   mesonCrossChainSupportedChains,
