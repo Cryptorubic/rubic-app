@@ -13,7 +13,7 @@
 }
 
 header {
-  padding: var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+  padding: 0 var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
 
   &:has(> *:empty) {
     display: none;
@@ -33,6 +33,10 @@ header {
   }
 }
 @include b($mobile-md) {
+  header {
+    padding: var(--tui-padding-l) var(--tui-padding-m) var(--tui-padding-l);
+  }
+
   .window-container {
     padding-top: 0;
   }
