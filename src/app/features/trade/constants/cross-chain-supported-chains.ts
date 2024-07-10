@@ -21,8 +21,7 @@ import {
   stargateCrossChainSupportedBlockchains,
   symbiosisCrossChainSupportedBlockchains,
   taikoBridgeSupportedBlockchains,
-  xySupportedBlockchains,
-  eddyBridgeSupportedChains
+  xySupportedBlockchains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
