@@ -400,11 +400,13 @@ export class SwapsControllerService {
   private subscribeOnAddressChange(): void {
     this.authService.currentUser$
       .pipe(
+        distinctUntilChanged(),
         switchMap(() => this.swapFormService.isFilled$),
         filter(isFilled => isFilled)
       )
       .subscribe(() => {
-        this.startRecalculation(false);
+        console.log('subscribeOnAddressChange');
+        this.startRecalculation(true);
       });
   }
 
