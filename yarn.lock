@@ -17291,10 +17291,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.30.1-alpha-berachain-testnet.1:
-  version "5.30.1-alpha-berachain-testnet.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.1-alpha-berachain-testnet.1.tgz#56959ba185a69a29ffa3cf8b3535e346bf7ff893"
-  integrity sha512-ZpFHciLrz7EG1cNDUBdx1m2XZFT6IvReeGdtxvhaGxc4Qjy4EIH8XQdm30dE9K3e9yzdjAy01ptU48oONlSUJw==
+rubic-sdk@5.30.1-alpha-berachain-testnet.3:
+  version "5.30.1-alpha-berachain-testnet.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.1-alpha-berachain-testnet.3.tgz#7c1d12a3f946b2046893178589dcf21cf46cff21"
+  integrity sha512-cpBOYFTC2YFLbWdG8ZjrD1xgLzRLU5rEdvASzw5iDwV4r7MXzr0yrNpXy1ooqx/BvuTInzT/9corIG6lz73Yjw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
