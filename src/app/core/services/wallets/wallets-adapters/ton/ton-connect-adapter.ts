@@ -7,6 +7,7 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { fetchFriendlyAddress } from './utils/ton-utils';
 
 export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   public chainType = CHAIN_TYPE.TON;
@@ -58,7 +59,15 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
 
   private listenEvents(): void {
     const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndwalletInfo => {
-      this.onAddressChanges$.next(walletAndwalletInfo.account.address);
+      if (walletAndwalletInfo.account) {
+        (async function (): Promise<void> {
+          const rawAddress = walletAndwalletInfo.account.address;
+          const friendlyAddress = await fetchFriendlyAddress(rawAddress);
+          this.onAddressChanges$.next(friendlyAddress);
+        }).call(this);
+      } else {
+        this.onAddressChanges$.next(null);
+      }
     });
 
     this.listeners.push(unsubscribeStatus);
