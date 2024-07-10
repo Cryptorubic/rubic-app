@@ -50,6 +50,8 @@
     "rejectedNetworkSwitch": "Вы отклонили переключение сети сети.",
     "noMetamaskAccess": "Вы не предоставили нам доступ к вашей учетной записи MetaMask. Для того чтобы продолжить обмен, требуется ваша подпись. Пожалуйста, оставьте подпись, если вы хотите продолжить.",
     "noMetamaskInstalled": "Убедитесь, что у вас установлен и разблокирован плагин Metamask. Вы можете скачать его на",
+    "noCoinBaseInstalled": "Убедитесь, что у вас установлен и разблокирован плагин CoinBase. Вы можете скачать его на",
+    "noTokenPocketInstalled": "Убедитесь, что у вас установлен и разблокирован плагин TokenPocket. Вы можете скачать его на",
     "noBitKeepInstalled": "Убедитесь, что у вас установлен и разблокирован плагин BitKeep. Вы можете скачать его на",
     "removeCoinbaseExtension": "Браузерное расширение Coinbase конфликтует с расширением Метамаск. Пожалуйста, отключите или удалите расширение Coinbase чтобы продолжить, либо выберите другой кошелек для подключения.",
     "wrongNetwork": "Вы выбрали не ту сеть. Пожалуйста, выберите {{ networkToChoose }} в MetaMask.",
@@ -99,7 +101,8 @@
     "walletNotInstalled": "Кошелек не установлен.",
     "crossChainSwapUnavailable": "К сожалению, данный обмен с использованием подобранного провайдера в настоящее время недоступен. Rubic пересчитает маршрут вашего обмена.",
     "noSelectedToken": "Выберите Токен",
-    "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются."
+    "wrongSourceNetwork": "Свопы из сети {{ network }} в настоящее время не поддерживаются.",
+    "fallbackSwap": "Свoп завершился с ошибкой, вам возвращены транзитные токены."
   },
   "navigation": {
     "retrodrop": "Retrodrop",
@@ -678,7 +681,8 @@
       "incorrectAddressError": "Entered address is incorrect",
       "notParticipant": "You are not a member",
       "closed": "Closed",
-      "soon": "Soon"
+      "soon": "Soon",
+      "expired": "Expired"
     },
     "tokenDescription": "In case of a successful claim, new RBC tokens will be allocated to your wallet",
     "notification": {

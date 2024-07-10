@@ -125,12 +125,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
       fullHost: 'https://api.trongrid.io'
     }
   ],
-  /*
-  [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://sol.getblock.io/mainnet/?api_key=02530958-c8c4-4297-974c-66203e79800d'
-  ],
-  [BLOCKCHAIN_NAME.NEAR]: ['https://rpc.testnet.near.org']
-   */
   [BLOCKCHAIN_NAME.BITGERT]: [
     'https://go.getblock.io/6e4887d81fd043c0b2fc8aa1f338fa2d',
     'https://serverrpc.com',
@@ -206,8 +200,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/mantle',
     'https://mantle-mainnet.public.blastapi.io',
-    'https://rpc.mantle.xyz',
     'https://mantle.publicnode.com'
   ],
   [BLOCKCHAIN_NAME.FUJI]: [
@@ -233,17 +227,18 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://bsc-testnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: ['https://sepolia-rpc.scroll.io/'],
-  [BLOCKCHAIN_NAME.ARTHERA]: ['https://rpc-test.arthera.net'],
-  [BLOCKCHAIN_NAME.ZETACHAIN]: ['https://zetachain-mainnet-archive.allthatnode.com:8545'],
-  [BLOCKCHAIN_NAME.TAIKO]: ['https://rpc.katla.taiko.xyz'],
-  [BLOCKCHAIN_NAME.SEPOLIA]: [
-    'https://rpc.ankr.com/eth_sepolia',
-    'https://ethereum-sepolia.publicnode.com',
-    'https://endpoints.omniatech.io/v1/eth/sepolia/public',
-    'https://1rpc.io/sepolia',
-    'wss://ethereum-sepolia.publicnode.com'
+  [BLOCKCHAIN_NAME.ARTHERA]: [],
+  [BLOCKCHAIN_NAME.ZETACHAIN]: [
+    'https://zetachain-evm.blockpi.network/v1/rpc/public',
+    'https://zetachain.blockpi.network/rpc/v1/94eada401271d16a169b6661424ab4d6d1cefd37',
+    'https://zetachain-mainnet-archive.allthatnode.com:8545'
   ],
-  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: ['https://pacific-rpc.manta.network/http'],
+  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
+  [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
+    'https://pacific-rpc.manta.network/http',
+    'https://1rpc.io/manta',
+    'https://pacific-rpc.manta.network/http'
+  ],
   [BLOCKCHAIN_NAME.SCROLL]: [
     'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/scroll',
@@ -258,11 +253,14 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
-    'https://rpc.ankr.com/solana/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://go.getblock.io/63e2f3a12930427dac486ea6cc1f8238',
-    'https://solana-mainnet.core.chainstack.com/58a7d8c0d60af9231c4f65d307a8f280'
+    'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+    'https://rpc.ankr.com/solana',
+    'https://api.mainnet-beta.solana.com'
   ],
-  [BLOCKCHAIN_NAME.BERACHAIN]: ['https://artio.rpc.berachain.com/'],
+  [BLOCKCHAIN_NAME.BERACHAIN]: [
+    'https://bartio.rpc.b-harvest.io',
+    'https://bartio.rpc.berachain.com'
+  ],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
     'https://rpc.ankr.com/blast_testnet_sepolia/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://sepolia.blast.io'
@@ -281,8 +279,53 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.KROMA]: ['https://api.kroma.network/', 'https://1rpc.io/kroma'],
   [BLOCKCHAIN_NAME.HORIZEN_EON]: [
+    'https://rpc.ankr.com/horizen_eon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/horizen_eon',
     'https://eon-rpc.horizenlabs.io/ethv1'
   ],
-  [BLOCKCHAIN_NAME.MERLIN]: ['https://rpc.merlinchain.io']
+  [BLOCKCHAIN_NAME.MERLIN]: [
+    'https://merlin.blockpi.network/v1/rpc/aa364c7e72eeaaf93c1a4c288928298c5895aec4',
+    'https://rpc.merlinchain.io',
+    'https://merlin.blockpi.network/v1/rpc/public'
+  ],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.MODE]: [
+    'https://mainnet.mode.network',
+    'https://1rpc.io/mode',
+    'https://mode.drpc.org'
+  ],
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [
+    'https://rpc.zkfair.io',
+    'https://zkfair.blockpi.network/v1/rpc/public',
+    'https://endpoints.omniatech.io/v1/zkfair/mainnet/public'
+  ],
+  [BLOCKCHAIN_NAME.ZK_LINK]: ['https://rpc.zklink.io', 'https://rpc.zklink.network'],
+  [BLOCKCHAIN_NAME.XLAYER]: [
+    'https://rpc.xlayer.tech',
+    'https://rpc.ankr.com/xlayer',
+    'https://endpoints.omniatech.io/v1/xlayer/mainnet/public',
+    'https://rpc.ankr.com/xlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://xlayerrpc.okx.com'
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    'https://taiko.blockpi.network/v1/rpc/fc222c6da14117b3d1c6f1b2a1ad25484162854b',
+    'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.mainnet.taiko.xyz',
+    'https://rpc.taiko.xyz',
+    'wss://ws.taiko.xyz'
+  ],
+  [BLOCKCHAIN_NAME.SEI]: ['https://evm-rpc.sei-apis.com'],
+  [BLOCKCHAIN_NAME.CORE]: [
+    'https://rpc.ankr.com/core/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.ankr.com/core',
+    'https://1rpc.io/core',
+    'https://core.public.infstones.com'
+  ],
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    'https://rpc.ankr.com/bahamut/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc1.bahamut.io',
+    'https://rpc2.bahamut.io',
+    'wss://ws2.sahara.bahamutchain.com',
+    'wss://bahamut-rpc.publicnode.com'
+  ]
 };

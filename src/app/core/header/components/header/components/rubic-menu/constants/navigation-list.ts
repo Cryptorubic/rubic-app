@@ -27,7 +27,7 @@ export const NAVIGATION_LIST = [
   {
     translateKey: 'Mainnet App',
     type: 'external',
-    link: EXTERNAL_LINKS.MAINNET_APP,
+    link: EXTERNAL_LINKS.TESTNET_APP,
     imagePath: `${defaultSrc}mainnet.svg`
   }
 ] as NavigationItem[];
@@ -43,7 +43,19 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Faucets',
       type: 'internal',
-      link: ROUTE_PATH.FAUCETS,
+      link: ROUTE_PATH.STAKING,
+      active: false
+    },
+    {
+      translateKey: 'Swap to Earn',
+      type: 'internal',
+      link: ROUTE_PATH.AIRDROP,
+      active: false
+    },
+    {
+      translateKey: 'Retrodrop',
+      type: 'internal',
+      link: ROUTE_PATH.RETRODROP,
       active: false
     }
   ],
@@ -51,7 +63,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Mainnet App',
       type: 'external',
-      link: EXTERNAL_LINKS.MAINNET_APP,
+      link: EXTERNAL_LINKS.TESTNET_APP,
       active: false
     },
     {

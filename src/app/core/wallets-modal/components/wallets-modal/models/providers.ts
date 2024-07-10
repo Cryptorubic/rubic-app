@@ -82,5 +82,23 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Safe',
+    value: WALLET_NAME.SAFE,
+    img: './assets/images/icons/wallets/solflare.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: false,
+    disabled: false
+  },
+  {
+    name: 'TokenPocket',
+    value: WALLET_NAME.TOKEN_POCKET,
+    img: './assets/images/icons/wallets/tokenpocket.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];

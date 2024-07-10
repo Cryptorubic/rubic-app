@@ -12,16 +12,18 @@
     </app-tokens-list-element>
   </div>
 
-  <app-rubic-button
+  <button
     *ngIf="token.available"
-    class="custom-token__button"
+    tuiButton
     appearance="secondary"
-    fullWidth
-    (onClick)="onImportClick()"
+    type="button"
+    size="m"
+    class="custom-token__button"
+    (click)="onImportClick()"
     [disabled]="!token.available"
   >
     Import {{ token.symbol }}
-  </app-rubic-button>
+  </button>
 </div>
 
 <ng-template #disabledTokenHint>

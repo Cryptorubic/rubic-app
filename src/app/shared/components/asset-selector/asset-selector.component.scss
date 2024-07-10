@@ -52,7 +52,7 @@
   }
 
   &__second-image {
-    margin-right: 20px;
+    margin-right: 22px;
 
     border-radius: 100%;
   }
@@ -60,6 +60,10 @@
   &__empty-container {
     position: relative;
     z-index: 1;
+
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 
   &__empty {
@@ -79,6 +83,14 @@
 
     background: var(--tui-secondary);
     border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
+
+    &-gas-form {
+      width: 200px;
+
+      &__disabled {
+        color: var(--tui-text-03);
+      }
+    }
 
     &::after {
       position: absolute;

@@ -4,25 +4,27 @@ app-action-button {
   width: 100%;
 }
 
+app-gas-form-hint {
+  position: absolute;
+  left: 0;
+
+  &.source-chain {
+    top: 85px;
+  }
+
+  &.target-chain {
+    bottom: 110px;
+  }
+}
+
 .form-links {
   display: flex;
   gap: var(--tui-padding-s);
 
-  .swap-button,
-  .faucets-button {
-    color: #fff;
-    text-decoration: none;
+  color: var(--tui-text-03);
 
-    cursor: pointer;
-
-    &.active {
-      color: var(--tui-primary-active);
-      font-weight: 500;
-
-      cursor: default;
-
-      pointer-events: none;
-    }
+  &_selected {
+    color: var(--tui-text-01);
   }
 }
 

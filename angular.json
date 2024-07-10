@@ -159,7 +159,8 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "rubic:build"
+            "browserTarget": "rubic:build",
+            "proxyConfig": "proxy.conf.js"
           },
           "configurations": {
             "production": {
@@ -191,6 +192,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
+            "codeCoverage": true,
             "main": "src/test.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",

@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
-import {
-  BackendBlockchain,
-  FROM_BACKEND_BLOCKCHAINS
-} from '@app/shared/constants/blockchain/backend-blockchains';
-import { BehaviorSubject, catchError, forkJoin, retry, map, Observable, of, tap } from 'rxjs';
+
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of, retry, tap } from 'rxjs';
 import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
-  LifiBridgeTypes,
+  LifiSubProvider,
   BLOCKCHAIN_NAME,
-  RubicTradeTypeForRango
+  FROM_BACKEND_BLOCKCHAINS,
+  BackendBlockchain,
+  RangoTradeType
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
@@ -22,13 +21,13 @@ import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain
 import { timeout } from 'rxjs/operators';
 import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled-providers';
 
-interface DisabledBridgeTypes {
-  [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiBridgeTypes[];
-  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RubicTradeTypeForRango[];
+interface DisabledSubProvidersType {
+  [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiSubProvider[];
+  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoTradeType[];
 }
 
 interface ProvidersConfiguration {
-  disabledBridgeTypes: DisabledBridgeTypes;
+  disabledSubProviders: DisabledSubProvidersType;
   disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
@@ -51,7 +50,7 @@ const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
 })
 export class PlatformConfigurationService {
   private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
-    disabledBridgeTypes: {
+    disabledSubProviders: {
       [CROSS_CHAIN_TRADE_TYPE.LIFI]: [],
       [CROSS_CHAIN_TRADE_TYPE.RANGO]: RANGO_CROSS_CHAIN_DISABLED_PROVIDERS
     },
@@ -90,14 +89,14 @@ export class PlatformConfigurationService {
     return this._useOnChainProxy$.getValue();
   }
 
-  private readonly _useCrossChainChainProxy$ = new BehaviorSubject<
-    Record<CrossChainTradeType, boolean>
-  >(undefined);
+  private readonly _useCrossChainProxy$ = new BehaviorSubject<Record<CrossChainTradeType, boolean>>(
+    undefined
+  );
 
   public readonly useCrossChainChainProxy$ = this._useOnChainProxy$.asObservable();
 
   public get useCrossChainChainProxy(): Record<CrossChainTradeType, boolean> {
-    return this._useCrossChainChainProxy$.getValue();
+    return this._useCrossChainProxy$.getValue();
   }
 
   constructor(private httpClient: HttpClient) {
@@ -174,7 +173,7 @@ export class PlatformConfigurationService {
         status.useProxy
       ])
     ) as Record<CrossChainTradeType, boolean>;
-    this._useCrossChainChainProxy$.next(providers);
+    this._useCrossChainProxy$.next(providers);
   }
 
   private mapDisabledProviders(crossChainProviders: {
@@ -194,34 +193,32 @@ export class PlatformConfigurationService {
       .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
       .filter(provider => Boolean(provider));
 
-    const disabledBridgeTypes = crossChainProvidersEntries
+    const disabledSubProviders = crossChainProvidersEntries
       .filter(([_, { active }]) => Boolean(active))
       .reduce((acc, [providerName, { disabledProviders }]) => {
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-          acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiBridgeTypes[];
+          acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiSubProvider[];
         }
 
         if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
           acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = this.getRangoDisabledProviders(
-            disabledProviders as RubicTradeTypeForRango[]
+            disabledProviders as RangoTradeType[]
           );
         }
 
         return acc;
-      }, {} as DisabledBridgeTypes);
+      }, {} as DisabledSubProvidersType);
 
-    return { disabledBridgeTypes, disabledCrossChainTradeTypes: disabledCrossChainProviders };
+    return { disabledSubProviders, disabledCrossChainTradeTypes: disabledCrossChainProviders };
   }
 
   /**
    * Combine disabled providers from server and client
    */
-  private getRangoDisabledProviders(
-    disabledFromServer: RubicTradeTypeForRango[]
-  ): RubicTradeTypeForRango[] {
+  private getRangoDisabledProviders(disabledFromServer: RangoTradeType[]): RangoTradeType[] {
     const disabledProviders = this._disabledProviders$.getValue();
     const disabledFromClient =
-      disabledProviders.disabledBridgeTypes[CROSS_CHAIN_TRADE_TYPE.RANGO] ?? [];
+      disabledProviders.disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] ?? [];
     return [...disabledFromClient, ...disabledFromServer];
   }
 

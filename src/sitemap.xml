@@ -2,13 +2,31 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
 >
     <url>
-        <loc>https://testnet.rubic.exchange</loc>
+        <loc>https://app.rubic.exchange</loc>
         <lastmod>2024-06-07T16:20:13.860Z</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://testnet.rubic.exchange/faucets</loc>
+        <loc>https://app.rubic.exchange/retrodrop</loc>
+        <lastmod>2024-06-07T16:20:13.860Z</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://app.rubic.exchange/airdrop</loc>
+        <lastmod>2024-06-07T16:20:13.860Z</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://app.rubic.exchange/history</loc>
+        <lastmod>2024-06-07T16:20:13.860Z</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://app.rubic.exchange/staking</loc>
         <lastmod>2024-06-07T16:20:13.860Z</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.9</priority>

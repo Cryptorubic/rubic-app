@@ -25,6 +25,14 @@
   &__row {
     display: flex;
     gap: var(--tui-padding-s);
+    align-items: flex-start;
+  }
+
+  &__row-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tui-padding-s);
+    justify-content: flex-end;
   }
 
   &__amounts-container {
@@ -107,10 +115,14 @@
   }
 
   &__best-badge {
+    display: flex;
+    align-items: center;
+
     font-weight: 700 !important;
     text-transform: uppercase;
 
     background: linear-gradient(90deg, rgba(0, 255, 117, 0.6) 0%, rgba(224, 255, 32, 0.6) 99.18%);
+    cursor: pointer;
   }
 
   &__warning-badge {
@@ -118,6 +130,7 @@
     text-transform: uppercase;
 
     background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
+    cursor: pointer;
   }
 
   ::ng-deep &__expander {

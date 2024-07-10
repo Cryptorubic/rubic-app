@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { startWith } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 
 @Component({
   selector: 'app-settings-it',
@@ -19,7 +21,14 @@ export class SettingsItComponent {
     startWith(this.instantTradeForm.value)
   );
 
-  constructor(private readonly settingsService: SettingsService) {}
+  public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
+    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
+  );
+
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly formsTogglerService: FormsTogglerService
+  ) {}
 
   public toggleAutoSlippageTolerance(): void {
     if (!this.instantTradeForm.value.autoSlippageTolerance) {

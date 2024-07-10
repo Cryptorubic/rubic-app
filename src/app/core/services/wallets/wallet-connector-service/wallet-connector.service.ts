@@ -37,6 +37,8 @@ import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/ev
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
+import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
+import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -78,15 +80,22 @@ export class WalletConnectorService {
     private readonly zone: NgZone
   ) {}
 
+  public checkIfSafeEnv(): boolean {
+    const params = new URLSearchParams(this.window.location.search);
+    return params.has('useSafe') ? params.get('useSafe') === 'true' : false;
+  }
+
   /**
    * Setups provider based on local storage.
    */
   public async setupProvider(): Promise<boolean> {
+    const isSafeEnv = this.checkIfSafeEnv();
+    console.info('isSafeEnv: ', isSafeEnv);
     const provider = this.storeService.getItem('RUBIC_PROVIDER');
-    if (!provider) {
+    if (!provider && !isSafeEnv) {
       return false;
     }
-    this.connectProvider(provider);
+    this.connectProvider(isSafeEnv ? WALLET_NAME.SAFE : provider);
     return true;
   }
 
@@ -103,20 +112,12 @@ export class WalletConnectorService {
       this.window
     ] as const;
 
-    if (walletName === WALLET_NAME.ARGENT) {
-      return new ArgentWalletAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.TRUST_WALLET) {
-      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
+    if (walletName === WALLET_NAME.METAMASK) {
+      return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
       return new WalletConnectAdapter(...defaultConstructorParameters);
-    }
-
-    if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.BITKEEP) {
@@ -131,6 +132,14 @@ export class WalletConnectorService {
       );
     }
 
+    if (walletName === WALLET_NAME.ARGENT) {
+      return new ArgentWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.TRUST_WALLET) {
+      return new TrustWalletAdapter(...defaultConstructorParameters, this.isIos);
+    }
+
     if (walletName === WALLET_NAME.TRON_LINK) {
       return new TronLinkAdapter(...defaultConstructorParameters);
     }
@@ -142,12 +151,23 @@ export class WalletConnectorService {
     if (walletName === WALLET_NAME.SOLFLARE) {
       return new SolflareWalletAdapter(...defaultConstructorParameters);
     }
+
+    if (walletName === WALLET_NAME.SAFE) {
+      return new SafeWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.TOKEN_POCKET) {
+      return new TokenPocketWalletAdapter(...defaultConstructorParameters);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
+    if (this.provider.walletName !== WALLET_NAME.SAFE) {
+      this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
+    }
   }
 
   public deactivate(): void {

@@ -1041,43 +1041,37 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
+  [BLOCKCHAIN_NAME.MERLIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MERLIN], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.KROMA]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.KROMA], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ROOTSTOCK], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MODE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MODE], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZK_FAIR]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_FAIR], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ZK_LINK]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ZK_LINK], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.XLAYER]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.XLAYER], ...defaultTokenParams } as Token
+  ],
   [BLOCKCHAIN_NAME.TAIKO]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.TAIKO],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/eth.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.TAIKO],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/weth.png'
-    } as Token
+    { ...nativeTokensList[BLOCKCHAIN_NAME.TAIKO], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.SEPOLIA]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.SEPOLIA],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/eth.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.SEPOLIA],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/weth.png'
-    } as Token
+  [BLOCKCHAIN_NAME.SEI]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SEI], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.BERACHAIN]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
+  [BLOCKCHAIN_NAME.CORE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.CORE], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.BLAST_TESTNET],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/eth.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.BLAST_TESTNET],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/weth.png'
-    } as Token
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BAHAMUT], ...defaultTokenParams } as Token
   ]
 };

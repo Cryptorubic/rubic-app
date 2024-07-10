@@ -212,12 +212,12 @@ export class SwapFormQueryService {
         return this.searchTokenBySymbol(tokens, token, chain);
       }),
       switchMap(foundToken =>
-        forkJoin(
+        forkJoin([
           of(foundToken),
           from(this.tokensService.getAndUpdateTokenBalance(foundToken)).pipe(
             catchError(() => of(new BigNumber(NaN)))
           )
-        )
+        ])
       ),
       map(([foundToken, balance]) => ({
         ...foundToken,

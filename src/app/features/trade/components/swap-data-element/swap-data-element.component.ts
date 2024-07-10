@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
+import { AppGasData } from '../../models/provider-info';
+import { HintAppearance, HintDirection } from './model';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -15,6 +17,10 @@ export class SwapDataElementComponent {
   public feeInfo: FeeInfo;
 
   public displayAmount: string | null;
+
+  @Input() hintAppearance: HintAppearance = '';
+
+  @Input() hintDirection: HintDirection = 'bottom-right';
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
@@ -37,13 +43,7 @@ export class SwapDataElementComponent {
     }
   }
 
-  @Input({ required: true }) gasInfo: {
-    amount: BigNumber;
-    amountInUsd: BigNumber;
-    symbol: string;
-  } | null;
+  @Input({ required: true }) gasInfo: AppGasData | null;
 
   @Input({ required: true }) time: string | number;
-
-  constructor() {}
 }

@@ -1,6 +1,7 @@
 .element {
   &__gas-refund-badge {
     font-weight: 700 !important;
+    text-shadow: 0 1px 4px #0000009e;
 
     background: linear-gradient(90deg, rgb(188, 45, 255) 0%, rgb(0, 102, 255) 99.18%);
     cursor: pointer;

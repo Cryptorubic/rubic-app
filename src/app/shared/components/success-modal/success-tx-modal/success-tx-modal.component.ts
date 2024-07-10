@@ -8,14 +8,18 @@ import {
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
-import { SuccessTxModalType } from '@app/shared/models/modals/modal-type';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from 'rubic-sdk';
+import { ROUTE_PATH } from '@shared/constants/common/links';
+import { Router } from '@angular/router';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { map } from 'rxjs';
+import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
+import { SuccessTxModalType } from '@app/shared/models/modals/modal-type';
 
 @Component({
   selector: 'polymorpheus-success-tx-modal',
@@ -44,6 +48,10 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
 
   public hideUnusedUI: boolean = this.queryParamsService.hideUnusedUI;
 
+  public readonly bonusPoints$ = this.airdropPointsService.points$.pipe(
+    map(points => this.getBonusPoints(points.participant))
+  );
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -57,7 +65,9 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
         ccrProviderType: CrossChainTradeType;
         isSwapAndEarnSwap?: boolean;
       }
-    >
+    >,
+    private readonly router: Router,
+    private readonly airdropPointsService: AirdropPointsService
   ) {
     this.isSwapAndEarnSwap = context.data.isSwapAndEarnSwap;
     this.idPrefix = context.data.idPrefix;
@@ -74,6 +84,7 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     SuccessTxModalComponent.toggleConfettiBackground('remove');
   }
 
@@ -90,6 +101,17 @@ export class SuccessTxModalComponent implements AfterViewInit, OnDestroy {
   }
 
   public onConfirm(): void {
+    this.airdropPointsService.updateSwapToEarnUserPointsInfo();
     this.context.completeWith(null);
+  }
+
+  public async navigateToSwapAndEarn(): Promise<void> {
+    await this.router.navigate([ROUTE_PATH.AIRDROP], { queryParamsHandling: '' });
+
+    this.context.completeWith(null);
+  }
+
+  public getBonusPoints(isParticipant: boolean): number {
+    return isParticipant ? 12 : 25;
   }
 }

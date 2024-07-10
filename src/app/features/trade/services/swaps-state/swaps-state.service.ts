@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { PromotionType, TradeState } from '@features/trade/models/trade-state';
+import { BadgeInfoForComponent, TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -15,6 +15,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   compareCrossChainTrades,
+  CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
   nativeTokensList,
   OnChainTrade,
@@ -41,6 +42,10 @@ import { defaultCalculationStatus } from '@features/trade/services/swaps-state/c
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
+import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '../forms-toggler/models';
+import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
+import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 
 @Injectable()
 export class SwapsStateService {
@@ -97,7 +102,7 @@ export class SwapsStateService {
     })
   );
 
-  public set currentTrade(state: SelectedTrade) {
+  private set currentTrade(state: SelectedTrade) {
     this._tradeState$.next(state);
   }
 
@@ -128,7 +133,8 @@ export class SwapsStateService {
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensService: TokensService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -138,11 +144,8 @@ export class SwapsStateService {
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean
   ): void {
-    if (!wrappedTrade?.trade) {
-      return;
-    }
-    const trade = wrappedTrade.trade;
-    const defaultState: TradeState = !wrappedTrade?.trade
+    const trade = wrappedTrade?.trade;
+    const defaultState: TradeState = !trade
       ? {
           error: wrappedTrade.error,
           trade: null,
@@ -158,7 +161,7 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          ...(this.setPromotion() && { promotion: this.setPromotion() })
+          badges: this.setSpecificBadges(trade)
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -168,36 +171,50 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider?.trade?.type === trade?.type
+          provider => provider?.trade?.type === wrappedTrade?.tradeType
         );
         // New or old
         if (providerIndex !== -1) {
-          currentTrades[providerIndex] = {
-            ...currentTrades[providerIndex],
-            trade: defaultState.trade!,
-            needApprove: defaultState.needApprove,
-            error: defaultState.error,
-            routes: defaultState.routes
-          };
+          if (trade) {
+            currentTrades[providerIndex] = {
+              ...currentTrades[providerIndex],
+              trade: defaultState.trade!,
+              needApprove: defaultState.needApprove,
+              error: defaultState.error,
+              routes: defaultState.routes
+            };
+          } else {
+            currentTrades.splice(providerIndex, 1);
+          }
         } else {
-          currentTrades.push(defaultState);
+          if (trade) {
+            currentTrades.push(defaultState);
+          }
         }
       } else {
-        // Make a new list with one element
-        currentTrades = [defaultState];
+        if (trade) {
+          // Make a new list with one element
+          currentTrades = [defaultState];
+        }
       }
     } else {
-      currentTrades.push(defaultState);
+      if (trade) {
+        currentTrades.push(defaultState);
+      }
     }
     this.swapType = type;
     this._tradesStore$.next(currentTrades);
   }
 
-  public clearProviders(): void {
+  public clearProviders(isTradeError: boolean = false): void {
     this._tradeState$.next(this.defaultState);
     this._tradesStore$.next([]);
-    this.setCalculationProgress(0, 0);
     this.tradePageService.setProvidersVisibility(false);
+    if (isTradeError) {
+      this.setCalculationProgress(1, 1);
+    } else {
+      this.setCalculationProgress(0, 0);
+    }
   }
 
   public pickProvider(isCalculationEnd: boolean): void {
@@ -218,10 +235,12 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
+      const status = this.getTradeStatusOnPickingProvider(isCalculationEnd);
+
       const trade: SelectedTrade = {
         ...bestTrade,
         selectedByUser: false,
-        status: TRADE_STATUS.READY_TO_SWAP
+        status
       };
       if (trade.error) {
         trade.status = TRADE_STATUS.DISABLED;
@@ -240,6 +259,14 @@ export class SwapsStateService {
     }
   }
 
+  private getTradeStatusOnPickingProvider(isCalculationEnd: boolean): TRADE_STATUS {
+    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && !isCalculationEnd) {
+      return TRADE_STATUS.LOADING;
+    } else {
+      return TRADE_STATUS.READY_TO_SWAP;
+    }
+  }
+
   private sortCrossChainTrades(
     currentTrades: TradeState[],
     isThereTokenWithoutPrice: boolean
@@ -252,14 +279,27 @@ export class SwapsStateService {
         ? this.getNativeTokenPrice(prevTrade.trade.from.blockchain)
         : new BigNumber(0);
 
-      return compareCrossChainTrades(
-        nextTrade,
-        prevTrade,
-        nativePriceForNextTrade,
-        nativePriceForPrevTrade,
-        isThereTokenWithoutPrice
-      );
+      // Raises RBC-RBC via Arbitrum_Bridge in top
+      if (this.isArbitrumBridgeForRBCTokens(nextTrade?.trade)) {
+        return -1;
+      } else {
+        return compareCrossChainTrades(
+          nextTrade,
+          prevTrade,
+          nativePriceForNextTrade,
+          nativePriceForPrevTrade,
+          isThereTokenWithoutPrice
+        );
+      }
     }) as TradeState[];
+  }
+
+  private isArbitrumBridgeForRBCTokens(trade: CrossChainTrade): boolean {
+    return (
+      trade.to.symbol.toLowerCase() === 'rbc' &&
+      trade.from.symbol.toLowerCase() === 'rbc' &&
+      trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM
+    );
   }
 
   private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
@@ -407,7 +447,40 @@ export class SwapsStateService {
     );
   }
 
-  private setPromotion(): PromotionType | null {
-    return null;
+  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfoForComponent[] {
+    const badgesByProvider = Object.entries(SPECIFIC_BADGES_FOR_PROVIDERS).find(
+      ([key]) => key === trade.type
+    );
+    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS)
+      .filter(([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain)
+      .map(([_, badgeInfo]) => badgeInfo?.[0]);
+
+    if (!badgesByProvider && !badgesByChain) {
+      return [];
+    }
+
+    const providerBadges = badgesByProvider?.[1] || [];
+    const chainBadges = badgesByChain || [];
+    const allBadges = [...providerBadges, ...chainBadges];
+
+    const tradeSpecificBadges = allBadges
+      .filter(Boolean)
+      .filter(info => {
+        if (!info.showLabel(trade)) {
+          return false;
+        }
+        return !!(
+          !info.fromSdk ||
+          (info.fromSdk && 'promotions' in trade && trade.promotions?.length)
+        );
+      })
+      .map(info => ({
+        bgColor: info.bgColor,
+        label: info.getLabel(trade),
+        hint: info?.getHint?.(trade),
+        href: info.href
+      }));
+
+    return tradeSpecificBadges;
   }
 }
