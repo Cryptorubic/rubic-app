@@ -203,12 +203,24 @@ export class SwapsControllerService {
           const wrappedTrade = container?.value?.wrappedTrade;
 
           if (wrappedTrade) {
+            if (wrappedTrade.tradeType === 'eddy_bridge') {
+              console.log('WRAPPED_TRADE_1 ===> ', wrappedTrade);
+            }
             const isCalculationEnd = container.value.total === container.value.calculated;
+            if (wrappedTrade.tradeType === 'eddy_bridge') {
+              console.log('WRAPPED_TRADE_2 ===> ', wrappedTrade);
+            }
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            if (wrappedTrade.tradeType === 'eddy_bridge') {
+              console.log('WRAPPED_TRADE_3 ===> ', wrappedTrade);
+            }
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
               wrappedTrade?.error
             );
+            if (wrappedTrade.tradeType === 'eddy_bridge') {
+              console.log('WRAPPED_TRADE_4 ===> ', wrappedTrade);
+            }
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
@@ -218,9 +230,15 @@ export class SwapsControllerService {
               .pipe(
                 tap(([trade, needApprove, type, isNotLinkedAccount]) => {
                   try {
+                    if (wrappedTrade.tradeType === 'eddy_bridge') {
+                      console.log('WRAPPED_TRADE_4.1 ===> ', trade);
+                    }
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
+                    }
+                    if (wrappedTrade.tradeType === 'eddy_bridge') {
+                      console.log('TRADE_5 ===> ', trade);
                     }
                     this.swapsStateService.updateTrade(trade, type, needApprove);
                     this.swapsStateService.pickProvider(isCalculationEnd);
@@ -233,12 +251,18 @@ export class SwapsControllerService {
                       this.refreshService.setStopped();
                     }
                   } catch (err) {
+                    if (wrappedTrade.tradeType === 'eddy_bridge') {
+                      console.log('CATCH_1 ===> ', err);
+                    }
                     console.error(err);
                   }
                 })
               )
               .pipe(
                 catchError(() => {
+                  if (wrappedTrade.tradeType === 'eddy_bridge') {
+                    console.log('CATCH_2');
+                  }
                   // this.swapsStateService.updateTrade(trade, type, needApprove);
                   this.swapsStateService.pickProvider(isCalculationEnd);
                   return of(null);
@@ -257,6 +281,7 @@ export class SwapsControllerService {
           return of(null);
         }),
         catchError((_err: unknown) => {
+          console.log('CATCH_3 ===> ', _err);
           this.refreshService.setStopped();
           this.swapsStateService.pickProvider(true);
           return of(null);
