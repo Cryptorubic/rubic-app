@@ -56,9 +56,7 @@ export class TokensListComponent {
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly formsTogglerService: FormsTogglerService
-  ) {
-    this.tokensToShow$.subscribe(console.log);
-  }
+  ) {}
 
   /**
    * Function to track list element by unique key: token blockchain and address.
