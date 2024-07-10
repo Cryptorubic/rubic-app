@@ -3,6 +3,7 @@ import { combineLatestWith, firstValueFrom, forkJoin, from, Observable, of, Subj
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
+  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -199,95 +200,29 @@ export class SwapsControllerService {
           console.debug(err);
           return of(null);
         }),
-        switchMap(container => {
+        concatMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
 
           if (wrappedTrade) {
-            if (wrappedTrade.tradeType === 'eddy_bridge') {
-              console.log('WRAPPED_TRADE_1 ===> ', wrappedTrade);
-            }
             const isCalculationEnd = container.value.total === container.value.calculated;
-            if (wrappedTrade.tradeType === 'eddy_bridge') {
-              console.log('WRAPPED_TRADE_2 ===> ', wrappedTrade);
-            }
-            // const needApprove$ =
-            //   from(wrappedTrade?.trade?.needApprove?.() || of(true)).pipe(
-            //     delay(5_000),
-            //     timeout({
-            //       each: 4_000,
-            //       with: () => {
-            //         console.log('TIMEOUT_ERROR');
-            //         return throwError(() => new Error('EDDY_TIMEOUT_ERROR'));
-            //       }
-            //     }),
-            //     retry(2)
-            //   ) || of(false);
-            // const needApprove$ = of(true).pipe(
-            //   switchMap(() => wrappedTrade?.trade?.needApprove()),
-            //   catchError(() => of(true))
-            // );
-
-            // const needApprove$: Promise<boolean> = new Promise(res => {
-            //   setTimeout(() => {
-            //     wrappedTrade?.trade
-            //       ?.needApprove()
-            //       .then(needApprove => res(needApprove))
-            //       .catch(() => res(false));
-            //   }, 3_000);
-            // });
-            // let need: boolean;
-            // const needApproveSubject$ = new BehaviorSubject<boolean>(false);
-            // const needApprove$ = needApproveSubject$.asObservable();
-            // if (!wrappedTrade?.trade) {
-            //   needApproveSubject$.complete();
-            // } else {
-            //   wrappedTrade?.trade?.needApprove?.().then(needAprove => {
-            //     console.log('SET_TIMEOUNT_NEED_APPROVE', needAprove);
-            //     needApproveSubject$.next(needAprove);
-            //     needApproveSubject$.complete();
-            //   });
-            // }
-
-            if (wrappedTrade.tradeType === 'eddy_bridge') {
-              console.log('WRAPPED_TRADE_3 ===> ', wrappedTrade);
-            }
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
               wrappedTrade?.error
             );
-            if (wrappedTrade.tradeType === 'eddy_bridge') {
-              console.log('WRAPPED_TRADE_4 ===> ', wrappedTrade);
-            }
-
-            let needApprove$: boolean;
-            (async function (): Promise<void> {
-              needApprove$ = await wrappedTrade?.trade?.needApprove();
-              await new Promise(res => {
-                setTimeout(() => {
-                  res(1);
-                }, 300);
-              });
-            })();
 
             return forkJoin([
               of(wrappedTrade),
-              of(needApprove$),
+              needApprove$,
               of(container.type),
               isNotLinkedAccount$
             ])
               .pipe(
                 tap(([trade, needApprove, type, isNotLinkedAccount]) => {
                   try {
-                    console.log('NEED_AAPROVE ===>', needApprove);
-                    if (wrappedTrade.tradeType === 'eddy_bridge') {
-                      console.log('WRAPPED_TRADE_4.1 ===> ', trade);
-                    }
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
-                    }
-                    if (wrappedTrade.tradeType === 'eddy_bridge') {
-                      console.log('TRADE_5 ===> ', trade);
                     }
                     this.swapsStateService.updateTrade(trade, type, needApprove);
                     this.swapsStateService.pickProvider(isCalculationEnd);
@@ -300,18 +235,12 @@ export class SwapsControllerService {
                       this.refreshService.setStopped();
                     }
                   } catch (err) {
-                    if (wrappedTrade.tradeType === 'eddy_bridge') {
-                      console.log('CATCH_1 ===> ', err);
-                    }
                     console.error(err);
                   }
                 })
               )
               .pipe(
                 catchError(() => {
-                  if (wrappedTrade.tradeType === 'eddy_bridge') {
-                    console.log('CATCH_2');
-                  }
                   // this.swapsStateService.updateTrade(trade, type, needApprove);
                   this.swapsStateService.pickProvider(isCalculationEnd);
                   return of(null);
@@ -330,7 +259,6 @@ export class SwapsControllerService {
           return of(null);
         }),
         catchError((_err: unknown) => {
-          console.log('CATCH_3 ===> ', _err);
           this.refreshService.setStopped();
           this.swapsStateService.pickProvider(true);
           return of(null);
@@ -454,7 +382,6 @@ export class SwapsControllerService {
         filter(isFilled => isFilled)
       )
       .subscribe(() => {
-        console.log('subscribeOnAddressChange');
         this.startRecalculation(true);
       });
   }

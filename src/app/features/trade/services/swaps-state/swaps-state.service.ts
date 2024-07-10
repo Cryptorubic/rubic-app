@@ -168,9 +168,6 @@ export class SwapsStateService {
           routes: trade.getTradeInfo().routePath || [],
           badges: this.setSpecificBadges(trade)
         };
-    if (trade?.type === 'eddy_bridge') {
-      console.log('UPDATE_TRADE_6 ===> ', trade);
-    }
 
     let currentTrades = this._tradesStore$.getValue();
 
@@ -211,9 +208,6 @@ export class SwapsStateService {
       }
     }
     this.swapType = type;
-    if (trade?.type === 'eddy_bridge') {
-      console.log('UPDATE_TRADE_7 ===> ', currentTrades);
-    }
     this._tradesStore$.next(currentTrades);
   }
 
