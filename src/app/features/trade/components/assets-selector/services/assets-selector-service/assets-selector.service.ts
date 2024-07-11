@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo, BLOCKCHAIN_NAME, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -78,16 +78,9 @@ export class AssetsSelectorService {
 
   private isUserFirstNetworkSelection(
     fromBlockchain: BlockchainName,
-    assetTypeKey: 'fromBlockchain' | 'toBlockchain'
+    toBlockchain: BlockchainName
   ): boolean {
-    return (
-      !fromBlockchain ||
-      assetTypeKey !== 'toBlockchain' ||
-      Boolean(
-        assetTypeKey === 'toBlockchain' && fromBlockchain && this.swapFormService.inputValue.toToken
-      ) ||
-      fromBlockchain in notEvmChangeNowBlockchainsList
-    );
+    return !fromBlockchain || !toBlockchain || fromBlockchain in notEvmChangeNowBlockchainsList;
   }
 
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
@@ -100,24 +93,28 @@ export class AssetsSelectorService {
       'blockchain' in this.swapFormService.inputValue.fromToken
         ? this.swapFormService.inputValue.fromToken.blockchain
         : null;
+    const toBlockchain =
+      this.swapFormService.inputValue.toToken &&
+      'blockchain' in this.swapFormService.inputValue.toToken
+        ? this.swapFormService.inputValue.toToken.blockchain
+        : null;
     const userBlockchainName = this.walletConnectorService.network;
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
     )?.name;
     const toTokenSelected = this.swapFormService.inputValue.toToken;
-    const fromTokenSelected = this.swapFormService.inputValue.fromToken;
 
-    if (this.isUserFirstNetworkSelection(fromBlockchain, assetTypeKey)) {
+    if (this.isUserFirstNetworkSelection(fromBlockchain, toBlockchain)) {
       if (toTokenSelected) {
-        this.assetType = assetType;
+        this.assetType = userAvailableBlockchainName || assetType;
       } else {
-        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
+        this.assetType = userAvailableBlockchainName || assetType;
       }
     } else {
-      if (toTokenSelected || fromTokenSelected) {
-        this.assetType = fromBlockchain;
+      if (assetTypeKey === 'toBlockchain') {
+        this.assetType = toBlockchain;
       } else {
-        this.assetType = userAvailableBlockchainName || BLOCKCHAIN_NAME.ETHEREUM;
+        this.assetType = fromBlockchain;
       }
     }
 

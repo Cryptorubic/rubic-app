@@ -142,5 +142,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.XLAYER]: 'X Layer',
   [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
   [BLOCKCHAIN_NAME.SEI]: 'Sei',
-  [BLOCKCHAIN_NAME.CORE]: 'CORE'
+  [BLOCKCHAIN_NAME.CORE]: 'CORE',
+  [BLOCKCHAIN_NAME.BAHAMUT]: 'Bahamut'
 };
