@@ -28,6 +28,10 @@ $token-card-height: 55px;
 
     background: none;
     border-radius: 0;
+
+    .tokens-scrollbar {
+      height: 30vh;
+    }
   }
 
   &__empty-list {
@@ -90,6 +94,7 @@ tui-loader {
     }
   }
 
+
   &__item {
     border-radius: var(--tui-radius-m);
 
@@ -127,7 +132,7 @@ tui-loader {
 }
 
 .tokens-scrollbar {
-  height: 30vh;
+  height: 100%;
   overflow-x: hidden !important;
 
   ::ng-deep {

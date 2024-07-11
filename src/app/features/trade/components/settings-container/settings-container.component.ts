@@ -3,7 +3,7 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, skip, startWith, switchMap } from 'rxjs/operators';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -23,11 +23,13 @@ export class SettingsContainerComponent implements OnInit {
   public open: boolean;
 
   public readonly mode$ = this.swapsFormService.inputValue$.pipe(
+    skip(1),
     map(({ fromBlockchain, toBlockchain }) =>
       fromBlockchain === toBlockchain
         ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
         : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-    )
+    ),
+    startWith(SWAP_PROVIDER_TYPE.INSTANT_TRADE)
   );
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
