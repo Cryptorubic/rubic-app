@@ -8,16 +8,21 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import {
+  TuiButtonModule,
   TuiDataListModule,
+  TuiDialogModule,
+  TuiDropdownModule,
   TuiGroupModule,
   TuiHintModule,
   TuiHostedDropdownModule,
-  TuiLoaderModule,
-  TuiDropdownModule,
-  TuiDialogModule,
-  TuiButtonModule
+  TuiLoaderModule
 } from '@taiga-ui/core';
-import { TuiBadgeModule, TuiToggleModule, TuiAccordionModule } from '@taiga-ui/kit';
+import {
+  TuiAccordionModule,
+  TuiBadgeModule,
+  TuiCarouselModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { PolymorpheusModule } from '@tinkoff/ng-polymorpheus';
 import { FormsModule } from '@angular/forms';
 import { MobileMenuTogglerComponent } from './components/header/components/mobile-menu-toggler/mobile-menu-toggler.component';
@@ -27,7 +32,7 @@ import { RubicMenuComponent } from './components/header/components/rubic-menu/ru
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
-import { BannerComponent } from './components/header/components/banner/app-banner.component';
+import { BannerZkLinkComponent } from '@core/header/components/header/components/banner-zk-link/banner-zk-link.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
@@ -41,6 +46,7 @@ import { LanguageSelectorComponent } from './components/header/components/langua
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
+import { BannerTaikoComponent } from './components/header/components/banner-taiko/banner-taiko.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +57,7 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
     ThemeSwitcherComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
-    BannerComponent,
+    BannerZkLinkComponent,
     MobileMenuComponent,
     RubicMenuTogglerComponent,
     MobileUserProfileComponent,
@@ -61,7 +67,8 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
     LanguageSelectorComponent,
     SettingsComponent,
     ProfileMenuTogglerComponent,
-    HistoryButtonComponent
+    HistoryButtonComponent,
+    BannerTaikoComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +93,8 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
     ClipboardModule,
     TuiAccordionModule,
     TuiDialogModule,
-    TuiButtonModule
+    TuiButtonModule,
+    TuiCarouselModule
   ],
   providers: [TuiDestroyService],
   exports: [HeaderComponent]

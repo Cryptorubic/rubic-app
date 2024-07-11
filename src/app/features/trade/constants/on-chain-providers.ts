@@ -156,6 +156,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //EEEEEEEEEEEEEEEEEEEE
+  [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {
+    name: 'Eddy Finance',
+    image: `${imageBasePath}eddyfinance.ico`,
+    color: 'black'
+  },
   [ON_CHAIN_TRADE_TYPE.ECHO_DEX]: {
     name: 'Echo',
     image: `${imageBasePath}ecodex.svg`,
@@ -192,6 +197,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Dodo',
     image: `${imageBasePath}dodo.png`,
     color: '#efc20b'
+  },
+  [ON_CHAIN_TRADE_TYPE.DRAGON_SWAP]: {
+    name: 'DragonSwap',
+    image: `${imageBasePath}dragonswap.svg`,
+    color: '#A855F7'
   },
   [ON_CHAIN_TRADE_TYPE.DYSTOPIA]: {
     name: 'Dystopia',
@@ -333,6 +343,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'NetSwap',
     image: `${imageBasePath}netswap.png`,
     color: '#257AF1'
+  },
+  [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: {
+    name: 'NativeRouter',
+    image: `${imageBasePath}native.svg`,
+    color: '#34A5F5'
   },
 
   //OOOOOOOOOOOOOOOOOOOOOOO
@@ -603,6 +618,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
+  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
+    name: 'Uniswap V2',
+    image: 'assets/images/icons/coins/bahamut.svg',
+    color: '#FFFFFF'
+  },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
@@ -691,6 +711,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.ZRX]: {
     name: '0x',
     image: `${imageBasePath}zrx.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: {
+    name: 'ZetaSwap',
+    image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
   }
 };

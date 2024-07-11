@@ -42,7 +42,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
 
   public readonly headerText$ = this.selectorListType$.pipe(
-    map(type => (type === 'blockchains' ? 'Blockchains List' : 'Tokens List'))
+    map(type => (type === 'blockchains' ? 'Blockchains List' : 'Select Chain and Token'))
   );
 
   public readonly isMobile = this.headerStore.isMobile;

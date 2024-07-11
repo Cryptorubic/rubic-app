@@ -81,6 +81,8 @@
     &__image {
       width: 16px;
       height: 16px;
+
+      border-radius: 50%;
     }
   }
 
@@ -125,7 +127,7 @@
     &-dropdown {
       display: flex;
       align-items: center;
-      
+
       app-dropdown-options-table-item {
         margin-left: 1px;
       }

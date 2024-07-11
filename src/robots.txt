@@ -4,3 +4,6 @@ Allow: /
 
 # Host
 Host: https://widgets.rubic.exchange
+
+# Sitemaps
+Sitemap: https://app.rubic.exchange/sitemap.xml

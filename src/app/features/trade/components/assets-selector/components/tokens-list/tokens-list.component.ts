@@ -12,6 +12,7 @@ import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/model
 import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-tokens-list',
@@ -30,6 +31,8 @@ export class TokensListComponent {
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
   public readonly customToken$ = this.tokensListStoreService.customToken$;
+
+  public readonly isMobile = this.headerStore.isMobile;
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
     switchMap(tokens => {
@@ -55,7 +58,8 @@ export class TokensListComponent {
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   /**

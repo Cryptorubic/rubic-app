@@ -36,6 +36,6 @@ export const securityMessages: Record<TokenSecurityStatus, string> = {
   [TokenSecurityStatus.LOW_RISK]: 'Token code contains some low risk elements of concern',
   [TokenSecurityStatus.HIGH_RISK]: 'Token code contains some high risk elements of concern',
   [TokenSecurityStatus.NO_INFO]: 'No information',
-  [TokenSecurityStatus.PLATFORM_TOKEN]: 'Platform Token',
+  [TokenSecurityStatus.PLATFORM_TOKEN]: 'Platform Native Token',
   [TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN]: 'Unsupported blockchain'
 };

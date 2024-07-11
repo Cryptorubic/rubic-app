@@ -126,16 +126,17 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
+          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
 
           const options: OnChainManagerCalculationOptions = {
-            timeout: 10_000,
+            timeout,
             gasCalculation: calculateGas ? 'calculate' : 'disabled',
             zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
             slippageTolerance,
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: disabledTradeTypes
+            disabledProviders: [...disabledTradeTypes]
           };
           handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
@@ -241,7 +242,7 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError) {
+      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
@@ -318,8 +319,6 @@ export class OnChainService {
     trade: OnChainTrade,
     isSwapAndEarnSwap: boolean
   ): Promise<void> {
-    let fee: number;
-    let promoCode: string;
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
@@ -327,14 +326,7 @@ export class OnChainService {
     await firstValueFrom(
       timer(waitTime).pipe(
         switchMap(() =>
-          this.onChainApiService.createTrade(
-            transactionHash,
-            trade.type,
-            trade,
-            isSwapAndEarnSwap,
-            fee,
-            promoCode
-          )
+          this.onChainApiService.createTrade(transactionHash, trade.type, trade, isSwapAndEarnSwap)
         )
       )
     );
@@ -368,5 +360,16 @@ export class OnChainService {
       const waitTime = 3_000;
       await firstValueFrom(timer(waitTime));
     }
+  }
+
+  private calculateTimeoutForChains(
+    blockchainFrom: BlockchainName,
+    blockchainTo: BlockchainName
+  ): number {
+    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
+    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+      return 30_000;
+    }
+    return 10_000;
   }
 }

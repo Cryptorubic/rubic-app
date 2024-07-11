@@ -1020,5 +1020,11 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.SEI]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SEI], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.CORE]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.CORE], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BAHAMUT], ...defaultTokenParams } as Token
   ]
 };

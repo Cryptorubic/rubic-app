@@ -98,6 +98,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}debridge.svg`,
     name: 'deBridge'
   },
+  //EEEEEEEEEEEEEEEE
+  eddy_bridge: {
+    averageTime: 5,
+    color: 'black',
+    image: 'assets/images/icons/providers/on-chain/eddyfinance.ico',
+    name: 'Eddy Finance'
+  },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
     averageTime: 5,
@@ -199,6 +206,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#5E12A0',
     image: `${imageBasePath}osmosis.svg`,
     name: 'Osmosis Bridge'
+  },
+  owl_to_bridge: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}owlto.svg`,
+    name: 'Owlto'
   },
   //PPPPPPPPPPPPPPP
   polygon: {
