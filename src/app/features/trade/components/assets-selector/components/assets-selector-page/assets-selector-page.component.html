@@ -7,7 +7,12 @@
   </ng-container>
 
   <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <ng-container *ngIf="!isMobile; then searchBar"></ng-container>
+    <app-blockchains-filter-list
+      *ngIf="!isMobile && selectorListType !== 'blockchains'"
+    ></app-blockchains-filter-list>
+    <ng-container
+      *ngIf="!isMobile && selectorListType === 'blockchains'; then searchBar"
+    ></ng-container>
     <div class="assets-selector__row">
       <ng-container *ngIf="selectorListType === 'blockchains'">
         <div class="blockchains-list-container">
@@ -16,18 +21,22 @@
       </ng-container>
 
       <ng-container *ngIf="selectorListType !== 'blockchains'">
-        <app-asset-types-aside [idPrefix]="'idPrefix'"></app-asset-types-aside>
-
+        <app-asset-types-aside [idPrefix]="'idPrefix'">
+          <app-blockchains-filter-list *ngIf="isMobile"></app-blockchains-filter-list>
+        </app-asset-types-aside>
         <ng-container *ngIf="selectorListType === 'fiats'">
-          <app-search-bar class="vertical-iframe-token-search"></app-search-bar>
+          <app-search-bar
+            class="vertical-iframe-token-search"
+            [searchBarType]="'tokens'"
+          ></app-search-bar>
         </ng-container>
 
         <ng-container *ngIf="isMobile; then searchBar"></ng-container>
 
         <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
-          <div class="token-list__header">
+          <!-- <div class="token-list__header">
             <div class="token-list__header-label">Tokens</div>
-          </div>
+          </div> -->
           <div class="token-list-container__list">
             <app-tokens-list></app-tokens-list>
           </div>
@@ -36,12 +45,11 @@
     </div>
 
     <ng-template #searchBar>
+      <hr *ngIf="isMobile" class="assets-selector__horizontal-line" />
       <div class="assets-selector__row">
-        <app-search-bar></app-search-bar>
-
-        <app-switch-list-type-button
-          *ngIf="selectorListType === 'tokens'"
-        ></app-switch-list-type-button>
+        <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
+        <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
+        </app-switch-list-type-button>
       </div>
     </ng-template>
   </ng-container>

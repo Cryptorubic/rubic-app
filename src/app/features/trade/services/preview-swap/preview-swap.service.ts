@@ -10,6 +10,7 @@ import {
   Subscription
 } from 'rxjs';
 import {
+  catchError,
   combineLatestWith,
   debounceTime,
   distinctUntilChanged,
@@ -19,7 +20,8 @@ import {
   startWith,
   switchMap,
   takeWhile,
-  tap
+  tap,
+  timeout
 } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -55,6 +57,9 @@ import {
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
+import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -129,7 +134,9 @@ export class PreviewSwapService {
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
     private readonly notificationsService: NotificationsService,
-    private readonly translateService: TranslateService
+    private readonly translateService: TranslateService,
+    private readonly errorService: ErrorsService,
+    private readonly ccrApiService: CrossChainApiService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -234,6 +241,15 @@ export class PreviewSwapService {
               },
               tradeState.tradeType as CrossChainTradeType
             )
+          ).pipe(
+            timeout(29_000),
+            catchError(() => {
+              return of({
+                srcTxStatus: TX_STATUS.SUCCESS,
+                dstTxStatus: TX_STATUS.PENDING,
+                dstTxHash: null
+              });
+            })
           );
         }),
         tap(crossChainStatus => {
@@ -245,6 +261,22 @@ export class PreviewSwapService {
                 toBlockchain
               }
             });
+          } else if (crossChainStatus.dstTxStatus === TX_STATUS.FALLBACK) {
+            if (crossChainStatus.dstTxHash) {
+              this.setNextTxState({
+                step: 'success',
+                data: {
+                  hash: crossChainStatus.dstTxHash,
+                  toBlockchain
+                }
+              });
+            } else {
+              this.setNextTxState({ step: 'error', data: this.transactionState.data });
+            }
+            this.errorService.catch(new FallbackSwapError());
+            if (crossChainStatus.extraInfo?.mesonSwapId) {
+              this.ccrApiService.sendMesonSwapId(crossChainStatus, srcHash);
+            }
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }

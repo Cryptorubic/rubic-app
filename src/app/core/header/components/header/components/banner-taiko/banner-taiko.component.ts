@@ -2,17 +2,17 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
-  selector: 'app-banner',
-  templateUrl: './app-banner.component.html',
-  styleUrls: ['./app-banner.component.scss'],
+  selector: 'app-banner-taiko',
+  templateUrl: './banner-taiko.component.html',
+  styleUrls: ['./banner-taiko.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BannerComponent {
+export class BannerTaikoComponent {
   @Input() href: string;
 
   constructor(private googleTagManagerService: GoogleTagManagerService) {}
 
   public fireClickOnBannerEvent(): void {
-    this.googleTagManagerService.fireClickOnBannerEvent('blast_gold');
+    this.googleTagManagerService.fireClickOnBannerEvent('taiko_point');
   }
 }

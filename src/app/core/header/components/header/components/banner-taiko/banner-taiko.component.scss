@@ -11,7 +11,7 @@
 
   text-decoration: none;
 
-  background-image: url('/assets/banner/desktop-bg.png');
+  background-image: url('/assets/banner/taiko-desk.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -36,6 +36,11 @@
     @include font(20px, 140%, 300, #ffffff);
 
     letter-spacing: 1px;
+
+    &_bold {
+      font-weight: bold;
+      white-space: nowrap;
+    }
   }
 
   &__mobile-br {
@@ -53,7 +58,7 @@
 
 @include b($mobile-md) {
   .banner {
-    background-image: url('/assets/banner/mobile-bg.png');
+    background-image: url('/assets/banner/taiko-mobile.png');
 
     &__container {
       width: 100%;
@@ -62,8 +67,7 @@
     &__text {
       @include font(16px, 1, 400, #ffffff);
 
-      display: flex;
-      max-width: 280px;
+      max-width: 310px;
 
       letter-spacing: 0.5px;
       text-align: center;

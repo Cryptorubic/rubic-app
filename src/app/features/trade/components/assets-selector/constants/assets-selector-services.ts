@@ -5,6 +5,8 @@ import { BlockchainsListService } from '@features/trade/components/assets-select
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
+import { FilterQueryService } from '../services/filter-query-service/filter-query.service';
+import { AssetsSearchQueryService } from '../services/assets-search-query-service/assets-search-query.service';
 
 /**
  * Singleton services, which are destroyed after selector is closed.
@@ -13,10 +15,10 @@ export const AssetsSelectorServices = [
   AssetsSelectorService,
   SearchQueryService,
   BlockchainsListService,
-
+  FilterQueryService,
   TokensListTypeService,
   TokensListStoreService,
   TokensListService,
-
-  TuiDestroyService
+  TuiDestroyService,
+  AssetsSearchQueryService
 ];
