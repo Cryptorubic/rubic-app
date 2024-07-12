@@ -285,7 +285,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.merlinchain.io',
     'https://merlin.blockpi.network/v1/rpc/public'
   ],
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: [
+    'https://go.getblock.io/d3d699096c304a68b1c1e741cf02207a',
+    'https://mycrypto.rsk.co'
+  ],
   [BLOCKCHAIN_NAME.MODE]: [
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
