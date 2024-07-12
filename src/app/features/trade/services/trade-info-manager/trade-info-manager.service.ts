@@ -35,7 +35,6 @@ export class TradeInfoManager {
     const provider = TRADES_PROVIDERS[tradeType];
     const providerAverageTime = this.platformConfigurationService.providersAverageTime;
     const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
-
     return {
       ...provider,
       averageTime: currentProviderTime ? currentProviderTime : provider.averageTime

@@ -8,19 +8,22 @@
 
 .dropdown-content {
   display: flex;
-  gap: var(--tui-padding-s);
-  align-items: center;
-  width: 100%;
+  flex-direction: column;
+  gap: 12px;
+  width: 209px;
   padding: var(--tui-padding-xs) var(--tui-padding-xs);
 
+  .auto-height {
+    height: auto !important;
+  }
+
   > * {
-    width: 16px;
-    height: 16px;
+    width: 100%;
+    height: 100%;
 
     cursor: pointer;
 
     ::ng-deep * {
-      width: 100%;
       height: 100%;
     }
   }
@@ -30,6 +33,33 @@
     border-radius: var(--tui-radius-m);
   }
 
+  &__element {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 5px;
+
+    color: white;
+    font-size: 13px;
+
+    &:active {
+      padding: 5px;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      background: var(--tui-base-01);
+      border-radius: var(--tui-radius-s);
+    }
+
+    ::ng-deep svg {
+      width: 20px;
+      height: 20px;
+    }
+
+  }
+
   &__favorite {
     &_active {
       ::ng-deep path {
@@ -37,4 +67,30 @@
       }
     }
   }
+
+  &__favorite-container {
+    height: 16px;
+
+    ::ng-deep {
+      .t-loader {
+        left: -65%;
+
+        min-width: unset;
+      }
+    }
+  }
+
+  &__security-label-powered-by {
+    color: #9a9ab0;
+    font-weight: 400;
+  }
+
+  &__security-container-label {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+
+    line-height: 1.2;
+  }
 }
+

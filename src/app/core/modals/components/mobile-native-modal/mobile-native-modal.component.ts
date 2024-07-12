@@ -131,7 +131,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     } else if (swipe.direction === 'bottom') {
       if (
         place === 'content' &&
-        (title === 'Select token' ||
+        (title === 'Select Chain and Token' ||
           title === 'Select Blockchain' ||
           title === 'Account' ||
           title === 'Menu')
@@ -140,9 +140,6 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
       }
 
       this.close();
-    } else if (swipe.direction === 'right') {
-      this.hide();
-      animationTimeout(this.context.completeWith);
     }
   }
 
