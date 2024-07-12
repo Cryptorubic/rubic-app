@@ -39,6 +39,7 @@ import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/so
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
+import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -158,6 +159,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.TOKEN_POCKET) {
       return new TokenPocketWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.HOLD_STATION) {
+      return new HoldstationWalletAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
