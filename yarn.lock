@@ -17000,10 +17000,8 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.30.0-alpha-stargate-v2.9:
+"rubic-sdk@file:../rubic-sdk":
   version "5.30.0-alpha-stargate-v2.9"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.0-alpha-stargate-v2.9.tgz#444e1dc3d410d7cde75719dadf8b6e0e47b52fda"
-  integrity sha512-ho/uhCUwOSi5kfcmNF1hs/bnNGmr/GlGVRwBsfF2Q8+fuhr8CzGFErdgBUajg65scoIm6OB27BLVCiHCs7qDtA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
