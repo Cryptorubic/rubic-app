@@ -7,16 +7,16 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { fetchFriendlyAddress } from './utils/ton-utils';
+import { AddressBookResponse } from './models/ton-utils-types';
 
 export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
-  public chainType = CHAIN_TYPE.TON;
+  public readonly chainType = CHAIN_TYPE.TON;
 
-  public walletName = WALLET_NAME.TON_CONNECT;
+  public readonly walletName = WALLET_NAME.TON_CONNECT;
 
-  private tonConnect: TonConnectUI;
+  private readonly tonConnect: TonConnectUI;
 
-  private listeners: Array<() => void> = [];
+  private readonly listeners: Array<() => void> = [];
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -28,14 +28,12 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
 
     this.tonConnect = new TonConnectUI({
-      manifestUrl: `http://bubamainer.fvds.ru/api/v1/tonconnect/manifest/${ENVIRONMENT.environmentName}`
-    });
-    this.tonConnect.uiOptions = {
-      language: 'en',
+      manifestUrl: `https://dev-api.rubic.exchange/api/info/tonconnect?env_id=${ENVIRONMENT.environmentName}`,
       uiPreferences: {
         theme: THEME.DARK
-      }
-    };
+      },
+      language: 'en'
+    });
   }
 
   public async activate(): Promise<void> {
@@ -59,18 +57,26 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
 
   private listenEvents(): void {
     const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndwalletInfo => {
-      if (walletAndwalletInfo.account) {
-        (async function (): Promise<void> {
+      if (walletAndwalletInfo?.account) {
+        (async () => {
           const rawAddress = walletAndwalletInfo.account.address;
-          const friendlyAddress = await fetchFriendlyAddress(rawAddress);
+          const friendlyAddress = await this.fetchFriendlyAddress(rawAddress);
           this.onAddressChanges$.next(friendlyAddress);
-        }).call(this);
+        })();
       } else {
         this.onAddressChanges$.next(null);
       }
     });
 
     this.listeners.push(unsubscribeStatus);
+  }
+
+  private async fetchFriendlyAddress(rawAddress: string): Promise<string> {
+    const res = (await (
+      await fetch(`https://toncenter.com/api/v3/addressBook?address=${rawAddress}`)
+    ).json()) as AddressBookResponse;
+    const friendly = Object.values(res)[0].user_friendly;
+    return friendly;
   }
 
   public async deactivate(): Promise<void> {
