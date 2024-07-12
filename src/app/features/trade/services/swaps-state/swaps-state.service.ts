@@ -149,11 +149,8 @@ export class SwapsStateService {
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean
   ): void {
-    if (!wrappedTrade?.trade) {
-      return;
-    }
-    const trade = wrappedTrade.trade;
-    const defaultState: TradeState = !wrappedTrade?.trade
+    const trade = wrappedTrade?.trade;
+    const defaultState: TradeState = !trade
       ? {
           error: wrappedTrade.error,
           trade: null,
@@ -179,26 +176,36 @@ export class SwapsStateService {
       // Same list
       if (type === this.swapType) {
         const providerIndex = currentTrades.findIndex(
-          provider => provider?.trade?.type === trade?.type
+          provider => provider?.trade?.type === wrappedTrade?.tradeType
         );
         // New or old
         if (providerIndex !== -1) {
-          currentTrades[providerIndex] = {
-            ...currentTrades[providerIndex],
-            trade: defaultState.trade!,
-            needApprove: defaultState.needApprove,
-            error: defaultState.error,
-            routes: defaultState.routes
-          };
+          if (trade) {
+            currentTrades[providerIndex] = {
+              ...currentTrades[providerIndex],
+              trade: defaultState.trade!,
+              needApprove: defaultState.needApprove,
+              error: defaultState.error,
+              routes: defaultState.routes
+            };
+          } else {
+            currentTrades.splice(providerIndex, 1);
+          }
         } else {
-          currentTrades.push(defaultState);
+          if (trade) {
+            currentTrades.push(defaultState);
+          }
         }
       } else {
-        // Make a new list with one element
-        currentTrades = [defaultState];
+        if (trade) {
+          // Make a new list with one element
+          currentTrades = [defaultState];
+        }
       }
     } else {
-      currentTrades.push(defaultState);
+      if (trade) {
+        currentTrades.push(defaultState);
+      }
     }
     this.swapType = type;
     this._tradesStore$.next(currentTrades);
@@ -451,7 +458,7 @@ export class SwapsStateService {
     );
     const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS)
       .filter(([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain)
-      .map(([_, badgeInfo]) => badgeInfo?.[0]);
+      .flatMap(([_, badgeInfo]) => badgeInfo);
     if (!badgesByProvider && !badgesByChain) {
       return [];
     }
@@ -461,6 +468,7 @@ export class SwapsStateService {
     const allBadges = [...providerBadges, ...chainBadges];
 
     const tradeSpecificBadges = allBadges
+      .filter(Boolean)
       .filter(info => {
         if (!info.showLabel(trade)) {
           return false;

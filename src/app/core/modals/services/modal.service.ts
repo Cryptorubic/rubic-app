@@ -43,7 +43,7 @@ export class ModalService {
     return this.showDialog<TokenSelectorPageComponent, void>(
       TokenSelectorPageComponent,
       {
-        title: 'Select token',
+        title: 'Select Chain and Token',
         size: 'l',
         data: {
           formType

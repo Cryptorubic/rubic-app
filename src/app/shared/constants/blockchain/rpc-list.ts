@@ -305,6 +305,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://xlayerrpc.okx.com'
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
+    'https://taiko.blockpi.network/v1/rpc/fc222c6da14117b3d1c6f1b2a1ad25484162854b',
     'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
@@ -316,5 +317,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/core',
     'https://1rpc.io/core',
     'https://core.public.infstones.com'
+  ],
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    'https://rpc.ankr.com/bahamut/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc1.bahamut.io',
+    'https://rpc2.bahamut.io',
+    'wss://ws2.sahara.bahamutchain.com',
+    'wss://bahamut-rpc.publicnode.com'
   ]
 };

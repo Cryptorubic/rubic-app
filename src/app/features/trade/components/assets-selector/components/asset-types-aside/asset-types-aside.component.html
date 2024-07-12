@@ -1,53 +1,53 @@
-<aside class="asset-types-aside">
-  <div class="asset-types-aside__blockchain-header">
-    <div class="asset-types-aside__blockchain-header-label">Blockchains</div>
-    <button class="asset-types-aside__blockchain-header-expand" (click)="toggleBlockchainList()">
-      View all
-    </button>
+<div
+  [ngClass]="{
+    'asset-types-aside__search-bar': !isMobile,
+    'asset-types-aside__search-bar-mobile': isMobile
+  }"
+>
+  <div *ngIf="isMobile" class="asset-types-aside__search-bar-mobile__search-bar-container">
+    <app-search-bar [searchBarType]="'blockchains'"></app-search-bar>
+    <app-filter-list-element
+      [blockchainFilter]="'All'"
+      [isSelected]="(selectedFilter$ | async) === 'All'"
+      (click)="setBlockchainFilterAll()"
+    ></app-filter-list-element>
   </div>
+  <app-search-bar *ngIf="!isMobile" [searchBarType]="'blockchains'"></app-search-bar>
+  <ng-content></ng-content>
+</div>
+<aside class="asset-types-aside">
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
-      <ng-container *ngLet="shownBlockchainsAmount$ | async as shownBlockchainsAmount">
-        <ng-container
-          *ngLet="
-            shownBlockchainsAmount | functionCall : getBlockchainsList : this as blockchainsList
-          "
-        >
-          <ng-container *ngFor="let blockchainItem of blockchainsList">
-            <ng-container
-              *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
-            >
-              <button
-                class="asset-types-aside__list-element"
-                [id]="idPrefix + 'Network_' + blockchainItem.name"
-                tuiButton
-                size="l"
-                type="button"
-                appearance="secondary"
-                [disabled]="selectedAssetType === blockchainItem.name || disabled"
-                [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
-                (click)="onBlockchainSelect(blockchainItem.name)"
-              >
-                <div class="icon-container">
-                  <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
-                  <span class="icon-label">{{ blockchainItem.label }}</span>
-                </div>
-              </button>
-            </ng-container>
-          </ng-container>
-        </ng-container>
-
-        <ng-container *ngIf="blockchainsAmount - shownBlockchainsAmount > 0">
-          <button
-            class="open-selector"
-            tuiButton
-            size="l"
-            type="button"
-            appearance="secondary"
-            (click)="openBlockchainsList()"
+      <ng-container>
+        <ng-container *ngFor="let blockchainItem of blockchainsToShow$ | async">
+          <ng-container
+            *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
           >
-            +{{ blockchainsAmount - shownBlockchainsAmount }}
-          </button>
+            <button
+              class="asset-types-aside__list-element"
+              [id]="idPrefix + 'Network_' + blockchainItem.name"
+              tuiButton
+              size="l"
+              type="button"
+              appearance="secondary"
+              [disabled]="selectedAssetType === blockchainItem.name || disabled"
+              [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
+              (click)="onBlockchainSelect(blockchainItem.name)"
+            >
+              <div class="icon-container">
+                <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
+                <span class="icon-label">{{ blockchainItem.label }}</span>
+              </div>
+              <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
+                <div class="badge-container">
+                  <app-blockchains-promo-badge
+                    [tag]="tag"
+                    [blockchain]="blockchainItem.name"
+                  ></app-blockchains-promo-badge>
+                </div>
+              </ng-container>
+            </button>
+          </ng-container>
         </ng-container>
       </ng-container>
     </ul>
