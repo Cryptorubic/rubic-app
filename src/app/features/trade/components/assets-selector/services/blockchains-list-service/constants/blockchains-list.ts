@@ -379,6 +379,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.4,
     tags: ['ZETA', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
+  {
+    name: BLOCKCHAIN_NAME.BAHAMUT,
+    rank: 0.4,
+    tags: ['FTN', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  },
   { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
   { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },
   { name: BLOCKCHAIN_NAME.CELO, rank: 0.4, tags: [BlockchainTags.EVM] },

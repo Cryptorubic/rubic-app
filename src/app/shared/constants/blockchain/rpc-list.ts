@@ -285,7 +285,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.merlinchain.io',
     'https://merlin.blockpi.network/v1/rpc/public'
   ],
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: [
+    'https://go.getblock.io/d3d699096c304a68b1c1e741cf02207a',
+    'https://mycrypto.rsk.co'
+  ],
   [BLOCKCHAIN_NAME.MODE]: [
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
@@ -317,5 +320,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/core',
     'https://1rpc.io/core',
     'https://core.public.infstones.com'
+  ],
+  [BLOCKCHAIN_NAME.BAHAMUT]: [
+    'https://rpc.ankr.com/bahamut/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc1.bahamut.io',
+    'https://rpc2.bahamut.io',
+    'wss://ws2.sahara.bahamutchain.com',
+    'wss://bahamut-rpc.publicnode.com'
   ]
 };

@@ -55,13 +55,13 @@ export class TransactionDetailsComponent {
 
   public getPriceImpactCssClass(priceImpact: number): string {
     const isUnknown = isNaN(priceImpact) || isNil(priceImpact);
-    if (isUnknown || (priceImpact >= 0.01 && priceImpact < 15)) {
+    if (isUnknown || (priceImpact >= 0.01 && priceImpact < 10)) {
       return '';
     }
     if (priceImpact < 0.01) {
       return 'transaction-details__priceImpact-low';
     }
-    if (priceImpact >= 15 && priceImpact < 30) {
+    if (priceImpact >= 10 && priceImpact < 20) {
       return 'transaction-details__priceImpact-medium';
     }
     return 'transaction-details__priceImpact-high';
