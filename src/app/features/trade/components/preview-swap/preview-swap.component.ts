@@ -220,11 +220,11 @@ export class PreviewSwapComponent implements OnDestroy {
     const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
-    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
+    const gasFee = gasData?.gasLimit?.multipliedBy(gasPrice);
 
     return {
-      amount: gasLimit,
-      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
+      amount: gasFee,
+      amountInUsd: gasFee.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
   }

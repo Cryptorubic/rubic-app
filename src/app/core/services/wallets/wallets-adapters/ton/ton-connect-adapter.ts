@@ -28,7 +28,7 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
 
     this.tonConnect = new TonConnectUI({
-      manifestUrl: `https://dev-api.rubic.exchange/api/info/tonconnect?env_id=${ENVIRONMENT.environmentName}`,
+      manifestUrl: `https://bubamainer.fvds.ru/api/v1/tonconnect/manifest/${ENVIRONMENT.environmentName}`,
       uiPreferences: {
         theme: THEME.DARK
       },

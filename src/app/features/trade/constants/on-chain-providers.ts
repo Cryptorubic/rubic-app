@@ -591,6 +591,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
+  [ON_CHAIN_TRADE_TYPE.TONKEEPER]: {
+    name: 'Tonkeeper Swap',
+    image: `${imageBasePath}tonkeeper.svg`,
+    color: 'white'
+  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
