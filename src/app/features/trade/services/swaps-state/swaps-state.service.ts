@@ -482,7 +482,7 @@ export class SwapsStateService {
         bgColor: info.bgColor,
         label: info.getLabel(trade),
         hint: info?.getHint?.(trade),
-        href: info.href
+        href: info?.getUrl?.(trade)
       }));
 
     return tradeSpecificBadges;
