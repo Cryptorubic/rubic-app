@@ -22,6 +22,7 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { AvailableBlockchain } from '../blockchains-list-service/models/available-blockchain';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -64,6 +65,7 @@ export class AssetsSelectorService {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensApiService: TokensApiService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
@@ -143,8 +145,8 @@ export class AssetsSelectorService {
   }
 
   private checkAndRefetchTokenList(): void {
-    if (this.tokensNetworkService.needRefetchTokens) {
-      this.tokensNetworkService.tokensRequestParameters = undefined;
+    if (this.tokensApiService.needRefetchTokens) {
+      this.tokensNetworkService.setTokensRequestParameters(undefined);
     }
   }
 

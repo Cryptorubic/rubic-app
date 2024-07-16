@@ -191,6 +191,9 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.SOLANA) {
       return [BLOCKCHAIN_NAME.SOLANA];
     }
+    if (this.chainType === CHAIN_TYPE.TON) {
+      return [BLOCKCHAIN_NAME.TON];
+    }
     throw new Error('Blockchain is not supported');
   }
 

@@ -56,10 +56,10 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   }
 
   private listenEvents(): void {
-    const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndwalletInfo => {
-      if (walletAndwalletInfo?.account) {
+    const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndWalletInfo => {
+      if (walletAndWalletInfo?.account) {
         (async () => {
-          const rawAddress = walletAndwalletInfo.account.address;
+          const rawAddress = walletAndWalletInfo.account.address;
           const friendlyAddress = await this.fetchFriendlyAddress(rawAddress);
           this.onAddressChanges$.next(friendlyAddress);
         })();

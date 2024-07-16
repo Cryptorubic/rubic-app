@@ -312,6 +312,11 @@ export class TokensStoreService {
     this._tokens$.next(tokens);
   }
 
+  /**
+   * @description Method combines tokens from storage.get('RUBIC_TOKENS) with tokens from backend
+   *              and tokens from backend have high priority
+   * @param newTokens tokens from backend
+   */
   public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
     const tokens = (this.tokens || List([]))
       .map(token => {
@@ -337,6 +342,7 @@ export class TokensStoreService {
             return this.getDefaultTokenAmounts(List([newToken]), isFavorite).get(0);
           })
       );
+    console.log('patchTokens_END', tokens);
     this._tokens$.next(tokens);
   }
 
