@@ -48,15 +48,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'HoldStation',
-    value: WALLET_NAME.HOLD_STATION,
-    img: './assets/images/icons/wallets/holdstation.png',
-    supportsDesktop: false,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
-  {
     name: 'Argent',
     value: WALLET_NAME.ARGENT,
     img: './assets/images/icons/wallets/argent.svg',
@@ -107,6 +98,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     img: './assets/images/icons/wallets/tokenpocket.png',
     supportsDesktop: true,
     supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'HoldStation',
+    value: WALLET_NAME.HOLD_STATION,
+    img: './assets/images/icons/wallets/holdstation.png',
+    supportsDesktop: true,
+    supportsMobile: true,
     display: true,
     disabled: false
   }
