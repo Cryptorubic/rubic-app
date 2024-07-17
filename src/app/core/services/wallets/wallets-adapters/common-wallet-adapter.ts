@@ -26,6 +26,8 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
 
   protected onDisconnectSub: Subscription;
 
+  protected onCustomEventSub: Subscription;
+
   public get isActive(): boolean {
     return this.isEnabled && Boolean(this.selectedAddress);
   }
@@ -65,6 +67,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
     this.onAddressChangesSub?.unsubscribe();
     this.onNetworkChangesSub?.unsubscribe();
     this.onDisconnectSub?.unsubscribe();
+    this.onCustomEventSub?.unsubscribe();
     this.onAddressChanges$.next(null);
     this.onNetworkChanges$.next(null);
     this.isEnabled = false;

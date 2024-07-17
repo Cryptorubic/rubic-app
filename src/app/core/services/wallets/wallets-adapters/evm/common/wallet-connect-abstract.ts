@@ -63,6 +63,8 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
   }
 
   public async deactivate(): Promise<void> {
+    // @ts-ignore
+    this.wallet?.disconnect?.();
     super.deactivate();
   }
 }
