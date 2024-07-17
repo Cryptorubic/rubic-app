@@ -342,7 +342,6 @@ export class TokensStoreService {
             return this.getDefaultTokenAmounts(List([newToken]), isFavorite).get(0);
           })
       );
-    console.log('patchTokens_END', tokens);
     this._tokens$.next(tokens);
   }
 

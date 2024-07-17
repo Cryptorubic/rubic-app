@@ -50,7 +50,7 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
       this.onAddressChanges$.next(this.selectedAddress);
       this.onNetworkChanges$.next(this.selectedChain);
     } catch (err) {
-      console.log('TON_CONNECT_ACTIVATE_ERROR ===> ', err);
+      console.error('[TonConnectAdapter] Activation error - ', err);
       throw err;
     }
   }
@@ -61,7 +61,8 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
         (async () => {
           const rawAddress = walletAndWalletInfo.account.address;
           const friendlyAddress = await this.fetchFriendlyAddress(rawAddress);
-          this.onAddressChanges$.next(friendlyAddress);
+          this.selectedAddress = friendlyAddress;
+          this.onAddressChanges$.next(this.selectedAddress);
         })();
       } else {
         this.onAddressChanges$.next(null);
