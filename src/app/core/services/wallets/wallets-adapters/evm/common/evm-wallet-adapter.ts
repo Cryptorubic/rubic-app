@@ -15,6 +15,7 @@ export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter
   protected initSubscriptionsOnChanges(): void {
     this.onAddressChangesSub = fromEvent(this.wallet as RubicAny, 'accountsChanged').subscribe(
       (accounts: string[]) => {
+        console.log(accounts);
         this.selectedAddress = accounts[0] || null;
         this.zone.run(() => {
           this.onAddressChanges$.next(this.selectedAddress);
@@ -24,12 +25,17 @@ export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter
 
     this.onNetworkChangesSub = fromEvent(this.wallet as RubicAny, 'chainChanged').subscribe(
       (chainId: string) => {
+        console.log(chainId);
         this.selectedChain =
           (BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName) ?? null;
         this.zone.run(() => {
           this.onNetworkChanges$.next(this.selectedChain);
         });
       }
+    );
+
+    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() =>
+      this.deactivate()
     );
   }
 

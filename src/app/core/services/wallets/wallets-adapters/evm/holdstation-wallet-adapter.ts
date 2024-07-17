@@ -2,12 +2,11 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
+import { blockchainId, BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
-import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 
 export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
@@ -23,7 +22,8 @@ export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
     super(
       {
         projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        chains: WALLET_CONNECT_SUPPORTED_CHAINS,
+        chains: [1],
+        optionalChains: Object.values(blockchainId),
         showQrModal: true,
         qrModalOptions: {
           explorerExcludedWalletIds: 'ALL',
@@ -52,7 +52,7 @@ export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
 
       const result = await Promise.race([
         this.wallet.enable(),
-        new Promise<void>(resolve => setTimeout(() => resolve(null), 10_000))
+        new Promise<void>(resolve => setTimeout(() => resolve(null), 60_000))
       ]);
       if (result !== null) {
         const [address] = await this.wallet.enable();
