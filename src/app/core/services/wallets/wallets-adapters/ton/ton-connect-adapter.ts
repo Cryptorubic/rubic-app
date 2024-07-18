@@ -82,7 +82,6 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
       )
     );
     const friendly = Object.values(res)[0].user_friendly;
-    console.log('FETCH_FRRRRRRRRR', { res, friendly });
     return friendly;
   }
 
