@@ -16,7 +16,7 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
 
   private readonly tonConnect: TonConnectUI;
 
-  private readonly listeners: Array<() => void> = [];
+  private unsubOnStatusChangeListener: () => void;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -28,7 +28,7 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
 
     this.tonConnect = new TonConnectUI({
-      manifestUrl: `https://bubamainer.fvds.ru/api/v1/tonconnect/manifest/${ENVIRONMENT.environmentName}`,
+      manifestUrl: `https://api.rubic.exchange/api/info/tonconnect/${ENVIRONMENT.environmentName}`,
       uiPreferences: {
         theme: THEME.DARK
       },
@@ -56,7 +56,7 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   }
 
   private listenEvents(): void {
-    const unsubscribeStatus = this.tonConnect.onStatusChange(walletAndWalletInfo => {
+    this.unsubOnStatusChangeListener = this.tonConnect.onStatusChange(walletAndWalletInfo => {
       if (walletAndWalletInfo?.account) {
         (async () => {
           const rawAddress = walletAndWalletInfo.account.address;
@@ -68,21 +68,18 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
         this.onAddressChanges$.next(null);
       }
     });
-
-    this.listeners.push(unsubscribeStatus);
   }
 
   private async fetchFriendlyAddress(rawAddress: string): Promise<string> {
-    const res = (await (
-      await fetch(`https://toncenter.com/api/v3/addressBook?address=${rawAddress}`)
-    ).json()) as AddressBookResponse;
+    const rawRes = await fetch(`https://toncenter.com/api/v3/addressBook?address=${rawAddress}`);
+    const res = (await rawRes.json()) as AddressBookResponse;
     const friendly = Object.values(res)[0].user_friendly;
     return friendly;
   }
 
   public async deactivate(): Promise<void> {
     await this.tonConnect.disconnect();
-    this.listeners.forEach(unsub => unsub());
+    this.unsubOnStatusChangeListener();
     super.deactivate();
   }
 }
