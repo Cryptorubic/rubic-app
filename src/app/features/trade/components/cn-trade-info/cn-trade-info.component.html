@@ -6,7 +6,7 @@
   } as state"
 >
   <ng-container header>Transaction details</ng-container>
-  <div class="transaction-details">
+  <div *ngIf="state?.trade" class="transaction-details">
     <app-transaction-details-element
       [title]="text.transactionId.label"
       [description]="text.transactionId.description"
