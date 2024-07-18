@@ -9,5 +9,6 @@ export enum WALLET_NAME {
   PHANTOM = 'phantom',
   SOLFLARE = 'solflare',
   SAFE = 'safe',
-  TOKEN_POCKET = 'tokenpocket'
+  TOKEN_POCKET = 'tokenpocket',
+  TON_CONNECT = 'tonconnect'
 }

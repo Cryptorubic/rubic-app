@@ -591,6 +591,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
+  [ON_CHAIN_TRADE_TYPE.TONKEEPER]: {
+    name: 'Tonkeeper Swap',
+    image: `${imageBasePath}tonkeeper.svg`,
+    color: 'white',
+    averageTime: 3
+  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
@@ -723,6 +729,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
 export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = Object.fromEntries(
   Object.entries(onChainTradeProviders).map(([key, value]: [OnChainTradeType, ProviderInfo]) => [
     key,
-    { ...value, averageTime: 1 }
+    { averageTime: 1, ...value }
   ])
 ) as Record<OnChainTradeType, ProviderInfo>;

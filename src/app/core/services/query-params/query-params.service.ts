@@ -207,7 +207,7 @@ export class QueryParamsService {
     );
 
     if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
+      this.tokensNetworkService.setTokensRequestParameters(tokensQueryParams);
     }
   }
 
