@@ -314,7 +314,7 @@ export class TokensStoreService {
 
   /**
    * @description Method combines tokens from storage.get('RUBIC_TOKENS) with tokens from backend
-   *              and tokens from backend have high priority
+   * and tokens from backend have high priority
    * @param newTokens tokens from backend
    */
   public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {

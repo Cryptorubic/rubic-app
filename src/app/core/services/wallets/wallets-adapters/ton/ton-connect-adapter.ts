@@ -2,12 +2,13 @@ import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
 import { CommonWalletAdapter } from '../common-wallet-adapter';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { THEME, TonConnectUI } from '@tonconnect/ui';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AddressBookResponse } from './models/ton-utils-types';
+import { HttpService } from '@app/core/services/http/http.service';
 
 export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   public readonly chainType = CHAIN_TYPE.TON;
@@ -23,7 +24,8 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow
+    window: RubicWindow,
+    private readonly httpService: HttpService
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
 
@@ -58,12 +60,13 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   private listenEvents(): void {
     this.unsubOnStatusChangeListener = this.tonConnect.onStatusChange(walletAndWalletInfo => {
       if (walletAndWalletInfo?.account) {
-        (async () => {
-          const rawAddress = walletAndWalletInfo.account.address;
-          const friendlyAddress = await this.fetchFriendlyAddress(rawAddress);
-          this.selectedAddress = friendlyAddress;
-          this.onAddressChanges$.next(this.selectedAddress);
-        })();
+        const rawAddress = walletAndWalletInfo.account.address;
+        this.fetchFriendlyAddress(rawAddress)
+          .then(friendlyAddress => {
+            this.selectedAddress = friendlyAddress;
+            this.onAddressChanges$.next(this.selectedAddress);
+          })
+          .catch(() => this.onAddressChanges$.next(null));
       } else {
         this.onAddressChanges$.next(null);
       }
@@ -71,9 +74,15 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   }
 
   private async fetchFriendlyAddress(rawAddress: string): Promise<string> {
-    const rawRes = await fetch(`https://toncenter.com/api/v3/addressBook?address=${rawAddress}`);
-    const res = (await rawRes.json()) as AddressBookResponse;
+    const res = await firstValueFrom(
+      this.httpService.get<AddressBookResponse>(
+        '',
+        {},
+        `https://toncenter.com/api/v3/addressBook?address=${rawAddress}`
+      )
+    );
     const friendly = Object.values(res)[0].user_friendly;
+    console.log('FETCH_FRRRRRRRRR', { res, friendly });
     return friendly;
   }
 

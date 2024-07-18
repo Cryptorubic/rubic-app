@@ -40,6 +40,7 @@ import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/s
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
 import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 
 @Injectable({
   providedIn: 'root'
@@ -162,7 +163,7 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.TON_CONNECT) {
-      return new TonConnectAdapter(...defaultConstructorParameters);
+      return new TonConnectAdapter(...defaultConstructorParameters, this.httpService);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
@@ -207,16 +208,19 @@ export class WalletConnectorService {
     evmBlockchainName: EvmBlockchainName,
     customRpcUrl?: string
   ): Promise<boolean> {
+    if (!(this.provider instanceof EvmWalletAdapter)) {
+      throw new RubicError("Can't switch chain in non evm wallet!");
+    }
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
-    const provider = this.provider as EvmWalletAdapter;
+
     try {
-      await provider.switchChain(chainId);
+      await this.provider.switchChain(chainId);
       return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
           await this.addChain(evmBlockchainName, customRpcUrl);
-          await provider.switchChain(chainId);
+          await this.provider.switchChain(chainId);
           return true;
         } catch (err) {
           this.errorService.catch(err);
