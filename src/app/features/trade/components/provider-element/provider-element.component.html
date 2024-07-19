@@ -72,7 +72,10 @@
 
       <tui-expand [expanded]="expanded">
         <ng-template tuiExpandContent>
-          <app-route-element [routes]="tradeState.routes"></app-route-element>
+          <app-route-element
+            [tradeType]="tradeState.tradeType"
+            [routes]="tradeState.routes"
+          ></app-route-element>
         </ng-template>
       </tui-expand>
     </div>
