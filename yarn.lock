@@ -6508,13 +6508,6 @@ ajv-formats@2.1.1, ajv-formats@^2.1.1:
   dependencies:
     ajv "^8.0.0"
 
-ajv-formats@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/ajv-formats/-/ajv-formats-3.0.1.tgz#3d5dc762bca17679c3c2ea7e90ad6b7532309578"
-  integrity sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==
-  dependencies:
-    ajv "^8.0.0"
-
 ajv-keywords@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/ajv-keywords/-/ajv-keywords-3.5.2.tgz#31f29da5ab6e00d1c2d329acf7b5929614d5014d"
@@ -17000,10 +16993,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.30.0-alpha-stargate-v2.17:
-  version "5.30.0-alpha-stargate-v2.17"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.0-alpha-stargate-v2.17.tgz#6d595af562e6de85e7e07b4bda97c9b442229648"
-  integrity sha512-dYqflcPvOjELO+mQwbNZyvTyLl5PITX2e1uVbjaJLYm6AFXpdYACjhI4lrw9oPBKaT4Zv/vHBOLmClNM0I6CTQ==
+rubic-sdk@5.30.0-alpha-stargate-v2.18:
+  version "5.30.0-alpha-stargate-v2.18"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.30.0-alpha-stargate-v2.18.tgz#c60e01afecbcc2bc590bc5e96675d52b7c13ec39"
+  integrity sha512-WPPlRfQkSb5tPU9vOYp1vBP5Y02ZTjZMNDlu5hLRIg8oSfv1TPi0uQccGPqvv44UGlCIKSPGnZBPRaFc2n9PrQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
