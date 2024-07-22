@@ -276,6 +276,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate'
   },
+  stargate_v2: {
+    averageTime: 5,
+    color: '#999999',
+    image: `${imageBasePath}stargate.svg`,
+    name: 'Stargate V2'
+  },
   symbiosis: {
     averageTime: 5,
     color: '#0dc449',

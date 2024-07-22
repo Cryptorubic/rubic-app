@@ -18,10 +18,10 @@ import {
   rangoSupportedBlockchains,
   scrollBridgeSupportedBlockchains,
   squidrouterCrossChainSupportedBlockchains,
-  stargateCrossChainSupportedBlockchains,
   symbiosisCrossChainSupportedBlockchains,
   taikoBridgeSupportedBlockchains,
   xySupportedBlockchains,
+  stargateV2SupportedBlockchains,
   routerCrossChainSupportedChains
 } from 'rubic-sdk';
 
@@ -36,7 +36,7 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.XY]: xySupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: cbridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: changenowProxySupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: stargateCrossChainSupportedBlockchains,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: stargateV2SupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: arbitrumRbcBridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: squidrouterCrossChainSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE]: scrollBridgeSupportedBlockchains,
@@ -49,5 +49,6 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.MESON]: mesonCrossChainSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: owlToSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: eddyBridgeSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: routerCrossChainSupportedChains
 } as const;
