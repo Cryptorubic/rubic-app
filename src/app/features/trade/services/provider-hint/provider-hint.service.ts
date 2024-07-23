@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 
 @Injectable()
 export class ProviderHintService {
-  private readonly _hideProviderHintOnScroll$ = new BehaviorSubject<boolean>(false);
+  private readonly _hideProviderHint$ = new BehaviorSubject<boolean>(false);
 
-  public get hideProviderHintOnScroll$(): Observable<boolean> {
-    return this._hideProviderHintOnScroll$.asObservable();
+  public get hideProviderHint$(): Observable<boolean> {
+    return this._hideProviderHint$.pipe(distinctUntilChanged());
   }
 
-  public hideProviderHintOnScroll(isScrollStart: boolean): void {
-    this._hideProviderHintOnScroll$.next(isScrollStart);
+  public hideHint(isScrollStart: boolean): void {
+    this._hideProviderHint$.next(isScrollStart);
   }
 }

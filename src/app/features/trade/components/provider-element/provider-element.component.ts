@@ -4,6 +4,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/provider-info';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 
 @Component({
   selector: 'app-provider-element',
@@ -22,7 +23,12 @@ export class ProviderElementComponent {
 
   public expanded = false;
 
-  constructor(private readonly tradeInfoManager: TradeInfoManager) {}
+  public readonly hideHint$ = this.providerHintService.hideProviderHint$;
+
+  constructor(
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly providerHintService: ProviderHintService
+  ) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();

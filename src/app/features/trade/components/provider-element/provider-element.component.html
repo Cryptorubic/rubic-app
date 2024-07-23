@@ -9,6 +9,7 @@
       [ngClass]="{
         'element__provider-container_selected': selectedTradeType === tradeState?.tradeType
       }"
+      *ngLet="hideHint$ | async as hideHint"
     >
       <div class="element__amounts-container">
         <div class="element__amount">
@@ -45,10 +46,12 @@
                 status="custom"
                 value="Best"
                 [tuiHint]="'The most profitable trade according to our calculations'"
+                [tuiHintHideDelay]="hideHint ? 0 : 200"
               ></tui-tag>
               <app-promotion-badge
                 *ngFor="let badge of tradeState.badges"
                 [data]="badge"
+                [hideHint]="hideHint"
               ></app-promotion-badge>
               <tui-tag
                 *ngIf="tradeState?.error"
@@ -80,6 +83,7 @@
       [gasInfo]="getGasData()"
       [feeInfoChange]="getFeeInfo()"
       [time]="getAverageTimeString()"
+      [hideHint$]="hideHint$"
     ></app-swap-data-element>
   </div>
 </ng-container>

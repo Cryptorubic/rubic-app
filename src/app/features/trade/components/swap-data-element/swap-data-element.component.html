@@ -1,4 +1,4 @@
-<div class="provider-info">
+<div class="provider-info" *ngLet="hideHint$ | async as hideHint">
   <div
     *ngIf="gasInfo?.amountInUsd?.gt(0)"
     class="provider-info__element"
@@ -20,7 +20,7 @@
     [tuiHint]="feeData"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
-    [tuiHintHideDelay]="(hideHintOnScroll$ | async) === false ? 200 : 0"
+    [tuiHintHideDelay]="!hideHint ? 200 : 0"
   >
     <img src="assets/images/icons/money.svg" alt="Fee" />
     {{ displayAmount }}
@@ -31,7 +31,7 @@
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
-    [tuiHintHideDelay]="(hideHintOnScroll$ | async) === false ? 200 : 0"
+    [tuiHintHideDelay]="!hideHint ? 200 : 0"
   >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>

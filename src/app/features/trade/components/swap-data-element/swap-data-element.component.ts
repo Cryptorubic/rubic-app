@@ -6,7 +6,7 @@ import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
 import { HintAppearance, HintDirection } from './model';
-import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -47,7 +47,5 @@ export class SwapDataElementComponent {
 
   @Input({ required: true }) time: string | number;
 
-  constructor(private readonly providerHintService: ProviderHintService) {}
-
-  public readonly hideHintOnScroll$ = this.providerHintService.hideProviderHintOnScroll$;
+  @Input() hideHint$: Observable<boolean> = of(false);
 }

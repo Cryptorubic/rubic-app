@@ -29,7 +29,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
   templateUrl: './providers-list-general.component.html',
   styleUrls: ['./providers-list-general.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [TuiDestroyService],
+  providers: [TuiDestroyService, ProviderHintService],
   animations: [
     trigger('progress', [
       transition(':enter', [
@@ -133,13 +133,13 @@ export class ProvidersListGeneralComponent {
     fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
       .pipe(
         tap(() => this.hideProviderHintOnScroll(true)),
-        debounceTime(50),
+        debounceTime(500),
         takeUntil(this.destroy$)
       )
       .subscribe(() => this.hideProviderHintOnScroll(false));
   }
 
   public hideProviderHintOnScroll(isScrollStart: boolean): void {
-    this.providerHintService.hideProviderHintOnScroll(isScrollStart);
+    this.providerHintService.hideHint(isScrollStart);
   }
 }
