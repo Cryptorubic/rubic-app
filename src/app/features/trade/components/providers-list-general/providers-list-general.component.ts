@@ -5,7 +5,9 @@ import {
   Inject,
   Injector,
   Input,
-  Output
+  Output,
+  Self,
+  ViewChild
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -13,17 +15,21 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
-import { BehaviorSubject, interval, map } from 'rxjs';
-import { switchMap, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
+import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { TuiScrollbarComponent } from '@taiga-ui/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-providers-list-general',
   templateUrl: './providers-list-general.component.html',
   styleUrls: ['./providers-list-general.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
   animations: [
     trigger('progress', [
       transition(':enter', [
@@ -50,6 +56,8 @@ export class ProvidersListGeneralComponent {
       this._triggerCalculation$.next();
     }
   }
+
+  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
 
   private _calculationStatus: CalculationStatus;
 
@@ -88,7 +96,9 @@ export class ProvidersListGeneralComponent {
     @Inject(Injector) private readonly injector: Injector,
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapsFormService: SwapsFormService,
+    private readonly providerHintService: ProviderHintService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public handleTradeSelection(tradeType: TradeProvider): void {
@@ -117,5 +127,19 @@ export class ProvidersListGeneralComponent {
       return val * ((100 * this.ratio) / 30_000);
     }
     return val * ((100 * this.ratio) / CALCULATION_TIMEOUT_MS);
+  }
+
+  ngAfterViewInit(): void {
+    fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
+      .pipe(
+        tap(() => this.hideProviderHintOnScroll(true)),
+        debounceTime(50),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.hideProviderHintOnScroll(false));
+  }
+
+  public hideProviderHintOnScroll(isScrollStart: boolean): void {
+    this.providerHintService.hideProviderHintOnScroll(isScrollStart);
   }
 }

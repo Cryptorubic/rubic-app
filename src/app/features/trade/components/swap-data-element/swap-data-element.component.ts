@@ -6,6 +6,7 @@ import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
 import { HintAppearance, HintDirection } from './model';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -24,7 +25,6 @@ export class SwapDataElementComponent {
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
-
     const sum = new BigNumber(0)
       .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
@@ -46,4 +46,8 @@ export class SwapDataElementComponent {
   @Input({ required: true }) gasInfo: AppGasData | null;
 
   @Input({ required: true }) time: string | number;
+
+  constructor(private readonly providerHintService: ProviderHintService) {}
+
+  public readonly hideHintOnScroll$ = this.providerHintService.hideProviderHintOnScroll$;
 }

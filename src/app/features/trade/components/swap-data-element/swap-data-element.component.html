@@ -20,6 +20,7 @@
     [tuiHint]="feeData"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="(hideHintOnScroll$ | async) === false ? 200 : 0"
   >
     <img src="assets/images/icons/money.svg" alt="Fee" />
     {{ displayAmount }}
@@ -30,6 +31,7 @@
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="(hideHintOnScroll$ | async) === false ? 200 : 0"
   >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>
