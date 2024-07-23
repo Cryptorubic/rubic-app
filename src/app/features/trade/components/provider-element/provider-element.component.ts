@@ -4,7 +4,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/provider-info';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
-import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-provider-element',
@@ -21,14 +21,11 @@ export class ProviderElementComponent {
 
   @Input({ required: true }) shortedInfo: boolean = false;
 
+  @Input({ required: true }) hideHint$: Observable<boolean>;
+
   public expanded = false;
 
-  public readonly hideHint$ = this.providerHintService.hideProviderHint$;
-
-  constructor(
-    private readonly tradeInfoManager: TradeInfoManager,
-    private readonly providerHintService: ProviderHintService
-  ) {}
+  constructor(private readonly tradeInfoManager: TradeInfoManager) {}
 
   public toggleExpand(event: Event): void {
     event.preventDefault();

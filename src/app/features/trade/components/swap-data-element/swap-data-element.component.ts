@@ -6,7 +6,6 @@ import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
 import { HintAppearance, HintDirection } from './model';
-import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -47,5 +46,5 @@ export class SwapDataElementComponent {
 
   @Input({ required: true }) time: string | number;
 
-  @Input() hideHint$: Observable<boolean> = of(false);
+  @Input() hideHint: boolean = false;
 }

@@ -130,6 +130,7 @@ export class ProvidersListGeneralComponent {
   }
 
   ngAfterViewInit(): void {
+    // @TODO optimise scroll handler
     fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
       .pipe(
         tap(() => this.hideProviderHintOnScroll(true)),
@@ -140,6 +141,6 @@ export class ProvidersListGeneralComponent {
   }
 
   public hideProviderHintOnScroll(isScrollStart: boolean): void {
-    this.providerHintService.hideHint(isScrollStart);
+    this.providerHintService.setHintVisibility(isScrollStart);
   }
 }
