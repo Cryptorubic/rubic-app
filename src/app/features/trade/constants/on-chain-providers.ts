@@ -173,6 +173,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //DDDDDDDDDDDDDDDDDDDDD
+  [ON_CHAIN_TRADE_TYPE.DEDUST]: {
+    name: 'Dedust',
+    image: `${imageBasePath}dedust.svg`,
+    color: '#ebab34',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
     image: `${imageBasePath}defiplaza.png`,
@@ -559,6 +565,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}stellaswap.svg`,
     color: '#E2107B'
   },
+  [ON_CHAIN_TRADE_TYPE.STONFI]: {
+    name: 'StonFi',
+    image: `${imageBasePath}stonfi.png`,
+    color: '#066ccc',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.SUN_SWAP]: {
     name: 'SunSwap',
     image: `${imageBasePath}sunswap.svg`,
@@ -591,12 +603,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
-  [ON_CHAIN_TRADE_TYPE.TONKEEPER]: {
-    name: 'Tonkeeper Swap',
-    image: `${imageBasePath}tonkeeper.svg`,
-    color: 'white',
-    averageTime: 3
-  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
