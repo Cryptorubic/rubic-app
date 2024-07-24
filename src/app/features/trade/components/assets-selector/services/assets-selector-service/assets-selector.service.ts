@@ -32,7 +32,9 @@ export class AssetsSelectorService {
 
   public readonly assetType$ = this._assetType$.asObservable();
 
-  /** blockchainName used for loading token's list */
+  /**
+   * blockchainName used for loading token's list
+   */
   public get assetType(): AssetType {
     return this._assetType$.value;
   }

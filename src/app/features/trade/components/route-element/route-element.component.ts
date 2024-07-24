@@ -1,11 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import {
-  BridgeType,
-  CrossChainTradeType,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType,
-  RubicStep
-} from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType, OnChainTradeType, RubicStep } from 'rubic-sdk';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { BRIDGE_PROVIDERS } from '@features/trade/constants/bridge-providers';
@@ -19,13 +13,6 @@ interface ProviderStep {
   };
   amounts: string[];
 }
-
-const BRIDGE_TO_ONCHAIN_KEY: Partial<Record<BridgeType, OnChainTradeType>> = {
-  rango: ON_CHAIN_TRADE_TYPE.RANGO,
-  symbiosis: ON_CHAIN_TRADE_TYPE.SYMBIOSIS_SWAP,
-  lifi: ON_CHAIN_TRADE_TYPE.LIFI,
-  xy: ON_CHAIN_TRADE_TYPE.XY_DEX
-};
 
 @Component({
   selector: 'app-route-element',
@@ -46,10 +33,7 @@ export class RouteElementComponent {
   public getSteps(routes: RubicStep[]): ProviderStep[] {
     return routes.map(route => {
       if (route.type === 'on-chain') {
-        const provider =
-          ON_CHAIN_PROVIDERS[route.provider] ||
-          ON_CHAIN_PROVIDERS[BRIDGE_TO_ONCHAIN_KEY[this.tradeType as BridgeType]] ||
-          this.getUnknownDex();
+        const provider = ON_CHAIN_PROVIDERS[route.provider] || this.getUnknownDex();
 
         return {
           provider: {
@@ -81,9 +65,9 @@ export class RouteElementComponent {
 
   private getUnknownDex(): ProviderInfo {
     return {
-      name: 'unknown dex',
+      name: 'Unknown dex',
       color: 'white',
-      image: 'assets/images/icons/coins/default-token-ico.svg'
+      image: 'assets/images/icons/unknown.svg'
     };
   }
 }

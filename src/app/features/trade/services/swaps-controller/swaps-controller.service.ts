@@ -40,7 +40,8 @@ import {
   NoLinkedAccountError,
   SymbiosisCrossChainTrade,
   BLOCKCHAIN_NAME,
-  OnChainTrade
+  OnChainTrade,
+  NotSupportedRegionError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -387,6 +388,11 @@ export class SwapsControllerService {
   }
 
   private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+    if (error instanceof NotSupportedRegionError) {
+      return new RubicError(
+        "Selected provider doesn't support your contry. Try to use VPN or select anothe provider."
+      );
+    }
     if (error instanceof NotSupportedTokensError) {
       return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
