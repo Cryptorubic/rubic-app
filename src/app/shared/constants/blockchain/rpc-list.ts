@@ -199,10 +199,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://base-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
+    'https://mantle.publicnode.com',
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/mantle',
-    'https://mantle-mainnet.public.blastapi.io',
-    'https://mantle.publicnode.com'
+    'https://mantle-mainnet.public.blastapi.io'
   ],
   [BLOCKCHAIN_NAME.FUJI]: [
     'https://endpoints.omniatech.io/v1/avax/fuji/public',
