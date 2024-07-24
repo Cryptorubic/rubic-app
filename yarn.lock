@@ -3193,12 +3193,10 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@layerzerolabs/scan-client@^0.0.0-beta.6":
-  version "0.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/@layerzerolabs/scan-client/-/scan-client-0.0.0-beta.6.tgz#079275514e2a386677fc8129ced52a3c3f0a1b9a"
-  integrity sha512-TjhEfMcmN5Q8Gtog45lj6in+y8OzGPoLzUzSF45cJO703Lrlwf5tAA85TQnnRWPGBiChw70KG2S6nzgmMRQWJg==
-  dependencies:
-    axios "^0.27.2"
+"@layerzerolabs/scan-client@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@layerzerolabs/scan-client/-/scan-client-0.0.8.tgz#38316cde50c06556bb81b74f18d10a36b637eefb"
+  integrity sha512-V9vvt9GW0+AHoWXfOSNmZ9WUa28fVBmC93J/f9RLeDMEy5VR8srW2Du5pf1mMAg6ncEL0kQ1xkVCu+X6ARFBtQ==
 
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
@@ -17003,7 +17001,7 @@ rubic-sdk@5.32.5-alpha.fix.1:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
     "@debridge-finance/debridge-external-call" "^1.0.7"
-    "@layerzerolabs/scan-client" "^0.0.0-beta.6"
+    "@layerzerolabs/scan-client" "0.0.8"
     "@noble/secp256k1" "^1.7.1"
     "@pancakeswap/sdk" "^5.1.0"
     "@pancakeswap/smart-router" "4.2.1"
