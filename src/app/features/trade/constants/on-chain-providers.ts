@@ -619,7 +619,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#FD017A'
   },
   [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
-    name: 'Uniswap V2',
+    name: 'Bahamut Dex',
     image: 'assets/images/icons/coins/bahamut.svg',
     color: '#FFFFFF'
   },
