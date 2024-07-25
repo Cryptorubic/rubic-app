@@ -3,7 +3,7 @@ import { RubicError } from '@core/errors/models/rubic-error';
 
 class NotSupportedRegionRubicError extends RubicError<ERROR_TYPE.TEXT> {
   constructor() {
-    super('Birders does not provide services for your current country/region.');
+    super('Bridgers does not provide services for your current country/region.');
     Object.setPrototypeOf(this, NotSupportedRegionRubicError.prototype);
   }
 }
