@@ -54,7 +54,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.TAIKO,
   BLOCKCHAIN_NAME.SEI,
   BLOCKCHAIN_NAME.CORE,
-  BLOCKCHAIN_NAME.BAHAMUT
+  BLOCKCHAIN_NAME.BAHAMUT,
+  BLOCKCHAIN_NAME.TON
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [
@@ -118,7 +119,6 @@ export const blockchainsWithOnePage: BlockchainName[] = [
   BLOCKCHAIN_NAME.STRATIS,
   BLOCKCHAIN_NAME.STACKS,
   BLOCKCHAIN_NAME.SOLAR,
-  BLOCKCHAIN_NAME.TON,
   BLOCKCHAIN_NAME.VE_CHAIN,
   BLOCKCHAIN_NAME.WAVES,
   BLOCKCHAIN_NAME.WAX,
