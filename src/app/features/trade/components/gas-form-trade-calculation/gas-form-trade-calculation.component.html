@@ -31,7 +31,10 @@
         >
           <img [src]="tradeData.providerInfo?.image" width="22" height="22" alt="Provider Logo" />
           <ng-template #pathHint>
-            <app-route-element [routes]="tradeData.routePath"></app-route-element>
+            <app-route-element
+              [routes]="tradeData.routePath"
+              [tradeType]="state.bestTradeState.tradeType"
+            ></app-route-element>
           </ng-template>
         </div>
 
