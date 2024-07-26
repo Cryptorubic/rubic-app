@@ -5,6 +5,7 @@
     [tuiHint]="gasTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
