@@ -78,10 +78,10 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
       this.httpService.get<AddressBookResponse>(
         '',
         {},
-        `https://toncenter.com/api/v3/addressBook?address=${rawAddress}`
+        `https://tonapi.io/v2/address/${rawAddress}`
       )
     );
-    const friendly = Object.values(res)[0].user_friendly;
+    const friendly = res.non_bounceable.b64url;
     return friendly;
   }
 
