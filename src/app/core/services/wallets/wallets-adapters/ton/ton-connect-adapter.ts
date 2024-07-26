@@ -74,13 +74,8 @@ export class TonConnectAdapter extends CommonWalletAdapter<TonConnectUI> {
   }
 
   private async fetchFriendlyAddress(rawAddress: string): Promise<string> {
-    const res = await firstValueFrom(
-      this.httpService.get<AddressBookResponse>(
-        '',
-        {},
-        `https://tonapi.io/v2/address/${rawAddress}`
-      )
-    );
+    const url = window.encodeURI(`https://tonapi.io/v2/address/${rawAddress}/parse`);
+    const res = await firstValueFrom(this.httpService.get<AddressBookResponse>('', {}, url));
     const friendly = res.non_bounceable.b64url;
     return friendly;
   }
