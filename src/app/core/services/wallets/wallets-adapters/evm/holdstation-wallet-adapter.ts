@@ -15,12 +15,13 @@ export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow
+    window: RubicWindow,
+    chainId?: number
   ) {
     super(
       {
         projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
-        chains: [1],
+        chains: [chainId || 1],
         optionalChains: Object.values(blockchainId),
         showQrModal: true,
         qrModalOptions: {

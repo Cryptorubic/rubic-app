@@ -28,6 +28,13 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
     super(accountChange$, chainChange$, errorsService, zone, window);
   }
 
+  public updateDefaultChain(chainId: number): void {
+    this.providerConfig = {
+      ...this.providerConfig,
+      chains: [chainId]
+    };
+  }
+
   /**
    * Gets RPC links for app networks.
    */
