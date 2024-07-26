@@ -14,7 +14,8 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
     {
       fromSdk: false,
       bgColor: 'linear-gradient(0deg, rgba(39,153,104,1) 0%, rgba(42,189,143,1) 100%)',
-      href: 'https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/',
+      getUrl: () =>
+        'https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/',
       getLabel: () => '+ Nova and Rubic Points',
       getHint: () =>
         'Double RBC points for all transactions and 1 Nova point for every transaction.',
@@ -23,7 +24,7 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
   ],
   [BLOCKCHAIN_NAME.SCROLL]: [
     {
-      href: 'https://scroll.io/sessions',
+      getUrl: () => 'https://scroll.io/sessions',
       bgColor: '#BDA584',
       fromSdk: false,
       getLabel: () => '+Marks!',
@@ -56,7 +57,8 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
     {
       bgColor: 'rgb(187 77 33)',
       fromSdk: false,
-      href: 'https://rubic.exchange/blog/bridge-to-and-from-x-layer-with-rubic-reduced-fees-and-seamless-swaps/',
+      getUrl: () =>
+        'https://rubic.exchange/blog/bridge-to-and-from-x-layer-with-rubic-reduced-fees-and-seamless-swaps/',
       getHint: () => 'Swap with 50% reduced fees on/to X Layer!',
       getLabel: () => '-50% fees',
       showLabel: showXLayerPromoLabel

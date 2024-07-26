@@ -21,7 +21,8 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.ARCHON_BRIDGE]: 'archon_bridge',
   [CROSS_CHAIN_TRADE_TYPE.MESON]: 'meson',
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: 'owl_to_bridge',
-  [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: 'eddy_bridge'
+  [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: 'eddy_bridge',
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: 'stargate_v2'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {

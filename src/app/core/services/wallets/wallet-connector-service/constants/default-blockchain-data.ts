@@ -129,7 +129,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.ankr.com/mantle'
+    rpc: 'https://mantle.publicnode.com'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
@@ -145,7 +145,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.ZETACHAIN]: {
     name: 'Zetachain',
-    rpc: 'https://zetachain-mainnet-archive.allthatnode.com:8545'
+    rpc: 'https://zetachain-evm.blockpi.network/v1/rpc/public'
   },
   [BLOCKCHAIN_NAME.BLAST]: {
     name: 'Blast',
