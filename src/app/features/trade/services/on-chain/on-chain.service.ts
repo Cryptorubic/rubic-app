@@ -366,7 +366,7 @@ export class OnChainService {
     blockchainFrom: BlockchainName,
     blockchainTo: BlockchainName
   ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
+    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN, BLOCKCHAIN_NAME.TON];
     if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
       return 30_000;
     }
