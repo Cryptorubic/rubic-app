@@ -772,11 +772,11 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.TON]: {
-    baseUrl: 'https://tonscan.org/',
+    baseUrl: 'https://tonviewer.com/',
     nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.WALLET]: '',
     [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.VE_CHAIN]: {
