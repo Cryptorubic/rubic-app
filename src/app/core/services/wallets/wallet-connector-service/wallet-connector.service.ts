@@ -41,6 +41,9 @@ import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/s
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
 import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
+import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
+import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -163,7 +166,35 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.TON_CONNECT) {
-      return new TonConnectAdapter(...defaultConstructorParameters, this.httpService);
+      return new TonConnectAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.MY_TON_WALLET) {
+      return new MyTonWalletAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.TONKEEPER) {
+      return new TonkeeperAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.TELEGRAM_WALLET) {
+      return new TelegramWalletAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
     }
 
     this.errorService.catch(new WalletNotInstalledError());
@@ -171,7 +202,10 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    if (this.provider.walletName !== WALLET_NAME.SAFE) {
+    if (
+      this.provider.walletName !== WALLET_NAME.SAFE &&
+      this.provider.walletName !== WALLET_NAME.TON_CONNECT
+    ) {
       this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
     }
   }

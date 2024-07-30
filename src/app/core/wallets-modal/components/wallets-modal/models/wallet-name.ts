@@ -10,5 +10,8 @@ export enum WALLET_NAME {
   SOLFLARE = 'solflare',
   SAFE = 'safe',
   TOKEN_POCKET = 'tokenpocket',
-  TON_CONNECT = 'tonconnect'
+  TON_CONNECT = 'tonconnect',
+  TONKEEPER = 'tonkeeper',
+  MY_TON_WALLET = 'my_ton_wallet',
+  TELEGRAM_WALLET = 'telegram_wallet'
 }

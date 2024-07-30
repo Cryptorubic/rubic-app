@@ -1,15 +1,15 @@
-import { BlockchainName } from 'rubic-sdk';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { TonConnectAbstractAdapter } from './abstract/ton-connect-abstract-adapter';
 import { BehaviorSubject } from 'rxjs';
+import { BlockchainName } from 'rubic-sdk';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';
 import { HttpService } from '@app/core/services/http/http.service';
-import { TonConnectAbstractAdapter } from './abstract/ton-connect-abstract-adapter';
 import { StoreService } from '@app/core/services/store/store.service';
 
-export class TonConnectAdapter extends TonConnectAbstractAdapter {
-  public readonly walletName = WALLET_NAME.TON_CONNECT;
+export class TonkeeperAdapter extends TonConnectAbstractAdapter {
+  public readonly walletName = WALLET_NAME.TONKEEPER;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -32,6 +32,6 @@ export class TonConnectAdapter extends TonConnectAbstractAdapter {
   }
 
   protected openWalletModal(): Promise<void> {
-    return this.tonConnect.openModal();
+    return this.tonConnect.openSingleWalletModal('tonkeeper');
   }
 }
