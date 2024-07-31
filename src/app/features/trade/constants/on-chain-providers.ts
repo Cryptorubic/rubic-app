@@ -618,6 +618,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: {
+    name: 'SilkSwap',
+    image: `${imageBasePath}silkswap.svg`,
+    color: '#000000'
+  },
   [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
     name: 'Bahamut Dex',
     image: 'assets/images/icons/coins/bahamut.svg',

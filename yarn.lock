@@ -16993,10 +16993,10 @@ rpc-websockets@^7.5.1:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.33.0-alpha-new-bahamut-dex.0:
-  version "5.33.0-alpha-new-bahamut-dex.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.33.0-alpha-new-bahamut-dex.0.tgz#40f25e4bd5793a16ff7f64a0fbd68f5f5d5fd6ea"
-  integrity sha512-63q9gRtnEtU3pdbG6NQQ5/w79J8dOkJAGg4/dEwgv5+FzRm5g5T945KfY9QE5KtXq8KLs66GYB8W2EFGDTXO+A==
+rubic-sdk@5.33.0-alpha-new-bahamut-dex.1:
+  version "5.33.0-alpha-new-bahamut-dex.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.33.0-alpha-new-bahamut-dex.1.tgz#8e0a3848c98b3b2b11fac46caf22a4df30855899"
+  integrity sha512-iM18TG6c88Q/ZQ7+5N8I07apMGFDW/dTMp7DlIfxKhwyxCwfgnFZLVI7HClVjflKJU+qzl7mSOAamx3fI5+c9g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
