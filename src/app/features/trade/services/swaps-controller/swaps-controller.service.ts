@@ -3,6 +3,7 @@ import { combineLatestWith, firstValueFrom, forkJoin, from, Observable, of, Subj
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
+  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -199,7 +200,7 @@ export class SwapsControllerService {
           console.debug(err);
           return of(null);
         }),
-        switchMap(container => {
+        concatMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
 
           if (wrappedTrade) {
@@ -209,6 +210,7 @@ export class SwapsControllerService {
               wrappedTrade.trade,
               wrappedTrade?.error
             );
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
@@ -375,11 +377,12 @@ export class SwapsControllerService {
   private subscribeOnAddressChange(): void {
     this.authService.currentUser$
       .pipe(
+        distinctUntilChanged(),
         switchMap(() => this.swapFormService.isFilled$),
         filter(isFilled => isFilled)
       )
       .subscribe(() => {
-        this.startRecalculation(false);
+        this.startRecalculation(true);
       });
   }
 
