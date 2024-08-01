@@ -82,10 +82,6 @@ export class AuthService {
       if (walletName && this.walletConnectorService.provider?.walletName !== walletName) {
         this.walletConnectorService.connectProvider(walletName, options.chainId);
       }
-      console.log(
-        'walletConnectorService.walletName',
-        this.walletConnectorService.provider?.walletName
-      );
 
       await this.walletConnectorService.activate();
       const { address, chainType } = this.walletConnectorService;

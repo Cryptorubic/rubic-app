@@ -39,7 +39,15 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       this.tonConnect = TonConnectInstance.getInstance();
 
       this.listenStatusChangeEvent();
-      await this.openWalletModal();
+
+      try {
+        await this.tonConnect.connector.restoreConnection();
+      } catch {}
+      const isConnected = (await this.tonConnect.connectionRestored) && this.tonConnect.connected;
+
+      if (!isConnected) {
+        await this.openWalletModal();
+      }
 
       this.selectedChain = BLOCKCHAIN_NAME.TON;
       this.selectedAddress = this.tonConnect.account?.address;
