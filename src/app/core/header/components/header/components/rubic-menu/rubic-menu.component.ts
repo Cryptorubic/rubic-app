@@ -28,6 +28,7 @@ import { takeUntil } from 'rxjs/operators';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { KeyValue } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-rubic-menu',
@@ -69,6 +70,7 @@ export class RubicMenuComponent implements AfterViewInit {
     private readonly headerStore: HeaderStore,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly mobileNativeService: MobileNativeModalService,
+    private readonly router: Router,
     @Inject(WINDOW) private readonly window: Window,
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
@@ -95,9 +97,8 @@ export class RubicMenuComponent implements AfterViewInit {
   public handleButtonClick(item?: NavigationItem): void {
     this.gtmService.reloadGtmSession();
     this.onClose.emit();
-    if (item) {
-      this.window.open(item.link, item?.target || '_blank');
-    }
+    if (!item) return;
+    this.window.open(item.link, item?.target || '_blank');
   }
 
   public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
