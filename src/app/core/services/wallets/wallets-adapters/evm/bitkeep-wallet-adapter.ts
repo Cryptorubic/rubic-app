@@ -44,7 +44,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
 
     const ethereum = window?.bitkeep?.ethereum;
-    BitkeepWalletAdapter.checkErrors(ethereum);
+    this.checkErrors(ethereum);
     this.wallet = ethereum;
     this.handleEvents();
   }
@@ -53,7 +53,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
    * Checks possible BitKeep errors.
    * @param ethereum Global ethereum object.
    */
-  private static checkErrors(ethereum: RubicAny): void {
+  private checkErrors(ethereum: RubicAny): void {
     if (!ethereum?.isBitKeep && !ethereum?.isBitKeepChrome) {
       throw new BitKeepError();
     }
