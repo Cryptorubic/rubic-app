@@ -69,7 +69,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile --ignore-engines
+        run: yarn --frozen-lockfile 
 
       - name: Run build
         run: yarn run build:${{ inputs.env_id }}

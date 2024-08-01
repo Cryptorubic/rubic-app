@@ -25,9 +25,6 @@
     .tui-table__tr.data-row:hover {
       background: var(--secondary-background);
 
-      .tui-table__td-actions {
-        opacity: 1;
-      }
     }
 
     .tui-table__tr {
@@ -93,7 +90,7 @@
       gap: var(--tui-padding-xs);
       justify-content: flex-end;
 
-      opacity: 0;
+      opacity: 1;
 
       button {
         font-size: 11px;
