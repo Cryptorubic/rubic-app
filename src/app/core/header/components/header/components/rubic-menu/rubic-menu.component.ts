@@ -98,7 +98,7 @@ export class RubicMenuComponent implements AfterViewInit {
     this.gtmService.reloadGtmSession();
     this.onClose.emit();
     if (!item) return;
-    this.router.navigate([item.link]);
+    this.window.open(item.link, item?.target || '_blank');
   }
 
   public keepOriginalOrder = <K, V>(a: KeyValue<K, V>): number => Number(a.key);
