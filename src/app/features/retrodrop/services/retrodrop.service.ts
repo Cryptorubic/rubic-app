@@ -19,7 +19,7 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
-  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5];
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6];
 
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
