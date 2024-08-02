@@ -20,11 +20,10 @@ export class SwapDataElementComponent {
 
   @Input() hintAppearance: HintAppearance = '';
 
-  @Input() hintDirection: HintDirection = 'bottom-left';
+  @Input() hintDirection: HintDirection = 'bottom-right';
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
     this.feeInfo = value.fee;
-
     const sum = new BigNumber(0)
       .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
@@ -46,4 +45,6 @@ export class SwapDataElementComponent {
   @Input({ required: true }) gasInfo: AppGasData | null;
 
   @Input({ required: true }) time: string | number;
+
+  @Input() hideHint: boolean = false;
 }

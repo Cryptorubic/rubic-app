@@ -4,6 +4,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/provider-info';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-provider-element',
@@ -19,6 +20,8 @@ export class ProviderElementComponent {
   @Input({ required: true }) isBest: boolean = false;
 
   @Input({ required: true }) shortedInfo: boolean = false;
+
+  @Input({ required: true }) hideHint$: Observable<boolean>;
 
   public expanded = false;
 

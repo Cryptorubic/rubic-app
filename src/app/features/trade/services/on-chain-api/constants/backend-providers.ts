@@ -134,7 +134,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.DRAGON_SWAP]: 'dragonswap',
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: 'eddy_finance',
   [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: 'native_router',
-  [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: 'zeta_swap'
+  [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: 'zeta_swap',
+  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

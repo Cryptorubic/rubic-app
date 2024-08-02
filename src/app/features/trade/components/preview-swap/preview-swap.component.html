@@ -105,6 +105,7 @@
         <app-route-element
           *ngIf="state.transaction.step === 'idle'"
           [routes]="state.tradeState?.routes || []"
+          [tradeType]="state.tradeState.tradeType"
         ></app-route-element>
 
         <app-transaction-state

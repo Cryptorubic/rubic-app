@@ -114,8 +114,8 @@ export class BlockchainsListService {
     const userBlockchain = this.walletConnectorService.network;
     const sortedAvailableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
     this._availableBlockchains = sortedAvailableBlockchains.sort((a, b) => {
-      if (a.name.includes(userBlockchain)) return -1;
-      if (b.name.includes(userBlockchain)) return 1;
+      if (a.name === userBlockchain) return -1;
+      if (b.name === userBlockchain) return 1;
       return 0;
     });
   }

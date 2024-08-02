@@ -19,7 +19,8 @@ import {
   InsufficientFundsGasPriceValueError,
   UpdatedRatesError,
   SdkSwapErrorOnProviderSide,
-  NoLinkedAccountError
+  NoLinkedAccountError,
+  NotSupportedRegionError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -45,11 +46,15 @@ import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
 import { FallbackSwapError } from './provider/fallback-swap-error';
 import { NotLinkedAddressError } from './provider/not-linked-address-error';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
+import NotSupportedRegionRubicError from './common/not-supported-region-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof NotSupportedRegionError) {
+      return new NotSupportedRegionRubicError();
+    }
     if (err instanceof UpdatedRatesError) {
       return new AmountChangeWarning(err.oldAmount, err.newAmount);
     }
