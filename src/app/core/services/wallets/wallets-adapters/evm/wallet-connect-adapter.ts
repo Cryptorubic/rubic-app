@@ -29,7 +29,10 @@ export class WalletConnectAdapter extends WalletConnectAbstractAdapter {
         projectId: 'cc80c3ad93f66e7708a8bdd66e85167e',
         chains: [1],
         optionalChains: WALLET_CONNECT_SUPPORTED_CHAINS,
-        showQrModal: true
+        showQrModal: true,
+        qrModalOptions: {
+          explorerRecommendedWalletIds: []
+        }
       },
       onAddressChanges$,
       onNetworkChanges$,

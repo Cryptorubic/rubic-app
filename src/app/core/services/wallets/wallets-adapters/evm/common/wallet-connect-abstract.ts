@@ -17,8 +17,10 @@ import { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/t
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
+  protected providerConfig: EthereumProviderOptions;
+
   protected constructor(
-    protected providerConfig: EthereumProviderOptions,
+    providerConfig: EthereumProviderOptions,
     accountChange$: BehaviorSubject<string>,
     chainChange$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
@@ -26,6 +28,19 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
     window: RubicWindow
   ) {
     super(accountChange$, chainChange$, errorsService, zone, window);
+    this.providerConfig = {
+      ...providerConfig,
+      qrModalOptions: {
+        ...providerConfig?.qrModalOptions,
+        themeMode: 'dark',
+        themeVariables: {
+          '--wcm-accent-color': 'var(--tui-primary)',
+          // @ts-ignore
+          '--wcm-color-bg-1': 'var(--app-background)',
+          '--wcm-background-color': 'var(--app-background)'
+        }
+      }
+    };
   }
 
   public updateDefaultChain(chainId: number): void {
