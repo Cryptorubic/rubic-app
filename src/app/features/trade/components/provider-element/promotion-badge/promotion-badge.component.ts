@@ -9,4 +9,6 @@ import { BadgeInfoForComponent } from '@app/features/trade/models/trade-state';
 })
 export class PromotionBadgeComponent {
   @Input() data: BadgeInfoForComponent;
+
+  @Input({ required: true }) hideHint: boolean;
 }

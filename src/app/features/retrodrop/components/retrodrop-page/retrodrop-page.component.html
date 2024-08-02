@@ -20,7 +20,12 @@
 </app-window-container>
 
 <ng-template #loginButton>
-  <app-login-button></app-login-button>
+  <div class="retrodrop__login">
+    <p class="retrodrop__not-member">
+      Connect your wallet below to access your personalized retrodrop dashboard.
+    </p>
+    <app-login-button></app-login-button>
+  </div>
 </ng-template>
 <ng-template #notMember>
   <p class="retrodrop__not-member">You are not a participant in the retrodrop.</p>

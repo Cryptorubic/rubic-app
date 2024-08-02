@@ -31,12 +31,12 @@ jobs:
           restore-keys: npm-
 
       - name: Set up packages
-        run: yarn --frozen-lockfile
+        run: yarn --frozen-lockfile 
 
       - name: Set up sshpass and npm
         run: |
           sudo apt-get install sshpass
-          yarn --frozen-lockfile
+          yarn --frozen-lockfile 
 
       - name: Run build prod
         run: yarn run build | tee log.txt
