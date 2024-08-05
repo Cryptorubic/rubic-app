@@ -6,6 +6,9 @@ export const transactionStep = {
   approveReady: 'approveReady',
   approvePending: 'approvePending',
 
+  authWalletPending: 'authWalletPending',
+  authWalletReady: 'authWalletReady',
+
   swapReady: 'swapReady',
   swapRequest: 'swapRequest',
 

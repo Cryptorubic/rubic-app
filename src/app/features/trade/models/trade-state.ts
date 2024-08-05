@@ -21,6 +21,7 @@ export type TradeState = (TradefullState | TradelessState) & {
     cheap: boolean;
   };
   needApprove: boolean;
+  needAuthWallet?: boolean;
   routes: RubicStep[];
   badges?: BadgeInfoForComponent[];
 };
