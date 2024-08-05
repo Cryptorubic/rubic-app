@@ -15,6 +15,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 
 @Component({
   selector: 'app-providers-list',
@@ -52,6 +53,8 @@ export class ProvidersListComponent {
   public readonly toToken$ = this.swapsFormService.toToken$;
 
   public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+
+  public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
   public handleTradeSelection(
     event: MouseEvent,
@@ -92,6 +95,7 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly providerHintService: ProviderHintService
   ) {}
 }

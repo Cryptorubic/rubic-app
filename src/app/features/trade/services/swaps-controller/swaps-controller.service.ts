@@ -486,6 +486,9 @@ export class SwapsControllerService {
       if ('rangoRequestId' in trade) {
         params.rangoRequestId = trade.rangoRequestId as string;
       }
+      if (trade instanceof RetroBridgeTrade) {
+        params.retroBridgeId = trade.retroBridgeId;
+      }
 
       onSwap?.(params);
       await this.crossChainApiService.patchTrade(txHash, true);

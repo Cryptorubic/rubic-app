@@ -245,6 +245,9 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
+                }),
+                ...(additionalInfo.retroBridgeId && {
+                  retroBridgeId: additionalInfo.retroBridgeId
                 })
               },
               tradeState.tradeType as CrossChainTradeType
