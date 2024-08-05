@@ -5,6 +5,7 @@
     [tuiHint]="gasTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
@@ -20,6 +21,7 @@
     [tuiHint]="feeData"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/money.svg" alt="Fee" />
     {{ displayAmount }}
@@ -30,6 +32,7 @@
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>
