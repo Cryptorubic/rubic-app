@@ -386,7 +386,7 @@ export class SwapsControllerService {
   ): Promise<void> {
     const trade = tradeState.trade as RetroBridgeTrade;
     try {
-      await trade.authWallet(window.ethereum);
+      await trade.authWallet();
       callback.onSwap();
     } catch (err) {
       console.error(err);
