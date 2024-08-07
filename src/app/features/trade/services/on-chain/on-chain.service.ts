@@ -45,6 +45,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
 @Injectable()
 export class OnChainService {
@@ -366,8 +367,10 @@ export class OnChainService {
     blockchainFrom: BlockchainName,
     blockchainTo: BlockchainName
   ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+    if (
+      LONG_TIMEOUT_CHAINS.includes(blockchainFrom) ||
+      LONG_TIMEOUT_CHAINS.includes(blockchainTo)
+    ) {
       return 30_000;
     }
     return 10_000;

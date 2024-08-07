@@ -19,10 +19,10 @@ import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
 import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 import { TuiScrollbarComponent } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -72,7 +72,11 @@ export class ProvidersListGeneralComponent {
   public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
     switchMap(() => interval(this.ratio)),
     takeWhile(val => {
-      if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+      const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+      if (
+        LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+        LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+      ) {
         return val <= 30_000 / this.ratio;
       }
       return val <= CALCULATION_TIMEOUT_MS / this.ratio;
@@ -123,7 +127,11 @@ export class ProvidersListGeneralComponent {
   }
 
   private convertIntervalValueToPercents(val: number): number {
-    if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+    if (
+      LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+      LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+    ) {
       return val * ((100 * this.ratio) / 30_000);
     }
     return val * ((100 * this.ratio) / CALCULATION_TIMEOUT_MS);
