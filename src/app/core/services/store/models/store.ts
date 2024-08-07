@@ -75,8 +75,6 @@ export type Store = {
   RUBIC_CHANGENOW_POST_TRADE: ChangenowPostTrade;
 
   RUBIC_CHANGENOW_RECENT_TRADE: ChangenowPostTrade[];
-
-  RUBIC_LAST_FROM_CHAIN: number | null;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -95,6 +93,5 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,
   RUBIC_TRADES_INSTANT_TRADE: null,
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
-  RUBIC_TOTAL_VALUES: null,
-  RUBIC_LAST_FROM_CHAIN: null
+  RUBIC_TOTAL_VALUES: null
 };

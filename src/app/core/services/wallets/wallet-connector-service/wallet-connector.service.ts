@@ -56,6 +56,15 @@ export class WalletConnectorService {
     return this.provider?.address;
   }
 
+  private _selectedChainId = 1;
+
+  public set selectedChain(blockchain: BlockchainName) {
+    const chainId = blockchainId[blockchain];
+    if (chainId) {
+      this._selectedChainId = chainId;
+    }
+  }
+
   public get chainType(): ChainType {
     return this.provider?.chainType;
   }
@@ -103,8 +112,7 @@ export class WalletConnectorService {
   }
 
   public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
-    const latestChain = this.storeService.getItem('RUBIC_LAST_FROM_CHAIN');
-    this.privateProvider = this.createWalletAdapter(walletName, chainId || latestChain);
+    this.privateProvider = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
   }
 
   private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
