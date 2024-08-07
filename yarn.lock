@@ -17217,8 +17217,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-"rubic-sdk@file:../rubic-sdk":
-  version "5.33.0-alpha-router.6"
+rubic-sdk@5.33.0-alpha-router.7:
+  version "5.33.0-alpha-router.7"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.33.0-alpha-router.7.tgz#bd411027e21a480fc4f0d0b64feb478ad0f1a92f"
+  integrity sha512-VzcptnKvTanERVdAl0a8R/NzQChR4T5PdpqbmS1wByVWXgHkk/nJuleA3rcwMddjiT+7MkIYrTA4otgjC7jHAA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
