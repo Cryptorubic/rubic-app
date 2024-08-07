@@ -45,7 +45,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
-import { LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
 @Injectable()
 export class OnChainService {
@@ -127,7 +127,7 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
+          const timeout = this.calculateTimeoutForChains();
 
           const options: OnChainManagerCalculationOptions = {
             timeout,
@@ -363,14 +363,9 @@ export class OnChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    if (
-      LONG_TIMEOUT_CHAINS.includes(blockchainFrom) ||
-      LONG_TIMEOUT_CHAINS.includes(blockchainTo)
-    ) {
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain)) {
       return 30_000;
     }
     return 10_000;

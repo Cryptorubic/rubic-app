@@ -22,7 +22,8 @@ import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 import { TuiScrollbarComponent } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
+import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -72,11 +73,7 @@ export class ProvidersListGeneralComponent {
   public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
     switchMap(() => interval(this.ratio)),
     takeWhile(val => {
-      const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
-      if (
-        LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
-        LONG_TIMEOUT_CHAINS.includes(toBlockchain)
-      ) {
+      if (this.isLongTimeoutChain()) {
         return val <= 30_000 / this.ratio;
       }
       return val <= CALCULATION_TIMEOUT_MS / this.ratio;
@@ -127,14 +124,22 @@ export class ProvidersListGeneralComponent {
   }
 
   private convertIntervalValueToPercents(val: number): number {
-    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
-    if (
-      LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
-      LONG_TIMEOUT_CHAINS.includes(toBlockchain)
-    ) {
+    if (this.isLongTimeoutChain()) {
       return val * ((100 * this.ratio) / 30_000);
     }
     return val * ((100 * this.ratio) / CALCULATION_TIMEOUT_MS);
+  }
+
+  private isLongTimeoutChain(): boolean {
+    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+    const isOnChain = fromBlockchain === toBlockchain;
+    if (isOnChain) {
+      return ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain);
+    }
+    return (
+      CCR_LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+      CCR_LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+    );
   }
 
   ngAfterViewInit(): void {
