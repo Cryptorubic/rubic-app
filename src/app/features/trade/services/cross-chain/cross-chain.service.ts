@@ -153,6 +153,52 @@ export class CrossChainService {
     );
   }
 
+  public async calcAndSwapTradeMock(): Promise<void> {
+    try {
+      const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
+        this.swapFormService.inputValue;
+      const [fromPrice, toPrice] = await Promise.all([
+        this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+        this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      ]);
+      const options = this.getOptions([], fromBlockchain, toBlockchain);
+      const fromSdkCompatibleToken = new PriceToken({
+        ...fromToken,
+        price: fromPrice
+      });
+      const toSdkCompatibleToken = new PriceToken({
+        ...toToken,
+        price: toPrice
+      });
+      console.log('MOCK_START_CALCULATION');
+      const trades = await this.sdkService.crossChain.calculateTrade(
+        fromSdkCompatibleToken,
+        fromAmount.actualValue.toFixed(),
+        toSdkCompatibleToken,
+        options
+      );
+      console.log('END_CALCULATION trades ====> ', trades);
+
+      const provider = trades.find(t => t.tradeType === 'xy');
+      const needApprove = await provider.trade.needApprove();
+      if (needApprove) {
+        await provider.trade.approve({}, false, provider.trade.from.weiAmount);
+      }
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        fromBlockchain
+      );
+      const referrer = this.sessionStorage.getItem('referral');
+      const txHash = await provider.trade.swap({
+        useEip155: false,
+        referrer,
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
+      });
+      console.log(txHash);
+    } catch (err) {
+      console.log('calcAndSwapTradeMock_ERROR ===> ', err);
+    }
+  }
+
   private getOptions(
     disabledTradeTypes: CrossChainTradeType[],
     fromBlockchain: BlockchainName,
