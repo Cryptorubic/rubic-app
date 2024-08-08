@@ -244,7 +244,8 @@ export class WalletConnectorService {
         if (reconnect) {
           try {
             await provider.deactivate();
-            await provider.updateDefaultChain(Number(chainId.slice(2)));
+            const decimalId = parseInt(chainId, 16);
+            await provider.updateDefaultChain(decimalId);
             await provider.activate();
           } catch (err) {
             await provider.deactivate();
