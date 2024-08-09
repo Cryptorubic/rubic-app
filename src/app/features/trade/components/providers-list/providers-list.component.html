@@ -6,7 +6,7 @@
       [tradeState]="state"
       [shortedInfo]="shortedInfo"
       [selectedTradeType]="selectedTradeType"
-      (click)="handleTradeSelection($event, state.tradeType, state.error)"
+      (click)="handleTradeSelection($event, state.tradeType, state.trade, state.error)"
       [hideHint$]="hideHint$"
     ></app-provider-element>
   </div>
