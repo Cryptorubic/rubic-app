@@ -16,6 +16,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-providers-list',
@@ -59,14 +60,16 @@ export class ProvidersListComponent {
   public handleTradeSelection(
     event: MouseEvent,
     tradeType: TradeProvider,
+    trade: CrossChainTrade | OnChainTrade,
     tradeError?: Error
   ): void {
     const element = event.target as HTMLElement;
+    const isZeroOrNegativeAmount = trade.to.tokenAmount.eq(0) || trade.to.tokenAmount.lt(0);
 
     if (
       element?.parentElement?.className?.includes?.('element__expander') ||
       element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
-      element?.className?.includes?.('element__expander') ||
+      isZeroOrNegativeAmount ||
       tradeError
     ) {
       event.preventDefault();
