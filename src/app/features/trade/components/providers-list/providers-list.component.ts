@@ -64,7 +64,7 @@ export class ProvidersListComponent {
     tradeError?: Error
   ): void {
     const element = event.target as HTMLElement;
-    const isZeroOrNegativeAmount = trade.to.tokenAmount.eq(0) || trade.to.tokenAmount.lt(0);
+    const isZeroOrNegativeAmount = trade.to.tokenAmount.lte(0);
 
     if (
       element?.parentElement?.className?.includes?.('element__expander') ||

@@ -6,8 +6,7 @@
       element_shorted: shortedInfo,
       element_disabled:
         tradeState?.error ||
-        tradeState?.trade?.to?.tokenAmount?.lt(0) ||
-        tradeState?.trade?.to?.tokenAmount?.eq(0)
+        tradeState?.trade?.to?.tokenAmount?.lte(0) 
     }"
   >
     <div
