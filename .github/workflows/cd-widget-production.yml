@@ -23,7 +23,7 @@ jobs:
           node-version: '${{ steps.nvm.outputs.NVMRC }}'
 
       - name: Set up packages
-        run: yarn --frozen-lockfile
+        run: yarn --frozen-lockfile 
 
       - name: Set up sshpass and yarn
         run: |
