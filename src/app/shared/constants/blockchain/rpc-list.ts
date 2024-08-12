@@ -290,6 +290,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://mycrypto.rsk.co'
   ],
   [BLOCKCHAIN_NAME.MODE]: [
+    'https://mode-mainnet.blastapi.io/f2a2318c-ed4d-4366-9675-ccfd49434359',
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
     'https://mode.drpc.org'
