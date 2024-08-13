@@ -492,6 +492,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}renbtc.svg`,
     color: 'grey'
   },
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: {
+    name: 'Router DEX',
+    image: 'assets/images/icons/providers/bridge/router.svg',
+    color: '#000000'
+  },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -623,8 +628,8 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}silkswap.svg`,
     color: '#000000'
   },
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
-    name: 'Bahamut Dex',
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
+    name: 'Kujata',
     image: 'assets/images/icons/coins/bahamut.svg',
     color: '#FFFFFF'
   },

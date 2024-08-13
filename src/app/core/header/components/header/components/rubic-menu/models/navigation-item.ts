@@ -3,6 +3,6 @@ export interface NavigationItem {
   type: 'internal' | 'external';
   link: string;
   imagePath?: string;
-  target?: string;
+  target?: '_self' | '_blank';
   active?: boolean;
 }
