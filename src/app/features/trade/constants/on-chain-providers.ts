@@ -630,7 +630,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.KUJATA]: {
     name: 'Kujata',
-    image: 'assets/images/icons/coins/bahamut.svg',
+    image: `${imageBasePath}kujata.svg`,
     color: '#FFFFFF'
   },
 
