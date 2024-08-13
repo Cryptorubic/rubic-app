@@ -4,9 +4,7 @@
     class="element"
     [ngClass]="{
       element_shorted: shortedInfo,
-      element_disabled:
-        tradeState?.error ||
-        tradeState?.trade?.to?.tokenAmount?.lte(0) 
+      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0)
     }"
   >
     <div
