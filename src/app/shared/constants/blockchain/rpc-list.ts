@@ -168,6 +168,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.FLARE]: [
     'https://rpc.ankr.com/flare/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://flare.rpc.thirdweb.com',
+    'https://rpc.ankr.com/flare',
     'https://flare-api.flare.network/ext/C/rpc'
   ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
