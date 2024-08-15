@@ -424,7 +424,7 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,
   // BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,
-  { name: BLOCKCHAIN_NAME.FLARE, rank: 1, tags: ['FLR', BlockchainTags.EVM] },
+  { name: BLOCKCHAIN_NAME.FLARE, rank: 0, tags: ['FLR', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.IOTEX,
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList
