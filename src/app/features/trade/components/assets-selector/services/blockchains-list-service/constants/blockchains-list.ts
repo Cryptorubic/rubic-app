@@ -424,17 +424,11 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,
   // BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,
-  // BLOCKCHAIN_NAME.FLARE,
+  { name: BLOCKCHAIN_NAME.FLARE, rank: 0, tags: ['FLR', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.IOTEX,
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList
 ];
-
-export const topRankedBlockchains = blockchainsList.map(blockchain => {
-  if (blockchain.rank === 1) {
-    return blockchain.name;
-  }
-});
 
 export type NotEvmChangeNowBlockchainsList =
   (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];
