@@ -55,7 +55,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.SEI,
   BLOCKCHAIN_NAME.CORE,
   BLOCKCHAIN_NAME.BAHAMUT,
-  BLOCKCHAIN_NAME.FLARE
+  BLOCKCHAIN_NAME.FLARE,
+  BLOCKCHAIN_NAME.GRAVITY
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [

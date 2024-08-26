@@ -175,6 +175,11 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   {
+    name: BLOCKCHAIN_NAME.GRAVITY,
+    rank: 1,
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW]
+  },
+  {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
     tags: [
