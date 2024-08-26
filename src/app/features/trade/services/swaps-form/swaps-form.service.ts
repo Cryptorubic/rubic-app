@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
@@ -19,6 +19,7 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class SwapsFormService {
@@ -147,7 +148,8 @@ export class SwapsFormService {
 
   constructor(
     private readonly tokensService: TokensService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnFormValueChange();
   }
@@ -155,6 +157,9 @@ export class SwapsFormService {
   private subscribeOnFormValueChange(): void {
     this.form.get('input').valueChanges.subscribe(inputValue => {
       this._inputValue$.next(inputValue);
+
+      this.walletConnectorService.selectedChain =
+        inputValue?.fromBlockchain || BLOCKCHAIN_NAME.ETHEREUM;
     });
 
     this.form.get('output').valueChanges.subscribe(outputValue => {

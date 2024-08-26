@@ -75,6 +75,7 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     SlippageFormatPipe,
     SkipDefaultDirective,
     MevBotModalComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    WcChangeNetworkModalComponent
   ],
   imports: [
     CommonModule,
