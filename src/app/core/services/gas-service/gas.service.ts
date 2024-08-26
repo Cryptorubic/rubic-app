@@ -592,9 +592,12 @@ export class GasService {
   })
   private fetchBitlayerGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BITLAYER);
-    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-      map(formatEIP1559Gas),
-      catchError(() => of(null))
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
     );
   }
 }
