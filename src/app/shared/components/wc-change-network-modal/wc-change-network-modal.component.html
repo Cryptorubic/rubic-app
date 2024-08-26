@@ -1,0 +1,30 @@
+<div class="modal">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img
+        class="modal__success-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Change network</h3>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-text">
+        <div>
+          We can't change the network automatically for your wallet, you have to reconnect it
+          manually with correct chain
+        </div>
+      </div>
+
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="outline" type="button" size="l" (click)="onCancel()">
+          Cancel
+        </button>
+
+        <button tuiButton appearance="primary" type="button" size="l" (click)="onConfirm()">
+          Reconnect
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

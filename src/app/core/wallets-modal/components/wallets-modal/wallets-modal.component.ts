@@ -150,7 +150,7 @@ export class WalletsModalComponent implements OnInit {
       const connectionTime = 15_000;
 
       await firstValueFrom(
-        from(this.authService.connectWallet({ walletName: provider, chainId: 1 })).pipe(
+        from(this.authService.connectWallet({ walletName: provider })).pipe(
           timeout(connectionTime),
           catchError(() => {
             this.headerStore.setWalletsLoadingStatus(false);
