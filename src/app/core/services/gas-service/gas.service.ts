@@ -38,7 +38,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.ZK_LINK,
   BLOCKCHAIN_NAME.TAIKO,
   BLOCKCHAIN_NAME.ROOTSTOCK,
-  BLOCKCHAIN_NAME.SEI
+  BLOCKCHAIN_NAME.SEI,
+  BLOCKCHAIN_NAME.GRAVITY
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -81,7 +82,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
     [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this),
     [BLOCKCHAIN_NAME.ROOTSTOCK]: this.fetchRootstockGas.bind(this),
-    [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this)
+    [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this),
+    [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -556,6 +558,20 @@ export class GasService {
   })
   private fetchSeiGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SEI);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchGravityGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.GRAVITY);
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {
