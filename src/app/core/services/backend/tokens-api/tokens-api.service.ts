@@ -179,11 +179,8 @@ export class TokensApiService {
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<TokensBackendResponse> {
     const blockchains = [...blockchainsWithOnePage];
-    console.log(blockchains);
     const backendBlockchains = blockchains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
-    console.log(backendBlockchains);
     const queryString = backendBlockchains.join(',');
-    console.log(queryString);
 
     return this.httpService
       .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { networks: queryString }, this.tokensApiUrl)

@@ -98,11 +98,11 @@ export class CrossChainService {
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({
           ...fromToken,
-          price: fromPrice.isFinite() ? fromPrice : new BigNumber(fromToken?.price || NaN)
+          price: fromPrice
         });
         const toSdkCompatibleToken = new PriceToken({
           ...toToken,
-          price: toPrice.isFinite() ? toPrice : new BigNumber(toToken?.price || NaN)
+          price: toPrice
         });
         const options = this.getOptions(disabledTradeTypes);
         handleIntegratorAddress(options, fromBlockchain, toBlockchain);
