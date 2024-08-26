@@ -103,9 +103,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "scripts": [
-                "src/assets/analytics/google-analytics.js"
-              ],
+              "scripts": [],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
