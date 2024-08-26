@@ -15,6 +15,8 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
 
 @Component({
   selector: 'app-providers-list',
@@ -53,17 +55,21 @@ export class ProvidersListComponent {
 
   public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
+  public readonly hideHint$ = this.providerHintService.hideProviderHint$;
+
   public handleTradeSelection(
     event: MouseEvent,
     tradeType: TradeProvider,
+    trade: CrossChainTrade | OnChainTrade,
     tradeError?: Error
   ): void {
     const element = event.target as HTMLElement;
+    const isZeroOrNegativeAmount = trade.to.tokenAmount.lte(0);
 
     if (
       element?.parentElement?.className?.includes?.('element__expander') ||
       element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
-      element?.className?.includes?.('element__expander') ||
+      isZeroOrNegativeAmount ||
       tradeError
     ) {
       event.preventDefault();
@@ -92,6 +98,7 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService
+    private readonly tokensService: TokensService,
+    private readonly providerHintService: ProviderHintService
   ) {}
 }

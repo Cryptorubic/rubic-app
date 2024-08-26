@@ -36,7 +36,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_LINK,
-  BLOCKCHAIN_NAME.TAIKO
+  BLOCKCHAIN_NAME.TAIKO,
+  BLOCKCHAIN_NAME.ROOTSTOCK,
+  BLOCKCHAIN_NAME.SEI
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -77,7 +79,9 @@ export class GasService {
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
-    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this)
+    [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this),
+    [BLOCKCHAIN_NAME.ROOTSTOCK]: this.fetchRootstockGas.bind(this),
+    [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -436,12 +440,9 @@ export class GasService {
   })
   private fetchScrollGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SCROLL);
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map((gasPriceInWei: string) => {
-        return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
-        };
-      })
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 
@@ -523,6 +524,38 @@ export class GasService {
   })
   private fetchTaikoGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.TAIKO);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  /**
+   * Gets Rootstock gas.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchRootstockGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ROOTSTOCK);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchSeiGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SEI);
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
         return {

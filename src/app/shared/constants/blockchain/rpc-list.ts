@@ -168,6 +168,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.FLARE]: [
     'https://rpc.ankr.com/flare/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://flare.rpc.thirdweb.com',
+    'https://rpc.ankr.com/flare',
     'https://flare-api.flare.network/ext/C/rpc'
   ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
@@ -285,8 +287,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.merlinchain.io',
     'https://merlin.blockpi.network/v1/rpc/public'
   ],
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: ['https://public-node.rsk.co', 'https://mycrypto.rsk.co'],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: [
+    'https://go.getblock.io/d3d699096c304a68b1c1e741cf02207a',
+    'https://mycrypto.rsk.co'
+  ],
   [BLOCKCHAIN_NAME.MODE]: [
+    'https://mode-mainnet.blastapi.io/f2a2318c-ed4d-4366-9675-ccfd49434359',
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
     'https://mode.drpc.org'

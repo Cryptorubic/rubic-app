@@ -21,8 +21,7 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError,
-  ON_CHAIN_TRADE_TYPE
+  UnapprovedContractError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -46,6 +45,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
 @Injectable()
 export class OnChainService {
@@ -127,7 +127,7 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
+          const timeout = this.calculateTimeoutForChains();
 
           const options: OnChainManagerCalculationOptions = {
             timeout,
@@ -137,7 +137,7 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: [...disabledTradeTypes, ON_CHAIN_TRADE_TYPE.OKU_SWAP]
+            disabledProviders: [...disabledTradeTypes]
           };
           handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 
@@ -363,12 +363,9 @@ export class OnChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain)) {
       return 30_000;
     }
     return 10_000;

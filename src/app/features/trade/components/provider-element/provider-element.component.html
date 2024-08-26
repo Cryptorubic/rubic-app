@@ -1,14 +1,18 @@
 <ng-container *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
   <div
-    *ngLet="tradeState?.trade as trade"
+    *ngLet="hideHint$ | async as hideHint"
     class="element"
-    [ngClass]="{ element_shorted: shortedInfo, element_disabled: tradeState?.error }"
+    [ngClass]="{
+      element_shorted: shortedInfo,
+      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0)
+    }"
   >
     <div
       class="element__provider-container"
       [ngClass]="{
         'element__provider-container_selected': selectedTradeType === tradeState?.tradeType
       }"
+      *ngLet="tradeState?.trade as trade"
     >
       <div class="element__amounts-container">
         <div class="element__amount">
@@ -45,10 +49,12 @@
                 status="custom"
                 value="Best"
                 [tuiHint]="'The most profitable trade according to our calculations'"
+                [tuiHintHideDelay]="hideHint ? 0 : 200"
               ></tui-tag>
               <app-promotion-badge
                 *ngFor="let badge of tradeState.badges"
                 [data]="badge"
+                [hideHint]="hideHint"
               ></app-promotion-badge>
               <tui-tag
                 *ngIf="tradeState?.error"
@@ -72,7 +78,10 @@
 
       <tui-expand [expanded]="expanded">
         <ng-template tuiExpandContent>
-          <app-route-element [routes]="tradeState.routes"></app-route-element>
+          <app-route-element
+            [tradeType]="tradeState.tradeType"
+            [routes]="tradeState.routes"
+          ></app-route-element>
         </ng-template>
       </tui-expand>
     </div>
@@ -80,6 +89,7 @@
       [gasInfo]="getGasData()"
       [feeInfoChange]="getFeeInfo()"
       [time]="getAverageTimeString()"
+      [hideHint]="hideHint"
     ></app-swap-data-element>
   </div>
 </ng-container>
