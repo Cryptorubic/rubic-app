@@ -57,7 +57,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.BAHAMUT,
   BLOCKCHAIN_NAME.FLARE,
   BLOCKCHAIN_NAME.TON,
-  BLOCKCHAIN_NAME.SCROLL
+  BLOCKCHAIN_NAME.SCROLL,
+  BLOCKCHAIN_NAME.GRAVITY
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [
