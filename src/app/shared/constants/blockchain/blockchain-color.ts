@@ -144,5 +144,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEI]: '#000000',
   [BLOCKCHAIN_NAME.CORE]: '#FF9211',
   [BLOCKCHAIN_NAME.BAHAMUT]: '#FFFFFF',
+  [BLOCKCHAIN_NAME.BITLAYER]: '#ffbd1a',
   [BLOCKCHAIN_NAME.GRAVITY]: '#FFFFFF'
 };

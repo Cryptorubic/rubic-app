@@ -39,6 +39,7 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.TAIKO,
   BLOCKCHAIN_NAME.ROOTSTOCK,
   BLOCKCHAIN_NAME.SEI,
+  BLOCKCHAIN_NAME.BITLAYER,
   BLOCKCHAIN_NAME.GRAVITY
 ] as const;
 
@@ -83,6 +84,7 @@ export class GasService {
     [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this),
     [BLOCKCHAIN_NAME.ROOTSTOCK]: this.fetchRootstockGas.bind(this),
     [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this),
+    [BLOCKCHAIN_NAME.BITLAYER]: this.fetchBitlayerGas.bind(this),
     [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this)
   };
 
@@ -615,5 +617,19 @@ export class GasService {
         : expectedMaxFeePerGas;
 
     return { baseFee, maxFeePerGas, maxPriorityFeePerGas };
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchBitlayerGas(): Observable<GasPrice | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BITLAYER);
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
   }
 }
