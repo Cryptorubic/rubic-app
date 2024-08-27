@@ -27,5 +27,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.TAIKO]: true,
   [BLOCKCHAIN_NAME.ROOTSTOCK]: true,
   [BLOCKCHAIN_NAME.SCROLL]: true,
+  [BLOCKCHAIN_NAME.SEI]: true,
   [BLOCKCHAIN_NAME.BITLAYER]: true
 };

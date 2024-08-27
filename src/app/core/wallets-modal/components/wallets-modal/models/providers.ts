@@ -100,5 +100,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'HoldStation',
+    value: WALLET_NAME.HOLD_STATION,
+    img: './assets/images/icons/wallets/holdstation.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];

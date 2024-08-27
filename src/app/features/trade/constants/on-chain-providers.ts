@@ -628,6 +628,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}silkswap.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
+    name: 'Kujata',
+    image: `${imageBasePath}kujata.svg`,
+    color: '#FFFFFF'
+  },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
