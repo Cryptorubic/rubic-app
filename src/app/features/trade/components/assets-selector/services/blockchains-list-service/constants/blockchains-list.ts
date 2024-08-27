@@ -318,6 +318,17 @@ export const blockchainsList: RankedBlockchain[] = [
     ]
   },
   {
+    name: BLOCKCHAIN_NAME.BITLAYER,
+    rank: 0.45,
+    tags: [
+      'BTC',
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW,
+      BlockchainTags.POPULAR
+    ]
+  },
+  {
     name: BLOCKCHAIN_NAME.MERLIN,
     rank: 0.45,
     tags: [

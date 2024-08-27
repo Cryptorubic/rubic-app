@@ -727,6 +727,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'ZetaSwap',
     image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
   }
 };
 

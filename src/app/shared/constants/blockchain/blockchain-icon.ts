@@ -145,5 +145,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
   [BLOCKCHAIN_NAME.SEI]: `${basePath}sei.svg`,
   [BLOCKCHAIN_NAME.CORE]: `${basePath}core.svg`,
-  [BLOCKCHAIN_NAME.BAHAMUT]: `${basePath}bahamut.svg`
+  [BLOCKCHAIN_NAME.BAHAMUT]: `${basePath}bahamut.svg`,
+  [BLOCKCHAIN_NAME.BITLAYER]: `${basePath}bitlayer.png`
 };

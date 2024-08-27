@@ -214,5 +214,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.IOTEX]: {
     name: 'Iotex',
     rpc: 'https://rpc.ankr.com/iotex'
+  },
+  [BLOCKCHAIN_NAME.BITLAYER]: {
+    name: 'Bitlayer',
+    rpc: 'https://rpc.ankr.com/bitlayer'
   }
 };
