@@ -65,6 +65,10 @@ export class LiveChatService {
             }
           }
         }
+
+        this.window.addEventListener('beforeunload', () => {
+          liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'minimize' }, '*');
+        });
       },
       false
     );
