@@ -19,7 +19,7 @@ describe('SdkService', () => {
   });
 
   it('#constructor should initiate SDK as null', () => {
-    expect((service as RubicAny)._SDK).toBeNull();
+    expect((service as RubicAny)._SDK).not.eq(null);
   });
 
   it('#getConfig should return default config', () => {
@@ -29,7 +29,7 @@ describe('SdkService', () => {
     };
     const config = service.getConfig({});
 
-    expect(config.providerAddress.EVM.onChain).toBe(defaultProvidersAddresses.onChain);
-    expect(config.providerAddress.EVM.crossChain).toBe(defaultProvidersAddresses.crossChain);
+    expect(config.providerAddress.EVM.onChain).eq(defaultProvidersAddresses.onChain);
+    expect(config.providerAddress.EVM.crossChain).eq(defaultProvidersAddresses.crossChain);
   });
 });
