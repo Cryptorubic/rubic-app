@@ -27,6 +27,7 @@ export class StakeButtonComponent {
   public readonly errors = StakeButtonError;
 
   public handleClick(): void {
+    /**
     if (this.amountError === this.errors.NULL) {
       this.onStake.emit();
     }
@@ -34,5 +35,6 @@ export class StakeButtonComponent {
     if (this.amountError === this.errors.NEED_APPROVE) {
       this.onApprove.emit();
     }
+    */
   }
 }
