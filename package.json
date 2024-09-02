@@ -29,7 +29,9 @@
     "unused-css": "ngx-unused-css",
     "compodoc": "compodoc -p tsconfig.doc.json -s",
     "precompile": "node scripts/build-timestamp.js",
-    "compile": "npm run precompile && tsc"
+    "compile": "npm run precompile && tsc",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -102,6 +104,7 @@
     "@angular/compiler-cli": "^16.1.3",
     "@angular/language-service": "^16.1.3",
     "@compodoc/compodoc": "^1.1.15",
+    "@cypress/schematic": "2.5.2",
     "@types/date-and-time": "^0.13.0",
     "@types/jasmine": "^3.6.11",
     "@types/jasminewd2": "^2.0.9",
@@ -112,6 +115,7 @@
     "browserify-fs": "^1.0.0",
     "codelyzer": "^6.0.2",
     "crypto-browserify": "^3.12.0",
+    "cypress": "^13.14.1",
     "eslint": "^8.39.0",
     "eslint-config-airbnb-typescript": "^16.0.0",
     "eslint-config-prettier": "^8.3.0",
@@ -141,7 +145,7 @@
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^2.4.1",
-    "protractor": "~7.0.0",
+    "protractor": "^7.0.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
     "stylelint": "^13.13.1",
