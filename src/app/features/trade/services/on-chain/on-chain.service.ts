@@ -21,7 +21,8 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  UnapprovedMethodError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -47,6 +48,10 @@ import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
+type NotWhitelistedProviderErrors =
+  | UnapprovedContractError
+  | UnapprovedMethodError
+  | NotWhitelistedProviderError;
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
@@ -243,7 +248,11 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
+      if (
+        err instanceof NotWhitelistedProviderError ||
+        err instanceof UnapprovedContractError ||
+        err instanceof UnapprovedMethodError
+      ) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
@@ -334,7 +343,7 @@ export class OnChainService {
   }
 
   public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderErrors,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
