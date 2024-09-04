@@ -179,6 +179,7 @@ export class SwapsControllerService {
               'layerzero'
             ];
           }
+          this.useSdk(fromToken, toToken);
 
           if (fromToken.blockchain === toToken.blockchain) {
             return this.onChainService
@@ -197,7 +198,6 @@ export class SwapsControllerService {
               })
             );
           }
-          this.useSdk(fromToken, toToken);
         }),
         catchError(err => {
           console.debug(err);
