@@ -64,6 +64,8 @@ import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-cont
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { SDK } from '@cryptorubic/sdk-lite';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 @Injectable()
 export class SwapsControllerService {
@@ -195,6 +197,7 @@ export class SwapsControllerService {
               })
             );
           }
+          this.useSdk(fromToken, toToken);
         }),
         catchError(err => {
           console.debug(err);
@@ -534,5 +537,35 @@ export class SwapsControllerService {
           this.startRecalculation(true);
         }
       });
+  }
+
+  private async useSdk(fromToken: TokenAmount, toToken: TokenAmount): Promise<void> {
+    try {
+      const sdk = await SDK.create({ referrer: 'rubic.exchange', apiKey: '111111111111111111' });
+      const bestTrade = await sdk.calculateBest({
+        srcTokenAddress: fromToken.address,
+        srcTokenBlockchain: fromToken.blockchain,
+        srcTokenAmount: fromToken.amount.toFixed(),
+        dstTokenAddress: toToken.address,
+        dstTokenBlockchain: toToken.blockchain
+      });
+      console.log(bestTrade);
+
+      const wallet = this.authService.userAddress;
+      if (wallet) {
+        const receiver = this.targetNetworkAddressService.address;
+        const data = await sdk.swap({
+          srcTokenAddress: fromToken.address,
+          srcTokenBlockchain: fromToken.blockchain,
+          srcTokenAmount: fromToken.amount.toFixed(),
+          dstTokenAddress: toToken.address,
+          dstTokenBlockchain: toToken.blockchain,
+          id: bestTrade.id,
+          fromAddress: wallet,
+          receiver: receiver || wallet
+        });
+        console.log(data);
+      }
+    } catch {}
   }
 }
