@@ -566,6 +566,8 @@ export class SwapsControllerService {
         });
         console.log(data);
       }
-    } catch {}
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
