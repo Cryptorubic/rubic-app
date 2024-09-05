@@ -84,7 +84,7 @@ export class StakeFormComponent implements OnInit {
 
   public lockTimeExceededError = false;
 
-  public stakingIsClosed = false;
+  public stakingIsClosed = true;
 
   public readonly errors = StakeButtonError;
 

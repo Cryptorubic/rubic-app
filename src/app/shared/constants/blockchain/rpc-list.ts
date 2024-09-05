@@ -330,5 +330,17 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc2.bahamut.io',
     'wss://ws2.sahara.bahamutchain.com',
     'wss://bahamut-rpc.publicnode.com'
+  ],
+  [BLOCKCHAIN_NAME.BITLAYER]: [
+    'https://rpc.ankr.com/bitlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.bitlayer.org',
+    'https://rpc.ankr.com/bitlayer',
+    'https://rpc-bitlayer.rockx.com',
+    'https://rpc.bitlayer-rpc.com'
+  ],
+  [BLOCKCHAIN_NAME.GRAVITY]: [
+    'https://rpc.ankr.com/gravity/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://mainnet.gravity-rpc.com',
+    'https://rpc.gravity.xyz'
   ]
 };

@@ -628,6 +628,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}silkswap.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
+    name: 'Kujata',
+    image: `${imageBasePath}kujata.svg`,
+    color: '#FFFFFF'
+  },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
@@ -722,6 +727,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'ZetaSwap',
     image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
   }
 };
 

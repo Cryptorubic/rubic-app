@@ -21,6 +21,7 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token,
   UnapprovedContractError,
+  UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
   Web3Pure
@@ -206,7 +207,7 @@ export class CrossChainService {
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderError | UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
@@ -311,7 +312,8 @@ export class CrossChainService {
 
       if (
         error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError
+        error instanceof UnapprovedContractError ||
+        error instanceof UnapprovedMethodError
       ) {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }

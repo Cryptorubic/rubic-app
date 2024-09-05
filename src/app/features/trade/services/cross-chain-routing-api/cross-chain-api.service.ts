@@ -10,6 +10,7 @@ import {
   NotWhitelistedProviderError,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
+  UnapprovedMethodError,
   Web3Pure
 } from 'rubic-sdk';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -63,7 +64,7 @@ export class CrossChainApiService {
   }
 
   public saveNotWhitelistedCcrProvider(
-    error: UnapprovedContractError,
+    error: UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): Observable<void> {

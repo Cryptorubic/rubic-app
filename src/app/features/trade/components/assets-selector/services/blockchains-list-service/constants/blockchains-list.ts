@@ -231,6 +231,11 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX', BlockchainTags.EVM] },
   {
+    name: BLOCKCHAIN_NAME.GRAVITY,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW, BlockchainTags.POPULAR]
+  },
+  {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
     tags: [
@@ -315,6 +320,17 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.LAYER_2,
       BlockchainTags.NEW,
       BlockchainTags.PROMO
+    ]
+  },
+  {
+    name: BLOCKCHAIN_NAME.BITLAYER,
+    rank: 0.45,
+    tags: [
+      'BTC',
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW,
+      BlockchainTags.POPULAR
     ]
   },
   {
@@ -424,7 +440,7 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,
   // BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,
-  { name: BLOCKCHAIN_NAME.FLARE, rank: 1, tags: ['FLR', BlockchainTags.EVM] },
+  { name: BLOCKCHAIN_NAME.FLARE, rank: 0, tags: ['FLR', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.IOTEX,
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList

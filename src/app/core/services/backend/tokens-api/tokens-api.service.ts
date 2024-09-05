@@ -178,20 +178,12 @@ export class TokensApiService {
   private fetchTokensFromOnePageBlockchains(
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<TokensBackendResponse> {
-    const onePageBlockchains = blockchainsWithOnePage
-      .map(b => TO_BACKEND_BLOCKCHAINS[b])
-      .reduce((acc, blockchain) => {
-        if (acc.length) {
-          return acc + ',' + blockchain;
-        }
-        return blockchain;
-      }, '');
+    const blockchains = [...blockchainsWithOnePage];
+    const backendBlockchains = blockchains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
+    const queryString = backendBlockchains.join(',');
+
     return this.httpService
-      .get<TokensBackendResponse>(
-        ENDPOINTS.TOKENS,
-        { networks: onePageBlockchains },
-        this.tokensApiUrl
-      )
+      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { networks: queryString }, this.tokensApiUrl)
       .pipe(
         tap(networkTokens => {
           if (networkTokens?.results) {
