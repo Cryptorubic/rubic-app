@@ -33,7 +33,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.OASIS]: 'Oasis',
   [BLOCKCHAIN_NAME.METIS]: 'Metis',
   [BLOCKCHAIN_NAME.DFK]: 'DFK',
-  [BLOCKCHAIN_NAME.KLAYTN]: 'Klaytn',
+  [BLOCKCHAIN_NAME.KLAYTN]: 'Kaia',
   [BLOCKCHAIN_NAME.VELAS]: 'Velas',
   [BLOCKCHAIN_NAME.SYSCOIN]: 'Syscoin',
   [BLOCKCHAIN_NAME.EOS]: 'EOS',
@@ -143,5 +143,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: 'Taiko',
   [BLOCKCHAIN_NAME.SEI]: 'Sei',
   [BLOCKCHAIN_NAME.CORE]: 'CORE',
-  [BLOCKCHAIN_NAME.BAHAMUT]: 'Bahamut'
+  [BLOCKCHAIN_NAME.BAHAMUT]: 'Bahamut',
+  [BLOCKCHAIN_NAME.BITLAYER]: 'Bitlayer',
+  [BLOCKCHAIN_NAME.GRAVITY]: 'Gravity'
 };

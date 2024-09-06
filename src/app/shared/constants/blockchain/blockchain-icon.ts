@@ -68,7 +68,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.IOTEX]: `${basePath}iotex.svg`,
   [BLOCKCHAIN_NAME.KADENA]: `${basePath}kadena.svg`,
   [BLOCKCHAIN_NAME.KAVA]: `${basePath}kava.svg`,
-  [BLOCKCHAIN_NAME.KLAYTN]: `${basePath}klaytn.svg`,
+  [BLOCKCHAIN_NAME.KLAYTN]: `${basePath}kaia.svg`,
   [BLOCKCHAIN_NAME.KOMODO]: `${basePath}komodo.svg`,
   [BLOCKCHAIN_NAME.KROMA]: `${basePath}kroma.svg`,
   [BLOCKCHAIN_NAME.KUSAMA]: `${basePath}kusama.svg`,
@@ -145,5 +145,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: `${basePath}taiko.svg`,
   [BLOCKCHAIN_NAME.SEI]: `${basePath}sei.svg`,
   [BLOCKCHAIN_NAME.CORE]: `${basePath}core.svg`,
-  [BLOCKCHAIN_NAME.BAHAMUT]: `${basePath}bahamut.svg`
+  [BLOCKCHAIN_NAME.BAHAMUT]: `${basePath}bahamut.svg`,
+  [BLOCKCHAIN_NAME.BITLAYER]: `${basePath}bitlayer.svg`,
+  [BLOCKCHAIN_NAME.GRAVITY]: `${basePath}gravity.svg`
 };

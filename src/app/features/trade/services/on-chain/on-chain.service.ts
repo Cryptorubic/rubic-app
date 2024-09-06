@@ -21,7 +21,8 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  UnapprovedMethodError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -45,7 +46,12 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
+type NotWhitelistedProviderErrors =
+  | UnapprovedContractError
+  | UnapprovedMethodError
+  | NotWhitelistedProviderError;
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
@@ -126,7 +132,7 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
+          const timeout = this.calculateTimeoutForChains();
 
           const options: OnChainManagerCalculationOptions = {
             timeout,
@@ -242,7 +248,11 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
+      if (
+        err instanceof NotWhitelistedProviderError ||
+        err instanceof UnapprovedContractError ||
+        err instanceof UnapprovedMethodError
+      ) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
@@ -333,7 +343,7 @@ export class OnChainService {
   }
 
   public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderErrors,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
@@ -362,12 +372,9 @@ export class OnChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain)) {
       return 30_000;
     }
     return 10_000;

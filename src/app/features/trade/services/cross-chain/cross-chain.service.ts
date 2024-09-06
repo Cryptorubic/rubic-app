@@ -21,6 +21,7 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token,
   UnapprovedContractError,
+  UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
   Web3Pure
@@ -53,6 +54,7 @@ import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../forms-toggler/models';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 
 @Injectable()
 export class CrossChainService {
@@ -103,7 +105,7 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
+        const options = this.getOptions(disabledTradeTypes);
         handleIntegratorAddress(options, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
@@ -154,9 +156,7 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
+    disabledTradeTypes: CrossChainTradeType[]
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -175,7 +175,7 @@ export class CrossChainService {
       ])
     );
     const calculateGas = this.authService.userAddress;
-    const timeout = this.calculateTimeoutForChains(fromBlockchain, toBlockchain);
+    const timeout = this.calculateTimeoutForChains();
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -207,7 +207,7 @@ export class CrossChainService {
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderError | UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
@@ -312,7 +312,8 @@ export class CrossChainService {
 
       if (
         error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError
+        error instanceof UnapprovedContractError ||
+        error instanceof UnapprovedMethodError
       ) {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
@@ -481,13 +482,13 @@ export class CrossChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.XLAYER];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
-      return 25_000;
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    if (
+      CCR_LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+      CCR_LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+    ) {
+      return 30_000;
     }
     return this.defaultTimeout;
   }
