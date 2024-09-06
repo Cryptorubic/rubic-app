@@ -249,13 +249,8 @@ export class CrossChainService {
       return null;
     }
 
-    const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
-
-    this.airdropPointsService
-      .setSeNPointsTemp(trade.from.blockchain, trade.to.blockchain)
-      .subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),
@@ -267,7 +262,7 @@ export class CrossChainService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
-      this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
+      this.crossChainApiService.createTrade(txHash, trade);
 
       this.notifyGtmAfterSignTx(
         txHash,
@@ -416,13 +411,6 @@ export class CrossChainService {
       )
       .subscribe();
     return false;
-  }
-
-  private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
-    const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
-    const isCnTrade = trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW;
-
-    return isCnTrade || swapWithProxy;
   }
 
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
