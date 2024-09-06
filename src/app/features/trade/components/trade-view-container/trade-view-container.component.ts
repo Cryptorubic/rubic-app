@@ -18,6 +18,7 @@ import { TargetNetworkAddressService } from '../../services/target-network-addre
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { GasFormAnalyticService } from '../../services/gas-form/gas-form-analytic.service';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -53,6 +54,8 @@ export class TradeViewContainerComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
   public readonly buttonState$ = this.actionButtonService.buttonState$;
 
   constructor(
@@ -67,7 +70,8 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormAnalyticService: GasFormAnalyticService
+    private readonly gasFormAnalyticService: GasFormAnalyticService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
