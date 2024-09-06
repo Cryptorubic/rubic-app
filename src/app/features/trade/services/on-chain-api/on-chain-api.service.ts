@@ -68,8 +68,7 @@ export class OnChainApiService {
   public createTrade(
     hash: string,
     provider: OnChainTradeType,
-    trade: OnChainTrade,
-    isSwapAndEarnSwap: boolean
+    trade: OnChainTrade
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
@@ -105,10 +104,7 @@ export class OnChainApiService {
     };
 
     return this.httpService
-      .post<InstantTradesResponseApi>(
-        `v2/trades/onchain/new_extended?valid=${isSwapAndEarnSwap ?? false}`,
-        tradeInfo
-      )
+      .post<InstantTradesResponseApi>('v2/trades/onchain/new_extended', tradeInfo)
       .pipe(delay(1000));
   }
 

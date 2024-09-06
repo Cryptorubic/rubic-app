@@ -1,22 +1,3 @@
 <div class="info">
   <div class="info__title">Yahoo!</div>
-  <ng-container *ngIf="showPoints">
-    <ng-container *ngIf="pointsAmount$ | async as pointsAmount; else pointsUndefined">
-      <div class="info__description">
-        {{
-          'airdrop.modals.rubicPointsModal.description' | translate : { pointsAmount: pointsAmount }
-        }}
-      </div>
-      <div class="info__bottom">
-        {{ 'airdrop.modals.rubicPointsModal.infoText' | translate }}
-        <span class="highlight_green" (click)="navigateToSwapAndEarn()">
-          {{ 'airdrop.modals.rubicPointsModal.infoLink' | translate }}
-        </span>
-      </div>
-    </ng-container>
-
-    <ng-template #pointsUndefined>
-      {{ 'airdrop.modals.rubicPointsModal.pointsUndefined' | translate }}
-    </ng-template>
-  </ng-container>
 </div>
