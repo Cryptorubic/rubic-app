@@ -73,7 +73,7 @@
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
   <!--  </button>-->
 
-  <ng-container>
+  <ng-container *ngIf="!useLargeIframe">
     <app-points-button
       class="rubic-header__point-button"
       *ngIf="currentUser$ | async"
