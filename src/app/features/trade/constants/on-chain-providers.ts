@@ -171,6 +171,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}elk.png`,
     color: '#009A5C'
   },
+  [ON_CHAIN_TRADE_TYPE.EYWA_SWAP]: {
+    name: 'Eywa Swap',
+    image: 'assets/images/icons/providers/bridge/eywa.svg',
+    color: '#FFFFFF'
+  },
 
   //DDDDDDDDDDDDDDDDDDDDD
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
