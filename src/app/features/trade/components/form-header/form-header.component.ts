@@ -3,7 +3,6 @@ import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.
 import { RefreshService } from '../../services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '../../models/refresh-status';
 import { map } from 'rxjs';
-import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/models';
 
 @Component({
   selector: 'app-form-header',
@@ -22,14 +21,6 @@ export class FormHeaderComponent {
     private readonly formsTogglerService: FormsTogglerService,
     private readonly refreshService: RefreshService
   ) {}
-
-  public toggleForm(formType: MainFormType): void {
-    if (formType === MAIN_FORM_TYPE.SWAP_FORM) {
-      this.formsTogglerService.openSwapForm();
-    } else {
-      this.formsTogglerService.openGasForm();
-    }
-  }
 
   public refreshTrades(): void {
     this.refreshService.onButtonClick();

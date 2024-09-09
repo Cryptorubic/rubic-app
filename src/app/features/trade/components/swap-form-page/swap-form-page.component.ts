@@ -11,12 +11,9 @@ import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { compareTokens, isNil } from '@shared/utils/utils';
+import { compareTokens } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
-import { GasFormService } from '../../services/gas-form/gas-form.service';
-import { BlockchainsListService } from '../assets-selector/services/blockchains-list-service/blockchains-list.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -76,41 +73,6 @@ export class SwapFormPageComponent {
     distinctUntilChanged()
   );
 
-  public readonly isDisabledFromSelector$ = this.selectedForm$.pipe(
-    combineLatestWith(this.toAsset$),
-    map(([selectedForm, toAsset]) => selectedForm === MAIN_FORM_TYPE.GAS_FORM && isNil(toAsset))
-  );
-
-  public readonly showGasTargetChainHint$ = this.selectedForm$.pipe(
-    combineLatestWith(this.tradePageService.formContent$, this.isMobile$, this.toAsset$),
-    map(([selectedForm, formState, isMobile, toAsset]) => {
-      return (
-        selectedForm === MAIN_FORM_TYPE.GAS_FORM &&
-        formState === 'form' &&
-        !isMobile &&
-        isNil(toAsset)
-      );
-    })
-  );
-
-  public readonly showGasSourceChainHint$ = this.selectedForm$.pipe(
-    combineLatestWith(
-      this.tradePageService.formContent$,
-      this.isMobile$,
-      this.toAsset$,
-      this.fromAsset$
-    ),
-    map(([selectedForm, formState, isMobile, toAsset, fromAsset]) => {
-      return (
-        selectedForm === MAIN_FORM_TYPE.GAS_FORM &&
-        formState === 'form' &&
-        !isMobile &&
-        !isNil(toAsset) &&
-        isNil(fromAsset)
-      );
-    })
-  );
-
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
@@ -121,9 +83,7 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly swapsStateService: SwapsStateService,
-    private readonly gasFormService: GasFormService,
-    private readonly blockchainsListService: BlockchainsListService
+    private readonly swapsStateService: SwapsStateService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -138,17 +98,8 @@ export class SwapFormPageComponent {
   }
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
-    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-      this.gasFormService.setGasFormTargetAvailableBlockchains(
-        this.blockchainsListService.availableBlockchains
-      );
-    }
     if (isMobile) {
-      if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && inputType === 'to') {
-        this.modalService.openTargetBlockchainListInGasForm(inputType, this.injector).subscribe();
-      } else {
-        this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
-      }
+      this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');
     }
