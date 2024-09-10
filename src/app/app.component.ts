@@ -13,6 +13,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { ApiWsService } from '@core/services/api-ws/api-ws.service';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly apiWsService: ApiWsService
   ) {
     this.printTimestamp();
     this.setupLanguage();

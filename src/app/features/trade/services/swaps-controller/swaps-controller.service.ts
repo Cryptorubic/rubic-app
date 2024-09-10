@@ -53,7 +53,6 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -64,6 +63,13 @@ import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-cont
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { ApiWsService } from '@core/services/api-ws/api-ws.service';
+import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
+import { TradeContainer } from '@features/trade/models/trade-container';
+import { WsResponse } from '@core/services/api-ws/ws-response';
+import { ApiCrossChainTrade } from '@features/trade/services/swaps-controller/api-cross-chain-trade';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/models/wrapped-cross-chain-trade';
 
 @Injectable()
 export class SwapsControllerService {
@@ -99,7 +105,9 @@ export class SwapsControllerService {
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly apiWsService: ApiWsService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -123,6 +131,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnCalculation(): void {
+    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(200),
@@ -177,6 +186,8 @@ export class SwapsControllerService {
               'layerzero'
             ];
           }
+
+          this.apiWsService.getRates();
 
           if (fromToken.blockchain === toToken.blockchain) {
             return this.onChainService
@@ -534,5 +545,81 @@ export class SwapsControllerService {
           this.startRecalculation(true);
         }
       });
+  }
+
+  private handleWs(): void {
+    this.apiWsService.subscribeOnEvents().pipe(
+      map(apiTrade => this.transformToTrade(apiTrade)),
+      catchError(err => {
+        console.debug(err);
+        return of(null);
+      }),
+      switchMap(container => {
+        const wrappedTrade = container?.value?.wrappedTrade;
+
+        if (wrappedTrade) {
+          const isCalculationEnd = container.value.total === container.value.calculated;
+          const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+          return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
+            .pipe(
+              tap(([trade, needApprove, type]) => {
+                try {
+                  this.swapsStateService.updateTrade(trade, type, needApprove);
+                  this.swapsStateService.pickProvider(isCalculationEnd);
+                  this.swapsStateService.setCalculationProgress(
+                    container.value.total,
+                    container.value.calculated
+                  );
+                  this.setTradeAmount();
+                  if (isCalculationEnd) {
+                    this.refreshService.setStopped();
+                  }
+                } catch (err) {
+                  console.error(err);
+                }
+              })
+            )
+            .pipe(
+              catchError(() => {
+                // this.swapsStateService.updateTrade(trade, type, needApprove);
+                this.swapsStateService.pickProvider(isCalculationEnd);
+                return of(null);
+              })
+            );
+        }
+        if (!container?.value) {
+          this.refreshService.setStopped();
+          this.swapsStateService.clearProviders(true);
+        } else {
+          this.swapsStateService.setCalculationProgress(
+            container.value.total,
+            container.value.calculated
+          );
+        }
+        return of(null);
+      }),
+      catchError((_err: unknown) => {
+        this.refreshService.setStopped();
+        this.swapsStateService.pickProvider(true);
+        return of(null);
+      })
+    );
+  }
+
+  private transformToTrade(apiTrade: WsResponse): TradeContainer {
+    // const type = apiTrade?
+    const { fromToken, toToken } = this.swapFormService.inputValue;
+    const container: TradeContainer = {
+      value: {
+        total: apiTrade.total,
+        calculated: apiTrade.calculated,
+        wrappedTrade: {
+          trade: new ApiCrossChainTrade(apiTrade, fromToken, toToken, this.walletConnectorService),
+          tradeType: apiTrade.type
+        } as WrappedCrossChainTrade
+      },
+      type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+    };
+    return container;
   }
 }
