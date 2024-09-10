@@ -20,6 +20,8 @@ import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.s
 import { AvailableBlockchain } from '../blockchains-list-service/models/available-blockchain';
 import { HeaderStore } from '@app/core/header/services/header.store';
 
+type SelectorType = 'fromBlockchain' | 'toBlockchain';
+
 @Injectable()
 export class AssetsSelectorService {
   private _formType: FormType;
@@ -88,16 +90,8 @@ export class AssetsSelectorService {
 
     const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     const assetType = this.swapFormService.inputValue[assetTypeKey];
-    const fromBlockchain =
-      this.swapFormService.inputValue.fromToken &&
-      'blockchain' in this.swapFormService.inputValue.fromToken
-        ? this.swapFormService.inputValue.fromToken.blockchain
-        : null;
-    const toBlockchain =
-      this.swapFormService.inputValue.toToken &&
-      'blockchain' in this.swapFormService.inputValue.toToken
-        ? this.swapFormService.inputValue.toToken.blockchain
-        : null;
+    const fromBlockchain = this.getTokenListChain('fromBlockchain');
+    const toBlockchain = this.getTokenListChain('toBlockchain');
     const userBlockchainName = this.walletConnectorService.network;
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
@@ -204,5 +198,18 @@ export class AssetsSelectorService {
       fromBlockchain: null,
       fromToken: null
     });
+  }
+
+  private getTokenListChain(selectorType: SelectorType): BlockchainName | null {
+    if (this.swapFormService.inputValue[selectorType]) {
+      return this.swapFormService.inputValue[selectorType];
+    }
+
+    const oppositSelector = selectorType === 'fromBlockchain' ? 'toBlockchain' : 'fromBlockchain';
+    if (this.swapFormService.inputValue[oppositSelector]) {
+      return this.swapFormService.inputValue[oppositSelector];
+    }
+
+    return null;
   }
 }
