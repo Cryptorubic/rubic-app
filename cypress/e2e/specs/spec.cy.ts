@@ -5,7 +5,7 @@ describe('OnChain в сети Ethereum', () => {
     copyright.should('exist');
     copyright.should('contain.text', ' © Copyright Rubic ');
 
-    // Проверка основных элементов на гоаыной странице
+    // Проверка основных элементов на глаыной странице
     cy.get('[class="_transitioned"]').should('exist'); // баннер
     cy.get('app-logo').should('exist'); // лого
     cy.get('[class=burger-menu]').should('exist'); // меню
@@ -51,7 +51,7 @@ describe('OnChain в сети Ethereum', () => {
     cy.get('[class="t-content"] li').eq(2).should('contain.text', 'Tether USD').click();
 
     //  Ввод амаунта =1
-    cy.get('[inputmode="input"]').click().type('1');
+    cy.get('#token-amount-input-element').click().type('1');
 
     // Проверка калькуляции провайдеров
     cy.get('[appearance="primary"]').should('exist').should('have.text', ' Connect wallet '); // кнопка подклчения кошелька на форме свапа
