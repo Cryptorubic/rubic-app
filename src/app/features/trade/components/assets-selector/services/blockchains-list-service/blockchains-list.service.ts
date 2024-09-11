@@ -183,21 +183,13 @@ export class BlockchainsListService {
   }
 
   private setChainInTopOfAssetsBlockchains(fromToken: TokenAmount, toToken: TokenAmount): void {
-    let chainList = this.assetsBlockchainsToShow;
     const firstSelectedChainName =
       this.assetsSelectorService.formType === 'from' ? toToken?.blockchain : fromToken?.blockchain;
-
-    for (let i = 0; i < this.assetsBlockchainsToShow.length; i++) {
-      const asset = this.assetsBlockchainsToShow[i];
-      if (asset.name === firstSelectedChainName) {
-        const prevFirstAsset = this.assetsBlockchainsToShow[0];
-        chainList[0] = asset;
-        chainList[i] = prevFirstAsset;
-        break;
-      }
-    }
-
-    this.assetsBlockchainsToShow = chainList;
+    const firstAssetIndex = this.assetsBlockchainsToShow.findIndex(
+      asset => asset?.name === firstSelectedChainName
+    );
+    const [firstAsset] = this.assetsBlockchainsToShow.splice(firstAssetIndex, 1);
+    this.assetsBlockchainsToShow.unshift(firstAsset);
   }
 
   private filterBlockchains(filterQuery: BlockchainFilters): AvailableBlockchain[] {
