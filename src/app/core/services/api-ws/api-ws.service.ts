@@ -22,14 +22,20 @@ export class ApiWsService {
     });
   }
 
-  public getRates(): void {
+  public getRates(params: {
+    srcTokenAddress: string;
+    srcTokenBlockchain: string;
+    srcTokenAmount: string;
+    dstTokenAddress: string;
+    dstTokenBlockchain: string;
+  }): void {
     this.client.emit('calculate', {
-      dstTokenAddress: '0x0000000000000000000000000000000000000000',
-      dstTokenBlockchain: 'POLYGON',
+      dstTokenAddress: params.dstTokenAddress,
+      dstTokenBlockchain: params.dstTokenBlockchain,
       referrer: 'rubic.exchange',
-      srcTokenAddress: '0x0000000000000000000000000000000000000000',
-      srcTokenAmount: '1.05',
-      srcTokenBlockchain: 'ETH'
+      srcTokenAddress: params.srcTokenAddress,
+      srcTokenAmount: params.srcTokenAmount,
+      srcTokenBlockchain: params.srcTokenBlockchain
     });
   }
 

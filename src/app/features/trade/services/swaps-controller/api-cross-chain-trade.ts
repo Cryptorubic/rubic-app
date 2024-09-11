@@ -13,13 +13,20 @@ import { BasicTransactionOptions } from 'rubic-sdk/lib/core/blockchain/web3-priv
 import { SwapTransactionOptions } from 'rubic-sdk/lib/features/common/models/swap-transaction-options';
 import { EncodeTransactionOptions } from 'rubic-sdk/lib/features/common/models/encode-transaction-options';
 import { TradeInfo } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/models/trade-info';
-import { AbstractAdapter } from '@cryptorubic/adapter/src/lib/adapters/abstract-adapter';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WsResponse } from '@core/services/api-ws/ws-response';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { Token } from '@shared/models/tokens/token';
+import { HttpService } from '@core/services/http/http.service';
+import { Route } from '@cryptorubic/sdk-core/src/lib/models/route';
+import { firstValueFrom } from 'rxjs';
+import { BlockchainAdapterFactoryService } from '@cryptorubic/adapter';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { EvmBlockchainName } from '@cryptorubic/blockchains';
 
 export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
+  private readonly apiAddress = 'https://dev-api-v2.rubic.exchange/api/routes/swap';
+
   protected readonly providerAddress: string;
 
   protected readonly routePath: RubicStep[] = [];
@@ -67,6 +74,8 @@ export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
 
   private readonly approveAddress: string;
 
+  private readonly id: string;
+
   // Fake
   protected get fromContractAddress(): string {
     throw new Error('Not supported');
@@ -111,13 +120,13 @@ export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
     throw new Error('Not supported');
   }
 
-  private readonly adapter: AbstractAdapter<unknown, unknown, BlockchainName>;
-
   public constructor(
     wsTrade: WsResponse,
     fromToken: TokenAmount,
     toToken: Token,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly httpService: HttpService,
+    private readonly adaptersFactory: BlockchainAdapterFactoryService
   ) {
     const { trade } = wsTrade;
     super('', []);
@@ -156,6 +165,7 @@ export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
       decimals: trade.fees.gasTokenFees.nativeToken.decimals,
       price: new BigNumber(1)
     };
+    this.id = trade.id;
     this.feeInfo = {
       rubicProxy: {
         fixedFee: {
@@ -177,7 +187,8 @@ export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
     if (this.from.isNative) {
       return Promise.resolve(false);
     }
-    return this.adapter.needPreswapAction(
+    const adapter = this.adaptersFactory.getAdapter(this.from.blockchain as EvmBlockchainName);
+    return adapter.needPreswapAction(
       this.approveAddress,
       this.from.address,
       this.walletAddress,
@@ -189,17 +200,46 @@ export class ApiCrossChainTrade extends CrossChainTrade<unknown> {
   // checkNeedApprove?: boolean,
   // amount?: BigNumber | 'infinity'
   Promise<unknown> {
-    return this.adapter.handlePreswap(
+    const adapter = this.adaptersFactory.getAdapter(this.from.blockchain as EvmBlockchainName);
+    return adapter.handlePreswap(
       this.approveAddress,
       // this.from.address,
       this.walletAddress,
-      this.from
+      this.from as RubicAny
     );
   }
 
-  async swap(options?: SwapTransactionOptions): Promise<string | never> {
-    console.log(options);
-    return '';
+  public async swap(_options?: SwapTransactionOptions): Promise<never | string> {
+    if (this.walletAddress) {
+      const response = await firstValueFrom(
+        this.httpService.post<Route>(
+          '',
+          {
+            dstTokenAddress: this.to.address,
+            dstTokenBlockchain: this.to.blockchain,
+            referrer: 'rubic.exchange',
+            srcTokenAddress: this.from.address,
+            srcTokenAmount: this.from.tokenAmount.toFixed(),
+            srcTokenBlockchain: this.from.blockchain,
+            fromAddress: this.walletAddress,
+            receiver: this.walletAddress,
+            id: this.id
+          },
+          this.apiAddress
+        )
+      );
+      if (!response.transaction) {
+        throw new Error('Failed to fetch data');
+      }
+      const {
+        transaction: { to, value, data }
+      } = response;
+      const blockchain = this.from.blockchain as RubicAny as EvmBlockchainName;
+      const adapter = this.adaptersFactory.getAdapter(blockchain);
+      return adapter.write(this.walletAddress, to, value, data);
+      // this.adapter.write();
+    }
+    throw Error('No wallet connected');
   }
 
   encode(_options: EncodeTransactionOptions): Promise<unknown> {

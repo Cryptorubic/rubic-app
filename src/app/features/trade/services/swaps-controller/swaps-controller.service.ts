@@ -64,12 +64,13 @@ import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { ApiWsService } from '@core/services/api-ws/api-ws.service';
-import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import { TradeContainer } from '@features/trade/models/trade-container';
 import { WsResponse } from '@core/services/api-ws/ws-response';
 import { ApiCrossChainTrade } from '@features/trade/services/swaps-controller/api-cross-chain-trade';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WrappedCrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/models/wrapped-cross-chain-trade';
+import { HttpService } from '@core/services/http/http.service';
+import { SdkApiService } from '@core/services/sdk-api/sdk-api.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -107,7 +108,9 @@ export class SwapsControllerService {
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
     private readonly apiWsService: ApiWsService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly httpService: HttpService,
+    private readonly sdkApiService: SdkApiService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -115,6 +118,7 @@ export class SwapsControllerService {
     this.subscribeOnAddressChange();
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
+    this.handleWs();
   }
 
   /**
@@ -128,12 +132,13 @@ export class SwapsControllerService {
 
   private startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
+    console.log('START RECALC');
   }
 
   private subscribeOnCalculation(): void {
-    this.handleWs();
     this.calculateTrade$
       .pipe(
+        tap(() => console.log('RUN CALCS')),
         debounceTime(200),
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
@@ -187,91 +192,36 @@ export class SwapsControllerService {
             ];
           }
 
-          this.apiWsService.getRates();
+          this.apiWsService.getRates({
+            srcTokenAddress: fromToken.address,
+            srcTokenBlockchain: fromToken.blockchain,
+            srcTokenAmount: fromToken.amount.toFixed(),
+            dstTokenAddress: toToken.address,
+            dstTokenBlockchain: toToken.blockchain
+          });
 
-          if (fromToken.blockchain === toToken.blockchain) {
-            return this.onChainService
-              .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
-              .pipe(
-                catchError(err => {
-                  console.debug(err);
-                  return of(null);
-                })
-              );
-          } else {
-            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
-              catchError(err => {
-                console.debug(err);
-                return of(null);
-              })
-            );
-          }
+          return of(null);
+
+          // if (fromToken.blockchain === toToken.blockchain) {
+          //   return this.onChainService
+          //     .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
+          //     .pipe(
+          //       catchError(err => {
+          //         console.debug(err);
+          //         return of(null);
+          //       })
+          //     );
+          // } else {
+          //   return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
+          //     catchError(err => {
+          //       console.debug(err);
+          //       return of(null);
+          //     })
+          //   );
+          // }
         }),
         catchError(err => {
-          console.debug(err);
-          return of(null);
-        }),
-        concatMap(container => {
-          const wrappedTrade = container?.value?.wrappedTrade;
-
-          if (wrappedTrade) {
-            const isCalculationEnd = container.value.total === container.value.calculated;
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-              wrappedTrade.trade,
-              wrappedTrade?.error
-            );
-
-            return forkJoin([
-              of(wrappedTrade),
-              needApprove$,
-              of(container.type),
-              isNotLinkedAccount$
-            ])
-              .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
-                  try {
-                    if (isNotLinkedAccount) {
-                      this.errorsService.catch(new NoLinkedAccountError());
-                      trade.trade = null;
-                    }
-                    this.swapsStateService.updateTrade(trade, type, needApprove);
-                    this.swapsStateService.pickProvider(isCalculationEnd);
-                    this.swapsStateService.setCalculationProgress(
-                      container.value.total,
-                      container.value.calculated
-                    );
-                    this.setTradeAmount();
-                    if (isCalculationEnd) {
-                      this.refreshService.setStopped();
-                    }
-                  } catch (err) {
-                    console.error(err);
-                  }
-                })
-              )
-              .pipe(
-                catchError(() => {
-                  // this.swapsStateService.updateTrade(trade, type, needApprove);
-                  this.swapsStateService.pickProvider(isCalculationEnd);
-                  return of(null);
-                })
-              );
-          }
-          if (!container?.value) {
-            this.refreshService.setStopped();
-            this.swapsStateService.clearProviders(true);
-          } else {
-            this.swapsStateService.setCalculationProgress(
-              container.value.total,
-              container.value.calculated
-            );
-          }
-          return of(null);
-        }),
-        catchError((_err: unknown) => {
-          this.refreshService.setStopped();
-          this.swapsStateService.pickProvider(true);
+          console.log(err);
           return of(null);
         })
       )
@@ -548,73 +498,111 @@ export class SwapsControllerService {
   }
 
   private handleWs(): void {
-    this.apiWsService.subscribeOnEvents().pipe(
-      map(apiTrade => this.transformToTrade(apiTrade)),
-      catchError(err => {
-        console.debug(err);
-        return of(null);
-      }),
-      switchMap(container => {
-        const wrappedTrade = container?.value?.wrappedTrade;
+    // this.apiWsService.subscribeOnEvents().subscribe(console.log);
+    this.apiWsService
+      .subscribeOnEvents()
+      .pipe(
+        map(apiTrade => this.transformToTrade(apiTrade)),
+        catchError(err => {
+          console.debug(err);
+          return of(null);
+        }),
+        concatMap(container => {
+          const wrappedTrade = container?.value?.wrappedTrade;
 
-        if (wrappedTrade) {
-          const isCalculationEnd = container.value.total === container.value.calculated;
-          const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-          return forkJoin([of(wrappedTrade), needApprove$, of(container.type)])
-            .pipe(
-              tap(([trade, needApprove, type]) => {
-                try {
-                  this.swapsStateService.updateTrade(trade, type, needApprove);
-                  this.swapsStateService.pickProvider(isCalculationEnd);
-                  this.swapsStateService.setCalculationProgress(
-                    container.value.total,
-                    container.value.calculated
-                  );
-                  this.setTradeAmount();
-                  if (isCalculationEnd) {
-                    this.refreshService.setStopped();
-                  }
-                } catch (err) {
-                  console.error(err);
-                }
-              })
-            )
-            .pipe(
-              catchError(() => {
-                // this.swapsStateService.updateTrade(trade, type, needApprove);
-                this.swapsStateService.pickProvider(isCalculationEnd);
-                return of(null);
-              })
+          if (wrappedTrade) {
+            console.log(container.value.total, container.value.calculated, 'ss');
+            const isCalculationEnd = container.value.total === container.value.calculated;
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
             );
-        }
-        if (!container?.value) {
+
+            return forkJoin([
+              of(wrappedTrade),
+              needApprove$,
+              of(container.type),
+              isNotLinkedAccount$
+            ])
+              .pipe(
+                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                  try {
+                    if (isNotLinkedAccount) {
+                      this.errorsService.catch(new NoLinkedAccountError());
+                      trade.trade = null;
+                    }
+                    this.swapsStateService.updateTrade(trade, type, needApprove);
+                    this.swapsStateService.pickProvider(isCalculationEnd);
+                    this.swapsStateService.setCalculationProgress(
+                      container.value.total,
+                      container.value.calculated
+                    );
+                    this.setTradeAmount();
+                    if (isCalculationEnd) {
+                      this.refreshService.setStopped();
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                })
+              )
+              .pipe(
+                catchError(() => {
+                  // this.swapsStateService.updateTrade(trade, type, needApprove);
+                  this.swapsStateService.pickProvider(isCalculationEnd);
+                  return of(null);
+                })
+              );
+          }
+          if (!container?.value) {
+            this.refreshService.setStopped();
+            this.swapsStateService.clearProviders(true);
+          } else {
+            this.swapsStateService.setCalculationProgress(
+              container.value.total,
+              container.value.calculated
+            );
+          }
+          return of(null);
+        }),
+        catchError((_err: unknown) => {
           this.refreshService.setStopped();
-          this.swapsStateService.clearProviders(true);
-        } else {
-          this.swapsStateService.setCalculationProgress(
-            container.value.total,
-            container.value.calculated
-          );
-        }
-        return of(null);
-      }),
-      catchError((_err: unknown) => {
-        this.refreshService.setStopped();
-        this.swapsStateService.pickProvider(true);
-        return of(null);
-      })
-    );
+          this.swapsStateService.pickProvider(true);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 
   private transformToTrade(apiTrade: WsResponse): TradeContainer {
-    // const type = apiTrade?
+    if (!apiTrade?.trade) {
+      return {
+        value: {
+          total: apiTrade.total,
+          calculated: apiTrade.calculated,
+          wrappedTrade: {
+            trade: null,
+            tradeType: apiTrade.type
+          } as WrappedCrossChainTrade
+        },
+        type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+      };
+    }
     const { fromToken, toToken } = this.swapFormService.inputValue;
     const container: TradeContainer = {
       value: {
         total: apiTrade.total,
         calculated: apiTrade.calculated,
         wrappedTrade: {
-          trade: new ApiCrossChainTrade(apiTrade, fromToken, toToken, this.walletConnectorService),
+          trade: new ApiCrossChainTrade(
+            apiTrade,
+            fromToken,
+            toToken,
+            this.walletConnectorService,
+            this.httpService,
+            this.sdkApiService.adaptersFactory
+          ),
           tradeType: apiTrade.type
         } as WrappedCrossChainTrade
       },

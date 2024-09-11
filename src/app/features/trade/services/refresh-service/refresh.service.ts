@@ -102,7 +102,7 @@ export class RefreshService {
       this._status$.next(REFRESH_STATUS.STOPPED);
     }
 
-    this.setupTimer();
+    // this.setupTimer();
   }
 
   /**
