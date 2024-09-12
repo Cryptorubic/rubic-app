@@ -10,24 +10,24 @@ export const pureRpcList: Record<
   string[]
 > = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
-    // 'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    // 'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
+    'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
     'https://eth.llamarpc.com',
     'https://rpc.ankr.com/eth'
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
-    // 'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    // 'https://go.getblock.io/734bf9d3bd634a7db4b6900fd5fbf8bb',
+    'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/734bf9d3bd634a7db4b6900fd5fbf8bb',
     'https://binance.llamarpc.com',
     'https://rpc.ankr.com/bsc'
-  ]
-  // [BLOCKCHAIN_NAME.POLYGON]: [
-  //   'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-  //   'https://go.getblock.io/2f5bb74f58cc442bab974615fa00a167',
-  //   'https://polygon.llamarpc.com',
-  //   'https://1rpc.io/matic',
-  //   'https://rpc.ankr.com/polygon'
-  // ],
+  ],
+  [BLOCKCHAIN_NAME.POLYGON]: [
+    'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/2f5bb74f58cc442bab974615fa00a167',
+    'https://polygon.llamarpc.com',
+    'https://1rpc.io/matic',
+    'https://rpc.ankr.com/polygon'
+  ],
   // [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
   //   'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
   //   // 'https://nd-286-108-077.p2pify.com/2bf96e69ad7bef27f9598f04c61ed737',
@@ -59,13 +59,13 @@ export const pureRpcList: Record<
   //   'https://rpc.ankr.com/fantom',
   //   'https://1rpc.io/ftm'
   // ],
-  // [BLOCKCHAIN_NAME.ARBITRUM]: [
-  //   'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-  //   'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8',
-  //   'https://arb1.arbitrum.io/rpc',
-  //   'https://arbitrum.llamarpc.com',
-  //   'https://rpc.ankr.com/arbitrum'
-  // ],
+  [BLOCKCHAIN_NAME.ARBITRUM]: [
+    'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8',
+    'https://arb1.arbitrum.io/rpc',
+    'https://arbitrum.llamarpc.com',
+    'https://rpc.ankr.com/arbitrum'
+  ]
   // [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   // [BLOCKCHAIN_NAME.TELOS]: [
   //   'https://mainnet.telos.net/evm',
