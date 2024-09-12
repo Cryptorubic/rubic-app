@@ -78,38 +78,29 @@ export class AssetsSelectorService {
     this.subscribeOnAssetChange();
   }
 
-  private isUserFirstNetworkSelection(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): boolean {
-    return !fromBlockchain && !toBlockchain;
-  }
+  // private isUserFirstNetworkSelection(
+  //   fromBlockchain: BlockchainName,
+  //   toBlockchain: BlockchainName
+  // ): boolean {
+  //   return !fromBlockchain && !toBlockchain;
+  // }
 
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
     const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     const assetType = this.swapFormService.inputValue[assetTypeKey];
-    const fromBlockchain = this.getTokenListChain('fromBlockchain');
-    const toBlockchain = this.getTokenListChain('toBlockchain');
+    const fromBlockchain = this.swapFormService.inputValue.fromToken?.blockchain;
+    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
     const userBlockchainName = this.walletConnectorService.network;
     const userAvailableBlockchainName = blockchainsList.find(
       chain => chain.name === userBlockchainName
     )?.name;
-    const toTokenSelected = this.swapFormService.inputValue.toToken;
 
-    if (this.isUserFirstNetworkSelection(fromBlockchain, toBlockchain)) {
-      if (toTokenSelected) {
-        this.assetType = userAvailableBlockchainName || assetType;
-      } else {
-        this.assetType = userAvailableBlockchainName || assetType;
-      }
+    if (!fromBlockchain && !toBlockchain) {
+      this.assetType = assetType || userAvailableBlockchainName;
     } else {
-      if (assetTypeKey === 'toBlockchain') {
-        this.assetType = toBlockchain;
-      } else {
-        this.assetType = fromBlockchain;
-      }
+      this.assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
     }
 
     this.selectorListType =
@@ -201,13 +192,16 @@ export class AssetsSelectorService {
   }
 
   private getTokenListChain(selectorType: SelectorType): BlockchainName | null {
-    if (this.swapFormService.inputValue[selectorType]) {
-      return this.swapFormService.inputValue[selectorType];
-    }
+    const tokenKey = selectorType === 'fromBlockchain' ? 'fromToken' : 'toToken';
+    const oppositeTokenKey = selectorType === 'fromBlockchain' ? 'toToken' : 'fromToken';
+    const isTokenSelected = !!this.swapFormService.inputValue[tokenKey]?.blockchain;
+    const isOppositeTokenSelected = !!this.swapFormService.inputValue[oppositeTokenKey]?.blockchain;
 
-    const oppositSelector = selectorType === 'fromBlockchain' ? 'toBlockchain' : 'fromBlockchain';
-    if (this.swapFormService.inputValue[oppositSelector]) {
-      return this.swapFormService.inputValue[oppositSelector];
+    if (!isTokenSelected && isOppositeTokenSelected) {
+      return this.swapFormService.inputValue[oppositeTokenKey].blockchain;
+    }
+    if (isTokenSelected) {
+      return this.swapFormService.inputValue[tokenKey].blockchain;
     }
 
     return null;
