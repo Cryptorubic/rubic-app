@@ -2,7 +2,10 @@
   <div
     *ngLet="hideHint$ | async as hideHint"
     class="element"
-    [ngClass]="{ element_shorted: shortedInfo, element_disabled: tradeState?.error }"
+    [ngClass]="{
+      element_shorted: shortedInfo,
+      element_disabled: tradeState?.error || tradeState?.trade?.to?.tokenAmount?.lte(0)
+    }"
   >
     <div
       class="element__provider-container"

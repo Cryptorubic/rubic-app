@@ -21,6 +21,7 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token,
   UnapprovedContractError,
+  UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
   Web3Pure
@@ -51,7 +52,6 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../forms-toggler/models';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 
@@ -206,7 +206,7 @@ export class CrossChainService {
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderError | UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
@@ -248,13 +248,8 @@ export class CrossChainService {
       return null;
     }
 
-    const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
-
-    this.airdropPointsService
-      .setSeNPointsTemp(trade.from.blockchain, trade.to.blockchain)
-      .subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),
@@ -266,7 +261,7 @@ export class CrossChainService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
-      this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
+      this.crossChainApiService.createTrade(txHash, trade);
 
       this.notifyGtmAfterSignTx(
         txHash,
@@ -311,7 +306,8 @@ export class CrossChainService {
 
       if (
         error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError
+        error instanceof UnapprovedContractError ||
+        error instanceof UnapprovedMethodError
       ) {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
@@ -321,9 +317,6 @@ export class CrossChainService {
 
       if (!(parsedError instanceof UserRejectError)) {
         this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
-        if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-          this.gtmService.fireGasFormGtm({ isSuccessfullSwap: false });
-        }
       }
 
       throw parsedError;
@@ -416,13 +409,6 @@ export class CrossChainService {
     return false;
   }
 
-  private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
-    const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
-    const isCnTrade = trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW;
-
-    return isCnTrade || swapWithProxy;
-  }
-
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
     const fromBlockchain = trade.from.blockchain;
     const toBlockchain = trade.to.blockchain;
@@ -467,10 +453,6 @@ export class CrossChainService {
       'crosschain',
       fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
-
-    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-      this.gtmService.fireGasFormGtm({ isSuccessfullSwap: true });
-    }
   }
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {

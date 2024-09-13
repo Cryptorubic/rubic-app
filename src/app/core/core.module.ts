@@ -18,7 +18,6 @@ import { ErrorsModule } from './errors/errors.module';
 import { SdkLoaderService } from '@core/services/sdk/sdk-loader.service';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { sdkLoader } from '@core/services/sdk/utils/sdk-loader';
-import { SuccessTxModalService } from './services/success-tx-modal-service/success-tx-modal.service';
 import { ModalsModule } from './modals/modals.module';
 import { LifiApiKeyInterceptor } from './interceptors/lifi-api-key.interceptor';
 
@@ -49,8 +48,7 @@ import { LifiApiKeyInterceptor } from './interceptors/lifi-api-key.interceptor';
       deps: [SdkLoaderService],
       multi: true
     },
-    SdkService,
-    SuccessTxModalService
+    SdkService
   ],
   imports: [
     CommonModule,
