@@ -28,11 +28,7 @@
   </ng-container>
 
   <ng-template #emptySelector>
-    <div
-      class="selector__empty"
-      [class.selector__empty-gas-form]="mainFormType === 'gasForm'"
-      [class.selector__empty-gas-form__disabled]="isDisabled"
-    >
+    <div class="selector__empty">
       <div class="selector__empty-container">
         {{ emptySelectorText }}
         <img

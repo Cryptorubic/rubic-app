@@ -178,26 +178,6 @@ export class ModalService {
    * Show Blockchain List dialog.
    * @param _injector Injector.
    */
-  public openTargetBlockchainListInGasForm(
-    formType: FormType,
-    _injector: Injector
-  ): Observable<void> {
-    return this.showDialog<BlockchainsListComponent, void>(
-      BlockchainsListComponent,
-      {
-        title: 'Select Blockchain',
-        scrollableContent: true,
-        size: 'l',
-        data: { formType }
-      },
-      _injector
-    );
-  }
-
-  /**
-   * Show Blockchain List dialog.
-   * @param _injector Injector.
-   */
   public openMobileBlockchainList(_injector: Injector): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,

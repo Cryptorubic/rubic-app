@@ -13,11 +13,6 @@ import { blockchainsList } from '@features/trade/components/assets-selector/serv
 import { AssetsSelectorComponentInput } from '@features/trade/components/assets-selector/models/assets-selector-component-context';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
-import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
-import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
-import { AvailableBlockchain } from '../blockchains-list-service/models/available-blockchain';
 import { HeaderStore } from '@app/core/header/services/header.store';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
@@ -70,9 +65,6 @@ export class AssetsSelectorService {
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly tradePageService: TradePageService,
-    private readonly gasFormService: GasFormService,
     private readonly headerStore: HeaderStore
   ) {
     this.subscribeOnAssetChange();
@@ -103,10 +95,7 @@ export class AssetsSelectorService {
       this.assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
     }
 
-    this.selectorListType =
-      this._formType === 'to' && this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM
-        ? 'blockchains'
-        : 'tokens';
+    this.selectorListType = 'tokens';
   }
 
   private subscribeOnAssetChange(): void {
@@ -152,15 +141,6 @@ export class AssetsSelectorService {
     if (!this.isMobile) {
       this.selectorListType = 'tokens';
     }
-  }
-
-  public onTargetBlockchainsSelectGasForm(
-    blockchainName: BlockchainName,
-    availableBlockchains: AvailableBlockchain[] = []
-  ): void {
-    this.setNativeTargetTokenInGasForm(blockchainName);
-    this.gasFormService.setGasFormSourceAvailableBlockchains(blockchainName, availableBlockchains);
-    this.tradePageService.setState('form');
   }
 
   public onAssetSelect(asset: Asset): void {
