@@ -177,14 +177,17 @@ export class BlockchainsListService {
         filter(([fromToken, toToken]) => !isNil(fromToken) || !isNil(toToken)),
         takeUntil(this.destroy$)
       )
-      .subscribe(([fromToken, toToken]) =>
-        this.setChainInTopOfAssetsBlockchains(fromToken, toToken)
-      );
+      .subscribe(([fromToken, toToken]) => {
+        this.setChainInTopOfAssetsBlockchains(fromToken, toToken);
+      });
   }
 
   private setChainInTopOfAssetsBlockchains(fromToken: TokenAmount, toToken: TokenAmount): void {
-    const firstSelectedChainName =
+    let firstSelectedChainName =
+      this.assetsSelectorService.formType === 'from' ? fromToken?.blockchain : toToken?.blockchain;
+    const chainFromOppositeSelector =
       this.assetsSelectorService.formType === 'from' ? toToken?.blockchain : fromToken?.blockchain;
+    if (!firstSelectedChainName) firstSelectedChainName = chainFromOppositeSelector;
     const firstAssetIndex = this.assetsBlockchainsToShow.findIndex(
       asset => asset?.name === firstSelectedChainName
     );
