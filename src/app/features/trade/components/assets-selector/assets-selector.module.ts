@@ -28,7 +28,6 @@ import { BlockchainsListComponent } from '@features/trade/components/assets-sele
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
 import { TradePageService } from '../../services/trade-page/trade-page.service';
-import { BlockchainsListService } from './services/blockchains-list-service/blockchains-list.service';
 import { SearchQueryService } from './services/search-query-service/search-query.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { AssetsSelectorService } from './services/assets-selector-service/assets-selector.service';
@@ -78,7 +77,6 @@ import { AssetsSearchQueryService } from './services/assets-search-query-service
   exports: [AssetsSelectorPageComponent],
   providers: [
     TradePageService,
-    BlockchainsListService,
     SearchQueryService,
     FormsTogglerService,
     AssetsSelectorService,
