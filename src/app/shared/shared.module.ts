@@ -38,7 +38,6 @@ import { TokenAmountDirective } from './directives/token-amount/token-amount.dir
 import { RubicButtonComponent } from './components/rubic-button/rubic-button.component';
 import { ShortenAmountPipe } from './pipes/shorten-amount.pipe';
 import { RubicVolumeComponent } from './components/rubic-volume/rubic-volume.component';
-import { SuccessTxModalComponent } from 'src/app/shared/components/success-modal/success-tx-modal/success-tx-modal.component';
 import { RotatingIconComponent } from './components/rotating-icon/rotating-icon.component';
 import { NotificationBadgeComponent } from './components/notification-badge/notification-badge.component';
 import { CopyContainerComponent } from './components/copy-container/copy-container.component';
@@ -47,11 +46,9 @@ import { TimeGuard } from './guards/time.guard';
 import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { SafeSanitizerPipe } from '@shared/pipes/safeSanitizer.pipe';
 import { BackButtonComponent } from './components/back-button/back-button.component';
-import { SuccessOrderModalComponent } from './components/success-modal/success-order-modal/success-order-modal.component';
 import { RefreshButtonComponent } from '@shared/components/refresh-button/refresh-button.component';
 import { LoginButtonComponent } from '@core/header/components/header/components/login-button/login-button.component';
 import { CommaToPeriodDirective } from './directives/comma-to-period/comma-to-period.directive';
-import { SwapAndEarnModalComponent } from '@shared/components/success-modal/swap-and-earn-modal/swap-and-earn-modal.component';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { ArbitrumBridgeWarningModalComponent } from './components/arbitrum-bridge-warning-modal/arbitrum-bridge-warning-modal.component';
 import { LiveChatComponent } from './components/live-chat/live-chat.component';
@@ -75,12 +72,12 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 
 @NgModule({
   declarations: [
     RubicButtonComponent,
     RubicVolumeComponent,
-    SuccessTxModalComponent,
     RotatingIconComponent,
     RotatingIconComponent,
     NotificationBadgeComponent,
@@ -90,8 +87,6 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     BackButtonComponent,
     LoginButtonComponent,
     RefreshButtonComponent,
-    SuccessOrderModalComponent,
-    SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
     ClaimRoundRowComponent,
@@ -124,7 +119,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     SlippageFormatPipe,
     SkipDefaultDirective,
     MevBotModalComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    WcChangeNetworkModalComponent
   ],
   imports: [
     CommonModule,
@@ -181,7 +177,6 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     RefreshButtonComponent,
     LoginButtonComponent,
     CommaToPeriodDirective,
-    SwapAndEarnModalComponent,
     SuccessWithdrawModalComponent,
     LiveChatComponent,
     AssetSelectorComponent,

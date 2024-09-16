@@ -35,6 +35,10 @@ export abstract class EvmWalletAdapter<T = RubicAny>
         });
       }
     );
+
+    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() =>
+      this.deactivate()
+    );
   }
 
   public async switchChain(chainId: string): Promise<void | never> {

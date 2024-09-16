@@ -21,7 +21,8 @@ import {
   UserRejectError,
   Web3Public,
   Web3Pure,
-  UnapprovedContractError
+  UnapprovedContractError,
+  UnapprovedMethodError
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -42,10 +43,14 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 
+type NotWhitelistedProviderErrors =
+  | UnapprovedContractError
+  | UnapprovedMethodError
+  | NotWhitelistedProviderError;
 @Injectable()
 export class OnChainService {
   private get receiverAddress(): string | null {
@@ -53,10 +58,6 @@ export class OnChainService {
       return null;
     }
     return this.targetNetworkAddressService.address;
-  }
-
-  private static isSwapAndEarnSwap(trade: OnChainTrade): boolean {
-    return trade.feeInfo.rubicProxy?.fixedFee?.amount?.gt(0) || false;
   }
 
   constructor(
@@ -71,8 +72,7 @@ export class OnChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly onChainApiService: OnChainApiService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly sessionStorage: SessionStorageService,
-    private readonly airdropPointsService: AirdropPointsService
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -126,7 +126,7 @@ export class OnChainService {
             deflationFromStatus.isDeflation || deflationToStatus.isDeflation
               ? false
               : this.platformConfigurationService.useOnChainProxy;
-          const timeout = this.calculateTimeoutForChains(fromToken.blockchain, toToken.blockchain);
+          const timeout = this.calculateTimeoutForChains();
 
           const options: OnChainManagerCalculationOptions = {
             timeout,
@@ -161,7 +161,6 @@ export class OnChainService {
     useCacheData?: boolean
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
-    const toBlockchain = trade.to.blockchain;
 
     const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
       TradeParser.getItSwapParams(trade);
@@ -183,9 +182,6 @@ export class OnChainService {
       blockchain
     );
 
-    this.airdropPointsService.setSeNPointsTemp(fromBlockchain, toBlockchain).subscribe();
-
-    const isSwapAndEarnTrade = OnChainService.isSwapAndEarnSwap(trade);
     const referrer = this.sessionStorage.getItem('referral');
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
@@ -203,7 +199,7 @@ export class OnChainService {
           useMevBotProtection
         );
 
-        this.postTrade(hash, trade, isSwapAndEarnTrade);
+        this.postTrade(hash, trade);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
@@ -242,7 +238,11 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
-      if (err instanceof NotWhitelistedProviderError || err instanceof UnapprovedContractError) {
+      if (
+        err instanceof NotWhitelistedProviderError ||
+        err instanceof UnapprovedContractError ||
+        err instanceof UnapprovedMethodError
+      ) {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
@@ -314,26 +314,20 @@ export class OnChainService {
     );
   }
 
-  private async postTrade(
-    transactionHash: string,
-    trade: OnChainTrade,
-    isSwapAndEarnSwap: boolean
-  ): Promise<void> {
+  private async postTrade(transactionHash: string, trade: OnChainTrade): Promise<void> {
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
     const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
     await firstValueFrom(
       timer(waitTime).pipe(
-        switchMap(() =>
-          this.onChainApiService.createTrade(transactionHash, trade.type, trade, isSwapAndEarnSwap)
-        )
+        switchMap(() => this.onChainApiService.createTrade(transactionHash, trade.type, trade))
       )
     );
   }
 
   public saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderErrors,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): void {
@@ -362,12 +356,9 @@ export class OnChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.MERLIN, BLOCKCHAIN_NAME.TON];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain } = this.swapFormService.inputValue;
+    if (ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain)) {
       return 30_000;
     }
     return 10_000;

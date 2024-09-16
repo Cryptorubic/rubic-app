@@ -1,5 +1,5 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
@@ -44,6 +44,8 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
 import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
+import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +59,15 @@ export class WalletConnectorService {
 
   public get address(): string {
     return this.provider?.address;
+  }
+
+  private _selectedChainId = 1;
+
+  public set selectedChain(blockchain: BlockchainName) {
+    const chainId = blockchainId[blockchain];
+    if (chainId) {
+      this._selectedChainId = chainId;
+    }
   }
 
   public get chainType(): ChainType {
@@ -82,7 +93,8 @@ export class WalletConnectorService {
     private readonly httpService: HttpService,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
-    private readonly zone: NgZone
+    private readonly zone: NgZone,
+    private readonly modalsService: ModalService
   ) {}
 
   public checkIfSafeEnv(): boolean {
@@ -105,7 +117,7 @@ export class WalletConnectorService {
   }
 
   public connectProvider(walletName: WALLET_NAME, chainId?: number): void {
-    this.privateProvider = this.createWalletAdapter(walletName, chainId);
+    this.privateProvider = this.createWalletAdapter(walletName, chainId || this._selectedChainId);
   }
 
   private createWalletAdapter(walletName: WALLET_NAME, chainId?: number): CommonWalletAdapter {
@@ -197,6 +209,10 @@ export class WalletConnectorService {
       );
     }
 
+    if (walletName === WALLET_NAME.HOLD_STATION) {
+      return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+
     this.errorService.catch(new WalletNotInstalledError());
   }
 
@@ -261,6 +277,27 @@ export class WalletConnectorService {
         }
       } else if (switchError.code === 4001) {
         this.errorService.catch(new UserRejectNetworkSwitchError());
+      } else if (
+        switchError.message.includes(
+          'Missing or invalid. request() method: wallet_switchEthereumChain'
+        ) &&
+        this.provider instanceof HoldstationWalletAdapter
+      ) {
+        const reconnect = await firstValueFrom(
+          this.modalsService.openWcChangeNetworkModal(this.network, evmBlockchainName)
+        );
+
+        if (reconnect) {
+          try {
+            await this.provider.deactivate();
+            const decimalId = parseInt(chainId, 16);
+            await this.provider.updateDefaultChain(decimalId);
+            await this.provider.activate();
+          } catch (err) {
+            await this.provider.deactivate();
+            this.errorService.catch(err);
+          }
+        }
       } else {
         this.errorService.catch(switchError);
       }

@@ -1,6 +1,6 @@
-import { BehaviorSubject, Observable, of, switchMap } from 'rxjs';
+import { BehaviorSubject, of, switchMap } from 'rxjs';
 import { AirdropUserPointsInfo } from '@features/airdrop/models/airdrop-user-info';
-import { map, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { SuccessWithdrawModalComponent } from '@shared/components/success-modal/success-withdraw-modal/success-withdraw-modal.component';
 import { switchIif } from '@shared/utils/utils';
 import { HttpService } from '@core/services/http/http.service';
@@ -8,13 +8,11 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { AirdropPointsApiService } from '@shared/services/airdrop-points-service/airdrop-points-api.service';
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, BlockchainName, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import {
   CrossChainRewardConvertedData,
   OnChainRewardConvertedData
 } from './models/airdrop-api-types';
-import { AirdropUtils } from './utils/airdrop-utils';
 
 @Injectable({ providedIn: 'root' })
 export class AirdropPointsService {
@@ -49,7 +47,7 @@ export class AirdropPointsService {
     this.handleAddressChange();
   }
 
-  public updateSwapToEarnUserPointsInfo(): void {
+  private updateSwapToEarnUserPointsInfo(): void {
     this._fetchUserPointsInfoLoading$.next(true);
 
     this.authService.currentUser$
@@ -63,80 +61,6 @@ export class AirdropPointsService {
         })
       )
       .subscribe();
-  }
-
-  /**
-   * @deprecated
-   * @temporary
-   * @remove
-   * @todo remove after backend update
-   */
-  public setSeNPointsTemp(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): Observable<number> {
-    const address = this.authService.user.address;
-    const request$ =
-      fromBlockchain === toBlockchain
-        ? this.apiService.getOnChainPoints(address)
-        : this.apiService.getCrossChainPoints(address);
-
-    return request$.pipe(
-      map(points => this.calcSeNPoints(fromBlockchain, toBlockchain, points)),
-      tap(points => this._pointsAmount$.next(points))
-    );
-  }
-
-  private calcSeNPoints(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName,
-    points: number
-  ): number {
-    if (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) {
-      return Math.floor(points / 2);
-    } else if (toBlockchain === BLOCKCHAIN_NAME.ZK_LINK) {
-      return points * 2;
-    }
-    return points;
-  }
-
-  public async getSwapAndEarnPointsAmount(
-    fromTokenAddress: string,
-    fromTokenBlockchain: BlockchainName,
-    toTokenAddress: string,
-    toTokenBlockchain: BlockchainName
-  ): Promise<void> {
-    const address = this.authService.user.address;
-    const from_token = fromTokenAddress;
-    const to_token = toTokenAddress;
-    const type = fromTokenBlockchain === toTokenBlockchain ? 'on-chain' : 'cross-chain';
-
-    if (type === 'on-chain') {
-      const network = TO_BACKEND_BLOCKCHAINS[fromTokenBlockchain];
-      //SET PROVIDER_ADDRESS AND POINTS IN SWAP
-
-      const res = await this.apiService.getOnChainRewardData({
-        address,
-        from_token,
-        to_token,
-        network
-      });
-
-      this.providersOnChainRewardData = AirdropUtils.convertOnChainRewardData(res);
-    } else {
-      const from_network = TO_BACKEND_BLOCKCHAINS[fromTokenBlockchain];
-      const to_network = TO_BACKEND_BLOCKCHAINS[toTokenBlockchain];
-
-      const res = await this.apiService.getCrossChainRewardData({
-        address,
-        from_token,
-        to_token,
-        from_network,
-        to_network
-      });
-
-      this.providersCrossChainRewardData = AirdropUtils.convertCrosschainRewardData(res);
-    }
   }
 
   public async claimPoints(points: number, address: string): Promise<void> {
