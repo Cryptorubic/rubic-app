@@ -1,4 +1,4 @@
-<ng-container *ngIf="!noRoutes; else emptyContent">
+<ng-container *ngIf="!noRoutes">
   <div class="list" [ngClass]="{ list_padding: isModal }">
     <app-provider-element
       *ngFor="let state of states; index as i"
@@ -11,14 +11,3 @@
     ></app-provider-element>
   </div>
 </ng-container>
-
-<ng-template #emptyContent>
-  <div class="empty-list">
-    <div class="empty-list__content">
-      <app-no-result
-        label="No routes available"
-        description="Please try another token combination."
-      ></app-no-result>
-    </div>
-  </div>
-</ng-template>

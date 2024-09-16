@@ -31,16 +31,23 @@
 
     ::ng-deep {
       .selector__main-image {
-        width: 32px;
-        height: 32px;
+        width: 27px;
+        height: 27px;
         margin-top: unset;
         overflow: hidden;
       }
 
       .selector__second-image-container {
-        width: 57px;
-        height: 32px;
+        width: 47px;
+        height: 27px;
         overflow: hidden;
+
+        border-radius: 10px 0 0 10px;
+
+        img {
+          width: 25px;
+          height: 25px;
+        }
       }
 
       .selector__main-label {
@@ -55,7 +62,7 @@
         line-height: 1.5;
 
         span {
-          font-size: 10px;
+          font-size: 12px;
         }
       }
 

@@ -18,6 +18,7 @@
 <ng-template #alternativeRoutes>
   <app-alternative-routes-list
     [alternativeRoutes]="alternativeRoutes$ | async"
+    (selectedRoute)="handleRouteSelection($event)"
   ></app-alternative-routes-list>
 </ng-template>
 

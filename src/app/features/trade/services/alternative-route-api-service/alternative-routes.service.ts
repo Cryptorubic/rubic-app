@@ -43,12 +43,17 @@ export class AlternativeRoutesService {
       ),
       map(alternativeRoutes =>
         alternativeRoutes
+          .sort((a, b) => b.totalRank - a.totalRank)
           .map(route => {
-            const fromToken = this.tokenStoreService.tokens.find(token =>
-              compareAddresses(token.address, route.sourceTokenAddress)
+            const fromToken = this.tokenStoreService.tokens.find(
+              token =>
+                compareAddresses(token.address, route.sourceTokenAddress) &&
+                token.blockchain.toLowerCase() === route.sourceTokenNetwork.toLowerCase()
             );
-            const toToken = this.tokenStoreService.tokens.find(token =>
-              compareAddresses(token.address, route.destinationTokenAddress)
+            const toToken = this.tokenStoreService.tokens.find(
+              token =>
+                compareAddresses(token.address, route.destinationTokenAddress) &&
+                token.blockchain.toLowerCase() === route.destinationTokenNetwork.toLowerCase()
             );
 
             if (!fromToken || !toToken) {
