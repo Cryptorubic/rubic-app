@@ -4,6 +4,7 @@
   <!-- Providers list -->
   <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
+      *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
       [states]="states"
       [selectedTradeType]="selectedTradeType"
       [calculationProgress]="calculationStatus.calculationProgress"
@@ -13,6 +14,12 @@
     ></app-providers-list>
   </tui-scrollbar>
 </app-window-container>
+
+<ng-template #alternativeRoutes>
+  <app-alternative-routes-list
+    [alternativeRoutes]="alternativeRoutes$ | async"
+  ></app-alternative-routes-list>
+</ng-template>
 
 <ng-template #mobileProviders>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
@@ -26,6 +33,7 @@
     [noRoutes]="calculationStatus.noRoutes"
   >
   </app-providers-list>
+
   <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
     <span class="other-providers__text">Other Providers</span>
     <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>

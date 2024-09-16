@@ -1,0 +1,71 @@
+@use 'src/scss/core' as *;
+
+.element {
+  &__route-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 62px;
+    margin-right: 10px;
+    padding: var(--tui-padding-m);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-s);
+
+    button {
+      font-weight: 500;
+      font-size: 15px;
+
+      border-radius: var(--tui-radius-s);
+    }
+  }
+
+  &__assets-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    
+    &_arrow-image {
+      filter: sepia(1) saturate(0) brightness(0.5);
+    }
+
+    ::ng-deep {
+      .selector__main-image {
+        width: 32px;
+        height: 32px;
+        margin-top: unset;
+        overflow: hidden;
+      }
+
+      .selector__second-image-container {
+        width: 57px;
+        height: 32px;
+        overflow: hidden;
+      }
+
+      .selector__main-label {
+        img {
+          display: none;
+        }
+      }
+
+      .selector__labels {
+        gap: unset;
+
+        line-height: 1.5;
+
+        span {
+          font-size: 10px;
+        }
+      }
+
+      .selector {
+        align-items: center;
+
+        &:hover {
+          cursor: unset;
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,8 @@ import { TuiScrollbarComponent } from '@taiga-ui/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
 import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
+import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
+import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
 
 @Component({
   selector: 'app-providers-list-general',
@@ -93,17 +95,31 @@ export class ProvidersListGeneralComponent {
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  public readonly alternativeRoutes$ = this.alternativeRoutesService.getAlternativeRoutes();
+
   constructor(
     @Inject(Injector) private readonly injector: Injector,
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
     private readonly providerHintService: ProviderHintService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly alternativeRoutesService: AlternativeRoutesService
   ) {}
 
   public handleTradeSelection(tradeType: TradeProvider): void {
     this.selectTrade.emit(tradeType);
+  }
+
+  public handleRouteSelection(route: AlternativeRoute): void {
+    this.swapsFormService.form.patchValue({
+      input: {
+        fromBlockchain: route.from.blockchain,
+        fromToken: route.from,
+        toBlockchain: route.to.blockchain,
+        toToken: route.to
+      }
+    });
   }
 
   public openOtherProvidersList(): void {

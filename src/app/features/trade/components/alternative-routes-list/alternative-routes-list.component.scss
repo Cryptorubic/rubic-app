@@ -1,0 +1,15 @@
+.alternative-routes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty-list {
+  &__content {
+    margin-right: 10px;
+    padding: var(--tui-padding-l);
+  
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
