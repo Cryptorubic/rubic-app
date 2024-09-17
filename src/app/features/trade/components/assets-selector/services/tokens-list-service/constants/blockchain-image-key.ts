@@ -33,7 +33,7 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.OASIS]: 'oasis',
   [BLOCKCHAIN_NAME.METIS]: 'metis',
   [BLOCKCHAIN_NAME.DFK]: 'defi-kingdoms',
-  [BLOCKCHAIN_NAME.KLAYTN]: 'klaytn',
+  [BLOCKCHAIN_NAME.KLAYTN]: 'kaia',
   [BLOCKCHAIN_NAME.VELAS]: 'velas',
   [BLOCKCHAIN_NAME.SYSCOIN]: 'syscoin',
   [BLOCKCHAIN_NAME.PULSECHAIN]: 'pulsechain',
@@ -54,5 +54,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.TAIKO]: 'taiko',
   [BLOCKCHAIN_NAME.SEI]: 'sei',
   [BLOCKCHAIN_NAME.CORE]: 'core',
-  [BLOCKCHAIN_NAME.BAHAMUT]: 'bahamut'
+  [BLOCKCHAIN_NAME.BAHAMUT]: 'bahamut',
+  [BLOCKCHAIN_NAME.GRAVITY]: 'gravity'
 };

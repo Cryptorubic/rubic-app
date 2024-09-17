@@ -251,6 +251,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}retro-bridge.svg`,
     name: 'Retro Bridge'
   },
+  router: {
+    averageTime: 5,
+    color: '#000000',
+    image: `${imageBasePath}router.svg`,
+    name: 'Router'
+  },
   //SSSSSSSSSSSSSSSSSSS
   satellite: {
     averageTime: 5,

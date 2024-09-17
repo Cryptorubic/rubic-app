@@ -232,9 +232,7 @@
       </div>
 
       <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
-        <app-success-swap-info
-          [showPoints]="state?.tradeState?.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false"
-        ></app-success-swap-info>
+        <app-success-swap-info></app-success-swap-info>
       </div>
     </div>
 

@@ -408,7 +408,6 @@ export class PreviewSwapService {
                     });
                   }
 
-                  this.airdropPointsService.updateSwapToEarnUserPointsInfo();
                   this.recentTradesStoreService.updateUnreadTrades();
                 }
               },

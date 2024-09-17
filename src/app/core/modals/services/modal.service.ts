@@ -26,6 +26,8 @@ import { BlockchainsListComponent } from '@features/trade/components/assets-sele
 import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-modal.component';
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
+import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
+import { BlockchainName } from 'rubic-sdk';
 
 @Injectable()
 export class ModalService {
@@ -176,26 +178,6 @@ export class ModalService {
    * Show Blockchain List dialog.
    * @param _injector Injector.
    */
-  public openTargetBlockchainListInGasForm(
-    formType: FormType,
-    _injector: Injector
-  ): Observable<void> {
-    return this.showDialog<BlockchainsListComponent, void>(
-      BlockchainsListComponent,
-      {
-        title: 'Select Blockchain',
-        scrollableContent: true,
-        size: 'l',
-        data: { formType }
-      },
-      _injector
-    );
-  }
-
-  /**
-   * Show Blockchain List dialog.
-   * @param _injector Injector.
-   */
   public openMobileBlockchainList(_injector: Injector): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
@@ -279,6 +261,16 @@ export class ModalService {
     return this.showDialog(MevBotModalComponent, {
       size: 's',
       scrollableContent: true
+    });
+  }
+
+  public openWcChangeNetworkModal(
+    oldBlockchain: BlockchainName,
+    newBlockchain: BlockchainName
+  ): Observable<boolean> {
+    return this.showDialog(WcChangeNetworkModalComponent, {
+      size: 's',
+      data: { oldBlockchain, newBlockchain }
     });
   }
 }

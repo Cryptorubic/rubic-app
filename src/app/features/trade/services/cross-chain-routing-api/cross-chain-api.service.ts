@@ -10,6 +10,7 @@ import {
   NotWhitelistedProviderError,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
+  UnapprovedMethodError,
   Web3Pure
 } from 'rubic-sdk';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -63,7 +64,7 @@ export class CrossChainApiService {
   }
 
   public saveNotWhitelistedCcrProvider(
-    error: UnapprovedContractError,
+    error: UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): Observable<void> {
@@ -80,11 +81,7 @@ export class CrossChainApiService {
    * Sends request to add trade.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public async createTrade(
-    hash: string,
-    trade: CrossChainTrade,
-    isSwapAndEarnSwapTrade: boolean
-  ): Promise<void> {
+  public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
     const {
       fromBlockchain,
       toBlockchain,
@@ -125,9 +122,7 @@ export class CrossChainApiService {
     };
 
     await firstValueFrom(
-      this.httpService
-        .post<void>(`${this.apiEndpoint}?valid=${isSwapAndEarnSwapTrade}`, tradeInfo)
-        .pipe(delay(1000))
+      this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000))
     );
   }
 

@@ -492,6 +492,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}renbtc.svg`,
     color: 'grey'
   },
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: {
+    name: 'Router DEX',
+    image: 'assets/images/icons/providers/bridge/router.svg',
+    color: '#000000'
+  },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -623,6 +628,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}silkswap.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
+    name: 'Kujata',
+    image: `${imageBasePath}kujata.svg`,
+    color: '#FFFFFF'
+  },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
@@ -717,6 +727,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'ZetaSwap',
     image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
   }
 };
 
