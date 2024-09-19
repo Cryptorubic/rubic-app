@@ -30,7 +30,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
-  LowSlippageError,
   NotSupportedTokensError,
   OnChainTradeType,
   RubicSdkError,
@@ -40,7 +39,8 @@ import {
   NoLinkedAccountError,
   SymbiosisEvmCcrTrade,
   BLOCKCHAIN_NAME,
-  OnChainTrade
+  OnChainTrade,
+  LowSlippageError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -501,7 +501,7 @@ export class SwapsControllerService {
       this.swapsStateService.pickProvider(true);
     }
     onError?.();
-    this.errorsService.catch(err);
+    this.errorsService.catch(parsedError);
   }
 
   private subscribeOnSettings(): void {

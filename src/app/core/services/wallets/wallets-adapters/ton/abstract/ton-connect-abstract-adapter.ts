@@ -50,12 +50,13 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       }
 
       this.selectedChain = BLOCKCHAIN_NAME.TON;
-      this.selectedAddress = this.tonConnect.account?.address;
-
       this.isEnabled = true;
       this.wallet = this.tonConnect;
 
-      this.onAddressChanges$.next(this.selectedAddress);
+      if (this.tonConnect.account) {
+        this.selectedAddress = await this.fetchFriendlyAddress(this.tonConnect.account?.address);
+        this.onAddressChanges$.next(this.selectedAddress);
+      }
       this.onNetworkChanges$.next(this.selectedChain);
     } catch (err) {
       console.error('[TonConnectAbstractAdapter] Activation error - ', err);
@@ -80,7 +81,7 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
             this.selectedAddress = friendlyAddress;
             this.onAddressChanges$.next(this.selectedAddress);
           })
-          .catch(() => this.onAddressChanges$.next(null));
+          .catch(err => console.log('fetchFriendlyAddress_CATCH ==> ', err));
 
         if (walletAndWalletInfo.appName in TON_CONNECT_WALLETS_MAP) {
           this.storeService.setItem(
@@ -90,8 +91,6 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
         } else {
           this.storeService.setItem('RUBIC_PROVIDER', WALLET_NAME.TON_CONNECT);
         }
-      } else {
-        this.onAddressChanges$.next(null);
       }
     });
   }

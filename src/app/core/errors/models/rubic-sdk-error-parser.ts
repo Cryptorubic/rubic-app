@@ -20,7 +20,8 @@ import {
   UpdatedRatesError,
   SdkSwapErrorOnProviderSide,
   NoLinkedAccountError,
-  NotSupportedRegionError
+  NotSupportedRegionError,
+  LowSlippageError as SdkLowSlippageError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -47,6 +48,7 @@ import { FallbackSwapError } from './provider/fallback-swap-error';
 import { NotLinkedAddressError } from './provider/not-linked-address-error';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import NotSupportedRegionRubicError from './common/not-supported-region-error';
+import { LowSlippageError } from './common/low-slippage-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -109,6 +111,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkSwapErrorOnProviderSide) {
       return new SwapErorOnProviderSide();
+    }
+    if (err instanceof SdkLowSlippageError) {
+      return new LowSlippageError(err.minSlippage);
     }
     if (err instanceof NoLinkedAccountError) {
       return new NotLinkedAddressError();
