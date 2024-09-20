@@ -106,12 +106,6 @@ export class AssetSelectorComponent implements OnInit {
   }
 
   private getEmptySelectorText(): string {
-    if (this.mainFormType === MAIN_FORM_TYPE.GAS_FORM && this.selectorType === 'from') {
-      return 'Select Source Token';
-    }
-    if (this.mainFormType === MAIN_FORM_TYPE.GAS_FORM && this.selectorType === 'to') {
-      return 'Select Target Chain';
-    }
     return 'Select Token';
   }
 }

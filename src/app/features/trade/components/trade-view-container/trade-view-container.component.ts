@@ -17,7 +17,6 @@ import { TuiNotification } from '@taiga-ui/core';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { GasFormAnalyticService } from '../../services/gas-form/gas-form-analytic.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
@@ -70,7 +69,6 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormAnalyticService: GasFormAnalyticService,
     private readonly queryParamsService: QueryParamsService
   ) {}
 
