@@ -119,7 +119,7 @@ export class CrossChainApiService {
           : this.window.document.location.href,
       ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
-      ...(trade instanceof RetroBridgeTrade && { retro_brige_id: trade.retroBridgeId }),
+      ...(trade instanceof RetroBridgeTrade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...(referral && { influencer: referral })
     };
 
