@@ -8,6 +8,7 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  RetroBridgeTrade,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   UnapprovedMethodError,
@@ -118,6 +119,7 @@ export class CrossChainApiService {
           : this.window.document.location.href,
       ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
+      ...(trade instanceof RetroBridgeTrade && { retro_brige_id: trade.retroBridgeId }),
       ...(referral && { influencer: referral })
     };
 
