@@ -1,4 +1,5 @@
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import BigNumber from 'bignumber.js';
 
 export interface AlternativeRouteDTO {
   token_pairs: AlternativeTokenPairs[];
@@ -18,9 +19,12 @@ export interface AlternativeTokenPairs {
   sourceTokenSymbol: string;
   sourceTokenTitle: string;
   totalRank: number;
+  destinationTokenUsdPrice: number;
+  sourceTokenUsdPrice: number;
 }
 
 export interface AlternativeRoute {
   from: TokenAmount;
   to: TokenAmount;
+  amount: BigNumber;
 }

@@ -22,8 +22,9 @@
 
   &__assets-container {
     display: flex;
-    gap: 10px;
     align-items: center;
+    justify-content: space-between;
+    width: 80%;
     
     &_arrow-image {
       filter: sepia(1) saturate(0) brightness(0.5);
@@ -58,8 +59,10 @@
 
       .selector__labels {
         gap: unset;
+        width: 50px;
+        margin: 0;
 
-        line-height: 1.5;
+        line-height: 1.2;
 
         span {
           font-size: 12px;

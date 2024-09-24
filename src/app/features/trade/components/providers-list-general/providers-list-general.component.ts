@@ -117,7 +117,11 @@ export class ProvidersListGeneralComponent {
         fromBlockchain: route.from.blockchain,
         fromToken: route.from,
         toBlockchain: route.to.blockchain,
-        toToken: route.to
+        toToken: route.to,
+        fromAmount: {
+          visibleValue: route.amount.toFixed(),
+          actualValue: route.amount
+        }
       }
     });
   }

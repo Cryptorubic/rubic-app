@@ -1,4 +1,7 @@
-<div class="alternative-routes-list" *ngIf="alternativeRoutes?.length !== 0; else emptyContent">
+<div
+  class="alternative-routes-list"
+  *ngIf="alternativeRoutes && alternativeRoutes?.length !== 0; else emptyContent"
+>
   <span>
     Most likely there will be no routes available. You can use networks below for intermediate swap.
   </span>

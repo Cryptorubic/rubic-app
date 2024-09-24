@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlternativeRoutesRequestParams } from './models/alternative-routes-request-params';
-import { combineLatest, map, Observable, switchMap } from 'rxjs';
+import { catchError, combineLatest, map, Observable, of, switchMap } from 'rxjs';
 import {
   AlternativeRoute,
   AlternativeRouteDTO,
@@ -10,6 +10,8 @@ import {
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { compareAddresses, notNull } from '@app/shared/utils/utils';
+import BigNumber from 'bignumber.js';
+import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 
 @Injectable()
 export class AlternativeRoutesService {
@@ -55,17 +57,32 @@ export class AlternativeRoutesService {
                 compareAddresses(token.address, route.destinationTokenAddress) &&
                 token.blockchain.toLowerCase() === route.destinationTokenNetwork.toLowerCase()
             );
-
             if (!fromToken || !toToken) {
               return null;
             }
+            const fromAmount = this.getFromTokenAmount(fromToken, route.sourceTokenUsdPrice);
             return {
               from: fromToken,
-              to: toToken
+              to: toToken,
+              amount: fromAmount
             };
           })
+          .slice(0, 5)
           .filter(notNull)
-      )
+      ),
+      catchError(() => of([]))
     );
+  }
+
+  private getFromTokenAmount(newFromToken: TokenAmount, tokenUsdPrice: number): BigNumber {
+    const prevFromToken = this.swapFormService.inputValue.fromToken;
+    const fromAmount = this.swapFormService.inputValue.fromAmount;
+    if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
+      const usdPrice = this.swapFormService.inputValue.fromToken.price;
+      const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
+
+      return usdAmount.dividedBy(tokenUsdPrice);
+    }
+    return fromAmount.actualValue;
   }
 }
