@@ -2,6 +2,7 @@ import { BadgeInfo } from '@features/trade/models/trade-state';
 import {
   BLOCKCHAIN_NAME,
   BRIDGE_TYPE,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
   ON_CHAIN_TRADE_TYPE,
@@ -28,7 +29,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       }
     }
   ],
-  [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: [
+  [CROSS_CHAIN_TRADE_TYPE.ROUTER]: [
     {
       bgColor: GOLD_COLOR,
       fromSdk: false,
