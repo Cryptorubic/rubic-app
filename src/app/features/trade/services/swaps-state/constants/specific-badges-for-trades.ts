@@ -36,7 +36,10 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => '0 FEES',
       getHint: () => ``,
       showLabel: (trade: CrossChainTrade | OnChainTrade) => {
-        return trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL;
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.SCROLL
+        );
       }
     }
   ],
