@@ -9,6 +9,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
+import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -64,14 +65,7 @@ export class AssetTypesAsideComponent {
   }
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
-    const tags = blockchain.tags
-      .filter(tag => tag === this.blockchainTags.PROMO || tag === this.blockchainTags.NEW)
-      .sort((a, b) => {
-        if (a === this.blockchainTags.PROMO) return -1;
-        if (b === this.blockchainTags.PROMO) return 1;
-        return 0;
-      });
-    return tags[0];
+    return SelectorUtils.getBlockchainTag(blockchain);
   }
 
   public setBlockchainFilterAll(): void {
