@@ -26,7 +26,8 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getHint: () => ``,
       showLabel: (trade: CrossChainTrade | OnChainTrade) => {
         return trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL;
-      }
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
     }
   ],
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: [
@@ -35,6 +36,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       fromSdk: false,
       getLabel: () => '0 FEES',
       getHint: () => ``,
+      getUrl: () => 'https://rubic.exchange/birthday4',
       showLabel: (trade: CrossChainTrade | OnChainTrade) => {
         return (
           trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL ||
