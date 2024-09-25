@@ -1,12 +1,18 @@
-<ng-container *ngIf="tag === blockchainTags.PROMO; else newBlockchainBadge">
+<ng-container *ngIf="tag === blockchainTags.PROMO">
   <a [href]="blockchainPromoLinks[blockchain]" class="badge-element promo" target="_blank">
     <span>{{ tag | uppercase }}</span>
     <img src="assets/images/icons/promo-link.svg" />
   </a>
 </ng-container>
 
-<ng-template #newBlockchainBadge>
+<ng-container *ngIf="tag === blockchainTags.BDAY_PROMO">
+  <a class="badge-element badge-element_full birthday" target="_blank">
+    <img src="assets/images/icons/bday_promo.svg" />
+  </a>
+</ng-container>
+
+<ng-container *ngIf="tag === blockchainTags.NEW">
   <div class="badge-element new">
     <span>{{ tag | uppercase }}</span>
   </div>
-</ng-template>
+</ng-container>
