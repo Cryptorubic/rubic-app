@@ -172,39 +172,27 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ETHEREUM,
     rank: 1,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.POLYGON,
     rank: 0.75,
-    tags: ['MATIC', BlockchainTags.PROMO, BlockchainTags.POPULAR, BlockchainTags.EVM]
+    tags: ['MATIC', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     rank: 0.75,
-    tags: ['BNB', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['BNB', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
@@ -217,7 +205,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.PROMO
     ]
   },
-  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0.75, tags: [BlockchainTags.EVM, BlockchainTags.PROMO] },
+  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0.75, tags: [BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,
     rank: 0.75,
@@ -226,7 +214,8 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
+      BlockchainTags.PROMO,
+      BlockchainTags.BDAY_PROMO
     ]
   },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX', BlockchainTags.EVM] },
@@ -238,13 +227,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MODE,
@@ -290,7 +273,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.PULSECHAIN,

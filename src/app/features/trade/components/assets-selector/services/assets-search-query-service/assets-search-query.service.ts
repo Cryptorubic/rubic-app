@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject, combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs';
 import { AssetsSelectorService } from '../assets-selector-service/assets-selector.service';
@@ -17,14 +16,12 @@ export class AssetsSearchQueryService {
 
   public set assetsQuery(value: string) {
     this._assetsQuery$.next(value.trim());
-    this.gasFormService.updateSearchQuery(value.trim());
   }
 
   constructor(
     public readonly assetsSelectorService: AssetsSelectorService,
     private readonly destroy$: TuiDestroyService,
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormService: GasFormService
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnSelectorListTypeChange();
   }

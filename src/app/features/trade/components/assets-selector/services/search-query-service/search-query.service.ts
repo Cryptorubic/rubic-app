@@ -4,7 +4,6 @@ import { combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs/operato
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 
 @Injectable()
 export class SearchQueryService {
@@ -21,16 +20,12 @@ export class SearchQueryService {
 
   public set query(value: string) {
     this._query$.next(value.trim());
-    if (this.assetsSelectorService.selectorListType !== 'tokens') {
-      this.gasFormService.updateSearchQuery(value.trim());
-    }
   }
 
   constructor(
     public readonly assetsSelectorService: AssetsSelectorService,
     private readonly destroy$: TuiDestroyService,
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormService: GasFormService
+    private readonly formsTogglerService: FormsTogglerService
   ) {
     this.subscribeOnSelectorListTypeChange();
   }
