@@ -7,6 +7,11 @@ import { addMinutes } from 'date-and-time';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
+import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import { getBalancesForGtagSwapError } from './utils/get-balances-for-swap-error';
+import { UnknownErrorComponent } from '@app/core/errors/components/unknown-error/unknown-error.component';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -178,13 +183,33 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Fires GTM event on transaction error.
+   * Fires GTM event on swap error.
    */
-  public fireTransactionError(tokenInName: string, tokenOutName: string, errorCode: string): void {
+  public async fireSwapError(
+    trade: CrossChainTrade | OnChainTrade,
+    walletAddress: string,
+    error: RubicError<ERROR_TYPE>
+  ): Promise<void> {
+    const [nativeBalance, srcTokenBalance] = await getBalancesForGtagSwapError(
+      trade.from,
+      walletAddress
+    );
+
     this.angularGtmService.gtag('event', 'swap_error', {
-      input_token: tokenInName,
-      output_token: tokenOutName,
-      error_code: errorCode || 'Nan'
+      input_token: trade.from.name,
+      input_token_address: trade.from.address,
+      input_token_amount: trade.from.tokenAmount.toFixed(),
+      output_token: trade.to.name,
+      output_token_address: trade.to.address,
+      output_token_amount: trade.to.tokenAmount.toFixed(),
+      network_from: trade.from.blockchain,
+      network_to: trade.to.blockchain,
+      provider: trade.type,
+      wallet_address: walletAddress,
+      token_from_ballance: srcTokenBalance,
+      token_native_ballance: nativeBalance,
+      identified_app_error: !(error.component instanceof UnknownErrorComponent),
+      identified_error_name: error.name
     });
   }
 }

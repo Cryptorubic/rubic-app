@@ -255,7 +255,7 @@ export class CrossChainService {
       this.tokensService.findToken(trade.from),
       this.tokensService.findToken(trade.to)
     ]);
-    await this.handlePreSwapModal(trade);
+    await this.showModalForArbitrumBridge(trade);
 
     let transactionHash: string;
     const onTransactionHash = (txHash: string) => {
@@ -312,11 +312,9 @@ export class CrossChainService {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
 
-      // this.handleSwapError(error, currentSelectedTrade.tradeType);
       const parsedError = RubicSdkErrorParser.parseError(error);
-
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
       throw parsedError;
@@ -420,7 +418,7 @@ export class CrossChainService {
     }
   }
 
-  private async handlePreSwapModal(trade: CrossChainTrade): Promise<void> {
+  private async showModalForArbitrumBridge(trade: CrossChainTrade): Promise<void> {
     if (
       trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
       trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM
