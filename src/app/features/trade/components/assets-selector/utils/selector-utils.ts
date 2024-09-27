@@ -10,9 +10,8 @@ export class SelectorUtils {
           tag === BlockchainTags.NEW ||
           tag === BlockchainTags.BDAY_PROMO
       )
-      .sort((a, b) => {
-        if (a === BlockchainTags.BDAY_PROMO || a === BlockchainTags.PROMO) return -1;
-        if (b === BlockchainTags.BDAY_PROMO || a === BlockchainTags.PROMO) return 1;
+      .sort((a, _b) => {
+        if (a === BlockchainTags.BDAY_PROMO) return -1;
         return 0;
       });
 

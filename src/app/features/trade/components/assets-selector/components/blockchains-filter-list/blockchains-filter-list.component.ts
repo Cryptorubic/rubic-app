@@ -21,6 +21,6 @@ export class BlockchainsFilterListComponent {
   ) {}
 
   public onSelectFilter(filter: BlockchainFilters): void {
-    this.filterQueryService.filterQuery = filter;
+    this.filterQueryService.setFilterQuery(filter);
   }
 }

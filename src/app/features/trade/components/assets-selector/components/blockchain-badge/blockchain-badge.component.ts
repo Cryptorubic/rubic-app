@@ -4,12 +4,12 @@ import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilt
 import { blockchainsPromoLinks } from './constants/blockchains-promo-links';
 
 @Component({
-  selector: 'app-blockchains-promo-badge',
-  templateUrl: './blockchains-promo-badge.component.html',
-  styleUrls: ['./blockchains-promo-badge.component.scss'],
+  selector: 'app-blockchain-badge',
+  templateUrl: './blockchain-badge.component.html',
+  styleUrls: ['./blockchain-badge.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlockchainsPromoBadgeComponent {
+export class BlockchainBadgeComponent {
   @Input({ required: true }) tag!: string;
 
   @Input({ required: true }) blockchain: BlockchainName;

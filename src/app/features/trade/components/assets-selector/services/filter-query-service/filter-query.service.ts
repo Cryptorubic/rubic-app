@@ -25,4 +25,13 @@ export class FilterQueryService {
       this.modalService.openMobileBlockchainList(this.injector);
     }
   }
+
+  public setFilterQuery(filter: BlockchainFilters): void {
+    if (filter === this._filterQuery$.getValue() && filter !== BlockchainTags.ALL) {
+      this._filterQuery$.next(BlockchainTags.ALL);
+    } else {
+      this._filterQuery$.next(filter);
+      this.modalService.openMobileBlockchainList(this.injector);
+    }
+  }
 }

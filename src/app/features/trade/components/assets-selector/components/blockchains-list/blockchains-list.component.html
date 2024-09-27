@@ -27,10 +27,10 @@
               </div>
               <ng-container *ngIf="isMobile && getBlockchainTag(blockchain) as tag">
                 <div class="list__badge-container">
-                  <app-blockchains-promo-badge
+                  <app-blockchain-badge
                     [tag]="tag"
                     [blockchain]="blockchain.name"
-                  ></app-blockchains-promo-badge>
+                  ></app-blockchain-badge>
                 </div>
               </ng-container>
             </div>
