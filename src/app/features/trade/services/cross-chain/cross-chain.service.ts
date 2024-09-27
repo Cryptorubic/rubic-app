@@ -255,7 +255,7 @@ export class CrossChainService {
       this.tokensService.findToken(trade.from),
       this.tokensService.findToken(trade.to)
     ]);
-    await this.showModalForArbitrumBridge(trade);
+    await this.handlePreSwapModal(trade);
 
     let transactionHash: string;
     const onTransactionHash = (txHash: string) => {
@@ -418,7 +418,7 @@ export class CrossChainService {
     }
   }
 
-  private async showModalForArbitrumBridge(trade: CrossChainTrade): Promise<void> {
+  private async handlePreSwapModal(trade: CrossChainTrade): Promise<void> {
     if (
       trade.type === CROSS_CHAIN_TRADE_TYPE.ARBITRUM &&
       trade.from.blockchain === BLOCKCHAIN_NAME.ARBITRUM

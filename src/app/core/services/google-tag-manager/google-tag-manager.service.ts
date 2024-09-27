@@ -7,11 +7,17 @@ import { addMinutes } from 'date-and-time';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
-import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import {
+  BlockchainName,
+  CrossChainTrade,
+  Injector,
+  nativeTokensList,
+  OnChainTrade,
+  PriceTokenAmount,
+  Web3Public,
+  Web3Pure
+} from 'rubic-sdk';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { ERROR_TYPE } from '@app/core/errors/models/error-type';
-import { getBalancesForGtagSwapError } from './utils/get-balances-for-swap-error';
-import { UnknownErrorComponent } from '@app/core/errors/components/unknown-error/unknown-error.component';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -188,9 +194,9 @@ export class GoogleTagManagerService {
   public async fireSwapError(
     trade: CrossChainTrade | OnChainTrade,
     walletAddress: string,
-    error: RubicError<ERROR_TYPE>
+    error: Error
   ): Promise<void> {
-    const [nativeBalance, srcTokenBalance] = await getBalancesForGtagSwapError(
+    const [nativeBalance, srcTokenBalance] = await this.getBalancesForGtagSwapError(
       trade.from,
       walletAddress
     );
@@ -208,8 +214,25 @@ export class GoogleTagManagerService {
       wallet_address: walletAddress,
       token_from_ballance: srcTokenBalance,
       token_native_ballance: nativeBalance,
-      identified_app_error: !(error.component instanceof UnknownErrorComponent),
+      identified_app_error: !(error instanceof RubicError),
       identified_error_name: error.name
     });
+  }
+
+  private async getBalancesForGtagSwapError(
+    fromToken: PriceTokenAmount<BlockchainName>,
+    walletAddress: string
+  ): Promise<[string, string]> {
+    const web3Public = Injector.web3PublicService.getWeb3Public(fromToken.blockchain) as Web3Public;
+    const [nativeBalanceWei, fromTokenBalanceWei] = await Promise.all([
+      web3Public.getBalance(walletAddress),
+      web3Public.getBalance(walletAddress, fromToken.address)
+    ]);
+
+    const nativeToken = nativeTokensList[fromToken.blockchain];
+    const nativeBalance = Web3Pure.fromWei(nativeBalanceWei, nativeToken.decimals).toFixed();
+    const fromTokenBalance = Web3Pure.fromWei(fromTokenBalanceWei, fromToken.decimals).toFixed();
+
+    return [nativeBalance, fromTokenBalance];
   }
 }
