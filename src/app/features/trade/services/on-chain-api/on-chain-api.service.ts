@@ -162,7 +162,7 @@ export class OnChainApiService {
   }
 
   public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {
-    return this.httpService.post('/api/onchain_route_calculation/save', data, null, {
+    return this.httpService.post('onchain_route_calculation/save', data, null, {
       headers: {
         Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
       }
