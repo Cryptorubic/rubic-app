@@ -1,6 +1,7 @@
 import { BadgeInfo } from '@app/features/trade/models/trade-state';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
+  showLineaLabel,
   showMerlinLabel,
   showScrollMarksPromoLabel,
   showTaikoPointsPromoLabel,
@@ -34,6 +35,14 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
     }
   ],
   [BLOCKCHAIN_NAME.BLAST]: [],
+  [BLOCKCHAIN_NAME.LINEA]: [
+    {
+      fromSdk: false,
+      getLabel: () => 'PROMO',
+      getHint: () => '0 fees',
+      showLabel: showLineaLabel
+    }
+  ],
   [BLOCKCHAIN_NAME.MERLIN]: [
     {
       bgColor: PURPLE_COLOR,

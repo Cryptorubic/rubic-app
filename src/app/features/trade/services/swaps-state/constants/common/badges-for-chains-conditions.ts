@@ -38,3 +38,9 @@ export function showXLayerPromoLabel(trade: OnChainTrade | CrossChainTrade): boo
       (trade.from.blockchain as BlockchainName) === BLOCKCHAIN_NAME.XLAYER)
   );
 }
+
+export function showLineaLabel(trade: OnChainTrade | CrossChainTrade): boolean {
+  return (
+    trade.to.blockchain === BLOCKCHAIN_NAME.LINEA || trade.from.blockchain === BLOCKCHAIN_NAME.LINEA
+  );
+}

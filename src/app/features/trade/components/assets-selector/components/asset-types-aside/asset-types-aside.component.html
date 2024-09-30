@@ -40,10 +40,10 @@
               </div>
               <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
                 <div class="badge-container">
-                  <app-blockchains-promo-badge
+                  <app-blockchain-badge
                     [tag]="tag"
                     [blockchain]="blockchainItem.name"
-                  ></app-blockchains-promo-badge>
+                  ></app-blockchain-badge>
                 </div>
               </ng-container>
             </button>

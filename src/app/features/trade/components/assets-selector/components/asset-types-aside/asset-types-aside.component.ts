@@ -51,25 +51,12 @@ export class AssetTypesAsideComponent {
     @Inject(Injector) private readonly injector: Injector
   ) {}
 
-  private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
-    const allAvailableBlockchains = this.blockchainsListService.availableBlockchains;
-    const zkSyncBlockchain = this.blockchainsListService.availableBlockchains.find(
-      blockchain => blockchain.name === 'ZK_SYNC'
-    );
-
-    if (this.swapFormService.inputValue.fromToken.blockchain !== 'ZK_SYNC') {
-      return this.formType === 'from' ? [...allAvailableBlockchains] : [zkSyncBlockchain];
-    } else {
-      return this.formType === 'from' ? [zkSyncBlockchain] : [...allAvailableBlockchains];
-    }
-  }
-
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
     return SelectorUtils.getBlockchainTag(blockchain);
   }
 
   public setBlockchainFilterAll(): void {
-    this.filterQueryService.filterQuery = BlockchainTags.ALL;
+    this.filterQueryService.setFilterQuery(BlockchainTags.ALL);
   }
 
   public isBlockchainDisabled(blockchain: AvailableBlockchain): boolean {
