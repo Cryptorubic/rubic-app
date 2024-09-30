@@ -2,7 +2,8 @@
   <ng-container header>Retrodrop</ng-container>
   <ng-container *ngIf="isAuth$ | async; else loginButton">
     <ng-container *ngIf="(fetchError$ | async) === false; else serverRequestFailed">
-      <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember">
+      <!-- <ng-container *ngIf="isUserParticipantOfRetrodrop$ | async; else notMember"> -->
+      <ng-container>
         <tui-loader [showLoader]="fetchUserInfoLoading$ | async" [overlay]="true">
           <tui-scrollbar>
             <app-claim-round-row-container

@@ -19,7 +19,7 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
-  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7];
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8];
 
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
@@ -66,11 +66,7 @@ export class RetrodropService extends ClaimService {
           .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
           .then(isAlreadyClaimed => {
             const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
-            const isRoundExpired = this.isRoundExpired(
-              isAlreadyClaimed,
-              claim.already_claimed_from_old_contract,
-              searchedRound.roundNumber
-            );
+            const isRoundExpired = this.isRoundExpired(isAlreadyClaimed, searchedRound.roundNumber);
 
             return {
               ...searchedRound,
@@ -119,15 +115,7 @@ export class RetrodropService extends ClaimService {
     this._rounds$.next(formattedRounds);
   }
 
-  private isRoundExpired(
-    isAlreadyClaimedOnCurrentContract: boolean,
-    isAlreadyClaimedOnOldContract: boolean,
-    roundNumber: number
-  ): boolean {
-    return (
-      !isAlreadyClaimedOnCurrentContract &&
-      !isAlreadyClaimedOnOldContract &&
-      this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber)
-    );
+  private isRoundExpired(isAlreadyClaimedOnCurrentContract: boolean, roundNumber: number): boolean {
+    return !isAlreadyClaimedOnCurrentContract && this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber);
   }
 }
