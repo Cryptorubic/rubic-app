@@ -8,7 +8,7 @@ import { retrodropContractAddress } from '@features/retrodrop/constants/retrodro
 import { retrodropRounds } from '@features/retrodrop/constants/retrodrop-rounds';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
-import { ClaimRound } from '@shared/models/claim/claim-round';
+import { ClaimRound, ClaimStatus } from '@shared/models/claim/claim-round';
 import { switchTap } from '@shared/utils/utils';
 import { ClaimService } from '@shared/services/claim-services/claim.services';
 
@@ -66,12 +66,15 @@ export class RetrodropService extends ClaimService {
           .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
           .then(isAlreadyClaimed => {
             const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
-            const isRoundExpired = this.isRoundExpired(isAlreadyClaimed, searchedRound.roundNumber);
 
             return {
               ...searchedRound,
               network,
-              status: isRoundExpired ? 'expired' : searchedRound.status,
+              status: this.getRoundStatusForUser(
+                claim.is_participant,
+                isAlreadyClaimed,
+                searchedRound
+              ),
               claimData: {
                 contractAddress,
                 node: {
@@ -89,10 +92,12 @@ export class RetrodropService extends ClaimService {
           });
       } else {
         const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
+
         return new Promise<ClaimRound>(resolve =>
           resolve({
             ...searchedRound,
             network,
+            status: this.getRoundStatusForUser(claim.is_participant, false, searchedRound),
             ...claim,
             claimData: {
               ...searchedRound.claimData,
@@ -115,7 +120,17 @@ export class RetrodropService extends ClaimService {
     this._rounds$.next(formattedRounds);
   }
 
-  private isRoundExpired(isAlreadyClaimedOnCurrentContract: boolean, roundNumber: number): boolean {
-    return !isAlreadyClaimedOnCurrentContract && this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber);
+  private getRoundStatusForUser(
+    isParticipant: boolean,
+    isAlreadyClaimedOnCurrentContract: boolean,
+    searchedRound: ClaimRound
+  ): ClaimStatus {
+    if (
+      this.EXPIRED_ROUNDS_NUMBER.includes(searchedRound.roundNumber) &&
+      (!isAlreadyClaimedOnCurrentContract || !isParticipant)
+    ) {
+      return 'expired';
+    }
+    return searchedRound.status;
   }
 }

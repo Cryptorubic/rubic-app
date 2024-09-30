@@ -41,6 +41,7 @@ const getButtonKey = ([
   if (!isParticipantOfCurrentRound) {
     return 'notParticipant';
   }
+
   if (isAlreadyClaimed) {
     if (claimName === 'airdrop') {
       return 'claimed';
