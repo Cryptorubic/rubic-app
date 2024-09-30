@@ -232,7 +232,6 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.BDAY_PROMO,
       BlockchainTags.PROMO
     ]
   },
