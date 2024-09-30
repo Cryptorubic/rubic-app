@@ -1,10 +1,21 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AlternativeRoutesRequestParams } from './models/alternative-routes-request-params';
-import { catchError, combineLatest, map, Observable, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  combineLatest,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap
+} from 'rxjs';
 import {
   AlternativeRoute,
   AlternativeRouteDTO,
+  AlternativeRouteStatus,
+  AlternativeRouteStatuses,
   AlternativeTokenPairs
 } from './models/alternative-route';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
@@ -21,6 +32,12 @@ export class AlternativeRoutesService {
     private readonly tokenStoreService: TokensStoreService
   ) {}
 
+  private readonly _alternativeRouteStatus$ = new BehaviorSubject<AlternativeRouteStatus>(
+    AlternativeRouteStatuses.PENDING
+  );
+
+  public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
+
   private fetchAlternativeRoutes(
     params: AlternativeRoutesRequestParams
   ): Observable<AlternativeTokenPairs[]> {
@@ -34,6 +51,7 @@ export class AlternativeRoutesService {
   }
 
   public getAlternativeRoutes(): Observable<AlternativeRoute[]> {
+    this._alternativeRouteStatus$.next(AlternativeRouteStatuses.PENDING);
     return combineLatest([this.swapFormService.fromToken$, this.swapFormService.toToken$]).pipe(
       switchMap(([fromToken, toToken]) =>
         this.fetchAlternativeRoutes({
@@ -43,8 +61,11 @@ export class AlternativeRoutesService {
           destinationTokenAddress: toToken.address
         })
       ),
-      map(alternativeRoutes =>
-        alternativeRoutes
+      map(alternativeRoutes => {
+        if (alternativeRoutes && alternativeRoutes.length === 0) {
+          throw Error();
+        }
+        return alternativeRoutes
           .sort((a, b) => b.totalRank - a.totalRank)
           .map(route => {
             const fromToken = this.tokenStoreService.tokens.find(
@@ -68,9 +89,13 @@ export class AlternativeRoutesService {
             };
           })
           .slice(0, 5)
-          .filter(notNull)
-      ),
-      catchError(() => of([]))
+          .filter(notNull);
+      }),
+      tap(() => this._alternativeRouteStatus$.next(AlternativeRouteStatuses.COMPLETE)),
+      catchError(() => {
+        this._alternativeRouteStatus$.next(AlternativeRouteStatuses.NO_ROUTES);
+        return of(null);
+      })
     );
   }
 
@@ -78,7 +103,7 @@ export class AlternativeRoutesService {
     const prevFromToken = this.swapFormService.inputValue.fromToken;
     const fromAmount = this.swapFormService.inputValue.fromAmount;
     if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
-      const usdPrice = this.swapFormService.inputValue.fromToken.price;
+      const usdPrice = this.swapFormService.inputValue.fromToken.price ?? 1000;
       const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
 
       return usdAmount.dividedBy(tokenUsdPrice);

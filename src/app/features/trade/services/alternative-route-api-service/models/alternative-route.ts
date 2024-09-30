@@ -28,3 +28,11 @@ export interface AlternativeRoute {
   to: TokenAmount;
   amount: BigNumber;
 }
+
+export type AlternativeRouteStatus = AlternativeRouteStatuses;
+
+export enum AlternativeRouteStatuses {
+  PENDING = 'pending',
+  COMPLETE = 'complete',
+  NO_ROUTES = 'noroutes'
+}

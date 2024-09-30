@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AlternativeRoute } from '../../services/alternative-route-api-service/models/alternative-route';
+import { AlternativeRoutesService } from '../../services/alternative-route-api-service/alternative-routes.service';
 
 @Component({
   selector: 'app-alternative-routes-list',
@@ -15,4 +16,8 @@ export class AlternativeRoutesListComponent {
   public handleAlternativeRouteSelection(route: AlternativeRoute): void {
     this.selectedRoute.emit(route);
   }
+
+  public readonly routeStatus$ = this.alternativeRouteService.alternativeRouteStatus$;
+
+  constructor(private readonly alternativeRouteService: AlternativeRoutesService) {}
 }

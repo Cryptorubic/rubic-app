@@ -1,20 +1,18 @@
-<div
-  class="alternative-routes-list"
-  *ngIf="alternativeRoutes && alternativeRoutes?.length !== 0; else emptyContent"
->
-  <span>
-    Most likely there will be no routes available. You can use networks below for intermediate swap.
-  </span>
-  <app-alternative-route-element
-    *ngFor="let route of alternativeRoutes"
-    [route]="route"
-    (selectedRoute)="handleAlternativeRouteSelection($event)"
-  >
-  </app-alternative-route-element>
-</div>
+<div [ngSwitch]="routeStatus$ | async">
+  <div class="alternative-routes-list" *ngSwitchCase="'complete'">
+    <span>
+      Most likely there will be no routes available. You can use networks below for intermediate
+      swap.
+    </span>
+    <app-alternative-route-element
+      *ngFor="let route of alternativeRoutes"
+      [route]="route"
+      (selectedRoute)="handleAlternativeRouteSelection($event)"
+    >
+    </app-alternative-route-element>
+  </div>
 
-<ng-template #emptyContent>
-  <div class="empty-list">
+  <div class="empty-list" *ngSwitchCase="'noroutes'">
     <div class="empty-list__content">
       <app-no-result
         label="No routes available"
@@ -22,4 +20,4 @@
       ></app-no-result>
     </div>
   </div>
-</ng-template>
+</div>
