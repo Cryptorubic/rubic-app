@@ -65,7 +65,6 @@ export class ClaimRoundRowComponent {
       claimRound.isParticipantOfCurrentRound,
       claimRound.claimData.node?.account || '',
       claimRound.network,
-      claimRound.isParticipantOfPrevRounds,
       claimRound.status,
       claimRound.isAlreadyClaimed,
       claimRound.claimName
