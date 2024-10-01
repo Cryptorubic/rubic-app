@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -27,7 +27,8 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
+import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 
 @Injectable()
 export class ModalService {
@@ -272,5 +273,21 @@ export class ModalService {
       size: 's',
       data: { oldBlockchain, newBlockchain }
     });
+  }
+
+  /**
+   * @param slippage from 0 to 1
+   */
+  public openTonSlippageWarning(
+    providerType: OnChainTradeType,
+    slippage: number
+  ): Promise<boolean> {
+    return firstValueFrom(
+      this.showDialog(TonSlippageWarnModalComponent, {
+        size: 's',
+        data: { providerType, slippagePercent: slippage * 100 },
+        closeable: false
+      })
+    );
   }
 }

@@ -1,0 +1,28 @@
+<div class="modal">
+  <div class="modal__content">
+    <div class="modal__header">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Warning</h3>
+    </div>
+
+    <div class="modal__body">
+      {{
+        'modals.warningModal.tonMinSlippage'
+          | translate : { providerType: providerType, slippage: slippagePercent }
+      }}
+    </div>
+
+    <div class="modal__footer">
+      <app-rubic-button fullWidth appearance="primary" (click)="confirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+      <app-rubic-button fullWidth appearance="secondary" (click)="cancel()">
+        {{ 'common.cancel' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>
