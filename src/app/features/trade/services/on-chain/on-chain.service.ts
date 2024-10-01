@@ -43,6 +43,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
+import { ProxyService } from '@features/trade/services/proxy-service/proxy.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -69,7 +70,8 @@ export class OnChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly onChainApiService: OnChainApiService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly sessionStorage: SessionStorageService
+    private readonly sessionStorage: SessionStorageService,
+    private readonly proxyService: ProxyService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -124,6 +126,11 @@ export class OnChainService {
               ? false
               : this.platformConfigurationService.useOnChainProxy;
           const timeout = this.calculateTimeoutForChains();
+          const providerAddress = this.proxyService.getIntegratorAddress(
+            fromSdkToken,
+            fromAmount.actualValue,
+            toSdkToken
+          );
 
           const options: OnChainManagerCalculationOptions = {
             timeout,
@@ -133,7 +140,8 @@ export class OnChainService {
             disableMultihops,
             deadlineMinutes,
             useProxy,
-            disabledProviders: [...disabledTradeTypes]
+            disabledProviders: [...disabledTradeTypes],
+            providerAddress
           };
           handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
 

@@ -11,4 +11,6 @@ export interface Token extends BlockchainToken {
    * Equals `null` in case security information is not available.
    */
   tokenSecurity?: TokenSecurity | null;
+
+  type?: 'NATIVE' | 'STABLE' | 'WRAPPED_NATIVE' | 'NATIVE_ETH' | 'TOKEN';
 }

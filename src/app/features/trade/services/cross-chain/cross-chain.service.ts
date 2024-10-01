@@ -54,6 +54,7 @@ import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
+import { ProxyService } from '@features/trade/services/proxy-service/proxy.service';
 
 @Injectable()
 export class CrossChainService {
@@ -83,7 +84,8 @@ export class CrossChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly airdropPointsService: AirdropPointsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly proxyService: ProxyService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -104,7 +106,12 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(disabledTradeTypes);
+        const options = this.getOptions(
+          disabledTradeTypes,
+          fromSdkCompatibleToken,
+          toSdkCompatibleToken,
+          fromAmount.actualValue
+        );
         handleIntegratorAddress(options, fromBlockchain, toBlockchain);
 
         const calculationStartTime = Date.now();
@@ -155,7 +162,10 @@ export class CrossChainService {
   }
 
   private getOptions(
-    disabledTradeTypes: CrossChainTradeType[]
+    disabledTradeTypes: CrossChainTradeType[],
+    fromSdkToken: PriceToken,
+    toSdkToken: PriceToken,
+    fromAmount: BigNumber
   ): CrossChainManagerCalculationOptions {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
@@ -175,6 +185,11 @@ export class CrossChainService {
     );
     const calculateGas = this.authService.userAddress;
     const timeout = this.calculateTimeoutForChains();
+    const providerAddress = this.proxyService.getIntegratorAddress(
+      fromSdkToken,
+      fromAmount,
+      toSdkToken
+    );
 
     return {
       fromSlippageTolerance: slippageTolerance / 2,
@@ -195,7 +210,8 @@ export class CrossChainService {
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: {
         ...this.platformConfigurationService.useCrossChainChainProxy
-      }
+      },
+      providerAddress
     };
   }
 

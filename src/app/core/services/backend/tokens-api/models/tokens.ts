@@ -26,6 +26,7 @@ export interface BackendToken {
   coingeckoId: string;
   usdPrice: number;
   token_security: TokenSecurity | null;
+  type: Token['type'];
 }
 
 export interface TokensBackendResponse {
