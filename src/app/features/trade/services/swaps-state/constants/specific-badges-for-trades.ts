@@ -45,6 +45,41 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       }
     }
   ],
+  [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      getUrl: () => 'https://rubic.exchange/birthday4',
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.TAIKO ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.TAIKO
+        );
+      }
+    },
+    {
+      getUrl: () => 'https://owlto.finance/',
+      bgColor: INFO_COLOR,
+      fromSdk: false,
+      getLabel: () => '+Points!',
+      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
+      showLabel: () => true
+    }
+  ],
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return trade.from.blockchain === BLOCKCHAIN_NAME.TAIKO;
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
@@ -117,16 +152,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'ATTENTION',
       getHint: () => 'Waiting funds in target chain for 7 days',
       showLabel: showAttentionLabelArbitrumBridge
-    }
-  ],
-  [BRIDGE_TYPE.OWL_TO_BRIDGE]: [
-    {
-      getUrl: () => 'https://owlto.finance/',
-      bgColor: INFO_COLOR,
-      fromSdk: false,
-      getLabel: () => '+Points!',
-      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
-      showLabel: () => true
     }
   ]
 };
