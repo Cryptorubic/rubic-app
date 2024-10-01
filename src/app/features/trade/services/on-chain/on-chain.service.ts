@@ -9,17 +9,14 @@ import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
-  Injector,
   NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeType,
   PriceToken,
   SwapTransactionOptions,
-  Token,
   TX_STATUS,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Public,
   Web3Pure,
   UnapprovedContractError,
   UnapprovedMethodError
@@ -162,19 +159,12 @@ export class OnChainService {
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
 
-    const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain, fromAddress, fromDecimals } =
+    const { fromSymbol, toSymbol, fromAmount, fromPrice, blockchain } =
       TradeParser.getItSwapParams(trade);
 
     if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
     }
-
-    const blockchainAdapter: Web3Public = Injector.web3PublicService.getWeb3Public(blockchain);
-    await blockchainAdapter.checkBalance(
-      { address: fromAddress, decimals: fromDecimals, symbol: fromSymbol } as Token,
-      fromAmount,
-      this.authService.userAddress
-    );
 
     const receiverAddress = this.receiverAddress;
 
@@ -246,8 +236,10 @@ export class OnChainService {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
+      const parsedError = RubicSdkErrorParser.parseError(err);
+
       if (!(err instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, err.code);
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
       if (transactionHash && !this.isNotMinedError(err)) {
@@ -261,7 +253,7 @@ export class OnChainService {
         throw new RubicError('Please, increase the slippage and try again!');
       }
 
-      throw RubicSdkErrorParser.parseError(err);
+      throw parsedError;
     }
   }
 

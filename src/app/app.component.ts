@@ -22,6 +22,8 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 export class AppComponent implements AfterViewInit {
   public isBackendAvailable: boolean;
 
+  public useLargeIframe = false;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
@@ -76,6 +78,11 @@ export class AppComponent implements AfterViewInit {
     if (this.iframeService.isIframe) {
       this.removeLiveChatInIframe();
     }
+    this.queryParamsService.queryParams$
+      .pipe(first(queryParams => Boolean(Object.keys(queryParams).length)))
+      .subscribe(params => {
+        this.useLargeIframe = params.useLargeIframe === 'true';
+      });
   }
 
   private removeLiveChatInIframe(): void {
