@@ -32,13 +32,14 @@
       state.calculationStatus &&
       state.calculationStatus.showSidebar &&
       state.selectedForm === 'swapForm' &&
-      state.content === 'form'
+      state.content === 'form' &&
+      !useLargeIframe
     "
     @inOutAnimation
     [states]="state.providers"
     [selectedTradeType]="selectedTradeType$ | async"
     (selectTrade)="selectTrade($event)"
-    [calculationStatus]="calculationStatus$ | async"
+    [calculationStatus]="state.calculationStatus"
     [showCalculation]="true"
   ></app-providers-list-general>
 

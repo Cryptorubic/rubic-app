@@ -1,15 +1,18 @@
 <tui-carousel [duration]="20000">
+  <!--  <ng-container *tuiItem>-->
+  <!--    <app-banner-zk-link-->
+  <!--      href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"-->
+  <!--      *noFrame-->
+  <!--    ></app-banner-zk-link>-->
+  <!--  </ng-container>-->
+  <!--  <ng-container *tuiItem>-->
+  <!--    <app-banner-taiko-->
+  <!--      href="https://rubic.exchange/blog/how-to-bridge-to-and-from-taiko-and-get-taiko-airdrop/"-->
+  <!--      *noFrame-->
+  <!--    ></app-banner-taiko>-->
+  <!--  </ng-container>-->
   <ng-container *tuiItem>
-    <app-banner-zk-link
-      href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"
-      *noFrame
-    ></app-banner-zk-link>
-  </ng-container>
-  <ng-container *tuiItem>
-    <app-banner-taiko
-      href="https://rubic.exchange/blog/how-to-bridge-to-and-from-taiko-and-get-taiko-airdrop/"
-      *noFrame
-    ></app-banner-taiko>
+    <app-banner-birthday href="https://rubic.exchange/birthday4" *noFrame></app-banner-birthday>
   </ng-container>
 </tui-carousel>
 
@@ -47,6 +50,7 @@
   </button>
 
   <button
+    *ngIf="!useLargeIframe"
     class="staking-button"
     tuiButton
     appearance="secondary"
@@ -72,7 +76,7 @@
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
   <!--  </button>-->
 
-  <ng-container>
+  <ng-container *ngIf="!useLargeIframe">
     <app-points-button
       class="rubic-header__point-button"
       *ngIf="currentUser$ | async"

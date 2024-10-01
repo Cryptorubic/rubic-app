@@ -237,6 +237,9 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
+                }),
+                ...(additionalInfo?.squidrouterId && {
+                  squidrouterRequestId: additionalInfo.squidrouterId
                 })
               },
               tradeState.tradeType as CrossChainTradeType
