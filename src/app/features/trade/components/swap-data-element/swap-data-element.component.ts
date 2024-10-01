@@ -29,7 +29,8 @@ export class SwapDataElementComponent {
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
 
     if (value?.nativeToken?.price && sum.gt(0)) {
-      this.displayAmount = `~ $${sum.multipliedBy(value.nativeToken.price).toFixed(2)}`;
+      const fiatAmountOut = sum.multipliedBy(value.nativeToken.price);
+      this.displayAmount = fiatAmountOut.gt(0.1) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
     } else if (value.nativeToken?.symbol && sum.gt(0)) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();

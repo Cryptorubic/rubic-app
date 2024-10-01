@@ -312,11 +312,9 @@ export class CrossChainService {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
 
-      // this.handleSwapError(error, currentSelectedTrade.tradeType);
       const parsedError = RubicSdkErrorParser.parseError(error);
-
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
       throw parsedError;

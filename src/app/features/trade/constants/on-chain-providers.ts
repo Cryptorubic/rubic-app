@@ -606,6 +606,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
   },
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: {
+    name: 'Squid Router',
+    image: 'assets/images/icons/providers/bridge/squidrouter.svg',
+    color: '#e6f936'
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TRADER]: {

@@ -8,7 +8,7 @@ import { retrodropContractAddress } from '@features/retrodrop/constants/retrodro
 import { retrodropRounds } from '@features/retrodrop/constants/retrodrop-rounds';
 import BigNumber from 'bignumber.js';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
-import { ClaimRound } from '@shared/models/claim/claim-round';
+import { ClaimRound, ClaimStatus } from '@shared/models/claim/claim-round';
 import { switchTap } from '@shared/utils/utils';
 import { ClaimService } from '@shared/services/claim-services/claim.services';
 
@@ -19,7 +19,7 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
-  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7];
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8];
 
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
@@ -66,16 +66,15 @@ export class RetrodropService extends ClaimService {
           .checkClaimed(retrodropContractAddress[claim.round - 1], claim.index)
           .then(isAlreadyClaimed => {
             const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
-            const isRoundExpired = this.isRoundExpired(
-              isAlreadyClaimed,
-              claim.already_claimed_from_old_contract,
-              searchedRound.roundNumber
-            );
 
             return {
               ...searchedRound,
               network,
-              status: isRoundExpired ? 'expired' : searchedRound.status,
+              status: this.getRoundStatusForUser(
+                claim.is_participant,
+                isAlreadyClaimed,
+                searchedRound
+              ),
               claimData: {
                 contractAddress,
                 node: {
@@ -93,10 +92,12 @@ export class RetrodropService extends ClaimService {
           });
       } else {
         const searchedRound = retrodropRounds.find(round => round.roundNumber === claim.round);
+
         return new Promise<ClaimRound>(resolve =>
           resolve({
             ...searchedRound,
             network,
+            status: this.getRoundStatusForUser(claim.is_participant, false, searchedRound),
             ...claim,
             claimData: {
               ...searchedRound.claimData,
@@ -119,15 +120,17 @@ export class RetrodropService extends ClaimService {
     this._rounds$.next(formattedRounds);
   }
 
-  private isRoundExpired(
+  private getRoundStatusForUser(
+    isParticipant: boolean,
     isAlreadyClaimedOnCurrentContract: boolean,
-    isAlreadyClaimedOnOldContract: boolean,
-    roundNumber: number
-  ): boolean {
-    return (
-      !isAlreadyClaimedOnCurrentContract &&
-      !isAlreadyClaimedOnOldContract &&
-      this.EXPIRED_ROUNDS_NUMBER.includes(roundNumber)
-    );
+    searchedRound: ClaimRound
+  ): ClaimStatus {
+    if (
+      this.EXPIRED_ROUNDS_NUMBER.includes(searchedRound.roundNumber) &&
+      (!isAlreadyClaimedOnCurrentContract || !isParticipant)
+    ) {
+      return 'expired';
+    }
+    return searchedRound.status;
   }
 }

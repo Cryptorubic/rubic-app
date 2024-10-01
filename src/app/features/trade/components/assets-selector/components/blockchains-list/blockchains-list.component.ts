@@ -11,6 +11,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
+import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -45,15 +46,7 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
-    const tags = blockchain.tags
-      .filter(tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW)
-      .sort((a, b) => {
-        if (a === this.blockchainsTags.PROMO) return -1;
-        if (b === this.blockchainsTags.PROMO) return 1;
-        return 0;
-      });
-
-    return tags[0];
+    return SelectorUtils.getBlockchainTag(blockchain);
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {

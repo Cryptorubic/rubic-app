@@ -1,12 +1,14 @@
 import { BLOCKCHAIN_NAME, BlockchainName, CrossChainManagerCalculationOptions } from 'rubic-sdk';
 import {
   MERLIN_INTEGRATOR_ADDRESS,
+  RUBIC_BDAY_ADDRESS,
   TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN,
   TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
 } from '../constants/calculation';
 
+// eslint-disable-next-line complexity
 export function handleIntegratorAddress(
   options: Pick<CrossChainManagerCalculationOptions, 'providerAddress'>,
   fromBlockchain: BlockchainName,
@@ -35,6 +37,8 @@ export function handleIntegratorAddress(
   const useXLayerIntegratorCcr =
     (fromBlockchain === BLOCKCHAIN_NAME.XLAYER || toBlockchain === BLOCKCHAIN_NAME.XLAYER) &&
     !crossChainIntegrator;
+  const useRubicBdayIntegrator =
+    fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
 
   if (useTaikoIntegratorOnChain) {
     options.providerAddress = TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
@@ -46,5 +50,7 @@ export function handleIntegratorAddress(
     options.providerAddress = XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
   } else if (useXLayerIntegratorCcr) {
     options.providerAddress = XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
+  } else if (useRubicBdayIntegrator) {
+    options.providerAddress = RUBIC_BDAY_ADDRESS;
   }
 }
