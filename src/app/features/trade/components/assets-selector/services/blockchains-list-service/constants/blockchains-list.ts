@@ -290,7 +290,8 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
       BlockchainTags.NEW,
-      BlockchainTags.PROMO
+      BlockchainTags.PROMO,
+      BlockchainTags.BDAY_PROMO
     ]
   },
   {
