@@ -3,7 +3,6 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
   showMerlinLabel,
   showScrollMarksPromoLabel,
-  showTaikoPointsPromoLabel,
   showXLayerPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
@@ -43,16 +42,16 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       showLabel: showMerlinLabel
     }
   ],
-  [BLOCKCHAIN_NAME.TAIKO]: [
-    {
-      bgColor: '#d112c5',
-      fromSdk: false,
-      getHint: () =>
-        'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
-      getLabel: () => '+Points!',
-      showLabel: showTaikoPointsPromoLabel
-    }
-  ],
+  // [BLOCKCHAIN_NAME.TAIKO]: [
+  //   {
+  //     bgColor: '#d112c5',
+  //     fromSdk: false,
+  //     getHint: () =>
+  //       'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
+  //     getLabel: () => '+Points!',
+  //     showLabel: showTaikoPointsPromoLabel
+  //   }
+  // ],
   [BLOCKCHAIN_NAME.XLAYER]: [
     {
       bgColor: 'rgb(187 77 33)',

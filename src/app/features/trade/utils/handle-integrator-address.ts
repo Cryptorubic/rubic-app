@@ -2,8 +2,6 @@ import { BLOCKCHAIN_NAME, BlockchainName, CrossChainManagerCalculationOptions } 
 import {
   MERLIN_INTEGRATOR_ADDRESS,
   RUBIC_BDAY_ADDRESS,
-  TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN,
-  TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
 } from '../constants/calculation';
@@ -41,9 +39,9 @@ export function handleIntegratorAddress(
     fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
 
   if (useTaikoIntegratorOnChain) {
-    options.providerAddress = TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
+    options.providerAddress = RUBIC_BDAY_ADDRESS;
   } else if (useTaikoIntegratorCcr) {
-    options.providerAddress = TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
+    options.providerAddress = RUBIC_BDAY_ADDRESS;
   } else if (useMerlinIntegrator) {
     options.providerAddress = MERLIN_INTEGRATOR_ADDRESS;
   } else if (useXLayerIntegratorOnChain) {
