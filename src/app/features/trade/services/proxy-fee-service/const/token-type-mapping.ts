@@ -1,5 +1,5 @@
 import { Token } from '@shared/models/tokens/token';
-import { TokenType } from '@features/trade/services/proxy-service/models/token-type';
+import { TokenType } from '@features/trade/services/proxy-fee-service/models/token-type';
 
 export const tokenTypeMapping: Record<Token['type'], TokenType> = {
   STABLE: 'stable',

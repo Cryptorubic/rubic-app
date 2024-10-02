@@ -43,7 +43,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@core/errors/models/rubic-error';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
-import { ProxyService } from '@features/trade/services/proxy-service/proxy.service';
+import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -71,7 +71,7 @@ export class OnChainService {
     private readonly onChainApiService: OnChainApiService,
     private readonly queryParamsService: QueryParamsService,
     private readonly sessionStorage: SessionStorageService,
-    private readonly proxyService: ProxyService
+    private readonly proxyService: ProxyFeeService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {

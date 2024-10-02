@@ -54,7 +54,7 @@ import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
-import { ProxyService } from '@features/trade/services/proxy-service/proxy.service';
+import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
 @Injectable()
 export class CrossChainService {
@@ -85,7 +85,7 @@ export class CrossChainService {
     private readonly gasService: GasService,
     private readonly airdropPointsService: AirdropPointsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly proxyService: ProxyService
+    private readonly proxyService: ProxyFeeService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
