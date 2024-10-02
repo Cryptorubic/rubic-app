@@ -10,17 +10,35 @@
     </div>
 
     <div class="modal__body">
-      {{
-        'modals.warningModal.tonMinSlippage'
-          | translate : { providerType: providerType, slippage: slippagePercent }
-      }}
+      <span>
+        {{ 'modals.warningModal.tonMinSlippage' | translate : { slippage: slippagePercent } }}
+      </span>
+
+      <div class="modal__body-path">
+        <h4 class="modal__body-path__title">
+          {{ 'modals.warningModal.tonEstimatedPath' | translate }}
+        </h4>
+
+        <span class="modal__body-path__tokens">
+          <ng-container *ngFor="let token of routingPath; let last = last">
+            <span class="token">
+              <img [src]="token.img" width="25" alt="token" /> ({{ token.symbol }})</span
+            >
+            <span *ngIf="!last"> → </span>
+          </ng-container>
+        </span>
+      </div>
+
+      <span>
+        {{ 'modals.warningModal.tonTransitToken' | translate : { transitTokens: transitTokens } }}
+      </span>
     </div>
 
     <div class="modal__footer">
-      <app-rubic-button fullWidth appearance="primary" (click)="confirm()">
+      <app-rubic-button fullWidth appearance="primary" size="l" (click)="confirm()">
         {{ 'common.OK' | translate }}
       </app-rubic-button>
-      <app-rubic-button fullWidth appearance="secondary" (click)="cancel()">
+      <app-rubic-button fullWidth bordered appearance="outline" size="l" (click)="cancel()">
         {{ 'common.cancel' | translate }}
       </app-rubic-button>
     </div>

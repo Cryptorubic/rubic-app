@@ -250,10 +250,7 @@
           "quarter": "Q3. 2021",
           "month": "Août",
           "done": "1",
-          "data": [
-            "Commission en RBC - étape 2",
-            "Anonymizer V1 - Polygon"
-          ]
+          "data": ["Commission en RBC - étape 2", "Anonymizer V1 - Polygon"]
         },
         "6": {
           "quarter": "Q3. 2021",
@@ -714,7 +711,10 @@
       "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
-      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
+      "tonMinSlippage": "Cette opération passe par un jeton de transit sur le contrat. Le taux de dérapage pour cette opération sera automatiquement défini à {{ slippage }}%.",
+      "tonTransitToken": "Au cas où le glissement ne suffirait pas, vous pouvez obtenir un montant équivalent de jetons de transit ({{ transitTokens }}) à la place du jeton cible sélectionné.",
+      "tonEstimatedPath": "Chemin estimé : "
     }
   },
   "settings": {

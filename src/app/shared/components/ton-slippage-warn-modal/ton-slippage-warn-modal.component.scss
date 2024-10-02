@@ -23,10 +23,37 @@
   &__footer {
     @include flex(row, center, space-around);
     gap: var(--tui-padding-xl);
+    width: 100%;
     padding-top: var(--tui-padding-xl);
+
+    app-rubic-button {
+      flex: 0 1 40%;
+    }
   }
 
   &__body {
     margin-bottom: 18px;
+
+    &-path {
+      &__title {
+        line-height: 10px;
+      }
+
+      &__tokens {
+        @include flex(row, center, center);
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .token {
+          @include flex(column, center, center);
+          gap: 3px;
+        }
+
+        img {
+          border-radius: 50%;
+        }
+      }
+    }
   }
 }

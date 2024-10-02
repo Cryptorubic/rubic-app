@@ -374,10 +374,7 @@ export class OnChainService {
 
   private async handlePreSwapModal(trade: OnChainTrade): Promise<void> {
     if (trade instanceof TonOnChainTrade && trade.isMultistepSwap) {
-      const ok = await this.modalService.openTonSlippageWarning(
-        trade.type,
-        trade.slippageTolerance
-      );
+      const ok = await this.modalService.openTonSlippageWarning(trade);
 
       if (!ok) throw new UserRejectError();
     }

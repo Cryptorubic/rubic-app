@@ -27,7 +27,7 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
+import { BlockchainName, TonOnChainTrade } from 'rubic-sdk';
 import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 
 @Injectable()
@@ -278,14 +278,11 @@ export class ModalService {
   /**
    * @param slippage from 0 to 1
    */
-  public openTonSlippageWarning(
-    providerType: OnChainTradeType,
-    slippage: number
-  ): Promise<boolean> {
+  public openTonSlippageWarning(trade: TonOnChainTrade): Promise<boolean> {
     return firstValueFrom(
       this.showDialog(TonSlippageWarnModalComponent, {
-        size: 's',
-        data: { providerType, slippagePercent: slippage * 100 },
+        size: 'm',
+        data: { trade },
         closeable: false
       })
     );
