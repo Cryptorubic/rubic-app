@@ -21,7 +21,7 @@ import {
   UnapprovedContractError,
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
-  DedustOnChainTrade
+  TonOnChainTrade
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -373,7 +373,7 @@ export class OnChainService {
   }
 
   private async handlePreSwapModal(trade: OnChainTrade): Promise<void> {
-    if (trade instanceof DedustOnChainTrade && trade.isTonMultistepTrade) {
+    if (trade instanceof TonOnChainTrade && trade.isMultistepSwap) {
       const ok = await this.modalService.openTonSlippageWarning(
         trade.type,
         trade.slippageTolerance
