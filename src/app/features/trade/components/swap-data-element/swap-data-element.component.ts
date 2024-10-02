@@ -23,6 +23,7 @@ export class SwapDataElementComponent {
   @Input() hintDirection: HintDirection = 'bottom-right';
 
   @Input({ required: true }) set feeInfoChange(value: { fee: FeeInfo | null; nativeToken: Token }) {
+    // @TODO REPLACE % with null
     this.feeInfo = value.fee;
     const sum = new BigNumber(0)
       .plus(value?.fee?.rubicProxy?.fixedFee?.amount || 0)
@@ -30,7 +31,7 @@ export class SwapDataElementComponent {
 
     if (value?.nativeToken?.price && sum.gt(0)) {
       const fiatAmountOut = sum.multipliedBy(value.nativeToken.price);
-      this.displayAmount = fiatAmountOut.gt(0.1) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
+      this.displayAmount = fiatAmountOut.gt(0.1) ? `~ $${fiatAmountOut.toFixed(2)}` : '%';
     } else if (value.nativeToken?.symbol && sum.gt(0)) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();
@@ -39,7 +40,7 @@ export class SwapDataElementComponent {
         value.nativeToken.symbol
       }`;
     } else {
-      this.displayAmount = null;
+      this.displayAmount = '%';
     }
   }
 

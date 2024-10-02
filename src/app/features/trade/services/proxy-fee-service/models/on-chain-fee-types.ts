@@ -9,9 +9,10 @@ export type OnChainTypes =
   | 'stableWnativeSwap'
   | 'tokenSwap';
 
-type OnChainTokenType = Exclude<TokenType, 'native_eth'>;
-
-export type OnChainTokenTypes = Exclude<`${OnChainTokenType}_${OnChainTokenType}`, 'native_native'>;
+export type OnChainTokenTypes = Exclude<
+  `${TokenType}_${TokenType}`,
+  'native_native' | 'native_eth_native_eth' | 'native_eth_native' | 'native_native_eth'
+>;
 
 export type OnChainTierFeeType = `${OnChainTypes}_${BlockchainStatus['tier']}`;
 
