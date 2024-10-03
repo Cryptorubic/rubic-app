@@ -2,13 +2,15 @@ import {
   BLOCKCHAIN_NAME,
   EvmBlockchainName,
   SolanaBlockchainName,
+  TonBlockchainName,
   TronBlockchainName,
   TronWebProvider
 } from 'rubic-sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
-  Record<SolanaBlockchainName, string[]> = {
+  Record<SolanaBlockchainName, string[]> &
+  Record<TonBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
@@ -330,6 +332,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc2.bahamut.io',
     'wss://ws2.sahara.bahamutchain.com',
     'wss://bahamut-rpc.publicnode.com'
+  ],
+  [BLOCKCHAIN_NAME.TON]: [
+    'https://go.getblock.io/fd91e4291b6847bf89e10df5f4ae98d8',
+    'https://go.getblock.io/aad518fd572d490eb42c1d5f201ce1b7'
   ],
   [BLOCKCHAIN_NAME.BITLAYER]: [
     'https://rpc.ankr.com/bitlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',

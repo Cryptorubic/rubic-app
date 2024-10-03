@@ -39,6 +39,11 @@ import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/so
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
 import { SafeWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/safe-wallet-adapter';
 import { TokenPocketWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/token-pocket-wallet-adapter';
+import { TonConnectAdapter } from '../wallets-adapters/ton/ton-connect-adapter';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { MyTonWalletAdapter } from '../wallets-adapters/ton/my-ton-wallet-adapter';
+import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
+import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
 
@@ -172,6 +177,38 @@ export class WalletConnectorService {
       return new TokenPocketWalletAdapter(...defaultConstructorParameters);
     }
 
+    if (walletName === WALLET_NAME.TON_CONNECT) {
+      return new TonConnectAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.MY_TON_WALLET) {
+      return new MyTonWalletAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.TONKEEPER) {
+      return new TonkeeperAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
+    if (walletName === WALLET_NAME.TELEGRAM_WALLET) {
+      return new TelegramWalletAdapter(
+        ...defaultConstructorParameters,
+        this.httpService,
+        this.storeService
+      );
+    }
+
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
     }
@@ -181,7 +218,10 @@ export class WalletConnectorService {
 
   public async activate(): Promise<void> {
     await this.provider.activate();
-    if (this.provider.walletName !== WALLET_NAME.SAFE) {
+    if (
+      this.provider.walletName !== WALLET_NAME.SAFE &&
+      this.provider.walletName !== WALLET_NAME.TON_CONNECT
+    ) {
       this.storeService.setItem('RUBIC_PROVIDER', this.provider.walletName);
     }
   }
@@ -202,6 +242,9 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.SOLANA) {
       return [BLOCKCHAIN_NAME.SOLANA];
     }
+    if (this.chainType === CHAIN_TYPE.TON) {
+      return [BLOCKCHAIN_NAME.TON];
+    }
     throw new Error('Blockchain is not supported');
   }
 
@@ -215,16 +258,19 @@ export class WalletConnectorService {
     evmBlockchainName: EvmBlockchainName,
     customRpcUrl?: string
   ): Promise<boolean> {
+    if (!(this.provider instanceof EvmWalletAdapter)) {
+      throw new RubicError("Can't switch chain in non evm wallet!");
+    }
     const chainId = `0x${blockchainId[evmBlockchainName].toString(16)}`;
-    const provider = this.provider;
+
     try {
-      await provider.switchChain(chainId);
+      await this.provider.switchChain(chainId);
       return true;
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {
           await this.addChain(evmBlockchainName, customRpcUrl);
-          await provider.switchChain(chainId);
+          await this.provider.switchChain(chainId);
           return true;
         } catch (err) {
           this.errorService.catch(err);
@@ -235,7 +281,7 @@ export class WalletConnectorService {
         switchError.message.includes(
           'Missing or invalid. request() method: wallet_switchEthereumChain'
         ) &&
-        provider instanceof HoldstationWalletAdapter
+        this.provider instanceof HoldstationWalletAdapter
       ) {
         const reconnect = await firstValueFrom(
           this.modalsService.openWcChangeNetworkModal(this.network, evmBlockchainName)
@@ -243,12 +289,12 @@ export class WalletConnectorService {
 
         if (reconnect) {
           try {
-            await provider.deactivate();
+            await this.provider.deactivate();
             const decimalId = parseInt(chainId, 16);
-            await provider.updateDefaultChain(decimalId);
-            await provider.activate();
+            await this.provider.updateDefaultChain(decimalId);
+            await this.provider.activate();
           } catch (err) {
-            await provider.deactivate();
+            await this.provider.deactivate();
             this.errorService.catch(err);
           }
         }

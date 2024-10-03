@@ -5,6 +5,7 @@
 import { STAKING_CONFIG_DEVELOP } from './constants/staking';
 
 export const ENVIRONMENT = {
+  environmentName: 'local',
   production: false,
 
   apiBaseUrl: '//dev-api.rubic.exchange/api',

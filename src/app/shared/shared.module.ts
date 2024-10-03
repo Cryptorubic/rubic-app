@@ -73,6 +73,7 @@ import { SkipDefaultDirective } from './directives/skip-default/skip-default.dir
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
+import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-netw
     SkipDefaultDirective,
     MevBotModalComponent,
     ProgressBarComponent,
-    WcChangeNetworkModalComponent
+    WcChangeNetworkModalComponent,
+    TonSlippageWarnModalComponent
   ],
   imports: [
     CommonModule,
