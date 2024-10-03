@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -106,14 +106,19 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(
-          disabledTradeTypes,
-          fromSdkCompatibleToken,
-          toSdkCompatibleToken,
-          fromAmount.actualValue
-        );
-        handleIntegratorAddress(options, fromBlockchain, toBlockchain);
-
+        return forkJoin([
+          of(fromSdkCompatibleToken),
+          of(toSdkCompatibleToken),
+          of(tokenState),
+          this.getOptions(
+            disabledTradeTypes,
+            fromSdkCompatibleToken,
+            toSdkCompatibleToken,
+            fromAmount.actualValue
+          )
+        ]);
+      }),
+      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, isDeflation, options]) => {
         const calculationStartTime = Date.now();
 
         return this.sdkService.crossChain
@@ -121,9 +126,7 @@ export class CrossChainService {
             fromSdkCompatibleToken,
             fromAmount.actualValue.toFixed(),
             toSdkCompatibleToken,
-            tokenState.isDeflation
-              ? { ...options, useProxy: this.getDisabledProxyConfig() }
-              : options
+            isDeflation ? { ...options, useProxy: this.getDisabledProxyConfig() } : options
           )
           .pipe(
             map(el => ({
@@ -161,12 +164,12 @@ export class CrossChainService {
     );
   }
 
-  private getOptions(
+  private async getOptions(
     disabledTradeTypes: CrossChainTradeType[],
     fromSdkToken: PriceToken,
     toSdkToken: PriceToken,
     fromAmount: BigNumber
-  ): CrossChainManagerCalculationOptions {
+  ): Promise<CrossChainManagerCalculationOptions> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
@@ -185,13 +188,12 @@ export class CrossChainService {
     );
     const calculateGas = this.authService.userAddress;
     const timeout = this.calculateTimeoutForChains();
-    const providerAddress = this.proxyService.getIntegratorAddress(
+    const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
       toSdkToken
     );
-
-    return {
+    const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
@@ -213,6 +215,9 @@ export class CrossChainService {
       },
       providerAddress
     };
+    handleIntegratorAddress(options, fromSdkToken.blockchain, toSdkToken.blockchain);
+
+    return options;
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {

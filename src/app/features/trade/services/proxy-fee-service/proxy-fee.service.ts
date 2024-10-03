@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PriceToken } from 'rubic-sdk';
+import { PriceToken, TimeoutError } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
@@ -21,6 +21,7 @@ import {
 import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-type-mapping';
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
 import { tokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/token-type-mapping';
+import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -30,22 +31,28 @@ export class ProxyFeeService {
     private readonly tokensStore: TokensStoreService
   ) {}
 
-  public getIntegratorAddress(
+  public async getIntegratorAddress(
     fromToken: PriceToken,
     fromAmount: BigNumber,
     toToken: PriceToken
-  ): string {
+  ): Promise<string> {
     try {
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
-      if (fromPriceAmount.lte(0)) {
+      if (fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) {
         return percentAddress.default;
       }
       if (fromPriceAmount.lte(100)) {
         return percentAddress.zeroFee;
       }
 
-      const fromType = this.getTokenType(fromToken);
-      const toType = this.getTokenType(toToken);
+      const fromType = await this.getTokenTypeWithinTime(fromToken);
+      if (!fromType) {
+        throw new Error('Failed to fetch token from backend');
+      }
+      const toType = await this.getTokenTypeWithinTime(toToken);
+      if (!toType) {
+        throw new Error('Failed to fetch token from backend');
+      }
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
@@ -53,9 +60,15 @@ export class ProxyFeeService {
       }
       const sortedLimits = feeValue.sort((a, b) => b.limit - a.limit);
       const suitableLimit = sortedLimits.find(el => fromPriceAmount.gt(el.limit));
-      const percentType = suitableLimit.type;
-      return percentAddress[percentType];
-    } catch {
+      if (!suitableLimit) {
+        throw new Error('Limit not found');
+      }
+      return percentAddress[suitableLimit.type];
+    } catch (err) {
+      console.error(err);
+      if (err instanceof TimeoutError) {
+        return percentAddress.onePercent;
+      }
       return percentAddress.default;
     }
   }
@@ -118,10 +131,25 @@ export class ProxyFeeService {
     }
   }
 
-  private getTokenType(soughtToken: PriceToken): TokenType {
-    const backendType = this.tokensStore.tokens.find(
-      token => token.blockchain === soughtToken.blockchain && token.address === soughtToken.address
-    ).type;
-    return tokenTypeMapping[backendType];
+  private async getTokenType(soughtToken: PriceToken): Promise<TokenType> {
+    return new Promise(resolve => {
+      const backendType = this.tokensStore.tokens.find(
+        token =>
+          token.blockchain === soughtToken.blockchain && token.address === soughtToken.address
+      ).type;
+      if (backendType) {
+        resolve(tokenTypeMapping[backendType]);
+      }
+      const timeout = 250;
+      setTimeout(() => {
+        this.getTokenType(soughtToken).then(resolve);
+      }, timeout);
+    });
+  }
+
+  private async getTokenTypeWithinTime(soughtToken: PriceToken): Promise<TokenType> {
+    const fetchToken = this.getTokenType(soughtToken);
+    const timeout = 5_000;
+    return pTimeout(fetchToken, timeout);
   }
 }

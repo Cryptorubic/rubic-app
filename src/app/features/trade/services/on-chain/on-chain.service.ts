@@ -19,7 +19,8 @@ import {
   UserRejectError,
   Web3Pure,
   UnapprovedContractError,
-  UnapprovedMethodError
+  UnapprovedMethodError,
+  IsDeflationToken
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -110,49 +111,29 @@ export class OnChainService {
           toSdkToken,
           isAddressCorrectValue
         ]) => {
-          const calculateGas = this.authService.userAddress && isAddressCorrectValue;
-
-          const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
-          const disabledTradeTypes = Array.from(
-            new Set<OnChainTradeType>([...disabledProviders, ...queryDisabledTradeTypes])
-          );
-
-          const settings = this.settingsService.instantTradeValue;
-          const slippageTolerance = settings.slippageTolerance / 100;
-          const disableMultihops = settings.disableMultihops;
-          const deadlineMinutes = settings.deadline;
-          const useProxy =
-            deflationFromStatus.isDeflation || deflationToStatus.isDeflation
-              ? false
-              : this.platformConfigurationService.useOnChainProxy;
-          const timeout = this.calculateTimeoutForChains();
-          const providerAddress = this.proxyService.getIntegratorAddress(
-            fromSdkToken,
-            fromAmount.actualValue,
-            toSdkToken
-          );
-
-          const options: OnChainManagerCalculationOptions = {
-            timeout,
-            gasCalculation: calculateGas ? 'calculate' : 'disabled',
-            zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
-            slippageTolerance,
-            disableMultihops,
-            deadlineMinutes,
-            useProxy,
-            disabledProviders: [...disabledTradeTypes],
-            providerAddress
-          };
-          handleIntegratorAddress(options, fromToken.blockchain, toToken.blockchain);
-
-          return this.sdkService.instantTrade.calculateTradeReactively(
-            fromSdkToken,
-            fromAmount.actualValue.toFixed(),
-            toSdkToken,
-            options
-          );
+          return forkJoin([
+            of(fromSdkToken),
+            of(toSdkToken),
+            this.getOptions(
+              fromSdkToken,
+              toSdkToken,
+              deflationFromStatus,
+              deflationToStatus,
+              isAddressCorrectValue,
+              disabledProviders,
+              fromAmount.actualValue
+            )
+          ]);
         }
       ),
+      switchMap(([fromSdkToken, toSdkToken, options]) => {
+        return this.sdkService.instantTrade.calculateTradeReactively(
+          fromSdkToken,
+          fromAmount.actualValue.toFixed(),
+          toSdkToken,
+          options
+        );
+      }),
       map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE }))
     );
   }
@@ -362,5 +343,51 @@ export class OnChainService {
       return 30_000;
     }
     return 10_000;
+  }
+
+  private async getOptions(
+    fromSdkToken: PriceToken,
+    toSdkToken: PriceToken,
+    deflationFromStatus: IsDeflationToken,
+    deflationToStatus: IsDeflationToken,
+    isAddressCorrectValue: boolean,
+    disabledProviders: OnChainTradeType[],
+    fromAmount: BigNumber
+  ): Promise<OnChainManagerCalculationOptions> {
+    const calculateGas = this.authService.userAddress && isAddressCorrectValue;
+
+    const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
+    const disabledTradeTypes = Array.from(
+      new Set<OnChainTradeType>([...disabledProviders, ...queryDisabledTradeTypes])
+    );
+
+    const settings = this.settingsService.instantTradeValue;
+    const slippageTolerance = settings.slippageTolerance / 100;
+    const disableMultihops = settings.disableMultihops;
+    const deadlineMinutes = settings.deadline;
+    const useProxy =
+      deflationFromStatus.isDeflation || deflationToStatus.isDeflation
+        ? false
+        : this.platformConfigurationService.useOnChainProxy;
+    const timeout = this.calculateTimeoutForChains();
+    const providerAddress = await this.proxyService.getIntegratorAddress(
+      fromSdkToken,
+      fromAmount,
+      toSdkToken
+    );
+
+    const options: OnChainManagerCalculationOptions = {
+      timeout,
+      gasCalculation: calculateGas ? 'calculate' : 'disabled',
+      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
+      slippageTolerance,
+      disableMultihops,
+      deadlineMinutes,
+      useProxy,
+      disabledProviders: [...disabledTradeTypes],
+      providerAddress
+    };
+    handleIntegratorAddress(options, fromSdkToken.blockchain, toSdkToken.blockchain);
+    return options;
   }
 }
