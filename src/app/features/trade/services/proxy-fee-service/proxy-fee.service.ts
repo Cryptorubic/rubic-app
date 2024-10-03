@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PriceToken, TimeoutError } from 'rubic-sdk';
+import { PriceToken } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
@@ -66,9 +66,6 @@ export class ProxyFeeService {
       return percentAddress[suitableLimit.type];
     } catch (err) {
       console.error(err);
-      if (err instanceof TimeoutError) {
-        return percentAddress.onePercent;
-      }
       return percentAddress.default;
     }
   }
