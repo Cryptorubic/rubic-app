@@ -228,7 +228,8 @@ export class TokensStoreService {
         decimals: token.decimals,
         image: token.image,
         rank: token.rank,
-        tokenSecurity: token.tokenSecurity
+        tokenSecurity: token.tokenSecurity,
+        type: token.type
       }))
       .toArray();
 
