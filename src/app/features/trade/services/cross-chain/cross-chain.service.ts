@@ -118,7 +118,7 @@ export class CrossChainService {
           )
         ]);
       }),
-      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, isDeflation, options]) => {
+      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
         const calculationStartTime = Date.now();
 
         return this.sdkService.crossChain
@@ -126,7 +126,9 @@ export class CrossChainService {
             fromSdkCompatibleToken,
             fromAmount.actualValue.toFixed(),
             toSdkCompatibleToken,
-            isDeflation ? { ...options, useProxy: this.getDisabledProxyConfig() } : options
+            deflationStatus.isDeflation
+              ? { ...options, useProxy: this.getDisabledProxyConfig() }
+              : options
           )
           .pipe(
             map(el => ({
