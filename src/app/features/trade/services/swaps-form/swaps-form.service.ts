@@ -130,9 +130,9 @@ export class SwapsFormService {
       map(form =>
         Boolean(
           form.fromBlockchain &&
-            form.fromToken &&
+            form.fromToken?.address &&
             form.toBlockchain &&
-            form.toToken &&
+            form.toToken?.address &&
             form.fromAmount?.actualValue?.gt(0)
         )
       )
@@ -156,7 +156,12 @@ export class SwapsFormService {
 
   private subscribeOnFormValueChange(): void {
     this.form.get('input').valueChanges.subscribe(inputValue => {
-      this._inputValue$.next(inputValue);
+      const currInputValue = {
+        ...inputValue,
+        fromToken: inputValue?.fromToken?.address ? inputValue.fromToken : null,
+        toToken: inputValue?.toToken?.address ? inputValue.toToken : null
+      };
+      this._inputValue$.next(currInputValue);
 
       this.walletConnectorService.selectedChain =
         inputValue?.fromBlockchain || BLOCKCHAIN_NAME.ETHEREUM;
