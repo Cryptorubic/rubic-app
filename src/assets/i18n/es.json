@@ -421,7 +421,7 @@
       "avgLockTime": "Avg. Lock Time",
       "estYieldPerWeek": "Est. Yield Per Week",
       "apr": "AVERAGE APR",
-      "endTitle": "The current staking round is over."
+      "endTitle": "The current staking round is over. Thank you for participation."
     },
     "withdrawModal": {
       "title": "WITHDRAWAL",
