@@ -5,16 +5,16 @@
     depositsLoading: depositsLoading$ | async
   } as depositsInfo"
 >
-  <app-window-container class="deposits fade-in" *ngIf="depositsInfo.deposits?.length">
+  <app-window-container class="deposits fade-in">
     <div class="deposits__head">
       <div class="deposits__title">
-        <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
+        <span class="deposits__title-text">{{ 'staking.overview.endTitle' | translate }}</span>
         <app-rotating-icon
           [rotating]="depositsInfo.depositsLoading"
           (iconClick)="refreshDeposits()"
         ></app-rotating-icon>
       </div>
-      <button
+      <!-- <button
         class="deposits__head-btn"
         tuiButton
         type="button"
@@ -23,7 +23,7 @@
         (click)="navigateToStakeForm()"
       >
         {{ 'staking.deposits.newPosition' | translate }}
-      </button>
+      </button> -->
     </div>
 
     <div class="deposits__body">
@@ -33,7 +33,7 @@
         [inheritColor]="true"
         [overlay]="true"
       >
-        <ng-container *ngIf="depositsInfo.deposits.length">
+        <ng-container *ngIf="depositsInfo.deposits.length; else noDeposits">
           <app-desktop-deposits
             *ngIf="!isMobile; else mobileDeposits"
             [deposits]="depositsInfo.deposits"
