@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BLOCKCHAIN_NAME, BlockchainName, PriceToken } from 'rubic-sdk';
-import { SdkService } from '@core/services/sdk/sdk.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -33,7 +32,6 @@ import { tokenTypeMapping } from './const/token-type-mapping';
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
   constructor(
-    private readonly sdkService: SdkService,
     private readonly configService: PlatformConfigurationService,
     private readonly tokensStore: TokensStoreService
   ) {}
@@ -152,27 +150,6 @@ export class ProxyFeeService {
     const backendType = token.type;
 
     return tokenTypeMapping[backendType];
-
-    // return new Promise(resolve => {
-    //   // const backendType = this.tokensStore.tokens.find(
-    //   //   token =>
-    //   //     token.blockchain === soughtToken.blockchain && token.address === soughtToken.address
-    //   // ).type;
-    //   if (backendType) {
-    //     resolve(tokenTypeMapping[backendType]);
-    //   }
-    //   // const timeout = 250;
-    //   // setTimeout(() => {
-    //   //   this.getTokenType(soughtToken).then(resolve);
-    //   // }, timeout);
-    // });
-  }
-
-  private async getTokenTypeWithinTime(soughtToken: PriceToken): Promise<TokenType> {
-    return this.getTokenType(soughtToken);
-    // const fetchToken = this.getTokenType(soughtToken);
-    // const timeout = 5_000;
-    // return pTimeout(fetchToken, timeout);
   }
 
   // eslint-disable-next-line complexity
