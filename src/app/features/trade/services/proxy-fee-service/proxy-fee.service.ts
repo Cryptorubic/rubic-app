@@ -178,25 +178,21 @@ export class ProxyFeeService {
     const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
     const crossChainIntegrator = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
     const onChainIntegrator = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+    const isOnChain = fromBlockchain === toBlockchain;
+
+    if (onChainIntegrator && isOnChain) return onChainIntegrator;
+    if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
 
     const useTaikoIntegratorOnChain =
-      fromBlockchain === toBlockchain &&
-      fromBlockchain === BLOCKCHAIN_NAME.TAIKO &&
-      !onChainIntegrator;
+      fromBlockchain === toBlockchain && fromBlockchain === BLOCKCHAIN_NAME.TAIKO;
     const useTaikoIntegratorCcr =
-      (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) &&
-      !crossChainIntegrator;
+      fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO;
     const useMerlinIntegrator =
-      (fromBlockchain === BLOCKCHAIN_NAME.MERLIN || toBlockchain === BLOCKCHAIN_NAME.MERLIN) &&
-      !crossChainIntegrator &&
-      !onChainIntegrator;
+      fromBlockchain === BLOCKCHAIN_NAME.MERLIN || toBlockchain === BLOCKCHAIN_NAME.MERLIN;
     const useXLayerIntegratorOnChain =
-      fromBlockchain === toBlockchain &&
-      fromBlockchain === BLOCKCHAIN_NAME.XLAYER &&
-      !onChainIntegrator;
+      fromBlockchain === toBlockchain && fromBlockchain === BLOCKCHAIN_NAME.XLAYER;
     const useXLayerIntegratorCcr =
-      (fromBlockchain === BLOCKCHAIN_NAME.XLAYER || toBlockchain === BLOCKCHAIN_NAME.XLAYER) &&
-      !crossChainIntegrator;
+      fromBlockchain === BLOCKCHAIN_NAME.XLAYER || toBlockchain === BLOCKCHAIN_NAME.XLAYER;
     const useRubicBdayIntegrator =
       fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
 
