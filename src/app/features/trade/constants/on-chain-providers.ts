@@ -242,6 +242,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
   },
+  [ON_CHAIN_TRADE_TYPE.GMX]: {
+    name: 'GMX',
+    image: `${imageBasePath}../bridge/openocean.png`,
+    color: '#15D9E1'
+  },
 
   //IIIIIIIIIIIIIIIIIIIIIIII
   [ON_CHAIN_TRADE_TYPE.IZUMI]: {
