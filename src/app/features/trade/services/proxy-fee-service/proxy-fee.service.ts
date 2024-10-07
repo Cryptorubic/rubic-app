@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PriceToken } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, PriceToken } from 'rubic-sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
@@ -22,6 +22,14 @@ import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-s
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
 import { tokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/token-type-mapping';
 import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
+import {
+  MERLIN_INTEGRATOR_ADDRESS,
+  RUBIC_BDAY_ADDRESS,
+  TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN,
+  TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN,
+  XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
+  XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
+} from './const/integrators-addresses';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -56,14 +64,24 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
-        return percentAddress[feeValue];
+        return this.handleIntegratorAddress(
+          fromToken.blockchain,
+          toToken.blockchain,
+          percentAddress[feeValue]
+        );
       }
+
       const sortedLimits = feeValue.sort((a, b) => b.limit - a.limit);
       const suitableLimit = sortedLimits.find(el => fromPriceAmount.gt(el.limit));
       if (!suitableLimit) {
         throw new Error('Limit not found');
       }
-      return percentAddress[suitableLimit.type];
+
+      return this.handleIntegratorAddress(
+        fromToken.blockchain,
+        toToken.blockchain,
+        percentAddress[suitableLimit.type]
+      );
     } catch (err) {
       console.error(err);
       return percentAddress.default;
@@ -148,5 +166,47 @@ export class ProxyFeeService {
     const fetchToken = this.getTokenType(soughtToken);
     const timeout = 5_000;
     return pTimeout(fetchToken, timeout);
+  }
+
+  // eslint-disable-next-line complexity
+  private handleIntegratorAddress(
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    providerAddress: string
+  ): string {
+    const urlParams = new URLSearchParams(window.location.search);
+    const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
+    const crossChainIntegrator = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
+    const onChainIntegrator = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+
+    const useTaikoIntegratorOnChain =
+      fromBlockchain === toBlockchain &&
+      fromBlockchain === BLOCKCHAIN_NAME.TAIKO &&
+      !onChainIntegrator;
+    const useTaikoIntegratorCcr =
+      (fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO) &&
+      !crossChainIntegrator;
+    const useMerlinIntegrator =
+      (fromBlockchain === BLOCKCHAIN_NAME.MERLIN || toBlockchain === BLOCKCHAIN_NAME.MERLIN) &&
+      !crossChainIntegrator &&
+      !onChainIntegrator;
+    const useXLayerIntegratorOnChain =
+      fromBlockchain === toBlockchain &&
+      fromBlockchain === BLOCKCHAIN_NAME.XLAYER &&
+      !onChainIntegrator;
+    const useXLayerIntegratorCcr =
+      (fromBlockchain === BLOCKCHAIN_NAME.XLAYER || toBlockchain === BLOCKCHAIN_NAME.XLAYER) &&
+      !crossChainIntegrator;
+    const useRubicBdayIntegrator =
+      fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
+
+    if (useTaikoIntegratorOnChain) return TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
+    if (useTaikoIntegratorCcr) return TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
+    if (useMerlinIntegrator) return MERLIN_INTEGRATOR_ADDRESS;
+    if (useXLayerIntegratorOnChain) return XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
+    if (useXLayerIntegratorCcr) return XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
+    if (useRubicBdayIntegrator) return RUBIC_BDAY_ADDRESS;
+
+    return providerAddress;
   }
 }

@@ -52,7 +52,6 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
@@ -217,7 +216,6 @@ export class CrossChainService {
       },
       providerAddress
     };
-    handleIntegratorAddress(options, fromSdkToken.blockchain, toSdkToken.blockchain);
 
     return options;
   }

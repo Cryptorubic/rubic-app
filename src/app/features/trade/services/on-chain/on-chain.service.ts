@@ -42,7 +42,6 @@ import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@core/errors/models/rubic-error';
-import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
@@ -387,7 +386,7 @@ export class OnChainService {
       disabledProviders: [...disabledTradeTypes],
       providerAddress
     };
-    handleIntegratorAddress(options, fromSdkToken.blockchain, toSdkToken.blockchain);
+
     return options;
   }
 }
