@@ -70,6 +70,15 @@
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 }
 
+app-login-button {
+  ::ng-deep {
+    button {
+      width: 100%;
+      margin-top: 12px; 
+    }
+  }
+}
+
 .connect-wallet {
   display: block;
   max-width: 396px;

@@ -1,5 +1,5 @@
 <!-- <app-statistics></app-statistics> -->
-<ng-container *ngIf="(needLogin$ | async) === false">
+<ng-container>
   <button
     *ngIf="(deposits$ | async).length"
     class="new-position-button"
