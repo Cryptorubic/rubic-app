@@ -6,5 +6,6 @@ export const tokenTypeMapping: Record<Token['type'], TokenType> = {
   WRAPPED_NATIVE: 'wNative',
   NATIVE: 'native',
   NATIVE_ETH: 'native_eth',
-  TOKEN: 'token'
+  TOKEN: 'token',
+  BRIDGED_NATIVE: 'native'
 };

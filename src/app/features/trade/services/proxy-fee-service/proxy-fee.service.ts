@@ -20,8 +20,6 @@ import {
 } from '@features/trade/services/proxy-fee-service/models/cross-chain-fee-types';
 import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-type-mapping';
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
-import { tokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/token-type-mapping';
-import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
 import {
   MERLIN_INTEGRATOR_ADDRESS,
   RUBIC_BDAY_ADDRESS,
@@ -30,6 +28,7 @@ import {
   XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
 } from './const/integrators-addresses';
+import { tokenTypeMapping } from './const/token-type-mapping';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -53,11 +52,11 @@ export class ProxyFeeService {
         return percentAddress.zeroFee;
       }
 
-      const fromType = await this.getTokenTypeWithinTime(fromToken);
+      const fromType = this.getTokenType(fromToken);
       if (!fromType) {
         throw new Error('Failed to fetch token from backend');
       }
-      const toType = await this.getTokenTypeWithinTime(toToken);
+      const toType = this.getTokenType(toToken);
       if (!toType) {
         throw new Error('Failed to fetch token from backend');
       }
@@ -146,26 +145,34 @@ export class ProxyFeeService {
     }
   }
 
-  private async getTokenType(soughtToken: PriceToken): Promise<TokenType> {
-    return new Promise(resolve => {
-      const backendType = this.tokensStore.tokens.find(
-        token =>
-          token.blockchain === soughtToken.blockchain && token.address === soughtToken.address
-      ).type;
-      if (backendType) {
-        resolve(tokenTypeMapping[backendType]);
-      }
-      const timeout = 250;
-      setTimeout(() => {
-        this.getTokenType(soughtToken).then(resolve);
-      }, timeout);
-    });
+  private getTokenType(soughtToken: PriceToken): TokenType {
+    const token = this.tokensStore.tokens.find(
+      t => t.blockchain === soughtToken.blockchain && t.address === soughtToken.address
+    );
+    const backendType = token.type;
+
+    return tokenTypeMapping[backendType];
+
+    // return new Promise(resolve => {
+    //   // const backendType = this.tokensStore.tokens.find(
+    //   //   token =>
+    //   //     token.blockchain === soughtToken.blockchain && token.address === soughtToken.address
+    //   // ).type;
+    //   if (backendType) {
+    //     resolve(tokenTypeMapping[backendType]);
+    //   }
+    //   // const timeout = 250;
+    //   // setTimeout(() => {
+    //   //   this.getTokenType(soughtToken).then(resolve);
+    //   // }, timeout);
+    // });
   }
 
   private async getTokenTypeWithinTime(soughtToken: PriceToken): Promise<TokenType> {
-    const fetchToken = this.getTokenType(soughtToken);
-    const timeout = 5_000;
-    return pTimeout(fetchToken, timeout);
+    return this.getTokenType(soughtToken);
+    // const fetchToken = this.getTokenType(soughtToken);
+    // const timeout = 5_000;
+    // return pTimeout(fetchToken, timeout);
   }
 
   // eslint-disable-next-line complexity

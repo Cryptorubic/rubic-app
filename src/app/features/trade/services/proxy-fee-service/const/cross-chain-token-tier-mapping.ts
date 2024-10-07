@@ -1,7 +1,10 @@
 import { CrossChainTierFee } from '@features/trade/services/proxy-fee-service/models/cross-chain-fee-types';
 
 export const crossChainTokenTierMapping: CrossChainTierFee = {
-  nativeStableSwap_1_1: 'onePercent',
+  nativeStableSwap_1_1: [
+    { limit: 100, type: 'onePercent' },
+    { limit: 5_000, type: 'twoPercent' }
+  ],
   nativeStableSwap_1_2: 'twoPercent',
   nativeStableSwap_2_1: [
     { limit: 100, type: 'onePercent' },
