@@ -11,6 +11,7 @@
       <div class="deposits__title">
         <span class="deposits__title-text">{{ 'staking.overview.endTitle' | translate }}</span>
         <app-rotating-icon
+          *ngIf="depositsInfo.user"
           [rotating]="depositsInfo.depositsLoading"
           (iconClick)="refreshDeposits()"
         ></app-rotating-icon>
@@ -34,7 +35,7 @@
         [inheritColor]="true"
         [overlay]="true"
       >
-        <ng-container *ngIf="depositsInfo.deposits.length; else noDeposits">
+        <ng-container *ngIf="depositsInfo.deposits.length; else noDepositsOrNotLogged">
           <app-desktop-deposits
             *ngIf="!isMobile; else mobileDeposits"
             [deposits]="depositsInfo.deposits"
@@ -64,9 +65,13 @@
     </ng-container>
   </app-window-container>
 
-  <ng-template #noDeposits>
+  <ng-template #noDepositsOrNotLogged>
     <div class="no-deposits">
-      <span class="no-deposits__text">You have no deposits.</span>
+      <span class="no-deposits__text">
+        {{
+          depositsInfo.user ? 'You have no deposits.' : 'Connect wallet to see your deposits.'
+        }}</span
+      >
     </div>
   </ng-template>
 </ng-container>
