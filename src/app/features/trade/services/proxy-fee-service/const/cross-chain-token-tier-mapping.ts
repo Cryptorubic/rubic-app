@@ -5,7 +5,10 @@ export const crossChainTokenTierMapping: CrossChainTierFee = {
     { limit: 100, type: 'onePercent' },
     { limit: 10_000, type: 'twoPercent' }
   ],
-  nativeStableSwap_1_2: 'twoPercent',
+  nativeStableSwap_1_2: [
+    { limit: 100, type: 'onePercent' },
+    { limit: 10_000, type: 'twoPercent' }
+  ],
   nativeStableSwap_2_1: [
     { limit: 100, type: 'onePercent' },
     { limit: 10_000, type: 'twoPercent' }

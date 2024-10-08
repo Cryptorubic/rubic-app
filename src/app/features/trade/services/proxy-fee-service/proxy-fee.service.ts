@@ -44,10 +44,10 @@ export class ProxyFeeService {
     try {
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
       if (fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) {
-        return percentAddress.default;
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
       if (fromPriceAmount.lte(100)) {
-        return this.handleIntegratorAddress(fromToken, toToken, percentAddress.zeroFee);
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
       const fromType = this.getTokenType(fromToken);
@@ -61,7 +61,7 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
-        return this.handleIntegratorAddress(fromToken, toToken, percentAddress[feeValue]);
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
       }
 
       const sortedLimits = feeValue.sort((a, b) => b.limit - a.limit);
@@ -70,7 +70,7 @@ export class ProxyFeeService {
         throw new Error('Limit not found');
       }
 
-      return this.handleIntegratorAddress(fromToken, toToken, percentAddress[suitableLimit.type]);
+      return this.handlePromoIntegrator(fromToken, toToken, percentAddress[suitableLimit.type]);
     } catch (err) {
       console.error(err);
       return percentAddress.default;
@@ -145,11 +145,7 @@ export class ProxyFeeService {
   }
 
   // eslint-disable-next-line complexity
-  private handleIntegratorAddress(
-    from: PriceToken,
-    to: PriceToken,
-    providerAddress: string
-  ): string {
+  private handlePromoIntegrator(from: PriceToken, to: PriceToken, providerAddress: string): string {
     const urlParams = new URLSearchParams(window.location.search);
     const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
     const crossChainIntegrator = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
