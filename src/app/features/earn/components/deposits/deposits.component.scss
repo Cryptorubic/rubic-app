@@ -137,6 +137,10 @@ app-login-button {
 
       &-text {
         @include font(18px, 25px, 500, var(--tui-text-01), 0.54px);
+        padding: 0 20px;
+
+        text-align: center;
+        text-wrap: wrap;
       }
     }
 
