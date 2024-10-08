@@ -2,19 +2,21 @@
   *ngLet="{
     isDarkTheme: isDarkTheme$ | async,
     deposits: deposits$ | async,
-    depositsLoading: depositsLoading$ | async
+    depositsLoading: depositsLoading$ | async,
+    user: currentUser$ | async
   } as depositsInfo"
 >
-  <app-window-container class="deposits fade-in" *ngIf="depositsInfo.deposits?.length">
+  <app-window-container class="deposits fade-in">
     <div class="deposits__head">
       <div class="deposits__title">
-        <span class="deposits__title-text">{{ 'staking.deposits.title' | translate }}</span>
+        <span class="deposits__title-text">{{ 'staking.overview.endTitle' | translate }}</span>
         <app-rotating-icon
+          *ngIf="depositsInfo.user"
           [rotating]="depositsInfo.depositsLoading"
           (iconClick)="refreshDeposits()"
         ></app-rotating-icon>
       </div>
-      <button
+      <!-- <button
         class="deposits__head-btn"
         tuiButton
         type="button"
@@ -23,7 +25,7 @@
         (click)="navigateToStakeForm()"
       >
         {{ 'staking.deposits.newPosition' | translate }}
-      </button>
+      </button> -->
     </div>
 
     <div class="deposits__body">
@@ -33,7 +35,7 @@
         [inheritColor]="true"
         [overlay]="true"
       >
-        <ng-container *ngIf="depositsInfo.deposits.length">
+        <ng-container *ngIf="depositsInfo.deposits.length; else noDepositsOrNotLogged">
           <app-desktop-deposits
             *ngIf="!isMobile; else mobileDeposits"
             [deposits]="depositsInfo.deposits"
@@ -58,11 +60,18 @@
         ></app-mobile-deposits>
       </ng-template>
     </div>
+    <ng-container *ngIf="!depositsInfo.user">
+      <app-login-button></app-login-button>
+    </ng-container>
   </app-window-container>
 
-  <ng-template #noDeposits>
+  <ng-template #noDepositsOrNotLogged>
     <div class="no-deposits">
-      <span class="no-deposits__text">You have no deposits.</span>
+      <span class="no-deposits__text">
+        {{
+          depositsInfo.user ? 'You have no deposits.' : 'Connect wallet to see your deposits.'
+        }}</span
+      >
     </div>
   </ng-template>
 </ng-container>
