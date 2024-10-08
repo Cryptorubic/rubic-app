@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, BlockchainName, PriceToken } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, PriceToken } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -47,7 +47,7 @@ export class ProxyFeeService {
         return percentAddress.default;
       }
       if (fromPriceAmount.lte(100)) {
-        return percentAddress.zeroFee;
+        return this.handleIntegratorAddress(fromToken, toToken, percentAddress.zeroFee);
       }
 
       const fromType = this.getTokenType(fromToken);
@@ -61,11 +61,7 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
-        return this.handleIntegratorAddress(
-          fromToken.blockchain,
-          toToken.blockchain,
-          percentAddress[feeValue]
-        );
+        return this.handleIntegratorAddress(fromToken, toToken, percentAddress[feeValue]);
       }
 
       const sortedLimits = feeValue.sort((a, b) => b.limit - a.limit);
@@ -74,11 +70,7 @@ export class ProxyFeeService {
         throw new Error('Limit not found');
       }
 
-      return this.handleIntegratorAddress(
-        fromToken.blockchain,
-        toToken.blockchain,
-        percentAddress[suitableLimit.type]
-      );
+      return this.handleIntegratorAddress(fromToken, toToken, percentAddress[suitableLimit.type]);
     } catch (err) {
       console.error(err);
       return percentAddress.default;
@@ -154,31 +146,31 @@ export class ProxyFeeService {
 
   // eslint-disable-next-line complexity
   private handleIntegratorAddress(
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName,
+    from: PriceToken,
+    to: PriceToken,
     providerAddress: string
   ): string {
     const urlParams = new URLSearchParams(window.location.search);
     const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
     const crossChainIntegrator = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
     const onChainIntegrator = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
-    const isOnChain = fromBlockchain === toBlockchain;
+    const isOnChain = from.blockchain === to.blockchain;
 
     if (onChainIntegrator && isOnChain) return onChainIntegrator;
     if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
 
     const useTaikoIntegratorOnChain =
-      fromBlockchain === toBlockchain && fromBlockchain === BLOCKCHAIN_NAME.TAIKO;
+      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.TAIKO;
     const useTaikoIntegratorCcr =
-      fromBlockchain === BLOCKCHAIN_NAME.TAIKO || toBlockchain === BLOCKCHAIN_NAME.TAIKO;
+      from.blockchain === BLOCKCHAIN_NAME.TAIKO || to.blockchain === BLOCKCHAIN_NAME.TAIKO;
     const useMerlinIntegrator =
-      fromBlockchain === BLOCKCHAIN_NAME.MERLIN || toBlockchain === BLOCKCHAIN_NAME.MERLIN;
+      from.blockchain === BLOCKCHAIN_NAME.MERLIN || to.blockchain === BLOCKCHAIN_NAME.MERLIN;
     const useXLayerIntegratorOnChain =
-      fromBlockchain === toBlockchain && fromBlockchain === BLOCKCHAIN_NAME.XLAYER;
+      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.XLAYER;
     const useXLayerIntegratorCcr =
-      fromBlockchain === BLOCKCHAIN_NAME.XLAYER || toBlockchain === BLOCKCHAIN_NAME.XLAYER;
+      from.blockchain === BLOCKCHAIN_NAME.XLAYER || to.blockchain === BLOCKCHAIN_NAME.XLAYER;
     const useRubicBdayIntegrator =
-      fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
+      from.blockchain === BLOCKCHAIN_NAME.SCROLL || to.blockchain === BLOCKCHAIN_NAME.SCROLL;
 
     if (useTaikoIntegratorOnChain) return TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
     if (useTaikoIntegratorCcr) return TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
