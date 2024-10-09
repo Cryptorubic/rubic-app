@@ -37,6 +37,8 @@ export function handleIntegratorAddress(
     !crossChainIntegrator;
   const useRubicBdayIntegrator =
     fromBlockchain === BLOCKCHAIN_NAME.SCROLL || toBlockchain === BLOCKCHAIN_NAME.SCROLL;
+  const useBaseBdayIntegrator =
+    fromBlockchain === BLOCKCHAIN_NAME.BASE || toBlockchain === BLOCKCHAIN_NAME.BASE;
 
   if (useTaikoIntegratorOnChain) {
     options.providerAddress = RUBIC_BDAY_ADDRESS;
@@ -48,7 +50,7 @@ export function handleIntegratorAddress(
     options.providerAddress = XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
   } else if (useXLayerIntegratorCcr) {
     options.providerAddress = XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
-  } else if (useRubicBdayIntegrator) {
+  } else if (useRubicBdayIntegrator || useBaseBdayIntegrator) {
     options.providerAddress = RUBIC_BDAY_ADDRESS;
   }
 }
