@@ -20,6 +20,8 @@ import { defaultConfig } from '@core/services/backend/platform-configuration/con
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { timeout } from 'rxjs/operators';
 import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled-providers';
+import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
+import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 
 interface DisabledSubProvidersType {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiSubProvider[];
@@ -73,11 +75,11 @@ export class PlatformConfigurationService {
     return this._disabledProviders$.getValue();
   }
 
-  private readonly _availableBlockchains$ = new BehaviorSubject<BlockchainName[]>(undefined);
+  private readonly _availableBlockchains$ = new BehaviorSubject<BlockchainStatus[]>(undefined);
 
   public readonly availableBlockchains$ = this._availableBlockchains$.asObservable();
 
-  public get availableBlockchains(): BlockchainName[] {
+  public get availableBlockchains(): BlockchainStatus[] {
     return this._availableBlockchains$.getValue();
   }
 
@@ -100,42 +102,57 @@ export class PlatformConfigurationService {
   }
 
   constructor(private httpClient: HttpClient) {
-    const availableBlockchains = Object.values(BLOCKCHAIN_NAME).filter(
-      blockchain => !temporarelyDisabledBlockchains.includes(blockchain)
-    );
+    const availableBlockchains = Object.values(BLOCKCHAIN_NAME).map(blockchain => ({
+      tier: 2,
+      blockchain,
+      isActive: !temporarelyDisabledBlockchains.includes(blockchain)
+    })) as BlockchainStatus[];
     this._availableBlockchains$.next(availableBlockchains);
   }
 
   public loadPlatformConfig(): Observable<boolean> {
-    return this.httpClient.get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info`).pipe(
-      timeout(5_000),
-      retry(1),
-      catchError(() => of(defaultConfig)),
-      tap(response => {
-        if (response.server_is_active === true) {
-          this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
-          this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
-          this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
-          this._providersAverageTime$.next(
-            this.mapAverageProvidersTime(response.cross_chain_providers)
-          );
-          this.handleCrossChainProxyProviders(response.cross_chain_providers);
-        }
-      }),
-      map(response => response.server_is_active)
-    );
+    return this.httpClient
+      .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info_with_tier`)
+      .pipe(
+        timeout(5_000),
+        retry(1),
+        catchError(() => of(defaultConfig)),
+        tap(response => {
+          if (response.server_is_active === true) {
+            this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
+            this._disabledProviders$.next(
+              this.mapDisabledProviders(response.cross_chain_providers)
+            );
+            this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
+            this._providersAverageTime$.next(
+              this.mapAverageProvidersTime(response.cross_chain_providers)
+            );
+            this.handleCrossChainProxyProviders(response.cross_chain_providers);
+          }
+        }),
+        map(response => response.server_is_active)
+      );
   }
 
   public isAvailableBlockchain(blockchain: BlockchainName): boolean {
-    return this.availableBlockchains ? this.availableBlockchains.includes(blockchain) : true;
+    return this.availableBlockchains
+      ? this.availableBlockchains.some(el => el.blockchain === blockchain && el.isActive)
+      : true;
   }
 
   private mapAvailableBlockchains(availableBlockchains: {
-    [chain: string]: boolean;
-  }): BlockchainName[] {
-    return Object.entries(availableBlockchains)
-      .filter(([_, availability]) => availability)
-      .map(([blockchain]) => FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain]);
+    [chain: string]: BackendBlockchainStatus;
+  }): BlockchainStatus[] {
+    const tierMap = {
+      TIER_ONE: 1,
+      TIER_TWO: 2
+      // TIER_THREE: 3
+    } as const;
+    return Object.entries(availableBlockchains).map(([blockchain, params]) => ({
+      isActive: params.is_active,
+      blockchain: FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain],
+      tier: tierMap[params.tier]
+    }));
   }
 
   private handleCrossChainProxyProviders(crossChainProviders: {

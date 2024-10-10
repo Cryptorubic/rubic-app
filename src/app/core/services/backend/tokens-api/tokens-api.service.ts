@@ -59,7 +59,8 @@ export class TokensApiService {
             image: token.image,
             rank: token.rank,
             price: token.usdPrice,
-            tokenSecurity: token_security
+            tokenSecurity: token_security,
+            type: token.type
           };
         })
         .filter(token => token.address && token.blockchain)
