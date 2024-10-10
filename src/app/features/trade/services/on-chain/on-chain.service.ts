@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeContainer } from '@features/trade/models/trade-container';
@@ -20,6 +20,7 @@ import {
   Web3Pure,
   UnapprovedContractError,
   UnapprovedMethodError,
+  TO_BACKEND_BLOCKCHAINS,
   IsDeflationToken
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
@@ -44,6 +45,8 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
+import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -71,7 +74,8 @@ export class OnChainService {
     private readonly onChainApiService: OnChainApiService,
     private readonly queryParamsService: QueryParamsService,
     private readonly sessionStorage: SessionStorageService,
-    private readonly proxyService: ProxyFeeService
+    private readonly proxyService: ProxyFeeService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -126,14 +130,38 @@ export class OnChainService {
         }
       ),
       switchMap(([fromSdkToken, toSdkToken, options]) => {
-        return this.sdkService.instantTrade.calculateTradeReactively(
-          fromSdkToken,
-          fromAmount.actualValue.toFixed(),
-          toSdkToken,
-          options
-        );
-      }),
-      map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE }))
+        const calculationStartTime = Date.now();
+        let providers: OnChainCalculatedTradeData[] = [];
+        return this.sdkService.instantTrade
+          .calculateTradeReactively(
+            fromSdkToken,
+            fromAmount.actualValue.toFixed(),
+            toSdkToken,
+            options
+          )
+          .pipe(
+            map(el => ({
+              ...el,
+              calculationTime: Date.now() - calculationStartTime
+            })),
+            map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })),
+            tap(el => {
+              const tradeContainer = el?.value;
+              providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
+              if (
+                tradeContainer.calculated === tradeContainer.total &&
+                tradeContainer?.calculated !== 0
+              ) {
+                this.saveTrade(providers, {
+                  fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
+                  blockchain: fromToken.blockchain,
+                  fromAddress: fromToken.address,
+                  toAddress: toToken.address
+                });
+              }
+            })
+          );
+      })
     );
   }
 
@@ -342,6 +370,39 @@ export class OnChainService {
       return 30_000;
     }
     return 10_000;
+  }
+
+  private saveTrade(
+    providers: OnChainCalculatedTradeData[],
+    trade: {
+      fromAddress: string;
+      toAddress: string;
+      blockchain: BlockchainName;
+      fromAmount: string;
+    }
+  ): void {
+    this.onChainApiService
+      .saveProvidersStatistics({
+        user: this.walletConnectorService.address,
+        from_token: trade.fromAddress,
+        network: TO_BACKEND_BLOCKCHAINS?.[trade.blockchain],
+        from_amount: trade.fromAmount,
+        to_token: trade.toAddress,
+        providers_statistics: providers.map(providerTrade => {
+          const { calculationTime, wrappedTrade } = providerTrade;
+          return {
+            provider_title: wrappedTrade?.tradeType,
+            calculation_time_in_seconds: String(calculationTime / 1000),
+            to_amount: wrappedTrade?.trade?.to.stringWeiAmount,
+            status: wrappedTrade?.trade ? 'success' : 'error',
+            proxy_used: wrappedTrade?.trade?.feeInfo?.rubicProxy?.fixedFee?.amount?.gt(0),
+            ...(wrappedTrade?.error && {
+              additional_info: wrappedTrade.error.message
+            })
+          };
+        })
+      })
+      .subscribe();
   }
 
   private async getOptions(

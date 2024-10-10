@@ -18,6 +18,7 @@ import { StakingNotificationService } from '../../services/staking-notification.
 import { DatePipe } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-deposits',
@@ -45,6 +46,8 @@ export class DepositsComponent implements OnInit {
 
   public readonly withdrawingId$ = this._withdrawingId$.asObservable();
 
+  public readonly currentUser$ = this.authService.currentUser$;
+
   constructor(
     private readonly router: Router,
     private readonly stakingService: StakingService,
@@ -54,7 +57,8 @@ export class DepositsComponent implements OnInit {
     private readonly stakingModalService: StakingModalService,
     private readonly stakingNotificationService: StakingNotificationService,
     @Inject(WINDOW) private readonly window: Window,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly authService: AuthService
   ) {}
 
   public ngOnInit(): void {
