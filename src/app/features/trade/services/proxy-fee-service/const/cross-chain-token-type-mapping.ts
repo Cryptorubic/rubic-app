@@ -28,5 +28,16 @@ export const crossChainTokenTypeMapping: Record<CrossChainTokenType, CrossChainF
   wNative_native_eth: 'tokenSwap',
   wNative_stable: 'stableWnativeSwap',
   wNative_token: 'tokenSwap',
-  wNative_wNative: 'tokenSwap'
+  wNative_wNative: 'tokenSwap',
+  bridged_native_bridged_native: 'sameTokenSwap',
+  bridged_native_native: 'bridgedNative_NativeSwap',
+  bridged_native_native_eth: 'bridgedNative_TokenSwap',
+  bridged_native_stable: 'bridgedNative_StableSwap',
+  bridged_native_token: 'tokenSwap',
+  bridged_native_wNative: 'tokenSwap',
+  native_bridged_native: 'bridgedNative_NativeSwap',
+  native_eth_bridged_native: 'bridgedNative_TokenSwap',
+  stable_bridged_native: 'bridgedNative_StableSwap',
+  wNative_bridged_native: 'tokenSwap',
+  token_bridged_native: 'tokenSwap'
 };

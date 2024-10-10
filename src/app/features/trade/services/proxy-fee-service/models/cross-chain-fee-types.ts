@@ -9,7 +9,10 @@ export type CrossChainFeeType =
   | 'stableTokenSwap'
   | 'stableWnativeSwap'
   | 'tokenSwap'
-  | 'sameTokenSwap';
+  | 'sameTokenSwap'
+  | 'bridgedNative_StableSwap'
+  | 'bridgedNative_TokenSwap'
+  | 'bridgedNative_NativeSwap';
 
 export type CrossChainTokenType = `${TokenType}_${TokenType}`;
 
