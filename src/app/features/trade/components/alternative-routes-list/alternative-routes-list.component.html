@@ -1,15 +1,20 @@
 <div [ngSwitch]="routeStatus$ | async">
-  <div class="alternative-routes-list" *ngSwitchCase="'complete'">
-    <span>
-      Most likely there will be no routes available. You can use networks below for intermediate
-      swap.
-    </span>
-    <app-alternative-route-element
-      *ngFor="let route of alternativeRoutes"
-      [route]="route"
-      (selectedRoute)="handleAlternativeRouteSelection($event)"
-    >
-    </app-alternative-route-element>
+  <div class="alternative-routes-list__container" *ngSwitchCase="'complete'">
+    <div class="alternative-routes-list__title">
+      <span>
+        Most likely there will be no routes available. You can use networks below for intermediate
+        swap.
+      </span>
+    </div>
+    <hr class="hr-mobile" />
+    <div class="alternative-routes-list">
+      <app-alternative-route-element
+        *ngFor="let route of alternativeRoutes"
+        [route]="route"
+        (selectedRoute)="handleAlternativeRouteSelection($event)"
+      >
+      </app-alternative-route-element>
+    </div>
   </div>
 
   <div class="empty-list" *ngSwitchCase="'noroutes'">

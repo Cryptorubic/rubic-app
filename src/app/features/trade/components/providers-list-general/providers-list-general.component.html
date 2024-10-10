@@ -10,7 +10,6 @@
       [calculationProgress]="calculationStatus.calculationProgress"
       [isModal]="false"
       (selectTrade)="handleTradeSelection($event)"
-      [noRoutes]="calculationStatus.noRoutes"
     ></app-providers-list>
   </tui-scrollbar>
 </app-window-container>
@@ -24,14 +23,15 @@
 
 <ng-template #mobileProviders>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
+
   <app-providers-list
+    *ngIf="!calculationStatus.noRoutes; else alternativeRoutes"
     [states]="states.slice(0, 1)"
     [selectedTradeType]="selectedTradeType"
     [calculationProgress]="calculationStatus.calculationProgress"
     [isModal]="false"
     [shortedInfo]="true"
     (selectTrade)="handleTradeSelection($event)"
-    [noRoutes]="calculationStatus.noRoutes"
   >
   </app-providers-list>
 

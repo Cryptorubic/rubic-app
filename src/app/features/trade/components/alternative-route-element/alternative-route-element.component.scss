@@ -79,3 +79,27 @@
     }
   }
 }
+
+@include b($mobile-md) {
+  .element {
+    &__route-container {
+      height: 55px;
+      margin-right: 0;
+
+      background: transparent;
+    }
+
+    &__assets-container {
+      ::ng-deep {
+        .selector__main-image {
+          background-color: var(--tui-secondary);
+          border: 5px solid var(--tui-secondary);
+        }
+      }
+
+      &_arrow-image {
+        filter: unset;
+      }
+    }
+  }
+}

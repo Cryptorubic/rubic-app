@@ -1,13 +1,11 @@
-<ng-container *ngIf="!noRoutes">
-  <div class="list" [ngClass]="{ list_padding: isModal }">
-    <app-provider-element
-      *ngFor="let state of states; index as i"
-      [isBest]="i === 0"
-      [tradeState]="state"
-      [shortedInfo]="shortedInfo"
-      [selectedTradeType]="selectedTradeType"
-      (click)="handleTradeSelection($event, state.tradeType, state.trade, state.error)"
-      [hideHint$]="hideHint$"
-    ></app-provider-element>
-  </div>
-</ng-container>
+<div class="list" [ngClass]="{ list_padding: isModal }">
+  <app-provider-element
+    *ngFor="let state of states; index as i"
+    [isBest]="i === 0"
+    [tradeState]="state"
+    [shortedInfo]="shortedInfo"
+    [selectedTradeType]="selectedTradeType"
+    (click)="handleTradeSelection($event, state.tradeType, state.trade, state.error)"
+    [hideHint$]="hideHint$"
+  ></app-provider-element>
+</div>
