@@ -50,6 +50,11 @@
     {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.provider.cryptoFee.token.symbol }}
   </div>
+  <div>
+    Percent Fee:
+    {{ feeInfo?.rubicProxy?.platformFee?.percent || 0 }}%
+    {{ feeInfo?.rubicProxy?.platformFee?.token?.symbol }}
+  </div>
 </ng-template>
 
 <ng-template #timeTooltip>Estimated arriving time</ng-template>
