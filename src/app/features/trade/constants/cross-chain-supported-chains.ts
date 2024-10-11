@@ -22,7 +22,8 @@ import {
   taikoBridgeSupportedBlockchains,
   xySupportedBlockchains,
   stargateV2SupportedBlockchains,
-  routerCrossChainSupportedChains
+  routerCrossChainSupportedChains,
+  acrossCcrSupportedChains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
@@ -50,5 +51,6 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: owlToSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: eddyBridgeSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.ROUTER]: routerCrossChainSupportedChains
+  [CROSS_CHAIN_TRADE_TYPE.ROUTER]: routerCrossChainSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains
 } as const;
