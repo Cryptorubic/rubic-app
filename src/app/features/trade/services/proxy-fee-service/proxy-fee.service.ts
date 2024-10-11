@@ -166,14 +166,19 @@ export class ProxyFeeService {
     const useXLayerIntegratorCcr =
       from.blockchain === BLOCKCHAIN_NAME.XLAYER || to.blockchain === BLOCKCHAIN_NAME.XLAYER;
     const useRubicBdayIntegrator =
-      from.blockchain === BLOCKCHAIN_NAME.SCROLL || to.blockchain === BLOCKCHAIN_NAME.SCROLL;
+      from.blockchain === BLOCKCHAIN_NAME.SCROLL ||
+      to.blockchain === BLOCKCHAIN_NAME.SCROLL ||
+      from.blockchain === BLOCKCHAIN_NAME.TAIKO ||
+      to.blockchain === BLOCKCHAIN_NAME.TAIKO ||
+      from.blockchain === BLOCKCHAIN_NAME.BASE ||
+      to.blockchain === BLOCKCHAIN_NAME.BASE;
 
+    if (useRubicBdayIntegrator) return RUBIC_BDAY_ADDRESS;
     if (useTaikoIntegratorOnChain) return TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
     if (useTaikoIntegratorCcr) return TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
     if (useMerlinIntegrator) return MERLIN_INTEGRATOR_ADDRESS;
     if (useXLayerIntegratorOnChain) return XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
     if (useXLayerIntegratorCcr) return XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
-    if (useRubicBdayIntegrator) return RUBIC_BDAY_ADDRESS;
 
     return providerAddress;
   }
