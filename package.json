@@ -82,6 +82,13 @@
     "ngx-cookie-service": "^16.0.0",
     "querystring-es3": "^0.2.1",
     "rubic-sdk": "5.38.5",
+    "rxjs": "7.8.1",
+    "ts-cacheable": "^1.0.5",
+    "viem": "^1.21.1",
+    "walletlink": "^2.1.0",
+    "web3": "^1.8.0",
+    "zone.js": "~0.13.1"
+  },
   "devDependencies": {
     "@angular-builders/custom-webpack": "^16.0.0",
     "@angular-devkit/architect": "^0.1601.3",
