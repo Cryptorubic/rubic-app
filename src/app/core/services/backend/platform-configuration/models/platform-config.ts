@@ -1,9 +1,10 @@
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
+import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
 
 export interface PlatformConfig {
   server_is_active: boolean;
   networks: {
-    [chain: string]: boolean;
+    [chain: string]: BackendBlockchainStatus;
   };
   cross_chain_providers: {
     [provider: string]: CrossChainProviderStatus;

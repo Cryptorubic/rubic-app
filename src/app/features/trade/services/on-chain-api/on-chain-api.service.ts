@@ -24,6 +24,8 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
+import { getSignature } from '@app/shared/utils/get-signature';
 
 @Injectable()
 export class OnChainApiService {
@@ -156,6 +158,14 @@ export class OnChainApiService {
       address: error.contract,
       cause: error.cause ?? 'dex',
       selector: error.method
+    });
+  }
+
+  public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {
+    return this.httpService.post('onchain_route_calculation/save', data, null, {
+      headers: {
+        Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
+      }
     });
   }
 }
