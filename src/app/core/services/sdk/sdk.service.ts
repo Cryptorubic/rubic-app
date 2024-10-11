@@ -60,7 +60,11 @@ export class SdkService {
     this._SDK = value;
   }
 
-  private currentConfig: Configuration;
+  private _currentConfig: Configuration;
+
+  public get currentConfig(): Configuration {
+    return this._currentConfig;
+  }
 
   constructor(private readonly angularHttpClient: HttpClient) {
     this._SDK = null;
@@ -70,7 +74,7 @@ export class SdkService {
     crossChainIntegratorAddress?: string;
     onChainIntegratorAddress?: string;
   }): Promise<void> {
-    this.currentConfig = this.getConfig(params);
+    this._currentConfig = this.getConfig(params);
     this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
@@ -92,18 +96,6 @@ export class SdkService {
         }
       }
     };
-  }
-
-  public async patchConfig(config: Partial<Configuration>): Promise<void> {
-    this._sdkLoading$.next(true);
-    try {
-      const newConfig = { ...this.currentConfig, ...config };
-      await this.SDK.updateConfiguration(newConfig);
-      this.currentConfig = newConfig;
-    } catch (err) {
-      console.debug('Failed to reload SDK configuration:', err);
-    }
-    this._sdkLoading$.next(false);
   }
 
   public updateWallet(
