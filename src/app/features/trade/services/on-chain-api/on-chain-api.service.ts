@@ -13,6 +13,7 @@ import {
   OnChainTradeType,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
+  UnapprovedMethodError,
   Web3Pure
 } from 'rubic-sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
@@ -23,6 +24,8 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
+import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
+import { getSignature } from '@app/shared/utils/get-signature';
 
 @Injectable()
 export class OnChainApiService {
@@ -67,8 +70,7 @@ export class OnChainApiService {
   public createTrade(
     hash: string,
     provider: OnChainTradeType,
-    trade: OnChainTrade,
-    isSwapAndEarnSwap: boolean
+    trade: OnChainTrade
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
@@ -104,10 +106,7 @@ export class OnChainApiService {
     };
 
     return this.httpService
-      .post<InstantTradesResponseApi>(
-        `v2/trades/onchain/new_extended?valid=${isSwapAndEarnSwap ?? false}`,
-        tradeInfo
-      )
+      .post<InstantTradesResponseApi>('v2/trades/onchain/new_extended', tradeInfo)
       .pipe(delay(1000));
   }
 
@@ -149,7 +148,7 @@ export class OnChainApiService {
   }
 
   public saveNotWhitelistedOnChainProvider(
-    error: UnapprovedContractError,
+    error: UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): Observable<void> {
@@ -157,8 +156,16 @@ export class OnChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: tradeType,
       address: error.contract,
-      cause: error.cause,
+      cause: error.cause ?? 'dex',
       selector: error.method
+    });
+  }
+
+  public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {
+    return this.httpService.post('onchain_route_calculation/save', data, null, {
+      headers: {
+        Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
+      }
     });
   }
 }

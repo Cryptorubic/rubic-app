@@ -40,7 +40,7 @@ import { GasInfo } from '@core/services/gas-service/models/gas-info';
 export class StakingService {
   public readonly MIN_STAKE_AMOUNT = 1;
 
-  public readonly MAX_LOCK_TIME = 3;
+  public readonly MAX_LOCK_TIME = 1;
 
   public readonly user$ = this.authService.currentUser$;
 

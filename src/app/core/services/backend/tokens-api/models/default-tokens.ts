@@ -8,8 +8,10 @@ import {
 
 const defaultTokenParams = {
   rank: 0.001,
-  price: 0
-};
+  price: 0,
+  // @TODO FIX
+  type: 'TOKEN'
+} as const;
 
 export const defaultTokens: Record<BlockchainName, Token[]> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
@@ -20,12 +22,14 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM],
       ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/eth.png'
+      image: 'assets/images/icons/default-tokens/eth.png',
+      type: 'NATIVE_ETH'
     } as Token,
     {
       ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM],
       ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/weth.png'
+      image: 'assets/images/icons/default-tokens/weth.png',
+      type: 'NATIVE'
     } as Token,
     {
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
@@ -34,6 +38,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       symbol: 'RBC',
       decimals: 18,
       image: 'assets/images/icons/default-tokens/rbc.png',
+      type: 'TOKEN',
       ...defaultTokenParams
     },
     {
@@ -43,6 +48,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       symbol: 'USDT',
       decimals: 6,
       image: 'assets/images/icons/default-tokens/usdt.png',
+      type: 'STABLE',
       ...defaultTokenParams
     },
     {
@@ -52,6 +58,7 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       symbol: 'USDC',
       decimals: 6,
       image: 'assets/images/icons/default-tokens/usdc.png',
+      type: 'STABLE',
       ...defaultTokenParams
     }
   ],
@@ -741,7 +748,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.OASIS,
@@ -751,7 +759,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.OASIS,
@@ -761,7 +770,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     }
   ],
   [BLOCKCHAIN_NAME.METIS]: [
@@ -773,7 +783,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.METIS,
@@ -783,7 +794,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.METIS,
@@ -793,7 +805,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     }
   ],
   [BLOCKCHAIN_NAME.SOLANA]: [
@@ -811,7 +824,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'NATIVE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.DFK,
@@ -821,7 +835,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'NATIVE'
     }
   ],
   [BLOCKCHAIN_NAME.KLAYTN]: [
@@ -833,7 +848,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'NATIVE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.KLAYTN,
@@ -843,7 +859,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'STABLE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.KLAYTN,
@@ -853,7 +870,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.KLAYTN,
@@ -863,7 +881,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     }
   ],
   [BLOCKCHAIN_NAME.VELAS]: [
@@ -875,7 +894,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 8,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'WRAPPED_NATIVE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.VELAS,
@@ -885,7 +905,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 6,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'STABLE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.VELAS,
@@ -895,7 +916,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'STABLE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.VELAS,
@@ -905,7 +927,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'STABLE'
     }
   ],
   [BLOCKCHAIN_NAME.SYSCOIN]: [
@@ -917,7 +940,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'NATIVE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.SYSCOIN,
@@ -927,7 +951,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 6,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'STABLE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.SYSCOIN,
@@ -937,7 +962,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     },
     {
       blockchain: BLOCKCHAIN_NAME.SYSCOIN,
@@ -947,7 +973,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'WRAPPED_NATIVE'
     },
     {
       blockchain: BLOCKCHAIN_NAME.SYSCOIN,
@@ -957,7 +984,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       decimals: 18,
       image: '',
       rank: 0.001,
-      price: null
+      price: null,
+      type: 'TOKEN'
     }
   ],
   [BLOCKCHAIN_NAME.ICP]: [
@@ -1026,5 +1054,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.BAHAMUT]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.BAHAMUT], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.GRAVITY]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.GRAVITY], ...defaultTokenParams } as Token
   ]
 };

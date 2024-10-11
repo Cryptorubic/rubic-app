@@ -3,14 +3,11 @@
     displayReceiver: displayTargetAddressInput$ | async,
     selectedForm: selectedForm$ | async,
     isMobile: isMobile$ | async,
-    showGasTargetChainHint: showGasTargetChainHint$ | async,
-    showGasSourceChainHint: showGasSourceChainHint$ | async,
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
     toAmount: toAmount$ | async,
     calculationStatus: calculationStatus$ | async,
-    isDisabledFromSelector: isDisabledFromSelector$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -41,14 +38,7 @@
       </div>
     </app-input-output-container>
     <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-    <app-input-output-container
-      [round]="
-        state.displayReceiver ||
-        (state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar)
-          ? 'none'
-          : 'bottom'
-      "
-    >
+    <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
       <app-asset-selector
         left
         selectorType="to"
@@ -73,11 +63,6 @@
     @receiverAnimation
   ></app-target-network-address>
 
-  <app-gas-form-trade-calculation
-    *ngIf="state.selectedForm === 'gasForm' && state.calculationStatus.showSidebar"
-    [isCalculation]="state.calculationStatus.activeCalculation"
-  ></app-gas-form-trade-calculation>
-
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
@@ -87,17 +72,4 @@
       ></app-receiver-address-button>
     </div>
   </ng-container>
-
-  <app-gas-form-hint
-    *ngIf="state.showGasSourceChainHint"
-    class="source-chain"
-    text="Select a source chain and token you want to exchange on gas!"
-  >
-  </app-gas-form-hint>
-  <app-gas-form-hint
-    *ngIf="state.showGasTargetChainHint"
-    class="target-chain"
-    text="Select a target chain, where you want to get the gas token!"
-  >
-  </app-gas-form-hint>
 </app-window-container>

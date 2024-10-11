@@ -17,6 +17,7 @@ interface AllQueryParams {
   hideSelectionFrom: string;
   hideSelectionTo: string;
   hideTokenSwitcher: string;
+  useLargeIframe: string;
   slippageIt: string;
   slippageCcr: string;
   accentColor: string; // correct format is ...&accentColor=00FFFF

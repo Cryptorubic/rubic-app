@@ -57,6 +57,7 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.WOO_FI]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.WYND]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: 'unknown',
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
@@ -135,7 +136,10 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: 'eddy_finance',
   [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: 'native_router',
   [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: 'zeta_swap',
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut'
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: 'kujata',
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: 'silk_swap',
+  [ON_CHAIN_TRADE_TYPE.MACARON]: 'macaron',
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

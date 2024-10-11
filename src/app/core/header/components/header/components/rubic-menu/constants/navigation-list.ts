@@ -34,7 +34,7 @@ export const NAVIGATION_LIST = [
     translateKey: 'navigation.retrodrop',
     type: 'internal',
     link: 'retrodrop',
-    target: '_self',
+    target: '_blank',
     imagePath: `${defaultSrc}retrodrop.svg`
   },
   {

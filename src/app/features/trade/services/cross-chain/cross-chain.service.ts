@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -21,6 +21,7 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token,
   UnapprovedContractError,
+  UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
   Web3Pure
@@ -51,8 +52,8 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
+import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
+import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
 @Injectable()
 export class CrossChainService {
@@ -82,7 +83,8 @@ export class CrossChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly airdropPointsService: AirdropPointsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly proxyService: ProxyFeeService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -103,9 +105,19 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(disabledTradeTypes, fromBlockchain, toBlockchain);
-        handleIntegratorAddress(options, fromBlockchain, toBlockchain);
-
+        return forkJoin([
+          of(fromSdkCompatibleToken),
+          of(toSdkCompatibleToken),
+          of(tokenState),
+          this.getOptions(
+            disabledTradeTypes,
+            fromSdkCompatibleToken,
+            toSdkCompatibleToken,
+            fromAmount.actualValue
+          )
+        ]);
+      }),
+      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
         const calculationStartTime = Date.now();
 
         return this.sdkService.crossChain
@@ -113,7 +125,7 @@ export class CrossChainService {
             fromSdkCompatibleToken,
             fromAmount.actualValue.toFixed(),
             toSdkCompatibleToken,
-            tokenState.isDeflation
+            deflationStatus.isDeflation
               ? { ...options, useProxy: this.getDisabledProxyConfig() }
               : options
           )
@@ -153,11 +165,12 @@ export class CrossChainService {
     );
   }
 
-  private getOptions(
+  private async getOptions(
     disabledTradeTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
-  ): CrossChainManagerCalculationOptions {
+    fromSdkToken: PriceToken,
+    toSdkToken: PriceToken,
+    fromAmount: BigNumber
+  ): Promise<CrossChainManagerCalculationOptions> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
@@ -175,9 +188,13 @@ export class CrossChainService {
       ])
     );
     const calculateGas = this.authService.userAddress;
-    const timeout = this.calculateTimeoutForChains(fromBlockchain, toBlockchain);
-
-    return {
+    const timeout = this.calculateTimeoutForChains();
+    const providerAddress = await this.proxyService.getIntegratorAddress(
+      fromSdkToken,
+      fromAmount,
+      toSdkToken
+    );
+    const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
@@ -196,8 +213,11 @@ export class CrossChainService {
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: {
         ...this.platformConfigurationService.useCrossChainChainProxy
-      }
+      },
+      providerAddress
     };
+
+    return options;
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {
@@ -207,7 +227,7 @@ export class CrossChainService {
   }
 
   private saveNotWhitelistedProvider(
-    error: NotWhitelistedProviderError | UnapprovedContractError,
+    error: NotWhitelistedProviderError | UnapprovedContractError | UnapprovedMethodError,
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): void {
@@ -249,13 +269,8 @@ export class CrossChainService {
       return null;
     }
 
-    const isSwapAndEarnSwapTrade = this.isSwapAndEarnSwap(trade);
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
-
-    this.airdropPointsService
-      .setSeNPointsTemp(trade.from.blockchain, trade.to.blockchain)
-      .subscribe();
 
     const [fromToken, toToken] = await Promise.all([
       this.tokensService.findToken(trade.from),
@@ -267,7 +282,7 @@ export class CrossChainService {
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
-      this.crossChainApiService.createTrade(txHash, trade, isSwapAndEarnSwapTrade);
+      this.crossChainApiService.createTrade(txHash, trade);
 
       this.notifyGtmAfterSignTx(
         txHash,
@@ -312,19 +327,15 @@ export class CrossChainService {
 
       if (
         error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError
+        error instanceof UnapprovedContractError ||
+        error instanceof UnapprovedMethodError
       ) {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
 
-      // this.handleSwapError(error, currentSelectedTrade.tradeType);
       const parsedError = RubicSdkErrorParser.parseError(error);
-
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
-        if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-          this.gtmService.fireGasFormGtm({ isSuccessfullSwap: false });
-        }
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
       throw parsedError;
@@ -417,13 +428,6 @@ export class CrossChainService {
     return false;
   }
 
-  private isSwapAndEarnSwap(trade: CrossChainTrade): boolean {
-    const swapWithProxy = trade.feeInfo?.rubicProxy?.fixedFee?.amount.gt(0) || false;
-    const isCnTrade = trade.type === CROSS_CHAIN_TRADE_TYPE.CHANGENOW;
-
-    return isCnTrade || swapWithProxy;
-  }
-
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
     const fromBlockchain = trade.from.blockchain;
     const toBlockchain = trade.to.blockchain;
@@ -468,10 +472,6 @@ export class CrossChainService {
       'crosschain',
       fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
-
-    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-      this.gtmService.fireGasFormGtm({ isSuccessfullSwap: true });
-    }
   }
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
@@ -481,13 +481,13 @@ export class CrossChainService {
     }
   }
 
-  private calculateTimeoutForChains(
-    blockchainFrom: BlockchainName,
-    blockchainTo: BlockchainName
-  ): number {
-    const longTimeoutChains: BlockchainName[] = [BLOCKCHAIN_NAME.XLAYER];
-    if (longTimeoutChains.includes(blockchainFrom) || longTimeoutChains.includes(blockchainTo)) {
-      return 25_000;
+  private calculateTimeoutForChains(): number {
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    if (
+      CCR_LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+      CCR_LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+    ) {
+      return 30_000;
     }
     return this.defaultTimeout;
   }

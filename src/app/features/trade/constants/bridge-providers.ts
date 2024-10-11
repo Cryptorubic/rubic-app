@@ -245,6 +245,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}refuel.png`,
     name: 'Refuel'
   },
+  router: {
+    averageTime: 5,
+    color: '#000000',
+    image: `${imageBasePath}router.svg`,
+    name: 'Router'
+  },
   //SSSSSSSSSSSSSSSSSSS
   satellite: {
     averageTime: 5,
@@ -269,6 +275,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#999999',
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate'
+  },
+  stargate_v2: {
+    averageTime: 5,
+    color: '#999999',
+    image: `${imageBasePath}stargate.svg`,
+    name: 'Stargate V2'
   },
   symbiosis: {
     averageTime: 5,

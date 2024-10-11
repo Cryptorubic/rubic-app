@@ -2,7 +2,7 @@
   <ng-container header>Providers list</ng-container>
   <ng-container *ngTemplateOutlet="waiting"></ng-container>
   <!-- Providers list -->
-  <tui-scrollbar class="providers-list">
+  <tui-scrollbar class="providers-list" #tuiScrollBar>
     <app-providers-list
       [states]="states"
       [selectedTradeType]="selectedTradeType"

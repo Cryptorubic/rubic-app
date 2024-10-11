@@ -5,7 +5,9 @@ import {
   Inject,
   Injector,
   Input,
-  Output
+  Output,
+  Self,
+  ViewChild
 } from '@angular/core';
 import { TradeState } from '@features/trade/models/trade-state';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -13,17 +15,22 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
-import { BehaviorSubject, interval, map } from 'rxjs';
-import { switchMap, takeWhile } from 'rxjs/operators';
+import { BehaviorSubject, fromEvent, interval, map } from 'rxjs';
+import { debounceTime, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
+import { TuiScrollbarComponent } from '@taiga-ui/core';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from '../../services/on-chain/constants/long-timeout-chains';
+import { CCR_LONG_TIMEOUT_CHAINS } from '../../services/cross-chain/ccr-long-timeout-chains';
 
 @Component({
   selector: 'app-providers-list-general',
   templateUrl: './providers-list-general.component.html',
   styleUrls: ['./providers-list-general.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService, ProviderHintService],
   animations: [
     trigger('progress', [
       transition(':enter', [
@@ -51,6 +58,8 @@ export class ProvidersListGeneralComponent {
     }
   }
 
+  @ViewChild('tuiScrollBar') scrollBarElement: TuiScrollbarComponent;
+
   private _calculationStatus: CalculationStatus;
 
   public get calculationStatus(): CalculationStatus {
@@ -64,7 +73,7 @@ export class ProvidersListGeneralComponent {
   public readonly calculationProcess$ = this._triggerCalculation$.asObservable().pipe(
     switchMap(() => interval(this.ratio)),
     takeWhile(val => {
-      if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+      if (this.isLongTimeoutChain()) {
         return val <= 30_000 / this.ratio;
       }
       return val <= CALCULATION_TIMEOUT_MS / this.ratio;
@@ -88,7 +97,9 @@ export class ProvidersListGeneralComponent {
     @Inject(Injector) private readonly injector: Injector,
     private readonly modalService: ModalService,
     private readonly headerStore: HeaderStore,
-    private readonly swapsFormService: SwapsFormService
+    private readonly swapsFormService: SwapsFormService,
+    private readonly providerHintService: ProviderHintService,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
   public handleTradeSelection(tradeType: TradeProvider): void {
@@ -113,9 +124,36 @@ export class ProvidersListGeneralComponent {
   }
 
   private convertIntervalValueToPercents(val: number): number {
-    if (this.swapsFormService.inputValue.fromBlockchain === BLOCKCHAIN_NAME.MERLIN) {
+    if (this.isLongTimeoutChain()) {
       return val * ((100 * this.ratio) / 30_000);
     }
     return val * ((100 * this.ratio) / CALCULATION_TIMEOUT_MS);
+  }
+
+  private isLongTimeoutChain(): boolean {
+    const { fromBlockchain, toBlockchain } = this.swapsFormService.inputValue;
+    const isOnChain = fromBlockchain === toBlockchain;
+    if (isOnChain) {
+      return ON_CHAIN_LONG_TIMEOUT_CHAINS.includes(fromBlockchain);
+    }
+    return (
+      CCR_LONG_TIMEOUT_CHAINS.includes(fromBlockchain) ||
+      CCR_LONG_TIMEOUT_CHAINS.includes(toBlockchain)
+    );
+  }
+
+  ngAfterViewInit(): void {
+    // @TODO optimise scroll handler
+    fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
+      .pipe(
+        tap(() => this.hideProviderHintOnScroll(true)),
+        debounceTime(500),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => this.hideProviderHintOnScroll(false));
+  }
+
+  public hideProviderHintOnScroll(isScrollStart: boolean): void {
+    this.providerHintService.setHintVisibility(isScrollStart);
   }
 }
