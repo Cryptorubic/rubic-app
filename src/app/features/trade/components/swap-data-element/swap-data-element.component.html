@@ -40,7 +40,7 @@
 </div>
 
 <ng-template #feeData>
-  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0.0000001)">
+  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
     Protocol Fee:
     {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
