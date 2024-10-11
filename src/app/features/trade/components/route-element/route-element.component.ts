@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { CrossChainTradeType, OnChainTradeType, RubicStep } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType, OnChainTradeType, RubicStep } from 'rubic-sdk';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { BRIDGE_PROVIDERS } from '@features/trade/constants/bridge-providers';
 import { ON_CHAIN_PROVIDERS } from '@features/trade/constants/on-chain-providers';
+import { ProviderInfo } from '../../models/provider-info';
 
 interface ProviderStep {
   provider: {
@@ -22,14 +23,18 @@ interface ProviderStep {
 export class RouteElementComponent {
   public steps: ProviderStep[] = [];
 
-  @Input({ required: true }) set routes(steps: RubicStep[]) {
+  @Input({ required: true }) tradeType: BridgeType | OnChainTradeType;
+
+  @Input({ required: true })
+  set routes(steps: RubicStep[]) {
     this.steps = this.getSteps(steps);
   }
 
   public getSteps(routes: RubicStep[]): ProviderStep[] {
     return routes.map(route => {
       if (route.type === 'on-chain') {
-        const provider = ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType];
+        const provider = ON_CHAIN_PROVIDERS[route.provider] || this.getUnknownDex();
+
         return {
           provider: {
             label: `Swap Via ${provider.name}`,
@@ -56,5 +61,13 @@ export class RouteElementComponent {
         })
       };
     });
+  }
+
+  private getUnknownDex(): ProviderInfo {
+    return {
+      name: 'Unknown dex',
+      color: 'white',
+      image: 'assets/images/icons/unknown.svg'
+    };
   }
 }

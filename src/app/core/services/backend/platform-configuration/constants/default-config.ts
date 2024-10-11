@@ -4,7 +4,15 @@ import { FROM_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 
 export const defaultConfig: PlatformConfig = {
   server_is_active: true,
-  networks: Object.fromEntries(Object.keys(FROM_BACKEND_BLOCKCHAINS).map(key => [key, true])),
+  networks: Object.fromEntries(
+    Object.keys(FROM_BACKEND_BLOCKCHAINS).map(key => [
+      key,
+      {
+        is_active: true,
+        tier: 'TIER_TWO'
+      }
+    ])
+  ),
   cross_chain_providers: Object.fromEntries(
     Object.keys(FROM_BACKEND_CROSS_CHAIN_PROVIDERS).map(key => [
       key,

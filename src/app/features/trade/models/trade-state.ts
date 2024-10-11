@@ -31,7 +31,7 @@ export interface BadgeInfo {
   showLabel: (trade: CrossChainTrade | OnChainTrade) => boolean;
   getLabel: (trade: CrossChainTrade | OnChainTrade) => string;
   getHint?: (trade: CrossChainTrade | OnChainTrade) => string;
-  href?: string;
+  getUrl?: (trade: CrossChainTrade | OnChainTrade) => string;
 }
 
 export interface BadgeInfoForComponent {

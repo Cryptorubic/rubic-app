@@ -492,6 +492,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}renbtc.svg`,
     color: 'grey'
   },
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: {
+    name: 'Router DEX',
+    image: 'assets/images/icons/providers/bridge/router.svg',
+    color: '#000000'
+  },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -589,6 +594,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
   },
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: {
+    name: 'Squid Router',
+    image: 'assets/images/icons/providers/bridge/squidrouter.svg',
+    color: '#e6f936'
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
@@ -618,9 +628,14 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
-    name: 'Uniswap V2',
-    image: 'assets/images/icons/coins/bahamut.svg',
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: {
+    name: 'SilkSwap',
+    image: `${imageBasePath}silkswap.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
+    name: 'Kujata',
+    image: `${imageBasePath}kujata.svg`,
     color: '#FFFFFF'
   },
 
@@ -717,6 +732,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'ZetaSwap',
     image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
   }
 };
 

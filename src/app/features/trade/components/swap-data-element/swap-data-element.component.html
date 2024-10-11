@@ -5,6 +5,7 @@
     [tuiHint]="gasTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/gas.svg" alt="Gas Price" />
     <div *ngIf="gasInfo.amountInUsd.lt(0.01)">< 0.01 $</div>
@@ -20,6 +21,7 @@
     [tuiHint]="feeData"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/money.svg" alt="Fee" />
     {{ displayAmount }}
@@ -30,6 +32,7 @@
     [tuiHint]="timeTooltip"
     [tuiHintAppearance]="hintAppearance"
     [tuiHintDirection]="hintDirection"
+    [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
     <div class="">{{ time }}</div>
@@ -37,7 +40,7 @@
 </div>
 
 <ng-template #feeData>
-  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)">
+  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
     Protocol Fee:
     {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
@@ -47,6 +50,11 @@
     {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.provider.cryptoFee.token.symbol }}
   </div>
+  <!-- <div>
+    Percent Fee:
+    {{ feeInfo?.rubicProxy?.platformFee?.percent || 0 }}%
+    {{ feeInfo?.rubicProxy?.platformFee?.token?.symbol }}
+  </div> -->
 </ng-template>
 
 <ng-template #timeTooltip>Estimated arriving time</ng-template>

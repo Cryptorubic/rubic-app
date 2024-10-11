@@ -4,12 +4,20 @@ import { BehaviorSubject } from 'rxjs';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CookieService } from 'ngx-cookie-service';
 import { addMinutes } from 'date-and-time';
-import {
-  FormSteps,
-  GasFormAnalytic
-} from '@core/services/google-tag-manager/models/google-tag-manager';
+import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
+import {
+  BlockchainName,
+  CrossChainTrade,
+  Injector,
+  nativeTokensList,
+  OnChainTrade,
+  PriceTokenAmount,
+  Web3Public,
+  Web3Pure
+} from 'rubic-sdk';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -181,36 +189,50 @@ export class GoogleTagManagerService {
   }
 
   /**
-   * Fires GTM event on transaction error.
+   * Fires GTM event on swap error.
    */
-  public fireTransactionError(tokenInName: string, tokenOutName: string, errorCode: string): void {
+  public async fireSwapError(
+    trade: CrossChainTrade | OnChainTrade,
+    walletAddress: string,
+    error: Error
+  ): Promise<void> {
+    const [nativeBalance, srcTokenBalance] = await this.getBalancesForGtagSwapError(
+      trade.from,
+      walletAddress
+    );
+
     this.angularGtmService.gtag('event', 'swap_error', {
-      input_token: tokenInName,
-      output_token: tokenOutName,
-      error_code: errorCode || 'Nan'
+      input_token: trade.from.name,
+      input_token_address: trade.from.address,
+      input_token_amount: trade.from.tokenAmount.toFixed(),
+      output_token: trade.to.name,
+      output_token_address: trade.to.address,
+      output_token_amount: trade.to.tokenAmount.toFixed(),
+      network_from: trade.from.blockchain,
+      network_to: trade.to.blockchain,
+      provider: trade.type,
+      wallet_address: walletAddress,
+      token_from_ballance: srcTokenBalance,
+      token_native_ballance: nativeBalance,
+      identified_app_error: !(error instanceof RubicError),
+      identified_error_name: error.name
     });
   }
 
-  public fireGasFormGtm(config: GasFormAnalytic): void {
-    if (config.visitedFrom) {
-      this.angularGtmService.gtag('event', 'gas_form_visit', { visited_from: config.visitedFrom });
-    }
-    if (config.leaveGasFormInfo) {
-      this.angularGtmService.gtag('event', 'leave_after_target_selected', {
-        to_blockchain: config.leaveGasFormInfo.toBlockchain,
-        to_token: config.leaveGasFormInfo.toToken,
-        wallet_address: config.leaveGasFormInfo.walletAddress
-      });
-    }
-    if (config.isSuccessfullSwap) {
-      this.angularGtmService.gtag('event', 'successfull_swap', {
-        is_swap_success: config.isSuccessfullSwap
-      });
-    }
-    if (config.isSuccessfullCalculation) {
-      this.angularGtmService.gtag('event', 'calculation', {
-        is_calculation_success: config.isSuccessfullCalculation
-      });
-    }
+  private async getBalancesForGtagSwapError(
+    fromToken: PriceTokenAmount<BlockchainName>,
+    walletAddress: string
+  ): Promise<[string, string]> {
+    const web3Public = Injector.web3PublicService.getWeb3Public(fromToken.blockchain) as Web3Public;
+    const [nativeBalanceWei, fromTokenBalanceWei] = await Promise.all([
+      web3Public.getBalance(walletAddress),
+      web3Public.getBalance(walletAddress, fromToken.address)
+    ]);
+
+    const nativeToken = nativeTokensList[fromToken.blockchain];
+    const nativeBalance = Web3Pure.fromWei(nativeBalanceWei, nativeToken.decimals).toFixed();
+    const fromTokenBalance = Web3Pure.fromWei(fromTokenBalanceWei, fromToken.decimals).toFixed();
+
+    return [nativeBalance, fromTokenBalance];
   }
 }

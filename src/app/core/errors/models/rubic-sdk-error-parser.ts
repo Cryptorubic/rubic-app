@@ -19,7 +19,8 @@ import {
   InsufficientFundsGasPriceValueError,
   UpdatedRatesError,
   SdkSwapErrorOnProviderSide,
-  NoLinkedAccountError
+  NoLinkedAccountError,
+  NotSupportedRegionError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -45,11 +46,19 @@ import SwapErorOnProviderSide from './common/swap-error-on-provider-side';
 import { FallbackSwapError } from './provider/fallback-swap-error';
 import { NotLinkedAddressError } from './provider/not-linked-address-error';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
+import NotSupportedRegionRubicError from './common/not-supported-region-error';
+import { LowSlippageError } from './common/low-slippage-error';
+import { InsufficientGasError } from './common/insufficient-gas-error';
+import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
+import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof NotSupportedRegionError) {
+      return new NotSupportedRegionRubicError();
+    }
     if (err instanceof UpdatedRatesError) {
       return new AmountChangeWarning(err.oldAmount, err.newAmount);
     }
@@ -124,26 +133,17 @@ export class RubicSdkErrorParser {
     ) {
       return new TokenWithFeeError();
     }
+
+    if (err.message.includes('Request failed with status code 400')) {
+      return new OneinchUnavailableError();
+    }
+    if (err.message.includes('max fee per gas less than block base fee')) {
+      return new MaxFeePerGasError();
+    }
     if (
       err.message.includes('Make sure you have at least') ||
       err.stack?.includes('InsufficientFundsGasPriceValueError') ||
-      err instanceof InsufficientFundsGasPriceValueError
-    ) {
-      return new RubicError(
-        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
-      );
-    }
-    if (err.message.includes('Request failed with status code 400')) {
-      return new RubicError(
-        'Oneinch provider is unavailable. Try to choose another or wait a few minutes.'
-      );
-    }
-    if (err.message.includes('max fee per gas less than block base fee')) {
-      return new RubicError(
-        'Max fee per gas less than block base fee. Increase max gas in your wallet.'
-      );
-    }
-    if (
+      err instanceof InsufficientFundsGasPriceValueError ||
       err.message.includes('Ok(OutOfFund)') ||
       err.message.includes('insufficient funds for transfer') ||
       err.message.includes('execution reverted: MetaRouter: second swap failed') ||
@@ -153,17 +153,16 @@ export class RubicSdkErrorParser {
       err.message.includes('insufficient balance for transfer') ||
       err.message.includes('Sender balance too low for value specified')
     ) {
-      return new RubicError(
-        'Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.'
-      );
+      return new InsufficientGasError();
     }
 
     if (
       err.message.includes('price change more than your slippage!') ||
       err.message.includes('Return amount is not enough')
     ) {
-      return new RubicError('Please, increase the slippage and try again!');
+      return new LowSlippageError();
     }
+
     if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
       return new CrossChainSwapUnavailableWarning();
     }

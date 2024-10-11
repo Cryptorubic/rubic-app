@@ -168,6 +168,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.FLARE]: [
     'https://rpc.ankr.com/flare/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://flare.rpc.thirdweb.com',
+    'https://rpc.ankr.com/flare',
     'https://flare-api.flare.network/ext/C/rpc'
   ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
@@ -290,6 +292,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://mycrypto.rsk.co'
   ],
   [BLOCKCHAIN_NAME.MODE]: [
+    'https://mode-mainnet.blastapi.io/f2a2318c-ed4d-4366-9675-ccfd49434359',
     'https://mainnet.mode.network',
     'https://1rpc.io/mode',
     'https://mode.drpc.org'
@@ -327,5 +330,17 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc2.bahamut.io',
     'wss://ws2.sahara.bahamutchain.com',
     'wss://bahamut-rpc.publicnode.com'
+  ],
+  [BLOCKCHAIN_NAME.BITLAYER]: [
+    'https://rpc.ankr.com/bitlayer/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://rpc.bitlayer.org',
+    'https://rpc.ankr.com/bitlayer',
+    'https://rpc-bitlayer.rockx.com',
+    'https://rpc.bitlayer-rpc.com'
+  ],
+  [BLOCKCHAIN_NAME.GRAVITY]: [
+    'https://rpc.ankr.com/gravity/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://mainnet.gravity-rpc.com',
+    'https://rpc.gravity.xyz'
   ]
 };

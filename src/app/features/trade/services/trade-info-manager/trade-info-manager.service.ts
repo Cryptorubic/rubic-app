@@ -44,6 +44,11 @@ export class TradeInfoManager {
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
     let gasData = null;
     let gasPrice = null;
+
+    if (trade.type === 'squidrouter') {
+      return null;
+    }
+
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
 

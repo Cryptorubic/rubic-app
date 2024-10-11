@@ -129,7 +129,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MANTLE]: {
     name: 'Mantle',
-    rpc: 'https://rpc.ankr.com/mantle'
+    rpc: 'https://mantle.publicnode.com'
   },
   [BLOCKCHAIN_NAME.ZK_SYNC]: {
     name: 'zkSync Era',
@@ -145,7 +145,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.ZETACHAIN]: {
     name: 'Zetachain',
-    rpc: 'https://zetachain-mainnet-archive.allthatnode.com:8545'
+    rpc: 'https://zetachain-evm.blockpi.network/v1/rpc/public'
   },
   [BLOCKCHAIN_NAME.BLAST]: {
     name: 'Blast',
@@ -198,5 +198,29 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.BAHAMUT]: {
     name: 'Bahamut',
     rpc: 'https://rpc1.bahamut.io'
+  },
+  [BLOCKCHAIN_NAME.HOLESKY]: {
+    name: 'Holesky',
+    rpc: 'https://ethereum-holesky-rpc.publicnode.com'
+  },
+  [BLOCKCHAIN_NAME.FLARE]: {
+    name: 'Flare',
+    rpc: 'https://flare-api.flare.network/ext/C/rpc'
+  },
+  [BLOCKCHAIN_NAME.BITCOIN_CASH]: {
+    name: 'Bitcoin Cash',
+    rpc: 'https://smartbch.greyh.at'
+  },
+  [BLOCKCHAIN_NAME.IOTEX]: {
+    name: 'Iotex',
+    rpc: 'https://rpc.ankr.com/iotex'
+  },
+  [BLOCKCHAIN_NAME.BITLAYER]: {
+    name: 'Bitlayer',
+    rpc: 'https://rpc.ankr.com/bitlayer'
+  },
+  [BLOCKCHAIN_NAME.GRAVITY]: {
+    name: 'Gravity',
+    rpc: 'https://rpc.gravity.xyz'
   }
 };
