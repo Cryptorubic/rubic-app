@@ -14,6 +14,11 @@ import { HintAppearance, HintDirection } from './model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapDataElementComponent {
+  /**
+   * used to hide micro fee for 0% fee swaps
+   */
+  public readonly minAmountToShowProtocolFee = new BigNumber(0.0000005);
+
   public feeInfo: FeeInfo;
 
   public displayAmount: string | null;
