@@ -11,6 +11,7 @@ import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList }
 import { compareAddresses } from '@app/shared/utils/utils';
 import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -43,12 +44,15 @@ export class TokensListComponent {
 
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
+  public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
   constructor(
     private readonly tokensListService: TokensListService,
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   /**

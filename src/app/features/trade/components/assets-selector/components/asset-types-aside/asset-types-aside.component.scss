@@ -175,16 +175,6 @@
   }
 }
 
-@include b($tablet) {
-  .asset-types-aside {
-    border-radius: 0 10px 0 0;
-
-    @include hide-unused-ui {
-      border-radius: 0 10px 0 20px;
-    }
-  }
-}
-
 @include b($mobile-md) {
   :host {
     display: flex;
@@ -274,5 +264,13 @@
         height: 52px;
       }
     }
+  }
+}
+
+.large-iframe-asset {
+  height: 430px;
+
+  tui-scrollbar {
+    min-height: 410px;
   }
 }
