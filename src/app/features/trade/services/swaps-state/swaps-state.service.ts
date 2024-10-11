@@ -367,7 +367,7 @@ export class SwapsStateService {
   }
 
   private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
-    if (!fromToken || !toToken) {
+    if (!fromToken?.address || !toToken?.address) {
       return false;
     }
     const fromSdkToken = new Token(fromToken);

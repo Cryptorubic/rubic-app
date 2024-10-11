@@ -40,7 +40,7 @@
 </div>
 
 <ng-template #feeData>
-  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(0)">
+  <div *ngIf="feeInfo?.rubicProxy?.fixedFee?.amount.gt(minAmountToShowProtocolFee)">
     Protocol Fee:
     {{ feeInfo.rubicProxy.fixedFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.rubicProxy.fixedFee.token.symbol }}
@@ -50,6 +50,11 @@
     {{ feeInfo.provider.cryptoFee.amount | bigNumberFormat | shortenAmount : 8 : 8 }}
     {{ feeInfo.provider.cryptoFee.token.symbol }}
   </div>
+  <!-- <div>
+    Percent Fee:
+    {{ feeInfo?.rubicProxy?.platformFee?.percent || 0 }}%
+    {{ feeInfo?.rubicProxy?.platformFee?.token?.symbol }}
+  </div> -->
 </ng-template>
 
 <ng-template #timeTooltip>Estimated arriving time</ng-template>

@@ -52,6 +52,7 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<ProviderInterface>
 
   public async activate(): Promise<void> {
     try {
+      //@ts-ignore
       const [address] = await this.wallet.request<[string]>({ method: 'eth_requestAccounts' });
       const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
       this.isEnabled = true;

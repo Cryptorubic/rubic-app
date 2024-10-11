@@ -246,6 +246,9 @@ export class PreviewSwapService {
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
                 }),
+                ...(additionalInfo?.squidrouterId && {
+                  squidrouterRequestId: additionalInfo.squidrouterId
+                }),
                 ...(additionalInfo.retroBridgeId && {
                   retroBridgeId: additionalInfo.retroBridgeId
                 })
