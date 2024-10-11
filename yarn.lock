@@ -17310,7 +17310,6 @@ rpc-websockets@^9.0.2:
   optionalDependencies:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
-
 rubic-sdk@5.38.5:
   version "5.38.5"
   resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.38.5.tgz#dc727c260d56b02a9f487b7daeb8308f88a30ddd"
