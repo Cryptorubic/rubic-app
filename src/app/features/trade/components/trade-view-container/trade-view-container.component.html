@@ -1,5 +1,6 @@
 <div
   class="swap-container"
+  [class.large-iframe-swap-container]="useLargeIframe"
   *ngLet="{
     content: formContent$ | async,
     providers: providers$ | async,
