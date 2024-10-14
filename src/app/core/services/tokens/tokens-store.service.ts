@@ -131,7 +131,7 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: BlockchainName): void {
-    if (this.isBalanceCalculatingStarted[blockchain]) {
+    if (this.isBalanceCalculatingStarted[blockchain] || !blockchain) {
       return;
     }
     this.isBalanceCalculatingStarted[blockchain] = true;
@@ -228,7 +228,8 @@ export class TokensStoreService {
         decimals: token.decimals,
         image: token.image,
         rank: token.rank,
-        tokenSecurity: token.tokenSecurity
+        tokenSecurity: token.tokenSecurity,
+        type: token.type
       }))
       .toArray();
 

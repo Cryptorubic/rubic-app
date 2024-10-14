@@ -192,7 +192,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.BDAY_PROMO
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
@@ -290,7 +296,8 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
       BlockchainTags.NEW,
-      BlockchainTags.PROMO
+      BlockchainTags.PROMO,
+      BlockchainTags.BDAY_PROMO
     ]
   },
   {

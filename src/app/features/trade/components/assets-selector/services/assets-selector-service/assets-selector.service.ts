@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainName } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -158,19 +158,6 @@ export class AssetsSelectorService {
   public getAssetType(formType: FormType): AssetType {
     const assetTypeKey = formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
     return this.swapFormService.inputValue[assetTypeKey];
-  }
-
-  private setNativeTargetTokenInGasForm(blockchainName: BlockchainName): void {
-    const chainType = BlockchainsInfo.getChainType(blockchainName);
-    const nativeToken = this.tokensStoreService.tokens.find(
-      t => t.blockchain === blockchainName && Web3Pure[chainType].isNativeAddress(t.address)
-    );
-    this.swapFormService.inputControl.patchValue({
-      toToken: nativeToken,
-      toBlockchain: blockchainName,
-      fromBlockchain: null,
-      fromToken: null
-    });
   }
 
   private getTokenListChain(selectorType: SelectorType): BlockchainName | null {
