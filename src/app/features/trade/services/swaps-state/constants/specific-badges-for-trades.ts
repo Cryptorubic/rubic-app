@@ -80,6 +80,34 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getUrl: () => 'https://rubic.exchange/birthday4'
     }
   ],
+  [ON_CHAIN_TRADE_TYPE.AERODROME]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return trade.from.blockchain === BLOCKCHAIN_NAME.BASE;
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.BASE ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.BASE
+        );
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
