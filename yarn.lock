@@ -10572,15 +10572,7 @@ ethereum-cryptography@^2.0.0, ethereum-cryptography@^2.1.2:
     "@scure/bip32" "1.4.0"
     "@scure/bip39" "1.3.0"
 
-ethereumjs-abi@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.8.tgz#71bc152db099f70e62f108b7cdfca1b362c6fcae"
-  integrity sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA==
-  dependencies:
-    bn.js "^4.11.8"
-    ethereumjs-util "^6.0.0"
-
-"ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+ethereumjs-abi@^0.6.8, "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
   dependencies:
@@ -17311,10 +17303,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.37.2-alpha.4:
-  version "5.37.2-alpha.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.37.2-alpha.4.tgz#f70edbcd895cfe46c6d171cdd2cf46c76a6d45ed"
-  integrity sha512-zsk4RKfJhYbS0VhH2YJGaDgqQPAdE3yLBmcw5zpZ2wkMOoEtmd/UDWqEAZ86l1X6ERUXZAIayiww2QLvzU/3AA==
+rubic-sdk@5.37.2-alpha.5:
+  version "5.37.2-alpha.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.37.2-alpha.5.tgz#d22ba426c6ada399588545304e9188d89b313341"
+  integrity sha512-XNUFcqIVRvDERgd8gR5V8tWTGewlA4ZSnIW0ea3oKvliIoxsEqO66gG8ffT2ELAwhD3SK5ZQWAjTQ+QLJcE+WA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
