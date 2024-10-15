@@ -192,13 +192,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.BDAY_PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
@@ -220,8 +214,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO,
-      BlockchainTags.BDAY_PROMO
+      BlockchainTags.PROMO
     ]
   },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX', BlockchainTags.EVM] },
@@ -296,8 +289,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
       BlockchainTags.NEW,
-      BlockchainTags.PROMO,
-      BlockchainTags.BDAY_PROMO
+      BlockchainTags.PROMO
     ]
   },
   {
