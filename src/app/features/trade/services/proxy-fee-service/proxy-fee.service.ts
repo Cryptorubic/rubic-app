@@ -21,8 +21,6 @@ import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-s
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
 import {
   MERLIN_INTEGRATOR_ADDRESS,
-  TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN,
-  TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
   XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
 } from './const/integrators-addresses';
@@ -154,10 +152,6 @@ export class ProxyFeeService {
     if (onChainIntegrator && isOnChain) return onChainIntegrator;
     if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
 
-    const useTaikoIntegratorOnChain =
-      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.TAIKO;
-    const useTaikoIntegratorCcr =
-      from.blockchain === BLOCKCHAIN_NAME.TAIKO || to.blockchain === BLOCKCHAIN_NAME.TAIKO;
     const useMerlinIntegrator =
       from.blockchain === BLOCKCHAIN_NAME.MERLIN || to.blockchain === BLOCKCHAIN_NAME.MERLIN;
     const useXLayerIntegratorOnChain =
@@ -165,8 +159,6 @@ export class ProxyFeeService {
     const useXLayerIntegratorCcr =
       from.blockchain === BLOCKCHAIN_NAME.XLAYER || to.blockchain === BLOCKCHAIN_NAME.XLAYER;
 
-    if (useTaikoIntegratorOnChain) return TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
-    if (useTaikoIntegratorCcr) return TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
     if (useMerlinIntegrator) return MERLIN_INTEGRATOR_ADDRESS;
     if (useXLayerIntegratorOnChain) return XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
     if (useXLayerIntegratorCcr) return XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
