@@ -21,6 +21,7 @@ import {
   UnapprovedContractError,
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
+  TonOnChainTrade,
   IsDeflationToken
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
@@ -47,6 +48,7 @@ import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -75,7 +77,8 @@ export class OnChainService {
     private readonly queryParamsService: QueryParamsService,
     private readonly sessionStorage: SessionStorageService,
     private readonly proxyService: ProxyFeeService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly modalService: ModalService
   ) {}
 
   public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
@@ -181,6 +184,7 @@ export class OnChainService {
     if (!this.platformConfigurationService.isAvailableBlockchain(fromBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[fromBlockchain]);
     }
+    await this.handlePreSwapModal(trade);
 
     const receiverAddress = this.receiverAddress;
 
@@ -355,6 +359,14 @@ export class OnChainService {
         'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
       )
     );
+  }
+
+  private async handlePreSwapModal(trade: OnChainTrade): Promise<void> {
+    if (trade instanceof TonOnChainTrade && trade.isMultistepSwap) {
+      const ok = await this.modalService.openTonSlippageWarning(trade);
+
+      if (!ok) throw new UserRejectError();
+    }
   }
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
