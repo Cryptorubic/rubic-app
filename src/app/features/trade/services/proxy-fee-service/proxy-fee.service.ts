@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, PriceToken } from 'rubic-sdk';
+import { PriceToken } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -19,11 +19,7 @@ import {
 } from '@features/trade/services/proxy-fee-service/models/cross-chain-fee-types';
 import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-type-mapping';
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
-import {
-  MERLIN_INTEGRATOR_ADDRESS,
-  XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
-  XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
-} from './const/integrators-addresses';
+
 import { tokenTypeMapping } from './const/token-type-mapping';
 
 @Injectable({ providedIn: 'root' })
@@ -151,17 +147,6 @@ export class ProxyFeeService {
 
     if (onChainIntegrator && isOnChain) return onChainIntegrator;
     if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
-
-    const useMerlinIntegrator =
-      from.blockchain === BLOCKCHAIN_NAME.MERLIN || to.blockchain === BLOCKCHAIN_NAME.MERLIN;
-    const useXLayerIntegratorOnChain =
-      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.XLAYER;
-    const useXLayerIntegratorCcr =
-      from.blockchain === BLOCKCHAIN_NAME.XLAYER || to.blockchain === BLOCKCHAIN_NAME.XLAYER;
-
-    if (useMerlinIntegrator) return MERLIN_INTEGRATOR_ADDRESS;
-    if (useXLayerIntegratorOnChain) return XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
-    if (useXLayerIntegratorCcr) return XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
 
     return providerAddress;
   }
