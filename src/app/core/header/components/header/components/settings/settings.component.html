@@ -1,22 +1,23 @@
 <div class="settings">
-  <div class="settings__theme">
-    <div class="settings__theme-text">
-      <span class="settings__theme-title">
-        {{ 'settings.header.switchTheme.title' | translate }}
-      </span>
-      <span class="settings__theme-subtitle">
-        {{ 'settings.header.switchTheme.desc' | translate }}
-      </span>
-    </div>
-    <button tuiIconButton appearance="secondary" type="button" size="m" (click)="switchTheme()">
-      <span
-        class="settings__theme-image"
-        [inlineSVG]="
-          (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'
-        "
-      ></span>
-    </button>
-  </div>
+  <!--  @deprecated -->
+  <!--  <div class="settings__theme">-->
+  <!--    <div class="settings__theme-text">-->
+  <!--      <span class="settings__theme-title">-->
+  <!--        {{ 'settings.header.switchTheme.title' | translate }}-->
+  <!--      </span>-->
+  <!--      <span class="settings__theme-subtitle">-->
+  <!--        {{ 'settings.header.switchTheme.desc' | translate }}-->
+  <!--      </span>-->
+  <!--    </div>-->
+  <!--    <button tuiIconButton appearance="secondary" type="button" size="m" (click)="switchTheme()">-->
+  <!--      <span-->
+  <!--        class="settings__theme-image"-->
+  <!--        [inlineSVG]="-->
+  <!--          (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
+  <!--        "-->
+  <!--      ></span>-->
+  <!--    </button>-->
+  <!--  </div>-->
 
   <div class="settings__language">
     <div class="settings__theme-text">

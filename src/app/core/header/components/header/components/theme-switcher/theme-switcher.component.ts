@@ -25,8 +25,9 @@ export class ThemeSwitcherComponent {
 
   /**
    * Toggles theme on dark or light.
+   * @deprecated
    */
   public switchTheme(): void {
-    this.themeService.switchTheme();
+    // this.themeService.switchTheme();
   }
 }

@@ -37,13 +37,6 @@ export class SettingsComponent {
     @Self() private readonly destroy$: TuiDestroyService
   ) {}
 
-  /**
-   * Toggles theme.
-   */
-  public switchTheme(): void {
-    this.themeService.switchTheme();
-  }
-
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')

@@ -143,7 +143,8 @@ export class HeaderComponent implements AfterViewInit {
     this.gtmService.reloadGtmSession();
   }
 
-  public switchTheme(): void {
-    this.themeService.switchTheme();
-  }
+  // @deprecated
+  // public switchTheme(): void {
+  //   this.themeService.switchTheme();
+  // }
 }
