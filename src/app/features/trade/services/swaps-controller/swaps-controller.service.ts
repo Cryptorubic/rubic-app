@@ -40,7 +40,8 @@ import {
   SymbiosisEvmCcrTrade,
   BLOCKCHAIN_NAME,
   OnChainTrade,
-  LowSlippageError
+  LowSlippageError,
+  RetroBridgeTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -206,6 +207,7 @@ export class SwapsControllerService {
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
               wrappedTrade?.error
@@ -215,16 +217,17 @@ export class SwapsControllerService {
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$
+              isNotLinkedAccount$,
+              needAuthWallet$
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount, needAuthWallet]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-                    this.swapsStateService.updateTrade(trade, type, needApprove);
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,
@@ -305,7 +308,6 @@ export class SwapsControllerService {
         callback.onError?.();
         return;
       }
-
       if (trade instanceof CrossChainTrade) {
         txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
       } else {
@@ -371,6 +373,25 @@ export class SwapsControllerService {
         error = new DelayedApproveError();
       }
       this.errorsService.catch(error);
+    }
+  }
+
+  public async authWallet(
+    tradeState: SelectedTrade,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: (...args: unknown[]) => void;
+      onError?: () => void;
+    }
+  ): Promise<void> {
+    const trade = tradeState.trade as RetroBridgeTrade;
+    try {
+      await trade.authWallet();
+      callback.onSwap();
+    } catch (err) {
+      console.error(err);
+      callback.onError();
+      this.errorsService.catch(err);
     }
   }
 
@@ -444,6 +465,13 @@ export class SwapsControllerService {
     return of(false);
   }
 
+  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): Observable<boolean> {
+    if (trade instanceof RetroBridgeTrade) {
+      return from(trade.needAuthWallet());
+    }
+    return of(false);
+  }
+
   private async handleCrossChainSwapResponse(
     trade: CrossChainTrade,
     txHash?: string,
@@ -460,6 +488,9 @@ export class SwapsControllerService {
       }
       if ('squidrouterRequestId' in trade) {
         params.squidrouterId = trade.squidrouterRequestId as string;
+      }
+      if (trade instanceof RetroBridgeTrade) {
+        params.retroBridgeId = trade.retroBridgeId;
       }
 
       onSwap?.(params);
@@ -499,6 +530,7 @@ export class SwapsControllerService {
         tradeState.trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        false,
         false
       );
       this.swapsStateService.pickProvider(true);
