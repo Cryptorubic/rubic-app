@@ -1,9 +1,16 @@
-import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { RubicError } from '@core/errors/models/rubic-error';
+import { ERROR_TYPE } from '../error-type';
+import { RubicError } from '../rubic-error';
 
 export class LowSlippageError extends RubicError<ERROR_TYPE.TEXT> {
-  constructor() {
-    super(`Please, increase the slippage and try again!`);
+  /**
+   * @param minSlippage number from 0 to 1
+   */
+  constructor(minSlippage?: number) {
+    super(
+      `Slippage is too low for transaction.${
+        minSlippage ? ` Minimal slippage percent is ${minSlippage * 100}.` : ''
+      } `
+    );
     Object.setPrototypeOf(this, LowSlippageError.prototype);
   }
 }

@@ -10,19 +10,16 @@ import {
   BlockchainsInfo,
   CrossChainTradeType,
   EvmBlockchainName,
-  EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTrade,
-  Web3Pure
+  OnChainTrade
 } from 'rubic-sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -30,9 +27,8 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareAddresses } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk/lib/core/blockchain/models/blockchain-name';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -40,6 +36,8 @@ import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
+import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
+import { AppGasData } from '../../models/provider-info';
 
 @Component({
   selector: 'app-preview-swap',
@@ -101,7 +99,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly swapsStateService: SwapsStateService,
+    private readonly tradeInfoManager: TradeInfoManager
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
@@ -191,46 +190,8 @@ export class PreviewSwapComponent implements OnDestroy {
     }
   }
 
-  public getGasData(
-    trade: CrossChainTrade | OnChainTrade
-  ): { amount: BigNumber; amountInUsd: BigNumber; symbol: string } | null {
-    let gasData = null;
-    let gasPrice = null;
-    if (trade instanceof EvmCrossChainTrade) {
-      gasData = trade.gasData;
-
-      if (
-        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
-        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
-      ) {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? Web3Pure.fromWei(gasData.gasPrice)
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      } else {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? gasData.gasPrice
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      }
-    } else if (trade instanceof EvmOnChainTrade) {
-      gasData = trade.gasFeeInfo;
-      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
-    }
-
-    if (!gasData || !gasData.gasLimit) {
-      return null;
-    }
-    const blockchain = trade.from.blockchain;
-    const nativeToken = nativeTokensList[blockchain];
-    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
-      compareTokens(token, { blockchain, address: nativeToken.address })
-    ).price;
-    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
-
-    return {
-      amount: gasLimit,
-      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
-      symbol: nativeToken.symbol
-    };
+  public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
+    return this.tradeInfoManager.getGasData(trade);
   }
 
   // eslint-disable-next-line complexity

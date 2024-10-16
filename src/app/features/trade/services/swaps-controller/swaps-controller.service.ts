@@ -30,7 +30,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
-  LowSlippageError,
   NotSupportedTokensError,
   OnChainTradeType,
   RubicSdkError,
@@ -38,9 +37,10 @@ import {
   UserRejectError,
   Web3Pure,
   NoLinkedAccountError,
-  SymbiosisCrossChainTrade,
+  SymbiosisEvmCcrTrade,
   BLOCKCHAIN_NAME,
   OnChainTrade,
+  LowSlippageError,
   RetroBridgeTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
@@ -459,7 +459,7 @@ export class SwapsControllerService {
     if (error && error instanceof NoLinkedAccountError) {
       return of(true);
     }
-    if (trade instanceof SymbiosisCrossChainTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
+    if (trade instanceof SymbiosisEvmCcrTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
       return from(trade.checkBlockchainRequirements());
     }
     return of(false);
@@ -536,7 +536,7 @@ export class SwapsControllerService {
       this.swapsStateService.pickProvider(true);
     }
     onError?.();
-    this.errorsService.catch(err);
+    this.errorsService.catch(parsedError);
   }
 
   private subscribeOnSettings(): void {

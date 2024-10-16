@@ -24,7 +24,7 @@ export class TokensNetworkService {
   /**
    * Sets new tokens request options.
    */
-  set tokensRequestParameters(parameters: { [p: string]: unknown }) {
+  public setTokensRequestParameters(parameters: { [p: string]: unknown }): void {
     this._tokensRequestParameters$.next(parameters);
   }
 
@@ -38,8 +38,6 @@ export class TokensNetworkService {
   public get tokensNetworkState(): TokensNetworkState {
     return this._tokensNetworkState$.value;
   }
-
-  public needRefetchTokens: boolean;
 
   private get userAddress(): string | undefined {
     return this.authService.userAddress;
@@ -60,8 +58,6 @@ export class TokensNetworkService {
           return this.tokensApiService.getTokensList(this._tokensNetworkState$);
         }),
         tap(backendTokens => {
-          this.needRefetchTokens = this.tokensApiService.needRefetchTokens;
-
           this.tokensStoreService.updateStorageTokens(backendTokens);
           this.tokensStoreService.patchTokens(backendTokens, false);
         }),
