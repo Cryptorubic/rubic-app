@@ -29,7 +29,6 @@ import { MobileMenuTogglerComponent } from './components/header/components/mobil
 import { UserProfileComponent } from './components/header/components/user-profile/user-profile.component';
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
-import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { BannerZkLinkComponent } from '@core/header/components/header/components/banner-zk-link/banner-zk-link.component';
@@ -55,7 +54,6 @@ import { BannerBirthdayComponent } from '@core/header/components/header/componen
     UserProfileComponent,
     MobileMenuTogglerComponent,
     RubicMenuComponent,
-    ThemeSwitcherComponent,
     ExternalLinkBannerComponent,
     BannerDirective,
     BannerZkLinkComponent,

@@ -142,9 +142,4 @@ export class HeaderComponent implements AfterViewInit {
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }
-
-  // @deprecated
-  // public switchTheme(): void {
-  //   this.themeService.switchTheme();
-  // }
 }
