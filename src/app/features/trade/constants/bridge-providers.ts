@@ -245,6 +245,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}refuel.png`,
     name: 'Refuel'
   },
+  retro_bridge: {
+    averageTime: 5,
+    color: '#000000',
+    image: `${imageBasePath}retro-bridge.svg`,
+    name: 'Retro Bridge'
+  },
   router: {
     averageTime: 5,
     color: '#000000',

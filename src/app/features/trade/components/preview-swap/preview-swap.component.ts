@@ -126,6 +126,10 @@ export class PreviewSwapComponent implements OnDestroy {
     await this.previewSwapService.startApprove();
   }
 
+  public authWallet(): void {
+    this.previewSwapService.startAuthWallet();
+  }
+
   public async navigateToHistory(): Promise<void> {
     const trade = await firstValueFrom(this.tradeState$);
     const isCrossChain = trade.trade instanceof CrossChainTrade;
@@ -225,6 +229,9 @@ export class PreviewSwapComponent implements OnDestroy {
       state.disabled = false;
       state.label = 'Done';
       state.action = this.backToForm.bind(this);
+    } else if (el.step === transactionStep.authWalletReady) {
+      state.disabled = false;
+      state.action = this.authWallet.bind(this);
     }
 
     if (
