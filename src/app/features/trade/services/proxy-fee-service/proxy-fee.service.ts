@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, PriceToken } from 'rubic-sdk';
+import { PriceToken } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -19,14 +19,7 @@ import {
 } from '@features/trade/services/proxy-fee-service/models/cross-chain-fee-types';
 import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-type-mapping';
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
-import {
-  MERLIN_INTEGRATOR_ADDRESS,
-  RUBIC_BDAY_ADDRESS,
-  TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN,
-  TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN,
-  XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN,
-  XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN
-} from './const/integrators-addresses';
+
 import { tokenTypeMapping } from './const/token-type-mapping';
 
 @Injectable({ providedIn: 'root' })
@@ -154,31 +147,6 @@ export class ProxyFeeService {
 
     if (onChainIntegrator && isOnChain) return onChainIntegrator;
     if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
-
-    const useTaikoIntegratorOnChain =
-      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.TAIKO;
-    const useTaikoIntegratorCcr =
-      from.blockchain === BLOCKCHAIN_NAME.TAIKO || to.blockchain === BLOCKCHAIN_NAME.TAIKO;
-    const useMerlinIntegrator =
-      from.blockchain === BLOCKCHAIN_NAME.MERLIN || to.blockchain === BLOCKCHAIN_NAME.MERLIN;
-    const useXLayerIntegratorOnChain =
-      from.blockchain === to.blockchain && from.blockchain === BLOCKCHAIN_NAME.XLAYER;
-    const useXLayerIntegratorCcr =
-      from.blockchain === BLOCKCHAIN_NAME.XLAYER || to.blockchain === BLOCKCHAIN_NAME.XLAYER;
-    const useRubicBdayIntegrator =
-      from.blockchain === BLOCKCHAIN_NAME.SCROLL ||
-      to.blockchain === BLOCKCHAIN_NAME.SCROLL ||
-      from.blockchain === BLOCKCHAIN_NAME.TAIKO ||
-      to.blockchain === BLOCKCHAIN_NAME.TAIKO ||
-      from.blockchain === BLOCKCHAIN_NAME.BASE ||
-      to.blockchain === BLOCKCHAIN_NAME.BASE;
-
-    if (useRubicBdayIntegrator) return RUBIC_BDAY_ADDRESS;
-    if (useTaikoIntegratorOnChain) return TAIKO_INTEGRATOR_ADDRESS_ON_CHAIN;
-    if (useTaikoIntegratorCcr) return TAIKO_INTEGRATOR_ADDRESS_CROSS_CHAIN;
-    if (useMerlinIntegrator) return MERLIN_INTEGRATOR_ADDRESS;
-    if (useXLayerIntegratorOnChain) return XLAYER_INTEGRATOR_ADDRESS_ON_CHAIN;
-    if (useXLayerIntegratorCcr) return XLAYER_INTEGRATOR_ADDRESS_CROSS_CHAIN;
 
     return providerAddress;
   }
