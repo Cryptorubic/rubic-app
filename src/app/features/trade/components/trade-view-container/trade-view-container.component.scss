@@ -64,6 +64,16 @@
   }
 }
 
+.large-iframe-swap-container {
+  flex-direction: column;
+  gap: 10px;
+
+  app-cn-trade-info {
+    width: 600px;
+    margin: 0 10px;
+  }
+}
+
 @include b($mobile-md) {
   .swap-container {
     display: flex;

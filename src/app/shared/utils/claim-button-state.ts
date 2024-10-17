@@ -28,20 +28,20 @@ const getButtonKey = ([
   isParticipantOfCurrentRound,
   userAddress,
   network,
-  isParticipantOfPrevRounds,
   status,
   isAlreadyClaimed,
   claimName
-]: [boolean, string, BlockchainName, boolean, ClaimStatus, boolean, ClaimName]): ButtonLabel => {
+]: [boolean, string, BlockchainName, ClaimStatus, boolean, ClaimName]): ButtonLabel => {
   if (!userAddress) {
     return 'login';
   }
   if (status !== 'active') {
-    return status;
+    return 'expired';
   }
-  if (isParticipantOfPrevRounds === false || !isParticipantOfCurrentRound) {
+  if (!isParticipantOfCurrentRound) {
     return 'notParticipant';
   }
+
   if (isAlreadyClaimed) {
     if (claimName === 'airdrop') {
       return 'claimed';
@@ -60,10 +60,6 @@ const getButtonKey = ([
     }
   }
 
-  if (!Boolean(userAddress)) {
-    return 'emptyError';
-  }
-
   const isEthAddress = EvmWeb3Pure.isAddressCorrect(userAddress);
   return isEthAddress ? 'wrongAddressError' : 'incorrectAddressError';
 };
@@ -72,7 +68,6 @@ export const setButtonState = (
   isParticipantOfCurrentRound: boolean,
   userAddress: string,
   network: BlockchainName,
-  isParticipantOfPrevRounds: boolean,
   status: ClaimStatus,
   isAlreadyClaimed: boolean,
   claimName: ClaimName
@@ -81,7 +76,6 @@ export const setButtonState = (
     isParticipantOfCurrentRound,
     userAddress,
     network,
-    isParticipantOfPrevRounds,
     status,
     isAlreadyClaimed,
     claimName

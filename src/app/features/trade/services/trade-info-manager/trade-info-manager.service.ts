@@ -6,6 +6,7 @@ import {
   EvmCrossChainTrade,
   EvmOnChainTrade,
   OnChainTrade,
+  TonOnChainTrade,
   Web3Pure,
   nativeTokensList
 } from 'rubic-sdk';
@@ -44,6 +45,11 @@ export class TradeInfoManager {
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
     let gasData = null;
     let gasPrice = null;
+
+    if (trade.type === 'squidrouter') {
+      return null;
+    }
+
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
 
@@ -59,7 +65,7 @@ export class TradeInfoManager {
           ? gasData.gasPrice
           : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
       }
-    } else if (trade instanceof EvmOnChainTrade) {
+    } else if (trade instanceof EvmOnChainTrade || trade instanceof TonOnChainTrade) {
       gasData = trade.gasFeeInfo;
       gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
@@ -72,11 +78,11 @@ export class TradeInfoManager {
     const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
-    const gasLimit = gasData?.gasLimit?.multipliedBy(gasPrice);
+    const gasFee = gasData?.gasLimit?.multipliedBy(gasPrice);
 
     return {
-      amount: gasLimit,
-      amountInUsd: gasLimit.multipliedBy(nativeTokenPrice),
+      amount: gasFee,
+      amountInUsd: gasFee.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
   }

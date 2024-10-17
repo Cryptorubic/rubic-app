@@ -8,6 +8,7 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  RetroBridgeTrade,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   UnapprovedMethodError,
@@ -20,13 +21,13 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
-import { ProviderStatisctic } from '@core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
+import { ProviderCcrStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 
 @Injectable()
 export class CrossChainApiService {
@@ -55,7 +56,7 @@ export class CrossChainApiService {
     });
   }
 
-  public saveProvidersStatistics(data: ProviderStatisctic): Observable<void> {
+  public saveProvidersStatistics(data: ProviderCcrStatistic): Observable<void> {
     return this.httpService.post('route_calculation_statistic/save', data, null, {
       headers: {
         Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
@@ -118,6 +119,10 @@ export class CrossChainApiService {
           : this.window.document.location.href,
       ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
+      ...('squidrouterRequestId' in trade && {
+        squidrouter_request_id: trade.squidrouterRequestId
+      }),
+      ...(trade instanceof RetroBridgeTrade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...(referral && { influencer: referral })
     };
 

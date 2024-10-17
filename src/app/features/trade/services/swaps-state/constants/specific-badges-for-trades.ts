@@ -1,12 +1,15 @@
 import { BadgeInfo } from '@features/trade/models/trade-state';
 import {
+  BLOCKCHAIN_NAME,
   BRIDGE_TYPE,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   OnChainTradeType
 } from 'rubic-sdk';
-import { INFO_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
+import { GOLD_COLOR, INFO_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
 import {
   showAttentionLabelArbitrumBridge,
   showNoSlippageLabelArbitrumBridge
@@ -15,6 +18,96 @@ import {
 export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>
 > = {
+  [ON_CHAIN_TRADE_TYPE.OPEN_OCEAN]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL;
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.ROUTER]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      getUrl: () => 'https://rubic.exchange/birthday4',
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.SCROLL ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.SCROLL
+        );
+      }
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      getUrl: () => 'https://rubic.exchange/birthday4',
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.TAIKO ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.TAIKO
+        );
+      }
+    },
+    {
+      getUrl: () => 'https://owlto.finance/',
+      bgColor: INFO_COLOR,
+      fromSdk: false,
+      getLabel: () => '+Points!',
+      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
+      showLabel: () => true
+    }
+  ],
+  [ON_CHAIN_TRADE_TYPE.IZUMI]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return trade.from.blockchain === BLOCKCHAIN_NAME.TAIKO;
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+  [ON_CHAIN_TRADE_TYPE.AERODROME]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return trade.from.blockchain === BLOCKCHAIN_NAME.BASE;
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: [
+    {
+      bgColor: GOLD_COLOR,
+      fromSdk: false,
+      getLabel: () => '0 FEES',
+      getHint: () => ``,
+      showLabel: (trade: CrossChainTrade | OnChainTrade) => {
+        return (
+          trade.from.blockchain === BLOCKCHAIN_NAME.BASE ||
+          trade.to.blockchain === BLOCKCHAIN_NAME.BASE
+        );
+      },
+      getUrl: () => 'https://rubic.exchange/birthday4'
+    }
+  ],
+
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
@@ -87,16 +180,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'ATTENTION',
       getHint: () => 'Waiting funds in target chain for 7 days',
       showLabel: showAttentionLabelArbitrumBridge
-    }
-  ],
-  [BRIDGE_TYPE.OWL_TO_BRIDGE]: [
-    {
-      getUrl: () => 'https://owlto.finance/',
-      bgColor: INFO_COLOR,
-      fromSdk: false,
-      getLabel: () => '+Points!',
-      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
-      showLabel: () => true
     }
   ]
 };

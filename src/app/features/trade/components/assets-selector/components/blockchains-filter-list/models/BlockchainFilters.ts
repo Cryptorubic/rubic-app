@@ -5,7 +5,8 @@ export const BlockchainTags = {
   NON_EVM: 'Non-EVM',
   LAYER_2: 'Layer-2',
   ALL: 'All',
-  NEW: 'new'
+  NEW: 'new',
+  BDAY_PROMO: 'birhtday'
 } as const;
 export const blockchainFilters = [
   BlockchainTags.ALL,

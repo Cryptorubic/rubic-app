@@ -1,6 +1,6 @@
 <app-window-container class="statistics" *ngLet="currentUser$ | async as user">
   <ng-container header
-    ><span class="statistics__title">{{ 'staking.overview.title' | translate }}</span>
+    ><span class="statistics__title">{{ 'staking.overview.endTitle' | translate }}</span>
     <app-rotating-icon
       class="statistics__refresh"
       (iconClick)="refreshStatistics()"
