@@ -41,7 +41,9 @@ import {
   BLOCKCHAIN_NAME,
   OnChainTrade,
   LowSlippageError,
-  RetroBridgeTrade
+  RetroBridgeTrade,
+  RetroBridgeEvmTrade,
+  RetroBridgeTonTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -466,7 +468,7 @@ export class SwapsControllerService {
   }
 
   private needAuthWallet(trade: CrossChainTrade | OnChainTrade): Observable<boolean> {
-    if (trade instanceof RetroBridgeTrade) {
+    if (trade instanceof RetroBridgeEvmTrade || trade instanceof RetroBridgeTonTrade) {
       return from(trade.needAuthWallet());
     }
     return of(false);
