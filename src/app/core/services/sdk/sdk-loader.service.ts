@@ -59,7 +59,6 @@ export class SdkLoaderService {
           };
           const core = chainTypeMap?.[chainType];
           const walletProviderCore: WalletProviderCore = { address, core };
-          console.log('subscribeOnAddressChange ===> ', address);
           this.sdkService.updateWallet(chainType, walletProviderCore);
         })
       )
