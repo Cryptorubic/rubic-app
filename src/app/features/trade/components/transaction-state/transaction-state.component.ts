@@ -20,9 +20,13 @@ export class TransactionStateComponent {
   @Input({ required: true }) set transactionData(value: {
     type: 'bridge' | 'swap';
     needApprove: boolean;
+    needAuthWallet: boolean;
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
+    if (value.needAuthWallet) {
+      steps.push(transactionStep.authWalletPending);
+    }
     if (value.needApprove) {
       steps.push(transactionStep.approvePending);
     }
@@ -49,6 +53,8 @@ export class TransactionStateComponent {
       error: 'Error',
       approveReady: 'Approve',
       approvePending: 'Manage allowance',
+      authWalletPending: 'Signing message',
+      authWalletReady: 'Wallet authorized',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
       sourcePending:

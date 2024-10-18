@@ -11,19 +11,26 @@
   <!--      *noFrame-->
   <!--    ></app-banner-taiko>-->
   <!--  </ng-container>-->
-  <ng-container *tuiItem>
+  <!-- <ng-container *tuiItem>
     <app-banner-birthday href="https://rubic.exchange/birthday4" *noFrame></app-banner-birthday>
+  </ng-container> -->
+  <ng-container *tuiItem>
+    <app-banner-zero-fees href="https://rubic.exchange/birthday4"></app-banner-zero-fees>
   </ng-container>
 </tui-carousel>
 
-<header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
+<header
+  class="rubic-header"
+  [ngClass]="{ 'large-iframe-header': useLargeIframe }"
+  *ngLet="currentUser$ | async as currentUser"
+>
   <app-logo
     [currentUser]="!!currentUser"
     [isDarkTheme]="isDarkTheme$ | async"
     [noFrameLink]="noFrameLink"
   ></app-logo>
 
-  <app-rubic-menu-toggler class="rubic-header__menu">
+  <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
     <app-rubic-menu
       [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
       [crossChainActive]="
@@ -39,6 +46,7 @@
     appearance="secondary"
     type="button"
     size="m"
+    *ngIf="!useLargeIframe"
     [pseudoActive]="
       rootPath &&
       ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
@@ -100,9 +108,9 @@
   <!--    ></div>-->
   <!--  </button>-->
 
-  <app-language-selector></app-language-selector>
+  <app-language-selector *ngIf="!useLargeIframe"></app-language-selector>
 
-  <app-history-button></app-history-button>
+  <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
   <div class="rubic-header__profile">
     <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
