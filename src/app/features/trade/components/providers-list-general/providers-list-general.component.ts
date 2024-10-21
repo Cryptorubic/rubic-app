@@ -112,16 +112,14 @@ export class ProvidersListGeneralComponent {
   }
 
   public handleRouteSelection(route: AlternativeRoute): void {
-    this.swapsFormService.form.patchValue({
-      input: {
-        fromBlockchain: route.from.blockchain,
-        fromToken: route.from,
-        toBlockchain: route.to.blockchain,
-        toToken: route.to,
-        fromAmount: {
-          visibleValue: route.amount.toFixed(),
-          actualValue: route.amount
-        }
+    this.swapsFormService.inputControl.patchValue({
+      fromBlockchain: route.from.blockchain,
+      fromToken: route.from,
+      toBlockchain: route.to.blockchain,
+      toToken: route.to,
+      fromAmount: {
+        visibleValue: route.amount.toFixed(),
+        actualValue: route.amount
       }
     });
   }
@@ -164,13 +162,15 @@ export class ProvidersListGeneralComponent {
 
   ngAfterViewInit(): void {
     // @TODO optimise scroll handler
-    fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
-      .pipe(
-        tap(() => this.hideProviderHintOnScroll(true)),
-        debounceTime(500),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => this.hideProviderHintOnScroll(false));
+    if (!this.isMobile) {
+      fromEvent(this.scrollBarElement.browserScrollRef.nativeElement, 'scroll')
+        .pipe(
+          tap(() => this.hideProviderHintOnScroll(true)),
+          debounceTime(500),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(() => this.hideProviderHintOnScroll(false));
+    }
   }
 
   public hideProviderHintOnScroll(isScrollStart: boolean): void {

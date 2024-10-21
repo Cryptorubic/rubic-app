@@ -36,6 +36,8 @@ export class AlternativeRoutesService {
     AlternativeRouteStatuses.PENDING
   );
 
+  private readonly DEFAULT_TOKEN_PRICE = 1000;
+
   public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
 
   private fetchAlternativeRoutes(
@@ -102,12 +104,14 @@ export class AlternativeRoutesService {
   private getFromTokenAmount(newFromToken: TokenAmount, tokenUsdPrice: number): BigNumber {
     const prevFromToken = this.swapFormService.inputValue.fromToken;
     const fromAmount = this.swapFormService.inputValue.fromAmount;
-    if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
-      const usdPrice = this.swapFormService.inputValue.fromToken.price ?? 1000;
+
+    if (!compareAddresses(prevFromToken.address, newFromToken.address) && tokenUsdPrice) {
+      const usdPrice = this.swapFormService.inputValue.fromToken.price ?? this.DEFAULT_TOKEN_PRICE;
       const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
 
       return usdAmount.dividedBy(tokenUsdPrice);
     }
+
     return fromAmount.actualValue;
   }
 }
