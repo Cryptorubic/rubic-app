@@ -11,7 +11,10 @@
 
     <div class="modal__body">
       <span>
-        {{ 'modals.warningModal.tonMinSlippage' | translate : { slippage: slippagePercent } }}
+        {{ 'modals.warningModal.tonMultistepWarning' | translate }}
+      </span>
+      <span *ngIf="isChangedSlippage">
+        {{ 'modals.warningModal.tonSlippageChanged' | translate : { slippage: slippagePercent } }}
       </span>
 
       <div class="modal__body-path">
