@@ -158,8 +158,9 @@ export class PreviewSwapService {
 
   public async requestTxSign(): Promise<void> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
-
-    if (tradeState.needApprove) {
+    if (tradeState.needAuthWallet) {
+      this.startAuthWallet();
+    } else if (tradeState.needApprove) {
       this.startApprove();
     } else {
       this.startSwap();
@@ -168,6 +169,10 @@ export class PreviewSwapService {
 
   public startSwap(): void {
     this.setNextTxState({ step: 'swapRequest', data: this.transactionState.data });
+  }
+
+  public startAuthWallet(): void {
+    this.setNextTxState({ step: 'authWalletPending', data: this.transactionState.data });
   }
 
   public startApprove(): void {
@@ -203,6 +208,9 @@ export class PreviewSwapService {
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
+          if (txState.step === 'authWalletPending') {
+            return this.handleAuthMessage(tradeState);
+          }
           if (txState.step === 'swapRequest') {
             return this.makeSwapRequest(tradeState);
           }
@@ -237,6 +245,12 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.rangoRequestId && {
                   rangoRequestId: additionalInfo.rangoRequestId
+                }),
+                ...(additionalInfo?.squidrouterId && {
+                  squidrouterRequestId: additionalInfo.squidrouterId
+                }),
+                ...(additionalInfo.retroBridgeId && {
+                  retroBridgeId: additionalInfo.retroBridgeId
                 })
               },
               tradeState.tradeType as CrossChainTradeType
@@ -424,6 +438,25 @@ export class PreviewSwapService {
         if (this.useCallback) {
           this.setNextTxState({
             step: 'approveReady',
+            data: this.transactionState.data
+          });
+        }
+      }
+    });
+  }
+
+  private handleAuthMessage(tradeState: SelectedTrade): Promise<void> {
+    this.useCallback = true;
+    return this.swapsControllerService.authWallet(tradeState, {
+      onSwap: () => {
+        if (this.useCallback) {
+          this.startSwap();
+        }
+      },
+      onError: () => {
+        if (this.useCallback) {
+          this.setNextTxState({
+            step: 'authWalletReady',
             data: this.transactionState.data
           });
         }

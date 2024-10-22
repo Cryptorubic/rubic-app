@@ -173,6 +173,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //DDDDDDDDDDDDDDDDDDDDD
+  [ON_CHAIN_TRADE_TYPE.DEDUST]: {
+    name: 'Dedust',
+    image: `${imageBasePath}dedust.svg`,
+    color: '#ebab34',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
     image: `${imageBasePath}defiplaza.png`,
@@ -564,6 +570,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}stellaswap.svg`,
     color: '#E2107B'
   },
+  [ON_CHAIN_TRADE_TYPE.STONFI]: {
+    name: 'StonFi',
+    image: `${imageBasePath}stonfi.png`,
+    color: '#066ccc',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.SUN_SWAP]: {
     name: 'SunSwap',
     image: `${imageBasePath}sunswap.svg`,
@@ -593,6 +605,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Sync Swap',
     image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
+  },
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: {
+    name: 'Squid Router',
+    image: 'assets/images/icons/providers/bridge/squidrouter.svg',
+    color: '#e6f936'
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
@@ -738,6 +755,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
 export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = Object.fromEntries(
   Object.entries(onChainTradeProviders).map(([key, value]: [OnChainTradeType, ProviderInfo]) => [
     key,
-    { ...value, averageTime: 1 }
+    { averageTime: 1, ...value }
   ])
 ) as Record<OnChainTradeType, ProviderInfo>;

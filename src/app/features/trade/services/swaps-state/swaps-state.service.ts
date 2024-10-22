@@ -43,7 +43,6 @@ import { defaultTradeState } from '@features/trade/services/swaps-state/constant
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../forms-toggler/models';
 import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
 import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 
@@ -147,7 +146,8 @@ export class SwapsStateService {
   public updateTrade(
     wrappedTrade: WrappedSdkTrade,
     type: SWAP_PROVIDER_TYPE,
-    needApprove: boolean
+    needApprove: boolean,
+    needAuthWallet: boolean
   ): void {
     const trade = wrappedTrade?.trade;
     const defaultState: TradeState = !trade
@@ -155,6 +155,7 @@ export class SwapsStateService {
           error: wrappedTrade.error,
           trade: null,
           needApprove,
+          needAuthWallet,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: []
@@ -163,6 +164,7 @@ export class SwapsStateService {
           error: wrappedTrade?.error,
           trade,
           needApprove,
+          needAuthWallet,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
@@ -240,7 +242,7 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
-      const status = this.getTradeStatusOnPickingProvider(isCalculationEnd);
+      const status = this.getTradeStatusOnPickingProvider();
 
       const trade: SelectedTrade = {
         ...bestTrade,
@@ -264,12 +266,8 @@ export class SwapsStateService {
     }
   }
 
-  private getTradeStatusOnPickingProvider(isCalculationEnd: boolean): TRADE_STATUS {
-    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && !isCalculationEnd) {
-      return TRADE_STATUS.LOADING;
-    } else {
-      return TRADE_STATUS.READY_TO_SWAP;
-    }
+  private getTradeStatusOnPickingProvider(): TRADE_STATUS {
+    return TRADE_STATUS.READY_TO_SWAP;
   }
 
   private sortCrossChainTrades(
@@ -369,7 +367,7 @@ export class SwapsStateService {
   }
 
   private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
-    if (!fromToken || !toToken) {
+    if (!fromToken?.address || !toToken?.address) {
       return false;
     }
     const fromSdkToken = new Token(fromToken);

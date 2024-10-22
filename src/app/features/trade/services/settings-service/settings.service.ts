@@ -208,7 +208,7 @@ export class SettingsService {
     ) {
       return priceImpact >= 15;
     }
-    return priceImpact >= 30;
+    return priceImpact >= 5;
   }
 
   public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {

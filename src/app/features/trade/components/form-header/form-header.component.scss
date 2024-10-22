@@ -38,10 +38,6 @@
       pointer-events: none;
     }
 
-    &-title {
-      cursor: pointer;
-    }
-
     &.selected {
       color: var(--tui-text-01);
     }

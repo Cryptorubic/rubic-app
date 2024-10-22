@@ -52,6 +52,8 @@ export class QueryParamsService {
     return urlTree.toString();
   }
 
+  public useLargeIframe: boolean;
+
   public hideUnusedUI: boolean;
 
   public hideTokenSwitcher: boolean;
@@ -91,6 +93,7 @@ export class QueryParamsService {
       return;
     }
 
+    this.useLargeIframe = queryParams.useLargeIframe === 'true';
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
     this.isDesktop = queryParams.isDesktop === 'true';
@@ -170,13 +173,7 @@ export class QueryParamsService {
       this.setHideSelectionStatus(queryParams);
     }
 
-    if (!queryParams.hasOwnProperty('iframe')) {
-      this.iframeService.setIframeFalse();
-      return;
-    }
-
-    const { iframe } = queryParams;
-    if (iframe !== 'true') {
+    if (queryParams?.iframe !== 'true') {
       this.iframeService.setIframeFalse();
       return;
     }
@@ -207,7 +204,7 @@ export class QueryParamsService {
     );
 
     if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkService.tokensRequestParameters = tokensQueryParams;
+      this.tokensNetworkService.setTokensRequestParameters(tokensQueryParams);
     }
   }
 
