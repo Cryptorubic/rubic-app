@@ -22,7 +22,7 @@ export class TonSlippageWarnModalComponent {
 
   public readonly routingPath: TxStep[];
 
-  public readonly isSlippageChanged: boolean;
+  public readonly isChangedSlippage: boolean;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
@@ -30,7 +30,7 @@ export class TonSlippageWarnModalComponent {
     private readonly tokensStoreService: TokensStoreService
   ) {
     this.slippagePercent = this.context.data.trade.slippageTolerance * 100;
-    this.isSlippageChanged = this.context.data.trade.additionalInfo.changedSlippage;
+    this.isChangedSlippage = this.context.data.trade.additionalInfo.isChangedSlippage;
     this.transitTokens = this.getTransitSymbols();
     this.routingPath = this.getRoutingPath();
   }

@@ -13,7 +13,7 @@
       <span>
         {{ 'modals.warningModal.tonMultistepWarning' | translate }}
       </span>
-      <span *ngIf="isSlippageChanged">
+      <span *ngIf="isChangedSlippage">
         {{ 'modals.warningModal.tonSlippageChanged' | translate : { slippage: slippagePercent } }}
       </span>
 
