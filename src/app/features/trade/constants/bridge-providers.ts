@@ -183,6 +183,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}omnibridge.png`,
     name: 'Omni Bridge'
   },
+  oneinch: {
+    averageTime: 5,
+    color: '#94A6C3',
+    image: 'assets/images/icons/providers/on-chain/oneinch.svg',
+    name: '1inch Fusion+'
+  },
   openocean: {
     averageTime: 5,
     color: '#15D9E1',
