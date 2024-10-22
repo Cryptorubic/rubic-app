@@ -1,6 +1,7 @@
 import { BadgeInfo } from '@app/features/trade/models/trade-state';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
+  showLineaLabel,
   showScrollMarksPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
@@ -27,6 +28,14 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       getHint: () =>
         'You will recieve Marks from Scroll for completing this swap and holding this token!',
       showLabel: showScrollMarksPromoLabel
+    }
+  ],
+  [BLOCKCHAIN_NAME.LINEA]: [
+    {
+      fromSdk: false,
+      getLabel: () => 'PROMO',
+      getHint: () => '0 fees',
+      showLabel: showLineaLabel
     }
   ]
 };

@@ -124,7 +124,7 @@
       &._disabled {
         cursor: not-allowed !important;
 
-        app-blockchains-promo-badge {
+        app-blockchain-badge {
           z-index: 1;
 
           pointer-events: auto;
@@ -134,7 +134,6 @@
           .t-wrapper {
             background: var(--tui-secondary-hover) !important;
             opacity: 1 !important;
-
           }
         }
       }
