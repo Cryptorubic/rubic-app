@@ -492,6 +492,9 @@ export class SwapsControllerService {
       if (trade instanceof RetroBridgeTrade) {
         params.retroBridgeId = trade.retroBridgeId;
       }
+      if ('simpleSwapId' in trade) {
+        params.simpleSwapId = trade.simpleSwapId as string;
+      }
 
       onSwap?.(params);
       await this.crossChainApiService.patchTrade(txHash, true);
