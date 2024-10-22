@@ -36,7 +36,7 @@ export class AlternativeRoutesService {
     AlternativeRouteStatuses.PENDING
   );
 
-  private readonly DEFAULT_TOKEN_PRICE = 1000;
+  private readonly DEFAULT_TOKEN_PRICE = 100;
 
   public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
 
@@ -83,7 +83,10 @@ export class AlternativeRoutesService {
             if (!fromToken || !toToken) {
               return null;
             }
-            const fromAmount = this.getFromTokenAmount(fromToken, route.sourceTokenUsdPrice);
+            const fromAmount = this.getFromTokenAmount(
+              fromToken,
+              route.sourceTokenUsdPrice || this.DEFAULT_TOKEN_PRICE
+            );
             return {
               from: fromToken,
               to: toToken,
@@ -105,8 +108,8 @@ export class AlternativeRoutesService {
     const prevFromToken = this.swapFormService.inputValue.fromToken;
     const fromAmount = this.swapFormService.inputValue.fromAmount;
 
-    if (!compareAddresses(prevFromToken.address, newFromToken.address) && tokenUsdPrice) {
-      const usdPrice = this.swapFormService.inputValue.fromToken.price ?? this.DEFAULT_TOKEN_PRICE;
+    if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
+      const usdPrice = this.swapFormService.inputValue.fromToken.price || this.DEFAULT_TOKEN_PRICE;
       const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
 
       return usdAmount.dividedBy(tokenUsdPrice);
