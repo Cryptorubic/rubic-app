@@ -22,12 +22,15 @@ export class TonSlippageWarnModalComponent {
 
   public readonly routingPath: TxStep[];
 
+  public readonly isSlippageChanged: boolean;
+
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, { trade: TonOnChainTrade }>,
     private readonly tokensStoreService: TokensStoreService
   ) {
     this.slippagePercent = this.context.data.trade.slippageTolerance * 100;
+    this.isSlippageChanged = this.context.data.trade.additionalInfo.changedSlippage;
     this.transitTokens = this.getTransitSymbols();
     this.routingPath = this.getRoutingPath();
   }
