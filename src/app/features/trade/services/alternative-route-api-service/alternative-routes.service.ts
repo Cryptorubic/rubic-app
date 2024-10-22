@@ -83,9 +83,10 @@ export class AlternativeRoutesService {
             if (!fromToken || !toToken) {
               return null;
             }
+
             const fromAmount = this.getFromTokenAmount(
               fromToken,
-              route.sourceTokenUsdPrice || this.DEFAULT_TOKEN_PRICE
+              route.sourceTokenUsdPrice ?? this.DEFAULT_TOKEN_PRICE
             );
             return {
               from: fromToken,
@@ -109,10 +110,13 @@ export class AlternativeRoutesService {
     const fromAmount = this.swapFormService.inputValue.fromAmount;
 
     if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
-      const usdPrice = this.swapFormService.inputValue.fromToken.price || this.DEFAULT_TOKEN_PRICE;
-      const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
+      const usdPrice = this.swapFormService.inputValue.fromToken.price;
+      if (usdPrice) {
+        const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
+        return usdAmount.dividedBy(tokenUsdPrice);
+      }
 
-      return usdAmount.dividedBy(tokenUsdPrice);
+      return new BigNumber(this.DEFAULT_TOKEN_PRICE).dividedBy(tokenUsdPrice);
     }
 
     return fromAmount.actualValue;
