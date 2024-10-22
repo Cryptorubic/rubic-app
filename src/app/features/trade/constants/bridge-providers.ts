@@ -105,6 +105,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/on-chain/eddyfinance.ico',
     name: 'Eddy Finance'
   },
+  eywa_v2: {
+    averageTime: 5,
+    color: 'black',
+    image: `${imageBasePath}eywa.svg`,
+    name: 'Eywa V2'
+  },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
     averageTime: 5,
