@@ -32,6 +32,8 @@ export class AssetTypesAsideComponent {
 
   public readonly blockchainsToShow$ = this.blockchainsListService.assetsBlockchainsToShow$;
 
+  public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
   public get blockchainsAmount(): number {
     return this.blockchainsListService.availableBlockchains.length;
   }

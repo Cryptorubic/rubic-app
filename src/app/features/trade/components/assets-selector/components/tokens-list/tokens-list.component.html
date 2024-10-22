@@ -3,7 +3,10 @@
     <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
-  <tui-scrollbar class="tokens-container">
+  <tui-scrollbar
+    class="tokens-container"
+    [ngClass]="{ 'large-iframe-token-container': useLargeIframe }"
+  >
     <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
         <!--standard mode -->
