@@ -143,7 +143,7 @@ export class OnChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: tradeType,
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: error.cause
+      cause: 'on-chain'
     });
   }
 
@@ -156,7 +156,7 @@ export class OnChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: tradeType,
       address: error.contract,
-      cause: error.cause ?? 'dex',
+      cause: 'on-chain',
       selector: error.method
     });
   }
