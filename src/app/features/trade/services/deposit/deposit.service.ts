@@ -15,7 +15,7 @@ import { CrossChainTransferTrade } from '../../models/cn-trade';
 
 @Injectable()
 export class DepositService {
-  private readonly maxLatestTrades = 8;
+  private readonly maxLatestTrades = 10;
 
   public get depositRecentTrades(): CrossChainTransferTrade[] {
     return this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
