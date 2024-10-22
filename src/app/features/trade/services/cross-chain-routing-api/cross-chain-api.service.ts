@@ -52,7 +52,7 @@ export class CrossChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: error.cause
+      cause: 'cross-chain'
     });
   }
 
@@ -73,7 +73,7 @@ export class CrossChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.contract,
-      cause: error.cause,
+      cause: 'cross-chain',
       selector: error.method
     });
   }
