@@ -25,7 +25,7 @@
                 </div>
                 <span class="list__label">{{ blockchain.label }}</span>
               </div>
-              <ng-container *ngIf="isMobile && !isGasForm && getBlockchainTag(blockchain) as tag">
+              <ng-container *ngIf="isMobile && getBlockchainTag(blockchain) as tag">
                 <div class="list__badge-container">
                   <app-blockchains-promo-badge
                     [tag]="tag"

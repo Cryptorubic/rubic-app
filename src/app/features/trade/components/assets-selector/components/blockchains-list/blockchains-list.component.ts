@@ -1,20 +1,17 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
 import { BlockchainName } from 'rubic-sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { Observable, combineLatestWith, of } from 'rxjs';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
-import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
-import { switchIif } from '@app/shared/utils/utils';
 import { FormType } from '@app/features/trade/models/form-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
+import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -23,25 +20,9 @@ import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilt
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsListComponent implements OnDestroy {
-  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$.pipe(
-    combineLatestWith(
-      this.gasFormService.sourceBlockchainsToShow$,
-      this.gasFormService.targetBlockchainsToShow$
-    ),
-    switchIif(
-      () => this.formsTogglerService.isGasFormOpened(),
-      () => this.gasFormBlockchainsToShow$,
-      ([swapFormBlockchainsToShow]) => of(swapFormBlockchainsToShow)
-    )
-    // map(blockchains => [
-    //   ...blockchains.slice(0, 8),
-    //   ...blockchains.slice(8, blockchains.length).sort((a, b) => a.name.localeCompare(b.name))
-    // ])
-  );
+  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$;
 
   public readonly isMobile = this.headerStore.isMobile;
-
-  public readonly isGasForm = this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM;
 
   private readonly blockchainsTags = BlockchainTags;
 
@@ -53,7 +34,6 @@ export class BlockchainsListComponent implements OnDestroy {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
     public readonly formsTogglerService: FormsTogglerService,
-    private readonly gasFormService: GasFormService,
     private readonly headerStore: HeaderStore
   ) {}
 
@@ -65,32 +45,8 @@ export class BlockchainsListComponent implements OnDestroy {
     this.closeBlockchainsList();
   }
 
-  private isTargetSelectorGasFormOpened(): boolean {
-    return (
-      this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM && this.formType === 'to'
-    );
-  }
-
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
-    const tags = blockchain.tags
-      .filter(tag => tag === this.blockchainsTags.PROMO || tag === this.blockchainsTags.NEW)
-      .sort((a, b) => {
-        if (a === this.blockchainsTags.PROMO) return -1;
-        if (b === this.blockchainsTags.PROMO) return 1;
-        return 0;
-      });
-
-    return tags[0];
-  }
-
-  private get gasFormBlockchainsToShow$(): Observable<AvailableBlockchain[]> {
-    if (this.formType === 'to') {
-      return this.gasFormService.targetBlockchainsToShow$;
-    } else if (this.formType === 'from' && !this.isMobile) {
-      return this.gasFormService.sourceAssetsBlockchainsToShow$;
-    } else {
-      return this.gasFormService.sourceBlockchainsToShow$;
-    }
+    return SelectorUtils.getBlockchainTag(blockchain);
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
@@ -108,14 +64,7 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
-    if (this.isTargetSelectorGasFormOpened()) {
-      this.assetsSelectorService.onTargetBlockchainsSelectGasForm(
-        blockchainName,
-        this.blockchainsListService.availableBlockchains
-      );
-    } else {
-      this.assetsSelectorService.onBlockchainSelect(blockchainName);
-    }
+    this.assetsSelectorService.onBlockchainSelect(blockchainName);
     this.mobileNativeService.forceClose();
   }
 

@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -27,7 +27,8 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, TonOnChainTrade } from 'rubic-sdk';
+import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 
 @Injectable()
 export class ModalService {
@@ -178,26 +179,6 @@ export class ModalService {
    * Show Blockchain List dialog.
    * @param _injector Injector.
    */
-  public openTargetBlockchainListInGasForm(
-    formType: FormType,
-    _injector: Injector
-  ): Observable<void> {
-    return this.showDialog<BlockchainsListComponent, void>(
-      BlockchainsListComponent,
-      {
-        title: 'Select Blockchain',
-        scrollableContent: true,
-        size: 'l',
-        data: { formType }
-      },
-      _injector
-    );
-  }
-
-  /**
-   * Show Blockchain List dialog.
-   * @param _injector Injector.
-   */
   public openMobileBlockchainList(_injector: Injector): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
@@ -292,5 +273,18 @@ export class ModalService {
       size: 's',
       data: { oldBlockchain, newBlockchain }
     });
+  }
+
+  /**
+   * @param slippage from 0 to 1
+   */
+  public openTonSlippageWarning(trade: TonOnChainTrade): Promise<boolean> {
+    return firstValueFrom(
+      this.showDialog(TonSlippageWarnModalComponent, {
+        size: 'm',
+        data: { trade },
+        closeable: false
+      })
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable, timer } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -52,9 +52,8 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../forms-toggler/models';
-import { handleIntegratorAddress } from '../../utils/handle-integrator-address';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
+import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 
 @Injectable()
 export class CrossChainService {
@@ -84,7 +83,8 @@ export class CrossChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly airdropPointsService: AirdropPointsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly proxyService: ProxyFeeService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -105,9 +105,19 @@ export class CrossChainService {
           ...toToken,
           price: toPrice
         });
-        const options = this.getOptions(disabledTradeTypes);
-        handleIntegratorAddress(options, fromBlockchain, toBlockchain);
-
+        return forkJoin([
+          of(fromSdkCompatibleToken),
+          of(toSdkCompatibleToken),
+          of(tokenState),
+          this.getOptions(
+            disabledTradeTypes,
+            fromSdkCompatibleToken,
+            toSdkCompatibleToken,
+            fromAmount.actualValue
+          )
+        ]);
+      }),
+      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
         const calculationStartTime = Date.now();
 
         return this.sdkService.crossChain
@@ -115,7 +125,7 @@ export class CrossChainService {
             fromSdkCompatibleToken,
             fromAmount.actualValue.toFixed(),
             toSdkCompatibleToken,
-            tokenState.isDeflation
+            deflationStatus.isDeflation
               ? { ...options, useProxy: this.getDisabledProxyConfig() }
               : options
           )
@@ -155,9 +165,12 @@ export class CrossChainService {
     );
   }
 
-  private getOptions(
-    disabledTradeTypes: CrossChainTradeType[]
-  ): CrossChainManagerCalculationOptions {
+  private async getOptions(
+    disabledTradeTypes: CrossChainTradeType[],
+    fromSdkToken: PriceToken,
+    toSdkToken: PriceToken,
+    fromAmount: BigNumber
+  ): Promise<CrossChainManagerCalculationOptions> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const receiverAddress = this.receiverAddress;
 
@@ -176,8 +189,12 @@ export class CrossChainService {
     );
     const calculateGas = this.authService.userAddress;
     const timeout = this.calculateTimeoutForChains();
-
-    return {
+    const providerAddress = await this.proxyService.getIntegratorAddress(
+      fromSdkToken,
+      fromAmount,
+      toSdkToken
+    );
+    const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
       slippageTolerance,
@@ -196,8 +213,11 @@ export class CrossChainService {
       gasCalculation: calculateGas ? 'enabled' : 'disabled',
       useProxy: {
         ...this.platformConfigurationService.useCrossChainChainProxy
-      }
+      },
+      providerAddress
     };
+
+    return options;
   }
 
   private getDisabledProxyConfig(): Record<CrossChainTradeType, boolean> {
@@ -313,14 +333,9 @@ export class CrossChainService {
         this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
       }
 
-      // this.handleSwapError(error, currentSelectedTrade.tradeType);
       const parsedError = RubicSdkErrorParser.parseError(error);
-
       if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireTransactionError(trade.from.name, trade.to.name, error.code);
-        if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-          this.gtmService.fireGasFormGtm({ isSuccessfullSwap: false });
-        }
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
       throw parsedError;
@@ -457,10 +472,6 @@ export class CrossChainService {
       'crosschain',
       fromAmount.multipliedBy(fromToken.price).gt(1000) ? useMevBotProtection : null
     );
-
-    if (this.formsTogglerService.selectedForm === MAIN_FORM_TYPE.GAS_FORM) {
-      this.gtmService.fireGasFormGtm({ isSuccessfullSwap: true });
-    }
   }
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {

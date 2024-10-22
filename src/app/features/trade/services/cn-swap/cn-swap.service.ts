@@ -9,7 +9,7 @@ import {
 import { BehaviorSubject, interval } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { HttpClient } from '@angular/common/http';
-import { startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
+import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
 
@@ -23,7 +23,7 @@ export class CnSwapService {
 
   private readonly _cnTrade$ = new BehaviorSubject<ChangenowPostTrade | null>(null);
 
-  public readonly cnTrade$ = this._cnTrade$.asObservable();
+  public readonly cnTrade$ = this._cnTrade$.asObservable().pipe(skip(1));
 
   private readonly _status$ = new BehaviorSubject<ChangenowApiStatus>(CHANGENOW_API_STATUS.WAITING);
 

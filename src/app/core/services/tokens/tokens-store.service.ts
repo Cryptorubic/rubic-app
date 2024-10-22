@@ -131,7 +131,7 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: BlockchainName): void {
-    if (this.isBalanceCalculatingStarted[blockchain]) {
+    if (this.isBalanceCalculatingStarted[blockchain] || !blockchain) {
       return;
     }
     this.isBalanceCalculatingStarted[blockchain] = true;
@@ -228,7 +228,8 @@ export class TokensStoreService {
         decimals: token.decimals,
         image: token.image,
         rank: token.rank,
-        tokenSecurity: token.tokenSecurity
+        tokenSecurity: token.tokenSecurity,
+        type: token.type
       }))
       .toArray();
 
@@ -312,6 +313,11 @@ export class TokensStoreService {
     this._tokens$.next(tokens);
   }
 
+  /**
+   * @description Method combines tokens from storage.get('RUBIC_TOKENS) with tokens from backend
+   * and tokens from backend have high priority
+   * @param newTokens tokens from backend
+   */
   public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
     const tokens = (this.tokens || List([]))
       .map(token => {

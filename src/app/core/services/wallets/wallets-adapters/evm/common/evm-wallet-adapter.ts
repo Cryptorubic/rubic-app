@@ -3,8 +3,12 @@ import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from 'rubic-sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { fromEvent } from 'rxjs';
+import { SupportsManyChains } from '../../../models/abstract-interfaces';
 
-export abstract class EvmWalletAdapter<T = RubicAny> extends CommonWalletAdapter<T> {
+export abstract class EvmWalletAdapter<T = RubicAny>
+  extends CommonWalletAdapter<T>
+  implements SupportsManyChains<AddEvmChainParams>
+{
   public readonly chainType = CHAIN_TYPE.EVM;
 
   protected selectedChain: EvmBlockchainName | null;

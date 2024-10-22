@@ -1,6 +1,7 @@
 import { BadgeInfo } from '@features/trade/models/trade-state';
 import {
   BRIDGE_TYPE,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
   OnChainTrade,
@@ -15,6 +16,16 @@ import {
 export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>
 > = {
+  [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: [
+    {
+      getUrl: () => 'https://owlto.finance/',
+      bgColor: INFO_COLOR,
+      fromSdk: false,
+      getLabel: () => '+Points!',
+      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
+      showLabel: () => true
+    }
+  ],
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
@@ -87,16 +98,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'ATTENTION',
       getHint: () => 'Waiting funds in target chain for 7 days',
       showLabel: showAttentionLabelArbitrumBridge
-    }
-  ],
-  [BRIDGE_TYPE.OWL_TO_BRIDGE]: [
-    {
-      getUrl: () => 'https://owlto.finance/',
-      bgColor: INFO_COLOR,
-      fromSdk: false,
-      getLabel: () => '+Points!',
-      getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
-      showLabel: () => true
     }
   ]
 };

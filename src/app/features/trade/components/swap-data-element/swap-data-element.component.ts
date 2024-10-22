@@ -14,6 +14,11 @@ import { HintAppearance, HintDirection } from './model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapDataElementComponent {
+  /**
+   * used to hide micro fee for 0% fee swaps
+   */
+  public readonly minAmountToShowProtocolFee = new BigNumber(0.0000005);
+
   public feeInfo: FeeInfo;
 
   public displayAmount: string | null;
@@ -29,7 +34,8 @@ export class SwapDataElementComponent {
       .plus(value?.fee?.provider?.cryptoFee?.amount || 0);
 
     if (value?.nativeToken?.price && sum.gt(0)) {
-      this.displayAmount = `~ $${sum.multipliedBy(value.nativeToken.price).toFixed(2)}`;
+      const fiatAmountOut = sum.multipliedBy(value.nativeToken.price);
+      this.displayAmount = fiatAmountOut.gt(0.1) ? `~ $${fiatAmountOut.toFixed(2)}` : null;
     } else if (value.nativeToken?.symbol && sum.gt(0)) {
       const bnPipe = new BigNumberFormatPipe();
       const shortenPipe = new ShortenAmountPipe();

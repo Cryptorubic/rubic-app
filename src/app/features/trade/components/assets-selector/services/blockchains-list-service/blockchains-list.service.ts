@@ -4,7 +4,15 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { debounceTime, takeUntil, tap } from 'rxjs/operators';
+import {
+  combineLatestWith,
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  takeUntil,
+  tap
+} from 'rxjs/operators';
+import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
@@ -25,6 +33,7 @@ import {
 import { AssetsSearchQueryService } from '../assets-search-query-service/assets-search-query.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { isNil } from '@app/shared/utils/utils';
 
 @Injectable()
 export class BlockchainsListService {
@@ -79,9 +88,11 @@ export class BlockchainsListService {
   ) {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
+    this.assetsBlockchainsToShow = this._availableBlockchains;
 
     this.subscribeOnSearchQuery();
     this.subscribeOnFilterQuery();
+    this.subscribeOnTokenSelection();
   }
 
   private setAvailableBlockchains(): void {
@@ -125,7 +136,7 @@ export class BlockchainsListService {
       this.filterQueryService.filterQuery$,
       this.assetsSearchQueryService.assetsQuery$
     ])
-      .pipe(debounceTime(200), takeUntil(this.destroy$))
+      .pipe(debounceTime(200), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(([filterQuery, searchQuery]) => {
         this.blockchainsToShow = this.filterBlockchains(filterQuery);
         this.assetsBlockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
@@ -157,6 +168,31 @@ export class BlockchainsListService {
         takeUntil(this.destroy$)
       )
       .subscribe();
+  }
+
+  private subscribeOnTokenSelection(): void {
+    this.swapFormService.fromToken$
+      .pipe(
+        combineLatestWith(this.swapFormService.toToken$),
+        filter(([fromToken, toToken]) => !isNil(fromToken) || !isNil(toToken)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(([fromToken, toToken]) => {
+        this.setChainInTopOfAssetsBlockchains(fromToken, toToken);
+      });
+  }
+
+  private setChainInTopOfAssetsBlockchains(fromToken: TokenAmount, toToken: TokenAmount): void {
+    let firstSelectedChainName =
+      this.assetsSelectorService.formType === 'from' ? fromToken?.blockchain : toToken?.blockchain;
+    const chainFromOppositeSelector =
+      this.assetsSelectorService.formType === 'from' ? toToken?.blockchain : fromToken?.blockchain;
+    if (!firstSelectedChainName) firstSelectedChainName = chainFromOppositeSelector;
+    const firstAssetIndex = this.assetsBlockchainsToShow.findIndex(
+      asset => asset?.name === firstSelectedChainName
+    );
+    const [firstAsset] = this.assetsBlockchainsToShow.splice(firstAssetIndex, 1);
+    this.assetsBlockchainsToShow.unshift(firstAsset);
   }
 
   private filterBlockchains(filterQuery: BlockchainFilters): AvailableBlockchain[] {

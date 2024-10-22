@@ -26,6 +26,15 @@
   background: linear-gradient(160deg, #fab2ff 10%, #1904e5 90%);
 }
 
+.birthday {
+  background: transparent;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
 @include b($mobile-md) {
   .badge-element {
     width: 83px;

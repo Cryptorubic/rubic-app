@@ -62,13 +62,9 @@ import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
-import { GasFormHintComponent } from './components/gas-form-hint/gas-form-hint.component';
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
-import { GasFormTradeCalculationComponent } from './components/gas-form-trade-calculation/gas-form-trade-calculation.component';
-import { GasFormService } from './services/gas-form/gas-form.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
-import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.service';
 
 @NgModule({
   declarations: [
@@ -99,9 +95,7 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     CnTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
-    FormHeaderComponent,
-    GasFormHintComponent,
-    GasFormTradeCalculationComponent
+    FormHeaderComponent
   ],
   exports: [],
   imports: [
@@ -169,8 +163,6 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     CnSwapService,
     ActionButtonService,
     FormsTogglerService,
-    GasFormService,
-    GasFormAnalyticService,
     TradeInfoManager,
     BlockchainsListService,
     FormsTogglerService
