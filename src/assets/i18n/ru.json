@@ -422,7 +422,8 @@
       "circRBCLocked": "Percent of Locked RBC",
       "avgLockTime": "Avg. Lock Time",
       "estYieldPerWeek": "Est. Yield Per Week",
-      "apr": "AVERAGE APR"
+      "apr": "AVERAGE APR",
+      "endTitle": "The current staking round is over. Thank you for participation."
     },
     "withdrawModal": {
       "title": "WITHDRAWAL",
@@ -540,7 +541,10 @@
       "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
-      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
+      "tonMinSlippage": "Этот трейд будет идти через промежуточные токены. Slippage для этого трейда автоматически выставлена на {{ slippage }}%.",
+      "tonTransitToken": "Если slippage окажется недостаточным, вы можете на свой кошелек получить один из транзитных токенов({{ transitTokens }}) в эквиваленте вместо целевого токена.",
+      "tonEstimatedPath": "Маршрут: "
     }
   },
   "settings": {

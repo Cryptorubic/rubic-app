@@ -54,6 +54,8 @@ export class HeaderComponent implements AfterViewInit {
 
   public settingsOpened = false;
 
+  public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
