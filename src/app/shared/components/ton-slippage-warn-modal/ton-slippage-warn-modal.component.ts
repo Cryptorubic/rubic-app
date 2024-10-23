@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
+import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { compareAddresses, Token, TonOnChainTrade } from 'rubic-sdk';
@@ -70,9 +71,12 @@ export class TonSlippageWarnModalComponent {
   }
 
   private getTokenImage(token: Token): string {
-    return this.tokensStoreService.tokens.find(
+    const foundToken = this.tokensStoreService.tokens.find(
       t => compareAddresses(t.address, token.address) && t.blockchain === token.blockchain
-    ).image;
+    );
+    const imgSrc = foundToken?.image ?? DEFAULT_TOKEN_IMAGE;
+
+    return imgSrc;
   }
 
   private getTransitSymbols(): string {
