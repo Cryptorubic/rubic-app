@@ -38,6 +38,8 @@ export class AlternativeRoutesService {
 
   private readonly DEFAULT_TOKEN_PRICE = 100;
 
+  private DEFAULT_TOKEN_AMOUNT = new BigNumber(100);
+
   public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
 
   private fetchAlternativeRoutes(
@@ -84,10 +86,7 @@ export class AlternativeRoutesService {
               return null;
             }
 
-            const fromAmount = this.getFromTokenAmount(
-              fromToken,
-              route.sourceTokenUsdPrice ?? this.DEFAULT_TOKEN_PRICE
-            );
+            const fromAmount = this.getFromTokenAmount(fromToken, route.sourceTokenUsdPrice);
             return {
               from: fromToken,
               to: toToken,
@@ -105,18 +104,23 @@ export class AlternativeRoutesService {
     );
   }
 
-  private getFromTokenAmount(newFromToken: TokenAmount, tokenUsdPrice: number): BigNumber {
+  private getFromTokenAmount(
+    newFromToken: TokenAmount,
+    alternativeTokenUsdPrice: number | null
+  ): BigNumber {
     const prevFromToken = this.swapFormService.inputValue.fromToken;
     const fromAmount = this.swapFormService.inputValue.fromAmount;
 
     if (!compareAddresses(prevFromToken.address, newFromToken.address)) {
+      if (!alternativeTokenUsdPrice) return this.DEFAULT_TOKEN_AMOUNT;
+
       const usdPrice = this.swapFormService.inputValue.fromToken.price;
       if (usdPrice) {
         const usdAmount = fromAmount.actualValue.multipliedBy(usdPrice);
-        return usdAmount.dividedBy(tokenUsdPrice);
+        return usdAmount.dividedBy(alternativeTokenUsdPrice);
       }
 
-      return new BigNumber(this.DEFAULT_TOKEN_PRICE).dividedBy(tokenUsdPrice);
+      return new BigNumber(this.DEFAULT_TOKEN_PRICE).dividedBy(alternativeTokenUsdPrice);
     }
 
     return fromAmount.actualValue;

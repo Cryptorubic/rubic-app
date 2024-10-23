@@ -20,7 +20,7 @@ export interface AlternativeTokenPairs {
   sourceTokenTitle: string;
   totalRank: number;
   destinationTokenUsdPrice: number;
-  sourceTokenUsdPrice: number;
+  sourceTokenUsdPrice: null | number;
 }
 
 export interface AlternativeRoute {
