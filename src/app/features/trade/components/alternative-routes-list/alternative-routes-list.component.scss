@@ -1,0 +1,57 @@
+@use 'src/scss/core' as *;
+
+.alternative-routes-list {
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+
+  &__title {
+    span {
+      font-size: 14px;
+      line-height: 15px;
+    }
+  }
+  
+
+}
+
+.hr-mobile {
+  display: none;
+  height: 2px;
+}
+
+.empty-list {
+  &__content {
+    margin-right: 10px;
+    padding: var(--tui-padding-l);
+  
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
+
+@include b($mobile-md) {
+  .alternative-routes-list,
+  .alternative-routes-list__title {
+    gap: 4px;
+    padding: 15px;
+
+    background: var(--tui-secondary);  
+  }
+
+  .alternative-routes-list {
+    margin-top: 0;
+
+    border-radius: 0 0 $border-radius-2 $border-radius-2;
+
+    &__title {
+      border-radius: $border-radius-2 $border-radius-2 0 0;
+    }
+  }
+
+  .hr-mobile {
+    display: block;
+  }
+}
