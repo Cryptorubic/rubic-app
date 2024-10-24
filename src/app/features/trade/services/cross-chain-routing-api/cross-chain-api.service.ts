@@ -8,6 +8,7 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
+  OneinchCcrTrade,
   RetroBridgeTrade,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
@@ -123,6 +124,7 @@ export class CrossChainApiService {
         squidrouter_request_id: trade.squidrouterRequestId
       }),
       ...(trade instanceof RetroBridgeTrade && { retrobridge_transaction_id: trade.retroBridgeId }),
+      ...(trade instanceof OneinchCcrTrade && { oneinch_order_hash: trade.oneinchOrderHash }),
       ...(referral && { influencer: referral })
     };
 

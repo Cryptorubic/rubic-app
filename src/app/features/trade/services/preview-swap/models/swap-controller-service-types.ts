@@ -3,4 +3,5 @@ export interface CrossChainSwapAdditionalParams {
   rangoRequestId?: string;
   squidrouterId?: string;
   retroBridgeId?: string;
+  oneinchOrderHash?: string;
 }

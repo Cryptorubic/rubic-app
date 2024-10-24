@@ -41,7 +41,8 @@ import {
   BLOCKCHAIN_NAME,
   OnChainTrade,
   LowSlippageError,
-  RetroBridgeTrade
+  RetroBridgeTrade,
+  OneinchCcrTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -491,6 +492,9 @@ export class SwapsControllerService {
       }
       if (trade instanceof RetroBridgeTrade) {
         params.retroBridgeId = trade.retroBridgeId;
+      }
+      if (trade instanceof OneinchCcrTrade) {
+        params.oneinchOrderHash = trade.oneinchOrderHash;
       }
 
       onSwap?.(params);

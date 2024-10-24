@@ -251,6 +251,9 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.retroBridgeId && {
                   retroBridgeId: additionalInfo.retroBridgeId
+                }),
+                ...(additionalInfo.oneinchOrderHash && {
+                  oneinchOrderHash: additionalInfo.oneinchOrderHash
                 })
               },
               tradeState.tradeType as CrossChainTradeType
