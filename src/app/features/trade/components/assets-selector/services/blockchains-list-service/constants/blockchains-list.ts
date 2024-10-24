@@ -253,7 +253,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.METIS,
     rank: 0.5,
-    tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.PROMO]
+    tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MANTA_PACIFIC,
@@ -287,8 +287,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
+      BlockchainTags.NEW
     ]
   },
   {
@@ -305,13 +304,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.MERLIN,
     rank: 0.45,
-    tags: [
-      'BTC',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
   },
   {
     name: BLOCKCHAIN_NAME.KROMA,
@@ -321,13 +314,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.XLAYER,
     rank: 0.4,
-    tags: [
-      'OKB',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
   },
   { name: BLOCKCHAIN_NAME.SEI, rank: 0.4, tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW] },
   {
@@ -338,8 +325,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
+      BlockchainTags.NEW
     ]
   },
   {
@@ -355,8 +341,7 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.POPULAR,
       BlockchainTags.EVM,
       BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
+      BlockchainTags.NEW
     ]
   },
   {
