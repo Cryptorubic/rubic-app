@@ -8,7 +8,10 @@ export interface RankedBlockchain {
 }
 
 function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
-  if (blockchain === BLOCKCHAIN_NAME.SOLANA || blockchain === BLOCKCHAIN_NAME.BITCOIN) {
+  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    return 0.75;
+  }
+  if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     return 0.6;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
@@ -221,7 +224,7 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX', BlockchainTags.EVM] },
+  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
