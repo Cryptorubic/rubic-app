@@ -17372,10 +17372,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.41.4:
-  version "5.41.4"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.41.4.tgz#0423d4ae8bf3224101b66a12ee38cdfb9b1031cc"
-  integrity sha512-UwD6KhQ7cXCdYSjzEJvTtCaKdtZSDMCz98bMbH8hv9dJgLKNkQyqSE+3Z7W86klYLiuA9bVivXa4XPIa6+ufAg==
+rubic-sdk@5.41.6-alpha-lifi-api-key.0:
+  version "5.41.6-alpha-lifi-api-key.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.41.6-alpha-lifi-api-key.0.tgz#8636ed447520eed83dd980ffbf75a5ba1d78cc2a"
+  integrity sha512-iutQ83i3Bsrw3syPbjh1i3nLTse8FJl2aK/Nm25d2jxxwhanSDf6YQBKDEDVPz5MxGkkdc9aQG/jw6qLEMIWYQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
