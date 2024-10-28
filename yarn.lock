@@ -17372,10 +17372,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.42.0-alpha-simpleswap.3:
-  version "5.42.0-alpha-simpleswap.3"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.42.0-alpha-simpleswap.3.tgz#26a89e65e09a860f480fc919fe0108251ea14737"
-  integrity sha512-hgr1dawbUhEJBI67KryXq/Oferju7B5KpPgH6F5ajjDcTIlueDQUqIlVFnKiJYk/s0QPQceFRtbO8VkkMxk6jw==
+rubic-sdk@5.42.0-alpha-simpleswap.4:
+  version "5.42.0-alpha-simpleswap.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.42.0-alpha-simpleswap.4.tgz#624f88ee364ba1e9a22cc99b00515abd567f01ec"
+  integrity sha512-9Vg+aGr8wqJ0VRRgVvqWRa34sbKYrI2ZQ2GFnSL501H0/C+8xF34PmlJXT6pLKa8stDUpHa9AkWdANAl775wKA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
