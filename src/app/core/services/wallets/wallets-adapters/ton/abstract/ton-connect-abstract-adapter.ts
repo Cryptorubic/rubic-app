@@ -1,6 +1,6 @@
 import { TonConnectUI } from '@tonconnect/ui';
 import { CommonWalletAdapter } from '../../common-wallet-adapter';
-import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, RetroBridgeApiService } from 'rubic-sdk';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
@@ -46,6 +46,11 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       const isConnected = (await this.tonConnect.connectionRestored) && this.tonConnect.connected;
 
       if (!isConnected) {
+        const payload = await RetroBridgeApiService.getMessageToAuthWallet();
+        this.tonConnect.setConnectRequestParameters({
+          state: 'ready',
+          value: { tonProof: this.window.btoa(payload) }
+        });
         await this.openWalletModal();
       }
 
@@ -56,6 +61,7 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       if (this.tonConnect.account) {
         this.selectedAddress = await this.fetchFriendlyAddress(this.tonConnect.account?.address);
         this.onAddressChanges$.next(this.selectedAddress);
+        this.handleRetroBridgeSignature();
       }
       this.onNetworkChanges$.next(this.selectedChain);
     } catch (err) {
@@ -83,6 +89,8 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
           })
           .catch(err => console.log('fetchFriendlyAddress_CATCH ==> ', err));
 
+        this.handleRetroBridgeSignature();
+
         if (walletAndWalletInfo.appName in TON_CONNECT_WALLETS_MAP) {
           this.storeService.setItem(
             'RUBIC_PROVIDER',
@@ -100,6 +108,26 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
     const res = await firstValueFrom(this.httpService.get<AddressBookResponse>('', {}, url));
     const friendly = res.non_bounceable.b64url;
     return friendly;
+  }
+
+  private async handleRetroBridgeSignature(): Promise<void> {
+    if (
+      this.tonConnect?.account?.address &&
+      this.tonConnect?.wallet?.connectItems?.tonProof &&
+      'proof' in this?.tonConnect.wallet?.connectItems?.tonProof
+    ) {
+      const proof = {
+        ...this.tonConnect.wallet?.connectItems.tonProof,
+        stateInit: this.tonConnect.wallet.account.walletStateInit
+      };
+      const signature = JSON.stringify({ ...proof.proof, stateInit: proof.stateInit });
+
+      await RetroBridgeApiService.sendSignedMessage(
+        this.tonConnect.account.address,
+        signature,
+        this.chainType
+      );
+    }
   }
 
   protected abstract openWalletModal(): Promise<void>;
