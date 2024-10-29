@@ -73,7 +73,9 @@ export class TransactionDetailsComponent {
         ? this.settingsService.instantTradeValue
         : this.settingsService.crossChainRoutingValue;
 
-    return settings.showReceiverAddress && this.targetAddressService.address
+    return settings.showReceiverAddress &&
+      this.targetAddressService.address &&
+      this.swapsStateService.currentTrade.tradeType !== 'WRAPPED'
       ? this.targetAddressService.address
       : this.walletConnector.address;
   }

@@ -5197,10 +5197,10 @@
     decamelize-keys "2.0.1"
     ofetch "1.3.4"
 
-"@ston-fi/sdk@2.0.0-rc.7":
-  version "2.0.0-rc.7"
-  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.0-rc.7.tgz#479bfd6ebc00cb749d755c00b6c3c2d7199a784b"
-  integrity sha512-5a04aX7FWq9Sm2/Ox2WayOpeoJ5VQH6Fnn/hiL8rW4wn7obwzAJgllnodwOQQNWw/z/Vb5BJHo2Ur5o7tymfXg==
+"@ston-fi/sdk@2.0.0-rc.8":
+  version "2.0.0-rc.8"
+  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.0-rc.8.tgz#c6b7260dfe29c27ec5e63f88af84ac24a730accd"
+  integrity sha512-9+9qBhdGzTVsC3iDHVQnrEFU7N7mdlGKbn57pHJrVfZiGm/55X5IPl4DKclbdtl9Gtjf9Kf8bBLweMEwzHntGw==
 
 "@stylelint/postcss-css-in-js@^0.37.2":
   version "0.37.3"
@@ -17372,10 +17372,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.42.0-retro-ton.25:
-  version "5.42.0-retro-ton.25"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.42.0-retro-ton.25.tgz#af432464f0384ffcad0db29a3ef950663c3e2790"
-  integrity sha512-BrndX9agUrgGstm4Cr93niaTypU/xAtBjY7k46quoE22sAyQpjSHnM/nH5Awp8uQqlFmqPw+oVu3caLiuk4Lrg==
+rubic-sdk@5.42.1:
+  version "5.42.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.42.1.tgz#2bac1f7752165b7df71020797d0bcf4f20b7fdb1"
+  integrity sha512-32YcFMvGY4gpP313JRpB7ds3G/ZB05T2xTIS1M5QmvWT9dfmltY+HjeU4TOh4xgMwemY8AUciqT7PFRgAWmRJw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -17391,7 +17391,7 @@ rubic-sdk@5.42.0-retro-ton.25:
     "@solana/web3.js" "^1.89.1"
     "@solflare-wallet/utl-sdk" "^1.4.0"
     "@ston-fi/api" "^0.12.1"
-    "@ston-fi/sdk" "2.0.0-rc.7"
+    "@ston-fi/sdk" "2.0.0-rc.8"
     "@ton/core" "^0.52.0"
     "@ton/crypto" "^3.3.0"
     "@ton/ton" "^15.0.0"
@@ -17412,6 +17412,7 @@ rubic-sdk@5.42.0-retro-ton.25:
     rxjs "7.8.1"
     tronweb "^5.3.2"
     viem "^1.3.1"
+    vm-browserify "^1.1.2"
     web3 "^1.8.1"
 
 run-async@^2.2.0, run-async@^2.4.0:
@@ -20020,6 +20021,11 @@ vlq@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/vlq/-/vlq-2.0.4.tgz#6057b85729245b9829e3cc7755f95b228d4fe041"
   integrity sha512-aodjPa2wPQFkra1G8CzJBTHXhgk3EVSwxSWXNPr1fgdFLUb8kvLV1iEb6rFgasIsjP82HWI6dsb5Io26DDnasA==
+
+vm-browserify@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
+  integrity sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==
 
 void-elements@^2.0.0:
   version "2.0.1"
