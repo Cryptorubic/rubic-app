@@ -119,6 +119,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}claimswap.svg`,
     color: '#181E6A'
   },
+  [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: {
+    name: 'CoffeeSwap',
+    image: `${imageBasePath}coffee-swap.png`,
+    color: '#181E6A'
+  },
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: {
     name: 'CremaFinance',
     image: `${imageBasePath}cremafinance.ico`,
