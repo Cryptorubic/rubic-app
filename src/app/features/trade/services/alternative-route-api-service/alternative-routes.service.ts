@@ -23,6 +23,7 @@ import { TokensStoreService } from '@app/core/services/tokens/tokens-store.servi
 import { compareAddresses, notNull } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class AlternativeRoutesService {
@@ -46,7 +47,7 @@ export class AlternativeRoutesService {
     params: AlternativeRoutesRequestParams
   ): Observable<AlternativeTokenPairs[]> {
     return this.httpClient
-      .get<AlternativeRouteDTO>('https://dev-tokens.rubic.exchange/api/v1/token_pairs', {
+      .get<AlternativeRouteDTO>(`${ENVIRONMENT.apiTokenUrl}/v1/token_pairs`, {
         params: {
           ...params
         }
