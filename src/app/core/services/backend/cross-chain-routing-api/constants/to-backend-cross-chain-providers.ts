@@ -25,6 +25,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: 'stargate_v2',
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: 'router',
   [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: 'retro_bridge',
+  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: 'across',
   [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: 'simple_swap'
 } as const;
 
