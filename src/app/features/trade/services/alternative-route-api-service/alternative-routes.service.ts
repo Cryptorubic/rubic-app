@@ -24,6 +24,8 @@ import { compareAddresses, notNull } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { RouterState } from '@angular/router';
 
 @Injectable()
 export class AlternativeRoutesService {
@@ -47,7 +49,7 @@ export class AlternativeRoutesService {
     params: AlternativeRoutesRequestParams
   ): Observable<AlternativeTokenPairs[]> {
     return this.httpClient
-      .get<AlternativeRouteDTO>(`${ENVIRONMENT.apiTokenUrl}/v1/token_pairs`, {
+      .get<AlternativeRouteDTO>(`${ENVIRONMENT.apiTokenUrl}/v1/token_pairs/`, {
         params: {
           ...params
         }
@@ -60,29 +62,31 @@ export class AlternativeRoutesService {
     return combineLatest([this.swapFormService.fromToken$, this.swapFormService.toToken$]).pipe(
       switchMap(([fromToken, toToken]) =>
         this.fetchAlternativeRoutes({
-          sourceNetwork: fromToken.blockchain.toLowerCase(),
+          sourceNetwork: TO_BACKEND_BLOCKCHAINS[fromToken.blockchain],
           sourceTokenAddress: fromToken.address,
-          destinationNetwork: toToken.blockchain.toLowerCase(),
+          destinationNetwork: TO_BACKEND_BLOCKCHAINS[toToken.blockchain],
           destinationTokenAddress: toToken.address
         })
       ),
-      map(alternativeRoutes => {
-        if (alternativeRoutes && alternativeRoutes.length === 0) {
+      map(routes => {
+        if (routes && RouterState.length === 0) {
           throw Error();
         }
-        return alternativeRoutes
+        const alternativeRoutes = routes
           .sort((a, b) => b.totalRank - a.totalRank)
           .map(route => {
             const fromToken = this.tokenStoreService.tokens.find(
               token =>
                 compareAddresses(token.address, route.sourceTokenAddress) &&
-                token.blockchain.toLowerCase() === route.sourceTokenNetwork.toLowerCase()
+                TO_BACKEND_BLOCKCHAINS[token.blockchain] === route.sourceTokenNetwork.toLowerCase()
             );
             const toToken = this.tokenStoreService.tokens.find(
               token =>
                 compareAddresses(token.address, route.destinationTokenAddress) &&
-                token.blockchain.toLowerCase() === route.destinationTokenNetwork.toLowerCase()
+                TO_BACKEND_BLOCKCHAINS[token.blockchain] ===
+                  route.destinationTokenNetwork.toLowerCase()
             );
+
             if (!fromToken || !toToken) {
               return null;
             }
@@ -96,6 +100,12 @@ export class AlternativeRoutesService {
           })
           .slice(0, 5)
           .filter(notNull);
+
+        if (alternativeRoutes.length === 0) {
+          throw new Error();
+        }
+
+        return alternativeRoutes;
       }),
       tap(() => this._alternativeRouteStatus$.next(AlternativeRouteStatuses.COMPLETE)),
       catchError(() => {
