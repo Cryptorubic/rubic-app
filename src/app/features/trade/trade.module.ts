@@ -65,6 +65,9 @@ import { FormHeaderComponent } from './components/form-header/form-header.compon
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
+import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
+import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
+import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +98,9 @@ import { BlockchainsListService } from './components/assets-selector/services/bl
     CnTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
-    FormHeaderComponent
+    FormHeaderComponent,
+    AlternativeRouteElementComponent,
+    AlternativeRoutesListComponent
   ],
   exports: [],
   imports: [
@@ -165,7 +170,8 @@ import { BlockchainsListService } from './components/assets-selector/services/bl
     FormsTogglerService,
     TradeInfoManager,
     BlockchainsListService,
-    FormsTogglerService
+    FormsTogglerService,
+    AlternativeRoutesService
     // SettingsService,
     // RefreshService,
     // TradeService,
