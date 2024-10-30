@@ -207,7 +207,7 @@ export class SwapsControllerService {
 
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => true) || of(true);
             const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
