@@ -240,12 +240,10 @@ export class SwapsStateService {
 
       const bestTrade = currentTrades[0];
 
-      const status = this.getTradeStatusOnPickingProvider();
-
       const trade: SelectedTrade = {
         ...bestTrade,
         selectedByUser: false,
-        status
+        status: TRADE_STATUS.READY_TO_SWAP
       };
       if (trade.error) {
         trade.status = TRADE_STATUS.DISABLED;
@@ -262,10 +260,6 @@ export class SwapsStateService {
         status: isCalculationEnd ? TRADE_STATUS.DISABLED : TRADE_STATUS.LOADING
       };
     }
-  }
-
-  private getTradeStatusOnPickingProvider(): TRADE_STATUS {
-    return TRADE_STATUS.READY_TO_SWAP;
   }
 
   private sortCrossChainTrades(

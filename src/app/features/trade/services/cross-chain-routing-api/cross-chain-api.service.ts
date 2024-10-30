@@ -8,7 +8,6 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
-  RetroBridgeTrade,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   UnapprovedMethodError,
@@ -52,7 +51,7 @@ export class CrossChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.providerRouter + (error.providerGateway ? `_${error.providerGateway}` : ''),
-      cause: error.cause
+      cause: 'cross-chain'
     });
   }
 
@@ -73,7 +72,7 @@ export class CrossChainApiService {
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
       title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
       address: error.contract,
-      cause: error.cause,
+      cause: 'cross-chain',
       selector: error.method
     });
   }
@@ -122,7 +121,7 @@ export class CrossChainApiService {
       ...('squidrouterRequestId' in trade && {
         squidrouter_request_id: trade.squidrouterRequestId
       }),
-      ...(trade instanceof RetroBridgeTrade && { retrobridge_transaction_id: trade.retroBridgeId }),
+      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...(referral && { influencer: referral })
     };
 
