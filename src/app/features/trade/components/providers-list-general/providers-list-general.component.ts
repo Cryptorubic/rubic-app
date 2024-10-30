@@ -122,6 +122,8 @@ export class ProvidersListGeneralComponent {
         actualValue: route.amount
       }
     });
+
+    this.alternativeRoutesService.setCurrentAlternativeRoute(route);
   }
 
   public openOtherProvidersList(): void {

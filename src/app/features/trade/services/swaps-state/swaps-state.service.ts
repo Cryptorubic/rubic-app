@@ -33,18 +33,17 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
-import { compareObjects, compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareObjects, compareTokens } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { HeaderStore } from '@core/header/services/header.store';
-import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
 import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
+import { AlternativeRoutesService } from '../alternative-route-api-service/alternative-routes.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -136,9 +135,8 @@ export class SwapsStateService {
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly alternativeRouteService: AlternativeRoutesService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -399,7 +397,22 @@ export class SwapsStateService {
           map(([forceExit, isMobile]) => forceExit && !isMobile)
         )
       ),
-      map(options => this.getCalculationStatus(options)),
+      map(options => {
+        const calcStatus = this.getCalculationStatus(options);
+        const currentAlternativeRoute = this.alternativeRouteService.currentAlternativeRoute;
+        const { fromToken, toToken } = this.swapsFormService.inputValue;
+        if (currentAlternativeRoute) {
+          const isAlternativeRoute =
+            compareAddresses(fromToken.address, currentAlternativeRoute.from.address) &&
+            compareAddresses(toToken.address, currentAlternativeRoute.to.address);
+
+          if (calcStatus.noRoutes && isAlternativeRoute) {
+            this.alternativeRouteService.setPrevAlternativeRoute(currentAlternativeRoute);
+          }
+        }
+
+        return calcStatus;
+      }),
       debounceTime(50),
       distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
       shareReplay(shareReplayConfig),

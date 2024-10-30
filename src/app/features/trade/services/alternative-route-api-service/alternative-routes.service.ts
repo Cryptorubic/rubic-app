@@ -25,7 +25,6 @@ import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
-import { RouterState } from '@angular/router';
 
 @Injectable()
 export class AlternativeRoutesService {
@@ -44,6 +43,29 @@ export class AlternativeRoutesService {
   private DEFAULT_TOKEN_AMOUNT = new BigNumber(100);
 
   public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
+
+  private readonly _prevAlternativeRoutes$ = new BehaviorSubject<AlternativeRoute[]>([]);
+
+  private readonly _currentAlternativeRoute$ = new BehaviorSubject<AlternativeRoute>(null);
+
+  public setCurrentAlternativeRoute(selectedRoute: AlternativeRoute): void {
+    this._currentAlternativeRoute$.next(selectedRoute);
+  }
+
+  public get currentAlternativeRoute(): AlternativeRoute {
+    return this._currentAlternativeRoute$.getValue();
+  }
+
+  public setPrevAlternativeRoute(selectedRoute: AlternativeRoute): void {
+    const prevAlternativeRoutes = this._prevAlternativeRoutes$.getValue();
+    const isPrevRoute = this.checkIsPrevRoute({
+      fromAddress: selectedRoute.from.address,
+      toAddress: selectedRoute.to.address
+    });
+    if (!isPrevRoute) {
+      this._prevAlternativeRoutes$.next([...prevAlternativeRoutes, selectedRoute]);
+    }
+  }
 
   private fetchAlternativeRoutes(
     params: AlternativeRoutesRequestParams
@@ -69,10 +91,18 @@ export class AlternativeRoutesService {
         })
       ),
       map(routes => {
-        if (routes && RouterState.length === 0) {
+        const currentRoutes = routes.filter(
+          route =>
+            !this.checkIsPrevRoute({
+              fromAddress: route.sourceTokenAddress,
+              toAddress: route.destinationTokenAddress
+            })
+        );
+
+        if (currentRoutes && currentRoutes.length === 0) {
           throw Error();
         }
-        const alternativeRoutes = routes
+        const alternativeRoutes = currentRoutes
           .sort((a, b) => b.totalRank - a.totalRank)
           .map(route => {
             const fromToken = this.tokenStoreService.tokens.find(
@@ -135,5 +165,15 @@ export class AlternativeRoutesService {
     }
 
     return fromAmount.actualValue;
+  }
+
+  private checkIsPrevRoute(currentRoute: { fromAddress: string; toAddress: string }): boolean {
+    const prevAlternativeRoutes = this._prevAlternativeRoutes$.getValue();
+
+    return prevAlternativeRoutes.some(
+      route =>
+        compareAddresses(route.from.address, currentRoute.fromAddress) &&
+        compareAddresses(route.to.address, currentRoute.toAddress)
+    );
   }
 }
