@@ -43,10 +43,6 @@ export class ProvidersListComponent {
 
   @PolymorpheusInput()
   @Input({ required: true })
-  public readonly noRoutes: boolean = this.context?.data?.noRoutes || false;
-
-  @PolymorpheusInput()
-  @Input({ required: true })
   calculationProgress: CalculationProgress = this.context?.data?.calculationProgress;
 
   @Output() readonly selectTrade = new EventEmitter<TradeProvider>();
