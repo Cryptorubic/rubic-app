@@ -40,7 +40,7 @@ export class AlternativeRoutesService {
 
   private readonly DEFAULT_TOKEN_PRICE = 100;
 
-  private DEFAULT_TOKEN_AMOUNT = new BigNumber(100);
+  private readonly DEFAULT_TOKEN_AMOUNT = new BigNumber(100);
 
   public readonly alternativeRouteStatus$ = this._alternativeRouteStatus$.asObservable();
 
