@@ -15,7 +15,7 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
     return 0.6;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
-    return 0.5;
+    return 0.75;
   }
   if (blockchain === BLOCKCHAIN_NAME.FILECOIN) {
     return 0.45;
@@ -169,6 +169,9 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   if (blockchain === BLOCKCHAIN_NAME.TON) {
     chainTags.push(BlockchainTags.NEW);
   }
+  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    chainTags.push(BlockchainTags.PROMO);
+  }
 
   return chainTags;
 }
@@ -218,13 +221,14 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.PROMO
     ]
   },
-  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0.75, tags: [BlockchainTags.EVM] },
+  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0.75, tags: [BlockchainTags.EVM, BlockchainTags.PROMO] },
+  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,
-    rank: 0.75,
+    rank: 0.5,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
+
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
@@ -233,7 +237,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.PROMO
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.MODE,
@@ -295,7 +305,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
     rank: 0.45,
-    tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'RBTC',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.PROMO
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.BITLAYER,
