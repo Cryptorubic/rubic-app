@@ -8,7 +8,10 @@ export interface RankedBlockchain {
 }
 
 function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
-  if (blockchain === BLOCKCHAIN_NAME.SOLANA || blockchain === BLOCKCHAIN_NAME.BITCOIN) {
+  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    return 0.75;
+  }
+  if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     return 0.6;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
@@ -160,11 +163,21 @@ export const notEvmChangeNowBlockchainsList = {
   // [BLOCKCHAIN_NAME.HORIZEN]: BLOCKCHAIN_NAME.HORIZEN
 };
 
+function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[] {
+  const chainTags = [...notEvmChangeNowBlockchainsTagsList[blockchain], BlockchainTags.NON_EVM];
+
+  if (blockchain === BLOCKCHAIN_NAME.TON) {
+    chainTags.push(BlockchainTags.NEW);
+  }
+
+  return chainTags;
+}
+
 const notEvmChangeNowFormattedBlockchainsList = Object.values(notEvmChangeNowBlockchainsList).map(
   blockchain => ({
     name: blockchain,
     rank: setRankToNonEvmBlockchain(blockchain),
-    tags: [...notEvmChangeNowBlockchainsTagsList[blockchain], BlockchainTags.NON_EVM]
+    tags: setNonEvmChainTag(blockchain)
   })
 );
 
@@ -211,7 +224,7 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.75, tags: ['AVAX', BlockchainTags.EVM] },
+  { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
@@ -253,7 +266,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.METIS,
     rank: 0.5,
-    tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.PROMO]
+    tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MANTA_PACIFIC,
@@ -282,14 +295,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
     rank: 0.45,
-    tags: [
-      'RBTC',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.BITLAYER,
@@ -305,13 +311,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.MERLIN,
     rank: 0.45,
-    tags: [
-      'BTC',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.KROMA,
@@ -321,26 +321,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.XLAYER,
     rank: 0.4,
-    tags: [
-      'OKB',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  { name: BLOCKCHAIN_NAME.SEI, rank: 0.4, tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW] },
+  { name: BLOCKCHAIN_NAME.SEI, rank: 0.4, tags: ['ETH', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.ZK_LINK,
     rank: 0.4,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_FAIR,
@@ -350,14 +337,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.HORIZEN_EON,
     rank: 0.4,
-    tags: [
-      'ZEN',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ZEN', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZETACHAIN,

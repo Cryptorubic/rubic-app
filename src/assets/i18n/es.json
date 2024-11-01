@@ -540,7 +540,8 @@
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
       "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
-      "tonMinSlippage": "Esta operación pasa por el token de tránsito en el contrato. El deslizamiento para esta operación se establecerá automáticamente a {{ slippage }}%.",
+      "tonMultistepWarning": "Esta operación pasa por el token de tránsito en el contrato.",
+      "tonSlippageChanged": "El deslizamiento para esta operación se establecerá automáticamente a {{ slippage }}%.",
       "tonTransitToken": "En caso de que el deslizamiento no sea suficiente, puede obtener una cantidad equivalente de tokens de tránsito ({{ transitTokens }}) en lugar del token de destino seleccionado.",
       "tonEstimatedPath": "Ruta estimada: "
     }

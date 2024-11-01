@@ -541,7 +541,8 @@
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
       "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
-      "tonMinSlippage": "这种贸易通过合同上的过境代币.此交易的滑动将自动设置为{{ slippage }}%。",
+      "tonMultistepWarning": "这种贸易通过合同上的过境代币.",
+      "tonSlippageChanged": "此交易的滑动将自动设置为{{ slippage }}%。",
       "tonTransitToken": "如果滑动不够,您可以得到一个等效的传输令牌（{{transitTokens}},而不是选定的目标令牌）。",
       "tonEstimatedPath": "估计路径："
     }
