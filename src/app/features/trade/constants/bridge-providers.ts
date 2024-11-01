@@ -313,6 +313,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}thorchain.svg`,
     name: 'Thorchain'
   },
+  //UUUUUUUUUUUUUUUUUUUUU
+  unizen: {
+    averageTime: 5,
+    color: '#33FF99',
+    image: `${imageBasePath}taiko.png`,
+    name: 'Unizen'
+  },
   //VVVVVVVVVVVVVVVVVVVVV
   voyager: {
     averageTime: 5,
