@@ -3,8 +3,7 @@ import {
   CROSS_CHAIN_DEPOSIT_STATUS,
   CrossChainDepositStatus,
   CrossChainPaymentInfo,
-  getDepositStatus,
-  RubicSdkError
+  getDepositStatus
 } from 'rubic-sdk';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -64,12 +63,11 @@ export class DepositService {
   }
 
   public async getSwapStatus(id: string): Promise<CrossChainDepositStatus> {
-    if (!id) {
-      throw new RubicSdkError('Must provide trade id');
-    }
-    const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
-
     try {
+      if (!id) {
+        throw new Error();
+      }
+      const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
       const response = await getDepositStatus(id, trade.tradeType);
 
       return response.status;
@@ -87,6 +85,10 @@ export class DepositService {
         takeWhile(status => status !== CROSS_CHAIN_DEPOSIT_STATUS.FINISHED)
       )
       .subscribe();
+  }
+
+  public removePrevDeposit(): void {
+    this._depositTrade$.next(null);
   }
 
   private saveTrade(tradeData: CrossChainTransferTrade): void {

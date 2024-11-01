@@ -189,6 +189,7 @@ export class DepositPreviewSwapComponent {
     const receiverAddress = this.targetAddressService.address;
     const selectedTrade = await firstValueFrom(this.tradeState$);
 
+    this.depositService.removePrevDeposit();
     const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
       receiverAddress
     );
