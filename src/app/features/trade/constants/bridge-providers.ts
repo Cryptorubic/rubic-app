@@ -317,7 +317,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   unizen: {
     averageTime: 5,
     color: '#33FF99',
-    image: `${imageBasePath}taiko.png`,
+    image: `${imageBasePath}unizen.png`,
     name: 'Unizen'
   },
   //VVVVVVVVVVVVVVVVVVVVV
