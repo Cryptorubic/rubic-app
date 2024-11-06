@@ -22,6 +22,7 @@ import { Cacheable } from 'ts-cacheable';
 import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
+import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 
 @Injectable()
 export class DepositTableService extends TableService<
@@ -108,6 +109,8 @@ export class DepositTableService extends TableService<
             image: blockchainIcon[toBlockchainName]
           };
 
+          const providerInfo = BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType];
+
           return {
             ...data[index],
             fromToken,
@@ -116,7 +119,8 @@ export class DepositTableService extends TableService<
             toBlockchain,
             status,
             date: tradeData.timestamp.toString(),
-            receiverAddress: tradeData.receiverAddress
+            receiverAddress: tradeData.receiverAddress,
+            providerInfo
           };
         });
         return {
