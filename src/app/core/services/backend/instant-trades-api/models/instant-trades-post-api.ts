@@ -9,6 +9,7 @@ export interface OnChainTradeCreationToBackend {
   to_amount_min: string;
   expected_amount: string;
   mevbot_protection: boolean;
+  receiver: string;
   hash?: string;
   from_token?: string;
   to_token?: string;
