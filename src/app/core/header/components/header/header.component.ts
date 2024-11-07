@@ -26,6 +26,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { Any, Injector } from 'rubic-sdk';
 
 @Component({
   selector: 'app-header',
@@ -145,5 +146,47 @@ export class HeaderComponent implements AfterViewInit {
 
   public switchTheme(): void {
     this.themeService.switchTheme();
+  }
+
+  public async swapDedust(): Promise<void> {
+    const quote = await Injector.httpClient.post(
+      'http://localhost:3000/api/routes/quoteAll',
+      {
+        dstTokenAddress: 'EQBTcytZjdZwFLj6TO7CeGvn4aMmqXvbX-nODiApbd011gT3',
+        dstTokenBlockchain: 'TON',
+        referrer: 'rubic.exchange',
+        srcTokenAddress: 'EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs',
+        srcTokenAmount: '0.2',
+        srcTokenBlockchain: 'TON',
+        preferredProvider: 'DEDUST',
+        slippage: 0.4
+      },
+      { headers: {} }
+    );
+
+    // @ts-ignore
+    const ddQuote = quote.routes[0];
+    // @ts-ignore
+    const quoteRes = quote.quote;
+
+    console.log('%cQUOTE', 'color: green; font-size: 24px;', ddQuote);
+
+    const tx = await Injector.httpClient.post<Any>(`http://localhost:3000/api/routes/swap`, {
+      dstTokenAddress: quoteRes.dstTokenAddress,
+      dstTokenBlockchain: 'TON',
+      referrer: 'rubic.exchange',
+      srcTokenAddress: quoteRes.srcTokenAddress,
+      srcTokenAmount: '0.2',
+      srcTokenBlockchain: 'TON',
+      fromAddress: 'UQATSC4TXAqjgLswuSEDVTIGmPG_kNnUTDhrTiIILVmymoQA',
+      id: ddQuote.id,
+      slippage: 0.4
+    });
+
+    console.log('%cTX', 'color: blue; font-size: 24px;', tx);
+
+    await Injector.web3PrivateService
+      .getWeb3Private('TON')
+      .sendTransaction({ messages: tx.transaction.tonMessages });
   }
 }

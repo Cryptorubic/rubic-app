@@ -58,6 +58,17 @@
   </button>
 
   <button
+    class="staking-button"
+    tuiButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    (click)="swapDedust()"
+  >
+    Swap Dedust
+  </button>
+
+  <button
     *ngIf="!useLargeIframe"
     class="staking-button"
     tuiButton
