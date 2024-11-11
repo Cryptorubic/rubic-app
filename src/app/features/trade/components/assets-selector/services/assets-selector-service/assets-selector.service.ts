@@ -14,6 +14,7 @@ import { AssetsSelectorComponentInput } from '@features/trade/components/assets-
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
+import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
 
@@ -61,6 +62,7 @@ export class AssetsSelectorService {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensApiService: TokensApiService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
@@ -117,8 +119,8 @@ export class AssetsSelectorService {
   }
 
   private checkAndRefetchTokenList(): void {
-    if (this.tokensNetworkService.needRefetchTokens) {
-      this.tokensNetworkService.tokensRequestParameters = undefined;
+    if (this.tokensApiService.needRefetchTokens) {
+      this.tokensNetworkService.setTokensRequestParameters(undefined);
     }
   }
 

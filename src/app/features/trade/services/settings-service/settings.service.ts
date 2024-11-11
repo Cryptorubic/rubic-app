@@ -208,7 +208,13 @@ export class SettingsService {
     ) {
       return priceImpact >= 15;
     }
-    return priceImpact >= 30;
+    if (
+      trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA ||
+      trade.to.blockchain === BLOCKCHAIN_NAME.SOLANA
+    ) {
+      return priceImpact >= 10;
+    }
+    return priceImpact >= 5;
   }
 
   public saveSettingsToLocalStorage(form: SettingsForm = this.settingsForm.getRawValue()): void {

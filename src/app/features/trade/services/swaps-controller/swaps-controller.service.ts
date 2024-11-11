@@ -30,7 +30,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
-  LowSlippageError,
   NotSupportedTokensError,
   OnChainTradeType,
   RubicSdkError,
@@ -38,9 +37,12 @@ import {
   UserRejectError,
   Web3Pure,
   NoLinkedAccountError,
-  SymbiosisCrossChainTrade,
+  SymbiosisEvmCcrTrade,
   BLOCKCHAIN_NAME,
-  OnChainTrade
+  OnChainTrade,
+  LowSlippageError,
+  RetroBridgeEvmTrade,
+  RetroBridgeTonTrade
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -206,6 +208,7 @@ export class SwapsControllerService {
           if (wrappedTrade) {
             const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
               wrappedTrade?.error
@@ -215,16 +218,17 @@ export class SwapsControllerService {
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$
+              isNotLinkedAccount$,
+              needAuthWallet$
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount, needAuthWallet]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-                    this.swapsStateService.updateTrade(trade, type, needApprove);
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,
@@ -305,7 +309,6 @@ export class SwapsControllerService {
         callback.onError?.();
         return;
       }
-
       if (trade instanceof CrossChainTrade) {
         txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
       } else {
@@ -374,6 +377,25 @@ export class SwapsControllerService {
     }
   }
 
+  public async authWallet(
+    tradeState: SelectedTrade,
+    callback?: {
+      onHash?: (hash: string) => void;
+      onSwap?: (...args: unknown[]) => void;
+      onError?: () => void;
+    }
+  ): Promise<void> {
+    const trade = tradeState.trade as RetroBridgeEvmTrade | RetroBridgeTonTrade;
+    try {
+      await trade.authWallet();
+      callback.onSwap();
+    } catch (err) {
+      console.error(err);
+      callback.onError();
+      this.errorsService.catch(err);
+    }
+  }
+
   private subscribeOnAddressChange(): void {
     this.authService.currentUser$
       .pipe(
@@ -438,8 +460,15 @@ export class SwapsControllerService {
     if (error && error instanceof NoLinkedAccountError) {
       return of(true);
     }
-    if (trade instanceof SymbiosisCrossChainTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
+    if (trade instanceof SymbiosisEvmCcrTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
       return from(trade.checkBlockchainRequirements());
+    }
+    return of(false);
+  }
+
+  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): Observable<boolean> {
+    if (trade instanceof RetroBridgeEvmTrade || trade instanceof RetroBridgeTonTrade) {
+      return from(trade.needAuthWallet());
     }
     return of(false);
   }
@@ -460,6 +489,9 @@ export class SwapsControllerService {
       }
       if ('squidrouterRequestId' in trade) {
         params.squidrouterId = trade.squidrouterRequestId as string;
+      }
+      if ('retroBridgeId' in trade) {
+        params.retroBridgeId = trade.retroBridgeId as string;
       }
 
       onSwap?.(params);
@@ -499,12 +531,13 @@ export class SwapsControllerService {
         tradeState.trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        false,
         false
       );
       this.swapsStateService.pickProvider(true);
     }
     onError?.();
-    this.errorsService.catch(err);
+    this.errorsService.catch(parsedError);
   }
 
   private subscribeOnSettings(): void {

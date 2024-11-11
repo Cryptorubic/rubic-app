@@ -1,0 +1,49 @@
+<div class="modal">
+  <div class="modal__content">
+    <div class="modal__header">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image.svg"
+        alt="Success"
+      />
+      <h3 class="modal__title">Warning</h3>
+    </div>
+
+    <div class="modal__body">
+      <span>
+        {{ 'modals.warningModal.tonMultistepWarning' | translate }}
+      </span>
+      <span *ngIf="isChangedSlippage">
+        {{ 'modals.warningModal.tonSlippageChanged' | translate : { slippage: slippagePercent } }}
+      </span>
+
+      <div class="modal__body-path">
+        <p class="modal__body-path__title">
+          {{ 'modals.warningModal.tonEstimatedPath' | translate }}
+        </p>
+
+        <span class="modal__body-path__tokens">
+          <ng-container *ngFor="let token of routingPath; let last = last">
+            <span class="token">
+              <img [src]="token.img" width="25" alt="token" /> ({{ token.symbol }})</span
+            >
+            <span *ngIf="!last"> → </span>
+          </ng-container>
+        </span>
+      </div>
+
+      <span>
+        {{ 'modals.warningModal.tonTransitToken' | translate : { transitTokens: transitTokens } }}
+      </span>
+    </div>
+
+    <div class="modal__footer">
+      <app-rubic-button fullWidth appearance="primary" size="l" (click)="confirm()">
+        {{ 'common.OK' | translate }}
+      </app-rubic-button>
+      <app-rubic-button fullWidth bordered appearance="outline" size="l" (click)="cancel()">
+        {{ 'common.cancel' | translate }}
+      </app-rubic-button>
+    </div>
+  </div>
+</div>
