@@ -201,11 +201,7 @@
           "quarter": "Q2. 2021",
           "month": "April",
           "done": true,
-          "data": [
-            "Özel Token Desteği",
-            "Özel Köprüler Özelliği",
-            "Özel Yönlendirme Sistemi"
-          ]
+          "data": ["Özel Token Desteği", "Özel Köprüler Özelliği", "Özel Yönlendirme Sistemi"]
         },
         "2": {
           "quarter": "Q2. 2021",
@@ -250,10 +246,7 @@
           "quarter": "Q3. 2021",
           "month": "August",
           "done": true,
-          "data": [
-            "Commission In RBC - stage 2",
-            "Anonymizer V1 - Polygon"
-          ]
+          "data": ["Commission In RBC - stage 2", "Anonymizer V1 - Polygon"]
         },
         "6": {
           "quarter": "Q3. 2021",
@@ -681,7 +674,11 @@
       "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
-      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
+      "tonMultistepWarning": "Bu ticaret, sözleşmeyle ilgili transit token yoluyla yürür.",
+      "tonSlippageChanged": "Bu ticaret için kayma otomatik olarak {{ slippage }}%.",
+      "tonTransitToken": "Kayma yeterli olmadığında, seçilen hedef belirteci yerine transit belirteçlerinden({{ transitTokens }}) eşdeğer miktarda bir tane alabilirsiniz.",
+      "tonEstimatedPath": "Tahmini yol: "
     }
   },
   "lp": {

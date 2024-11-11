@@ -541,7 +541,11 @@
       "highSlippage": "Slippage happens when traders buy or sell their assets for more or less than the expected price. During the transaction, the token price might change, so the trade has a chance to be less efficient or be front-runned by bots.",
       "highPriceImpact": "Price impact refers to how underlying tokens will affect your trade/transaction based on the market price. In simple terms, this warning means that you might lose a substantial part of your crypto if you continue with your transaction.",
       "slippageAmount": "The slippage for this trade is {{ slippage }}%",
-      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%"
+      "priceImpactAmount": "The price impact for this trade is {{ priceImpact }}%",
+      "tonMultistepWarning": "This trade walks through transit token on contract.",
+      "tonSlippageChanged": "Slippage for this trade will be automatically set to {{ slippage }}%.",
+      "tonTransitToken": "In case when slippage is not enough you can get one of transit tokens({{ transitTokens }}) equivalent amount instead of selected target token.",
+      "tonEstimatedPath": "Estimated path: "
     }
   },
   "settings": {

@@ -200,6 +200,8 @@ export class GoogleTagManagerService {
       trade.from,
       walletAddress
     );
+    const isErrorDefined = error instanceof RubicError;
+    const errorName = isErrorDefined ? error.constructor.name : error?.name;
 
     this.angularGtmService.gtag('event', 'swap_error', {
       input_token: trade.from.name,
@@ -214,8 +216,8 @@ export class GoogleTagManagerService {
       wallet_address: walletAddress,
       token_from_ballance: srcTokenBalance,
       token_native_ballance: nativeBalance,
-      identified_app_error: !(error instanceof RubicError),
-      identified_error_name: error.name
+      identified_app_error: !isErrorDefined,
+      identified_error_name: errorName
     });
   }
 
