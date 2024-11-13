@@ -145,7 +145,9 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: 'coffeeswap',
   [ON_CHAIN_TRADE_TYPE.ENOSYS]: 'enosys',
   [ON_CHAIN_TRADE_TYPE.SPARK_DEX]: 'spark_dex',
-  [ON_CHAIN_TRADE_TYPE.BLAZE_SWAP]: 'blaze_swap'
+  [ON_CHAIN_TRADE_TYPE.BLAZE_SWAP]: 'blaze_swap',
+  [ON_CHAIN_TRADE_TYPE.ENOSYS_V3]: 'enosys_v3',
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: 'spark_dex_v3'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

@@ -186,6 +186,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}enosys.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.ENOSYS_V3]: {
+    name: 'Enosys V3',
+    image: `${imageBasePath}enosys.svg`,
+    color: '#000000'
+  },
 
   //DDDDDDDDDDDDDDDDDDDDD
   [ON_CHAIN_TRADE_TYPE.DEDUST]: {
@@ -628,6 +633,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.SPARK_DEX]: {
     name: 'Spark Dex',
+    image: `${imageBasePath}sparkdex.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: {
+    name: 'Spark Dex V3',
     image: `${imageBasePath}sparkdex.svg`,
     color: '#000000'
   },
