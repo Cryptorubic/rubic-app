@@ -143,7 +143,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.STONFI]: 'stonfi',
   [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter',
   [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: 'coffeeswap',
-  [ON_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen'
+  [ON_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen',
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: 'tonco_dex'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
