@@ -655,6 +655,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}kujata.svg`,
     color: '#FFFFFF'
   },
+  [ON_CHAIN_TRADE_TYPE.UNIZEN]: {
+    name: 'Unizen',
+    image: 'assets/images/icons/providers/bridge/unizen.png',
+    color: '#00805C'
+  },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV
   [ON_CHAIN_TRADE_TYPE.VERSE]: {
