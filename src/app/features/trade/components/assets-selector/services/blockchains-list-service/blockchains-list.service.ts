@@ -18,13 +18,11 @@ import { AvailableBlockchain } from '@features/trade/components/assets-selector/
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import {
   blockchainsList,
-  notEvmChangeNowBlockchainsList,
   RankedBlockchain
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
-import { BlockchainName } from 'rubic-sdk';
 import { FilterQueryService } from '../filter-query-service/filter-query.service';
 import {
   BlockchainFilters,
@@ -106,11 +104,7 @@ export class BlockchainsListService {
       const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
         blockchain.name
       );
-      const disabledFrom = !this.iframeService.isIframe
-        ? disabledFromBlockchains.includes(blockchain.name)
-        : (Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]).includes(
-            blockchain.name
-          );
+      const disabledFrom = disabledFromBlockchains.includes(blockchain.name);
 
       return {
         name: blockchain.name,
