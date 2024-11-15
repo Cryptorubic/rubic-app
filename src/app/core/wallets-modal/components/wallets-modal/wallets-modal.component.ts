@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Injector,
   OnInit
 } from '@angular/core';
 import { USER_AGENT, WINDOW } from '@ng-web-apis/common';
@@ -11,7 +10,6 @@ import { AsyncPipe } from '@angular/common';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { TranslateService } from '@ngx-translate/core';
 import { BrowserService } from 'src/app/core/services/browser/browser.service';
 import { BROWSER } from '@shared/models/browser/browser';
 import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/models/types';
@@ -19,7 +17,6 @@ import { HeaderStore } from 'src/app/core/header/services/header.store';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { PROVIDERS_LIST } from '@core/wallets-modal/components/wallets-modal/models/providers';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { ModalService } from '@app/core/modals/services/modal.service';
 import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
 import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
@@ -27,6 +24,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
+import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -82,28 +80,26 @@ export class WalletsModalComponent implements OnInit {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<void>,
-    private readonly dialogService: ModalService,
-    @Inject(Injector) private readonly injector: Injector,
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(USER_AGENT) private readonly userAgent: string,
-    private readonly translateService: TranslateService,
     private readonly authService: AuthService,
     private readonly headerStore: HeaderStore,
     private readonly cdr: ChangeDetectorRef,
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly iframeService: IframeService
   ) {}
 
   ngOnInit() {
     this.rulesCheckbox.patchValue(this.getStorageValue());
 
-    if (this.browserService.currentBrowser === BROWSER.METAMASK) {
+    if (this.browserService.currentBrowser === BROWSER.METAMASK && !this.iframeService.isIframe) {
       this.connectProvider(WALLET_NAME.METAMASK);
       return;
     }
 
-    if (this.browserService.currentBrowser === BROWSER.COINBASE) {
+    if (this.browserService.currentBrowser === BROWSER.COINBASE && !this.iframeService.isIframe) {
       this.connectProvider(WALLET_NAME.WALLET_LINK);
     }
   }
