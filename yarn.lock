@@ -5450,7 +5450,7 @@
     teslabot "^1.3.0"
     zod "^3.21.4"
 
-"@toncodex/sdk@^1.0.19":
+"@toncodex/sdk@1.0.22":
   version "1.0.22"
   resolved "https://registry.yarnpkg.com/@toncodex/sdk/-/sdk-1.0.22.tgz#2d623e2e2674a8a2b9d5fadd8c5fe550ed4044c2"
   integrity sha512-jcJ/4pgAK0X7Ma9cfT3p4coWQxC8Hu4OUHOCVn3elyOMP3mlTBUGyrTKRhgwnm/XFIDQXUlIvZC/bvLJayaKfw==
@@ -17410,10 +17410,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.45.0-alpha.tonco.8:
-  version "5.45.0-alpha.tonco.8"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.45.0-alpha.tonco.8.tgz#767979e300b317a1cd66c124132939dda470e168"
-  integrity sha512-gYQc4QQsUim266q1vfyoisalb6/viEzymsVpHSQIGSuN+AmIx5/co0hUfa1YjacONLzvnI5q9BEEytBDduf6aA==
+rubic-sdk@5.45.0-alpha.tonco.11:
+  version "5.45.0-alpha.tonco.11"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.45.0-alpha.tonco.11.tgz#42dc0304b89bc4c54d9887483e07fc68a04bb3ff"
+  integrity sha512-jc9sCN88EFawmb7617lsjh5wUvXbZqyamI8eSEkYCwfgh2yH2vadib374+ogAqaGGTDWpgIsMjeZVcSzearY8g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -17433,7 +17433,7 @@ rubic-sdk@5.45.0-alpha.tonco.8:
     "@ton/core" "0.59.0"
     "@ton/crypto" "^3.3.0"
     "@ton/ton" "15.1.0"
-    "@toncodex/sdk" "^1.0.19"
+    "@toncodex/sdk" "1.0.22"
     "@tonconnect/ui" "^2.0.5"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
