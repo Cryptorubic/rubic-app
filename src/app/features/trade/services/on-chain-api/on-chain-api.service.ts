@@ -26,6 +26,7 @@ import { SettingsService } from '../settings-service/settings.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@app/shared/utils/get-signature';
+import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 
 @Injectable()
 export class OnChainApiService {
@@ -35,6 +36,7 @@ export class OnChainApiService {
     private readonly authService: AuthService,
     private readonly sessionStorage: SessionStorageService,
     private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean
   ) {}
 
@@ -100,6 +102,7 @@ export class OnChainApiService {
       from_amount: options.fromAmount,
       to_amount: options.toAmount,
       user: this.authService.userAddress,
+      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       hash,
       ...(referral && { influencer: referral }),
       ...(swapId && { swap_id: swapId })

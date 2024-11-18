@@ -15,7 +15,7 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
     return 0.6;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
-    return 0.5;
+    return 0.75;
   }
   if (blockchain === BLOCKCHAIN_NAME.FILECOIN) {
     return 0.45;
@@ -167,7 +167,10 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   const chainTags = [...notEvmChangeNowBlockchainsTagsList[blockchain], BlockchainTags.NON_EVM];
 
   if (blockchain === BLOCKCHAIN_NAME.TON) {
-    chainTags.push(BlockchainTags.NEW);
+    chainTags.push(BlockchainTags.NEW, BlockchainTags.POPULAR);
+  }
+  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    chainTags.push(BlockchainTags.PROMO);
   }
 
   return chainTags;
@@ -210,21 +213,20 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
-  },
-  { name: BLOCKCHAIN_NAME.OPTIMISM, rank: 0.75, tags: [BlockchainTags.EVM] },
-  {
-    name: BLOCKCHAIN_NAME.SCROLL,
-    rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
+  {
+    name: BLOCKCHAIN_NAME.OPTIMISM,
+    rank: 0.75,
+    tags: [BlockchainTags.EVM, BlockchainTags.PROMO, BlockchainTags.POPULAR]
+  },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
+  {
+    name: BLOCKCHAIN_NAME.SCROLL,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  },
+
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
@@ -233,30 +235,23 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.PROMO
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.MODE,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.BLAST,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MANTLE,
@@ -286,7 +281,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.5,
     tags: ['PLS', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
-  { name: BLOCKCHAIN_NAME.TRON, rank: 0.5, tags: ['TRX', BlockchainTags.NON_EVM] },
+  {
+    name: BLOCKCHAIN_NAME.TRON,
+    rank: 0.5,
+    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
+  },
   {
     name: BLOCKCHAIN_NAME.TAIKO,
     rank: 0.45,
@@ -295,7 +294,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
     rank: 0.45,
-    tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'RBTC',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.PROMO
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.BITLAYER,
@@ -323,11 +328,15 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.4,
     tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  { name: BLOCKCHAIN_NAME.SEI, rank: 0.4, tags: ['ETH', BlockchainTags.EVM] },
+  {
+    name: BLOCKCHAIN_NAME.SEI,
+    rank: 0.4,
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  },
   {
     name: BLOCKCHAIN_NAME.ZK_LINK,
     rank: 0.4,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_FAIR,
@@ -337,7 +346,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.HORIZEN_EON,
     rank: 0.4,
-    tags: ['ZEN', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['ZEN', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZETACHAIN,
@@ -347,7 +356,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BAHAMUT,
     rank: 0.4,
-    tags: ['FTN', BlockchainTags.EVM, BlockchainTags.POPULAR]
+    tags: ['FTN', BlockchainTags.EVM]
   },
   { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
   { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },

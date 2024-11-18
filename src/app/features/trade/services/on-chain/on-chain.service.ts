@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import { concatMap, firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeContainer } from '@features/trade/models/trade-container';
@@ -22,7 +22,8 @@ import {
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
   TonOnChainTrade,
-  IsDeflationToken
+  IsDeflationToken,
+  ON_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -229,16 +230,24 @@ export class OnChainService {
       await this.conditionalAwait(fromBlockchain);
       await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
-      if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
+      if (
+        trade instanceof OnChainTrade &&
+        trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
+        trade.type === ON_CHAIN_TRADE_TYPE.BRIDGERS
+      ) {
         const txStatusData = await firstValueFrom(
-          timer(7_000).pipe(
-            switchMap(() =>
+          timer(7_000, 5_000).pipe(
+            concatMap(() =>
               this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
             ),
-            filter(
+            first(
               statusData =>
                 statusData.status === TX_STATUS.SUCCESS || statusData.status === TX_STATUS.FAIL
-            )
+            ),
+            catchError(err => {
+              console.log(err);
+              return of({ hash: null, status: TX_STATUS.PENDING });
+            })
           )
         );
         if (txStatusData.status !== TX_STATUS.SUCCESS) {

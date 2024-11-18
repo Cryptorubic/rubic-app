@@ -8,7 +8,6 @@ import {
   CrossChainTrade,
   CrossChainTradeType,
   NotWhitelistedProviderError,
-  RetroBridgeTrade,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   UnapprovedMethodError,
@@ -28,6 +27,7 @@ import { SessionStorageService } from '@core/services/session-storage/session-st
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
 import { ProviderCcrStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
+import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 
 @Injectable()
 export class CrossChainApiService {
@@ -39,6 +39,7 @@ export class CrossChainApiService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly sessionStorage: SessionStorageService,
     private readonly settingsService: SettingsService,
+    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     @Inject(TUI_IS_MOBILE) private readonly isMobile: boolean,
     @Inject(WINDOW) private readonly window: RubicWindow
   ) {}
@@ -113,6 +114,7 @@ export class CrossChainApiService {
       to_amount: Web3Pure.toWei(toAmount, toDecimals),
       user: this.authService.userAddress,
       tx_hash: hash,
+      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
@@ -122,7 +124,7 @@ export class CrossChainApiService {
       ...('squidrouterRequestId' in trade && {
         squidrouter_request_id: trade.squidrouterRequestId
       }),
-      ...(trade instanceof RetroBridgeTrade && { retrobridge_transaction_id: trade.retroBridgeId }),
+      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...('simpleSwapId' in trade && { simpleswap_id: trade.simpleSwapId }),
       ...(referral && { influencer: referral })
     };

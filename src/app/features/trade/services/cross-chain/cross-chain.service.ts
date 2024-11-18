@@ -54,6 +54,8 @@ import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
+import { IframeService } from '@app/core/services/iframe-service/iframe.service';
+import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 
 @Injectable()
 export class CrossChainService {
@@ -84,13 +86,15 @@ export class CrossChainService {
     private readonly gasService: GasService,
     private readonly airdropPointsService: AirdropPointsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly proxyService: ProxyFeeService
+    private readonly proxyService: ProxyFeeService,
+    private readonly iframeService: IframeService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
     let providers: CrossChainCalculatedTradeData[] = [];
     const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
+    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
       this.tokensService.getAndUpdateTokenPrice(fromToken, true),
@@ -110,7 +114,7 @@ export class CrossChainService {
           of(toSdkCompatibleToken),
           of(tokenState),
           this.getOptions(
-            disabledTradeTypes,
+            disabledProviders,
             fromSdkCompatibleToken,
             toSdkCompatibleToken,
             fromAmount.actualValue
@@ -490,5 +494,20 @@ export class CrossChainService {
       return 30_000;
     }
     return this.defaultTimeout;
+  }
+
+  private getDisabledProviders(
+    disabledTradesTypes: CrossChainTradeType[],
+    fromBlockchain: BlockchainName
+  ): CrossChainTradeType[] {
+    const isNonEvmCNChain = (
+      Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
+    ).includes(fromBlockchain);
+
+    if (isNonEvmCNChain && this.iframeService.isIframe) {
+      return [...disabledTradesTypes, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
+    }
+
+    return disabledTradesTypes;
   }
 }
