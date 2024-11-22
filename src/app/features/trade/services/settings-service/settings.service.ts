@@ -23,7 +23,7 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 @Injectable()
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
-    instantTrades: 1,
+    instantTrades: 2,
     crossChain: 2
   };
 
