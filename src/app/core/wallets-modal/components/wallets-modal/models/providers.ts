@@ -118,5 +118,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
+  },
+  {
+    name: 'xDefi',
+    value: WALLET_NAME.X_DEFI,
+    img: './assets/images/icons/wallets/xdefi.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];
