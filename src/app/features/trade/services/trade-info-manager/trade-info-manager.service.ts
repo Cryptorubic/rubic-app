@@ -46,19 +46,22 @@ export class TradeInfoManager {
     let gasData = null;
     let gasPrice = null;
 
-    if (trade.type === 'squidrouter') {
-      return null;
-    }
-
     if (trade instanceof EvmCrossChainTrade) {
       gasData = trade.gasData;
+      // @TODO fix gasPrice - undefined always
+      if (gasData) {
+        console.log(`%c trade ${trade.type}`, 'color: yellow; font-size: 20px;', {
+          gasPrice: gasData.gasPrice?.toFixed(0),
+          gasPriceBN: gasData.gasPrice
+        });
+      }
 
       if (
         trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
         trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
       ) {
         gasPrice = gasData?.gasPrice?.gt(0)
-          ? Web3Pure.fromWei(gasData.gasPrice)
+          ? gasData.gasPrice
           : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
       } else {
         gasPrice = gasData?.gasPrice?.gt(0)
@@ -70,15 +73,22 @@ export class TradeInfoManager {
       gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
 
-    if (!gasData || !gasData.gasLimit) {
-      return null;
-    }
+    if (!gasData || !gasData.gasLimit) return null;
+
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
     const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
     const gasFee = gasData?.gasLimit?.multipliedBy(gasPrice);
+
+    // if (gasPrice) {
+    //   console.log(`%c trade ${trade.type}`, 'color: yellow; font-size: 20px;', {
+    //     gasPrice: gasPrice.toFixed(0),
+    //     gasLimit: gasData.gasLimit?.toFixed(0),
+    //     gasFee: gasFee.toFixed(0)
+    //   });
+    // }
 
     return {
       amount: gasFee,
