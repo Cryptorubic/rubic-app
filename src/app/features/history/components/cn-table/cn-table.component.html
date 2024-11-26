@@ -7,7 +7,6 @@
         <th *tuiHead="'date'" [sorter]="null" tuiTh>{{ 'recentTrades.date' | translate }}</th>
         <th *tuiHead="'status'" [sorter]="null" tuiTh>Status</th>
         <th *tuiHead="'receiver'" [sorter]="null" tuiTh>Receiver address</th>
-        <th *tuiHead="'tradeType'" [sorter]="null" tuiTh>Provider</th>
       </tr>
     </thead>
     <tbody tuiTbody [data]="state.data">
@@ -70,17 +69,7 @@
             <app-rubic-badge-with-copy-btn [item]="item"></app-rubic-badge-with-copy-btn>
           </td>
           <td *tuiCell="'receiver'" tuiTd>
-            {{ item?.receiverAddress | shortAddress : 10 : 5 }}
-          </td>
-          <td *tuiCell="'tradeType'" tuiTd>
-            <div *ngIf="item?.providerInfo?.name" class="provider-container">
-              <img
-                class="provider-container__image"
-                [src]="item.providerInfo.image"
-                [alt]="item.providerInfo.name"
-              />
-              {{ item.providerInfo.name }}
-            </div>
+            {{ item?.receiverAddress | shortAddress : 10 : 8 }}
           </td>
           <!--          <td *tuiCell="'statusFrom'" tuiTd>-->
           <!--            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">-->

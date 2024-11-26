@@ -1,4 +1,4 @@
-export const depositInfoText = {
+export const cnInfoText = {
   transactionId: {
     label: 'Transaction ID',
     description: 'Transaction swap identifier'
