@@ -26,8 +26,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: 'router',
   [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: 'retro_bridge',
   [CROSS_CHAIN_TRADE_TYPE.ACROSS]: 'across',
-  [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen',
-  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: 'simple_swap'
+  [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {

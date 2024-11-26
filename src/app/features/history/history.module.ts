@@ -28,8 +28,8 @@ import { OnChainDesktopTableComponent } from '@features/history/components/on-ch
 import { CrossChainTableService } from '@features/history/services/cross-chain-table-service/cross-chain-table.service';
 import { OnChainTableService } from '@features/history/services/on-chain-table-service/on-chain-table.service';
 import { CommonTableService } from '@features/history/services/common-table-service/common-table.service';
-import { DepositTableService } from './services/cn-table-service/deposit-table.service';
-import { DepositTableComponent } from './components/deposit-table/deposit-table.component';
+import { CnTableComponent } from '@features/history/components/cn-table/cn-table.component';
+import { CnTableService } from '@features/history/services/cn-table-service/cn-table.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +38,7 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     HistoryTableComponent,
     CrossChainDesktopTableComponent,
     OnChainDesktopTableComponent,
-    DepositTableComponent
+    CnTableComponent
   ],
   imports: [
     CommonModule,
@@ -60,6 +60,6 @@ import { DepositTableComponent } from './components/deposit-table/deposit-table.
     TuiButtonModule,
     TuiHintModule
   ],
-  providers: [CommonTableService, CrossChainTableService, OnChainTableService, DepositTableService]
+  providers: [CommonTableService, CrossChainTableService, OnChainTableService, CnTableService]
 })
 export class HistoryModule {}
