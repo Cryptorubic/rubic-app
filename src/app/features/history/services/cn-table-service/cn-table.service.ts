@@ -5,31 +5,25 @@ import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
-import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
+import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
 import {
+  CHANGENOW_API_STATUS,
+  ChangenowApiStatus,
   RubicSdkError,
-  CrossChainDepositStatus,
-  CROSS_CHAIN_DEPOSIT_STATUS,
-  getDepositStatus,
-  CrossChainTradeType,
-  OnChainTradeType
+  ChangeNowCrossChainApiService
 } from 'rubic-sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
+import { CnTableData } from '@features/history/models/cn-table-data';
+import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
 import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
-import { DepositTableData } from '../../models/deposit-table-data';
-import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 
 @Injectable()
-export class DepositTableService extends TableService<
-  'date',
-  CrossChainTransferTrade,
-  DepositTableData
-> {
+export class CnTableService extends TableService<'date', ChangenowPostTrade, CnTableData> {
   public readonly statusFilter = new FormControl<string>('All');
 
   private readonly _tableUpdate$ = new BehaviorSubject<void>(null);
@@ -54,7 +48,7 @@ export class DepositTableService extends TableService<
     map(([total, size]) => Math.trunc(total / size) + 1)
   );
 
-  public readonly data$: Observable<DepositTableData[]> = this.request$.pipe(
+  public readonly data$: Observable<CnTableData[]> = this.request$.pipe(
     filter(tuiIsPresent),
     map(response => response.data.filter(tuiIsPresent)),
     startWith([])
@@ -62,18 +56,19 @@ export class DepositTableService extends TableService<
 
   constructor(
     protected readonly walletConnector: WalletConnectorService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly httpClient: HttpClient
   ) {
     super('date');
   }
 
   protected getData(): Observable<{
-    data: DepositTableData[];
+    data: CnTableData[];
     total: number;
   }> {
-    const data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
+    const data = this.storeService.getItem('RUBIC_CHANGENOW_RECENT_TRADE') || [];
     const tradeStatuses = data.map(trade => {
-      return this.getDepositStatus(trade.id, trade.tradeType);
+      return this.getChangenowSwapStatus(trade.id);
     });
 
     return forkJoin(tradeStatuses).pipe(
@@ -109,8 +104,6 @@ export class DepositTableService extends TableService<
             image: blockchainIcon[toBlockchainName]
           };
 
-          const providerInfo = BRIDGE_PROVIDERS[tradeData.tradeType as CrossChainTradeType];
-
           return {
             ...data[index],
             fromToken,
@@ -119,8 +112,7 @@ export class DepositTableService extends TableService<
             toBlockchain,
             status,
             date: tradeData.timestamp.toString(),
-            receiverAddress: tradeData.receiverAddress,
-            providerInfo
+            receiverAddress: tradeData.receiverAddress
           };
         });
         return {
@@ -131,8 +123,8 @@ export class DepositTableService extends TableService<
     );
   }
 
-  protected transformResponse(_response: CrossChainTransferTrade): {
-    data: DepositTableData[];
+  protected transformResponse(_response: ChangenowPostTrade): {
+    data: CnTableData[];
     total: number;
   } {
     return undefined;
@@ -141,25 +133,20 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(
-    id: string,
-    tradeType: CrossChainTradeType | OnChainTradeType
-  ): Observable<CrossChainDepositStatus> {
+  public getChangenowSwapStatus(id: string): Observable<ChangenowApiStatus> {
     if (!id) {
-      throw new RubicSdkError(`Must provide ${tradeType} trade id`);
+      throw new RubicSdkError('Must provide changenow trade id');
     }
 
     try {
-      return from(getDepositStatus(id, tradeType)).pipe(
-        map(el => el.status as CrossChainDepositStatus)
-      );
+      return from(ChangeNowCrossChainApiService.getTxStatus(id)).pipe(map(el => el.status));
     } catch {
-      return of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
+      return of(CHANGENOW_API_STATUS.WAITING);
     }
   }
 
-  private getStatus(originalStatus: CrossChainDepositStatus): TxStatus {
-    const txStatusMapping: Record<CrossChainDepositStatus, TxStatus> = {
+  private getStatus(originalStatus: ChangenowApiStatus): TxStatus {
+    const txStatusMapping: Record<ChangenowApiStatus, TxStatus> = {
       new: { appearance: 'info', label: 'New' },
       waiting: { appearance: 'info', label: 'Waiting' },
       confirming: { appearance: 'info', label: 'Confirming' },
