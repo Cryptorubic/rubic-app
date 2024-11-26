@@ -102,6 +102,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}../bridge/bridgers.png`,
     color: 'white'
   },
+  [ON_CHAIN_TRADE_TYPE.BLAZE_SWAP]: {
+    name: 'Blaze Swap',
+    image: `${imageBasePath}blazeswap.svg`,
+    color: '#FFAF1D'
+  },
 
   //CCCCCCCCCCCCCCCCCCCC
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
@@ -175,6 +180,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Elk',
     image: `${imageBasePath}elk.png`,
     color: '#009A5C'
+  },
+  [ON_CHAIN_TRADE_TYPE.ENOSYS]: {
+    name: 'Enosys',
+    image: `${imageBasePath}enosys.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.ENOSYS_V3]: {
+    name: 'Enosys V3',
+    image: `${imageBasePath}enosys.svg`,
+    color: '#000000'
   },
 
   //DDDDDDDDDDDDDDDDDDDDD
@@ -616,8 +631,23 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/squidrouter.svg',
     color: '#e6f936'
   },
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX]: {
+    name: 'Spark Dex',
+    image: `${imageBasePath}sparkdex.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: {
+    name: 'Spark Dex V3',
+    image: `${imageBasePath}sparkdex.svg`,
+    color: '#000000'
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
+    name: 'ToncoDex',
+    image: `${imageBasePath}tonco-dex.svg`,
+    color: '#00CAB2'
+  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,

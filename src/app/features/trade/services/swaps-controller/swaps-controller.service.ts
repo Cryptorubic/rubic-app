@@ -435,6 +435,9 @@ export class SwapsControllerService {
     if (error?.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
+    if (error?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
+      return new RubicError('Please, increase the slippage or amount and try again!');
+    }
 
     const parsedError = error && RubicSdkErrorParser.parseError(error);
     if (!parsedError || parsedError instanceof ExecutionRevertedError) {
