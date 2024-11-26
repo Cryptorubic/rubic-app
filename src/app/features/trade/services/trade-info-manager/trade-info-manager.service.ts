@@ -91,6 +91,13 @@ export class TradeInfoManager {
 
     if (!gasFeeWei) return null;
 
+    console.log(`%c${trade.type}`, 'color: red; font-size: 20px;', {
+      gasPriceWei: gasData.gasPrice?.toFixed(),
+      gasLimitWei: gasData.gasLimit?.toFixed(),
+      maxFeePerGas: gasData.maxFeePerGas?.toFixed(),
+      totalGas: gasData.totalGas?.toFixed()
+    });
+
     return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
   }
 
@@ -119,6 +126,13 @@ export class TradeInfoManager {
     } else if ('maxFeePerGas' in gasData && gasData.maxFeePerGas.gt(0)) {
       gasFeeWei = gasData.gasLimit.multipliedBy(gasData.maxFeePerGas);
     }
+
+    console.log(`%c${trade.type}`, 'color: yellow; font-size: 20px;', {
+      gasPriceWei: gasData.gasPrice?.toFixed(),
+      gasLimitWei: gasData.gasLimit?.toFixed(),
+      maxFeePerGas: gasData.maxFeePerGas?.toFixed(),
+      totalGas: gasData.totalGas?.toFixed()
+    });
 
     return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
   }
