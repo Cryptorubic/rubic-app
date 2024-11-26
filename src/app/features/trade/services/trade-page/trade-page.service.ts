@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
-type FormType = 'form' | 'fromSelector' | 'toSelector' | 'preview' | 'cnPreview';
+type FormType = 'form' | 'fromSelector' | 'toSelector' | 'preview' | 'depositPreview';
 
 @Injectable()
 export class TradePageService {
