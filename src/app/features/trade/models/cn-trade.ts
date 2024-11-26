@@ -1,7 +1,6 @@
 import { Token } from '@shared/models/tokens/token';
-import { CrossChainTradeType, OnChainTradeType } from 'rubic-sdk';
 
-export interface CrossChainTransferTrade {
+export interface ChangenowPostTrade {
   id: string;
 
   fromToken: Token;
@@ -13,7 +12,6 @@ export interface CrossChainTransferTrade {
   receiverAddress: string;
 
   timestamp: number;
-  tradeType: CrossChainTradeType | OnChainTradeType;
 
   extraField?: {
     name?: string;

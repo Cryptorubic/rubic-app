@@ -25,7 +25,7 @@
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
-    <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
+    <app-cn-preview-swap *ngSwitchCase="'cnPreview'"></app-cn-preview-swap>
   </div>
 
   <app-providers-list-general
@@ -44,5 +44,5 @@
     [showCalculation]="true"
   ></app-providers-list-general>
 
-  <app-deposit-trade-info *ngIf="state.content === 'depositPreview'"></app-deposit-trade-info>
+  <app-cn-trade-info *ngIf="state.content === 'cnPreview'"></app-cn-trade-info>
 </div>
