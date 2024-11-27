@@ -92,9 +92,9 @@ export class ActionButtonService {
     }
     if (notEnoughBalance) {
       return {
-        type: 'action',
-        text: 'Preview swap',
-        action: this.swap.bind(this)
+        type: 'error',
+        text: 'Insufficient balance',
+        action: () => {}
       };
     }
     const isCnFromNonEvm =
