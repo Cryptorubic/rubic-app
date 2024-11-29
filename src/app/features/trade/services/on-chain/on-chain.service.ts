@@ -465,7 +465,8 @@ export class OnChainService {
       disableMultihops,
       deadlineMinutes,
       useProxy,
-      disabledProviders: [...disabledTradeTypes],
+      // UNIZEN disabled until slippage fix
+      disabledProviders: [...disabledTradeTypes, ON_CHAIN_TRADE_TYPE.UNIZEN],
       providerAddress
     };
 
