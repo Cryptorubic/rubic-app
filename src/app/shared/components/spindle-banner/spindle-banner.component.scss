@@ -1,0 +1,19 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .spindle-banner {
+    @include flex(row, center, center);
+
+    iframe {
+      margin-left: 10px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .spindle-banner {
+    iframe {
+      margin-left: 0;
+    }
+  }
+}

@@ -21,11 +21,11 @@
       formType="from"
     ></app-token-selector-page>
     <app-token-selector-page *ngSwitchCase="'toSelector'" formType="to"> </app-token-selector-page>
-    <app-swap-form-page
-      [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
-    ></app-swap-form-page>
+    <app-swap-form-page *ngSwitchCase="'form'"></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-cn-preview-swap *ngSwitchCase="'cnPreview'"></app-cn-preview-swap>
+
+    <app-spindle-banner *ngIf="state.content === 'form'"></app-spindle-banner>
   </div>
 
   <app-providers-list-general
