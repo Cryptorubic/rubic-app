@@ -84,13 +84,6 @@
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
   <!--  </button>-->
 
-  <ng-container *ngIf="!useLargeIframe">
-    <app-points-button
-      class="rubic-header__point-button"
-      *ngIf="currentUser$ | async"
-    ></app-points-button>
-  </ng-container>
-
   <!-- Uncomment when light theme ready -->
   <!--  <button-->
   <!--    class="theme-switcher"-->

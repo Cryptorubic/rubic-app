@@ -7,6 +7,12 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
+    translateKey: 'Swap & Earn',
+    type: 'internal',
+    link: ROUTE_PATH.AIRDROP,
+    imagePath: `assets/images/rbc.svg`
+  },
+  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,

@@ -40,7 +40,6 @@ import { MobileUserProfileComponent } from './components/header/components/mobil
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MobileNavigationMenuComponent } from './components/header/components/mobile-navigation-menu/mobile-navigation-menu.component';
-import { PointsButtonComponent } from './components/header/components/points-button/points-button.component';
 import { LogoComponent } from './components/header/components/logo/logo.component';
 import { LanguageSelectorComponent } from './components/header/components/language-selector/language-selector.component';
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
@@ -64,7 +63,6 @@ import { BannerZeroFeesComponent } from './components/header/components/banner-z
     RubicMenuTogglerComponent,
     MobileUserProfileComponent,
     MobileNavigationMenuComponent,
-    PointsButtonComponent,
     LogoComponent,
     LanguageSelectorComponent,
     SettingsComponent,
