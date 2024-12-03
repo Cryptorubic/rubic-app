@@ -5416,10 +5416,10 @@
   dependencies:
     tslib "^2.0.0"
 
-"@ton/core@^0.52.0":
-  version "0.52.2"
-  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.52.2.tgz#bec763fda9164ac831fdaa45cf86135d8394d5ef"
-  integrity sha512-h7ILb3XIrZ+tZ4sqTBORna3HVaVnSjhc6gGQY11yKeDBRrhIXO7wdlpk7IICwpUndbWB9YzgmXXLDvtpoIixTg==
+"@ton/core@0.59.0", "@ton/core@^0.59.0":
+  version "0.59.0"
+  resolved "https://registry.yarnpkg.com/@ton/core/-/core-0.59.0.tgz#58da9fcaa58e5a0c705b63baf1e86cab6e196689"
+  integrity sha512-LSIkGst7BoY7fMWshejzcH0UJnoW21JGlRrW0ch+6A7Xb/7EuekxgdKym7fHxcry6OIf6FoeFg97lJ960N/Ghg==
   dependencies:
     symbol.inspect "1.0.1"
 
@@ -5439,7 +5439,7 @@
     jssha "3.2.0"
     tweetnacl "1.0.3"
 
-"@ton/ton@^15.0.0":
+"@ton/ton@15.1.0", "@ton/ton@^15.1.0":
   version "15.1.0"
   resolved "https://registry.yarnpkg.com/@ton/ton/-/ton-15.1.0.tgz#a760b1492dd3e5896238b7154f7377f4e51fa086"
   integrity sha512-almetcfTu7jLjcNcEEPB7wAc8yl90ES1M//sOr1QE+kv7RbmEvMkaPSc7kFxzs10qrjIPKxlodBJlMSWP5LuVQ==
@@ -5449,6 +5449,24 @@
     symbol.inspect "1.0.1"
     teslabot "^1.3.0"
     zod "^3.21.4"
+
+"@toncodex/sdk@1.0.26":
+  version "1.0.26"
+  resolved "https://registry.yarnpkg.com/@toncodex/sdk/-/sdk-1.0.26.tgz#c363a469e30b74d78acf06540eb9ba2c9358a5d8"
+  integrity sha512-DX++TcyuY+W9/cJUmCbX+odcFGTdg+v4U51Y/lElDJpghn6roHUREoCaQxtSMo5IZJ0wQKO5N16+3lq5O7tE1w==
+  dependencies:
+    "@ton/core" "^0.59.0"
+    "@ton/crypto" "^3.3.0"
+    "@ton/ton" "^15.1.0"
+    big.js "^6.2.1"
+    crc "^4.3.2"
+    decimal.js-light "^2.5.1"
+    jsbi "^3.2.5"
+    numeral "^2.0.6"
+    tiny-invariant "^1.3.1"
+    tiny-warning "^1.0.3"
+    toformat "^2.0.0"
+    tonapi-sdk-js "^1.0.11"
 
 "@tonconnect/isomorphic-eventsource@^0.0.2":
   version "0.0.2"
@@ -7629,6 +7647,11 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+big.js@^6.2.1:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/big.js/-/big.js-6.2.2.tgz#be3bb9ac834558b53b099deef2a1d06ac6368e1a"
+  integrity sha512-y/ie+Faknx7sZA5MfGA2xKlu0GDv8RWrXGsmlteyJQ2lvoKv9GBK/fpRMc2qlSoBAgNxrixICFCBefIq8WCQpQ==
+
 bigint-buffer@^1.1.5:
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/bigint-buffer/-/bigint-buffer-1.1.5.tgz#d038f31c8e4534c1f8d0015209bf34b4fa6dd442"
@@ -8970,6 +8993,11 @@ crc32@^0.2.2:
   resolved "https://registry.yarnpkg.com/crc32/-/crc32-0.2.2.tgz#7ad220d6ffdcd119f9fc127a7772cacea390a4ba"
   integrity sha512-PFZEGbDUeoNbL2GHIEpJRQGheXReDody/9axKTxhXtQqIL443wnNigtVZO9iuCIMPApKZRv7k2xr8euXHqNxQQ==
 
+crc@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/crc/-/crc-4.3.2.tgz#49b7821cbf2cf61dfd079ed93863bbebd5469b9a"
+  integrity sha512-uGDHf4KLLh2zsHa8D8hIQ1H/HtFQhyHrc0uhHBcoKGol/Xnb+MPYfUMw7cvON6ze/GUESTudKayDcJC5HnJv1A==
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
@@ -9329,7 +9357,7 @@ decamelize@^6.0.0:
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-6.0.0.tgz#8cad4d916fde5c41a264a43d0ecc56fe3d31749e"
   integrity sha512-Fv96DCsdOgB6mdGl67MT5JaTNKRzrzill5OH5s8bjYJXVlcXyPYGyPsUkWyGV5p1TXI5esYIYMMeDJL0hEIwaA==
 
-decimal.js-light@^2.5.0:
+decimal.js-light@^2.5.0, decimal.js-light@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/decimal.js-light/-/decimal.js-light-2.5.1.tgz#134fd32508f19e208f4fb2f8dac0d2626a867934"
   integrity sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg==
@@ -13357,6 +13385,11 @@ js-yaml@^3.10.0, js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+jsbi@^3.2.5:
+  version "3.2.5"
+  resolved "https://registry.yarnpkg.com/jsbi/-/jsbi-3.2.5.tgz#b37bb90e0e5c2814c1c2a1bcd8c729888a2e37d6"
+  integrity sha512-aBE4n43IPvjaddScbvWRA2YlTzKEynHzu7MqOyTipdHucf/VxS63ViCjxYRg86M8Rxwbt/GfzHl1kKERkt45fQ==
+
 jsbi@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/jsbi/-/jsbi-4.3.0.tgz#b54ee074fb6fcbc00619559305c8f7e912b04741"
@@ -15407,6 +15440,11 @@ number-to-bn@1.7.0:
     bn.js "4.11.6"
     strip-hex-prefix "1.0.0"
 
+numeral@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/numeral/-/numeral-2.0.6.tgz#4ad080936d443c2561aed9f2197efffe25f4e506"
+  integrity sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==
+
 nwsapi@^2.2.0:
   version "2.2.13"
   resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.13.tgz#e56b4e98960e7a040e5474536587e599c4ff4655"
@@ -17372,10 +17410,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.46.0-alpha.gas.8:
-  version "5.46.0-alpha.gas.8"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.46.0-alpha.gas.8.tgz#6d3e35c1cd21ebbebabf9c185b4910cfc73b25ca"
-  integrity sha512-J0UGq5Mrn/Ru0sZ23FEkiaTUGujFiRHLZjCKBlvY+4lhx2yiN3CmKP1y+QuoZSydUL/rG88H1FlRAhJxaqkglg==
+rubic-sdk@5.48.0-alpha.gas.2:
+  version "5.48.0-alpha.gas.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.48.0-alpha.gas.2.tgz#10f1c5ddef088412bf536d6d47dd84a4ccf66a97"
+  integrity sha512-N151MHa1z9sJx0T+zbZQ5jVl3WgstzjIAqXhdvC4X5rYzUOAjxMp29UljIG9MePcrRNEdRFfKepErwkwyzZRnQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -17392,9 +17430,10 @@ rubic-sdk@5.46.0-alpha.gas.8:
     "@solflare-wallet/utl-sdk" "^1.4.0"
     "@ston-fi/api" "^0.12.1"
     "@ston-fi/sdk" "2.0.0-rc.8"
-    "@ton/core" "^0.52.0"
+    "@ton/core" "0.59.0"
     "@ton/crypto" "^3.3.0"
-    "@ton/ton" "^15.0.0"
+    "@ton/ton" "15.1.0"
+    "@toncodex/sdk" "1.0.26"
     "@tonconnect/ui" "^2.0.5"
     "@viaprotocol/router-sdk" "^1.0.7"
     assert "^2.0.0"
@@ -18954,7 +18993,7 @@ timed-out@^4.0.1:
   resolved "https://registry.yarnpkg.com/timed-out/-/timed-out-4.0.1.tgz#f32eacac5a175bea25d7fab565ab3ed8741ef56f"
   integrity sha512-G7r3AhovYtr5YKOWQkta8RKAPb+J9IsO4uVmzjl8AZwfhs8UcUwTiD6gcJYSgOtzyjvQKrKYn41syHbUWMkafA==
 
-tiny-invariant@^1.1.0, tiny-invariant@^1.3.0, tiny-invariant@^1.3.3:
+tiny-invariant@^1.1.0, tiny-invariant@^1.3.0, tiny-invariant@^1.3.1, tiny-invariant@^1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.3.3.tgz#46680b7a873a0d5d10005995eb90a70d74d60127"
   integrity sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==
@@ -19051,6 +19090,11 @@ toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
+
+tonapi-sdk-js@^1.0.11:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/tonapi-sdk-js/-/tonapi-sdk-js-1.1.2.tgz#bb2b0620544f2666855e6461f30a490168ee5727"
+  integrity sha512-jWnT0u5S9knGvKY0ZyQSyXxYoE8mDOzanBgzvpzWVF5IKiWSJyZZbIqXNT+gQshqwOwPWMaBzfPEYn32mHazJQ==
 
 totalist@^3.0.0:
   version "3.0.1"

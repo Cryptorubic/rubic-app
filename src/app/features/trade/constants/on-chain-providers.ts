@@ -643,6 +643,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
+    name: 'ToncoDex',
+    image: `${imageBasePath}tonco-dex.svg`,
+    color: '#00CAB2'
+  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
