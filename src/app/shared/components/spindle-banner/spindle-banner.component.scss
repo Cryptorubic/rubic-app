@@ -5,15 +5,7 @@
     @include flex(row, center, center);
 
     iframe {
-      margin-left: 10px;
-    }
-  }
-}
-
-@include b($mobile-md) {
-  .spindle-banner {
-    iframe {
-      margin-left: 0;
+      border-radius: var(--tui-radius-m);
     }
   }
 }
