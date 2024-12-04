@@ -18,7 +18,7 @@ export class ActionButtonService {
     .pipe(
       combineLatestWith([
         this.tradeState.wrongBlockchain$,
-        this.tradeState.notEnoughBalance$,
+        this.tradeState.notEnoughBalance$.pipe(map(() => false)),
         this.walletConnector.addressChange$,
         this.targetNetworkAddressService.isAddressValid$,
         this.targetNetworkAddressService.isAddressRequired$,
