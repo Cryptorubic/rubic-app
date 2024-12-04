@@ -200,7 +200,6 @@ export class PreviewSwapComponent implements OnDestroy {
     tradeState: SelectedTrade,
     balanceError: boolean
   ): Promise<{ action: () => void; label: string; disabled: boolean }> {
-    balanceError = false;
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
       this.swapsFormService.inputValue.toBlockchain;

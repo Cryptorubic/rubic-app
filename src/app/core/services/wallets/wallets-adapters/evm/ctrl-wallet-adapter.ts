@@ -17,10 +17,10 @@ import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/com
 import { BtcWallet } from '@core/services/wallets/wallets-adapters/solana/models/btc-wallet';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 
-export class XdefiWalletAdapter extends CommonWalletAdapter<BtcWallet> {
+export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   public readonly chainType = CHAIN_TYPE.BITCOIN;
 
-  public readonly walletName = WALLET_NAME.X_DEFI;
+  public readonly walletName = WALLET_NAME.CTRL;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,

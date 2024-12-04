@@ -15,5 +15,5 @@ export enum WALLET_NAME {
   TONKEEPER = 'tonkeeper',
   MY_TON_WALLET = 'my_ton_wallet',
   TELEGRAM_WALLET = 'telegram_wallet',
-  X_DEFI = 'x_defi'
+  CTRL = 'ctrl'
 }

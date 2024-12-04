@@ -46,7 +46,7 @@ import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
-import { XdefiWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/xdefi-wallet-adapter';
+import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -210,8 +210,8 @@ export class WalletConnectorService {
       );
     }
 
-    if (walletName === WALLET_NAME.X_DEFI) {
-      return new XdefiWalletAdapter(...defaultConstructorParameters);
+    if (walletName === WALLET_NAME.CTRL) {
+      return new CtrlWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.HOLD_STATION) {

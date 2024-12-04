@@ -120,9 +120,9 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'xDefi',
-    value: WALLET_NAME.X_DEFI,
-    img: './assets/images/icons/wallets/xdefi.png',
+    name: 'Ctrl Wallet',
+    value: WALLET_NAME.CTRL,
+    img: './assets/images/icons/wallets/ctrl.svg',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
