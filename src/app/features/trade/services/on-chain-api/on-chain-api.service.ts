@@ -73,7 +73,7 @@ export class OnChainApiService {
     hash: string,
     provider: OnChainTradeType,
     trade: OnChainTrade,
-    preTradeId: string
+    preTradeId?: string
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
@@ -104,8 +104,8 @@ export class OnChainApiService {
       to_amount: options.toAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
-      pretrade_id: preTradeId,
       hash,
+      ...(preTradeId && { pretrade_id: preTradeId }),
       ...(referral && { influencer: referral }),
       ...(swapId && { swap_id: swapId })
     };

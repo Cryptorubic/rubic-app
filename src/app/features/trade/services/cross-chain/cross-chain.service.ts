@@ -278,7 +278,7 @@ export class CrossChainService {
     ]);
     await this.handlePreSwapModal(trade);
 
-    const preTradeId = await this.crossChainApiService.sendPreTradeInfo(trade);
+    const preTradeId = await this.sendPreTradeInfo(trade);
 
     let transactionHash: string;
     const onTransactionHash = (txHash: string) => {
@@ -507,5 +507,14 @@ export class CrossChainService {
     }
 
     return disabledTradesTypes;
+  }
+
+  private async sendPreTradeInfo(trade: CrossChainTrade): Promise<string | null> {
+    try {
+      const preTradeId = await this.crossChainApiService.sendPreTradeInfo(trade);
+      return preTradeId;
+    } catch {
+      return null;
+    }
   }
 }

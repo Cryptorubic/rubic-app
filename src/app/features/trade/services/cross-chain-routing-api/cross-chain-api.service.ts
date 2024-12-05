@@ -86,7 +86,7 @@ export class CrossChainApiService {
   public async createTrade(
     hash: string,
     trade: CrossChainTrade,
-    preTradeId: string
+    preTradeId?: string
   ): Promise<void> {
     const {
       fromBlockchain,
@@ -119,11 +119,11 @@ export class CrossChainApiService {
       user: this.authService.userAddress,
       tx_hash: hash,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
-      pretrade_id: preTradeId,
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
+      ...(preTradeId && { pretrade_id: preTradeId }),
       ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
       ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
       ...('squidrouterRequestId' in trade && {

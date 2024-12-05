@@ -197,7 +197,7 @@ export class OnChainService {
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
 
-    const preTradeId = await this.onChainApiService.sendPreTradeInfo(trade);
+    const preTradeId = await this.sendPreTradeInfo(trade);
 
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
@@ -478,5 +478,14 @@ export class OnChainService {
     };
 
     return options;
+  }
+
+  private async sendPreTradeInfo(trade: OnChainTrade): Promise<string | null> {
+    try {
+      const preTradeId = await this.onChainApiService.sendPreTradeInfo(trade);
+      return preTradeId;
+    } catch {
+      return null;
+    }
   }
 }
