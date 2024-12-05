@@ -72,7 +72,8 @@ export class OnChainApiService {
   public createTrade(
     hash: string,
     provider: OnChainTradeType,
-    trade: OnChainTrade
+    trade: OnChainTrade,
+    preTradeId: string
   ): Observable<InstantTradesResponseApi> {
     const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
@@ -103,6 +104,7 @@ export class OnChainApiService {
       to_amount: options.toAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      pretrade_id: preTradeId,
       hash,
       ...(referral && { influencer: referral }),
       ...(swapId && { swap_id: swapId })
@@ -170,5 +172,37 @@ export class OnChainApiService {
         Signature: getSignature(data.to_token.toLowerCase(), data.from_token.toLowerCase())
       }
     });
+  }
+
+  public sendPreTradeInfo(trade: OnChainTrade): Promise<string> {
+    const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
+      TradeParser.getItSwapParams(trade);
+    const referral = this.sessionStorage.getItem('referral');
+    const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[trade.type];
+
+    const preTradeInfo: Omit<OnChainTradeCreationToBackend, 'pretrade_id'> = {
+      price_impact: trade.getTradeInfo().priceImpact,
+      walletName: this.walletConnectorService.provider.walletName,
+      deviceType: this.isMobile ? 'mobile' : 'desktop',
+      slippage: trade.slippageTolerance,
+      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
+      to_amount_min: trade.toTokenAmountMin.stringWeiAmount,
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
+      provider: backendProvider,
+      from_token: fromAddress,
+      to_token: toAddress,
+      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
+      to_amount: Web3Pure.toWei(toAmount, toDecimals),
+      user: this.authService.userAddress,
+      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      ...(referral && { influencer: referral })
+    };
+
+    return firstValueFrom(
+      this.httpService
+        .post<string>('v2/trades/onchain/pretrade_new', preTradeInfo)
+        .pipe(delay(1000))
+    );
   }
 }

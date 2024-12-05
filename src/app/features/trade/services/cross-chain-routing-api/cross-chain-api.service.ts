@@ -83,7 +83,11 @@ export class CrossChainApiService {
    * Sends request to add trade.
    * @return InstantTradesResponseApi Instant trade object.
    */
-  public async createTrade(hash: string, trade: CrossChainTrade): Promise<void> {
+  public async createTrade(
+    hash: string,
+    trade: CrossChainTrade,
+    preTradeId: string
+  ): Promise<void> {
     const {
       fromBlockchain,
       toBlockchain,
@@ -115,6 +119,7 @@ export class CrossChainApiService {
       user: this.authService.userAddress,
       tx_hash: hash,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      pretrade_id: preTradeId,
       domain:
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
@@ -161,5 +166,50 @@ export class CrossChainApiService {
         swap_id: dstStatusInfo.extraInfo?.mesonSwapId
       })
       .subscribe();
+  }
+
+  public async sendPreTradeInfo(trade: CrossChainTrade): Promise<string> {
+    const {
+      fromBlockchain,
+      toBlockchain,
+      fromAmount,
+      fromAddress,
+      fromDecimals,
+      toAmount,
+      toDecimals,
+      toAddress
+    } = TradeParser.getCrossChainSwapParams(trade);
+    const referral = this.sessionStorage.getItem('referral');
+    const slippage = trade.getTradeInfo().slippage;
+
+    const preTradeInfo = {
+      price_impact: trade.getTradeInfo().priceImpact,
+      slippage,
+      wallet_name: this.walletConnectorService.provider.walletName,
+      device_type: this.isMobile ? 'mobile' : 'desktop',
+      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
+      to_amount_min: Web3Pure.toWei(trade.toTokenAmountMin, toDecimals),
+      from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
+      to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
+      provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],
+      from_token: fromAddress,
+      to_token: toAddress,
+      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
+      to_amount: Web3Pure.toWei(toAmount, toDecimals),
+      user: this.authService.userAddress,
+      receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
+      domain:
+        this.window.location !== this.window.parent.location
+          ? this.window.document.referrer
+          : this.window.document.location.href,
+      ...(referral && { influencer: referral })
+    };
+
+    return firstValueFrom(
+      this.httpService
+        .post<string>('v2/trades/crosschain/pretrade_new', preTradeInfo)
+        .pipe(delay(1000))
+    );
   }
 }

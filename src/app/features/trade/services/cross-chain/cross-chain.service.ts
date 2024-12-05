@@ -49,9 +49,7 @@ import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chai
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { AirdropPointsService } from '@app/shared/services/airdrop-points-service/airdrop-points.service';
 import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
-import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
@@ -84,8 +82,6 @@ export class CrossChainService {
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
-    private readonly airdropPointsService: AirdropPointsService,
-    private readonly formsTogglerService: FormsTogglerService,
     private readonly proxyService: ProxyFeeService,
     private readonly iframeService: IframeService
   ) {}
@@ -282,11 +278,13 @@ export class CrossChainService {
     ]);
     await this.handlePreSwapModal(trade);
 
+    const preTradeId = await this.crossChainApiService.sendPreTradeInfo(trade);
+
     let transactionHash: string;
     const onTransactionHash = (txHash: string) => {
       transactionHash = txHash;
       callbackOnHash?.(txHash);
-      this.crossChainApiService.createTrade(txHash, trade);
+      this.crossChainApiService.createTrade(txHash, trade, preTradeId);
 
       this.notifyGtmAfterSignTx(
         txHash,
