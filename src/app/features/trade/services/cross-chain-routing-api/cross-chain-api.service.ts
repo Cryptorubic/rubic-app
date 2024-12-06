@@ -14,7 +14,7 @@ import {
   Web3Pure
 } from 'rubic-sdk';
 import { firstValueFrom, Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
@@ -208,8 +208,11 @@ export class CrossChainApiService {
 
     return firstValueFrom(
       this.httpService
-        .post<string>('v2/trades/crosschain/pretrade_new', preTradeInfo)
-        .pipe(delay(1000))
+        .post<{ pretrade_id: string }>('v2/trades/crosschain/pretrade_new', preTradeInfo)
+        .pipe(
+          delay(1000),
+          map(res => res.pretrade_id)
+        )
     );
   }
 }

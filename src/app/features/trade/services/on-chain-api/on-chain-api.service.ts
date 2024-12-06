@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { delay, map } from 'rxjs/operators';
 import { OnChainTradeCreationToBackend } from '@core/services/backend/instant-trades-api/models/instant-trades-post-api';
 import { InstantTradesResponseApi } from '@core/services/backend/instant-trades-api/models/instant-trades-response-api';
 import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-api/models/instant-trades-bot-request';
@@ -201,8 +201,11 @@ export class OnChainApiService {
 
     return firstValueFrom(
       this.httpService
-        .post<string>('v2/trades/onchain/pretrade_new', preTradeInfo)
-        .pipe(delay(1000))
+        .post<{ pretrade_id: string }>('v2/trades/onchain/pretrade_new', preTradeInfo)
+        .pipe(
+          delay(1000),
+          map(res => res.pretrade_id)
+        )
     );
   }
 }
