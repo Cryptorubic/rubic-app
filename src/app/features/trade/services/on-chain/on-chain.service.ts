@@ -197,6 +197,8 @@ export class OnChainService {
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
 
+    const preTradeId = await this.sendPreTradeInfo(trade);
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -210,7 +212,7 @@ export class OnChainService {
           useMevBotProtection
         );
 
-        this.postTrade(hash, trade);
+        this.postTrade(hash, trade, preTradeId);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
@@ -335,14 +337,20 @@ export class OnChainService {
     );
   }
 
-  private async postTrade(transactionHash: string, trade: OnChainTrade): Promise<void> {
+  private async postTrade(
+    transactionHash: string,
+    trade: OnChainTrade,
+    preTradeId: string
+  ): Promise<void> {
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
     const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
     await firstValueFrom(
       timer(waitTime).pipe(
-        switchMap(() => this.onChainApiService.createTrade(transactionHash, trade.type, trade))
+        switchMap(() =>
+          this.onChainApiService.createTrade(transactionHash, trade.type, trade, preTradeId)
+        )
       )
     );
   }
@@ -470,5 +478,14 @@ export class OnChainService {
     };
 
     return options;
+  }
+
+  private async sendPreTradeInfo(trade: OnChainTrade): Promise<string | null> {
+    try {
+      const preTradeId = await this.onChainApiService.sendPreTradeInfo(trade);
+      return preTradeId;
+    } catch {
+      return null;
+    }
   }
 }
