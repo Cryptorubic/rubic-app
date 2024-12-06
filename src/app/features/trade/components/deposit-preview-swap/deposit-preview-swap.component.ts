@@ -11,8 +11,8 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { first, map, switchMap } from 'rxjs/operators';
 import {
-  ChangenowCrossChainTrade,
   CrossChainTradeType,
+  CrossChainTransferTrade,
   EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -33,18 +33,18 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
-import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { DepositService } from '../../services/deposit/deposit.service';
 
 @Component({
-  selector: 'app-cn-preview-swap',
-  templateUrl: './cn-preview-swap.component.html',
-  styleUrls: ['./cn-preview-swap.component.scss'],
+  selector: 'app-deposit-preview-swap',
+  templateUrl: './deposit-preview-swap.component.html',
+  styleUrls: ['./deposit-preview-swap.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CnPreviewSwapComponent {
-  public readonly status$ = this.cnSwapService.status$;
+export class DepositPreviewSwapComponent {
+  public readonly status$ = this.depositService.status$;
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
 
@@ -79,7 +79,7 @@ export class CnPreviewSwapComponent {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly cnTrade$ = this.cnSwapService.cnTrade$;
+  public readonly cnTrade$ = this.depositService.depositTrade$;
 
   public hintShown: boolean = false;
 
@@ -94,7 +94,7 @@ export class CnPreviewSwapComponent {
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly cnSwapService: CnSwapService,
+    private readonly depositService: DepositService,
     private readonly targetAddressService: TargetNetworkAddressService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef
@@ -189,12 +189,12 @@ export class CnPreviewSwapComponent {
     const receiverAddress = this.targetAddressService.address;
     const selectedTrade = await firstValueFrom(this.tradeState$);
 
-    const paymentInfo = await (
-      selectedTrade.trade as ChangenowCrossChainTrade
-    ).getChangenowPostTrade(receiverAddress);
+    const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
+      receiverAddress
+    );
 
-    this.cnSwapService.updateTrade(paymentInfo, receiverAddress);
-    this.cnSwapService.setupUpdate();
+    this.depositService.updateTrade(paymentInfo, receiverAddress);
+    this.depositService.setupUpdate();
   }
 
   /**

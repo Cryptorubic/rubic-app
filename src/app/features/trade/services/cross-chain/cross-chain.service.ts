@@ -8,11 +8,11 @@ import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  ChangenowCrossChainTrade,
-  ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
+  CrossChainPaymentInfo,
   CrossChainTradeType,
+  CrossChainTransferTrade,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
   NotWhitelistedProviderError,
@@ -247,10 +247,10 @@ export class CrossChainService {
   }
 
   public async getChangenowPaymentInfo(
-    trade: ChangenowCrossChainTrade
-  ): Promise<{ paymentInfo: ChangenowPaymentInfo; receiverAddress: string }> {
+    trade: CrossChainTransferTrade
+  ): Promise<{ paymentInfo: CrossChainPaymentInfo; receiverAddress: string }> {
     const receiverAddress = this.receiverAddress;
-    const paymentInfo = await trade.getChangenowPostTrade(receiverAddress);
+    const paymentInfo = await trade.getTransferTrade(receiverAddress);
     return {
       paymentInfo,
       receiverAddress
