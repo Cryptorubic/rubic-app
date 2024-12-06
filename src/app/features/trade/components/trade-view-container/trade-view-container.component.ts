@@ -57,6 +57,8 @@ export class TradeViewContainerComponent {
 
   public readonly buttonState$ = this.actionButtonService.buttonState$;
 
+  public readonly transactionState$ = this.previewSwapService.transactionState$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
