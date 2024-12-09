@@ -1,0 +1,42 @@
+<svg width="257" height="256" viewBox="0 0 257 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_1246_2710)">
+<rect width="256" height="256" transform="translate(0.442871)" fill="white"/>
+<rect width="256" height="256" transform="translate(0.442871)" fill="url(#paint0_radial_1246_2710)"/>
+<path d="M26.043 0V256" stroke="#FDAFF0"/>
+<path d="M51.6429 0V256" stroke="#FDAFF0"/>
+<path d="M77.2429 0V256" stroke="#FDAFF0"/>
+<path d="M102.843 0V256" stroke="#FDAFF0"/>
+<path d="M128.443 0V256" stroke="#FDAFF0"/>
+<path d="M154.043 0V256" stroke="#FDAFF0"/>
+<path d="M179.643 0V256" stroke="#FDAFF0"/>
+<path d="M205.243 0V256" stroke="#FDAFF0"/>
+<path d="M230.843 0V256" stroke="#FDAFF0"/>
+<path d="M256.443 25.6001L0.442877 25.6001" stroke="#FDAFF0"/>
+<path d="M256.443 51.2001L0.442877 51.2001" stroke="#FDAFF0"/>
+<path d="M256.443 76.8L0.442877 76.8" stroke="#FDAFF0"/>
+<path d="M256.443 102.4L0.442877 102.4" stroke="#FDAFF0"/>
+<path d="M256.443 128L0.442877 128" stroke="#FDAFF0"/>
+<path d="M256.443 153.6L0.442877 153.6" stroke="#FDAFF0"/>
+<path d="M256.443 179.2L0.442877 179.2" stroke="#FDAFF0"/>
+<path d="M256.443 204.8L0.442877 204.8" stroke="#FDAFF0"/>
+<path d="M256.443 230.4L0.442877 230.4" stroke="#FDAFF0"/>
+<circle cx="128.443" cy="128" r="76.2999" stroke="#FDAFF0"/>
+<path d="M128.443 26.145V229.977" stroke="white" stroke-width="11"/>
+<path d="M231.316 127.998L25.5697 127.998" stroke="white" stroke-width="11"/>
+<path d="M230.845 128.002C174.29 128.002 128.443 82.1553 128.443 25.6001" stroke="white" stroke-width="11"/>
+<path d="M26.0404 128.061C82.5957 128.061 128.443 173.908 128.443 230.464" stroke="white" stroke-width="11"/>
+<path d="M256.868 76.8C214.218 76.8 179.643 42.4155 179.643 0" stroke="#FDAFF0"/>
+<path d="M0.017743 179.625C42.6681 179.625 77.243 214.01 77.243 256.425" stroke="#FDAFF0"/>
+<path d="M179.855 256.425C179.855 213.775 214.24 179.2 256.656 179.2" stroke="#FDAFF0"/>
+<path d="M77.0303 -5.18768e-06C77.0303 42.6503 42.6457 77.2252 0.230225 77.2252" stroke="#FDAFF0"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_1246_2710" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 128) rotate(90) scale(128)">
+<stop stop-color="#FC74FE"/>
+<stop offset="1" stop-color="#F50DB4"/>
+</radialGradient>
+<clipPath id="clip0_1246_2710">
+<rect width="256" height="256" fill="white" transform="translate(0.442871)"/>
+</clipPath>
+</defs>
+</svg>

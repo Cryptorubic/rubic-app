@@ -102,6 +102,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}../bridge/bridgers.png`,
     color: 'white'
   },
+  [ON_CHAIN_TRADE_TYPE.BLAZE_SWAP]: {
+    name: 'Blaze Swap',
+    image: `${imageBasePath}blazeswap.svg`,
+    color: '#FFAF1D'
+  },
 
   //CCCCCCCCCCCCCCCCCCCC
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
@@ -154,6 +159,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
   },
+  [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: {
+    name: 'CoffeeSwap',
+    image: `${imageBasePath}coffee-swap.png`,
+    color: '#181E6A'
+  },
 
   //EEEEEEEEEEEEEEEEEEEE
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {
@@ -170,6 +180,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Elk',
     image: `${imageBasePath}elk.png`,
     color: '#009A5C'
+  },
+  [ON_CHAIN_TRADE_TYPE.ENOSYS]: {
+    name: 'Enosys',
+    image: `${imageBasePath}enosys.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.ENOSYS_V3]: {
+    name: 'Enosys V3',
+    image: `${imageBasePath}enosys.svg`,
+    color: '#000000'
   },
 
   //DDDDDDDDDDDDDDDDDDDDD
@@ -207,6 +227,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Dystopia',
     image: `${imageBasePath}dystopia.png`,
     color: '#085F8E'
+  },
+  [ON_CHAIN_TRADE_TYPE.DEDUST]: {
+    name: 'Dedust',
+    image: `${imageBasePath}dedust.svg`,
+    color: '#ebab34',
+    averageTime: 5
   },
 
   //FFFFFFFFFFFFFFFFFFFFFFF
@@ -336,6 +362,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'MuteSwap',
     image: `${imageBasePath}muteswap.webp`,
     color: 'white'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
   },
 
   //NNNNNNNNNNNNNNNNNNNNNNNNN
@@ -492,6 +523,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}renbtc.svg`,
     color: 'grey'
   },
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: {
+    name: 'Router DEX',
+    image: 'assets/images/icons/providers/bridge/router.svg',
+    color: '#000000'
+  },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -589,6 +625,32 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/syncswap.svg',
     color: '#79d778'
   },
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: {
+    name: 'Squid Router',
+    image: 'assets/images/icons/providers/bridge/squidrouter.svg',
+    color: '#e6f936'
+  },
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX]: {
+    name: 'Spark Dex',
+    image: `${imageBasePath}sparkdex.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: {
+    name: 'Spark Dex V3',
+    image: `${imageBasePath}sparkdex.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: {
+    name: 'SilkSwap',
+    image: `${imageBasePath}silkswap.svg`,
+    color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.STONFI]: {
+    name: 'StonFi',
+    image: `${imageBasePath}stonfi.png`,
+    color: '#066ccc',
+    averageTime: 5
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
@@ -600,6 +662,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
     color: '#00F4FF'
+  },
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
+    name: 'ToncoDex',
+    image: `${imageBasePath}tonco-dex.svg`,
+    color: '#00CAB2'
   },
 
   //UUUUUUUUUUUUUUUUUUUUUUUUUU
@@ -618,10 +685,15 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: {
     name: 'Uniswap V2',
     image: 'assets/images/icons/coins/bahamut.svg',
     color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.UNIZEN]: {
+    name: 'Unizen',
+    image: 'assets/images/icons/providers/bridge/unizen.png',
+    color: '#00805C'
   },
 
   //VVVVVVVVVVVVVVVVVVVVVVVVVVV

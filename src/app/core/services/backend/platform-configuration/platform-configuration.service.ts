@@ -132,6 +132,7 @@ export class PlatformConfigurationService {
       catchError(() => of(defaultConfig)),
       tap(response => {
         if (response.server_is_active === true) {
+          console.log(response.networks);
           this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
           this._disabledProviders$.next(this.mapDisabledProviders(response.cross_chain_providers));
           this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);

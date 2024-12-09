@@ -21,7 +21,13 @@ import {
   symbiosisCrossChainSupportedBlockchains,
   taikoBridgeSupportedBlockchains,
   xySupportedBlockchains,
-  eddyBridgeSupportedChains
+  eddyBridgeSupportedChains,
+  simpleSwapCcrProxySupportedChains,
+  acrossCcrSupportedChains,
+  routerCrossChainSupportedChains,
+  retroBridgeSupportedBlockchain,
+  stargateV2SupportedBlockchains,
+  uniZenCcrSupportedChains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
@@ -47,5 +53,11 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.ARCHON_BRIDGE]: archonBridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.MESON]: mesonCrossChainSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: owlToSupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: eddyBridgeSupportedChains
+  [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: eddyBridgeSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.ROUTER]: routerCrossChainSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: retroBridgeSupportedBlockchain,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
+  [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: uniZenCcrSupportedChains
 } as const;

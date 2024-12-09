@@ -172,6 +172,7 @@ export class AssetTypesAsideComponent {
   }
 
   public getBlockchainHintText(blockchain: AvailableBlockchain): string | null {
+    console.log(blockchain);
     return this.blockchainsListService.getHintText(blockchain);
   }
 
