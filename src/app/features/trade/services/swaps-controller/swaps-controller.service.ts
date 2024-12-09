@@ -499,6 +499,9 @@ export class SwapsControllerService {
       if ('simpleSwapId' in trade) {
         params.simpleSwapId = trade.simpleSwapId as string;
       }
+      if ('changellySwapId' in trade) {
+        params.changellySwapId = trade.changellySwapId as string;
+      }
 
       onSwap?.(params);
       await this.crossChainApiService.patchTrade(txHash, true);
