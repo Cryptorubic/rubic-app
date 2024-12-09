@@ -147,7 +147,7 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.XLAYER]: 'xlayer',
   [BLOCKCHAIN_NAME.GRAVITY]: 'gravity',
   [BLOCKCHAIN_NAME.BITLAYER]: 'bitlayer',
-  [BLOCKCHAIN_NAME.UNICHAIN]: 'unichain'
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'unichain-sepolia-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

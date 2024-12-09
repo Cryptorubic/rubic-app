@@ -62,7 +62,7 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.GOERLI,
   BLOCKCHAIN_NAME.BLAST_TESTNET,
   BLOCKCHAIN_NAME.ARTHERA,
-  BLOCKCHAIN_NAME.UNICHAIN
+  BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [

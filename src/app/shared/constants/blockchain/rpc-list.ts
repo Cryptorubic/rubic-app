@@ -337,5 +337,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://mainnet.gravity-rpc.com',
     'https://rpc.gravity.xyz'
   ],
-  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://sepolia.unichain.org', 'https://1301.rpc.thirdweb.com/']
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: [
+    'https://sepolia.unichain.org',
+    'https://1301.rpc.thirdweb.com'
+  ]
 };

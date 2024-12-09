@@ -146,5 +146,5 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BAHAMUT]: 'Bahamut',
   [BLOCKCHAIN_NAME.BITLAYER]: 'Bitlayer',
   [BLOCKCHAIN_NAME.GRAVITY]: 'Gravity',
-  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain'
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain'
 };

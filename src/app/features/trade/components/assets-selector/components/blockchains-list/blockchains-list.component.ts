@@ -36,7 +36,6 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
-    console.log(blockchain);
     return this.blockchainsListService.getHintText(blockchain);
   }
 
