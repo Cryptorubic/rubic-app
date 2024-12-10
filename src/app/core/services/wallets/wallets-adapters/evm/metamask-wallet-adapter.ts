@@ -32,7 +32,15 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     }
 
     if (typeof this.window?.tokenpocket?.ethereum?.isTokenPocket !== 'undefined') {
-      throw new Error('TokenPocket Enabled');
+      throw new RubicError(
+        'To proceed with using MetaMask wallet on our app, please disable all other wallets and reload the page.'
+      );
+    }
+
+    if (this.window.xfi?.ethereum) {
+      throw new RubicError(
+        'Ctrl-wallet enabled. To get available accounts of Metamask wallet, disable "Сtrl Wallet" extension first.'
+      );
     }
   }
 
@@ -80,10 +88,8 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
         throw new SignRejectError();
       }
 
-      if (error.message?.toLowerCase().includes('tokenpocket enabled')) {
-        throw new RubicError(
-          'To proceed with using MetaMask wallet on our app, please disable all other wallets and reload the page.'
-        );
+      if (error instanceof RubicError) {
+        throw error;
       }
 
       throw new MetamaskError();

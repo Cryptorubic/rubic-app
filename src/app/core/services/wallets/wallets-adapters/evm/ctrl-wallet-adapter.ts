@@ -55,17 +55,21 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       }
     });
 
+    // buggy listener, when you switch between accounts having bitcoin wallets, it doesn't see updated bitcoin address
     this.wallet.on('accountsChanged', async (accounts: string[]) => {
       this.selectedAddress = accounts[0] || null;
 
-      if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
-        console.info('Selected account changed to', accounts[0]);
+      // Trick to connect another account
+      if (!this.selectedAddress) {
+        [this.selectedAddress] = await this.wallet.getAccounts();
       }
 
-      if (!this.selectedAddress) {
-        this.selectedChain = null;
-        this.deActivate();
+      if (this.isEnabled) {
+        this.onAddressChanges$.next(this.selectedAddress);
+        console.log(
+          `%cSelected account changed to ${accounts[0]}`,
+          'color: yellow; font-size: 16px;'
+        );
       }
     });
   }
@@ -77,7 +81,7 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       this.wallet = wallet;
       this.handleEvents();
 
-      const accounts = await this.getAccounts();
+      const accounts = await this.wallet.getAccounts();
       this.isEnabled = true;
       this.selectedChain = BLOCKCHAIN_NAME.BITCOIN;
       [this.selectedAddress] = accounts;
@@ -131,19 +135,6 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   }
 
   private getAccounts(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.wallet.request<string[]>(
-        {
-          method: 'request_accounts',
-          params: []
-        },
-        (error, accs) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(accs);
-        }
-      );
-    });
+    return this.wallet.getAccounts();
   }
 }
