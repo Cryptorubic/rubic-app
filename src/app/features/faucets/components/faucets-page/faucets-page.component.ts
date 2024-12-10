@@ -13,13 +13,17 @@ import { Faucet } from '@features/faucets/models/faucet';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FaucetsPageComponent {
-  public selectedBlockchain: BlockchainName = BLOCKCHAIN_NAME.GOERLI;
+  public selectedBlockchain: BlockchainName = BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET;
 
   public readonly faucetsData$ = this.getData().pipe(
     first(faucets => Object.keys(faucets).length > 0),
     tap(faucets => {
       this.loading = false;
-      this.selectedBlockchain = Object.keys(faucets)[0] as BlockchainName;
+      this.selectedBlockchain = Object.keys(faucets).find(
+        faucet => faucet === BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET
+      )
+        ? BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET
+        : (Object.keys(faucets)[0] as BlockchainName);
       this.cdr.detectChanges();
     })
   );
