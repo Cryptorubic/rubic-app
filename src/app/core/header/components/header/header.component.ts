@@ -76,10 +76,6 @@ export class HeaderComponent implements AfterViewInit {
     );
   }
 
-  public get isFaucetsPage(): boolean {
-    return this.window.location.pathname === '/faucets';
-  }
-
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
