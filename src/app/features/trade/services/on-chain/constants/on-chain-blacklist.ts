@@ -80,7 +80,10 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.TAIKO]: [],
   [BLOCKCHAIN_NAME.SEI]: [],
   [BLOCKCHAIN_NAME.CORE]: [],
-  [BLOCKCHAIN_NAME.BAHAMUT]: []
+  [BLOCKCHAIN_NAME.BAHAMUT]: [],
+  [BLOCKCHAIN_NAME.BITLAYER]: [],
+  [BLOCKCHAIN_NAME.GRAVITY]: [],
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

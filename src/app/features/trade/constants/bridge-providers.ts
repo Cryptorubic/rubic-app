@@ -245,6 +245,18 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}refuel.png`,
     name: 'Refuel'
   },
+  retro_bridge: {
+    averageTime: 5,
+    color: '#000000',
+    image: `${imageBasePath}retro-bridge.svg`,
+    name: 'Retro Bridge'
+  },
+  router: {
+    averageTime: 5,
+    color: '#000000',
+    image: `${imageBasePath}router.svg`,
+    name: 'Router'
+  },
   //SSSSSSSSSSSSSSSSSSS
   satellite: {
     averageTime: 5,
@@ -258,6 +270,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}scroll.svg`,
     name: 'Scroll bridge'
   },
+  simple_swap: {
+    averageTime: 5,
+    color: '##3C82F9',
+    image: `${imageBasePath}simpleswap.svg`,
+    name: 'Simple Swap'
+  },
   squidrouter: {
     averageTime: 5,
     color: '#e6f936',
@@ -269,6 +287,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#999999',
     image: `${imageBasePath}stargate.svg`,
     name: 'Stargate'
+  },
+  stargate_v2: {
+    averageTime: 5,
+    color: '#999999',
+    image: `${imageBasePath}stargate.svg`,
+    name: 'Stargate V2'
   },
   symbiosis: {
     averageTime: 5,
@@ -294,6 +318,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#33FF99',
     image: `${imageBasePath}thorchain.svg`,
     name: 'Thorchain'
+  },
+  //UUUUUUUUUUUUUUUU
+  unizen: {
+    averageTime: 5,
+    color: '#33FF99',
+    image: `${imageBasePath}unizen.png`,
+    name: 'Unizen'
   },
   //VVVVVVVVVVVVVVVVVVVVV
   voyager: {

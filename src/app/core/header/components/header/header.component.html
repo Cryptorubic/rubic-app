@@ -31,48 +31,6 @@
   >
     Swaps
   </button>
-  <button
-    class="staking-button"
-    tuiButton
-    appearance="secondary"
-    type="button"
-    [pseudoActive]="isFaucetsPage"
-    size="m"
-    routerLink="/faucets"
-  >
-    Faucets
-  </button>
-
-  <!--  <button-->
-  <!--    tuiButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    [pseudoActive]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"-->
-  <!--  >-->
-  <!--    <div (click)="navigateToLimitOrder()">Limit Order</div>-->
-  <!--  </button>-->
-
-  <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
-  <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
-  <!--  </button>-->
-
-  <!-- Uncomment when light theme ready -->
-  <!--  <button-->
-  <!--    class="theme-switcher"-->
-  <!--    tuiIconButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="switchTheme()"-->
-  <!--  >-->
-  <!--    <div-->
-  <!--      class="image"-->
-  <!--      [inlineSVG]="-->
-  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
-  <!--      "-->
-  <!--    ></div>-->
-  <!--  </button>-->
 
   <app-language-selector></app-language-selector>
 

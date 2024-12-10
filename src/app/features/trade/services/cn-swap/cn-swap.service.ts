@@ -65,7 +65,7 @@ export class CnSwapService {
     try {
       const response = await ChangeNowCrossChainApiService.getTxStatus(id);
 
-      return response.status;
+      return response.status as ChangenowApiStatus;
     } catch {
       return CHANGENOW_API_STATUS.WAITING;
     }

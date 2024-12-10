@@ -57,7 +57,7 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.WOO_FI]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.WYND]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.ALGEBRA_INTEGRAL]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: 'unknown',
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
@@ -136,7 +136,20 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: 'eddy_finance',
   [ON_CHAIN_TRADE_TYPE.NATIVE_ROUTER]: 'native_router',
   [ON_CHAIN_TRADE_TYPE.ZETA_SWAP]: 'zeta_swap',
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut'
+  [ON_CHAIN_TRADE_TYPE.KUJATA]: 'kujata',
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: 'silk_swap',
+  [ON_CHAIN_TRADE_TYPE.MACARON]: 'macaron',
+  [ON_CHAIN_TRADE_TYPE.DEDUST]: 'dedust',
+  [ON_CHAIN_TRADE_TYPE.STONFI]: 'stonfi',
+  [ON_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter',
+  [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: 'coffeeswap',
+  [ON_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen',
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: 'tonco_dex',
+  [ON_CHAIN_TRADE_TYPE.ENOSYS]: 'enosys',
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX]: 'spark_dex',
+  [ON_CHAIN_TRADE_TYPE.BLAZE_SWAP]: 'blaze_swap',
+  [ON_CHAIN_TRADE_TYPE.ENOSYS_V3]: 'enosys_v3',
+  [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: 'spark_dex_v3'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
