@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { BaseBlockchain } from '@features/faucets/models/base-blockchain';
 import { Router } from '@angular/router';
 import { WINDOW } from '@ng-web-apis/common';
@@ -35,11 +35,13 @@ export class FaucetsHeaderComponent {
   constructor(private readonly router: Router, @Inject(WINDOW) private readonly window: Window) {}
 
   private prepareBlockchains(blockchains: BlockchainName[]): BaseBlockchain[] {
-    return blockchains.map(chain => ({
-      name: chain,
-      icon: blockchainIcon[chain],
-      label: blockchainLabel[chain]
-    }));
+    return blockchains
+      .map(chain => ({
+        name: chain,
+        icon: blockchainIcon[chain],
+        label: blockchainLabel[chain]
+      }))
+      .sort(chain => (chain.name === BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET ? -1 : 1));
   }
 
   public get isFaucetsPage(): boolean {

@@ -81,6 +81,7 @@ header {
       align-items: center;
       justify-content: center;
       width: 75px;
+      height: 75px;
       padding: 5px;
       overflow: hidden;
 
@@ -89,6 +90,7 @@ header {
 
       .icon-label {
         font-size: 12px;
+        line-height: 13px;
       }
     }
   }
