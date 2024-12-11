@@ -44,7 +44,7 @@ export class SpindleBannerComponent {
 
   private getPlacementId(isMobile: boolean, step: TransactionStep): string {
     if (step === 'success') return 'post_swap';
-    else if (isMobile) return 'under_swap_mobile';
-    else return 'under_swap_desktop';
+    if (isMobile) return 'under_swap_mobile';
+    return 'under_swap_desktop';
   }
 }
