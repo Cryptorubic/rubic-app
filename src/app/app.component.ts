@@ -163,8 +163,7 @@ export class AppComponent implements AfterViewInit {
     spindl.configure({
       sdkKey: '5c8549dc-9be6-49ee-bc3f-8192870f4553',
       debugMode: !ENVIRONMENT.production,
-      maxRetries: 3,
-      host: new URL(this.window.location.href).host
+      maxRetries: 3
     });
 
     spindl.enableAutoPageViews();
