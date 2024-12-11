@@ -64,6 +64,10 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       this.handleEvents();
 
       const accounts = await this.wallet.getAccounts();
+      if (!accounts || !accounts.length) {
+        throw new WalletNotInstalledError();
+      }
+
       this.isEnabled = true;
       this.selectedChain = BLOCKCHAIN_NAME.BITCOIN;
       [this.selectedAddress] = accounts;
@@ -80,13 +84,15 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
         throw new SignRejectError();
       }
 
+      if (error instanceof WalletNotInstalledError) throw error;
+
       throw new RubicError(error.message);
     }
   }
 
   public override deactivate(): void {
-    this.wallet.off('chainChanged', this.handleChainChanged);
-    this.wallet.off('accountsChanged', this.handleAccountChanged);
+    this.wallet?.off('chainChanged', this.handleChainChanged);
+    this.wallet?.off('accountsChanged', this.handleAccountChanged);
     super.deactivate();
   }
 

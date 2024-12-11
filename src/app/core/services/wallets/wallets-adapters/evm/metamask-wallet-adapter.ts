@@ -9,6 +9,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -27,6 +28,10 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
    * Checks possible metamask errors.
    */
   private checkErrors(): void {
+    if (this.window.xfi?.ethereum?.isCtrl || this.window.xfi?.ethereum?.isXDEFI) {
+      throw new NeedDisableCtrlWalletError(this.walletName.toUpperCase());
+    }
+
     if (!this.wallet?.isMetaMask) {
       throw new MetamaskError();
     }
@@ -34,12 +39,6 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     if (typeof this.window?.tokenpocket?.ethereum?.isTokenPocket !== 'undefined') {
       throw new RubicError(
         'To proceed with using MetaMask wallet on our app, please disable all other wallets and reload the page.'
-      );
-    }
-
-    if (this.window.xfi?.ethereum) {
-      throw new RubicError(
-        'Ctrl-wallet enabled. To get available accounts of Metamask wallet, disable "Сtrl Wallet" extension first.'
       );
     }
   }

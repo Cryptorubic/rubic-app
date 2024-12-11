@@ -23,5 +23,15 @@ export interface RubicWindow extends Window {
   tokenpocket?: { ethereum?: WalletLinkProvider & { isTokenPocket?: boolean } };
   phantom?: { ethereum?: WalletLinkProvider; solana: PhantomWallet };
   ethereum?: WalletLinkProvider & { providers?: RubicAny[] };
-  xfi?: { bitcoin?: BtcWallet; ethereum?: RubicAny; solana?: RubicAny };
+  xfi?: {
+    bitcoin?: BtcWallet;
+    ethereum?: {
+      isMetaMask: boolean;
+      isXDEFI: boolean;
+      connected: boolean;
+      isCtrl: boolean;
+    };
+    solana?: RubicAny;
+    info: { installed: boolean; isCtrl: boolean };
+  };
 }
