@@ -13,6 +13,9 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import spindl from '@spindl-xyz/attribution';
+import { ENVIRONMENT } from 'src/environments/environment';
+import { AuthService } from './core/services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +36,8 @@ export class AppComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly authService: AuthService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -43,6 +47,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+    this.initSpindlAds();
   }
 
   /**
@@ -152,5 +157,20 @@ export class AppComponent implements AfterViewInit {
    */
   private loadPlatformConfig(): Observable<boolean> {
     return this.platformConfigurationService.loadPlatformConfig();
+  }
+
+  private initSpindlAds(): void {
+    spindl.configure({
+      sdkKey: '5c8549dc-9be6-49ee-bc3f-8192870f4553',
+      debugMode: !ENVIRONMENT.production,
+      maxRetries: 3,
+      host: new URL(window.location.href).host
+    });
+
+    spindl.enableAutoPageViews();
+
+    this.authService.currentUser$.subscribe(user => {
+      if (user.address) spindl.attribute(user.address);
+    });
   }
 }

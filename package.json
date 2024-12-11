@@ -57,6 +57,7 @@
     "@sentry/angular-ivy": "^7.112.2",
     "@sentry/wizard": "^3.22.1",
     "@solana/web3.js": "^1.36.0",
+    "@spindl-xyz/attribution": "^1.8.0",
     "@taiga-ui/addon-mobile": "^3.46.0",
     "@taiga-ui/addon-table": "~3.46.0",
     "@taiga-ui/cdk": "~3.46.0",
