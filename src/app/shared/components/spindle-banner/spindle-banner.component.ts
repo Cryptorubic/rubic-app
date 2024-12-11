@@ -16,7 +16,7 @@ export class SpindleBannerComponent {
     combineLatestWith(this.authService.currentUser$, this.previewSwapService.transactionState$),
     map(([isMobile, user, txState]) => {
       const placementId = this.getPlacementId(isMobile, txState.step);
-      const walletAddress = user.address ?? '0xe388Ed184958062a2ea29B7fD049ca21244AE02e';
+      const walletAddress = user ? user.address : '0xe388Ed184958062a2ea29B7fD049ca21244AE02e';
       const src = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${walletAddress}`;
       return src;
     })
