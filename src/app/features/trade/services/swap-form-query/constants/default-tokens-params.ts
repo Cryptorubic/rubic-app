@@ -2,10 +2,10 @@ import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 export const defaultFormParameters = {
   swap: {
-    fromChain: BLOCKCHAIN_NAME.GOERLI,
-    toChain: BLOCKCHAIN_NAME.GOERLI,
+    fromChain: BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET,
+    toChain: BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET,
     from: {
-      [BLOCKCHAIN_NAME.GOERLI]: 'ETH',
+      [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'ETH',
       [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'ETH'
     },
     to: {},
