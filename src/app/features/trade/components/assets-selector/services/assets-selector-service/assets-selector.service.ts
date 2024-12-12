@@ -72,13 +72,6 @@ export class AssetsSelectorService {
     this.subscribeOnAssetChange();
   }
 
-  // private isUserFirstNetworkSelection(
-  //   fromBlockchain: BlockchainName,
-  //   toBlockchain: BlockchainName
-  // ): boolean {
-  //   return !fromBlockchain && !toBlockchain;
-  // }
-
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this._formType = context.formType;
 
@@ -128,9 +121,8 @@ export class AssetsSelectorService {
     this.selectorListType = this.assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
-  public openFiatsList(): void {
-    this.assetType = 'fiat';
-    this.selectorListType = 'fiats';
+  public openAllChainsTokens(): void {
+    this.assetType = 'allChains';
   }
 
   public openBlockchainsList(): void {

@@ -18,11 +18,24 @@
   }
 
   &__image-container {
+    position: relative;
+
     display: flex;
 
-    img {
+    &-token {
       width: 32px;
       height: 32px;
+
+      border-radius: 25%;
+    }
+
+    &-blockchain {
+      position: absolute;
+      top: -2px;
+      right: -5px;
+
+      width: 16px;
+      height: 16px;
 
       border-radius: 25%;
     }
@@ -89,7 +102,7 @@
     &__image-container {
       display: flex;
 
-      img {
+      &-token {
         width: 35px;
         height: 35px;
       }

@@ -33,6 +33,7 @@
               >
                 <app-tokens-list-element
                   [token]="token"
+                  [showAll]="showAll"
                   [balanceLoading]="isBalanceLoading$ | async"
                   (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>

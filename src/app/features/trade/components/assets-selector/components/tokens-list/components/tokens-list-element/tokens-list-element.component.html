@@ -2,8 +2,17 @@
   <div class="token-card" (click)="selectToken.emit(token)">
     <div class="token-card__image-container">
       <img
+        class="token-card__image-container-token"
         [src]="token.image || DEFAULT_TOKEN_IMAGE"
         [alt]="token.name"
+        loading="lazy"
+        (error)="onImageError($event)"
+      />
+      <img
+        *ngIf="showAll"
+        class="token-card__image-container-blockchain"
+        [src]="BLOCKCHAIN_ICON[token.blockchain] || DEFAULT_TOKEN_IMAGE"
+        [alt]="token.blockchain"
         loading="lazy"
         (error)="onImageError($event)"
       />

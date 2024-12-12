@@ -36,6 +36,7 @@ import { FilterListElementComponent } from './components/blockchains-filter-list
 import { FilterQueryService } from './services/filter-query-service/filter-query.service';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
 import { AssetsSearchQueryService } from './services/assets-search-query-service/assets-search-query.service';
+import { AssetsTypeAsideElementComponent } from './components/assets-type-aside-element/assets-type-aside-element.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { AssetsSearchQueryService } from './services/assets-search-query-service
     AssetsSelectorPageComponent,
     BlockchainsFilterListComponent,
     FilterListElementComponent,
-    BlockchainsPromoBadgeComponent
+    BlockchainsPromoBadgeComponent,
+    AssetsTypeAsideElementComponent
   ],
   imports: [
     CommonModule,

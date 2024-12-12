@@ -42,6 +42,10 @@ export class TokensListComponent {
     })
   );
 
+  public get showAll(): boolean {
+    return this.assetsSelectorService.assetType === 'allChains';
+  }
+
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;

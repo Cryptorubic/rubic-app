@@ -218,14 +218,11 @@ export class BlockchainsListService {
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
-    if (this.isDisabledFrom(blockchain)) {
-      return 'Select as target network';
+    if (blockchain.disabledConfiguration || this.isDisabledFrom(blockchain)) {
+      return 'Temporary disabled';
     }
     if (this.isDisabledTo(blockchain)) {
       return 'Cannot trade with fiats';
-    }
-    if (blockchain.disabledConfiguration) {
-      return 'Temporary disabled';
     }
     return null;
   }
