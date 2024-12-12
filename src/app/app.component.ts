@@ -8,7 +8,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -168,8 +168,10 @@ export class AppComponent implements AfterViewInit {
 
     spindl.enableAutoPageViews();
 
-    this.authService.currentUser$.subscribe(user => {
-      if (user.address) spindl.attribute(user.address);
-    });
+    this.authService.currentUser$
+      .pipe(distinctUntilChanged((prev, curr) => prev.address === curr.address))
+      .subscribe(user => {
+        if (user.address) spindl.attribute(user.address);
+      });
   }
 }
