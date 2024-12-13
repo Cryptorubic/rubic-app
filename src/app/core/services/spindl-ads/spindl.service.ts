@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import spindl from '@spindl-xyz/attribution';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -13,10 +13,28 @@ import { HttpClient } from '@angular/common/http';
 //   geoplugin_countryName: string;
 // }
 
+interface IpGeolocationResp {
+  country_code2: string;
+}
+
+interface IpInfoResp {
+  country: string;
+}
+
+interface Ip2LocationIoResp {
+  country_code: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class SpindlService {
+  private readonly IPGEOLOCATIONIO_KEY = '31553f81a35f449a9f98fc2a38fa9841';
+
+  private readonly IPINFO_KEY = 'a5ca2c499897ac';
+
+  private readonly IP2LOCATION_KEY = 'D13DC4B78F655A8DD9011ECC0FCDFA7D';
+
   private _showSpindl: boolean = false;
 
   public get showSpindl(): boolean {
@@ -30,12 +48,35 @@ export class SpindlService {
   ) {}
 
   private async isForbiddenIP(): Promise<boolean> {
-    return false;
-    // const { geoplugin_countryCode } = await firstValueFrom(
-    //   this.httpService.get<GeoPlugonResp>('', undefined, 'http://www.geoplugin.net/json.gp')
-    // );
+    const ipgeoResp = await firstValueFrom(
+      this.httpService.get<IpGeolocationResp>(
+        '',
+        { apiKey: this.IPGEOLOCATIONIO_KEY },
+        'https://api.ipgeolocation.io/ipgeo'
+      )
+    ).catch(() => null);
 
-    // return geoplugin_countryCode === 'RU';
+    if (ipgeoResp && ipgeoResp.country_code2) return ipgeoResp.country_code2 === 'RU';
+
+    const ipinfoResp = await firstValueFrom<IpInfoResp>(
+      this.httpService.get<IpInfoResp>('', { token: this.IPINFO_KEY }, 'https://ipinfo.io')
+    ).catch(() => null);
+
+    if (ipinfoResp && ipinfoResp.country) return ipinfoResp.country === 'RU';
+
+    const ip2LocationResp = await firstValueFrom<Ip2LocationIoResp>(
+      this.httpService.get<Ip2LocationIoResp>(
+        '',
+        { key: this.IP2LOCATION_KEY },
+        'https://api.ip2location.io/'
+      )
+    ).catch(() => null);
+
+    if (ip2LocationResp && ip2LocationResp.country_code) {
+      return ip2LocationResp.country_code === 'RU';
+    }
+
+    return false;
   }
 
   public async initSpindlAds(): Promise<void> {
