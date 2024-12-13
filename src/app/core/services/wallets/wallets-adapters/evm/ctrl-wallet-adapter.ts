@@ -16,6 +16,7 @@ import { NgZone } from '@angular/core';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { BtcWallet } from '@core/services/wallets/wallets-adapters/solana/models/btc-wallet';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 
 export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   public readonly chainType = CHAIN_TYPE.BITCOIN;
@@ -46,28 +47,13 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
    * Handles chain and account change events.
    */
   private handleEvents(): void {
-    this.wallet.on('chainChanged', async (chain: string) => {
-      this.selectedChain = (chain as EvmBlockchainName) ?? null;
-
-      if (this.isEnabled) {
-        this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainNameById(chain));
-        console.info('Chain changed', BlockchainsInfo.getBlockchainNameById(chain));
-      }
-    });
-
-    this.wallet.on('accountsChanged', async (accounts: string[]) => {
-      this.selectedAddress = accounts[0] || null;
-
-      if (this.isEnabled) {
-        this.onAddressChanges$.next(this.selectedAddress);
-        console.info('Selected account changed to', accounts[0]);
-      }
-
-      if (!this.selectedAddress) {
-        this.selectedChain = null;
-        this.deActivate();
-      }
-    });
+    this.wallet.on('chainChanged', async (chain: string) => await this.handleChainChanged(chain));
+    // buggy listener, when you switch between accounts having bitcoin wallets,
+    // it doesn't see updated bitcoin address and returns ampty `accounts` object
+    this.wallet.on(
+      'accountsChanged',
+      async (accounts: string[]) => await this.handleAccountChanged(accounts)
+    );
   }
 
   public async activate(): Promise<void> {
@@ -77,7 +63,11 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       this.wallet = wallet;
       this.handleEvents();
 
-      const accounts = await this.getAccounts();
+      const accounts = await this.wallet.getAccounts();
+      if (!accounts || !accounts.length) {
+        throw new WalletNotInstalledError();
+      }
+
       this.isEnabled = true;
       this.selectedChain = BLOCKCHAIN_NAME.BITCOIN;
       [this.selectedAddress] = accounts;
@@ -93,16 +83,17 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       ) {
         throw new SignRejectError();
       }
-      if (error instanceof WalletNotInstalledError) {
-        this.errorsService.catch(error);
-      }
+
+      if (error instanceof WalletNotInstalledError) throw error;
+
+      throw new RubicError(error.message);
     }
   }
 
-  public deActivate(): void {
-    this.onAddressChanges$.next(null);
-    this.onNetworkChanges$.next(null);
-    this.isEnabled = false;
+  public override deactivate(): void {
+    this.wallet?.off('chainChanged', this.handleChainChanged);
+    this.wallet?.off('accountsChanged', this.handleAccountChanged);
+    super.deactivate();
   }
 
   protected initSubscriptionsOnChanges(): void {
@@ -125,25 +116,34 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
       }
     );
 
-    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() =>
-      this.deactivate()
-    );
+    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() => {
+      this.deactivate();
+    });
   }
 
-  private getAccounts(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      this.wallet.request<string[]>(
-        {
-          method: 'request_accounts',
-          params: []
-        },
-        (error, accs) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(accs);
-        }
-      );
-    });
+  private handleChainChanged(chain: string): void {
+    this.selectedChain = (chain as EvmBlockchainName) ?? null;
+
+    if (this.isEnabled) {
+      this.onNetworkChanges$.next(BlockchainsInfo.getBlockchainNameById(chain));
+    }
+  }
+
+  private async handleAccountChanged(accounts: string[]): Promise<void> {
+    this.selectedAddress = accounts[0] || null;
+
+    // Trick to connect another account
+    if (!this.selectedAddress) {
+      try {
+        [this.selectedAddress] = await this.wallet.getAccounts();
+      } catch {
+        this.errorsService.catch(new SignRejectError());
+        this.deactivate();
+      }
+    }
+
+    if (this.isEnabled) {
+      this.onAddressChanges$.next(this.selectedAddress);
+    }
   }
 }
