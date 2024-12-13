@@ -4,7 +4,6 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { HttpService } from '../http/http.service';
-import { HttpClient } from '@angular/common/http';
 import { StoreService } from '../store/store.service';
 import { isNil } from '@app/shared/utils/utils';
 
@@ -46,7 +45,6 @@ export class SpindlService {
   constructor(
     private readonly authService: AuthService,
     private readonly httpService: HttpService,
-    private readonly httpClient: HttpClient,
     private readonly storageService: StoreService
   ) {}
 
