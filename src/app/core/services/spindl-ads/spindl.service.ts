@@ -58,4 +58,8 @@ export class SpindlService {
         });
     }
   }
+
+  public sendSwapEvent(txHash: string): void {
+    spindl.track('SWAP', { txHash }, { address: this.authService.userAddress });
+  }
 }
