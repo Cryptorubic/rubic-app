@@ -6,7 +6,7 @@
 
 ## Добавление и редактирование достижений
 
-1. Добавить нужное изобаржение в папку
+1. Добавить нужное изображение в папку
    ```assets/images/icons/collaborations```
 
 2. Добавить записть в `assets/content/content.json` в массив `collaborations`
