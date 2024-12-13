@@ -33,6 +33,7 @@ import { SwapsControllerService } from '@features/trade/services/swaps-controlle
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
@@ -228,7 +229,10 @@ export class PreviewSwapService {
     toBlockchain: BlockchainName,
     additionalInfo: CrossChainSwapAdditionalParams
   ): void {
-    const pollingSubscription$ = interval(30_000)
+    const intervalMS =
+      this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 60_000 : 30_000;
+
+    const pollingSubscription$ = interval(intervalMS)
       .pipe(
         startWith(-1),
         switchMap(() => this.selectedTradeState$.pipe(first())),
