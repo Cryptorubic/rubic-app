@@ -22,6 +22,7 @@ import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
+import { UserInterface } from '../auth/models/user.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -99,7 +100,7 @@ export class TokensStoreService {
   private setupSubscriptions(): void {
     this.authService.currentUser$
       .pipe(
-        switchMap(user => {
+        switchMap((user: UserInterface) => {
           if (user?.address) {
             return this.tokensApiService.fetchFavoriteTokens();
           }
@@ -178,13 +179,13 @@ export class TokensStoreService {
         return List([]);
       }
       const blockchain = tokens.get(0).blockchain as Web3PublicSupportedBlockchain;
-      tokens.forEach((token, index) => {
+      tokens.forEach((_, index) => {
         if (index === 0) {
           return;
         }
-        if (token.blockchain !== tokens.get(index - 1).blockchain) {
-          throw new Error('Blockchain must be the same for all tokens');
-        }
+        // if (token.blockchain !== tokens.get(index - 1).blockchain) {
+        //   throw new Error('Blockchain must be the same for all tokens');
+        // }
       });
 
       const tokenAmounts = tokens.map(token => {
@@ -283,7 +284,7 @@ export class TokensStoreService {
         decimals: token.decimals,
         image: '',
         rank: 1,
-        price: null,
+        price: null as number | null,
         amount: amount || new BigNumber(NaN)
       })),
       tap((token: TokenAmount) => {
