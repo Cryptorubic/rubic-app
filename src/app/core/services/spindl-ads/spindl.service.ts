@@ -5,14 +5,6 @@ import { AuthService } from '../auth/auth.service';
 import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { StoreService } from '../store/store.service';
-import { isNil } from '@app/shared/utils/utils';
-
-// interface GeoPlugonResp {
-//   geoplugin_countryCode: string;
-//   geoplugin_latitude: string;
-//   geoplugin_longitude: string;
-//   geoplugin_countryName: string;
-// }
 
 interface IpGeolocationResp {
   country_code2: string;
@@ -49,10 +41,6 @@ export class SpindlService {
   ) {}
 
   private async isForbiddenIP(): Promise<boolean> {
-    const isRussianIP = this.storageService.getItem('IS_RUSSIAN_IP');
-
-    if (!isNil(isRussianIP)) return isRussianIP;
-
     const ipgeoResp = await firstValueFrom(
       this.httpService.get<IpGeolocationResp>(
         '',
@@ -62,7 +50,7 @@ export class SpindlService {
     ).catch(() => null);
 
     if (ipgeoResp && ipgeoResp.country_code2) {
-      this.storageService.setItem('IS_RUSSIAN_IP', true);
+      // this.storageService.setItem('IS_RUSSIAN_IP', true);
       return ipgeoResp.country_code2 === 'RU';
     }
 
@@ -71,7 +59,7 @@ export class SpindlService {
     ).catch(() => null);
 
     if (ipinfoResp && ipinfoResp.country) {
-      this.storageService.setItem('IS_RUSSIAN_IP', true);
+      // this.storageService.setItem('IS_RUSSIAN_IP', true);
       return ipinfoResp.country === 'RU';
     }
 
@@ -84,11 +72,11 @@ export class SpindlService {
     ).catch(() => null);
 
     if (ip2LocationResp && ip2LocationResp.country_code) {
-      this.storageService.setItem('IS_RUSSIAN_IP', true);
+      // this.storageService.setItem('IS_RUSSIAN_IP', true);
       return ip2LocationResp.country_code === 'RU';
     }
 
-    this.storageService.setItem('IS_RUSSIAN_IP', false);
+    // this.storageService.setItem('IS_RUSSIAN_IP', false);
 
     return false;
   }
