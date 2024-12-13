@@ -94,7 +94,7 @@ export class SpindlService {
   }
 
   public async initSpindlAds(): Promise<void> {
-    const isForbiddenIP = await this.isForbiddenIP().catch(() => false);
+    const isForbiddenIP = await this.isForbiddenIP();
     this._showSpindl = !isForbiddenIP;
 
     if (this._showSpindl) {
