@@ -8,14 +8,12 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, distinctUntilChanged, first, map } from 'rxjs/operators';
+import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
-import spindl from '@spindl-xyz/attribution';
-import { ENVIRONMENT } from 'src/environments/environment';
-import { AuthService } from './core/services/auth/auth.service';
+import { SpindlService } from './core/services/spindl-ads/spindl.service';
 
 @Component({
   selector: 'app-root',
@@ -37,17 +35,17 @@ export class AppComponent implements AfterViewInit {
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly authService: AuthService
+    private readonly spindlService: SpindlService
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
+    this.spindlService.initSpindlAds().then();
   }
 
   ngAfterViewInit() {
     this.setupIframeSettings();
-    this.initSpindlAds();
   }
 
   /**
@@ -157,21 +155,5 @@ export class AppComponent implements AfterViewInit {
    */
   private loadPlatformConfig(): Observable<boolean> {
     return this.platformConfigurationService.loadPlatformConfig();
-  }
-
-  private initSpindlAds(): void {
-    spindl.configure({
-      sdkKey: '5c8549dc-9be6-49ee-bc3f-8192870f4553',
-      debugMode: !ENVIRONMENT.production,
-      maxRetries: 3
-    });
-
-    spindl.enableAutoPageViews();
-
-    this.authService.currentUser$
-      .pipe(distinctUntilChanged((prev, curr) => prev.address === curr.address))
-      .subscribe(user => {
-        if (user.address) spindl.attribute(user.address);
-      });
   }
 }

@@ -29,6 +29,7 @@
     <app-cn-preview-swap *ngSwitchCase="'cnPreview'"></app-cn-preview-swap>
 
     <app-spindle-banner
+      *ngIf="showSpindl"
       [ngStyle]="{
         display:
           state.content === 'form' || state.transactionState.step === 'success' ? 'block' : 'none'

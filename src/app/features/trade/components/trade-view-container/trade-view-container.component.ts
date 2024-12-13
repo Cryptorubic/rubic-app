@@ -18,6 +18,7 @@ import { TargetNetworkAddressService } from '../../services/target-network-addre
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -59,6 +60,8 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
+  public readonly showSpindl = this.spindlService.showSpindl;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -71,7 +74,8 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly spindlService: SpindlService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
