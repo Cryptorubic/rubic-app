@@ -9,7 +9,7 @@
 1. Добавить нужное изображение в папку
    ```assets/images/icons/collaborations```
 
-2. Добавить записть в `assets/content/content.json` в массив `collaborations`
+2. Добавить запись в `assets/content/content.json` в массив `collaborations`
 
 Формат записи:
 ```
