@@ -5,6 +5,8 @@ import { AuthService } from '../auth/auth.service';
 import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { HttpService } from '../http/http.service';
 import { HttpClient } from '@angular/common/http';
+import { StoreService } from '../store/store.service';
+import { isNil } from '@app/shared/utils/utils';
 
 // interface GeoPlugonResp {
 //   geoplugin_countryCode: string;
@@ -44,10 +46,15 @@ export class SpindlService {
   constructor(
     private readonly authService: AuthService,
     private readonly httpService: HttpService,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
+    private readonly storageService: StoreService
   ) {}
 
   private async isForbiddenIP(): Promise<boolean> {
+    const isRussianIP = this.storageService.getItem('IS_RUSSIAN_IP');
+
+    if (!isNil(isRussianIP)) return isRussianIP;
+
     const ipgeoResp = await firstValueFrom(
       this.httpService.get<IpGeolocationResp>(
         '',
@@ -56,13 +63,19 @@ export class SpindlService {
       )
     ).catch(() => null);
 
-    if (ipgeoResp && ipgeoResp.country_code2) return ipgeoResp.country_code2 === 'RU';
+    if (ipgeoResp && ipgeoResp.country_code2) {
+      this.storageService.setItem('IS_RUSSIAN_IP', true);
+      return ipgeoResp.country_code2 === 'RU';
+    }
 
     const ipinfoResp = await firstValueFrom<IpInfoResp>(
       this.httpService.get<IpInfoResp>('', { token: this.IPINFO_KEY }, 'https://ipinfo.io')
     ).catch(() => null);
 
-    if (ipinfoResp && ipinfoResp.country) return ipinfoResp.country === 'RU';
+    if (ipinfoResp && ipinfoResp.country) {
+      this.storageService.setItem('IS_RUSSIAN_IP', true);
+      return ipinfoResp.country === 'RU';
+    }
 
     const ip2LocationResp = await firstValueFrom<Ip2LocationIoResp>(
       this.httpService.get<Ip2LocationIoResp>(
@@ -73,8 +86,11 @@ export class SpindlService {
     ).catch(() => null);
 
     if (ip2LocationResp && ip2LocationResp.country_code) {
+      this.storageService.setItem('IS_RUSSIAN_IP', true);
       return ip2LocationResp.country_code === 'RU';
     }
+
+    this.storageService.setItem('IS_RUSSIAN_IP', false);
 
     return false;
   }
