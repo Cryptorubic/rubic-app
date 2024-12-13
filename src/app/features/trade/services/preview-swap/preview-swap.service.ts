@@ -230,7 +230,7 @@ export class PreviewSwapService {
     additionalInfo: CrossChainSwapAdditionalParams
   ): void {
     const intervalMS =
-      this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 60_000 : 30_000;
+      this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 300_000 : 30_000;
 
     const pollingSubscription$ = interval(intervalMS)
       .pipe(
