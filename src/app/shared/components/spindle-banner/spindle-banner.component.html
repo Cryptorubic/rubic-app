@@ -1,0 +1,11 @@
+<div
+  *ngLet="{ src: iframeSrc$ | async, size: iframeSize$ | async } as state"
+  class="spindle-banner"
+>
+  <iframe
+    [src]="state.src | safeSanitizer : 'resourceUrl'"
+    [width]="state.size.width"
+    [height]="state.size.height"
+    title="SpindleAds"
+  ></iframe>
+</div>
