@@ -4,13 +4,14 @@
     tradeState: tradeState$ | async,
     transaction: transactionState$ | async,
     status: status$ | async,
-    cnTrade: cnTrade$ | async,
+    depositTrade: depositTrade$ | async,
     isMobile: isMobile$ | async,
+    spesificStatusText: specificProviderStatusText$ | async
   } as state"
 >
   <ng-container header>
     <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-    <span class="back-button__text">Change Now Swap</span>
+    <span class="back-button__text">Deposit Swap</span>
   </ng-container>
   <ng-container>
     <div class="preview">
@@ -58,16 +59,16 @@
 
     <div class="target-address">
       <div class="target-address__title">Deposit address to transfer funds</div>
-      <div *ngIf="state.cnTrade?.depositAddress" class="target-address__text">
+      <div *ngIf="state.depositTrade?.depositAddress" class="target-address__text">
         {{
-          state.cnTrade.depositAddress
+          state.depositTrade.depositAddress
             | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
         }}
         <button
-          [cdkCopyToClipboard]="state.cnTrade.depositAddress"
+          [cdkCopyToClipboard]="state.depositTrade.depositAddress"
           class="copy-icon copy-icon_green"
           inlineSVG="assets/images/icons/copy.svg"
-          (click)="copyToClipboard(state.cnTrade.depositAddress)"
+          (click)="copyToClipboard(state.depositTrade.depositAddress)"
           [tuiHint]="template"
           [tuiHintManual]="hintShown"
         ></button>
@@ -117,7 +118,8 @@
             *ngIf="
               state.status === 'exchanging' ||
               state.status === 'sending' ||
-              state.status === 'finished'
+              state.status === 'finished' ||
+              state.status === 'failed'
             "
           >
             <img
@@ -126,6 +128,7 @@
               alt=""
             />
           </div>
+
           <div
             class="row-item__value status-item__value"
             [ngClass]="{
@@ -133,7 +136,8 @@
                 state.status === 'confirming' ||
                 state.status === 'exchanging' ||
                 state.status === 'sending' ||
-                state.status === 'finished'
+                state.status === 'finished' ||
+                state.status === 'failed',
             }"
           >
             Confirming
@@ -147,7 +151,11 @@
         <div class="row-item status-item">
           <div
             class="status-item__circle"
-            *ngIf="state.status === 'waiting' || state.status === 'confirming'"
+            *ngIf="
+              state.status === 'waiting' ||
+              state.status === 'confirming' ||
+              state.status === 'failed'
+            "
           ></div>
           <div
             class="status-item__line status-item__line_exchanging"
@@ -195,6 +203,9 @@
             "
           ></div>
           <div class="status-item__spinner" *ngIf="state.status === 'sending'"></div>
+          <ng-container *ngIf="state.status === 'failed'">
+            <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
+          </ng-container>
           <div class="status-item__circle_complete" *ngIf="state.status === 'finished'">
             <img
               class="scheme__state.status-icon"
@@ -206,7 +217,8 @@
             class="row-item__value status-item__value"
             [ngClass]="{
               'status-item__value_completed':
-                state.status === 'sending' || state.status === 'finished'
+                state.status === 'sending' || state.status === 'finished',
+              'status-item__value_failed': state.status === 'failed'
             }"
           >
             Sending to you
@@ -214,6 +226,15 @@
         </div>
       </div>
     </div>
+  </ng-container>
+  <ng-container footer>
+    <tui-notification
+      *ngIf="state.spesificStatusText && state.status === 'failed'"
+      status="error"
+      class="tui-space_vertical-4"
+    >
+      {{ state.spesificStatusText }}
+    </tui-notification>
   </ng-container>
 </app-window-container>
 
@@ -225,3 +246,13 @@
 </ng-template>
 
 <ng-template #template>Address copied on clipboard!</ng-template>
+
+<ng-template #failedStatus>
+  <div class="status-item__circle_failed">
+    <img
+      class="scheme__state.status-icon"
+      src="assets/images/icons/checkmark/failed-checkmark.svg"
+      alt=""
+    />
+  </div>
+</ng-template>

@@ -5,12 +5,13 @@ import {
   Inject,
   Injector
 } from '@angular/core';
-import { firstValueFrom, Observable, of, timer } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, of, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { first, map, switchMap } from 'rxjs/operators';
 import {
+  CROSS_CHAIN_DEPOSIT_STATUS,
   CrossChainTradeType,
   CrossChainTransferTrade,
   EvmBlockchainName,
@@ -28,7 +29,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { ModalService } from '@core/modals/services/modal.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
@@ -36,6 +36,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
+import { specificProviderStatusText } from './constants/specific-provider-status';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -44,7 +45,25 @@ import { DepositService } from '../../services/deposit/deposit.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositPreviewSwapComponent {
-  public readonly status$ = this.depositService.status$;
+  public readonly status$ = combineLatest([
+    this.depositService.status$,
+    this.depositService.depositTrade$
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade.tradeType]?.[status];
+      return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status;
+    })
+  );
+
+  public readonly specificProviderStatusText$ = combineLatest([
+    this.depositService.status$,
+    this.depositService.depositTrade$
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade.tradeType]?.[status];
+      return specificStatusText ? specificStatusText : null;
+    })
+  );
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
 
@@ -79,7 +98,7 @@ export class DepositPreviewSwapComponent {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly cnTrade$ = this.depositService.depositTrade$;
+  public readonly depositTrade$ = this.depositService.depositTrade$;
 
   public hintShown: boolean = false;
 
@@ -91,7 +110,6 @@ export class DepositPreviewSwapComponent {
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly depositService: DepositService,
