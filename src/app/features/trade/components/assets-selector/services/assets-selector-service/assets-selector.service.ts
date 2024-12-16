@@ -123,6 +123,7 @@ export class AssetsSelectorService {
 
   public openAllChainsTokens(): void {
     this.assetType = 'allChains';
+    this.tokensStoreService.startBalanceCalculating('allChains');
   }
 
   public openBlockchainsList(): void {

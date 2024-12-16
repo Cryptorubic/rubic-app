@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -14,6 +14,7 @@ import {
   BlockchainsInfo,
   EvmBlockchainName,
   Injector,
+  Web3Public,
   Web3PublicSupportedBlockchain,
   Web3Pure
 } from 'rubic-sdk';
@@ -22,7 +23,8 @@ import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { UserInterface } from '../auth/models/user.interface';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { AssetType } from '@app/features/trade/models/asset';
 
 @Injectable({
   providedIn: 'root'
@@ -58,18 +60,20 @@ export class TokensStoreService {
 
   private storageTokens: StorageToken[];
 
-  private isBalanceCalculatingStarted: Record<BlockchainName, boolean> = Object.values(
-    BLOCKCHAIN_NAME
-  ).reduce(
+  private isBalanceAlreadyCalculatedForChain: Record<AssetType, boolean> = [
+    ...Object.values(BLOCKCHAIN_NAME),
+    'allChains'
+  ].reduce(
     (acc, blockchain) => ({ ...acc, [blockchain]: false }),
-    {} as Record<BlockchainName, boolean>
+    {} as Record<AssetType, boolean>
   );
 
-  private _isBalanceLoading$: Record<BlockchainName, BehaviorSubject<boolean>> = Object.values(
-    BLOCKCHAIN_NAME
-  ).reduce(
+  private _isBalanceLoading$: Record<AssetType, BehaviorSubject<boolean>> = [
+    ...Object.values(BLOCKCHAIN_NAME),
+    'allChains'
+  ].reduce(
     (acc, blockchain) => ({ ...acc, [blockchain]: new BehaviorSubject(true) }),
-    {} as Record<BlockchainName, BehaviorSubject<boolean>>
+    {} as Record<AssetType, BehaviorSubject<boolean>>
   );
 
   private get userAddress(): string | undefined {
@@ -100,7 +104,8 @@ export class TokensStoreService {
   private setupSubscriptions(): void {
     this.authService.currentUser$
       .pipe(
-        switchMap((user: UserInterface) => {
+        // @ts-ignore
+        switchMap(user => {
           if (user?.address) {
             return this.tokensApiService.fetchFavoriteTokens();
           }
@@ -131,28 +136,30 @@ export class TokensStoreService {
     ).flat();
   }
 
-  public startBalanceCalculating(blockchain: BlockchainName): void {
-    if (this.isBalanceCalculatingStarted[blockchain] || !blockchain) {
+  public startBalanceCalculating(blockchain: BlockchainName | 'allChains'): void {
+    if (this.isBalanceAlreadyCalculatedForChain[blockchain] || !blockchain) {
       return;
     }
-    this.isBalanceCalculatingStarted[blockchain] = true;
+    this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
 
     combineLatest([
       this.tokens$.pipe(
         first(v => Boolean(v)),
-        map(tokens => tokens.filter(t => t.blockchain === blockchain))
+        map(tokens => tokens.filter(t => blockchain === 'allChains' || t.blockchain === blockchain))
       ),
       this.authService.currentUser$
     ])
       .pipe(
         debounceTime(100),
         switchMap(async ([tokens, user]) => {
-          if (!user) {
-            return this.getDefaultTokenAmounts(tokens, false);
-          }
           this._isBalanceLoading$[blockchain].next(true);
-          return this.getTokensWithBalance(tokens);
-        })
+          if (!user) return this.getDefaultTokenAmounts(tokens, false);
+
+          return blockchain === 'allChains'
+            ? this.getAllTokensBalances(tokens)
+            : this.getTokensWithBalance(tokens);
+        }),
+        catchError(() => of(List()))
       )
       .subscribe((tokensWithBalances: List<TokenAmount>) => {
         this.patchTokensBalances(tokensWithBalances);
@@ -161,14 +168,15 @@ export class TokensStoreService {
   }
 
   public balanceCalculatingStarted(blockchain: BlockchainName): boolean {
-    return this.isBalanceCalculatingStarted[blockchain];
+    return this.isBalanceAlreadyCalculatedForChain[blockchain];
   }
 
-  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
     return this._isBalanceLoading$[blockchain].asObservable();
   }
 
   /**
+   * @description METHOD FOR SINGLE CHAIN TOKENS FETCHING
    * Get balance for each token in list. Tokens must be from same blockchain.
    * @param tokens List of tokens.
    * @return Promise<TokenAmount[]> Tokens with balance.
@@ -179,14 +187,6 @@ export class TokensStoreService {
         return List([]);
       }
       const blockchain = tokens.get(0).blockchain as Web3PublicSupportedBlockchain;
-      tokens.forEach((_, index) => {
-        if (index === 0) {
-          return;
-        }
-        // if (token.blockchain !== tokens.get(index - 1).blockchain) {
-        //   throw new Error('Blockchain must be the same for all tokens');
-        // }
-      });
 
       const tokenAmounts = tokens.map(token => {
         if (isTokenAmount(token)) {
@@ -202,10 +202,11 @@ export class TokensStoreService {
         return tokenAmounts;
       }
 
+      // fix adapter for different chains for `allChains`
       const publicAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
-      const balances = await publicAdapter
+      const balances: BigNumber[] = await publicAdapter
         .getTokensBalances(this.userAddress, tokens.map(token => token.address).toArray())
-        .catch(() => []);
+        .catch((): RubicAny => []);
 
       return tokenAmounts.map((token, index) => ({
         ...token,
@@ -215,6 +216,69 @@ export class TokensStoreService {
       }));
     } catch (err: unknown) {
       console.debug(err);
+      return List([]);
+    }
+  }
+
+  /**
+   * @description METHOD FOR ALL CHAINS TOKENS FETCHING
+   * @param allChainsTokens full list of tokens from store for every chain
+   * @returns full list of tokens from store for every chain with balances
+   */
+  private async getAllTokensBalances(
+    allChainsTokens: List<TokenAmount | Token>
+  ): Promise<List<TokenAmount>> {
+    const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
+
+    for (const token of allChainsTokens) {
+      const chainTokensList = tokensByChain[token.blockchain];
+      if (!Array.isArray(chainTokensList)) {
+        tokensByChain[token.blockchain] = [] as Token[];
+      }
+      if (isTokenAmount(token)) {
+        tokensByChain[token.blockchain].push(token);
+      } else {
+        tokensByChain[token.blockchain].push(
+          this.getDefaultTokenAmounts(List([token]), false).get(0)
+        );
+      }
+    }
+
+    try {
+      const promises = Object.entries(tokensByChain).map(
+        ([chain, tokens]: [BlockchainName, Token[]]) => {
+          const doesWalletSupportsTokenChain =
+            BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
+          if (doesWalletSupportsTokenChain) {
+            const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+            const chainTokensBalances = web3Public
+              .getTokensBalances(
+                this.userAddress,
+                tokens.map(t => t.address)
+              )
+              .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
+            // if EVM-address used -> it will fetch only evm address etc.
+            return chainTokensBalances;
+          } else {
+            return tokens.map(() => new BigNumber(NaN));
+          }
+        }
+      );
+
+      const resp = await Promise.all(promises);
+      const allTokensBalances = resp.flat();
+      const allTokensWithAmountArray = Object.values(tokensByChain)
+        .flat()
+        .map((token, index) => ({
+          ...token,
+          amount: allTokensBalances[index]
+            ? Web3Pure.fromWei(allTokensBalances[index], token.decimals)
+            : new BigNumber(NaN)
+        })) as TokenAmount[];
+
+      return List(allTokensWithAmountArray);
+    } catch (err) {
+      console.log('%cgetAllChainsTokenBalances_ERROR', 'color: red; font-size: 20px;', err);
       return List([]);
     }
   }

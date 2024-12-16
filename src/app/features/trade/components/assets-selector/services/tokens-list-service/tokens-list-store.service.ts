@@ -38,6 +38,7 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
+import { AssetType } from '@app/features/trade/models/asset';
 
 @Injectable()
 export class TokensListStoreService {
@@ -425,7 +426,7 @@ export class TokensListStoreService {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 
-  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
     return this.tokensStoreService.isBalanceLoading$(blockchain);
   }
 }
