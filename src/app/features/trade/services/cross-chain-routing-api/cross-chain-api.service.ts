@@ -126,7 +126,7 @@ export class CrossChainApiService {
       }),
       ...('simpleSwapId' in trade && { simpleswap_id: trade.simpleSwapId }),
       ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
-      ...('changellySwapId' in trade && { changelly_id: trade.changellySwapId }),
+      ...('changellyId' in trade && { changelly_id: trade.changellyId }),
       ...(referral && { influencer: referral })
     };
 
