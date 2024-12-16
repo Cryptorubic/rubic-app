@@ -41,7 +41,7 @@ export class AppComponent implements AfterViewInit {
     this.setupLanguage();
 
     this.initApp();
-    this.spindlService.initSpindlAds().then();
+    this.spindlService.initSpindlAds();
   }
 
   ngAfterViewInit() {

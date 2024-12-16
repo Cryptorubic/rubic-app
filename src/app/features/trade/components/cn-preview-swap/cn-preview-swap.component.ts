@@ -172,15 +172,22 @@ export class CnPreviewSwapComponent {
       gasData = trade.gasFeeInfo;
     }
 
-    if (!gasData || !gasData.gasLimit) {
-      return null;
-    }
+    if (!gasData) return null;
+
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const gasLimit = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+
+    let gasFeeWei = null;
+    if (gasData.gasLimit) {
+      gasFeeWei = gasData.gasLimit.multipliedBy(gasData.gasPrice ?? 0);
+    } else if (gasData.totalGas) {
+      gasFeeWei = Web3Pure.fromWei(gasData.totalGas, nativeToken.decimals);
+    }
+
+    if (!gasFeeWei) return null;
 
     return {
-      amount: Web3Pure.fromWei(gasLimit, trade.from.decimals),
+      amount: Web3Pure.fromWei(gasFeeWei, nativeToken.decimals),
       symbol: nativeToken.symbol
     };
   }

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {
-  BLOCKCHAIN_NAME,
   CrossChainTrade,
   CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
   OnChainTrade,
+  Token,
   TonOnChainTrade,
   Web3Pure,
   nativeTokensList
@@ -16,6 +16,7 @@ import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
 import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class TradeInfoManager {
@@ -43,47 +44,82 @@ export class TradeInfoManager {
   }
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
-    let gasData = null;
-    let gasPrice = null;
+    if (!('gasData' in trade) && !('gasFeeInfo' in trade)) return null;
 
-    if (trade.type === 'squidrouter') {
-      return null;
-    }
-
-    if (trade instanceof EvmCrossChainTrade) {
-      gasData = trade.gasData;
-
-      if (
-        trade.from.blockchain !== BLOCKCHAIN_NAME.ETHEREUM &&
-        trade.from.blockchain !== BLOCKCHAIN_NAME.FANTOM
-      ) {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? Web3Pure.fromWei(gasData.gasPrice)
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      } else {
-        gasPrice = gasData?.gasPrice?.gt(0)
-          ? gasData.gasPrice
-          : Web3Pure.fromWei(gasData?.maxFeePerGas || 0);
-      }
-    } else if (trade instanceof EvmOnChainTrade || trade instanceof TonOnChainTrade) {
-      gasData = trade.gasFeeInfo;
-      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
-    }
-
-    if (!gasData || !gasData.gasLimit) {
-      return null;
-    }
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
     const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
-    const gasFee = gasData?.gasLimit?.multipliedBy(gasPrice);
+
+    let gasFeeNonWei = null;
+    if (trade instanceof EvmCrossChainTrade) {
+      gasFeeNonWei = this.getCcrGasFee(trade, nativeToken);
+    } else if (trade instanceof EvmOnChainTrade || trade instanceof TonOnChainTrade) {
+      gasFeeNonWei = this.getOnChainGasFee(trade, nativeToken);
+    }
+
+    if (!gasFeeNonWei || gasFeeNonWei.lte(0)) return null;
 
     return {
-      amount: gasFee,
-      amountInUsd: gasFee.multipliedBy(nativeTokenPrice),
+      amount: gasFeeNonWei,
+      amountInUsd: gasFeeNonWei.multipliedBy(nativeTokenPrice),
       symbol: nativeToken.symbol
     };
+  }
+
+  /**
+   * In trade.gasData:
+   * totalGas - in wei
+   * gasLimit - in wei
+   * gasPrice - in wei
+   * maxFeePerGas - in wei
+   * @returns gasFee non wei
+   */
+  private getCcrGasFee(trade: EvmCrossChainTrade, nativeToken: Token): BigNumber | null {
+    const gasData = trade.gasData;
+    if (!gasData) return null;
+
+    let gasFeeWei: BigNumber | null = null;
+    if ('totalGas' in gasData) {
+      gasFeeWei = gasData.totalGas;
+    } else if ('gasPrice' in gasData && gasData.gasPrice.gt(0)) {
+      gasFeeWei = gasData.gasLimit?.multipliedBy(gasData.gasPrice);
+    } else if ('maxFeePerGas' in gasData && gasData.maxFeePerGas.gt(0)) {
+      gasFeeWei = gasData.gasLimit?.multipliedBy(gasData.maxFeePerGas || 0);
+    }
+
+    if (!gasFeeWei) return null;
+
+    return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
+  }
+
+  /**
+   * In trade.gasFeeInfo:
+   * totalGas - in wei
+   * gasLimit - in wei
+   * gasPrice - in wei
+   * maxFeePerGas - in wei
+   * @returns gasFee non wei
+   */
+  private getOnChainGasFee(
+    trade: EvmOnChainTrade | TonOnChainTrade,
+    nativeToken: Token
+  ): BigNumber | null {
+    const gasData = trade.gasFeeInfo;
+    if (!gasData) return null;
+
+    if (gasData.totalGas) return Web3Pure.fromWei(gasData.totalGas, nativeToken.decimals);
+
+    if (!gasData.gasLimit) return null;
+
+    let gasFeeWei = null;
+    if ('gasPrice' in gasData && gasData.gasPrice.gt(0)) {
+      gasFeeWei = gasData.gasLimit.multipliedBy(gasData.gasPrice);
+    } else if ('maxFeePerGas' in gasData && gasData.maxFeePerGas.gt(0)) {
+      gasFeeWei = gasData.gasLimit.multipliedBy(gasData.maxFeePerGas);
+    }
+
+    return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
   }
 }
