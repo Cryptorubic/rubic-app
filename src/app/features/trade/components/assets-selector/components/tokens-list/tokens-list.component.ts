@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { of, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
@@ -34,13 +34,14 @@ export class TokensListComponent {
   public readonly isMobile = this.headerStore.isMobile;
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
-    switchMap(tokens => {
-      if (!tokens.length) {
-        return of(false);
-      }
-      return this.tokensListStoreService.isBalanceLoading$(tokens[0].blockchain);
-    })
+    switchMap(() =>
+      this.tokensListStoreService.isBalanceLoading$(this.assetsSelectorService.assetType)
+    )
   );
+
+  public get showAll(): boolean {
+    return this.assetsSelectorService.assetType === 'allChains';
+  }
 
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 

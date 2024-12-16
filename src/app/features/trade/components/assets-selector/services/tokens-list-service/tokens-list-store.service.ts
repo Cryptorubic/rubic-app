@@ -38,6 +38,7 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
+import { AssetType } from '@app/features/trade/models/asset';
 
 @Injectable()
 export class TokensListStoreService {
@@ -139,11 +140,7 @@ export class TokensListStoreService {
 
   private subscribeOnBlockchainChange(): void {
     this.assetsSelectorService.assetType$
-      .pipe(
-        distinctUntilChanged(),
-        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
-        takeUntil(this.destroy$)
-      )
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.updateTokens();
       });
@@ -167,6 +164,7 @@ export class TokensListStoreService {
     this.updateTokens$
       .pipe(
         switchMap(() => {
+          // @TODO handle query with assetType === 'allChains'
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
               return this.getDefaultTokensByQuery();
@@ -216,9 +214,7 @@ export class TokensListStoreService {
    * Fetches tokens form backend by search query.
    */
   private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
-    if (!this.searchQuery || !this.blockchain) {
-      return of([]);
-    }
+    if (!this.searchQuery) return of([]);
 
     return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
       map(backendTokens => {
@@ -305,7 +301,7 @@ export class TokensListStoreService {
 
     const query = this.searchQuery.toLowerCase();
     const filteredFavoriteTokens = allFavoriteTokens
-      .filter(token => token.blockchain === this.blockchain)
+      .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
       .map(token => ({
         ...token,
         available: this.isTokenAvailable(token),
@@ -340,7 +336,7 @@ export class TokensListStoreService {
       const tokens = this.tokensStoreService.tokens.toArray();
 
       const currentBlockchainTokens = tokens
-        .filter(token => token.blockchain === this.blockchain && this.isTokenAvailable(token))
+        .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: true,
@@ -351,7 +347,7 @@ export class TokensListStoreService {
       const favoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
       const currentBlockchainFavoriteTokens = favoriteTokens
-        .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
+        .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: this.isTokenAvailable(token),
@@ -359,6 +355,11 @@ export class TokensListStoreService {
         }));
       return this.sortTokensByComparator(currentBlockchainFavoriteTokens);
     }
+  }
+
+  private needFilterToken(token: AvailableTokenAmount): boolean {
+    const isAllChains = this.assetsSelectorService.assetType === 'allChains';
+    return this.isTokenAvailable(token) && (isAllChains || token.blockchain === this.blockchain);
   }
 
   /**
@@ -425,7 +426,7 @@ export class TokensListStoreService {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 
-  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
     return this.tokensStoreService.isBalanceLoading$(blockchain);
   }
 }
