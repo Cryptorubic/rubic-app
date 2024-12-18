@@ -17498,10 +17498,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.49.0-alpha-changelly.2:
-  version "5.49.0-alpha-changelly.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.49.0-alpha-changelly.2.tgz#9c73c32223a24d19a930343a5313e9c6c9705bed"
-  integrity sha512-UcBaDoG3Veodzv59Fd+fT8RCcNBUxQFW1ek/172P7HZE2x/AlyRqucUywjyBUKYRtPEoO6lfaQioz6V9lXv8sg==
+rubic-sdk@5.49.0-alpha-changelly.3:
+  version "5.49.0-alpha-changelly.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.49.0-alpha-changelly.3.tgz#c3322f1822130dffa11ed680481c29326b82f8cf"
+  integrity sha512-EcT2VS0Slcu5WK1y/o2TGUA1EHe/D7k6ybs9BP2c/EGdbC7ybk7tuLfN5+kcuiaYmtQSHZn0Y++tj1fBhrQUyw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
