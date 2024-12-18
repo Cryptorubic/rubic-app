@@ -32,7 +32,11 @@
       *ngIf="showSpindl"
       [ngStyle]="{
         display:
-          state.content === 'form' || state.transactionState.step === 'success' ? 'block' : 'none'
+          state.content === 'form' ||
+          state.content === 'preview' ||
+          state.transactionState.step === 'success'
+            ? 'block'
+            : 'none'
       }"
     ></app-spindle-banner>
   </div>

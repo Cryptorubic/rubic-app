@@ -4,7 +4,6 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { distinctUntilChanged, firstValueFrom } from 'rxjs';
 import { HttpService } from '../http/http.service';
-import { StoreService } from '../store/store.service';
 
 interface IpGeolocationResp {
   country_code2: string;
@@ -36,8 +35,7 @@ export class SpindlService {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly httpService: HttpService,
-    private readonly storageService: StoreService
+    private readonly httpService: HttpService
   ) {}
 
   private async isForbiddenIP(): Promise<boolean> {
@@ -96,7 +94,7 @@ export class SpindlService {
     this.authService.currentUser$
       .pipe(distinctUntilChanged((prev, curr) => prev?.address === curr?.address))
       .subscribe(user => {
-        if (user.address) spindl.attribute(user.address);
+        if (user?.address) spindl.attribute(user.address);
       });
   }
 
