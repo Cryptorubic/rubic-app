@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import spindl from '@spindl-xyz/attribution';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
-import { distinctUntilChanged, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, firstValueFrom, Observable } from 'rxjs';
 import { HttpService } from '../http/http.service';
-import { StoreService } from '../store/store.service';
 
 interface IpGeolocationResp {
   country_code2: string;
@@ -28,16 +27,15 @@ export class SpindlService {
 
   private readonly IP2LOCATION_KEY = 'D13DC4B78F655A8DD9011ECC0FCDFA7D';
 
-  private _showSpindl: boolean = false;
+  private _showSpindl$ = new BehaviorSubject(false);
 
-  public get showSpindl(): boolean {
-    return this._showSpindl;
+  public get showSpindl$(): Observable<boolean> {
+    return this._showSpindl$.asObservable();
   }
 
   constructor(
     private readonly authService: AuthService,
-    private readonly httpService: HttpService,
-    private readonly storageService: StoreService
+    private readonly httpService: HttpService
   ) {}
 
   private async isForbiddenIP(): Promise<boolean> {
@@ -83,8 +81,7 @@ export class SpindlService {
 
   public async initSpindlAds(): Promise<void> {
     const isForbiddenIP = await this.isForbiddenIP();
-    this._showSpindl = !isForbiddenIP;
-
+    this._showSpindl$.next(!isForbiddenIP);
     spindl.configure({
       sdkKey: '5c8549dc-9be6-49ee-bc3f-8192870f4553',
       debugMode: !ENVIRONMENT.production,
@@ -96,7 +93,7 @@ export class SpindlService {
     this.authService.currentUser$
       .pipe(distinctUntilChanged((prev, curr) => prev?.address === curr?.address))
       .subscribe(user => {
-        if (user.address) spindl.attribute(user.address);
+        if (user?.address) spindl.attribute(user.address);
       });
   }
 

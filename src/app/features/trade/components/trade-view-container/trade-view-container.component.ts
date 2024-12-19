@@ -14,7 +14,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
-import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
@@ -60,7 +59,7 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  public readonly showSpindl = this.spindlService.showSpindl;
+  public readonly showSpindl$ = this.spindlService.showSpindl$;
 
   constructor(
     private readonly swapsState: SwapsStateService,
@@ -68,7 +67,6 @@ export class TradeViewContainerComponent {
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
     public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly headerStore: HeaderStore,
     private readonly previewSwapService: PreviewSwapService,
     private readonly actionButtonService: ActionButtonService,
