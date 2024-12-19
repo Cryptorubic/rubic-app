@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { TransactionStep } from '@app/features/trade/models/transaction-steps';
 import { PreviewSwapService } from '@app/features/trade/services/preview-swap/preview-swap.service';
 import { combineLatestWith, map, Observable } from 'rxjs';
 
@@ -13,13 +12,13 @@ import { combineLatestWith, map, Observable } from 'rxjs';
 })
 export class SpindleBannerComponent {
   public readonly iframeSrc$ = this.headerStore.getMobileDisplayStatus().pipe(
-    combineLatestWith(this.authService.currentUser$, this.previewSwapService.transactionState$),
-    map(([isMobile, user, txState]) => {
+    combineLatestWith(this.authService.currentUser$),
+    map(([isMobile, user]) => {
       if (!user?.address) {
         return null;
       }
 
-      const placementId = this.getPlacementId(isMobile, txState.step);
+      const placementId = this.getPlacementId(isMobile);
       const src = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${user.address}`;
       return src;
     })
@@ -45,8 +44,7 @@ export class SpindleBannerComponent {
     private readonly previewSwapService: PreviewSwapService
   ) {}
 
-  private getPlacementId(isMobile: boolean, step: TransactionStep): string {
-    if (step === 'success' || step === 'idle') return 'post_swap';
+  private getPlacementId(isMobile: boolean): string {
     if (isMobile) return 'under_swap_mobile';
     return 'under_swap_desktop';
   }
