@@ -250,6 +250,10 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.TON) {
       return [BLOCKCHAIN_NAME.TON];
     }
+    if (this.chainType === CHAIN_TYPE.BITCOIN) {
+      return [BLOCKCHAIN_NAME.BITCOIN];
+    }
+
     throw new Error('Blockchain is not supported');
   }
 
