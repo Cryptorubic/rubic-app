@@ -39,19 +39,5 @@ export const crossChainTokenTypeMapping: Record<CrossChainTokenType, CrossChainF
   native_eth_bridged_native: 'bridgedNative_TokenSwap',
   stable_bridged_native: 'bridgedNative_StableSwap',
   wNative_bridged_native: 'tokenSwap',
-  token_bridged_native: 'tokenSwap',
-
-  stable_bridged_btc: 'bridgedNative_StableSwap',
-  token_bridged_btc: 'tokenSwap',
-  wNative_bridged_btc: 'tokenSwap',
-  native_bridged_btc: 'bridgedNative_NativeSwap',
-  native_eth_bridged_btc: 'sameNativeSwap',
-  bridged_native_bridged_btc: 'bridgedNative_NativeSwap',
-  bridged_btc_wNative: 'tokenSwap',
-  bridged_btc_native: 'bridgedNative_NativeSwap',
-  bridged_btc_stable: 'bridgedNative_StableSwap',
-  bridged_btc_token: 'tokenSwap',
-  bridged_btc_native_eth: 'bridgedNative_TokenSwap',
-  bridged_btc_bridged_native: 'bridgedNative_NativeSwap',
-  bridged_btc_bridged_btc: 'sameTokenSwap'
+  token_bridged_native: 'tokenSwap'
 };

@@ -7,6 +7,5 @@ export const tokenTypeMapping: Record<Token['type'], TokenType> = {
   NATIVE: 'native',
   NATIVE_ETH: 'native_eth',
   TOKEN: 'token',
-  BRIDGED_NATIVE: 'bridged_native',
-  BRIDGED_BTC: 'bridged_btc'
+  BRIDGED_NATIVE: 'bridged_native'
 };

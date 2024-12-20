@@ -35,19 +35,5 @@ export const onChainTokenTypeMapping: Record<OnChainTokenTypes, OnChainTypes> = 
   bridged_native_stable: 'stableTokenSwap',
   native_bridged_native: 'tokenSwap',
   native_eth_bridged_native: 'tokenSwap',
-  stable_bridged_native: 'stableTokenSwap',
-
-  native_bridged_btc: 'tokenSwap',
-  wNative_bridged_btc: 'tokenSwap',
-  stable_bridged_btc: 'stableTokenSwap',
-  token_bridged_btc: 'tokenSwap',
-  native_eth_bridged_btc: 'tokenSwap',
-  bridged_native_bridged_btc: 'tokenSwap',
-  bridged_btc_wNative: 'tokenSwap',
-  bridged_btc_native: 'tokenSwap',
-  bridged_btc_stable: 'stableTokenSwap',
-  bridged_btc_token: 'tokenSwap',
-  bridged_btc_native_eth: 'tokenSwap',
-  bridged_btc_bridged_btc: 'tokenSwap',
-  bridged_btc_bridged_native: 'tokenSwap'
+  stable_bridged_native: 'stableTokenSwap'
 };

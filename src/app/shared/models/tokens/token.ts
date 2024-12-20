@@ -12,12 +12,5 @@ export interface Token extends BlockchainToken {
    */
   tokenSecurity?: TokenSecurity | null;
 
-  type?:
-    | 'NATIVE'
-    | 'STABLE'
-    | 'WRAPPED_NATIVE'
-    | 'NATIVE_ETH'
-    | 'TOKEN'
-    | 'BRIDGED_NATIVE'
-    | 'BRIDGED_BTC';
+  type?: 'NATIVE' | 'STABLE' | 'WRAPPED_NATIVE' | 'NATIVE_ETH' | 'TOKEN' | 'BRIDGED_NATIVE';
 }
