@@ -3,6 +3,7 @@ import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-settings-it',
@@ -17,17 +18,21 @@ export class SettingsItComponent {
 
   public instantTradeForm = this.settingsService.instantTrade;
 
+  public readonly hideReceiverOption =
+    this.queryParamsService.hideLogoAndReceiver && this.queryParamsService.useLargeIframe;
+
   public readonly formValue$ = this.instantTradeForm.valueChanges.pipe(
     startWith(this.instantTradeForm.value)
   );
 
   public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
-    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
+    map(form => form === MAIN_FORM_TYPE.SWAP_FORM && !this.hideReceiverOption)
   );
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public toggleAutoSlippageTolerance(): void {

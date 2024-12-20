@@ -14,6 +14,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -45,6 +46,9 @@ export class SwapFormPageComponent {
   public readonly toAsset$ = this.swapFormService.toToken$;
 
   public readonly fromAmount$ = this.swapFormService.fromAmount$;
+
+  public readonly hideReceiverButton =
+    this.queryParamsService.hideLogoAndReceiver && this.queryParamsService.useLargeIframe;
 
   public readonly toAmount$ = this.swapFormService.toAmount$.pipe(
     map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null))
@@ -83,7 +87,8 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly swapsStateService: SwapsStateService,
+    private readonly queryParamsService: QueryParamsService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {

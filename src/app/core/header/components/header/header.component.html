@@ -22,9 +22,11 @@
 <header
   class="rubic-header"
   [ngClass]="{ 'large-iframe-header': useLargeIframe }"
+  [ngStyle]="{ 'justify-content': hideLogo ? 'end' : 'space-between' }"
   *ngLet="currentUser$ | async as currentUser"
 >
   <app-logo
+    *ngIf="!hideLogo"
     [currentUser]="!!currentUser"
     [isDarkTheme]="isDarkTheme$ | async"
     [noFrameLink]="noFrameLink"
