@@ -22,11 +22,11 @@ import { OneID } from '@oneid-xyz/inspect';
 export class AuthService {
   private web3Name = createWeb3Name();
 
-  private readonly _currentUser$ = new BehaviorSubject<UserInterface>(undefined);
+  private readonly _currentUser$ = new BehaviorSubject<UserInterface | undefined>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();
 
-  get user(): UserInterface {
+  get user(): UserInterface | undefined {
     return this._currentUser$.getValue();
   }
 
