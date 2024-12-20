@@ -59,7 +59,12 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  public readonly showSpindl$ = this.spindlService.showSpindl$;
+  private readonly hideIframeBanner =
+    this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
+
+  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
+    map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
+  );
 
   constructor(
     private readonly swapsState: SwapsStateService,
