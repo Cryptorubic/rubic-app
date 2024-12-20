@@ -22,7 +22,6 @@
 <header
   class="rubic-header"
   [ngClass]="{ 'large-iframe-header': useLargeIframe }"
-  [ngStyle]="{ 'justify-content': hideLogo ? 'end' : 'space-between' }"
   *ngLet="currentUser$ | async as currentUser"
 >
   <app-logo
@@ -48,7 +47,6 @@
     appearance="secondary"
     type="button"
     size="m"
-    *ngIf="!useLargeIframe"
     [pseudoActive]="
       rootPath &&
       ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
