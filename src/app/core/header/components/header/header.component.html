@@ -53,6 +53,7 @@
         (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
     "
     (click)="navigateToSwaps()"
+    [ngStyle]="{ 'margin-right': useLargeIframe ? 'auto' : 'unset' }"
   >
     Swaps
   </button>
