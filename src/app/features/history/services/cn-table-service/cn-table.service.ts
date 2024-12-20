@@ -139,7 +139,9 @@ export class CnTableService extends TableService<'date', ChangenowPostTrade, CnT
     }
 
     try {
-      return from(ChangeNowCrossChainApiService.getTxStatus(id)).pipe(map(el => el.status));
+      return from(ChangeNowCrossChainApiService.getTxStatus(id)).pipe(
+        map(el => el.status as ChangenowApiStatus)
+      );
     } catch {
       return of(CHANGENOW_API_STATUS.WAITING);
     }

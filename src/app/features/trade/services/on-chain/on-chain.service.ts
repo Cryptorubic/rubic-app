@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import { concatMap, firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
 
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, map, switchMap, tap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeContainer } from '@features/trade/models/trade-container';
@@ -22,7 +22,8 @@ import {
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
   TonOnChainTrade,
-  IsDeflationToken
+  IsDeflationToken,
+  ON_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -196,6 +197,8 @@ export class OnChainService {
     const useMevBotProtection = this.settingsService.instantTradeValue.useMevBotProtection;
     let transactionHash: string;
 
+    const preTradeId = await this.sendPreTradeInfo(trade);
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -209,7 +212,7 @@ export class OnChainService {
           useMevBotProtection
         );
 
-        this.postTrade(hash, trade);
+        this.postTrade(hash, trade, preTradeId);
       },
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
@@ -229,16 +232,24 @@ export class OnChainService {
       await this.conditionalAwait(fromBlockchain);
       await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
-      if (trade instanceof OnChainTrade && trade.from.blockchain === BLOCKCHAIN_NAME.TRON) {
+      if (
+        trade instanceof OnChainTrade &&
+        trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
+        trade.type === ON_CHAIN_TRADE_TYPE.BRIDGERS
+      ) {
         const txStatusData = await firstValueFrom(
-          timer(7_000).pipe(
-            switchMap(() =>
+          timer(7_000, 5_000).pipe(
+            concatMap(() =>
               this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
             ),
-            filter(
+            first(
               statusData =>
                 statusData.status === TX_STATUS.SUCCESS || statusData.status === TX_STATUS.FAIL
-            )
+            ),
+            catchError(err => {
+              console.log(err);
+              return of({ hash: null, status: TX_STATUS.PENDING });
+            })
           )
         );
         if (txStatusData.status !== TX_STATUS.SUCCESS) {
@@ -326,14 +337,20 @@ export class OnChainService {
     );
   }
 
-  private async postTrade(transactionHash: string, trade: OnChainTrade): Promise<void> {
+  private async postTrade(
+    transactionHash: string,
+    trade: OnChainTrade,
+    preTradeId: string
+  ): Promise<void> {
     const { blockchain } = TradeParser.getItSwapParams(trade);
 
     // Boba is too fast, status does not have time to get into the database.
     const waitTime = blockchain === BLOCKCHAIN_NAME.BOBA ? 3_000 : 0;
     await firstValueFrom(
       timer(waitTime).pipe(
-        switchMap(() => this.onChainApiService.createTrade(transactionHash, trade.type, trade))
+        switchMap(() =>
+          this.onChainApiService.createTrade(transactionHash, trade.type, trade, preTradeId)
+        )
       )
     );
   }
@@ -461,5 +478,14 @@ export class OnChainService {
     };
 
     return options;
+  }
+
+  private async sendPreTradeInfo(trade: OnChainTrade): Promise<string | null> {
+    try {
+      const preTradeId = await this.onChainApiService.sendPreTradeInfo(trade);
+      return preTradeId;
+    } catch {
+      return null;
+    }
   }
 }

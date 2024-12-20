@@ -78,6 +78,8 @@ export class QueryParamsService {
 
   public useSafe: boolean;
 
+  public hideBranding: boolean;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensNetworkService: TokensNetworkService,
@@ -93,6 +95,7 @@ export class QueryParamsService {
       return;
     }
 
+    this.hideBranding = queryParams.hideBranding === 'true';
     this.useLargeIframe = queryParams.useLargeIframe === 'true';
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';
