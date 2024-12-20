@@ -9,8 +9,6 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
-import { BlockchainTags } from '@app/features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
-import { blockchainsList } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { TokensListTypeService } from '@app/features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
@@ -24,6 +22,7 @@ import { NAVIGATOR } from '@ng-web-apis/common';
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
+  BlockchainsInfo,
   compareAddresses,
   EvmBlockchainName,
   wrappedNativeTokensList
@@ -44,8 +43,6 @@ export class DropdownOptionsTokenComponent {
 
   public isCopyClicked: boolean = false;
 
-  private readonly blockchainTags = BlockchainTags;
-
   public loadingFavoriteToken = false;
 
   public readonly TokenSecurityStatus = TokenSecurityStatus;
@@ -61,15 +58,11 @@ export class DropdownOptionsTokenComponent {
     private readonly tokensListTypeService: TokensListTypeService
   ) {}
 
-  public get isTokenFromEvm(): boolean {
-    const tokenBlockchain = blockchainsList.filter(
-      blockchain => blockchain.name === this.token.blockchain
-    )[0];
-    return !tokenBlockchain.tags.includes(BlockchainTags.NON_EVM) ||
-      tokenBlockchain.name === BLOCKCHAIN_NAME.TRON ||
-      tokenBlockchain.name === BLOCKCHAIN_NAME.SOLANA
-      ? true
-      : false;
+  public get canBeAddedToFavorite(): boolean {
+    const tokenChainType = BlockchainsInfo.getChainType(this.token.blockchain);
+    const walletChainType = this.authService.userChainType;
+
+    return tokenChainType === walletChainType;
   }
 
   public get showCopyToClipboardOption(): boolean {

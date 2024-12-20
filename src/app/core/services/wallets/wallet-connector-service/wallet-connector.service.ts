@@ -46,6 +46,7 @@ import { TonkeeperAdapter } from '../wallets-adapters/ton/tonkeeper-adapter';
 import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-adapter';
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
+import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -209,6 +210,10 @@ export class WalletConnectorService {
       );
     }
 
+    if (walletName === WALLET_NAME.CTRL) {
+      return new CtrlWalletAdapter(...defaultConstructorParameters);
+    }
+
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
     }
@@ -245,6 +250,10 @@ export class WalletConnectorService {
     if (this.chainType === CHAIN_TYPE.TON) {
       return [BLOCKCHAIN_NAME.TON];
     }
+    if (this.chainType === CHAIN_TYPE.BITCOIN) {
+      return [BLOCKCHAIN_NAME.BITCOIN];
+    }
+
     throw new Error('Blockchain is not supported');
   }
 
