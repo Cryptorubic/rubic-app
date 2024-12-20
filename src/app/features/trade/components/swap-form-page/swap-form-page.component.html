@@ -67,7 +67,7 @@
     <div class="buttons-container">
       <app-action-button></app-action-button>
       <app-receiver-address-button
-        *ngIf="state.selectedForm === 'swapForm' && !hideReceiverButton"
+        *ngIf="state.selectedForm === 'swapForm' && !hideReceiver"
         (handleClick)="toggleReceiver()"
       ></app-receiver-address-button>
     </div>

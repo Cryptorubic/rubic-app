@@ -47,7 +47,7 @@ export class SwapFormPageComponent {
 
   public readonly fromAmount$ = this.swapFormService.fromAmount$;
 
-  public readonly hideReceiverButton =
+  public readonly hideReceiver =
     this.queryParamsService.hideLogoAndReceiver && this.queryParamsService.useLargeIframe;
 
   public readonly toAmount$ = this.swapFormService.toAmount$.pipe(
@@ -67,6 +67,9 @@ export class SwapFormPageComponent {
       )
     ),
     map(([from, to, crossChainReceiver, onChainReceiver]) => {
+      if (this.hideReceiver) {
+        return false;
+      }
       if (!from || !to) {
         return crossChainReceiver.showReceiverAddress;
       }
