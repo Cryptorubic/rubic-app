@@ -65,7 +65,9 @@ export class SwapFormPageComponent {
     ),
     map(([from, to, crossChainReceiver, onChainReceiver]) => {
       if (!from || !to) {
-        return crossChainReceiver.showReceiverAddress;
+        const showReceiverAddress =
+          crossChainReceiver.showReceiverAddress || onChainReceiver.showReceiverAddress;
+        return showReceiverAddress;
       }
       return from.blockchain === to.blockchain
         ? onChainReceiver.showReceiverAddress
