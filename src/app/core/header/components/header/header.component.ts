@@ -54,7 +54,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
-  public readonly hideLogo = this.queryParamsService.hideLogoAndReceiver && this.useLargeIframe;
+  public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;

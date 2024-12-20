@@ -78,7 +78,7 @@ export class QueryParamsService {
 
   public useSafe: boolean;
 
-  public hideLogoAndReceiver: boolean;
+  public hideBranding: boolean;
 
   constructor(
     private readonly headerStore: HeaderStore,
@@ -95,7 +95,7 @@ export class QueryParamsService {
       return;
     }
 
-    this.hideLogoAndReceiver = queryParams.hideLogoAndReceiver === 'true';
+    this.hideBranding = queryParams.hideBranding === 'true';
     this.useLargeIframe = queryParams.useLargeIframe === 'true';
     this.testMode = queryParams.testMode === 'true';
     this.hideUnusedUI = queryParams.hideUnusedUI === 'true';

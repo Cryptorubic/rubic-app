@@ -60,7 +60,7 @@ export class TradeViewContainerComponent {
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
   private readonly hideIframeBanner =
-    this.queryParamsService.hideLogoAndReceiver && this.queryParamsService.useLargeIframe;
+    this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
   public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
     map(showSpindl => (this.hideIframeBanner ? false : showSpindl))

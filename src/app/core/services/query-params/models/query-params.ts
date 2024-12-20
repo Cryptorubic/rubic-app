@@ -42,7 +42,7 @@ interface AllQueryParams {
   referral: string;
   swapId: string;
   useSafe: string;
-  hideLogoAndReceiver: string;
+  hideBranding: string;
 }
 
 export type QueryParams = {

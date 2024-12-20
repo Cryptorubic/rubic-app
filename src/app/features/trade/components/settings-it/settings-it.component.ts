@@ -18,15 +18,12 @@ export class SettingsItComponent {
 
   public instantTradeForm = this.settingsService.instantTrade;
 
-  public readonly hideReceiverOption =
-    this.queryParamsService.hideLogoAndReceiver && this.queryParamsService.useLargeIframe;
-
   public readonly formValue$ = this.instantTradeForm.valueChanges.pipe(
     startWith(this.instantTradeForm.value)
   );
 
   public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
-    map(form => form === MAIN_FORM_TYPE.SWAP_FORM && !this.hideReceiverOption)
+    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
   );
 
   constructor(
