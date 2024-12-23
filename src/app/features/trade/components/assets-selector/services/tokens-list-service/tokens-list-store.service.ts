@@ -25,7 +25,7 @@ import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -39,6 +39,7 @@ import { AssetsSelectorService } from '@features/trade/components/assets-selecto
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
 import { AssetType } from '@app/features/trade/models/asset';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -107,7 +108,8 @@ export class TokensListStoreService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly authService: AuthService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -164,7 +166,6 @@ export class TokensListStoreService {
     this.updateTokens$
       .pipe(
         switchMap(() => {
-          // @TODO handle query with assetType === 'allChains'
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
               return this.getDefaultTokensByQuery();
@@ -219,7 +220,7 @@ export class TokensListStoreService {
     return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
       map(backendTokens => {
         if (backendTokens.size) {
-          return backendTokens
+          const notSortedtokens = backendTokens
             .map(token => {
               return {
                 ...token,
@@ -228,6 +229,8 @@ export class TokensListStoreService {
               };
             })
             .toArray();
+
+          return this.sortTokensByComparator(notSortedtokens);
         }
         return [];
       })
@@ -318,13 +321,7 @@ export class TokensListStoreService {
         token.name.toLowerCase().includes(query)
       );
 
-      return symbolMatchingTokens.concat(
-        nameMatchingTokens.filter(nameToken =>
-          symbolMatchingTokens.every(
-            symbolToken => !compareAddresses(nameToken.address, symbolToken.address)
-          )
-        )
-      );
+      return [...new Set([...symbolMatchingTokens, ...nameMatchingTokens])];
     }
   }
 
@@ -392,7 +389,7 @@ export class TokensListStoreService {
       return Web3Pure[chainType].isNativeAddress(token.address);
     });
 
-    if (nativeTokenIndex < 0) {
+    if (nativeTokenIndex === -1 || this.assetsSelectorService.assetType === 'allChains') {
       return tokens.sort(comparator);
     } else {
       const slicedTokensArray = [

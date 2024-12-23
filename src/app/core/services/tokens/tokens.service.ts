@@ -162,14 +162,6 @@ export class TokensService {
     }
   }
 
-  public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(blockchain);
-    await this.getAndUpdateTokenBalance({
-      address: Web3Pure[chainType].nativeTokenAddress,
-      blockchain
-    });
-  }
-
   public async updateTokenBalanceAfterCcrSwap(
     fromToken: {
       address: string;

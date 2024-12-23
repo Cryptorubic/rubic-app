@@ -121,7 +121,7 @@ export class AssetsSelectorService {
     this.selectorListType = this.assetType === 'fiat' ? 'fiats' : 'tokens';
   }
 
-  public openAllChainsTokens(): void {
+  public onAllChainsSelect(): void {
     this.assetType = 'allChains';
     this.tokensStoreService.startBalanceCalculating('allChains');
   }

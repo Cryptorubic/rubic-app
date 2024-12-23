@@ -23,7 +23,6 @@ import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
-import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { AssetType } from '@app/features/trade/models/asset';
 
 @Injectable({
@@ -155,9 +154,7 @@ export class TokensStoreService {
           this._isBalanceLoading$[blockchain].next(true);
           if (!user) return this.getDefaultTokenAmounts(tokens, false);
 
-          return blockchain === 'allChains'
-            ? this.getAllTokensBalances(tokens)
-            : this.getTokensWithBalance(tokens);
+          return this.getTokensWithBalance(tokens);
         }),
         catchError(() => of(List()))
       )
@@ -176,61 +173,15 @@ export class TokensStoreService {
   }
 
   /**
-   * @description METHOD FOR SINGLE CHAIN TOKENS FETCHING
-   * Get balance for each token in list. Tokens must be from same blockchain.
-   * @param tokens List of tokens.
-   * @return Promise<TokenAmount[]> Tokens with balance.
+   * @param tokensList list of tokens, tokens can be from different chains in same list
+   * @returns list of tokens from store with balances
    */
-  public async getTokensWithBalance(tokens: List<TokenAmount | Token>): Promise<List<TokenAmount>> {
-    try {
-      if (!tokens.size) {
-        return List([]);
-      }
-      const blockchain = tokens.get(0).blockchain as Web3PublicSupportedBlockchain;
-
-      const tokenAmounts = tokens.map(token => {
-        if (isTokenAmount(token)) {
-          return token;
-        }
-        return this.getDefaultTokenAmounts(List([token]), false).get(0);
-      });
-
-      if (
-        !this.userAddress ||
-        !this.walletConnectorService.getBlockchainsBasedOnWallet().includes(blockchain)
-      ) {
-        return tokenAmounts;
-      }
-
-      // fix adapter for different chains for `allChains`
-      const publicAdapter = Injector.web3PublicService.getWeb3Public(blockchain);
-      const balances: BigNumber[] = await publicAdapter
-        .getTokensBalances(this.userAddress, tokens.map(token => token.address).toArray())
-        .catch((): RubicAny => []);
-
-      return tokenAmounts.map((token, index) => ({
-        ...token,
-        amount: balances[index]
-          ? Web3Pure.fromWei(balances[index], token.decimals)
-          : new BigNumber(NaN)
-      }));
-    } catch (err: unknown) {
-      console.debug(err);
-      return List([]);
-    }
-  }
-
-  /**
-   * @description METHOD FOR ALL CHAINS TOKENS FETCHING
-   * @param allChainsTokens full list of tokens from store for every chain
-   * @returns full list of tokens from store for every chain with balances
-   */
-  private async getAllTokensBalances(
-    allChainsTokens: List<TokenAmount | Token>
+  public async getTokensWithBalance(
+    tokensList: List<TokenAmount | Token>
   ): Promise<List<TokenAmount>> {
     const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
 
-    for (const token of allChainsTokens) {
+    for (const token of tokensList) {
       const chainTokensList = tokensByChain[token.blockchain];
       if (!Array.isArray(chainTokensList)) {
         tokensByChain[token.blockchain] = [] as Token[];
@@ -249,6 +200,7 @@ export class TokensStoreService {
         ([chain, tokens]: [BlockchainName, Token[]]) => {
           const doesWalletSupportsTokenChain =
             BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
+          // if EVM-address used -> it will fetch only evm address etc.
           if (doesWalletSupportsTokenChain) {
             const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
             const chainTokensBalances = web3Public
@@ -257,7 +209,6 @@ export class TokensStoreService {
                 tokens.map(t => t.address)
               )
               .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
-            // if EVM-address used -> it will fetch only evm address etc.
             return chainTokensBalances;
           } else {
             return tokens.map(() => new BigNumber(NaN));

@@ -47,7 +47,7 @@ export class AssetsTypeAsideElementComponent {
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (!this.isBlockchain) this.assetsSelectorService.openAllChainsTokens();
+    if (!this.isBlockchain) this.assetsSelectorService.onAllChainsSelect();
     else this.assetsSelectorService.onBlockchainSelect(item.name);
   }
 }
