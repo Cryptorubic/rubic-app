@@ -24,7 +24,7 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       bgColor: '#d112c5',
       fromSdk: false,
       getHint: () =>
-        'Swap to/from/on Taiko with 50% reduced protocol fees to get XPs for the future rewards from Taiko.',
+        'Join Taiko Trailblazers, earn XPs on all swaps with Taiko & get a potential $TKO airdrop with Rubic.',
       getLabel: () => '+Points!',
       showLabel: showTaikoPointsPromoLabel
     }
