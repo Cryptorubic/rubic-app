@@ -172,6 +172,9 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     chainTags.push(BlockchainTags.PROMO);
   }
+  if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
+    chainTags.push(BlockchainTags.POPULAR);
+  }
 
   return chainTags;
 }

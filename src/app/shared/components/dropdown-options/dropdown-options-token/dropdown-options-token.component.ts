@@ -9,7 +9,6 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
-import { BlockchainTags } from '@app/features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import { TokensListTypeService } from '@app/features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
@@ -43,8 +42,6 @@ export class DropdownOptionsTokenComponent {
   public isDropdownOpen: boolean = false;
 
   public isCopyClicked: boolean = false;
-
-  private readonly blockchainTags = BlockchainTags;
 
   public loadingFavoriteToken = false;
 
