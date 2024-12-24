@@ -19,7 +19,7 @@
 .icon-container {
   display: flex;
   flex-direction: row;
-  gap: var(--tui-padding-xs);
+  gap: var(--tui-padding-s);
   align-items: center;
   height: 60px;
   padding: 5px;
@@ -134,7 +134,6 @@
           .t-wrapper {
             background: var(--tui-secondary-hover) !important;
             opacity: 1 !important;
-
           }
         }
       }

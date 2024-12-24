@@ -19,6 +19,7 @@ import {
   ETHEREUM_PLATFORM_TOKEN_ADDRESS
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -31,7 +32,11 @@ export class TokensListElementComponent {
 
   @Input() balanceLoading = false;
 
+  @Input() showAll: boolean = false;
+
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
+
+  public readonly BLOCKCHAIN_ICON = blockchainIcon;
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 

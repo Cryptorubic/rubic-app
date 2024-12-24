@@ -41,7 +41,7 @@ export interface TokenSecurityBackendResponse {
 }
 
 export interface TokensRequestQueryOptions {
-  readonly network: BlockchainName;
+  readonly network?: BlockchainName;
   readonly address?: string;
   readonly symbol?: string;
 }

@@ -15,7 +15,6 @@ import {
   Injector,
   isAddressCorrect,
   Token as SdkToken,
-  TO_BACKEND_BLOCKCHAINS,
   Web3PublicService,
   Web3Pure
 } from 'rubic-sdk';
@@ -163,14 +162,6 @@ export class TokensService {
     }
   }
 
-  public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(blockchain);
-    await this.getAndUpdateTokenBalance({
-      address: Web3Pure[chainType].nativeTokenAddress,
-      blockchain
-    });
-  }
-
   public async updateTokenBalanceAfterCcrSwap(
     fromToken: {
       address: string;
@@ -270,48 +261,33 @@ export class TokensService {
   /**
    * Fetches tokens from backend by search query string.
    * @param query Search query.
-   * @param blockchain Tokens blockchain.
+   * @param blockchain Tokens blockchain. null if search by all chains.
    */
   public fetchQueryTokens(
     query: string,
-    blockchain: BlockchainName
+    blockchain: BlockchainName | null
   ): Observable<List<TokenAmount>> {
+    // @TODO transfer this check to python backend
     return from(isAddressCorrect(query, blockchain)).pipe(
       catchError(() => of(false)),
       switchMap(isAddress => {
-        const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
+        const params: TokensRequestQueryOptions = {
+          ...(blockchain && { network: blockchain }),
+          ...((!isAddress || !blockchain) && { symbol: query }),
+          ...(isAddress && blockchain && { address: query })
+        };
 
-        if (isLifiTokens) {
-          return of(
-            this.tokensStoreService.tokens.filter(
+        return this.tokensApiService.fetchQueryTokens(params).pipe(
+          switchMap(backendTokens => {
+            const filteredTokens = backendTokens.filter(
               token =>
-                token.blockchain === blockchain &&
-                ((isAddress && compareAddresses(token.address, query)) ||
-                  (!isAddress &&
-                    (token.name.toLowerCase().includes(query.toLowerCase()) ||
-                      token.symbol.toLowerCase().includes(query.toLowerCase()))))
-            )
-          );
-        } else {
-          const params: TokensRequestQueryOptions = {
-            network: blockchain,
-            ...(!isAddress && { symbol: query }),
-            ...(isAddress && { address: query })
-          };
-
-          return this.tokensApiService.fetchQueryTokens(params).pipe(
-            switchMap(backendTokens => {
-              const filteredTokens = backendTokens.filter(
-                token =>
-                  !(
-                    token.name.toLowerCase().includes('tether') &&
-                    query.toLowerCase().includes('eth')
-                  )
-              );
-              return this.tokensStoreService.getTokensWithBalance(filteredTokens);
-            })
-          );
-        }
+                !(
+                  token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth')
+                )
+            );
+            return this.tokensStoreService.getTokensWithBalance(filteredTokens);
+          })
+        );
       })
     );
   }

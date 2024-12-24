@@ -25,7 +25,7 @@ import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
-import { compareAddresses, compareTokens } from '@shared/utils/utils';
+import { compareTokens } from '@shared/utils/utils';
 import { Token } from '@shared/models/tokens/token';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -38,6 +38,8 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
+import { AssetType } from '@app/features/trade/models/asset';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -106,7 +108,8 @@ export class TokensListStoreService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly authService: AuthService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -139,11 +142,7 @@ export class TokensListStoreService {
 
   private subscribeOnBlockchainChange(): void {
     this.assetsSelectorService.assetType$
-      .pipe(
-        distinctUntilChanged(),
-        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
-        takeUntil(this.destroy$)
-      )
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.updateTokens();
       });
@@ -216,14 +215,12 @@ export class TokensListStoreService {
    * Fetches tokens form backend by search query.
    */
   private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
-    if (!this.searchQuery || !this.blockchain) {
-      return of([]);
-    }
+    if (!this.searchQuery) return of([]);
 
     return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
       map(backendTokens => {
         if (backendTokens.size) {
-          return backendTokens
+          const notSortedtokens = backendTokens
             .map(token => {
               return {
                 ...token,
@@ -232,6 +229,8 @@ export class TokensListStoreService {
               };
             })
             .toArray();
+
+          return this.sortTokensByComparator(notSortedtokens);
         }
         return [];
       })
@@ -305,7 +304,7 @@ export class TokensListStoreService {
 
     const query = this.searchQuery.toLowerCase();
     const filteredFavoriteTokens = allFavoriteTokens
-      .filter(token => token.blockchain === this.blockchain)
+      .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
       .map(token => ({
         ...token,
         available: this.isTokenAvailable(token),
@@ -322,13 +321,7 @@ export class TokensListStoreService {
         token.name.toLowerCase().includes(query)
       );
 
-      return symbolMatchingTokens.concat(
-        nameMatchingTokens.filter(nameToken =>
-          symbolMatchingTokens.every(
-            symbolToken => !compareAddresses(nameToken.address, symbolToken.address)
-          )
-        )
-      );
+      return [...new Set([...symbolMatchingTokens, ...nameMatchingTokens])];
     }
   }
 
@@ -340,7 +333,7 @@ export class TokensListStoreService {
       const tokens = this.tokensStoreService.tokens.toArray();
 
       const currentBlockchainTokens = tokens
-        .filter(token => token.blockchain === this.blockchain && this.isTokenAvailable(token))
+        .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: true,
@@ -351,7 +344,7 @@ export class TokensListStoreService {
       const favoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
       const currentBlockchainFavoriteTokens = favoriteTokens
-        .filter((token: AvailableTokenAmount) => token.blockchain === this.blockchain)
+        .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: this.isTokenAvailable(token),
@@ -359,6 +352,11 @@ export class TokensListStoreService {
         }));
       return this.sortTokensByComparator(currentBlockchainFavoriteTokens);
     }
+  }
+
+  private needFilterToken(token: AvailableTokenAmount): boolean {
+    const isAllChains = this.assetsSelectorService.assetType === 'allChains';
+    return this.isTokenAvailable(token) && (isAllChains || token.blockchain === this.blockchain);
   }
 
   /**
@@ -391,7 +389,7 @@ export class TokensListStoreService {
       return Web3Pure[chainType].isNativeAddress(token.address);
     });
 
-    if (nativeTokenIndex < 0) {
+    if (nativeTokenIndex === -1 || this.assetsSelectorService.assetType === 'allChains') {
       return tokens.sort(comparator);
     } else {
       const slicedTokensArray = [
@@ -425,7 +423,7 @@ export class TokensListStoreService {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 
-  public isBalanceLoading$(blockchain: BlockchainName): Observable<boolean> {
+  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
     return this.tokensStoreService.isBalanceLoading$(blockchain);
   }
 }

@@ -31,8 +31,6 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
   providers: [AssetsSelectorServices, TuiDestroyService]
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
-  // @Input() public idPrefix: string;
-
   @Input() set type(type: 'from' | 'to') {
     this.assetsSelectorService.initParameters({ formType: type });
   }
