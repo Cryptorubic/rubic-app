@@ -232,9 +232,23 @@
   </body>
   <script>
     if (window?.document && window?.localStorage) {
+      const currUrl = new URL(window.location.href);
+      const hideBranding = currUrl.searchParams.get('hideBranding');
+
       const theme = window && JSON.parse(window?.localStorage.getItem('rubicData'))?.theme;
       const loaderElement = document.getElementById('loader');
-      if (theme && loaderElement) {
+      if(hideBranding && hideBranding === 'true'){
+        document.title = 'Swap Crypto | Decentralized Crypto Exchange'
+
+        if(theme && loaderElement){
+        const loaderTextStyle = `style="color:${theme === 'dark' ? '#fff' : '#000000'}"`
+          loaderElement.innerHTML = `<h1 ${loaderTextStyle}">Loading</h1>`
+          loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+        }else{
+          loaderElement.innerHTML =`<h1>Loading</h1>`
+        }
+    }else{
+        if (theme && loaderElement) {
         loaderElement.innerHTML =
           theme === 'dark'
             ? '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">'
@@ -244,6 +258,7 @@
         loaderElement.innerHTML =
           '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">';
       }
+    }
     }
   </script>
 </html>

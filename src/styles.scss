@@ -188,8 +188,10 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-
+  color: #fff;
   background-color: #282935;
+  
+  font-family: Red-Hat-Display, sans-serif;
   opacity: 1;
 
   transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
@@ -199,8 +201,10 @@ a {
 
     opacity: 0;
   }
+  
 
-  img {
+  img,
+  h1 {
     animation: 1.4s infinite 1s loader-icon-fadein;
   }
 }
