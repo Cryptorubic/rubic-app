@@ -215,9 +215,13 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBscGas(): Observable<GasPrice> {
-    return of({
-      gasPrice: new BigNumber(2.5).dividedBy(10 ** 9).toFixed()
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
   }
 
   /**
