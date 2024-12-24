@@ -232,17 +232,37 @@
   </body>
   <script>
     if (window?.document && window?.localStorage) {
+      const currUrl = new URL(window.location.href);
+      const hideBranding = currUrl.searchParams.get('hideBranding');
+
       const theme = window && JSON.parse(window?.localStorage.getItem('rubicData'))?.theme;
       const loaderElement = document.getElementById('loader');
-      if (theme && loaderElement) {
-        loaderElement.innerHTML =
-          theme === 'dark'
-            ? '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">'
-            : '<img src="assets/images/rubic-logo-dark.png" width="138" alt="rubic-logo">';
-        loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+      if (hideBranding && hideBranding === 'true') {
+        document.title = 'Swap Crypto | Decentralized Crypto Exchange';
+        const favicon = document.querySelector('link[rel="icon"], link[rel="shortcut icon"]');
+
+        if (favicon) {
+          favicon.href = '/default-icon';
+        }
+
+        if (theme && loaderElement) {
+          const loaderTextStyle = `style="color:${theme === 'dark' ? '#fff' : '#000000'}"`;
+          loaderElement.innerHTML = `<h1 ${loaderTextStyle}">Loading</h1>`;
+          loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+        } else {
+          loaderElement.innerHTML = '<h1>Loading</h1>';
+        }
       } else {
-        loaderElement.innerHTML =
-          '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">';
+        if (theme && loaderElement) {
+          loaderElement.innerHTML =
+            theme === 'dark'
+              ? '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">'
+              : '<img src="assets/images/rubic-logo-dark.png" width="138" alt="rubic-logo">';
+          loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+        } else {
+          loaderElement.innerHTML =
+            '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">';
+        }
       }
     }
   </script>
