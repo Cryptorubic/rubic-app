@@ -23,7 +23,12 @@ import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import {
+  BackendBlockchain,
+  BlockchainName,
+  FROM_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_BLOCKCHAINS
+} from 'rubic-sdk';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -206,19 +211,29 @@ export class TokensApiService {
   }
 
   /**
-   * Fetches specific tokens by symbol or address.
-   * @param requestOptions Request options to search tokens by.
-   * @return Observable<TokensListResponse> Tokens response from backend with count.
+   * Fetches specific tokens by symbol/address from specific chain or from all chains
    */
-  public fetchQueryTokens(requestOptions: TokensRequestQueryOptions): Observable<List<Token>> {
+  public fetchQueryTokens(
+    query: string,
+    blockchain: BlockchainName | null
+  ): Observable<List<Token>> {
     const options = {
-      ...(requestOptions.network && { network: TO_BACKEND_BLOCKCHAINS[requestOptions.network] }),
-      ...(requestOptions.symbol && { symbol: requestOptions.symbol.toLowerCase() }),
-      ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
+      query,
+      ...(blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[blockchain] })
     };
+
     return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
+      .get<TokensBackendResponse>('', options, `https://dev2-api.rubic.exchange/api/v2/tokens/`)
       .pipe(
+        catchError(err => {
+          console.log('ERROR_fetchQueryTokens', err);
+          return of({
+            count: 0,
+            next: '0',
+            previous: '0',
+            results: [] as BackendToken[]
+          });
+        }),
         map(tokensResponse =>
           tokensResponse.results.length
             ? TokensApiService.prepareTokens(tokensResponse.results)
@@ -234,7 +249,7 @@ export class TokensApiService {
    */
   public fetchTokenSecurity(requestOptions: TokensRequestQueryOptions): Observable<TokenSecurity> {
     const options = {
-      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+      ...(requestOptions.network && { network: TO_BACKEND_BLOCKCHAINS[requestOptions.network] }),
       ...(requestOptions.address && { address: requestOptions.address })
     };
 

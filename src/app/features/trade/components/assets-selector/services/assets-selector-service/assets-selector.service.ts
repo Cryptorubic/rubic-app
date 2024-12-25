@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -76,7 +76,6 @@ export class AssetsSelectorService {
     this._formType = context.formType;
 
     const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    const assetType = this.swapFormService.inputValue[assetTypeKey];
     const fromBlockchain = this.swapFormService.inputValue.fromToken?.blockchain;
     const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
     const userBlockchainName = this.walletConnectorService.network;
@@ -84,8 +83,11 @@ export class AssetsSelectorService {
       chain => chain.name === userBlockchainName
     )?.name;
 
-    if (!fromBlockchain && !toBlockchain) {
-      this.assetType = assetType || userAvailableBlockchainName;
+    const noChainInOpenedSelector =
+      (this.formType === 'from' && !fromBlockchain) || (this.formType === 'to' && !toBlockchain);
+
+    if (noChainInOpenedSelector) {
+      this.assetType = 'allChains';
     } else {
       this.assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
     }
@@ -95,7 +97,11 @@ export class AssetsSelectorService {
 
   private subscribeOnAssetChange(): void {
     this.assetType$
-      .pipe(filter(Boolean), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(
+        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(assetType => {
         const assetKey = this.formType === 'from' ? 'fromBlockchain' : 'toToken';
         if (!this.swapFormService.inputValue[assetKey]) {

@@ -164,12 +164,6 @@ export class QueryParamsService {
     });
   }
 
-  // @TODO Delete Query params on toggling Gas-Swap forms
-  public clearQueryParams(): void {
-    this.queryParams = {};
-    this.router.navigate([], { queryParams: this.queryParams });
-  }
-
   private setIframeInfo(queryParams: QueryParams): void {
     if (queryParams.hideUnusedUI) {
       this.setLanguage(queryParams);

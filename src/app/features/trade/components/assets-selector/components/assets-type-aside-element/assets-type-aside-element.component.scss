@@ -23,27 +23,35 @@
   }
 
   .asset-types-aside__list-element {
-
     width: 169px;
     height: 41px;
 
     border-radius: 8px;
     cursor: not-allowed;
 
+    &:hover {
+      background: var(--tui-secondary-hover);
+    }
+
     app-blockchains-promo-badge {
       z-index: 1;
 
       pointer-events: auto;
-    }
-
-    &:hover {
-      background: var(--tui-secondary-hover);
     }
   }
 
   .disabled {
     background: var(--tui-secondary-hover);
     cursor: not-allowed;
+  }
+
+  .selected {
+    ::ng-deep {
+      .t-wrapper {
+        background: var(--tui-secondary-hover);
+        border-radius: 8px;
+      }
+    }
   }
 
   .icon {

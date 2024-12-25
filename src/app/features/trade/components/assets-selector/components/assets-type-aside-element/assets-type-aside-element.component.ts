@@ -18,12 +18,19 @@ export class AssetsTypeAsideElementComponent {
 
   @Input({ required: true }) isMobile: boolean = false;
 
-  public get isBlockchain(): boolean {
-    return this.blockchainItem.name !== null;
+  private get isAllChains(): boolean {
+    return this.blockchainItem.name === null;
+  }
+
+  public get isSelected(): boolean {
+    return (
+      this.selectedAssetType === this.blockchainItem.name ||
+      (this.isAllChains && this.selectedAssetType === 'allChains')
+    );
   }
 
   public get id(): string {
-    return this.isBlockchain ? `idPrefixNetwork_${this.blockchainItem.name}` : 'allChainsSelector';
+    return !this.isAllChains ? `idPrefixNetwork_${this.blockchainItem.name}` : 'allChainsSelector';
   }
 
   constructor(
@@ -32,22 +39,22 @@ export class AssetsTypeAsideElementComponent {
   ) {}
 
   public isItemDisabled(item: BlockchainItem): boolean {
-    if (!this.isBlockchain) return false;
+    if (this.isAllChains) return false;
     return this.blockchainsListService.isDisabled(item);
   }
 
   public getHintText(item: BlockchainItem): string | null {
-    if (!this.isBlockchain) return 'Show tokens of all chains.';
+    if (this.isAllChains) return 'Show tokens of all chains.';
     return this.blockchainsListService.getHintText(item);
   }
 
   public getBlockchainTag(item: BlockchainItem): string | null {
-    if (!this.isBlockchain) return null;
+    if (this.isAllChains) return null;
     return SelectorUtils.getBlockchainTag(item);
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (!this.isBlockchain) this.assetsSelectorService.onAllChainsSelect();
+    if (this.isAllChains) this.assetsSelectorService.onAllChainsSelect();
     else this.assetsSelectorService.onBlockchainSelect(item.name);
   }
 }

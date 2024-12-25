@@ -3,7 +3,7 @@ import { firstValueFrom, from, Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import BigNumber from 'bignumber.js';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
@@ -259,40 +259,22 @@ export class TokensService {
   }
 
   /**
-   * Fetches tokens from backend by search query string.
-   * @param query Search query.
-   * @param blockchain Tokens blockchain. null if search by all chains.
+   * Fetches specific tokens by symbol/address from specific chain or from all chains
    */
   public fetchQueryTokens(
     query: string,
     blockchain: BlockchainName | null
   ): Observable<List<TokenAmount>> {
-    return from(isAddressCorrect(query, blockchain)).pipe(
-      catchError(() => of(false)),
-      switchMap(isAddress => {
-        const params: TokensRequestQueryOptions = {
-          ...(blockchain && { network: blockchain }),
-          ...((!isAddress || !blockchain) && { symbol: query }),
-          ...(isAddress && blockchain && { address: query })
-        };
-
-        return this.tokensApiService.fetchQueryTokens(params).pipe(
-          switchMap(backendTokens => {
-            const filteredTokens = backendTokens.filter(
-              token =>
-                !(
-                  token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth')
-                )
-            );
-            return this.tokensStoreService.getTokensWithBalance(filteredTokens);
-          })
+    return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
+      switchMap(backendTokens => {
+        const filteredTokens = backendTokens.filter(
+          token =>
+            !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
+        return this.tokensStoreService.getTokensWithBalance(filteredTokens);
       })
     );
   }
-
-  //@ts-ignore
-  public fetchAllChainsQueryTokens(_query: string): Observable<List<TokenAmount>> {}
 
   /**
    * Gets token by address.

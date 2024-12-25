@@ -200,18 +200,31 @@ export class TokensStoreService {
           const doesWalletSupportsTokenChain =
             BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
           // if EVM-address used -> it will fetch only evm address etc.
-          if (doesWalletSupportsTokenChain) {
-            const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-            const chainTokensBalances = web3Public
-              .getTokensBalances(
-                this.userAddress,
-                tokens.map(t => t.address)
-              )
-              .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
-            return chainTokensBalances;
-          } else {
-            return tokens.map(() => new BigNumber(NaN));
-          }
+          if (!doesWalletSupportsTokenChain) return tokens.map(() => new BigNumber(NaN));
+
+          // if (this.isBalanceAlreadyCalculatedForChain[chain]) {
+          //   const chainBalancesByTokenAddr = this.tokens.reduce(
+          //     (acc, token) =>
+          //       token.blockchain === chain
+          //         ? { ...acc, [token.address.toLowerCase()]: token.amount }
+          //         : { ...acc },
+          //     {} as Record<string, BigNumber>
+          //   );
+
+          //   return tokens.map(
+          //     token => chainBalancesByTokenAddr[token.address] || new BigNumber(NaN)
+          //   );
+          // }
+
+          const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+          const chainTokensBalances = web3Public
+            .getTokensBalances(
+              this.userAddress,
+              tokens.map(t => t.address)
+            )
+            .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
+
+          return chainTokensBalances;
         }
       );
 
