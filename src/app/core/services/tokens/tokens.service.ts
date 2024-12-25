@@ -267,7 +267,6 @@ export class TokensService {
     query: string,
     blockchain: BlockchainName | null
   ): Observable<List<TokenAmount>> {
-    // @TODO transfer this check to python backend
     return from(isAddressCorrect(query, blockchain)).pipe(
       catchError(() => of(false)),
       switchMap(isAddress => {
@@ -291,6 +290,9 @@ export class TokensService {
       })
     );
   }
+
+  //@ts-ignore
+  public fetchAllChainsQueryTokens(_query: string): Observable<List<TokenAmount>> {}
 
   /**
    * Gets token by address.
