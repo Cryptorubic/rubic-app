@@ -216,7 +216,7 @@ export class GasService {
   })
   private fetchBscGas(): Observable<GasPrice> {
     return of({
-      gasPrice: new BigNumber(1.5).dividedBy(10 ** 9).toFixed()
+      gasPrice: new BigNumber(2).dividedBy(10 ** 9).toFixed()
     });
   }
 
