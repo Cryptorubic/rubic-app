@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
@@ -15,6 +15,8 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
+import { FilterQueryService } from '../filter-query-service/filter-query.service';
+import { BlockchainTags } from '../../components/blockchains-filter-list/models/BlockchainFilters';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
 
@@ -67,7 +69,8 @@ export class AssetsSelectorService {
     private readonly destroy$: TuiDestroyService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly filterQueryService: FilterQueryService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -96,13 +99,8 @@ export class AssetsSelectorService {
   }
 
   private subscribeOnAssetChange(): void {
-    this.assetType$
-      .pipe(
-        filter(assetType => BlockchainsInfo.isBlockchainName(assetType)),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(assetType => {
+    this.assetType$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe(assetType => {
+      if (BlockchainsInfo.isBlockchainName(assetType)) {
         const assetKey = this.formType === 'from' ? 'fromBlockchain' : 'toToken';
         if (!this.swapFormService.inputValue[assetKey]) {
           const assetTypeKey = this.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
@@ -112,9 +110,12 @@ export class AssetsSelectorService {
             });
           }
         }
-
         this.checkAndRefetchTokenList();
-      });
+      }
+      if (assetType === 'allChains') {
+        this.filterQueryService.filterQuery = BlockchainTags.ALL;
+      }
+    });
   }
 
   private checkAndRefetchTokenList(): void {

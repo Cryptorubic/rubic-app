@@ -135,10 +135,9 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: BlockchainName | 'allChains'): void {
-    if (this.isBalanceAlreadyCalculatedForChain[blockchain] || !blockchain) {
+    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
       return;
     }
-    this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
 
     combineLatest([
       this.tokens$.pipe(
@@ -149,7 +148,7 @@ export class TokensStoreService {
     ])
       .pipe(
         debounceTime(100),
-        switchMap(async ([tokens, user]) => {
+        switchMap(([tokens, user]) => {
           this._isBalanceLoading$[blockchain].next(true);
           if (!user) return this.getDefaultTokenAmounts(tokens, false);
 
@@ -160,6 +159,7 @@ export class TokensStoreService {
       .subscribe((tokensWithBalances: List<TokenAmount>) => {
         this.patchTokensBalances(tokensWithBalances);
         this._isBalanceLoading$[blockchain].next(false);
+        this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
       });
   }
 
@@ -179,12 +179,25 @@ export class TokensStoreService {
     tokensList: List<TokenAmount | Token>
   ): Promise<List<TokenAmount>> {
     const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
+    // const tokensByChainWithBalancesMap: Map<
+    //   BlockchainName,
+    //   Record<string, TokenAmount>
+    // > = new Map() as Map<BlockchainName, Record<string, TokenAmount>>;
 
     for (const token of tokensList) {
       const chainTokensList = tokensByChain[token.blockchain];
       if (!Array.isArray(chainTokensList)) {
         tokensByChain[token.blockchain] = [] as Token[];
       }
+      // if (!tokensByChainWithBalancesMap.has(token.blockchain)) {
+      //   tokensByChainWithBalancesMap.set(token.blockchain, {} as Record<string, TokenAmount>);
+      // }
+
+      // const chainTokensWithBalances = tokensByChainWithBalancesMap.get(token.blockchain);
+      // chainTokensWithBalances[token.address] =
+      //   this.tokens.find(t => compareAddresses(t.address, token.address)) ||
+      //   this.getDefaultTokenAmounts(List([token]), false).get(0);
+
       if (isTokenAmount(token)) {
         tokensByChain[token.blockchain].push(token);
       } else {
@@ -202,17 +215,12 @@ export class TokensStoreService {
           // if EVM-address used -> it will fetch only evm address etc.
           if (!doesWalletSupportsTokenChain) return tokens.map(() => new BigNumber(NaN));
 
+          // @TODO try in perfomance
           // if (this.isBalanceAlreadyCalculatedForChain[chain]) {
-          //   const chainBalancesByTokenAddr = this.tokens.reduce(
-          //     (acc, token) =>
-          //       token.blockchain === chain
-          //         ? { ...acc, [token.address.toLowerCase()]: token.amount }
-          //         : { ...acc },
-          //     {} as Record<string, BigNumber>
-          //   );
-
           //   return tokens.map(
-          //     token => chainBalancesByTokenAddr[token.address] || new BigNumber(NaN)
+          //     token =>
+          //       this.tokens.find(t => compareAddresses(t.address, token.address)).amount ||
+          //       new BigNumber(NaN)
           //   );
           // }
 

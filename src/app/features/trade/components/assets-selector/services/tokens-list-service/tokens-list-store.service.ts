@@ -39,7 +39,7 @@ import { AssetsSelectorService } from '@features/trade/components/assets-selecto
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
 import { AssetType } from '@app/features/trade/models/asset';
-import { AuthService } from '@app/core/services/auth/auth.service';
+import { blockchainRanks } from '../blockchains-list-service/constants/blockchains-list';
 
 @Injectable()
 export class TokensListStoreService {
@@ -108,8 +108,7 @@ export class TokensListStoreService {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly authService: AuthService
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnUpdateTokens();
 
@@ -332,25 +331,25 @@ export class TokensListStoreService {
     if (this.listType === 'default') {
       const tokens = this.tokensStoreService.tokens.toArray();
 
-      const currentBlockchainTokens = tokens
+      const tokensList = tokens
         .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: true,
           favorite: this.isTokenFavorite(token)
         }));
-      return this.sortTokensByComparator(currentBlockchainTokens);
+      return this.sortTokensByComparator(tokensList);
     } else {
       const favoriteTokens = this.tokensStoreService.favoriteTokens.toArray();
 
-      const currentBlockchainFavoriteTokens = favoriteTokens
+      const favoriteTokensList = favoriteTokens
         .filter((token: AvailableTokenAmount) => this.needFilterToken(token))
         .map(token => ({
           ...token,
           available: this.isTokenAvailable(token),
           favorite: true
         }));
-      return this.sortTokensByComparator(currentBlockchainFavoriteTokens);
+      return this.sortTokensByComparator(favoriteTokensList);
     }
   }
 
@@ -379,9 +378,20 @@ export class TokensListStoreService {
       const availabilityComparison = Number(b.available) - Number(a.available);
       const amountsComparison = bAmountInDollars.minus(aAmountInDollars).toNumber();
       const balanceComparison = Number(bBalaceAvailability) - Number(aBalaceAvailability);
-      const rankComparison = b.rank - a.rank;
+      const tokenRankComparison = b.rank - a.rank;
+      const blockchainRankComparison =
+        blockchainRanks[b.blockchain] - blockchainRanks[a.blockchain];
+      const blockchainNameComparison =
+        a.blockchain === b.blockchain ? 0 : a.blockchain > b.blockchain ? 1 : -1;
 
-      return availabilityComparison || amountsComparison || balanceComparison || rankComparison;
+      return (
+        availabilityComparison ||
+        amountsComparison ||
+        balanceComparison ||
+        blockchainRankComparison ||
+        blockchainNameComparison ||
+        tokenRankComparison
+      );
     };
 
     const nativeTokenIndex = tokens.findIndex(token => {
