@@ -125,7 +125,6 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SCROLL_SEPOLIA]: 'scroll-sepolia-testnet',
   [BLOCKCHAIN_NAME.ARTHERA]: 'arthera-testnet',
   [BLOCKCHAIN_NAME.ZETACHAIN]: 'zetachain',
-  [BLOCKCHAIN_NAME.TAIKO]: 'taiko-katla',
   [BLOCKCHAIN_NAME.SEPOLIA]: 'sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'manta-pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'scroll',
@@ -147,7 +146,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.XLAYER]: 'xlayer',
   [BLOCKCHAIN_NAME.GRAVITY]: 'gravity',
   [BLOCKCHAIN_NAME.BITLAYER]: 'bitlayer',
-  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'unichain-sepolia-testnet'
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'unichain-sepolia-testnet',
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'soneium-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {
