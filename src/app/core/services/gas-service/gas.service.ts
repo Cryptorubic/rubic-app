@@ -215,11 +215,19 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBscGas(): Observable<GasPrice> {
-    return of({
-      gasPrice: new BigNumber(2).dividedBy(10 ** 9).toFixed()
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        return {
+          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+        };
+      })
+    );
   }
 
+  // 508281 BNB
   /**
    * Gets Polygon gas from gas station api.
    * @return Observable<number> Average gas price in Gwei.
