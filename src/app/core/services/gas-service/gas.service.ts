@@ -220,8 +220,14 @@ export class GasService {
     );
     return from(blockchainAdapter.getGasPrice()).pipe(
       map((gasPriceInWei: string) => {
+        const gasPriceinGwei = new BigNumber(gasPriceInWei).dividedBy(10 ** 9);
+        if (gasPriceinGwei.lt(1)) {
+          return {
+            gasPrice: new BigNumber(1).dividedBy(10 ** 9).toFixed()
+          };
+        }
         return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+          gasPrice: gasPriceinGwei.dividedBy(10 ** 9).toFixed()
         };
       })
     );
