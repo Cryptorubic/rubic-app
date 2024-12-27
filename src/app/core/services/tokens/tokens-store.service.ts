@@ -159,11 +159,6 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: AssetType): void {
-    console.log(
-      '%cSTART_BALANCE for ==> ',
-      'color: green; font-size: 30px;',
-      this.isBalanceAlreadyCalculatedForChain
-    );
     if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
       return;
     }
@@ -179,7 +174,6 @@ export class TokensStoreService {
 
     forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
       .pipe(
-        first(),
         debounceTime(500),
         switchMap(([tokens, user]) => {
           this._isBalanceLoading$[blockchain].next(true);
