@@ -96,6 +96,7 @@ export class AssetsSelectorService {
     }
 
     this.selectorListType = 'tokens';
+    this.tokensStoreService.startBalanceCalculating(this.assetType);
   }
 
   private subscribeOnAssetChange(): void {

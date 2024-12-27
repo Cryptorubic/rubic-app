@@ -43,7 +43,6 @@ export class SwapFormQueryService {
     this.swapsFormService.inputValue$
       .pipe(distinctUntilChanged((prev, curr) => compareObjects(prev, curr)))
       .subscribe(inputValue => {
-        console.log('%csubscribeOnSwapForm', 'color: red; font-size: 20px;', inputValue);
         this.queryParamsService.patchQueryParams({
           ...(inputValue.fromToken?.symbol && { from: inputValue.fromToken.symbol }),
           ...(inputValue.toToken?.symbol && { to: inputValue.toToken.symbol }),

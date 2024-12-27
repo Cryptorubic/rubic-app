@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, forkJoin, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, from, iif, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
@@ -23,6 +23,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
+import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,11 +36,23 @@ export class TokensStoreService {
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
+  private readonly _allChainsTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+
+  /**
+   * Tokens shown in seelctor when 'All Chains' selected
+   */
+  public readonly allChainsTokens$: Observable<List<TokenAmount>> =
+    this._allChainsTokens$.asObservable();
+
   /**
    * Current tokens list.
    */
-  get tokens(): List<TokenAmount> {
+  public get tokens(): List<TokenAmount> {
     return this._tokens$.getValue();
+  }
+
+  public get allChainsTokens(): List<TokenAmount> {
+    return this._allChainsTokens$.getValue();
   }
 
   /**
@@ -82,13 +95,15 @@ export class TokensStoreService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.setupStorageTokens();
+    this.setupAllChainsTokensList();
     this.setupSubscriptions();
   }
 
-  public setupStorageTokens(): void {
+  private setupStorageTokens(): void {
     this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
     if (this.storageTokens.length) {
       const tokens = this.getDefaultTokenAmounts(
@@ -97,6 +112,15 @@ export class TokensStoreService {
       );
       this._tokens$.next(tokens);
     }
+  }
+
+  private setupAllChainsTokensList(): void {
+    this.tokensApiService
+      .fetchTokensListForAllChains()
+      .pipe(map(tokens => this.getDefaultTokenAmounts(tokens, false)))
+      .subscribe(tokensWithBalancesNaN => {
+        this._allChainsTokens$.next(tokensWithBalancesNaN);
+      });
   }
 
   private setupSubscriptions(): void {
@@ -134,30 +158,39 @@ export class TokensStoreService {
     ).flat();
   }
 
-  public startBalanceCalculating(blockchain: BlockchainName | 'allChains'): void {
+  public startBalanceCalculating(blockchain: AssetType): void {
+    console.log(
+      '%cSTART_BALANCE for ==> ',
+      'color: green; font-size: 30px;',
+      this.isBalanceAlreadyCalculatedForChain
+    );
     if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
       return;
     }
 
-    combineLatest([
+    const tokensList$: Observable<List<TokenAmount>> = iif(
+      () => blockchain === 'allChains',
+      this.allChainsTokens$,
       this.tokens$.pipe(
         first(v => Boolean(v)),
-        map(tokens => tokens.filter(t => blockchain === 'allChains' || t.blockchain === blockchain))
-      ),
-      this.authService.currentUser$
-    ])
+        map(tokens => tokens.filter(t => t.blockchain === blockchain))
+      )
+    );
+
+    forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
       .pipe(
-        debounceTime(100),
+        first(),
+        debounceTime(500),
         switchMap(([tokens, user]) => {
           this._isBalanceLoading$[blockchain].next(true);
           if (!user) return this.getDefaultTokenAmounts(tokens, false);
-
           return this.getTokensWithBalance(tokens);
         }),
         catchError(() => of(List()))
       )
       .subscribe((tokensWithBalances: List<TokenAmount>) => {
-        this.patchTokensBalances(tokensWithBalances);
+        this.patchTokensBalances(tokensWithBalances, blockchain === 'allChains');
+        this.tokensUpdaterService.triggerUpdateTokens();
         this._isBalanceLoading$[blockchain].next(false);
         this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
       });
@@ -179,25 +212,12 @@ export class TokensStoreService {
     tokensList: List<TokenAmount | Token>
   ): Promise<List<TokenAmount>> {
     const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
-    // const tokensByChainWithBalancesMap: Map<
-    //   BlockchainName,
-    //   Record<string, TokenAmount>
-    // > = new Map() as Map<BlockchainName, Record<string, TokenAmount>>;
 
     for (const token of tokensList) {
       const chainTokensList = tokensByChain[token.blockchain];
       if (!Array.isArray(chainTokensList)) {
         tokensByChain[token.blockchain] = [] as Token[];
       }
-      // if (!tokensByChainWithBalancesMap.has(token.blockchain)) {
-      //   tokensByChainWithBalancesMap.set(token.blockchain, {} as Record<string, TokenAmount>);
-      // }
-
-      // const chainTokensWithBalances = tokensByChainWithBalancesMap.get(token.blockchain);
-      // chainTokensWithBalances[token.address] =
-      //   this.tokens.find(t => compareAddresses(t.address, token.address)) ||
-      //   this.getDefaultTokenAmounts(List([token]), false).get(0);
-
       if (isTokenAmount(token)) {
         tokensByChain[token.blockchain].push(token);
       } else {
@@ -214,15 +234,6 @@ export class TokensStoreService {
             BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
           // if EVM-address used -> it will fetch only evm address etc.
           if (!doesWalletSupportsTokenChain) return tokens.map(() => new BigNumber(NaN));
-
-          // @TODO try in perfomance
-          // if (this.isBalanceAlreadyCalculatedForChain[chain]) {
-          //   return tokens.map(
-          //     token =>
-          //       this.tokens.find(t => compareAddresses(t.address, token.address)).amount ||
-          //       new BigNumber(NaN)
-          //   );
-          // }
 
           const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
           const chainTokensBalances = web3Public
@@ -382,8 +393,31 @@ export class TokensStoreService {
     this._tokens$.next(tokens);
   }
 
-  public patchTokensBalances(tokensWithBalances: List<TokenAmount>): void {
-    const tokens = (this.tokens || List([])).map(token => {
+  // public patchTokensBalances(tokensWithBalances: List<TokenAmount>): void {
+  //   const tokens = (this.tokens || List([])).map(token => {
+  //     const foundToken = tokensWithBalances.find(tokenWithBalance =>
+  //       compareTokens(token, tokenWithBalance)
+  //     );
+  //     if (!foundToken) {
+  //       return token;
+  //     } else {
+  //       return {
+  //         ...token,
+  //         amount: foundToken.amount
+  //       };
+  //     }
+  //   });
+  //   this._tokens$.next(tokens);
+  // }
+
+  public patchTokensBalances(
+    tokensWithBalances: List<TokenAmount>,
+    patchAllChains: boolean = false
+  ): void {
+    const list = patchAllChains ? this.allChainsTokens : this.tokens;
+    const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
+
+    const tokens = (list || List([])).map(token => {
       const foundToken = tokensWithBalances.find(tokenWithBalance =>
         compareTokens(token, tokenWithBalance)
       );
@@ -396,7 +430,7 @@ export class TokensStoreService {
         };
       }
     });
-    this._tokens$.next(tokens);
+    _listSubj$.next(tokens);
   }
 
   /**

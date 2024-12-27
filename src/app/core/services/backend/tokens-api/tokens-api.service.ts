@@ -6,6 +6,7 @@ import { Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
+  BackendTokenForAllChains,
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
@@ -287,5 +288,15 @@ export class TokensApiService {
           };
         })
       );
+  }
+
+  public fetchTokensListForAllChains(): Observable<List<Token>> {
+    return this.httpService
+      .get<BackendTokenForAllChains[]>(
+        '',
+        {},
+        'https://dev2-api.rubic.exchange/api/v2/tokens/allchains'
+      )
+      .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
   }
 }

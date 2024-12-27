@@ -29,6 +29,11 @@ export interface BackendToken {
   type: Token['type'];
 }
 
+export interface BackendTokenForAllChains extends BackendToken {
+  network: BlockchainName;
+  network_rank: number;
+}
+
 export interface TokensBackendResponse {
   readonly count: number;
   readonly next: string | null;
