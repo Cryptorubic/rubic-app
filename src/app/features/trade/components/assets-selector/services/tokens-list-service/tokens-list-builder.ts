@@ -19,21 +19,15 @@ export class TokensListBuilder {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly swapFormService: SwapsFormService,
-    listType: TokensListType
-  ) {
-    this.initList(listType);
-  }
+    private readonly swapFormService: SwapsFormService
+  ) {}
 
-  /**
-   * Use at the beggining of builder, if you work directly with tokenList
-   */
-  public useCustomList(tokensList: List<TokenAmount>): TokensListBuilder {
-    this.tempTokensList = this.addAvailableFavoriteFields(tokensList);
-    return this;
-  }
+  public initList(listType: TokensListType, tokensList?: List<TokenAmount>): TokensListBuilder {
+    if (tokensList) {
+      this.tempTokensList = this.addAvailableFavoriteFields(tokensList);
+      return this;
+    }
 
-  private initList(listType: TokensListType): TokensListBuilder {
     if (listType === 'favorite') {
       this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.favoriteTokens);
     } else if (this.assetsSelectorService.assetType === 'allChains') {

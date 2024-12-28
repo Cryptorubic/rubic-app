@@ -207,11 +207,10 @@ export class TokensListStoreService {
           const tlb = new TokensListBuilder(
             this.tokensStoreService,
             this.assetsSelectorService,
-            this.swapFormService,
-            this.listType
+            this.swapFormService
           );
 
-          return tlb.useCustomList(backendTokens).applySortByComparator().toArray();
+          return tlb.initList(this.listType, backendTokens).applySortByComparator().toArray();
         }
         return [];
       })
@@ -282,12 +281,15 @@ export class TokensListStoreService {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorService,
-      this.swapFormService,
-      this.listType
+      this.swapFormService
     );
 
     if (this.assetsSelectorService.assetType === 'allChains') {
-      return tlb.applyFilterBySearchQueryOnClient(query).applySortByComparator().toArray();
+      return tlb
+        .initList(this.listType)
+        .applyFilterBySearchQueryOnClient(query)
+        .applySortByComparator()
+        .toArray();
     }
 
     return tlb
@@ -304,15 +306,18 @@ export class TokensListStoreService {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorService,
-      this.swapFormService,
-      this.listType
+      this.swapFormService
     );
 
     if (this.assetsSelectorService.assetType === 'allChains') {
-      return tlb.applySortByComparator().toArray();
+      return tlb.initList(this.listType).applySortByComparator().toArray();
     }
 
-    return tlb.applyFilterByChain(this.blockchain).applySortByComparator().toArray();
+    return tlb
+      .initList(this.listType)
+      .applyFilterByChain(this.blockchain)
+      .applySortByComparator()
+      .toArray();
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {
