@@ -207,10 +207,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Flare',
     rpc: 'https://flare-api.flare.network/ext/C/rpc'
   },
-  [BLOCKCHAIN_NAME.BITCOIN_CASH]: {
-    name: 'Bitcoin Cash',
-    rpc: 'https://smartbch.greyh.at'
-  },
+  // [BLOCKCHAIN_NAME.BITCOIN_CASH]: {
+  //   name: 'Bitcoin Cash',
+  //   rpc: 'https://smartbch.greyh.at'
+  // },
   [BLOCKCHAIN_NAME.IOTEX]: {
     name: 'Iotex',
     rpc: 'https://rpc.ankr.com/iotex'

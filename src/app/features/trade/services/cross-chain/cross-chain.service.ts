@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { map, switchMap, tap } from 'rxjs/operators';
-import { firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import { firstValueFrom, Observable, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -19,7 +18,6 @@ import {
   PriceToken,
   SwapTransactionOptions,
   TO_BACKEND_BLOCKCHAINS,
-  Token,
   UnapprovedContractError,
   UnapprovedMethodError,
   UnnecessaryApproveError,
@@ -86,83 +84,84 @@ export class CrossChainService {
     private readonly iframeService: IframeService
   ) {}
 
-  public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
-    let providers: CrossChainCalculatedTradeData[] = [];
-    const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
-      this.swapFormService.inputValue;
-    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
-    return forkJoin([
-      this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
-    ]).pipe(
-      switchMap(([tokenState, fromPrice, toPrice]) => {
-        const fromSdkCompatibleToken = new PriceToken({
-          ...fromToken,
-          price: fromPrice
-        });
-        const toSdkCompatibleToken = new PriceToken({
-          ...toToken,
-          price: toPrice
-        });
-        return forkJoin([
-          of(fromSdkCompatibleToken),
-          of(toSdkCompatibleToken),
-          of(tokenState),
-          this.getOptions(
-            disabledProviders,
-            fromSdkCompatibleToken,
-            toSdkCompatibleToken,
-            fromAmount.actualValue
-          )
-        ]);
-      }),
-      switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
-        const calculationStartTime = Date.now();
-
-        return this.sdkService.crossChain
-          .calculateTradesReactively(
-            fromSdkCompatibleToken,
-            fromAmount.actualValue.toFixed(),
-            toSdkCompatibleToken,
-            deflationStatus.isDeflation
-              ? { ...options, useProxy: this.getDisabledProxyConfig() }
-              : options
-          )
-          .pipe(
-            map(el => ({
-              ...el,
-              calculationTime: Date.now() - calculationStartTime
-            })),
-            map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
-            tap(el => {
-              if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
-                this.saveNotWhitelistedProvider(
-                  el.value.wrappedTrade.error,
-                  fromToken.blockchain,
-                  el.value.wrappedTrade.tradeType
-                );
-              }
-            }),
-            tap(el => {
-              const tradeContainer = el?.value;
-              providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
-              if (
-                tradeContainer.calculated === tradeContainer.total &&
-                tradeContainer?.calculated !== 0
-              ) {
-                this.saveTrade(providers, {
-                  fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
-                  fromBlockchain,
-                  toBlockchain,
-                  fromAddress: fromToken.address,
-                  toAddress: toToken.address
-                });
-              }
-            })
-          );
-      })
-    );
+  public calculateTrades(_disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
+    throw new Error('');
+    // let providers: CrossChainCalculatedTradeData[] = [];
+    // const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
+    //   this.swapFormService.inputValue;
+    // const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
+    // return forkJoin([
+    //   this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
+    //   this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+    //   this.tokensService.getAndUpdateTokenPrice(toToken, true)
+    // ]).pipe(
+    //   switchMap(([tokenState, fromPrice, toPrice]) => {
+    //     const fromSdkCompatibleToken = new PriceToken({
+    //       ...fromToken,
+    //       price: fromPrice
+    //     });
+    //     const toSdkCompatibleToken = new PriceToken({
+    //       ...toToken,
+    //       price: toPrice
+    //     });
+    //     return forkJoin([
+    //       of(fromSdkCompatibleToken),
+    //       of(toSdkCompatibleToken),
+    //       of(tokenState),
+    //       this.getOptions(
+    //         disabledProviders,
+    //         fromSdkCompatibleToken,
+    //         toSdkCompatibleToken,
+    //         fromAmount.actualValue
+    //       )
+    //     ]);
+    //   }),
+    //   switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
+    //     const calculationStartTime = Date.now();
+    //
+    //     return this.sdkService.crossChain
+    //       .calculateTradesReactively(
+    //         fromSdkCompatibleToken,
+    //         fromAmount.actualValue.toFixed(),
+    //         toSdkCompatibleToken,
+    //         deflationStatus.isDeflation
+    //           ? { ...options, useProxy: this.getDisabledProxyConfig() }
+    //           : options
+    //       )
+    //       .pipe(
+    //         map(el => ({
+    //           ...el,
+    //           calculationTime: Date.now() - calculationStartTime
+    //         })),
+    //         map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
+    //         tap(el => {
+    //           if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
+    //             this.saveNotWhitelistedProvider(
+    //               el.value.wrappedTrade.error,
+    //               fromToken.blockchain,
+    //               el.value.wrappedTrade.tradeType
+    //             );
+    //           }
+    //         }),
+    //         tap(el => {
+    //           const tradeContainer = el?.value;
+    //           providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
+    //           if (
+    //             tradeContainer.calculated === tradeContainer.total &&
+    //             tradeContainer?.calculated !== 0
+    //           ) {
+    //             this.saveTrade(providers, {
+    //               fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
+    //               fromBlockchain,
+    //               toBlockchain,
+    //               fromAddress: fromToken.address,
+    //               toAddress: toToken.address
+    //             });
+    //           }
+    //         })
+    //       );
+    //   })
+    // );
   }
 
   private async getOptions(

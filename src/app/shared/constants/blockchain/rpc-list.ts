@@ -176,10 +176,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.IOTEX]: ['https://rpc.ankr.com/iotex', 'https://pokt-api.iotex.io'],
   [BLOCKCHAIN_NAME.THETA]: ['https://eth-rpc-api.thetatoken.org/rpc'],
-  [BLOCKCHAIN_NAME.BITCOIN_CASH]: [
-    'https://smartbch.greyh.at',
-    'https://smartbch.fountainhead.cash/mainnet'
-  ],
+  // [BLOCKCHAIN_NAME.BITCOIN_CASH]: [
+  //   'https://smartbch.greyh.at',
+  //   'https://smartbch.fountainhead.cash/mainnet'
+  // ],
   [BLOCKCHAIN_NAME.ZK_SYNC]: [
     'https://rpc.ankr.com/zksync_era/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/5289e86fa1494ed4881580da533933e2',

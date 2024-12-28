@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
-import { concatMap, firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import { concatMap, firstValueFrom, Observable, of, timer } from 'rxjs';
 
-import { catchError, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  BlockchainsInfo,
   NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeType,
@@ -82,91 +81,93 @@ export class OnChainService {
     private readonly modalService: ModalService
   ) {}
 
-  public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
-    const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    return forkJoin([
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      PriceToken.createToken(fromToken),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true),
-      PriceToken.createToken(toToken)
-    ]).pipe(
-      switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
-        forkJoin([
-          this.sdkService.deflationTokenManager.isDeflationToken(fromPriceToken),
-          of(
-            new PriceToken({
-              ...fromPriceToken.asStruct,
-              price: new BigNumber(fromTokenPrice)
-            })
-          ),
-          this.sdkService.deflationTokenManager.isDeflationToken(toPriceToken),
-          of(
-            new PriceToken({
-              ...toPriceToken.asStruct,
-              price: new BigNumber(toTokenPrice)
-            })
-          ),
-          Web3Pure[chainType].isAddressCorrect(this.authService.userAddress)
-        ])
-      ),
-      switchMap(
-        ([
-          deflationFromStatus,
-          fromSdkToken,
-          deflationToStatus,
-          toSdkToken,
-          isAddressCorrectValue
-        ]) => {
-          return forkJoin([
-            of(fromSdkToken),
-            of(toSdkToken),
-            this.getOptions(
-              fromSdkToken,
-              toSdkToken,
-              deflationFromStatus,
-              deflationToStatus,
-              isAddressCorrectValue,
-              disabledProviders,
-              fromAmount.actualValue
-            )
-          ]);
-        }
-      ),
-      switchMap(([fromSdkToken, toSdkToken, options]) => {
-        const calculationStartTime = Date.now();
-        let providers: OnChainCalculatedTradeData[] = [];
-        return this.sdkService.instantTrade
-          .calculateTradeReactively(
-            fromSdkToken,
-            fromAmount.actualValue.toFixed(),
-            toSdkToken,
-            options
-          )
-          .pipe(
-            map(el => ({
-              ...el,
-              calculationTime: Date.now() - calculationStartTime
-            })),
-            map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })),
-            tap(el => {
-              const tradeContainer = el?.value;
-              providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
-              if (
-                tradeContainer.calculated === tradeContainer.total &&
-                tradeContainer?.calculated !== 0
-              ) {
-                this.saveTrade(providers, {
-                  fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
-                  blockchain: fromToken.blockchain,
-                  fromAddress: fromToken.address,
-                  toAddress: toToken.address
-                });
-              }
-            })
-          );
-      })
-    );
+  public calculateTrades(_disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
+    // @TODO API
+    throw new Error('Not implemented');
+    // const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+    // const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    // return forkJoin([
+    //   this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+    //   PriceToken.createToken(fromToken),
+    //   this.tokensService.getAndUpdateTokenPrice(toToken, true),
+    //   PriceToken.createToken(toToken)
+    // ]).pipe(
+    //   switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
+    //     forkJoin([
+    //       this.sdkService.deflationTokenManager.isDeflationToken(fromPriceToken),
+    //       of(
+    //         new PriceToken({
+    //           ...fromPriceToken.asStruct,
+    //           price: new BigNumber(fromTokenPrice)
+    //         })
+    //       ),
+    //       this.sdkService.deflationTokenManager.isDeflationToken(toPriceToken),
+    //       of(
+    //         new PriceToken({
+    //           ...toPriceToken.asStruct,
+    //           price: new BigNumber(toTokenPrice)
+    //         })
+    //       ),
+    //       Web3Pure[chainType].isAddressCorrect(this.authService.userAddress)
+    //     ])
+    //   ),
+    //   switchMap(
+    //     ([
+    //       deflationFromStatus,
+    //       fromSdkToken,
+    //       deflationToStatus,
+    //       toSdkToken,
+    //       isAddressCorrectValue
+    //     ]) => {
+    //       return forkJoin([
+    //         of(fromSdkToken),
+    //         of(toSdkToken),
+    //         this.getOptions(
+    //           fromSdkToken,
+    //           toSdkToken,
+    //           deflationFromStatus,
+    //           deflationToStatus,
+    //           isAddressCorrectValue,
+    //           disabledProviders,
+    //           fromAmount.actualValue
+    //         )
+    //       ]);
+    //     }
+    //   ),
+    //   switchMap(([fromSdkToken, toSdkToken, options]) => {
+    //     const calculationStartTime = Date.now();
+    //     let providers: OnChainCalculatedTradeData[] = [];
+    //     return this.sdkService.instantTrade
+    //       .calculateTradeReactively(
+    //         fromSdkToken,
+    //         fromAmount.actualValue.toFixed(),
+    //         toSdkToken,
+    //         options
+    //       )
+    //       .pipe(
+    //         map(el => ({
+    //           ...el,
+    //           calculationTime: Date.now() - calculationStartTime
+    //         })),
+    //         map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })),
+    //         tap(el => {
+    //           const tradeContainer = el?.value;
+    //           providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
+    //           if (
+    //             tradeContainer.calculated === tradeContainer.total &&
+    //             tradeContainer?.calculated !== 0
+    //           ) {
+    //             this.saveTrade(providers, {
+    //               fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
+    //               blockchain: fromToken.blockchain,
+    //               fromAddress: fromToken.address,
+    //               toAddress: toToken.address
+    //             });
+    //           }
+    //         })
+    //       );
+    //   })
+    // );
   }
 
   /**

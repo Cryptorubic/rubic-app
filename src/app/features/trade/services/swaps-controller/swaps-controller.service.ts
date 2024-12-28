@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, firstValueFrom, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import {
+  combineLatestWith,
+  concatMap,
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
-  concatMap,
   debounceTime,
   distinctUntilChanged,
   filter,
@@ -25,24 +33,25 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
-  ALGB_TOKEN,
+  // ALGB_TOKEN,
+  BLOCKCHAIN_NAME,
   ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
+  Injector,
+  LowSlippageError,
+  NoLinkedAccountError,
   NotSupportedTokensError,
+  OnChainTrade,
   OnChainTradeType,
+  RetroBridgeEvmTrade,
+  RetroBridgeTonTrade,
   RubicSdkError,
+  SymbiosisEvmCcrTrade,
   UnsupportedReceiverAddressError,
   UserRejectError,
-  Web3Pure,
-  NoLinkedAccountError,
-  SymbiosisEvmCcrTrade,
-  BLOCKCHAIN_NAME,
-  OnChainTrade,
-  LowSlippageError,
-  RetroBridgeEvmTrade,
-  RetroBridgeTonTrade
+  Web3Pure
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -55,7 +64,6 @@ import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitel
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import DelayedApproveError from '@core/errors/models/common/delayed-approve.error';
 import AmountChangeWarning from '@core/errors/models/cross-chain/amount-change-warning';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -125,6 +133,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnCalculation(): void {
+    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(200),
@@ -163,11 +172,13 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { fromToken, toToken } = this.swapFormService.inputValue;
+          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
 
-          const isAlgebraWrap =
-            Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
-            Object.values(ALGB_TOKEN).includes(toToken.address.toLowerCase());
+          // @TODO API
+          const isAlgebraWrap = false;
+          // const isAlgebraWrap =
+          //   Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
+          //   Object.values(ALGB_TOKEN).includes(toToken.address.toLowerCase());
 
           if (isAlgebraWrap) {
             this.disabledTradesTypes.crossChain = [
@@ -180,93 +191,106 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken.blockchain === toToken.blockchain) {
-            return this.onChainService
-              .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
-              .pipe(
-                catchError(err => {
-                  console.debug(err);
-                  return of(null);
-                })
-              );
-          } else {
-            return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
-              catchError(err => {
-                console.debug(err);
-                return of(null);
-              })
-            );
+          if (fromToken && toToken) {
+            Injector.rubicApiService.calculateAsync({
+              calculationTimeout: 30,
+              srcTokenAddress: fromToken.address,
+              dstTokenBlockchain: toToken.blockchain,
+              srcTokenBlockchain: fromToken.blockchain,
+              srcTokenAmount: fromAmount.actualValue.toFixed(),
+              dstTokenAddress: toToken.address
+            });
           }
+
+          return of(null);
+          //
+          // if (fromToken.blockchain === toToken.blockchain) {
+          //   return this.onChainService
+          //     .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
+          //     .pipe(
+          //       catchError(err => {
+          //         console.debug(err);
+          //         return of(null);
+          //       })
+          //     );
+          // } else {
+          //   return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
+          //     catchError(err => {
+          //       console.debug(err);
+          //       return of(null);
+          //     })
+          //   );
+          // }
         }),
         catchError(err => {
           console.debug(err);
           return of(null);
-        }),
-        concatMap(container => {
-          const wrappedTrade = container?.value?.wrappedTrade;
-
-          if (wrappedTrade) {
-            const isCalculationEnd = container.value.total === container.value.calculated;
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
-            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-              wrappedTrade.trade,
-              wrappedTrade?.error
-            );
-
-            return forkJoin([
-              of(wrappedTrade),
-              needApprove$,
-              of(container.type),
-              isNotLinkedAccount$,
-              needAuthWallet$
-            ])
-              .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount, needAuthWallet]) => {
-                  try {
-                    if (isNotLinkedAccount) {
-                      this.errorsService.catch(new NoLinkedAccountError());
-                      trade.trade = null;
-                    }
-                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
-                    this.swapsStateService.pickProvider(isCalculationEnd);
-                    this.swapsStateService.setCalculationProgress(
-                      container.value.total,
-                      container.value.calculated
-                    );
-                    this.setTradeAmount();
-                    if (isCalculationEnd) {
-                      this.refreshService.setStopped();
-                    }
-                  } catch (err) {
-                    console.error(err);
-                  }
-                })
-              )
-              .pipe(
-                catchError(() => {
-                  // this.swapsStateService.updateTrade(trade, type, needApprove);
-                  this.swapsStateService.pickProvider(isCalculationEnd);
-                  return of(null);
-                })
-              );
-          }
-          if (!container?.value) {
-            this.refreshService.setStopped();
-            this.swapsStateService.clearProviders(true);
-          } else {
-            this.swapsStateService.setCalculationProgress(
-              container.value.total,
-              container.value.calculated
-            );
-          }
-          return of(null);
-        }),
-        catchError((_err: unknown) => {
-          this.refreshService.setStopped();
-          this.swapsStateService.pickProvider(true);
-          return of(null);
         })
+        // concatMap(container => {
+        //   const wrappedTrade = container?.value?.wrappedTrade;
+        //
+        //   if (wrappedTrade) {
+        //     const isCalculationEnd = container.value.total === container.value.calculated;
+        //     const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+        //     const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
+        //     const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+        //       wrappedTrade.trade,
+        //       wrappedTrade?.error
+        //     );
+        //
+        //     return forkJoin([
+        //       of(wrappedTrade),
+        //       needApprove$,
+        //       of(container.type),
+        //       isNotLinkedAccount$,
+        //       needAuthWallet$
+        //     ])
+        //       .pipe(
+        //         tap(([trade, needApprove, type, isNotLinkedAccount, needAuthWallet]) => {
+        //           try {
+        //             if (isNotLinkedAccount) {
+        //               this.errorsService.catch(new NoLinkedAccountError());
+        //               trade.trade = null;
+        //             }
+        //             this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
+        //             this.swapsStateService.pickProvider(isCalculationEnd);
+        //             this.swapsStateService.setCalculationProgress(
+        //               container.value.total,
+        //               container.value.calculated
+        //             );
+        //             this.setTradeAmount();
+        //             if (isCalculationEnd) {
+        //               this.refreshService.setStopped();
+        //             }
+        //           } catch (err) {
+        //             console.error(err);
+        //           }
+        //         })
+        //       )
+        //       .pipe(
+        //         catchError(() => {
+        //           // this.swapsStateService.updateTrade(trade, type, needApprove);
+        //           this.swapsStateService.pickProvider(isCalculationEnd);
+        //           return of(null);
+        //         })
+        //       );
+        //   }
+        //   if (!container?.value) {
+        //     this.refreshService.setStopped();
+        //     this.swapsStateService.clearProviders(true);
+        //   } else {
+        //     this.swapsStateService.setCalculationProgress(
+        //       container.value.total,
+        //       container.value.calculated
+        //     );
+        //   }
+        //   return of(null);
+        // }),
+        // catchError((_err: unknown) => {
+        //   this.refreshService.setStopped();
+        //   this.swapsStateService.pickProvider(true);
+        //   return of(null);
+        // })
       )
       .subscribe();
   }
@@ -573,5 +597,91 @@ export class SwapsControllerService {
           this.startRecalculation(true);
         }
       });
+  }
+
+  private handleWs(): void {
+    Injector.rubicApiService
+      .handleQuotesAsync()
+      .pipe(
+        map(wrap => {
+          const { fromToken, toToken } = this.swapFormService.inputValue;
+          return {
+            value: wrap,
+            type:
+              fromToken.blockchain === toToken.blockchain
+                ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
+                : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+          };
+        }),
+        catchError(err => {
+          console.debug(err);
+          return of(null);
+        }),
+        concatMap(container => {
+          const wrappedTrade = container?.value?.wrappedTrade;
+
+          if (wrappedTrade) {
+            const isCalculationEnd = container.value.total === container.value.calculated;
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
+            );
+
+            return forkJoin([
+              of(wrappedTrade),
+              needApprove$,
+              of(container.type),
+              isNotLinkedAccount$
+            ])
+              .pipe(
+                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                  try {
+                    if (isNotLinkedAccount) {
+                      this.errorsService.catch(new NoLinkedAccountError());
+                      trade.trade = null;
+                    }
+                    // @TODO API
+                    this.swapsStateService.updateTrade(trade, type, needApprove, false);
+                    this.swapsStateService.pickProvider(isCalculationEnd);
+                    this.swapsStateService.setCalculationProgress(
+                      container.value.total,
+                      container.value.calculated
+                    );
+                    this.setTradeAmount();
+                    if (isCalculationEnd) {
+                      this.refreshService.setStopped();
+                    }
+                  } catch (err) {
+                    console.error(err);
+                  }
+                })
+              )
+              .pipe(
+                catchError(() => {
+                  // this.swapsStateService.updateTrade(trade, type, needApprove);
+                  this.swapsStateService.pickProvider(isCalculationEnd);
+                  return of(null);
+                })
+              );
+          }
+          if (!container?.value) {
+            this.refreshService.setStopped();
+            this.swapsStateService.clearProviders(true);
+          } else {
+            this.swapsStateService.setCalculationProgress(
+              container.value.total,
+              container.value.calculated
+            );
+          }
+          return of(null);
+        }),
+        catchError((_err: unknown) => {
+          this.refreshService.setStopped();
+          this.swapsStateService.pickProvider(true);
+          return of(null);
+        })
+      )
+      .subscribe();
   }
 }

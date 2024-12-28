@@ -1,5 +1,4 @@
-import { BLOCKCHAIN_NAME, ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
-import { OnChainTradeType } from 'rubic-sdk/lib/features/on-chain/calculation-manager/providers/common/models/on-chain-trade-type';
+import { BLOCKCHAIN_NAME, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
 import { SupportedOnChainNetworks } from '@features/trade/constants/instant-trade.type';
 
 const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
