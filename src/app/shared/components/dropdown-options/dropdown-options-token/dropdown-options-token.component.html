@@ -3,7 +3,7 @@
   [content]="content"
   [(open)]="isDropdownOpen"
   *ngIf="
-    isTokenFromEvm ||
+    canBeAddedToFavorite ||
     showCopyToClipboardOption ||
     securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
   "
@@ -53,7 +53,7 @@
             </span>
           </ng-template>
         </ng-container>
-        <ng-container *ngIf="isTokenFromEvm">
+        <ng-container *ngIf="canBeAddedToFavorite">
           <tui-loader
             (click.stop)="toggleFavorite()"
             class="dropdown-content__favorite-container"
