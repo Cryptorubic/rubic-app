@@ -82,7 +82,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.BAHAMUT]: [],
   [BLOCKCHAIN_NAME.BITLAYER]: [],
   [BLOCKCHAIN_NAME.GRAVITY]: [],
-  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: []
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: [],
+  [BLOCKCHAIN_NAME.SONIC]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [

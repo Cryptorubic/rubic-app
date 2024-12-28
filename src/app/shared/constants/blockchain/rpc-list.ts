@@ -351,5 +351,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://sepolia.unichain.org',
     'https://1301.rpc.thirdweb.com/'
   ],
-  [BLOCKCHAIN_NAME.BITCOIN]: ['']
+  [BLOCKCHAIN_NAME.BITCOIN]: [''],
+  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org']
 };
