@@ -170,6 +170,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}meson.svg`,
     name: 'Meson'
   },
+  morph_bridge: {
+    averageTime: 20,
+    color: '#54d35b',
+    image: `${imageBasePath}morph-bridge.svg`,
+    name: 'MorphBridge'
+  },
   multichain: {
     averageTime: 5,
     color: '#452fbf',

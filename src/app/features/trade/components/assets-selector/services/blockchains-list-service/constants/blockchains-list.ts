@@ -223,6 +223,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: [BlockchainTags.EVM, BlockchainTags.PROMO, BlockchainTags.POPULAR]
   },
+  {
+    name: BLOCKCHAIN_NAME.MORPH,
+    rank: 0.75,
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.NEW]
+  },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,
