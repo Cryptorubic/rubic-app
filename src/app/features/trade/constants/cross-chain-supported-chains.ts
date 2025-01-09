@@ -26,8 +26,7 @@ import {
   retroBridgeSupportedBlockchain,
   acrossCcrSupportedChains,
   uniZenCcrSupportedChains,
-  simpleSwapCcrProxySupportedChains,
-  morphBridgeSupportedBlockchains
+  simpleSwapCcrProxySupportedChains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
@@ -59,6 +58,5 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: retroBridgeSupportedBlockchain,
   [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: uniZenCcrSupportedChains,
-  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains,
-  [CROSS_CHAIN_TRADE_TYPE.MORPH_BRIDGE]: morphBridgeSupportedBlockchains
+  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains
 } as const;
