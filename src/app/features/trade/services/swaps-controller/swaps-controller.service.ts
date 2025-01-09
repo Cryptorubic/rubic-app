@@ -478,38 +478,34 @@ export class SwapsControllerService {
 
   private async handleCrossChainSwapResponse(
     trade: CrossChainTrade,
-    txHash?: string,
+    txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
-    if (txHash) {
-      const params: CrossChainSwapAdditionalParams = {};
+    const params: CrossChainSwapAdditionalParams = {};
 
-      if (trade instanceof ChangenowCrossChainTrade) {
-        params.changenowId = trade.changenowId as string;
-      }
-      if ('rangoRequestId' in trade) {
-        params.rangoRequestId = trade.rangoRequestId as string;
-      }
-      if ('squidrouterRequestId' in trade) {
-        params.squidrouterId = trade.squidrouterRequestId as string;
-      }
-      if ('retroBridgeId' in trade) {
-        params.retroBridgeId = trade.retroBridgeId as string;
-      }
-
-      onSwap?.(params);
-      await this.crossChainApiService.patchTrade(txHash, true);
+    if (trade instanceof ChangenowCrossChainTrade) {
+      params.changenowId = trade.changenowId as string;
     }
+    if ('rangoRequestId' in trade) {
+      params.rangoRequestId = trade.rangoRequestId as string;
+    }
+    if ('squidrouterRequestId' in trade) {
+      params.squidrouterId = trade.squidrouterRequestId as string;
+    }
+    if ('retroBridgeId' in trade) {
+      params.retroBridgeId = trade.retroBridgeId as string;
+    }
+
+    onSwap?.(params);
+    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
   private async handleOnChainSwapResponse(
-    txHash?: string,
+    txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
-    if (txHash) {
-      onSwap?.();
-      await this.onChainApiService.patchTrade(txHash, true);
-    }
+    onSwap?.();
+    await this.onChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(
