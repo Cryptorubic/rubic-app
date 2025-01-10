@@ -1,29 +1,28 @@
 import { Injectable } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Any } from 'rubic-sdk';
 import { BehaviorSubject, combineLatest, Observable, switchMap, takeUntil, tap } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 
-type RefundObserverAction = 'fromBlockchainChanged';
+type RefundObserverAction = 'inputValueChanged';
 
 export interface RefundObserver {
   obs$: Observable<Any>;
   action: RefundObserverAction;
-  callback?: <T>(...args: unknown[]) => T;
+  callback?: (...args: unknown[]) => void;
 }
 
 @Injectable()
 export class RefundService {
   private readonly actions: Record<RefundObserverAction, (emittedValue: unknown) => void> = {
-    fromBlockchainChanged: this.onFromBlockchainChanged.bind(this)
+    inputValueChanged: this.onSwapFormInputChanged
   };
 
   private readonly _observers$ = new BehaviorSubject<RefundObserver[]>([]);
 
   public readonly refundAddressCtrl = new FormControl<string>('', {
-    validators: [Validators.required],
     asyncValidators: []
   });
 
@@ -56,14 +55,12 @@ export class RefundService {
     this._observers$.next([...this._observers$.value, observer]);
   }
 
-  private onFromBlockchainChanged(input: SwapFormInput): void {
-    // this.refundAddressCtrl.clearAsyncValidators();
-    this.refundAddressCtrl.removeAsyncValidators(
-      getCorrectAddressValidator({
-        fromAssetType: input.fromBlockchain,
-        toBlockchain: input.toBlockchain
-      })
-    );
+  public setRefundAddress(value: string): void {
+    this.refundAddressCtrl.setValue(value);
+  }
+
+  private onSwapFormInputChanged(input: SwapFormInput): void {
+    this.refundAddressCtrl.clearAsyncValidators();
     this.refundAddressCtrl.setAsyncValidators(
       getCorrectAddressValidator({
         fromAssetType: input.fromBlockchain,
