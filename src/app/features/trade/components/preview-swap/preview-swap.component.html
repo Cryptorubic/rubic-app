@@ -227,6 +227,10 @@
         </button>
       </div>
 
+      <div *ngIf="state.transaction.step !== 'success'">
+        <app-refund-address></app-refund-address>
+      </div>
+
       <div *ngIf="state.transaction.step !== 'success'" class="preview__transaction-details">
         <app-transaction-details></app-transaction-details>
       </div>

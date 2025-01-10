@@ -68,6 +68,8 @@ import { BlockchainsListService } from './components/assets-selector/services/bl
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
+import { RefundService } from './services/refund-service/refund.service';
+import { RefundAddressComponent } from './components/refund-address/refund-address.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +102,8 @@ import { AlternativeRoutesListComponent } from './components/alternative-routes-
     PromotionBadgeComponent,
     FormHeaderComponent,
     AlternativeRouteElementComponent,
-    AlternativeRoutesListComponent
+    AlternativeRoutesListComponent,
+    RefundAddressComponent
   ],
   exports: [],
   imports: [
@@ -171,7 +174,8 @@ import { AlternativeRoutesListComponent } from './components/alternative-routes-
     TradeInfoManager,
     BlockchainsListService,
     FormsTogglerService,
-    AlternativeRoutesService
+    AlternativeRoutesService,
+    RefundService
     // SettingsService,
     // RefreshService,
     // TradeService,

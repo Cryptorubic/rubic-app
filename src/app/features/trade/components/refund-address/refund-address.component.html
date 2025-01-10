@@ -1,0 +1,31 @@
+<div class="refund-address">
+  <tui-input
+    [tuiTextfieldCustomContent]="
+      !!refundAddressCtrl.value ? (refundAddressCtrl.valid ? success : error) : ''
+    "
+    tuiTextfieldSize="l"
+    [formControl]="refundAddressCtrl"
+    [pseudoFocus]="refundAddressCtrl.invalid"
+    [pseudoInvalid]="refundAddressCtrl.invalid"
+    [tuiTextfieldCleaner]="!!refundAddressCtrl.value"
+    [tuiTextfieldLabelOutside]="false"
+    (focusedChange)="onFocusChange($event)"
+  >
+    <div [@moveLabel]="isActiveInput" class="refund-address__label">
+      <label>{{ 'Refund Address (ETH) ' }}</label>
+    </div>
+  </tui-input>
+
+  <ng-template #success>
+    <div
+      class="network-container__input-status-icon"
+      [inlineSVG]="'assets/images/icons/forms/success-input.svg'"
+    ></div>
+  </ng-template>
+  <ng-template #error>
+    <div
+      class="network-container__input-status-icon"
+      [inlineSVG]="'assets/images/icons/forms/error-input.svg'"
+    ></div>
+  </ng-template>
+</div>
