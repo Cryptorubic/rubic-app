@@ -5,6 +5,7 @@ import { catchError, first, map, startWith, tap, timeout } from 'rxjs/operators'
 import { defaultFaucets } from '@features/faucets/constants/default-faucets';
 import { FaucetsApiService } from '@features/faucets/services/faucets-api.service';
 import { Faucet } from '@features/faucets/models/faucet';
+import { sortFaucets } from '../../utils/faucets-sorter';
 
 @Component({
   selector: 'app-faucets-page',
@@ -18,12 +19,11 @@ export class FaucetsPageComponent {
   public readonly faucetsData$ = this.getData().pipe(
     first(faucets => Object.keys(faucets).length > 0),
     tap(faucets => {
+      const sortedChainNames = Object.keys(faucets).sort(
+        (currChain: BlockchainName, prevChain: BlockchainName) => sortFaucets(currChain, prevChain)
+      );
       this.loading = false;
-      this.selectedBlockchain = Object.keys(faucets).find(
-        faucet => faucet === BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET
-      )
-        ? BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET
-        : (Object.keys(faucets)[0] as BlockchainName);
+      this.selectedBlockchain = sortedChainNames[0] as BlockchainName;
       this.cdr.detectChanges();
     })
   );

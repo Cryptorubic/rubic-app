@@ -27,7 +27,7 @@ export const NAVIGATION_LIST = [
   {
     translateKey: 'Mainnet App',
     type: 'external',
-    link: EXTERNAL_LINKS.TESTNET_APP,
+    link: EXTERNAL_LINKS.MAINNET_APP,
     imagePath: `${defaultSrc}mainnet.svg`
   }
 ] as NavigationItem[];
@@ -63,7 +63,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Mainnet App',
       type: 'external',
-      link: EXTERNAL_LINKS.TESTNET_APP,
+      link: EXTERNAL_LINKS.MAINNET_APP,
       active: false
     },
     {

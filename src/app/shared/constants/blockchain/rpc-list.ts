@@ -340,5 +340,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: [
     'https://sepolia.unichain.org',
     'https://1301.rpc.thirdweb.com'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
+  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org']
 };

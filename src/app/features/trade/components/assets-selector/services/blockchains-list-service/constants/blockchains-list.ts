@@ -9,6 +9,7 @@ export interface RankedBlockchain {
 export const notEvmChangeNowBlockchainsList = {};
 
 export const defaultBlockchainsList: BlockchainName[] = [
+  BLOCKCHAIN_NAME.SONEIUM_TESTNET,
   BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET,
   BLOCKCHAIN_NAME.SEPOLIA,
   BLOCKCHAIN_NAME.BERACHAIN,
