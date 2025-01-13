@@ -79,6 +79,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celerim.png`,
     name: 'Celerim'
   },
+  changelly: {
+    averageTime: 5,
+    color: '#008aff',
+    image: `${imageBasePath}celer.svg`,
+    name: 'Changelly'
+  },
   changenow: {
     averageTime: 5,
     color: '#8888bb',
