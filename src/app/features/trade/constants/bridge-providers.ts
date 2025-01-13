@@ -81,8 +81,8 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
   changelly: {
     averageTime: 5,
-    color: '#008aff',
-    image: `${imageBasePath}celer.svg`,
+    color: '#8e28fe',
+    image: `${imageBasePath}changelly.svg`,
     name: 'Changelly'
   },
   changenow: {
