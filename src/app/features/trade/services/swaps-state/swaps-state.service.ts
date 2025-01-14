@@ -44,6 +44,7 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
 import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 import { AlternativeRoutesService } from '../alternative-route-api-service/alternative-routes.service';
+import { RefundService } from '../refund-service/refund.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -136,9 +137,16 @@ export class SwapsStateService {
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
-    private readonly alternativeRouteService: AlternativeRoutesService
+    private readonly alternativeRouteService: AlternativeRoutesService,
+    private readonly refundService: RefundService
   ) {
     this.subscribeOnTradeChange();
+    this.refundService.addObserver({
+      action: 'tradeSelected',
+      obs$: this.tradeState$.pipe(
+        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
+      )
+    });
   }
 
   public updateTrade(

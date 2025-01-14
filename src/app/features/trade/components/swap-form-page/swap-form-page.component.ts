@@ -101,9 +101,6 @@ export class SwapFormPageComponent {
     });
     this.refundService.addObserver({
       action: 'inputValueChanged',
-      callback: () => {
-        console.log('inputValueChanged_CALLED!!!');
-      },
       obs$: this.swapFormService.inputValueDistinct$
     });
   }
