@@ -1,4 +1,5 @@
 import {
+  BitcoinBlockchainName,
   BLOCKCHAIN_NAME,
   EvmBlockchainName,
   SolanaBlockchainName,
@@ -10,7 +11,8 @@ import {
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
   Record<SolanaBlockchainName, string[]> &
-  Record<TonBlockchainName, string[]> = {
+  Record<TonBlockchainName, string[]> &
+  Record<BitcoinBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
@@ -348,5 +350,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: [
     'https://sepolia.unichain.org',
     'https://1301.rpc.thirdweb.com/'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.BITCOIN]: [''],
+  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/']
 };

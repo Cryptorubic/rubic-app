@@ -1057,5 +1057,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.GRAVITY]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.GRAVITY], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.SONIC]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SONIC], ...defaultTokenParams } as Token
   ]
 };

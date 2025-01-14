@@ -172,6 +172,9 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     chainTags.push(BlockchainTags.PROMO);
   }
+  if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
+    chainTags.push(BlockchainTags.POPULAR);
+  }
 
   return chainTags;
 }
@@ -226,7 +229,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.5,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-
+  {
+    name: BLOCKCHAIN_NAME.SONIC,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
