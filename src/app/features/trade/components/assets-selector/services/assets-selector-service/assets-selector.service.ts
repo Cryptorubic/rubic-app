@@ -73,6 +73,7 @@ export class AssetsSelectorService {
     private readonly filterQueryService: FilterQueryService
   ) {
     this.subscribeOnAssetChange();
+    this.subscribeOnWalletAddressChange();
   }
 
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
@@ -97,6 +98,13 @@ export class AssetsSelectorService {
 
     this.selectorListType = 'tokens';
     this.tokensStoreService.startBalanceCalculating(this.assetType);
+  }
+
+  private subscribeOnWalletAddressChange(): void {
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.tokensStoreService.resetBalanceCalculatingStatuses();
+      this.tokensStoreService.startBalanceCalculating(this.assetType);
+    });
   }
 
   private subscribeOnAssetChange(): void {

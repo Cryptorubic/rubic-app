@@ -210,7 +210,7 @@ export class TokensListStoreService {
             this.swapFormService
           );
 
-          return tlb.initList(this.listType, backendTokens).applySortByComparator().toArray();
+          return tlb.initList(this.listType, backendTokens).applySortByTokenRank().toArray();
         }
         return [];
       })
@@ -288,14 +288,14 @@ export class TokensListStoreService {
       return tlb
         .initList(this.listType)
         .applyFilterBySearchQueryOnClient(query)
-        .applySortByComparator()
+        .applyDefaultSort()
         .toArray();
     }
 
     return tlb
       .applyFilterByChain(this.blockchain)
       .applyFilterBySearchQueryOnClient(query)
-      .applySortByComparator()
+      .applyDefaultSort()
       .toArray();
   }
 
@@ -310,13 +310,13 @@ export class TokensListStoreService {
     );
 
     if (this.assetsSelectorService.assetType === 'allChains') {
-      return tlb.initList(this.listType).applySortByComparator().toArray();
+      return tlb.initList(this.listType).applyDefaultSort().toArray();
     }
 
     return tlb
       .initList(this.listType)
       .applyFilterByChain(this.blockchain)
-      .applySortByComparator()
+      .applyDefaultSort()
       .toArray();
   }
 

@@ -6,12 +6,11 @@ import { AssetsSelectorService } from '../assets-selector-service/assets-selecto
 import { List } from 'immutable';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
-import { blockchainRanks } from '../blockchains-list-service/constants/blockchains-list';
-import BigNumber from 'bignumber.js';
 import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
 import { TokensListType } from '../../models/tokens-list-type';
+import { sorterByChain, sorterByTokenRank, TokensSorter } from './utils/sorters';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);
@@ -76,9 +75,16 @@ export class TokensListBuilder {
   /**
    * used when you sure tokens has filled 'available' field
    */
-  public applySortByComparator(): TokensListBuilder {
+  public applyDefaultSort(): TokensListBuilder {
     const tokensArr = this.tempTokensList.toArray();
-    this.tempTokensList = this.sortTokensByComparator(tokensArr);
+    this.tempTokensList = this.sortTokens(tokensArr, sorterByChain);
+
+    return this;
+  }
+
+  public applySortByTokenRank(): TokensListBuilder {
+    const tokensArr = this.tempTokensList.toArray();
+    this.tempTokensList = this.sortTokens(tokensArr, sorterByTokenRank);
 
     return this;
   }
@@ -96,51 +102,24 @@ export class TokensListBuilder {
    * @param tokens Tokens to perform with.
    * @return AvailableTokenAmount[] Filtered and sorted tokens.
    */
-  private sortTokensByComparator(tokens: AvailableTokenAmount[]): List<AvailableTokenAmount> {
-    const comparator = (a: AvailableTokenAmount, b: AvailableTokenAmount) => {
-      const aAmountInDollars = a.amount.isFinite()
-        ? a.amount.multipliedBy(a.price === null ? 0 : a.price)
-        : new BigNumber(0);
-      const bAmountInDollars = b.amount.isFinite()
-        ? b.amount.multipliedBy(b.price === null ? 0 : b.price)
-        : new BigNumber(0);
-
-      const aBalaceAvailability = a.amount?.gt(0);
-      const bBalaceAvailability = b.amount?.gt(0);
-
-      const availabilityComparison = Number(b.available) - Number(a.available);
-      const amountsComparison = bAmountInDollars.minus(aAmountInDollars).toNumber();
-      const balanceComparison = Number(bBalaceAvailability) - Number(aBalaceAvailability);
-      const tokenRankComparison = b.rank - a.rank;
-      const blockchainRankComparison =
-        blockchainRanks[b.blockchain] - blockchainRanks[a.blockchain];
-      const blockchainNameComparison =
-        a.blockchain === b.blockchain ? 0 : a.blockchain > b.blockchain ? 1 : -1;
-
-      return (
-        availabilityComparison ||
-        amountsComparison ||
-        balanceComparison ||
-        blockchainRankComparison ||
-        blockchainNameComparison ||
-        tokenRankComparison
-      );
-    };
-
+  private sortTokens(
+    tokens: AvailableTokenAmount[],
+    sorter: TokensSorter
+  ): List<AvailableTokenAmount> {
     const nativeTokenIndex = tokens.findIndex(token => {
       const chainType = BlockchainsInfo.getChainType(token.blockchain);
       return Web3Pure[chainType].isNativeAddress(token.address);
     });
 
     if (nativeTokenIndex === -1 || this.assetsSelectorService.assetType === 'allChains') {
-      return List(tokens.sort(comparator));
+      return List(tokens.sort(sorter));
     } else {
       const slicedTokensArray = [
         ...tokens.slice(0, nativeTokenIndex),
         ...tokens.slice(nativeTokenIndex + 1, tokens.length)
       ];
 
-      return List([tokens[nativeTokenIndex], ...slicedTokensArray.sort(comparator)]);
+      return List([tokens[nativeTokenIndex], ...slicedTokensArray.sort(sorter)]);
     }
   }
 
@@ -159,6 +138,7 @@ export class TokensListBuilder {
     const oppositeAssetTypeKey =
       this.assetsSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
     const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
+
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
   }
 }

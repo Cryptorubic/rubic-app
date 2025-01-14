@@ -159,9 +159,7 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: AssetType): void {
-    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
-      return;
-    }
+    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) return;
 
     const tokensList$: Observable<List<TokenAmount>> = iif(
       () => blockchain === 'allChains',
@@ -176,8 +174,11 @@ export class TokensStoreService {
       .pipe(
         debounceTime(500),
         switchMap(([tokens, user]) => {
+          if (!user) return of(this.getDefaultTokenAmounts(tokens, false));
+
           this._isBalanceLoading$[blockchain].next(true);
-          if (!user) return this.getDefaultTokenAmounts(tokens, false);
+          this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
+
           return this.getTokensWithBalance(tokens);
         }),
         catchError(() => of(List()))
@@ -186,8 +187,16 @@ export class TokensStoreService {
         this.patchTokensBalances(tokensWithBalances, blockchain === 'allChains');
         this.tokensUpdaterService.triggerUpdateTokens();
         this._isBalanceLoading$[blockchain].next(false);
-        this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
       });
+  }
+
+  public resetBalanceCalculatingStatuses(): void {
+    this.isBalanceAlreadyCalculatedForChain = Object.keys(
+      this.isBalanceAlreadyCalculatedForChain
+    ).reduce(
+      (acc, assetType) => ({ ...acc, [assetType]: false }),
+      {} as Record<AssetType, boolean>
+    );
   }
 
   public balanceCalculatingStarted(blockchain: BlockchainName): boolean {
