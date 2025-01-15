@@ -55,9 +55,6 @@ import { TokensRateComponent } from '@features/trade/components/tokens-rate/toke
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
-import { CnPreviewSwapComponent } from '@features/trade/components/cn-preview-swap/cn-preview-swap.component';
-import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
-import { CnTradeInfoComponent } from './components/cn-trade-info/cn-trade-info.component';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
@@ -70,6 +67,9 @@ import { AlternativeRouteElementComponent } from './components/alternative-route
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
+import { DepositService } from './services/deposit/deposit.service';
+import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
+import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 
 @NgModule({
   declarations: [
@@ -96,8 +96,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     TokensRateComponent,
     SettingsWarningModalComponent,
     ProvidersListComponent,
-    CnPreviewSwapComponent,
-    CnTradeInfoComponent,
+    DepositPreviewSwapComponent,
+    DepositTradeInfoComponent,
     MevBotComponent,
     PromotionBadgeComponent,
     FormHeaderComponent,
@@ -168,7 +168,7 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     OnChainApiService,
     SwapTokensUpdaterService,
     TradePageService,
-    CnSwapService,
+    DepositService,
     ActionButtonService,
     FormsTogglerService,
     TradeInfoManager,
