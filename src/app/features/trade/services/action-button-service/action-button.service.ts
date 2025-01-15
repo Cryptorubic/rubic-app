@@ -140,13 +140,8 @@ export class ActionButtonService {
         return {
           type: 'action',
           text: 'Preview swap',
-          action: this.swapCn.bind(this)
+          action: this.swap.bind(this)
         };
-        // return {
-        //   type: 'action',
-        //   text: 'Preview swap',
-        //   action: this.swap.bind(this)
-        // };
       }
     }
     if (currentTrade.status === TRADE_STATUS.LOADING) {
