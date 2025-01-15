@@ -279,63 +279,6 @@ export class TokensApiService {
   }
 
   public getFakeTokens(): BackendToken[] {
-    return [
-      {
-        address: '0x0000000000000000000000000000000000000000',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        blockchainNetwork: 'morph',
-        decimals: 18,
-        rank: 8,
-        image:
-          'https://assets.rubic.exchange/assets/ethereum/0x0000000000000000000000000000000000000000/logo.png',
-        coingeckoId: 'morph',
-        usdPrice: 3670,
-        token_security: null,
-        type: 'NATIVE_ETH'
-      },
-      {
-        address: '0x5300000000000000000000000000000000000011',
-        name: 'Wrapped Ethereum',
-        symbol: 'WETH',
-        blockchainNetwork: 'morph',
-        decimals: 18,
-        rank: 8,
-        image:
-          'https://assets.rubic.exchange/assets/ethereum/0x0000000000000000000000000000000000000000/logo.png',
-        coingeckoId: 'morph',
-        usdPrice: 3670,
-        token_security: null,
-        type: 'NATIVE_ETH'
-      },
-      {
-        address: '0xe34c91815d7fc18A9e2148bcD4241d0a5848b693',
-        name: 'USDC',
-        symbol: 'USDC',
-        blockchainNetwork: 'morph',
-        decimals: 18,
-        rank: 8,
-        image:
-          'https://assets.rubic.exchange/assets/ethereum/0x0000000000000000000000000000000000000000/logo.png',
-        coingeckoId: 'morph',
-        usdPrice: 1,
-        token_security: null,
-        type: 'STABLE'
-      },
-      {
-        address: '0xc7D67A9cBB121b3b0b9c053DD9f469523243379A',
-        name: 'USDT',
-        symbol: 'USDT',
-        blockchainNetwork: 'morph',
-        decimals: 6,
-        rank: 8,
-        image:
-          'https://assets.rubic.exchange/assets/ethereum/0x0000000000000000000000000000000000000000/logo.png',
-        coingeckoId: 'morph',
-        usdPrice: 1,
-        token_security: null,
-        type: 'STABLE'
-      }
-    ];
+    return [];
   }
 }

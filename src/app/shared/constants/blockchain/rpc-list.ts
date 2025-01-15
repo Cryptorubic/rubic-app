@@ -353,5 +353,5 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.BITCOIN]: [''],
   [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
-  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc.morphl2.io', 'https://rpc-quicknode.morphl2.io']
+  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io']
 };

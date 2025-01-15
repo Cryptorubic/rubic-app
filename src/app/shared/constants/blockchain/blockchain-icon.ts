@@ -150,5 +150,5 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.GRAVITY]: `${basePath}gravity.svg`,
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: `${basePath}unichain-testnet.svg`,
   [BLOCKCHAIN_NAME.SONIC]: `${basePath}sonic.svg`,
-  [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.png`
+  [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.svg`
 };
