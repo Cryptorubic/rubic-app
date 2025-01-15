@@ -1,16 +1,14 @@
 import { Inject, Injectable, Injector, INJECTOR } from '@angular/core';
-import { firstValueFrom, Observable, timer } from 'rxjs';
+import { firstValueFrom, timer } from 'rxjs';
 
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   ChangenowCrossChainTrade,
   ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  CrossChainManagerCalculationOptions,
   CrossChainTradeType,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
@@ -22,7 +20,8 @@ import {
   UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure
+  Web3Pure,
+  Injector as SdkInjector
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -52,6 +51,7 @@ import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { QuoteOptionsInterface } from '@cryptorubic/core';
 
 @Injectable()
 export class CrossChainService {
@@ -84,84 +84,42 @@ export class CrossChainService {
     private readonly iframeService: IframeService
   ) {}
 
-  public calculateTrades(_disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
-    throw new Error('');
-    // let providers: CrossChainCalculatedTradeData[] = [];
-    // const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
-    //   this.swapFormService.inputValue;
-    // const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
-    // return forkJoin([
-    //   this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
-    //   this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-    //   this.tokensService.getAndUpdateTokenPrice(toToken, true)
-    // ]).pipe(
-    //   switchMap(([tokenState, fromPrice, toPrice]) => {
-    //     const fromSdkCompatibleToken = new PriceToken({
-    //       ...fromToken,
-    //       price: fromPrice
-    //     });
-    //     const toSdkCompatibleToken = new PriceToken({
-    //       ...toToken,
-    //       price: toPrice
-    //     });
-    //     return forkJoin([
-    //       of(fromSdkCompatibleToken),
-    //       of(toSdkCompatibleToken),
-    //       of(tokenState),
-    //       this.getOptions(
-    //         disabledProviders,
-    //         fromSdkCompatibleToken,
-    //         toSdkCompatibleToken,
-    //         fromAmount.actualValue
-    //       )
-    //     ]);
-    //   }),
-    //   switchMap(([fromSdkCompatibleToken, toSdkCompatibleToken, deflationStatus, options]) => {
-    //     const calculationStartTime = Date.now();
-    //
-    //     return this.sdkService.crossChain
-    //       .calculateTradesReactively(
-    //         fromSdkCompatibleToken,
-    //         fromAmount.actualValue.toFixed(),
-    //         toSdkCompatibleToken,
-    //         deflationStatus.isDeflation
-    //           ? { ...options, useProxy: this.getDisabledProxyConfig() }
-    //           : options
-    //       )
-    //       .pipe(
-    //         map(el => ({
-    //           ...el,
-    //           calculationTime: Date.now() - calculationStartTime
-    //         })),
-    //         map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING })),
-    //         tap(el => {
-    //           if (el?.value?.wrappedTrade?.error instanceof NotWhitelistedProviderError) {
-    //             this.saveNotWhitelistedProvider(
-    //               el.value.wrappedTrade.error,
-    //               fromToken.blockchain,
-    //               el.value.wrappedTrade.tradeType
-    //             );
-    //           }
-    //         }),
-    //         tap(el => {
-    //           const tradeContainer = el?.value;
-    //           providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
-    //           if (
-    //             tradeContainer.calculated === tradeContainer.total &&
-    //             tradeContainer?.calculated !== 0
-    //           ) {
-    //             this.saveTrade(providers, {
-    //               fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
-    //               fromBlockchain,
-    //               toBlockchain,
-    //               fromAddress: fromToken.address,
-    //               toAddress: toToken.address
-    //             });
-    //           }
-    //         })
-    //       );
-    //   })
-    // );
+  public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
+    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+    const [fromPrice, toPrice] = await Promise.all([
+      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+    ]);
+    const fromSdkCompatibleToken = new PriceToken({
+      ...fromToken,
+      price: fromPrice
+    });
+    const toSdkCompatibleToken = new PriceToken({
+      ...toToken,
+      price: toPrice
+    });
+
+    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
+    const options = await this.getOptions(
+      disabledProviders,
+      fromSdkCompatibleToken,
+      toSdkCompatibleToken,
+      fromAmount.actualValue
+    );
+
+    const tradeParams = {
+      srcTokenAddress: fromToken.address,
+      dstTokenBlockchain: toToken.blockchain,
+      srcTokenBlockchain: fromToken.blockchain,
+      srcTokenAmount: fromAmount.actualValue.toFixed(),
+      dstTokenAddress: toToken.address
+    };
+
+    SdkInjector.rubicApiService.calculateAsync({
+      calculationTimeout: 30,
+      ...tradeParams,
+      ...options
+    });
   }
 
   private async getOptions(
@@ -169,10 +127,8 @@ export class CrossChainService {
     fromSdkToken: PriceToken,
     toSdkToken: PriceToken,
     fromAmount: BigNumber
-  ): Promise<CrossChainManagerCalculationOptions> {
+  ): Promise<QuoteOptionsInterface> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const receiverAddress = this.receiverAddress;
-
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledSubProviders } =
       this.platformConfigurationService.disabledProviders;
     const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
@@ -186,34 +142,25 @@ export class CrossChainService {
         ...(queryDisabledTradeTypes || [])
       ])
     );
-    const calculateGas = this.authService.userAddress;
-    const timeout = this.calculateTimeoutForChains();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
       toSdkToken
     );
-    const options: CrossChainManagerCalculationOptions = {
-      fromSlippageTolerance: slippageTolerance / 2,
-      toSlippageTolerance: slippageTolerance / 2,
-      slippageTolerance,
-      timeout,
-      disabledProviders: disabledProviders,
-      lifiDisabledBridgeTypes: [
-        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
-        ...(queryLifiDisabledBridges || [])
-      ],
-      rangoDisabledProviders: [
-        ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
-        ...(queryRangoDisabledBridges || [])
-      ],
-      ...(receiverAddress && { receiverAddress }),
-      changenowFullyEnabled: true,
-      gasCalculation: calculateGas ? 'enabled' : 'disabled',
-      useProxy: {
-        ...this.platformConfigurationService.useCrossChainChainProxy
+    const options: QuoteOptionsInterface = {
+      slippage: slippageTolerance,
+      nativeBlacklist: disabledProviders,
+      foreignBlacklist: {
+        lifi: [
+          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
+          ...(queryLifiDisabledBridges || [])
+        ],
+        rango: [
+          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
+          ...(queryRangoDisabledBridges || [])
+        ]
       },
-      providerAddress
+      integratorAddress: providerAddress
     };
 
     return options;

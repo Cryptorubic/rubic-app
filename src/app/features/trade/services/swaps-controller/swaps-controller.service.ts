@@ -74,6 +74,7 @@ import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-cont
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 
 @Injectable()
 export class SwapsControllerService {
@@ -128,6 +129,13 @@ export class SwapsControllerService {
     });
   }
 
+  private get receiverAddress(): string | null {
+    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
+      return null;
+    }
+    return this.targetNetworkAddressService.address;
+  }
+
   private startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
   }
@@ -140,17 +148,6 @@ export class SwapsControllerService {
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.refreshService.setStopped();
-            // this.tradeStatus = TRADE_STATUS.DISABLED;
-
-            // if (
-            //   this.swapTypeService.getSwapProviderType() === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-            // ) {
-            //   this.refreshService.setStopped();
-            //   this.swapFormService.outputControl.patchValue({
-            //     toAmount: new BigNumber(NaN)
-            //   });
-            // }
-
             return { ...calculateData, stop: true };
           }
           return { ...calculateData, stop: false };
@@ -172,13 +169,10 @@ export class SwapsControllerService {
             return of(null);
           }
 
-          const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
+          const { fromToken, toToken } = this.swapFormService.inputValue;
 
           // @TODO API
           const isAlgebraWrap = false;
-          // const isAlgebraWrap =
-          //   Object.values(ALGB_TOKEN).includes(fromToken.address.toLowerCase()) &&
-          //   Object.values(ALGB_TOKEN).includes(toToken.address.toLowerCase());
 
           if (isAlgebraWrap) {
             this.disabledTradesTypes.crossChain = [
@@ -191,106 +185,18 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken && toToken) {
-            Injector.rubicApiService.calculateAsync({
-              calculationTimeout: 30,
-              srcTokenAddress: fromToken.address,
-              dstTokenBlockchain: toToken.blockchain,
-              srcTokenBlockchain: fromToken.blockchain,
-              srcTokenAmount: fromAmount.actualValue.toFixed(),
-              dstTokenAddress: toToken.address
-            });
+          if (fromToken?.blockchain === toToken?.blockchain) {
+            return this.onChainService.calculateTrades([
+              ...this.disabledTradesTypes.onChain,
+              ...onChainBlacklistProviders
+            ]);
           }
-
-          return of(null);
-          //
-          // if (fromToken.blockchain === toToken.blockchain) {
-          //   return this.onChainService
-          //     .calculateTrades([...this.disabledTradesTypes.onChain, ...onChainBlacklistProviders])
-          //     .pipe(
-          //       catchError(err => {
-          //         console.debug(err);
-          //         return of(null);
-          //       })
-          //     );
-          // } else {
-          //   return this.crossChainService.calculateTrades(this.disabledTradesTypes.crossChain).pipe(
-          //     catchError(err => {
-          //       console.debug(err);
-          //       return of(null);
-          //     })
-          //   );
-          // }
+          return this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
         }),
         catchError(err => {
           console.debug(err);
           return of(null);
         })
-        // concatMap(container => {
-        //   const wrappedTrade = container?.value?.wrappedTrade;
-        //
-        //   if (wrappedTrade) {
-        //     const isCalculationEnd = container.value.total === container.value.calculated;
-        //     const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-        //     const needAuthWallet$ = this.needAuthWallet(wrappedTrade.trade);
-        //     const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-        //       wrappedTrade.trade,
-        //       wrappedTrade?.error
-        //     );
-        //
-        //     return forkJoin([
-        //       of(wrappedTrade),
-        //       needApprove$,
-        //       of(container.type),
-        //       isNotLinkedAccount$,
-        //       needAuthWallet$
-        //     ])
-        //       .pipe(
-        //         tap(([trade, needApprove, type, isNotLinkedAccount, needAuthWallet]) => {
-        //           try {
-        //             if (isNotLinkedAccount) {
-        //               this.errorsService.catch(new NoLinkedAccountError());
-        //               trade.trade = null;
-        //             }
-        //             this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
-        //             this.swapsStateService.pickProvider(isCalculationEnd);
-        //             this.swapsStateService.setCalculationProgress(
-        //               container.value.total,
-        //               container.value.calculated
-        //             );
-        //             this.setTradeAmount();
-        //             if (isCalculationEnd) {
-        //               this.refreshService.setStopped();
-        //             }
-        //           } catch (err) {
-        //             console.error(err);
-        //           }
-        //         })
-        //       )
-        //       .pipe(
-        //         catchError(() => {
-        //           // this.swapsStateService.updateTrade(trade, type, needApprove);
-        //           this.swapsStateService.pickProvider(isCalculationEnd);
-        //           return of(null);
-        //         })
-        //       );
-        //   }
-        //   if (!container?.value) {
-        //     this.refreshService.setStopped();
-        //     this.swapsStateService.clearProviders(true);
-        //   } else {
-        //     this.swapsStateService.setCalculationProgress(
-        //       container.value.total,
-        //       container.value.calculated
-        //     );
-        //   }
-        //   return of(null);
-        // }),
-        // catchError((_err: unknown) => {
-        //   this.refreshService.setStopped();
-        //   this.swapsStateService.pickProvider(true);
-        //   return of(null);
-        // })
       )
       .subscribe();
   }

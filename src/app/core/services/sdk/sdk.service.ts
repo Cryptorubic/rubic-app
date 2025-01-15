@@ -89,7 +89,7 @@ export class SdkService {
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
-      envType: 'dev2',
+      envType: 'local',
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
           crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
