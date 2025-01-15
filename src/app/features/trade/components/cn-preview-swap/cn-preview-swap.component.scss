@@ -10,6 +10,10 @@ app-form-switcher {
   justify-content: flex-end;
 }
 
+.refund-address {
+  margin-top: var(--tui-padding-l);
+}
+
 .target-address {
   margin-top: var(--tui-padding-l);
   padding: var(--tui-padding-l);
@@ -40,6 +44,14 @@ app-form-switcher {
 
   background: var(--primary-background);
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+  transition: all 100ms;
+
+  &__inactive {
+    margin-top: var(--tui-padding-l);
+
+    border-radius: var(--tui-radius-m);
+  }
 }
 
 

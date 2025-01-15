@@ -36,6 +36,7 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { CnSwapService } from '@features/trade/services/cn-swap/cn-swap.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
+import { RefundService } from '../../services/refund-service/refund.service';
 
 @Component({
   selector: 'app-cn-preview-swap',
@@ -77,6 +78,8 @@ export class CnPreviewSwapComponent {
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
+  public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
+
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public readonly cnTrade$ = this.cnSwapService.cnTrade$;
@@ -95,6 +98,7 @@ export class CnPreviewSwapComponent {
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly cnSwapService: CnSwapService,
+    private readonly refundService: RefundService,
     private readonly targetAddressService: TargetNetworkAddressService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef

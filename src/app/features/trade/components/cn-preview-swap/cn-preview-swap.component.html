@@ -6,6 +6,7 @@
     status: status$ | async,
     cnTrade: cnTrade$ | async,
     isMobile: isMobile$ | async,
+    isValidRefundAddress: isValidRefundAddress$ | async
   } as state"
 >
   <ng-container header>
@@ -56,7 +57,11 @@
       </div>
     </div>
 
-    <div class="target-address">
+    <div class="refund-address">
+      <app-refund-address></app-refund-address>
+    </div>
+
+    <div *ngIf="state.isValidRefundAddress" class="target-address">
       <div class="target-address__title">Deposit address to transfer funds</div>
       <div *ngIf="state.cnTrade?.depositAddress" class="target-address__text">
         {{
@@ -74,10 +79,17 @@
       </div>
     </div>
 
-    <div class="status-wrapper">
+    <div class="status-wrapper" [class.status-wrapper__inactive]="!state.isValidRefundAddress">
       <div class="row row-status">
         <div class="row-item status-item">
-          <div class="status-item__spinner" *ngIf="state.status === 'waiting'"></div>
+          <div
+            class="status-item__circle"
+            *ngIf="state.status === 'waiting' && !state.isValidRefundAddress"
+          ></div>
+          <div
+            class="status-item__spinner"
+            *ngIf="state.status === 'waiting' && state.isValidRefundAddress"
+          ></div>
           <div class="status-item__circle_complete" *ngIf="state.status !== 'waiting'">
             <img
               class="scheme__state.status-icon"
@@ -85,20 +97,23 @@
               alt=""
             />
           </div>
+
           <div
             class="row-item__value status-item__value"
             [ngClass]="{
-              'status-item__value_completed': state.status
+              'status-item__value_completed': state.status && state.isValidRefundAddress
             }"
           >
             Awaiting deposit
           </div>
         </div>
+
         <img
           class="arrow-step"
           src="assets/images/icons/arrow/arrow-right-white.svg"
           alt="Next step"
         />
+
         <div class="row-item status-item">
           <div class="status-item__circle" *ngIf="state.status === 'waiting'"></div>
           <div
@@ -139,11 +154,13 @@
             Confirming
           </div>
         </div>
+
         <img
           class="arrow-step"
           src="assets/images/icons/arrow/arrow-right-white.svg"
           alt="Next step"
         />
+
         <div class="row-item status-item">
           <div
             class="status-item__circle"
@@ -180,11 +197,13 @@
             Exchanging
           </div>
         </div>
+
         <img
           class="arrow-step"
           src="assets/images/icons/arrow/arrow-right-white.svg"
           alt="Next step"
         />
+
         <div class="row-item status-item">
           <div
             class="status-item__circle"

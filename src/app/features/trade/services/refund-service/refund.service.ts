@@ -2,10 +2,21 @@ import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { Any, CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
-import { BehaviorSubject, combineLatest, Observable, switchMap, takeUntil, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  map,
+  Observable,
+  shareReplay,
+  startWith,
+  switchMap,
+  takeUntil,
+  tap
+} from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
+import { shareReplayConfig } from '@app/shared/constants/common/share-replay-config';
 
 type RefundObserverAction = 'inputValueChanged' | 'tradeSelected';
 
@@ -28,6 +39,12 @@ export class RefundService {
     validators: [],
     asyncValidators: []
   });
+
+  public readonly isValidRefundAddress$ = this.refundAddressCtrl.statusChanges.pipe(
+    map(status => status === 'VALID'),
+    startWith(true),
+    shareReplay(shareReplayConfig)
+  );
 
   public get refundAddress(): string {
     return this.refundAddressCtrl.value;
@@ -74,12 +91,11 @@ export class RefundService {
   }
 
   private onTradeSelection(trade: SelectedTrade): void {
-    // @TODO add input on UI in cn-preview-swap.component.ts over deposit-address
-    console.log('onTradeSelection ===> ', trade);
     if (trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY) {
       this.refundAddressCtrl.addValidators([Validators.required]);
     } else {
       this.refundAddressCtrl.removeValidators([Validators.required]);
     }
+    this.refundAddressCtrl.updateValueAndValidity();
   }
 }
