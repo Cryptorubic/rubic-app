@@ -36,8 +36,8 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<ProviderInterface>
     }
 
     this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
-    console.log(this.window.ethereum?.providers);
-    if (!this.window.ethereum?.providers) {
+    //@ts-ignore
+    if (!this.window.coinbaseWalletExtension?.isCoinbaseWallet) {
       throw new CoinBaseError();
     }
 
