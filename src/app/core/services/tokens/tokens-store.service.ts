@@ -24,6 +24,7 @@ import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
+import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
 
 @Injectable({
   providedIn: 'root'
@@ -239,14 +240,18 @@ export class TokensStoreService {
           if (!doesWalletSupportsTokenChain) return tokens.map(() => new BigNumber(NaN));
 
           const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-          const chainTokensBalances = web3Public
-            .getTokensBalances(
-              this.userAddress,
-              tokens.map(t => t.address)
-            )
-            .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
+          const chainBalancesPromise = web3Public.getTokensBalances(
+            this.userAddress,
+            tokens.map(t => t.address)
+          );
 
-          return chainTokensBalances;
+          const withTimeout = pTimeout(
+            chainBalancesPromise,
+            3_000,
+            new Error(`chainTokensBalances_Timeout for chain ${chain}.`)
+          ).catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
+
+          return withTimeout;
         }
       );
 
