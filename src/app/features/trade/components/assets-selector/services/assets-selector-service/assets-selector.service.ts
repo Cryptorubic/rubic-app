@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { distinctUntilChanged, filter, pairwise, skip, takeUntil } from 'rxjs/operators';
+import { BlockchainName, BlockchainsInfo, compareAddresses } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -97,14 +97,22 @@ export class AssetsSelectorService {
     }
 
     this.selectorListType = 'tokens';
+    console.log('initParameters ===> ', this.assetType);
     this.tokensStoreService.startBalanceCalculating(this.assetType);
   }
 
   private subscribeOnWalletAddressChange(): void {
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.tokensStoreService.resetBalanceCalculatingStatuses();
-      this.tokensStoreService.startBalanceCalculating(this.assetType);
-    });
+    this.walletConnectorService.addressChange$
+      .pipe(
+        skip(1),
+        pairwise(),
+        filter(([prevAddr, currAddr]) => !compareAddresses(prevAddr, currAddr)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        // this.tokensStoreService.resetBalanceCalculatingStatuses();
+        this.tokensStoreService.startBalanceCalculating(this.assetType || 'allChains');
+      });
   }
 
   private subscribeOnAssetChange(): void {

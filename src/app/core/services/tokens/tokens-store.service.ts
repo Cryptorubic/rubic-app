@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, forkJoin, from, iif, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, exhaustMap, first, map, switchMap, tap } from 'rxjs/operators';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
 import {
@@ -95,7 +94,6 @@ export class TokensStoreService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly walletConnectorService: WalletConnectorService,
     private readonly storeService: StoreService,
     private readonly tokensUpdaterService: TokensUpdaterService
   ) {
@@ -115,13 +113,24 @@ export class TokensStoreService {
     }
   }
 
-  private setupAllChainsTokensList(): void {
-    this.tokensApiService
-      .fetchTokensListForAllChains()
-      .pipe(map(tokens => this.getDefaultTokenAmounts(tokens, false)))
-      .subscribe(tokensWithBalancesNaN => {
-        this._allChainsTokens$.next(tokensWithBalancesNaN);
-      });
+  private async setupAllChainsTokensList(): Promise<void> {
+    // firstly load tokens without balances to make allChainsTokens not empty
+    const tokensListForAllChainsFromBackend = await firstValueFrom(
+      this.tokensApiService.fetchTokensListForAllChains()
+    );
+    const defaultTokensList = this.getDefaultTokenAmounts(tokensListForAllChainsFromBackend, false);
+    this._allChainsTokens$.next(defaultTokensList);
+
+    this._isBalanceLoading$.allChains.next(true);
+    this.getTokensWithBalance(tokensListForAllChainsFromBackend).then(
+      allChainsTokensWithBalances => {
+        this.patchTokensBalances(allChainsTokensWithBalances, true);
+        this.tokensUpdaterService.triggerUpdateTokens();
+
+        this._isBalanceLoading$.allChains.next(false);
+        this.isBalanceAlreadyCalculatedForChain.allChains = true;
+      }
+    );
   }
 
   private setupSubscriptions(): void {
@@ -160,7 +169,14 @@ export class TokensStoreService {
   }
 
   public startBalanceCalculating(blockchain: AssetType): void {
-    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) return;
+    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
+      console.log(
+        `%cSKIPPED FOR ${blockchain}`,
+        'color: red; font-size: 20px;',
+        this.isBalanceAlreadyCalculatedForChain
+      );
+      return;
+    }
 
     const tokensList$: Observable<List<TokenAmount>> = iif(
       () => blockchain === 'allChains',
@@ -174,7 +190,7 @@ export class TokensStoreService {
     forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
       .pipe(
         debounceTime(500),
-        switchMap(([tokens, user]) => {
+        exhaustMap(([tokens, user]) => {
           if (!user) return of(this.getDefaultTokenAmounts(tokens, false));
 
           this._isBalanceLoading$[blockchain].next(true);
@@ -400,23 +416,6 @@ export class TokensStoreService {
       );
     this._tokens$.next(tokens);
   }
-
-  // public patchTokensBalances(tokensWithBalances: List<TokenAmount>): void {
-  //   const tokens = (this.tokens || List([])).map(token => {
-  //     const foundToken = tokensWithBalances.find(tokenWithBalance =>
-  //       compareTokens(token, tokenWithBalance)
-  //     );
-  //     if (!foundToken) {
-  //       return token;
-  //     } else {
-  //       return {
-  //         ...token,
-  //         amount: foundToken.amount
-  //       };
-  //     }
-  //   });
-  //   this._tokens$.next(tokens);
-  // }
 
   public patchTokensBalances(
     tokensWithBalances: List<TokenAmount>,

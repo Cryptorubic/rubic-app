@@ -55,7 +55,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService
   ) {
-    this.assetsSelectorService.initParameters({ formType: this.type });
     this.subscribeOnAssetsSelect();
   }
 
