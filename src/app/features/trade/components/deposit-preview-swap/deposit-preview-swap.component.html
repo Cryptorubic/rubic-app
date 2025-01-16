@@ -217,8 +217,7 @@
             class="row-item__value status-item__value"
             [ngClass]="{
               'status-item__value_completed':
-                state.status === 'sending' || state.status === 'finished',
-              'status-item__value_failed': state.status === 'failed'
+                state.status === 'sending' || state.status === 'finished'
             }"
           >
             Sending to you
@@ -227,12 +226,8 @@
       </div>
     </div>
   </ng-container>
-  <ng-container footer>
-    <tui-notification
-      *ngIf="state.spesificStatusText && state.status === 'failed'"
-      status="error"
-      class="tui-space_vertical-4"
-    >
+  <ng-container footer *ngIf="state.status === 'failed'">
+    <tui-notification *ngIf="state.spesificStatusText; else defaultFailedStatusText" status="error">
       {{ state.spesificStatusText }}
     </tui-notification>
   </ng-container>
@@ -243,6 +238,15 @@
     If your transaction seems to be taking longer than normal (more than 10 minutes), please contact
     our Support Team at <span class="primary-text">support@rubic.exchange</span>.
   </div>
+</ng-template>
+
+<ng-template #defaultFailedStatusText>
+  <tui-notification status="error">
+    The transaction failed, please contact our Support Team at
+    <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
+      >support@rubic.exchange</a
+    >
+  </tui-notification>
 </ng-template>
 
 <ng-template #template>Address copied on clipboard!</ng-template>
