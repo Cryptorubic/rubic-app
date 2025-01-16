@@ -32,7 +32,6 @@ import { AssetsSearchQueryService } from '../assets-search-query-service/assets-
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { isNil } from '@app/shared/utils/utils';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Injectable()
 export class BlockchainsListService {
@@ -103,10 +102,9 @@ export class BlockchainsListService {
     }
     const availableBlockchains = blockchains.map(blockchain => {
       // // @TODO REMOVE
-      const disabledConfiguration =
-        blockchain.name === BLOCKCHAIN_NAME.MORPH
-          ? false
-          : !this.platformConfigurationService.isAvailableBlockchain(blockchain.name);
+      const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
+        blockchain.name
+      );
       const disabledFrom = disabledFromBlockchains.includes(blockchain.name);
 
       return {
