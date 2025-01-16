@@ -272,9 +272,9 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
   },
   simple_swap: {
     averageTime: 5,
-    color: '##3C82F9',
-    image: `${imageBasePath}simpleswap.svg`,
-    name: 'Simple Swap'
+    color: '#3C82F9',
+    image: `${imageBasePath}simpleswap.png`,
+    name: 'SimpleSwap'
   },
   squidrouter: {
     averageTime: 5,
