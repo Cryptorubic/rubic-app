@@ -3,13 +3,14 @@ import {
   ChangeDetectorRef,
   Component,
   Inject,
-  Injector
+  Injector,
+  Self
 } from '@angular/core';
 import { firstValueFrom, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { first, map } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, takeUntil } from 'rxjs/operators';
 import {
   CrossChainTradeType,
   CrossChainTransferTrade,
@@ -36,11 +37,13 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],
+  providers: [TuiDestroyService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositPreviewSwapComponent {
@@ -100,10 +103,19 @@ export class DepositPreviewSwapComponent {
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly refundService: RefundService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.previewSwapService.setSelectedProvider();
-    this.setupTrade();
+    this.refundService.isValidRefundAddress$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(isValid => {
+        if (isValid) {
+          this.setupTrade();
+        } else {
+          this.depositService.removePrevDeposit();
+        }
+      });
   }
 
   public backToForm(): void {
@@ -183,7 +195,8 @@ export class DepositPreviewSwapComponent {
 
     this.depositService.removePrevDeposit();
     const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
-      receiverAddress
+      receiverAddress,
+      this.refundService.refundAddress
     );
 
     this.depositService.updateTrade(paymentInfo, receiverAddress);

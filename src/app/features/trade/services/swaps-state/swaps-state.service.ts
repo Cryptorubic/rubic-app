@@ -141,12 +141,6 @@ export class SwapsStateService {
     private readonly refundService: RefundService
   ) {
     this.subscribeOnTradeChange();
-    this.refundService.addObserver({
-      action: 'tradeSelected',
-      obs$: this.tradeState$.pipe(
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr))
-      )
-    });
   }
 
   public updateTrade(
@@ -345,6 +339,7 @@ export class SwapsStateService {
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
+    this.refundService.onTradeSelection(this.currentTrade);
   }
 
   private subscribeOnTradeChange(): void {

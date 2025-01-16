@@ -99,9 +99,8 @@ export class SwapFormPageComponent {
         this.tokensStoreService.startBalanceCalculating(blockchain);
       }
     });
-    this.refundService.addObserver({
-      action: 'inputValueChanged',
-      obs$: this.swapFormService.inputValueDistinct$
+    this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
+      this.refundService.onSwapFormInputChanged(inputValue);
     });
   }
 
