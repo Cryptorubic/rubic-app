@@ -230,6 +230,17 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.MORPH,
+    rank: 0.5,
+    tags: [
+      'ETH',
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW,
+      BlockchainTags.POPULAR
+    ]
+  },
+  {
     name: BLOCKCHAIN_NAME.SONIC,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]

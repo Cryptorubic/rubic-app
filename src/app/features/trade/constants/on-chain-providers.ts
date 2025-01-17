@@ -789,6 +789,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Macaron',
     image: `${imageBasePath}macaron.svg`,
     color: '#f6d03a'
+  },
+  [ON_CHAIN_TRADE_TYPE.BULBA_SWAP]: {
+    name: 'BulbaSwap',
+    image: `${imageBasePath}bulba-swap.svg`,
+    color: '#41c533'
   }
 };
 
