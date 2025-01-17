@@ -122,15 +122,19 @@ export class TokensStoreService {
     this._allChainsTokens$.next(defaultTokensList);
 
     this._isBalanceLoading$.allChains.next(true);
-    this.getTokensWithBalance(tokensListForAllChainsFromBackend).then(
-      allChainsTokensWithBalances => {
+    this.getTokensWithBalance(tokensListForAllChainsFromBackend)
+      .then(allChainsTokensWithBalances => {
         this.patchTokensBalances(allChainsTokensWithBalances, true);
         this.tokensUpdaterService.triggerUpdateTokens();
 
         this._isBalanceLoading$.allChains.next(false);
         this.isBalanceAlreadyCalculatedForChain.allChains = true;
-      }
-    );
+      })
+      .catch(err => {
+        console.log(`%cERROR_getTokensWithBalance ===> ${err}`, 'color: red; font-size: 20px');
+        this._isBalanceLoading$.allChains.next(false);
+        this.isBalanceAlreadyCalculatedForChain.allChains = false;
+      });
   }
 
   private setupSubscriptions(): void {
