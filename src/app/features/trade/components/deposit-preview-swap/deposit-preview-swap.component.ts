@@ -192,15 +192,21 @@ export class DepositPreviewSwapComponent {
   private async setupTrade(): Promise<void> {
     const receiverAddress = this.targetAddressService.address;
     const selectedTrade = await firstValueFrom(this.tradeState$);
-
     this.depositService.removePrevDeposit();
-    const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
-      receiverAddress,
-      this.refundService.refundAddress
-    );
 
-    this.depositService.updateTrade(paymentInfo, receiverAddress);
-    this.depositService.setupUpdate();
+    try {
+      const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
+        receiverAddress,
+        this.refundService.refundAddress
+      );
+
+      this.depositService.updateTrade(paymentInfo, receiverAddress);
+      this.depositService.setupUpdate();
+    } catch (err) {
+      console.error(`DepositPreviewSwapComponent_setupTrade_error ===> ${err}`);
+      const callbackOnClose = () => this.tradePageService.setState('form');
+      this.modalService.openDepositTradeRateChangedModal(selectedTrade, callbackOnClose);
+    }
   }
 
   /**
