@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
-import { firstValueFrom, Observable, timer } from 'rxjs';
+import { combineLatest, firstValueFrom, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, first, map, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
 import {
+  CROSS_CHAIN_DEPOSIT_STATUS,
   CrossChainTradeType,
   CrossChainTransferTrade,
   EvmCrossChainTrade,
@@ -29,6 +30,7 @@ import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { specificProviderStatusText } from './constants/specific-provider-status';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -38,7 +40,25 @@ import { ModalService } from '@app/core/modals/services/modal.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DepositPreviewSwapComponent {
-  public readonly status$ = this.depositService.status$;
+  public readonly status$ = combineLatest([
+    this.depositService.status$.pipe(startWith(CROSS_CHAIN_DEPOSIT_STATUS.WAITING)),
+    this.depositService.depositTrade$.pipe(startWith(null))
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status;
+    })
+  );
+
+  public readonly specificProviderStatusText$ = combineLatest([
+    this.depositService.status$,
+    this.depositService.depositTrade$
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      return specificStatusText ? specificStatusText : null;
+    })
+  );
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
 
@@ -73,7 +93,7 @@ export class DepositPreviewSwapComponent {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly cnTrade$ = this.depositService.depositTrade$;
+  public readonly depositTrade$ = this.depositService.depositTrade$;
 
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 

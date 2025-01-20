@@ -37,6 +37,12 @@ app-form-switcher {
     font-weight: 700;
     font-size: 18px;
   }
+
+  &__disabled {
+    opacity: 0.8;
+
+    user-select: none;
+  }
 }
 
 .status-wrapper {
@@ -293,5 +299,13 @@ app-form-switcher {
 
   87% {
     box-shadow: 0.2em -0.2em 0 0 currentcolor;
+  }
+}
+
+.failed-notification {
+  ::ng-deep {
+    .t-content {
+      max-width: 450px;
+    }
   }
 }
