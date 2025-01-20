@@ -25,5 +25,6 @@ export class DepositRateChangedModalComponent {
 
   public backToForm(): void {
     this.context.data.onClose();
+    this.context.completeWith(null);
   }
 }
