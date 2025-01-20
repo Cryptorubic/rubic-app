@@ -28,6 +28,7 @@ import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -90,7 +91,8 @@ export class DepositPreviewSwapComponent {
     private readonly refundService: RefundService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly modalService: ModalService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.refundService.isValidRefundAddress$
@@ -178,8 +180,8 @@ export class DepositPreviewSwapComponent {
   private async setupTrade(): Promise<void> {
     const receiverAddress = this.targetAddressService.address;
     const selectedTrade = await firstValueFrom(this.tradeState$);
-
     this.depositService.removePrevDeposit();
+
     try {
       const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
         receiverAddress,
@@ -189,7 +191,9 @@ export class DepositPreviewSwapComponent {
       this.depositService.updateTrade(paymentInfo, receiverAddress);
       this.depositService.setupUpdate();
     } catch (err) {
-      console.error(err);
+      console.error(`DepositPreviewSwapComponent_setupTrade_error ===> ${err}`);
+      const callbackOnClose = () => this.tradePageService.setState('form');
+      this.modalService.openDepositTradeRateChangedModal(selectedTrade, callbackOnClose);
     }
   }
 
