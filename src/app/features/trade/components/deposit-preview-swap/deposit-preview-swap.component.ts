@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Injector,
-  Self
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
 import { firstValueFrom, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
@@ -24,11 +17,8 @@ import {
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
-import { ModalService } from '@core/modals/services/modal.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
@@ -93,10 +83,6 @@ export class DepositPreviewSwapComponent {
     private readonly previewSwapService: PreviewSwapService,
     private readonly router: Router,
     private readonly swapsFormService: SwapsFormService,
-    private readonly walletConnector: WalletConnectorService,
-    private readonly modalService: ModalService,
-    @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly depositService: DepositService,
@@ -194,13 +180,17 @@ export class DepositPreviewSwapComponent {
     const selectedTrade = await firstValueFrom(this.tradeState$);
 
     this.depositService.removePrevDeposit();
-    const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
-      receiverAddress,
-      this.refundService.refundAddress
-    );
+    try {
+      const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
+        receiverAddress,
+        this.refundService.refundAddress
+      );
 
-    this.depositService.updateTrade(paymentInfo, receiverAddress);
-    this.depositService.setupUpdate();
+      this.depositService.updateTrade(paymentInfo, receiverAddress);
+      this.depositService.setupUpdate();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**

@@ -1,4 +1,7 @@
-<div class="refund-address-container">
+<div
+  *ngLet="isCorrectDepositAddressSet$ | async as isCorrectAddressSet"
+  class="refund-address-container"
+>
   <div class="refund-address__title">
     <img
       class="refund-address__title-icon"
@@ -12,10 +15,10 @@
     </p>
   </div>
 
-  <div class="refund-address__input">
+  <div class="refund-address__input" [ngStyle]="{ opacity: isCorrectAddressSet ? 0.8 : 1 }">
     <tui-input
       [tuiTextfieldCustomContent]="
-        !!refundAddressCtrl.value ? (refundAddressCtrl.valid ? success : error) : ''
+        !!refundAddressCtrl.value ? (isCorrectAddressSet ? success : error) : ''
       "
       tuiTextfieldSize="l"
       [formControl]="refundAddressCtrl"

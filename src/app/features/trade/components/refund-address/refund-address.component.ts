@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { RefundService } from '../../services/refund-service/refund.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { SwapsFormService } from '../../services/swaps-form/swaps-form.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-refund-address',
@@ -19,21 +20,30 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 export class RefundAddressComponent implements OnDestroy {
   public readonly refundAddressCtrl = this.refundService.refundAddressCtrl;
 
+  public readonly isCorrectDepositAddressSet$ = this.refundService.isValidRefundAddress$.pipe(
+    tap(isCorrectAddress => {
+      if (isCorrectAddress) {
+        this.refundAddressCtrl.disable({ emitEvent: false });
+      }
+    })
+  );
+
   public isActiveInput: boolean;
 
   constructor(
     private readonly refundService: RefundService,
-    private readonly walletConectorService: WalletConnectorService
+    private readonly swapFormService: SwapsFormService
   ) {
     this.isActiveInput = !!this.refundAddressCtrl.value;
   }
 
   ngOnDestroy(): void {
     this.refundService.setRefundAddress('');
+    this.refundService.refundAddressCtrl.enable();
   }
 
   public get labetText(): string {
-    return `Refund Address (${this.walletConectorService.chainType})`;
+    return `Refund Address (${this.swapFormService.inputValue.fromBlockchain})`;
   }
 
   public onFocusChange(isFocused: boolean): void {

@@ -10,9 +10,7 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
-  CrossChainPaymentInfo,
   CrossChainTradeType,
-  CrossChainTransferTrade,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
   NotWhitelistedProviderError,
@@ -242,17 +240,6 @@ export class CrossChainService {
         .saveNotWhitelistedCcrProvider(error, blockchain, tradeType)
         .subscribe();
     }
-  }
-
-  public async getChangenowPaymentInfo(
-    trade: CrossChainTransferTrade
-  ): Promise<{ paymentInfo: CrossChainPaymentInfo; receiverAddress: string }> {
-    const receiverAddress = this.receiverAddress;
-    const paymentInfo = await trade.getTransferTrade(receiverAddress);
-    return {
-      paymentInfo,
-      receiverAddress
-    };
   }
 
   /**
