@@ -31,13 +31,22 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],
   providers: [TuiDestroyService],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('showDepositAddressAnimation', [
+      transition(':enter', [
+        style({ height: '0px', padding: 0, 'margin-top': 0 }),
+        animate('0.3s ease-out', style({ height: '54px', padding: '1rem', 'margin-top': '1rem' }))
+      ])
+    ])
+  ]
 })
 export class DepositPreviewSwapComponent {
   public readonly status$ = combineLatest([
