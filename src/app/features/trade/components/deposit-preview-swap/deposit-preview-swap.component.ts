@@ -89,6 +89,7 @@ export class DepositPreviewSwapComponent {
     this.previewSwapService.selectedTradeState$.pipe(
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
+
         return {
           ...tradeState,
           feeInfo: info?.feeInfo
@@ -103,6 +104,10 @@ export class DepositPreviewSwapComponent {
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
   public readonly depositTrade$ = this.depositService.depositTrade$;
+
+  public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState.tradeType === 'changelly')
+  );
 
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 

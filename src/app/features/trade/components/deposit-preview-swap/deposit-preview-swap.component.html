@@ -7,7 +7,8 @@
     depositTrade: depositTrade$ | async,
     isMobile: isMobile$ | async,
     isValidRefundAddress: isValidRefundAddress$ | async,
-    spesificStatusText: specificProviderStatusText$ | async
+    spesificStatusText: specificProviderStatusText$ | async,
+    isRefundAddressRequired: isRefundAddressRequired$ | async
   } as state"
 >
   <ng-container header>
@@ -58,7 +59,7 @@
       </div>
     </div>
 
-    <div class="refund-address">
+    <div class="refund-address" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
     <div
