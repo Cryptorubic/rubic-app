@@ -62,14 +62,14 @@ import { FormHeaderComponent } from './components/form-header/form-header.compon
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
+import { DepositService } from './services/deposit/deposit.service';
+import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
+import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
 import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
-import { DepositService } from './services/deposit/deposit.service';
-import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
-import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
 
 @NgModule({
   declarations: [

@@ -127,6 +127,27 @@ app-form-switcher {
         display: none;
       }
     }
+
+    &_failed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+
+      background-color: #ba0303;
+      border-color: #ba0303;
+      border-radius: 50%;
+
+      img {
+        width: 12px;
+        height: 10px;
+      }
+
+      &::before {
+        display: none;
+      }
+    }
   }
 
   &__spinner {
@@ -175,6 +196,10 @@ app-form-switcher {
 
     &_completed {
       color: var(--tui-primary);
+    }
+
+    &_failed {
+      color: #ba0303;
     }
   }
 }
