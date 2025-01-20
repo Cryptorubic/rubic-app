@@ -5,6 +5,11 @@ import { AppFeeInfo, AppGasData, ProviderInfo } from '@features/trade/models/pro
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { Observable } from 'rxjs';
+import {
+  CENTRALIZATION_CONFIG,
+  CentralizationStatus,
+  hasCentralizationStatus
+} from '../../constants/centralization-status';
 
 @Component({
   selector: 'app-provider-element',
@@ -41,6 +46,13 @@ export class ProviderElementComponent {
     const time = `${info?.averageTime || 3} M`;
 
     return time;
+  }
+
+  public getCentralizationStatus(): CentralizationStatus | null {
+    if (hasCentralizationStatus(this.tradeState.tradeType)) {
+      return CENTRALIZATION_CONFIG[this.tradeState.tradeType];
+    }
+    return null;
   }
 
   public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
