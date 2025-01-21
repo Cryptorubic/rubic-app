@@ -50,16 +50,6 @@ export class AuthService {
   private initSubscriptions(): void {
     this.walletConnectorService.addressChange$.subscribe(address => {
       this.setCurrentUser(address, this.walletConnectorService.chainType);
-      setTimeout(() => {
-        Injector.web3PublicService
-          .getWeb3Public('SOLANA')
-          .callForTokensInfo(
-            ['6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN'],
-            ['decimals', 'name', 'symbol']
-          )
-          .then(d => console.log(`%cSOLANA_TOKEN ${d[0].name}`, 'color: blue; font-size: 20px;', d))
-          .catch(err => console.log(`%cERROR_FETCH ==> ${err}`, 'color: red; font-size: 20px;'));
-      }, 2000);
     });
   }
 
