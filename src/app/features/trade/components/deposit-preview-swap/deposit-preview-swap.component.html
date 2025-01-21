@@ -8,7 +8,8 @@
     isMobile: isMobile$ | async,
     isValidRefundAddress: isValidRefundAddress$ | async,
     spesificStatusText: specificProviderStatusText$ | async,
-    isRefundAddressRequired: isRefundAddressRequired$ | async
+    isRefundAddressRequired: isRefundAddressRequired$ | async,
+    isToAmountCalculated: isToAmountCalculated$ | async
   } as state"
 >
   <ng-container header>
@@ -48,6 +49,7 @@
           ></app-asset-selector>
           <div right class="input-container">
             <app-amount-transput
+            [class.tui-skeleton]="!state.isToAmountCalculated"
               formType="to"
               [selectedToken]="toAsset$ | async"
               inputMode="output"

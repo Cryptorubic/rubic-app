@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
-import { combineLatest, firstValueFrom, Observable, timer } from 'rxjs';
+import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
@@ -75,9 +75,25 @@ export class DepositPreviewSwapComponent {
 
   public readonly fromAmount$ = this.swapsFormService.fromAmount$.pipe(first());
 
-  public readonly toAmount$ = this.swapsFormService.toAmount$
+  private readonly calculatedToAmount$ = this.swapsFormService.toAmount$
     .pipe(map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null)))
     .pipe(first());
+
+  public readonly toAmount$ = merge(
+    this.calculatedToAmount$,
+    this.depositService.depositTrade$.pipe(
+      map(depositTrade => {
+        return depositTrade?.toAmount
+          ? {
+              actualValue: depositTrade.toAmount,
+              visibleValue: depositTrade.toAmount.toFixed()
+            }
+          : null;
+      })
+    )
+  );
+
+  public readonly isToAmountCalculated$ = this.toAmount$.pipe(map(toAmount => Boolean(toAmount)));
 
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
