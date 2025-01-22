@@ -79,18 +79,15 @@
       <tui-expand [expanded]="expanded">
         <ng-template tuiExpandContent>
           <div class="element__expandable">
-            <div
-              *ngIf="getCentralizationStatus() as centralization"
-              class="element__expandable-status"
-            >
+            <div *ngIf="tradeState.centralizationStatus" class="element__expandable-status">
               <img
                 class="element__expan dable-status-icon"
-                [src]="'assets/images/icons/' + centralization + '.png'"
+                [src]="'assets/images/icons/' + tradeState.centralizationStatus + '.png'"
                 width="16"
                 height="16"
                 alt="centralization"
               />
-              <p class="element__expandable-status-text">{{ centralization }}</p>
+              <p class="element__expandable-status-text">{{ tradeState.centralizationStatus }}</p>
             </div>
 
             <app-route-element
