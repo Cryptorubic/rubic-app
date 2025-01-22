@@ -226,8 +226,7 @@ export class TokensApiService {
     return this.httpService
       .get<TokensBackendResponse>('', options, `https://dev2-api.rubic.exchange/api/v2/tokens/`)
       .pipe(
-        catchError(err => {
-          console.log('ERROR_fetchQueryTokens', err);
+        catchError(() => {
           return of({
             count: 0,
             next: '0',

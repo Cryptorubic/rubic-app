@@ -31,8 +31,8 @@ import { AssetsSelectorService } from '@features/trade/components/assets-selecto
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
 import { AssetType } from '@app/features/trade/models/asset';
-import { TokensListBuilder } from './tokens-list-builder';
 import { TokensUpdaterService } from '../../../../../../core/services/tokens/tokens-updater.service';
+import { TokensListBuilder } from './utils/tokens-list-builder';
 
 @Injectable()
 export class TokensListStoreService {

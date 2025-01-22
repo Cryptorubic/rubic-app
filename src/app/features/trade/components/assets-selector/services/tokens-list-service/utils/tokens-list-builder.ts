@@ -2,15 +2,15 @@ import { TokensStoreService } from '@app/core/services/tokens/tokens-store.servi
 import { Token } from '@shared/models/tokens/token';
 
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
-import { AssetsSelectorService } from '../assets-selector-service/assets-selector.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
-import { TokensListType } from '../../models/tokens-list-type';
-import { sorterByChain, sorterByTokenRank, TokensSorter } from './utils/sorters';
+import { sorterByChain, sorterByTokenRank, TokensSorter } from './sorters';
+import { AssetsSelectorService } from '../../assets-selector-service/assets-selector.service';
+import { TokensListType } from '../../../models/tokens-list-type';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);

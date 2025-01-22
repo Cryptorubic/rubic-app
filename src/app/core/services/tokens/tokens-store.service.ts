@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, forkJoin, from, iif, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { catchError, debounceTime, exhaustMap, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
@@ -25,6 +25,7 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
 
+type TokenAddress = string;
 @Injectable({
   providedIn: 'root'
 })
@@ -115,6 +116,8 @@ export class TokensStoreService {
 
   private async setupAllChainsTokensList(): Promise<void> {
     // firstly load tokens without balances to make allChainsTokens not empty
+    const start = Date.now();
+    console.log('setupAllChainsTokensList_START ==> ', start);
     const tokensListForAllChainsFromBackend = await firstValueFrom(
       this.tokensApiService.fetchTokensListForAllChains()
     );
@@ -129,6 +132,7 @@ export class TokensStoreService {
 
         this._isBalanceLoading$.allChains.next(false);
         this.isBalanceAlreadyCalculatedForChain.allChains = true;
+        console.log('setupAllChainsTokensList_END ==> ', Date.now() - start);
       })
       .catch(err => {
         console.log(`%cERROR_getTokensWithBalance ===> ${err}`, 'color: red; font-size: 20px');
@@ -194,7 +198,7 @@ export class TokensStoreService {
     forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
       .pipe(
         debounceTime(500),
-        exhaustMap(([tokens, user]) => {
+        switchMap(([tokens, user]) => {
           if (!user) return of(this.getDefaultTokenAmounts(tokens, false));
 
           this._isBalanceLoading$[blockchain].next(true);
@@ -425,22 +429,32 @@ export class TokensStoreService {
     tokensWithBalances: List<TokenAmount>,
     patchAllChains: boolean = false
   ): void {
-    const list = patchAllChains ? this.allChainsTokens : this.tokens;
+    const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
-    const tokens = (list || List([])).map(token => {
-      const foundToken = tokensWithBalances.find(tokenWithBalance =>
-        compareTokens(token, tokenWithBalance)
-      );
-      if (!foundToken) {
-        return token;
+    const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
+    tokensWithBalances.forEach(t => {
+      const chainType = BlockchainsInfo.getChainType(t.blockchain);
+      if (Web3Pure[chainType].isNativeAddress(t.address)) {
+        tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
       } else {
-        return {
-          ...token,
-          amount: foundToken.amount
-        };
+        tokensWithBalancesMap.set(t.address.toLowerCase(), t);
       }
     });
+
+    const tokens = list.map(token => {
+      const chainType = BlockchainsInfo.getChainType(token.blockchain);
+      const foundTokenWithBalance = Web3Pure[chainType].isNativeAddress(token.address)
+        ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
+        : tokensWithBalancesMap.get(token.address.toLowerCase());
+
+      if (!foundTokenWithBalance) {
+        return token;
+      } else {
+        return { ...token, amount: foundTokenWithBalance.amount };
+      }
+    });
+
     _listSubj$.next(tokens);
   }
 

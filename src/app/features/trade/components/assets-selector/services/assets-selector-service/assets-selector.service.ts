@@ -110,7 +110,7 @@ export class AssetsSelectorService {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        // this.tokensStoreService.resetBalanceCalculatingStatuses();
+        this.tokensStoreService.resetBalanceCalculatingStatuses();
         this.tokensStoreService.startBalanceCalculating(this.assetType || 'allChains');
       });
   }
