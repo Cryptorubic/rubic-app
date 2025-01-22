@@ -22,6 +22,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { BalanceLoaderService } from './balance-loader.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -37,7 +38,8 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly balanceLoaderService: BalanceLoaderService
   ) {}
 
   /**
@@ -271,7 +273,7 @@ export class TokensService {
           token =>
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
-        return this.tokensStoreService.getTokensWithBalance(filteredTokens);
+        return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
       })
     );
   }

@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { BlockchainItem } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
+import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -24,9 +24,9 @@ export class AssetTypesAsideComponent {
     disabledFrom: false
   };
 
-  public readonly selectedAssetType$ = this.assetsSelectorService.assetType$;
+  public readonly selectedAssetType$ = this.assetsSelectorStateService.assetType$;
 
-  public readonly formType = this.assetsSelectorService.formType;
+  public readonly formType = this.assetsSelectorStateService.formType;
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -44,7 +44,7 @@ export class AssetTypesAsideComponent {
 
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
-    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly queryParamsService: QueryParamsService,
     private readonly headerStore: HeaderStore,
     private readonly filterQueryService: FilterQueryService

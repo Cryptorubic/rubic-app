@@ -14,6 +14,8 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SpindlService } from './core/services/spindl-ads/spindl.service';
+import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 
 @Component({
   selector: 'app-root',
@@ -35,17 +37,27 @@ export class AppComponent implements AfterViewInit {
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly spindlService: SpindlService
+    private readonly spindlService: SpindlService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensStoreService: TokensStoreService
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
     this.spindlService.initSpindlAds();
+    this.subscribeOnWalletChanges();
   }
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+  }
+
+  private subscribeOnWalletChanges(): void {
+    this.walletConnectorService.addressChange$.subscribe(() => {
+      this.tokensStoreService.resetBalanceCalculatingStatuses();
+      this.tokensStoreService.startBalanceCalculating('allChains');
+    });
   }
 
   /**

@@ -9,15 +9,15 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
 import { sorterByChain, sorterByTokenRank, TokensSorter } from './sorters';
-import { AssetsSelectorService } from '../../assets-selector-service/assets-selector.service';
 import { TokensListType } from '../../../models/tokens-list-type';
+import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);
 
   constructor(
     private readonly tokensStoreService: TokensStoreService,
-    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly swapFormService: SwapsFormService
   ) {}
 
@@ -29,7 +29,7 @@ export class TokensListBuilder {
 
     if (listType === 'favorite') {
       this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.favoriteTokens);
-    } else if (this.assetsSelectorService.assetType === 'allChains') {
+    } else if (this.assetsSelectorStateService.assetType === 'allChains') {
       this.tempTokensList = this.addAvailableFavoriteFields(
         this.tokensStoreService.allChainsTokens
       );
@@ -111,7 +111,7 @@ export class TokensListBuilder {
       return Web3Pure[chainType].isNativeAddress(token.address);
     });
 
-    if (nativeTokenIndex === -1 || this.assetsSelectorService.assetType === 'allChains') {
+    if (nativeTokenIndex === -1 || this.assetsSelectorStateService.assetType === 'allChains') {
       return List(tokens.sort(sorter));
     } else {
       const slicedTokensArray = [
@@ -136,7 +136,7 @@ export class TokensListBuilder {
 
   private oppositeToken(): Token | null {
     const oppositeAssetTypeKey =
-      this.assetsSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
+      this.assetsSelectorStateService.formType === 'from' ? 'toToken' : 'fromToken';
     const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
 
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;

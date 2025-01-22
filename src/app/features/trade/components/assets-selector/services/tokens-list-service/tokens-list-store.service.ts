@@ -33,6 +33,7 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '../../../../../../core/services/tokens/tokens-updater.service';
 import { TokensListBuilder } from './utils/tokens-list-builder';
+import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -77,7 +78,7 @@ export class TokensListStoreService {
   }
 
   private get blockchain(): BlockchainName | null {
-    const assetType = this.assetsSelectorService.assetType;
+    const assetType = this.assetsSelectorStateService.assetType;
     if (!BlockchainsInfo.isBlockchainName(assetType)) {
       return null;
     }
@@ -94,6 +95,7 @@ export class TokensListStoreService {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
@@ -118,7 +120,10 @@ export class TokensListStoreService {
   }
 
   private subscribeOnSearchQueryChange(): void {
-    combineLatest([this.searchQueryService.query$, this.assetsSelectorService.selectorListType$])
+    combineLatest([
+      this.searchQueryService.query$,
+      this.assetsSelectorStateService.selectorListType$
+    ])
       .pipe(
         filter(([_, selectorListType]) => selectorListType === 'tokens'),
         takeUntil(this.destroy$)
@@ -206,7 +211,7 @@ export class TokensListStoreService {
         if (backendTokens.size) {
           const tlb = new TokensListBuilder(
             this.tokensStoreService,
-            this.assetsSelectorService,
+            this.assetsSelectorStateService,
             this.swapFormService
           );
 
@@ -280,11 +285,11 @@ export class TokensListStoreService {
     const query = this.searchQuery.toLowerCase();
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
-      this.assetsSelectorService,
+      this.assetsSelectorStateService,
       this.swapFormService
     );
 
-    if (this.assetsSelectorService.assetType === 'allChains') {
+    if (this.assetsSelectorStateService.assetType === 'allChains') {
       return tlb
         .initList(this.listType)
         .applyFilterBySearchQueryOnClient(query)
@@ -305,11 +310,11 @@ export class TokensListStoreService {
   private getSortedTokens(): AvailableTokenAmount[] {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
-      this.assetsSelectorService,
+      this.assetsSelectorStateService,
       this.swapFormService
     );
 
-    if (this.assetsSelectorService.assetType === 'allChains') {
+    if (this.assetsSelectorStateService.assetType === 'allChains') {
       return tlb.initList(this.listType).applyDefaultSort().toArray();
     }
 
@@ -333,7 +338,7 @@ export class TokensListStoreService {
 
   private oppositeToken(): Token | null {
     const oppositeAssetTypeKey =
-      this.assetsSelectorService.formType === 'from' ? 'toToken' : 'fromToken';
+      this.assetsSelectorStateService.formType === 'from' ? 'toToken' : 'fromToken';
     const oppositeAsset = this.swapFormService.inputValue[oppositeAssetTypeKey];
     return isMinimalToken(oppositeAsset) ? oppositeAsset : null;
   }

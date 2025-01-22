@@ -13,7 +13,6 @@ import {
   BlockchainsInfo,
   EvmBlockchainName,
   Injector,
-  Web3Public,
   Web3Pure
 } from 'rubic-sdk';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
@@ -23,7 +22,7 @@ import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
-import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
+import { BalanceLoaderService } from './balance-loader.service';
 
 type TokenAddress = string;
 @Injectable({
@@ -96,7 +95,8 @@ export class TokensStoreService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly storeService: StoreService,
-    private readonly tokensUpdaterService: TokensUpdaterService
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly balanceLoaderService: BalanceLoaderService
   ) {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
@@ -106,7 +106,7 @@ export class TokensStoreService {
   private setupStorageTokens(): void {
     this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
     if (this.storageTokens.length) {
-      const tokens = this.getDefaultTokenAmounts(
+      const tokens = this.balanceLoaderService.getTokensWithNullBalances(
         List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
         false
       );
@@ -116,26 +116,27 @@ export class TokensStoreService {
 
   private async setupAllChainsTokensList(): Promise<void> {
     // firstly load tokens without balances to make allChainsTokens not empty
-    const start = Date.now();
-    console.log('setupAllChainsTokensList_START ==> ', start);
     const tokensListForAllChainsFromBackend = await firstValueFrom(
       this.tokensApiService.fetchTokensListForAllChains()
     );
-    const defaultTokensList = this.getDefaultTokenAmounts(tokensListForAllChainsFromBackend, false);
+    const defaultTokensList = this.balanceLoaderService.getTokensWithNullBalances(
+      tokensListForAllChainsFromBackend,
+      false
+    );
     this._allChainsTokens$.next(defaultTokensList);
+    this._isBalanceLoading$.allChains.next(true);
 
     this._isBalanceLoading$.allChains.next(true);
-    this.getTokensWithBalance(tokensListForAllChainsFromBackend)
+    this.balanceLoaderService
+      .getTokensWithBalance(tokensListForAllChainsFromBackend)
       .then(allChainsTokensWithBalances => {
         this.patchTokensBalances(allChainsTokensWithBalances, true);
         this.tokensUpdaterService.triggerUpdateTokens();
 
         this._isBalanceLoading$.allChains.next(false);
         this.isBalanceAlreadyCalculatedForChain.allChains = true;
-        console.log('setupAllChainsTokensList_END ==> ', Date.now() - start);
       })
-      .catch(err => {
-        console.log(`%cERROR_getTokensWithBalance ===> ${err}`, 'color: red; font-size: 20px');
+      .catch(() => {
         this._isBalanceLoading$.allChains.next(false);
         this.isBalanceAlreadyCalculatedForChain.allChains = false;
       });
@@ -166,10 +167,13 @@ export class TokensStoreService {
           const favoriteTokensByBlockchain = favoriteTokens.filter(
             fT => fT.blockchain === blockchain
           );
+          const favoriteTokensWithoutBalances = this.balanceLoaderService.getTokensWithNullBalances(
+            List(favoriteTokensByBlockchain),
+            true
+          );
+
           return (
-            await this.getTokensWithBalance(
-              this.getDefaultTokenAmounts(List(favoriteTokensByBlockchain), true)
-            )
+            await this.balanceLoaderService.getTokensWithBalance(favoriteTokensWithoutBalances)
           ).toArray();
         })
       )
@@ -199,12 +203,12 @@ export class TokensStoreService {
       .pipe(
         debounceTime(500),
         switchMap(([tokens, user]) => {
-          if (!user) return of(this.getDefaultTokenAmounts(tokens, false));
+          if (!user) return of(this.balanceLoaderService.getTokensWithNullBalances(tokens, false));
 
           this._isBalanceLoading$[blockchain].next(true);
           this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
 
-          return this.getTokensWithBalance(tokens);
+          return this.balanceLoaderService.getTokensWithBalance(tokens);
         }),
         catchError(() => of(List()))
       )
@@ -232,71 +236,6 @@ export class TokensStoreService {
     return this._isBalanceLoading$[blockchain].asObservable();
   }
 
-  /**
-   * @param tokensList list of tokens, tokens can be from different chains in same list
-   * @returns list of tokens from store with balances
-   */
-  public async getTokensWithBalance(
-    tokensList: List<TokenAmount | Token>
-  ): Promise<List<TokenAmount>> {
-    const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
-
-    for (const token of tokensList) {
-      const chainTokensList = tokensByChain[token.blockchain];
-      if (!Array.isArray(chainTokensList)) {
-        tokensByChain[token.blockchain] = [] as Token[];
-      }
-      if (isTokenAmount(token)) {
-        tokensByChain[token.blockchain].push(token);
-      } else {
-        tokensByChain[token.blockchain].push(
-          this.getDefaultTokenAmounts(List([token]), false).get(0)
-        );
-      }
-    }
-
-    try {
-      const promises = Object.entries(tokensByChain).map(
-        ([chain, tokens]: [BlockchainName, Token[]]) => {
-          const doesWalletSupportsTokenChain =
-            BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
-          // if EVM-address used -> it will fetch only evm address etc.
-          if (!doesWalletSupportsTokenChain) return tokens.map(() => new BigNumber(NaN));
-
-          const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-          const chainBalancesPromise = web3Public.getTokensBalances(
-            this.userAddress,
-            tokens.map(t => t.address)
-          );
-
-          const withTimeout = pTimeout(
-            chainBalancesPromise,
-            3_000,
-            new Error(`chainTokensBalances_Timeout for chain ${chain}.`)
-          ).catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
-
-          return withTimeout;
-        }
-      );
-
-      const resp = await Promise.all(promises);
-      const allTokensBalances = resp.flat();
-      const allTokensWithAmountArray = Object.values(tokensByChain)
-        .flat()
-        .map((token, index) => ({
-          ...token,
-          amount: allTokensBalances[index]
-            ? Web3Pure.fromWei(allTokensBalances[index], token.decimals)
-            : new BigNumber(NaN)
-        })) as TokenAmount[];
-
-      return List(allTokensWithAmountArray);
-    } catch (err) {
-      console.log('%cgetAllChainsTokenBalances_ERROR', 'color: red; font-size: 20px;', err);
-      return List([]);
-    }
-  }
-
   public updateStorageTokens(tokens: List<Token>): void {
     const updatedTokens: StorageToken[] = tokens
       .map(token => ({
@@ -321,19 +260,6 @@ export class TokensStoreService {
     if (shouldUpdateList) {
       this.storeService.setItem('RUBIC_TOKENS', updatedTokens);
     }
-  }
-
-  /**
-   * Sets default tokens params.
-   * @param tokens Tokens list.
-   * @param isFavorite Is tokens list favorite.
-   */
-  public getDefaultTokenAmounts(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
-    return tokens.map(token => ({
-      ...token,
-      amount: new BigNumber(NaN),
-      favorite: isFavorite
-    }));
   }
 
   /**
@@ -419,7 +345,9 @@ export class TokensStoreService {
             if (isTokenAmount(newToken)) {
               return newToken;
             }
-            return this.getDefaultTokenAmounts(List([newToken]), isFavorite).get(0);
+            return this.balanceLoaderService
+              .getTokensWithNullBalances(List([newToken]), isFavorite)
+              .get(0);
           })
       );
     this._tokens$.next(tokens);

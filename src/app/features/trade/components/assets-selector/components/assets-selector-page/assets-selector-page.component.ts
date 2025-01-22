@@ -22,6 +22,7 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
+import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -37,7 +38,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
-  public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
+  public readonly selectorListType$ = this.assetsSelectorStateService.selectorListType$;
 
   public readonly headerText$ = this.selectorListType$.pipe(
     map(type => (type === 'blockchains' ? 'Blockchains List' : 'Select Chain and Token'))
@@ -49,6 +50,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
@@ -87,7 +89,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnAssetsSelect(): void {
-    this.assetsSelectorService.assetSelected$
+    this.assetsSelectorStateService.assetSelected$
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedAsset => {
         if (isMinimalToken(selectedAsset)) {
