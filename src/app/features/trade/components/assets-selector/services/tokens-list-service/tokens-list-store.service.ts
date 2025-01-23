@@ -152,8 +152,13 @@ export class TokensListStoreService {
    * Can be called only from constructor.
    */
   private subscribeOnUpdateTokens(): void {
+    let x = 1;
     this.tokensUpdaterService.updateTokensList$
       .pipe(
+        tap(() => {
+          console.log('LIST_UPDATED_' + x);
+          x += 1;
+        }),
         switchMap(() => {
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
