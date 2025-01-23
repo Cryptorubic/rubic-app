@@ -263,7 +263,10 @@ export class CrossChainService {
   public async swapTrade(
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
-    useCacheData?: boolean
+    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+      useCacheData: false,
+      skipAmountCheck: false
+    }
   ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
       return null;
@@ -310,7 +313,8 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
-      useCacheData: useCacheData || false
+      useCacheData: params.useCacheData,
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {
