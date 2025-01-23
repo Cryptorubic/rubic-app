@@ -17559,10 +17559,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.50.4-alpha-xy-retro-bridge-fix.0:
-  version "5.50.4-alpha-xy-retro-bridge-fix.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.50.4-alpha-xy-retro-bridge-fix.0.tgz#63b8556cc6b5b94ff5342395f82f51a58ee3a7f2"
-  integrity sha512-qqFqYSbCZTDumHcaMGMJ439NK05zunm4ZybPg2VLZjWB89te0DgF8kW6zYln7of74i/wKQbyGbOKbCRt/XVQTA==
+rubic-sdk@5.50.5:
+  version "5.50.5"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.50.5.tgz#293051f42d931129e16118928e3a34bc4f0a8873"
+  integrity sha512-MmSABhp5lnUJje5tooxKuEmQ2Lc5zpU/tz91U/ZZbfRUgxZAdOFBrpgnyI2mP28TsG5xaxcS6cmMUfE08YiipA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
