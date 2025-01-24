@@ -149,5 +149,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain',
   [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
-  [BLOCKCHAIN_NAME.MORPH]: 'Morph'
+  [BLOCKCHAIN_NAME.MORPH]: 'Morph',
+  [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal'
 };
