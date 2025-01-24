@@ -101,6 +101,7 @@ export class BlockchainsListService {
       );
     }
     const availableBlockchains = blockchains.map(blockchain => {
+      // // @TODO REMOVE
       const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
         blockchain.name
       );

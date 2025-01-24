@@ -10,6 +10,10 @@ app-form-switcher {
   justify-content: flex-end;
 }
 
+.refund-address {
+  margin-top: var(--tui-padding-l);
+}
+
 .target-address {
   margin-top: var(--tui-padding-l);
   padding: var(--tui-padding-l);
@@ -33,6 +37,12 @@ app-form-switcher {
     font-weight: 700;
     font-size: 18px;
   }
+
+  &__disabled {
+    opacity: 0.8;
+
+    user-select: none;
+  }
 }
 
 .status-wrapper {
@@ -40,6 +50,14 @@ app-form-switcher {
 
   background: var(--primary-background);
   border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+  transition: all 100ms;
+
+  &__inactive {
+    margin-top: var(--tui-padding-l);
+
+    border-radius: var(--tui-radius-m);
+  }
 }
 
 
@@ -115,6 +133,27 @@ app-form-switcher {
         display: none;
       }
     }
+
+    &_failed {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+
+      background-color: #ba0303;
+      border-color: #ba0303;
+      border-radius: 50%;
+
+      img {
+        width: 12px;
+        height: 10px;
+      }
+
+      &::before {
+        display: none;
+      }
+    }
   }
 
   &__spinner {
@@ -163,6 +202,10 @@ app-form-switcher {
 
     &_completed {
       color: var(--tui-primary);
+    }
+
+    &_failed {
+      color: #ba0303;
     }
   }
 }
@@ -256,5 +299,13 @@ app-form-switcher {
 
   87% {
     box-shadow: 0.2em -0.2em 0 0 currentcolor;
+  }
+}
+
+.failed-notification {
+  ::ng-deep {
+    .t-content {
+      max-width: 450px;
+    }
   }
 }
