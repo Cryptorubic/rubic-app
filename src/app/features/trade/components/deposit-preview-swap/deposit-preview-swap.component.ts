@@ -146,15 +146,7 @@ export class DepositPreviewSwapComponent {
     private readonly modalService: ModalService
   ) {
     this.previewSwapService.setSelectedProvider();
-    this.refundService.isValidRefundAddress$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(isValid => {
-        if (isValid) {
-          this.setupTrade();
-        } else {
-          this.depositService.removePrevDeposit();
-        }
-      });
+    this.setupTradeIfValidRefundAddress();
   }
 
   public backToForm(): void {
@@ -243,8 +235,11 @@ export class DepositPreviewSwapComponent {
       this.depositService.setupUpdate();
     } catch (err) {
       console.error(`DepositPreviewSwapComponent_setupTrade_error ===> ${err}`);
-      const callbackOnClose = () => this.tradePageService.setState('form');
-      this.modalService.openDepositTradeRateChangedModal(selectedTrade, callbackOnClose);
+      const backToForm = await this.modalService.openDepositTradeRateChangedModal(selectedTrade);
+
+      if (backToForm) {
+        this.tradePageService.setState('form');
+      }
     }
   }
 
@@ -265,5 +260,17 @@ export class DepositPreviewSwapComponent {
       this.hintShown = false;
       this.cdr.markForCheck();
     });
+  }
+
+  private setupTradeIfValidRefundAddress(): void {
+    this.refundService.isValidRefundAddress$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(isValid => {
+        if (isValid) {
+          this.setupTrade();
+        } else {
+          this.depositService.removePrevDeposit();
+        }
+      });
   }
 }

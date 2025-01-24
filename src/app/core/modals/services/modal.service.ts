@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { firstValueFrom, Observable } from 'rxjs';
+import { catchError, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -248,17 +248,14 @@ export class ModalService {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
   }
 
-  public openDepositTradeRateChangedModal(
-    trade: SelectedTrade,
-    onClose: (...args: unknown[]) => void
-  ): Promise<void> {
+  public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
     return firstValueFrom(
       this.showDialog(DepositRateChangedModalComponent, {
         size: 's',
         closeable: false,
         required: true,
-        data: { trade, onClose }
-      })
+        data: { trade }
+      }).pipe(catchError(() => of(false))) as Observable<boolean>
     );
   }
 

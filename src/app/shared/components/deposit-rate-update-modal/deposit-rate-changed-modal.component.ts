@@ -15,16 +15,12 @@ export class DepositRateChangedModalComponent {
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<
-      boolean,
-      { trade: SelectedTrade; onClose: (...args: unknown[]) => void }
-    >
+    private readonly context: TuiDialogContext<boolean, { trade: SelectedTrade }>
   ) {
     this.tradeType = context.data.trade.tradeType as CrossChainTradeType;
   }
 
   public backToForm(): void {
-    this.context.data.onClose();
-    this.context.completeWith(null);
+    this.context.completeWith(true);
   }
 }
