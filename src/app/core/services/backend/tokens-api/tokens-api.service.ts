@@ -171,7 +171,11 @@ export class TokensApiService {
 
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
-        return TokensApiService.prepareTokens(backendTokens);
+        const fakeTokens = this.getFakeTokens();
+
+        const allTokens = [...backendTokens, ...fakeTokens];
+
+        return TokensApiService.prepareTokens(allTokens);
       })
     );
   }
@@ -272,5 +276,9 @@ export class TokensApiService {
           };
         })
       );
+  }
+
+  public getFakeTokens(): BackendToken[] {
+    return [];
   }
 }

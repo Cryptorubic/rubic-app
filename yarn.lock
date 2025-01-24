@@ -5179,10 +5179,10 @@
     decamelize-keys "2.0.1"
     ofetch "1.3.4"
 
-"@ston-fi/sdk@2.0.0-rc.8":
-  version "2.0.0-rc.8"
-  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.0-rc.8.tgz#c6b7260dfe29c27ec5e63f88af84ac24a730accd"
-  integrity sha512-9+9qBhdGzTVsC3iDHVQnrEFU7N7mdlGKbn57pHJrVfZiGm/55X5IPl4DKclbdtl9Gtjf9Kf8bBLweMEwzHntGw==
+"@ston-fi/sdk@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.1.tgz#7e07206a8486a02124790b123ae1c5dfa05119cb"
+  integrity sha512-9Xut/lkCH74QYjIUAi7HA1T30M1QfcTLj9iosmX4Ma7cJFYuRzO4ygYN/qB0dVkVQSRawaDTZDT1e6dKp8AhAQ==
 
 "@stylelint/postcss-css-in-js@^0.37.2":
   version "0.37.3"
@@ -17559,10 +17559,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.51.0-alpha.changelly-refund.12:
-  version "5.51.0-alpha.changelly-refund.12"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.51.0-alpha.changelly-refund.12.tgz#9f67ee15c348d21492d0275bfe5ef94d674f58bc"
-  integrity sha512-HxVJjvAuFTRi3xR44CDi++b+YYMH8wFPhiczzeR8BRtGQdkXiq3CBir1Pb8iBRuIHCvxBarbgAq8wem0/kQdIg==
+rubic-sdk@5.51.0-alpha.changelly-refund.13:
+  version "5.51.0-alpha.changelly-refund.13"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.51.0-alpha.changelly-refund.13.tgz#897f1883ebcffca35bf39c492603c086158a9545"
+  integrity sha512-qpWBAb8WKMmwxgAt2Y/jaL/9bV2QYo2OOgVrJfZT7yBBGxKfrjObo7fO7wdLNqaiUMYPtKzYHNEAdfJGqgTmYQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -17578,7 +17578,7 @@ rubic-sdk@5.51.0-alpha.changelly-refund.12:
     "@solana/web3.js" "1.89.1"
     "@solflare-wallet/utl-sdk" "^1.4.0"
     "@ston-fi/api" "^0.12.1"
-    "@ston-fi/sdk" "2.0.0-rc.8"
+    "@ston-fi/sdk" "2.0.1"
     "@ton/core" "0.59.0"
     "@ton/crypto" "^3.3.0"
     "@ton/ton" "15.1.0"

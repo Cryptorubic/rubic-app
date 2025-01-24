@@ -1,5 +1,6 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { CrossChainTrade, OnChainTrade, RubicStep } from 'rubic-sdk';
+import { CentralizationStatus } from '../constants/centralization-status';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
@@ -24,6 +25,7 @@ export type TradeState = (TradefullState | TradelessState) & {
   needAuthWallet?: boolean;
   routes: RubicStep[];
   badges?: BadgeInfoForComponent[];
+  centralizationStatus: CentralizationStatus;
 };
 
 export interface BadgeInfo {
