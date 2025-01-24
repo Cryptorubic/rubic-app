@@ -4,7 +4,7 @@ import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
-  TOKENS = 'v1/tokens/',
+  TOKENS = 'v2/tokens/',
   FAVORITE_TOKENS = 'v1/tokens/favorite/',
   TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
 }

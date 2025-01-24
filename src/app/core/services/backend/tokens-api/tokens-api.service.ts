@@ -21,7 +21,6 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
 
@@ -34,7 +33,7 @@ import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, TO_BACKEND_BLOCKCHAINS } f
 export class TokensApiService {
   public needRefetchTokens: boolean;
 
-  private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
+  private readonly tokensApiUrl = `https://dev-api.rubic.exchange/api/`;
 
   constructor(
     private readonly httpService: HttpService,
