@@ -49,7 +49,7 @@
           ></app-asset-selector>
           <div right class="input-container">
             <app-amount-transput
-            [class.tui-skeleton]="!state.isToAmountCalculated"
+              [class.tui-skeleton]="!state.isToAmountCalculated"
               formType="to"
               [selectedToken]="toAsset$ | async"
               inputMode="output"
