@@ -129,8 +129,9 @@ export class CrossChainApiService {
       ...('squidrouterRequestId' in trade && {
         squidrouter_request_id: trade.squidrouterRequestId
       }),
-      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...('simpleSwapId' in trade && { simpleswap_id: trade.simpleSwapId }),
+      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
+      ...('changellyId' in trade && { changelly_id: trade.changellyId }),
       ...(referral && { influencer: referral })
     };
 
