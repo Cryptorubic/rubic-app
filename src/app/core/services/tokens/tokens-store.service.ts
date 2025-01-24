@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, from, iif, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, forkJoin, from, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
-import { catchError, debounceTime, first, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
@@ -180,7 +180,45 @@ export class TokensStoreService {
     ).flat();
   }
 
-  public startBalanceCalculating(blockchain: AssetType): void {
+  // public startBalanceCalculating(blockchain: AssetType): void {
+  //   if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
+  //     console.log(
+  //       `%cSKIPPED FOR ${blockchain}`,
+  //       'color: red; font-size: 20px;',
+  //       this.isBalanceAlreadyCalculatedForChain
+  //     );
+  //     return;
+  //   }
+
+  //   const tokensList$: Observable<List<TokenAmount>> = iif(
+  //     () => blockchain === 'allChains',
+  //     this.allChainsTokens$,
+  //     this.tokens$.pipe(
+  //       first(v => Boolean(v)),
+  //       map(tokens => tokens.filter(t => t.blockchain === blockchain))
+  //     )
+  //   );
+
+  //   forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
+  //     .pipe(
+  //       switchMap(([tokens, user]) => {
+  //         if (!user) return of(this.balanceLoaderService.getTokensWithNullBalances(tokens, false));
+
+  //         this._isBalanceLoading$[blockchain].next(true);
+  //         this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
+
+  //         return this.balanceLoaderService.getTokensWithBalance(tokens);
+  //       }),
+  //       catchError(() => of(List()))
+  //     )
+  //     .subscribe((tokensWithBalances: List<TokenAmount>) => {
+  //       this.patchTokensBalances(tokensWithBalances, blockchain === 'allChains');
+  //       this.tokensUpdaterService.triggerUpdateTokens();
+  //       this._isBalanceLoading$[blockchain].next(false);
+  //     });
+  // }
+
+  public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
     if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
       console.log(
         `%cSKIPPED FOR ${blockchain}`,
@@ -189,34 +227,33 @@ export class TokensStoreService {
       );
       return;
     }
+    const tokensList =
+      blockchain === 'allChains'
+        ? this.allChainsTokens
+        : this.tokens.filter(t => t.blockchain === blockchain);
 
-    const tokensList$: Observable<List<TokenAmount>> = iif(
-      () => blockchain === 'allChains',
-      this.allChainsTokens$,
-      this.tokens$.pipe(
-        first(v => Boolean(v)),
-        map(tokens => tokens.filter(t => t.blockchain === blockchain))
-      )
-    );
+    if (!this.authService.user) {
+      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
+      this.patchTokensBalances(nullTokens, blockchain === 'allChains');
+      this.tokensUpdaterService.triggerUpdateTokens();
+      return;
+    }
 
-    forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
-      .pipe(
-        debounceTime(500),
-        switchMap(([tokens, user]) => {
-          if (!user) return of(this.balanceLoaderService.getTokensWithNullBalances(tokens, false));
-
-          this._isBalanceLoading$[blockchain].next(true);
-          this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
-
-          return this.balanceLoaderService.getTokensWithBalance(tokens);
-        }),
-        catchError(() => of(List()))
-      )
-      .subscribe((tokensWithBalances: List<TokenAmount>) => {
-        this.patchTokensBalances(tokensWithBalances, blockchain === 'allChains');
-        this.tokensUpdaterService.triggerUpdateTokens();
-        this._isBalanceLoading$[blockchain].next(false);
-      });
+    this._isBalanceLoading$[blockchain].next(true);
+    if (blockchain === 'allChains') {
+      this.balanceLoaderService.updateAllChainsTokensWithBalances(
+        tokensList,
+        this.patchTokensBalances.bind(this),
+        this.isBalanceAlreadyCalculatedForChain,
+        this._isBalanceLoading$
+      );
+    } else {
+      const tokens = await this.balanceLoaderService.getTokensWithBalance(tokensList);
+      this.patchTokensBalances(tokens, false);
+      this.tokensUpdaterService.triggerUpdateTokens();
+      this._isBalanceLoading$[blockchain].next(false);
+      this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
+    }
   }
 
   public resetBalanceCalculatingStatuses(): void {

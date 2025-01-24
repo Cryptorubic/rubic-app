@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 export const CHAINS_TO_LOAD_FIRSTLY = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -8,3 +8,9 @@ export const CHAINS_TO_LOAD_FIRSTLY = [
   BLOCKCHAIN_NAME.BASE,
   BLOCKCHAIN_NAME.ZK_SYNC
 ] as const;
+
+export type ChainsToLoadFirstly = (typeof CHAINS_TO_LOAD_FIRSTLY)[number];
+
+export function isTopChain(blockchain: BlockchainName): blockchain is ChainsToLoadFirstly {
+  return CHAINS_TO_LOAD_FIRSTLY.some(topChain => topChain === blockchain);
+}
