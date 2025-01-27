@@ -5,8 +5,8 @@ import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
   TOKENS = 'v2/tokens/',
-  FAVORITE_TOKENS = 'v1/tokens/favorite/',
-  TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
+  FAVORITE_TOKENS = 'v2/tokens/favorite/',
+  TOKENS_SECURITY = 'v2/tokens_security/unknown_token'
 }
 
 export interface FavoriteTokenRequestParams {

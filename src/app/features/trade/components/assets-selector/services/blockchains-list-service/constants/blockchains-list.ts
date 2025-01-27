@@ -194,11 +194,6 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
-    name: BLOCKCHAIN_NAME.FRAXTAL,
-    rank: 0.75,
-    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
@@ -244,6 +239,11 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.NEW,
       BlockchainTags.POPULAR
     ]
+  },
+  {
+    name: BLOCKCHAIN_NAME.FRAXTAL,
+    rank: 0.5,
+    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.SONIC,
