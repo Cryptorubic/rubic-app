@@ -105,7 +105,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.NEM]: 'NEM',
   [BLOCKCHAIN_NAME.STELLAR]: 'Stellar',
   [BLOCKCHAIN_NAME.MONERO]: 'Monero',
-  [BLOCKCHAIN_NAME.RIPPLE]: 'Ripple',
+  [BLOCKCHAIN_NAME.RIPPLE]: 'XRP Ledger',
   [BLOCKCHAIN_NAME.TEZOS]: 'Tezos',
   [BLOCKCHAIN_NAME.VERGE]: 'Verge',
   [BLOCKCHAIN_NAME.SYMBOL]: 'Symbol',
@@ -149,5 +149,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain',
   [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
-  [BLOCKCHAIN_NAME.MORPH]: 'Morph'
+  [BLOCKCHAIN_NAME.MORPH]: 'Morph',
+  [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal'
 };

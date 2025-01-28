@@ -354,5 +354,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.BITCOIN]: [''],
   [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
-  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io']
+  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
+  [BLOCKCHAIN_NAME.FRAXTAL]: [
+    'https://rpc.frax.com',
+    'https://fraxtal-rpc.publicnode.com',
+    'https://fraxtal.drpc.org'
+  ]
 };

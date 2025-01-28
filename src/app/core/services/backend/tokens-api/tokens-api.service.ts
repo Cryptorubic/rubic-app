@@ -21,9 +21,9 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 /**
  * Perform backend requests and transforms to get valid tokens.

@@ -230,5 +230,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MORPH]: {
     name: 'Morph',
     rpc: 'https://rpc-quicknode.morphl2.io'
+  },
+  [BLOCKCHAIN_NAME.FRAXTAL]: {
+    name: 'Fraxtal',
+    rpc: 'https://rpc.frax.com'
   }
 };
