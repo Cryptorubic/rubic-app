@@ -11,7 +11,7 @@ import {
   TuiSvgModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiDataListDropdownManagerModule, TuiInputModule } from '@taiga-ui/kit';
+import { TuiCarouselModule, TuiDataListDropdownManagerModule, TuiInputModule } from '@taiga-ui/kit';
 import { FormsModule } from '@angular/forms';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -38,6 +38,7 @@ import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-b
 import { AssetsSearchQueryService } from './services/assets-search-query-service/assets-search-query.service';
 import { AssetsTypeAsideElementComponent } from './components/assets-type-aside-element/assets-type-aside-element.component';
 import { AssetsSelectorStateService } from './services/assets-selector-state/assets-selector-state.service';
+import { TokensListFiltersComponent } from './components/tokens-list/components/tokens-list-filters/tokens-list-filters.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { AssetsSelectorStateService } from './services/assets-selector-state/ass
     BlockchainsFilterListComponent,
     FilterListElementComponent,
     BlockchainsPromoBadgeComponent,
-    AssetsTypeAsideElementComponent
+    AssetsTypeAsideElementComponent,
+    TokensListFiltersComponent
   ],
   imports: [
     CommonModule,
@@ -75,7 +77,8 @@ import { AssetsSelectorStateService } from './services/assets-selector-state/ass
     TuiDataListDropdownManagerModule,
     TuiActiveZoneModule,
     TuiDropdownModule,
-    TuiDataListModule
+    TuiDataListModule,
+    TuiCarouselModule
   ],
   exports: [AssetsSelectorPageComponent],
   providers: [

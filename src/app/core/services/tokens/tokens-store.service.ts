@@ -181,7 +181,6 @@ export class TokensStoreService {
         this.patchTokensBalances.bind(this)
       );
     } else {
-      console.log(`startBalanceCalculating_${blockchain}`, tokensList.toArray());
       this.balanceLoaderService.updateBalancesForSpecificChain(
         tokensList,
         blockchain,

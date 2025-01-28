@@ -1,0 +1,52 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .filters-wrapper {
+    @include flex(row, center, space-between);
+    gap: 5px;
+
+    width: 100%;
+    max-width: 375px;
+    height: 44px;
+
+    background-color: var(--io-background);
+  }
+
+  .filters-wrapper__next-btn {
+    img {
+      transform: rotateZ(270deg);
+    }
+  }
+
+  .filters-wrapper__prev-btn {
+    &:hover {
+      background-color: var(--tui-secondary);
+      border-radius: var(--tui-radius-xs);;
+    }
+
+    img {
+      transform: rotateZ(90deg);
+    }
+  }
+
+  .token-filter {
+    @include flex(row, center, center);
+    gap: 7px;
+    width: 118px;
+    margin-right: 3px;
+
+    background: #2c2d3e;
+
+    border-radius: var(--tui-radius-s);
+
+    transition: all 100ms;
+
+    &:hover {
+      background: var(--tui-secondary);
+    }
+        
+    &__active {
+      background: var(--tui-secondary);
+    }
+  }
+}
