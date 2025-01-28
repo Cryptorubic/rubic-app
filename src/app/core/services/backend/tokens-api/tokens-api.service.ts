@@ -177,7 +177,11 @@ export class TokensApiService {
 
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
-        return TokensApiService.prepareTokens(backendTokens);
+        const fakeTokens = this.getFakeTokens();
+
+        const allTokens = [...backendTokens, ...fakeTokens];
+
+        return TokensApiService.prepareTokens(allTokens);
       })
     );
   }
@@ -297,5 +301,9 @@ export class TokensApiService {
         'https://dev2-api.rubic.exchange/api/v2/tokens/allchains'
       )
       .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
+  }
+
+  public getFakeTokens(): BackendToken[] {
+    return [];
   }
 }

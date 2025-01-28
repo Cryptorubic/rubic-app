@@ -222,5 +222,13 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.GRAVITY]: {
     name: 'Gravity',
     rpc: 'https://rpc.gravity.xyz'
+  },
+  [BLOCKCHAIN_NAME.SONIC]: {
+    name: 'Sonic',
+    rpc: 'https://rpc.soniclabs.com'
+  },
+  [BLOCKCHAIN_NAME.MORPH]: {
+    name: 'Morph',
+    rpc: 'https://rpc-quicknode.morphl2.io'
   }
 };

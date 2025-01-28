@@ -257,6 +257,12 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.retroBridgeId && {
                   retroBridgeId: additionalInfo.retroBridgeId
+                }),
+                ...(additionalInfo.simpleSwapId && {
+                  simpleSwapId: additionalInfo.simpleSwapId
+                }),
+                ...(additionalInfo.changellySwapId && {
+                  changellySwapId: additionalInfo.changellySwapId
                 })
               },
               tradeState.tradeType as CrossChainTradeType

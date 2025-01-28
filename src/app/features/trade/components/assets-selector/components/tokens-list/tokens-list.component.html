@@ -24,7 +24,12 @@
               [style.overflow]="loading ? 'hidden' : 'auto'"
             >
               <li
-                *cdkVirtualFor="let token of tokensToShow; let i = index; trackBy: trackByFn"
+                *cdkVirtualFor="
+                  let token of tokensToShow;
+                  let i = index;
+                  templateCacheSize: 0;
+                  trackBy: trackByFn
+                "
                 class="tokens-list__item"
                 [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
                 [tuiHint]="!token.available ? disabledTokenHint : null"
