@@ -49,6 +49,7 @@ import {
   CentralizationStatus,
   hasCentralizationStatus
 } from '../../constants/centralization-status';
+import { RefundService } from '../refund-service/refund.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -141,7 +142,8 @@ export class SwapsStateService {
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
-    private readonly alternativeRouteService: AlternativeRoutesService
+    private readonly alternativeRouteService: AlternativeRoutesService,
+    private readonly refundService: RefundService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -344,6 +346,7 @@ export class SwapsStateService {
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
+    this.refundService.onTradeSelection(this.currentTrade);
   }
 
   private subscribeOnTradeChange(): void {

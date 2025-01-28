@@ -75,6 +75,7 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
+import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 
 @NgModule({
   declarations: [
@@ -124,7 +125,8 @@ import { SpindleBannerComponent } from './components/spindle-banner/spindle-bann
     ProgressBarComponent,
     WcChangeNetworkModalComponent,
     TonSlippageWarnModalComponent,
-    SpindleBannerComponent
+    SpindleBannerComponent,
+    DepositRateChangedModalComponent
   ],
   imports: [
     CommonModule,

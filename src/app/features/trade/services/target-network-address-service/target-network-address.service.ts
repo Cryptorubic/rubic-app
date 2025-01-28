@@ -74,13 +74,9 @@ export class TargetNetworkAddressService {
     this.addressControl.setAsyncValidators(
       getCorrectAddressValidator({
         fromAssetType: input.fromBlockchain,
-        toBlockchain: input.toBlockchain
+        validatedChain: input.toBlockchain
       })
     );
     this.addressControl.updateValueAndValidity();
-  }
-
-  public clearReceiverAddress(): void {
-    this.addressControl.setValue(null);
   }
 }
