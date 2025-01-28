@@ -254,11 +254,12 @@ export class TokensListStoreService {
         });
 
         if (token?.name && token?.symbol && token?.decimals) {
-          const image = await this.fetchTokenImage(token);
+          let image = token.image;
+          if (!image) image = await this.fetchTokenImage(token).catch(() => DEFAULT_TOKEN_IMAGE);
 
           return {
             ...token,
-            image,
+            image: image,
             rank: 0,
             amount: new BigNumber(NaN),
             price: 0,
@@ -422,6 +423,9 @@ export class TokensListStoreService {
   }
 
   private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
+    if (BlockchainsInfo.isSolanaBlockchainName(token.blockchain)) {
+      return null;
+    }
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
   }
 
