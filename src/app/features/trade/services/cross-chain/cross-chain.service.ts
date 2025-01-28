@@ -10,9 +10,7 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
-  CrossChainPaymentInfo,
   CrossChainTradeType,
-  CrossChainTransferTrade,
   EvmBasicTransactionOptions,
   EvmCrossChainTrade,
   NotWhitelistedProviderError,
@@ -54,6 +52,7 @@ import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { RefundService } from '../refund-service/refund.service';
 
 @Injectable()
 export class CrossChainService {
@@ -83,7 +82,8 @@ export class CrossChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly proxyService: ProxyFeeService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly refundService: RefundService
   ) {}
 
   public calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Observable<TradeContainer> {
@@ -242,17 +242,6 @@ export class CrossChainService {
     }
   }
 
-  public async getChangenowPaymentInfo(
-    trade: CrossChainTransferTrade
-  ): Promise<{ paymentInfo: CrossChainPaymentInfo; receiverAddress: string }> {
-    const receiverAddress = this.receiverAddress;
-    const paymentInfo = await trade.getTransferTrade(receiverAddress);
-    return {
-      paymentInfo,
-      receiverAddress
-    };
-  }
-
   /**
    *
    * @param trade trade data
@@ -313,6 +302,7 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
+      refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
       skipAmountCheck: params.skipAmountCheck
     };

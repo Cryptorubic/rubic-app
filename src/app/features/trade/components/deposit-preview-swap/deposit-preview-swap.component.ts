@@ -1,19 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  Inject,
-  Injector
-} from '@angular/core';
-import { firstValueFrom, Observable, of, timer } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
+import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { first, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
 import {
+  CROSS_CHAIN_DEPOSIT_STATUS,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   CrossChainTransferTrade,
-  EvmBlockchainName,
   EvmCrossChainTrade,
   EvmOnChainTrade,
   FeeInfo,
@@ -24,11 +19,8 @@ import {
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
-import { ModalService } from '@core/modals/services/modal.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
@@ -36,15 +28,47 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
+import { RefundService } from '../../services/refund-service/refund.service';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { specificProviderStatusText } from './constants/specific-provider-status';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-deposit-preview-swap',
   templateUrl: './deposit-preview-swap.component.html',
   styleUrls: ['./deposit-preview-swap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  providers: [TuiDestroyService],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('showDepositAddressAnimation', [
+      transition(':enter', [
+        style({ height: '0px', padding: 0, 'margin-top': 0 }),
+        animate('0.3s ease-out', style({ height: '54px', padding: '1rem', 'margin-top': '1rem' }))
+      ])
+    ])
+  ]
 })
 export class DepositPreviewSwapComponent {
-  public readonly status$ = this.depositService.status$;
+  public readonly status$ = combineLatest([
+    this.depositService.status$.pipe(startWith(CROSS_CHAIN_DEPOSIT_STATUS.WAITING)),
+    this.depositService.depositTrade$.pipe(startWith(null))
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status;
+    })
+  );
+
+  public readonly specificProviderStatusText$ = combineLatest([
+    this.depositService.status$,
+    this.depositService.depositTrade$
+  ]).pipe(
+    map(([status, depositTrade]) => {
+      const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
+      return specificStatusText ? specificStatusText : null;
+    })
+  );
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
 
@@ -52,9 +76,25 @@ export class DepositPreviewSwapComponent {
 
   public readonly fromAmount$ = this.swapsFormService.fromAmount$.pipe(first());
 
-  public readonly toAmount$ = this.swapsFormService.toAmount$
+  private readonly calculatedToAmount$ = this.swapsFormService.toAmount$
     .pipe(map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null)))
     .pipe(first());
+
+  public readonly toAmount$ = merge(
+    this.calculatedToAmount$,
+    this.depositService.depositTrade$.pipe(
+      map(depositTrade => {
+        return depositTrade?.toAmount
+          ? {
+              actualValue: depositTrade.toAmount,
+              visibleValue: depositTrade.toAmount.toFixed()
+            }
+          : null;
+      })
+    )
+  );
+
+  public readonly isToAmountCalculated$ = this.toAmount$.pipe(map(toAmount => Boolean(toAmount)));
 
   protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 
@@ -66,6 +106,7 @@ export class DepositPreviewSwapComponent {
     this.previewSwapService.selectedTradeState$.pipe(
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
+
         return {
           ...tradeState,
           feeInfo: info?.feeInfo
@@ -79,7 +120,13 @@ export class DepositPreviewSwapComponent {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
-  public readonly cnTrade$ = this.depositService.depositTrade$;
+  public readonly depositTrade$ = this.depositService.depositTrade$;
+
+  public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY)
+  );
+
+  public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
   public hintShown: boolean = false;
 
@@ -88,19 +135,18 @@ export class DepositPreviewSwapComponent {
     private readonly previewSwapService: PreviewSwapService,
     private readonly router: Router,
     private readonly swapsFormService: SwapsFormService,
-    private readonly walletConnector: WalletConnectorService,
-    private readonly modalService: ModalService,
-    @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly depositService: DepositService,
     private readonly targetAddressService: TargetNetworkAddressService,
+    private readonly refundService: RefundService,
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly modalService: ModalService
   ) {
     this.previewSwapService.setSelectedProvider();
-    this.setupTrade();
+    this.setupTradeIfValidRefundAddress();
   }
 
   public backToForm(): void {
@@ -130,24 +176,6 @@ export class DepositPreviewSwapComponent {
       queryParamsHandling: 'preserve',
       state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
     });
-  }
-
-  private async switchChain(): Promise<void> {
-    const blockchain = this.swapsFormService.inputValue.fromBlockchain;
-    const switched = await this.walletConnector.switchChain(blockchain as EvmBlockchainName);
-    if (switched) {
-      await this.previewSwapService.requestTxSign();
-    }
-  }
-
-  private connectWallet(): void {
-    this.modalService
-      .openWalletModal(this.injector)
-      .pipe(
-        switchMap(() => this.walletConnector.addressChange$),
-        switchMap(el => (Boolean(el) ? this.previewSwapService.requestTxSign() : of(null)))
-      )
-      .subscribe();
   }
 
   public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
@@ -195,14 +223,24 @@ export class DepositPreviewSwapComponent {
   private async setupTrade(): Promise<void> {
     const receiverAddress = this.targetAddressService.address;
     const selectedTrade = await firstValueFrom(this.tradeState$);
-
     this.depositService.removePrevDeposit();
-    const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
-      receiverAddress
-    );
 
-    this.depositService.updateTrade(paymentInfo, receiverAddress);
-    this.depositService.setupUpdate();
+    try {
+      const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
+        receiverAddress,
+        this.refundService.refundAddress
+      );
+
+      this.depositService.updateTrade(paymentInfo, receiverAddress);
+      this.depositService.setupUpdate();
+    } catch (err) {
+      console.error(`DepositPreviewSwapComponent_setupTrade_error ===> ${err}`);
+      const backToForm = await this.modalService.openDepositTradeRateChangedModal(selectedTrade);
+
+      if (backToForm) {
+        this.tradePageService.setState('form');
+      }
+    }
   }
 
   /**
@@ -222,5 +260,17 @@ export class DepositPreviewSwapComponent {
       this.hintShown = false;
       this.cdr.markForCheck();
     });
+  }
+
+  private setupTradeIfValidRefundAddress(): void {
+    this.refundService.isValidRefundAddress$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(isValid => {
+        if (isValid) {
+          this.setupTrade();
+        } else {
+          this.depositService.removePrevDeposit();
+        }
+      });
   }
 }

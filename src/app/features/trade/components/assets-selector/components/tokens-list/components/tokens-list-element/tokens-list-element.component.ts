@@ -51,7 +51,7 @@ export class TokensListElementComponent {
   }
 
   public get securityStatus(): TokenSecurityStatus {
-    if (GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain) === false) {
+    if (!GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain)) {
       return TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN;
     }
 

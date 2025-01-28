@@ -44,13 +44,24 @@ export class TradeInfoManager {
   }
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
-    if (!('gasData' in trade) && !('gasFeeInfo' in trade)) return null;
+    const estimatedGasInWei = trade.getTradeInfo().estimatedGas;
+
+    if ((!('gasData' in trade) && !('gasFeeInfo' in trade)) || !estimatedGasInWei) return null;
 
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
     const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
+
+    if (estimatedGasInWei) {
+      const estimatedGas = Web3Pure.fromWei(estimatedGasInWei, nativeToken.decimals);
+      return {
+        amount: estimatedGas,
+        amountInUsd: estimatedGas.multipliedBy(nativeTokenPrice),
+        symbol: nativeToken.symbol
+      };
+    }
 
     let gasFeeNonWei = null;
     if (trade instanceof EvmCrossChainTrade) {
