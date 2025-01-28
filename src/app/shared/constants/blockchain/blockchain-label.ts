@@ -105,7 +105,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.NEM]: 'NEM',
   [BLOCKCHAIN_NAME.STELLAR]: 'Stellar',
   [BLOCKCHAIN_NAME.MONERO]: 'Monero',
-  [BLOCKCHAIN_NAME.RIPPLE]: 'Ripple',
+  [BLOCKCHAIN_NAME.RIPPLE]: 'XRP Ledger',
   [BLOCKCHAIN_NAME.TEZOS]: 'Tezos',
   [BLOCKCHAIN_NAME.VERGE]: 'Verge',
   [BLOCKCHAIN_NAME.SYMBOL]: 'Symbol',
