@@ -5,11 +5,10 @@ import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { BlockchainName, BlockchainsInfo, Injector, Web3Public, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '../auth/auth.service';
-import pTimeout from 'rubic-sdk/lib/common/utils/p-timeout';
 import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains';
 import { TokensUpdaterService } from './tokens-updater.service';
+import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
-import { BehaviorSubject } from 'rxjs';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -25,17 +24,13 @@ type TokensListOfTopChainsWithOtherChains = {
 export class BalanceLoaderService {
   constructor(
     private readonly authService: AuthService,
-    private readonly tokensUpdaterService: TokensUpdaterService
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService
   ) {}
 
-  public updateAllChainsTokensWithBalances(
+  public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
-    patchTokensInGeneralList: (
-      tokensWithBalances: List<TokenAmount>,
-      patchAllChains: boolean
-    ) => void,
-    isBalanceAlreadyCalculatedForChain: Record<AssetType, boolean>,
-    isBalanceLoading$: Record<AssetType, BehaviorSubject<boolean>>
+    patchTokens: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
   ): void {
     const tokensByChain: TokensListOfTopChainsWithOtherChains = {
       TOP_CHAINS: {}
@@ -54,6 +49,8 @@ export class BalanceLoaderService {
         tokensByChain[token.blockchain].push(token);
       }
     }
+
+    this.balanceLoadingStateService.setBalanceLoading('allChains', true);
 
     for (const key in tokensByChain) {
       if (key === 'TOP_CHAINS') {
@@ -82,11 +79,10 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          patchTokensInGeneralList(List(tokensWithBalances), true);
+          patchTokens(List(tokensWithBalances), true);
           this.tokensUpdaterService.triggerUpdateTokens();
-
-          isBalanceAlreadyCalculatedForChain.allChains = true;
-          isBalanceLoading$.allChains.next(false);
+          this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
+          this.balanceLoadingStateService.setBalanceLoading('allChains', false);
         });
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
@@ -107,11 +103,25 @@ export class BalanceLoaderService {
                 : new BigNumber(NaN)
             })) as TokenAmount[];
 
-            patchTokensInGeneralList(List(tokensWithBalances), true);
+            patchTokens(List(tokensWithBalances), true);
             this.tokensUpdaterService.triggerUpdateTokens();
           });
       }
     }
+  }
+
+  public async updateBalancesForSpecificChain(
+    tokensList: List<TokenAmount | Token>,
+    blockchain: AssetType,
+    patchTokens: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+  ): Promise<void> {
+    this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
+    const tokensWithBalances = await this.getTokensWithBalance(tokensList);
+
+    patchTokens(tokensWithBalances, false);
+    this.tokensUpdaterService.triggerUpdateTokens();
+    this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
+    this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
   }
 
   /**
@@ -137,18 +147,14 @@ export class BalanceLoaderService {
           if (!this.isChainSupportedByWallet(chain)) return tokens.map(() => new BigNumber(NaN));
 
           const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-          const chainBalancesPromise = web3Public.getTokensBalances(
-            this.authService.userAddress,
-            tokens.map(t => t.address)
-          );
+          const chainBalancesPromise = web3Public
+            .getTokensBalances(
+              this.authService.userAddress,
+              tokens.map(t => t.address)
+            )
+            .catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
 
-          const withTimeout = pTimeout(
-            chainBalancesPromise,
-            3_000,
-            new Error(`chainTokensBalances_Timeout for chain ${chain}.`)
-          ).catch((): Array<BigNumber> => tokens.map(() => new BigNumber(NaN)));
-
-          return withTimeout;
+          return chainBalancesPromise;
         }
       );
 
@@ -185,6 +191,10 @@ export class BalanceLoaderService {
 
   /* if EVM-address used -> it will fetch only evm address etc. */
   private isChainSupportedByWallet(chain: BlockchainName): boolean {
-    return BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
+    try {
+      return BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
+    } catch {
+      return false;
+    }
   }
 }

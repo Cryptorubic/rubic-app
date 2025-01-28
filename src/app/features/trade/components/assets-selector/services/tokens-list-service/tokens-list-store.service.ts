@@ -30,7 +30,6 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
-import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '../../../../../../core/services/tokens/tokens-updater.service';
 import { TokensListBuilder } from './utils/tokens-list-builder';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
@@ -152,13 +151,8 @@ export class TokensListStoreService {
    * Can be called only from constructor.
    */
   private subscribeOnUpdateTokens(): void {
-    let x = 1;
     this.tokensUpdaterService.updateTokensList$
       .pipe(
-        tap(() => {
-          console.log('LIST_UPDATED_' + x);
-          x += 1;
-        }),
         switchMap(() => {
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
@@ -350,9 +344,5 @@ export class TokensListStoreService {
 
   private getTokenSecurity(token: BlockchainToken): Promise<TokenSecurity> {
     return this.tokensService.fetchTokenSecurity(token.address, token.blockchain);
-  }
-
-  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
-    return this.tokensStoreService.isBalanceLoading$(blockchain);
   }
 }

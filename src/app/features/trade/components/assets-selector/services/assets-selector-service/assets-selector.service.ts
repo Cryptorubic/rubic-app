@@ -42,7 +42,6 @@ export class AssetsSelectorService {
     private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {
     this.subscribeOnAssetChange();
-    this.subscribeOnWalletAddressChange();
   }
 
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
@@ -69,16 +68,7 @@ export class AssetsSelectorService {
     }
 
     this.assetsSelectorStateService.setSelectorListType('tokens');
-    console.log('initParameters ===> ', this.assetType);
     this.tokensStoreService.startBalanceCalculating(this.assetType);
-  }
-
-  private subscribeOnWalletAddressChange(): void {
-    // this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(addr => {
-    //   console.log('WALLET_CHANGED', addr);
-    //   this.tokensStoreService.resetBalanceCalculatingStatuses();
-    //   this.tokensStoreService.startBalanceCalculating(this.assetType || 'allChains');
-    // });
   }
 
   private subscribeOnAssetChange(): void {

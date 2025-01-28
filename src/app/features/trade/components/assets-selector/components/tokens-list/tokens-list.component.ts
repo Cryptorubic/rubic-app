@@ -13,6 +13,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
+import { BalanceLoadingStateService } from '@app/core/services/tokens/balance-loading-state.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -36,7 +37,7 @@ export class TokensListComponent {
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
     switchMap(() =>
-      this.tokensListStoreService.isBalanceLoading$(this.assetsSelectorStateService.assetType)
+      this.balanceLoadingStateService.isBalanceLoading$(this.assetsSelectorStateService.assetType)
     )
   );
 
@@ -55,7 +56,8 @@ export class TokensListComponent {
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly headerStore: HeaderStore,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService
   ) {}
 
   /**

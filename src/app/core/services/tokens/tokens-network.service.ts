@@ -12,6 +12,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceLoaderService } from './balance-loader.service';
+import { BalanceLoadingStateService } from './balance-loading-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,7 @@ export class TokensNetworkService {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoaderService: BalanceLoaderService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService
   ) {
@@ -85,7 +87,7 @@ export class TokensNetworkService {
         bT.blockchain === blockchain &&
         !this.tokensStoreService.tokens.some(t => compareTokens(bT, t))
     );
-    if (newAddedTokens.size && this.tokensStoreService.balanceCalculatingStarted(blockchain)) {
+    if (newAddedTokens.size && this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       this.tokensStoreService.patchTokensBalances(
         await this.balanceLoaderService.getTokensWithBalance(newAddedTokens)
       );

@@ -7,14 +7,7 @@ import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.s
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  BlockchainsInfo,
-  EvmBlockchainName,
-  Injector,
-  Web3Pure
-} from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
@@ -23,6 +16,8 @@ import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
+import { BalanceLoadingStateService } from './balance-loading-state.service';
+import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
 
 type TokenAddress = string;
 @Injectable({
@@ -71,22 +66,6 @@ export class TokensStoreService {
 
   private storageTokens: StorageToken[];
 
-  private isBalanceAlreadyCalculatedForChain: Record<AssetType, boolean> = [
-    ...Object.values(BLOCKCHAIN_NAME),
-    'allChains'
-  ].reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: false }),
-    {} as Record<AssetType, boolean>
-  );
-
-  private _isBalanceLoading$: Record<AssetType, BehaviorSubject<boolean>> = [
-    ...Object.values(BLOCKCHAIN_NAME),
-    'allChains'
-  ].reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: new BehaviorSubject(true) }),
-    {} as Record<AssetType, BehaviorSubject<boolean>>
-  );
-
   private get userAddress(): string | undefined {
     return this.authService.userAddress;
   }
@@ -96,7 +75,8 @@ export class TokensStoreService {
     private readonly authService: AuthService,
     private readonly storeService: StoreService,
     private readonly tokensUpdaterService: TokensUpdaterService,
-    private readonly balanceLoaderService: BalanceLoaderService
+    private readonly balanceLoaderService: BalanceLoaderService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService
   ) {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
@@ -124,22 +104,20 @@ export class TokensStoreService {
       false
     );
     this._allChainsTokens$.next(defaultTokensList);
-    this._isBalanceLoading$.allChains.next(true);
 
-    this._isBalanceLoading$.allChains.next(true);
-    this.balanceLoaderService
-      .getTokensWithBalance(tokensListForAllChainsFromBackend)
-      .then(allChainsTokensWithBalances => {
-        this.patchTokensBalances(allChainsTokensWithBalances, true);
-        this.tokensUpdaterService.triggerUpdateTokens();
+    // @TODO Check if needs to load balances for `allChains` here
 
-        this._isBalanceLoading$.allChains.next(false);
-        this.isBalanceAlreadyCalculatedForChain.allChains = true;
-      })
-      .catch(() => {
-        this._isBalanceLoading$.allChains.next(false);
-        this.isBalanceAlreadyCalculatedForChain.allChains = false;
-      });
+    // this.balanceLoadingStateService.setBalanceLoading('allChains', true);
+    // this.balanceLoaderService
+    //   .getTokensWithBalance(tokensListForAllChainsFromBackend)
+    //   .then(allChainsTokensWithBalances => {
+    //     this.patchTokensBalances(allChainsTokensWithBalances, true);
+    //     this.tokensUpdaterService.triggerUpdateTokens();
+    //     this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
+    //   })
+    //   .finally(() => {
+    //     this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+    //   });
   }
 
   private setupSubscriptions(): void {
@@ -180,53 +158,11 @@ export class TokensStoreService {
     ).flat();
   }
 
-  // public startBalanceCalculating(blockchain: AssetType): void {
-  //   if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
-  //     console.log(
-  //       `%cSKIPPED FOR ${blockchain}`,
-  //       'color: red; font-size: 20px;',
-  //       this.isBalanceAlreadyCalculatedForChain
-  //     );
-  //     return;
-  //   }
-
-  //   const tokensList$: Observable<List<TokenAmount>> = iif(
-  //     () => blockchain === 'allChains',
-  //     this.allChainsTokens$,
-  //     this.tokens$.pipe(
-  //       first(v => Boolean(v)),
-  //       map(tokens => tokens.filter(t => t.blockchain === blockchain))
-  //     )
-  //   );
-
-  //   forkJoin([firstValueFrom(tokensList$), firstValueFrom(this.authService.currentUser$)])
-  //     .pipe(
-  //       switchMap(([tokens, user]) => {
-  //         if (!user) return of(this.balanceLoaderService.getTokensWithNullBalances(tokens, false));
-
-  //         this._isBalanceLoading$[blockchain].next(true);
-  //         this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
-
-  //         return this.balanceLoaderService.getTokensWithBalance(tokens);
-  //       }),
-  //       catchError(() => of(List()))
-  //     )
-  //     .subscribe((tokensWithBalances: List<TokenAmount>) => {
-  //       this.patchTokensBalances(tokensWithBalances, blockchain === 'allChains');
-  //       this.tokensUpdaterService.triggerUpdateTokens();
-  //       this._isBalanceLoading$[blockchain].next(false);
-  //     });
-  // }
-
   public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
-    if (this.isBalanceAlreadyCalculatedForChain[blockchain]) {
-      console.log(
-        `%cSKIPPED FOR ${blockchain}`,
-        'color: red; font-size: 20px;',
-        this.isBalanceAlreadyCalculatedForChain
-      );
+    if (this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       return;
     }
+
     const tokensList =
       blockchain === 'allChains'
         ? this.allChainsTokens
@@ -239,38 +175,19 @@ export class TokensStoreService {
       return;
     }
 
-    this._isBalanceLoading$[blockchain].next(true);
     if (blockchain === 'allChains') {
-      this.balanceLoaderService.updateAllChainsTokensWithBalances(
+      this.balanceLoaderService.updateBalancesForAllChains(
         tokensList,
-        this.patchTokensBalances.bind(this),
-        this.isBalanceAlreadyCalculatedForChain,
-        this._isBalanceLoading$
+        this.patchTokensBalances.bind(this)
       );
     } else {
-      const tokens = await this.balanceLoaderService.getTokensWithBalance(tokensList);
-      this.patchTokensBalances(tokens, false);
-      this.tokensUpdaterService.triggerUpdateTokens();
-      this._isBalanceLoading$[blockchain].next(false);
-      this.isBalanceAlreadyCalculatedForChain[blockchain] = true;
+      console.log(`startBalanceCalculating_${blockchain}`, tokensList.toArray());
+      this.balanceLoaderService.updateBalancesForSpecificChain(
+        tokensList,
+        blockchain,
+        this.patchTokensBalances.bind(this)
+      );
     }
-  }
-
-  public resetBalanceCalculatingStatuses(): void {
-    this.isBalanceAlreadyCalculatedForChain = Object.keys(
-      this.isBalanceAlreadyCalculatedForChain
-    ).reduce(
-      (acc, assetType) => ({ ...acc, [assetType]: false }),
-      {} as Record<AssetType, boolean>
-    );
-  }
-
-  public balanceCalculatingStarted(blockchain: BlockchainName): boolean {
-    return this.isBalanceAlreadyCalculatedForChain[blockchain];
-  }
-
-  public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
-    return this._isBalanceLoading$[blockchain].asObservable();
   }
 
   public updateStorageTokens(tokens: List<Token>): void {
@@ -399,8 +316,7 @@ export class TokensStoreService {
 
     const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
     tokensWithBalances.forEach(t => {
-      const chainType = BlockchainsInfo.getChainType(t.blockchain);
-      if (Web3Pure[chainType].isNativeAddress(t.address)) {
+      if (isNativeAddressSafe(t)) {
         tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
       } else {
         tokensWithBalancesMap.set(t.address.toLowerCase(), t);
@@ -408,8 +324,7 @@ export class TokensStoreService {
     });
 
     const tokens = list.map(token => {
-      const chainType = BlockchainsInfo.getChainType(token.blockchain);
-      const foundTokenWithBalance = Web3Pure[chainType].isNativeAddress(token.address)
+      const foundTokenWithBalance = isNativeAddressSafe(token)
         ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
         : tokensWithBalancesMap.get(token.address.toLowerCase());
 
