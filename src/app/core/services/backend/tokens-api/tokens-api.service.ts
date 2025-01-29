@@ -227,23 +227,21 @@ export class TokensApiService {
       ...(blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[blockchain] })
     };
 
-    return this.httpService
-      .get<TokensBackendResponse>('', options, `https://dev2-api.rubic.exchange/api/v2/tokens/`)
-      .pipe(
-        catchError(() => {
-          return of({
-            count: 0,
-            next: '0',
-            previous: '0',
-            results: [] as BackendToken[]
-          });
-        }),
-        map(tokensResponse =>
-          tokensResponse.results.length
-            ? TokensApiService.prepareTokens(tokensResponse.results)
-            : List()
-        )
-      );
+    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
+      catchError(() => {
+        return of({
+          count: 0,
+          next: '0',
+          previous: '0',
+          results: [] as BackendToken[]
+        });
+      }),
+      map(tokensResponse =>
+        tokensResponse.results.length
+          ? TokensApiService.prepareTokens(tokensResponse.results)
+          : List()
+      )
+    );
   }
 
   /**
