@@ -17,6 +17,7 @@ import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
+import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-root',
@@ -41,7 +42,8 @@ export class AppComponent implements AfterViewInit {
     private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -58,7 +60,7 @@ export class AppComponent implements AfterViewInit {
   private subscribeOnWalletChanges(): void {
     this.walletConnectorService.addressChange$.subscribe(() => {
       this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-      this.tokensStoreService.startBalanceCalculating('allChains');
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
     });
   }
 

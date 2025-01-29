@@ -9,6 +9,7 @@ import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains
 import { TokensUpdaterService } from './tokens-updater.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
+import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -87,25 +88,28 @@ export class BalanceLoaderService {
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
-        const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+        const web3Public = getWeb3PublicSafe(chain);
 
-        web3Public
-          .getTokensBalances(
-            this.authService.userAddress,
-            chainTokens.map(t => t.address)
-          )
-          .catch(() => chainTokens.map(() => new BigNumber(NaN)))
-          .then(balances => {
-            const tokensWithBalances = chainTokens.map((token, idx) => ({
-              ...token,
-              amount: balances[idx]
-                ? Web3Pure.fromWei(balances[idx], token.decimals)
-                : new BigNumber(NaN)
-            })) as TokenAmount[];
+        const balancesPromise = web3Public
+          ? web3Public
+              .getTokensBalances(
+                this.authService.userAddress,
+                chainTokens.map(t => t.address)
+              )
+              .catch(() => chainTokens.map(() => new BigNumber(NaN)))
+          : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
 
-            patchTokens(List(tokensWithBalances), true);
-            this.tokensUpdaterService.triggerUpdateTokens();
-          });
+        balancesPromise.then(balances => {
+          const tokensWithBalances = chainTokens.map((token, idx) => ({
+            ...token,
+            amount: balances[idx]
+              ? Web3Pure.fromWei(balances[idx], token.decimals)
+              : new BigNumber(NaN)
+          })) as TokenAmount[];
+
+          patchTokens(List(tokensWithBalances), true);
+          this.tokensUpdaterService.triggerUpdateTokens();
+        });
       }
     }
   }
@@ -119,9 +123,9 @@ export class BalanceLoaderService {
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
     patchTokens(tokensWithBalances, false);
-    this.tokensUpdaterService.triggerUpdateTokens();
     this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
     this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
+    this.tokensUpdaterService.triggerUpdateTokens();
   }
 
   /**

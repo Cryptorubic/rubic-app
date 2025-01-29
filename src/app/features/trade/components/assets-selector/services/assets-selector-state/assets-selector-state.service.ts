@@ -4,7 +4,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { SelectorListType } from '../../models/selector-list-type';
 import { FormType } from '@app/features/trade/models/form-type';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class AssetsSelectorStateService {
   private _formType: FormType;
 
