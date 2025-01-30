@@ -23,6 +23,7 @@ import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BalanceLoaderService } from './balance-loader.service';
+import { TokensUpdaterService } from './tokens-updater.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -39,7 +40,8 @@ export class TokensService {
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly tokensStoreService: TokensStoreService,
-    private readonly balanceLoaderService: BalanceLoaderService
+    private readonly balanceLoaderService: BalanceLoaderService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {}
 
   /**
@@ -274,6 +276,45 @@ export class TokensService {
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
         return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
+      })
+    );
+  }
+
+  public fetchQueryTokensDynamically(
+    query: string,
+    blockchain: BlockchainName | null,
+    patchTokensToShowBalances: (tokensWithBalances: List<TokenAmount>) => void
+  ): Observable<List<TokenAmount>> {
+    return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
+      switchMap(backendTokens => {
+        const filteredTokens = backendTokens.filter(
+          token =>
+            !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
+        );
+
+        return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
+      }),
+      tap(tokensWithNullBalances => {
+        this.tokensStoreService.saveLastQueriedTokens(tokensWithNullBalances);
+
+        const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
+          patchTokensToShowBalances(tokensWithBalances);
+          this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
+        };
+
+        // allChains
+        if (!blockchain) {
+          this.balanceLoaderService.updateBalancesForAllChains(
+            tokensWithNullBalances,
+            onBalanceLoaded
+          );
+        } else {
+          this.balanceLoaderService.updateBalancesForSpecificChain(
+            tokensWithNullBalances,
+            blockchain,
+            onBalanceLoaded
+          );
+        }
       })
     );
   }

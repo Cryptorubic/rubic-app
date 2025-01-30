@@ -35,7 +35,7 @@ export class BalanceLoadingStateService {
   }
 
   public setBalanceLoading(asset: AssetType, isLoading: boolean): void {
-    this._isBalanceLoading$[asset].next(isLoading);
+    this._isBalanceLoading$[asset]?.next(isLoading);
   }
 
   public setBalanceCalculated(asset: AssetType, isCalculated: boolean): void {

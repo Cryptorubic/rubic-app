@@ -6,7 +6,6 @@ import { List } from 'immutable';
 import { BlockchainName, BlockchainsInfo, Injector, Web3Public, Web3Pure } from 'rubic-sdk';
 import { AuthService } from '../auth/auth.service';
 import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains';
-import { TokensUpdaterService } from './tokens-updater.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
@@ -25,13 +24,12 @@ type TokensListOfTopChainsWithOtherChains = {
 export class BalanceLoaderService {
   constructor(
     private readonly authService: AuthService,
-    private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService
   ) {}
 
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
-    patchTokens: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
   ): void {
     const tokensByChain: TokensListOfTopChainsWithOtherChains = {
       TOP_CHAINS: {}
@@ -80,8 +78,7 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          patchTokens(List(tokensWithBalances), true);
-          this.tokensUpdaterService.triggerUpdateTokens();
+          onBalanceLoaded(List(tokensWithBalances), true);
           this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
           this.balanceLoadingStateService.setBalanceLoading('allChains', false);
         });
@@ -107,34 +104,30 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          patchTokens(List(tokensWithBalances), true);
-          this.tokensUpdaterService.triggerUpdateTokens();
+          onBalanceLoaded(List(tokensWithBalances), true);
         });
       }
     }
   }
 
   public async updateBalancesForSpecificChain(
-    tokensList: List<TokenAmount | Token>,
+    tokensList: List<Token>,
     blockchain: AssetType,
-    patchTokens: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
   ): Promise<void> {
     this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
-    patchTokens(tokensWithBalances, false);
+    onBalanceLoaded(tokensWithBalances, false);
     this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
     this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
-    this.tokensUpdaterService.triggerUpdateTokens();
   }
 
   /**
    * @param tokensList list of tokens, tokens can be from different chains in same list
    * @returns list of tokens from store with balances
    */
-  public async getTokensWithBalance(
-    tokensList: List<TokenAmount | Token>
-  ): Promise<List<TokenAmount>> {
+  public async getTokensWithBalance(tokensList: List<Token>): Promise<List<TokenAmount>> {
     const tokensByChain: Record<BlockchainName, Token[]> = {} as Record<BlockchainName, Token[]>;
 
     for (const token of tokensList) {

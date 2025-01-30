@@ -18,8 +18,8 @@ import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.s
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
+import { TokenAddress } from '@app/features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 
-type TokenAddress = string;
 @Injectable({
   providedIn: 'root'
 })
@@ -32,6 +32,12 @@ export class TokensStoreService {
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
   private readonly _allChainsTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+
+  private readonly _lastQueriedTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+
+  public saveLastQueriedTokens(queryTokens: List<TokenAmount>): void {
+    this._lastQueriedTokens$.next(queryTokens);
+  }
 
   /**
    * Tokens shown in seelctor when 'All Chains' selected
@@ -48,6 +54,10 @@ export class TokensStoreService {
 
   public get allChainsTokens(): List<TokenAmount> {
     return this._allChainsTokens$.getValue();
+  }
+
+  public get lastQueriedTokens(): List<TokenAmount> {
+    return this._lastQueriedTokens$.value;
   }
 
   /**
@@ -175,16 +185,18 @@ export class TokensStoreService {
       return;
     }
 
+    const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
+      this.patchTokensBalances(tokensWithBalances, patchAllChains);
+      this.tokensUpdaterService.triggerUpdateTokens();
+    };
+
     if (blockchain === 'allChains') {
-      this.balanceLoaderService.updateBalancesForAllChains(
-        tokensList,
-        this.patchTokensBalances.bind(this)
-      );
+      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded);
     } else {
       this.balanceLoaderService.updateBalancesForSpecificChain(
         tokensList,
         blockchain,
-        this.patchTokensBalances.bind(this)
+        onBalanceLoaded
       );
     }
   }
@@ -335,6 +347,34 @@ export class TokensStoreService {
     });
 
     _listSubj$.next(tokens);
+  }
+
+  /**
+   * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`
+   * */
+  public patchLastQueriedTokensBalances(tokensWithBalances: List<TokenAmount>): void {
+    const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
+    tokensWithBalances.forEach(t => {
+      if (isNativeAddressSafe(t)) {
+        tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
+      } else {
+        tokensWithBalancesMap.set(t.address.toLowerCase(), t);
+      }
+    });
+
+    const lastQueriedTokensWithBalances = this.lastQueriedTokens.map(token => {
+      const foundTokenWithBalance = isNativeAddressSafe(token)
+        ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
+        : tokensWithBalancesMap.get(token.address.toLowerCase());
+
+      if (!foundTokenWithBalance) {
+        return token;
+      } else {
+        return { ...token, amount: foundTokenWithBalance.amount };
+      }
+    });
+
+    this.saveLastQueriedTokens(lastQueriedTokensWithBalances);
   }
 
   /**

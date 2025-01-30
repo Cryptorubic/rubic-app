@@ -6,6 +6,7 @@ import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'r
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
+  concatMap,
   distinctUntilChanged,
   filter,
   map,
@@ -153,10 +154,10 @@ export class TokensListStoreService {
   private subscribeOnUpdateTokens(): void {
     this.tokensUpdaterService.updateTokensList$
       .pipe(
-        switchMap(() => {
+        switchMap(({ skipRefetch }) => {
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
-              return this.getDefaultTokensByQuery();
+              return this.getDefaultTokensByQuery(skipRefetch);
             } else {
               return of({ tokensToShow: this.getFilteredFavoriteTokens() });
             }
@@ -180,10 +181,11 @@ export class TokensListStoreService {
   /**
    * Handles search query requests to APIs and gets parsed tokens.
    */
-  private getDefaultTokensByQuery(): Observable<TokensList> {
+  private getDefaultTokensByQuery(skipRefetch?: boolean): Observable<TokensList> {
     return timer(300).pipe(
+      distinctUntilChanged(),
       tap(() => (this.searchLoading = true)),
-      switchMap(() => this.tryParseQueryAsBackendTokens()),
+      concatMap(() => this.tryParseQueryAsBackendTokens(skipRefetch)),
       switchMap(async backendTokens => {
         if (backendTokens?.length) {
           return { tokensToShow: backendTokens };
@@ -202,23 +204,41 @@ export class TokensListStoreService {
   /**
    * Fetches tokens form backend by search query.
    */
-  private tryParseQueryAsBackendTokens(): Observable<AvailableTokenAmount[]> {
+  private tryParseQueryAsBackendTokens(skipRefetch?: boolean): Observable<AvailableTokenAmount[]> {
     if (!this.searchQuery) return of([]);
 
-    return this.tokensService.fetchQueryTokens(this.searchQuery, this.blockchain).pipe(
-      map(backendTokens => {
-        if (backendTokens.size) {
-          const tlb = new TokensListBuilder(
-            this.tokensStoreService,
-            this.assetsSelectorStateService,
-            this.swapFormService
-          );
-
-          return tlb.initList(this.listType, backendTokens).applySortByTokenRank().toArray();
-        }
-        return [];
-      })
+    const tlb = new TokensListBuilder(
+      this.tokensStoreService,
+      this.assetsSelectorStateService,
+      this.swapFormService
     );
+
+    // used to prevent infinite triggering this.tokensUpdaterService.updateTokensList$
+    if (skipRefetch) {
+      const sortedTokensToShow = tlb
+        .initList(this.listType, this.tokensStoreService.lastQueriedTokens)
+        .applySortByTokenRank()
+        .toArray();
+
+      return of(sortedTokensToShow);
+    }
+
+    this.searchQueryService.updatePrevQueryValueToBackend(this.searchQuery);
+
+    return this.tokensService
+      .fetchQueryTokensDynamically(
+        this.searchQuery,
+        this.blockchain,
+        this.tokensStoreService.patchLastQueriedTokensBalances.bind(this.tokensStoreService)
+      )
+      .pipe(
+        map(backendTokens => {
+          if (backendTokens.size) {
+            return tlb.initList(this.listType, backendTokens).applySortByTokenRank().toArray();
+          }
+          return [];
+        })
+      );
   }
 
   /**

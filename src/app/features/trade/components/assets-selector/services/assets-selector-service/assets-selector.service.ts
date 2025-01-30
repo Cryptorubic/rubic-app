@@ -14,7 +14,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 import { FilterQueryService } from '../filter-query-service/filter-query.service';
-import { BlockchainTags } from '../../components/blockchains-filter-list/models/BlockchainFilters';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
@@ -87,9 +86,9 @@ export class AssetsSelectorService {
         }
         this.checkAndRefetchTokenList();
       }
-      if (assetType === 'allChains') {
-        this.filterQueryService.filterQuery = BlockchainTags.ALL;
-      }
+      // if (assetType === 'allChains') {
+      //   this.filterQueryService.filterQuery = BlockchainTags.ALL;
+      // }
     });
   }
 
