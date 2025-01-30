@@ -28,6 +28,18 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
   }
 
   private setDefaultParams<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
+    if (httpRequest.url.includes('/api/routes/swap')) {
+      return httpRequest.clone({
+        headers: httpRequest.headers
+          .append(
+            'Cache-Control',
+            'max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0'
+          )
+          .append('Pragma', 'no-cache')
+          .append('Expires', '0'),
+        withCredentials: false
+      });
+    }
     return httpRequest.clone({
       headers: httpRequest.headers
         .append(
