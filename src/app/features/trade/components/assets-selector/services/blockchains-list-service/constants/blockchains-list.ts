@@ -427,5 +427,16 @@ export const blockchainsList: RankedBlockchain[] = [
   ...notEvmChangeNowFormattedBlockchainsList
 ];
 
+export const blockchainRanks: Record<BlockchainName, number> = {
+  ...Object.values(BLOCKCHAIN_NAME).reduce(
+    (acc, name) => ({ ...acc, [name]: 0 }),
+    {} as Record<BlockchainName, number>
+  ),
+  ...blockchainsList.reduce(
+    (acc, chainConfig) => ({ ...acc, [chainConfig.name]: chainConfig.rank }),
+    {} as Record<BlockchainName, number>
+  )
+};
+
 export type NotEvmChangeNowBlockchainsList =
   (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];

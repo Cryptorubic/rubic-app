@@ -11,8 +11,8 @@ import { ListAnimationType } from '@features/trade/components/assets-selector/se
 import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
+import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 @Injectable()
 export class TokensListService {
@@ -50,7 +50,7 @@ export class TokensListService {
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
-    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly searchQueryService: SearchQueryService,
     private readonly destroy$: TuiDestroyService
   ) {
@@ -82,7 +82,7 @@ export class TokensListService {
       .subscribe(() => {
         this._listUpdating$.next(true);
         this.tokensNetworkService.fetchNetworkTokens(
-          this.assetsSelectorService.assetType as BlockchainName,
+          this.assetsSelectorStateService.assetType as BlockchainName,
           () => this._listUpdating$.next(false)
         );
       });
@@ -122,7 +122,7 @@ export class TokensListService {
   }
 
   private skipTokensFetching(currentIndex: number): boolean {
-    const blockchain = this.assetsSelectorService.assetType;
+    const blockchain = this.assetsSelectorStateService.assetType;
     if (!BlockchainsInfo.isBlockchainName(blockchain)) {
       return true;
     }

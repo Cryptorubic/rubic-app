@@ -10,3 +10,8 @@ export interface AvailableBlockchain {
   disabledConfiguration: boolean;
   disabledFrom: boolean;
 }
+
+export interface BlockchainItem extends AvailableBlockchain {
+  /* name is null for "All Chains" item */
+  name: BlockchainName | null;
+}

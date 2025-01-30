@@ -15,7 +15,7 @@
     ></ng-container>
     <div class="assets-selector__row">
       <ng-container *ngIf="selectorListType !== 'blockchains'">
-        <app-asset-types-aside [idPrefix]="'idPrefix'">
+        <app-asset-types-aside>
           <app-blockchains-filter-list *ngIf="isMobile"></app-blockchains-filter-list>
         </app-asset-types-aside>
         <ng-container *ngIf="selectorListType === 'fiats'">
