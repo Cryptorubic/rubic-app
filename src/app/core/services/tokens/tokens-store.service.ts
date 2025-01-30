@@ -35,7 +35,7 @@ export class TokensStoreService {
 
   private readonly _lastQueriedTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
-  public saveLastQueriedTokens(queryTokens: List<TokenAmount>): void {
+  public updateLastQueriedTokens(queryTokens: List<TokenAmount>): void {
     this._lastQueriedTokens$.next(queryTokens);
   }
 
@@ -353,20 +353,8 @@ export class TokensStoreService {
    * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`
    * */
   public patchLastQueriedTokensBalances(tokensWithBalances: List<TokenAmount>): void {
-    // const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
-    // tokensWithBalances.forEach(t => {
-    //   if (isNativeAddressSafe(t)) {
-    //     tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
-    //   } else {
-    //     tokensWithBalancesMap.set(t.address.toLowerCase(), t);
-    //   }
-    // });
-
     const lastQueriedTokensWithBalances = this.lastQueriedTokens.map(token => {
       const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
-      // const foundTokenWithBalance = isNativeAddressSafe(token)
-      //   ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
-      //   : tokensWithBalancesMap.get(token.address.toLowerCase());
 
       if (!foundTokenWithBalance) {
         return token;
@@ -375,7 +363,7 @@ export class TokensStoreService {
       }
     });
 
-    this.saveLastQueriedTokens(lastQueriedTokensWithBalances);
+    this.updateLastQueriedTokens(lastQueriedTokensWithBalances);
   }
 
   /**

@@ -295,7 +295,7 @@ export class TokensService {
         return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
       }),
       tap(tokensWithNullBalances => {
-        this.tokensStoreService.saveLastQueriedTokens(tokensWithNullBalances);
+        this.tokensStoreService.updateLastQueriedTokens(tokensWithNullBalances);
 
         const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
           patchLastQueriedTokensBalances(tokensWithBalances);

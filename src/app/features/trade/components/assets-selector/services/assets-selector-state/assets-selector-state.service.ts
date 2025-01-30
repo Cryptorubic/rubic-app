@@ -3,6 +3,7 @@ import { Asset, AssetType } from '@app/features/trade/models/asset';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { SelectorListType } from '../../models/selector-list-type';
 import { FormType } from '@app/features/trade/models/form-type';
+import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
 
 @Injectable({ providedIn: 'root' })
 export class AssetsSelectorStateService {
@@ -23,6 +24,10 @@ export class AssetsSelectorStateService {
   private readonly _selectorListType$ = new BehaviorSubject<SelectorListType>(undefined);
 
   public readonly selectorListType$ = this._selectorListType$.asObservable();
+
+  private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(TOKEN_FILTERS.ALL_TOKENS);
+
+  public readonly tokenFilter$ = this._tokenFilter$.asObservable();
 
   /**
    * blockchainName used for loading token's list
@@ -47,5 +52,9 @@ export class AssetsSelectorStateService {
 
   public setSelectorListType(listType: SelectorListType): void {
     this._selectorListType$.next(listType);
+  }
+
+  public setTokenFilter(filter: TokenFilter): void {
+    this._tokenFilter$.next(filter);
   }
 }

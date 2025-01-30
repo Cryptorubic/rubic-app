@@ -1,9 +1,9 @@
-interface TokenFilter {
+interface TokenFilterUI {
   img: string;
   label: string;
 }
 
-export const TOKEN_FILTERS: ReadonlyArray<TokenFilter> = [
+export const TOKEN_FILTERS_UI: ReadonlyArray<TokenFilterUI> = [
   {
     img: 'assets/images/icons/all-tokens.svg',
     label: 'All Tokens'

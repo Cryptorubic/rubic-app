@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { TOKEN_FILTERS } from './constants/token-filters';
+import { TOKEN_FILTERS_UI } from './constants/token-filters';
 
 @Component({
   selector: 'app-tokens-list-filters',
@@ -8,7 +8,7 @@ import { TOKEN_FILTERS } from './constants/token-filters';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListFiltersComponent {
-  public readonly TOKEN_FILTERS = TOKEN_FILTERS;
+  public readonly TOKEN_FILTERS_UI = TOKEN_FILTERS_UI;
 
   public currentIdx: number = 0;
 

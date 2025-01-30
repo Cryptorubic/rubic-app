@@ -13,7 +13,6 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
-import { FilterQueryService } from '../filter-query-service/filter-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
@@ -37,7 +36,6 @@ export class AssetsSelectorService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
-    private readonly filterQueryService: FilterQueryService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {
     this.subscribeOnAssetChange();
@@ -86,9 +84,6 @@ export class AssetsSelectorService {
         }
         this.checkAndRefetchTokenList();
       }
-      // if (assetType === 'allChains') {
-      //   this.filterQueryService.filterQuery = BlockchainTags.ALL;
-      // }
     });
   }
 
