@@ -293,11 +293,7 @@ export class TokensApiService {
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
     return this.httpService
-      .get<BackendTokenForAllChains[]>(
-        '',
-        {},
-        'https://dev2-api.rubic.exchange/api/v2/tokens/allchains'
-      )
+      .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
       .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
   }
 
