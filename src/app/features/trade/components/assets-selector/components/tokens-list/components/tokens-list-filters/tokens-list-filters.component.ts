@@ -18,7 +18,7 @@ export class TokensListFiltersComponent {
   }
 
   public next(): void {
-    if (this.currentIdx >= 1) return;
+    if (this.currentIdx >= 2) return;
     this.currentIdx += 1;
   }
 }

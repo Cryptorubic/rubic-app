@@ -3,11 +3,11 @@
     <img src="assets/images/icons/chevron.svg" alt="prev-button" />
   </button>
 
-  <tui-carousel #carousel [draggable]="false" [itemsCount]="3" [(index)]="currentIdx">
+  <tui-carousel #carousel [draggable]="false" [itemsCount]="2" [(index)]="currentIdx">
     <ng-container *ngFor="let filter of TOKEN_FILTERS; let i = index">
       <div *tuiItem [draggable]="false" class="token-filter">
-        <p>{{ filter.label }}</p>
-        <img [src]="filter.img" alt="token-filter" />
+        <p class="token-filter__text">{{ filter.label }}</p>
+        <img class="token-filter__icon" [src]="filter.img" alt="token-filter" />
       </div>
     </ng-container>
   </tui-carousel>
