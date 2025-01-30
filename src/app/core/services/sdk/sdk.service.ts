@@ -16,6 +16,7 @@ import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-de
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class SdkService {
@@ -86,10 +87,12 @@ export class SdkService {
       crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
+
+    const envType = ENVIRONMENT.environmentName as 'local' | 'dev2' | 'dev' | 'prod';
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
-      envType: 'local',
+      envType: envType,
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
           crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
