@@ -223,8 +223,6 @@ export class TokensListStoreService {
       return of(sortedTokensToShow);
     }
 
-    this.searchQueryService.updatePrevQueryValueToBackend(this.searchQuery);
-
     return this.tokensService
       .fetchQueryTokensDynamically(
         this.searchQuery,

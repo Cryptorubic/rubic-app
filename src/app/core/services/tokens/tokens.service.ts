@@ -283,7 +283,7 @@ export class TokensService {
   public fetchQueryTokensDynamically(
     query: string,
     blockchain: BlockchainName | null,
-    patchTokensToShowBalances: (tokensWithBalances: List<TokenAmount>) => void
+    patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
   ): Observable<List<TokenAmount>> {
     return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
       switchMap(backendTokens => {
@@ -298,7 +298,7 @@ export class TokensService {
         this.tokensStoreService.saveLastQueriedTokens(tokensWithNullBalances);
 
         const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
-          patchTokensToShowBalances(tokensWithBalances);
+          patchLastQueriedTokensBalances(tokensWithBalances);
           this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
         };
 
