@@ -14,6 +14,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
+import { SearchQueryService } from '../search-query-service/search-query.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
 
@@ -36,7 +37,8 @@ export class AssetsSelectorService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly searchQueryService: SearchQueryService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -70,6 +72,7 @@ export class AssetsSelectorService {
 
   private subscribeOnAssetChange(): void {
     this.assetType$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe(assetType => {
+      this.searchQueryService.query = '';
       if (BlockchainsInfo.isBlockchainName(assetType)) {
         const assetKey =
           this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toToken';

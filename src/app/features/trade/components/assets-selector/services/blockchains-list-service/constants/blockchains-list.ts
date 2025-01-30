@@ -241,6 +241,11 @@ export const blockchainsList: RankedBlockchain[] = [
     ]
   },
   {
+    name: BLOCKCHAIN_NAME.FRAXTAL,
+    rank: 0.5,
+    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  },
+  {
     name: BLOCKCHAIN_NAME.SONIC,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
