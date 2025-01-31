@@ -6,6 +6,7 @@ import { Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
+  BackendTokenForAllChains,
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
@@ -29,6 +30,8 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from 'rubic-sdk';
 import { ENVIRONMENT } from 'src/environments/environment';
+
+import { compareTokens } from '@app/shared/utils/utils';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -291,16 +294,25 @@ export class TokensApiService {
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
-    return (
+    return forkJoin([
       this.httpService
         .get<TokensBackendResponse>(
           '',
           {},
           `https://dev2-api.rubic.exchange/api/v2/tokens/?pageSize=5000`
         )
-        // .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
-        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results)))
-      // .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
+      this.httpService
+        .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+    ]).pipe(
+      map(([topTokens, allChainsTokens]) => {
+        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
+        return topTokens.concat(allChainsTokens).reduce((acc, token) => {
+          const repeated = acc.find(t => compareTokens(t, token));
+          return repeated ? acc : acc.push(token);
+        }, List() as List<Token>);
+      })
     );
   }
 

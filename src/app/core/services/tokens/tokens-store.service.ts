@@ -18,7 +18,7 @@ import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.s
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
-import { TokenAddress } from '@app/features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
+import { convertTokensListToMap } from './utils/convert-tokens-list-to-map';
 
 @Injectable({
   providedIn: 'root'
@@ -311,14 +311,7 @@ export class TokensStoreService {
     const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
-    const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
-    tokensWithBalances.forEach(t => {
-      if (isNativeAddressSafe(t)) {
-        tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
-      } else {
-        tokensWithBalancesMap.set(t.address.toLowerCase(), t);
-      }
-    });
+    const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
 
     const tokens = list.map(token => {
       const foundTokenWithBalance = isNativeAddressSafe(token)
