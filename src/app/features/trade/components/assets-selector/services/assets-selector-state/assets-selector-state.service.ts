@@ -25,7 +25,9 @@ export class AssetsSelectorStateService {
 
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
-  private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(TOKEN_FILTERS.ALL_TOKENS);
+  private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(
+    TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+  );
 
   public readonly tokenFilter$ = this._tokenFilter$.asObservable();
 
@@ -56,5 +58,15 @@ export class AssetsSelectorStateService {
 
   public setTokenFilter(filter: TokenFilter): void {
     this._tokenFilter$.next(filter);
+  }
+
+  /**
+   * returns tokenFilter only when allChains opened, otherwise null
+   */
+  public getTokenAllChainsFilter(): TokenFilter | null {
+    if (this.assetType !== 'allChains') {
+      return null;
+    }
+    return this._tokenFilter$.value;
   }
 }

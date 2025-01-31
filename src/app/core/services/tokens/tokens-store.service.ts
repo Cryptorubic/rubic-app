@@ -17,8 +17,10 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
-import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
+import { TokenFilter } from '@app/features/trade/components/assets-selector/models/token-filters';
+import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { TokenAddress } from '@app/features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
+import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +34,12 @@ export class TokensStoreService {
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
   private readonly _allChainsTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+  // private readonly _allChainsTokens$ = new BehaviorSubject<AllChainsTokensLists>({
+  //   ALL_CHAINS_ALL_TOKENS: List(),
+  //   ALL_CHAINS_GAINERS: List(),
+  //   ALL_CHAINS_LOSERS: List(),
+  //   ALL_CHAINS_TRENDING: List()
+  // });
 
   private readonly _lastQueriedTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
@@ -39,11 +47,11 @@ export class TokensStoreService {
     this._lastQueriedTokens$.next(queryTokens);
   }
 
-  /**
-   * Tokens shown in seelctor when 'All Chains' selected
-   */
-  public readonly allChainsTokens$: Observable<List<TokenAmount>> =
-    this._allChainsTokens$.asObservable();
+  // /**
+  //  * Tokens shown in seelctor when 'All Chains' selected
+  //  */
+  // public readonly allChainsTokens$: Observable<List<TokenAmount>> =
+  //   this._allChainsTokens$.asObservable();
 
   /**
    * Current tokens list.
@@ -86,7 +94,8 @@ export class TokensStoreService {
     private readonly storeService: StoreService,
     private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly balanceLoaderService: BalanceLoaderService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
@@ -175,6 +184,14 @@ export class TokensStoreService {
       this.patchTokensBalances(tokensWithBalances, patchAllChains);
       this.tokensUpdaterService.triggerUpdateTokens();
     };
+
+    // const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
+    //   this.patchTokensBalances(
+    //     tokensWithBalances,
+    //     this.assetsSelectorStateService.getTokenAllChainsFilter()
+    //   );
+    //   this.tokensUpdaterService.triggerUpdateTokens();
+    // };
 
     if (blockchain === 'allChains') {
       this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded);
@@ -334,6 +351,15 @@ export class TokensStoreService {
 
     _listSubj$.next(tokens);
   }
+
+  /* sets balances for tokens in _tokens$ list  */
+  public patchCommonTokensBalances(_tokensWithBalances: List<TokenAmount>): void {}
+
+  /* sets balances for tokens in _allChainsTokens$ list  */
+  public patchAllChainsTokensBalances(
+    _tokensWithBalances: List<TokenAmount>,
+    _allChainsFilter: TokenFilter
+  ): void {}
 
   /**
    * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`

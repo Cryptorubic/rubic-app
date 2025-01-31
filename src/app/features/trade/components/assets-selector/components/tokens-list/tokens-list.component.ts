@@ -14,6 +14,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 import { BalanceLoadingStateService } from '@app/core/services/tokens/balance-loading-state.service';
+import { TokenFilter } from '../../models/token-filters';
 
 @Component({
   selector: 'app-tokens-list',
@@ -47,6 +48,8 @@ export class TokensListComponent {
 
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
+  public readonly tokenFilter$ = this.assetsSelectorStateService.tokenFilter$;
+
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
   constructor(
@@ -76,6 +79,10 @@ export class TokensListComponent {
     if (token.available) {
       this.assetsSelectorService.onAssetSelect(token);
     }
+  }
+
+  public selectTokenFilter(filter: TokenFilter): void {
+    this.assetsSelectorStateService.setTokenFilter(filter);
   }
 
   public isGasExchangeableToken(t: AvailableTokenAmount): boolean {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 
-import { Token } from '@shared/models/tokens/token';
+import { RatedToken, Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
@@ -10,6 +10,7 @@ import {
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
+  RatedBackendToken,
   TokensBackendResponse,
   TokenSecurityBackendResponse,
   TokensListResponse,
@@ -52,10 +53,13 @@ export class TokensApiService {
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */
-  public static prepareTokens(tokens: BackendToken[]): List<Token> {
+  public static prepareTokens<T extends BackendToken = BackendToken, K extends Token = Token>(
+    tokens: T[]
+  ): List<K> {
     return List(
       tokens
-        .map(({ token_security, ...token }: BackendToken) => {
+        .map((token: T) => {
+          // @ts-ignore
           return {
             blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork as BackendBlockchain],
             address: token.address,
@@ -65,9 +69,16 @@ export class TokensApiService {
             image: token.image,
             rank: token.rank,
             price: token.usdPrice,
-            tokenSecurity: token_security,
-            type: token.type
-          };
+            tokenSecurity: token.token_security,
+            type: token.type,
+            ...('source_rank' in token && { sourceRank: token.source_rank }),
+            ...('usdPriceChangePercentage24h' in token && {
+              priceChange24h: token.usdPriceChangePercentage24h
+            }),
+            ...('usdPriceChangePercentage7d' in token && {
+              priceChange7d: token.usdPriceChangePercentage7d
+            })
+          } as K;
         })
         .filter(token => token.address && token.blockchain)
     );
@@ -296,6 +307,17 @@ export class TokensApiService {
       .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
       .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
   }
+
+  public fetchTrendTokens(): Observable<List<RatedToken>> {
+    return this.httpService.get<RatedBackendToken[]>('v2/tokens/trending').pipe(
+      map(backendTokens =>
+        TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
+      ),
+      catchError(() => of(List() as List<RatedToken>))
+    );
+  }
+
+  public async fetchTokensByDailyRating(): Promise<void> {}
 
   public getFakeTokens(): BackendToken[] {
     return [];

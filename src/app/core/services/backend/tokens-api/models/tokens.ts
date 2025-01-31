@@ -34,6 +34,13 @@ export interface BackendTokenForAllChains extends BackendToken {
   network_rank: number;
 }
 
+export interface RatedBackendToken extends BackendToken {
+  network: BlockchainName;
+  source_rank: number;
+  usdPriceChangePercentage24h: number;
+  usdPriceChangePercentage7d: number;
+}
+
 export interface TokensBackendResponse {
   readonly count: number;
   readonly next: string | null;
