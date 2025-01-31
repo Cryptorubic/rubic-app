@@ -292,9 +292,16 @@ export class TokensApiService {
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
-      .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
+    return (
+      this.httpService
+        .get<BackendTokenForAllChains[]>(
+          '',
+          {},
+          `https://dev-api.rubic.exchange/api/v2/tokens/?pageSize=5000`
+        )
+        // .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+    );
   }
 
   public getFakeTokens(): BackendToken[] {
