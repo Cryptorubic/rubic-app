@@ -18,6 +18,8 @@ import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
+type EnvType = 'local' | 'dev2' | 'dev' | 'prod';
+
 @Injectable()
 export class SdkService {
   private readonly _sdkLoading$ = new BehaviorSubject<boolean>(false);
@@ -88,7 +90,7 @@ export class SdkService {
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
 
-    const envType = ENVIRONMENT.environmentName as 'local' | 'dev2' | 'dev' | 'prod';
+    const envType = this.getEnvType();
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
@@ -107,5 +109,15 @@ export class SdkService {
     walletProviderCore: WalletProviderCore
   ): void {
     this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
+  }
+
+  private getEnvType(): EnvType {
+    const envType = ENVIRONMENT.environmentName;
+
+    if (envType === 'stage') {
+      return 'prod';
+    }
+
+    return envType as EnvType;
   }
 }

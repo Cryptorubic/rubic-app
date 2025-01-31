@@ -28,7 +28,10 @@ export class RubicExchangeInterceptor implements HttpInterceptor {
   }
 
   private setDefaultParams<T>(httpRequest: HttpRequest<T>): HttpRequest<T> {
-    if (httpRequest.url.includes('/api/routes/swap')) {
+    if (
+      httpRequest.url.includes('/api/routes/swap') ||
+      httpRequest.url.includes('/api/info/status')
+    ) {
       return httpRequest.clone({
         headers: httpRequest.headers
           .append(
