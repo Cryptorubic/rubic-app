@@ -160,8 +160,7 @@ export class CrossChainService {
           ...(queryRangoDisabledBridges || [])
         ]
       },
-      integratorAddress: providerAddress,
-      enableChecks: !this.queryParamsService.testMode
+      integratorAddress: providerAddress
     };
 
     return options;
