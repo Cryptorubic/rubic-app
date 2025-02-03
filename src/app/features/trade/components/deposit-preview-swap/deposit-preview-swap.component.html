@@ -1,0 +1,303 @@
+<app-window-container
+  *ngLet="{
+    tradeInfo: tradeInfo$ | async,
+    tradeState: tradeState$ | async,
+    transaction: transactionState$ | async,
+    status: status$ | async,
+    depositTrade: depositTrade$ | async,
+    isMobile: isMobile$ | async,
+    isValidRefundAddress: isValidRefundAddress$ | async,
+    spesificStatusText: specificProviderStatusText$ | async,
+    isRefundAddressRequired: isRefundAddressRequired$ | async,
+    isToAmountCalculated: isToAmountCalculated$ | async
+  } as state"
+>
+  <ng-container header>
+    <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
+    <span class="back-button__text">Deposit Swap</span>
+  </ng-container>
+  <ng-container>
+    <div class="preview">
+      <div class="form__container">
+        <app-input-output-container
+          [round]="!state.isMobile ? 'top' : 'none'"
+          [marginTop]="state.isMobile"
+          *ngLet="fromAsset$ | async as fromAsset"
+        >
+          <app-asset-selector
+            left
+            selectorType="from"
+            [asset]="fromAsset"
+            [mainFormType]="'swapForm'"
+          ></app-asset-selector>
+          <div right class="input-container">
+            <app-amount-transput
+              formType="from"
+              [selectedToken]="fromAsset"
+              inputMode="output"
+              [amountValue]="fromAmount$ | async"
+            ></app-amount-transput>
+          </div>
+        </app-input-output-container>
+        <app-form-switcher></app-form-switcher>
+        <app-input-output-container round="bottom">
+          <app-asset-selector
+            left
+            selectorType="to"
+            [asset]="toAsset$ | async"
+            [mainFormType]="'swapForm'"
+          ></app-asset-selector>
+          <div right class="input-container">
+            <app-amount-transput
+              [class.tui-skeleton]="!state.isToAmountCalculated"
+              formType="to"
+              [selectedToken]="toAsset$ | async"
+              inputMode="output"
+              [amountValue]="toAmount$ | async"
+            ></app-amount-transput>
+            <app-tokens-rate></app-tokens-rate>
+          </div>
+        </app-input-output-container>
+      </div>
+    </div>
+
+    <div class="refund-address" *ngIf="state.isRefundAddressRequired">
+      <app-refund-address></app-refund-address>
+    </div>
+    <div
+      *ngIf="state.isValidRefundAddress"
+      @showDepositAddressAnimation
+      class="target-address"
+      [ngClass]="{ 'target-address__disabled': state.status === 'expired' }"
+    >
+      <div class="target-address__title">Deposit address to transfer funds</div>
+      <div *ngIf="state.depositTrade?.depositAddress" class="target-address__text">
+        {{
+          state.depositTrade.depositAddress
+            | shortAddress : (state.isMobile ? 10 : 20) : (state.isMobile ? 10 : 20)
+        }}
+        <button
+          *ngIf="state.status !== 'expired'"
+          [cdkCopyToClipboard]="state.depositTrade.depositAddress"
+          class="copy-icon copy-icon_green"
+          inlineSVG="assets/images/icons/copy.svg"
+          (click)="copyToClipboard(state.depositTrade.depositAddress)"
+          [tuiHint]="template"
+          [tuiHintManual]="hintShown"
+        ></button>
+      </div>
+    </div>
+
+    <div class="status-wrapper" [class.status-wrapper__inactive]="!state.isValidRefundAddress">
+      <div class="row row-status">
+        <div class="row-item status-item">
+          <div
+            class="status-item__circle"
+            *ngIf="state.status === 'waiting' && !state.isValidRefundAddress"
+          ></div>
+          <div
+            class="status-item__spinner"
+            *ngIf="state.status === 'waiting' && state.isValidRefundAddress"
+          ></div>
+          <div
+            class="status-item__circle_complete"
+            *ngIf="state.status !== 'waiting' && state.status !== 'expired'"
+          >
+            <img
+              class="scheme__state.status-icon"
+              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+              alt=""
+            />
+          </div>
+          <ng-container *ngIf="state.status === 'expired'">
+            <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
+          </ng-container>
+
+          <div
+            class="row-item__value status-item__value"
+            [ngClass]="{
+              'status-item__value_completed':
+                state.status !== 'expired' && state.isValidRefundAddress,
+              'status-item__value_failed': state.status === 'expired' && state.isValidRefundAddress
+            }"
+          >
+            {{ state.status === 'expired' ? 'Expired' : 'Awaiting deposit' }}
+          </div>
+        </div>
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
+
+        <div class="row-item status-item">
+          <div
+            class="status-item__circle"
+            *ngIf="state.status === 'waiting' || state.status === 'expired'"
+          ></div>
+          <div
+            class="status-item__line status-item__line_confirming"
+            [ngClass]="{
+              'status-item__line_completed':
+                state.status === 'exchanging' ||
+                state.status === 'sending' ||
+                state.status === 'finished',
+              'status-item__line_load': state.status === 'confirming'
+            }"
+          ></div>
+          <div class="status-item__spinner" *ngIf="state.status === 'confirming'"></div>
+          <div
+            class="status-item__circle_complete"
+            *ngIf="
+              state.status === 'exchanging' ||
+              state.status === 'sending' ||
+              state.status === 'finished' ||
+              state.status === 'failed'
+            "
+          >
+            <img
+              class="scheme__state.status-icon"
+              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+              alt=""
+            />
+          </div>
+          <div
+            class="row-item__value status-item__value"
+            [ngClass]="{
+              'status-item__value_completed':
+                state.status === 'confirming' ||
+                state.status === 'exchanging' ||
+                state.status === 'sending' ||
+                state.status === 'finished' ||
+                state.status === 'failed'
+            }"
+          >
+            Confirming
+          </div>
+        </div>
+
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
+
+        <div class="row-item status-item">
+          <div
+            class="status-item__circle"
+            *ngIf="
+              state.status === 'waiting' ||
+              state.status === 'confirming' ||
+              state.status === 'failed' ||
+              state.status === 'expired'
+            "
+          ></div>
+          <div
+            class="status-item__line status-item__line_exchanging"
+            [ngClass]="{
+              'status-item__line_completed':
+                state.status === 'sending' || state.status === 'finished',
+              'status-item__line_load': state.status === 'exchanging'
+            }"
+          ></div>
+          <div class="status-item__spinner" *ngIf="state.status === 'exchanging'"></div>
+          <div
+            class="status-item__circle_complete"
+            *ngIf="state.status === 'sending' || state.status === 'finished'"
+          >
+            <img
+              class="scheme__state.status-icon"
+              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+              alt=""
+            />
+          </div>
+          <div
+            class="row-item__value status-item__value"
+            [ngClass]="{
+              'status-item__value_completed':
+                state.status === 'exchanging' ||
+                state.status === 'sending' ||
+                state.status === 'finished'
+            }"
+          >
+            Exchanging
+          </div>
+        </div>
+
+        <img
+          class="arrow-step"
+          src="assets/images/icons/arrow/arrow-right-white.svg"
+          alt="Next step"
+        />
+        <div class="row-item status-item">
+          <div
+            class="status-item__circle"
+            *ngIf="
+              state.status === 'waiting' ||
+              state.status === 'confirming' ||
+              state.status === 'exchanging' ||
+              state.status === 'expired'
+            "
+          ></div>
+          <div class="status-item__spinner" *ngIf="state.status === 'sending'"></div>
+          <ng-container *ngIf="state.status === 'failed'">
+            <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
+          </ng-container>
+          <div class="status-item__circle_complete" *ngIf="state.status === 'finished'">
+            <img
+              class="scheme__state.status-icon"
+              src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+              alt=""
+            />
+          </div>
+          <div
+            class="row-item__value status-item__value"
+            [ngClass]="{
+              'status-item__value_completed':
+                state.status === 'sending' || state.status === 'finished'
+            }"
+          >
+            Sending to you
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container footer *ngIf="state.status === 'failed'">
+    <tui-notification
+      class="failed-notification"
+      *ngIf="state.spesificStatusText; else defaultFailedStatusText"
+      status="error"
+    >
+      {{ state.spesificStatusText }}
+    </tui-notification>
+  </ng-container>
+</app-window-container>
+
+<ng-template #contactSupportHint>
+  <div class="contact-support-hint">
+    If your transaction seems to be taking longer than normal (more than 10 minutes), please contact
+    our Support Team at <span class="primary-text">support@rubic.exchange</span>.
+  </div>
+</ng-template>
+
+<ng-template #template>Address copied on clipboard!</ng-template>
+
+<ng-template #defaultFailedStatusText>
+  <tui-notification status="error">
+    The transaction failed, please contact our Support Team at
+    <a class="modal__footer-link" href="mailto:support@rubic.exchange" target="_blank"
+      >support@rubic.exchange</a
+    >
+  </tui-notification>
+</ng-template>
+
+<ng-template #failedStatus>
+  <div class="status-item__circle_failed">
+    <img
+      class="scheme__state.status-icon"
+      src="assets/images/icons/checkmark/failed-checkmark.svg"
+      alt=""
+    />
+  </div>
+</ng-template>

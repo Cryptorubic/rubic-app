@@ -1,16 +1,18 @@
 import {
   BLOCKCHAIN_NAME,
   EvmBlockchainName,
+  TronBlockchainName,
   SolanaBlockchainName,
   TonBlockchainName,
-  TronBlockchainName,
-  TronWebProvider
-} from 'rubic-sdk';
+  BitcoinBlockchainName
+} from '@cryptorubic/core';
+import { TronWebProvider } from 'rubic-sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
   Record<SolanaBlockchainName, string[]> &
-  Record<TonBlockchainName, string[]> = {
+  Record<TonBlockchainName, string[]> &
+  Record<BitcoinBlockchainName, string[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
@@ -63,10 +65,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8',
+    'https://rpc.ankr.com/arbitrum',
     'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.llamarpc.com',
-    'https://rpc.ankr.com/arbitrum'
+    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   [BLOCKCHAIN_NAME.TELOS]: [
@@ -344,13 +346,18 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc-bitlayer.rockx.com',
     'https://rpc.bitlayer-rpc.com'
   ],
-  [BLOCKCHAIN_NAME.GRAVITY]: [
-    'https://rpc.ankr.com/gravity/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://mainnet.gravity-rpc.com',
-    'https://rpc.gravity.xyz'
-  ],
+  [BLOCKCHAIN_NAME.GRAVITY]: ['https://1625.rpc.thirdweb.com', 'https://rpc.gravity.xyz'],
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: [
     'https://sepolia.unichain.org',
     'https://1301.rpc.thirdweb.com/'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.BITCOIN]: ['']
+  // [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
+  // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
+  // [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
+  // [BLOCKCHAIN_NAME.FRAXTAL]: [
+  //   'https://rpc.frax.com',
+  //   'https://fraxtal-rpc.publicnode.com',
+  //   'https://fraxtal.drpc.org'
+  // ]
 };

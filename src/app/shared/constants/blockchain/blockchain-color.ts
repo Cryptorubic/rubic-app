@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: '#627DEA',
@@ -147,4 +147,8 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITLAYER]: '#E36E1B',
   [BLOCKCHAIN_NAME.GRAVITY]: '#FFFFFF',
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: '#FFFFFF'
+  // [BLOCKCHAIN_NAME.SONIC]: '#131315',
+  // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: '#131315',
+  // [BLOCKCHAIN_NAME.MORPH]: '#14a800',
+  // [BLOCKCHAIN_NAME.FRAXTAL]: '#FFFFFF'
 };

@@ -12,7 +12,7 @@ export class SelectorUtils {
       )
       .sort((a, b) => {
         if (a === BlockchainTags.BDAY_PROMO || a === BlockchainTags.PROMO) return -1;
-        if (b === BlockchainTags.BDAY_PROMO || a === BlockchainTags.PROMO) return 1;
+        if (b === BlockchainTags.BDAY_PROMO) return 1;
         return 0;
       });
 

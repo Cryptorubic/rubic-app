@@ -10,7 +10,13 @@
     (focusedChange)="onFocusChange($event)"
   >
     <div [@moveLabel]="isActiveInput" class="network-container__row">
-      <label class="network-container__label">Wallet address or ENS name in target network</label>
+      <label class="network-container__label">
+        {{
+          isIntegratorWidget
+            ? 'You must be the owner and have access to this wallet'
+            : 'You must have access to this address'
+        }}
+      </label>
     </div>
   </tui-input>
 

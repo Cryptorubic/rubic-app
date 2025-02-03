@@ -9,7 +9,7 @@ import {
   ItSettingsForm
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { ChangenowPostTrade } from '@features/trade/models/cn-trade';
+import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import BigNumber from 'bignumber.js';
 
 export type Store = {
@@ -72,9 +72,11 @@ export type Store = {
 
   RUBIC_TOKENS: StorageToken[];
 
-  RUBIC_CHANGENOW_POST_TRADE: ChangenowPostTrade;
+  RUBIC_CHANGENOW_POST_TRADE: CrossChainTransferTrade;
 
-  RUBIC_CHANGENOW_RECENT_TRADE: ChangenowPostTrade[];
+  RUBIC_DEPOSIT_RECENT_TRADE: CrossChainTransferTrade[];
+
+  IS_RUSSIAN_IP: boolean;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -87,11 +89,12 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_UNREAD_TRADES: null,
   RUBIC_TOKENS: null,
   RUBIC_CHANGENOW_POST_TRADE: null,
-  RUBIC_CHANGENOW_RECENT_TRADE: null,
+  RUBIC_DEPOSIT_RECENT_TRADE: null,
   RUBIC_OPTIONS_CROSS_CHAIN_ROUTING: null,
   RUBIC_OPTIONS_INSTANT_TRADE: null,
   RUBIC_TRADES_CROSS_CHAIN_ROUTING: null,
   RUBIC_TRADES_INSTANT_TRADE: null,
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
-  RUBIC_TOTAL_VALUES: null
+  RUBIC_TOTAL_VALUES: null,
+  IS_RUSSIAN_IP: null
 };
