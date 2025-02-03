@@ -299,7 +299,7 @@ export class TokensApiService {
         .get<TokensBackendResponse>(
           '',
           {},
-          `https://dev2-api.rubic.exchange/api/v2/tokens/?pageSize=10000`
+          `https://dev2-api.rubic.exchange/api/v2/tokens/?pageSize=5000`
         )
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
       this.httpService
@@ -307,7 +307,7 @@ export class TokensApiService {
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
     ]).pipe(
       map(([topTokens, allChainsTokens]) => {
-        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=10000
+        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
         return topTokens.concat(allChainsTokens).reduce((acc, token) => {
           const repeated = acc.find(t => compareTokens(t, token));
           return repeated ? acc : acc.push(token);
