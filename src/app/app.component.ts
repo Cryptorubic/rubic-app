@@ -8,7 +8,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map, switchMap } from 'rxjs/operators';
+import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -58,16 +58,10 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        switchMap(() => {
-          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-          return this.tokensStoreService.startBalanceCalculating(
-            this.assetsSelectorStateService.assetType
-          );
-        })
-      )
-      .subscribe();
+    this.walletConnectorService.addressChange$.subscribe(() => {
+      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+    });
   }
 
   /**
