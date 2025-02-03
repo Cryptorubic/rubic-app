@@ -11,7 +11,6 @@ import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { CrossChainTransferTrade } from '../../models/cn-trade';
-import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class DepositService {
@@ -49,7 +48,7 @@ export class DepositService {
       fromToken,
       toToken,
       fromAmount: fromAmount.visibleValue,
-      toAmount: new BigNumber(0),
+      toAmount: paymentInfo.toAmount,
       timestamp: Date.now(),
 
       depositAddress: paymentInfo.depositAddress,

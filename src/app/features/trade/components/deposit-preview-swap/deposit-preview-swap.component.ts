@@ -227,8 +227,8 @@ export class DepositPreviewSwapComponent {
 
     try {
       const paymentInfo = await (selectedTrade.trade as CrossChainTransferTrade).getTransferTrade(
-        receiverAddress
-        // this.refundService.refundAddress
+        receiverAddress,
+        this.refundService.refundAddress
       );
 
       this.depositService.updateTrade(paymentInfo, receiverAddress);

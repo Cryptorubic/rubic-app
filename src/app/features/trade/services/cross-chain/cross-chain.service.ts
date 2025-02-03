@@ -160,7 +160,8 @@ export class CrossChainService {
           ...(queryRangoDisabledBridges || [])
         ]
       },
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      enableChecks: !this.queryParamsService.testMode
     };
 
     return options;
@@ -248,9 +249,9 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
-      // refundAddress: this.refundService.refundAddress,
-      useCacheData: params.useCacheData
-      // skipAmountCheck: params.skipAmountCheck
+      refundAddress: this.refundService.refundAddress,
+      useCacheData: params.useCacheData,
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {

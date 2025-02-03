@@ -675,11 +675,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-2.svg`,
     color: '#F9DBEA'
   },
-  [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
-    name: 'Uniswap Nahamut',
-    image: `${imageBasePath}uniswap-2.svg`,
-    color: '#F9DBEA'
-  },
+  // [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
+  //   name: 'Uniswap Nahamut',
+  //   image: `${imageBasePath}uniswap-2.svg`,
+  //   color: '#F9DBEA'
+  // },
   [ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.svg`,

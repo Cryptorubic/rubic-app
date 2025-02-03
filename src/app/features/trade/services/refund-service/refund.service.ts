@@ -49,8 +49,8 @@ export class RefundService {
 
   public onTradeSelection(_trade: SelectedTrade): void {
     // if (trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY) {
-    //   this.refundAddressCtrl.addValidators([Validators.required]);
-    //   this._isValidRefundAddress$.next(false);
+    this.refundAddressCtrl.addValidators([Validators.required]);
+    this._isValidRefundAddress$.next(false);
     // } else {
     //   this.refundAddressCtrl.clearValidators();
     //   this._isValidRefundAddress$.next(true);

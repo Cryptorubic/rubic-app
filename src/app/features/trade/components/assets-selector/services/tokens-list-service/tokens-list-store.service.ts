@@ -255,7 +255,7 @@ export class TokensListStoreService {
         });
 
         if (token?.name && token?.symbol && token?.decimals) {
-          let image = '';
+          let image = token.image;
           if (!image) image = await this.fetchTokenImage(token).catch(() => DEFAULT_TOKEN_IMAGE);
 
           return {

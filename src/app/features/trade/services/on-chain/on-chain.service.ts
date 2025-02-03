@@ -406,7 +406,8 @@ export class OnChainService {
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: [...disabledTradeTypes],
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      enableChecks: !this.queryParamsService.testMode
     };
 
     return options;
