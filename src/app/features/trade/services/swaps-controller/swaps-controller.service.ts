@@ -517,6 +517,7 @@ export class SwapsControllerService {
     Injector.rubicApiService
       .handleQuotesAsync()
       .pipe(
+        tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
           return {
@@ -533,9 +534,9 @@ export class SwapsControllerService {
         }),
         concatMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
+          const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade) {
-            const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
@@ -578,6 +579,9 @@ export class SwapsControllerService {
                   return of(null);
                 })
               );
+          }
+          if (isCalculationEnd) {
+            this.refreshService.setStopped();
           }
           if (!container?.value) {
             this.refreshService.setStopped();

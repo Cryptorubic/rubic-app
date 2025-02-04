@@ -116,7 +116,7 @@ export class CrossChainService {
     };
 
     SdkInjector.rubicApiService.calculateAsync({
-      calculationTimeout: 30,
+      calculationTimeout: 60,
       ...tradeParams,
       ...options
     });
