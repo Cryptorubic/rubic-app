@@ -18,6 +18,7 @@ import { WalletConnectorService } from './core/services/wallets/wallet-connector
 import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
 import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,8 @@ export class AppComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tradePageService: TradePageService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -60,7 +62,16 @@ export class AppComponent implements AfterViewInit {
   private subscribeOnWalletChanges(): void {
     this.walletConnectorService.addressChange$.subscribe(() => {
       this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+
+      if (this.assetsSelectorStateService.assetType === 'allChains') {
+        this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+      } else {
+        if (this.tradePageService.formContent === 'form') {
+          // load allchains in background if token's selector closed
+          this.tokensStoreService.startBalanceCalculating('allChains');
+        }
+        this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+      }
     });
   }
 
