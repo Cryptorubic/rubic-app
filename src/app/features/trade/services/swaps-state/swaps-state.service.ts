@@ -44,6 +44,12 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
 import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 import { AlternativeRoutesService } from '../alternative-route-api-service/alternative-routes.service';
+import {
+  CENTRALIZATION_CONFIG,
+  CentralizationStatus,
+  hasCentralizationStatus
+} from '../../constants/centralization-status';
+import { RefundService } from '../refund-service/refund.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -136,7 +142,8 @@ export class SwapsStateService {
     private readonly tradePageService: TradePageService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
-    private readonly alternativeRouteService: AlternativeRoutesService
+    private readonly alternativeRouteService: AlternativeRoutesService,
+    private readonly refundService: RefundService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -156,7 +163,8 @@ export class SwapsStateService {
           needAuthWallet,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: []
+          routes: [],
+          centralizationStatus: null
         }
       : {
           error: wrappedTrade?.error,
@@ -166,7 +174,8 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
-          badges: this.setSpecificBadges(trade)
+          badges: this.setSpecificBadges(trade),
+          centralizationStatus: this.setCentralizationStatus(trade)
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -337,6 +346,7 @@ export class SwapsStateService {
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
+    this.refundService.onTradeSelection(this.currentTrade);
   }
 
   private subscribeOnTradeChange(): void {
@@ -491,5 +501,14 @@ export class SwapsStateService {
       }));
 
     return tradeSpecificBadges;
+  }
+
+  private setCentralizationStatus(
+    trade: CrossChainTrade | OnChainTrade
+  ): CentralizationStatus | null {
+    if (hasCentralizationStatus(trade.type)) {
+      return CENTRALIZATION_CONFIG[trade.type];
+    }
+    return null;
   }
 }

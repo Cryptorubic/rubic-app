@@ -65,10 +65,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8',
+    'https://rpc.ankr.com/arbitrum',
     'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.llamarpc.com',
-    'https://rpc.ankr.com/arbitrum'
+    'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8'
   ],
   [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
   [BLOCKCHAIN_NAME.TELOS]: [
@@ -351,5 +351,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://sepolia.unichain.org',
     'https://1301.rpc.thirdweb.com/'
   ],
-  [BLOCKCHAIN_NAME.BITCOIN]: ['']
+  [BLOCKCHAIN_NAME.BITCOIN]: [''],
+  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
+  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io']
 };

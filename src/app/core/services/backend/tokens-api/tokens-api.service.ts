@@ -171,7 +171,11 @@ export class TokensApiService {
 
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
-        return TokensApiService.prepareTokens(backendTokens);
+        const fakeTokens = this.getFakeTokens();
+
+        const allTokens = [...backendTokens, ...fakeTokens];
+
+        return TokensApiService.prepareTokens(allTokens);
       })
     );
   }
@@ -213,7 +217,7 @@ export class TokensApiService {
   public fetchQueryTokens(requestOptions: TokensRequestQueryOptions): Observable<List<Token>> {
     const options = {
       network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
-      ...(requestOptions.symbol && { symbol: requestOptions.symbol.toLowerCase() }),
+      ...(requestOptions.symbol && { query: requestOptions.symbol.toLowerCase() }),
       ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
     };
     return this.httpService
@@ -272,5 +276,9 @@ export class TokensApiService {
           };
         })
       );
+  }
+
+  public getFakeTokens(): BackendToken[] {
+    return [];
   }
 }
