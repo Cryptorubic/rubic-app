@@ -199,6 +199,11 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.SONEIUM,
+    rank: 0.75,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
+  {
     name: BLOCKCHAIN_NAME.POLYGON,
     rank: 0.75,
     tags: ['MATIC', BlockchainTags.POPULAR, BlockchainTags.EVM]

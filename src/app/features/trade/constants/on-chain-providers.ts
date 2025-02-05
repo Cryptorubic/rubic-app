@@ -319,6 +319,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}kyberswap.svg`,
     color: '#31CB9E'
   },
+  [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: {
+    name: 'Kyo Finance',
+    image: `${imageBasePath}kyo_finance.svg`,
+    color: '#FF4C00'
+  },
 
   //LLLLLLLLLLLLLLLLLLLLLLL
   [ON_CHAIN_TRADE_TYPE.LIFI]: {

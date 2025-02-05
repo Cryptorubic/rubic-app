@@ -359,5 +359,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.frax.com',
     'https://fraxtal-rpc.publicnode.com',
     'https://fraxtal.drpc.org'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.SONEIUM]: ['https://rpc.soneium.org/', 'https://soneium.drpc.org']
 };

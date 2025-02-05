@@ -86,7 +86,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: [],
   [BLOCKCHAIN_NAME.SONIC]: [],
   [BLOCKCHAIN_NAME.MORPH]: [],
-  [BLOCKCHAIN_NAME.FRAXTAL]: []
+  [BLOCKCHAIN_NAME.FRAXTAL]: [],
+  [BLOCKCHAIN_NAME.SONEIUM]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
