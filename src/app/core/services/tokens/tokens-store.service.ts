@@ -331,9 +331,7 @@ export class TokensStoreService {
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
     const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
-
     const tokens = list.map(token => {
-      // const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
       const foundTokenWithBalance = tokensWithBalancesMap.get(getTokenKeyInMap(token));
 
       if (!foundTokenWithBalance) {
