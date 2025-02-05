@@ -66,8 +66,11 @@ export class AppComponent implements AfterViewInit {
       if (this.assetsSelectorStateService.assetType === 'allChains') {
         this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
       } else {
-        if (this.tradePageService.formContent === 'form') {
-          // load allchains in background if token's selector closed
+        if (
+          this.tradePageService.formContent === 'form' &&
+          !this.balanceLoadingStateService.isBalanceLoading('allChains')
+        ) {
+          // load allchains in background if token's selector closed if not loaded yet
           this.tokensStoreService.startBalanceCalculating('allChains');
         }
         this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);

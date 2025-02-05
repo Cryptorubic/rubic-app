@@ -112,6 +112,11 @@ export class TokensStoreService {
       false
     );
     this._allChainsTokens$.next(defaultTokensList);
+
+    // load balances at first loading for allchains
+    if (this.userAddress) {
+      this.startBalanceCalculating('allChains');
+    }
   }
 
   private setupSubscriptions(): void {
