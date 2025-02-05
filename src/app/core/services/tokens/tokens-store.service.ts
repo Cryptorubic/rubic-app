@@ -17,6 +17,7 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
+import { convertTokensListToMap, getTokenKeyInMap } from './utils/convert-tokens-list-to-map';
 
 @Injectable({
   providedIn: 'root'
@@ -78,6 +79,8 @@ export class TokensStoreService {
     return this.authService.userAddress;
   }
 
+  private readonly balanceWorker: Worker;
+
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
@@ -89,6 +92,14 @@ export class TokensStoreService {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
     this.setupSubscriptions();
+
+    // this.balanceWorker = new Worker(
+    //   new URL('./workers/balance-patcher.worker.ts', import.meta.url)
+    // );
+    // this.balanceWorker.onmessage = ({ data }) => {
+    //   this._allChainsTokens$.next(data.tokensWithBalances);
+    //   this.tokensUpdaterService.triggerUpdateTokens();
+    // };
   }
 
   private setupStorageTokens(): void {
@@ -158,6 +169,7 @@ export class TokensStoreService {
   }
 
   public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
+    const start = Date.now();
     if (this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       return;
     }
@@ -168,9 +180,13 @@ export class TokensStoreService {
         : this.tokens.filter(t => t.blockchain === blockchain);
 
     if (!this.authService.user) {
+      // const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
+      // this.balanceWorker.postMessage({ nullTokens, allChainsTokens: this.allChainsTokens });
       const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
       this.patchTokensBalances(nullTokens, blockchain === 'allChains');
+      console.log('after patching ===> ', Date.now() - start);
       this.tokensUpdaterService.triggerUpdateTokens();
+
       return;
     }
 
@@ -314,8 +330,11 @@ export class TokensStoreService {
     const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
+    const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
+
     const tokens = list.map(token => {
-      const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
+      // const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
+      const foundTokenWithBalance = tokensWithBalancesMap.get(getTokenKeyInMap(token));
 
       if (!foundTokenWithBalance) {
         return token;
