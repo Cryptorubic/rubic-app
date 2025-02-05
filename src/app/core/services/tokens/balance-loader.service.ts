@@ -31,6 +31,9 @@ export class BalanceLoaderService {
     tokensList: List<TokenAmount | Token>,
     onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
   ): void {
+    //  can be empty when v2/tokens/allchains response lower then first startBalanceCalculating call in app.component.ts
+    if (!tokensList.size) return;
+
     const tokensByChain: TokensListOfTopChainsWithOtherChains = {
       TOP_CHAINS: {}
     } as TokensListOfTopChainsWithOtherChains;
@@ -78,9 +81,11 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          onBalanceLoaded(List(tokensWithBalances), true);
-          this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
-          this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+          if (balances.length) {
+            onBalanceLoaded(List(tokensWithBalances), true);
+            this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
+            this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+          }
         });
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
