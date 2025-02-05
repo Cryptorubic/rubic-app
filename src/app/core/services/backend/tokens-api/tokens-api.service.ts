@@ -299,7 +299,7 @@ export class TokensApiService {
         .get<TokensBackendResponse>(
           '',
           {},
-          `https://dev2-api.rubic.exchange/api/v2/tokens/?pageSize=6000`
+          `https://dev2-api.rubic.exchange/api/v2/tokens/?pageSize=7500`
         )
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
       this.httpService
