@@ -348,8 +348,9 @@ export class TokensStoreService {
    * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`
    * */
   public patchLastQueriedTokensBalances(tokensWithBalances: List<TokenAmount>): void {
+    const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
     const lastQueriedTokensWithBalances = this.lastQueriedTokens.map(token => {
-      const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
+      const foundTokenWithBalance = tokensWithBalancesMap.get(getTokenKeyInMap(token));
 
       if (!foundTokenWithBalance) {
         return token;
