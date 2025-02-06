@@ -25,7 +25,7 @@ export class TokensStoreService {
   /**
    * Current tokens list state.
    */
-  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
+  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
