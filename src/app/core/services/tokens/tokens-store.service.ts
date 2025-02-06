@@ -184,6 +184,7 @@ export class TokensStoreService {
       // patches all tokens from allchains to common list to show them also in chains selectors
       const onFinish = (): void => {
         this.patchTokens(this.allChainsTokens);
+        // this.tokensUpdaterService.triggerUpdateTokens();
       };
       this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
