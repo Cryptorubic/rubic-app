@@ -285,7 +285,6 @@ export class TokensStoreService {
   public patchTokens(newTokens: List<Token | TokenAmount>): void {
     const newTokensMap = convertTokensListToMap(newTokens);
     const oldTokensMap = convertTokensListToMap(this.tokens);
-    console.log('newTOkensMap ==> ', newTokensMap);
 
     const updatedTokens = this.tokens
       .map(token => {
