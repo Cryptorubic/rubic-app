@@ -699,12 +699,9 @@ export class GasService {
   })
   private fetchSoneiumGas(): Observable<GasPrice> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONEIUM);
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map((gasPriceInWei: string) => {
-        return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
-        };
-      })
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 }
