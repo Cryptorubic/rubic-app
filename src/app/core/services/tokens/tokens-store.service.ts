@@ -18,26 +18,6 @@ import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { convertTokensListToMap, getTokenKeyInMap } from './utils/convert-tokens-list-to-map';
 
-export class ByteUtils {
-  public static serialize(obj: object): ArrayBufferLike {
-    var string = JSON.stringify(obj);
-    var uint8_array = new TextEncoder().encode(string);
-    var array_buffer = uint8_array.buffer;
-
-    return array_buffer;
-  }
-
-  static deserialize(array_buffer: ArrayBufferLike): object {
-    // Now to the decoding
-    var decoder = new TextDecoder('utf-8');
-    var view = new DataView(array_buffer, 0, array_buffer.byteLength);
-    var string = decoder.decode(view);
-    var object = JSON.parse(string);
-
-    return object;
-  }
-}
-
 @Injectable({
   providedIn: 'root'
 })
