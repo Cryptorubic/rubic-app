@@ -5,8 +5,14 @@ import { isTokenAmount } from '@app/shared/utils/is-token';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 
+/**
+ * from https://assets.rubic.exchange/assets/ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
+ * @returns ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
+ */
 export function getTokenKeyInMap(t: Token): string {
-  return `${t.blockchain}_${t.symbol}_${t.name}_${t.address}_${t.rank}`;
+  const splitted = t.image.split('/');
+  const imgKey = splitted.slice(splitted.length - 3).join('/');
+  return imgKey;
 }
 
 export function convertTokensListToMap(
