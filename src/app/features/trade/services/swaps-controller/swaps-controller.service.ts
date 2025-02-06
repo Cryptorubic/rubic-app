@@ -405,11 +405,11 @@ export class SwapsControllerService {
     return of(false);
   }
 
-  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): Observable<boolean> {
-    if (trade instanceof RetroBridgeEvmTrade || trade instanceof RetroBridgeTonTrade) {
-      return from(trade.needAuthWallet());
+  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): boolean {
+    if (trade instanceof CrossChainTrade) {
+      return trade.needAuthWallet;
     }
-    return of(false);
+    return false;
   }
 
   private async handleCrossChainSwapResponse(
@@ -557,7 +557,8 @@ export class SwapsControllerService {
                       trade.trade = null;
                     }
                     // @TODO API
-                    this.swapsStateService.updateTrade(trade, type, needApprove, false);
+                    const needAuthWallet = this.needAuthWallet(trade.trade);
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,
