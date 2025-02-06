@@ -17,7 +17,7 @@ export function convertTokensListToMap(
     if (isTokenAmount(t)) {
       tokensWithBalancesMap.set(getTokenKeyInMap(t), t);
     } else {
-      const tokenAmount = { ...t, amount: new BigNumber(NaN) } as TokenAmount;
+      const tokenAmount = { amount: new BigNumber(NaN), favorite: false, ...t } as TokenAmount;
       tokensWithBalancesMap.set(getTokenKeyInMap(tokenAmount), tokenAmount);
     }
   });
