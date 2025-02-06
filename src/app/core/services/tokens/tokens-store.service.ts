@@ -11,7 +11,6 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName, Injector, Web3Pure 
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
-import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
@@ -169,7 +168,6 @@ export class TokensStoreService {
   }
 
   public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
-    const start = Date.now();
     if (this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       return;
     }
@@ -184,7 +182,6 @@ export class TokensStoreService {
       // this.balanceWorker.postMessage({ nullTokens, allChainsTokens: this.allChainsTokens });
       const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
       this.patchTokensBalances(nullTokens, blockchain === 'allChains');
-      console.log('after patching ===> ', Date.now() - start);
       this.tokensUpdaterService.triggerUpdateTokens();
 
       return;
@@ -196,7 +193,11 @@ export class TokensStoreService {
     };
 
     if (blockchain === 'allChains') {
-      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded);
+      // patches all tokens from allchains to common list to show them also in chains selectors
+      const onFinish = (): void => {
+        this.patchTokens(this.allChainsTokens);
+      };
+      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
       this.balanceLoaderService.updateBalancesForSpecificChain(
         tokensList,
@@ -293,34 +294,24 @@ export class TokensStoreService {
    * and tokens from backend have high priority
    * @param newTokens tokens from backend
    */
-  public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
-    const tokens = (this.tokens || List([]))
+  public patchTokens(newTokens: List<Token | TokenAmount>): void {
+    const newTokensMap = convertTokensListToMap(newTokens);
+    const oldTokensMap = convertTokensListToMap(this.tokens);
+
+    const updatedTokens = this.tokens
       .map(token => {
-        const foundToken = newTokens?.find(tokenWithBalance =>
-          compareTokens(token, tokenWithBalance)
-        );
-        if (!foundToken) {
-          return token;
+        const tokenInPrevList = oldTokensMap.get(getTokenKeyInMap(token));
+        const tokenInNewList = newTokensMap.get(getTokenKeyInMap(token));
+        if (tokenInPrevList && tokenInNewList) {
+          newTokensMap.delete(getTokenKeyInMap(token));
+          return { ...tokenInPrevList, ...tokenInNewList };
         } else {
-          return {
-            ...token,
-            ...foundToken
-          };
+          return tokenInPrevList;
         }
       })
-      .concat(
-        newTokens
-          .filter(newToken => !this.tokens?.find(token => compareTokens(newToken, token)))
-          .map(newToken => {
-            if (isTokenAmount(newToken)) {
-              return newToken;
-            }
-            return this.balanceLoaderService
-              .getTokensWithNullBalances(List([newToken]), isFavorite)
-              .get(0);
-          })
-      );
-    this._tokens$.next(tokens);
+      .concat(newTokensMap.values());
+
+    this._tokens$.next(updatedTokens);
   }
 
   public patchTokensBalances(

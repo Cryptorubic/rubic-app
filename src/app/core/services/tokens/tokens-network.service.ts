@@ -63,7 +63,7 @@ export class TokensNetworkService {
         }),
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
-          this.tokensStoreService.patchTokens(backendTokens, false);
+          this.tokensStoreService.patchTokens(backendTokens);
         }),
         switchMap(backendTokens => {
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
@@ -142,7 +142,7 @@ export class TokensNetworkService {
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.tokensStoreService.patchTokens(List(tokens), false);
+        this.tokensStoreService.patchTokens(List(tokens));
       });
   }
 }
