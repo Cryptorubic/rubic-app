@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -45,7 +45,8 @@ export class AppComponent implements AfterViewInit {
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.printTimestamp();
     this.setupLanguage();

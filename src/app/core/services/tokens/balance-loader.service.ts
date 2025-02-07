@@ -38,7 +38,7 @@ export class BalanceLoaderService {
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
     onChainLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void,
-    onFinish?: (userAddress: string | undefined) => void
+    onFinish?: (allChainsTokensWithBalances: List<TokenAmount>) => void
   ): void {
     //  can be empty when v2/tokens/allchains response lower then first startBalanceCalculating call in app.component.ts
     if (!tokensList.size) return;
@@ -63,6 +63,7 @@ export class BalanceLoaderService {
 
     this.balanceLoadingStateService.setBalanceLoading('allChains', true);
 
+    const allTokensWithPositiveBalances = List([]).asMutable() as List<TokenAmount>;
     const chainsCount = Object.keys(tokensByChain).length;
     const iterator = new Iterable(chainsCount);
 
@@ -72,7 +73,7 @@ export class BalanceLoaderService {
         while (!iterator.done && !!this.authService.userAddress) {
           await waitFor(100);
         }
-        onFinish(this.authService.userAddress);
+        onFinish(allTokensWithPositiveBalances);
       })();
     }
 
@@ -93,26 +94,32 @@ export class BalanceLoaderService {
           }
         );
 
-        Promise.all(promises).then(balances => {
-          const flattenBalances = balances.flat();
-          const flattenTokens = Object.values(topChainsTokens).flat();
-          const tokensWithBalancesList = List(
-            flattenTokens.map((token, idx) => ({
-              ...token,
-              amount: flattenBalances[idx]
-                ? Web3Pure.fromWei(flattenBalances[idx], token.decimals)
-                : new BigNumber(NaN)
-            })) as TokenAmount[]
-          );
+        Promise.all(promises)
+          .then(balances => {
+            const flattenBalances = balances.flat();
+            const flattenTokens = Object.values(topChainsTokens).flat();
+            const tokensWithBalancesList = List(
+              flattenTokens.map((token, idx) => ({
+                ...token,
+                amount: flattenBalances[idx]
+                  ? Web3Pure.fromWei(flattenBalances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as TokenAmount[]
+            );
 
-          if (balances.length) {
-            this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
-            this.balanceLoadingStateService.setBalanceLoading('allChains', false);
-          }
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(
+              t => !t.amount.isNaN() && t.amount.gt(0)
+            );
+            allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
 
-          onChainLoaded(tokensWithBalancesList, true);
-          iterator.next();
-        });
+            if (balances.length) {
+              this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
+              this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+            }
+
+            onChainLoaded(tokensWithBalancesList, true);
+          })
+          .finally(() => iterator.next());
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
@@ -127,19 +134,25 @@ export class BalanceLoaderService {
               .catch(() => chainTokens.map(() => new BigNumber(NaN)))
           : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
 
-        balancesPromise.then(balances => {
-          const tokensWithBalancesList = List(
-            chainTokens.map((token, idx) => ({
-              ...token,
-              amount: balances[idx]
-                ? Web3Pure.fromWei(balances[idx], token.decimals)
-                : new BigNumber(NaN)
-            })) as TokenAmount[]
-          );
+        balancesPromise
+          .then(balances => {
+            const tokensWithBalancesList = List(
+              chainTokens.map((token, idx) => ({
+                ...token,
+                amount: balances[idx]
+                  ? Web3Pure.fromWei(balances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as TokenAmount[]
+            );
 
-          onChainLoaded(tokensWithBalancesList, true);
-          iterator.next();
-        });
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(
+              t => !t.amount.isNaN() && t.amount.gt(0)
+            );
+            allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
+
+            onChainLoaded(tokensWithBalancesList, true);
+          })
+          .finally(() => iterator.next());
       }
     }
   }

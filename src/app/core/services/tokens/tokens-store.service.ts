@@ -158,6 +158,20 @@ export class TokensStoreService {
   }
 
   public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
+    if (!this.authService.userAddress) {
+      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(this.tokens, false);
+      const nullAllChainsTokens = this.balanceLoaderService.getTokensWithNullBalances(
+        this.allChainsTokens,
+        false
+      );
+
+      this.patchTokensBalances(nullTokens, false);
+      this.patchTokensBalances(nullAllChainsTokens, true);
+      this.tokensUpdaterService.triggerUpdateTokens();
+
+      return;
+    }
+
     if (this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       return;
     }
@@ -167,25 +181,15 @@ export class TokensStoreService {
         ? this.allChainsTokens
         : this.tokens.filter(t => t.blockchain === blockchain);
 
-    if (!this.authService.user) {
-      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
-      this.patchTokensBalances(nullTokens, blockchain === 'allChains');
-      this.tokensUpdaterService.triggerUpdateTokens();
-
-      return;
-    }
-
     if (blockchain === 'allChains') {
       const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
         this.patchTokensBalances(tokensWithBalances, patchAllChains);
         this.tokensUpdaterService.triggerUpdateTokens();
       };
       // patches all tokens from allchains to common list to show them also in chains selectors
-      const onFinish = (userAddress: string | undefined): void => {
-        if (userAddress) {
-          this.patchTokens(this.allChainsTokens);
-          this.tokensUpdaterService.triggerUpdateTokens();
-        }
+      const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
+        this.patchTokens(allChainsTokensWithBalances);
+        this.tokensUpdaterService.triggerUpdateTokens();
       };
       this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
@@ -303,6 +307,11 @@ export class TokensStoreService {
       })
       .concat(newTokensMap.values());
 
+    console.log('%cpatchTokens ==> ', 'color: aqua;', {
+      newTokens: newTokens.toArray(),
+      prevTokens: this.tokens.toArray(),
+      updatedTokens: updatedTokens.toArray()
+    });
     this._tokens$.next(updatedTokens);
   }
 
