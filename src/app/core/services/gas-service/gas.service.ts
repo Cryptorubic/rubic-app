@@ -43,7 +43,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.GRAVITY,
   BLOCKCHAIN_NAME.SONIC,
   BLOCKCHAIN_NAME.MORPH,
-  BLOCKCHAIN_NAME.FRAXTAL
+  BLOCKCHAIN_NAME.FRAXTAL,
+  BLOCKCHAIN_NAME.SONEIUM
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -91,7 +92,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this),
     [BLOCKCHAIN_NAME.SONIC]: this.fetchSonicGas.bind(this),
     [BLOCKCHAIN_NAME.MORPH]: this.fetchMorphGas.bind(this),
-    [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this)
+    [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this),
+    [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -689,6 +691,17 @@ export class GasService {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchSoneiumGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONEIUM);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 }
