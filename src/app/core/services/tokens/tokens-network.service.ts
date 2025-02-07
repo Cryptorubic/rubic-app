@@ -13,6 +13,7 @@ import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
+import { TokensUpdaterService } from './tokens-updater.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,8 @@ export class TokensNetworkService {
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensApiService: TokensApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.setupSubscriptions();
   }
@@ -143,6 +145,7 @@ export class TokensNetworkService {
       )
       .subscribe((tokens: TokenAmount[]) => {
         this.tokensStoreService.patchTokens(List(tokens));
+        this.tokensUpdaterService.triggerUpdateTokens();
       });
   }
 }

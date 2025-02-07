@@ -63,18 +63,16 @@ export class AppComponent implements AfterViewInit {
     this.walletConnectorService.addressChange$.subscribe(() => {
       this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
 
-      if (this.assetsSelectorStateService.assetType === 'allChains') {
-        this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
-      } else {
-        if (
-          this.tradePageService.formContent === 'form' &&
-          !this.balanceLoadingStateService.isBalanceLoading('allChains')
-        ) {
-          // load allchains in background if token's selector closed if not loaded yet
-          this.tokensStoreService.startBalanceCalculating('allChains');
-        }
-        this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+      // load allchains in background if token's selector closed if not loaded yet
+      if (
+        this.assetsSelectorStateService.assetType !== 'allChains' &&
+        this.tradePageService.formContent === 'form' &&
+        !this.balanceLoadingStateService.isBalanceCalculated('allChains')
+      ) {
+        this.tokensStoreService.startBalanceCalculating('allChains');
       }
+
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
     });
   }
 
