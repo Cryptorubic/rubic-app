@@ -38,7 +38,7 @@ export class BalanceLoaderService {
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
     onChainLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void,
-    onFinish?: () => void
+    onFinish?: (userAddress: string | undefined) => void
   ): void {
     //  can be empty when v2/tokens/allchains response lower then first startBalanceCalculating call in app.component.ts
     if (!tokensList.size) return;
@@ -69,10 +69,10 @@ export class BalanceLoaderService {
     // make some when every chain from tokensByChain loaded tokens with balances
     if (onFinish) {
       (async () => {
-        while (!iterator.done) {
+        while (!iterator.done && !!this.authService.userAddress) {
           await waitFor(100);
         }
-        onFinish();
+        onFinish(this.authService.userAddress);
       })();
     }
 
@@ -105,13 +105,13 @@ export class BalanceLoaderService {
             })) as TokenAmount[]
           );
 
-          onChainLoaded(tokensWithBalancesList, true);
-          iterator.next();
-
           if (balances.length) {
             this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
             this.balanceLoadingStateService.setBalanceLoading('allChains', false);
           }
+
+          onChainLoaded(tokensWithBalancesList, true);
+          iterator.next();
         });
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
@@ -147,14 +147,14 @@ export class BalanceLoaderService {
   public async updateBalancesForSpecificChain(
     tokensList: List<Token>,
     blockchain: AssetType,
-    onChainLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onFinish: (tokensWithBalances: List<TokenAmount>, userAddress: string | undefined) => void
   ): Promise<void> {
     this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
-    onChainLoaded(tokensWithBalances, false);
     this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
     this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
+    onFinish(tokensWithBalances, this.authService.userAddress);
   }
 
   /**

@@ -175,24 +175,29 @@ export class TokensStoreService {
       return;
     }
 
-    const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
-      this.patchTokensBalances(tokensWithBalances, patchAllChains);
-      this.tokensUpdaterService.triggerUpdateTokens();
-    };
-
     if (blockchain === 'allChains') {
+      const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
+        this.patchTokensBalances(tokensWithBalances, patchAllChains);
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
       // patches all tokens from allchains to common list to show them also in chains selectors
-      const onFinish = (): void => {
-        this.patchTokens(this.allChainsTokens);
-        // this.tokensUpdaterService.triggerUpdateTokens();
+      const onFinish = (userAddress: string | undefined): void => {
+        if (userAddress) {
+          this.patchTokens(this.allChainsTokens);
+        } else {
+          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+        }
+        this.tokensUpdaterService.triggerUpdateTokens();
       };
       this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
-      this.balanceLoaderService.updateBalancesForSpecificChain(
-        tokensList,
-        blockchain,
-        onBalanceLoaded
-      );
+      const onFinish = (tokensWithBalances: List<TokenAmount>, userAddress: string | undefined) => {
+        if (userAddress) {
+          this.patchTokensBalances(tokensWithBalances);
+          this.tokensUpdaterService.triggerUpdateTokens();
+        }
+      };
+      this.balanceLoaderService.updateBalancesForSpecificChain(tokensList, blockchain, onFinish);
     }
   }
 
