@@ -17559,10 +17559,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.52.4-alpha-soneium.1:
-  version "5.52.4-alpha-soneium.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.4-alpha-soneium.1.tgz#21a3be5ffbad9401752d94d3c3fe4c36562e95b8"
-  integrity sha512-2eWWIeT+N6nj+epu7MA6eBY51f+m45JOPfIJBi+fyVcJCgc4mDl9BuR0JBUPk8SgByjNEqWmPnHNDKgKuX9xAA==
+rubic-sdk@5.52.4-alpha-soneium.2:
+  version "5.52.4-alpha-soneium.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.4-alpha-soneium.2.tgz#e3bbdad4a435e2d02e8ab0a84110b72fd937825a"
+  integrity sha512-aEOvVX947d57RlRVqem3GFFRsttwx4y7m+7n3JU/+O6I/Vw51l6sTZculQmSQHKootCaAo+bQx5Zom9FRbik0g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
