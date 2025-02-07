@@ -307,11 +307,6 @@ export class TokensStoreService {
       })
       .concat(newTokensMap.values());
 
-    console.log('%cpatchTokens ==> ', 'color: aqua;', {
-      newTokens: newTokens.toArray(),
-      prevTokens: this.tokens.toArray(),
-      updatedTokens: updatedTokens.toArray()
-    });
     this._tokens$.next(updatedTokens);
   }
 
