@@ -184,10 +184,8 @@ export class TokensStoreService {
       const onFinish = (userAddress: string | undefined): void => {
         if (userAddress) {
           this.patchTokens(this.allChainsTokens);
-        } else {
-          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+          this.tokensUpdaterService.triggerUpdateTokens();
         }
-        this.tokensUpdaterService.triggerUpdateTokens();
       };
       this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
