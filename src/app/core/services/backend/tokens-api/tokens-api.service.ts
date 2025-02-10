@@ -297,7 +297,7 @@ export class TokensApiService {
   public fetchTokensListForAllChains(): Observable<List<Token>> {
     return forkJoin([
       this.httpService
-        .get<TokensBackendResponse>('', {}, `https://dev-api.rubic.exchange/api/v2/tokens/top`)
+        .get<TokensBackendResponse>('v2/tokens/top')
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
       this.httpService
         .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
