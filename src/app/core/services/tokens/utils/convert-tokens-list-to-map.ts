@@ -12,6 +12,7 @@ import { BLOCKCHAIN_NAME, EvmWeb3Pure } from 'rubic-sdk';
  * @returns ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
  */
 export function getTokenKeyInMap(t: Token): string {
+  // show only one native token in selector for METIS
   if (
     t.address === BLOCKCHAIN_NAME.METIS &&
     (compareAddresses(t.address, EvmWeb3Pure.nativeTokenAddress) ||
