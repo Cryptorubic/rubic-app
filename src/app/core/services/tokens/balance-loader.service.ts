@@ -3,12 +3,20 @@ import { Token } from '@app/shared/models/tokens/token';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
-import { BlockchainName, BlockchainsInfo, Injector, Web3Public, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  Injector,
+  waitFor,
+  Web3Public,
+  Web3Pure
+} from 'rubic-sdk';
 import { AuthService } from '../auth/auth.service';
 import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
+import { Iterable } from './utils/iterable';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -29,8 +37,12 @@ export class BalanceLoaderService {
 
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
-    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onChainLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void,
+    onFinish?: (allChainsTokensWithBalances: List<TokenAmount>) => void
   ): void {
+    //  can be empty when v2/tokens/allchains response lower then first startBalanceCalculating call in app.component.ts
+    if (!tokensList.size) return;
+
     const tokensByChain: TokensListOfTopChainsWithOtherChains = {
       TOP_CHAINS: {}
     } as TokensListOfTopChainsWithOtherChains;
@@ -51,6 +63,20 @@ export class BalanceLoaderService {
 
     this.balanceLoadingStateService.setBalanceLoading('allChains', true);
 
+    const allTokensWithPositiveBalances = List([]).asMutable() as List<TokenAmount>;
+    const chainsCount = Object.keys(tokensByChain).length;
+    const iterator = new Iterable(chainsCount);
+
+    // calls onFinish() when every chain from tokensByChain loaded tokens with balances
+    if (onFinish) {
+      (async () => {
+        while (!iterator.done && !!this.authService.userAddress) {
+          await waitFor(100);
+        }
+        onFinish(allTokensWithPositiveBalances);
+      })();
+    }
+
     for (const key in tokensByChain) {
       if (key === 'TOP_CHAINS') {
         const topChainsTokens = tokensByChain.TOP_CHAINS;
@@ -68,20 +94,32 @@ export class BalanceLoaderService {
           }
         );
 
-        Promise.all(promises).then(balances => {
-          const flattenBalances = balances.flat();
-          const flattenTokens = Object.values(topChainsTokens).flat();
-          const tokensWithBalances = flattenTokens.map((token, idx) => ({
-            ...token,
-            amount: flattenBalances[idx]
-              ? Web3Pure.fromWei(flattenBalances[idx], token.decimals)
-              : new BigNumber(NaN)
-          })) as TokenAmount[];
+        Promise.all(promises)
+          .then(balances => {
+            const flattenBalances = balances.flat();
+            const flattenTokens = Object.values(topChainsTokens).flat();
+            const tokensWithBalancesList = List(
+              flattenTokens.map((token, idx) => ({
+                ...token,
+                amount: flattenBalances[idx]
+                  ? Web3Pure.fromWei(flattenBalances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as TokenAmount[]
+            );
 
-          onBalanceLoaded(List(tokensWithBalances), true);
-          this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
-          this.balanceLoadingStateService.setBalanceLoading('allChains', false);
-        });
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(
+              t => !t.amount.isNaN() && t.amount.gt(0)
+            );
+            allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
+
+            if (balances.length) {
+              this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
+              this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+            }
+
+            onChainLoaded(tokensWithBalancesList, true);
+          })
+          .finally(() => iterator.next());
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
@@ -96,16 +134,34 @@ export class BalanceLoaderService {
               .catch(() => chainTokens.map(() => new BigNumber(NaN)))
           : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
 
-        balancesPromise.then(balances => {
-          const tokensWithBalances = chainTokens.map((token, idx) => ({
-            ...token,
-            amount: balances[idx]
-              ? Web3Pure.fromWei(balances[idx], token.decimals)
-              : new BigNumber(NaN)
-          })) as TokenAmount[];
+        balancesPromise
+          .then(balances => {
+            const tokensWithBalancesList = List(
+              chainTokens.map((token, idx) => ({
+                ...token,
+                amount: balances[idx]
+                  ? Web3Pure.fromWei(balances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as TokenAmount[]
+            );
 
-          onBalanceLoaded(List(tokensWithBalances), true);
-        });
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(t => {
+              // not show 2nd metis native token in selector
+              // if (
+              //   t.blockchain === BLOCKCHAIN_NAME.METIS &&
+              //   compareAddresses(t.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+              // ) {
+              //   return false;
+              // }
+              if (t.amount.isNaN() || t.amount.lte(0)) return false;
+
+              return false;
+            });
+            allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
+
+            onChainLoaded(tokensWithBalancesList, true);
+          })
+          .finally(() => iterator.next());
       }
     }
   }
@@ -113,14 +169,14 @@ export class BalanceLoaderService {
   public async updateBalancesForSpecificChain(
     tokensList: List<Token>,
     blockchain: AssetType,
-    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onFinish: (tokensWithBalances: List<TokenAmount>, userAddress: string | undefined) => void
   ): Promise<void> {
     this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
-    onBalanceLoaded(tokensWithBalances, false);
     this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
     this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
+    onFinish(tokensWithBalances, this.authService.userAddress);
   }
 
   /**

@@ -13,6 +13,7 @@ import { TokensListStoreService } from '@features/trade/components/assets-select
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
+import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 
 @Injectable()
 export class TokensListService {
@@ -52,7 +53,8 @@ export class TokensListService {
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.subscribeOnScroll();
 

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -8,7 +8,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map, switchMap } from 'rxjs/operators';
+import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -18,6 +18,7 @@ import { WalletConnectorService } from './core/services/wallets/wallet-connector
 import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
 import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,9 @@ export class AppComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tradePageService: TradePageService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -58,16 +61,20 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        switchMap(() => {
-          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-          return this.tokensStoreService.startBalanceCalculating(
-            this.assetsSelectorStateService.assetType
-          );
-        })
-      )
-      .subscribe();
+    this.walletConnectorService.addressChange$.subscribe(() => {
+      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+
+      // load allchains in background if token's selector closed if not loaded yet
+      if (
+        this.assetsSelectorStateService.assetType !== 'allChains' &&
+        this.tradePageService.formContent === 'form' &&
+        !this.balanceLoadingStateService.isBalanceCalculated('allChains')
+      ) {
+        this.tokensStoreService.startBalanceCalculating('allChains');
+      }
+
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+    });
   }
 
   /**

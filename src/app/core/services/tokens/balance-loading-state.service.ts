@@ -49,4 +49,8 @@ export class BalanceLoadingStateService {
   public isBalanceLoading$(blockchain: AssetType): Observable<boolean> {
     return this._isBalanceLoading$[blockchain].asObservable();
   }
+
+  public isBalanceLoading(blockchain: AssetType): boolean {
+    return this._isBalanceLoading$[blockchain].value;
+  }
 }

@@ -11,14 +11,12 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName, Injector, Web3Pure 
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
-import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
-import { isNativeAddressSafe } from '@app/shared/utils/is-native-address-safe';
-import { TokenAddress } from '@app/features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
+import { TokenConvertersService } from './token-converters.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +25,7 @@ export class TokensStoreService {
   /**
    * Current tokens list state.
    */
-  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(undefined);
+  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
@@ -86,7 +84,8 @@ export class TokensStoreService {
     private readonly storeService: StoreService,
     private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly balanceLoaderService: BalanceLoaderService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
@@ -114,6 +113,11 @@ export class TokensStoreService {
       false
     );
     this._allChainsTokens$.next(defaultTokensList);
+
+    // load balances at first loading for allchains
+    if (this.userAddress) {
+      this.startBalanceCalculating('allChains');
+    }
   }
 
   private setupSubscriptions(): void {
@@ -155,6 +159,20 @@ export class TokensStoreService {
   }
 
   public async startBalanceCalculating(blockchain: AssetType): Promise<void> {
+    if (!this.authService.userAddress) {
+      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(this.tokens, false);
+      const nullAllChainsTokens = this.balanceLoaderService.getTokensWithNullBalances(
+        this.allChainsTokens,
+        false
+      );
+
+      this.patchTokensBalances(nullTokens, false);
+      this.patchTokensBalances(nullAllChainsTokens, true);
+      this.tokensUpdaterService.triggerUpdateTokens();
+
+      return;
+    }
+
     if (this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       return;
     }
@@ -164,26 +182,25 @@ export class TokensStoreService {
         ? this.allChainsTokens
         : this.tokens.filter(t => t.blockchain === blockchain);
 
-    if (!this.authService.user) {
-      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
-      this.patchTokensBalances(nullTokens, blockchain === 'allChains');
-      this.tokensUpdaterService.triggerUpdateTokens();
-      return;
-    }
-
-    const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
-      this.patchTokensBalances(tokensWithBalances, patchAllChains);
-      this.tokensUpdaterService.triggerUpdateTokens();
-    };
-
     if (blockchain === 'allChains') {
-      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded);
+      const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => {
+        this.patchTokensBalances(tokensWithBalances, patchAllChains);
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
+      // patches all tokens from allchains to common list to show them also in chains selectors
+      const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
+        this.patchTokens(allChainsTokensWithBalances);
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
+      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, onFinish);
     } else {
-      this.balanceLoaderService.updateBalancesForSpecificChain(
-        tokensList,
-        blockchain,
-        onBalanceLoaded
-      );
+      const onFinish = (tokensWithBalances: List<TokenAmount>, userAddress: string | undefined) => {
+        if (userAddress) {
+          this.patchTokensBalances(tokensWithBalances);
+          this.tokensUpdaterService.triggerUpdateTokens();
+        }
+      };
+      this.balanceLoaderService.updateBalancesForSpecificChain(tokensList, blockchain, onFinish);
     }
   }
 
@@ -274,34 +291,24 @@ export class TokensStoreService {
    * and tokens from backend have high priority
    * @param newTokens tokens from backend
    */
-  public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
-    const tokens = (this.tokens || List([]))
+  public patchTokens(newTokens: List<Token | TokenAmount>): void {
+    const newTokensMap = this.tokenConverters.convertTokensListToMap(newTokens);
+    const oldTokensMap = this.tokenConverters.convertTokensListToMap(this.tokens);
+
+    const updatedTokens = this.tokens
       .map(token => {
-        const foundToken = newTokens?.find(tokenWithBalance =>
-          compareTokens(token, tokenWithBalance)
-        );
-        if (!foundToken) {
-          return token;
+        const tokenInPrevList = oldTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
+        const tokenInNewList = newTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
+        if (tokenInPrevList && tokenInNewList) {
+          newTokensMap.delete(this.tokenConverters.getTokenKeyInMap(token));
+          return { ...tokenInPrevList, ...tokenInNewList };
         } else {
-          return {
-            ...token,
-            ...foundToken
-          };
+          return tokenInPrevList;
         }
       })
-      .concat(
-        newTokens
-          .filter(newToken => !this.tokens?.find(token => compareTokens(newToken, token)))
-          .map(newToken => {
-            if (isTokenAmount(newToken)) {
-              return newToken;
-            }
-            return this.balanceLoaderService
-              .getTokensWithNullBalances(List([newToken]), isFavorite)
-              .get(0);
-          })
-      );
-    this._tokens$.next(tokens);
+      .concat(newTokensMap.values());
+
+    this._tokens$.next(updatedTokens);
   }
 
   public patchTokensBalances(
@@ -311,19 +318,11 @@ export class TokensStoreService {
     const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
-    const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
-    tokensWithBalances.forEach(t => {
-      if (isNativeAddressSafe(t)) {
-        tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
-      } else {
-        tokensWithBalancesMap.set(t.address.toLowerCase(), t);
-      }
-    });
-
+    const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
     const tokens = list.map(token => {
-      const foundTokenWithBalance = isNativeAddressSafe(token)
-        ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
-        : tokensWithBalancesMap.get(token.address.toLowerCase());
+      const foundTokenWithBalance = tokensWithBalancesMap.get(
+        this.tokenConverters.getTokenKeyInMap(token)
+      );
 
       if (!foundTokenWithBalance) {
         return token;
@@ -339,8 +338,11 @@ export class TokensStoreService {
    * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`
    * */
   public patchLastQueriedTokensBalances(tokensWithBalances: List<TokenAmount>): void {
+    const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
     const lastQueriedTokensWithBalances = this.lastQueriedTokens.map(token => {
-      const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(t, token));
+      const foundTokenWithBalance = tokensWithBalancesMap.get(
+        this.tokenConverters.getTokenKeyInMap(token)
+      );
 
       if (!foundTokenWithBalance) {
         return token;
