@@ -2,14 +2,24 @@ import { TokenAddress } from '@app/features/trade/components/assets-selector/ser
 import { Token } from '@app/shared/models/tokens/token';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { isTokenAmount } from '@app/shared/utils/is-token';
+import { compareAddresses } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
+import { BLOCKCHAIN_NAME, EvmWeb3Pure } from 'rubic-sdk';
 
 /**
  * from https://assets.rubic.exchange/assets/ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
  * @returns ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
  */
 export function getTokenKeyInMap(t: Token): string {
+  if (
+    t.address === BLOCKCHAIN_NAME.METIS &&
+    (compareAddresses(t.address, EvmWeb3Pure.nativeTokenAddress) ||
+      compareAddresses(t.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'))
+  ) {
+    return `METIS_NATIVE`;
+  }
+
   const splitted = t.image.split('/');
   const imgKey = splitted.slice(splitted.length - 3).join('/');
   return imgKey;
