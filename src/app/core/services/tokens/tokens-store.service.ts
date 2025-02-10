@@ -16,7 +16,7 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
-import { convertTokensListToMap, getTokenKeyInMap } from './utils/tokens-converters';
+import { TokenConvertersService } from './token-converters.service';
 
 @Injectable({
   providedIn: 'root'
@@ -84,7 +84,8 @@ export class TokensStoreService {
     private readonly storeService: StoreService,
     private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly balanceLoaderService: BalanceLoaderService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     this.setupStorageTokens();
     this.setupAllChainsTokensList();
@@ -291,15 +292,15 @@ export class TokensStoreService {
    * @param newTokens tokens from backend
    */
   public patchTokens(newTokens: List<Token | TokenAmount>): void {
-    const newTokensMap = convertTokensListToMap(newTokens);
-    const oldTokensMap = convertTokensListToMap(this.tokens);
+    const newTokensMap = this.tokenConverters.convertTokensListToMap(newTokens);
+    const oldTokensMap = this.tokenConverters.convertTokensListToMap(this.tokens);
 
     const updatedTokens = this.tokens
       .map(token => {
-        const tokenInPrevList = oldTokensMap.get(getTokenKeyInMap(token));
-        const tokenInNewList = newTokensMap.get(getTokenKeyInMap(token));
+        const tokenInPrevList = oldTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
+        const tokenInNewList = newTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
         if (tokenInPrevList && tokenInNewList) {
-          newTokensMap.delete(getTokenKeyInMap(token));
+          newTokensMap.delete(this.tokenConverters.getTokenKeyInMap(token));
           return { ...tokenInPrevList, ...tokenInNewList };
         } else {
           return tokenInPrevList;
@@ -317,9 +318,11 @@ export class TokensStoreService {
     const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
     const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
 
-    const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
+    const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
     const tokens = list.map(token => {
-      const foundTokenWithBalance = tokensWithBalancesMap.get(getTokenKeyInMap(token));
+      const foundTokenWithBalance = tokensWithBalancesMap.get(
+        this.tokenConverters.getTokenKeyInMap(token)
+      );
 
       if (!foundTokenWithBalance) {
         return token;
@@ -335,9 +338,11 @@ export class TokensStoreService {
    * used to dynamically update tokensToShow balances in `fetchQueryTokensDynamically`
    * */
   public patchLastQueriedTokensBalances(tokensWithBalances: List<TokenAmount>): void {
-    const tokensWithBalancesMap = convertTokensListToMap(tokensWithBalances);
+    const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
     const lastQueriedTokensWithBalances = this.lastQueriedTokens.map(token => {
-      const foundTokenWithBalance = tokensWithBalancesMap.get(getTokenKeyInMap(token));
+      const foundTokenWithBalance = tokensWithBalancesMap.get(
+        this.tokenConverters.getTokenKeyInMap(token)
+      );
 
       if (!foundTokenWithBalance) {
         return token;

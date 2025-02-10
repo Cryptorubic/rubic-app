@@ -67,7 +67,7 @@ export class BalanceLoaderService {
     const chainsCount = Object.keys(tokensByChain).length;
     const iterator = new Iterable(chainsCount);
 
-    // make some when every chain from tokensByChain loaded tokens with balances
+    // calls onFinish() when every chain from tokensByChain loaded tokens with balances
     if (onFinish) {
       (async () => {
         while (!iterator.done && !!this.authService.userAddress) {
