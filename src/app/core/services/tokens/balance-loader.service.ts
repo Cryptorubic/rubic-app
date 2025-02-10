@@ -4,6 +4,7 @@ import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
   Injector,
@@ -17,6 +18,7 @@ import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
 import { Iterable } from './utils/iterable';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -145,9 +147,18 @@ export class BalanceLoaderService {
               })) as TokenAmount[]
             );
 
-            const tokensWithPositiveBalances = tokensWithBalancesList.filter(
-              t => !t.amount.isNaN() && t.amount.gt(0)
-            );
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(t => {
+              // not show 2nd metis native token in selector
+              if (
+                t.blockchain === BLOCKCHAIN_NAME.METIS &&
+                compareAddresses(t.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+              ) {
+                return false;
+              }
+              if (t.amount.isNaN() || t.amount.lte(0)) return false;
+
+              return false;
+            });
             allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
 
             onChainLoaded(tokensWithBalancesList, true);

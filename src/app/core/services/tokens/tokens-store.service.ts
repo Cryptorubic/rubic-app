@@ -16,7 +16,7 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
-import { convertTokensListToMap, getTokenKeyInMap } from './utils/convert-tokens-list-to-map';
+import { convertTokensListToMap, getTokenKeyInMap } from './utils/tokens-converters';
 
 @Injectable({
   providedIn: 'root'
