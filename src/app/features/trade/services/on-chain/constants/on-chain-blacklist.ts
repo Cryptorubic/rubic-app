@@ -65,7 +65,7 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [],
   [BLOCKCHAIN_NAME.SCROLL]: [],
   [BLOCKCHAIN_NAME.STARKNET]: [],
-  [BLOCKCHAIN_NAME.BERACHAIN]: [],
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: [],
   [BLOCKCHAIN_NAME.BLAST]: [ON_CHAIN_TRADE_TYPE.FENIX_V2],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [],
   [BLOCKCHAIN_NAME.HOLESKY]: [],
@@ -86,7 +86,9 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: [],
   [BLOCKCHAIN_NAME.SONIC]: [],
   [BLOCKCHAIN_NAME.MORPH]: [],
-  [BLOCKCHAIN_NAME.FRAXTAL]: []
+  [BLOCKCHAIN_NAME.FRAXTAL]: [],
+  [BLOCKCHAIN_NAME.BERACHAIN]: [],
+  [BLOCKCHAIN_NAME.SONEIUM]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
