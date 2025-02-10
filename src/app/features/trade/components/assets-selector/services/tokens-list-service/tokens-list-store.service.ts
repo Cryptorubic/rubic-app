@@ -333,7 +333,11 @@ export class TokensListStoreService {
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
-      return tlb.initList(this.listType).applyDefaultSort().toArray();
+      return tlb
+        .initList(this.listType)
+        .applyFilterOnlyWithBalancesAndTopTokens()
+        .applyDefaultSort()
+        .toArray();
     }
 
     return tlb

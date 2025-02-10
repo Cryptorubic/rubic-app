@@ -13,6 +13,7 @@ import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { BalanceLoaderService } from './balance-loader.service';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
+import { TokensUpdaterService } from './tokens-updater.service';
 
 @Injectable({
   providedIn: 'root'
@@ -50,7 +51,8 @@ export class TokensNetworkService {
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensApiService: TokensApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.setupSubscriptions();
   }
@@ -63,7 +65,7 @@ export class TokensNetworkService {
         }),
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
-          this.tokensStoreService.patchTokens(backendTokens, false);
+          this.tokensStoreService.patchTokens(backendTokens);
         }),
         switchMap(backendTokens => {
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
@@ -142,7 +144,8 @@ export class TokensNetworkService {
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.tokensStoreService.patchTokens(List(tokens), false);
+        this.tokensStoreService.patchTokens(List(tokens));
+        this.tokensUpdaterService.triggerUpdateTokens();
       });
   }
 }
