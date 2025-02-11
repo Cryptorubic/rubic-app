@@ -26,10 +26,17 @@ export class AssetsSelectorStateService {
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
   private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(
-    TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+    TOKEN_FILTERS.ALL_CHAINS_TRENDING
   );
 
   public readonly tokenFilter$ = this._tokenFilter$.asObservable();
+
+  /**
+   * returns tokenFilter of allChains selector
+   */
+  public get tokenFilter(): TokenFilter {
+    return this._tokenFilter$.value;
+  }
 
   /**
    * blockchainName used for loading token's list
@@ -58,15 +65,5 @@ export class AssetsSelectorStateService {
 
   public setTokenFilter(filter: TokenFilter): void {
     this._tokenFilter$.next(filter);
-  }
-
-  /**
-   * returns tokenFilter only when allChains opened, otherwise null
-   */
-  public getTokenAllChainsFilter(): TokenFilter | null {
-    if (this.assetType !== 'allChains') {
-      return null;
-    }
-    return this._tokenFilter$.value;
   }
 }

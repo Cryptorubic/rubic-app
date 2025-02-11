@@ -3,7 +3,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -13,6 +13,12 @@ import { TokensListStoreService } from '@features/trade/components/assets-select
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
+import {
+  assertTokensNetworkStateKey,
+  isTokensNetworkStateKey,
+  TokensNetworkStateKey
+} from '@app/shared/models/tokens/paginated-tokens';
+import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
 
 @Injectable()
 export class TokensListService {
@@ -50,6 +56,7 @@ export class TokensListService {
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly searchQueryService: SearchQueryService,
     private readonly destroy$: TuiDestroyService
@@ -65,7 +72,7 @@ export class TokensListService {
     }
   }
 
-  public resetScrollToTop(): void {
+  private resetScrollToTop(): void {
     if (this.listScrollSubject$.value) {
       this.listScrollSubject$.value.scrollToIndex(0);
     }
@@ -81,11 +88,22 @@ export class TokensListService {
       )
       .subscribe(() => {
         this._listUpdating$.next(true);
-        this.tokensNetworkService.fetchNetworkTokens(
-          this.assetsSelectorStateService.assetType as BlockchainName,
-          () => this._listUpdating$.next(false)
+        const tokensNetworkStateKey = this.getTokensNetworkStateKey();
+        this.tokensNetworkService.fetchNextPageOfTokensForSelectedAsset(tokensNetworkStateKey, () =>
+          this._listUpdating$.next(false)
         );
       });
+  }
+
+  /**
+   *
+   */
+  private getTokensNetworkStateKey(): TokensNetworkStateKey {
+    if (this.assetsSelectorStateService.assetType === 'allChains') {
+      return this.assetsSelectorStateService.tokenFilter;
+    }
+    assertTokensNetworkStateKey(this.assetsSelectorStateService.assetType);
+    return this.assetsSelectorStateService.assetType;
   }
 
   private subscribeOnTokensToShow(): void {
@@ -122,11 +140,16 @@ export class TokensListService {
   }
 
   private skipTokensFetching(currentIndex: number): boolean {
-    const blockchain = this.assetsSelectorStateService.assetType;
-    if (!BlockchainsInfo.isBlockchainName(blockchain)) {
+    const assetType = this.assetsSelectorStateService.assetType;
+    const allChainsFilter = this.assetsSelectorStateService.tokenFilter;
+
+    if (!isTokensNetworkStateKey(assetType, allChainsFilter)) {
       return true;
     }
-    const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
+
+    const tokensNetworkState = BlockchainsInfo.isBlockchainName(assetType)
+      ? this.tokensNetworkStateService.tokensNetworkState[assetType]
+      : this.tokensNetworkStateService.tokensNetworkState[allChainsFilter as TokensNetworkStateKey];
 
     if (
       Boolean(

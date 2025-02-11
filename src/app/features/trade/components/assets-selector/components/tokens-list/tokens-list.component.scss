@@ -13,7 +13,7 @@
 .tokens-container {
   position: relative;
 
-  height: 419px;
+  height: 469px;
   padding: 10px;
 
   background: var(--io-background);
@@ -30,6 +30,10 @@
     .tokens-scrollbar {
       height: 30vh;
     }
+  }
+
+  &__all-chains {
+    height: 419px;
   }
 
   &__empty-list {

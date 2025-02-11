@@ -1,4 +1,7 @@
-import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import {
+  AvailableTokenAmount,
+  TokenAmountWithPriceChange
+} from '@app/shared/models/tokens/available-token-amount';
 import BigNumber from 'bignumber.js';
 import { blockchainRanks } from '../../blockchains-list-service/constants/blockchains-list';
 
@@ -66,4 +69,18 @@ export const sorterByTokenRank: TokensSorter = (
     blockchainRankComparison ||
     blockchainNameComparison
   );
+};
+
+export const sorterForLosers: TokensSorter = (
+  a: TokenAmountWithPriceChange,
+  b: TokenAmountWithPriceChange
+): number => {
+  return a.priceChange24h - b.priceChange24h;
+};
+
+export const sorterForGainers: TokensSorter = (
+  a: TokenAmountWithPriceChange,
+  b: TokenAmountWithPriceChange
+): number => {
+  return b.priceChange24h - a.priceChange24h;
 };

@@ -9,6 +9,9 @@ import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
+import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { BalanceLoadingAssetData } from './models/balance-loading-types';
+import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -24,12 +27,14 @@ type TokensListOfTopChainsWithOtherChains = {
 export class BalanceLoaderService {
   constructor(
     private readonly authService: AuthService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {}
 
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
-    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>) => void,
+    options: { patchAllTokensInAllChains?: boolean } = { patchAllTokensInAllChains: false }
   ): void {
     const tokensByChain: TokensListOfTopChainsWithOtherChains = {
       TOP_CHAINS: {}
@@ -49,7 +54,14 @@ export class BalanceLoaderService {
       }
     }
 
-    this.balanceLoadingStateService.setBalanceLoading('allChains', true);
+    const assetDataForBalanceStatus = {
+      assetType: this.assetsSelectorStateService.assetType,
+      tokenFilter: options.patchAllTokensInAllChains
+        ? TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+        : this.assetsSelectorStateService.tokenFilter
+    } as BalanceLoadingAssetData;
+
+    this.balanceLoadingStateService.setBalanceLoading(assetDataForBalanceStatus, true);
 
     for (const key in tokensByChain) {
       if (key === 'TOP_CHAINS') {
@@ -78,9 +90,9 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          onBalanceLoaded(List(tokensWithBalances), true);
-          this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
-          this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+          onBalanceLoaded(List(tokensWithBalances));
+          this.balanceLoadingStateService.setBalanceCalculated(assetDataForBalanceStatus, true);
+          this.balanceLoadingStateService.setBalanceLoading(assetDataForBalanceStatus, false);
         });
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
@@ -104,7 +116,7 @@ export class BalanceLoaderService {
               : new BigNumber(NaN)
           })) as TokenAmount[];
 
-          onBalanceLoaded(List(tokensWithBalances), true);
+          onBalanceLoaded(List(tokensWithBalances));
         });
       }
     }
@@ -113,14 +125,14 @@ export class BalanceLoaderService {
   public async updateBalancesForSpecificChain(
     tokensList: List<Token>,
     blockchain: AssetType,
-    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void
+    onBalanceLoaded: (tokensWithBalances: List<TokenAmount>) => void
   ): Promise<void> {
-    this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
+    this.balanceLoadingStateService.setBalanceLoading({ assetType: blockchain }, true);
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
-    onBalanceLoaded(tokensWithBalances, false);
-    this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
-    this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
+    onBalanceLoaded(tokensWithBalances);
+    this.balanceLoadingStateService.setBalanceCalculated({ assetType: blockchain }, true);
+    this.balanceLoadingStateService.setBalanceLoading({ assetType: blockchain }, false);
   }
 
   /**

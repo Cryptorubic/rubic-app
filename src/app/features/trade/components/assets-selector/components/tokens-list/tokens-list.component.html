@@ -7,14 +7,18 @@
   </div>
 
   <app-tokens-list-filters
-    [selectedFilter]="state.tokenFilter"
+    *ngIf="isAllChainsOpened"
+    [tokenFilter]="state.tokenFilter"
     (onSelect)="selectTokenFilter($event)"
   >
   </app-tokens-list-filters>
 
   <tui-scrollbar
     class="tokens-container"
-    [ngClass]="{ 'large-iframe-token-container': useLargeIframe }"
+    [ngClass]="{
+      'large-iframe-token-container': useLargeIframe,
+      'tokens-container__all-chains': isAllChainsOpened
+    }"
   >
     <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
@@ -50,8 +54,10 @@
               >
                 <app-tokens-list-element
                   [token]="token"
-                  [showAll]="showAll"
+                  [showAll]="isAllChainsOpened"
                   [balanceLoading]="isBalanceLoading$ | async"
+                  [tokenFilter]="state.tokenFilter"
+                  [assetType]="assetType"
                   (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>
               </li>

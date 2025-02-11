@@ -24,6 +24,8 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BalanceLoaderService } from './balance-loader.service';
 import { TokensUpdaterService } from './tokens-updater.service';
+import { BalancePatcherFacade } from './utils/balance-patcher-facade';
+import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -36,13 +38,21 @@ export class TokensService {
     return this.authService.userAddress;
   }
 
+  private readonly balancePatcherFacade: BalancePatcherFacade;
+
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoaderService: BalanceLoaderService,
-    private readonly tokensUpdaterService: TokensUpdaterService
-  ) {}
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
+  ) {
+    this.balancePatcherFacade = new BalancePatcherFacade(
+      this.tokensStoreService,
+      this.assetsSelectorStateService
+    );
+  }
 
   /**
    * Sets default image to token, in case original image has thrown error.
@@ -280,10 +290,10 @@ export class TokensService {
     );
   }
 
-  public fetchQueryTokensDynamically(
+  public fetchQueryTokensDynamicallyAndPatch(
     query: string,
-    blockchain: BlockchainName | null,
-    patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
+    blockchain: BlockchainName | null
+    // patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
   ): Observable<List<TokenAmount>> {
     return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
       switchMap(backendTokens => {
@@ -295,10 +305,11 @@ export class TokensService {
         return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
       }),
       tap(tokensWithNullBalances => {
-        this.tokensStoreService.updateLastQueriedTokens(tokensWithNullBalances);
+        this.tokensStoreService.updateLastQueriedTokensState(tokensWithNullBalances);
 
         const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
-          patchLastQueriedTokensBalances(tokensWithBalances);
+          this.balancePatcherFacade.patchQueryTokensBalances(tokensWithBalances);
+          // patchLastQueriedTokensBalances.bind(this.tokensStoreService, tokensWithBalances);
           this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
         };
 

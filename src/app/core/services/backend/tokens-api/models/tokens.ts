@@ -1,4 +1,3 @@
-import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
@@ -61,12 +60,6 @@ export interface TokensRequestQueryOptions {
 export interface TokensRequestNetworkOptions {
   readonly network: BlockchainName;
   readonly page: number;
-}
-
-export interface TokensListResponse {
-  total: number;
-  result: List<Token>;
-  next: string;
 }
 
 export const DEFAULT_PAGE_SIZE = 200;

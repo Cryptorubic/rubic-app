@@ -9,11 +9,11 @@ import { TokenFilter } from '../../../../models/token-filters';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListFiltersComponent {
-  @Input({ required: true }) selectedFilter: TokenFilter;
+  @Input({ required: true }) tokenFilter: TokenFilter;
 
   @Output() onSelect: EventEmitter<TokenFilter> = new EventEmitter();
 
-  public readonly ITEMS_PER_SLIDE = 2;
+  public readonly ITEMS_PER_SLIDE = 3;
 
   public readonly TOKEN_FILTERS_UI = TOKEN_FILTERS_UI;
 

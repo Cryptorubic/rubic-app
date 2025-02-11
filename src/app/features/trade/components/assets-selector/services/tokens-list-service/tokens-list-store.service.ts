@@ -34,6 +34,8 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { TokensUpdaterService } from '../../../../../../core/services/tokens/tokens-updater.service';
 import { TokensListBuilder } from './utils/tokens-list-builder';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
+import { BalancePatcherFacade } from '@app/core/services/tokens/utils/balance-patcher-facade';
+import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
 
 @Injectable()
 export class TokensListStoreService {
@@ -89,6 +91,12 @@ export class TokensListStoreService {
     return this.tokensListTypeService.listType;
   }
 
+  private get tokenFilter(): TokenFilter {
+    return this.assetsSelectorStateService.tokenFilter;
+  }
+
+  private readonly balancePatcherFacade: BalancePatcherFacade;
+
   constructor(
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
@@ -101,8 +109,12 @@ export class TokensListStoreService {
     private readonly destroy$: TuiDestroyService,
     private readonly tokensUpdaterService: TokensUpdaterService
   ) {
-    this.subscribeOnUpdateTokens();
+    this.balancePatcherFacade = new BalancePatcherFacade(
+      this.tokensStoreService,
+      this.assetsSelectorStateService
+    );
 
+    this.subscribeOnUpdateTokens();
     this.subscribeOnTokensChange();
     this.subscribeOnSearchQueryChange();
     this.subscribeOnBlockchainChange();
@@ -224,10 +236,11 @@ export class TokensListStoreService {
     }
 
     return this.tokensService
-      .fetchQueryTokensDynamically(
+      .fetchQueryTokensDynamicallyAndPatch(
         this.searchQuery,
-        this.blockchain,
-        this.tokensStoreService.patchLastQueriedTokensBalances.bind(this.tokensStoreService)
+        this.blockchain
+        // this.balancePatcherFacade.patchQueryTokensBalances.bind(this.tokensStoreService)
+        // this.tokensStoreService.patchLastQueriedTokensBalances.bind(this.tokensStoreService)
       )
       .pipe(
         map(backendTokens => {
@@ -333,6 +346,16 @@ export class TokensListStoreService {
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
+      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_TRENDING) {
+        return tlb.initList(this.listType).toArray();
+      }
+      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
+        return tlb.initList(this.listType).applySortByMostGainer(this.tokenFilter).toArray();
+      }
+      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
+        return tlb.initList(this.listType).applySortByMostLoser(this.tokenFilter).toArray();
+      }
+
       return tlb.initList(this.listType).applyDefaultSort().toArray();
     }
 
