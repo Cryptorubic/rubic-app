@@ -59,4 +59,9 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
         FeatureName.SUI__SIGN_AND_EXECUTE_TRANSACTION_BLOCK in wallet.features);
     return res;
   }
+
+  public deactivate(): void {
+    (this.wallet?.features['standard:disconnect'] as RubicAny)?.disconnect();
+    super.deactivate();
+  }
 }
