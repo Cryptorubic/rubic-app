@@ -127,5 +127,23 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Sui Wallet',
+    value: WALLET_NAME.SUI_WALLET,
+    img: './assets/images/icons/wallets/sui-wallet.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Suiet Wallet',
+    value: WALLET_NAME.SUIET_WALLET,
+    img: './assets/images/icons/wallets/suiet.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];
