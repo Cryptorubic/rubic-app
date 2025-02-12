@@ -24,11 +24,14 @@ import { defaultTokens } from './models/default-tokens';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 import {
   BackendBlockchain,
+  BLOCKCHAIN_NAME,
   BlockchainName,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
 } from 'rubic-sdk';
 import { ENVIRONMENT } from 'src/environments/environment';
+
+import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
 import { GainersLosersOrder, ORDERING_TYPE_TO_TOKEN_FILTER } from './models/gainers-losers';
 import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 
@@ -279,13 +282,33 @@ export class TokensApiService {
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
-    return this.httpService
-      .get<BackendTokenForAllChains[]>('v2/tokens/allchains', {}, '', 15_000)
-      .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)));
+    return forkJoin([
+      this.httpService
+        .get<TokensBackendResponse>('v2/tokens/top')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
+      this.httpService
+        .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+    ]).pipe(
+      map(([topTokens, allChainsTokens]) => {
+        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
+        return topTokens.concat(allChainsTokens).reduce((acc, token) => {
+          // not show 2nd metis native token in selector
+          if (
+            token.blockchain === BLOCKCHAIN_NAME.METIS &&
+            compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+          ) {
+            return acc;
+          }
+          const repeated = acc.find(t => compareTokens(t, token));
+          return repeated ? acc : acc.push(token);
+        }, List() as List<Token>);
+      })
+    );
   }
 
   public fetchTrendTokens(): Observable<List<RatedToken>> {
-    return this.httpService.get<RatedBackendToken[]>('v2/tokens/trending', {}, '', 15_000).pipe(
+    return this.httpService.get<RatedBackendToken[]>('v2/tokens/trending').pipe(
       map(backendTokens =>
         TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
       ),
@@ -299,7 +322,7 @@ export class TokensApiService {
   ): Observable<List<RatedToken>> {
     const options = { ordering, page, pageSize: DEFAULT_PAGE_SIZE };
 
-    return this.httpService.get<TokensBackendResponse>('v2/tokens/', options, '', 15_000).pipe(
+    return this.httpService.get<TokensBackendResponse>('v2/tokens/', options).pipe(
       tap(resp => {
         const tokensNetworkStateKey = ORDERING_TYPE_TO_TOKEN_FILTER[ordering];
         const oldState = this.tokensNetworkStateService.tokensNetworkState;

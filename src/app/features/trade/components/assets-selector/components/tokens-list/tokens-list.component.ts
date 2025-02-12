@@ -16,6 +16,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { AssetType } from '@app/features/trade/models/asset';
+import { SearchQueryService } from '../../services/search-query-service/search-query.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -72,11 +73,13 @@ export class TokensListComponent {
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly searchQueryService: SearchQueryService,
     @Self() private readonly destroy$: TuiDestroyService
   ) {
     this.assetsSelectorStateService.tokenFilter$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
+        this.searchQueryService.setSearchQuery('');
         this.tokensStoreService.startBalanceCalculating('allChains');
         this.tokensUpdaterService.triggerUpdateTokens();
       });

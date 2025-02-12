@@ -34,7 +34,6 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { TokensUpdaterService } from '../../../../../../core/services/tokens/tokens-updater.service';
 import { TokensListBuilder } from './utils/tokens-list-builder';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
-import { BalancePatcherFacade } from '@app/core/services/tokens/utils/balance-patcher-facade';
 import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
 
 @Injectable()
@@ -95,8 +94,6 @@ export class TokensListStoreService {
     return this.assetsSelectorStateService.tokenFilter;
   }
 
-  private readonly balancePatcherFacade: BalancePatcherFacade;
-
   constructor(
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
@@ -109,11 +106,6 @@ export class TokensListStoreService {
     private readonly destroy$: TuiDestroyService,
     private readonly tokensUpdaterService: TokensUpdaterService
   ) {
-    this.balancePatcherFacade = new BalancePatcherFacade(
-      this.tokensStoreService,
-      this.assetsSelectorStateService
-    );
-
     this.subscribeOnUpdateTokens();
     this.subscribeOnTokensChange();
     this.subscribeOnSearchQueryChange();
@@ -166,6 +158,7 @@ export class TokensListStoreService {
   private subscribeOnUpdateTokens(): void {
     this.tokensUpdaterService.updateTokensList$
       .pipe(
+        tap(),
         switchMap(({ skipRefetch }) => {
           if (this.searchQuery.length) {
             if (this.listType === 'default') {
@@ -236,12 +229,7 @@ export class TokensListStoreService {
     }
 
     return this.tokensService
-      .fetchQueryTokensDynamicallyAndPatch(
-        this.searchQuery,
-        this.blockchain
-        // this.balancePatcherFacade.patchQueryTokensBalances.bind(this.tokensStoreService)
-        // this.tokensStoreService.patchLastQueriedTokensBalances.bind(this.tokensStoreService)
-      )
+      .fetchQueryTokensDynamicallyAndPatch(this.searchQuery, this.blockchain)
       .pipe(
         map(backendTokens => {
           if (backendTokens.size) {
@@ -356,7 +344,11 @@ export class TokensListStoreService {
         return tlb.initList(this.listType).applySortByMostLoser(this.tokenFilter).toArray();
       }
 
-      return tlb.initList(this.listType).applyDefaultSort().toArray();
+      return tlb
+        .initList(this.listType)
+        .applyFilterOnlyWithBalancesAndTopTokens()
+        .applyDefaultSort()
+        .toArray();
     }
 
     return tlb

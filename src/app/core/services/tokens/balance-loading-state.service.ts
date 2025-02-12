@@ -13,8 +13,7 @@ import { BalanceLoadingAssetData } from './models/balance-loading-types';
 })
 export class BalanceLoadingStateService {
   private isBalanceAlreadyCalculatedForChain: Record<AssetType, boolean> = [
-    ...Object.values(BLOCKCHAIN_NAME),
-    'allChains'
+    ...Object.values(BLOCKCHAIN_NAME)
   ].reduce(
     (acc, blockchain) => ({ ...acc, [blockchain]: false }),
     {} as Record<AssetType, boolean>
@@ -27,8 +26,7 @@ export class BalanceLoadingStateService {
     );
 
   private _isBalanceLoading$: Record<AssetType, BehaviorSubject<boolean>> = [
-    ...Object.values(BLOCKCHAIN_NAME),
-    'allChains'
+    ...Object.values(BLOCKCHAIN_NAME)
   ].reduce(
     (acc, blockchain) => ({ ...acc, [blockchain]: new BehaviorSubject(true) }),
     {} as Record<AssetType, BehaviorSubject<boolean>>
@@ -59,7 +57,7 @@ export class BalanceLoadingStateService {
   }
 
   public setBalanceLoading(assetData: BalanceLoadingAssetData, isLoading: boolean): void {
-    if (assetData.assetType === 'allChains') {
+    if (assetData.assetType === 'allChains' || assetData.tokenFilter) {
       this._isBalanceLoadingAllChains$[assetData.tokenFilter].next(isLoading);
     } else {
       this._isBalanceLoading$[assetData.assetType]?.next(isLoading);
@@ -67,7 +65,7 @@ export class BalanceLoadingStateService {
   }
 
   public setBalanceCalculated(assetData: BalanceLoadingAssetData, isCalculated: boolean): void {
-    if (assetData.assetType === 'allChains') {
+    if (assetData.assetType === 'allChains' || assetData.tokenFilter) {
       this.isBalanceAlreadyCalculatedForAllChainsFilter[assetData.tokenFilter] = isCalculated;
     } else {
       this.isBalanceAlreadyCalculatedForChain[assetData.assetType] = isCalculated;

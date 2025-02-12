@@ -62,7 +62,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$.subscribe(() => {
+    this.walletConnectorService.addressChange$.subscribe(userAddress => {
       this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
       this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
 
@@ -74,12 +74,13 @@ export class AppComponent implements AfterViewInit {
       // load ALL_CHAINS_ALL_TOKENS assets in background if token's selector closed
       // and if ALL_CHAINS_ALL_TOKENS balances not loaded yet
       if (
+        userAddress &&
         this.tradePageService.formContent === 'form' &&
         !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData) &&
         this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
       ) {
         this.tokensStoreService.startBalanceCalculating('allChains', {
-          calculateAllTokensOfAllChains: true
+          allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
         });
       }
     });

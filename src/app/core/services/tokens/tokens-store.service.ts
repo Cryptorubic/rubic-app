@@ -11,7 +11,6 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName, Injector, Web3Pure 
 import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
-import { isTokenAmount } from '@shared/utils/is-token';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
 import { AssetType } from '@app/features/trade/models/asset';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
@@ -26,6 +25,7 @@ import {
 } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { GAINERS_LOSERS_ORDER } from '../backend/tokens-api/models/gainers-losers';
 import { TokenAmountWithPriceChange } from '@app/shared/models/tokens/available-token-amount';
+import { TokenConvertersService } from './token-converters.service';
 
 @Injectable({
   providedIn: 'root'
@@ -107,10 +107,15 @@ export class TokensStoreService {
     private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     // @TODO create tokens-state-srv
-    this.balancePatcherFacade = new BalancePatcherFacade(this, assetsSelectorStateService);
+    this.balancePatcherFacade = new BalancePatcherFacade(
+      this,
+      assetsSelectorStateService,
+      tokenConverters
+    );
 
     this.setupStorageTokens();
     this.setupTokensForAllChainsTab();
@@ -120,7 +125,7 @@ export class TokensStoreService {
   private setupStorageTokens(): void {
     this.storageTokens = this.storeService.getItem('RUBIC_TOKENS') || [];
     if (this.storageTokens.length) {
-      const tokens = this.balanceLoaderService.getTokensWithNullBalances(
+      const tokens = this.tokenConverters.getTokensWithNullBalances(
         List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
         false
       );
@@ -132,17 +137,17 @@ export class TokensStoreService {
     // firstly load tokens without balances for ALL_CHAINS_ALL_TOKENS, TRENDING, GAINERS, LOSERS
     const [allTokens, trendingTokens, gainersTokens, losersTokens] = await Promise.all([
       firstValueFrom(this.tokensApiService.fetchTokensListForAllChains()).then(val =>
-        this.balanceLoaderService.getTokensWithNullBalances(val, false)
+        this.tokenConverters.getTokensWithNullBalances(val, false)
       ),
       firstValueFrom(this.tokensApiService.fetchTrendTokens()).then(val =>
-        this.balanceLoaderService.getTokensWithNullBalances(val, false)
+        this.tokenConverters.getTokensWithNullBalances(val, false)
       ),
       firstValueFrom(
         this.tokensApiService.fetchTokensByDailyRating(1, GAINERS_LOSERS_ORDER.GAINERS_24HRS)
-      ).then(val => this.balanceLoaderService.getTokensWithNullBalances(val, false)),
+      ).then(val => this.tokenConverters.getTokensWithNullBalances(val, false)),
       firstValueFrom(
         this.tokensApiService.fetchTokensByDailyRating(1, GAINERS_LOSERS_ORDER.LOSERS_24HRS)
-      ).then(val => this.balanceLoaderService.getTokensWithNullBalances(val, false))
+      ).then(val => this.tokenConverters.getTokensWithNullBalances(val, false))
     ]);
 
     this._allChainsTokens$.next({
@@ -151,6 +156,14 @@ export class TokensStoreService {
       ALL_CHAINS_GAINERS: gainersTokens as List<TokenAmountWithPriceChange>,
       ALL_CHAINS_LOSERS: losersTokens as List<TokenAmountWithPriceChange>
     });
+
+    // load balances at first loading for allchains
+    if (this.userAddress) {
+      this.startBalanceCalculating('allChains', {
+        allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+      });
+      this.tokensUpdaterService.triggerUpdateTokens();
+    }
   }
 
   private setupSubscriptions(): void {
@@ -178,7 +191,7 @@ export class TokensStoreService {
           const favoriteTokensByBlockchain = favoriteTokens.filter(
             fT => fT.blockchain === blockchain
           );
-          const favoriteTokensWithoutBalances = this.balanceLoaderService.getTokensWithNullBalances(
+          const favoriteTokensWithoutBalances = this.tokenConverters.getTokensWithNullBalances(
             List(favoriteTokensByBlockchain),
             true
           );
@@ -193,53 +206,66 @@ export class TokensStoreService {
 
   public async startBalanceCalculating(
     assetType: AssetType,
-    options: { calculateAllTokensOfAllChains?: boolean } = { calculateAllTokensOfAllChains: false }
+    options: { allChainsFilterToPatch?: TokenFilter } = {}
   ): Promise<void> {
     const isBalanceForSelectedAssetCalculated = this.balanceLoadingStateService.isBalanceCalculated(
       {
         assetType,
-        tokenFilter: this.assetsSelectorStateService.tokenFilter
+        tokenFilter: options.allChainsFilterToPatch || this.assetsSelectorStateService.tokenFilter
       }
     );
 
     if (isBalanceForSelectedAssetCalculated) {
+      console.log(`%c${assetType} calculated ==> `, 'color: red;');
+      return;
+    }
+
+    if (!this.authService.userAddress) {
+      console.log('%cNULL_BALANCES', 'color: aqua; font-size: 20px;');
+      this.balancePatcherFacade.patchNullBalancesCommonTokensList();
+      this.balancePatcherFacade.patchNullBalancesEveryFilterListAllChains();
+      this.tokensUpdaterService.triggerUpdateTokens();
       return;
     }
 
     let tokensList: List<TokenAmount> = List();
-    if (options.calculateAllTokensOfAllChains) {
-      tokensList = this.allChainsTokens[TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS];
+    if (options.allChainsFilterToPatch) {
+      tokensList = this.allChainsTokens[options.allChainsFilterToPatch];
     } else if (assetType === 'allChains') {
       tokensList = this.allChainsTokens[this.assetsSelectorStateService.tokenFilter];
     } else {
       tokensList = this.tokens.filter(t => t.blockchain === assetType);
     }
 
-    if (!this.authService.user) {
-      const nullTokens = this.balanceLoaderService.getTokensWithNullBalances(tokensList, false);
-      this.balancePatcherFacade.patchDefaultTokensBalances(nullTokens, {
-        patchAllTokensInAllChains: options.calculateAllTokensOfAllChains
-      });
-      this.tokensUpdaterService.triggerUpdateTokens();
-      return;
-    }
-
-    const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
-      this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
-        patchAllTokensInAllChains: options.calculateAllTokensOfAllChains
-      });
-      this.tokensUpdaterService.triggerUpdateTokens();
-    };
-
     if (assetType === 'allChains') {
-      this.balanceLoaderService.updateBalancesForAllChains(tokensList, onBalanceLoaded, {
-        patchAllTokensInAllChains: options.calculateAllTokensOfAllChains
+      const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
+        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances);
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
+      // patches all tokens from allchains to common list to show them also in chains selectors
+      const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
+        // @FIX maybe somehow handle properly to not fill Trending list with
+        this.balancePatcherFacade.addNewTokensToList(allChainsTokensWithBalances, {
+          tokenListToPatch: 'tokens$'
+        });
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
+      this.balanceLoaderService.updateBalancesForAllChains(tokensList, {
+        onChainLoaded,
+        onFinish,
+        ...('allChainsFilterToPatch' in options && {
+          allChainsFilterToPatch: options.allChainsFilterToPatch
+        })
       });
     } else {
+      const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
+        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances);
+        this.tokensUpdaterService.triggerUpdateTokens();
+      };
       this.balanceLoaderService.updateBalancesForSpecificChain(
         tokensList,
         assetType,
-        onBalanceLoaded
+        onChainLoaded
       );
     }
   }
@@ -325,72 +351,6 @@ export class TokensStoreService {
     const tokens = this.tokens.filter(t => !compareTokens(t, token)).push(token);
     this._tokens$.next(tokens);
   }
-
-  /**
-   * @description Method combines tokens from storage.get('RUBIC_TOKENS) with tokens from backend
-   * and tokens from backend have high priority
-   * @param newTokens tokens from backend
-   */
-  public patchTokens(newTokens: List<Token | TokenAmount>, isFavorite: boolean): void {
-    const tokens = (this.tokens || List([]))
-      .map(token => {
-        const foundToken = newTokens?.find(tokenWithBalance =>
-          compareTokens(token, tokenWithBalance)
-        );
-        if (!foundToken) {
-          return token;
-        } else {
-          return {
-            ...token,
-            ...foundToken
-          };
-        }
-      })
-      .concat(
-        newTokens
-          .filter(newToken => !this.tokens?.find(token => compareTokens(newToken, token)))
-          .map(newToken => {
-            if (isTokenAmount(newToken)) {
-              return newToken;
-            }
-            return this.balanceLoaderService
-              .getTokensWithNullBalances(List([newToken]), isFavorite)
-              .get(0);
-          })
-      );
-    this._tokens$.next(tokens);
-  }
-
-  // public patchTokensBalances(
-  //   tokensWithBalances: List<TokenAmount>,
-  //   patchAllChains: boolean = false
-  // ): void {
-  //   const list: List<TokenAmount> = patchAllChains ? this.allChainsTokens : this.tokens;
-  //   const _listSubj$ = patchAllChains ? this._allChainsTokens$ : this._tokens$;
-
-  //   const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
-  //   tokensWithBalances.forEach(t => {
-  //     if (isNativeAddressSafe(t)) {
-  //       tokensWithBalancesMap.set(`${t.address.toLowerCase()}_${t.blockchain}`, t);
-  //     } else {
-  //       tokensWithBalancesMap.set(t.address.toLowerCase(), t);
-  //     }
-  //   });
-
-  //   const tokens = list.map(token => {
-  //     const foundTokenWithBalance = isNativeAddressSafe(token)
-  //       ? tokensWithBalancesMap.get(`${token.address.toLowerCase()}_${token.blockchain}`)
-  //       : tokensWithBalancesMap.get(token.address.toLowerCase());
-
-  //     if (!foundTokenWithBalance) {
-  //       return token;
-  //     } else {
-  //       return { ...token, amount: foundTokenWithBalance.amount };
-  //     }
-  //   });
-
-  //   _listSubj$.next(tokens);
-  // }
 
   /**
    * Adds token to list of favorite tokens.

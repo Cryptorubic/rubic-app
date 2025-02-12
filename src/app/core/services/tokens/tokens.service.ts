@@ -26,6 +26,7 @@ import { BalanceLoaderService } from './balance-loader.service';
 import { TokensUpdaterService } from './tokens-updater.service';
 import { BalancePatcherFacade } from './utils/balance-patcher-facade';
 import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TokenConvertersService } from './token-converters.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -46,11 +47,13 @@ export class TokensService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly tokensUpdaterService: TokensUpdaterService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     this.balancePatcherFacade = new BalancePatcherFacade(
       this.tokensStoreService,
-      this.assetsSelectorStateService
+      this.assetsSelectorStateService,
+      this.tokenConverters
     );
   }
 
@@ -293,7 +296,6 @@ export class TokensService {
   public fetchQueryTokensDynamicallyAndPatch(
     query: string,
     blockchain: BlockchainName | null
-    // patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
   ): Observable<List<TokenAmount>> {
     return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
       switchMap(backendTokens => {
@@ -302,28 +304,26 @@ export class TokensService {
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
 
-        return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
+        return of(this.tokenConverters.getTokensWithNullBalances(filteredTokens, false));
       }),
       tap(tokensWithNullBalances => {
         this.tokensStoreService.updateLastQueriedTokensState(tokensWithNullBalances);
 
-        const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
+        const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
           this.balancePatcherFacade.patchQueryTokensBalances(tokensWithBalances);
-          // patchLastQueriedTokensBalances.bind(this.tokensStoreService, tokensWithBalances);
           this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
         };
 
         // allChains
         if (!blockchain) {
-          this.balanceLoaderService.updateBalancesForAllChains(
-            tokensWithNullBalances,
-            onBalanceLoaded
-          );
+          this.balanceLoaderService.updateBalancesForAllChains(tokensWithNullBalances, {
+            onChainLoaded
+          });
         } else {
           this.balanceLoaderService.updateBalancesForSpecificChain(
             tokensWithNullBalances,
             blockchain,
-            onBalanceLoaded
+            onChainLoaded
           );
         }
       })

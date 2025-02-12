@@ -61,6 +61,11 @@ export class TokensListBuilder {
     return this;
   }
 
+  public applyFilterOnlyWithBalancesAndTopTokens(): TokensListBuilder {
+    this.tempTokensList = this.tempTokensList.filter(t => t.rank >= 7 || t.amount.gt(0));
+    return this;
+  }
+
   /**
    * add filter of tokens list on UI without api requests
    */

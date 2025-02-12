@@ -15,6 +15,7 @@ import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-a
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import { SearchQueryService } from '../search-query-service/search-query.service';
 import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
 
@@ -38,7 +39,8 @@ export class AssetsSelectorService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly headerStore: HeaderStore,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly searchQueryService: SearchQueryService
+    private readonly searchQueryService: SearchQueryService,
+    private readonly authService: AuthService
   ) {
     this.subscribeOnAssetChange();
   }
@@ -59,7 +61,7 @@ export class AssetsSelectorService {
       (this.assetsSelectorStateService.formType === 'from' && !fromBlockchain) ||
       (this.assetsSelectorStateService.formType === 'to' && !toBlockchain);
 
-    if (noChainInOpenedSelector) {
+    if (noChainInOpenedSelector && !this.authService.userAddress) {
       this.assetsSelectorStateService.setAssetType('allChains');
     } else {
       const assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
@@ -72,7 +74,7 @@ export class AssetsSelectorService {
 
   private subscribeOnAssetChange(): void {
     this.assetType$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe(assetType => {
-      this.searchQueryService.query = '';
+      this.searchQueryService.setSearchQuery('');
       if (BlockchainsInfo.isBlockchainName(assetType)) {
         const assetKey =
           this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toToken';

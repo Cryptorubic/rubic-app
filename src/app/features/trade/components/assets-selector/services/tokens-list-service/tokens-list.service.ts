@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatestWith, filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -107,35 +107,17 @@ export class TokensListService {
   }
 
   private subscribeOnTokensToShow(): void {
-    let prevSearchQuery = this.searchQueryService.query;
-    let prevListType = this.listType;
-
-    this.tokensListStoreService.tokensToShow$
-      .pipe(pairwise(), takeUntil(this.destroy$))
-      .subscribe(([prevTokensToShow, tokensToShow]) => {
-        if (prevTokensToShow?.length && tokensToShow?.length) {
-          const prevToken = prevTokensToShow[0];
-          const newToken = tokensToShow[0];
-          let shouldAnimate = prevToken.blockchain !== newToken.blockchain;
-
-          shouldAnimate ||= prevListType !== this.listType;
-          prevListType = this.listType;
-
-          if (shouldAnimate) {
-            this.listAnimationType = 'hidden';
-            setTimeout(() => {
-              this.listAnimationType = 'shown';
-            });
-          }
-        }
-
-        if (
-          prevTokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
-          prevSearchQuery !== this.searchQueryService.query
-        ) {
-          this.resetScrollToTop();
-          prevSearchQuery = this.searchQueryService.query;
-        }
+    this.assetsSelectorStateService.assetType$
+      .pipe(
+        combineLatestWith(this.assetsSelectorStateService.tokenFilter$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.resetScrollToTop();
+        this.listAnimationType = 'hidden';
+        setTimeout(() => {
+          this.listAnimationType = 'shown';
+        });
       });
   }
 

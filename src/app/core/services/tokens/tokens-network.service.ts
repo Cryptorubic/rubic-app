@@ -19,6 +19,7 @@ import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/mo
 import { GAINERS_LOSERS_ORDER } from '../backend/tokens-api/models/gainers-losers';
 import { TokensNetworkStateService } from './tokens-network-state.service';
 import { TokensUpdaterService } from './tokens-updater.service';
+import { TokenConvertersService } from './token-converters.service';
 
 @Injectable({
   providedIn: 'root'
@@ -38,11 +39,13 @@ export class TokensNetworkService {
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly tokensUpdaterService: TokensUpdaterService
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     this.balancePatcherFacade = new BalancePatcherFacade(
       this.tokensStoreService,
-      this.assetsSelectorStateService
+      this.assetsSelectorStateService,
+      this.tokenConverters
     );
 
     this.setupSubscriptions();
@@ -54,7 +57,9 @@ export class TokensNetworkService {
         switchMap(() => this.tokensApiService.fetchBasicTokensOnPageInit()),
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
-          this.tokensStoreService.patchTokens(backendTokens, false);
+          this.balancePatcherFacade.addNewTokensToList(backendTokens, {
+            tokenListToPatch: 'allChainsTokens$'
+          });
         }),
         switchMap(backendTokens => {
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
@@ -88,9 +93,6 @@ export class TokensNetworkService {
       newAddedTokens.size &&
       this.balanceLoadingStateService.isBalanceCalculated(assetDataForBalanceStatus)
     ) {
-      // this.tokensStoreService.patchTokensBalances(
-      //   await this.balanceLoaderService.getTokensWithBalance(newAddedTokens)
-      // );
       const tokensWithBalances = await this.balanceLoaderService.getTokensWithBalance(
         newAddedTokens
       );
@@ -147,7 +149,9 @@ c   * @param tokensNetworkKey Requested TokensNetworkStateKey.
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.balancePatcherFacade.addNewTokensToList(List(tokens));
+        this.balancePatcherFacade.addNewTokensToList(List(tokens), {
+          tokenListToPatch: 'allChainsTokens$'
+        });
         this.tokensUpdaterService.triggerUpdateTokens();
       });
   }
