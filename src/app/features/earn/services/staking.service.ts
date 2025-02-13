@@ -21,7 +21,7 @@ import {
   tap,
   timer
 } from 'rxjs';
-import { TransactionReceipt } from 'web3-eth';
+import { TransactionReceipt } from 'web3-core';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';

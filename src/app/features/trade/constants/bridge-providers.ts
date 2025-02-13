@@ -319,6 +319,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}taiko.svg`,
     name: 'Taiko bridge'
   },
+  tele_swap: {
+    averageTime: 5,
+    color: '#78FF39',
+    image: `${imageBasePath}teleswap.svg`,
+    name: 'TeleSwap'
+  },
   thorchain: {
     averageTime: 5,
     color: '#33FF99',
