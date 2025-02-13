@@ -8,8 +8,6 @@ import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  BlockchainsInfo,
-  CHAIN_TYPE,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainManagerCalculationOptions,
   CrossChainTradeType,
@@ -512,17 +510,16 @@ export class CrossChainService {
     }
 
     const referral = this.sessionStorage.getItem('referral');
-    const fromChainType = BlockchainsInfo.getChainType(fromBlockchain);
 
-    if (referral && fromChainType !== CHAIN_TYPE.EVM) {
+    if (referral) {
       const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
 
       if (integratorAddress) {
-        const disabledNonEvmProviders = Object.values(CROSS_CHAIN_TRADE_TYPE).filter(
-          tradeType => tradeType !== CROSS_CHAIN_TRADE_TYPE.CHANGENOW
-        );
-
-        disabledProviders = [...disabledProviders, ...disabledNonEvmProviders];
+        disabledProviders = [
+          ...disabledProviders,
+          CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+          CROSS_CHAIN_TRADE_TYPE.CHANGELLY
+        ];
       }
     }
 
