@@ -3,7 +3,7 @@ import { firstValueFrom, from, Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TokensApiService } from 'src/app/core/services/backend/tokens-api/tokens-api.service';
 import BigNumber from 'bignumber.js';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
 import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
@@ -15,7 +15,6 @@ import {
   Injector,
   isAddressCorrect,
   Token as SdkToken,
-  TO_BACKEND_BLOCKCHAINS,
   Web3PublicService,
   Web3Pure
 } from 'rubic-sdk';
@@ -23,6 +22,8 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { BalanceLoaderService } from './balance-loader.service';
+import { TokensUpdaterService } from './tokens-updater.service';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -38,7 +39,9 @@ export class TokensService {
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly balanceLoaderService: BalanceLoaderService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {}
 
   /**
@@ -163,14 +166,6 @@ export class TokensService {
     }
   }
 
-  public async updateNativeTokenBalance(blockchain: BlockchainName): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(blockchain);
-    await this.getAndUpdateTokenBalance({
-      address: Web3Pure[chainType].nativeTokenAddress,
-      blockchain
-    });
-  }
-
   public async updateTokenBalanceAfterCcrSwap(
     fromToken: {
       address: string;
@@ -268,48 +263,56 @@ export class TokensService {
   }
 
   /**
-   * Fetches tokens from backend by search query string.
-   * @param query Search query.
-   * @param blockchain Tokens blockchain.
+   * Fetches specific tokens by symbol/address from specific chain or from all chains
    */
   public fetchQueryTokens(
     query: string,
-    blockchain: BlockchainName
+    blockchain: BlockchainName | null
   ): Observable<List<TokenAmount>> {
-    return from(isAddressCorrect(query, blockchain)).pipe(
-      catchError(() => of(false)),
-      switchMap(isAddress => {
-        const isLifiTokens = !TO_BACKEND_BLOCKCHAINS[blockchain];
+    return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
+      switchMap(backendTokens => {
+        const filteredTokens = backendTokens.filter(
+          token =>
+            !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
+        );
+        return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
+      })
+    );
+  }
 
-        if (isLifiTokens) {
-          return of(
-            this.tokensStoreService.tokens.filter(
-              token =>
-                token.blockchain === blockchain &&
-                ((isAddress && compareAddresses(token.address, query)) ||
-                  (!isAddress &&
-                    (token.name.toLowerCase().includes(query.toLowerCase()) ||
-                      token.symbol.toLowerCase().includes(query.toLowerCase()))))
-            )
+  public fetchQueryTokensDynamically(
+    query: string,
+    blockchain: BlockchainName | null,
+    patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
+  ): Observable<List<TokenAmount>> {
+    return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
+      switchMap(backendTokens => {
+        const filteredTokens = backendTokens.filter(
+          token =>
+            !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
+        );
+
+        return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
+      }),
+      tap(tokensWithNullBalances => {
+        this.tokensStoreService.updateLastQueriedTokens(tokensWithNullBalances);
+
+        const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
+          patchLastQueriedTokensBalances(tokensWithBalances);
+          this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
+        };
+
+        // allChains
+        if (!blockchain) {
+          this.balanceLoaderService.updateBalancesForAllChains(
+            tokensWithNullBalances,
+            onBalanceLoaded
           );
         } else {
-          const params: TokensRequestQueryOptions = {
-            network: blockchain,
-            ...(!isAddress && { symbol: query }),
-            ...(isAddress && { address: query })
-          };
-
-          return this.tokensApiService.fetchQueryTokens(params).pipe(
-            switchMap(backendTokens => {
-              const filteredTokens = backendTokens.filter(
-                token =>
-                  !(
-                    token.name.toLowerCase().includes('tether') &&
-                    query.toLowerCase().includes('eth')
-                  )
-              );
-              return this.tokensStoreService.getTokensWithBalance(filteredTokens);
-            })
+          this.balanceLoaderService.updateBalancesForSpecificChain(
+            tokensWithNullBalances,
+            blockchain,
+            onBalanceLoaded
           );
         }
       })

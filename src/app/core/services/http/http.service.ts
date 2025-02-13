@@ -16,7 +16,7 @@ export class HttpService {
     const request$ = this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
       params: data || {}
     });
-
+    // @FIX set timeout to 5_000
     return path ? request$ : request$.pipe(timeout(5_000), retry(1));
   }
 
