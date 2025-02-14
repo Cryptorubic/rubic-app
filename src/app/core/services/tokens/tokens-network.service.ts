@@ -15,8 +15,6 @@ import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { BalancePatcherFacade } from './utils/balance-patcher-facade';
 import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { BalanceLoadingAssetData } from './models/balance-loading-types';
-import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
-import { GAINERS_LOSERS_ORDER } from '../backend/tokens-api/models/gainers-losers';
 import { TokensNetworkStateService } from './tokens-network-state.service';
 import { TokensUpdaterService } from './tokens-updater.service';
 import { TokenConvertersService } from './token-converters.service';
@@ -58,7 +56,7 @@ export class TokensNetworkService {
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
           this.balancePatcherFacade.addNewTokensToList(backendTokens, {
-            tokenListToPatch: 'allChainsTokens$'
+            tokenListToPatch: 'tokens$'
           });
         }),
         switchMap(backendTokens => {
@@ -150,7 +148,7 @@ c   * @param tokensNetworkKey Requested TokensNetworkStateKey.
       )
       .subscribe((tokens: TokenAmount[]) => {
         this.balancePatcherFacade.addNewTokensToList(List(tokens), {
-          tokenListToPatch: 'allChainsTokens$'
+          tokenListToPatch: 'tokens$'
         });
         this.tokensUpdaterService.triggerUpdateTokens();
       });
@@ -162,21 +160,21 @@ c   * @param tokensNetworkKey Requested TokensNetworkStateKey.
     const page =
       this.tokensNetworkStateService.getNextPageCountForSpecificSelector(tokensNetworkKey);
 
-    if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
-      return this.tokensApiService.fetchTokensByDailyRating(
-        page,
-        GAINERS_LOSERS_ORDER.GAINERS_24HRS
-      );
-    }
-    if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
-      return this.tokensApiService.fetchTokensByDailyRating(
-        page,
-        GAINERS_LOSERS_ORDER.LOSERS_24HRS
-      );
-    }
+    // if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
+    //   return this.tokensApiService.fetchTokensByDailyRating(
+    //     page,
+    //     GAINERS_LOSERS_ORDER.GAINERS_24HRS
+    //   );
+    // }
+    // if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
+    //   return this.tokensApiService.fetchTokensByDailyRating(
+    //     page,
+    //     GAINERS_LOSERS_ORDER.LOSERS_24HRS
+    //   );
+    // }
 
     return this.tokensApiService.fetchSpecificBackendTokens({
-      network: tokensNetworkKey as BlockchainName,
+      network: tokensNetworkKey,
       page
     });
   }

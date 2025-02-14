@@ -32,7 +32,7 @@ import {
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
-import { GainersLosersOrder, ORDERING_TYPE_TO_TOKEN_FILTER } from './models/gainers-losers';
+import { GainersLosersOrder } from './models/gainers-losers';
 import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 
 /**
@@ -320,21 +320,21 @@ export class TokensApiService {
     page: number,
     ordering: GainersLosersOrder
   ): Observable<List<RatedToken>> {
-    const options = { ordering, page, pageSize: DEFAULT_PAGE_SIZE };
+    const options = { ordering, page, pageSize: 50 };
 
     return this.httpService.get<TokensBackendResponse>('v2/tokens/', options).pipe(
-      tap(resp => {
-        const tokensNetworkStateKey = ORDERING_TYPE_TO_TOKEN_FILTER[ordering];
-        const oldState = this.tokensNetworkStateService.tokensNetworkState;
+      // tap(resp => {
+      //   const tokensNetworkStateKey = ORDERING_TYPE_TO_TOKEN_FILTER[ordering];
+      //   const oldState = this.tokensNetworkStateService.tokensNetworkState;
 
-        this.tokensNetworkStateService.updateTokensNetworkState({
-          ...oldState,
-          [tokensNetworkStateKey]: {
-            page: options.page,
-            maxPage: Math.ceil(resp.count / options.pageSize)
-          }
-        });
-      }),
+      //   this.tokensNetworkStateService.updateTokensNetworkState({
+      //     ...oldState,
+      //     [tokensNetworkStateKey]: {
+      //       page: options.page,
+      //       maxPage: Math.ceil(resp.count / options.pageSize)
+      //     }
+      //   });
+      // }),
       map(resp =>
         TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
           resp.results as RatedBackendToken[]

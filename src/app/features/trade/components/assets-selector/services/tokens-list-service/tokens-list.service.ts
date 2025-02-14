@@ -15,7 +15,6 @@ import { SearchQueryService } from '@features/trade/components/assets-selector/s
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import {
   assertTokensNetworkStateKey,
-  isTokensNetworkStateKey,
   TokensNetworkStateKey
 } from '@app/shared/models/tokens/paginated-tokens';
 import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
@@ -99,9 +98,6 @@ export class TokensListService {
    *
    */
   private getTokensNetworkStateKey(): TokensNetworkStateKey {
-    if (this.assetsSelectorStateService.assetType === 'allChains') {
-      return this.assetsSelectorStateService.tokenFilter;
-    }
     assertTokensNetworkStateKey(this.assetsSelectorStateService.assetType);
     return this.assetsSelectorStateService.assetType;
   }
@@ -123,23 +119,17 @@ export class TokensListService {
 
   private skipTokensFetching(currentIndex: number): boolean {
     const assetType = this.assetsSelectorStateService.assetType;
-    const allChainsFilter = this.assetsSelectorStateService.tokenFilter;
+    if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
 
-    if (!isTokensNetworkStateKey(assetType, allChainsFilter)) {
-      return true;
-    }
-
-    const tokensNetworkState = BlockchainsInfo.isBlockchainName(assetType)
-      ? this.tokensNetworkStateService.tokensNetworkState[assetType]
-      : this.tokensNetworkStateService.tokensNetworkState[allChainsFilter as TokensNetworkStateKey];
+    const tokensNetworkStateByAsset = this.tokensNetworkStateService.tokensNetworkState[assetType];
 
     if (
       Boolean(
         this.loading ||
           this.searchQueryService.query ||
           this.listType === 'favorite' ||
-          !tokensNetworkState ||
-          tokensNetworkState.maxPage === tokensNetworkState.page
+          !tokensNetworkStateByAsset ||
+          tokensNetworkStateByAsset.maxPage === tokensNetworkStateByAsset.page
       )
     ) {
       return true;

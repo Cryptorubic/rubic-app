@@ -1,7 +1,4 @@
-import {
-  TOKEN_FILTERS,
-  TokenFilter
-} from '@app/features/trade/components/assets-selector/models/token-filters';
+import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 
 export interface PaginatedPage {
@@ -9,7 +6,7 @@ export interface PaginatedPage {
   maxPage: number | null;
 }
 
-export type TokensNetworkStateKey = BlockchainName | TokenFilter;
+export type TokensNetworkStateKey = BlockchainName;
 
 export type TokensNetworkState = Partial<Record<TokensNetworkStateKey, PaginatedPage>>;
 
@@ -24,10 +21,7 @@ export function isTokensNetworkStateKey(
 }
 
 export function assertTokensNetworkStateKey(value: string): asserts value is TokensNetworkStateKey {
-  if (
-    !BlockchainsInfo.isBlockchainName(value) &&
-    !Object.values(TOKEN_FILTERS).some(filter => value === filter)
-  ) {
+  if (!BlockchainsInfo.isBlockchainName(value)) {
     throw new Error(`[assertTokensNetworkStateKey] ${value} is not TokensNetworkStateKey.`);
   }
 }
