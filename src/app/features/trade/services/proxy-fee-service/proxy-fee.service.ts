@@ -41,14 +41,14 @@ export class ProxyFeeService {
   ): Promise<string> {
     try {
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
-      if (fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) {
+      const referral = this.sessionStorage.getItem('referral');
+
+      if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
-      if (fromPriceAmount.lte(100)) {
+      if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
-
-      const referral = this.sessionStorage.getItem('referral');
 
       if (referral) {
         const referralIntegrator = await this.getIntegratorByReferralName(referral);
