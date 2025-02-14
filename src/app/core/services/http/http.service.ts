@@ -17,7 +17,7 @@ export class HttpService {
       params: data || {}
     });
     // @FIX set timeout to 5_000
-    return path ? request$ : request$.pipe(timeout(5_000), retry(1));
+    return path ? request$ : request$.pipe(timeout(10_000), retry(1));
   }
 
   public patch<T>(url: string, data?: {}, params?: {}, path?: string): Observable<T> {

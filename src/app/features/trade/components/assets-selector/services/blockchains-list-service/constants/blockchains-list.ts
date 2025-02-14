@@ -225,6 +225,11 @@ export const blockchainsList: RankedBlockchain[] = [
     ]
   },
   {
+    name: BLOCKCHAIN_NAME.UNICHAIN,
+    rank: 0.75,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
+  {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]

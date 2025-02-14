@@ -365,5 +365,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1868.rpc.thirdweb.com/',
     'https://rpc.soneium.org/',
     'https://soneium.drpc.org'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://mainnet.unichain.org/']
 };

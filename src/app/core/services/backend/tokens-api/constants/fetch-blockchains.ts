@@ -64,7 +64,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.MORPH,
   BLOCKCHAIN_NAME.FRAXTAL,
   BLOCKCHAIN_NAME.BERACHAIN,
-  BLOCKCHAIN_NAME.SONEIUM
+  BLOCKCHAIN_NAME.SONEIUM,
+  BLOCKCHAIN_NAME.UNICHAIN
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [
