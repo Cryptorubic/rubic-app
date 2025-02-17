@@ -18,6 +18,7 @@ import {
 import { TokensListType } from '../../../models/tokens-list-type';
 import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
 import { TOKEN_FILTERS, TokenFilter } from '../../../models/token-filters';
+import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);
@@ -25,7 +26,8 @@ export class TokensListBuilder {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly swapFormService: SwapsFormService
+    private readonly swapFormService: SwapsFormService,
+    private readonly tokenConverters: TokenConvertersService
   ) {}
 
   public initList(listType: TokensListType, tokensList?: List<TokenAmount>): TokensListBuilder {
@@ -81,6 +83,20 @@ export class TokensListBuilder {
           token.symbol.toLowerCase().includes(query) || token.name.toLowerCase().includes(query)
       );
     }
+
+    return this;
+  }
+
+  public applyFilterDuplicates(): TokensListBuilder {
+    const tokensMap = this.tokenConverters.convertTokensListToMap(this.tempTokensList);
+    const uniqueTokensList = List().asMutable() as List<AvailableTokenAmount>;
+    for (const token of this.tempTokensList) {
+      const alreadyAdded = tokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
+      if (alreadyAdded) continue;
+      uniqueTokensList.push(token);
+    }
+
+    this.tempTokensList = uniqueTokensList;
 
     return this;
   }

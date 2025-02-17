@@ -215,13 +215,9 @@ export class TokensStoreService {
       }
     );
 
-    if (isBalanceForSelectedAssetCalculated) {
-      console.log(`%c${assetType} calculated ==> `, 'color: red;');
-      return;
-    }
+    if (isBalanceForSelectedAssetCalculated) return;
 
     if (!this.authService.userAddress) {
-      console.log('%cNULL_BALANCES', 'color: aqua; font-size: 20px;');
       this.balancePatcherFacade.patchNullBalancesCommonTokensList();
       this.balancePatcherFacade.patchNullBalancesEveryFilterListAllChains();
       this.tokensUpdaterService.triggerUpdateTokens();
@@ -285,12 +281,14 @@ export class TokensStoreService {
       }))
       .toArray();
 
+    const storageTokensMap = this.tokenConverters.convertTokensListToMap(List(this.storageTokens));
     const shouldUpdateList = updatedTokens.some(updatedToken => {
-      const foundStorageToken = this.storageTokens?.find(localToken =>
-        compareTokens(updatedToken, localToken)
+      const foundStorageToken = storageTokensMap.get(
+        this.tokenConverters.getTokenKeyInMap(updatedToken)
       );
       return !foundStorageToken || !compareObjects(updatedToken, foundStorageToken);
     });
+
     if (shouldUpdateList) {
       this.storeService.setItem('RUBIC_TOKENS', updatedTokens);
     }

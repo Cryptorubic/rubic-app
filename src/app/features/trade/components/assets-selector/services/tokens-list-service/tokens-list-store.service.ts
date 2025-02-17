@@ -35,6 +35,7 @@ import { TokensUpdaterService } from '../../../../../../core/services/tokens/tok
 import { TokensListBuilder } from './utils/tokens-list-builder';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
+import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -104,7 +105,8 @@ export class TokensListStoreService {
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
-    private readonly tokensUpdaterService: TokensUpdaterService
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly tokenConverters: TokenConvertersService
   ) {
     this.subscribeOnUpdateTokens();
     this.subscribeOnTokensChange();
@@ -215,7 +217,8 @@ export class TokensListStoreService {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorStateService,
-      this.swapFormService
+      this.swapFormService,
+      this.tokenConverters
     );
 
     // used to prevent infinite triggering this.tokensUpdaterService.updateTokensList$
@@ -305,7 +308,8 @@ export class TokensListStoreService {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorStateService,
-      this.swapFormService
+      this.swapFormService,
+      this.tokenConverters
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
@@ -330,7 +334,8 @@ export class TokensListStoreService {
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorStateService,
-      this.swapFormService
+      this.swapFormService,
+      this.tokenConverters
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
@@ -338,10 +343,18 @@ export class TokensListStoreService {
         return tlb.initList(this.listType).toArray();
       }
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
-        return tlb.initList(this.listType).applySortByMostGainer(this.tokenFilter).toArray();
+        return tlb
+          .initList(this.listType)
+          .applyFilterDuplicates()
+          .applySortByMostGainer(this.tokenFilter)
+          .toArray();
       }
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
-        return tlb.initList(this.listType).applySortByMostLoser(this.tokenFilter).toArray();
+        return tlb
+          .initList(this.listType)
+          .applyFilterDuplicates()
+          .applySortByMostLoser(this.tokenFilter)
+          .toArray();
       }
 
       return tlb

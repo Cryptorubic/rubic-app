@@ -7,6 +7,7 @@ import { compareAddresses } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
 import { BLOCKCHAIN_NAME, EvmWeb3Pure } from 'rubic-sdk';
+import { StorageToken } from './models/storage-token';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class TokenConvertersService {
    * from https://assets.rubic.exchange/assets/ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
    * @returns ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
    */
-  public getTokenKeyInMap(t: Token): string {
+  public getTokenKeyInMap(t: Token | StorageToken): string {
     // show only one native token in selector for METIS
     if (
       t.address === BLOCKCHAIN_NAME.METIS &&
@@ -34,7 +35,7 @@ export class TokenConvertersService {
   }
 
   public convertTokensListToMap(
-    tokensWithBalances: List<TokenAmount | Token>
+    tokensWithBalances: List<TokenAmount | Token | StorageToken>
   ): Map<TokenAddress, TokenAmount> {
     const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
     tokensWithBalances.forEach((t: TokenAmount | Token) => {

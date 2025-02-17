@@ -21,6 +21,7 @@ import { AssetsSelectorStateService } from './features/trade/components/assets-s
 import { TOKEN_FILTERS } from './features/trade/components/assets-selector/models/token-filters';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
+import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +48,8 @@ export class AppComponent implements AfterViewInit {
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly tokensNetworkService: TokensNetworkService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -55,6 +57,7 @@ export class AppComponent implements AfterViewInit {
     this.initApp();
     this.spindlService.initSpindlAds();
     this.subscribeOnWalletChanges();
+    this.tokensNetworkService.setupSubscriptions();
   }
 
   ngAfterViewInit() {

@@ -45,11 +45,9 @@ export class TokensNetworkService {
       this.assetsSelectorStateService,
       this.tokenConverters
     );
-
-    this.setupSubscriptions();
   }
 
-  private setupSubscriptions(): void {
+  public setupSubscriptions(): void {
     this.tokensNetworkStateService.tokensRequestParameters$
       .pipe(
         switchMap(() => this.tokensApiService.fetchBasicTokensOnPageInit()),
