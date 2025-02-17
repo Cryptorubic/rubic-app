@@ -126,6 +126,7 @@ export class SwapsControllerService {
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.startRecalculation(true);
+      this.swapsStateService.clearProviders(false);
     });
   }
 
