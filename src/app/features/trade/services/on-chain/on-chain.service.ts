@@ -110,6 +110,7 @@ export class OnChainService {
 
     SdkInjector.rubicApiService.calculateAsync({
       calculationTimeout: 60,
+      showDangerousRoutes: true,
       ...tradeParams,
       ...options
     });
