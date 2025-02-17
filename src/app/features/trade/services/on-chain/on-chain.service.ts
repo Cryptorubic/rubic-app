@@ -109,7 +109,8 @@ export class OnChainService {
     };
 
     SdkInjector.rubicApiService.calculateAsync({
-      calculationTimeout: 30,
+      calculationTimeout: 60,
+      showDangerousRoutes: true,
       ...tradeParams,
       ...options
     });
@@ -121,7 +122,10 @@ export class OnChainService {
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
-    useCacheData?: boolean
+    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+      useCacheData: false,
+      skipAmountCheck: false
+    }
   ): Promise<string> {
     const fromBlockchain = trade.from.blockchain;
 
@@ -163,7 +167,8 @@ export class OnChainService {
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
-      useCacheData: useCacheData || false,
+      useCacheData: params.useCacheData,
+      // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer })
     };
 

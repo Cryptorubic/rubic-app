@@ -1,0 +1,18 @@
+<div class="filters-wrapper">
+  <button class="filters-wrapper__prev-btn" (click)="prev()">
+    <img src="assets/images/icons/chevron.svg" alt="prev-button" />
+  </button>
+
+  <tui-carousel #carousel [draggable]="false" [itemsCount]="2" [(index)]="currentIdx">
+    <ng-container *ngFor="let filter of TOKEN_FILTERS_UI; let i = index">
+      <div *tuiItem [draggable]="false" class="token-filter">
+        <p class="token-filter__text">{{ filter.label }}</p>
+        <img class="token-filter__icon" [src]="filter.img" alt="token-filter" />
+      </div>
+    </ng-container>
+  </tui-carousel>
+
+  <button class="filters-wrapper__next-btn" (click)="next()">
+    <img src="assets/images/icons/chevron.svg" alt="prev-button" />
+  </button>
+</div>

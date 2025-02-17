@@ -18,37 +18,18 @@
 <aside class="asset-types-aside" [class.large-iframe-asset]="useLargeIframe">
   <tui-scrollbar class="asset-types-aside__scroll">
     <ul class="asset-types-aside__list" *ngLet="selectedAssetType$ | async as selectedAssetType">
-      <ng-container>
-        <ng-container *ngFor="let blockchainItem of blockchainsToShow$ | async">
-          <ng-container
-            *ngLet="blockchainItem | functionCall : isBlockchainDisabled : this as disabled"
-          >
-            <button
-              class="asset-types-aside__list-element"
-              [id]="idPrefix + 'Network_' + blockchainItem.name"
-              tuiButton
-              size="l"
-              type="button"
-              appearance="secondary"
-              [disabled]="selectedAssetType === blockchainItem.name || disabled"
-              [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
-              (click)="onBlockchainSelect(blockchainItem.name)"
-            >
-              <div class="icon-container">
-                <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
-                <span class="icon-label">{{ blockchainItem.label }}</span>
-              </div>
-              <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
-                <div class="badge-container">
-                  <app-blockchains-promo-badge
-                    [tag]="tag"
-                    [blockchain]="blockchainItem.name"
-                  ></app-blockchains-promo-badge>
-                </div>
-              </ng-container>
-            </button>
-          </ng-container>
-        </ng-container>
+      <app-assets-type-aside-element
+        [blockchainItem]="allChainsSelectorItem"
+        [selectedAssetType]="selectedAssetType"
+        [isMobile]="isMobile"
+      ></app-assets-type-aside-element>
+
+      <ng-container *ngFor="let blockchainItem of blockchainsToShow$ | async">
+        <app-assets-type-aside-element
+          [blockchainItem]="blockchainItem"
+          [selectedAssetType]="selectedAssetType"
+          [isMobile]="isMobile"
+        ></app-assets-type-aside-element>
       </ng-container>
     </ul>
   </tui-scrollbar>

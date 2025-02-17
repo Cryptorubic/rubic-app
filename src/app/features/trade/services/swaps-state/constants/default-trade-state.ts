@@ -12,5 +12,7 @@ export const defaultTradeState: SelectedTrade = {
   },
   routes: [],
   selectedByUser: false,
-  status: TRADE_STATUS.NOT_INITIATED
+  status: TRADE_STATUS.NOT_INITIATED,
+  centralizationStatus: null,
+  badges: []
 };

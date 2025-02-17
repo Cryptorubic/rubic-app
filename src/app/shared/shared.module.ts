@@ -74,6 +74,8 @@ import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.c
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
+import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
+import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +124,9 @@ import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-mo
     MevBotModalComponent,
     ProgressBarComponent,
     WcChangeNetworkModalComponent,
-    TonSlippageWarnModalComponent
+    TonSlippageWarnModalComponent,
+    SpindleBannerComponent,
+    DepositRateChangedModalComponent
   ],
   imports: [
     CommonModule,
@@ -198,7 +202,8 @@ import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-mo
     PriceImpactFormatPipe,
     SlippageFormatPipe,
     SkipDefaultDirective,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SpindleBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

@@ -1,0 +1,49 @@
+<div
+  *ngLet="isCorrectDepositAddressSet$ | async as isCorrectAddressSet"
+  class="refund-address-container"
+>
+  <div class="refund-address__title">
+    <img
+      class="refund-address__title-icon"
+      src="assets/images/icons/yellow-warn.png"
+      width="15"
+      height="15"
+      alt="warn-icon"
+    />
+    <p class="refund-address__title-text">
+      The refund address is required in the event of a failed transaction
+    </p>
+  </div>
+
+  <div class="refund-address__input" [ngStyle]="{ opacity: isCorrectAddressSet ? 0.8 : 1 }">
+    <tui-input
+      [tuiTextfieldCustomContent]="
+        !!refundAddressCtrl.value ? (isCorrectAddressSet ? success : error) : ''
+      "
+      tuiTextfieldSize="l"
+      [formControl]="refundAddressCtrl"
+      [pseudoFocus]="refundAddressCtrl.invalid"
+      [pseudoInvalid]="refundAddressCtrl.invalid"
+      [tuiTextfieldCleaner]="!!refundAddressCtrl.value"
+      [tuiTextfieldLabelOutside]="false"
+      (focusedChange)="onFocusChange($event)"
+    >
+      <label [@moveLabel]="isActiveInput" class="refund-address__input-label">
+        {{ labetText }}
+      </label>
+    </tui-input>
+  </div>
+</div>
+
+<ng-template #success>
+  <div
+    class="network-container__input-status-icon"
+    [inlineSVG]="'assets/images/icons/forms/success-input.svg'"
+  ></div>
+</ng-template>
+<ng-template #error>
+  <div
+    class="network-container__input-status-icon"
+    [inlineSVG]="'assets/images/icons/forms/error-input.svg'"
+  ></div>
+</ng-template>

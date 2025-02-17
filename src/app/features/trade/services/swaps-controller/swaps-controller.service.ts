@@ -126,6 +126,7 @@ export class SwapsControllerService {
   private subscribeOnFormChanges(): void {
     this.swapFormService.inputValueDistinct$.subscribe(() => {
       this.startRecalculation(true);
+      this.swapsStateService.clearProviders(false);
     });
   }
 
@@ -257,9 +258,15 @@ export class SwapsControllerService {
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, true);
+              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, {
+                skipAmountCheck: true,
+                useCacheData: true
+              });
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
+              txHash = await this.onChainService.swapTrade(trade, callback.onHash, {
+                skipAmountCheck: true,
+                useCacheData: true
+              });
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
@@ -399,47 +406,49 @@ export class SwapsControllerService {
     return of(false);
   }
 
-  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): Observable<boolean> {
-    if (trade instanceof RetroBridgeEvmTrade || trade instanceof RetroBridgeTonTrade) {
-      return from(trade.needAuthWallet());
+  private needAuthWallet(trade: CrossChainTrade | OnChainTrade): boolean {
+    if (trade instanceof CrossChainTrade) {
+      return trade.needAuthWallet;
     }
-    return of(false);
+    return false;
   }
 
   private async handleCrossChainSwapResponse(
     trade: CrossChainTrade,
-    txHash?: string,
+    txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
-    if (txHash) {
-      const params: CrossChainSwapAdditionalParams = {};
+    const params: CrossChainSwapAdditionalParams = {};
 
-      if (trade instanceof ChangenowCrossChainTrade) {
-        params.changenowId = trade.changenowId as string;
-      }
-      if ('rangoRequestId' in trade) {
-        params.rangoRequestId = trade.rangoRequestId as string;
-      }
-      if ('squidrouterRequestId' in trade) {
-        params.squidrouterId = trade.squidrouterRequestId as string;
-      }
-      if ('retroBridgeId' in trade) {
-        params.retroBridgeId = trade.retroBridgeId as string;
-      }
-
-      onSwap?.(params);
-      await this.crossChainApiService.patchTrade(txHash, true);
+    if (trade instanceof ChangenowCrossChainTrade) {
+      params.changenowId = trade.changenowId as string;
     }
+    if ('rangoRequestId' in trade) {
+      params.rangoRequestId = trade.rangoRequestId as string;
+    }
+    if ('squidrouterRequestId' in trade) {
+      params.squidrouterId = trade.squidrouterRequestId as string;
+    }
+    if ('retroBridgeId' in trade) {
+      params.retroBridgeId = trade.retroBridgeId as string;
+    }
+    if ('simpleSwapId' in trade) {
+      params.simpleSwapId = trade.simpleSwapId as string;
+    }
+    if ('changellyId' in trade) {
+      params.changellySwapId = trade.changellyId as string;
+    }
+
+    onSwap?.(params);
+    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
   private async handleOnChainSwapResponse(
-    txHash?: string,
+    txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
-    if (txHash) {
-      onSwap?.();
-      await this.onChainApiService.patchTrade(txHash, true);
-    }
+    onSwap?.();
+    await this.onChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(
@@ -509,6 +518,7 @@ export class SwapsControllerService {
     Injector.rubicApiService
       .handleQuotesAsync()
       .pipe(
+        tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
           return {
@@ -525,9 +535,9 @@ export class SwapsControllerService {
         }),
         concatMap(container => {
           const wrappedTrade = container?.value?.wrappedTrade;
+          const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade) {
-            const isCalculationEnd = container.value.total === container.value.calculated;
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
@@ -548,7 +558,8 @@ export class SwapsControllerService {
                       trade.trade = null;
                     }
                     // @TODO API
-                    this.swapsStateService.updateTrade(trade, type, needApprove, false);
+                    const needAuthWallet = this.needAuthWallet(trade.trade);
+                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,
@@ -570,6 +581,9 @@ export class SwapsControllerService {
                   return of(null);
                 })
               );
+          }
+          if (isCalculationEnd) {
+            this.refreshService.setStopped();
           }
           if (!container?.value) {
             this.refreshService.setStopped();

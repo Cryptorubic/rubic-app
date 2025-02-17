@@ -34,11 +34,6 @@ import { ModalsModule } from './modals/modals.module';
       useClass: RubicExchangeInterceptor,
       multi: true
     },
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: LifiApiKeyInterceptor,
-    //   multi: true
-    // },
     NG_EVENT_PLUGINS,
     SdkLoaderService,
     {

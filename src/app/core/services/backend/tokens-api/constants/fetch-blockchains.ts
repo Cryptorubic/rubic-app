@@ -59,6 +59,10 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.TON,
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.GRAVITY
+  // BLOCKCHAIN_NAME.SONIC,
+  // BLOCKCHAIN_NAME.SONEIUM_TESTNET,
+  // BLOCKCHAIN_NAME.MORPH,
+  // BLOCKCHAIN_NAME.FRAXTAL
 ];
 
 export const blockchainsWithOnePage: BlockchainName[] = [

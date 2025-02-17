@@ -29,10 +29,15 @@ export interface BackendToken {
   type: Token['type'];
 }
 
+export interface BackendTokenForAllChains extends BackendToken {
+  network: BlockchainName;
+  network_rank: number;
+}
+
 export interface TokensBackendResponse {
   readonly count: number;
-  readonly next: string;
-  readonly previous: string;
+  readonly next: string | null;
+  readonly previous: string | null;
   readonly results: BackendToken[];
 }
 
@@ -41,7 +46,7 @@ export interface TokenSecurityBackendResponse {
 }
 
 export interface TokensRequestQueryOptions {
-  readonly network: BlockchainName;
+  readonly network?: BlockchainName;
   readonly address?: string;
   readonly symbol?: string;
 }

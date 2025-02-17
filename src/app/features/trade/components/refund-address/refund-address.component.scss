@@ -1,0 +1,51 @@
+@use 'src/scss/mixins' as *;
+@use 'src/scss/core' as *;
+
+:host {
+  .refund-address-container {
+    @include flex(column, normal, normal);
+    gap: 2px;
+    width: 100%;
+
+    font-size: 15px;
+
+    .refund-address__title,
+    .refund-address__input {
+      background: var(--primary-background);
+    }
+    
+    .refund-address__title {
+      @include flex(row, flex-start, normal);
+      gap: 7px;
+
+      padding: var(--tui-padding-l);
+
+      color: var(--tui-warn);
+      font-weight: bold;
+
+      border-top-left-radius: var(--tui-radius-m);
+      border-top-right-radius: var(--tui-radius-m);
+
+      &-text {
+        margin: 0;
+      }
+
+      &-icon {
+        margin-top: 2px;
+      }
+    }
+  
+    .refund-address__input {
+      position: relative;
+
+      border-bottom-right-radius: var(--tui-radius-m);
+      border-bottom-left-radius: var(--tui-radius-m);
+
+      .refund-address__input-label {
+        position: relative;
+        top: 0px;
+      }
+    }
+  }
+}
+
