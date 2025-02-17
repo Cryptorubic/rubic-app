@@ -90,10 +90,16 @@ export class TokensListBuilder {
     return this;
   }
 
-  public applyFilterDuplicates(): TokensListBuilder {
+  /**
+   * @param limit how mane tokens leave in list
+   */
+  public applyFilterDuplicates(limit: number): TokensListBuilder {
     const uniqueTokensList = List().asMutable() as List<TokenAmountWithPriceChange>;
     const checkedTokensMap = new Map<string, TokenAmountWithPriceChange>([]);
+
     for (const token of this.tempTokensList as List<TokenAmountWithPriceChange>) {
+      if (uniqueTokensList.size >= limit) break;
+
       const alreadyAdded = checkedTokensMap.get(token.symbol.toLowerCase());
       if (alreadyAdded) continue;
 

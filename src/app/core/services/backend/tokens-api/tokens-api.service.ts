@@ -325,7 +325,7 @@ export class TokensApiService {
     page: number,
     ordering: GainersLosersOrder
   ): Observable<List<RatedToken>> {
-    const options = { ordering, page, pageSize: 50 };
+    const options = { ordering, page, pageSize: 100 };
 
     return this.httpService
       .get<TokensBackendResponse>('v2/tokens/', options, '', { retry: 2, timeoutMs: 15_000 })

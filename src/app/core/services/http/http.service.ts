@@ -9,7 +9,7 @@ interface GetRequestOptions {
   retry?: number;
   external?: boolean;
 }
-const defaultGetOptions: GetRequestOptions = {
+const defaultGetRequestOptions: GetRequestOptions = {
   timeoutMs: 5_000,
   retry: 1,
   external: false
@@ -27,7 +27,7 @@ export class HttpService {
     url: string,
     data?: {},
     path?: string,
-    options: GetRequestOptions = defaultGetOptions
+    options: GetRequestOptions = defaultGetRequestOptions
   ): Observable<T> {
     const request$ = this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
       params: data || {}

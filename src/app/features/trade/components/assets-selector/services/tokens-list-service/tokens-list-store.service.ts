@@ -345,14 +345,14 @@ export class TokensListStoreService {
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
         return tlb
           .initList(this.listType)
-          .applyFilterDuplicates()
+          .applyFilterDuplicates(50)
           .applySortByMostGainer(this.tokenFilter)
           .toArray();
       }
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
         return tlb
           .initList(this.listType)
-          .applyFilterDuplicates()
+          .applyFilterDuplicates(50)
           .applySortByMostLoser(this.tokenFilter)
           .toArray();
       }
