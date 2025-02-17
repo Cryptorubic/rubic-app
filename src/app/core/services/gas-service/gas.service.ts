@@ -289,7 +289,7 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchUnichainGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.AVALANCHE);
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.UNICHAIN);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
