@@ -1,7 +1,10 @@
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { Token } from '@shared/models/tokens/token';
 
-import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import {
+  AvailableTokenAmount,
+  TokenAmountWithPriceChange
+} from '@app/shared/models/tokens/available-token-amount';
 import { List } from 'immutable';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
@@ -88,13 +91,13 @@ export class TokensListBuilder {
   }
 
   public applyFilterDuplicates(): TokensListBuilder {
-    const uniqueTokensList = List().asMutable() as List<AvailableTokenAmount>;
-    const checkedTokensMap = new Map<string, AvailableTokenAmount>([]);
-    for (const token of this.tempTokensList) {
-      const alreadyAdded = checkedTokensMap.get(token.symbol);
+    const uniqueTokensList = List().asMutable() as List<TokenAmountWithPriceChange>;
+    const checkedTokensMap = new Map<string, TokenAmountWithPriceChange>([]);
+    for (const token of this.tempTokensList as List<TokenAmountWithPriceChange>) {
+      const alreadyAdded = checkedTokensMap.get(token.symbol.toLowerCase());
       if (alreadyAdded) continue;
 
-      checkedTokensMap.set(token.symbol, token);
+      checkedTokensMap.set(token.symbol.toLowerCase(), token);
       uniqueTokensList.push(token);
     }
 
