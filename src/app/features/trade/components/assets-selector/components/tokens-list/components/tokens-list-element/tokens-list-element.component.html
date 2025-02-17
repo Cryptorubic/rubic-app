@@ -48,7 +48,7 @@
         [class.red]="pcPercent < 0"
       >
         <span class="arrow" [style.transform]="pcPercent > 0 && 'rotateZ(180deg)'">▾</span>
-        <span class="price-change">{{ pcPercent + '%' }}</span>
+        <span class="price-change">{{ pcPercent + '%' | mathAbs }}</span>
       </div>
     </ng-container>
 

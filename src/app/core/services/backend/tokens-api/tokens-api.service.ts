@@ -284,10 +284,13 @@ export class TokensApiService {
   public fetchTokensListForAllChains(): Observable<List<Token>> {
     return forkJoin([
       this.httpService
-        .get<TokensBackendResponse>('v2/tokens/top')
+        .get<TokensBackendResponse>('v2/tokens/top', {}, '', { retry: 2, timeoutMs: 15_000 })
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
       this.httpService
-        .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .get<BackendTokenForAllChains[]>('v2/tokens/allchains', {}, '', {
+          retry: 2,
+          timeoutMs: 15_000
+        })
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
     ]).pipe(
       map(([topTokens, allChainsTokens]) => {
@@ -308,12 +311,14 @@ export class TokensApiService {
   }
 
   public fetchTrendTokens(): Observable<List<RatedToken>> {
-    return this.httpService.get<RatedBackendToken[]>('v2/tokens/trending').pipe(
-      map(backendTokens =>
-        TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
-      ),
-      catchError(() => of(List() as List<RatedToken>))
-    );
+    return this.httpService
+      .get<RatedBackendToken[]>('v2/tokens/trending', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(backendTokens =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
   }
 
   public fetchTokensByDailyRating(
@@ -322,25 +327,15 @@ export class TokensApiService {
   ): Observable<List<RatedToken>> {
     const options = { ordering, page, pageSize: 50 };
 
-    return this.httpService.get<TokensBackendResponse>('v2/tokens/', options).pipe(
-      // tap(resp => {
-      //   const tokensNetworkStateKey = ORDERING_TYPE_TO_TOKEN_FILTER[ordering];
-      //   const oldState = this.tokensNetworkStateService.tokensNetworkState;
-
-      //   this.tokensNetworkStateService.updateTokensNetworkState({
-      //     ...oldState,
-      //     [tokensNetworkStateKey]: {
-      //       page: options.page,
-      //       maxPage: Math.ceil(resp.count / options.pageSize)
-      //     }
-      //   });
-      // }),
-      map(resp =>
-        TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
-          resp.results as RatedBackendToken[]
-        )
-      ),
-      catchError(() => of(List() as List<RatedToken>))
-    );
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/', options, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
   }
 }

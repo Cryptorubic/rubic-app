@@ -162,8 +162,9 @@ export class TokensStoreService {
       this.startBalanceCalculating('allChains', {
         allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
       });
-      this.tokensUpdaterService.triggerUpdateTokens();
     }
+
+    this.tokensUpdaterService.triggerUpdateTokens();
   }
 
   private setupSubscriptions(): void {

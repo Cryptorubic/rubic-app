@@ -49,13 +49,6 @@ export class BalancePatcherFacade {
     const tokenFilter =
       options.allChainsFilterToPatch ?? this.assetsSelectorStateService.tokenFilter;
 
-    console.log('%caddNewTokensToList ==> ', 'color: yellow;', {
-      tokensListWithNewTokens: tokensListWithNewTokens.toArray(),
-      newTokens: newTokens.toArray(),
-      assetType: this.assetsSelectorStateService.assetType,
-      tokenFilter
-    });
-
     updateListSubject(tokensListWithNewTokens, tokenFilter);
   }
 

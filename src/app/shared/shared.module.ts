@@ -78,6 +78,7 @@ import { SpindleBannerComponent } from './components/spindle-banner/spindle-bann
 import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
+import { MathAbsPipe } from './pipes/math-abs.pipe';
 
 @NgModule({
   declarations: [
@@ -130,7 +131,8 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     SpindleBannerComponent,
     DepositRateChangedModalComponent,
     ShowPriceChangePipe,
-    ShortenTextPipe
+    ShortenTextPipe,
+    MathAbsPipe
   ],
   imports: [
     CommonModule,
@@ -209,7 +211,8 @@ import { ShortenTextPipe } from './pipes/shorten-text.pipe';
     ProgressBarComponent,
     SpindleBannerComponent,
     ShowPriceChangePipe,
-    ShortenTextPipe
+    ShortenTextPipe,
+    MathAbsPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

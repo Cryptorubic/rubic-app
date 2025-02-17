@@ -88,11 +88,13 @@ export class TokensListBuilder {
   }
 
   public applyFilterDuplicates(): TokensListBuilder {
-    const tokensMap = this.tokenConverters.convertTokensListToMap(this.tempTokensList);
     const uniqueTokensList = List().asMutable() as List<AvailableTokenAmount>;
+    const checkedTokensMap = new Map<string, AvailableTokenAmount>([]);
     for (const token of this.tempTokensList) {
-      const alreadyAdded = tokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
+      const alreadyAdded = checkedTokensMap.get(token.symbol);
       if (alreadyAdded) continue;
+
+      checkedTokensMap.set(token.symbol, token);
       uniqueTokensList.push(token);
     }
 

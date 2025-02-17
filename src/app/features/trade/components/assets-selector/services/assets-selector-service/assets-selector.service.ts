@@ -61,7 +61,7 @@ export class AssetsSelectorService {
       (this.assetsSelectorStateService.formType === 'from' && !fromBlockchain) ||
       (this.assetsSelectorStateService.formType === 'to' && !toBlockchain);
 
-    if (noChainInOpenedSelector && !this.authService.userAddress) {
+    if (noChainInOpenedSelector) {
       this.assetsSelectorStateService.setAssetType('allChains');
     } else {
       const assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
