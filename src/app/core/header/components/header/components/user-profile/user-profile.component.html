@@ -2,21 +2,9 @@
   <tui-hosted-dropdown [content]="dropdown" tuiDropdownAlign="right" [(open)]="dropdownIsOpened">
     <div tuiGroup>
       <button tuiButton appearance="secondary" type="button" size="m">
-        <ng-container
-          *ngLet="{
-            text: profileText$ | async,
-            img: avatar$ | async,
-            needRoundBorder: hasSpaceIdAvatar$ | async
-          } as profile"
-        >
+        <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
           <div class="user-profile__avatar">
-            <img
-              [class.user-profile__avatar-rounded]="profile.needRoundBorder"
-              [src]="profile.img"
-              alt="User avatar"
-              width="24"
-              height="24"
-            />
+            <img [src]="profile.img" alt="User avatar" width="24" height="24" />
           </div>
 
           <div class="user-profile__text">

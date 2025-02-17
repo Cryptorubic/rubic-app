@@ -74,8 +74,6 @@ export class UserProfileComponent {
     })
   );
 
-  public readonly hasSpaceIdAvatar$ = this.avatar$.pipe(map(src => !src.includes(basePath)));
-
   public logout(): void {
     this.authService.disconnectWallet();
   }
