@@ -32,7 +32,6 @@ import {
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
-import { GainersLosersOrder } from './models/gainers-losers';
 import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 
 /**
@@ -321,14 +320,22 @@ export class TokensApiService {
       );
   }
 
-  public fetchTokensByDailyRating(
-    page: number,
-    ordering: GainersLosersOrder
-  ): Observable<List<RatedToken>> {
-    const options = { ordering, page, pageSize: 100 };
-
+  public fetchGainersTokens(): Observable<List<RatedToken>> {
     return this.httpService
-      .get<TokensBackendResponse>('v2/tokens/', options, '', { retry: 2, timeoutMs: 15_000 })
+      .get<TokensBackendResponse>('v2/tokens/gainers', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
+  }
+
+  public fetchLosersTokens(): Observable<List<RatedToken>> {
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/losers', {}, '', { retry: 2, timeoutMs: 15_000 })
       .pipe(
         map(resp =>
           TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(

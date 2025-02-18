@@ -23,7 +23,6 @@ import {
   TOKEN_FILTERS,
   TokenFilter
 } from '@app/features/trade/components/assets-selector/models/token-filters';
-import { GAINERS_LOSERS_ORDER } from '../backend/tokens-api/models/gainers-losers';
 import { TokenAmountWithPriceChange } from '@app/shared/models/tokens/available-token-amount';
 import { TokenConvertersService } from './token-converters.service';
 
@@ -142,12 +141,12 @@ export class TokensStoreService {
       firstValueFrom(this.tokensApiService.fetchTrendTokens()).then(val =>
         this.tokenConverters.getTokensWithNullBalances(val, false)
       ),
-      firstValueFrom(
-        this.tokensApiService.fetchTokensByDailyRating(1, GAINERS_LOSERS_ORDER.GAINERS_24HRS)
-      ).then(val => this.tokenConverters.getTokensWithNullBalances(val, false)),
-      firstValueFrom(
-        this.tokensApiService.fetchTokensByDailyRating(1, GAINERS_LOSERS_ORDER.LOSERS_24HRS)
-      ).then(val => this.tokenConverters.getTokensWithNullBalances(val, false))
+      firstValueFrom(this.tokensApiService.fetchGainersTokens()).then(val =>
+        this.tokenConverters.getTokensWithNullBalances(val, false)
+      ),
+      firstValueFrom(this.tokensApiService.fetchLosersTokens()).then(val =>
+        this.tokenConverters.getTokensWithNullBalances(val, false)
+      )
     ]);
 
     this._allChainsTokens$.next({
