@@ -3,6 +3,10 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TokensUpdaterService {
+  private readonly _tokensLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly tokensLoading$ = this._tokensLoading$.asObservable();
+
   /**
    * Emits events, when list must be updated.
    */
@@ -11,6 +15,14 @@ export class TokensUpdaterService {
   });
 
   public readonly updateTokensList$ = this._updateTokensList$.asObservable();
+
+  public get tokensLoading(): boolean {
+    return this._tokensLoading$.value;
+  }
+
+  public setTokensLoading(value: boolean): void {
+    this._tokensLoading$.next(value);
+  }
 
   public triggerUpdateTokens(options: { skipRefetch?: boolean } = {}): void {
     this._updateTokensList$.next({ skipRefetch: options.skipRefetch ?? false });

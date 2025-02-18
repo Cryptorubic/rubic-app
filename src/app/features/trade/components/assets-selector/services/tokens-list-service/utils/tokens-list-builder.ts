@@ -8,9 +8,16 @@ import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
-import { sorterByChain, sorterByTokenRank, TokensSorter } from './sorters';
-import { TokensListType } from '../../../models/tokens-list-type';
+import {
+  sorterByChain,
+  sorterForGainers,
+  sorterByTokenRank,
+  TokensSorter,
+  sorterForLosers
+} from './sorters';
 import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
+import { TOKEN_FILTERS, TokenFilter } from '../../../models/token-filters';
+import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);
@@ -18,20 +25,20 @@ export class TokensListBuilder {
   constructor(
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly swapFormService: SwapsFormService
+    private readonly swapFormService: SwapsFormService,
+    private readonly tokenConverters: TokenConvertersService
   ) {}
 
-  public initList(listType: TokensListType, tokensList?: List<TokenAmount>): TokensListBuilder {
+  public initList(tokensList?: List<TokenAmount>): TokensListBuilder {
     if (tokensList) {
       this.tempTokensList = this.addAvailableFavoriteFields(tokensList);
       return this;
     }
 
-    if (listType === 'favorite') {
-      this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.favoriteTokens);
-    } else if (this.assetsSelectorStateService.assetType === 'allChains') {
+    if (this.assetsSelectorStateService.assetType === 'allChains') {
+      const allChainsFilter = this.assetsSelectorStateService.tokenFilter;
       this.tempTokensList = this.addAvailableFavoriteFields(
-        this.tokensStoreService.allChainsTokens
+        this.tokensStoreService.allChainsTokens[allChainsFilter]
       );
     } else {
       this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.tokens);
@@ -61,7 +68,7 @@ export class TokensListBuilder {
   /**
    * add filter of tokens list on UI without api requests
    */
-  public applyFilterBySearchQueryOnClient(query: string): TokensListBuilder {
+  public applyFilterByQueryOnClient(query: string): TokensListBuilder {
     // @TODO fix search for non evm by address
     if (query.startsWith('0x')) {
       this.tempTokensList = this.tempTokensList.filter(token =>
@@ -73,6 +80,19 @@ export class TokensListBuilder {
           token.symbol.toLowerCase().includes(query) || token.name.toLowerCase().includes(query)
       );
     }
+
+    return this;
+  }
+
+  public applyShowFavoriteTokensIf(needFilter: boolean): TokensListBuilder {
+    if (!needFilter) return this;
+
+    const favoriteTokensMap = this.tokenConverters.convertTokensListToMap(
+      this.tokensStoreService.favoriteTokens
+    );
+    this.tempTokensList = this.tempTokensList.filter(
+      t => !!favoriteTokensMap.get(this.tokenConverters.getTokenKeyInMap(t))
+    );
 
     return this;
   }
@@ -91,6 +111,24 @@ export class TokensListBuilder {
     const tokensArr = this.tempTokensList.toArray();
     this.tempTokensList = this.sortTokens(tokensArr, sorterByTokenRank);
 
+    return this;
+  }
+
+  public applySortByMostGainer(tokenFilter: TokenFilter): TokensListBuilder {
+    if (tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
+      throw new Error(`[applySortByMostGainer] Invalid tokenFilter ${tokenFilter}`);
+    }
+    const tokensArr = this.tempTokensList.toArray();
+    this.tempTokensList = this.sortTokens(tokensArr, sorterForGainers);
+    return this;
+  }
+
+  public applySortByMostLoser(tokenFilter: TokenFilter): TokensListBuilder {
+    if (tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
+      throw new Error(`[applySortByMostLoser] Invalid tokenFilter ${tokenFilter}`);
+    }
+    const tokensArr = this.tempTokensList.toArray();
+    this.tempTokensList = this.sortTokens(tokensArr, sorterForLosers);
     return this;
   }
 

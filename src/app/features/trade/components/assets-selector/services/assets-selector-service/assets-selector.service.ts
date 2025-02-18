@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
@@ -15,6 +14,7 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import { SearchQueryService } from '../search-query-service/search-query.service';
+import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 
 type SelectorType = 'fromBlockchain' | 'toBlockchain';
@@ -31,7 +31,7 @@ export class AssetsSelectorService {
 
   constructor(
     private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly tokensApiService: TokensApiService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
@@ -61,7 +61,7 @@ export class AssetsSelectorService {
       (this.assetsSelectorStateService.formType === 'from' && !fromBlockchain) ||
       (this.assetsSelectorStateService.formType === 'to' && !toBlockchain);
 
-    if (noChainInOpenedSelector && !this.authService.userAddress) {
+    if (noChainInOpenedSelector) {
       this.assetsSelectorStateService.setAssetType('allChains');
     } else {
       const assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
@@ -74,7 +74,7 @@ export class AssetsSelectorService {
 
   private subscribeOnAssetChange(): void {
     this.assetType$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe(assetType => {
-      this.searchQueryService.query = '';
+      this.searchQueryService.setSearchQuery('');
       if (BlockchainsInfo.isBlockchainName(assetType)) {
         const assetKey =
           this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toToken';
@@ -94,7 +94,7 @@ export class AssetsSelectorService {
 
   private checkAndRefetchTokenList(): void {
     if (this.tokensApiService.needRefetchTokens) {
-      this.tokensNetworkService.setTokensRequestParameters(undefined);
+      this.tokensNetworkStateService.setTokensRequestParameters(undefined);
     }
   }
 

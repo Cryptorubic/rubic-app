@@ -13,13 +13,13 @@
     icon="tuiIconMoreVertical"
     tuiIconButton
     type="button"
-    [size]="'m'"
+    [size]="'s'"
     [pseudoHover]="dropdown.open || null"
   ></button>
 </tui-hosted-dropdown>
 
 <ng-template #content let-activeZone>
-  <tui-data-list tuiDataListDropdownManager size="l" [tuiActiveZoneParent]="activeZone">
+  <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
     <div class="dropdown-content__wrapper">
       <div class="dropdown-content">
         <ng-container *ngIf="showCopyToClipboardOption">

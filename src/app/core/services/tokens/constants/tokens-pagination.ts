@@ -1,7 +1,7 @@
 import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 import { PaginatedPage, TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 
-const defaultState: PaginatedPage = { page: null, maxPage: null };
+const defaultState: PaginatedPage = { page: 1, maxPage: 1 };
 
 export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.ETHEREUM]: { ...defaultState },
@@ -16,4 +16,6 @@ export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.SOLANA]: { ...defaultState },
   [BLOCKCHAIN_NAME.NEAR]: { ...defaultState },
   [BLOCKCHAIN_NAME.TELOS]: { ...defaultState }
+  // [TOKEN_FILTERS.ALL_CHAINS_GAINERS]: { ...defaultState },
+  // [TOKEN_FILTERS.ALL_CHAINS_LOSERS]: { ...defaultState }
 };

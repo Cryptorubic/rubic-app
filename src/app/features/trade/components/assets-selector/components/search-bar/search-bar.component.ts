@@ -52,7 +52,7 @@ export class SearchBarComponent {
    */
   public onQueryChanges(model: string): void {
     if (this.searchBarType === 'tokens') {
-      this.searchQueryService.query = model;
+      this.searchQueryService.setSearchQuery(model);
     } else if (this.searchBarType === 'blockchains') {
       this.assetsSearchQueryService.assetsQuery = model;
     }

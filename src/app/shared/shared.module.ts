@@ -76,6 +76,9 @@ import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-netw
 import { TonSlippageWarnModalComponent } from './components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
 import { DepositRateChangedModalComponent } from './components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
+import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
+import { ShortenTextPipe } from './pipes/shorten-text.pipe';
+import { MathAbsPipe } from './pipes/math-abs.pipe';
 
 @NgModule({
   declarations: [
@@ -126,7 +129,10 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
     WcChangeNetworkModalComponent,
     TonSlippageWarnModalComponent,
     SpindleBannerComponent,
-    DepositRateChangedModalComponent
+    DepositRateChangedModalComponent,
+    ShowPriceChangePipe,
+    ShortenTextPipe,
+    MathAbsPipe
   ],
   imports: [
     CommonModule,
@@ -203,7 +209,10 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
     SlippageFormatPipe,
     SkipDefaultDirective,
     ProgressBarComponent,
-    SpindleBannerComponent
+    SpindleBannerComponent,
+    ShowPriceChangePipe,
+    ShortenTextPipe,
+    MathAbsPipe
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
