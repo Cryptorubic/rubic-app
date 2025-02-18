@@ -302,6 +302,7 @@ export class TokensApiService {
           ) {
             return acc;
           }
+
           const repeated = acc.find(t => compareTokens(t, token));
           return repeated ? acc : acc.push(token);
         }, List() as List<Token>);

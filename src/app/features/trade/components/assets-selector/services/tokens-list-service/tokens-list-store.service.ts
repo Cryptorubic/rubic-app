@@ -39,18 +39,6 @@ import { TokenConvertersService } from '@app/core/services/tokens/token-converte
 
 @Injectable()
 export class TokensListStoreService {
-  private readonly _searchLoading$ = new BehaviorSubject<boolean>(false);
-
-  public readonly searchLoading$ = this._searchLoading$.asObservable();
-
-  public get searchLoading(): boolean {
-    return this._searchLoading$.value;
-  }
-
-  public set searchLoading(value: boolean) {
-    this._searchLoading$.next(value);
-  }
-
   private readonly _tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
   public readonly tokensToShow$ = this._tokensToShow$.asObservable();
@@ -149,6 +137,7 @@ export class TokensListStoreService {
 
   private subscribeOnListType(): void {
     this.tokensListTypeService.listType$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.searchQueryService.setSearchQuery('');
       this.tokensUpdaterService.triggerUpdateTokens();
     });
   }
@@ -166,7 +155,7 @@ export class TokensListStoreService {
             if (this.listType === 'default') {
               return this.getDefaultTokensByQuery(skipRefetch);
             } else {
-              return of({ tokensToShow: this.getFilteredFavoriteTokens() });
+              return of({ tokensToShow: this.getFavoriteTokensByQuery() });
             }
           }
           return of({ tokensToShow: this.getSortedTokens() });
@@ -181,7 +170,6 @@ export class TokensListStoreService {
           this.tokensToShow = [];
           this.customToken = tokensList.customToken;
         }
-        this.searchLoading = false;
       });
   }
 
@@ -189,9 +177,30 @@ export class TokensListStoreService {
    * Handles search query requests to APIs and gets parsed tokens.
    */
   private getDefaultTokensByQuery(skipRefetch?: boolean): Observable<TokensList> {
+    if (
+      this.assetsSelectorStateService.assetType === 'allChains' &&
+      this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+    ) {
+      const query = this.searchQuery.toLowerCase();
+      const tlb = new TokensListBuilder(
+        this.tokensStoreService,
+        this.assetsSelectorStateService,
+        this.swapFormService,
+        this.tokenConverters
+      );
+
+      return of({
+        tokensToShow: tlb
+          .initList()
+          .applyFilterByQueryOnClient(query)
+          .applySortByTokenRank()
+          .toArray()
+      });
+    }
+
     return timer(300).pipe(
       distinctUntilChanged(),
-      tap(() => (this.searchLoading = true)),
+      tap(() => this.tokensUpdaterService.setTokensLoading(true)),
       concatMap(() => this.tryParseQueryAsBackendTokens(skipRefetch)),
       switchMap(async backendTokens => {
         if (backendTokens?.length) {
@@ -204,7 +213,8 @@ export class TokensListStoreService {
         }
 
         return { tokensToShow: [] };
-      })
+      }),
+      tap(() => this.tokensUpdaterService.setTokensLoading(false))
     );
   }
 
@@ -224,7 +234,7 @@ export class TokensListStoreService {
     // used to prevent infinite triggering this.tokensUpdaterService.updateTokensList$
     if (skipRefetch) {
       const sortedTokensToShow = tlb
-        .initList(this.listType, this.tokensStoreService.lastQueriedTokens)
+        .initList(this.tokensStoreService.lastQueriedTokens)
         .applySortByTokenRank()
         .toArray();
 
@@ -236,7 +246,7 @@ export class TokensListStoreService {
       .pipe(
         map(backendTokens => {
           if (backendTokens.size) {
-            return tlb.initList(this.listType, backendTokens).applySortByTokenRank().toArray();
+            return tlb.initList(backendTokens).applySortByTokenRank().toArray();
           }
           return [];
         })
@@ -303,7 +313,7 @@ export class TokensListStoreService {
     );
   }
 
-  private getFilteredFavoriteTokens(): AvailableTokenAmount[] {
+  private getFavoriteTokensByQuery(): AvailableTokenAmount[] {
     const query = this.searchQuery.toLowerCase();
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
@@ -314,15 +324,18 @@ export class TokensListStoreService {
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
       return tlb
-        .initList(this.listType)
-        .applyFilterBySearchQueryOnClient(query)
+        .initList()
+        .applyShowFavoriteTokensIf(true)
+        .applyFilterByQueryOnClient(query)
         .applyDefaultSort()
         .toArray();
     }
 
     return tlb
+      .initList()
+      .applyShowFavoriteTokensIf(true)
       .applyFilterByChain(this.blockchain)
-      .applyFilterBySearchQueryOnClient(query)
+      .applyFilterByQueryOnClient(query)
       .applyDefaultSort()
       .toArray();
   }
@@ -340,32 +353,37 @@ export class TokensListStoreService {
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_TRENDING) {
-        return tlb.initList(this.listType).toArray();
+        return tlb
+          .initList()
+          .applyShowFavoriteTokensIf(this.listType === 'favorite')
+          .toArray();
       }
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
         return tlb
-          .initList(this.listType)
-          .applyFilterDuplicates(50)
+          .initList()
+          .applyShowFavoriteTokensIf(this.listType === 'favorite')
           .applySortByMostGainer(this.tokenFilter)
           .toArray();
       }
       if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
         return tlb
-          .initList(this.listType)
-          .applyFilterDuplicates(50)
+          .initList()
+          .applyShowFavoriteTokensIf(this.listType === 'favorite')
           .applySortByMostLoser(this.tokenFilter)
           .toArray();
       }
 
       return tlb
-        .initList(this.listType)
+        .initList()
         .applyFilterOnlyWithBalancesAndTopTokens()
+        .applyShowFavoriteTokensIf(this.listType === 'favorite')
         .applyDefaultSort()
         .toArray();
     }
 
     return tlb
-      .initList(this.listType)
+      .initList()
+      .applyShowFavoriteTokensIf(this.listType === 'favorite')
       .applyFilterByChain(this.blockchain)
       .applyDefaultSort()
       .toArray();

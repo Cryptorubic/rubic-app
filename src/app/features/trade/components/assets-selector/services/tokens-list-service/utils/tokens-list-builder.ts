@@ -1,10 +1,7 @@
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { Token } from '@shared/models/tokens/token';
 
-import {
-  AvailableTokenAmount,
-  TokenAmountWithPriceChange
-} from '@app/shared/models/tokens/available-token-amount';
+import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { List } from 'immutable';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
@@ -18,7 +15,6 @@ import {
   TokensSorter,
   sorterForLosers
 } from './sorters';
-import { TokensListType } from '../../../models/tokens-list-type';
 import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
 import { TOKEN_FILTERS, TokenFilter } from '../../../models/token-filters';
 import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
@@ -33,15 +29,13 @@ export class TokensListBuilder {
     private readonly tokenConverters: TokenConvertersService
   ) {}
 
-  public initList(listType: TokensListType, tokensList?: List<TokenAmount>): TokensListBuilder {
+  public initList(tokensList?: List<TokenAmount>): TokensListBuilder {
     if (tokensList) {
       this.tempTokensList = this.addAvailableFavoriteFields(tokensList);
       return this;
     }
 
-    if (listType === 'favorite') {
-      this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.favoriteTokens);
-    } else if (this.assetsSelectorStateService.assetType === 'allChains') {
+    if (this.assetsSelectorStateService.assetType === 'allChains') {
       const allChainsFilter = this.assetsSelectorStateService.tokenFilter;
       this.tempTokensList = this.addAvailableFavoriteFields(
         this.tokensStoreService.allChainsTokens[allChainsFilter]
@@ -74,7 +68,7 @@ export class TokensListBuilder {
   /**
    * add filter of tokens list on UI without api requests
    */
-  public applyFilterBySearchQueryOnClient(query: string): TokensListBuilder {
+  public applyFilterByQueryOnClient(query: string): TokensListBuilder {
     // @TODO fix search for non evm by address
     if (query.startsWith('0x')) {
       this.tempTokensList = this.tempTokensList.filter(token =>
@@ -90,24 +84,15 @@ export class TokensListBuilder {
     return this;
   }
 
-  /**
-   * @param limit how mane tokens leave in list
-   */
-  public applyFilterDuplicates(limit: number): TokensListBuilder {
-    const uniqueTokensList = List().asMutable() as List<TokenAmountWithPriceChange>;
-    const checkedTokensMap = new Map<string, TokenAmountWithPriceChange>([]);
+  public applyShowFavoriteTokensIf(needFilter: boolean): TokensListBuilder {
+    if (!needFilter) return this;
 
-    for (const token of this.tempTokensList as List<TokenAmountWithPriceChange>) {
-      if (uniqueTokensList.size >= limit) break;
-
-      const alreadyAdded = checkedTokensMap.get(token.symbol.toLowerCase());
-      if (alreadyAdded) continue;
-
-      checkedTokensMap.set(token.symbol.toLowerCase(), token);
-      uniqueTokensList.push(token);
-    }
-
-    this.tempTokensList = uniqueTokensList;
+    const favoriteTokensMap = this.tokenConverters.convertTokensListToMap(
+      this.tokensStoreService.favoriteTokens
+    );
+    this.tempTokensList = this.tempTokensList.filter(
+      t => !!favoriteTokensMap.get(this.tokenConverters.getTokenKeyInMap(t))
+    );
 
     return this;
   }

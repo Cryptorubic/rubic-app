@@ -133,6 +133,7 @@ export class TokensStoreService {
   }
 
   private async setupTokensForAllChainsTab(): Promise<void> {
+    this.tokensUpdaterService.setTokensLoading(true);
     // firstly load tokens without balances for ALL_CHAINS_ALL_TOKENS, TRENDING, GAINERS, LOSERS
     const [allTokens, trendingTokens, gainersTokens, losersTokens] = await Promise.all([
       firstValueFrom(this.tokensApiService.fetchTokensListForAllChains()).then(val =>
@@ -163,6 +164,7 @@ export class TokensStoreService {
       });
     }
 
+    this.tokensUpdaterService.setTokensLoading(false);
     this.tokensUpdaterService.triggerUpdateTokens();
   }
 
@@ -243,7 +245,6 @@ export class TokensStoreService {
       };
       // patches all tokens from allchains to common list to show them also in chains selectors
       const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
-        // @FIX maybe somehow handle properly to not fill Trending list with
         this.balancePatcherFacade.addNewTokensToList(allChainsTokensWithBalances, {
           tokenListToPatch: 'tokens$'
         });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { combineLatestWith, filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { combineLatestWith, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -18,18 +18,12 @@ import {
   TokensNetworkStateKey
 } from '@app/shared/models/tokens/paginated-tokens';
 import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
+import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 
 @Injectable()
 export class TokensListService {
-  private readonly _listUpdating$ = new BehaviorSubject<boolean>(false);
-
-  public readonly loading$ = combineLatest([
-    this._listUpdating$,
-    this.tokensListStoreService.searchLoading$
-  ]).pipe(map(([listUpdating, searchLoading]) => listUpdating || searchLoading));
-
   public get loading(): boolean {
-    return this._listUpdating$.value || this.tokensListStoreService.searchLoading;
+    return this.tokensUpdaterService.tokensLoading;
   }
 
   private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
@@ -58,7 +52,8 @@ export class TokensListService {
     private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly searchQueryService: SearchQueryService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.subscribeOnScroll();
 
@@ -86,10 +81,10 @@ export class TokensListService {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this._listUpdating$.next(true);
+        this.tokensUpdaterService.setTokensLoading(true);
         const tokensNetworkStateKey = this.getTokensNetworkStateKey();
         this.tokensNetworkService.fetchNextPageOfTokensForSelectedAsset(tokensNetworkStateKey, () =>
-          this._listUpdating$.next(false)
+          this.tokensUpdaterService.setTokensLoading(false)
         );
       });
   }

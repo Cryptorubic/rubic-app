@@ -31,7 +31,7 @@ export class TokensListComponent {
     this.tokensListService.setListScrollSubject(scroll);
   }
 
-  public readonly loading$ = this.tokensListService.loading$;
+  public readonly tokensLoading$ = this.tokensUpdaterService.tokensLoading$;
 
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
