@@ -235,7 +235,10 @@ export class TokensStoreService {
 
     if (assetType === 'allChains') {
       const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
-        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances);
+        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
+          patchAllTokensInAllChains:
+            options.allChainsFilterToPatch === TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+        });
         this.tokensUpdaterService.triggerUpdateTokens();
       };
       // patches all tokens from allchains to common list to show them also in chains selectors
