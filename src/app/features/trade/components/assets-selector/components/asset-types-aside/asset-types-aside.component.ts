@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector, Input } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import { map } from 'rxjs/operators';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
@@ -176,6 +176,11 @@ export class AssetTypesAsideComponent {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
+    if (blockchainName === BLOCKCHAIN_NAME.MONAD_TESTNET) {
+      const tt = new Audio('assets/sounds/select-chain.mp3');
+      tt.play();
+    }
+
     this.assetsSelectorService.onBlockchainSelect(blockchainName);
   }
 

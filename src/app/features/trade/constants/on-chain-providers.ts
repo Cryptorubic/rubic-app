@@ -124,6 +124,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}claimswap.svg`,
     color: '#181E6A'
   },
+  [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: {
+    name: 'CoffeeSwap',
+    image: `${imageBasePath}coffee-swap.png`,
+    color: '#181E6A'
+  },
   [ON_CHAIN_TRADE_TYPE.CREMA_FINANCE]: {
     name: 'CremaFinance',
     image: `${imageBasePath}cremafinance.ico`,
@@ -159,11 +164,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
   },
-  [ON_CHAIN_TRADE_TYPE.COFFEE_SWAP]: {
-    name: 'CoffeeSwap',
-    image: `${imageBasePath}coffee-swap.png`,
-    color: '#181E6A'
-  },
 
   //EEEEEEEEEEEEEEEEEEEE
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {
@@ -193,6 +193,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
 
   //DDDDDDDDDDDDDDDDDDDDD
+  [ON_CHAIN_TRADE_TYPE.DEDUST]: {
+    name: 'Dedust',
+    image: `${imageBasePath}dedust.svg`,
+    color: '#ebab34',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.DEFI_PLAZA]: {
     name: 'DefiPlaza',
     image: `${imageBasePath}defiplaza.png`,
@@ -228,12 +234,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}dystopia.png`,
     color: '#085F8E'
   },
-  [ON_CHAIN_TRADE_TYPE.DEDUST]: {
-    name: 'Dedust',
-    image: `${imageBasePath}dedust.svg`,
-    color: '#ebab34',
-    averageTime: 5
-  },
 
   //FFFFFFFFFFFFFFFFFFFFFFF
   [ON_CHAIN_TRADE_TYPE.FENIX_V2]: {
@@ -255,6 +255,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'FusionX',
     image: `${imageBasePath}fusionx.webp`,
     color: '#b0b3b7'
+  },
+  [ON_CHAIN_TRADE_TYPE.FRAX_SWAP_V2]: {
+    name: 'FraxSwap V2',
+    image: `${imageBasePath}fraxswap.svg`,
+    color: '#FFFFFF'
   },
 
   //HHHHHHHHHHHHHHHHHHHHH
@@ -314,6 +319,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}kyberswap.svg`,
     color: '#31CB9E'
   },
+  [ON_CHAIN_TRADE_TYPE.KODIAK]: {
+    name: 'Kodiak',
+    image: `${imageBasePath}kodiak.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: {
+    name: 'Kyo Finance',
+    image: `${imageBasePath}kyo_finance.svg`,
+    color: '#FF4C00'
+  },
 
   //LLLLLLLLLLLLLLLLLLLLLLL
   [ON_CHAIN_TRADE_TYPE.LIFI]: {
@@ -362,11 +377,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'MuteSwap',
     image: `${imageBasePath}muteswap.webp`,
     color: 'white'
-  },
-  [ON_CHAIN_TRADE_TYPE.MACARON]: {
-    name: 'Macaron',
-    image: `${imageBasePath}macaron.svg`,
-    color: '#f6d03a'
   },
 
   //NNNNNNNNNNNNNNNNNNNNNNNNN
@@ -595,6 +605,12 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}stellaswap.svg`,
     color: '#E2107B'
   },
+  [ON_CHAIN_TRADE_TYPE.STONFI]: {
+    name: 'StonFi',
+    image: `${imageBasePath}stonfi.png`,
+    color: '#066ccc',
+    averageTime: 5
+  },
   [ON_CHAIN_TRADE_TYPE.SUN_SWAP]: {
     name: 'SunSwap',
     image: `${imageBasePath}sunswap.svg`,
@@ -640,19 +656,13 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}sparkdex.svg`,
     color: '#000000'
   },
-  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: {
-    name: 'SilkSwap',
-    image: `${imageBasePath}silkswap.svg`,
-    color: '#000000'
-  },
-  [ON_CHAIN_TRADE_TYPE.STONFI]: {
-    name: 'StonFi',
-    image: `${imageBasePath}stonfi.png`,
-    color: '#066ccc',
-    averageTime: 5
-  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
+  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
+    name: 'ToncoDex',
+    image: `${imageBasePath}tonco-dex.svg`,
+    color: '#00CAB2'
+  },
   [ON_CHAIN_TRADE_TYPE.TRADER]: {
     name: 'The Trader',
     image: `${imageBasePath}sushiswap.svg`,
@@ -662,11 +672,6 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Trisolaris',
     image: `${imageBasePath}trisolaris.svg`,
     color: '#00F4FF'
-  },
-  [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
-    name: 'ToncoDex',
-    image: `${imageBasePath}tonco-dex.svg`,
-    color: '#00CAB2'
   },
 
   //UUUUUUUUUUUUUUUUUUUUUUUUUU
@@ -685,9 +690,14 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-3.svg`,
     color: '#FD017A'
   },
+  [ON_CHAIN_TRADE_TYPE.SILK_SWAP]: {
+    name: 'SilkSwap',
+    image: `${imageBasePath}silkswap.svg`,
+    color: '#000000'
+  },
   [ON_CHAIN_TRADE_TYPE.KUJATA]: {
-    name: 'Uniswap V2',
-    image: 'assets/images/icons/coins/bahamut.svg',
+    name: 'Kujata',
+    image: `${imageBasePath}kujata.svg`,
     color: '#FFFFFF'
   },
   [ON_CHAIN_TRADE_TYPE.UNIZEN]: {
@@ -789,12 +799,22 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'ZetaSwap',
     image: `${imageBasePath}zetaswap.svg`,
     color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.MACARON]: {
+    name: 'Macaron',
+    image: `${imageBasePath}macaron.svg`,
+    color: '#f6d03a'
+  },
+  [ON_CHAIN_TRADE_TYPE.BULBA_SWAP]: {
+    name: 'BulbaSwap',
+    image: `${imageBasePath}bulba-swap.svg`,
+    color: '#41c533'
   }
 };
 
 export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = Object.fromEntries(
   Object.entries(onChainTradeProviders).map(([key, value]: [OnChainTradeType, ProviderInfo]) => [
     key,
-    { ...value, averageTime: 1 }
+    { averageTime: 1, ...value }
   ])
 ) as Record<OnChainTradeType, ProviderInfo>;

@@ -5138,10 +5138,10 @@
     decamelize-keys "2.0.1"
     ofetch "1.3.4"
 
-"@ston-fi/sdk@2.0.0-rc.8":
-  version "2.0.0-rc.8"
-  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.0-rc.8.tgz#c6b7260dfe29c27ec5e63f88af84ac24a730accd"
-  integrity sha512-9+9qBhdGzTVsC3iDHVQnrEFU7N7mdlGKbn57pHJrVfZiGm/55X5IPl4DKclbdtl9Gtjf9Kf8bBLweMEwzHntGw==
+"@ston-fi/sdk@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ston-fi/sdk/-/sdk-2.0.1.tgz#7e07206a8486a02124790b123ae1c5dfa05119cb"
+  integrity sha512-9Xut/lkCH74QYjIUAi7HA1T30M1QfcTLj9iosmX4Ma7cJFYuRzO4ygYN/qB0dVkVQSRawaDTZDT1e6dKp8AhAQ==
 
 "@stylelint/postcss-css-in-js@^0.37.2":
   version "0.37.3"
@@ -5473,11 +5473,6 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
-
-"@tronweb3/google-protobuf@^3.21.2":
-  version "3.21.4"
-  resolved "https://registry.yarnpkg.com/@tronweb3/google-protobuf/-/google-protobuf-3.21.4.tgz#611e5b4f6d084c24301e1ee583fe09dc7fcfe41a"
-  integrity sha512-joxgV4esCdyZ921AprMIG1T7HjkypquhbJ5qJti/priCBJhRE1z9GOxIEMvayxSVSRbMGIoJNE0Knrg3vpwM1w==
 
 "@ts-morph/common@~0.25.0":
   version "0.25.0"
@@ -7474,7 +7469,7 @@ axios@^0.27.2:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
 
-axios@^1.0.0, axios@^1.5.0, axios@^1.6.2, axios@^1.6.7, axios@^1.7.2:
+axios@^1.0.0, axios@^1.5.0, axios@^1.6.7, axios@^1.7.2, axios@^1.7.4:
   version "1.7.9"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.9.tgz#d7d071380c132a24accda1b2cfc1535b79ec650a"
   integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
@@ -10658,7 +10653,7 @@ ethereum-cryptography@^0.1.3:
     secp256k1 "^4.0.1"
     setimmediate "^1.0.5"
 
-ethereum-cryptography@^2.0.0, ethereum-cryptography@^2.1.2:
+ethereum-cryptography@^2.0.0, ethereum-cryptography@^2.1.2, ethereum-cryptography@^2.1.3:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ethereum-cryptography/-/ethereum-cryptography-2.2.1.tgz#58f2810f8e020aecb97de8c8c76147600b0b8ccf"
   integrity sha512-r/W8lkHSiTLxUxW8Rf3u4HGB0xQweG2RyETjywylKZSzLWoWAijRz8WCuOtJ6wah+avllXBqZuk29HCCvhEIRg==
@@ -10668,15 +10663,7 @@ ethereum-cryptography@^2.0.0, ethereum-cryptography@^2.1.2:
     "@scure/bip32" "1.4.0"
     "@scure/bip39" "1.3.0"
 
-ethereumjs-abi@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.8.tgz#71bc152db099f70e62f108b7cdfca1b362c6fcae"
-  integrity sha512-Tx0r/iXI6r+lRsdvkFDlut0N08jWMnKRZ6Gkq+Nmw75lZe4e6o3EkSnkaBP5NF6+m5PTGAr9JP43N3LyeoglsA==
-  dependencies:
-    bn.js "^4.11.8"
-    ethereumjs-util "^6.0.0"
-
-"ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
+ethereumjs-abi@^0.6.8, "ethereumjs-abi@git+https://github.com/ethereumjs/ethereumjs-abi.git":
   version "0.6.8"
   resolved "git+https://github.com/ethereumjs/ethereumjs-abi.git#ee3994657fa7a427238e6ba92a84d0b529bbcde0"
   dependencies:
@@ -10756,7 +10743,7 @@ ethers@^5.1.0, ethers@^5.5.1, ethers@^5.6.7, ethers@^5.6.8, ethers@^5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^6.6.0:
+ethers@^6.13.4:
   version "6.13.5"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.13.5.tgz#8c1d6ac988ac08abc3c1d8fabbd4b8b602851ac4"
   integrity sha512-+knKNieu5EKRThQJWwqaJ10a6HE9sSehGeqWN65//wE7j47ZpFhKAnHB/JJFibwwg61I/koxaPsXbXpD/skNOQ==
@@ -11832,7 +11819,7 @@ gonzales-pe@^4.2.3, gonzales-pe@^4.3.0:
   dependencies:
     minimist "^1.2.5"
 
-google-protobuf@^3.21.2:
+google-protobuf@^3.21.2, google-protobuf@^3.21.4:
   version "3.21.4"
   resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.21.4.tgz#2f933e8b6e5e9f8edde66b7be0024b68f77da6c9"
   integrity sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==
@@ -12575,11 +12562,6 @@ ini@^1.3.4, ini@^1.3.5:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
   integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
-injectpromise@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/injectpromise/-/injectpromise-1.0.0.tgz#c621f7df2bbfc1164d714f1fb229adec2079da39"
-  integrity sha512-qNq5wy4qX4uWHcVFOEU+RqZkoVG65FhvGkyDWbuBxILMjK6A1LFf5A1mgXZkD4nRx5FCorD81X/XvPKp/zVfPA==
-
 inquirer@8.2.4:
   version "8.2.4"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-8.2.4.tgz#ddbfe86ca2f67649a67daa6f1051c128f684f0b4"
@@ -13092,11 +13074,6 @@ is-unicode-supported@^0.1.0:
   resolved "https://registry.yarnpkg.com/is-unicode-supported/-/is-unicode-supported-0.1.0.tgz#3f26c76a809593b52bfa2ecb5710ed2779b522a7"
   integrity sha512-knxG2q4UC3u8stRGyAVJCOdxFmv5DZiRcdlIaAQXAbSfJya+OhopNotLQrstBhququ4ZpuKbDc/8S6mgXgPFPw==
 
-is-unicode-supported@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/is-unicode-supported/-/is-unicode-supported-1.3.0.tgz#d824984b616c292a2e198207d4a609983842f714"
-  integrity sha512-43r2mRvz+8JRIKnWJ+3j8JtjRKZ6GmjzfaE/qiBJnikNnYv/6bagRJ1kUhNk8R5EX/GkobD+r+sfxCPJsiKBLQ==
-
 is-weakmap@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/is-weakmap/-/is-weakmap-2.0.2.tgz#bf72615d649dfe5f699079c54b83e47d1ae19cfd"
@@ -13284,10 +13261,10 @@ istanbul-reports@^3.0.2, istanbul-reports@^3.0.5:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-iziswap-sdk@1.5.1:
-  version "1.5.1"
-  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.5.1.tgz#2d05e0f564500651258dc2a35dd38606864e61d1"
-  integrity sha512-79a3u3f7aDedAGXIv2qNfL7vLS6TBtJjl94N/vQZL2TCXtiK4o9NvMhhd4gGscwjSyUVZwhlx26/M8G/kERf3Q==
+iziswap-sdk@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-3.0.1.tgz#a9ecdbaa005aab6710099e2df19794373bded119"
+  integrity sha512-q8pLN8kY82/kCx9Ht7c1SaiQ/A/Gp/cH35nj+gsI/3oDKQ0kTmftRr/1D51OHrsDlm5kiuAOMKYpaGWJwRHhKQ==
   dependencies:
     bignumber.js "^9.0.2"
     http "^0.0.1-security"
@@ -17511,10 +17488,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.50.0:
-  version "5.50.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.50.0.tgz#8cff90a5ea3e2a80b793bea7aec7e12eb3aab14d"
-  integrity sha512-p/8f2PwCYm+XQGNxgKZ43tTAlbyn8MRbiqfJWgDZ8wurB8MwqyGErykHzodsV7iS3lMD5ECj69aW6Th8DXZJsw==
+rubic-sdk@5.52.8-alpha-monad-testnet.0:
+  version "5.52.8-alpha-monad-testnet.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.8-alpha-monad-testnet.0.tgz#f4f495648d7fbfaac539f92c8b8ceea2f6be3389"
+  integrity sha512-gDDhqi7u0N9UK4SydqkLmoGu4KGca+MjqJKiLO4/7JQXsWYUI/gCd3FMrFz8YSmWcQBkLByKp5Yapwy6DhdWiQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
@@ -17530,7 +17507,7 @@ rubic-sdk@5.50.0:
     "@solana/web3.js" "1.89.1"
     "@solflare-wallet/utl-sdk" "^1.4.0"
     "@ston-fi/api" "^0.12.1"
-    "@ston-fi/sdk" "2.0.0-rc.8"
+    "@ston-fi/sdk" "2.0.1"
     "@ton/core" "0.59.0"
     "@ton/crypto" "^3.3.0"
     "@ton/ton" "15.1.0"
@@ -17547,11 +17524,11 @@ rubic-sdk@5.50.0:
     ethers "^5.6.8"
     graphql-request "^6.1.0"
     grpc-web "^1.4.2"
-    iziswap-sdk "1.5.1"
+    iziswap-sdk "3.0.1"
     lodash.clonedeep "^4.5.0"
     rpc-websockets "7.9.0"
     rxjs "7.8.1"
-    tronweb "^5.3.2"
+    tronweb "^6.0.0"
     viem "^1.3.1"
     vm-browserify "^1.1.2"
     web3 "^1.8.1"
@@ -19310,22 +19287,18 @@ trim@0.0.1:
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
   integrity sha512-YzQV+TZg4AxpKxaTHK3c3D+kRDCGVEE7LemdlQZoQXn0iennk10RsIoY6ikzAqJTc9Xjl9C1/waHom/J86ziAQ==
 
-tronweb@^5.3.2:
-  version "5.3.2"
-  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-5.3.2.tgz#393b0fa0290e2c5aa7a3b3b82956f53ca65a764f"
-  integrity sha512-iPcIjMCxb6H7FXMntAj47F3L+7jSideyQ7ZOvRj9MeZBh46SHevMrDDR57HzakUa/tT8VvlPFHtqFK4hzTLkXw==
+tronweb@^6.0.0:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/tronweb/-/tronweb-6.0.1.tgz#04c927462f084c45f3c4a6d25ae6c5125e6573e3"
+  integrity sha512-/WR4g9s21JAMdKS/s6yaQwrLVQTwSiLyOa8SAO2cAvASDfXJR8cFgsukPpHpyrkiHweC05PukSavshbIhB0cPw==
   dependencies:
     "@babel/runtime" "^7.0.0"
-    "@ethersproject/abi" "^5.7.0"
-    "@tronweb3/google-protobuf" "^3.21.2"
-    axios "^1.6.2"
+    axios "^1.7.4"
     bignumber.js "^9.0.1"
-    ethereum-cryptography "^2.0.0"
-    ethers "^6.6.0"
+    ethereum-cryptography "^2.1.3"
+    ethers "^6.13.4"
     eventemitter3 "^3.1.0"
-    injectpromise "^1.0.0"
-    lodash "^4.17.21"
-    querystring-es3 "^0.2.1"
+    google-protobuf "^3.21.4"
     semver "^5.6.0"
     validator "^13.7.0"
 
