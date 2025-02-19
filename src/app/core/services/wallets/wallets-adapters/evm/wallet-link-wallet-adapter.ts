@@ -8,7 +8,7 @@ import { NgZone } from '@angular/core';
 import { blockchainId, BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
-import { CoinbaseWalletSDK, ProviderInterface } from '@coinbase/wallet-sdk';
+import { createCoinbaseWalletSDK, ProviderInterface } from '@coinbase/wallet-sdk';
 import { CoinBaseError } from '@core/errors/models/provider/coinbase-error';
 
 export class WalletLinkWalletAdapter extends EvmWalletAdapter<ProviderInterface> {
@@ -36,18 +36,18 @@ export class WalletLinkWalletAdapter extends EvmWalletAdapter<ProviderInterface>
     }
 
     this.selectedChain = BlockchainsInfo.getBlockchainNameById(chainId) as EvmBlockchainName;
-
-    if (!this.window.ethereum?.providers) {
+    //@ts-ignore
+    if (!this.window.coinbaseWalletExtension?.isCoinbaseWallet) {
       throw new CoinBaseError();
     }
 
-    const coinbaseWallet = new CoinbaseWalletSDK({
+    const coinbaseWallet = createCoinbaseWalletSDK({
       appName: 'Rubic',
       appLogoUrl: 'https://rubic.exchange/assets/images/rubic-logo.svg',
       appChainIds: Object.values(blockchainId)
     });
 
-    return coinbaseWallet.makeWeb3Provider();
+    return coinbaseWallet.getProvider();
   }
 
   public async activate(): Promise<void> {

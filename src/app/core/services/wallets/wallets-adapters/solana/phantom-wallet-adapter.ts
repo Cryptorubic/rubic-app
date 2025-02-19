@@ -9,6 +9,8 @@ import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
 
 export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWallet> {
   public get walletName(): WALLET_NAME {
@@ -83,21 +85,30 @@ export class PhantomWalletAdapter extends CommonSolanaWalletAdapter<PhantomWalle
       throw new WalletNotInstalledError();
     }
 
+    // Hotfix if Ctrl-wallet connected, it catches requests to phantom wallet and returns solana wallets from itself
+    if (wallet.isXDEFI) {
+      throw new NeedDisableCtrlWalletError(this.walletName.toUpperCase());
+    }
+
     if (!wallet.isConnected) {
       await this.handleDisconnect(wallet);
     }
 
     if (!wallet.publicKey) {
-      throw new CustomError('Connection error');
+      throw new RubicError('Connection error');
     }
   }
 
   private handleAccountChange(): void {
     this.wallet.on('accountChanged', (address: PublicKey) => {
-      this.selectedAddress = address.toBase58();
-      this.zone.run(() => {
-        this.onAddressChanges$.next(this.selectedAddress);
-      });
+      if (!address) {
+        this.deactivate();
+      } else {
+        this.selectedAddress = address.toBase58();
+        this.zone.run(() => {
+          this.onAddressChanges$.next(this.selectedAddress);
+        });
+      }
     });
   }
 

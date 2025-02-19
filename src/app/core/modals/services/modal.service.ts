@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { firstValueFrom, Observable } from 'rxjs';
+import { catchError, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -29,6 +29,8 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
 import { BlockchainName, TonOnChainTrade } from 'rubic-sdk';
 import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
+import { DepositRateChangedModalComponent } from '@app/shared/components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
+import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 
 @Injectable()
 export class ModalService {
@@ -244,6 +246,17 @@ export class ModalService {
    */
   public openArbitrumWarningModal(): Observable<void> {
     return this.showDialog(ArbitrumBridgeWarningModalComponent, { size: 's' });
+  }
+
+  public openDepositTradeRateChangedModal(trade: SelectedTrade): Promise<boolean> {
+    return firstValueFrom(
+      this.showDialog(DepositRateChangedModalComponent, {
+        size: 's',
+        closeable: false,
+        required: true,
+        data: { trade }
+      }).pipe(catchError(() => of(false))) as Observable<boolean>
+    );
   }
 
   public openRateChangedModal(

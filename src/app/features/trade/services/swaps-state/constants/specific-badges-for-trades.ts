@@ -4,6 +4,7 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
   CrossChainTradeType,
+  ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   OnChainTradeType
 } from 'rubic-sdk';
@@ -23,6 +24,16 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       fromSdk: false,
       getLabel: () => '+Points!',
       getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
+      showLabel: () => true
+    }
+  ],
+  [ON_CHAIN_TRADE_TYPE.ODOS]: [
+    {
+      getUrl: () => 'https://x.com/odosdao/status/1869962497694036358',
+      bgColor: '#FF510199',
+      fromSdk: false,
+      getLabel: () => '+Points!',
+      getHint: () => 'Complete swap using Odos and recieve Odos points!',
       showLabel: () => true
     }
   ],

@@ -101,7 +101,8 @@
     "walletNotInstalled": "지갑이 설치되지 않았습니다",
     "crossChainSwapUnavailable": "유감스럽게도 계산된 공급자를 사용하는 이 스왑은 현재 사용할 수 없습니다. Rubic은 스왑 경로를 다시 계산합니다.",
     "noSelectedToken": "토큰 선택",
-    "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다."
+    "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다.",
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

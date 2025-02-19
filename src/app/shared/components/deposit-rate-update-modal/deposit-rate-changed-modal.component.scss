@@ -1,0 +1,84 @@
+@use '../../../../scss/core' as *;
+
+.modal {
+  &__title {
+    margin: var(--tui-padding-l) 0 0 0;
+  }
+
+  &__content {
+    text-align: center;
+
+    @include b($tablet) {
+      padding: 10px;
+    }
+  }
+
+  &__footer {
+    margin-top: var(--tui-padding-l);
+
+    &-text {
+      margin-bottom: var(--tui-padding-l);
+    }
+
+    &-actions {
+      display: flex;
+      gap: var(--tui-padding-m);
+
+      button {
+        display: block;
+        flex: 1;
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+
+    img {
+      width: 120px;
+    }
+  }
+
+  &__footer {
+    &-text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+
+      font-weight: 400;
+      font-size: 1rem;
+
+      img {
+        margin-left: 4px;
+      }
+
+      > div:first-child {
+        margin-bottom: var(--tui-padding-l);
+
+        text-align: left;
+      }
+
+      > div:not(:first-child) {
+        display: flex;
+        justify-content: space-between;
+
+        > span:last-child {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  h3 {
+    font-size: 18px;
+    text-align: left;
+  }
+
+  ::ng-deep app-rubic-button button {
+    float: left;
+    width: 150px;
+  }
+}

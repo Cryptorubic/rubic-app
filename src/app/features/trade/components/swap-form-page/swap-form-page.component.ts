@@ -14,6 +14,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
+import { RefundService } from '../../services/refund-service/refund.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -64,7 +65,9 @@ export class SwapFormPageComponent {
     ),
     map(([from, to, crossChainReceiver, onChainReceiver]) => {
       if (!from || !to) {
-        return crossChainReceiver.showReceiverAddress;
+        const showReceiverAddress =
+          crossChainReceiver.showReceiverAddress || onChainReceiver.showReceiverAddress;
+        return showReceiverAddress;
       }
       return from.blockchain === to.blockchain
         ? onChainReceiver.showReceiverAddress
@@ -83,7 +86,8 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly swapsStateService: SwapsStateService
+    private readonly swapsStateService: SwapsStateService,
+    private readonly refundService: RefundService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -94,6 +98,9 @@ export class SwapFormPageComponent {
       if (blockchain) {
         this.tokensStoreService.startBalanceCalculating(blockchain);
       }
+    });
+    this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
+      this.refundService.onSwapFormInputChanged(inputValue);
     });
   }
 

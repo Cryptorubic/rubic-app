@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { catchError, distinctUntilChanged, first, map, pairwise, switchMap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
 import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
@@ -12,14 +12,9 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { AssetType } from '@features/trade/models/asset';
-import {
-  defaultFormParameters,
-  DefaultParametersFrom,
-  DefaultParametersTo
-} from '@features/trade/services/swap-form-query/constants/default-tokens-params';
+import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 
 @Injectable()
@@ -46,54 +41,16 @@ export class SwapFormQueryService {
 
   private subscribeOnSwapForm(): void {
     this.swapsFormService.inputValue$
-      .pipe(
-        distinctUntilChanged((prev, curr) => compareObjects(prev, curr)),
-        pairwise()
-      )
-      .subscribe(([prev, curr]) => {
-        let isEqual = compareObjects(prev, curr);
-        if (
-          prev?.fromToken &&
-          'price' in prev?.fromToken &&
-          curr?.fromToken &&
-          'price' in curr?.fromToken
-        ) {
-          const pricelessPrev = {
-            ...prev,
-            fromToken: {
-              ...(prev.fromToken as AvailableTokenAmount),
-              price: 0
-            },
-            toToken: {
-              ...prev.toToken,
-              price: 0
-            }
-          };
-
-          const pricelessCurr = {
-            ...curr,
-            fromToken: {
-              ...(curr.fromToken as AvailableTokenAmount),
-              price: 0
-            },
-            toToken: {
-              ...curr.toToken,
-              price: 0
-            }
-          };
-
-          isEqual = compareObjects(pricelessPrev, pricelessCurr);
-        }
-
+      .pipe(distinctUntilChanged((prev, curr) => compareObjects(prev, curr)))
+      .subscribe(inputValue => {
         this.queryParamsService.patchQueryParams({
-          ...(curr.fromToken?.symbol && { from: curr.fromToken.symbol }),
-          ...(curr.toToken?.symbol && { to: curr.toToken.symbol }),
-          ...(curr.fromBlockchain && { fromChain: curr.fromBlockchain }),
-          ...(curr.toBlockchain && { toChain: curr.toBlockchain }),
-          ...(curr.fromAmount?.actualValue.gt(0) && {
-            amount: curr.fromAmount.actualValue.toFixed()
-          }),
-          ...(!isEqual && { onramperTxId: null })
+          ...(inputValue.fromToken?.symbol && { from: inputValue.fromToken.symbol }),
+          ...(inputValue.toToken?.symbol && { to: inputValue.toToken.symbol }),
+          ...(inputValue.fromBlockchain && { fromChain: inputValue.fromBlockchain }),
+          ...(inputValue.toBlockchain && { toChain: inputValue.toBlockchain }),
+          ...(inputValue.fromAmount?.actualValue.gt(0) && {
+            amount: inputValue.fromAmount.actualValue.toFixed()
+          })
         });
       });
   }
@@ -154,10 +111,7 @@ export class SwapFormQueryService {
 
   private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
     let fromChain: AssetType;
-    if (
-      BlockchainsInfo.isBlockchainName(queryParams.fromChain) ||
-      queryParams.fromChain === 'fiat'
-    ) {
+    if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
     } else if (this.walletConnectorService.network) {
       fromChain = this.walletConnectorService.network;
@@ -175,13 +129,13 @@ export class SwapFormQueryService {
       toChain
     };
 
-    if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-      if (newParams.from === defaultFormParameters.swap.from[fromChain as DefaultParametersFrom]) {
-        newParams.from = defaultFormParameters.swap.to[fromChain as DefaultParametersTo];
-      } else {
-        newParams.to = defaultFormParameters.swap.from[fromChain as DefaultParametersFrom];
-      }
-    }
+    // if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
+    //   if (newParams.from === defaultFormParameters.swap.from[fromChain as DefaultParametersFrom]) {
+    //     newParams.from = defaultFormParameters.swap.to[fromChain as DefaultParametersTo];
+    //   } else {
+    //     newParams.to = defaultFormParameters.swap.from[fromChain as DefaultParametersFrom];
+    //   }
+    // }
 
     return newParams;
   }
