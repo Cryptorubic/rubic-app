@@ -148,7 +148,12 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITLAYER]: 'bitlayer',
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'unichain-sepolia-testnet',
   [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'soneium-minato',
-  [BLOCKCHAIN_NAME.SONIC]: 'sonic'
+  [BLOCKCHAIN_NAME.SONIC]: 'sonic',
+  [BLOCKCHAIN_NAME.FRAXTAL]: 'fraxtal',
+  [BLOCKCHAIN_NAME.SONEIUM]: 'soneium',
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: 'berachain-testnet',
+  [BLOCKCHAIN_NAME.MORPH]: 'morph',
+  [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'monad-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

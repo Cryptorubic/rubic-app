@@ -39,6 +39,10 @@ export class TokensListElementComponent {
 
   public readonly securityMessages = securityMessages;
 
+  public onTokenSelect(token: AvailableTokenAmount): void {
+    this.selectToken.emit(token);
+  }
+
   public get isNativeToken(): boolean {
     return this.token.address === NATIVE_TOKEN_ADDRESS;
   }

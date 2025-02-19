@@ -8,6 +8,7 @@ import {
   cbridgeSupportedBlockchains,
   changenowProxySupportedBlockchains,
   deBridgeCrossChainSupportedBlockchains,
+  eddyBridgeSupportedChains,
   layerZeroBridgeSupportedBlockchains,
   lifiCrossChainSupportedBlockchains,
   mesonCrossChainSupportedChains,
@@ -17,17 +18,16 @@ import {
   rangoSupportedBlockchains,
   scrollBridgeSupportedBlockchains,
   squidrouterCrossChainSupportedBlockchains,
-  stargateCrossChainSupportedBlockchains,
   symbiosisCrossChainSupportedBlockchains,
   taikoBridgeSupportedBlockchains,
   xySupportedBlockchains,
-  eddyBridgeSupportedChains,
-  simpleSwapCcrProxySupportedChains,
-  acrossCcrSupportedChains,
+  stargateV2SupportedBlockchains,
   routerCrossChainSupportedChains,
   retroBridgeSupportedBlockchain,
-  stargateV2SupportedBlockchains,
-  uniZenCcrSupportedChains
+  acrossCcrSupportedChains,
+  uniZenCcrSupportedChains,
+  simpleSwapCcrProxySupportedChains,
+  changellySupportedChains
 } from 'rubic-sdk';
 
 export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
@@ -41,7 +41,7 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.XY]: xySupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: cbridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: changenowProxySupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: stargateCrossChainSupportedBlockchains,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: stargateV2SupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: arbitrumRbcBridgeSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: squidrouterCrossChainSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE]: scrollBridgeSupportedBlockchains,
@@ -54,10 +54,11 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.MESON]: mesonCrossChainSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: owlToSupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: eddyBridgeSupportedChains,
-  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains,
-  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: routerCrossChainSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: retroBridgeSupportedBlockchain,
-  [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: stargateV2SupportedBlockchains,
-  [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: uniZenCcrSupportedChains
+  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: uniZenCcrSupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: changellySupportedChains
 } as const;

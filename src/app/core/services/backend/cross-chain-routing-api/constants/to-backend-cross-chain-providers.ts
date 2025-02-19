@@ -22,12 +22,13 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.MESON]: 'meson',
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: 'owl_to_bridge',
   [CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE]: 'eddy_bridge',
-  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: 'across',
   [CROSS_CHAIN_TRADE_TYPE.STARGATE_V2]: 'stargate_v2',
   [CROSS_CHAIN_TRADE_TYPE.ROUTER]: 'router',
   [CROSS_CHAIN_TRADE_TYPE.RETRO_BRIDGE]: 'retro_bridge',
+  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: 'simple_swap',
+  [CROSS_CHAIN_TRADE_TYPE.ACROSS]: 'across',
   [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen',
-  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: 'simple_swap'
+  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: 'changelly'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
