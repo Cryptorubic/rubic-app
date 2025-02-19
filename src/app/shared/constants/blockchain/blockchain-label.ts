@@ -152,5 +152,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MORPH]: 'Morph',
   [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal',
   [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
-  [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium'
+  [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
+  [BLOCKCHAIN_NAME.VANA]: 'Vana'
 };

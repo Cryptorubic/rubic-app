@@ -242,5 +242,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.SONEIUM]: {
     name: 'Soneium',
     rpc: 'https://rpc.soneium.org/'
+  },
+  [BLOCKCHAIN_NAME.VANA]: {
+    name: 'Vana',
+    rpc: 'https://rpc.vana.org'
   }
 };

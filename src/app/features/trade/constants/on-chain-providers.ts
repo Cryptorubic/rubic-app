@@ -234,6 +234,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}dystopia.png`,
     color: '#085F8E'
   },
+  [ON_CHAIN_TRADE_TYPE.DATA_DEX]: {
+    name: 'Data Dex',
+    image: `${imageBasePath}data-dex.svg`,
+    color: '#0a1124'
+  },
 
   //FFFFFFFFFFFFFFFFFFFFFFF
   [ON_CHAIN_TRADE_TYPE.FENIX_V2]: {

@@ -365,5 +365,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1868.rpc.thirdweb.com/',
     'https://rpc.soneium.org/',
     'https://soneium.drpc.org'
+  ],
+  [BLOCKCHAIN_NAME.VANA]: [
+    'https://evm-rpc-vana.josephtran.xyz',
+    'https://evm-rpc-vana.j-node.net',
+    'https://rpc.vana.org'
   ]
 };
