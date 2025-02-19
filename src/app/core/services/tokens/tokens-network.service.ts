@@ -90,9 +90,8 @@ export class TokensNetworkService {
         !this.tokensStoreService.tokens.some(t => compareTokens(bT, t))
     );
     if (newAddedTokens.size && this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
-      this.tokensStoreService.patchTokensBalances(
-        await this.balanceLoaderService.getTokensWithBalance(newAddedTokens)
-      );
+      const tokens = await this.balanceLoaderService.getTokensWithBalance(newAddedTokens);
+      this.tokensStoreService.patchTokensBalances(tokens);
     }
   }
 

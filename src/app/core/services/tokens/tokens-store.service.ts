@@ -99,7 +99,7 @@ export class TokensStoreService {
         List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
         false
       );
-      this._tokens$.next(tokens);
+      this.setTokens(tokens);
     }
   }
 
@@ -261,7 +261,7 @@ export class TokensStoreService {
       })),
       tap((token: TokenAmount) => {
         const tokens = this.tokens.push(token);
-        this._tokens$.next(tokens);
+        this.setTokens(tokens);
       })
     );
   }
@@ -273,7 +273,7 @@ export class TokensStoreService {
   public addToken(token: TokenAmount): void {
     if (!this.tokens.find(t => compareTokens(t, token))) {
       const tokens = this.tokens.push(token);
-      this._tokens$.next(tokens);
+      this.setTokens(tokens);
     }
   }
 
@@ -283,7 +283,7 @@ export class TokensStoreService {
    */
   public patchToken(token: TokenAmount): void {
     const tokens = this.tokens.filter(t => !compareTokens(t, token)).push(token);
-    this._tokens$.next(tokens);
+    this.setTokens(tokens);
   }
 
   /**
@@ -295,20 +295,20 @@ export class TokensStoreService {
     const newTokensMap = this.tokenConverters.convertTokensListToMap(newTokens);
     const oldTokensMap = this.tokenConverters.convertTokensListToMap(this.tokens);
 
-    const updatedTokens = this.tokens
-      .map(token => {
-        const tokenInPrevList = oldTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
-        const tokenInNewList = newTokensMap.get(this.tokenConverters.getTokenKeyInMap(token));
-        if (tokenInPrevList && tokenInNewList) {
-          newTokensMap.delete(this.tokenConverters.getTokenKeyInMap(token));
-          return { ...tokenInPrevList, ...tokenInNewList };
-        } else {
-          return tokenInPrevList;
-        }
-      })
-      .concat(newTokensMap.values());
+    const updatedTokens = this.tokens.map(token => {
+      const key = this.tokenConverters.getTokenKeyInMap(token);
+      const tokenInPrevList = oldTokensMap.get(key);
+      const tokenInNewList = newTokensMap.get(key);
 
-    this._tokens$.next(updatedTokens);
+      if (tokenInPrevList && tokenInNewList) {
+        newTokensMap.delete(key);
+        return { ...tokenInPrevList, ...tokenInNewList };
+      } else {
+        return tokenInPrevList;
+      }
+    });
+
+    this.setTokens(updatedTokens);
   }
 
   public patchTokensBalances(
@@ -393,5 +393,10 @@ export class TokensStoreService {
     const address = Web3Pure[chainType].nativeTokenAddress;
 
     return this.tokens.find(t => compareTokens(t, { address, blockchain }));
+  }
+
+  private setTokens(value: List<TokenAmount>): List<TokenAmount> {
+    this._tokens$.next(value);
+    return this.tokens;
   }
 }

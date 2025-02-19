@@ -1072,5 +1072,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.SONEIUM]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SONEIUM], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.SUI]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SUI], ...defaultTokenParams } as Token
   ]
 };

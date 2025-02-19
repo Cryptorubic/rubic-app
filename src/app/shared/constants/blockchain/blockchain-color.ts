@@ -153,5 +153,5 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.FRAXTAL]: '#FFFFFF',
   [BLOCKCHAIN_NAME.BERACHAIN]: '#FFFFFF',
   [BLOCKCHAIN_NAME.SONEIUM]: '#131315',
-  [BLOCKCHAIN_NAME.SUI]: '#53c8ee'
+  [BLOCKCHAIN_NAME.SUI]: 'white'
 };

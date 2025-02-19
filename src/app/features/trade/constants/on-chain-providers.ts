@@ -809,6 +809,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'BulbaSwap',
     image: `${imageBasePath}bulba-swap.svg`,
     color: '#41c533'
+  },
+  [ON_CHAIN_TRADE_TYPE.CETUS]: {
+    name: 'Cetus',
+    image: `${imageBasePath}cetus.png`,
+    color: '#61e0af'
   }
 };
 

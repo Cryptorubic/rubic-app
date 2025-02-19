@@ -11,6 +11,9 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     return 0.75;
   }
+  if (blockchain === BLOCKCHAIN_NAME.SUI) {
+    return 0.7;
+  }
   if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     return 0.6;
   }
@@ -77,7 +80,8 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.EOS]: ['EOS'],
   [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
   [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
-  [BLOCKCHAIN_NAME.XDC]: ['XDC']
+  [BLOCKCHAIN_NAME.XDC]: ['XDC'],
+  [BLOCKCHAIN_NAME.SUI]: ['SUI']
 };
 
 export const notEvmChangeNowBlockchainsList = {
@@ -121,7 +125,8 @@ export const notEvmChangeNowBlockchainsList = {
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
 
-  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC
+  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC,
+  [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI
   // [BLOCKCHAIN_NAME.KADENA]: BLOCKCHAIN_NAME.KADENA,
   // [BLOCKCHAIN_NAME.AION]: BLOCKCHAIN_NAME.AION,
   // [BLOCKCHAIN_NAME.ARDOR]: BLOCKCHAIN_NAME.ARDOR,

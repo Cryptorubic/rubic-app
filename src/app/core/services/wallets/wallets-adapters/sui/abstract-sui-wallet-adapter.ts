@@ -29,12 +29,12 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
     const adapter = wallets.find(
       walletAdapter =>
         walletAdapter.name === this.extensionName &&
-        this.isStandardWalletAdapterCompatibleWallet(walletAdapter)
+        this.isStandardWalletAdapterCompatibleWallet(walletAdapter as RubicAny)
     );
     if (!adapter) {
       throw new WalletNotInstalledError();
     }
-    this.wallet = adapter;
+    this.wallet = adapter as RubicAny;
     try {
       await (this.wallet.features['standard:connect'] as RubicAny).connect();
       // await waitFor(50);
@@ -45,6 +45,7 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
       this.isEnabled = true;
 
       this.onNetworkChanges$.next(this.selectedChain);
+      this.onAddressChanges$.next(this.selectedAddress);
     } catch (err) {
       console.error('[SuiDefaultAdapter] Activation error - ', err);
       throw err;

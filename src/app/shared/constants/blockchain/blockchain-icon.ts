@@ -155,6 +155,5 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.FRAXTAL]: `${basePath}fraxtal.svg`,
   [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}berachain.svg`,
   [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
-  // @TODO SUI
-  [BLOCKCHAIN_NAME.SUI]: `${basePath}soneium.svg`
+  [BLOCKCHAIN_NAME.SUI]: `${basePath}sui.svg`
 };
