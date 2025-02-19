@@ -13,7 +13,7 @@ import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/tok
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { GO_PLUS_AVAILABLE_NETWORKS } from '../../../../constants/go-plus-available-networks';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
-import { BLOCKCHAIN_NAME, compareAddresses } from 'rubic-sdk';
+import { compareAddresses } from 'rubic-sdk';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
   ETHEREUM_PLATFORM_TOKEN_ADDRESS
@@ -40,11 +40,6 @@ export class TokensListElementComponent {
   public readonly securityMessages = securityMessages;
 
   public onTokenSelect(token: AvailableTokenAmount): void {
-    if (token.blockchain === BLOCKCHAIN_NAME.MONAD_TESTNET) {
-      const audio = new Audio('assets/sounds/select-token.mp3');
-      audio.play();
-    }
-
     this.selectToken.emit(token);
   }
 
