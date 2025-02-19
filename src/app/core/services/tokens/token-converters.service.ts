@@ -29,9 +29,13 @@ export class TokenConvertersService {
       return 'METIS_NATIVE';
     }
 
-    const splitted = t.image.split('/');
-    const imgKey = splitted.slice(splitted.length - 3).join('/');
-    return imgKey;
+    if (t.image) {
+      const splitted = t.image.split('/');
+      const imgKey = splitted.slice(splitted.length - 3).join('/');
+      return imgKey;
+    }
+
+    return `${t.address}_${t.blockchain}_${t.rank}_${t.name}_${t.type}`;
   }
 
   public convertTokensListToMap(
