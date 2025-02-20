@@ -17358,10 +17358,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.52.8-alpha-vana.0:
-  version "5.52.8-alpha-vana.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.8-alpha-vana.0.tgz#4005c6cf0e6b9f39ebe729156dc3cb90bbe6962d"
-  integrity sha512-xi+WepI8cU/ivIB8dwNMsmBIgCpEzVHzo79duap00SSPU70tiU2MfWxTZp+R3EBpcUSxMqoypwrOH31Fni/HlQ==
+rubic-sdk@5.52.8-alpha-vana.1:
+  version "5.52.8-alpha-vana.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.8-alpha-vana.1.tgz#da87fd6a982c23a8e8e30c7a118573e16a1a7059"
+  integrity sha512-vIx0pQu6MOf/NyeCEhz3fGqStfB73u5Xcs5ep3JfvNhhXYkQI7BhzrDodyUqyeBot+l9CRV6l5qubNpcFoRzcw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
