@@ -21,12 +21,17 @@ import { crossChainTokenTypeMapping } from '@features/trade/services/proxy-fee-s
 import { crossChainTokenTierMapping } from '@features/trade/services/proxy-fee-service/const/cross-chain-token-tier-mapping';
 
 import { tokenTypeMapping } from './const/token-type-mapping';
+import { HttpService } from '@app/core/services/http/http.service';
+import { firstValueFrom } from 'rxjs';
+import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
   constructor(
     private readonly configService: PlatformConfigurationService,
-    private readonly tokensStore: TokensStoreService
+    private readonly tokensStore: TokensStoreService,
+    private readonly httpService: HttpService,
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
   public async getIntegratorAddress(
@@ -36,11 +41,19 @@ export class ProxyFeeService {
   ): Promise<string> {
     try {
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
-      if (fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) {
+      const referral = this.sessionStorage.getItem('referral');
+
+      if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
-      if (fromPriceAmount.lte(100)) {
+      if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
+      }
+
+      if (referral) {
+        const referralIntegrator = await this.getIntegratorByReferralName(referral);
+
+        if (referralIntegrator) return referralIntegrator;
       }
 
       const fromType = this.getTokenType(fromToken);
@@ -149,5 +162,31 @@ export class ProxyFeeService {
     if (crossChainIntegrator && !isOnChain) return crossChainIntegrator;
 
     return providerAddress;
+  }
+
+  private async getIntegratorByReferralName(referral: string): Promise<string | null> {
+    try {
+      const integratorFromStorage = this.sessionStorage.getItem(referral.toLowerCase());
+
+      if (integratorFromStorage) {
+        return integratorFromStorage;
+      }
+
+      const res = await firstValueFrom(
+        this.httpService.get<{ integrator_address?: string }>(
+          `v2/referrers/get_integrator_address_for_referrer?referrer=${referral}`
+        )
+      );
+
+      if (res.integrator_address) {
+        this.sessionStorage.setItem(referral.toLowerCase(), res.integrator_address);
+
+        return res.integrator_address;
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
   }
 }
