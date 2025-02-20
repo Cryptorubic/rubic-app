@@ -7,6 +7,7 @@ import { EntitiesForAddingNewTokens } from '../models/balance-loading-types';
 import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { TokenConvertersService } from '../token-converters.service';
 import { PatchingFuncOptions } from '../models/all-chains-tokens';
+import { findIdxAndTokenInList } from './find-idx-and-token-in-list';
 
 export class BalancePatcherFacade {
   constructor(
@@ -213,5 +214,88 @@ export class BalancePatcherFacade {
     });
 
     this.tokensStoreService.updateAllChainsTokensState(updatedTokens, allChainsFilter);
+  }
+
+  /**
+   * Patches token in _tokens$ list and _allChainsTokens$(TRENDING, GAINERS, LOSERS, ALL_TOKENS) lists if token exists in any of them.
+   * @param token Token to patch.
+   */
+  public patchTokenInLists(token: TokenAmount): void {
+    const commonListData = findIdxAndTokenInList(this.tokensStoreService.tokens, token);
+    if (commonListData.idx !== -1) {
+      const newCommonList = this.tokensStoreService.tokens
+        .splice(commonListData.idx, 1)
+        .push(token);
+      this.tokensStoreService.updateCommonTokensState(newCommonList);
+    }
+
+    const allTokensListData = findIdxAndTokenInList(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_ALL_TOKENS,
+      token
+    );
+    if (allTokensListData.idx !== -1) {
+      const newAllTokensList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_ALL_TOKENS.splice(
+        allTokensListData.idx,
+        1
+      ).push(token);
+      this.tokensStoreService.updateAllChainsTokensState(
+        newAllTokensList,
+        TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+      );
+    }
+
+    const trendingListData = findIdxAndTokenInList(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_TRENDING,
+      token
+    );
+    if (trendingListData.idx !== -1) {
+      const newTrendingList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_TRENDING.splice(
+        trendingListData.idx,
+        1
+      ).push({
+        ...trendingListData.token,
+        ...token
+      });
+      this.tokensStoreService.updateAllChainsTokensState(
+        newTrendingList,
+        TOKEN_FILTERS.ALL_CHAINS_TRENDING
+      );
+    }
+
+    const gainersListData = findIdxAndTokenInList(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_GAINERS,
+      token
+    );
+    if (gainersListData.idx !== -1) {
+      const newGainersList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_GAINERS.splice(
+        gainersListData.idx,
+        1
+      ).push({
+        ...gainersListData.token,
+        ...token
+      });
+      this.tokensStoreService.updateAllChainsTokensState(
+        newGainersList,
+        TOKEN_FILTERS.ALL_CHAINS_GAINERS
+      );
+    }
+
+    const losersListData = findIdxAndTokenInList(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_LOSERS,
+      token
+    );
+    if (gainersListData.idx !== -1) {
+      const newLosersList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_LOSERS.splice(
+        losersListData.idx,
+        1
+      ).push({
+        ...losersListData.token,
+        ...token
+      });
+      this.tokensStoreService.updateAllChainsTokensState(
+        newLosersList,
+        TOKEN_FILTERS.ALL_CHAINS_LOSERS
+      );
+    }
   }
 }

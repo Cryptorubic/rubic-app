@@ -16,8 +16,7 @@ import { AssetsSelectorStateService } from '../assets-selector-state/assets-sele
 import { SearchQueryService } from '../search-query-service/search-query.service';
 import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-
-type SelectorType = 'fromBlockchain' | 'toBlockchain';
+import { TOKEN_FILTERS } from '../../models/token-filters';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -48,25 +47,8 @@ export class AssetsSelectorService {
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this.assetsSelectorStateService.setFormType(context.formType);
 
-    const assetTypeKey =
-      this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    const fromBlockchain = this.swapFormService.inputValue.fromToken?.blockchain;
-    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
-    const userBlockchainName = this.walletConnectorService.network;
-    const userAvailableBlockchainName = blockchainsList.find(
-      chain => chain.name === userBlockchainName
-    )?.name;
-
-    const noChainInOpenedSelector =
-      (this.assetsSelectorStateService.formType === 'from' && !fromBlockchain) ||
-      (this.assetsSelectorStateService.formType === 'to' && !toBlockchain);
-
-    if (noChainInOpenedSelector) {
-      this.assetsSelectorStateService.setAssetType('allChains');
-    } else {
-      const assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
-      this.assetsSelectorStateService.setAssetType(assetType);
-    }
+    const assetType = this.getTokensListAssetType(this.assetsSelectorStateService.formType);
+    this.assetsSelectorStateService.setAssetType(assetType);
 
     this.assetsSelectorStateService.setSelectorListType('tokens');
     this.tokensStoreService.startBalanceCalculating(this.assetType);
@@ -136,19 +118,32 @@ export class AssetsSelectorService {
     return this.swapFormService.inputValue[assetTypeKey];
   }
 
-  private getTokenListChain(selectorType: SelectorType): BlockchainName | null {
-    const tokenKey = selectorType === 'fromBlockchain' ? 'fromToken' : 'toToken';
-    const oppositeTokenKey = selectorType === 'fromBlockchain' ? 'toToken' : 'fromToken';
-    const isTokenSelected = !!this.swapFormService.inputValue[tokenKey]?.blockchain;
-    const isOppositeTokenSelected = !!this.swapFormService.inputValue[oppositeTokenKey]?.blockchain;
+  private getTokensListAssetType(openedSelector: FormType): AssetType {
+    const openedToken = openedSelector === 'from' ? 'fromToken' : 'toToken';
+    const oppositeToken = openedSelector === 'from' ? 'toToken' : 'fromToken';
 
-    if (!isTokenSelected && isOppositeTokenSelected) {
-      return this.swapFormService.inputValue[oppositeTokenKey].blockchain;
-    }
-    if (isTokenSelected) {
-      return this.swapFormService.inputValue[tokenKey].blockchain;
+    const isTokenSelected = !!this.swapFormService.inputValue[openedToken]?.blockchain;
+    const isOppositeTokenSelected = !!this.swapFormService.inputValue[oppositeToken]?.blockchain;
+
+    if (isTokenSelected) return this.swapFormService.inputValue[openedToken].blockchain;
+    if (!isOppositeTokenSelected && !isTokenSelected) {
+      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+      return 'allChains';
     }
 
-    return null;
+    const userBlockchainName = this.walletConnectorService.network;
+    const userAvailableBlockchainName = blockchainsList.find(
+      chain => chain.name === userBlockchainName
+    )?.name;
+
+    if (userAvailableBlockchainName) return userAvailableBlockchainName;
+
+    if (!userAvailableBlockchainName && isOppositeTokenSelected) {
+      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS);
+      return 'allChains';
+    }
+
+    this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+    return 'allChains';
   }
 }
