@@ -26,7 +26,7 @@ export class ThemeService {
 
         this.document.documentElement.style.setProperty(
           '--app-background',
-          `url('assets/images/monad-promo/${fileName}.svg')`
+          `url('assets/images/monad-promo/${fileName}.webp')`
         );
       } else if (bgTheme === 'dark') {
         this.document.documentElement.style.setProperty('--app-background', '#282935');
