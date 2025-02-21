@@ -2,14 +2,39 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { DOCUMENT } from '@angular/common';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 export type Theme = 'dark' | 'light';
 
+export type MainBgTheme = 'dark' | 'light' | 'monad';
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
   private _theme$ = new BehaviorSubject<Theme>(this.store.getItem('RUBIC_THEME') || 'dark');
+
+  private _mainBgTheme$ = new BehaviorSubject<MainBgTheme>(this.theme);
+
+  public mainBgTheme$ = this._mainBgTheme$.asObservable();
+
+  public setMainBgTheme(bgTheme: MainBgTheme): void {
+    if (bgTheme !== this._mainBgTheme$.getValue()) {
+      this._mainBgTheme$.next(bgTheme);
+
+      if (bgTheme === 'monad') {
+        const fileName = this.headerStore.isMobile ? 'monad-testnet-mb-bg' : 'monad-testnet-bg';
+
+        this.document.documentElement.style.setProperty(
+          '--app-background',
+          `url('assets/images/monad-promo/${fileName}.webp')`
+        );
+      } else if (bgTheme === 'dark') {
+        this.document.documentElement.style.setProperty('--app-background', '#282935');
+      } else {
+        this.document.documentElement.style.setProperty('--app-background', '#fff');
+      }
+    }
+  }
 
   get theme(): Theme {
     return this._theme$.getValue();
@@ -19,7 +44,11 @@ export class ThemeService {
     return this._theme$.asObservable();
   }
 
-  constructor(private readonly store: StoreService, @Inject(DOCUMENT) private document: Document) {
+  constructor(
+    private readonly store: StoreService,
+    @Inject(DOCUMENT) private document: Document,
+    private readonly headerStore: HeaderStore
+  ) {
     if (this._theme$.value !== 'dark') {
       this.switchDomClass();
     } else {

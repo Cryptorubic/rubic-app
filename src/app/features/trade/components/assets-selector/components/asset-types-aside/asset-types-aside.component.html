@@ -28,7 +28,10 @@
                 [tuiHint]="blockchainItem | functionCall : getBlockchainHintText : this"
                 (click)="onBlockchainSelect(blockchainItem.name)"
               >
-                <div class="icon-container">
+                <div
+                  class="icon-container"
+                  [ngClass]="{ 'monad-chain-bg': blockchainItem.label === 'Monad' }"
+                >
                   <img class="icon" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
                   <span class="icon-label">{{ blockchainItem.label }}</span>
                 </div>

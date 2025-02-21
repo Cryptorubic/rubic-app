@@ -8,6 +8,8 @@ import { Asset } from '@features/trade/models/asset';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
+import { ThemeService } from '@app/core/services/theme/theme.service';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 @Component({
   selector: 'app-token-selector-page',
@@ -27,7 +29,8 @@ export class TokenSelectorPageComponent {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly swapFormService: SwapsFormService,
     private readonly tradePageService: TradePageService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly themeService: ThemeService
   ) {
     this.formType = this.context?.data?.formType;
   }
@@ -54,6 +57,16 @@ export class TokenSelectorPageComponent {
           toToken: token,
           toBlockchain: token.blockchain
         });
+      }
+
+      const { fromToken, toToken } = this.swapFormService.inputValue;
+      if (
+        fromToken?.blockchain === BLOCKCHAIN_NAME.MONAD_TESTNET ||
+        toToken?.blockchain === BLOCKCHAIN_NAME.MONAD_TESTNET
+      ) {
+        this.themeService.setMainBgTheme('monad');
+      } else {
+        this.themeService.setMainBgTheme('dark');
       }
     }
     this.tradePageService.setState('form');

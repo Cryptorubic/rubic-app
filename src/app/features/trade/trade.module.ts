@@ -68,6 +68,8 @@ import { GasFormService } from './services/gas-form/gas-form.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.service';
+import { SoundsService } from './services/sounds-service/sounds.service';
+import { MonadSuccessSwapInfoComponent } from './components/monad-success-swap-info/monad-success-swap-info.component';
 
 @NgModule({
   declarations: [
@@ -99,7 +101,8 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     PromotionBadgeComponent,
     FormHeaderComponent,
     GasFormHintComponent,
-    GasFormTradeCalculationComponent
+    GasFormTradeCalculationComponent,
+    MonadSuccessSwapInfoComponent
   ],
   exports: [],
   imports: [
@@ -171,7 +174,8 @@ import { GasFormAnalyticService } from './services/gas-form/gas-form-analytic.se
     GasFormAnalyticService,
     TradeInfoManager,
     BlockchainsListService,
-    FormsTogglerService
+    FormsTogglerService,
+    SoundsService
     // SettingsService,
     // RefreshService,
     // TradeService,

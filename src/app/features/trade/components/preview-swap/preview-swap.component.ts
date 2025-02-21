@@ -54,6 +54,14 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly nativeToken$ = this.swapsFormService.nativeToken$;
 
+  public readonly isMonadTrade$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(
+      tradeState =>
+        tradeState.trade.from.blockchain === BLOCKCHAIN_NAME.MONAD_TESTNET ||
+        tradeState.trade.to.blockchain === BLOCKCHAIN_NAME.MONAD_TESTNET
+    )
+  );
+
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
       map(chain => mevBotSupportedBlockchains.some(mevBotChain => mevBotChain === chain))

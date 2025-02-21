@@ -12,7 +12,6 @@ import {
   switchMap,
   tap
 } from 'rxjs/operators';
-import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
@@ -20,7 +19,6 @@ import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
@@ -63,6 +61,8 @@ import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-cont
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
+import { SoundsService } from '../sounds-service/sounds.service';
+import { SoundEvent } from '../sounds-service/constants/sounds-config';
 
 @Injectable()
 export class SwapsControllerService {
@@ -86,19 +86,18 @@ export class SwapsControllerService {
 
   constructor(
     private readonly swapFormService: SwapsFormService,
-    private readonly sdkService: SdkService,
     private readonly crossChainService: CrossChainService,
     private readonly onChainService: OnChainService,
     private readonly swapsStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly tradePageService: TradePageService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly soundService: SoundsService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -304,6 +303,8 @@ export class SwapsControllerService {
         return;
       }
 
+      this.soundService.playSound(SoundEvent.ON_SWAP_START, trade.from.blockchain);
+
       if (trade instanceof CrossChainTrade) {
         txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
       } else {
@@ -344,6 +345,8 @@ export class SwapsControllerService {
     } else {
       await this.handleOnChainSwapResponse(txHash, callback.onSwap);
     }
+
+    this.soundService.playSound(SoundEvent.ON_SWAP_FINISHED, trade.from.blockchain);
   }
 
   public async approve(

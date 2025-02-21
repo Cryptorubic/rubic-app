@@ -1,0 +1,94 @@
+@use 'src/scss/core' as *;
+
+.banner {
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  height: 57px;
+  max-height: 57px;
+  overflow: hidden;
+
+  text-decoration: none;
+
+  background-image: url('/assets/banner/banner-monad-testnet.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @include hide-unused-ui {
+    display: none;
+  }
+
+  &__container {
+    position: relative;
+    z-index: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: fit-content;
+  }
+
+  &__text {
+    @include font(20px, 140%, 300, #ffffff);
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    &_green {
+      color: var(--tui-primary);
+    }
+  }
+
+  &__mobile-br {
+    display: none;
+  }
+}
+
+@include b($tablet) {
+  .banner {
+    &__text {
+      font-size: 18px;
+    }
+  }
+}
+
+@include b($mobile-md) {
+  .banner {
+    padding: 0 20px;
+
+    background-image: url('/assets/banner/banner-monad-testnet-mb.png');
+
+    &__container {
+      justify-content: start;
+      width: 100%;
+    }
+
+    &__text {
+      @include font(16px, 1, 400, #ffffff);
+
+      display: block;
+      max-width: 280px;
+
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      text-align: left;
+    }
+  }
+}
+
+@include b(460) {
+  .banner {
+    height: 49px;
+
+    &__text {
+      font-size: 12px;
+    }
+
+    &__mobile-br {
+      display: block;
+    }
+  }
+}
