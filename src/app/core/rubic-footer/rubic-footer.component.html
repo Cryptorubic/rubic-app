@@ -1,4 +1,21 @@
 <footer class="rubic-footer">
+  <ng-container *ngLet="isMonaBgTheme$ | async as monadBg">
+    <img
+      src="assets/images/left-tower.svg"
+      class="rubic-footer__tower-left"
+      [@showTowerLeft]="monadBg"
+    />
+    <img
+      src="assets/images/right-tower.svg"
+      class="rubic-footer__tower-right"
+      [@showTowerRight]="monadBg"
+    />
+    <img
+      src="assets/images/molandak.svg"
+      class="rubic-footer__molandak-image"
+      [@showFigure]="monadBg"
+    />
+  </ng-container>
   <nav class="rubic-footer__nav">
     <a
       *ngFor="let link of footerLinks"

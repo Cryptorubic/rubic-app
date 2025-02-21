@@ -12,6 +12,8 @@ import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/model
 import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
+import { SoundsService } from '@app/features/trade/services/sounds-service/sounds.service';
+import { SoundEvent } from '@app/features/trade/services/sounds-service/constants/sounds-config';
 
 @Component({
   selector: 'app-tokens-list',
@@ -55,7 +57,8 @@ export class TokensListComponent {
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly soundService: SoundsService
   ) {}
 
   /**
@@ -72,6 +75,7 @@ export class TokensListComponent {
     this.mobileNativeService.forceClose();
 
     if (token.available) {
+      this.soundService.playSound(SoundEvent.ON_TOKEN_SELECT, token.blockchain);
       this.assetsSelectorService.onAssetSelect(token);
     }
   }

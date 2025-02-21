@@ -14,6 +14,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { GasFormService } from '@app/features/trade/services/gas-form/gas-form.service';
 import { MAIN_FORM_TYPE } from '@app/features/trade/services/forms-toggler/models';
+import { SoundsService } from '@app/features/trade/services/sounds-service/sounds.service';
+import { SoundEvent } from '@app/features/trade/services/sounds-service/constants/sounds-config';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -61,7 +63,8 @@ export class AssetTypesAsideComponent {
     private readonly modalService: ModalService,
     private readonly formsTogglerService: FormsTogglerService,
     private readonly gasFormService: GasFormService,
-    @Inject(Injector) private readonly injector: Injector
+    @Inject(Injector) private readonly injector: Injector,
+    private readonly soundService: SoundsService
   ) {}
 
   private getBlockchainsListForLandingIframe(): AvailableBlockchain[] {
@@ -176,6 +179,7 @@ export class AssetTypesAsideComponent {
   }
 
   public onBlockchainSelect(blockchainName: BlockchainName): void {
+    this.soundService.playSound(SoundEvent.ON_CHAIN_SELECT, blockchainName);
     this.assetsSelectorService.onBlockchainSelect(blockchainName);
   }
 

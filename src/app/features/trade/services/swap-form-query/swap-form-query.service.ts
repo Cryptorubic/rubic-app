@@ -2,7 +2,14 @@ import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { catchError, distinctUntilChanged, first, map, pairwise, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  EvmWeb3Pure,
+  Web3Pure
+} from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';
@@ -21,6 +28,7 @@ import {
   DefaultParametersTo
 } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -38,7 +46,8 @@ export class SwapFormQueryService {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly themeService: ThemeService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -104,6 +113,13 @@ export class SwapFormQueryService {
       .pipe(
         switchMap(tokens => {
           const queryParams = this.queryParamsService.queryParams;
+
+          if (
+            queryParams.fromChain === BLOCKCHAIN_NAME.MONAD_TESTNET ||
+            queryParams.toChain === BLOCKCHAIN_NAME.MONAD_TESTNET
+          ) {
+            this.themeService.setMainBgTheme('monad');
+          }
           const protectedParams = this.getProtectedSwapParams(queryParams);
 
           const fromBlockchain = protectedParams.fromChain as BlockchainName;

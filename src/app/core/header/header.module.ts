@@ -47,6 +47,7 @@ import { ProfileMenuTogglerComponent } from '@core/header/components/header/comp
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
 import { BannerTaikoComponent } from './components/header/components/banner-taiko/banner-taiko.component';
 import { BannerBirthdayComponent } from '@core/header/components/header/components/banner-bday/banner-birthday.component';
+import { BannerMonadTestnetComponent } from './components/header/components/banner-monad-testnet/banner-monad-testnet.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { BannerBirthdayComponent } from '@core/header/components/header/componen
     ProfileMenuTogglerComponent,
     HistoryButtonComponent,
     BannerTaikoComponent,
-    BannerBirthdayComponent
+    BannerBirthdayComponent,
+    BannerMonadTestnetComponent
   ],
   imports: [
     CommonModule,

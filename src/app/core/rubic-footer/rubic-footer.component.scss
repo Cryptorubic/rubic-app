@@ -1,9 +1,14 @@
 @use 'src/scss/core' as *;
 
+:host {
+  position: relative;
+}
+
 .rubic-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 20px;
   margin-bottom: 60px;
   padding: 0 20px;
 
@@ -12,6 +17,41 @@
   @include hide-unused-ui {
     display: none;
   }
+
+  &__molandak-image {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    width: 40vw;
+
+    user-select: none;
+    pointer-events: none;
+  }
+
+  &__tower-left {
+    position: absolute;
+    bottom: 105px;
+    left: 0;
+
+    width: 50vw;
+
+    user-select: none;
+    pointer-events: none;
+  }
+
+  &__tower-right {
+    position: absolute;
+    right: 0;
+    bottom: 105px;
+
+    width: 50vw;
+
+    user-select: none;
+    pointer-events: none;
+  }
+
+
 
   &__nav {
     display: flex;

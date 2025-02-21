@@ -5,11 +5,32 @@ import { DOCUMENT } from '@angular/common';
 
 export type Theme = 'dark' | 'light';
 
+export type MainBgTheme = 'dark' | 'light' | 'monad';
 @Injectable({
   providedIn: 'root'
 })
 export class ThemeService {
   private _theme$ = new BehaviorSubject<Theme>(this.store.getItem('RUBIC_THEME') || 'dark');
+
+  private _mainBgTheme$ = new BehaviorSubject<MainBgTheme>(this.theme);
+
+  public mainBgTheme$ = this._mainBgTheme$.asObservable();
+
+  public setMainBgTheme(bgTheme: MainBgTheme): void {
+    if (bgTheme !== this._mainBgTheme$.getValue()) {
+      this._mainBgTheme$.next(bgTheme);
+      if (bgTheme === 'monad') {
+        this.document.documentElement.style.setProperty(
+          '--app-background',
+          `url('assets/images/monad-testnet-bg.svg')`
+        );
+      } else if (bgTheme === 'dark') {
+        this.document.documentElement.style.setProperty('--app-background', '#282935');
+      } else {
+        this.document.documentElement.style.setProperty('--app-background', '#fff');
+      }
+    }
+  }
 
   get theme(): Theme {
     return this._theme$.getValue();

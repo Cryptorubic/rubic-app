@@ -6,13 +6,13 @@ import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { ThemeService } from './core/services/theme/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -22,16 +22,18 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 export class AppComponent implements AfterViewInit {
   public isBackendAvailable: boolean;
 
+  public bgTheme$ = this.themeService.mainBgTheme$;
+
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly gtmService: GoogleTagManagerService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly themeService: ThemeService
   ) {
     this.printTimestamp();
     this.setupLanguage();
