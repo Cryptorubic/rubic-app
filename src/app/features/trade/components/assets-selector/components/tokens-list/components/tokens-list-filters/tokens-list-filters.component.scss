@@ -11,6 +11,13 @@
     padding: 5px;
 
     background-color: var(--io-background);
+
+    @include b($mobile-md) {
+      margin-top: 5px;
+
+      background-color: transparent;
+      border-radius: var(--tui-radius-m);
+    }
   }
 
   .filters-wrapper__next-btn,
