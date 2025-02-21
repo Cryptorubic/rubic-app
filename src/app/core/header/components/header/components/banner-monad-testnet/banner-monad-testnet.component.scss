@@ -57,9 +57,12 @@
 
 @include b($mobile-md) {
   .banner {
-    background-image: url('/assets/banner/birth-bg-mobile.png');
+    padding: 0 20px;
+
+    background-image: url('/assets/banner/banner-monad-testnet-mb.png');
 
     &__container {
+      justify-content: start;
       width: 100%;
     }
 
@@ -69,6 +72,7 @@
       display: block;
       max-width: 280px;
 
+      font-weight: bold;
       letter-spacing: 0.5px;
       text-align: left;
     }
@@ -87,19 +91,4 @@
       display: block;
     }
   }
-}
-
-.banner-button {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  margin-left: 16px;
-  padding: 6px 10px;
-
-  color: white;
-  font-weight: 500;
-
-  background: transparent;
-  border: 2px solid white;
-  border-radius: 20px;
 }
