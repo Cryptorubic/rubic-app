@@ -22,7 +22,7 @@ export class ThemeService {
       if (bgTheme === 'monad') {
         this.document.documentElement.style.setProperty(
           '--app-background',
-          `url('assets/images/monad-testnet-bg.svg')`
+          `url('assets/images/monad-promo/monad-testnet-bg.svg')`
         );
       } else if (bgTheme === 'dark') {
         this.document.documentElement.style.setProperty('--app-background', '#282935');

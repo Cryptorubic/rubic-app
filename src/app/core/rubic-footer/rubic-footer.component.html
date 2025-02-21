@@ -1,17 +1,17 @@
 <footer class="rubic-footer">
   <ng-container *ngLet="isMonaBgTheme$ | async as monadBg">
     <img
-      src="assets/images/left-tower.svg"
+      src="assets/images/monad-promo/left-tower.svg"
       class="rubic-footer__tower-left"
       [@showTowerLeft]="monadBg"
     />
     <img
-      src="assets/images/right-tower.svg"
+      src="assets/images/monad-promo/right-tower.svg"
       class="rubic-footer__tower-right"
       [@showTowerRight]="monadBg"
     />
     <img
-      src="assets/images/molandak.svg"
+      src="assets/images/monad-promo/molandak.svg"
       class="rubic-footer__molandak-image"
       [@showFigure]="monadBg"
     />

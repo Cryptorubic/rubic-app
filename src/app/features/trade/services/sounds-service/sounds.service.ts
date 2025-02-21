@@ -11,6 +11,7 @@ export class SoundsService {
       sound.play();
 
       setTimeout(() => sound.pause(), 3000);
+      sound.currentTime = 0;
     }
   }
 }
