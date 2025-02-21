@@ -25,9 +25,18 @@ export class AssetsSelectorStateService {
 
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
-  private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(TOKEN_FILTERS.ALL_TOKENS);
+  private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(
+    TOKEN_FILTERS.ALL_CHAINS_TRENDING
+  );
 
   public readonly tokenFilter$ = this._tokenFilter$.asObservable();
+
+  /**
+   * returns tokenFilter of allChains selector
+   */
+  public get tokenFilter(): TokenFilter {
+    return this._tokenFilter$.value;
+  }
 
   /**
    * blockchainName used for loading token's list

@@ -1,21 +1,11 @@
 <div class="element__route-container">
   <div class="element__assets-container">
-    <app-asset-selector
-      left
-      selectorType="from"
-      [asset]="route.from"
-      [mainFormType]="'swapForm'"
-    ></app-asset-selector>
+    <app-asset-selector left selectorType="from" [asset]="route.from"></app-asset-selector>
     <img
       class="element__assets-container_arrow-image"
       src="assets/images/icons/arrow/arrow-right-white.svg"
     />
-    <app-asset-selector
-      right
-      selectorType="to"
-      [asset]="route.to"
-      [mainFormType]="'swapForm'"
-    ></app-asset-selector>
+    <app-asset-selector right selectorType="to" [asset]="route.to"></app-asset-selector>
   </div>
   <button tuiButton type="button" appearance="primary" size="s" (click)="handleSelectedRoute()">
     Get

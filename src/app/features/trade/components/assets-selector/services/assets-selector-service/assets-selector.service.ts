@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
@@ -15,9 +14,9 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { TokensApiService } from '@app/core/services/backend/tokens-api/tokens-api.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import { SearchQueryService } from '../search-query-service/search-query.service';
+import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-
-type SelectorType = 'fromBlockchain' | 'toBlockchain';
+import { TOKEN_FILTERS } from '../../models/token-filters';
 
 @Injectable()
 export class AssetsSelectorService {
@@ -31,7 +30,7 @@ export class AssetsSelectorService {
 
   constructor(
     private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly tokensApiService: TokensApiService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
@@ -48,25 +47,8 @@ export class AssetsSelectorService {
   public initParameters(context: Omit<AssetsSelectorComponentInput, 'idPrefix'>): void {
     this.assetsSelectorStateService.setFormType(context.formType);
 
-    const assetTypeKey =
-      this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toBlockchain';
-    const fromBlockchain = this.swapFormService.inputValue.fromToken?.blockchain;
-    const toBlockchain = this.swapFormService.inputValue.toToken?.blockchain;
-    const userBlockchainName = this.walletConnectorService.network;
-    const userAvailableBlockchainName = blockchainsList.find(
-      chain => chain.name === userBlockchainName
-    )?.name;
-
-    const noChainInOpenedSelector =
-      (this.assetsSelectorStateService.formType === 'from' && !fromBlockchain) ||
-      (this.assetsSelectorStateService.formType === 'to' && !toBlockchain);
-
-    if (noChainInOpenedSelector && !this.authService.userAddress) {
-      this.assetsSelectorStateService.setAssetType('allChains');
-    } else {
-      const assetType = this.getTokenListChain(assetTypeKey) || userAvailableBlockchainName;
-      this.assetsSelectorStateService.setAssetType(assetType);
-    }
+    const assetType = this.getTokensListAssetType(this.assetsSelectorStateService.formType);
+    this.assetsSelectorStateService.setAssetType(assetType);
 
     this.assetsSelectorStateService.setSelectorListType('tokens');
     this.tokensStoreService.startBalanceCalculating(this.assetType);
@@ -74,7 +56,7 @@ export class AssetsSelectorService {
 
   private subscribeOnAssetChange(): void {
     this.assetType$.pipe(distinctUntilChanged(), takeUntil(this.destroy$)).subscribe(assetType => {
-      this.searchQueryService.query = '';
+      this.searchQueryService.setSearchQuery('');
       if (BlockchainsInfo.isBlockchainName(assetType)) {
         const assetKey =
           this.assetsSelectorStateService.formType === 'from' ? 'fromBlockchain' : 'toToken';
@@ -94,7 +76,7 @@ export class AssetsSelectorService {
 
   private checkAndRefetchTokenList(): void {
     if (this.tokensApiService.needRefetchTokens) {
-      this.tokensNetworkService.setTokensRequestParameters(undefined);
+      this.tokensNetworkStateService.setTokensRequestParameters(undefined);
     }
   }
 
@@ -136,19 +118,32 @@ export class AssetsSelectorService {
     return this.swapFormService.inputValue[assetTypeKey];
   }
 
-  private getTokenListChain(selectorType: SelectorType): BlockchainName | null {
-    const tokenKey = selectorType === 'fromBlockchain' ? 'fromToken' : 'toToken';
-    const oppositeTokenKey = selectorType === 'fromBlockchain' ? 'toToken' : 'fromToken';
-    const isTokenSelected = !!this.swapFormService.inputValue[tokenKey]?.blockchain;
-    const isOppositeTokenSelected = !!this.swapFormService.inputValue[oppositeTokenKey]?.blockchain;
+  private getTokensListAssetType(openedSelector: FormType): AssetType {
+    const openedToken = openedSelector === 'from' ? 'fromToken' : 'toToken';
+    const oppositeToken = openedSelector === 'from' ? 'toToken' : 'fromToken';
 
-    if (!isTokenSelected && isOppositeTokenSelected) {
-      return this.swapFormService.inputValue[oppositeTokenKey].blockchain;
-    }
-    if (isTokenSelected) {
-      return this.swapFormService.inputValue[tokenKey].blockchain;
+    const isTokenSelected = !!this.swapFormService.inputValue[openedToken]?.blockchain;
+    const isOppositeTokenSelected = !!this.swapFormService.inputValue[oppositeToken]?.blockchain;
+
+    if (isTokenSelected) return this.swapFormService.inputValue[openedToken].blockchain;
+    if (!isOppositeTokenSelected && !isTokenSelected) {
+      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+      return 'allChains';
     }
 
-    return null;
+    const userBlockchainName = this.walletConnectorService.network;
+    const userAvailableBlockchainName = blockchainsList.find(
+      chain => chain.name === userBlockchainName
+    )?.name;
+
+    if (userAvailableBlockchainName) return userAvailableBlockchainName;
+
+    if (!userAvailableBlockchainName && isOppositeTokenSelected) {
+      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS);
+      return 'allChains';
+    }
+
+    this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+    return 'allChains';
   }
 }

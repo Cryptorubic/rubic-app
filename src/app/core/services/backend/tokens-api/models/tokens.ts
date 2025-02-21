@@ -1,4 +1,3 @@
-import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
@@ -34,6 +33,13 @@ export interface BackendTokenForAllChains extends BackendToken {
   network_rank: number;
 }
 
+export interface RatedBackendToken extends BackendToken {
+  network: BlockchainName;
+  source_rank: number;
+  usdPriceChangePercentage24h: number;
+  usdPriceChangePercentage7d: number;
+}
+
 export interface TokensBackendResponse {
   readonly count: number;
   readonly next: string | null;
@@ -54,12 +60,6 @@ export interface TokensRequestQueryOptions {
 export interface TokensRequestNetworkOptions {
   readonly network: BlockchainName;
   readonly page: number;
-}
-
-export interface TokensListResponse {
-  total: number;
-  result: List<Token>;
-  next: string;
 }
 
 export const DEFAULT_PAGE_SIZE = 200;
