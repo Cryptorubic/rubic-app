@@ -31,13 +31,12 @@ import { TokenConvertersService } from './token-converters.service';
 })
 export class TokensStoreService {
   /**
-   * Current tokens list state.
+   * Common tokens list state for selectors of specific blockchain.
    */
   private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(List());
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
-  // private readonly _allChainsTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
   private readonly _allChainsTokens$ = new BehaviorSubject<AllChainsTokensLists>({
     ALL_CHAINS_ALL_TOKENS: List(),
     ALL_CHAINS_GAINERS: List(),
@@ -66,9 +65,6 @@ export class TokensStoreService {
     return this._tokens$.getValue();
   }
 
-  // public get allChainsTokens(): List<TokenAmount> {
-  //   return this._allChainsTokens$.getValue();
-  // }
   public get allChainsTokens(): AllChainsTokensLists {
     return this._allChainsTokens$.getValue();
   }
@@ -109,7 +105,6 @@ export class TokensStoreService {
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tokenConverters: TokenConvertersService
   ) {
-    // @TODO create tokens-state-srv
     this.balancePatcherFacade = new BalancePatcherFacade(
       this,
       assetsSelectorStateService,
@@ -343,15 +338,6 @@ export class TokensStoreService {
       const tokens = this.tokens.push(token);
       this._tokens$.next(tokens);
     }
-  }
-
-  /**
-   * Patches token in tokens list.
-   * @param token Token to patch.
-   */
-  public patchToken(token: TokenAmount): void {
-    const tokens = this.tokens.filter(t => !compareTokens(t, token)).push(token);
-    this._tokens$.next(tokens);
   }
 
   /**

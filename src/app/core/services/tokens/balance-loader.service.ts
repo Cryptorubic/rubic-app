@@ -232,7 +232,7 @@ export class BalanceLoaderService {
     }
   }
 
-  /* if EVM-address used -> it will fetch only evm address etc. */
+  /* if EVM-wallet used -> it will fetch only evm addresses etc. */
   private isChainSupportedByWallet(chain: BlockchainName): boolean {
     try {
       return BlockchainsInfo.getChainType(chain) === this.authService.userChainType;
