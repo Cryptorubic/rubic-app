@@ -158,19 +158,6 @@ c   * @param tokensNetworkKey Requested TokensNetworkStateKey.
     const page =
       this.tokensNetworkStateService.getNextPageCountForSpecificSelector(tokensNetworkKey);
 
-    // if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
-    //   return this.tokensApiService.fetchTokensByDailyRating(
-    //     page,
-    //     GAINERS_LOSERS_ORDER.GAINERS_24HRS
-    //   );
-    // }
-    // if (tokensNetworkKey === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
-    //   return this.tokensApiService.fetchTokensByDailyRating(
-    //     page,
-    //     GAINERS_LOSERS_ORDER.LOSERS_24HRS
-    //   );
-    // }
-
     return this.tokensApiService.fetchSpecificBackendTokens({
       network: tokensNetworkKey,
       page

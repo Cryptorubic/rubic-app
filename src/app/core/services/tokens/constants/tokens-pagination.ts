@@ -16,6 +16,4 @@ export const TOKENS_PAGINATION: TokensNetworkState = {
   [BLOCKCHAIN_NAME.SOLANA]: { ...defaultState },
   [BLOCKCHAIN_NAME.NEAR]: { ...defaultState },
   [BLOCKCHAIN_NAME.TELOS]: { ...defaultState }
-  // [TOKEN_FILTERS.ALL_CHAINS_GAINERS]: { ...defaultState },
-  // [TOKEN_FILTERS.ALL_CHAINS_LOSERS]: { ...defaultState }
 };
