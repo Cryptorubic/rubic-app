@@ -13,7 +13,7 @@ export const soundsConfig: SoundConfig = {
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: {
     ON_CHAIN_SELECT: new Audio(`${basePath}select-chain.mp3`),
     ON_TOKEN_SELECT: new Audio(`${basePath}select-token.mp3`),
-    ON_SWAP_FINISHED: new Audio(`${basePath}start-swap.mp3`),
-    ON_SWAP_START: new Audio(`${basePath}finish-swap.mp3`)
+    ON_SWAP_FINISHED: new Audio(`${basePath}finish-swap.mp3`),
+    ON_SWAP_START: new Audio(`${basePath}start-swap.mp3`)
   }
 };
