@@ -3,7 +3,7 @@ import { TokenAmountWithPriceChange } from '@app/shared/models/tokens/available-
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { List } from 'immutable';
 
-export type TokenListToPatch = 'tokens$' | 'allChainsTokens$';
+export type TokenListToPatch = 'commonTokens' | 'allChainsTokens';
 
 export type AllChainsTokensLists = {
   ALL_CHAINS_ALL_TOKENS: List<TokenAmount>;

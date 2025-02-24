@@ -54,7 +54,7 @@ export class TokensNetworkService {
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
           this.balancePatcherFacade.addNewTokensToList(backendTokens, {
-            tokenListToPatch: 'tokens$'
+            tokenListToPatch: 'commonTokens'
           });
         }),
         switchMap(backendTokens => {
@@ -93,7 +93,7 @@ export class TokensNetworkService {
         newAddedTokens
       );
       this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
-        tokenListToPatch: 'tokens$'
+        tokenListToPatch: 'commonTokens'
       });
     }
   }
@@ -148,7 +148,7 @@ c   * @param tokensNetworkKey Requested TokensNetworkStateKey.
       )
       .subscribe((tokens: TokenAmount[]) => {
         this.balancePatcherFacade.addNewTokensToList(List(tokens), {
-          tokenListToPatch: 'tokens$'
+          tokenListToPatch: 'commonTokens'
         });
         this.tokensUpdaterService.triggerUpdateTokens();
       });

@@ -59,7 +59,7 @@ export class BalancePatcherFacade {
   private getTokensListAndListUpdaterByAsset(
     options: PatchingFuncOptions
   ): EntitiesForAddingNewTokens {
-    if (options.tokenListToPatch === 'tokens$') {
+    if (options.tokenListToPatch === 'commonTokens') {
       return {
         tokensList: this.tokensStoreService.tokens,
         updateListSubject: this.tokensStoreService.updateCommonTokensState.bind(
@@ -68,9 +68,8 @@ export class BalancePatcherFacade {
       };
     }
 
-    // @FIX check if it works
     if (
-      options.tokenListToPatch === 'allChainsTokens$' &&
+      options.tokenListToPatch === 'allChainsTokens' &&
       this.assetsSelectorStateService.assetType === 'allChains'
     ) {
       const tokenFilter =
@@ -121,7 +120,7 @@ export class BalancePatcherFacade {
     tokensWithBalances: List<TokenAmount>,
     options: PatchingFuncOptions
   ): void {
-    if (options.tokenListToPatch === 'allChainsTokens$') {
+    if (options.tokenListToPatch === 'allChainsTokens') {
       this.patchAllChainsTokensBalances(tokensWithBalances, options.allChainsFilterToPatch);
     } else {
       this.patchCommonTokensBalances(tokensWithBalances);

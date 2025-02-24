@@ -233,7 +233,7 @@ export class TokensStoreService {
     if (assetType === 'allChains') {
       const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
         this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
-          tokenListToPatch: 'allChainsTokens$',
+          tokenListToPatch: 'allChainsTokens',
           allChainsFilterToPatch: options.allChainsFilterToPatch
         });
         this.tokensUpdaterService.triggerUpdateTokens();
@@ -241,7 +241,7 @@ export class TokensStoreService {
       // patches all tokens from allchains to common list to show them also in chains selectors
       const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
         this.balancePatcherFacade.addNewTokensToList(allChainsTokensWithBalances, {
-          tokenListToPatch: 'tokens$'
+          tokenListToPatch: 'commonTokens'
         });
         this.tokensUpdaterService.triggerUpdateTokens();
       };
@@ -255,7 +255,7 @@ export class TokensStoreService {
     } else {
       const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
         this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
-          tokenListToPatch: 'tokens$'
+          tokenListToPatch: 'commonTokens'
         });
         this.tokensUpdaterService.triggerUpdateTokens();
       };
