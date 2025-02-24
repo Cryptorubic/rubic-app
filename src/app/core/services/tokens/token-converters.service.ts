@@ -43,6 +43,11 @@ export class TokenConvertersService {
   ): Map<TokenAddress, TokenAmount> {
     const tokensWithBalancesMap = new Map<TokenAddress, TokenAmount>();
     tokensWithBalances.forEach((t: TokenAmount | Token) => {
+      if (t.symbol === 'AVAX')
+        console.log('%cAVAX_KEY ==> ', 'color: orange; font-size: 20px;', {
+          key: this.getTokenKeyInMap(t),
+          token: t
+        });
       if (isTokenAmount(t)) {
         tokensWithBalancesMap.set(this.getTokenKeyInMap(t), t);
       } else {

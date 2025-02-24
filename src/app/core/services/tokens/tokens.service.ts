@@ -117,19 +117,19 @@ export class TokensService {
             );
           }
           return of(tokenPrice);
-        }),
-        tap(tokenPrice => {
-          if (tokenPrice) {
-            const foundToken = this.tokensStoreService.tokens?.find(t => compareTokens(t, token));
-            if (foundToken) {
-              const newToken = {
-                ...foundToken,
-                price: tokenPrice.toNumber()
-              };
-              this.balancePatcherFacade.patchTokenInLists(newToken);
-            }
-          }
         })
+        // tap(tokenPrice => {
+        //   if (tokenPrice) {
+        //     const foundToken = this.tokensStoreService.tokens?.find(t => compareTokens(t, token));
+        //     if (foundToken) {
+        //       const newToken = {
+        //         ...foundToken,
+        //         price: tokenPrice.toNumber()
+        //       };
+        //       this.balancePatcherFacade.patchTokenInLists(newToken);
+        //     }
+        //   }
+        // })
       )
     );
   }
