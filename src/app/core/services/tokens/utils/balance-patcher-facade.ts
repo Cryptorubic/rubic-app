@@ -8,6 +8,7 @@ import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/mo
 import { TokenConvertersService } from '../token-converters.service';
 import { PatchingFuncOptions } from '../models/all-chains-tokens';
 import { findIdxAndTokenInList } from './find-idx-and-token-in-list';
+import { compareTokens } from '@app/shared/utils/utils';
 
 export class BalancePatcherFacade {
   constructor(
@@ -199,12 +200,10 @@ export class BalancePatcherFacade {
       ? TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
       : this.assetsSelectorStateService.tokenFilter;
     const allChainsTokensByFilter = this.tokensStoreService.allChainsTokens[allChainsFilter];
-    const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
+    // const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);
 
     const updatedTokens = allChainsTokensByFilter.map(token => {
-      const foundTokenWithBalance = tokensWithBalancesMap.get(
-        this.tokenConverters.getTokenKeyInMap(token)
-      );
+      const foundTokenWithBalance = tokensWithBalances.find(t => compareTokens(token, t));
 
       if (!foundTokenWithBalance) {
         return token;

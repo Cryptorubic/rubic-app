@@ -236,11 +236,11 @@ export class TokensStoreService {
           patchAllTokensInAllChains:
             options.allChainsFilterToPatch === TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
         });
-        console.log(
-          '%cLOADED_BALANCES ==>',
-          'color:aqua; font-size: 20px;',
-          tokensWithBalances.toArray()
-        );
+        // console.log(
+        //   '%cLOADED_BALANCES ==>',
+        //   'color:aqua; font-size: 20px;',
+        //   tokensWithBalances.toArray()
+        // );
         this.tokensUpdaterService.triggerUpdateTokens();
       };
       // patches all tokens from allchains to common list to show them also in chains selectors
