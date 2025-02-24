@@ -86,9 +86,9 @@ export class OnChainService {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     return forkJoin([
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
+      this.tokensService.getTokenPrice(fromToken, true),
       PriceToken.createToken(fromToken),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true),
+      this.tokensService.getTokenPrice(toToken, true),
       PriceToken.createToken(toToken)
     ]).pipe(
       switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
