@@ -92,7 +92,9 @@ export class TokensNetworkService {
       const tokensWithBalances = await this.balanceLoaderService.getTokensWithBalance(
         newAddedTokens
       );
-      this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances);
+      this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
+        tokenListToPatch: 'tokens$'
+      });
     }
   }
 
