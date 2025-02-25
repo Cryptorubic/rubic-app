@@ -1,13 +1,26 @@
-import { getWallets, Wallet } from '@mysten/wallet-standard';
+import {
+  getWallets,
+  Wallet,
+  WalletAccount,
+  IdentifierArray,
+  IdentifierRecord
+} from '@mysten/wallet-standard';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, fromEvent } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletNotInstalledError } from '@core/errors/models/provider/wallet-not-installed-error';
 import { FeatureName } from '@suiet/wallet-sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { SignRejectError } from '@core/errors/models/provider/sign-reject-error';
+
+interface WalletChange {
+  accounts: WalletAccount[];
+  chains: IdentifierArray;
+  features: IdentifierRecord<unknown>;
+}
 
 export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Wallet> {
   public readonly chainType = CHAIN_TYPE.SUI;
@@ -46,7 +59,12 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
 
       this.onNetworkChanges$.next(this.selectedChain);
       this.onAddressChanges$.next(this.selectedAddress);
+
+      this.initSubscriptionsOnChanges();
     } catch (err) {
+      if (err?.message.toLowerCase().includes('rejected the request')) {
+        throw new SignRejectError();
+      }
       console.error('[SuiDefaultAdapter] Activation error - ', err);
       throw err;
     }
@@ -64,5 +82,24 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
   public deactivate(): void {
     (this.wallet?.features['standard:disconnect'] as RubicAny)?.disconnect();
     super.deactivate();
+  }
+
+  private initSubscriptionsOnChanges(): void {
+    const eventEmitter = this.wallet.features['standard:events'] as RubicAny;
+    // To keep event emitter interface (on => {}, off => {})
+    eventEmitter.off = () => {};
+    this.onAddressChangesSub = fromEvent(eventEmitter, 'change').subscribe(
+      (changes: WalletChange) => {
+        console.log(changes.accounts);
+        if (!changes.accounts.length) {
+          super.deactivate();
+          return;
+        }
+        this.selectedAddress = changes.accounts?.[0].address || null;
+        this.zone.run(() => {
+          this.onAddressChanges$.next(this.selectedAddress);
+        });
+      }
+    );
   }
 }

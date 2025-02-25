@@ -2,7 +2,7 @@ import { AbstractSuiWalletAdapter } from '@core/services/wallets/wallets-adapter
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 export class SuietWalletAdapter extends AbstractSuiWalletAdapter {
-  public readonly walletName = WALLET_NAME.SUI_WALLET;
+  public readonly walletName = WALLET_NAME.SUIET_WALLET;
 
   public readonly extensionName = 'Suiet';
 }
