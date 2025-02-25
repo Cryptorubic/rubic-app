@@ -92,7 +92,7 @@ export class TokensService {
    * @param token Tokens to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public async getAndUpdateTokenPrice(
+  public async getTokenPrice(
     token: {
       address: string;
       blockchain: BlockchainName;
@@ -101,34 +101,14 @@ export class TokensService {
   ): Promise<BigNumber | null> {
     return firstValueFrom(
       from(Injector.coingeckoApi.getTokenPrice(token)).pipe(
-        map(tokenPrice => {
-          if (tokenPrice) {
-            return tokenPrice;
-          }
-          return null;
-          // @TODO Uncomment after coingecko refactoring.
-          // const foundToken = this.tokens?.find(t => TokensService.compareTokens(t, token));
-          // return foundToken?.price;
-        }),
         switchMap(tokenPrice => {
-          if (!tokenPrice && searchBackend) {
+          if (tokenPrice) return of(tokenPrice);
+          if (searchBackend) {
             return this.fetchQueryTokens(token.address, token.blockchain).pipe(
               map(backendTokens => new BigNumber(backendTokens.get(0)?.price))
             );
           }
-          return of(tokenPrice);
-        }),
-        tap(tokenPrice => {
-          if (tokenPrice) {
-            const foundToken = this.tokensStoreService.tokens?.find(t => compareTokens(t, token));
-            if (foundToken) {
-              const newToken = {
-                ...foundToken,
-                price: tokenPrice.toNumber()
-              };
-              this.balancePatcherFacade.patchTokenInLists(newToken);
-            }
-          }
+          return of(null);
         })
       )
     );

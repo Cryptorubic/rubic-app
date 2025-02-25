@@ -233,20 +233,15 @@ export class TokensStoreService {
     if (assetType === 'allChains') {
       const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
         this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
-          patchAllTokensInAllChains:
-            options.allChainsFilterToPatch === TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+          tokenListToPatch: 'allChainsTokens',
+          allChainsFilterToPatch: options.allChainsFilterToPatch
         });
-        // console.log(
-        //   '%cLOADED_BALANCES ==>',
-        //   'color:aqua; font-size: 20px;',
-        //   tokensWithBalances.toArray()
-        // );
         this.tokensUpdaterService.triggerUpdateTokens();
       };
       // patches all tokens from allchains to common list to show them also in chains selectors
       const onFinish = (allChainsTokensWithBalances: List<TokenAmount>): void => {
         this.balancePatcherFacade.addNewTokensToList(allChainsTokensWithBalances, {
-          tokenListToPatch: 'tokens$'
+          tokenListToPatch: 'commonTokens'
         });
         this.tokensUpdaterService.triggerUpdateTokens();
       };
@@ -259,7 +254,9 @@ export class TokensStoreService {
       });
     } else {
       const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
-        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances);
+        this.balancePatcherFacade.patchDefaultTokensBalances(tokensWithBalances, {
+          tokenListToPatch: 'commonTokens'
+        });
         this.tokensUpdaterService.triggerUpdateTokens();
       };
       this.balanceLoaderService.updateBalancesForSpecificChain(

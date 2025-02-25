@@ -4,7 +4,10 @@ import { TokensStoreService } from '../tokens-store.service';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { Token } from '@app/shared/models/tokens/token';
 import { EntitiesForAddingNewTokens } from '../models/balance-loading-types';
-import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
+import {
+  TOKEN_FILTERS,
+  TokenFilter
+} from '@app/features/trade/components/assets-selector/models/token-filters';
 import { TokenConvertersService } from '../token-converters.service';
 import { PatchingFuncOptions } from '../models/all-chains-tokens';
 import { findIdxAndTokenInList } from './find-idx-and-token-in-list';
@@ -56,7 +59,7 @@ export class BalancePatcherFacade {
   private getTokensListAndListUpdaterByAsset(
     options: PatchingFuncOptions
   ): EntitiesForAddingNewTokens {
-    if (options.tokenListToPatch === 'tokens$') {
+    if (options.tokenListToPatch === 'commonTokens') {
       return {
         tokensList: this.tokensStoreService.tokens,
         updateListSubject: this.tokensStoreService.updateCommonTokensState.bind(
@@ -65,9 +68,8 @@ export class BalancePatcherFacade {
       };
     }
 
-    // @FIX check if it works
     if (
-      options.tokenListToPatch === 'allChainsTokens$' &&
+      options.tokenListToPatch === 'allChainsTokens' &&
       this.assetsSelectorStateService.assetType === 'allChains'
     ) {
       const tokenFilter =
@@ -116,14 +118,10 @@ export class BalancePatcherFacade {
    */
   public patchDefaultTokensBalances(
     tokensWithBalances: List<TokenAmount>,
-    options: { patchAllTokensInAllChains?: boolean } = { patchAllTokensInAllChains: false }
+    options: PatchingFuncOptions
   ): void {
-    const hasDifferentChains = tokensWithBalances.some(
-      t => tokensWithBalances.get(0).blockchain !== t.blockchain
-    );
-
-    if (hasDifferentChains) {
-      this.patchAllChainsTokensBalances(tokensWithBalances, options);
+    if (options.tokenListToPatch === 'allChainsTokens') {
+      this.patchAllChainsTokensBalances(tokensWithBalances, options.allChainsFilterToPatch);
     } else {
       this.patchCommonTokensBalances(tokensWithBalances);
     }
@@ -193,10 +191,10 @@ export class BalancePatcherFacade {
   /* sets balances for tokens in _allChainsTokens$ list  */
   private patchAllChainsTokensBalances(
     tokensWithBalances: List<TokenAmount>,
-    options: { patchAllTokensInAllChains?: boolean } = { patchAllTokensInAllChains: false }
+    allChainsFilterToPatch?: TokenFilter
   ): void {
-    const allChainsFilter = options.patchAllTokensInAllChains
-      ? TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+    const allChainsFilter = allChainsFilterToPatch
+      ? allChainsFilterToPatch
       : this.assetsSelectorStateService.tokenFilter;
     const allChainsTokensByFilter = this.tokensStoreService.allChainsTokens[allChainsFilter];
     const tokensWithBalancesMap = this.tokenConverters.convertTokensListToMap(tokensWithBalances);

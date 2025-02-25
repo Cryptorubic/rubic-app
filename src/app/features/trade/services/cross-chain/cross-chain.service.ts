@@ -93,8 +93,8 @@ export class CrossChainService {
     // const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getTokenPrice(fromToken, true),
+      this.tokensService.getTokenPrice(toToken, true)
     ]).pipe(
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({

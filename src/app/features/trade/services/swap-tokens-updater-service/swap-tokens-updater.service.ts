@@ -59,10 +59,10 @@ export class SwapTokensUpdaterService {
 
     const update = () => {
       if (isMinimalToken(form.fromToken)) {
-        this.tokensService.getAndUpdateTokenPrice(form.fromToken);
+        this.tokensService.getTokenPrice(form.fromToken);
       }
       if (form.toToken) {
-        this.tokensService.getAndUpdateTokenPrice(form.toToken, true);
+        this.tokensService.getTokenPrice(form.toToken, true);
       }
     };
 
