@@ -24,6 +24,10 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { BalanceLoaderService } from './balance-loader.service';
 import { TokensUpdaterService } from './tokens-updater.service';
+import { BalancePatcherFacade } from './utils/balance-patcher-facade';
+import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TokenConvertersService } from './token-converters.service';
+import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -36,13 +40,23 @@ export class TokensService {
     return this.authService.userAddress;
   }
 
+  private readonly balancePatcherFacade: BalancePatcherFacade;
+
   constructor(
     private readonly tokensApiService: TokensApiService,
     private readonly authService: AuthService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoaderService: BalanceLoaderService,
-    private readonly tokensUpdaterService: TokensUpdaterService
-  ) {}
+    private readonly tokensUpdaterService: TokensUpdaterService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tokenConverters: TokenConvertersService
+  ) {
+    this.balancePatcherFacade = new BalancePatcherFacade(
+      this.tokensStoreService,
+      this.assetsSelectorStateService,
+      this.tokenConverters
+    );
+  }
 
   /**
    * Sets default image to token, in case original image has thrown error.
@@ -78,7 +92,7 @@ export class TokensService {
    * @param token Tokens to get price for.
    * @param searchBackend If true and token's price was not retrieved, then request to backend with token's params is sent.
    */
-  public async getAndUpdateTokenPrice(
+  public async getTokenPrice(
     token: {
       address: string;
       blockchain: BlockchainName;
@@ -87,34 +101,14 @@ export class TokensService {
   ): Promise<BigNumber | null> {
     return firstValueFrom(
       from(Injector.coingeckoApi.getTokenPrice(token)).pipe(
-        map(tokenPrice => {
-          if (tokenPrice) {
-            return tokenPrice;
-          }
-          return null;
-          // @TODO Uncomment after coingecko refactoring.
-          // const foundToken = this.tokens?.find(t => TokensService.compareTokens(t, token));
-          // return foundToken?.price;
-        }),
         switchMap(tokenPrice => {
-          if (!tokenPrice && searchBackend) {
+          if (tokenPrice) return of(tokenPrice);
+          if (searchBackend) {
             return this.fetchQueryTokens(token.address, token.blockchain).pipe(
               map(backendTokens => new BigNumber(backendTokens.get(0)?.price))
             );
           }
-          return of(tokenPrice);
-        }),
-        tap(tokenPrice => {
-          if (tokenPrice) {
-            const foundToken = this.tokensStoreService.tokens?.find(t => compareTokens(t, token));
-            if (foundToken) {
-              const newToken = {
-                ...foundToken,
-                price: tokenPrice.toNumber()
-              };
-              this.tokensStoreService.patchToken(newToken);
-            }
-          }
+          return of(null);
         })
       )
     );
@@ -142,22 +136,39 @@ export class TokensService {
 
     try {
       const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
-      const balanceInWei = Web3Pure[chainType].isNativeAddress(token.address)
-        ? await blockchainAdapter.getBalance(this.userAddress)
-        : await blockchainAdapter.getTokenBalance(this.userAddress, token.address);
+      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 
-      const foundToken = this.tokensStoreService.tokens.find(t => compareTokens(t, token));
-      if (!foundToken) {
-        return new BigNumber(NaN);
-      }
+      const foundTokenInCommonList = this.tokensStoreService.tokens.find(t =>
+        compareTokens(t, token)
+      );
+      const foundTokenInAllTokens = this.tokensStoreService.allChainsTokens[
+        TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+      ].find(t => compareTokens(t, token));
+      const foundTokenInTrending = this.tokensStoreService.allChainsTokens[
+        TOKEN_FILTERS.ALL_CHAINS_TRENDING
+      ].find(t => compareTokens(t, token));
+      const foundTokenInGainers = this.tokensStoreService.allChainsTokens[
+        TOKEN_FILTERS.ALL_CHAINS_GAINERS
+      ].find(t => compareTokens(t, token));
+      const foundTokenInLosers = this.tokensStoreService.allChainsTokens[
+        TOKEN_FILTERS.ALL_CHAINS_LOSERS
+      ].find(t => compareTokens(t, token));
+
+      const foundToken =
+        foundTokenInCommonList ||
+        foundTokenInAllTokens ||
+        foundTokenInTrending ||
+        foundTokenInGainers ||
+        foundTokenInLosers;
+
+      if (!foundToken) return new BigNumber(NaN);
+
       const balance = Web3Pure.fromWei(balanceInWei, foundToken.decimals);
-      if (!foundToken.amount.eq(balance)) {
-        const newToken = {
-          ...foundToken,
-          amount: balance
-        };
-        this.tokensStoreService.patchToken(newToken);
+      if (foundToken && !foundToken.amount.eq(balance)) {
+        const newToken = { ...foundToken, amount: balance };
+        this.balancePatcherFacade.patchTokenInLists(newToken);
       }
+
       return new BigNumber(balance);
     } catch (err) {
       console.debug(err);
@@ -280,10 +291,9 @@ export class TokensService {
     );
   }
 
-  public fetchQueryTokensDynamically(
+  public fetchQueryTokensDynamicallyAndPatch(
     query: string,
-    blockchain: BlockchainName | null,
-    patchLastQueriedTokensBalances: (tokensWithBalances: List<TokenAmount>) => void
+    blockchain: BlockchainName | null
   ): Observable<List<TokenAmount>> {
     return this.tokensApiService.fetchQueryTokens(query, blockchain).pipe(
       switchMap(backendTokens => {
@@ -292,27 +302,26 @@ export class TokensService {
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
 
-        return of(this.balanceLoaderService.getTokensWithNullBalances(filteredTokens, false));
+        return of(this.tokenConverters.getTokensWithNullBalances(filteredTokens, false));
       }),
       tap(tokensWithNullBalances => {
-        this.tokensStoreService.updateLastQueriedTokens(tokensWithNullBalances);
+        this.tokensStoreService.updateLastQueriedTokensState(tokensWithNullBalances);
 
-        const onBalanceLoaded = (tokensWithBalances: List<TokenAmount>) => {
-          patchLastQueriedTokensBalances(tokensWithBalances);
+        const onChainLoaded = (tokensWithBalances: List<TokenAmount>) => {
+          this.balancePatcherFacade.patchQueryTokensBalances(tokensWithBalances);
           this.tokensUpdaterService.triggerUpdateTokens({ skipRefetch: true });
         };
 
         // allChains
         if (!blockchain) {
-          this.balanceLoaderService.updateBalancesForAllChains(
-            tokensWithNullBalances,
-            onBalanceLoaded
-          );
+          this.balanceLoaderService.updateBalancesForAllChains(tokensWithNullBalances, {
+            onChainLoaded
+          });
         } else {
           this.balanceLoaderService.updateBalancesForSpecificChain(
             tokensWithNullBalances,
             blockchain,
-            onBalanceLoaded
+            onChainLoaded
           );
         }
       })

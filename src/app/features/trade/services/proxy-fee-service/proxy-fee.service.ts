@@ -40,20 +40,20 @@ export class ProxyFeeService {
     toToken: PriceToken
   ): Promise<string> {
     try {
+      const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
       const referral = this.sessionStorage.getItem('referral');
+
+      if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
+      }
+      if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
+      }
 
       if (referral) {
         const referralIntegrator = await this.getIntegratorByReferralName(referral);
 
         if (referralIntegrator) return referralIntegrator;
-      }
-
-      const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
-      if (fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) {
-        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
-      }
-      if (fromPriceAmount.lte(100)) {
-        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
       const fromType = this.getTokenType(fromToken);

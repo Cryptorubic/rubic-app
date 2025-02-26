@@ -16,6 +16,9 @@ import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
+import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { BalanceLoadingAssetData } from './models/balance-loading-types';
+import { TokenFilter } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { Iterable } from './utils/iterable';
 
 type TokensListOfTopChainsWithOtherChains = {
@@ -32,13 +35,17 @@ type TokensListOfTopChainsWithOtherChains = {
 export class BalanceLoaderService {
   constructor(
     private readonly authService: AuthService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {}
 
   public updateBalancesForAllChains(
     tokensList: List<TokenAmount | Token>,
-    onChainLoaded: (tokensWithBalances: List<TokenAmount>, patchAllChains: boolean) => void,
-    onFinish?: (allChainsTokensWithBalances: List<TokenAmount>) => void
+    options: {
+      allChainsFilterToPatch?: TokenFilter;
+      onChainLoaded: (tokensWithBalances: List<TokenAmount>) => void;
+      onFinish?: (allChainsTokensWithBalances: List<TokenAmount>) => void;
+    }
   ): void {
     //  can be empty when v2/tokens/allchains response lower then first startBalanceCalculating call in app.component.ts
     if (!tokensList.size) return;
@@ -61,19 +68,24 @@ export class BalanceLoaderService {
       }
     }
 
-    this.balanceLoadingStateService.setBalanceLoading('allChains', true);
+    const assetDataForBalanceStatus = {
+      assetType: this.assetsSelectorStateService.assetType,
+      tokenFilter: options.allChainsFilterToPatch ?? this.assetsSelectorStateService.tokenFilter
+    } as BalanceLoadingAssetData;
+
+    this.balanceLoadingStateService.setBalanceLoading(assetDataForBalanceStatus, true);
 
     const allTokensWithPositiveBalances = List([]).asMutable() as List<TokenAmount>;
     const chainsCount = Object.keys(tokensByChain).length;
     const iterator = new Iterable(chainsCount);
 
     // calls onFinish() when every chain from tokensByChain loaded tokens with balances
-    if (onFinish) {
+    if (options.onFinish) {
       (async () => {
         while (!iterator.done && !!this.authService.userAddress) {
           await waitFor(100);
         }
-        onFinish(allTokensWithPositiveBalances);
+        options.onFinish(allTokensWithPositiveBalances);
       })();
     }
 
@@ -113,11 +125,11 @@ export class BalanceLoaderService {
             allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
 
             if (balances.length) {
-              this.balanceLoadingStateService.setBalanceCalculated('allChains', true);
-              this.balanceLoadingStateService.setBalanceLoading('allChains', false);
+              this.balanceLoadingStateService.setBalanceCalculated(assetDataForBalanceStatus, true);
+              this.balanceLoadingStateService.setBalanceLoading(assetDataForBalanceStatus, false);
             }
 
-            onChainLoaded(tokensWithBalancesList, true);
+            options.onChainLoaded(tokensWithBalancesList);
           })
           .finally(() => iterator.next());
       } else {
@@ -145,21 +157,12 @@ export class BalanceLoaderService {
               })) as TokenAmount[]
             );
 
-            const tokensWithPositiveBalances = tokensWithBalancesList.filter(t => {
-              // not show 2nd metis native token in selector
-              // if (
-              //   t.blockchain === BLOCKCHAIN_NAME.METIS &&
-              //   compareAddresses(t.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
-              // ) {
-              //   return false;
-              // }
-              if (t.amount.isNaN() || t.amount.lte(0)) return false;
-
-              return false;
-            });
+            const tokensWithPositiveBalances = tokensWithBalancesList.filter(
+              t => !t.amount.isNaN() && t.amount.gt(0)
+            );
             allTokensWithPositiveBalances.concat(tokensWithPositiveBalances);
 
-            onChainLoaded(tokensWithBalancesList, true);
+            options.onChainLoaded(tokensWithBalancesList);
           })
           .finally(() => iterator.next());
       }
@@ -169,14 +172,14 @@ export class BalanceLoaderService {
   public async updateBalancesForSpecificChain(
     tokensList: List<Token>,
     blockchain: AssetType,
-    onFinish: (tokensWithBalances: List<TokenAmount>, userAddress: string | undefined) => void
+    onFinish: (tokensWithBalances: List<TokenAmount>) => void
   ): Promise<void> {
-    this.balanceLoadingStateService.setBalanceLoading(blockchain, true);
+    this.balanceLoadingStateService.setBalanceLoading({ assetType: blockchain }, true);
     const tokensWithBalances = await this.getTokensWithBalance(tokensList);
 
-    this.balanceLoadingStateService.setBalanceCalculated(blockchain, true);
-    this.balanceLoadingStateService.setBalanceLoading(blockchain, false);
-    onFinish(tokensWithBalances, this.authService.userAddress);
+    this.balanceLoadingStateService.setBalanceCalculated({ assetType: blockchain }, true);
+    this.balanceLoadingStateService.setBalanceLoading({ assetType: blockchain }, false);
+    onFinish(tokensWithBalances);
   }
 
   /**
@@ -229,20 +232,7 @@ export class BalanceLoaderService {
     }
   }
 
-  /**
-   * Sets default tokens params.
-   * @param tokens Tokens list.
-   * @param isFavorite Is tokens list favorite.
-   */
-  public getTokensWithNullBalances(tokens: List<Token>, isFavorite: boolean): List<TokenAmount> {
-    return tokens.map(token => ({
-      ...token,
-      amount: new BigNumber(NaN),
-      favorite: isFavorite
-    }));
-  }
-
-  /* if EVM-address used -> it will fetch only evm address etc. */
+  /* if EVM-wallet used -> it will fetch only evm addresses etc. */
   private isChainSupportedByWallet(chain: BlockchainName): boolean {
     try {
       return BlockchainsInfo.getChainType(chain) === this.authService.userChainType;

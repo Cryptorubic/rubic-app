@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, forkJoin, Observable, of } from 'rxjs';
+import { firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 
-import { Token } from '@shared/models/tokens/token';
+import { RatedToken, Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
@@ -10,14 +10,13 @@ import {
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
+  RatedBackendToken,
   TokensBackendResponse,
   TokenSecurityBackendResponse,
-  TokensListResponse,
   TokensRequestNetworkOptions,
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { TokensNetworkState } from 'src/app/shared/models/tokens/paginated-tokens';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
@@ -33,6 +32,7 @@ import {
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -47,7 +47,8 @@ export class TokensApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService
   ) {}
 
   /**
@@ -55,10 +56,13 @@ export class TokensApiService {
    * @param tokens Tokens from backend response.
    * @return List<Token> Useful tokens list.
    */
-  public static prepareTokens(tokens: BackendToken[]): List<Token> {
+  public static prepareTokens<T extends BackendToken = BackendToken, K extends Token = Token>(
+    tokens: T[]
+  ): List<K> {
     return List(
       tokens
-        .map(({ token_security, ...token }: BackendToken) => {
+        .map((token: T) => {
+          // @ts-ignore
           return {
             blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork as BackendBlockchain],
             address: token.address,
@@ -68,24 +72,19 @@ export class TokensApiService {
             image: token.image,
             rank: token.rank,
             price: token.usdPrice,
-            tokenSecurity: token_security,
-            type: token.type
-          };
+            tokenSecurity: token.token_security,
+            type: token.type,
+            ...('source_rank' in token && { sourceRank: token.source_rank }),
+            ...('usdPriceChangePercentage24h' in token && {
+              priceChange24h: token.usdPriceChangePercentage24h
+            }),
+            ...('usdPriceChangePercentage7d' in token && {
+              priceChange7d: token.usdPriceChangePercentage7d
+            })
+          } as K;
         })
         .filter(token => token.address && token.blockchain)
     );
-  }
-
-  /**
-   * Fetch specific tokens from backend.
-   * @param params Request params.
-   * @param tokensNetworkState$ Tokens pagination state.
-   * @return Observable<List<Token>> Tokens list.
-   */
-  public getTokensList(
-    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
-  ): Observable<List<Token>> {
-    return this.fetchBasicTokens(tokensNetworkState$);
   }
 
   /**
@@ -135,10 +134,9 @@ export class TokensApiService {
 
   /**
    * Fetches basic tokens from backend.
+   * Sets maxPage for each assetType of selector.
    */
-  private fetchBasicTokens(
-    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
-  ): Observable<List<Token>> {
+  public fetchBasicTokensOnPageInit(): Observable<List<Token>> {
     const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
     const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
 
@@ -149,10 +147,10 @@ export class TokensApiService {
           tap(networkTokens => {
             if (networkTokens?.results) {
               const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
-              tokensNetworkState$.next({
-                ...tokensNetworkState$.value,
+              const oldState = this.tokensNetworkStateService.tokensNetworkState;
+              this.tokensNetworkStateService.updateTokensNetworkState({
+                ...oldState,
                 [blockchain]: {
-                  ...tokensNetworkState$.value[blockchain],
                   page: options.page,
                   maxPage: Math.ceil(networkTokens.count / options.pageSize)
                 }
@@ -164,7 +162,8 @@ export class TokensApiService {
           })
         )
     );
-    requests$.push(this.fetchTokensFromOnePageBlockchains(tokensNetworkState$));
+    // @FIX add loading of gainers/losers
+    requests$.push(this.fetchTokensFromOnePageBlockchains());
 
     return forkJoin(requests$).pipe(
       map(results => {
@@ -180,18 +179,13 @@ export class TokensApiService {
 
         this.needRefetchTokens = false;
         const backendTokens = results.flatMap(el => el?.results || []);
-        const fakeTokens = this.getFakeTokens();
 
-        const allTokens = [...backendTokens, ...fakeTokens];
-
-        return TokensApiService.prepareTokens(allTokens);
+        return TokensApiService.prepareTokens(backendTokens);
       })
     );
   }
 
-  private fetchTokensFromOnePageBlockchains(
-    tokensNetworkState$: BehaviorSubject<TokensNetworkState>
-  ): Observable<TokensBackendResponse> {
+  private fetchTokensFromOnePageBlockchains(): Observable<TokensBackendResponse> {
     const blockchains = [...blockchainsWithOnePage];
     const backendBlockchains = blockchains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
     const queryString = backendBlockchains.join(',');
@@ -202,8 +196,9 @@ export class TokensApiService {
         tap(networkTokens => {
           if (networkTokens?.results) {
             blockchainsWithOnePage.forEach(blockchain => {
-              tokensNetworkState$.next({
-                ...tokensNetworkState$.value,
+              const oldState = this.tokensNetworkStateService.tokensNetworkState;
+              this.tokensNetworkStateService.updateTokensNetworkState({
+                ...oldState,
                 [blockchain]: {
                   page: 1,
                   maxPage: 1
@@ -271,11 +266,10 @@ export class TokensApiService {
   /**
    * Fetches specific network tokens from backend.
    * @param requestOptions Request options to get tokens by.
-   * @return Observable<TokensListResponse> Tokens response from backend with count.
    */
   public fetchSpecificBackendTokens(
     requestOptions: TokensRequestNetworkOptions
-  ): Observable<TokensListResponse> {
+  ): Observable<List<Token>> {
     const options = {
       network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
       page: requestOptions.page,
@@ -283,24 +277,19 @@ export class TokensApiService {
     };
     return this.httpService
       .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
-      .pipe(
-        map(tokensResponse => {
-          return {
-            total: tokensResponse.count,
-            result: TokensApiService.prepareTokens(tokensResponse.results),
-            next: tokensResponse.next
-          };
-        })
-      );
+      .pipe(map(tokensResponse => TokensApiService.prepareTokens(tokensResponse.results)));
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
     return forkJoin([
       this.httpService
-        .get<TokensBackendResponse>('v2/tokens/top')
+        .get<TokensBackendResponse>('v2/tokens/top', {}, '', { retry: 2, timeoutMs: 15_000 })
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
       this.httpService
-        .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .get<BackendTokenForAllChains[]>('v2/tokens/allchains', {}, '', {
+          retry: 2,
+          timeoutMs: 15_000
+        })
         .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
     ]).pipe(
       map(([topTokens, allChainsTokens]) => {
@@ -313,6 +302,7 @@ export class TokensApiService {
           ) {
             return acc;
           }
+
           const repeated = acc.find(t => compareTokens(t, token));
           return repeated ? acc : acc.push(token);
         }, List() as List<Token>);
@@ -320,7 +310,40 @@ export class TokensApiService {
     );
   }
 
-  public getFakeTokens(): BackendToken[] {
-    return [];
+  public fetchTrendTokens(): Observable<List<RatedToken>> {
+    return this.httpService
+      .get<RatedBackendToken[]>('v2/tokens/trending', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(backendTokens =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
+  }
+
+  public fetchGainersTokens(): Observable<List<RatedToken>> {
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/gainers', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
+  }
+
+  public fetchLosersTokens(): Observable<List<RatedToken>> {
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/losers', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of(List() as List<RatedToken>))
+      );
   }
 }
