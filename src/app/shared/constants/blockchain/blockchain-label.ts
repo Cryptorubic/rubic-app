@@ -153,5 +153,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal',
   [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
   [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
+  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad'
 };
