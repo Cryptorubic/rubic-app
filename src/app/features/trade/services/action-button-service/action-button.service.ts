@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, ChangenowCrossChainTrade } from 'rubic-sdk';
+import { BlockchainsInfo, CrossChainTransferTrade } from 'rubic-sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -47,8 +47,8 @@ export class ActionButtonService {
     this.tradePageService.setState('preview');
   }
 
-  private swapCn(): void {
-    this.tradePageService.setState('cnPreview');
+  private deposit(): void {
+    this.tradePageService.setState('depositPreview');
   }
 
   private connectWallet(): void {
@@ -97,8 +97,8 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-    const isCnFromNonEvm =
-      currentTrade.trade instanceof ChangenowCrossChainTrade &&
+    const isTransferFromNonEvm =
+      currentTrade.trade instanceof CrossChainTransferTrade &&
       !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
     if (
@@ -111,11 +111,11 @@ export class ActionButtonService {
         const trulyAddress = Boolean(receiverAddress);
 
         if (isReceiverValid && trulyAddress) {
-          if (isCnFromNonEvm) {
+          if (isTransferFromNonEvm) {
             return {
               type: 'action',
               text: 'Preview swap',
-              action: this.swapCn.bind(this)
+              action: this.deposit.bind(this)
             };
           }
           return {

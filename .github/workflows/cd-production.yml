@@ -62,13 +62,13 @@ jobs:
           done
 
       - name: Show changes
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Changes
           path: files.txt
 
       - name: Upload to storage
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Build
           path: dist/

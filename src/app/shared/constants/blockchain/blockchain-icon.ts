@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const basePath = 'assets/images/icons/coins/';
 
@@ -149,4 +149,8 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITLAYER]: `${basePath}bitlayer.svg`,
   [BLOCKCHAIN_NAME.GRAVITY]: `${basePath}gravity.svg`,
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: `${basePath}unichain-testnet.svg`
+  // [BLOCKCHAIN_NAME.SONIC]: `${basePath}sonic.svg`,
+  // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: `${basePath}soneium-testnet.webp`,
+  // [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.svg`,
+  // [BLOCKCHAIN_NAME.FRAXTAL]: `${basePath}fraxtal.svg`
 };

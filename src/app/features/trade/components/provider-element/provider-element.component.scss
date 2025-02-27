@@ -166,11 +166,27 @@
     gap: var(--tui-padding-xs);
     align-items: flex-end;
   }
+
+  &__expandable {
+    @include flex(column, normal, normal);
+    margin-top: var(--tui-padding-s);
+
+    &-status {
+      @include flex(row, center, normal);
+      gap: 7px;
+
+      
+      &-text {
+        color: var(--tui-text-03);
+        line-height: 10px;
+      }
+    }
+  }
 }
 
 app-route-element {
   display: block;
-  margin-top: var(--tui-padding-l);
+  // margin-top: var(--tui-padding-s);
 }
 
 @include b($mobile-md) {

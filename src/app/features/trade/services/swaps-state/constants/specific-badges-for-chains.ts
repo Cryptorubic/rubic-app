@@ -2,6 +2,7 @@ import { BadgeInfo } from '@app/features/trade/models/trade-state';
 import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 import {
   showScrollMarksPromoLabel,
+  showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
 
@@ -16,6 +17,16 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
       getHint: () =>
         'Double RBC points for all transactions and 1 Nova point for every transaction.',
       showLabel: showZkLinkPointsLabel
+    }
+  ],
+  [BLOCKCHAIN_NAME.TAIKO]: [
+    {
+      bgColor: '#d112c5',
+      fromSdk: false,
+      getHint: () =>
+        'Join Taiko Trailblazers, earn XPs on all swaps with Taiko & get a potential $TKO airdrop with Rubic.',
+      getLabel: () => '+Points!',
+      showLabel: showTaikoPointsPromoLabel
     }
   ],
   [BLOCKCHAIN_NAME.SCROLL]: [

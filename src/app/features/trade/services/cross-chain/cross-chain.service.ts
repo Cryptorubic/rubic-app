@@ -6,8 +6,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  ChangenowCrossChainTrade,
-  ChangenowPaymentInfo,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   EvmBasicTransactionOptions,
@@ -51,6 +49,7 @@ import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { RefundService } from '../refund-service/refund.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
 
 @Injectable()
@@ -81,7 +80,8 @@ export class CrossChainService {
     private readonly gtmService: GoogleTagManagerService,
     private readonly gasService: GasService,
     private readonly proxyService: ProxyFeeService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly refundService: RefundService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -116,7 +116,8 @@ export class CrossChainService {
     };
 
     SdkInjector.rubicApiService.calculateAsync({
-      calculationTimeout: 30,
+      calculationTimeout: 60,
+      showDangerousRoutes: true,
       ...tradeParams,
       ...options
     });
@@ -188,17 +189,6 @@ export class CrossChainService {
     }
   }
 
-  public async getChangenowPaymentInfo(
-    trade: ChangenowCrossChainTrade
-  ): Promise<{ paymentInfo: ChangenowPaymentInfo; receiverAddress: string }> {
-    const receiverAddress = this.receiverAddress;
-    const paymentInfo = await trade.getChangenowPostTrade(receiverAddress);
-    return {
-      paymentInfo,
-      receiverAddress
-    };
-  }
-
   /**
    *
    * @param trade trade data
@@ -209,7 +199,10 @@ export class CrossChainService {
   public async swapTrade(
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
-    useCacheData?: boolean
+    params: { useCacheData: boolean; skipAmountCheck: boolean } = {
+      useCacheData: false,
+      skipAmountCheck: false
+    }
   ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
       return null;
@@ -256,7 +249,9 @@ export class CrossChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
-      useCacheData: useCacheData || false
+      refundAddress: this.refundService.refundAddress,
+      useCacheData: params.useCacheData,
+      skipAmountCheck: params.skipAmountCheck
     };
 
     try {

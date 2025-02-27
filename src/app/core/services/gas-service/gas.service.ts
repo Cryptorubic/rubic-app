@@ -41,6 +41,9 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SEI,
   BLOCKCHAIN_NAME.BITLAYER,
   BLOCKCHAIN_NAME.GRAVITY
+  // BLOCKCHAIN_NAME.SONIC,
+  // BLOCKCHAIN_NAME.MORPH,
+  // BLOCKCHAIN_NAME.FRAXTAL
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -86,6 +89,9 @@ export class GasService {
     [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this),
     [BLOCKCHAIN_NAME.BITLAYER]: this.fetchBitlayerGas.bind(this),
     [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this)
+    // [BLOCKCHAIN_NAME.SONIC]: this.fetchSonicGas.bind(this),
+    // [BLOCKCHAIN_NAME.MORPH]: this.fetchMorphGas.bind(this),
+    // [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -215,11 +221,25 @@ export class GasService {
     maxAge: GasService.requestInterval
   })
   private fetchBscGas(): Observable<GasPrice> {
-    return of({
-      gasPrice: new BigNumber(5).dividedBy(10 ** 9).toFixed()
-    });
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN
+    );
+    return from(blockchainAdapter.getGasPrice()).pipe(
+      map((gasPriceInWei: string) => {
+        const gasPriceinGwei = new BigNumber(gasPriceInWei).dividedBy(10 ** 9);
+        if (gasPriceinGwei.lt(1)) {
+          return {
+            gasPrice: new BigNumber(1).dividedBy(10 ** 9).toFixed()
+          };
+        }
+        return {
+          gasPrice: gasPriceinGwei.dividedBy(10 ** 9).toFixed()
+        };
+      })
+    );
   }
 
+  // 508281 BNB
   /**
    * Gets Polygon gas from gas station api.
    * @return Observable<number> Average gas price in Gwei.
@@ -632,4 +652,43 @@ export class GasService {
       })
     );
   }
+
+  // @Cacheable({
+  //   maxAge: GasService.requestInterval
+  // })
+  // private fetchSonicGas(): Observable<GasPrice | null> {
+  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONIC);
+  //   return from(blockchainAdapter.getGasPrice()).pipe(
+  //     map((gasPriceInWei: string) => {
+  //       return {
+  //         gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+  //       };
+  //     })
+  //   );
+  // }
+
+  // @Cacheable({
+  //   maxAge: GasService.requestInterval
+  // })
+  // private fetchMorphGas(): Observable<GasPrice> {
+  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.MORPH);
+  //   return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+  //     map(formatEIP1559Gas),
+  //     catchError(() => of(null))
+  //   );
+  // }
+
+  // @Cacheable({
+  //   maxAge: GasService.requestInterval
+  // })
+  // private fetchFraxtalGas(): Observable<GasPrice> {
+  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.FRAXTAL);
+  //   return from(blockchainAdapter.getGasPrice()).pipe(
+  //     map((gasPriceInWei: string) => {
+  //       return {
+  //         gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
+  //       };
+  //     })
+  //   );
+  // }
 }

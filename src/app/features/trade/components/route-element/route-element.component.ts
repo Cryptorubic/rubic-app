@@ -33,7 +33,8 @@ export class RouteElementComponent {
   public getSteps(routes: RubicStep[]): ProviderStep[] {
     return routes.map(route => {
       if (route.type === 'on-chain') {
-        const provider = ON_CHAIN_PROVIDERS[route.provider] || this.getUnknownDex();
+        const provider =
+          ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownDex();
 
         return {
           provider: {

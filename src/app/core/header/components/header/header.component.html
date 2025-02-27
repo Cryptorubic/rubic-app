@@ -1,4 +1,4 @@
-<tui-carousel [duration]="20000">
+<tui-carousel [duration]="0" [draggable]="true">
   <!--  <ng-container *tuiItem>-->
   <!--    <app-banner-zk-link-->
   <!--      href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"-->
@@ -25,6 +25,7 @@
   *ngLet="currentUser$ | async as currentUser"
 >
   <app-logo
+    *ngIf="!hideLogo"
     [currentUser]="!!currentUser"
     [isDarkTheme]="isDarkTheme$ | async"
     [noFrameLink]="noFrameLink"
@@ -46,13 +47,13 @@
     appearance="secondary"
     type="button"
     size="m"
-    *ngIf="!useLargeIframe"
     [pseudoActive]="
       rootPath &&
       ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
         (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
     "
     (click)="navigateToSwaps()"
+    [ngStyle]="{ 'margin-right': useLargeIframe ? 'auto' : 'unset' }"
   >
     Swaps
   </button>

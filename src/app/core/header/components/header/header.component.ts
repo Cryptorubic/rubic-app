@@ -15,7 +15,6 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
-import { ErrorsService } from 'src/app/core/errors/errors.service';
 import { Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
@@ -23,7 +22,6 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 
@@ -55,6 +53,8 @@ export class HeaderComponent implements AfterViewInit {
   public settingsOpened = false;
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
+  public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
@@ -89,9 +89,7 @@ export class HeaderComponent implements AfterViewInit {
     private readonly authService: AuthService,
     private readonly cdr: ChangeDetectorRef,
     private readonly router: Router,
-    private readonly errorService: ErrorsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly tokensService: TokensService,
     @Inject(WINDOW) private readonly window: Window,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,

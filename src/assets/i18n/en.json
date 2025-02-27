@@ -103,7 +103,8 @@
     "crossChainSwapUnavailable": "Unfortunately, using the calculated provider is currently unavailable with this swap. Rubic will recalculate the route for your swap.",
     "noSelectedToken": "Select Token",
     "wrongSourceNetwork": "The swaps from the {{ network }} network are currently not supported.",
-    "fallbackSwap": "Swap ended with the error, transit tokens have been returned to you."
+    "fallbackSwap": "Swap ended with the error, transit tokens have been returned to you.",
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

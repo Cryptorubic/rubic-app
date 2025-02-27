@@ -33,6 +33,7 @@ import { SwapsControllerService } from '@features/trade/services/swaps-controlle
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
+  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
   EvmBlockchainName,
@@ -60,6 +61,7 @@ import { CrossChainSwapAdditionalParams } from './models/swap-controller-service
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
+import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -136,7 +138,8 @@ export class PreviewSwapService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
-    private readonly ccrApiService: CrossChainApiService
+    private readonly ccrApiService: CrossChainApiService,
+    private readonly spindlService: SpindlService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -228,7 +231,10 @@ export class PreviewSwapService {
     toBlockchain: BlockchainName,
     additionalInfo: CrossChainSwapAdditionalParams
   ): void {
-    const pollingSubscription$ = interval(30_000)
+    const intervalMS =
+      this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 300_000 : 30_000;
+
+    const pollingSubscription$ = interval(intervalMS)
       .pipe(
         startWith(-1),
         switchMap(() => this.selectedTradeState$.pipe(first())),
@@ -251,6 +257,12 @@ export class PreviewSwapService {
                 }),
                 ...(additionalInfo.retroBridgeId && {
                   retroBridgeId: additionalInfo.retroBridgeId
+                }),
+                ...(additionalInfo.simpleSwapId && {
+                  simpleSwapId: additionalInfo.simpleSwapId
+                }),
+                ...(additionalInfo.changellySwapId && {
+                  changellySwapId: additionalInfo.changellySwapId
                 })
               },
               tradeState.tradeType as CrossChainTradeType
@@ -411,6 +423,7 @@ export class PreviewSwapService {
                     });
                   }
 
+                  this.spindlService.sendSwapEvent(txHash);
                   this.recentTradesStoreService.updateUnreadTrades();
                 }
               },

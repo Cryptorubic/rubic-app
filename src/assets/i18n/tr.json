@@ -100,7 +100,8 @@
     "walletNotInstalled": "Cüzdan yüklü değil.",
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token Seç",
-    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir."
+    "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir.",
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

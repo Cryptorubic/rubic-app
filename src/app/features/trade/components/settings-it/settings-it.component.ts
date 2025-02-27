@@ -3,6 +3,7 @@ import { map, startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
+import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-settings-it',
@@ -27,7 +28,8 @@ export class SettingsItComponent {
 
   constructor(
     private readonly settingsService: SettingsService,
-    private readonly formsTogglerService: FormsTogglerService
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   public toggleAutoSlippageTolerance(): void {

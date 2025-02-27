@@ -1,0 +1,233 @@
+<ng-container *ngLet="{ data: data$ | async } as state">
+  <table *ngIf="device === 'desktop'; else mobileView" tuiTable class="table" [columns]="columns">
+    <thead>
+      <tr tuiThGroup>
+        <th *tuiHead="'from'" [sorter]="null" tuiTh>{{ 'recentTrades.from' | translate }}</th>
+        <th *tuiHead="'to'" [sorter]="null" tuiTh>{{ 'recentTrades.to' | translate }}</th>
+        <th *tuiHead="'date'" [sorter]="null" tuiTh>{{ 'recentTrades.date' | translate }}</th>
+        <th *tuiHead="'status'" [sorter]="null" tuiTh>Status</th>
+        <th *tuiHead="'receiver'" [sorter]="null" tuiTh>Receiver address</th>
+        <th *tuiHead="'tradeType'" [sorter]="null" tuiTh>Provider</th>
+      </tr>
+    </thead>
+    <tbody tuiTbody [data]="state.data">
+      <tr *ngFor="let innerItem of state.data" tuiTr>
+        <ng-container *ngLet="getItem(innerItem) as item">
+          <td *tuiCell="'from'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__top">
+                <div class="token-images" *ngIf="item?.fromBlockchain?.color">
+                  <div
+                    class="token-images__second-container"
+                    [style]="{ background: item.fromBlockchain.color }"
+                  >
+                    <img [src]="item.fromBlockchain.image" [alt]="item.fromBlockchain.label" />
+                  </div>
+                  <img
+                    class="token-images__main-image"
+                    [src]="item.fromToken.image"
+                    [alt]="item.fromToken.symbol"
+                  />
+                </div>
+                {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                {{ item.fromToken.symbol }}
+              </div>
+            </div>
+          </td>
+          <td *tuiCell="'to'" tuiTd>
+            <div class="token-container">
+              <div class="token-container__top">
+                <div class="token-images" *ngIf="item?.toBlockchain?.color">
+                  <div
+                    class="token-images__second-container"
+                    [style]="{ background: item.toBlockchain.color }"
+                  >
+                    <img [src]="item.toBlockchain.image" [alt]="item.toBlockchain.label" />
+                  </div>
+                  <img
+                    class="token-images__main-image"
+                    [src]="item.toToken.image"
+                    [alt]="item.toToken.symbol"
+                  />
+                </div>
+                <div class="asset__asset-type">
+                  <!--                {{ item.toBlockchain.label }}-->
+                  {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}
+                  {{ item.toToken.symbol }}
+                </div>
+              </div>
+              <!--            <div class="token-container__bot">-->
+              <!--              {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}-->
+              <!--              {{ item.toToken.symbol }}-->
+              <!--            </div>-->
+            </div>
+          </td>
+          <td *tuiCell="'date'" tuiTd>
+            {{ item?.date | date : 'MMM dd, yyyy' }}
+            {{ ' at ' + (item?.date | date : 'h:mm') }}
+          </td>
+          <td *tuiCell="'status'" tuiTd>
+            <app-rubic-badge-with-copy-btn [item]="item"></app-rubic-badge-with-copy-btn>
+          </td>
+          <td *tuiCell="'receiver'" tuiTd>
+            {{ item?.receiverAddress | shortAddress : 10 : 5 }}
+          </td>
+          <td *tuiCell="'tradeType'" tuiTd>
+            <div *ngIf="item?.providerInfo?.name" class="provider-container">
+              <img
+                class="provider-container__image"
+                [src]="item.providerInfo.image"
+                [alt]="item.providerInfo.name"
+              />
+              {{ item.providerInfo.name }}
+            </div>
+          </td>
+          <!--          <td *tuiCell="'statusFrom'" tuiTd>-->
+          <!--            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">-->
+          <!--              <app-rubic-badge-->
+          <!--                *ngIf="item?.fromTx?.status"-->
+          <!--                [status]="item.fromTx.status.appearance"-->
+          <!--                [label]="item.fromTx.status.label"-->
+          <!--              >-->
+          <!--              </app-rubic-badge>-->
+          <!--              <img-->
+          <!--                *ngIf="item.fromTx.explorerLink"-->
+          <!--                class="status-from-link-arrow"-->
+          <!--                src="assets/images/icons/arrow/link-arrow.svg"-->
+          <!--                alt="link-arrow"-->
+          <!--              />-->
+          <!--            </a>-->
+          <!--          </td>-->
+          <!--          <td *tuiCell="'statusTo'" tuiTd>-->
+          <!--            <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">-->
+          <!--              <app-rubic-badge-->
+          <!--                *ngIf="item?.toTx?.status"-->
+          <!--                [status]="item.toTx.status.appearance"-->
+          <!--                [label]="item.toTx.status.label"-->
+          <!--              >-->
+          <!--              </app-rubic-badge>-->
+          <!--              <img-->
+          <!--                *ngIf="item.toTx.explorerLink"-->
+          <!--                class="status-from-link-arrow"-->
+          <!--                src="assets/images/icons/arrow/link-arrow.svg"-->
+          <!--                alt="link-arrow"-->
+          <!--              />-->
+          <!--            </a>-->
+          <!--          </td>-->
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #mobileView>
+    <div class="mobile-view">
+      <div class="mobile-view__card" *ngFor="let item of state.data">
+        <div class="mobile-view__card-header">
+          <!--          <div class="mobile-view__from-field">-->
+          <!--            <div class="token-images" *ngIf="item?.fromBlockchain?.color">-->
+          <!--              <div-->
+          <!--                class="token-images__second-container"-->
+          <!--                [style]="{ background: item.fromBlockchain.color }"-->
+          <!--              >-->
+          <!--                <img [src]="item.fromBlockchain.image" [alt]="item.fromBlockchain.label" />-->
+          <!--              </div>-->
+          <!--              <img-->
+          <!--                class="token-images__main-image"-->
+          <!--                [src]="item.fromToken.image"-->
+          <!--                [alt]="item.fromToken.symbol"-->
+          <!--              />-->
+          <!--            </div>-->
+          <!--            {{ item.fromToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}-->
+          <!--            {{ item.fromToken.symbol }}-->
+          <!--          </div>-->
+          <!--          <div class="mobile-view__to-field">-->
+          <!--            <div class="token-images" *ngIf="item?.toBlockchain?.color">-->
+          <!--              <div-->
+          <!--                class="token-images__second-container"-->
+          <!--                [style]="{ background: item.toBlockchain.color }"-->
+          <!--              >-->
+          <!--                <img [src]="item.toBlockchain.image" [alt]="item.toBlockchain.label" />-->
+          <!--              </div>-->
+          <!--              <img-->
+          <!--                class="token-images__main-image"-->
+          <!--                [src]="item.toToken.image"-->
+          <!--                [alt]="item.toToken.symbol"-->
+          <!--              />-->
+          <!--            </div>-->
+          <!--            <div class="asset__asset-type">-->
+          <!--              &lt;!&ndash;                {{ item.toBlockchain.label }}&ndash;&gt;-->
+          <!--              {{ item.toToken.amount | bigNumberFormat | shortenAmount : 6 : 4 : true }}-->
+          <!--              {{ item.toToken.symbol }}-->
+          <!--            </div>-->
+          <!--          </div>-->
+        </div>
+
+        <div class="mobile-view__row">
+          <div class="mobile-view__row-key">{{ 'recentTrades.date' | translate }}</div>
+          <!--          <div class="mobile-view__row-value">-->
+          <!--            {{ item?.date | date : 'MMM dd, yyyy' }} {{ ' at ' + (item?.date | date : 'h:mm') }}-->
+          <!--          </div>-->
+        </div>
+
+        <div class="mobile-view__row">
+          <div class="mobile-view__row-key">{{ 'recentTrades.statusFrom' | translate }}</div>
+          <!--          <div class="mobile-view__row-value">-->
+          <!--            <a class="token-container__inner" [safetyLink]="item?.fromTx?.explorerLink">-->
+          <!--              <app-rubic-badge-->
+          <!--                *ngIf="item?.fromTx?.status"-->
+          <!--                [status]="item.fromTx.status.appearance"-->
+          <!--                [label]="item.fromTx.status.label"-->
+          <!--              >-->
+          <!--              </app-rubic-badge>-->
+          <!--              <img-->
+          <!--                *ngIf="item?.fromTx?.explorerLink"-->
+          <!--                class="status-from-link-arrow"-->
+          <!--                src="assets/images/icons/arrow/link-arrow.svg"-->
+          <!--                alt="link-arrow"-->
+          <!--              />-->
+          <!--            </a>-->
+          <!--          </div>-->
+        </div>
+
+        <div class="mobile-view__row">
+          <div class="mobile-view__row-key">{{ 'recentTrades.statusTo' | translate }}</div>
+          <!--          <div class="mobile-view__row-value">-->
+          <!--            <a class="token-container__inner" [safetyLink]="item?.toTx?.explorerLink">-->
+          <!--              <app-rubic-badge-->
+          <!--                *ngIf="item?.toTx?.status"-->
+          <!--                [status]="item.toTx.status.appearance"-->
+          <!--                [label]="item.toTx.status.label"-->
+          <!--              >-->
+          <!--              </app-rubic-badge>-->
+          <!--              <img-->
+          <!--                *ngIf="item?.toTx?.explorerLink"-->
+          <!--                class="status-from-link-arrow"-->
+          <!--                src="assets/images/icons/arrow/link-arrow.svg"-->
+          <!--                alt="link-arrow"-->
+          <!--              />-->
+          <!--            </a>-->
+          <!--          </div>-->
+        </div>
+
+        <div class="mobile-view__row">
+          <div class="mobile-view__row-key">Provider</div>
+          <div class="mobile-view__row-value">
+            <!--            <div class="provider-container" *ngIf="item?.provider?.name">-->
+            <!--              <img-->
+            <!--                class="provider-container__image"-->
+            <!--                [src]="item.provider.image"-->
+            <!--                [alt]="item.provider.name"-->
+            <!--              />-->
+            <!--              {{ item.provider.name }}-->
+            <!--            </div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</ng-container>
+
+<!--<tui-pagination-->
+<!--  [index]="(page$ | async) || 0"-->
+<!--  [length]="(totalPages$ | async) || 0"-->
+<!--  (indexChange)="changePage($event)"-->
+<!--&gt;</tui-pagination>-->

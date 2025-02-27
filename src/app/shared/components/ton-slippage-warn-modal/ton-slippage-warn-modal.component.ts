@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
+import { Token } from '@cryptorubic/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { compareAddresses, Token, TonOnChainTrade } from 'rubic-sdk';
+import { compareAddresses, TonOnChainTrade } from 'rubic-sdk';
 
 interface TxStep {
   img: string;

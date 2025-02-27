@@ -5,7 +5,7 @@ import {
   Inject,
   Input
 } from '@angular/core';
-import { CnTableData } from '@app/features/history/models/cn-table-data';
+import { DepositTableData } from '@app/features/history/models/deposit-table-data';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
 
@@ -16,7 +16,7 @@ import { timer } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RubicBadgeWithCopyBtnComponent {
-  @Input({ required: true }) item: CnTableData;
+  @Input({ required: true }) item: DepositTableData;
 
   public isHintVisible: boolean = false;
 

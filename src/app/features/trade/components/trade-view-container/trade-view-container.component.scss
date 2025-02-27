@@ -32,6 +32,8 @@
   margin: 0 auto;
 
   .form {
+    @include flex(column, center, center);
+
     position: relative;
 
     width: 600px;
@@ -47,6 +49,22 @@
     &_small {
       width: 360px;
     }
+  }
+
+  app-spindle-banner,
+  app-token-selector-page {
+    width: 100%;
+  }
+
+  app-swap-form-page {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  app-preview-swap,
+  app-cn-preview-swap {
+    width: 100%;
+    margin-bottom: 20px;
   }
 
   app-input-output-container:first-child {

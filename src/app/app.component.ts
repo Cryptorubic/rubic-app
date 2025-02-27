@@ -8,11 +8,16 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map } from 'rxjs/operators';
+import { catchError, first, map, switchMap } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
+import { SpindlService } from './core/services/spindl-ads/spindl.service';
+import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokensStoreService } from './core/services/tokens/tokens-store.service';
+import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
+import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-root',
@@ -33,16 +38,36 @@ export class AppComponent implements AfterViewInit {
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly spindlService: SpindlService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
+    this.spindlService.initSpindlAds();
+    this.subscribeOnWalletChanges();
   }
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+  }
+
+  private subscribeOnWalletChanges(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        switchMap(() => {
+          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+          return this.tokensStoreService.startBalanceCalculating(
+            this.assetsSelectorStateService.assetType
+          );
+        })
+      )
+      .subscribe();
   }
 
   /**

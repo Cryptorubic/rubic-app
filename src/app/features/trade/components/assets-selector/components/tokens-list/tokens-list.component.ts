@@ -1,17 +1,19 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { of, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 import { BlockchainsInfo, EvmBlockchainName, Web3Pure, wrappedNativeTokensList } from 'rubic-sdk';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { STABLE_TOKENS_NAMES } from '../../constants/stable-tokens-names';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
+import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
+import { BalanceLoadingStateService } from '@app/core/services/tokens/balance-loading-state.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -34,13 +36,14 @@ export class TokensListComponent {
   public readonly isMobile = this.headerStore.isMobile;
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
-    switchMap(tokens => {
-      if (!tokens.length) {
-        return of(false);
-      }
-      return this.tokensListStoreService.isBalanceLoading$(tokens[0].blockchain);
-    })
+    switchMap(() =>
+      this.balanceLoadingStateService.isBalanceLoading$(this.assetsSelectorStateService.assetType)
+    )
   );
+
+  public get showAll(): boolean {
+    return this.assetsSelectorStateService.assetType === 'allChains';
+  }
 
   public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
 
@@ -50,9 +53,11 @@ export class TokensListComponent {
     private readonly tokensListService: TokensListService,
     private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly headerStore: HeaderStore,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService
   ) {}
 
   /**
