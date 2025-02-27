@@ -17826,10 +17826,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.52.7-alpha-teleswap.13:
-  version "5.52.7-alpha-teleswap.13"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.7-alpha-teleswap.13.tgz#f8fdb377a4f14e2ba5154d45cf7531cc187e1859"
-  integrity sha512-ojALzUikXTLpWPLGDfu0937PI2Gx/m6OF6lvz2HnoiQKI1EBipuEza5mJvaK+IOH+YQtrRCcSdHFvZ+VBrKk7Q==
+rubic-sdk@5.52.7-alpha-teleswap.14:
+  version "5.52.7-alpha-teleswap.14"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.7-alpha-teleswap.14.tgz#df64d05692fbfe65cf82a84ff5b09f911950c5b9"
+  integrity sha512-Cf00j5WnmP04yvtvKVpC9U7VbJzn7t7ib6rqsWFYhcRh0+G6qalIu18OTK2m55nFqyTBQqZb1r7ycOo6LLiROw==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
