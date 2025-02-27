@@ -1,7 +1,6 @@
 <app-window-container
   *ngLet="{
     displayReceiver: displayTargetAddressInput$ | async,
-    selectedForm: selectedForm$ | async,
     isMobile: isMobile$ | async,
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
@@ -21,7 +20,6 @@
         selectorType="from"
         (handleAssetSelection)="openSelector('from', state.isMobile)"
         [asset]="state.fromAsset"
-        [mainFormType]="state.selectedForm"
         [isDisabled]="state.isDisabledFromSelector"
       ></app-asset-selector>
       <div right class="input-container">
@@ -44,7 +42,6 @@
         selectorType="to"
         (handleAssetSelection)="openSelector('to', state.isMobile)"
         [asset]="state.toAsset"
-        [mainFormType]="state.selectedForm"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput

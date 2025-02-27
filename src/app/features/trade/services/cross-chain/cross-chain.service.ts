@@ -87,8 +87,8 @@ export class CrossChainService {
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getTokenPrice(fromToken, true),
+      this.tokensService.getTokenPrice(toToken, true)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,

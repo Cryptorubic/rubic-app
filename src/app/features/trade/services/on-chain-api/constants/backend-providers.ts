@@ -152,7 +152,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.SPARK_DEX_V3]: 'spark_dex_v3'
   // [ON_CHAIN_TRADE_TYPE.BULBA_SWAP]: 'bulba_swap',
   // [ON_CHAIN_TRADE_TYPE.FRAX_SWAP_V2]: 'frax_swap_v2',
-  //[ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut'
+  // [ON_CHAIN_TRADE_TYPE.KODIAK]: 'kodiak',
+  // [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: 'kyo_finance'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

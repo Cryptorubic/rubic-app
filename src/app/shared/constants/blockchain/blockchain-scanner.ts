@@ -1027,14 +1027,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.BERACHAIN]: {
-    baseUrl: 'https://artio.beratrail.io/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
+  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: {
+  //   baseUrl: 'https://artio.beratrail.io/',
+  //   nativeCoinUrl: '',
+  //   [ADDRESS_TYPE.WALLET]: 'address/',
+  //   [ADDRESS_TYPE.TOKEN]: 'token/',
+  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+  //   [ADDRESS_TYPE.BLOCK]: 'block/'
+  // },
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
     baseUrl: 'https://testnet.blastscan.io/',
     nativeCoinUrl: '',
@@ -1178,7 +1178,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
-  }
+  },
   // [BLOCKCHAIN_NAME.SONIC]: {
   //   baseUrl: 'https://sonicscan.org/',
   //   nativeCoinUrl: '',
@@ -1186,7 +1186,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   //   [ADDRESS_TYPE.TOKEN]: 'token/',
   //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
   //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // }
+  // },
   // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: {
   //   baseUrl: 'https://soneium-minato.blockscout.com/',
   //   nativeCoinUrl: '',
@@ -1205,6 +1205,38 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   // },
   // [BLOCKCHAIN_NAME.FRAXTAL]: {
   //   baseUrl: 'https://fraxscan.com/',
+  //   nativeCoinUrl: '',
+  //   [ADDRESS_TYPE.WALLET]: 'address/',
+  //   [ADDRESS_TYPE.TOKEN]: 'token/',
+  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+  //   [ADDRESS_TYPE.BLOCK]: 'block/'
+  // },
+  [BLOCKCHAIN_NAME.BERACHAIN]: {
+    baseUrl: 'https://berascan.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  }
+  // [BLOCKCHAIN_NAME.SONEIUM]: {
+  //   baseUrl: 'https://soneium.blockscout.com/',
+  //   nativeCoinUrl: '',
+  //   [ADDRESS_TYPE.WALLET]: 'address/',
+  //   [ADDRESS_TYPE.TOKEN]: 'token/',
+  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+  //   [ADDRESS_TYPE.BLOCK]: 'block/'
+  // },
+  // [BLOCKCHAIN_NAME.UNICHAIN]: {
+  //   baseUrl: 'https://uniscan.xyz/',
+  //   nativeCoinUrl: '',
+  //   [ADDRESS_TYPE.WALLET]: 'address/',
+  //   [ADDRESS_TYPE.TOKEN]: 'token/',
+  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+  //   [ADDRESS_TYPE.BLOCK]: 'block/'
+  // },
+  // [BLOCKCHAIN_NAME.MONAD_TESTNET]: {
+  //   baseUrl: 'https://testnet.monadexplorer.com/',
   //   nativeCoinUrl: '',
   //   [ADDRESS_TYPE.WALLET]: 'address/',
   //   [ADDRESS_TYPE.TOKEN]: 'token/',

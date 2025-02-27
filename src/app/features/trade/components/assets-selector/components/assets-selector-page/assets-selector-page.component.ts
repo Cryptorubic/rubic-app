@@ -76,12 +76,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
    * Sets window height through html class name, to prevent broken scroll in Safari.
    */
   private setWindowHeight(): void {
-    this.document.documentElement.style.setProperty(
-      '--window-inner-height',
-      `${window.innerHeight}px`
-    );
-    this.document.documentElement.classList.add('is-locked');
-    this.document.documentElement.classList.add('scroll-y');
+    if (this.isMobile) {
+      this.document.documentElement.style.setProperty(
+        '--window-inner-height',
+        `${window.innerHeight}px`
+      );
+      this.document.documentElement.classList.add('is-locked');
+      this.document.documentElement.classList.add('scroll-y');
+    }
   }
 
   private resetWindowHeight(): void {

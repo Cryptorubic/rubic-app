@@ -8,7 +8,7 @@ import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map, switchMap } from 'rxjs/operators';
+import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -18,6 +18,10 @@ import { WalletConnectorService } from './core/services/wallets/wallet-connector
 import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
 import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TOKEN_FILTERS } from './features/trade/components/assets-selector/models/token-filters';
+import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
+import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
+import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +47,9 @@ export class AppComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tradePageService: TradePageService,
+    private readonly tokensNetworkService: TokensNetworkService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -51,6 +57,7 @@ export class AppComponent implements AfterViewInit {
     this.initApp();
     this.spindlService.initSpindlAds();
     this.subscribeOnWalletChanges();
+    this.tokensNetworkService.setupSubscriptions();
   }
 
   ngAfterViewInit() {
@@ -58,16 +65,28 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        switchMap(() => {
-          this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-          return this.tokensStoreService.startBalanceCalculating(
-            this.assetsSelectorStateService.assetType
-          );
-        })
-      )
-      .subscribe();
+    this.walletConnectorService.addressChange$.subscribe(userAddress => {
+      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+
+      const allTokensAssetData: BalanceLoadingAssetData = {
+        assetType: 'allChains',
+        tokenFilter: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+      };
+
+      // load ALL_CHAINS_ALL_TOKENS assets in background if token's selector closed
+      // and if ALL_CHAINS_ALL_TOKENS balances not loaded yet
+      if (
+        userAddress &&
+        this.tradePageService.formContent === 'form' &&
+        !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData) &&
+        this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+      ) {
+        this.tokensStoreService.startBalanceCalculating('allChains', {
+          allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+        });
+      }
+    });
   }
 
   /**
