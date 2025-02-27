@@ -24,7 +24,7 @@ import { SettingsWarningModalComponent } from '@features/trade/components/settin
 export class SettingsService {
   private readonly defaultSlippageTolerance = {
     instantTrades: 1,
-    crossChain: 0.1
+    crossChain: 2
   };
 
   public defaultItSettings: ItSettingsForm;
