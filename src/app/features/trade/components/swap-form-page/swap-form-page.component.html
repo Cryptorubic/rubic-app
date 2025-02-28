@@ -63,10 +63,7 @@
   <ng-container footer>
     <div class="buttons-container">
       <app-action-button></app-action-button>
-      <app-receiver-address-button
-        *ngIf="state.selectedForm === 'swapForm'"
-        (handleClick)="toggleReceiver()"
-      ></app-receiver-address-button>
+      <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
     </div>
   </ng-container>
 </app-window-container>
