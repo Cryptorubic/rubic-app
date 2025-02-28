@@ -18,6 +18,7 @@
     "build:dev2": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --configuration dev2",
     "build:dev3": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --configuration dev3",
     "build:stage": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --configuration stage",
+    "build:beta": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build --configuration production",
     "build:analyze": "ng build --stats-json && webpack-bundle-analyzer dist/rubic/stats.json",
     "test": "ng test",
     "test:ci": "ng test --karma-config=src/karma-ci.conf.js --no-progress",
