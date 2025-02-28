@@ -60,15 +60,15 @@
 
   <button
     *ngIf="!useLargeIframe"
-    class="staking-button"
+    class="testnets-button"
     tuiButton
     appearance="secondary"
     type="button"
     [pseudoActive]="isStakingPage"
     size="m"
-    routerLink="/staking"
+    (click)="navigateToTestnets()"
   >
-    Staking
+    Tesnets
   </button>
 
   <!--  <button-->

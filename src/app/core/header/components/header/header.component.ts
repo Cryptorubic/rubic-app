@@ -133,8 +133,12 @@ export class HeaderComponent implements AfterViewInit {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
 
-  public async navigateToSwaps(): Promise<void> {
-    await this.router.navigate(['/'], { queryParamsHandling: 'merge' });
+  public navigateToSwaps(): void {
+    this.router.navigate(['/'], { queryParamsHandling: 'merge' });
+  }
+
+  public navigateToTestnets(): void {
+    this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
   public handleMenuButtonClick(): void {

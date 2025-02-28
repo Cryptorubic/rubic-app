@@ -7,6 +7,12 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
+    translateKey: 'Testnet App',
+    type: 'external',
+    link: EXTERNAL_LINKS.TESTNET_APP,
+    imagePath: `${defaultSrc}test.svg`
+  },
+  {
     translateKey: 'Swap & Earn',
     type: 'internal',
     link: ROUTE_PATH.AIRDROP,
@@ -42,12 +48,6 @@ export const NAVIGATION_LIST = [
     link: 'retrodrop',
     target: '_blank',
     imagePath: `${defaultSrc}retrodrop.svg`
-  },
-  {
-    translateKey: 'Testnet App',
-    type: 'external',
-    link: EXTERNAL_LINKS.TESTNET_APP,
-    imagePath: `${defaultSrc}test.svg`
   }
 ] as NavigationItem[];
 
@@ -80,6 +80,11 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
   ],
   ['More']: [
     {
+      translateKey: 'Testnet App',
+      type: 'external',
+      link: EXTERNAL_LINKS.TESTNET_APP
+    },
+    {
       translateKey: 'Documentation',
       type: 'external',
       link: 'https://docs.rubic.finance/rubic/introduction'
@@ -98,11 +103,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'About',
       type: 'external',
       link: EXTERNAL_LINKS.LANDING
-    },
-    {
-      translateKey: 'Testnet App',
-      type: 'external',
-      link: EXTERNAL_LINKS.TESTNET_APP
     }
   ],
   ['Social']: [
