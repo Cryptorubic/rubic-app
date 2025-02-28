@@ -62,7 +62,10 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
 
       this.initSubscriptionsOnChanges();
     } catch (err) {
-      if (err?.message.toLowerCase().includes('rejected the request')) {
+      if (
+        err?.message.toLowerCase().includes('rejected the request') ||
+        err?.message.toLowerCase().includes('user rejection')
+      ) {
         throw new SignRejectError();
       }
       console.error('[SuiDefaultAdapter] Activation error - ', err);
