@@ -44,8 +44,6 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly isMobileMenuOpened$: Observable<boolean>;
 
-  public readonly isMobile$: Observable<boolean>;
-
   public currentUser$: Observable<UserInterface>;
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
@@ -78,6 +76,10 @@ export class HeaderComponent implements AfterViewInit {
     );
   }
 
+  public get isMobile(): boolean {
+    return this.headerStore.isMobile;
+  }
+
   public readonly isDarkTheme$ = this.themeService.theme$.pipe(
     startWith('dark'),
     map(theme => theme === 'dark')
@@ -100,7 +102,6 @@ export class HeaderComponent implements AfterViewInit {
     this.advertisementType = 'default';
     this.currentUser$ = this.authService.currentUser$;
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
-    this.isMobile$ = this.headerStore.getMobileDisplayStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {
       this.zone.runOutsideAngular(() => {

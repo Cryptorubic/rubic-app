@@ -7,12 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'Testnet App',
-    type: 'external',
-    link: EXTERNAL_LINKS.TESTNET_APP,
-    imagePath: `${defaultSrc}test.svg`
-  },
-  {
     translateKey: 'Swap & Earn',
     type: 'internal',
     link: ROUTE_PATH.AIRDROP,

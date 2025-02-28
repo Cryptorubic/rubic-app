@@ -59,12 +59,11 @@
   </button>
 
   <button
-    *ngIf="!useLargeIframe"
+    *ngIf="!useLargeIframe && !isMobile"
     class="testnets-button"
     tuiButton
     appearance="secondary"
     type="button"
-    [pseudoActive]="isStakingPage"
     size="m"
     (click)="navigateToTestnets()"
   >
@@ -116,6 +115,6 @@
   </div>
 
   <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
   </ng-container>
 </header>
