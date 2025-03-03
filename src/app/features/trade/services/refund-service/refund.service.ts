@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
@@ -48,14 +47,14 @@ export class RefundService {
     this.refundAddressCtrl.updateValueAndValidity();
   }
 
-  public onTradeSelection(trade: SelectedTrade): void {
-    if (trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY) {
-      this.refundAddressCtrl.addValidators([Validators.required]);
-      this._isValidRefundAddress$.next(false);
-    } else {
-      this.refundAddressCtrl.clearValidators();
-      this._isValidRefundAddress$.next(true);
-    }
+  public onTradeSelection(_trade: SelectedTrade): void {
+    // if (trade.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY) {
+    this.refundAddressCtrl.addValidators([Validators.required]);
+    this._isValidRefundAddress$.next(false);
+    // } else {
+    //   this.refundAddressCtrl.clearValidators();
+    //   this._isValidRefundAddress$.next(true);
+    // }
 
     this.refundAddressCtrl.updateValueAndValidity();
   }

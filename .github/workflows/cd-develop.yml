@@ -13,6 +13,7 @@ on:
           - dev2
           - dev3
           - stage
+          - beta
 
 jobs:
   deploy:
@@ -47,6 +48,11 @@ jobs:
         if: ${{ inputs.env_id == 'stage' }}
         run: |
           echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
+
+      - name: Set stage target path
+        if: ${{ inputs.env_id == 'beta' }}
+        run: |
+          echo "TARGET_PATH=${{ secrets.BETA_TARGET_PATH }}" >> $GITHUB_ENV
 
       - name: Install sshpass
         run: |

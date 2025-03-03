@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+      - rubic-beta
 
 jobs:
   lint:
