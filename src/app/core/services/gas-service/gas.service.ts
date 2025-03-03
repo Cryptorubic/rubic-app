@@ -44,7 +44,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SONIC,
   BLOCKCHAIN_NAME.MORPH,
   BLOCKCHAIN_NAME.FRAXTAL,
-  BLOCKCHAIN_NAME.SONEIUM
+  BLOCKCHAIN_NAME.SONEIUM,
+  BLOCKCHAIN_NAME.UNICHAIN
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -93,7 +94,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.SONIC]: this.fetchSonicGas.bind(this),
     [BLOCKCHAIN_NAME.MORPH]: this.fetchMorphGas.bind(this),
     [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this),
-    [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this)
+    [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this),
+    [BLOCKCHAIN_NAME.UNICHAIN]: this.fetchUnichainGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -273,6 +275,21 @@ export class GasService {
   })
   private fetchAvalancheGas(): Observable<GasPrice | null> {
     const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.AVALANCHE);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
+
+  /**
+   * Gets Avalanche gas from gas station api.
+   * @return Observable<number> Average gas price in Gwei.
+   */
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchUnichainGas(): Observable<GasPrice | null> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.UNICHAIN);
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { BehaviorSubject, combineLatest } from 'rxjs';
-import { filter, map, pairwise, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { combineLatestWith, filter, switchMap, takeUntil } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainsInfo } from 'rubic-sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
@@ -13,19 +13,17 @@ import { TokensListStoreService } from '@features/trade/components/assets-select
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
+import {
+  assertTokensNetworkStateKey,
+  TokensNetworkStateKey
+} from '@app/shared/models/tokens/paginated-tokens';
+import { TokensNetworkStateService } from '@app/core/services/tokens/tokens-network-state.service';
 import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 
 @Injectable()
 export class TokensListService {
-  private readonly _listUpdating$ = new BehaviorSubject<boolean>(false);
-
-  public readonly loading$ = combineLatest([
-    this._listUpdating$,
-    this.tokensListStoreService.searchLoading$
-  ]).pipe(map(([listUpdating, searchLoading]) => listUpdating || searchLoading));
-
   public get loading(): boolean {
-    return this._listUpdating$.value || this.tokensListStoreService.searchLoading;
+    return this.tokensUpdaterService.tokensLoading;
   }
 
   private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
@@ -51,6 +49,7 @@ export class TokensListService {
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly searchQueryService: SearchQueryService,
     private readonly destroy$: TuiDestroyService,
@@ -67,7 +66,7 @@ export class TokensListService {
     }
   }
 
-  public resetScrollToTop(): void {
+  private resetScrollToTop(): void {
     if (this.listScrollSubject$.value) {
       this.listScrollSubject$.value.scrollToIndex(0);
     }
@@ -82,61 +81,50 @@ export class TokensListService {
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        this._listUpdating$.next(true);
-        this.tokensNetworkService.fetchNetworkTokens(
-          this.assetsSelectorStateService.assetType as BlockchainName,
-          () => this._listUpdating$.next(false)
+        this.tokensUpdaterService.setTokensLoading(true);
+        const tokensNetworkStateKey = this.getTokensNetworkStateKey();
+        this.tokensNetworkService.fetchNextPageOfTokensForSelectedAsset(tokensNetworkStateKey, () =>
+          this.tokensUpdaterService.setTokensLoading(false)
         );
       });
   }
 
+  /**
+   *
+   */
+  private getTokensNetworkStateKey(): TokensNetworkStateKey {
+    assertTokensNetworkStateKey(this.assetsSelectorStateService.assetType);
+    return this.assetsSelectorStateService.assetType;
+  }
+
   private subscribeOnTokensToShow(): void {
-    let prevSearchQuery = this.searchQueryService.query;
-    let prevListType = this.listType;
-
-    this.tokensListStoreService.tokensToShow$
-      .pipe(pairwise(), takeUntil(this.destroy$))
-      .subscribe(([prevTokensToShow, tokensToShow]) => {
-        if (prevTokensToShow?.length && tokensToShow?.length) {
-          const prevToken = prevTokensToShow[0];
-          const newToken = tokensToShow[0];
-          let shouldAnimate = prevToken.blockchain !== newToken.blockchain;
-
-          shouldAnimate ||= prevListType !== this.listType;
-          prevListType = this.listType;
-
-          if (shouldAnimate) {
-            this.listAnimationType = 'hidden';
-            setTimeout(() => {
-              this.listAnimationType = 'shown';
-            });
-          }
-        }
-
-        if (
-          prevTokensToShow?.[0]?.blockchain !== tokensToShow?.[0]?.blockchain ||
-          prevSearchQuery !== this.searchQueryService.query
-        ) {
-          this.resetScrollToTop();
-          prevSearchQuery = this.searchQueryService.query;
-        }
+    this.assetsSelectorStateService.assetType$
+      .pipe(
+        combineLatestWith(this.assetsSelectorStateService.tokenFilter$),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.resetScrollToTop();
+        this.listAnimationType = 'hidden';
+        setTimeout(() => {
+          this.listAnimationType = 'shown';
+        });
       });
   }
 
   private skipTokensFetching(currentIndex: number): boolean {
-    const blockchain = this.assetsSelectorStateService.assetType;
-    if (!BlockchainsInfo.isBlockchainName(blockchain)) {
-      return true;
-    }
-    const tokensNetworkState = this.tokensNetworkService.tokensNetworkState[blockchain];
+    const assetType = this.assetsSelectorStateService.assetType;
+    if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
+
+    const tokensNetworkStateByAsset = this.tokensNetworkStateService.tokensNetworkState[assetType];
 
     if (
       Boolean(
         this.loading ||
           this.searchQueryService.query ||
           this.listType === 'favorite' ||
-          !tokensNetworkState ||
-          tokensNetworkState.maxPage === tokensNetworkState.page
+          !tokensNetworkStateByAsset ||
+          tokensNetworkStateByAsset.maxPage === tokensNetworkStateByAsset.page
       )
     ) {
       return true;
