@@ -106,7 +106,7 @@ export class OnChainApiService {
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       hash,
       ...(preTradeId && { pretrade_id: preTradeId }),
-      ...(referral && { influencer: referral }),
+      ...(referral && { referrer: referral }),
       ...(swapId && { swap_id: swapId })
     };
 
@@ -196,7 +196,7 @@ export class OnChainApiService {
       to_amount: Web3Pure.toWei(toAmount, toDecimals),
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
-      ...(referral && { influencer: referral })
+      ...(referral && { referrer: referral })
     };
 
     return firstValueFrom(

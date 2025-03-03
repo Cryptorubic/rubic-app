@@ -4,6 +4,17 @@ import { Observable, retry } from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { timeout } from 'rxjs/operators';
 
+interface GetRequestOptions {
+  timeoutMs?: number;
+  retry?: number;
+  external?: boolean;
+}
+const defaultGetRequestOptions: GetRequestOptions = {
+  timeoutMs: 5_000,
+  retry: 1,
+  external: false
+};
+
 export const SERVER_REST_URL = `${ENVIRONMENT.apiBaseUrl}/`;
 
 @Injectable({
@@ -12,12 +23,19 @@ export const SERVER_REST_URL = `${ENVIRONMENT.apiBaseUrl}/`;
 export class HttpService {
   constructor(private http: HttpClient) {}
 
-  public get<T>(url: string, data?: {}, path?: string): Observable<T> {
+  public get<T>(
+    url: string,
+    data?: {},
+    path?: string,
+    options: GetRequestOptions = defaultGetRequestOptions
+  ): Observable<T> {
     const request$ = this.http.get<T>((path || SERVER_REST_URL) + (url || ''), {
       params: data || {}
     });
 
-    return path ? request$ : request$.pipe(timeout(5_000), retry(1));
+    if (path && !options.external) return request$;
+
+    return request$.pipe(timeout(options.timeoutMs ?? 10_000), retry(options.retry));
   }
 
   public patch<T>(url: string, data?: {}, params?: {}, path?: string): Observable<T> {

@@ -4,7 +4,7 @@ import { debounceTime } from 'rxjs/operators';
 
 type FormType = 'form' | 'fromSelector' | 'toSelector' | 'preview' | 'depositPreview';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TradePageService {
   private readonly _formContent$ = new BehaviorSubject<FormType>('form');
 
@@ -13,6 +13,10 @@ export class TradePageService {
   private readonly _showProviders$ = new BehaviorSubject<boolean>(false);
 
   public readonly showProviders$ = this._showProviders$.asObservable().pipe(debounceTime(50));
+
+  public get formContent(): FormType {
+    return this._formContent$.value;
+  }
 
   constructor() {}
 

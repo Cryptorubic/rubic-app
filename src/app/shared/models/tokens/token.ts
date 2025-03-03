@@ -14,3 +14,9 @@ export interface Token extends BlockchainToken {
 
   type?: 'NATIVE' | 'STABLE' | 'WRAPPED_NATIVE' | 'NATIVE_ETH' | 'TOKEN' | 'BRIDGED_NATIVE';
 }
+
+export interface RatedToken extends Token {
+  sourceRank: number;
+  priceChange24h: number;
+  priceChange7d: number;
+}

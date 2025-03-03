@@ -1,19 +1,32 @@
-<ng-container *ngLet="tokensToShow$ | async as tokensToShow">
+<ng-container
+  *ngLet="{ tokensToShow: tokensToShow$ | async, tokenFilter: tokenFilter$ | async } as state"
+>
   <div *ngIf="!isMobile" class="tokens-list__search-bar-container">
     <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
 
-  <!-- <app-tokens-list-filters> </app-tokens-list-filters> -->
+  <app-tokens-list-filters
+    *ngIf="isAllChainsOpened"
+    [tokenFilter]="state.tokenFilter"
+    (onSelect)="selectTokenFilter($event)"
+  >
+  </app-tokens-list-filters>
 
   <tui-scrollbar
     class="tokens-container"
-    [ngClass]="{ 'large-iframe-token-container': useLargeIframe }"
+    [ngClass]="{
+      'large-iframe-token-container': useLargeIframe,
+      'tokens-container__all-chains': isAllChainsOpened
+    }"
   >
-    <tui-loader *ngLet="loading$ | async as loading" [showLoader]="loading" [overlay]="true">
+    <tui-loader *ngLet="tokensLoading$ | async as loading" [showLoader]="loading" [overlay]="true">
       <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
         <!--standard mode -->
-        <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
+        <div
+          class="tokens-container__empty-list"
+          *ngIf="!state.tokensToShow?.length; else tokenList"
+        >
           <app-empty-list></app-empty-list>
         </div>
 
@@ -23,12 +36,12 @@
               tuiScrollable
               itemSize="50"
               class="tokens-scrollbar tui-zero-scrollbar"
-              [ngClass]="{ 'tokens-scrollbar__empty': !tokensToShow?.length }"
+              [ngClass]="{ 'tokens-scrollbar__empty': !state.tokensToShow?.length }"
               [style.overflow]="loading ? 'hidden' : 'auto'"
             >
               <li
                 *cdkVirtualFor="
-                  let token of tokensToShow;
+                  let token of state.tokensToShow;
                   let i = index;
                   templateCacheSize: 0;
                   trackBy: trackByFn
@@ -41,8 +54,10 @@
               >
                 <app-tokens-list-element
                   [token]="token"
-                  [showAll]="showAll"
+                  [showAll]="isAllChainsOpened"
                   [balanceLoading]="isBalanceLoading$ | async"
+                  [tokenFilter]="state.tokenFilter"
+                  [assetType]="assetType"
                   (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>
               </li>

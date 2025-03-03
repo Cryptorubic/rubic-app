@@ -87,8 +87,8 @@ export class CrossChainService {
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getTokenPrice(fromToken, true),
+      this.tokensService.getTokenPrice(toToken, true)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -136,7 +136,7 @@ export class CrossChainService {
     const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
-    const disabledProviders = Array.from(
+    const disabledProvidersFromApiAndQuery = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
         ...(apiDisabledTradeTypes || []),
@@ -150,7 +150,7 @@ export class CrossChainService {
     );
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
-      nativeBlacklist: disabledProviders,
+      nativeBlacklist: disabledProvidersFromApiAndQuery,
       foreignBlacklist: {
         lifi: [
           ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
@@ -443,11 +443,27 @@ export class CrossChainService {
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
     ).includes(fromBlockchain);
 
+    let disabledProviders = [...disabledTradesTypes];
+
     if (isNonEvmCNChain && this.iframeService.isIframe) {
-      return [...disabledTradesTypes, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
+      disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
     }
 
-    return disabledTradesTypes;
+    const referral = this.sessionStorage.getItem('referral');
+
+    if (referral) {
+      const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
+
+      if (integratorAddress) {
+        disabledProviders = [
+          ...disabledProviders,
+          CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+          CROSS_CHAIN_TRADE_TYPE.CHANGELLY
+        ];
+      }
+    }
+
+    return disabledProviders;
   }
 
   private async sendPreTradeInfo(trade: CrossChainTrade): Promise<string | null> {
