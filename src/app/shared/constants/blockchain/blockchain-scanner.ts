@@ -1242,5 +1242,13 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.SUI]: {
+    baseUrl: 'https://suiscan.xyz/mainnet/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'account/',
+    [ADDRESS_TYPE.TOKEN]: 'coin/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
 };

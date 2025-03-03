@@ -56,7 +56,8 @@ export class SdkLoaderService {
             [CHAIN_TYPE.TRON]: provider.wallet.tronWeb,
             [CHAIN_TYPE.SOLANA]: provider.wallet,
             [CHAIN_TYPE.TON]: provider.wallet,
-            [CHAIN_TYPE.BITCOIN]: provider.wallet
+            [CHAIN_TYPE.BITCOIN]: provider.wallet,
+            [CHAIN_TYPE.SUI]: provider.wallet
           };
           const core = chainTypeMap?.[chainType];
           const walletProviderCore: WalletProviderCore = { address, core };
