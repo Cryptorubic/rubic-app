@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
-import { TransactionReceipt } from 'web3-eth';
+import { TransactionReceipt } from 'web3-core';
 import { TuiNotification } from '@taiga-ui/core';
 import {
   ArbitrumRbcBridgeTrade,
