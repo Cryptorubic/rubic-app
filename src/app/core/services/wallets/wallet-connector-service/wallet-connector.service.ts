@@ -47,6 +47,8 @@ import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-a
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
+import { SuiWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/sui-wallet-adapter';
+import { SuietWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/suiet-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -212,6 +214,12 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.CTRL) {
       return new CtrlWalletAdapter(...defaultConstructorParameters);
+    }
+    if (walletName === WALLET_NAME.SUI_WALLET) {
+      return new SuiWalletAdapter(...defaultConstructorParameters);
+    }
+    if (walletName === WALLET_NAME.SUIET_WALLET) {
+      return new SuietWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
