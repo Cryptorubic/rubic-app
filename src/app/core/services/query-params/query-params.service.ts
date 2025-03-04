@@ -17,10 +17,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { TokensNetworkStateService } from '../tokens/tokens-network-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +82,7 @@ export class QueryParamsService {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensNetworkService: TokensNetworkService,
+    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly router: Router,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
@@ -201,7 +201,7 @@ export class QueryParamsService {
     );
 
     if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkService.setTokensRequestParameters(tokensQueryParams);
+      this.tokensNetworkStateService.setTokensRequestParameters(tokensQueryParams);
     }
   }
 

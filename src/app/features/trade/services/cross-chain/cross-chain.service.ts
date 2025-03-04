@@ -90,11 +90,11 @@ export class CrossChainService {
     let providers: CrossChainCalculatedTradeData[] = [];
     const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
-    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
+    // const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
     return forkJoin([
       this.sdkService.deflationTokenManager.isDeflationToken(new Token(fromToken)),
-      this.tokensService.getAndUpdateTokenPrice(fromToken, true),
-      this.tokensService.getAndUpdateTokenPrice(toToken, true)
+      this.tokensService.getTokenPrice(fromToken, true),
+      this.tokensService.getTokenPrice(toToken, true)
     ]).pipe(
       switchMap(([tokenState, fromPrice, toPrice]) => {
         const fromSdkCompatibleToken = new PriceToken({
@@ -110,7 +110,7 @@ export class CrossChainService {
           of(toSdkCompatibleToken),
           of(tokenState),
           this.getOptions(
-            disabledProviders,
+            disabledTradeTypes,
             fromSdkCompatibleToken,
             toSdkCompatibleToken,
             fromAmount.actualValue
@@ -180,13 +180,14 @@ export class CrossChainService {
     const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
-    const disabledProviders = Array.from(
+    const disabledProvidersFromApiAndQuery = Array.from(
       new Set<CrossChainTradeType>([
         ...disabledTradeTypes,
         ...(apiDisabledTradeTypes || []),
         ...(queryDisabledTradeTypes || [])
       ])
     );
+
     const calculateGas = this.authService.userAddress;
     const timeout = this.calculateTimeoutForChains();
     const providerAddress = await this.proxyService.getIntegratorAddress(
@@ -194,6 +195,12 @@ export class CrossChainService {
       fromAmount,
       toSdkToken
     );
+
+    const disabledProviders = this.getDisabledProviders(
+      disabledProvidersFromApiAndQuery,
+      fromSdkToken.blockchain
+    );
+
     const options: CrossChainManagerCalculationOptions = {
       fromSlippageTolerance: slippageTolerance / 2,
       toSlippageTolerance: slippageTolerance / 2,
@@ -496,11 +503,27 @@ export class CrossChainService {
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
     ).includes(fromBlockchain);
 
+    let disabledProviders = [...disabledTradesTypes];
+
     if (isNonEvmCNChain && this.iframeService.isIframe) {
-      return [...disabledTradesTypes, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
+      disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
     }
 
-    return disabledTradesTypes;
+    const referral = this.sessionStorage.getItem('referral');
+
+    if (referral) {
+      const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
+
+      if (integratorAddress) {
+        disabledProviders = [
+          ...disabledProviders,
+          CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+          CROSS_CHAIN_TRADE_TYPE.CHANGELLY
+        ];
+      }
+    }
+
+    return disabledProviders;
   }
 
   private async sendPreTradeInfo(trade: CrossChainTrade): Promise<string | null> {

@@ -116,7 +116,7 @@ export class StakingService {
 
   public getRbcAmountPrice(): Observable<BigNumber> {
     return from(
-      this.tokensService.getAndUpdateTokenPrice(
+      this.tokensService.getTokenPrice(
         {
           address: '0x3330bfb7332ca23cd071631837dc289b09c33333',
           blockchain: BLOCKCHAIN_NAME.ETHEREUM
