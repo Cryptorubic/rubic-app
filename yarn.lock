@@ -3646,11 +3646,6 @@
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.4.0.tgz#45814aa329f30e4fe0ba49426f49dfccdd066426"
   integrity sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==
 
-"@noble/hashes@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.6.0.tgz#d4bfb516ad6e7b5111c216a5cc7075f4cf19e6c5"
-  integrity sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==
-
 "@noble/hashes@1.7.0":
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.7.0.tgz#5d9e33af2c7d04fee35de1519b80c958b2e35e39"
@@ -17825,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.52.7-alpha-teleswap.17:
-  version "5.52.7-alpha-teleswap.17"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.52.7-alpha-teleswap.17.tgz#591fd5f3839c6c64d32ce711fbc8e3317c724fc8"
-  integrity sha512-4QUGFyY6DfivorfGV7nqKYbkUbNNg+bjMJ9a2Vgw6K/dacVT1gPI2Q8cdjeQkJ5NYyVPhw5qo4yQ7ZvTk7cVtg==
+rubic-sdk@5.55.0:
+  version "5.55.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.55.0.tgz#efe5137edfbf42b1957cd41a6f2af0205cc133fd"
+  integrity sha512-QfamKouwcvxF3aVt0spCq5x8V453Tg3TCV3DeId4MxgyrGdvGnClh1XpljUUXNjKxIgy4zRneScG8+jYlSwh8w==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
