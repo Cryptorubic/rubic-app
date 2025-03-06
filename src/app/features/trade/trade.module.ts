@@ -45,7 +45,6 @@ import { TransactionStateComponent } from './components/transaction-state/transa
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
-import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { TransactionDetailsElementComponent } from '@features/trade/components/swap-info/components/transaction-details-element/transaction-details-element.component';
 import { UserBalanceContainerComponent } from '@features/trade/components/user-balance-container/user-balance-container.component';
@@ -167,7 +166,6 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     PreviewSwapService,
     OnChainApiService,
     SwapTokensUpdaterService,
-    TradePageService,
     DepositService,
     ActionButtonService,
     FormsTogglerService,

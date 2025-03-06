@@ -17,7 +17,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
-import { MAIN_FORM_TYPE, MainFormType } from '@app/features/trade/services/forms-toggler/models';
 
 @Component({
   selector: 'app-asset-selector',
@@ -27,20 +26,9 @@ import { MAIN_FORM_TYPE, MainFormType } from '@app/features/trade/services/forms
   providers: [TuiDestroyService]
 })
 export class AssetSelectorComponent implements OnInit {
-  private _mainFormType: MainFormType = MAIN_FORM_TYPE.SWAP_FORM;
-
   @Input() isDisabled?: boolean = false;
 
   @Input({ required: true }) selectorType: 'from' | 'to';
-
-  @Input({ required: true }) set mainFormType(type: MainFormType) {
-    this._mainFormType = type;
-    this.emptySelectorText = this.getEmptySelectorText();
-  }
-
-  public get mainFormType(): MainFormType {
-    return this._mainFormType;
-  }
 
   @Input() set asset(value: TokenAmount | null) {
     if (value) {

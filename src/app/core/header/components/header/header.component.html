@@ -1,21 +1,6 @@
-<tui-carousel [duration]="0" [draggable]="true">
-  <!--  <ng-container *tuiItem>-->
-  <!--    <app-banner-zk-link-->
-  <!--      href="https://rubic.exchange/blog/bridge-to-zklink-network-and-get-extra-nova-points/"-->
-  <!--      *noFrame-->
-  <!--    ></app-banner-zk-link>-->
-  <!--  </ng-container>-->
-  <!--  <ng-container *tuiItem>-->
-  <!--    <app-banner-taiko-->
-  <!--      href="https://rubic.exchange/blog/how-to-bridge-to-and-from-taiko-and-get-taiko-airdrop/"-->
-  <!--      *noFrame-->
-  <!--    ></app-banner-taiko>-->
-  <!--  </ng-container>-->
-  <!-- <ng-container *tuiItem>
-    <app-banner-birthday href="https://rubic.exchange/birthday4" *noFrame></app-banner-birthday>
-  </ng-container> -->
+<tui-carousel [duration]="0" [draggable]="false">
   <ng-container *tuiItem>
-    <app-banner-zero-fees href="https://rubic.exchange/birthday4"></app-banner-zero-fees>
+    <app-banner-test-api></app-banner-test-api>
   </ng-container>
 </tui-carousel>
 
@@ -59,16 +44,15 @@
   </button>
 
   <button
-    *ngIf="!useLargeIframe"
-    class="staking-button"
+    *ngIf="!useLargeIframe && !isMobile"
+    class="testnets-button"
     tuiButton
     appearance="secondary"
     type="button"
-    [pseudoActive]="isStakingPage"
     size="m"
-    routerLink="/staking"
+    (click)="navigateToTestnets()"
   >
-    Staking
+    Tesnets
   </button>
 
   <!--  <button-->
@@ -116,6 +100,6 @@
   </div>
 
   <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile$ | async"></app-mobile-menu>
+    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
   </ng-container>
 </header>
