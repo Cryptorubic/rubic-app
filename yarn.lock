@@ -3491,7 +3491,7 @@
   dependencies:
     "@noble/hashes" "1.7.0"
 
-"@noble/curves@1.8.1", "@noble/curves@^1.2.0", "@noble/curves@^1.4.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@~1.8.1":
+"@noble/curves@1.8.1", "@noble/curves@^1.2.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@~1.8.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.8.1.tgz#19bc3970e205c99e4bdb1c64a4785706bce497ff"
   integrity sha512-warwspo+UYUPep0Q+vtdVB4Ugn8GGQj8iyB3gnRWsztmUHTI3S1nhdiWNsPUGL0vud7JlRRk1XEu7Lq1KGTnMQ==
@@ -3512,11 +3512,6 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.4.0.tgz#45814aa329f30e4fe0ba49426f49dfccdd066426"
   integrity sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==
-
-"@noble/hashes@1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.6.0.tgz#d4bfb516ad6e7b5111c216a5cc7075f4cf19e6c5"
-  integrity sha512-YUULf0Uk4/mAA89w+k3+yUYh6NrEvxZa5T6SY3wlMvE2chHkxFUUIDI8/XW1QSC357iA5pSnqt7XEhvFOqmDyQ==
 
 "@noble/hashes@1.7.0":
   version "1.7.0"
@@ -13200,10 +13195,10 @@ istanbul-reports@^3.0.2, istanbul-reports@^3.0.5:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
 
-iziswap-sdk@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-3.0.1.tgz#a9ecdbaa005aab6710099e2df19794373bded119"
-  integrity sha512-q8pLN8kY82/kCx9Ht7c1SaiQ/A/Gp/cH35nj+gsI/3oDKQ0kTmftRr/1D51OHrsDlm5kiuAOMKYpaGWJwRHhKQ==
+iziswap-sdk@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/iziswap-sdk/-/iziswap-sdk-1.5.1.tgz#2d05e0f564500651258dc2a35dd38606864e61d1"
+  integrity sha512-79a3u3f7aDedAGXIv2qNfL7vLS6TBtJjl94N/vQZL2TCXtiK4o9NvMhhd4gGscwjSyUVZwhlx26/M8G/kERf3Q==
   dependencies:
     bignumber.js "^9.0.2"
     http "^0.0.1-security"
@@ -15799,19 +15794,6 @@ own-keys@^1.0.1:
     get-intrinsic "^1.2.6"
     object-keys "^1.1.1"
     safe-push-apply "^1.0.0"
-
-ox@0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/ox/-/ox-0.1.2.tgz#0f791be2ccabeaf4928e6d423498fe1c8094e560"
-  integrity sha512-ak/8K0Rtphg9vnRJlbOdaX9R7cmxD2MiSthjWGaQdMk3D7hrAlDoM+6Lxn7hN52Za3vrXfZ7enfke/5WjolDww==
-  dependencies:
-    "@adraffy/ens-normalize" "^1.10.1"
-    "@noble/curves" "^1.6.0"
-    "@noble/hashes" "^1.5.0"
-    "@scure/bip32" "^1.5.0"
-    "@scure/bip39" "^1.4.0"
-    abitype "^1.0.6"
-    eventemitter3 "5.0.1"
 
 ox@0.6.7:
   version "0.6.7"
@@ -20730,14 +20712,6 @@ web3@^1.7.3, web3@^1.8.0, web3@^1.8.1:
     web3-net "1.10.4"
     web3-shh "1.10.4"
     web3-utils "1.10.4"
-
-webauthn-p256@0.0.10:
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/webauthn-p256/-/webauthn-p256-0.0.10.tgz#877e75abe8348d3e14485932968edf3325fd2fdd"
-  integrity sha512-EeYD+gmIT80YkSIDb2iWq0lq2zbHo1CxHlQTeJ+KkCILWpVy3zASH3ByD4bopzfk0uCwXxLqKGLqp2W4O28VFA==
-  dependencies:
-    "@noble/curves" "^1.4.0"
-    "@noble/hashes" "^1.4.0"
 
 webdriver-js-extender@2.1.0:
   version "2.1.0"
