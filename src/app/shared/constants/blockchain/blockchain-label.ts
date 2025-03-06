@@ -105,7 +105,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.NEM]: 'NEM',
   [BLOCKCHAIN_NAME.STELLAR]: 'Stellar',
   [BLOCKCHAIN_NAME.MONERO]: 'Monero',
-  [BLOCKCHAIN_NAME.RIPPLE]: 'Ripple',
+  [BLOCKCHAIN_NAME.RIPPLE]: 'XRP Ledger',
   [BLOCKCHAIN_NAME.TEZOS]: 'Tezos',
   [BLOCKCHAIN_NAME.VERGE]: 'Verge',
   [BLOCKCHAIN_NAME.SYMBOL]: 'Symbol',
@@ -128,7 +128,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
-  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: 'Berachain',
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'Blast Testnet',
   [BLOCKCHAIN_NAME.BLAST]: 'Blast',
   [BLOCKCHAIN_NAME.HOLESKY]: 'Holesky',
@@ -148,5 +148,12 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.GRAVITY]: 'Gravity',
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain',
   [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
-  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium'
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
+  [BLOCKCHAIN_NAME.MORPH]: 'Morph',
+  [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
+  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
+  [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad',
+  [BLOCKCHAIN_NAME.SUI]: 'Sui'
 };

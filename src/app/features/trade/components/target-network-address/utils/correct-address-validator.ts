@@ -4,22 +4,22 @@ import { AssetType } from '@features/trade/models/asset';
 
 export function correctAddressValidator(
   fromAssetType: AssetType,
-  toBlockchain: BlockchainName
+  validatedChain: BlockchainName
 ): AsyncValidatorFn {
-  const toChainType = BlockchainsInfo.getChainType(toBlockchain);
+  const validatedChainType = BlockchainsInfo.getChainType(validatedChain);
   const fromChainType = BlockchainsInfo.getChainType(fromAssetType as BlockchainName);
 
   return async (control: AbstractControl): Promise<ValidationErrors | null> => {
     const address = control.value;
 
     const isAddressCorrectValue =
-      address === '' || (await Web3Pure[toChainType].isAddressCorrect(address));
+      address === '' || (await Web3Pure[validatedChainType].isAddressCorrect(address));
 
-    if (!isAddressCorrectValue && (address || fromChainType !== toChainType)) {
+    if (!isAddressCorrectValue && (address || fromChainType !== validatedChainType)) {
       return { wrongAddress: address };
     }
 
-    if (!toChainType) {
+    if (!validatedChainType) {
       return !address?.length ? { wrongAddress: address } : null;
     }
     return null;

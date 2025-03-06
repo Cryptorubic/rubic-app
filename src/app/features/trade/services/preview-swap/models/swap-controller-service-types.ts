@@ -4,4 +4,5 @@ export interface CrossChainSwapAdditionalParams {
   squidrouterId?: string;
   retroBridgeId?: string;
   simpleSwapId?: string;
+  changellySwapId?: string;
 }

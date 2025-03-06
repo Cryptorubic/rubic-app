@@ -1,7 +1,5 @@
 @use 'src/scss/core' as *;
 
-$token-card-height: 55px;
-
 :host {
   width: 100%;
 
@@ -32,6 +30,10 @@ $token-card-height: 55px;
     .tokens-scrollbar {
       height: 30vh;
     }
+  }
+
+  &__all-chains {
+    height: 413px;
   }
 
   &__empty-list {
@@ -93,7 +95,6 @@ tui-loader {
       }
     }
   }
-
 
   &__item {
     border-radius: var(--tui-radius-m);

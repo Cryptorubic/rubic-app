@@ -79,6 +79,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}celerim.png`,
     name: 'Celerim'
   },
+  changelly: {
+    averageTime: 5,
+    color: '#8e28fe',
+    image: `${imageBasePath}changelly.svg`,
+    name: 'Changelly'
+  },
   changenow: {
     averageTime: 5,
     color: '#8888bb',
@@ -312,6 +318,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#e81899',
     image: `${imageBasePath}taiko.svg`,
     name: 'Taiko bridge'
+  },
+  tele_swap: {
+    averageTime: 5,
+    color: '#78FF39',
+    image: `${imageBasePath}teleswap.svg`,
+    name: 'TeleSwap'
   },
   thorchain: {
     averageTime: 5,

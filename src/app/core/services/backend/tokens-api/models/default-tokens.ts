@@ -1060,5 +1060,23 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.SONIC]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SONIC], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.MORPH]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.MORPH], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.FRAXTAL]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.FRAXTAL], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.BERACHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.SONEIUM]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SONEIUM], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.UNICHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.UNICHAIN], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.SUI]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.SUI], ...defaultTokenParams } as Token
   ]
 };

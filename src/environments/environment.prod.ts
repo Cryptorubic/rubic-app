@@ -5,7 +5,7 @@ export const ENVIRONMENT = {
   production: true,
 
   apiBaseUrl: '//api.rubic.exchange/api',
-  apiTokenUrl: 'https://tokens.rubic.exchange/api',
+  apiTokenUrl: 'https://api.rubic.exchange/api',
   websocketBaseUrl: 'wss://api.rubic.exchange/ws',
 
   staking: STAKING_CONFIG_PROD,

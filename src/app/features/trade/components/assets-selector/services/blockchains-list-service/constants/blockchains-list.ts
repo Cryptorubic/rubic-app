@@ -11,6 +11,9 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     return 0.75;
   }
+  if (blockchain === BLOCKCHAIN_NAME.SUI) {
+    return 0.7;
+  }
   if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     return 0.6;
   }
@@ -77,7 +80,8 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.EOS]: ['EOS'],
   [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
   [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
-  [BLOCKCHAIN_NAME.XDC]: ['XDC']
+  [BLOCKCHAIN_NAME.XDC]: ['XDC'],
+  [BLOCKCHAIN_NAME.SUI]: ['SUI']
 };
 
 export const notEvmChangeNowBlockchainsList = {
@@ -121,7 +125,8 @@ export const notEvmChangeNowBlockchainsList = {
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
 
-  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC
+  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC,
+  [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI
   // [BLOCKCHAIN_NAME.KADENA]: BLOCKCHAIN_NAME.KADENA,
   // [BLOCKCHAIN_NAME.AION]: BLOCKCHAIN_NAME.AION,
   // [BLOCKCHAIN_NAME.ARDOR]: BLOCKCHAIN_NAME.ARDOR,
@@ -214,6 +219,17 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.BERACHAIN,
+    rank: 0.75,
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.NEW,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2
+    ]
+  },
+  {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
@@ -223,6 +239,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: [BlockchainTags.EVM, BlockchainTags.PROMO, BlockchainTags.POPULAR]
   },
+  {
+    name: BLOCKCHAIN_NAME.UNICHAIN,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,
@@ -230,9 +251,30 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.MORPH,
+    rank: 0.5,
+    tags: [
+      'ETH',
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW,
+      BlockchainTags.POPULAR
+    ]
+  },
+  {
+    name: BLOCKCHAIN_NAME.FRAXTAL,
+    rank: 0.5,
+    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  },
+  {
     name: BLOCKCHAIN_NAME.SONIC,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  },
+  {
+    name: BLOCKCHAIN_NAME.SONEIUM,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
@@ -410,6 +452,17 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList
 ];
+
+export const blockchainRanks: Record<BlockchainName, number> = {
+  ...Object.values(BLOCKCHAIN_NAME).reduce(
+    (acc, name) => ({ ...acc, [name]: 0 }),
+    {} as Record<BlockchainName, number>
+  ),
+  ...blockchainsList.reduce(
+    (acc, chainConfig) => ({ ...acc, [chainConfig.name]: chainConfig.rank }),
+    {} as Record<BlockchainName, number>
+  )
+};
 
 export type NotEvmChangeNowBlockchainsList =
   (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];

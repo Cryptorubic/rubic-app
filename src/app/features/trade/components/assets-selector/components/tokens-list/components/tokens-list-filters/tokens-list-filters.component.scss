@@ -1,0 +1,76 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .filters-wrapper {
+    @include flex(row, end, space-between);
+    gap: 5px;
+
+    width: 100%;
+    max-width: 375px;
+    height: 56px;
+    padding: 5px;
+
+    background-color: var(--io-background);
+
+    @include b($mobile-md) {
+      margin-top: 5px;
+
+      background-color: transparent;
+      border-radius: var(--tui-radius-m);
+    }
+  }
+
+  .filters-wrapper__next-btn,
+  .filters-wrapper__prev-btn {
+    padding: 11px 5px;
+
+    background-color: #2c2d3e;
+    border-radius: var(--tui-radius-s);
+
+    &:hover {
+      background-color: var(--tui-secondary-hover);
+    }
+  }
+
+  .filters-wrapper__next-btn {
+    img {
+      transform: rotateZ(270deg);
+    }
+  }
+
+  .filters-wrapper__prev-btn {
+    img {
+      transform: rotateZ(90deg);
+    }
+  }
+
+  .token-filter {
+    @include flex(row, center, center);
+    gap: 7px;
+
+    width: 155%;
+    height: 41px;
+    margin: 0 auto;
+    margin-left: -18px;
+    
+    background: #2c2d3e;
+    border-radius: 8px;
+
+    transition: all 100ms;
+
+    &:hover {
+      background: var(--tui-secondary-hover);
+      cursor: pointer;
+    }
+        
+    &__active {
+      background: var(--tui-secondary-active);
+    }
+  }
+
+  .token-filter__text {
+    line-height: 15px;
+  }
+
+  // .token-filter__icon {}
+}

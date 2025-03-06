@@ -5,10 +5,10 @@ import { correctAddressValidator } from '@features/trade/components/target-netwo
 
 export function getCorrectAddressValidator(inputForm: {
   fromAssetType: AssetType;
-  toBlockchain: BlockchainName;
+  validatedChain: BlockchainName;
 }): AsyncValidatorFn {
-  if (inputForm.toBlockchain) {
-    return correctAddressValidator(inputForm.fromAssetType, inputForm.toBlockchain);
+  if (inputForm.validatedChain) {
+    return correctAddressValidator(inputForm.fromAssetType, inputForm.validatedChain);
   }
   return () => new Promise(resolve => resolve(null));
 }

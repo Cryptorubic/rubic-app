@@ -41,7 +41,6 @@ export class DepositService {
     receiverAddress: string
   ): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapsFormService.inputValue;
-    const { toAmount } = this.swapsFormService.outputValue;
     const selectedTrade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
     const trade = {
       id: paymentInfo.id,
@@ -49,7 +48,7 @@ export class DepositService {
       fromToken,
       toToken,
       fromAmount: fromAmount.visibleValue,
-      toAmount: toAmount.toFixed(),
+      toAmount: paymentInfo.toAmount,
       timestamp: Date.now(),
 
       depositAddress: paymentInfo.depositAddress,

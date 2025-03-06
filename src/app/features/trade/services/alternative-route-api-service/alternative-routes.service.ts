@@ -71,7 +71,7 @@ export class AlternativeRoutesService {
     params: AlternativeRoutesRequestParams
   ): Observable<AlternativeTokenPairs[]> {
     return this.httpClient
-      .get<AlternativeRouteDTO>(`${ENVIRONMENT.apiTokenUrl}/v1/token_pairs/`, {
+      .get<AlternativeRouteDTO>(`${ENVIRONMENT.apiTokenUrl}/v2/token_pairs/`, {
         params: {
           ...params
         }

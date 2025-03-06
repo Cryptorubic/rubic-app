@@ -2,8 +2,17 @@
   <div class="token-card" (click)="selectToken.emit(token)">
     <div class="token-card__image-container">
       <img
+        class="token-card__image-container-token"
         [src]="token.image || DEFAULT_TOKEN_IMAGE"
         [alt]="token.name"
+        loading="lazy"
+        (error)="onImageError($event)"
+      />
+      <img
+        *ngIf="showAll"
+        class="token-card__image-container-blockchain"
+        [src]="BLOCKCHAIN_ICON[token.blockchain] || DEFAULT_TOKEN_IMAGE"
+        [alt]="token.blockchain"
         loading="lazy"
         (error)="onImageError($event)"
       />
@@ -11,25 +20,37 @@
 
     <div class="token-card__symbol-name-container">
       <div class="token-card__symbol-container">
-        <span class="token-card__symbol">{{
-          token.symbol.length > 10 ? token.symbol.slice(0, 10) + '...' : token.symbol
-        }}</span>
+        <span class="token-card__symbol">{{ token.symbol | shortenText : 10 }}</span>
 
-        <div class="token-card__actions">
-          <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
-            <div class="token-card__security-container">
-              <div
-                class="token-card__security-container-security-icon"
-                [inlineSVG]="
-                  'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
-                "
-              ></div>
-            </div>
-          </ng-container>
+        <div
+          *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN"
+          class="token-card__actions"
+        >
+          <div class="token-card__security-container">
+            <div
+              class="token-card__security-container-security-icon"
+              [inlineSVG]="
+                'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
+              "
+            ></div>
+          </div>
         </div>
       </div>
-      <span class="token-card__name">{{ token.name }}</span>
+
+      <span class="token-card__name">{{ token.name | shortenText : 20 }}</span>
     </div>
+
+    <ng-container *ngLet="token | showPriceChange : tokenFilter : assetType as pcPercent">
+      <div
+        *ngIf="pcPercent !== null"
+        class="token-card__price-change-container"
+        [class.green]="pcPercent >= 0"
+        [class.red]="pcPercent < 0"
+      >
+        <span class="arrow" [style.transform]="pcPercent > 0 && 'rotateZ(180deg)'">▾</span>
+        <span class="price-change">{{ pcPercent + '%' | mathAbs }}</span>
+      </div>
+    </ng-container>
 
     <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
       <div class="token-card__amount" *ngIf="token.amount.gt(0)">

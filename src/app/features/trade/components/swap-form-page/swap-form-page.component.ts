@@ -12,9 +12,8 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
-import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { RefundService } from '../../services/refund-service/refund.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -35,8 +34,6 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
   ]
 })
 export class SwapFormPageComponent {
-  public readonly selectedForm$ = this.formsTogglerService.selectedForm$;
-
   public readonly calculationStatus$ = this.swapsStateService.calculationStatus$;
 
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
@@ -85,9 +82,8 @@ export class SwapFormPageComponent {
     private readonly modalService: ModalService,
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
-    private readonly formsTogglerService: FormsTogglerService,
     private readonly swapsStateService: SwapsStateService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly refundService: RefundService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -98,6 +94,9 @@ export class SwapFormPageComponent {
       if (blockchain) {
         this.tokensStoreService.startBalanceCalculating(blockchain);
       }
+    });
+    this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
+      this.refundService.onSwapFormInputChanged(inputValue);
     });
   }
 

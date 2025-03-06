@@ -1,0 +1,85 @@
+@use 'src/scss/core' as *;
+
+:host {
+
+  @include b($mobile-md) {
+    .asset-types-aside__list-element {
+      width: 80px;
+      height: 62px;
+
+      border-radius: 16px;
+
+      ::ng-deep {
+        .t-content {
+          justify-content: center;
+        }
+      }
+    }
+
+    .icon {
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+
+  .asset-types-aside__list-element {
+    width: 169px;
+    height: 41px;
+
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--tui-secondary-hover);
+    }
+
+    app-blockchains-promo-badge {
+      z-index: 1;
+
+      pointer-events: auto;
+    }
+  }
+
+  .disabled {
+    background: var(--tui-secondary-hover);
+    cursor: not-allowed;
+  }
+
+  .selected {
+    ::ng-deep {
+      .t-wrapper {
+        background: var(--tui-secondary-hover);
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .icon {
+    display: flex;
+    flex-direction: row;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+    width: 100%;
+    height: 60px;
+    padding: 5px;
+    overflow: hidden;
+  }
+
+  .icon-label {
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .icon-img {
+    width: 24px;
+    height: 24px;
+
+    border-radius: 50%;
+  }
+
+  app-blockchains-promo-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}

@@ -6,7 +6,6 @@ import {
   Input,
   Output
 } from '@angular/core';
-// import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/token-security';
@@ -19,6 +18,9 @@ import {
   ETHEREUM_PLATFORM_TOKEN_ADDRESS
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
+import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
+import { TokenFilter } from '../../../../models/token-filters';
+import { AssetType } from '@app/features/trade/models/asset';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -31,7 +33,15 @@ export class TokensListElementComponent {
 
   @Input() balanceLoading = false;
 
+  @Input() showAll: boolean = false;
+
+  @Input({ required: true }) tokenFilter: TokenFilter;
+
+  @Input({ required: true }) assetType: AssetType;
+
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
+
+  public readonly BLOCKCHAIN_ICON = blockchainIcon;
 
   public readonly DEFAULT_TOKEN_IMAGE = DEFAULT_TOKEN_IMAGE;
 
@@ -51,7 +61,7 @@ export class TokensListElementComponent {
   }
 
   public get securityStatus(): TokenSecurityStatus {
-    if (GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain) === false) {
+    if (!GO_PLUS_AVAILABLE_NETWORKS.includes(this.token.blockchain)) {
       return TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN;
     }
 

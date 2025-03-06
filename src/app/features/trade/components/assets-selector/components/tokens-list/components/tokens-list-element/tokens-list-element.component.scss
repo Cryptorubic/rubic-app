@@ -1,15 +1,13 @@
 @use 'src/scss/core' as *;
 
 .token-card-container {
-  display: flex;
-  gap: var(--tui-padding-s);
+  @include flex(row, center, space-between);
 }
 
 .token-card {
   display: flex;
-  gap: var(--tui-padding-m);
   align-items: center;
-  width: 100%;
+  width: 310px;
   padding: var(--tui-padding-xs) var(--tui-padding-s);
 
   &:hover {
@@ -18,11 +16,25 @@
   }
 
   &__image-container {
-    display: flex;
+    position: relative;
 
-    img {
+    display: flex;
+    margin-right: 10px;
+
+    &-token {
       width: 32px;
       height: 32px;
+
+      border-radius: 25%;
+    }
+
+    &-blockchain {
+      position: absolute;
+      top: -2px;
+      right: -5px;
+
+      width: 16px;
+      height: 16px;
 
       border-radius: 25%;
     }
@@ -31,7 +43,10 @@
   &__symbol-name-container {
     display: flex;
     flex-direction: column;
-    margin-right: auto;
+    width: 95px;
+    margin-right: 40px;
+
+    white-space: nowrap;
   }
 
   &__symbol-container {
@@ -67,10 +82,33 @@
     line-height: 12px;
   }
 
+  &__price-change-container {
+    @include flex(row, center, space-around);
+    width: 63px;
+    max-height: 16px;
+    margin-right: 10px;
+    padding: 0 2px;
+
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+
+    border-radius: 5px;
+  }
+
+  .green {
+    background: #1aa773;
+  }
+
+  .red {
+    background: #a93d3f;
+  }
+
   &__amount-container {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    margin-right: 5px;
   }
 }
 
@@ -89,7 +127,7 @@
     &__image-container {
       display: flex;
 
-      img {
+      &-token {
         width: 35px;
         height: 35px;
       }

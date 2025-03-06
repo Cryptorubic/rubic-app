@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
+import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 @Injectable()
 export class SearchQueryService {
@@ -18,27 +17,22 @@ export class SearchQueryService {
     return this._query$.value;
   }
 
-  public set query(value: string) {
+  public setSearchQuery(value: string): void {
     this._query$.next(value.trim());
   }
 
   constructor(
-    public readonly assetsSelectorService: AssetsSelectorService,
-    private readonly destroy$: TuiDestroyService,
-    private readonly formsTogglerService: FormsTogglerService
+    public readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.subscribeOnSelectorListTypeChange();
   }
 
   private subscribeOnSelectorListTypeChange(): void {
-    this.assetsSelectorService.selectorListType$
-      .pipe(
-        combineLatestWith(this.formsTogglerService.selectedForm$),
-        distinctUntilChanged(),
-        takeUntil(this.destroy$)
-      )
+    this.assetsSelectorStateService.selectorListType$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.query = '';
+        this.setSearchQuery('');
       });
   }
 }

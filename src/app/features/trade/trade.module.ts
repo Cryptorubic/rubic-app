@@ -45,7 +45,6 @@ import { TransactionStateComponent } from './components/transaction-state/transa
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SuccessSwapInfoComponent } from './components/success-swap-info/success-swap-info.component';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
-import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { TransactionDetailsElementComponent } from '@features/trade/components/swap-info/components/transaction-details-element/transaction-details-element.component';
 import { UserBalanceContainerComponent } from '@features/trade/components/user-balance-container/user-balance-container.component';
@@ -62,12 +61,14 @@ import { FormHeaderComponent } from './components/form-header/form-header.compon
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
 import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
-import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
-import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
-import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { DepositService } from './services/deposit/deposit.service';
 import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
 import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
+import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
+import { AlternativeRouteElementComponent } from './components/alternative-route-element/alternative-route-element.component';
+import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
+import { RefundService } from './services/refund-service/refund.service';
+import { RefundAddressComponent } from './components/refund-address/refund-address.component';
 
 @NgModule({
   declarations: [
@@ -100,7 +101,8 @@ import { DepositTradeInfoComponent } from './components/deposit-trade-info/depos
     PromotionBadgeComponent,
     FormHeaderComponent,
     AlternativeRouteElementComponent,
-    AlternativeRoutesListComponent
+    AlternativeRoutesListComponent,
+    RefundAddressComponent
   ],
   exports: [],
   imports: [
@@ -164,14 +166,14 @@ import { DepositTradeInfoComponent } from './components/deposit-trade-info/depos
     PreviewSwapService,
     OnChainApiService,
     SwapTokensUpdaterService,
-    TradePageService,
     DepositService,
     ActionButtonService,
     FormsTogglerService,
     TradeInfoManager,
     BlockchainsListService,
     FormsTogglerService,
-    AlternativeRoutesService
+    AlternativeRoutesService,
+    RefundService
     // SettingsService,
     // RefreshService,
     // TradeService,

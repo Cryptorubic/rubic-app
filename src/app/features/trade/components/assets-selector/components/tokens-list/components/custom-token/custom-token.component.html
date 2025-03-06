@@ -1,11 +1,13 @@
-<div class="custom-token">
+<div *ngLet="customToken$ | async as customToken" class="custom-token">
   <div
     class="custom-token__element"
-    [ngClass]="{ 'custom-token__element_disabled': !token.available }"
+    [ngClass]="{ 'custom-token__element_disabled': !customToken.available }"
   >
     <app-tokens-list-element
-      [token]="token"
-      [tuiHint]="!token.available ? disabledTokenHint : null"
+      [token]="customToken"
+      [tokenFilter]="tokenFilter"
+      [assetType]="assetType"
+      [tuiHint]="!customToken.available ? disabledTokenHint : null"
       tuiHintAppearance="error"
       tuiHintDirection="bottom-right"
     >
@@ -13,16 +15,16 @@
   </div>
 
   <button
-    *ngIf="token.available"
+    *ngIf="customToken.available"
     tuiButton
     appearance="secondary"
     type="button"
     size="m"
     class="custom-token__button"
-    (click)="onImportClick()"
-    [disabled]="!token.available"
+    (click)="onImportClick(customToken)"
+    [disabled]="!customToken.available"
   >
-    Import {{ token.symbol }}
+    Import {{ customToken.symbol }}
   </button>
 </div>
 

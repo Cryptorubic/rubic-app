@@ -12,6 +12,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
+import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -31,6 +32,7 @@ export class BlockchainsListComponent implements OnDestroy {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { formType: FormType }>,
     private readonly blockchainsListService: BlockchainsListService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
     public readonly formsTogglerService: FormsTogglerService,
@@ -38,7 +40,7 @@ export class BlockchainsListComponent implements OnDestroy {
   ) {}
 
   public get formType(): FormType {
-    return this.context?.data?.formType || this.assetsSelectorService.formType;
+    return this.context?.data?.formType || this.assetsSelectorStateService.formType;
   }
 
   ngOnDestroy(): void {

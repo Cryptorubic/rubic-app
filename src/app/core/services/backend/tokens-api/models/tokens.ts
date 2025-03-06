@@ -1,12 +1,11 @@
-import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
-  TOKENS = 'v1/tokens/',
-  FAVORITE_TOKENS = 'v1/tokens/favorite/',
-  TOKENS_SECURITY = 'v1/tokens_security/unknown_token'
+  TOKENS = 'v2/tokens/',
+  FAVORITE_TOKENS = 'v2/tokens/favorite/',
+  TOKENS_SECURITY = 'v2/tokens_security/unknown_token'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -29,10 +28,22 @@ export interface BackendToken {
   type: Token['type'];
 }
 
+export interface BackendTokenForAllChains extends BackendToken {
+  network: BlockchainName;
+  network_rank: number;
+}
+
+export interface RatedBackendToken extends BackendToken {
+  network: BlockchainName;
+  source_rank: number;
+  usdPriceChangePercentage24h: number;
+  usdPriceChangePercentage7d: number;
+}
+
 export interface TokensBackendResponse {
   readonly count: number;
-  readonly next: string;
-  readonly previous: string;
+  readonly next: string | null;
+  readonly previous: string | null;
   readonly results: BackendToken[];
 }
 
@@ -41,7 +52,7 @@ export interface TokenSecurityBackendResponse {
 }
 
 export interface TokensRequestQueryOptions {
-  readonly network: BlockchainName;
+  readonly network?: BlockchainName;
   readonly address?: string;
   readonly symbol?: string;
 }
@@ -49,12 +60,6 @@ export interface TokensRequestQueryOptions {
 export interface TokensRequestNetworkOptions {
   readonly network: BlockchainName;
   readonly page: number;
-}
-
-export interface TokensListResponse {
-  total: number;
-  result: List<Token>;
-  next: string;
 }
 
 export const DEFAULT_PAGE_SIZE = 200;

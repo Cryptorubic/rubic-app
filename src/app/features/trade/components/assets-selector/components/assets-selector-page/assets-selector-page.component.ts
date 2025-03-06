@@ -22,6 +22,7 @@ import { TokensListTypeService } from '@features/trade/components/assets-selecto
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
+import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -31,15 +32,13 @@ import { TradePageService } from '@app/features/trade/services/trade-page/trade-
   providers: [AssetsSelectorServices, TuiDestroyService]
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
-  // @Input() public idPrefix: string;
-
   @Input() set type(type: 'from' | 'to') {
     this.assetsSelectorService.initParameters({ formType: type });
   }
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
-  public readonly selectorListType$ = this.assetsSelectorService.selectorListType$;
+  public readonly selectorListType$ = this.assetsSelectorStateService.selectorListType$;
 
   public readonly headerText$ = this.selectorListType$.pipe(
     map(type => (type === 'blockchains' ? 'Blockchains List' : 'Select Chain and Token'))
@@ -51,13 +50,13 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService
   ) {
-    this.assetsSelectorService.initParameters({ formType: this.type });
     this.subscribeOnAssetsSelect();
   }
 
@@ -77,12 +76,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
    * Sets window height through html class name, to prevent broken scroll in Safari.
    */
   private setWindowHeight(): void {
-    this.document.documentElement.style.setProperty(
-      '--window-inner-height',
-      `${window.innerHeight}px`
-    );
-    this.document.documentElement.classList.add('is-locked');
-    this.document.documentElement.classList.add('scroll-y');
+    if (this.isMobile) {
+      this.document.documentElement.style.setProperty(
+        '--window-inner-height',
+        `${window.innerHeight}px`
+      );
+      this.document.documentElement.classList.add('is-locked');
+      this.document.documentElement.classList.add('scroll-y');
+    }
   }
 
   private resetWindowHeight(): void {
@@ -90,7 +91,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnAssetsSelect(): void {
-    this.assetsSelectorService.assetSelected$
+    this.assetsSelectorStateService.assetSelected$
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedAsset => {
         if (isMinimalToken(selectedAsset)) {

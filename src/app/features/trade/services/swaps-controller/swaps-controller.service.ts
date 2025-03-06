@@ -327,9 +327,15 @@ export class SwapsControllerService {
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, true);
+              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, {
+                skipAmountCheck: true,
+                useCacheData: true
+              });
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash, true);
+              txHash = await this.onChainService.swapTrade(trade, callback.onHash, {
+                skipAmountCheck: true,
+                useCacheData: true
+              });
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
@@ -497,6 +503,9 @@ export class SwapsControllerService {
     }
     if ('simpleSwapId' in trade) {
       params.simpleSwapId = trade.simpleSwapId as string;
+    }
+    if ('changellyId' in trade) {
+      params.changellySwapId = trade.changellyId as string;
     }
 
     onSwap?.(params);

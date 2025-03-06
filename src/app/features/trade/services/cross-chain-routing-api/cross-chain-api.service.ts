@@ -129,9 +129,10 @@ export class CrossChainApiService {
       ...('squidrouterRequestId' in trade && {
         squidrouter_request_id: trade.squidrouterRequestId
       }),
-      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
       ...('simpleSwapId' in trade && { simpleswap_id: trade.simpleSwapId }),
-      ...(referral && { influencer: referral })
+      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
+      ...('changellyId' in trade && { changelly_id: trade.changellyId }),
+      ...(referral && { referrer: referral })
     };
 
     await firstValueFrom(
@@ -204,7 +205,7 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...(referral && { influencer: referral })
+      ...(referral && { referrer: referral })
     };
 
     return firstValueFrom(

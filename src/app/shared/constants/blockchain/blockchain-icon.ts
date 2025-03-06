@@ -16,7 +16,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.AVALANCHE]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.BAND_PROTOCOL]: `${basePath}band-protocol.svg`,
   [BLOCKCHAIN_NAME.BASE]: `${basePath}base.svg`,
-  [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}default-chain.png`,
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: `${basePath}default-chain.png`,
   [BLOCKCHAIN_NAME.BITCOIN]: `${basePath}bitcoin.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: `${basePath}bitcoin-cash.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_DIAMOND]: `${basePath}bitcoin-diamond.svg`,
@@ -150,5 +150,12 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.GRAVITY]: `${basePath}gravity.svg`,
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: `${basePath}unichain-testnet.svg`,
   [BLOCKCHAIN_NAME.SONIC]: `${basePath}sonic.svg`,
-  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: `${basePath}soneium-testnet.webp`
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: `${basePath}soneium-testnet.webp`,
+  [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.svg`,
+  [BLOCKCHAIN_NAME.FRAXTAL]: `${basePath}fraxtal.svg`,
+  [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}berachain.svg`,
+  [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
+  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`,
+  [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`,
+  [BLOCKCHAIN_NAME.SUI]: `${basePath}sui.svg`
 };

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { BehaviorSubject, combineLatestWith, distinctUntilChanged, takeUntil } from 'rxjs';
-import { AssetsSelectorService } from '../assets-selector-service/assets-selector.service';
+import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 @Injectable()
 export class AssetsSearchQueryService {
@@ -19,7 +19,7 @@ export class AssetsSearchQueryService {
   }
 
   constructor(
-    public readonly assetsSelectorService: AssetsSelectorService,
+    public readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly destroy$: TuiDestroyService,
     private readonly formsTogglerService: FormsTogglerService
   ) {
@@ -27,7 +27,7 @@ export class AssetsSearchQueryService {
   }
 
   private subscribeOnSelectorListTypeChange(): void {
-    this.assetsSelectorService.selectorListType$
+    this.assetsSelectorStateService.selectorListType$
       .pipe(
         combineLatestWith(this.formsTogglerService.selectedForm$),
         distinctUntilChanged(),
