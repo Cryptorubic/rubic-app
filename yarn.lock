@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.55.1-alpha-flare-openocean.0:
-  version "5.55.1-alpha-flare-openocean.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.55.1-alpha-flare-openocean.0.tgz#307353ac2867142b39ac4ef781a89a3c34b9b4fb"
-  integrity sha512-OkHQWc+TceDTb15xaLYAko4j/FgQ2QWcKNCBugi2HKKHnxmxGkNrZiYyvzrB4dYaSSAHjrfZ5yJjBNSPPkh+NA==
+rubic-sdk@5.55.1-alpha-flare-openocean.1:
+  version "5.55.1-alpha-flare-openocean.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.55.1-alpha-flare-openocean.1.tgz#c1459705e04e6d83713cdee94611ecc5fa880fa9"
+  integrity sha512-llCODEgrx7CZSDzPCo/GT98r9kSMOQf57unYcjldORmnxrwofHjfMu/BZO846qEU3arJl1EeVQ2CEQpTNoa85g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
