@@ -88,7 +88,7 @@
     "ngx-cookie-service": "^16.0.0",
     "querystring-es3": "^0.2.1",
     "rpc-websockets": "7.9.0",
-    "rubic-sdk": "6.0.0-alpha-new-sdk-fixes.13",
+    "rubic-sdk": "6.0.0-alpha-new-sdk-fixes.14",
     "rxjs": "7.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "^1.21.1",
