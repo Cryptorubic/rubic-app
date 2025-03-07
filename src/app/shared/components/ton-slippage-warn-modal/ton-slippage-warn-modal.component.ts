@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
-import { Token } from '@cryptorubic/core';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { compareAddresses, TonOnChainTrade } from 'rubic-sdk';
+import { compareAddresses, Token, TokenAmount, TonOnChainTrade } from 'rubic-sdk';
 
 interface TxStep {
   img: string;
@@ -56,14 +55,14 @@ export class TonSlippageWarnModalComponent {
       const to = step.path[1];
 
       if (isFirstStep) {
-        const fromTokenImg = this.getTokenImage(from);
-        const toTokenImg = this.getTokenImage(to);
+        const fromTokenImg = this.getTokenImage(from as TokenAmount);
+        const toTokenImg = this.getTokenImage(to as TokenAmount);
         routingPath.push(
           { img: fromTokenImg, symbol: from.symbol },
           { img: toTokenImg, symbol: to.symbol }
         );
       } else {
-        const toTokenImg = this.getTokenImage(to);
+        const toTokenImg = this.getTokenImage(to as TokenAmount);
         routingPath.push({ img: toTokenImg, symbol: to.symbol });
       }
     }
