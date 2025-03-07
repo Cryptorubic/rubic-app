@@ -35,7 +35,6 @@ import { RefreshService } from '@features/trade/services/refresh-service/refresh
 import {
   // ALGB_TOKEN,
   BLOCKCHAIN_NAME,
-  ChangenowCrossChainTrade,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -420,23 +419,23 @@ export class SwapsControllerService {
   ): Promise<void> {
     const params: CrossChainSwapAdditionalParams = {};
 
-    if (trade instanceof ChangenowCrossChainTrade) {
-      params.changenowId = trade.changenowId as string;
+    if (trade.uniqueInfo.changenowId) {
+      params.changenowId = trade.uniqueInfo.changenowId;
     }
-    if ('rangoRequestId' in trade) {
-      params.rangoRequestId = trade.rangoRequestId as string;
+    if (trade.uniqueInfo.rangoRequestId) {
+      params.rangoRequestId = trade.uniqueInfo.rangoRequestId;
     }
-    if ('squidrouterRequestId' in trade) {
-      params.squidrouterId = trade.squidrouterRequestId as string;
+    if (trade.uniqueInfo.squidrouterRequestId) {
+      params.rangoRequestId = trade.uniqueInfo.squidrouterRequestId;
     }
-    if ('retroBridgeId' in trade) {
-      params.retroBridgeId = trade.retroBridgeId as string;
+    if (trade.uniqueInfo.retroBridgeId) {
+      params.rangoRequestId = trade.uniqueInfo.retroBridgeId;
     }
-    if ('simpleSwapId' in trade) {
-      params.simpleSwapId = trade.simpleSwapId as string;
+    if (trade.uniqueInfo.simpleSwapId) {
+      params.rangoRequestId = trade.uniqueInfo.simpleSwapId;
     }
-    if ('changellyId' in trade) {
-      params.changellySwapId = trade.changellyId as string;
+    if (trade.uniqueInfo.changellyId) {
+      params.rangoRequestId = trade.uniqueInfo.changellyId;
     }
 
     onSwap?.(params);
