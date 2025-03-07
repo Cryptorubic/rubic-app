@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.55.0-alpha-squid-test-refund.1:
-  version "5.55.0-alpha-squid-test-refund.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.55.0-alpha-squid-test-refund.1.tgz#5102de9769e72602d61e68d81b1c554e5901aa9d"
-  integrity sha512-UWu9JhJt6NVgF5+GDF/dOJluDrZB2eXKnQtl9x/aiVm5jhbOvFSBYfJZJE5PSLKewb+r+qKIlFzCJr9UmSg5NQ==
+rubic-sdk@5.55.0-alpha-squid-test-refund.2:
+  version "5.55.0-alpha-squid-test-refund.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.55.0-alpha-squid-test-refund.2.tgz#abf343251c6cc3e0a872bd37a0dc57f9e1a99e83"
+  integrity sha512-SvwmlIAIAExi8cvMXriItMD0hIco44rgwkfx9GzNiypmM6bsDeWurthjkaVVw066/xbsv72AKuu3dbkLGK8T8A==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
