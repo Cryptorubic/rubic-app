@@ -256,11 +256,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}fusionx.webp`,
     color: '#b0b3b7'
   },
-  // [ON_CHAIN_TRADE_TYPE.FRAX_SWAP_V2]: {
-  //   name: 'FraxSwap V2',
-  //   image: `${imageBasePath}fraxswap.svg`,
-  //   color: '#FFFFFF'
-  // },
+  [ON_CHAIN_TRADE_TYPE.FRAX_SWAP_V2]: {
+    name: 'FraxSwap V2',
+    image: `${imageBasePath}fraxswap.svg`,
+    color: '#FFFFFF'
+  },
 
   //HHHHHHHHHHHHHHHHHHHHH
   [ON_CHAIN_TRADE_TYPE.HONEY_SWAP]: {
