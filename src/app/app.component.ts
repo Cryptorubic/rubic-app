@@ -29,6 +29,7 @@ import {
   gatewayRubicCrossChainAbi,
   Injector,
   nativeTokensList,
+  OnChainProxyService,
   PriceTokenAmount,
   ProxyCrossChainEvmTrade,
   rubicProxyContractAddress,
@@ -88,19 +89,18 @@ export class AppComponent implements AfterViewInit {
       BLOCKCHAIN_NAME.AVALANCHE
     );
 
-    const AGGRO_TOKEN_ADDR = '0xFBf56C87217CB9c76D18A9a4bF313B8719cEfe50';
+    const MEM_TOKEN_ADDR = '0xEc37C50Fd18B93Ab47578E58a952F25b35A0F63e';
     const avaxToken = await PriceTokenAmount.createFromToken({
       ...nativeTokensList.AVALANCHE,
       tokenAmount: new BigNumber(0.1)
     });
 
-    const feeInfo = await ProxyCrossChainEvmTrade.getFeeInfo(
-      BLOCKCHAIN_NAME.AVALANCHE,
-      percentAddress.twoPercent,
+    const proxyFeeInfo = await new OnChainProxyService().getFeeInfo(
       avaxToken,
-      true
+      percentAddress.twoPercent
     );
-    const proxyFee = new BigNumber(feeInfo.rubicProxy?.fixedFee?.amount || '0');
+    // const fromWithoutFee = getFromWithoutFee(avaxToken, proxyFeeInfo.platformFee.percent);
+    const proxyFee = new BigNumber(proxyFeeInfo?.fixedFeeToken.tokenAmount || '0');
 
     const value = Web3Pure.toWei(proxyFee.plus(avaxToken.tokenAmount), avaxToken.decimals);
 
@@ -108,8 +108,15 @@ export class AppComponent implements AfterViewInit {
       PUMP_CONTRACT,
       PUMP_ABI,
       'buyToken',
-      [AGGRO_TOKEN_ADDR, '10381133558821699000000000'],
-      '0'
+      [MEM_TOKEN_ADDR, '0'],
+      value
+    );
+    const selector = buyTokenEvmConfig.data.slice(0, 10);
+
+    await ProxyCrossChainEvmTrade.checkDexWhiteList(
+      BLOCKCHAIN_NAME.AVALANCHE,
+      PUMP_CONTRACT,
+      selector
     );
 
     const swapGenericMethodArgs = [
@@ -117,15 +124,17 @@ export class AppComponent implements AfterViewInit {
       percentAddress.twoPercent,
       '0x0000000000000000000000000000000000000000',
       this.walletConnectorService.address,
-      '10381133558821699000000000',
+      '0',
       [
-        PUMP_CONTRACT,
-        PUMP_CONTRACT,
-        avaxToken.address,
-        AGGRO_TOKEN_ADDR,
-        Web3Pure.toWei(0.1, avaxToken.decimals),
-        buyTokenEvmConfig.data,
-        true
+        [
+          PUMP_CONTRACT,
+          PUMP_CONTRACT,
+          avaxToken.address,
+          MEM_TOKEN_ADDR,
+          Web3Pure.toWei(0.1, avaxToken.decimals),
+          buyTokenEvmConfig.data,
+          true
+        ]
       ]
     ];
 
@@ -154,6 +163,11 @@ export class AppComponent implements AfterViewInit {
         value: startViaRubicEvmConfig.value,
         to: startViaRubicEvmConfig.to
       });
+      // const receipt = await web3Private.sendTransaction(buyTokenEvmConfig.to, {
+      //   data: buyTokenEvmConfig.data,
+      //   value: buyTokenEvmConfig.value,
+      //   to: buyTokenEvmConfig.to
+      // });
 
       console.log('%cPUMP_Receipt ===> ', 'color: yellow; font-size: 20px;', receipt);
     } catch (err) {
