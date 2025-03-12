@@ -17443,10 +17443,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@6.0.1-alpha-fraxtal-api.1:
-  version "6.0.1-alpha-fraxtal-api.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.1-alpha-fraxtal-api.1.tgz#732a7c43565f26caa9f7f644e5680449e624c829"
-  integrity sha512-qafstzHwgnTf0VM/2mTNw+vwGQsG68s35yL2UszjejoiT4QT9gL32toXIy9T0I1+DXsAT9GVSz08Kmqm3z7/dw==
+rubic-sdk@6.0.1-alpha-fraxtal-api.2:
+  version "6.0.1-alpha-fraxtal-api.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.1-alpha-fraxtal-api.2.tgz#a5ce576c63aded25585a41758abfcd894cb2bf65"
+  integrity sha512-ZyfiLQE2in3TbNW3fa9voy3OVcj/pc3SYQpRX+5K22LUmwKa6jX79gEHPnUjvRzwSguUEA5zzk6sIxyjsy0Rwg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
