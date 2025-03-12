@@ -17,7 +17,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     name: 'Polygon Mainnet',
-    rpc: 'https://rpc-mainnet.maticvigil.com'
+    rpc: 'https://polygon-rpc.com'
   },
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
     name: 'Polygon zkEVM',
