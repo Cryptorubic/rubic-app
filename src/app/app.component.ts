@@ -80,8 +80,60 @@ export class AppComponent implements AfterViewInit {
     this.setupIframeSettings();
 
     setTimeout(() => {
-      this.buyToken();
+      // this.buyToken();
+      this.sellToken();
     }, 5_000);
+  }
+
+  private async sellToken(): Promise<void> {
+    const web3Private = Injector.web3PrivateService.getWeb3PrivateByBlockchain(
+      BLOCKCHAIN_NAME.AVALANCHE
+    );
+
+    const MEM_TOKEN_ADDR = '0xEc37C50Fd18B93Ab47578E58a952F25b35A0F63e';
+    const memToken = new PriceTokenAmount({
+      address: MEM_TOKEN_ADDR,
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE,
+      decimals: 18,
+      name: 'shrek',
+      symbol: 'SHREK',
+      price: new BigNumber(1),
+      tokenAmount: new BigNumber(1_000_000)
+    });
+
+    // const proxyFeeInfo = await new OnChainProxyService().getFeeInfo(
+    //   memToken,
+    //   percentAddress.twoPercent
+    // );
+
+    // const proxyFee = new BigNumber(proxyFeeInfo?.fixedFeeToken.tokenAmount || '0');
+
+    // const value = Web3Pure.toWei(proxyFee.plus('0'), memToken.decimals);
+
+    const sellTokenEvmConfig = EvmWeb3Pure.encodeMethodCall(
+      PUMP_CONTRACT,
+      PUMP_ABI,
+      'sellToken',
+      [memToken.address, memToken.stringWeiAmount, '0'],
+      '0'
+    );
+
+    try {
+      // const receipt = await web3Private.sendTransaction(startViaRubicEvmConfig.to, {
+      //   data: startViaRubicEvmConfig.data,
+      //   value: startViaRubicEvmConfig.value,
+      //   to: startViaRubicEvmConfig.to
+      // });
+      const receipt = await web3Private.sendTransaction(sellTokenEvmConfig.to, {
+        data: sellTokenEvmConfig.data,
+        value: sellTokenEvmConfig.value,
+        to: sellTokenEvmConfig.to
+      });
+
+      console.log('%cMEM_Receipt ===> ', 'color: yellow; font-size: 20px;', receipt);
+    } catch (err) {
+      console.log('%cMEM_Error ===> ', 'color: yellow; font-size: 20px;', err);
+    }
   }
 
   private async buyToken(): Promise<void> {

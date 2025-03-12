@@ -61,5 +61,16 @@ export const PUMP_ABI = [
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function'
+  },
+  {
+    name: 'sellToken',
+    inputs: [
+      { internalType: 'address', name: '_token', type: 'address' },
+      { internalType: 'uint256', name: 'amountIn', type: 'uint256' },
+      { internalType: 'uint256', name: 'amountOutMin', type: 'uint256' }
+    ],
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function'
   }
 ] as AbiItem[];
