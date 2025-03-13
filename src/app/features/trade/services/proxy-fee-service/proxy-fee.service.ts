@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PriceToken, percentAddress } from 'rubic-sdk';
+import { PriceToken } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -23,6 +23,7 @@ import { tokenTypeMapping } from './const/token-type-mapping';
 import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
+import { percentAddress } from './const/fee-type-address-mapping';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
