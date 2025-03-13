@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { PriceToken } from 'rubic-sdk';
+import { PriceToken, percentAddress } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { percentAddress } from '@features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
 import { TokenType } from '@features/trade/services/proxy-fee-service/models/token-type';
 import { FeeValue } from '@features/trade/services/proxy-fee-service/models/fee-value';
 import {
