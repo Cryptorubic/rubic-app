@@ -86,7 +86,7 @@
     "ngx-cookie-service": "^16.0.0",
     "querystring-es3": "^0.2.1",
     "rpc-websockets": "7.9.0",
-    "rubic-sdk": "5.55.5-alpha.teleswap.7",
+    "rubic-sdk": "5.56.2-alpha.teleswap.2",
     "rxjs": "7.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "^1.21.1",

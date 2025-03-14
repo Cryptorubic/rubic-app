@@ -265,6 +265,7 @@ export class CrossChainService {
     }
   ): Promise<string | null> {
     if (!this.isSlippageCorrect(trade)) {
+      // @TODO here return to inactive form
       return null;
     }
 
