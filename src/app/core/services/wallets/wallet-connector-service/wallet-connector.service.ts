@@ -49,6 +49,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
 import { SuiWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/sui-wallet-adapter';
 import { SuietWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/suiet-wallet-adapter';
+import { BestwalletWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/beswallet-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -224,6 +225,9 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+    if (walletName === WALLET_NAME.BEST_WALLET) {
+      return new BestwalletWalletAdapter(...defaultConstructorParameters, chainId);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

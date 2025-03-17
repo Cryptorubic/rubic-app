@@ -3,6 +3,15 @@ import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/mod
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
+    name: 'Best Wallet',
+    value: WALLET_NAME.BEST_WALLET,
+    img: './assets/images/icons/wallets/bestwallet.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
     name: 'MetaMask',
     value: WALLET_NAME.METAMASK,
     img: './assets/images/icons/wallets/metamask.svg',
