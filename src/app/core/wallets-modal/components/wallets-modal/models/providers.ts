@@ -3,15 +3,6 @@ import { WalletProvider } from '@core/wallets-modal/components/wallets-modal/mod
 
 export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   {
-    name: 'Best Wallet',
-    value: WALLET_NAME.BEST_WALLET,
-    img: './assets/images/icons/wallets/bestwallet.png',
-    supportsDesktop: true,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
-  {
     name: 'MetaMask',
     value: WALLET_NAME.METAMASK,
     img: './assets/images/icons/wallets/metamask.svg',
@@ -21,19 +12,38 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'TronLink',
-    value: WALLET_NAME.TRON_LINK,
-    img: './assets/images/icons/wallets/tronlink.webp',
+    name: 'Trust Wallet',
+    value: WALLET_NAME.TRUST_WALLET,
+    img: './assets/images/icons/wallets/trust.svg',
+    supportsDesktop: false,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
     disabled: false
   },
   {
-    name: 'Trust Wallet',
-    value: WALLET_NAME.TRUST_WALLET,
-    img: './assets/images/icons/wallets/trust.svg',
-    supportsDesktop: false,
+    name: 'Best Wallet',
+    value: WALLET_NAME.BEST_WALLET,
+    img: './assets/images/icons/wallets/bestwallet.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+
+  {
+    name: 'TronLink',
+    value: WALLET_NAME.TRON_LINK,
+    img: './assets/images/icons/wallets/tronlink.webp',
+    supportsDesktop: true,
     supportsMobile: false,
     display: true,
     disabled: false
@@ -74,15 +84,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     disabled: false
   },
-  {
-    name: 'Phantom',
-    value: WALLET_NAME.PHANTOM,
-    img: './assets/images/icons/wallets/phantom.svg',
-    supportsDesktop: true,
-    supportsMobile: false,
-    display: true,
-    disabled: false
-  },
+
   {
     name: 'Solflare',
     value: WALLET_NAME.SOLFLARE,
