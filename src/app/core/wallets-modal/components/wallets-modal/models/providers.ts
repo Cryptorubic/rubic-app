@@ -12,11 +12,11 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'Trust Wallet',
-    value: WALLET_NAME.TRUST_WALLET,
-    img: './assets/images/icons/wallets/trust.svg',
-    supportsDesktop: false,
-    supportsMobile: false,
+    name: 'WalletConnect',
+    value: WALLET_NAME.WALLET_CONNECT,
+    img: './assets/images/icons/wallets/walletconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -38,12 +38,20 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     disabled: false
   },
-
   {
     name: 'TronLink',
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',
     supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Trust Wallet',
+    value: WALLET_NAME.TRUST_WALLET,
+    img: './assets/images/icons/wallets/trust.svg',
+    supportsDesktop: false,
     supportsMobile: false,
     display: true,
     disabled: false
@@ -57,15 +65,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     disabled: false
   },
-  {
-    name: 'WalletConnect',
-    value: WALLET_NAME.WALLET_CONNECT,
-    img: './assets/images/icons/wallets/walletconnect.svg',
-    supportsDesktop: true,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
+
   {
     name: 'Argent',
     value: WALLET_NAME.ARGENT,
