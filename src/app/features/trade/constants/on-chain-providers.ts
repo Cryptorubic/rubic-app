@@ -164,7 +164,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
   },
-
+  [ON_CHAIN_TRADE_TYPE.CETUS]: {
+    name: 'Cetus',
+    image: `${imageBasePath}cetus.png`,
+    color: '#61e0af'
+  },
   //EEEEEEEEEEEEEEEEEEEE
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {
     name: 'Eddy Finance',

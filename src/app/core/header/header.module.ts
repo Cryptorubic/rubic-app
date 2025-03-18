@@ -48,6 +48,7 @@ import { HistoryButtonComponent } from './components/header/components/hisory-bu
 import { BannerTaikoComponent } from './components/header/components/banner-taiko/banner-taiko.component';
 import { BannerBirthdayComponent } from '@core/header/components/header/components/banner-bday/banner-birthday.component';
 import { BannerMonadTestnetComponent } from './components/header/components/banner-monad-testnet/banner-monad-testnet.component';
+import { ZeroFeesBannerComponent } from './components/header/components/zero-fees-banner/zero-fees-banner.component';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { BannerMonadTestnetComponent } from './components/header/components/bann
     HistoryButtonComponent,
     BannerTaikoComponent,
     BannerBirthdayComponent,
-    BannerMonadTestnetComponent
+    BannerMonadTestnetComponent,
+    ZeroFeesBannerComponent
   ],
   imports: [
     CommonModule,
