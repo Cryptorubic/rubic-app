@@ -60,5 +60,6 @@ export const CROSS_CHAIN_SUPPORTED_CHAINS_CONFIG: Record<
   [CROSS_CHAIN_TRADE_TYPE.ACROSS]: acrossCcrSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: uniZenCcrSupportedChains,
   [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: simpleSwapCcrProxySupportedChains,
-  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: changellySupportedChains
+  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: changellySupportedChains,
+  [CROSS_CHAIN_TRADE_TYPE.TELE_SWAP]: []
 } as const;
