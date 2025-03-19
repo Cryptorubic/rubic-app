@@ -180,6 +180,8 @@ export class TokensApiService {
   private fetchTokensFromOnePageBlockchains(
     tokensNetworkState$: BehaviorSubject<TokensNetworkState>
   ): Observable<TokensBackendResponse> {
+    if (blockchainsWithOnePage.length === 0) return of(null);
+
     const onePageBlockchains = blockchainsWithOnePage
       .map(b => TO_BACKEND_BLOCKCHAINS[b])
       .reduce((acc, blockchain) => {
