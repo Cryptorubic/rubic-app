@@ -12,6 +12,33 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
+    name: 'WalletConnect',
+    value: WALLET_NAME.WALLET_CONNECT,
+    img: './assets/images/icons/wallets/walletconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Best Wallet',
+    value: WALLET_NAME.BEST_WALLET,
+    img: './assets/images/icons/wallets/bestwallet.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
     name: 'TronLink',
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',
@@ -38,15 +65,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     disabled: false
   },
-  {
-    name: 'WalletConnect',
-    value: WALLET_NAME.WALLET_CONNECT,
-    img: './assets/images/icons/wallets/walletconnect.svg',
-    supportsDesktop: true,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
+
   {
     name: 'Argent',
     value: WALLET_NAME.ARGENT,
@@ -65,15 +84,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     display: true,
     disabled: false
   },
-  {
-    name: 'Phantom',
-    value: WALLET_NAME.PHANTOM,
-    img: './assets/images/icons/wallets/phantom.svg',
-    supportsDesktop: true,
-    supportsMobile: false,
-    display: true,
-    disabled: false
-  },
+
   {
     name: 'Solflare',
     value: WALLET_NAME.SOLFLARE,
