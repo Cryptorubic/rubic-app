@@ -246,6 +246,7 @@ export class PreviewSwapService {
                 toBlockchain: tradeState.trade.to.blockchain,
                 srcTxHash: srcHash,
                 txTimestamp: timestamp,
+                slippage: tradeState.trade.getTradeInfo().slippage / 100,
                 ...(additionalInfo?.changenowId && {
                   changenowId: additionalInfo.changenowId
                 }),
