@@ -1,4 +1,6 @@
-<app-zero-fees-banner [href]="'https://app.rubic.exchange/?fromChain=ETH&toChain=ARBITRUM'"></app-zero-fees-banner>
+<app-zero-fees-banner
+  [href]="'https://app.rubic.exchange/?fromChain=ETH&toChain=ARBITRUM'"
+></app-zero-fees-banner>
 <header class="rubic-header" *ngLet="currentUser$ | async as currentUser">
   <app-logo
     [currentUser]="!!currentUser"
