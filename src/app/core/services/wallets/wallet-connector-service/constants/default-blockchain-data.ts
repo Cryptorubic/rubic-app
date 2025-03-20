@@ -49,7 +49,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.TELOS]: {
     name: 'Telos EVM Mainnet',
-    rpc: 'https://mainnet.telos.net/evm'
+    rpc: 'https://rpc.telos.net'
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
