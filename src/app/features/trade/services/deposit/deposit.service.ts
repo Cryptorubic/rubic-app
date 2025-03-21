@@ -11,6 +11,7 @@ import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { CrossChainTransferTrade } from '../../models/cn-trade';
+import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 @Injectable()
 export class DepositService {
@@ -33,7 +34,8 @@ export class DepositService {
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly storeService: StoreService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly tokensService: TokensService
   ) {}
 
   public async updateTrade(
@@ -66,8 +68,15 @@ export class DepositService {
       if (!id) {
         throw new Error();
       }
-      const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
-      const response = await getDepositStatus(id, trade.tradeType);
+      const wrappedTrade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
+      const response = await getDepositStatus(id, wrappedTrade.tradeType);
+
+      if (response.status === CROSS_CHAIN_DEPOSIT_STATUS.FINISHED) {
+        this.tokensService.updateTokenBalanceAfterCcrSwap(
+          wrappedTrade.trade.from,
+          wrappedTrade.trade.to
+        );
+      }
 
       return response.status;
     } catch {
