@@ -322,14 +322,6 @@ export class CrossChainService {
       return transactionHash;
     } catch (error) {
       if (
-        transactionHash &&
-        error instanceof Error &&
-        error.message.includes('Transaction was not mined')
-      ) {
-        await this.crossChainApiService.patchTrade(transactionHash, false);
-      }
-
-      if (
         error instanceof NotWhitelistedProviderError ||
         error instanceof UnapprovedContractError ||
         error instanceof UnapprovedMethodError

@@ -360,9 +360,9 @@ export class SwapsControllerService {
     if (!txHash) return;
 
     if (trade instanceof CrossChainTrade) {
-      await this.handleCrossChainSwapResponse(trade, txHash, callback.onSwap);
+      await this.handleCrossChainSwapResponse(trade, callback.onSwap);
     } else {
-      await this.handleOnChainSwapResponse(txHash, callback.onSwap);
+      await this.handleOnChainSwapResponse(callback.onSwap);
     }
   }
 
@@ -496,7 +496,6 @@ export class SwapsControllerService {
 
   private async handleCrossChainSwapResponse(
     trade: CrossChainTrade,
-    txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
     const params: CrossChainSwapAdditionalParams = {};
@@ -521,15 +520,12 @@ export class SwapsControllerService {
     }
 
     onSwap?.(params);
-    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
-  private async handleOnChainSwapResponse(
-    txHash: string,
+  private handleOnChainSwapResponse(
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
-  ): Promise<void> {
+  ): void {
     onSwap?.();
-    await this.onChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(
