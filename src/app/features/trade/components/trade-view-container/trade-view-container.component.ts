@@ -15,7 +15,6 @@ import { ActionButtonService } from '@features/trade/services/action-button-serv
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 
@@ -38,8 +37,6 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
   ]
 })
 export class TradeViewContainerComponent {
-  public readonly selectedForm$ = this.formsTogglerService.selectedForm$;
-
   public readonly formContent$ = this.tradePageService.formContent$;
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
@@ -76,7 +73,6 @@ export class TradeViewContainerComponent {
     private readonly previewSwapService: PreviewSwapService,
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
-    private readonly formsTogglerService: FormsTogglerService,
     private readonly queryParamsService: QueryParamsService,
     private readonly spindlService: SpindlService
   ) {}
