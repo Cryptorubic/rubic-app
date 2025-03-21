@@ -425,6 +425,8 @@ export class PreviewSwapService {
                         toBlockchain: tradeState.trade.to.blockchain
                       }
                     });
+
+                    this.updateTokensBalanceAfterReceivedTxStatus();
                   }
 
                   this.spindlService.sendSwapEvent(txHash);
