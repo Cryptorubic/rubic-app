@@ -62,7 +62,6 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -140,8 +139,7 @@ export class PreviewSwapService {
     private readonly translateService: TranslateService,
     private readonly errorService: ErrorsService,
     private readonly ccrApiService: CrossChainApiService,
-    private readonly spindlService: SpindlService,
-    private readonly tokensService: TokensService
+    private readonly spindlService: SpindlService
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -290,7 +288,6 @@ export class PreviewSwapService {
                 toBlockchain
               }
             });
-            this.updateTokensBalanceAfterReceivedTxStatus();
           } else if (crossChainStatus.dstTxStatus === TX_STATUS.FALLBACK) {
             if (crossChainStatus.dstTxHash) {
               this.setNextTxState({
@@ -300,7 +297,6 @@ export class PreviewSwapService {
                   toBlockchain
                 }
               });
-              this.updateTokensBalanceAfterReceivedTxStatus();
             } else {
               this.setNextTxState({ step: 'error', data: this.transactionState.data });
             }
@@ -426,8 +422,6 @@ export class PreviewSwapService {
                         toBlockchain: tradeState.trade.to.blockchain
                       }
                     });
-
-                    this.updateTokensBalanceAfterReceivedTxStatus();
                   }
 
                   this.spindlService.sendSwapEvent(txHash);
@@ -494,15 +488,5 @@ export class PreviewSwapService {
 
   private resetTransactionState(): void {
     this.setNextTxState({ step: 'idle', data: {} });
-  }
-
-  private updateTokensBalanceAfterReceivedTxStatus(): void {
-    const trade = this.swapsStateService.currentTrade.trade;
-
-    if (trade instanceof CrossChainTrade) {
-      this.tokensService.updateTokenBalanceAfterCcrSwap(trade.from, trade.to);
-    } else {
-      this.tokensService.updateTokenBalancesAfterItSwap(trade.from, trade.to);
-    }
   }
 }
