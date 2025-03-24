@@ -21,6 +21,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
@@ -112,6 +113,30 @@ export class OnChainApiService {
     return this.httpService
       .post<InstantTradesResponseApi>('v2/trades/onchain/new_extended', tradeInfo)
       .pipe(delay(1000));
+  }
+
+  /**
+   * Sends request to update trade's status.
+   * @param hash Hash of transaction what we want to update.
+   * @param success If true status is `completed`, otherwise `cancelled`.
+   * @return InstantTradesResponseApi Instant trade object.
+   */
+  public async patchTrade(hash: string, success: boolean): Promise<InstantTradesResponseApi> {
+    try {
+      const body = {
+        success,
+        hash,
+        user: this.authService.userAddress
+      };
+
+      const res = await firstValueFrom(
+        this.httpService.patch<InstantTradesResponseApi>('v2/trades/onchain/new_extended', body)
+      );
+
+      return res;
+    } catch (err) {
+      throw new RubicError(err);
+    }
   }
 
   public saveNotWhitelistedProvider(
