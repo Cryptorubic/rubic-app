@@ -19,7 +19,7 @@ export class RetrodropService extends ClaimService {
   public readonly isUserParticipantOfRetrodrop$ =
     this._isUserParticipantOfRetrodrop$.asObservable();
 
-  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  private readonly EXPIRED_ROUNDS_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   constructor(private readonly retrodropApiService: RetrodropApiService) {
     super();
@@ -40,7 +40,8 @@ export class RetrodropService extends ClaimService {
           return from(this.setRounds(userAddress, network, retrodropUserInfo));
         }),
         // @TODO refactoring _fetchError$ logic
-        catchError(() => {
+        catchError(err => {
+          console.log('%cretrodrop_fetchError ==> ', err);
           this._fetchError$.next(true);
           return of();
         })

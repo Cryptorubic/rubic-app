@@ -16,9 +16,10 @@ import { RetrodropRoutingModule } from '@features/retrodrop/retrodrop-routing.mo
 import { RetrodropPageComponent } from '@features/retrodrop/components/retrodrop-page/retrodrop-page.component';
 import { RetrodropApiService } from '@features/retrodrop/services/retrodrop-api.service';
 import { RetrodropService } from '@features/retrodrop/services/retrodrop.service';
+import { RetrodropFinishedComponent } from './components/retrodrop-finished/retrodrop-finished.component';
 
 @NgModule({
-  declarations: [RetrodropPageComponent, RetrodropStakeModalComponent],
+  declarations: [RetrodropPageComponent, RetrodropStakeModalComponent, RetrodropFinishedComponent],
   imports: [
     CommonModule,
     RetrodropRoutingModule,
