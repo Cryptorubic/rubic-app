@@ -367,5 +367,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://soneium.drpc.org'
   ],
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: ['https://testnet-rpc.monad.xyz'],
-  [BLOCKCHAIN_NAME.UNICHAIN]: []
+  [BLOCKCHAIN_NAME.UNICHAIN]: [],
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: ['https://carrot.megaeth.com/rpc']
 };

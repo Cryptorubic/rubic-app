@@ -18,7 +18,8 @@ export const defaultBlockchainsList: BlockchainName[] = [
   BLOCKCHAIN_NAME.ARTHERA,
   BLOCKCHAIN_NAME.HOLESKY,
   BLOCKCHAIN_NAME.BLAST_TESTNET,
-  BLOCKCHAIN_NAME.TAIKO
+  BLOCKCHAIN_NAME.TAIKO,
+  BLOCKCHAIN_NAME.MEGAETH_TESTNET
 ];
 
 export const blockchainsList: RankedBlockchain[] = defaultBlockchainsList.map(chain => {
