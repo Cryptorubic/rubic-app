@@ -21,7 +21,8 @@ import {
   SdkSwapErrorOnProviderSide,
   NoLinkedAccountError,
   NotSupportedRegionError,
-  LowSlippageError as SdkLowSlippageError
+  LowSlippageError as SdkLowSlippageError,
+  TimeoutError as SdkTimeoutError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -52,11 +53,16 @@ import { LowSlippageError } from './common/low-slippage-error';
 import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
+import TradeTimeoutError from './common/trade-timeout.error';
 
 export class RubicSdkErrorParser {
+  // eslint-disable-next-line complexity
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof SdkTimeoutError) {
+      return new TradeTimeoutError();
+    }
     if (err instanceof NotSupportedRegionError) {
       return new NotSupportedRegionRubicError();
     }
