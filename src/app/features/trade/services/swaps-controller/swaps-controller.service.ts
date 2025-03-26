@@ -260,7 +260,7 @@ export class SwapsControllerService {
             const isCalculationEnd = container.value.total === container.value.calculated;
             if (isCalculationEnd) {
               this.refreshService.setStopped();
-              this.swapsStateService.clearProviders(true);
+              this.swapsStateService.setCalculationProgress(1, 1);
             } else {
               this.swapsStateService.setCalculationProgress(
                 container.value.total,
