@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.57.2-alpha-celer-slip.2:
-  version "5.57.2-alpha-celer-slip.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.2-alpha-celer-slip.2.tgz#01107086ced2396d3d082c3fb782ea668075a28e"
-  integrity sha512-Yjwk1GJqTse1n3qx5SX01nNwbQY9w+yf8zb2rrmOlR/shJirJk7T/aZ8v6kGH5hAIvginFDfs7H6MP3870P82A==
+rubic-sdk@5.57.2-alpha-celer-slip.3:
+  version "5.57.2-alpha-celer-slip.3"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.2-alpha-celer-slip.3.tgz#c77090430a4dcf5617d78dfceedee0cf266470a1"
+  integrity sha512-t2wFdyP1o7IS8gdSasGdTZOgF27yZEbKq4Z1uIKQJaU6lFDxMNyi07Mzkl075lk9e8JRdqrG1dqsNuVZbBnDyg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
