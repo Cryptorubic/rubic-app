@@ -251,15 +251,24 @@ export class SwapsControllerService {
                 })
               );
           }
+
+          // stop calculation if error occured
           if (!container?.value) {
             this.refreshService.setStopped();
             this.swapsStateService.clearProviders(true);
           } else {
-            this.swapsStateService.setCalculationProgress(
-              container.value.total,
-              container.value.calculated
-            );
+            const isCalculationEnd = container.value.total === container.value.calculated;
+            if (isCalculationEnd) {
+              this.refreshService.setStopped();
+              this.swapsStateService.setCalculationProgress(1, 1);
+            } else {
+              this.swapsStateService.setCalculationProgress(
+                container.value.total,
+                container.value.calculated
+              );
+            }
           }
+
           return of(null);
         }),
         catchError((_err: unknown) => {
