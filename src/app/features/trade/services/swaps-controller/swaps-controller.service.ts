@@ -556,6 +556,7 @@ export class SwapsControllerService {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
+                    console.log(`%c${trade.tradeType} ===> `, 'color: orange', trade);
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
