@@ -18000,10 +18000,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.57.3-alpha-megaeth-testnet.1:
-  version "5.57.3-alpha-megaeth-testnet.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.3-alpha-megaeth-testnet.1.tgz#ebf2c49db47d7b376ec6c049eff176d285fd4791"
-  integrity sha512-6O3nNKuNy68YF2KjPZvDCXe/3jtoV4F1CtQkY8fbc0riuarM/ORI/wzfg2djoShFG4SpEn1pRzAv4CytLxYUrw==
+rubic-sdk@5.57.3-alpha-megaeth-testnet.2:
+  version "5.57.3-alpha-megaeth-testnet.2"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.3-alpha-megaeth-testnet.2.tgz#618c55bac40f487281b0dfc76fd5124739660e5d"
+  integrity sha512-pZAB4uwrXvw1vtl49p2iGY6lTlBjb11SHoTJaUqw7RmQXlOnmtdegDLVJsLgLg5W3PY+WYXqxSOhiReksKIQJQ==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
