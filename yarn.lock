@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.57.2-alpha-okuswap-fix.0:
-  version "5.57.2-alpha-okuswap-fix.0"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.2-alpha-okuswap-fix.0.tgz#826bad6c554186e1f09e3ae3a43757a2be278047"
-  integrity sha512-BM7bROPvrT69ImZNyOqR08E8NblitIGqwRvgMJQz1uYPlnZNmZgEDh4RNwHjIdmS1rawtsfdLi+2G94oxNgskQ==
+rubic-sdk@5.57.2-alpha-okuswap-fix.1:
+  version "5.57.2-alpha-okuswap-fix.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.2-alpha-okuswap-fix.1.tgz#08b027244a4b5a162c0f614cd053cea866ef5877"
+  integrity sha512-6Wi2C8B9VcuQsVA23xWhyaek85a7zsmwcaYOUpLpyOtX1SWEZZn7Lx2zywSJ92I0W4nxMLvZg4Cj1b0ITfX4dg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
