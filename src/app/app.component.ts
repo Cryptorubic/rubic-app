@@ -22,6 +22,22 @@ import { TOKEN_FILTERS } from './features/trade/components/assets-selector/model
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
 import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
+import {
+  BLOCKCHAIN_NAME,
+  evmCommonCrossChainAbi,
+  EvmWeb3Pure,
+  gatewayRubicCrossChainAbi,
+  Injector,
+  nativeTokensList,
+  OnChainProxyService,
+  PriceTokenAmount,
+  ProxyCrossChainEvmTrade,
+  rubicProxyContractAddress,
+  Web3Pure
+} from 'rubic-sdk';
+import { PUMP_ABI, PUMP_CONTRACT } from './pump-abi';
+import { percentAddress } from './features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-root',
@@ -62,6 +78,153 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+
+    setTimeout(() => {
+      // this.buyToken();
+      this.sellToken();
+    }, 5_000);
+  }
+
+  private async sellToken(): Promise<void> {
+    const web3Private = Injector.web3PrivateService.getWeb3PrivateByBlockchain(
+      BLOCKCHAIN_NAME.AVALANCHE
+    );
+
+    const MEM_TOKEN_ADDR = '0xEc37C50Fd18B93Ab47578E58a952F25b35A0F63e';
+    const memToken = new PriceTokenAmount({
+      address: MEM_TOKEN_ADDR,
+      blockchain: BLOCKCHAIN_NAME.AVALANCHE,
+      decimals: 18,
+      name: 'shrek',
+      symbol: 'SHREK',
+      price: new BigNumber(1),
+      tokenAmount: new BigNumber(1_000_000)
+    });
+
+    // const proxyFeeInfo = await new OnChainProxyService().getFeeInfo(
+    //   memToken,
+    //   percentAddress.twoPercent
+    // );
+
+    // const proxyFee = new BigNumber(proxyFeeInfo?.fixedFeeToken.tokenAmount || '0');
+
+    // const value = Web3Pure.toWei(proxyFee.plus('0'), memToken.decimals);
+
+    const sellTokenEvmConfig = EvmWeb3Pure.encodeMethodCall(
+      PUMP_CONTRACT,
+      PUMP_ABI,
+      'sellToken',
+      [memToken.address, memToken.stringWeiAmount, '0'],
+      '0'
+    );
+
+    try {
+      // const receipt = await web3Private.sendTransaction(startViaRubicEvmConfig.to, {
+      //   data: startViaRubicEvmConfig.data,
+      //   value: startViaRubicEvmConfig.value,
+      //   to: startViaRubicEvmConfig.to
+      // });
+      const receipt = await web3Private.sendTransaction(sellTokenEvmConfig.to, {
+        data: sellTokenEvmConfig.data,
+        value: sellTokenEvmConfig.value,
+        to: sellTokenEvmConfig.to
+      });
+
+      console.log('%cMEM_Receipt ===> ', 'color: yellow; font-size: 20px;', receipt);
+    } catch (err) {
+      console.log('%cMEM_Error ===> ', 'color: yellow; font-size: 20px;', err);
+    }
+  }
+
+  private async buyToken(): Promise<void> {
+    const web3Private = Injector.web3PrivateService.getWeb3PrivateByBlockchain(
+      BLOCKCHAIN_NAME.AVALANCHE
+    );
+
+    const MEM_TOKEN_ADDR = '0xEc37C50Fd18B93Ab47578E58a952F25b35A0F63e';
+    const avaxToken = await PriceTokenAmount.createFromToken({
+      ...nativeTokensList.AVALANCHE,
+      tokenAmount: new BigNumber(0.1)
+    });
+
+    const proxyFeeInfo = await new OnChainProxyService().getFeeInfo(
+      avaxToken,
+      percentAddress.twoPercent
+    );
+    // const fromWithoutFee = getFromWithoutFee(avaxToken, proxyFeeInfo.platformFee.percent);
+    const proxyFee = new BigNumber(proxyFeeInfo?.fixedFeeToken.tokenAmount || '0');
+
+    const value = Web3Pure.toWei(proxyFee.plus(avaxToken.tokenAmount), avaxToken.decimals);
+
+    const buyTokenEvmConfig = EvmWeb3Pure.encodeMethodCall(
+      PUMP_CONTRACT,
+      PUMP_ABI,
+      'buyToken',
+      [MEM_TOKEN_ADDR, '0'],
+      value
+    );
+    const selector = buyTokenEvmConfig.data.slice(0, 10);
+
+    await ProxyCrossChainEvmTrade.checkDexWhiteList(
+      BLOCKCHAIN_NAME.AVALANCHE,
+      PUMP_CONTRACT,
+      selector
+    );
+
+    const swapGenericMethodArgs = [
+      EvmWeb3Pure.randomHex(32),
+      percentAddress.twoPercent,
+      '0x0000000000000000000000000000000000000000',
+      this.walletConnectorService.address,
+      '0',
+      [
+        [
+          PUMP_CONTRACT,
+          PUMP_CONTRACT,
+          avaxToken.address,
+          MEM_TOKEN_ADDR,
+          Web3Pure.toWei(0.1, avaxToken.decimals),
+          buyTokenEvmConfig.data,
+          true
+        ]
+      ]
+    ];
+
+    const swapGenericEvmConfig = EvmWeb3Pure.encodeMethodCall(
+      rubicProxyContractAddress[BLOCKCHAIN_NAME.AVALANCHE].router,
+      evmCommonCrossChainAbi,
+      'swapTokensGeneric',
+      swapGenericMethodArgs,
+      value
+    );
+
+    const sendingToken = avaxToken.isNative ? [] : [avaxToken.address];
+    const sendingAmount = avaxToken.isNative ? [] : [avaxToken.stringWeiAmount];
+
+    const startViaRubicEvmConfig = EvmWeb3Pure.encodeMethodCall(
+      rubicProxyContractAddress[BLOCKCHAIN_NAME.AVALANCHE].gateway,
+      gatewayRubicCrossChainAbi,
+      'startViaRubic',
+      [sendingToken, sendingAmount, swapGenericEvmConfig.data],
+      value
+    );
+
+    try {
+      const receipt = await web3Private.sendTransaction(startViaRubicEvmConfig.to, {
+        data: startViaRubicEvmConfig.data,
+        value: startViaRubicEvmConfig.value,
+        to: startViaRubicEvmConfig.to
+      });
+      // const receipt = await web3Private.sendTransaction(buyTokenEvmConfig.to, {
+      //   data: buyTokenEvmConfig.data,
+      //   value: buyTokenEvmConfig.value,
+      //   to: buyTokenEvmConfig.to
+      // });
+
+      console.log('%cPUMP_Receipt ===> ', 'color: yellow; font-size: 20px;', receipt);
+    } catch (err) {
+      console.log('%cPUMP_Error ===> ', 'color: yellow; font-size: 20px;', err);
+    }
   }
 
   private subscribeOnWalletChanges(): void {
