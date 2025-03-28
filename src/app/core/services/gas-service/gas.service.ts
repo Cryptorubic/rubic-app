@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
@@ -116,7 +116,8 @@ export class GasService {
         return {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
-      })
+      }),
+      catchError(() => of(null))
     );
   }
 
