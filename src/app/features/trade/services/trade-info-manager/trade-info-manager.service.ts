@@ -61,7 +61,7 @@ export class TradeInfoManager {
       }
     } else if (trade instanceof EvmOnChainTrade) {
       gasData = trade.gasFeeInfo;
-      gasPrice = gasData?.gasPrice.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
+      gasPrice = gasData?.gasPrice?.gt(0) ? gasData.gasPrice : gasData?.maxFeePerGas;
     }
 
     if (!gasData || !gasData.gasLimit) {

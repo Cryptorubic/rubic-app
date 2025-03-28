@@ -155,5 +155,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad',
   [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
-  [BLOCKCHAIN_NAME.SUI]: 'Sui'
+  [BLOCKCHAIN_NAME.SUI]: 'Sui',
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: 'MegaETH'
 };
