@@ -90,7 +90,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: [],
   [BLOCKCHAIN_NAME.SONEIUM]: [],
   [BLOCKCHAIN_NAME.UNICHAIN]: [],
-  [BLOCKCHAIN_NAME.MONAD_TESTNET]: []
+  [BLOCKCHAIN_NAME.MONAD_TESTNET]: [],
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: []
 };
 
 export const onChainBlacklistProviders: OnChainTradeType[] = [
