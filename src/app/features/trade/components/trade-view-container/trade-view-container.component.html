@@ -4,7 +4,6 @@
   *ngLet="{
     content: formContent$ | async,
     providers: providers$ | async,
-    selectedForm: selectedForm$ | async,
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
     showSpindl: showSpindl$ | async
@@ -40,7 +39,6 @@
     *ngIf="
       state.calculationStatus &&
       state.calculationStatus.showSidebar &&
-      state.selectedForm === 'swapForm' &&
       state.content === 'form' &&
       !useLargeIframe
     "
