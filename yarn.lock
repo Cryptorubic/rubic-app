@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.57.2:
-  version "5.57.2"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.2.tgz#976d5954eb84d9c4a89bcacea8f938bc02ccce97"
-  integrity sha512-h/ZHLcd2toWv4bhcdfVf2yzjoxbvFm5kgvTpjsAB3FOP2JZduptkUCS31Pps2gQByio5VBhg8jm3okRPoQM+hQ==
+rubic-sdk@5.57.4-alpha.solana.1:
+  version "5.57.4-alpha.solana.1"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.4-alpha.solana.1.tgz#21f4c9cdb1a5a2d38d709f546d16fec26da675bb"
+  integrity sha512-MB34fMD29Re1J2sTddQ2mPiCcsjoBrMk77czgJuz6gS7297s9aleN0V8D2xQbSCGbc1Sj/ZyDlwOrj4/7agLlA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
