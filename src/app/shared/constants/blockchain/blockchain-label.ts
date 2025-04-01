@@ -128,7 +128,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SEPOLIA]: 'Sepolia',
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: 'Manta Pacific',
   [BLOCKCHAIN_NAME.SCROLL]: 'Scroll',
-  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: 'Berachain',
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: 'Blast Testnet',
   [BLOCKCHAIN_NAME.BLAST]: 'Blast',
   [BLOCKCHAIN_NAME.HOLESKY]: 'Holesky',
@@ -146,9 +146,14 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BAHAMUT]: 'Bahamut',
   [BLOCKCHAIN_NAME.BITLAYER]: 'Bitlayer',
   [BLOCKCHAIN_NAME.GRAVITY]: 'Gravity',
-  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain'
+  [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain',
   // [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
   // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
   // [BLOCKCHAIN_NAME.MORPH]: 'Morph',
-  // [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal'
+  [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal',
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
+  [BLOCKCHAIN_NAME.SUI]: 'Sui'
+  // [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
+  // [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
+  // [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad'
 };

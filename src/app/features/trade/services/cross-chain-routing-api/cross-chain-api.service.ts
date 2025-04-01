@@ -3,7 +3,6 @@ import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
   BlockchainName,
-  ChangenowCrossChainTrade,
   CrossChainStatus,
   CrossChainTrade,
   CrossChainTradeType,
@@ -124,15 +123,17 @@ export class CrossChainApiService {
           ? this.window.document.referrer
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
-      ...(trade instanceof ChangenowCrossChainTrade && { changenow_id: trade.changenowId }),
-      ...('rangoRequestId' in trade && { rango_request_id: trade.rangoRequestId }),
-      ...('squidrouterRequestId' in trade && {
-        squidrouter_request_id: trade.squidrouterRequestId
+      ...(trade.uniqueInfo.changenowId && { changenow_id: trade.uniqueInfo.changenowId }),
+      ...(trade.uniqueInfo.rangoRequestId && { rango_request_id: trade.uniqueInfo.rangoRequestId }),
+      ...(trade.uniqueInfo.simpleSwapId && { simpleswap_id: trade.uniqueInfo.simpleSwapId }),
+      ...(trade.uniqueInfo.changellyId && { changelly_id: trade.uniqueInfo.changellyId }),
+      ...(trade.uniqueInfo.squidrouterRequestId && {
+        squidrouter_request_id: trade.uniqueInfo.squidrouterRequestId
       }),
-      ...('simpleSwapId' in trade && { simpleswap_id: trade.simpleSwapId }),
-      ...('retroBridgeId' in trade && { retrobridge_transaction_id: trade.retroBridgeId }),
-      ...('changellyId' in trade && { changelly_id: trade.changellyId }),
-      ...(referral && { influencer: referral })
+      ...(trade.uniqueInfo.retroBridgeId && {
+        retrobridge_transaction_id: trade.uniqueInfo.retroBridgeId
+      }),
+      ...(referral && { referrer: referral })
     };
 
     await firstValueFrom(
@@ -205,7 +206,7 @@ export class CrossChainApiService {
         this.window.location !== this.window.parent.location
           ? this.window.document.referrer
           : this.window.document.location.href,
-      ...(referral && { influencer: referral })
+      ...(referral && { referrer: referral })
     };
 
     return firstValueFrom(
