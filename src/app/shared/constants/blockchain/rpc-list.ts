@@ -66,9 +66,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/ftm'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
+    'https://arb1.arbitrum.io/rpc',
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/arbitrum',
-    'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.llamarpc.com',
     'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8'
   ],
