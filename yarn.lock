@@ -17820,10 +17820,10 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@5.57.4-lifi-solana-fix.1:
-  version "5.57.4-lifi-solana-fix.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.4-lifi-solana-fix.1.tgz#a7fcc5a5474bac6f1e5cdc12e994082102dcdddb"
-  integrity sha512-iSPlUXHtsdVdSfMGUORTn/GBKzHM+yj+pw0seTdIAj0qEIhmjw8SBj+lAuiKtf8E60FYPHSchlNsyfybteVC3g==
+rubic-sdk@5.57.4:
+  version "5.57.4"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-5.57.4.tgz#57df95ee149aae7ad76aa35eb312e71cb272933a"
+  integrity sha512-AOreSO/P239VVk43ibTTj+TEwPuij81WJCNGm4Cmxhe/BbGuuZHKDxSsPcWDGNUsBw4esEgaKWTzx2c6vnTsQg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
