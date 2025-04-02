@@ -319,16 +319,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}kyberswap.svg`,
     color: '#31CB9E'
   },
-  // [ON_CHAIN_TRADE_TYPE.KODIAK]: {
-  //   name: 'Kodiak',
-  //   image: `${imageBasePath}kodiak.svg`,
-  //   color: '#34A5F5'
-  // },
-  // [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: {
-  //   name: 'Kyo Finance',
-  //   image: `${imageBasePath}kyo_finance.svg`,
-  //   color: '#FF4C00'
-  // },
+  [ON_CHAIN_TRADE_TYPE.KODIAK]: {
+    name: 'Kodiak',
+    image: `${imageBasePath}kodiak.svg`,
+    color: '#34A5F5'
+  },
+  [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: {
+    name: 'Kyo Finance',
+    image: `${imageBasePath}kyo_finance.svg`,
+    color: '#FF4C00'
+  },
 
   //LLLLLLLLLLLLLLLLLLLLLLL
   [ON_CHAIN_TRADE_TYPE.LIFI]: {
@@ -809,12 +809,17 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Macaron',
     image: `${imageBasePath}macaron.svg`,
     color: '#f6d03a'
+  },
+  [ON_CHAIN_TRADE_TYPE.BULBA_SWAP]: {
+    name: 'BulbaSwap',
+    image: `${imageBasePath}bulba-swap.svg`,
+    color: '#41c533'
+  },
+  [ON_CHAIN_TRADE_TYPE.CETUS]: {
+    name: 'Cetus',
+    image: `${imageBasePath}cetus.png`,
+    color: '#61e0af'
   }
-  // [ON_CHAIN_TRADE_TYPE.BULBA_SWAP]: {
-  //   name: 'BulbaSwap',
-  //   image: `${imageBasePath}bulba-swap.svg`,
-  //   color: '#41c533'
-  // }
 };
 
 export const ON_CHAIN_PROVIDERS: Record<OnChainTradeType, ProviderInfo> = Object.fromEntries(

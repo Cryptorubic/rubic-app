@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   CHAIN_TYPE,
   Configuration,
@@ -16,9 +16,9 @@ import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-de
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
-import { ENVIRONMENT } from 'src/environments/environment';
+import { WINDOW } from '@ng-web-apis/common';
 
-type EnvType = 'local' | 'dev2' | 'dev' | 'prod';
+type EnvType = 'local' | 'dev2' | 'dev' | 'prod' | 'rubic';
 
 @Injectable()
 export class SdkService {
@@ -69,7 +69,10 @@ export class SdkService {
     return this._currentConfig;
   }
 
-  constructor(private readonly angularHttpClient: HttpClient) {
+  constructor(
+    private readonly angularHttpClient: HttpClient,
+    @Inject(WINDOW) private readonly window: Window
+  ) {
     this._SDK = null;
   }
 
@@ -94,7 +97,7 @@ export class SdkService {
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
-      envType: envType,
+      ...(envType && { envType }),
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
           crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
@@ -111,13 +114,20 @@ export class SdkService {
     this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
   }
 
-  private getEnvType(): EnvType {
-    const envType = ENVIRONMENT.environmentName;
+  private getEnvType(): EnvType | null {
+    const map: Record<string, string> = {
+      'dev-app.rubic.exchange': 'dev',
+      'dev2-app.rubic.exchange': 'dev2',
+      'dev3-app.rubic.exchange': 'dev',
+      'stage-app.rubic.exchange': 'rubic',
+      'beta-app.rubic.exchange': 'rubic',
+      'app.rubic.exchange': 'rubic',
+      'local.rubic.exchange': 'local'
+    };
 
-    if (envType === 'stage') {
-      return 'prod';
-    }
+    const host = this?.window?.location?.hostname;
+    const apiEnv = map?.[host] as EnvType | undefined;
 
-    return envType as EnvType;
+    return apiEnv || null;
   }
 }
