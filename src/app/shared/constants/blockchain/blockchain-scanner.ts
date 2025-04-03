@@ -1179,6 +1179,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.FRAXTAL]: {
+    baseUrl: 'https://fraxscan.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   // [BLOCKCHAIN_NAME.SONIC]: {
   //   baseUrl: 'https://sonicscan.org/',
   //   nativeCoinUrl: '',
@@ -1203,14 +1211,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
   //   [ADDRESS_TYPE.BLOCK]: 'block/'
   // },
-  [BLOCKCHAIN_NAME.FRAXTAL]: {
-    baseUrl: 'https://fraxscan.com/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.BERACHAIN]: {
     baseUrl: 'https://berascan.com/',
     nativeCoinUrl: '',
