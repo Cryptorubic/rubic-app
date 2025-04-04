@@ -30,7 +30,6 @@ import { CrossChainApiService } from '@features/trade/services/cross-chain-routi
 import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { AutoSlippageWarningModalComponent } from '@shared/components/via-slippage-warning-modal/auto-slippage-warning-modal.component';
 import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
@@ -204,10 +203,6 @@ export class CrossChainService {
       skipAmountCheck: false
     }
   ): Promise<string | null> {
-    if (!this.isSlippageCorrect(trade)) {
-      return null;
-    }
-
     const useMevBotProtection = this.settingsService.crossChainRoutingValue.useMevBotProtection;
     this.checkBlockchainsAvailable(trade);
 
@@ -348,27 +343,6 @@ export class CrossChainService {
         })
       })
       .subscribe();
-  }
-
-  private isSlippageCorrect(trade: CrossChainTrade): boolean {
-    if (
-      this.settingsService.crossChainRoutingValue.autoSlippageTolerance ||
-      [CROSS_CHAIN_TRADE_TYPE.BRIDGERS].every(crossChainType => crossChainType !== trade.type)
-    ) {
-      return true;
-    }
-
-    this.dialogService
-      .showDialog(
-        AutoSlippageWarningModalComponent,
-        {
-          size: 's',
-          fitContent: true
-        },
-        this.injector
-      )
-      .subscribe();
-    return false;
   }
 
   private checkBlockchainsAvailable(trade: CrossChainTrade): void | never {
