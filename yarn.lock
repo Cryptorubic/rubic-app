@@ -2297,10 +2297,10 @@
     jest-mock-promise "^2.0.2"
     tslib "^2.3.0"
 
-"@cryptorubic/core@0.7.8":
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.8.tgz#8eb3ea3cb07d2a9e3909e8da8796abe4bb29cb24"
-  integrity sha512-UnnCEi2825xicNoU4glVBViFiUjcQqkJmojJXT0BhISMT5ZD19IG/HSyY+6DHmC3TbrSzAC46Ix1ByoDCn3CJA==
+"@cryptorubic/core@0.7.9-alpha-id-1690.0":
+  version "0.7.9-alpha-id-1690.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.9-alpha-id-1690.0.tgz#3e90d50187cd7b97678b021a1193369ea1cbcde2"
+  integrity sha512-logpqYRkAUCgzTvNrYwoigPCNlgSv1maTY1EdOwlQZ6q9Jw4H6BNESXKOmrId0xzahMO0TtlOGrEmPZMF6ileA==
   dependencies:
     bignumber.js "9.1.2"
     jest-mock-promise "^2.0.2"
@@ -2313,10 +2313,10 @@
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
-"@cryptorubic/tron-types@0.7.8":
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.8.tgz#8e6f14505dec8c5230d5294e20b974da9b4afff4"
-  integrity sha512-U0LO6Hcy6jtoFkyRKvKl/enNh4XmiAByOTnGM91pcqDNpEbKZqODpRGtAI9WxHPt+uXQeNH5i/QkO9hPMf8BoA==
+"@cryptorubic/tron-types@0.7.9-alpha-id-1690.0":
+  version "0.7.9-alpha-id-1690.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.9-alpha-id-1690.0.tgz#2f18d4491078fd87644f238b8206908828a9d1ed"
+  integrity sha512-zp+vgq81dveuTF9qvbRtp/Tqtng2CiUHcMabqdcRTK3JGhFge91zOvyI5Kpm3zby9CeDAa+MexJE6F2wWkHFTA==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
@@ -2343,13 +2343,13 @@
     viem "^2.19.1"
     web3-utils "^4.3.1"
 
-"@cryptorubic/web3@0.7.8":
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.8.tgz#6374b28d2a76aa1bb6613c0acf8a51993e325bcc"
-  integrity sha512-VkpXqblGDGwHWNLNdKINGd0HNpb5+GKCd5bcuJRm3hAp2Tb9krbRKDsPmzhTrVnwOE/bYBJha6hLbUN7+8xmsA==
+"@cryptorubic/web3@0.7.9-alpha-id-1690.0":
+  version "0.7.9-alpha-id-1690.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.9-alpha-id-1690.0.tgz#de4bd1d7c277eb4666d999161fcee1bfe3992207"
+  integrity sha512-0EF+hiaZGh7WwVMg8bsTi95S5Z0tCgipFGWiaV39q3DkqgU+RpeyrQrociGUTmdvmkAGHYoB+TgHUuO/6te48A==
   dependencies:
-    "@cryptorubic/core" "0.7.8"
-    "@cryptorubic/tron-types" "0.7.8"
+    "@cryptorubic/core" "0.7.9-alpha-id-1690.0"
+    "@cryptorubic/tron-types" "0.7.9-alpha-id-1690.0"
     "@ethersproject/bignumber" "^5.7.0"
     "@mysten/sui" "^1.24.0"
     "@solana/spl-token" "0.2.0"
@@ -17716,15 +17716,15 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@6.0.0-alpha-new-sdk-fixes.24:
-  version "6.0.0-alpha-new-sdk-fixes.24"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-new-sdk-fixes.24.tgz#35d3e1a61f1b6c84b7149faa6e1c2a5e6ee4ba6b"
-  integrity sha512-AMIVpjexv5srreHDMBoiEw/aJeIHrqm3G0xgAsWFeKfnNhH2YDGgwTtA/mAbuHPlK2gtFsmOBo7Zd19TcVPofw==
+rubic-sdk@6.0.0-alpha-id-1690-fix.0:
+  version "6.0.0-alpha-id-1690-fix.0"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-id-1690-fix.0.tgz#43213636219d1ac7155d6b63ef3ae25c1cdf504f"
+  integrity sha512-CAo2Qwxr7cW4n75wIXIIIPsLehaxMe0qmNLjfaZfSA8o+BpN1isO6f0lKuB/u/H2BJHam/+vEIvPAyvyBzfCLA==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
-    "@cryptorubic/core" "0.7.8"
-    "@cryptorubic/web3" "0.7.8"
+    "@cryptorubic/core" "0.7.9-alpha-id-1690.0"
+    "@cryptorubic/web3" "0.7.9-alpha-id-1690.0"
     "@debridge-finance/debridge-external-call" "^1.0.7"
     "@dedust/sdk" "^0.8.7"
     "@layerzerolabs/scan-client" "0.0.8"
