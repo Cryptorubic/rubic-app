@@ -1,0 +1,13 @@
+<div class="status-wrapper">
+  <div class="row row-status">
+    <ng-container *ngFor="let handler of statusHandlerChain; last as lastHandler">
+      <app-deposit-tx-status-element [statusHandler]="handler"></app-deposit-tx-status-element>
+      <img
+        *ngIf="!lastHandler"
+        class="arrow-step"
+        src="assets/images/icons/arrow/arrow-right-white.svg"
+        alt="Next step"
+      />
+    </ng-container>
+  </div>
+</div>

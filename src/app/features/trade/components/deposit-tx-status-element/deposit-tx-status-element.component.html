@@ -1,0 +1,30 @@
+<ng-container
+  *ngLet="{
+    isDone: statusHandler.isDone$ | async,
+    isPending: statusHandler.isPending$ | async
+  } as state"
+>
+  <div class="row-item status-item">
+    <div class="status-item__circle" *ngIf="!state.isPending && !state.isDone"></div>
+    <div class="status-item__spinner" *ngIf="state.isPending"></div>
+    <div class="status-item__circle_complete" *ngIf="state.isDone">
+      <img
+        class="scheme__state.status-icon"
+        src="assets/images/icons/checkmark/checkmark-bold-black.svg"
+        alt=""
+      />
+    </div>
+    <!-- <ng-container *ngIf="false">
+    <ng-container *ngTemplateOutlet="failedStatus"> </ng-container>
+  </ng-container> -->
+
+    <div
+      class="row-item__value status-item__value"
+      [ngClass]="{
+        'status-item__value_completed': state.isPending || state.isDone
+      }"
+    >
+      {{ statusHandler.getStatusLabel() }}
+    </div>
+  </div>
+</ng-container>

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
-import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import {
   CROSS_CHAIN_DEPOSIT_STATUS,
   CROSS_CHAIN_TRADE_TYPE,
@@ -33,6 +33,9 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { DepositStatusHandler } from './abstract/deposit-status-handler';
+import { DepositBaseStatusHandler } from './abstract/deposit-base-status-handler';
+import { DEPOSIT_STATUS_STEPS } from './constants/deposit-status-steps';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -57,7 +60,8 @@ export class DepositPreviewSwapComponent {
     map(([status, depositTrade]) => {
       const specificStatusText = specificProviderStatusText[depositTrade?.tradeType]?.[status];
       return specificStatusText ? CROSS_CHAIN_DEPOSIT_STATUS.FAILED : status;
-    })
+    }),
+    tap(status => this._firstStatusHandler$.getValue().handleTxStatus(status))
   );
 
   public readonly specificProviderStatusText$ = combineLatest([
@@ -69,6 +73,8 @@ export class DepositPreviewSwapComponent {
       return specificStatusText ? specificStatusText : null;
     })
   );
+
+  public readonly depositStatusHandlerChain;
 
   public readonly fromAsset$ = this.swapsFormService.fromToken$.pipe(first());
 
@@ -128,6 +134,8 @@ export class DepositPreviewSwapComponent {
 
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
+  private readonly _firstStatusHandler$ = new BehaviorSubject<DepositStatusHandler | null>(null);
+
   public hintShown: boolean = false;
 
   constructor(
@@ -147,6 +155,7 @@ export class DepositPreviewSwapComponent {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
+    this.depositStatusHandlerChain = this.createDepositStatusHandlerChain();
   }
 
   public backToForm(): void {
@@ -272,5 +281,22 @@ export class DepositPreviewSwapComponent {
           this.depositService.removePrevDeposit();
         }
       });
+  }
+
+  private createDepositStatusHandlerChain(): DepositStatusHandler[] {
+    const statusHandlerChain = [];
+    let prevHandler: DepositStatusHandler | null = null;
+    for (const [initialStatus, finishStatus] of DEPOSIT_STATUS_STEPS) {
+      const handler = new DepositBaseStatusHandler(initialStatus, finishStatus, null);
+
+      if (!this._firstStatusHandler$.getValue()) this._firstStatusHandler$.next(handler);
+      if (prevHandler) prevHandler.setNextHandler(handler);
+
+      prevHandler = handler;
+
+      statusHandlerChain.push(handler);
+    }
+
+    return statusHandlerChain;
   }
 }
