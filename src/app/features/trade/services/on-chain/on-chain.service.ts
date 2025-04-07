@@ -37,9 +37,7 @@ import { TransactionFailedError } from '@core/errors/models/common/transaction-f
 import { OnChainApiService } from '@features/trade/services/on-chain-api/on-chain-api.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
-import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
@@ -210,6 +208,9 @@ export class OnChainService {
 
       return transactionHash;
     } catch (err) {
+      if (transactionHash && !this.isNotMinedError(err)) {
+        await this.onChainApiService.patchTrade(transactionHash, false);
+      }
       if (
         err instanceof NotWhitelistedProviderError ||
         err instanceof UnapprovedContractError ||
@@ -218,24 +219,11 @@ export class OnChainService {
         this.saveNotWhitelistedProvider(err, fromBlockchain, (trade as OnChainTrade)?.type);
       }
 
-      const parsedError = RubicSdkErrorParser.parseError(err);
-
       if (!(err instanceof UserRejectError)) {
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, err);
       }
 
-      if (transactionHash && !this.isNotMinedError(err)) {
-        await this.onChainApiService.patchTrade(transactionHash, false);
-      }
-
-      if (
-        err?.message?.includes('execution reverted') &&
-        this.settingsService.instantTradeValue.slippageTolerance < 0.5
-      ) {
-        throw new RubicError('Please, increase the slippage and try again!');
-      }
-
-      throw parsedError;
+      throw err;
     }
   }
 

@@ -36,29 +36,22 @@ import {
   // ALGB_TOKEN,
   BLOCKCHAIN_NAME,
   CROSS_CHAIN_TRADE_TYPE,
-  CrossChainIsUnavailableError,
   CrossChainTradeType,
   Injector,
-  LowSlippageError,
   NoLinkedAccountError,
-  NotSupportedTokensError,
   OnChainTrade,
   OnChainTradeType,
   RetroBridgeEvmTrade,
   RetroBridgeTonTrade,
   RubicSdkError,
   SymbiosisEvmCcrTrade,
-  UnsupportedReceiverAddressError,
   UserRejectError,
   Web3Pure
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
-import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
-import CrossChainPairCurrentlyUnavailableError from '@core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 import NotWhitelistedProviderWarning from '@core/errors/models/common/not-whitelisted-provider-warning';
 import UnsupportedDeflationTokenWarning from '@core/errors/models/common/unsupported-deflation-token.warning';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -74,6 +67,7 @@ import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
+import { isRawApiError, RubicApiErrorParser } from '@app/core/errors/models/rubic-api-error-parser';
 
 @Injectable()
 export class SwapsControllerService {
@@ -344,45 +338,6 @@ export class SwapsControllerService {
       });
   }
 
-  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
-    if (error instanceof NotSupportedTokensError) {
-      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
-    }
-    if (error instanceof UnsupportedReceiverAddressError) {
-      return new RubicError('This provider doesn’t support the receiver address.');
-    }
-    if (error instanceof CrossChainIsUnavailableError) {
-      return new CrossChainIsUnavailableWarning();
-    }
-    if (error instanceof LowSlippageError) {
-      return new RubicError('Slippage is too low for transaction.');
-    }
-    if (error instanceof TooLowAmountError) {
-      return new RubicError(
-        "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
-      );
-    }
-    if (error?.message?.includes('No available routes')) {
-      return new RubicError('No available routes.');
-    }
-    if (error?.message?.includes('There are no providers for trade')) {
-      return new RubicError('There are no providers for trade.');
-    }
-    if (error?.message?.includes('Representation of ')) {
-      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
-    }
-    if (error?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
-      return new RubicError('Please, increase the slippage or amount and try again!');
-    }
-
-    const parsedError = error && RubicSdkErrorParser.parseError(error);
-    if (!parsedError || parsedError instanceof ExecutionRevertedError) {
-      return new CrossChainPairCurrentlyUnavailableError();
-    } else {
-      return parsedError;
-    }
-  }
-
   private isExecutionCriticalError(error: RubicError<ERROR_TYPE>): boolean {
     return [
       NotWhitelistedProviderWarning,
@@ -450,13 +405,11 @@ export class SwapsControllerService {
     await this.onChainApiService.patchTrade(txHash, true);
   }
 
-  private catchSwapError(
-    err: RubicSdkError,
-    tradeState: SelectedTrade,
-    onError?: () => void
-  ): void {
-    console.error(err);
-    const parsedError = this.parseCalculationError(err);
+  private catchSwapError(err: Error, tradeState: SelectedTrade, onError?: () => void): void {
+    const parsedError = isRawApiError(err)
+      ? RubicApiErrorParser.parseErrorByCode(err)
+      : RubicSdkErrorParser.parseError(err);
+
     if (this.isExecutionCriticalError(parsedError)) {
       if (tradeState.trade instanceof CrossChainTrade) {
         this.disabledTradesTypes.crossChain.push(tradeState.trade.type);
@@ -477,6 +430,7 @@ export class SwapsControllerService {
       );
       this.swapsStateService.pickProvider(true);
     }
+
     onError?.();
     this.errorsService.catch(parsedError);
   }

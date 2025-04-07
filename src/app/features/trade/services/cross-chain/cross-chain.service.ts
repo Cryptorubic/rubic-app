@@ -38,7 +38,6 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainCalculatedTradeData } from '@features/trade/models/cross-chain-calculated-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -259,29 +258,28 @@ export class CrossChainService {
       await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       return transactionHash;
-    } catch (error) {
+    } catch (err) {
       if (
         transactionHash &&
-        error instanceof Error &&
-        error.message.includes('Transaction was not mined')
+        err instanceof Error &&
+        err.message.includes('Transaction was not mined')
       ) {
         await this.crossChainApiService.patchTrade(transactionHash, false);
       }
 
       if (
-        error instanceof NotWhitelistedProviderError ||
-        error instanceof UnapprovedContractError ||
-        error instanceof UnapprovedMethodError
+        err instanceof NotWhitelistedProviderError ||
+        err instanceof UnapprovedContractError ||
+        err instanceof UnapprovedMethodError
       ) {
-        this.saveNotWhitelistedProvider(error, trade.from.blockchain, trade.type);
+        this.saveNotWhitelistedProvider(err, trade.from.blockchain, trade.type);
       }
 
-      const parsedError = RubicSdkErrorParser.parseError(error);
-      if (!(parsedError instanceof UserRejectError)) {
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+      if (!(err instanceof UserRejectError)) {
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, err);
       }
 
-      throw parsedError;
+      throw err;
     }
   }
 
