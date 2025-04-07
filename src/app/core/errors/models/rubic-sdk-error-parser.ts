@@ -21,7 +21,9 @@ import {
   SdkSwapErrorOnProviderSide,
   NoLinkedAccountError,
   NotSupportedRegionError,
-  LowSlippageError as SdkLowSlippageError
+  LowSlippageError as SdkLowSlippageError,
+  CrossChainIsUnavailableError as SdkCrossChainIsUnavailableError,
+  NotSupportedTokensError as SdkNotSupportedTokensError
 } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -38,7 +40,6 @@ import { NetworkError } from '@core/errors/models/provider/network-error';
 import UnsupportedDeflationTokenWarning from './common/unsupported-deflation-token.warning';
 import MinAmountError from '@core/errors/models/common/min-amount-error';
 import MaxAmountError from '@core/errors/models/common/max-amount-error';
-import { ExecutionRevertedError } from '@core/errors/models/common/execution-reverted-error';
 import UnsupportedReceiverAddressError from '@core/errors/models/common/unsupported-receiver-address-error';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import TooLowAmountError from '@core/errors/models/common/too-low-amount-error';
@@ -52,11 +53,20 @@ import { LowSlippageError } from './common/low-slippage-error';
 import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
+import CrossChainIsUnavailableWarning from './cross-chain/cross-chainIs-unavailable-warning';
+import CrossChainPairCurrentlyUnavailableError from './cross-chain/cross-chain-pair-currently-unavailable-error';
 
 export class RubicSdkErrorParser {
+  // eslint-disable-next-line complexity
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof SdkNotSupportedTokensError) {
+      return new RubicError('Currently, Rubic does not support swaps between these tokens.');
+    }
+    if (err instanceof SdkCrossChainIsUnavailableError) {
+      return new CrossChainIsUnavailableWarning();
+    }
     if (err instanceof NotSupportedRegionError) {
       return new NotSupportedRegionRubicError();
     }
@@ -125,9 +135,22 @@ export class RubicSdkErrorParser {
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 
+  // eslint-disable-next-line complexity
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err.message?.includes('No available routes')) {
+      return new RubicError('No available routes.');
+    }
+    if (err.message?.includes('There are no providers for trade')) {
+      return new RubicError('There are no providers for trade.');
+    }
+    if (err.message?.includes('Representation of ')) {
+      return new RubicError('The swap between this pair of blockchains is currently unavailable.');
+    }
+    if (err.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
+      return new RubicError('Please, increase the slippage or amount and try again!');
+    }
     if (err.message.includes('You rejected the network switch.')) {
       return new UserRejectNetworkSwitchError();
     }
@@ -137,7 +160,6 @@ export class RubicSdkErrorParser {
     ) {
       return new TokenWithFeeError();
     }
-
     if (err.message.includes('Request failed with status code 400')) {
       return new OneinchUnavailableError();
     }
@@ -159,7 +181,6 @@ export class RubicSdkErrorParser {
     ) {
       return new InsufficientGasError();
     }
-
     if (
       err.message.includes('price change more than your slippage!') ||
       err.message.includes('Return amount is not enough') ||
@@ -167,12 +188,11 @@ export class RubicSdkErrorParser {
     ) {
       return new LowSlippageError();
     }
-
     if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
       return new CrossChainSwapUnavailableWarning();
     }
 
-    return new ExecutionRevertedError(err.message);
+    return new CrossChainPairCurrentlyUnavailableError();
   }
 
   public static parseError(
