@@ -1027,14 +1027,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: {
-  //   baseUrl: 'https://artio.beratrail.io/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: {
+    baseUrl: 'https://artio.beratrail.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
     baseUrl: 'https://testnet.blastscan.io/',
     nativeCoinUrl: '',
