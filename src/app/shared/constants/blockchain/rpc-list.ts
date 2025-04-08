@@ -19,7 +19,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://go.getblock.io/1830a5cccc564b28902ba9bbccfadf14',
     'https://eth.llamarpc.com',
-    'https://rpc.ankr.com/eth'
+    'https://eth.meowrpc.com',
+    'https://1rpc.io/eth'
   ],
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
     'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
