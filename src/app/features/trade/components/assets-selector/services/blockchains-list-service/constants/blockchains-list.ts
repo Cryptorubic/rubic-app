@@ -266,11 +266,11 @@ export const blockchainsList: RankedBlockchain[] = [
   //   rank: 0.5,
   //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
   // },
-  // {
-  //   name: BLOCKCHAIN_NAME.SONEIUM,
-  //   rank: 0.5,
-  //   tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
-  // },
+  {
+    name: BLOCKCHAIN_NAME.SONEIUM,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,

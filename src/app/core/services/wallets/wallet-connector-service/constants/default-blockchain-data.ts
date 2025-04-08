@@ -234,15 +234,15 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.FRAXTAL]: {
     name: 'Fraxtal',
     rpc: 'https://rpc.frax.com'
-  }
+  },
   // [BLOCKCHAIN_NAME.BERACHAIN]: {
   //   name: 'Berachain',
   //   rpc: 'https://rpc.berachain.com/'
   // },
-  // [BLOCKCHAIN_NAME.SONEIUM]: {
-  //   name: 'Soneium',
-  //   rpc: 'https://rpc.soneium.org/'
-  // },
+  [BLOCKCHAIN_NAME.SONEIUM]: {
+    name: 'Soneium',
+    rpc: 'https://rpc.soneium.org/'
+  }
   // [BLOCKCHAIN_NAME.UNICHAIN]: {
   //   name: 'Unichain',
   //   rpc: 'https://mainnet.unichain.org/'

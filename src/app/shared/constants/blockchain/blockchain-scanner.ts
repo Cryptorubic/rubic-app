@@ -1219,14 +1219,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  // [BLOCKCHAIN_NAME.SONEIUM]: {
-  //   baseUrl: 'https://soneium.blockscout.com/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.SONEIUM]: {
+    baseUrl: 'https://soneium.blockscout.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   // [BLOCKCHAIN_NAME.UNICHAIN]: {
   //   baseUrl: 'https://uniscan.xyz/',
   //   nativeCoinUrl: '',

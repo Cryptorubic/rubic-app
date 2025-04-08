@@ -41,10 +41,10 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SEI,
   BLOCKCHAIN_NAME.BITLAYER,
   BLOCKCHAIN_NAME.GRAVITY,
-  BLOCKCHAIN_NAME.FRAXTAL
+  BLOCKCHAIN_NAME.FRAXTAL,
   // BLOCKCHAIN_NAME.SONIC,
   // BLOCKCHAIN_NAME.MORPH,
-  // BLOCKCHAIN_NAME.SONEIUM,
+  BLOCKCHAIN_NAME.SONEIUM
   // BLOCKCHAIN_NAME.UNICHAIN
 ] as const;
 
@@ -93,8 +93,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this),
     // [BLOCKCHAIN_NAME.SONIC]: this.fetchSonicGas.bind(this),
     // [BLOCKCHAIN_NAME.MORPH]: this.fetchMorphGas.bind(this),
-    [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this)
-    // [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this),
+    [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this),
+    [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this)
     // [BLOCKCHAIN_NAME.UNICHAIN]: this.fetchUnichainGas.bind(this)
   };
 
@@ -711,14 +711,14 @@ export class GasService {
     );
   }
 
-  // @Cacheable({
-  //   maxAge: GasService.requestInterval
-  // })
-  // private fetchSoneiumGas(): Observable<GasPrice> {
-  //   const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONEIUM);
-  //   return from(blockchainAdapter.getPriorityFeeGas()).pipe(
-  //     map(formatEIP1559Gas),
-  //     catchError(() => of(null))
-  //   );
-  // }
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchSoneiumGas(): Observable<GasPrice> {
+    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SONEIUM);
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
+    );
+  }
 }
