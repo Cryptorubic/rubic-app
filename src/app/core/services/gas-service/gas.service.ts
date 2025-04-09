@@ -150,9 +150,8 @@ export class GasService {
       return { shouldCalculateGasPrice, gasPriceOptions: {} };
     }
 
-    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = await this.getGasPriceInEthUnits(
-      blockchain
-    );
+    const gasResult = await this.getGasPriceInEthUnits(blockchain);
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasResult;
 
     const gasPriceOptions = Boolean(maxPriorityFeePerGas)
       ? {
