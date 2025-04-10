@@ -265,7 +265,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/solana',
     'https://api.mainnet-beta.solana.com'
   ],
-  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: ['https://artio.rpc.berachain.com/'],
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: ['https://artio.rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: [
     'https://rpc.ankr.com/blast_testnet_sepolia/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://sepolia.blast.io'
@@ -363,12 +363,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
   // [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://rpc.berachain.com/'],
-  [BLOCKCHAIN_NAME.SUI]: ['https://fullnode.mainnet.sui.io:443']
-  // [BLOCKCHAIN_NAME.SONEIUM]: [
-  //   'https://1868.rpc.thirdweb.com/',
-  //   'https://rpc.soneium.org/',
-  //   'https://soneium.drpc.org'
-  // ],
+  [BLOCKCHAIN_NAME.SUI]: ['https://fullnode.mainnet.sui.io:443'],
+  [BLOCKCHAIN_NAME.SONEIUM]: [
+    'https://1868.rpc.thirdweb.com/',
+    'https://rpc.soneium.org/',
+    'https://soneium.drpc.org'
+  ]
   // [BLOCKCHAIN_NAME.UNICHAIN]: ['https://mainnet.unichain.org/'],
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: ['https://testnet-rpc.monad.xyz']
 };
