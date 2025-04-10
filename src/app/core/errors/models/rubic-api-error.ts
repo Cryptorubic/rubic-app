@@ -4,6 +4,7 @@ export interface RubicApiError {
   response: {
     code: ApiErrorCode;
     reason: string;
+    data: object;
   };
   status: number;
 }

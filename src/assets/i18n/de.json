@@ -73,6 +73,7 @@
     "notSupportedBridge": "Diese Bridge steht momentan leider nicht zur Verfügung. Bitte passe Deine Auswahl an.",
     "insufficientLiquidityCCR": "Für diese Transaktion reicht die Liquidität nicht aus",
     "insufficientLiquidityIT": "Für diese Transaktion reicht die Liquidität nicht aus.",
+    "notEnoughBalance": "You have not enough balance of {{tokenSymbol}} token on your wallet. Decrease swap amount or increase balance of {{tokenSymbol}}.",
     "oneinchRefreshError": "1inch ist gerade nicht verfügbar. Bitte versuche es erneut.",
     "1inchNotSupportedToken": "Ein von Dir gewählter Token wird seitens 1inch nicht unterstützt.",
     "cancelDeadline": "Deine Transaktion wurde abgebrochen, da die maximale Ausführungsfrist überschritten ist. Bitte versuche es erneut mit einer längeren Transaktionsfrist oder höheren Gas-Gebühren.",

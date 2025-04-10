@@ -73,6 +73,7 @@
     "notSupportedBridge": "Este puente no está disponible actualmente. Seleccione un puente compatible.",
     "insufficientLiquidityCCR": "Liquidez insuficiente para esta operación",
     "insufficientLiquidityIT": "Liquidez insuficiente para esta operación.",
+    "notEnoughBalance": "You have not enough balance of {{tokenSymbol}} token on your wallet. Decrease swap amount or increase balance of {{tokenSymbol}}.",
     "oneinchRefreshError": "1inch actualmente no está disponible. Por favor, intente actualizar la operación.",
     "1inchNotSupportedToken": "1inch no admite uno de los tokens seleccionados.",
     "cancelDeadline": "Su transacción se ha revertido porque el tiempo límite de transacción ha expirado. Intente aumentar el tiempo de vencimiento de la transacción o la cantidad de la comisión.",

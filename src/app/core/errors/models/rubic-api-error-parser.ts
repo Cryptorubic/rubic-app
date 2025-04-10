@@ -6,6 +6,7 @@ import { API_ERROR_CODES, RubicApiError } from './rubic-api-error';
 import { RubicError } from './rubic-error';
 import { UnknownError } from './unknown.error';
 import InvalidTradeIdError from './common/invalid-trade-id-error';
+import InsufficientFundsError from './instant-trade/insufficient-funds-error';
 
 export function isRawApiError(err: object): err is RubicApiError {
   return (
@@ -24,9 +25,10 @@ export class RubicApiErrorParser {
     if (apiErr.response.code === API_ERROR_CODES.SIMULATION_FAILED) {
       return new ExecutionRevertedError(apiErr.response.reason);
     }
-    // if (apiErr.response.code === API_ERROR_CODES.NOT_ENOUGH_BALANCE) {
-    //   return new InsufficientFundsError();
-    // }
+    if (apiErr.response.code === API_ERROR_CODES.NOT_ENOUGH_BALANCE) {
+      const data = apiErr.response.data as { tokenSymbol: string };
+      return new InsufficientFundsError(data.tokenSymbol);
+    }
     if (apiErr.response.code === API_ERROR_CODES.NOT_ENOUGH_NATIVE_FOR_GAS) {
       return new InsufficientGasError();
     }

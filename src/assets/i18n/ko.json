@@ -74,6 +74,7 @@
     "notSupportedBridge": "선택한 브리지는 지원되지 않습니다. 순서를 변경하거나 다른 네트워크를 선택하십시오.",
     "insufficientLiquidityCCR": "이 거래에 대한 유동성이 충분하지 않습니다",
     "insufficientLiquidityIT": "이 거래에 대한 유동성이 충분하지 않습니다.",
+    "notEnoughBalance": "You have not enough balance of {{tokenSymbol}} token on your wallet. Decrease swap amount or increase balance of {{tokenSymbol}}.",
     "1inchRefreshError": "1inch는 현재 사용할 수 없습니다. 거래를 새로 고치세요.",
     "1inchNotSupportedToken": "1INCH는 선택한 토큰 중 하나를 지원하지 않습니다.",
     "cancelDeadline": "거래 기한이 만료되어 거래가 취소되었습니다. 거래 마감 시간 또는 가스량을 늘리십시오.",

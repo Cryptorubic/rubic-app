@@ -75,6 +75,7 @@
     "notSupportedBridge": "This bridge is currently unavailable. Please select a supported bridge.",
     "insufficientLiquidityCCR": "Insufficient liquidity for this trade",
     "insufficientLiquidityIT": "Insufficient liquidity for this trade.",
+    "notEnoughBalance": "You have not enough balance of {{tokenSymbol}} token on your wallet. Decrease swap amount or increase balance of {{tokenSymbol}}.",
     "oneinchRefreshError": "1inch is currently unavailable. Please try to refresh the trade.",
     "1inchNotSupportedToken": "1inch doesn’t support one of the selected tokens.",
     "cancelDeadline": "Your transaction has been reverted because the transaction deadline has expired. Please try to increase transaction deadline time or gas amount.",
