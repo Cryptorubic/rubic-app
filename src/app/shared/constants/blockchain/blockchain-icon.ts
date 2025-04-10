@@ -16,7 +16,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.AVALANCHE]: `${basePath}avalanche.svg`,
   [BLOCKCHAIN_NAME.BAND_PROTOCOL]: `${basePath}band-protocol.svg`,
   [BLOCKCHAIN_NAME.BASE]: `${basePath}base.svg`,
-  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: `${basePath}default-chain.png`,
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: `${basePath}default-chain.png`,
   [BLOCKCHAIN_NAME.BITCOIN]: `${basePath}bitcoin.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_CASH]: `${basePath}bitcoin-cash.svg`,
   [BLOCKCHAIN_NAME.BITCOIN_DIAMOND]: `${basePath}bitcoin-diamond.svg`,

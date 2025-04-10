@@ -1067,9 +1067,9 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.FRAXTAL]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.FRAXTAL], ...defaultTokenParams } as Token
   ],
-  // [BLOCKCHAIN_NAME.BERACHAIN]: [
-  //   { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
-  // ],
+  [BLOCKCHAIN_NAME.BERACHAIN]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.BERACHAIN], ...defaultTokenParams } as Token
+  ],
   [BLOCKCHAIN_NAME.SONEIUM]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SONEIUM], ...defaultTokenParams } as Token
   ]
