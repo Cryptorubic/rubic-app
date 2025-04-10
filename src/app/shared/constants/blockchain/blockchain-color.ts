@@ -155,5 +155,5 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SONEIUM]: '#131315',
   // [BLOCKCHAIN_NAME.UNICHAIN]: '#F50DB4',
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: '#FFFFFF'
-  [BLOCKCHAIN_NAME.SUI]: 'Sui'
+  [BLOCKCHAIN_NAME.SUI]: '#FFFFFF'
 };

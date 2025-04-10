@@ -77,7 +77,8 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.EOS]: ['EOS'],
   [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
   [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
-  [BLOCKCHAIN_NAME.XDC]: ['XDC']
+  [BLOCKCHAIN_NAME.XDC]: ['XDC'],
+  [BLOCKCHAIN_NAME.SUI]: ['SUI']
 };
 
 export const notEvmChangeNowBlockchainsList = {
@@ -117,6 +118,7 @@ export const notEvmChangeNowBlockchainsList = {
   [BLOCKCHAIN_NAME.TON]: BLOCKCHAIN_NAME.TON,
   [BLOCKCHAIN_NAME.WAVES]: BLOCKCHAIN_NAME.WAVES,
   [BLOCKCHAIN_NAME.WAX]: BLOCKCHAIN_NAME.WAX,
+  [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI,
   // [BLOCKCHAIN_NAME.CASPER]: BLOCKCHAIN_NAME.CASPER,
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
@@ -168,6 +170,9 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
 
   if (blockchain === BLOCKCHAIN_NAME.TON) {
     chainTags.push(BlockchainTags.NEW, BlockchainTags.POPULAR);
+  }
+  if (blockchain === BLOCKCHAIN_NAME.SUI) {
+    chainTags.push(BlockchainTags.NEW);
   }
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     chainTags.push(BlockchainTags.PROMO);
