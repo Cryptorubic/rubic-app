@@ -218,17 +218,17 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  // {
-  //   name: BLOCKCHAIN_NAME.BERACHAIN,
-  //   rank: 0.75,
-  //   tags: [
-  //     'ETH',
-  //     BlockchainTags.POPULAR,
-  //     BlockchainTags.NEW,
-  //     BlockchainTags.EVM,
-  //     BlockchainTags.LAYER_2
-  //   ]
-  // },
+  {
+    name: BLOCKCHAIN_NAME.BERACHAIN,
+    rank: 0.75,
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.NEW,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2
+    ]
+  },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.75,
@@ -271,11 +271,11 @@ export const blockchainsList: RankedBlockchain[] = [
   //   rank: 0.5,
   //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
   // },
-  // {
-  //   name: BLOCKCHAIN_NAME.SONEIUM,
-  //   rank: 0.5,
-  //   tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
-  // },
+  {
+    name: BLOCKCHAIN_NAME.SONEIUM,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
