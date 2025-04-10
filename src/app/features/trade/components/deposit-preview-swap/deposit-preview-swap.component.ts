@@ -152,7 +152,7 @@ export class DepositPreviewSwapComponent {
   public backToForm(): void {
     this.tradePageService.setState('form');
     this.previewSwapService.setNextTxState({
-      step: 'inactive',
+      step: 'idle',
       data: {}
     });
   }
