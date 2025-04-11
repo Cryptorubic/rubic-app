@@ -1203,14 +1203,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
   //   [ADDRESS_TYPE.BLOCK]: 'block/'
   // },
-  // [BLOCKCHAIN_NAME.MORPH]: {
-  //   baseUrl: 'https://explorer.morphl2.io/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.MORPH]: {
+    baseUrl: 'https://explorer.morphl2.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.BERACHAIN]: {
     baseUrl: 'https://berascan.com/',
     nativeCoinUrl: '',
