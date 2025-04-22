@@ -1060,7 +1060,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.KROMA]: {
-    baseUrl: 'https://kromascan.com/',
+    baseUrl: 'https://kroscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -1227,14 +1227,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  // [BLOCKCHAIN_NAME.UNICHAIN]: {
-  //   baseUrl: 'https://uniscan.xyz/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.UNICHAIN]: {
+    baseUrl: 'https://uniscan.xyz/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: {
   //   baseUrl: 'https://testnet.monadexplorer.com/',
   //   nativeCoinUrl: '',
