@@ -5197,6 +5197,11 @@
     eventemitter3 "^5.0.0"
     lodash "^4.17.21"
 
+"@spindl-xyz/attribution@^1.8.0":
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/@spindl-xyz/attribution/-/attribution-1.8.1.tgz#c5d99022a7fa5530e8be1742efe4ac78afe816f5"
+  integrity sha512-YxIECjxf5qiUV5tzMwRKlsISsTvpd/xmrTexu7RAvSSrpCM/T4RP13VhWmU9t1AvMmfjuoRHwPMQPXxXbTPHiA==
+
 "@stablelib/aead@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@stablelib/aead/-/aead-1.0.1.tgz#c4b1106df9c23d1b867eb9b276d8f42d5fc4c0c3"

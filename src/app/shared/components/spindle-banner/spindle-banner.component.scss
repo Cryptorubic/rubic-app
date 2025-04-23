@@ -1,0 +1,11 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .spindle-banner {
+    @include flex(row, center, center);
+
+    iframe {
+      border-radius: var(--tui-radius-m);
+    }
+  }
+}

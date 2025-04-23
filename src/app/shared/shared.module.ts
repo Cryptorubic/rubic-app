@@ -73,6 +73,7 @@ import { SlippageFormatPipe } from '@shared/pipes/slippage-format.pipe';
 import { SkipDefaultDirective } from './directives/skip-default/skip-default.directive';
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
+import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
 
 @NgModule({
   declarations: [
@@ -120,7 +121,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     SlippageFormatPipe,
     SkipDefaultDirective,
     MevBotModalComponent,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SpindleBannerComponent
   ],
   imports: [
     CommonModule,
@@ -195,7 +197,8 @@ import { ProgressBarComponent } from './components/progress-bar/progress-bar.com
     PriceImpactFormatPipe,
     SlippageFormatPipe,
     SkipDefaultDirective,
-    ProgressBarComponent
+    ProgressBarComponent,
+    SpindleBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
