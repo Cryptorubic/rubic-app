@@ -117,6 +117,7 @@ export class SwapsControllerService {
     this.subscribeOnAddressChange();
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
+    this.subscribeOnSwapFormFilled();
   }
 
   /**
@@ -602,5 +603,11 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+  }
+
+  private subscribeOnSwapFormFilled(): void {
+    this.swapFormService.isFilled$.subscribe(isFilled => {
+      if (!isFilled) Injector.rubicApiService.stopCalculation();
+    });
   }
 }
