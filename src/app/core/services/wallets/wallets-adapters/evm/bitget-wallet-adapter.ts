@@ -20,8 +20,9 @@ import {
 } from 'rubic-sdk';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { NgZone } from '@angular/core';
+import { NeedDisableTokenPocketWalletError } from '@app/core/errors/models/provider/token-pocket-enabled-error';
 
-export class BitkeepWalletAdapter extends EvmWalletAdapter {
+export class BitgetWalletAdapter extends EvmWalletAdapter {
   public get isMultiChainWallet(): boolean {
     return false;
   }
@@ -31,7 +32,7 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
   }
 
   public get walletName(): WALLET_NAME {
-    return WALLET_NAME.BITKEEP;
+    return WALLET_NAME.BITGET;
   }
 
   constructor(
@@ -42,11 +43,6 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
     window: RubicWindow
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
-
-    const ethereum = window?.bitkeep?.ethereum;
-    this.checkErrors(ethereum);
-    this.wallet = ethereum;
-    this.handleEvents();
   }
 
   /**
@@ -56,6 +52,10 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
   private checkErrors(ethereum: RubicAny): void {
     if (!ethereum?.isBitKeep && !ethereum?.isBitKeepChrome) {
       throw new BitKeepError();
+    }
+
+    if (ethereum?.isTokenPocket) {
+      throw new NeedDisableTokenPocketWalletError(this.walletName);
     }
 
     // installed coinbase Chrome extension
@@ -105,6 +105,10 @@ export class BitkeepWalletAdapter extends EvmWalletAdapter {
 
   public async activate(params?: unknown[]): Promise<void> {
     try {
+      const provider = await this.getProvider('bitget wallet');
+      this.checkErrors(provider);
+
+      this.wallet = provider;
       const accounts = await this.wallet.request({
         method: 'eth_requestAccounts',
         params

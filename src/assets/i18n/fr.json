@@ -101,7 +101,8 @@
     "crossChainSwapUnavailable": "Malheureusement, cet échange utilisant le fournisseur calculé n'est actuellement pas disponible. Rubic recalculera l'itinéraire pour votre swap.",
     "noSelectedToken": "Sélectionnez le Token",
     "wrongSourceNetwork": "Les swaps du réseau {{ network ]} ne sont actuellement pas pris en charge.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
+    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",
