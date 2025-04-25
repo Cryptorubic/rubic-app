@@ -129,6 +129,10 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
       ) {
         throw new SignRejectError();
       }
+
+      if (error instanceof RubicError) {
+        throw error;
+      }
     }
   }
 
