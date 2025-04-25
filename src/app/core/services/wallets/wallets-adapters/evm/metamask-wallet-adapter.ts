@@ -10,6 +10,8 @@ import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/co
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { NeedDisableCtrlWalletError } from '@app/core/errors/models/provider/ctrl-wallet-enabled-error';
+import { WalletLinkProvider } from 'walletlink';
+import { EIP6963AnnounceProviderEvent } from './common/models/eip-6963-provider-event';
 
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
@@ -45,23 +47,11 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      const commonProvider = this.window?.ethereum;
-
-      if (!commonProvider) {
+      const metamaskProvider = await this.getProvider();
+      if (!metamaskProvider) {
         throw new MetamaskError();
       }
-
-      if (commonProvider.providers?.length) {
-        const metamaskProvider = commonProvider.providers.find(provider => provider?.isMetaMask);
-
-        if (!metamaskProvider) {
-          throw new MetamaskError();
-        }
-
-        this.wallet = metamaskProvider;
-      } else {
-        this.wallet = commonProvider;
-      }
+      this.wallet = metamaskProvider;
 
       const accounts = (await this.wallet.request({
         method: 'eth_requestAccounts'
@@ -93,5 +83,26 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
       throw new MetamaskError();
     }
+  }
+
+  private getProvider(): Promise<WalletLinkProvider | null> {
+    return new Promise(resolve => {
+      const checkProvider = (event: RubicAny) => {
+        const timeoutId = setTimeout(() => {
+          this.window.removeEventListener('eip6963:announceProvider', checkProvider);
+          resolve(null);
+        }, 5000);
+
+        const res = event as EIP6963AnnounceProviderEvent;
+        if (res.detail.info.name.toLowerCase() === 'metamask') {
+          clearTimeout(timeoutId);
+          this.window.removeEventListener('eip6963:announceProvider', checkProvider);
+          resolve(res.detail.provider);
+        }
+      };
+
+      this.window.addEventListener('eip6963:announceProvider', checkProvider);
+      this.window.dispatchEvent(new Event('eip6963:requestProvider'));
+    });
   }
 }
