@@ -607,7 +607,7 @@ export class SwapsControllerService {
 
   private subscribeOnSwapFormFilled(): void {
     this.swapFormService.isFilled$
-      .pipe(debounceTime(200), distinctUntilChanged())
+      .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(isFilled => {
         if (!isFilled) Injector.rubicApiService.stopCalculation();
       });
