@@ -117,6 +117,7 @@ export class SwapsControllerService {
     this.subscribeOnAddressChange();
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
+    this.subscribeOnSwapFormFilled();
   }
 
   /**
@@ -536,7 +537,7 @@ export class SwapsControllerService {
           const wrappedTrade = container?.value?.wrappedTrade;
           const isCalculationEnd = container.value.total === container.value.calculated;
 
-          if (wrappedTrade) {
+          if (wrappedTrade && this.swapFormService.isFilled) {
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
@@ -584,7 +585,7 @@ export class SwapsControllerService {
           if (isCalculationEnd) {
             this.refreshService.setStopped();
           }
-          if (!container?.value) {
+          if (!container?.value || !this.swapFormService.isFilled) {
             this.refreshService.setStopped();
             this.swapsStateService.clearProviders(true);
           } else {
@@ -602,5 +603,13 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+  }
+
+  private subscribeOnSwapFormFilled(): void {
+    this.swapFormService.isFilled$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(isFilled => {
+        if (!isFilled) Injector.rubicApiService.stopCalculation();
+      });
   }
 }
