@@ -4,7 +4,9 @@
     content: formContent$ | async,
     providers: providers$ | async,
     selectedForm: selectedForm$ | async,
-    calculationStatus: calculationStatus$ | async
+    calculationStatus: calculationStatus$ | async,
+    transactionState: transactionState$ | async,
+    showSpindl: showSpindl$ | async
   } as state"
 >
   <div
@@ -24,6 +26,12 @@
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
+    <app-spindle-banner
+      *ngIf="state.showSpindl"
+      [ngStyle]="{
+        display: state.content === 'form' ? 'block' : 'none'
+      }"
+    ></app-spindle-banner>
   </div>
 
   <app-providers-list-general

@@ -21,6 +21,13 @@
   }
 }
 
+@mixin flex($dir, $align, $justify-content) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $justify-content;
+}
+
 @mixin dark {
   :host-context(html.dark) & {
     @content;
