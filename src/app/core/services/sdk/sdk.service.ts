@@ -118,7 +118,7 @@ export class SdkService {
     const map: Record<string, string> = {
       'dev-app.rubic.exchange': 'dev',
       'dev2-app.rubic.exchange': 'dev2',
-      'dev3-app.rubic.exchange': 'dev',
+      'dev3-app.rubic.exchange': 'dev3',
       'stage-app.rubic.exchange': 'rubic',
       'beta-app.rubic.exchange': 'rubic',
       'app.rubic.exchange': 'rubic',
