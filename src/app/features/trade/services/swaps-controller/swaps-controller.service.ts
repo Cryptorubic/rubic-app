@@ -389,7 +389,8 @@ export class SwapsControllerService {
       NotWhitelistedProviderWarning,
       UnsupportedDeflationTokenWarning,
       ExecutionRevertedError,
-      CrossChainSwapUnavailableWarning
+      CrossChainSwapUnavailableWarning,
+      CrossChainPairCurrentlyUnavailableError
     ].some(CriticalError => error instanceof CriticalError);
   }
 
