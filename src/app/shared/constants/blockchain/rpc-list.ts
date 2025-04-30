@@ -35,8 +35,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/polygon'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    // 'https://nd-286-108-077.p2pify.com/2bf96e69ad7bef27f9598f04c61ed737',
+    'https://x-api.rubic.exchange/polygon_zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://go.getblock.io/709661d31f3d436bb87a56de04bb4116',
     'https://zkevm-rpc.com',
     'https://1rpc.io/polygon/zkevm',
