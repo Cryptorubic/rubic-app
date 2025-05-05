@@ -69,13 +69,23 @@ export class CrossChainApiService {
     blockchain: BlockchainName,
     tradeType: CrossChainTradeType
   ): Observable<void> {
-    return this.httpService.post(`info/new_provider`, {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
-      address: error.contract,
-      cause: 'cross-chain',
-      selector: error.method
-    });
+    if (error instanceof UnapprovedContractError) {
+      return this.httpService.post(`info/new_provider`, {
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
+        address: error.contract,
+        cause: 'cross-chain',
+        selector: 'unknown'
+      });
+    } else {
+      return this.httpService.post(`info/new_provider`, {
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        title: TO_BACKEND_CROSS_CHAIN_PROVIDERS[tradeType],
+        address: 'unknown',
+        cause: 'cross-chain',
+        selector: error.method
+      });
+    }
   }
 
   /**
