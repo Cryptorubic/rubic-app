@@ -57,7 +57,7 @@
     "OverQueryLimit": "Vous avez tenté d'exécuter trop de transactions  et avez dépassé les restrictions du bridge Binance de 3 transactions maximum en 30 minutes. Veuillez réessayer plus tard. Si le problème persiste, veuillez contacter notre",
     "userReject": "Vous avez refusé l'exécution de la transaction. Veuillez confirmer l'exécution pour conclure l'échange.",
     "rubicError": "Veuillez réessayer plus tard ou essayez d'utiliser un autre appareil. Si vous rencontrez toujours des problèmes, veuillez contacter notre",
-    "insufficientFunds": "Vous n'avez pas assez de {{ tokenSymbol }}. Votre solde est de {{balance}} {{tokenSymbol}}, mais vous devez disposer de {{requiredBalance}} {{tokenSymbol}}.",
+    "insufficientFunds": "Vous n'avez pas assez de {{ tokenSymbol }}.",
     "insufficientFunds1inch": "Vous n'avez pas assez de {{ tokenSymbol }} pour couvrir le transfert et les frais de gaz. Veuillez demander un montant moindre ou recharger en {{ nativeToken }}.",
     "noQrCode": "Veuillez scanner le QR code.",
     "walletlinkWrongNetwork": "Veuillez vous assurer que le réseau {{ networkToChoose }} est sélectionné dans l'application Coinbase. Pour changer de réseau dans l'application Coinbase, accédez aux paramètres dans le panneau inférieur et sélectionnez l'onglet \"Réseau actif\".",

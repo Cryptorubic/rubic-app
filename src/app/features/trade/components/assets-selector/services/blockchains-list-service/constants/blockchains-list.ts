@@ -239,17 +239,16 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.75,
     tags: [BlockchainTags.EVM, BlockchainTags.PROMO, BlockchainTags.POPULAR]
   },
-  // {
-  //   name: BLOCKCHAIN_NAME.UNICHAIN,
-  //   rank: 0.5,
-  //   tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
-  // },
+  {
+    name: BLOCKCHAIN_NAME.UNICHAIN,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+  },
   // @DELETE
   // {
   //   name: BLOCKCHAIN_NAME.WANCHAIN,
   //   rank: 0.5,
   //   tags: ['WAN', BlockchainTags.NEW, BlockchainTags.EVM]
-  // },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,

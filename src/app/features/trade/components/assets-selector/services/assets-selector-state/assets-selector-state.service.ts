@@ -26,7 +26,7 @@ export class AssetsSelectorStateService {
   public readonly selectorListType$ = this._selectorListType$.asObservable();
 
   private readonly _tokenFilter$ = new BehaviorSubject<TokenFilter>(
-    TOKEN_FILTERS.ALL_CHAINS_TRENDING
+    TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
   );
 
   public readonly tokenFilter$ = this._tokenFilter$.asObservable();

@@ -156,7 +156,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}berachain.svg`,
   [BLOCKCHAIN_NAME.SUI]: `${basePath}sui.svg`,
   [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
-  [BLOCKCHAIN_NAME.WANCHAIN]: `${basePath}wanchain.svg`
-  // [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`,
+  [BLOCKCHAIN_NAME.WANCHAIN]: `${basePath}wanchain.svg`,
+  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`
 };
