@@ -25,7 +25,7 @@ export class CoinBaseWalletAdapter extends EvmWalletAdapter<ProviderInterface> {
 
   public async activate(): Promise<void> {
     try {
-      const provider = await this.getProvider('coinbase wallet');
+      const provider = await this.getProvider({ provider: 'coinbase wallet' });
 
       if (!provider) {
         throw new CoinBaseError();

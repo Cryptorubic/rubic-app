@@ -33,8 +33,11 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
   public async activate(): Promise<void> {
     try {
-      const metamaskProvider = await this.getProvider('metamask');
-      const provider = metamaskProvider ? metamaskProvider : await this.getProvider('rabby wallet');
+      const provider = await this.getProvider({
+        provider: 'metamask',
+        reserveProvider: 'rabby wallet'
+      });
+
       if (!provider) {
         throw new MetamaskError();
       }

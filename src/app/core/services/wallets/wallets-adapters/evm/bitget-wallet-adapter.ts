@@ -105,7 +105,7 @@ export class BitgetWalletAdapter extends EvmWalletAdapter {
 
   public async activate(params?: unknown[]): Promise<void> {
     try {
-      const provider = await this.getProvider('bitget wallet');
+      const provider = await this.getProvider({ provider: 'bitget wallet' });
       this.checkErrors(provider);
 
       this.wallet = provider;
