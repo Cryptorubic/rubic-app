@@ -58,7 +58,7 @@ export abstract class EvmWalletAdapter<T = RubicAny>
   }
 
   protected getProvider(walletName: string): Promise<T | null> {
-    const providerFromStore = EvmWalletProviderStore.getProvider(this.walletName);
+    const providerFromStore = EvmWalletProviderStore.getProvider(walletName);
 
     if (providerFromStore) return providerFromStore;
 
@@ -70,9 +70,10 @@ export abstract class EvmWalletAdapter<T = RubicAny>
         }, 5000);
 
         const res = event as EIP6963AnnounceProviderEvent;
-        EvmWalletProviderStore.setProvider(res.detail.info.name, res.detail.provider);
+        const providerName = res.detail.info.name.toLowerCase();
 
-        if (res.detail.info.name.toLowerCase() === walletName) {
+        EvmWalletProviderStore.setProvider(providerName, res.detail.provider);
+        if (providerName === walletName) {
           clearTimeout(timeoutId);
           this.window.removeEventListener('eip6963:announceProvider', checkProvider);
           resolve(res.detail.provider as T);
