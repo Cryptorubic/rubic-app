@@ -127,5 +127,23 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Slush',
+    value: WALLET_NAME.SLUSH,
+    img: './assets/images/icons/wallets/slush.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Suiet Wallet',
+    value: WALLET_NAME.SUIET_WALLET,
+    img: './assets/images/icons/wallets/suiet.png',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
   }
 ];

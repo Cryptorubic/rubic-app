@@ -47,6 +47,8 @@ import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapter
 import { ModalService } from '@core/modals/services/modal.service';
 import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
 import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
+import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
+import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -208,6 +210,13 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.CTRL) {
       return new CtrlWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.SLUSH) {
+      return new SlushWalletAdapter(...defaultConstructorParameters);
+    }
+    if (walletName === WALLET_NAME.SUIET_WALLET) {
+      return new SuietWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
