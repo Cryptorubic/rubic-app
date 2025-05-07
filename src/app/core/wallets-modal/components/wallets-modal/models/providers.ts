@@ -31,7 +31,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Coinbase Wallet',
-    value: WALLET_NAME.WALLET_LINK,
+    value: WALLET_NAME.COIN_BASE,
     img: './assets/images/icons/wallets/coinbase.png',
     supportsDesktop: true,
     supportsMobile: false,
@@ -57,9 +57,9 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'BitKeep',
-    value: WALLET_NAME.BITKEEP,
-    img: './assets/images/icons/wallets/bitkeep.svg',
+    name: 'BitGet',
+    value: WALLET_NAME.BITGET,
+    img: './assets/images/icons/wallets/bitget.svg',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
