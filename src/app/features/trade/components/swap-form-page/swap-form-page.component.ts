@@ -119,15 +119,12 @@ export class SwapFormPageComponent {
   }
 
   public async toggleReceiver(): Promise<void> {
-    const { fromToken, toToken } = this.swapFormService.inputValue;
-    let settings = this.settingsService.crossChainRouting;
-    if (fromToken && toToken) {
-      // @ts-ignore
-      settings =
-        fromToken.blockchain === toToken.blockchain
-          ? this.settingsService.instantTrade
-          : this.settingsService.crossChainRouting;
-    }
+    const { fromBlockchain, toBlockchain } = this.swapFormService.inputValue;
+    const settings =
+      fromBlockchain === toBlockchain
+        ? this.settingsService.instantTrade
+        : this.settingsService.crossChainRouting;
+
     const oldValue = settings.controls.showReceiverAddress.value;
     settings.patchValue({ showReceiverAddress: !oldValue });
   }
