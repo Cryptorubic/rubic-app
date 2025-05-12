@@ -39,7 +39,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: '#000',
     image: `${imageBasePath}archon.svg`,
-    name: 'Archon bridge'
+    name: 'Archon Bridge'
   },
   avalanche: {
     averageTime: 5,
@@ -224,7 +224,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: '#5d25ba',
     image: `${imageBasePath}polygon-bridge.png`,
-    name: 'Polygon bridge'
+    name: 'Polygon Bridge'
   },
   pulsechain_bridge: {
     averageTime: 5,
@@ -317,7 +317,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: '#e81899',
     image: `${imageBasePath}taiko.svg`,
-    name: 'Taiko bridge'
+    name: 'Taiko Bridge'
   },
   tele_swap: {
     averageTime: 5,
@@ -346,6 +346,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Voyager'
   },
   //WWWWWWWWWWWWWWWWWWWW
+  wanchain_bridge: {
+    averageTime: 5,
+    color: '#2a74db',
+    image: 'assets/images/icons/coins/wanchain.svg',
+    name: 'Wanchain Bridge'
+  },
   wormhole: {
     averageTime: 5,
     color: 'white',

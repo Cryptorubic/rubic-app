@@ -6,7 +6,6 @@ import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -37,7 +36,6 @@ export class AppComponent implements AfterViewInit {
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
     private readonly cookieService: CookieService,
-    private readonly gtmService: GoogleTagManagerService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
@@ -79,8 +77,7 @@ export class AppComponent implements AfterViewInit {
       if (
         userAddress &&
         this.tradePageService.formContent === 'form' &&
-        !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData) &&
-        this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+        !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData)
       ) {
         this.tokensStoreService.startBalanceCalculating('allChains', {
           allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS

@@ -185,7 +185,6 @@ export class PlatformConfigurationService {
     if (!crossChainProvidersEntries.length) {
       return this._disabledProviders$.getValue();
     }
-
     const disabledCrossChainProviders = crossChainProvidersEntries
       .filter(([_, { active }]) => !active)
       .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
