@@ -57,7 +57,7 @@
     "OverQueryLimit": "Kısa bir süre içinde çok fazla işlem gerçekleştirmeye çalıştınız ve 30 dakika içinde maksimum 3 işlem olan Binance köprü kısıtlamalarını aştınız.\nLütfen bekleyin ve tekrar deneyin, hala sorun yaşıyorsanız lütfen bizimle iletişime geçin.",
     "userReject": "İşlemin yürütülmesini reddettiniz. Lütfen işlemi tamamlamak için önce onaylayın.",
     "rubicError": "Lütfen daha sonra tekrar deneyin veya başka bir cihaz kullanmayı deneyin. Hala sorun yaşıyorsanız, lütfen bize ulaşın",
-    "insufficientFunds": "Yeterli {{ tokenSymbol }} yok. Bakiyeniz {{balance}} {{tokenSymbol}}, ancak {{requiredBalance}} {{tokenSymbol}} gerekli.",
+    "insufficientFunds": "Yeterli {{ tokenSymbol }} yok.",
     "insufficientFunds1inch": "Transfer ve gaz ücreti için yeterli miktarda {{ nativeToken }} yok. İşlem için daha az miktar girin veya {{ nativeToken }} bakiyenizi doldurun.",
     "noQrCode": "Lütfen QR kodunu taradığınızdan emin olun.",
     "walletlinkWrongNetwork": "Lütfen Coinbase uygulamasında {{ networkToChoose }} ağının seçili olduğundan emin olun. Coinbase uygulamasında ağı değiştirmek için alt paneldeki ayarlara gidin ve \"Aktif Ağ\"sekmesini seçin.",
@@ -101,7 +101,8 @@
     "crossChainSwapUnavailable": "Ne yazık ki, hesaplanan sağlayıcıyı kullanan bu takas şu anda kullanılamıyor. Rubic, takasınız için rotayı yeniden hesaplayacaktır.",
     "noSelectedToken": "Token Seç",
     "wrongSourceNetwork": "{{ network }} ağından yapılan takaslar şu anda desteklenmemektedir.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
+    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

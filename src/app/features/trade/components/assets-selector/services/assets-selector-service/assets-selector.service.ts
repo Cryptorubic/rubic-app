@@ -127,7 +127,7 @@ export class AssetsSelectorService {
 
     if (isTokenSelected) return this.swapFormService.inputValue[openedToken].blockchain;
     if (!isOppositeTokenSelected && !isTokenSelected) {
-      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+      this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS);
       return 'allChains';
     }
 
@@ -143,7 +143,7 @@ export class AssetsSelectorService {
       return 'allChains';
     }
 
-    this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_TRENDING);
+    this.assetsSelectorStateService.setTokenFilter(TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS);
     return 'allChains';
   }
 }
