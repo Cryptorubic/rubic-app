@@ -157,13 +157,23 @@ export class OnChainApiService {
     blockchain: BlockchainName,
     tradeType: OnChainTradeType
   ): Observable<void> {
-    return this.httpService.post(`info/new_provider`, {
-      network: TO_BACKEND_BLOCKCHAINS[blockchain],
-      title: tradeType,
-      address: error.contract,
-      cause: 'on-chain',
-      selector: error.method
-    });
+    if (error instanceof UnapprovedContractError) {
+      return this.httpService.post(`info/new_provider`, {
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        title: tradeType,
+        address: error.contract,
+        cause: 'on-chain',
+        selector: 'unknown'
+      });
+    } else {
+      return this.httpService.post(`info/new_provider`, {
+        network: TO_BACKEND_BLOCKCHAINS[blockchain],
+        title: tradeType,
+        address: 'unknown',
+        cause: 'on-chain',
+        selector: error.method
+      });
+    }
   }
 
   public saveProvidersStatistics(data: ProviderOnChainStatistic): Observable<void> {

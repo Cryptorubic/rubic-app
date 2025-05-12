@@ -58,7 +58,7 @@
     "OverQueryLimit": "당신은 시간의 짧은 기간에 너무 많은 거래를 실행하려고했습니다. 당신은 여전히 문제가있는 경우, 기다려 나중에 다시 시도하시기",
     "userReject": "트랜잭션 실행을 거부했습니다. 거래를 완료하기 위해 먼저 확인하십시오.",
     "rubicError": "나중에 다시 시도하거나 다른 장치를 사용해 보십시오. 여전히 문제가 있는 경우",
-    "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다. 잔액은 {{balance}} {{tokenSymbol}}, 이지만 {{requiredBalance}} {{tokenSymbol}} 이 (가) 필요합니다.",
+    "insufficientFunds": "{{ tokenSymbol }} 이 (가) 충분하지 않습니다.",
     "insufficientFunds1inch": "이체 및 가스 수수료에 대한 {{ nativeToken }} 의 양이 충분하지 않습니다. 거래의 경우 더 적은 금액을 입력하거나 {{ nativeToken }} 잔액을 충전하십시오.",
     "noQrCode": "qrCode를 스캔했는지 확인하십시오",
     "walletlinkWrongNetwork": "Coinbase 애플리케이션에서 {{ networkToChoose }} 네트워크가 선택되어 있는지 확인하십시오. 코인베이스 애플리케이션에서 네트워크를 변경하려면 하단 패널의 설정으로 이동하여 \"Active Network\" 탭을 선택합니다.",
@@ -102,7 +102,8 @@
     "crossChainSwapUnavailable": "유감스럽게도 계산된 공급자를 사용하는 이 스왑은 현재 사용할 수 없습니다. Rubic은 스왑 경로를 다시 계산합니다.",
     "noSelectedToken": "토큰 선택",
     "wrongSourceNetwork": "{{ network }} 네트워크의 스왑은 현재 지원되지 않습니다.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
+    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",
