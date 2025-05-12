@@ -21,15 +21,12 @@
   border-bottom-left-radius: var(--tui-radius-m);
 
   @include b($mobile-md) {
-    height: 54vh;
+    height: 60vh;
     padding: var(--tui-padding-l);
 
     background: none;
     border-radius: 0;
 
-    .tokens-scrollbar {
-      height: 30vh;
-    }
   }
 
   &__all-chains {
