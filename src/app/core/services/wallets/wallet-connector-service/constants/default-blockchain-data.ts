@@ -243,6 +243,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Soneium',
     rpc: 'https://rpc.soneium.org/'
   },
+  [BLOCKCHAIN_NAME.WANCHAIN]: {
+    name: 'Wanchain',
+    rpc: 'https://gwan-ssl.wandevs.org:56891'
+  },
   [BLOCKCHAIN_NAME.UNICHAIN]: {
     name: 'Unichain',
     rpc: 'https://mainnet.unichain.org/'

@@ -4,6 +4,8 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { fromEvent } from 'rxjs';
 import { SupportsManyChains } from '../../../models/abstract-interfaces';
+import { EIP6963AnnounceProviderEvent } from './models/eip-6963-provider-event';
+import { EvmWalletProviderStore } from './evm-wallet-provider-store';
 
 export abstract class EvmWalletAdapter<T = RubicAny>
   extends CommonWalletAdapter<T>
@@ -52,6 +54,39 @@ export abstract class EvmWalletAdapter<T = RubicAny>
     return (this.wallet as RubicAny).request({
       method: 'wallet_addEthereumChain',
       params: [params]
+    });
+  }
+
+  protected getProvider(walletInfo: {
+    provider: string;
+    reserveProvider?: string;
+  }): Promise<T | null> {
+    const providerFromStore =
+      EvmWalletProviderStore.getProvider(walletInfo.provider) ||
+      EvmWalletProviderStore.getProvider(walletInfo.reserveProvider);
+
+    if (providerFromStore) return providerFromStore;
+
+    return new Promise(resolve => {
+      const checkProvider = (event: RubicAny) => {
+        const timeoutId = setTimeout(() => {
+          this.window.removeEventListener('eip6963:announceProvider', checkProvider);
+          resolve(null);
+        }, 5000);
+
+        const res = event as EIP6963AnnounceProviderEvent;
+        const providerName = res.detail.info.name.toLowerCase();
+
+        EvmWalletProviderStore.setProvider(providerName, res.detail.provider);
+        if (providerName === walletInfo.provider || providerName === walletInfo.reserveProvider) {
+          clearTimeout(timeoutId);
+          this.window.removeEventListener('eip6963:announceProvider', checkProvider);
+          resolve(res.detail.provider as T);
+        }
+      };
+
+      this.window.addEventListener('eip6963:announceProvider', checkProvider);
+      this.window.dispatchEvent(new Event('eip6963:requestProvider'));
     });
   }
 }
