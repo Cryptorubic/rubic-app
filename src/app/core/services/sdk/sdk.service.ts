@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   CHAIN_TYPE,
   Configuration,
@@ -6,6 +6,7 @@ import {
   CrossChainStatusManager,
   CrossChainSymbiosisManager,
   DeflationTokenManager,
+  EnvType,
   OnChainManager,
   OnChainStatusManager,
   SDK,
@@ -16,6 +17,7 @@ import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-de
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
+import { WINDOW } from '@ng-web-apis/common';
 
 @Injectable()
 export class SdkService {
@@ -66,7 +68,10 @@ export class SdkService {
     return this._currentConfig;
   }
 
-  constructor(private readonly angularHttpClient: HttpClient) {
+  constructor(
+    private readonly angularHttpClient: HttpClient,
+    @Inject(WINDOW) private readonly window: Window
+  ) {
     this._SDK = null;
   }
 
@@ -86,9 +91,12 @@ export class SdkService {
       crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
+
+    const envType = this.getEnvType();
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
+      ...(envType && { envType }),
       providerAddress: {
         [CHAIN_TYPE.EVM]: {
           crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
@@ -103,5 +111,22 @@ export class SdkService {
     walletProviderCore: WalletProviderCore
   ): void {
     this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
+  }
+
+  private getEnvType(): EnvType | null {
+    const map: Record<string, string> = {
+      'dev-app.rubic.exchange': 'dev',
+      'dev2-app.rubic.exchange': 'dev2',
+      'dev3-app.rubic.exchange': 'dev3',
+      'stage-app.rubic.exchange': 'rubic',
+      'beta-app.rubic.exchange': 'rubic',
+      'app.rubic.exchange': 'rubic',
+      'local.rubic.exchange': 'local'
+    };
+
+    const host = this?.window?.location?.hostname;
+    const apiEnv = map?.[host] as EnvType | undefined;
+
+    return apiEnv || null;
   }
 }

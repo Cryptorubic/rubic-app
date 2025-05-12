@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { concatMap, firstValueFrom, forkJoin, Observable, of, timer } from 'rxjs';
+import { concatMap, firstValueFrom, of, timer } from 'rxjs';
 
-import { catchError, first, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TradeContainer } from '@features/trade/models/trade-container';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  BlockchainsInfo,
   NotWhitelistedProviderError,
   OnChainTrade,
   OnChainTradeType,
@@ -22,7 +20,6 @@ import {
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
   TonOnChainTrade,
-  IsDeflationToken,
   ON_CHAIN_TRADE_TYPE
 } from 'rubic-sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
@@ -33,8 +30,6 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { ENVIRONMENT } from '../../../../../environments/environment';
-import { OnChainManagerCalculationOptions } from 'rubic-sdk/lib/features/on-chain/calculation-manager/models/on-chain-manager-calculation-options';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -50,6 +45,8 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { QuoteOptionsInterface } from '@cryptorubic/core';
+import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -82,91 +79,41 @@ export class OnChainService {
     private readonly modalService: ModalService
   ) {}
 
-  public calculateTrades(disabledProviders: OnChainTradeType[]): Observable<TradeContainer> {
+  public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
-    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    return forkJoin([
+    const [fromPrice, toPrice] = await Promise.all([
       this.tokensService.getTokenPrice(fromToken, true),
-      PriceToken.createToken(fromToken),
-      this.tokensService.getTokenPrice(toToken, true),
-      PriceToken.createToken(toToken)
-    ]).pipe(
-      switchMap(([fromTokenPrice, fromPriceToken, toTokenPrice, toPriceToken]) =>
-        forkJoin([
-          this.sdkService.deflationTokenManager.isDeflationToken(fromPriceToken),
-          of(
-            new PriceToken({
-              ...fromPriceToken.asStruct,
-              price: new BigNumber(fromTokenPrice)
-            })
-          ),
-          this.sdkService.deflationTokenManager.isDeflationToken(toPriceToken),
-          of(
-            new PriceToken({
-              ...toPriceToken.asStruct,
-              price: new BigNumber(toTokenPrice)
-            })
-          ),
-          Web3Pure[chainType].isAddressCorrect(this.authService.userAddress)
-        ])
-      ),
-      switchMap(
-        ([
-          deflationFromStatus,
-          fromSdkToken,
-          deflationToStatus,
-          toSdkToken,
-          isAddressCorrectValue
-        ]) => {
-          return forkJoin([
-            of(fromSdkToken),
-            of(toSdkToken),
-            this.getOptions(
-              fromSdkToken,
-              toSdkToken,
-              deflationFromStatus,
-              deflationToStatus,
-              isAddressCorrectValue,
-              disabledProviders,
-              fromAmount.actualValue
-            )
-          ]);
-        }
-      ),
-      switchMap(([fromSdkToken, toSdkToken, options]) => {
-        const calculationStartTime = Date.now();
-        let providers: OnChainCalculatedTradeData[] = [];
-        return this.sdkService.instantTrade
-          .calculateTradeReactively(
-            fromSdkToken,
-            fromAmount.actualValue.toFixed(),
-            toSdkToken,
-            options
-          )
-          .pipe(
-            map(el => ({
-              ...el,
-              calculationTime: Date.now() - calculationStartTime
-            })),
-            map(el => ({ value: el, type: SWAP_PROVIDER_TYPE.INSTANT_TRADE })),
-            tap(el => {
-              const tradeContainer = el?.value;
-              providers = tradeContainer.calculated === 0 ? [] : [...providers, tradeContainer];
-              if (
-                tradeContainer.calculated === tradeContainer.total &&
-                tradeContainer?.calculated !== 0
-              ) {
-                this.saveTrade(providers, {
-                  fromAmount: Web3Pure.toWei(fromAmount.actualValue, fromToken.decimals),
-                  blockchain: fromToken.blockchain,
-                  fromAddress: fromToken.address,
-                  toAddress: toToken.address
-                });
-              }
-            })
-          );
-      })
+      this.tokensService.getTokenPrice(toToken, true)
+    ]);
+    const fromSdkCompatibleToken = new PriceToken({
+      ...fromToken,
+      price: fromPrice
+    });
+    const toSdkCompatibleToken = new PriceToken({
+      ...toToken,
+      price: toPrice
+    });
+
+    const options = await this.getOptions(
+      fromSdkCompatibleToken,
+      toSdkCompatibleToken,
+      disabledProviders,
+      fromAmount.actualValue
     );
+    const tradeParams = {
+      srcTokenAddress: fromToken.address,
+      dstTokenBlockchain: toToken.blockchain,
+      srcTokenBlockchain: fromToken.blockchain,
+      srcTokenAmount: fromAmount.actualValue.toFixed(),
+      dstTokenAddress: toToken.address
+    };
+
+    SdkInjector.rubicApiService.calculateAsync({
+      calculationTimeout: 60,
+      showDangerousRoutes: true,
+      ...tradeParams,
+      ...options
+    });
   }
 
   /**
@@ -221,7 +168,7 @@ export class OnChainService {
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck,
+      // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer })
     };
 
@@ -244,7 +191,10 @@ export class OnChainService {
         const txStatusData = await firstValueFrom(
           timer(7_000, 5_000).pipe(
             concatMap(() =>
-              this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
+              this.sdkService.onChainStatusManager.getBridgersSwapStatus(
+                transactionHash,
+                trade.slippageTolerance
+              )
             ),
             first(
               statusData =>
@@ -441,14 +391,9 @@ export class OnChainService {
   private async getOptions(
     fromSdkToken: PriceToken,
     toSdkToken: PriceToken,
-    deflationFromStatus: IsDeflationToken,
-    deflationToStatus: IsDeflationToken,
-    isAddressCorrectValue: boolean,
     disabledProviders: OnChainTradeType[],
     fromAmount: BigNumber
-  ): Promise<OnChainManagerCalculationOptions> {
-    const calculateGas = this.authService.userAddress && isAddressCorrectValue;
-
+  ): Promise<QuoteOptionsInterface> {
     const queryDisabledTradeTypes = this.queryParamsService.disabledOnChainProviders;
     const disabledTradeTypes = Array.from(
       new Set<OnChainTradeType>([...disabledProviders, ...queryDisabledTradeTypes])
@@ -456,29 +401,16 @@ export class OnChainService {
 
     const settings = this.settingsService.instantTradeValue;
     const slippageTolerance = settings.slippageTolerance / 100;
-    const disableMultihops = settings.disableMultihops;
-    const deadlineMinutes = settings.deadline;
-    const useProxy =
-      deflationFromStatus.isDeflation || deflationToStatus.isDeflation
-        ? false
-        : this.platformConfigurationService.useOnChainProxy;
-    const timeout = this.calculateTimeoutForChains();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
       toSdkToken
     );
 
-    const options: OnChainManagerCalculationOptions = {
-      timeout,
-      gasCalculation: calculateGas ? 'calculate' : 'disabled',
-      zrxAffiliateAddress: ENVIRONMENT.zrxAffiliateAddress,
-      slippageTolerance,
-      disableMultihops,
-      deadlineMinutes,
-      useProxy,
-      disabledProviders: [...disabledTradeTypes],
-      providerAddress
+    const options: QuoteOptionsInterface = {
+      slippage: slippageTolerance,
+      nativeBlacklist: [...disabledTradeTypes],
+      integratorAddress: providerAddress
     };
 
     return options;

@@ -1,0 +1,41 @@
+@use 'src/scss/core' as *;
+
+.banner__container {
+  @include flex(row, center, center);
+  width: 100vw;
+  height: 57px;
+  max-height: 57px;
+  overflow: hidden;
+
+  background-image: url('/assets/banner/birth-bg.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @include hide-unused-ui {
+    display: none;
+  }
+
+  .banner__text {
+    @include font(18px, 140%, 800, #ffffff);
+    letter-spacing: 1px;
+  }
+}
+
+
+@include b($mobile-md) {
+  .banner__container {
+    background-image: url('/assets/banner/birth-bg-mobile.png');
+
+    .banner__text {
+      @include font(20px, 1, 800, #ffffff);
+      text-align: center;
+    }
+  }
+}
+
+@include b(460) {
+  .banner__container {
+    height: 49px;
+  }
+}

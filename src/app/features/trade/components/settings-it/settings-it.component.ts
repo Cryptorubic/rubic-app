@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { map, startWith } from 'rxjs/operators';
+import { startWith } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 
 @Component({
@@ -20,10 +19,6 @@ export class SettingsItComponent {
 
   public readonly formValue$ = this.instantTradeForm.valueChanges.pipe(
     startWith(this.instantTradeForm.value)
-  );
-
-  public readonly showReceiverAddressRadio$ = this.formsTogglerService.selectedForm$.pipe(
-    map(form => form === MAIN_FORM_TYPE.SWAP_FORM)
   );
 
   constructor(

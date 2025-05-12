@@ -1,7 +1,7 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { NON_NATIVE_BLOCKCHAIN_NAME, BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const shouldCalculateGas: Record<BlockchainName, boolean> = {
-  ...Object.values(BLOCKCHAIN_NAME).reduce(
+  ...Object.values(NON_NATIVE_BLOCKCHAIN_NAME).reduce(
     (acc, blockchain) => ({ ...acc, [blockchain]: false }),
     {} as Record<BlockchainName, boolean>
   ),
@@ -29,10 +29,10 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.SEI]: true,
   [BLOCKCHAIN_NAME.BITLAYER]: true,
   [BLOCKCHAIN_NAME.GRAVITY]: true,
-  [BLOCKCHAIN_NAME.SONIC]: true,
-  [BLOCKCHAIN_NAME.MORPH]: true,
   [BLOCKCHAIN_NAME.FRAXTAL]: true,
+  [BLOCKCHAIN_NAME.BERACHAIN]: true,
   [BLOCKCHAIN_NAME.SONEIUM]: true,
-  [BLOCKCHAIN_NAME.UNICHAIN]: true,
-  [BLOCKCHAIN_NAME.FLARE]: true
+  // [BLOCKCHAIN_NAME.SONIC]: true,
+  // [BLOCKCHAIN_NAME.MORPH]: true,
+  [BLOCKCHAIN_NAME.UNICHAIN]: true
 };

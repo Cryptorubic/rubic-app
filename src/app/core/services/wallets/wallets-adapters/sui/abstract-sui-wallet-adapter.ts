@@ -41,9 +41,10 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
     const wallets = getWallets().get();
     const adapter = wallets.find(
       walletAdapter =>
-        walletAdapter.name === this.extensionName &&
+        walletAdapter.name.toLowerCase().includes(this.extensionName.toLowerCase()) &&
         this.isStandardWalletAdapterCompatibleWallet(walletAdapter as RubicAny)
     );
+
     if (!adapter) {
       throw new WalletNotInstalledError();
     }
@@ -93,7 +94,6 @@ export abstract class AbstractSuiWalletAdapter extends CommonWalletAdapter<Walle
     eventEmitter.off = () => {};
     this.onAddressChangesSub = fromEvent(eventEmitter, 'change').subscribe(
       (changes: WalletChange) => {
-        console.log(changes.accounts);
         if (!changes.accounts.length) {
           super.deactivate();
           return;

@@ -1,11 +1,11 @@
 export enum WALLET_NAME {
   METAMASK = 'metamask',
-  WALLET_LINK = 'walletlink',
+  COIN_BASE = 'coinbase',
   WALLET_CONNECT = 'walletconnect',
   TRUST_WALLET = 'trustwallet',
   TRON_LINK = 'tronlink',
   ARGENT = 'argent',
-  BITKEEP = 'bitkeep',
+  BITGET = 'bitget',
   PHANTOM = 'phantom',
   SOLFLARE = 'solflare',
   SAFE = 'safe',
@@ -16,7 +16,8 @@ export enum WALLET_NAME {
   MY_TON_WALLET = 'my_ton_wallet',
   TELEGRAM_WALLET = 'telegram_wallet',
   CTRL = 'ctrl',
-  SUI_WALLET = 'sui_wallet',
+  SLUSH = 'slush',
   SUIET_WALLET = 'suiet',
-  BEST_WALLET = 'best_wallet'
+  BEST_WALLET = 'best_wallet',
+  SUI_WALLET = 'sui_wallet'
 }

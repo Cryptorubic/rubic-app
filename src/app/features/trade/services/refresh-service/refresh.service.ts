@@ -29,13 +29,6 @@ export class RefreshService {
   public readonly onRefresh$ = this._onRefresh$.asObservable();
 
   /**
-   * Refresh timeout in milliseconds.
-   */
-  private readonly timeout = 60_000;
-
-  private timeoutId: NodeJS.Timeout;
-
-  /**
    * True, if form is in recalculation.
    */
   private isRefreshing = false;
@@ -67,7 +60,6 @@ export class RefreshService {
     this.swapFormService.isFilled$.pipe(distinctUntilChanged()).subscribe(isFilled => {
       if (!isFilled) {
         this._status$.next(REFRESH_STATUS.STOPPED);
-        clearTimeout(this.timeoutId);
       }
     });
   }
@@ -84,8 +76,6 @@ export class RefreshService {
    * Needs to be called, when recalculation is started.
    */
   public setRefreshing(): void {
-    clearTimeout(this.timeoutId);
-
     this.isRefreshing = true;
     if (this.status !== REFRESH_STATUS.IN_PROGRESS) {
       this._status$.next(REFRESH_STATUS.REFRESHING);
@@ -101,19 +91,6 @@ export class RefreshService {
     if (this.status !== REFRESH_STATUS.IN_PROGRESS) {
       this._status$.next(REFRESH_STATUS.STOPPED);
     }
-
-    this.setupTimer();
-  }
-
-  /**
-   * Timer, which makes refresh service call to services to start new recalculation.
-   */
-  private setupTimer(): void {
-    clearTimeout(this.timeoutId);
-
-    this.timeoutId = setTimeout(() => {
-      this._onRefresh$.next({ isForced: false });
-    }, this.timeout);
   }
 
   /**

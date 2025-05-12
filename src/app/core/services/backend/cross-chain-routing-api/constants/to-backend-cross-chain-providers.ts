@@ -5,7 +5,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: 'lifi',
   [CROSS_CHAIN_TRADE_TYPE.BRIDGERS]: 'bridgers',
   [CROSS_CHAIN_TRADE_TYPE.DEBRIDGE]: 'dln',
-  [CROSS_CHAIN_TRADE_TYPE.MULTICHAIN]: 'multichain',
+  // [CROSS_CHAIN_TRADE_TYPE.MULTICHAIN]: 'multichain',
   [CROSS_CHAIN_TRADE_TYPE.XY]: 'xy',
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: 'celer_bridge',
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: 'changenow',
@@ -29,7 +29,8 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.ACROSS]: 'across',
   [CROSS_CHAIN_TRADE_TYPE.UNIZEN]: 'unizen',
   [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: 'changelly',
-  [CROSS_CHAIN_TRADE_TYPE.TELE_SWAP]: 'teleswap'
+  [CROSS_CHAIN_TRADE_TYPE.TELE_SWAP]: 'teleswap',
+  [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: 'wanchain_bridge'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {

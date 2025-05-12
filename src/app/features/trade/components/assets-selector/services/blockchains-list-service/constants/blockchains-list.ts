@@ -121,6 +121,7 @@ export const notEvmChangeNowBlockchainsList = {
   [BLOCKCHAIN_NAME.TON]: BLOCKCHAIN_NAME.TON,
   [BLOCKCHAIN_NAME.WAVES]: BLOCKCHAIN_NAME.WAVES,
   [BLOCKCHAIN_NAME.WAX]: BLOCKCHAIN_NAME.WAX,
+  [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI,
   // [BLOCKCHAIN_NAME.CASPER]: BLOCKCHAIN_NAME.CASPER,
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
@@ -173,6 +174,9 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
 
   if (blockchain === BLOCKCHAIN_NAME.TON) {
     chainTags.push(BlockchainTags.NEW, BlockchainTags.POPULAR);
+  }
+  if (blockchain === BLOCKCHAIN_NAME.SUI) {
+    chainTags.push(BlockchainTags.NEW);
   }
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
     chainTags.push(BlockchainTags.PROMO);
@@ -244,33 +248,38 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.5,
     tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
   },
+  // @DELETE
+  // {
+  //   name: BLOCKCHAIN_NAME.WANCHAIN,
+  //   rank: 0.5,
+  //   tags: ['WAN', BlockchainTags.NEW, BlockchainTags.EVM]
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  {
-    name: BLOCKCHAIN_NAME.MORPH,
-    rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.POPULAR
-    ]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.MORPH,
+  //   rank: 0.5,
+  //   tags: [
+  //     'ETH',
+  //     BlockchainTags.EVM,
+  //     BlockchainTags.LAYER_2,
+  //     BlockchainTags.NEW,
+  //     BlockchainTags.POPULAR
+  //   ]
+  // },
   {
     name: BLOCKCHAIN_NAME.FRAXTAL,
     rank: 0.5,
     tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  {
-    name: BLOCKCHAIN_NAME.SONIC,
-    rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.SONIC,
+  //   rank: 0.5,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  // },
   {
     name: BLOCKCHAIN_NAME.SONEIUM,
     rank: 0.5,

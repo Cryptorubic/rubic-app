@@ -12,33 +12,6 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'WalletConnect',
-    value: WALLET_NAME.WALLET_CONNECT,
-    img: './assets/images/icons/wallets/walletconnect.svg',
-    supportsDesktop: true,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
-  {
-    name: 'Phantom',
-    value: WALLET_NAME.PHANTOM,
-    img: './assets/images/icons/wallets/phantom.svg',
-    supportsDesktop: true,
-    supportsMobile: false,
-    display: true,
-    disabled: false
-  },
-  {
-    name: 'Best Wallet',
-    value: WALLET_NAME.BEST_WALLET,
-    img: './assets/images/icons/wallets/bestwallet.png',
-    supportsDesktop: true,
-    supportsMobile: true,
-    display: true,
-    disabled: false
-  },
-  {
     name: 'TronLink',
     value: WALLET_NAME.TRON_LINK,
     img: './assets/images/icons/wallets/tronlink.webp',
@@ -58,14 +31,22 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
   },
   {
     name: 'Coinbase Wallet',
-    value: WALLET_NAME.WALLET_LINK,
+    value: WALLET_NAME.COIN_BASE,
     img: './assets/images/icons/wallets/coinbase.png',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
     disabled: false
   },
-
+  {
+    name: 'WalletConnect',
+    value: WALLET_NAME.WALLET_CONNECT,
+    img: './assets/images/icons/wallets/walletconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
   {
     name: 'Argent',
     value: WALLET_NAME.ARGENT,
@@ -76,15 +57,23 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'BitKeep',
-    value: WALLET_NAME.BITKEEP,
-    img: './assets/images/icons/wallets/bitkeep.svg',
+    name: 'BitGet',
+    value: WALLET_NAME.BITGET,
+    img: './assets/images/icons/wallets/bitget.svg',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
     disabled: false
   },
-
+  {
+    name: 'Phantom',
+    value: WALLET_NAME.PHANTOM,
+    img: './assets/images/icons/wallets/phantom.svg',
+    supportsDesktop: true,
+    supportsMobile: false,
+    display: true,
+    disabled: false
+  },
   {
     name: 'Solflare',
     value: WALLET_NAME.SOLFLARE,
@@ -140,9 +129,9 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
-    name: 'Sui Wallet',
-    value: WALLET_NAME.SUI_WALLET,
-    img: './assets/images/icons/wallets/sui-wallet.png',
+    name: 'Slush',
+    value: WALLET_NAME.SLUSH,
+    img: './assets/images/icons/wallets/slush.svg',
     supportsDesktop: true,
     supportsMobile: false,
     display: true,

@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const basePath = 'assets/images/icons/coins/';
 
@@ -149,14 +149,14 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITLAYER]: `${basePath}bitlayer.svg`,
   [BLOCKCHAIN_NAME.GRAVITY]: `${basePath}gravity.svg`,
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: `${basePath}unichain-testnet.svg`,
-  [BLOCKCHAIN_NAME.SONIC]: `${basePath}sonic.svg`,
-  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: `${basePath}soneium-testnet.webp`,
-  [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.svg`,
+  // [BLOCKCHAIN_NAME.SONIC]: `${basePath}sonic.svg`,
+  // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: `${basePath}soneium-testnet.webp`,
+  // [BLOCKCHAIN_NAME.MORPH]: `${basePath}morph.svg`,
   [BLOCKCHAIN_NAME.FRAXTAL]: `${basePath}fraxtal.svg`,
   [BLOCKCHAIN_NAME.BERACHAIN]: `${basePath}berachain.svg`,
-  [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
-  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`,
-  [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`,
   [BLOCKCHAIN_NAME.SUI]: `${basePath}sui.svg`,
-  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: `${basePath}megaeth.svg`
+  [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
+  [BLOCKCHAIN_NAME.WANCHAIN]: `${basePath}wanchain.svg`,
+  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`
+  // [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`
 };

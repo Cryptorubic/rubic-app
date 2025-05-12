@@ -107,11 +107,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}blazeswap.svg`,
     color: '#FFAF1D'
   },
-  [ON_CHAIN_TRADE_TYPE.BRONTO_FINANCE]: {
-    name: 'Bronto Finance',
-    image: `${imageBasePath}bronto_finance.png`,
-    color: '#B9FF7B'
-  },
+  // [ON_CHAIN_TRADE_TYPE.BRONTO_FINANCE]: {
+  //   name: 'Bronto Finance',
+  //   image: `${imageBasePath}bronto_finance.png`,
+  //   color: '#B9FF7B'
+  // },
 
   //CCCCCCCCCCCCCCCCCCCC
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
@@ -690,6 +690,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}uniswap-2.svg`,
     color: '#F9DBEA'
   },
+  // [ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: {
+  //   name: 'Uniswap Nahamut',
+  //   image: `${imageBasePath}uniswap-2.svg`,
+  //   color: '#F9DBEA'
+  // },
   [ON_CHAIN_TRADE_TYPE.UNI_SWAP_V3]: {
     name: 'Uniswap V3',
     image: `${imageBasePath}uniswap-3.svg`,

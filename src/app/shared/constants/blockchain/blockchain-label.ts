@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'Ethereum',
@@ -147,14 +147,14 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BITLAYER]: 'Bitlayer',
   [BLOCKCHAIN_NAME.GRAVITY]: 'Gravity',
   [BLOCKCHAIN_NAME.UNICHAIN_SEPOLIA_TESTNET]: 'Unichain',
-  [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
-  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
-  [BLOCKCHAIN_NAME.MORPH]: 'Morph',
+  // [BLOCKCHAIN_NAME.SONIC]: 'Sonic',
+  // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: 'Soneium',
+  // [BLOCKCHAIN_NAME.MORPH]: 'Morph',
   [BLOCKCHAIN_NAME.FRAXTAL]: 'Fraxtal',
   [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
-  [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
-  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
-  [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad',
   [BLOCKCHAIN_NAME.SUI]: 'Sui',
-  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: 'MegaEth'
+  [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
+  [BLOCKCHAIN_NAME.WANCHAIN]: 'Wanchain',
+  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain'
+  // [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad'
 };

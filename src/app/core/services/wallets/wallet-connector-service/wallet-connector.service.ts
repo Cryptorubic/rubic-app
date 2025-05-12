@@ -4,7 +4,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { MetamaskWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/metamask-wallet-adapter';
 import { WalletConnectAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-connect-adapter';
-import { WalletLinkWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/wallet-link-wallet-adapter';
+import { CoinBaseWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/coin-base-wallet-adapter';
 import { StoreService } from '@core/services/store/store.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -33,7 +33,6 @@ import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-lab
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
-import { BitkeepWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/bitkeep-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
 import { PhantomWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/phantom-wallet-adapter';
 import { SolflareWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/solflare-wallet-adapter';
@@ -47,9 +46,9 @@ import { TelegramWalletAdapter } from '../wallets-adapters/ton/telegram-wallet-a
 import { HoldstationWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/holdstation-wallet-adapter';
 import { ModalService } from '@core/modals/services/modal.service';
 import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/ctrl-wallet-adapter';
-import { SuiWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/sui-wallet-adapter';
-import { SuietWalletAdapter } from '@core/services/wallets/wallets-adapters/sui/suiet-wallet-adapter';
-import { BestwalletWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/beswallet-wallet-adapter';
+import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
+import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
+import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -141,16 +140,12 @@ export class WalletConnectorService {
       return new WalletConnectAdapter(...defaultConstructorParameters);
     }
 
-    if (walletName === WALLET_NAME.BITKEEP) {
-      return new BitkeepWalletAdapter(...defaultConstructorParameters);
+    if (walletName === WALLET_NAME.BITGET) {
+      return new BitgetWalletAdapter(...defaultConstructorParameters);
     }
 
-    if (walletName === WALLET_NAME.WALLET_LINK) {
-      return new WalletLinkWalletAdapter(
-        ...defaultConstructorParameters,
-        this.storeService,
-        chainId!
-      );
+    if (walletName === WALLET_NAME.COIN_BASE) {
+      return new CoinBaseWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.ARGENT) {
@@ -216,8 +211,9 @@ export class WalletConnectorService {
     if (walletName === WALLET_NAME.CTRL) {
       return new CtrlWalletAdapter(...defaultConstructorParameters);
     }
-    if (walletName === WALLET_NAME.SUI_WALLET) {
-      return new SuiWalletAdapter(...defaultConstructorParameters);
+
+    if (walletName === WALLET_NAME.SLUSH) {
+      return new SlushWalletAdapter(...defaultConstructorParameters);
     }
     if (walletName === WALLET_NAME.SUIET_WALLET) {
       return new SuietWalletAdapter(...defaultConstructorParameters);
@@ -225,9 +221,6 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
-    }
-    if (walletName === WALLET_NAME.BEST_WALLET) {
-      return new BestwalletWalletAdapter(...defaultConstructorParameters, chainId);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

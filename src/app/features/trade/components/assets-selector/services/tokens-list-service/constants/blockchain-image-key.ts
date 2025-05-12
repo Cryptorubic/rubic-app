@@ -56,7 +56,8 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.CORE]: 'core',
   [BLOCKCHAIN_NAME.BAHAMUT]: 'bahamut',
   [BLOCKCHAIN_NAME.GRAVITY]: 'gravity',
-  [BLOCKCHAIN_NAME.SONIC]: 'sonic',
+  // [BLOCKCHAIN_NAME.SONIC]: 'sonic',
   [BLOCKCHAIN_NAME.FRAXTAL]: 'fraxtal',
-  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain'
+  [BLOCKCHAIN_NAME.BERACHAIN]: 'berachain',
+  [BLOCKCHAIN_NAME.SONEIUM]: 'soneium'
 };

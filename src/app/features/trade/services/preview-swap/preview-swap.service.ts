@@ -35,7 +35,6 @@ import BigNumber from 'bignumber.js';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  CrossChainTradeType,
   EvmBlockchainName,
   TX_STATUS,
   Web3PublicSupportedBlockchain
@@ -57,7 +56,6 @@ import {
 } from './models/mevbot-data';
 import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
-import { CrossChainSwapAdditionalParams } from './models/swap-controller-service-types';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
@@ -225,12 +223,7 @@ export class PreviewSwapService {
     this.subscriptions$.push(transactionStateSubscription$);
   }
 
-  public initDstTxStatusPolling(
-    srcHash: string,
-    timestamp: number,
-    toBlockchain: BlockchainName,
-    additionalInfo: CrossChainSwapAdditionalParams
-  ): void {
+  public initDstTxStatusPolling(srcHash: string, toBlockchain: BlockchainName): void {
     const intervalMS =
       this.swapForm.inputValue.fromBlockchain === BLOCKCHAIN_NAME.BITCOIN ? 300_000 : 30_000;
 
@@ -240,33 +233,10 @@ export class PreviewSwapService {
         switchMap(() => this.selectedTradeState$.pipe(first())),
         switchMap(tradeState => {
           return from(
-            this.sdkService.crossChainStatusManager.getCrossChainStatus(
-              {
-                fromBlockchain: tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain,
-                toBlockchain: tradeState.trade.to.blockchain,
-                srcTxHash: srcHash,
-                txTimestamp: timestamp,
-                slippage: tradeState.trade.getTradeInfo().slippage / 100,
-                ...(additionalInfo?.changenowId && {
-                  changenowId: additionalInfo.changenowId
-                }),
-                ...(additionalInfo.rangoRequestId && {
-                  rangoRequestId: additionalInfo.rangoRequestId
-                }),
-                ...(additionalInfo?.squidrouterId && {
-                  squidrouterRequestId: additionalInfo.squidrouterId
-                }),
-                ...(additionalInfo.retroBridgeId && {
-                  retroBridgeId: additionalInfo.retroBridgeId
-                }),
-                ...(additionalInfo.simpleSwapId && {
-                  simpleSwapId: additionalInfo.simpleSwapId
-                }),
-                ...(additionalInfo.changellySwapId && {
-                  changellySwapId: additionalInfo.changellySwapId
-                })
-              },
-              tradeState.tradeType as CrossChainTradeType
+            this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
+              (tradeState.trade as CrossChainTrade).rubicId,
+              srcHash,
+              tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain
             )
           ).pipe(
             timeout(29_000),
@@ -401,19 +371,14 @@ export class PreviewSwapService {
                   });
                 }
               },
-              onSwap: (additionalInfo?: CrossChainSwapAdditionalParams) => {
+              onSwap: () => {
                 if (this.useCallback) {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this.setNextTxState({
                       step: 'destinationPending',
                       data: { ...this.transactionState.data }
                     });
-                    this.initDstTxStatusPolling(
-                      txHash,
-                      Date.now(),
-                      tradeState.trade.to.blockchain,
-                      additionalInfo
-                    );
+                    this.initDstTxStatusPolling(txHash, tradeState.trade.to.blockchain);
                   } else {
                     this.setNextTxState({
                       step: 'success',

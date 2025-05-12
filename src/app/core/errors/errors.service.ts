@@ -86,7 +86,12 @@ export class ErrorsService {
         error.component || UnknownErrorComponent,
         this.injector
       );
-      options.data = error?.data || error;
+      options.data =
+        error?.data && Object.keys(error.data).length !== 0
+          ? error.data
+          : {
+              message: error?.message
+            };
       this.notificationsService.show(errorComponent, options);
       return;
     }

@@ -4,7 +4,8 @@ import { TransactionReceipt } from 'web3-core';
 import { TuiNotification } from '@taiga-ui/core';
 import {
   ArbitrumRbcBridgeTrade,
-  CbridgeCrossChainSupportedBlockchain,
+  BlockchainName,
+  // CbridgeCrossChainSupportedBlockchain,
   CrossChainCbridgeManager
 } from 'rubic-sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -32,46 +33,48 @@ export class CommonTableService {
     private readonly http: HttpService
   ) {}
 
-  public async claimArbitrumBridgeTokens(srcTxHash: string): Promise<TransactionReceipt> {
-    let tradeInProgressSubscription$: Subscription;
-    let transactionReceipt: TransactionReceipt;
-    const onTransactionHash = () => {
-      tradeInProgressSubscription$ = this.notificationsService.show(
-        this.translateService.instant('bridgePage.progressMessage'),
-        {
-          label: this.translateService.instant('notifications.tradeInProgress'),
-          status: TuiNotification.Info,
-          autoClose: false,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
-        }
-      );
-    };
-
-    try {
-      transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
-        onConfirm: onTransactionHash
-      });
-
-      await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
-      tradeInProgressSubscription$.unsubscribe();
-      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
-        label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
-        autoClose: 15000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      });
-    } catch (error) {
-      console.debug('[ArbitrumBridge] Transaction claim error: ', error);
-      this.errorService.catch(error);
-    } finally {
-      tradeInProgressSubscription$?.unsubscribe();
-    }
-
-    return transactionReceipt;
+  public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
+    // @TODO API
+    throw new Error('Not implemented');
+    // let tradeInProgressSubscription$: Subscription;
+    // let transactionReceipt: TransactionReceipt;
+    // const onTransactionHash = () => {
+    //   tradeInProgressSubscription$ = this.notificationsService.show(
+    //     this.translateService.instant('bridgePage.progressMessage'),
+    //     {
+    //       label: this.translateService.instant('notifications.tradeInProgress'),
+    //       status: TuiNotification.Info,
+    //       autoClose: false,
+    //       data: null,
+    //       icon: '',
+    //       defaultAutoCloseTime: 0
+    //     }
+    //   );
+    // };
+    //
+    // try {
+    //   transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
+    //     onConfirm: onTransactionHash
+    //   });
+    //
+    //   await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
+    //   tradeInProgressSubscription$.unsubscribe();
+    //   this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+    //     label: this.translateService.instant('notifications.successfulTradeTitle'),
+    //     status: TuiNotification.Success,
+    //     autoClose: 15000,
+    //     data: null,
+    //     icon: '',
+    //     defaultAutoCloseTime: 0
+    //   });
+    // } catch (error) {
+    //   console.debug('[ArbitrumBridge] Transaction claim error: ', error);
+    //   this.errorService.catch(error);
+    // } finally {
+    //   tradeInProgressSubscription$?.unsubscribe();
+    // }
+    //
+    // return transactionReceipt;
   }
 
   private async sendHashesOnClaimSuccess(
@@ -138,7 +141,7 @@ export class CommonTableService {
 
   public async revertCbridge(
     srcTxHash: string,
-    fromBlockchain: CbridgeCrossChainSupportedBlockchain
+    fromBlockchain: BlockchainName
   ): Promise<TransactionReceipt> {
     let tradeInProgressSubscription$: Subscription;
     let transactionReceipt: TransactionReceipt;
