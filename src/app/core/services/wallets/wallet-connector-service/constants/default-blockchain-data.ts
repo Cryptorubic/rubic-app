@@ -17,7 +17,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     name: 'Polygon Mainnet',
-    rpc: 'https://rpc-mainnet.maticvigil.com'
+    rpc: 'https://polygon-rpc.com'
   },
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
     name: 'Polygon zkEVM',
@@ -49,7 +49,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.TELOS]: {
     name: 'Telos EVM Mainnet',
-    rpc: 'https://mainnet.telos.net/evm'
+    rpc: 'https://rpc.telos.net'
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
