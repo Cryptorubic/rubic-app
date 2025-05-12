@@ -34,8 +34,6 @@ import { RefundService } from '../../services/refund-service/refund.service';
   ]
 })
 export class SwapFormPageComponent {
-  public readonly calculationStatus$ = this.swapsStateService.calculationStatus$;
-
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly fromAsset$ = this.swapFormService.fromToken$;

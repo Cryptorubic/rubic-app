@@ -4,7 +4,6 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { percentAddress } from '@features/trade/services/proxy-fee-service/const/fee-type-address-mapping';
 import { TokenType } from '@features/trade/services/proxy-fee-service/models/token-type';
 import { FeeValue } from '@features/trade/services/proxy-fee-service/models/fee-value';
 import {
@@ -24,6 +23,7 @@ import { tokenTypeMapping } from './const/token-type-mapping';
 import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
+import { percentAddress } from './const/fee-type-address-mapping';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {

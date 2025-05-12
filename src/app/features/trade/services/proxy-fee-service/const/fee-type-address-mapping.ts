@@ -1,4 +1,4 @@
-import { PercentType } from '@features/trade/services/proxy-fee-service/models/percent-type';
+import { PercentType } from '../models/percent-type';
 
 export const percentAddress: Record<PercentType, string> = {
   default: '0xE20c7F79DAEaBEB7a9D8cEffB73c4f857Be7fC27',
