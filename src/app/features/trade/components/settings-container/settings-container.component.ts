@@ -3,10 +3,11 @@ import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { distinctUntilChanged, first, map, skip, startWith, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map, skip, startWith } from 'rxjs/operators';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-settings-container',
@@ -29,6 +30,7 @@ export class SettingsContainerComponent implements OnInit {
         ? SWAP_PROVIDER_TYPE.INSTANT_TRADE
         : SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
     ),
+    distinctUntilChanged(),
     startWith(SWAP_PROVIDER_TYPE.INSTANT_TRADE)
   );
 
@@ -54,16 +56,12 @@ export class SettingsContainerComponent implements OnInit {
     });
   }
 
-  public openMobile(): void {
-    this.mode$
-      .pipe(
-        first(),
-        switchMap(mode =>
-          mode === SWAP_PROVIDER_TYPE.INSTANT_TRADE
-            ? this.modalService.openItSettings(this.injector)
-            : this.modalService.openCcrSettings(this.injector)
-        )
-      )
-      .subscribe();
+  public async openMobile(): Promise<void> {
+    const inputValue = await firstValueFrom(this.swapsFormService.inputValue$);
+    if (inputValue.fromBlockchain === inputValue.toBlockchain) {
+      this.modalService.openItSettings(this.injector).subscribe();
+    } else {
+      this.modalService.openCcrSettings(this.injector).subscribe();
+    }
   }
 }
