@@ -21,12 +21,15 @@
   border-bottom-left-radius: var(--tui-radius-m);
 
   @include b($mobile-md) {
-    height: 60vh;
+    height: 67vh;
     padding: var(--tui-padding-l);
 
     background: none;
     border-radius: 0;
 
+    &__all-chains {
+      height: 60vh !important;
+    }
   }
 
   &__all-chains {
@@ -162,4 +165,12 @@ tui-loader {
 
 .large-iframe-token-container {
   height: 430px;
+}
+
+@include b($mobile-md) {
+  app-tokens-list-filters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
