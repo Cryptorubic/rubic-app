@@ -17,5 +17,7 @@ export enum WALLET_NAME {
   TELEGRAM_WALLET = 'telegram_wallet',
   CTRL = 'ctrl',
   SLUSH = 'slush',
-  SUIET_WALLET = 'suiet'
+  SUIET_WALLET = 'suiet',
+  BEST_WALLET = 'best_wallet',
+  SUI_WALLET = 'sui_wallet'
 }

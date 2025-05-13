@@ -123,7 +123,7 @@ export class TokensStoreService {
         List(this.storageTokens.map(token => ({ ...token, price: 0 }))),
         false
       );
-      this._tokens$.next(tokens);
+      this.updateCommonTokensState(tokens);
     }
   }
 
@@ -326,7 +326,7 @@ export class TokensStoreService {
       })),
       tap((token: TokenAmount) => {
         const tokens = this.tokens.push(token);
-        this._tokens$.next(tokens);
+        this.updateCommonTokensState(tokens);
       })
     );
   }
@@ -338,7 +338,7 @@ export class TokensStoreService {
   public addToken(token: TokenAmount): void {
     if (!this.tokens.find(t => compareTokens(t, token))) {
       const tokens = this.tokens.push(token);
-      this._tokens$.next(tokens);
+      this.updateCommonTokensState(tokens);
     }
   }
 

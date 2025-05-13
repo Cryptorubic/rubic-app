@@ -1,3 +1,3 @@
-import { PercentType } from '@features/trade/services/proxy-fee-service/models/percent-type';
+import { PercentType } from './percent-type';
 
 export type FeeValue = PercentType | { limit: number; type: PercentType }[];
