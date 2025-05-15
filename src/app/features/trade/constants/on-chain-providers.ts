@@ -107,6 +107,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}blazeswap.svg`,
     color: '#FFAF1D'
   },
+  // [ON_CHAIN_TRADE_TYPE.BRONTO_FINANCE]: {
+  //   name: 'Bronto Finance',
+  //   image: `${imageBasePath}bronto_finance.png`,
+  //   color: '#B9FF7B'
+  // },
 
   //CCCCCCCCCCCCCCCCCCCC
   [ON_CHAIN_TRADE_TYPE.CAMELOT]: {
