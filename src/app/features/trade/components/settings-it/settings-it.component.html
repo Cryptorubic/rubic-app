@@ -46,7 +46,7 @@
         class="settings__slippage-input"
         tuiTextfieldSize="s"
         tuiTextfieldPostfix="%"
-        [min]="0.01"
+        [min]="0.1"
         [max]="50"
         [ngModel]="formValue.slippageTolerance"
         [ngModelOptions]="{ standalone: true }"
@@ -114,7 +114,7 @@
       ></tui-toggle>
     </div>
 
-    <div class="settings__row" *ngIf="showReceiverAddressRadio$ | async">
+    <div class="settings__row">
       <div
         class="settings__hint"
         [inlineSVG]="'/assets/images/icons/hint.svg'"

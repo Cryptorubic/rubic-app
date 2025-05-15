@@ -435,7 +435,7 @@ export class SwapsStateService {
     const hasRealTrades = trades.filter(el => Boolean(el.trade)).length > 0;
     const activeCalculation = progress.current !== progress.total;
 
-    const calculationResult = {
+    const calculationResult: CalculationStatus = {
       noRoutes: !activeCalculation && !hasRealTrades && progress.total > 0,
       showSidebar: false,
       activeCalculation,
