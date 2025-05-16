@@ -207,7 +207,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://rpc.ankr.com/mantle',
+    'https://1rpc.io/mantle',
     'https://mantle-mainnet.public.blastapi.io',
     'https://mantle.publicnode.com'
   ],
@@ -360,7 +360,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   // [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
   // [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
-  // [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
+  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.SUI]: ['https://fullnode.mainnet.sui.io:443'],
   [BLOCKCHAIN_NAME.SONEIUM]: [
