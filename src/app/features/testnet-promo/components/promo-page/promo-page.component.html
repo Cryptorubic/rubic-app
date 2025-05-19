@@ -9,7 +9,8 @@
   <main class="promo-page" [ngClass]="{ 'promo-page__solo': data.pageState === 'noWallet' }">
     <!-- Left -->
     <div class="box">
-      <ng-container *ngIf="data.pageState !== 'noWallet'">
+      <ng-container *ngIf="data.pageState !== 'noWallet' && data.proofs">
+        {{ data.pageState }}
         <!-- Snapshots -->
         <app-window-container *ngIf="data.pageState !== 'notVerifiedUser'" class="form-container">
           <ng-container header> Snapshots </ng-container>
@@ -23,7 +24,7 @@
           class="form-container claim-card"
         >
           <ng-container header> Claim </ng-container>
-          <app-total-rbc [weekInfo]="data.weekInfo"></app-total-rbc>
+          <app-total-rbc *ngIf="data.weekInfo" [weekInfo]="data.weekInfo"></app-total-rbc>
         </app-window-container>
       </ng-container>
     </div>
@@ -36,7 +37,7 @@
 
       <!-- Buttons -->
       <app-action-buttons
-        *ngIf="data.pageState === 'inAction'"
+        *ngIf="data.pageState === 'inAction' && data.weekInfo"
         [weekInfo]="data.weekInfo"
       ></app-action-buttons>
     </div>
@@ -52,7 +53,7 @@
 
         <ng-template #rules>
           <!-- Rules -->
-          <app-window-container class="form-container">
+          <app-window-container *ngIf="data.prizePool" class="form-container">
             <ng-container header> Rules </ng-container>
             <app-rules [prizePool]="data.prizePool"></app-rules>
           </app-window-container>

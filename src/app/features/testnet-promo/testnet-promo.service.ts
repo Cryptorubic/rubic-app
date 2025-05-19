@@ -33,14 +33,15 @@ export class TestnetPromoService {
           })
         );
       }
-    })
+    }),
+    startWith(pageState.noWallet)
   );
 
   public readonly verification$ = this.currentUser$.pipe(
     switchIif(
       user => Boolean(user?.address),
       user =>
-        interval(10_000).pipe(
+        interval(30_000).pipe(
           startWith(-1),
           switchMap(() => this.apiService.getUserVerification(user.address)),
           takeWhile(status => !status.isVerified, true)
