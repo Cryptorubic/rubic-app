@@ -2288,29 +2288,29 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.7.6":
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.6.tgz#5ef1a7d39a97ebe95f1de18fa30f203b4fc577d1"
-  integrity sha512-w4hF6qKuRBPdC+SFHEKLHsxphDH5MQCpZC0FhEyLOcAqBO7SsuvshlUhb6HnGXHHMYxmf1I/p1Am2yDq5gxabA==
+"@cryptorubic/core@0.7.17":
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.17.tgz#455bdf05f917e6df05d80bf4f88fb1eb8a77c19e"
+  integrity sha512-lGcFPnw9y1bdY8U55YWHwojzjDM7sYbw3QSGOG0+IEF9+gfLD3l2y7T3Y6SY8gGGP0ZFAuhOqHQQkqAemHy4sg==
   dependencies:
     bignumber.js "9.1.2"
     jest-mock-promise "^2.0.2"
     tslib "^2.3.0"
 
-"@cryptorubic/tron-types@0.7.6":
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.6.tgz#ace33d41da4a33eab52f4c14a67a6495d2b2225a"
-  integrity sha512-1n4YqSIywxVZPjiX2x86c4lro7Sn95yGsOQnqjsdUnSGG7/wO6lMk58XNdGgTFGuNZ61HSIqWqlW5muSzLHj7g==
+"@cryptorubic/tron-types@0.7.17":
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.17.tgz#7a6195dba65c60b74db6cb1f4734ba25e3e058c1"
+  integrity sha512-LEpP9FdAHEHNtJabKZvdOyleGOPCSWOBC+onFIhAWLEq6YIVq9w2ywPQEL8YicRYxqWevXHijTE/REqxGrwupw==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
-"@cryptorubic/web3@0.7.6":
-  version "0.7.6"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.6.tgz#542228e9ee64477f2afc77cce3eafda70fc7b7b9"
-  integrity sha512-PZsngXw6Wx9Q3tbFVE3K8htWaazKFC5iVLvxCroYa2OZt0q20gcYFgzeawBwmiIdYEw7WdmMjcDUNS+QZtq7xQ==
+"@cryptorubic/web3@0.7.17":
+  version "0.7.17"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.17.tgz#8092973e66f4934e26637cd5fd211294793f2d2f"
+  integrity sha512-7JYAqfMoBWaNTBTq1WhtIjlk0BI4xe104hREJhJXxdw+tFMAfpGEPEbnO1I/d0AWd3nt2AHbxv2m8Vo6WpqdCA==
   dependencies:
-    "@cryptorubic/core" "0.7.6"
-    "@cryptorubic/tron-types" "0.7.6"
+    "@cryptorubic/core" "0.7.17"
+    "@cryptorubic/tron-types" "0.7.17"
     "@ethersproject/bignumber" "^5.7.0"
     "@mysten/sui" "^1.24.0"
     "@solana/spl-token" "0.2.0"
@@ -17677,15 +17677,15 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@6.0.0-alpha-new-sdk-fixes.22:
-  version "6.0.0-alpha-new-sdk-fixes.22"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-new-sdk-fixes.22.tgz#10be2fd884ef6e9ca43d7e20966b7f3d36a42677"
-  integrity sha512-aqTMxK9KuOdCBw8PpMyXq5mHvFTcit1LABpd1vPOMRbiqr5tZsL+029tawfVevcPfkjjSGpSmXRaVSx8FgJFZw==
+rubic-sdk@6.0.0-alpha-new-sdk-fixes.41:
+  version "6.0.0-alpha-new-sdk-fixes.41"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-new-sdk-fixes.41.tgz#b5dacc1626ab4aa9b847b790950c1569c2cfbfb2"
+  integrity sha512-tcYb2MAWC2U7krnuHeAMDim5X/Ev9Ef7p84PDPg4h1EBt+u0gyvH2tuhXNK+hOPUclJqCN/uvgYNYm03dWr7tg==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
-    "@cryptorubic/core" "0.7.6"
-    "@cryptorubic/web3" "0.7.6"
+    "@cryptorubic/core" "0.7.17"
+    "@cryptorubic/web3" "0.7.17"
     "@debridge-finance/debridge-external-call" "^1.0.7"
     "@dedust/sdk" "^0.8.7"
     "@layerzerolabs/scan-client" "0.0.8"
@@ -18713,7 +18713,16 @@ string-range@~1.2, string-range@~1.2.1:
   resolved "https://registry.yarnpkg.com/string-range/-/string-range-1.2.2.tgz#a893ed347e72299bc83befbbf2a692a8d239d5dd"
   integrity sha512-tYft6IFi8SjplJpxCUxyqisD3b+R2CSkomrtJYCkvuf1KuCAWgz7YXt4O0jip7efpfCemwHEzTEAO8EuOYgh3w==
 
-"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.2, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.2, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -18818,7 +18827,7 @@ stringify-object@^3.3.0:
     is-obj "^1.0.1"
     is-regexp "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -18845,6 +18854,13 @@ strip-ansi@^5.1.0:
   integrity sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==
   dependencies:
     ansi-regex "^4.1.0"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1:
   version "7.1.0"
@@ -21529,7 +21545,7 @@ workerpool@^6.5.1:
   resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.5.1.tgz#060f73b39d0caf97c6db64da004cd01b4c099544"
   integrity sha512-Fs4dNYcsdpYSAfVxhnl1L5zTksjvOJxtC5hzMNl+1t9B8hTJTdKDyZ5ju7ztgPy+ft9tBFXoOlDNiOT9WUXZlA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -21542,6 +21558,15 @@ wrap-ansi@^6.0.1, wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

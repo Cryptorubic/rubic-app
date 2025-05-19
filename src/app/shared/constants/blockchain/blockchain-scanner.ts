@@ -1027,14 +1027,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  // [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: {
-  //   baseUrl: 'https://artio.beratrail.io/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.BERACHAIN_TESTNET]: {
+    baseUrl: 'https://artio.beratrail.io/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   [BLOCKCHAIN_NAME.BLAST_TESTNET]: {
     baseUrl: 'https://testnet.blastscan.io/',
     nativeCoinUrl: '',
@@ -1060,7 +1060,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.KROMA]: {
-    baseUrl: 'https://kromascan.com/',
+    baseUrl: 'https://kroscan.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -1179,6 +1179,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
+  [BLOCKCHAIN_NAME.FRAXTAL]: {
+    baseUrl: 'https://fraxscan.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   // [BLOCKCHAIN_NAME.SONIC]: {
   //   baseUrl: 'https://sonicscan.org/',
   //   nativeCoinUrl: '',
@@ -1195,16 +1203,8 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
   //   [ADDRESS_TYPE.BLOCK]: 'block/'
   // },
-  // [BLOCKCHAIN_NAME.MORPH]: {
-  //   baseUrl: 'https://explorer.morphl2.io/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
-  [BLOCKCHAIN_NAME.FRAXTAL]: {
-    baseUrl: 'https://fraxscan.com/',
+  [BLOCKCHAIN_NAME.MORPH]: {
+    baseUrl: 'https://explorer.morphl2.io/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
@@ -1219,22 +1219,22 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  // [BLOCKCHAIN_NAME.SONEIUM]: {
-  //   baseUrl: 'https://soneium.blockscout.com/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
-  // [BLOCKCHAIN_NAME.UNICHAIN]: {
-  //   baseUrl: 'https://uniscan.xyz/',
-  //   nativeCoinUrl: '',
-  //   [ADDRESS_TYPE.WALLET]: 'address/',
-  //   [ADDRESS_TYPE.TOKEN]: 'token/',
-  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-  //   [ADDRESS_TYPE.BLOCK]: 'block/'
-  // },
+  [BLOCKCHAIN_NAME.SONEIUM]: {
+    baseUrl: 'https://soneium.blockscout.com/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.UNICHAIN]: {
+    baseUrl: 'https://uniscan.xyz/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: {
   //   baseUrl: 'https://testnet.monadexplorer.com/',
   //   nativeCoinUrl: '',
@@ -1250,5 +1250,29 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TOKEN]: 'coin/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.WANCHAIN]: {
+    baseUrl: 'https://wanscan.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.SUI]: {
+    baseUrl: 'https://suiscan.xyz/mainnet/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'account/',
+    [ADDRESS_TYPE.TOKEN]: 'coin/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
   }
+  // [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: {
+  //   baseUrl: 'https://megaexplorer.xyz/',
+  //   nativeCoinUrl: '',
+  //   [ADDRESS_TYPE.WALLET]: 'address/',
+  //   [ADDRESS_TYPE.TOKEN]: 'token/',
+  //   [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+  //   [ADDRESS_TYPE.BLOCK]: 'block/'
+  // }
 };

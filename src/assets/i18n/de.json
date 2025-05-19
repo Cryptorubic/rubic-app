@@ -57,7 +57,7 @@
     "OverQueryLimit": "Deine Transaktionsanfragen wurden über die Binance Bridge abgewickelt. Diese erlaubt maximal 3 Transaktionen innerhalb von 30 Minuten. Du hast die Anzahl für den Moment leider überschritten.\nBitte versuche es zu einem späteren Zeitpunkt erneut. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren",
     "userReject": "Du hast die Transaktion leider nicht freigegeben. Bitte wiederhole den Vorgang und achte darauf, die Transaktion ordnungsgemäß zu bestätigen.",
     "rubicError": "Bitte versuche es zu einem späteren Zeitpunkt erneut oder wechsele auf ein anderes Gerät. Sollten weiterhin Probleme bestehen, wende Dich bitte an unseren",
-    "insufficientFunds": "Dein {{ tokenSymbol }} reicht nicht aus. Du hast lediglich {{balance}} {{tokenSymbol}}, doch {{requiredBalance}} {{tokenSymbol}} sind erforderlich.",
+    "insufficientFunds": "Dein {{ tokenSymbol }} reicht nicht aus.",
     "insufficientFunds1inch": "Dein {{ nativeToken }}-Guthaben reicht leider nicht aus, um die Transaktions- und Gasgebühren zu begleichen. Bitte reduziere Deine Transaktion entsprechend oder erhöhe Dein {{ nativeToken }}-Guthaben.",
     "noQrCode": "Bitte versichere Dich, dass Du den QR-Code gescannt hast.",
     "walletlinkWrongNetwork": "Bitte versichere Dich, dass das {{ networkToChoose }}-Netzwerk in der Coinbase-App ausgewählt ist. Das Netzwerk kannst Du in den App-Einstellungen anpassen.",
@@ -101,7 +101,8 @@
     "crossChainSwapUnavailable": "Leider ist dieser Swap mit dem berechneten Anbieter derzeit nicht verfügbar. Rubic berechnet die Route für Ihren Tausch neu.",
     "noSelectedToken": "Token Auswählen",
     "wrongSourceNetwork": "Die Swaps aus dem {{ network }} werden derzeit nicht unterstützt.",
-    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}."
+    "needDisableCtrlWallet": "Ctrl-wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Сtrl Wallet\" extension first and restart page to activate {{walletName}}.",
+    "needDisableTokenPocketWallet": "TokenPocket wallet enabled. To get available accounts of \"{{walletName}}\" wallet, disable \"Token Pocket wallet\" extension first and restart page to activate {{walletName}}."
   },
   "navigation": {
     "retrodrop": "Retrodrop",

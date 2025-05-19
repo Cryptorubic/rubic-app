@@ -189,7 +189,10 @@ export class OnChainService {
         const txStatusData = await firstValueFrom(
           timer(7_000, 5_000).pipe(
             concatMap(() =>
-              this.sdkService.onChainStatusManager.getBridgersSwapStatus(transactionHash)
+              this.sdkService.onChainStatusManager.getBridgersSwapStatus(
+                transactionHash,
+                trade.slippageTolerance
+              )
             ),
             first(
               statusData =>

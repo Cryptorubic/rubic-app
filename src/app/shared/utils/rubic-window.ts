@@ -18,6 +18,7 @@ export interface RubicWindow extends Window {
   chrome?: boolean;
   tronLink?: {
     tronWeb: unknown;
+    isBitKeepChrome: boolean;
   };
   bitkeep?: { ethereum?: WalletLinkProvider };
   tokenpocket?: { ethereum?: WalletLinkProvider & { isTokenPocket?: boolean } };

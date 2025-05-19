@@ -68,6 +68,7 @@ import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cr
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import { isRawApiError, RubicApiErrorParser } from '@app/core/errors/models/rubic-api-error-parser';
+import CrossChainPairCurrentlyUnavailableError from '@app/core/errors/models/cross-chain/cross-chain-pair-currently-unavailable-error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -111,6 +112,7 @@ export class SwapsControllerService {
     this.subscribeOnAddressChange();
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
+    this.subscribeOnSwapFormFilled();
   }
 
   /**
@@ -343,7 +345,8 @@ export class SwapsControllerService {
       NotWhitelistedProviderWarning,
       UnsupportedDeflationTokenWarning,
       ExecutionRevertedError,
-      CrossChainSwapUnavailableWarning
+      CrossChainSwapUnavailableWarning,
+      CrossChainPairCurrentlyUnavailableError
     ].some(CriticalError => error instanceof CriticalError);
   }
 
@@ -490,7 +493,7 @@ export class SwapsControllerService {
           const wrappedTrade = container?.value?.wrappedTrade;
           const isCalculationEnd = container.value.total === container.value.calculated;
 
-          if (wrappedTrade) {
+          if (wrappedTrade && this.swapFormService.isFilled) {
             const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
             const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
               wrappedTrade.trade,
@@ -538,7 +541,7 @@ export class SwapsControllerService {
           if (isCalculationEnd) {
             this.refreshService.setStopped();
           }
-          if (!container?.value) {
+          if (!container?.value || !this.swapFormService.isFilled) {
             this.refreshService.setStopped();
             this.swapsStateService.clearProviders(true);
           } else {
@@ -556,5 +559,13 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+  }
+
+  private subscribeOnSwapFormFilled(): void {
+    this.swapFormService.isFilled$
+      .pipe(debounceTime(400), distinctUntilChanged())
+      .subscribe(isFilled => {
+        if (!isFilled) Injector.rubicApiService.stopCalculation();
+      });
   }
 }

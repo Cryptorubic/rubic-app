@@ -51,7 +51,7 @@ export class WalletsModalComponent implements OnInit {
   public get providers(): ReadonlyArray<WalletProvider> {
     const isChromiumProviders = this.isChromium
       ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITKEEP);
+      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
 
     return this.isMobile
       ? isChromiumProviders.filter(provider => provider.supportsMobile)
@@ -68,7 +68,7 @@ export class WalletsModalComponent implements OnInit {
   private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
 
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
-    return this.isMobile && provider === WALLET_NAME.WALLET_LINK;
+    return this.isMobile && provider === WALLET_NAME.COIN_BASE;
   };
 
   public readonly rulesCheckbox = new FormControl<boolean>(this.getStorageValue());
@@ -100,7 +100,7 @@ export class WalletsModalComponent implements OnInit {
     }
 
     if (this.browserService.currentBrowser === BROWSER.COINBASE && !this.iframeService.isIframe) {
-      this.connectProvider(WALLET_NAME.WALLET_LINK);
+      this.connectProvider(WALLET_NAME.COIN_BASE);
     }
   }
 
@@ -113,7 +113,7 @@ export class WalletsModalComponent implements OnInit {
       case WALLET_NAME.METAMASK:
         await this.redirectToMetamaskBrowser();
         return true;
-      case WALLET_NAME.WALLET_LINK:
+      case WALLET_NAME.COIN_BASE:
         this.redirectToCoinbaseBrowser();
         return true;
       default:

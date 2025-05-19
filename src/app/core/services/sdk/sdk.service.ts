@@ -6,6 +6,7 @@ import {
   CrossChainStatusManager,
   CrossChainSymbiosisManager,
   DeflationTokenManager,
+  EnvType,
   OnChainManager,
   OnChainStatusManager,
   SDK,
@@ -17,8 +18,6 @@ import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 import { WINDOW } from '@ng-web-apis/common';
-
-type EnvType = 'local' | 'dev2' | 'dev' | 'prod' | 'rubic';
 
 @Injectable()
 export class SdkService {
@@ -118,7 +117,7 @@ export class SdkService {
     const map: Record<string, string> = {
       'dev-app.rubic.exchange': 'dev',
       'dev2-app.rubic.exchange': 'dev2',
-      'dev3-app.rubic.exchange': 'dev',
+      'dev3-app.rubic.exchange': 'dev3',
       'stage-app.rubic.exchange': 'rubic',
       'beta-app.rubic.exchange': 'rubic',
       'app.rubic.exchange': 'rubic',

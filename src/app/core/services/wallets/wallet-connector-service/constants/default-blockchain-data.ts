@@ -17,7 +17,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.POLYGON]: {
     name: 'Polygon Mainnet',
-    rpc: 'https://rpc-mainnet.maticvigil.com'
+    rpc: 'https://polygon-rpc.com'
   },
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: {
     name: 'Polygon zkEVM',
@@ -49,7 +49,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.TELOS]: {
     name: 'Telos EVM Mainnet',
-    rpc: 'https://mainnet.telos.net/evm'
+    rpc: 'https://rpc.telos.net'
   },
   [BLOCKCHAIN_NAME.OPTIMISM]: {
     name: 'Optimism',
@@ -222,29 +222,33 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.GRAVITY]: {
     name: 'Gravity',
     rpc: 'https://rpc.gravity.xyz'
-  }
+  },
   // [BLOCKCHAIN_NAME.SONIC]: {
   //   name: 'Sonic',
   //   rpc: 'https://rpc.soniclabs.com'
   // },
-  // [BLOCKCHAIN_NAME.MORPH]: {
-  //   name: 'Morph',
-  //   rpc: 'https://rpc-quicknode.morphl2.io'
-  // },
-  // [BLOCKCHAIN_NAME.FRAXTAL]: {
-  //   name: 'Fraxtal',
-  //   rpc: 'https://rpc.frax.com'
-  // },
-  // [BLOCKCHAIN_NAME.BERACHAIN]: {
-  //   name: 'Berachain',
-  //   rpc: 'https://rpc.berachain.com/'
-  // },
-  // [BLOCKCHAIN_NAME.SONEIUM]: {
-  //   name: 'Soneium',
-  //   rpc: 'https://rpc.soneium.org/'
-  // },
-  // [BLOCKCHAIN_NAME.UNICHAIN]: {
-  //   name: 'Unichain',
-  //   rpc: 'https://mainnet.unichain.org/'
-  // }
+  [BLOCKCHAIN_NAME.MORPH]: {
+    name: 'Morph',
+    rpc: 'https://rpc-quicknode.morphl2.io'
+  },
+  [BLOCKCHAIN_NAME.FRAXTAL]: {
+    name: 'Fraxtal',
+    rpc: 'https://rpc.frax.com'
+  },
+  [BLOCKCHAIN_NAME.BERACHAIN]: {
+    name: 'Berachain',
+    rpc: 'https://rpc.berachain.com/'
+  },
+  [BLOCKCHAIN_NAME.SONEIUM]: {
+    name: 'Soneium',
+    rpc: 'https://rpc.soneium.org/'
+  },
+  [BLOCKCHAIN_NAME.WANCHAIN]: {
+    name: 'Wanchain',
+    rpc: 'https://gwan-ssl.wandevs.org:56891'
+  },
+  [BLOCKCHAIN_NAME.UNICHAIN]: {
+    name: 'Unichain',
+    rpc: 'https://mainnet.unichain.org/'
+  }
 };

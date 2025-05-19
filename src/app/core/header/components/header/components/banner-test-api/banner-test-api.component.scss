@@ -17,7 +17,7 @@
   }
 
   .banner__text {
-    @include font(24px, 140%, 800, #ffffff);
+    @include font(18px, 140%, 800, #ffffff);
     letter-spacing: 1px;
   }
 }

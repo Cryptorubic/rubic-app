@@ -6,6 +6,7 @@ import { PreviewSwapService } from '@features/trade/services/preview-swap/previe
 import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
 import {
   CROSS_CHAIN_DEPOSIT_STATUS,
+  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   CrossChainTransferTrade,
   EvmCrossChainTrade,
@@ -121,10 +122,9 @@ export class DepositPreviewSwapComponent {
 
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
-  public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$
-    .pipe
-    // map(tradeState => tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY)
-    ();
+  public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(tradeState => tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY)
+  );
 
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
@@ -152,7 +152,7 @@ export class DepositPreviewSwapComponent {
   public backToForm(): void {
     this.tradePageService.setState('form');
     this.previewSwapService.setNextTxState({
-      step: 'inactive',
+      step: 'idle',
       data: {}
     });
   }
