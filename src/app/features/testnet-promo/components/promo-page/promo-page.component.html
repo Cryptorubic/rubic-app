@@ -10,7 +10,6 @@
     <!-- Left -->
     <div class="box">
       <ng-container *ngIf="data.pageState !== 'noWallet' && data.proofs">
-        {{ data.pageState }}
         <!-- Snapshots -->
         <app-window-container *ngIf="data.pageState !== 'notVerifiedUser'" class="form-container">
           <ng-container header> Snapshots </ng-container>
