@@ -18,7 +18,8 @@ import { AvailableBlockchain } from '@features/trade/components/assets-selector/
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import {
   blockchainsList,
-  RankedBlockchain
+  RankedBlockchain,
+  temporarelyDisabledBlockchains
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
@@ -230,6 +231,9 @@ export class BlockchainsListService {
     }
     if (this.isDisabledTo(blockchain)) {
       return 'Cannot trade with fiats';
+    }
+    if (temporarelyDisabledBlockchains.includes(blockchain.name)) {
+      return 'Сoming soon';
     }
     return null;
   }
