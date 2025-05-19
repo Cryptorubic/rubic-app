@@ -1,0 +1,70 @@
+@use 'src/scss/core' as *;
+
+:root {
+  --app-background: url('/assets/images/testnet-promo/matrix.jpg');
+}
+
+.promo-page {
+  display: grid;
+  grid-template-columns: minmax(351px, 3fr) 5fr minmax(351px, 3fr);
+  gap: var(--tui-padding-l);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: var(--tui-padding-4xl);
+
+  &__solo {
+    grid-template-columns: 1fr minmax(0, 600px) 1fr;
+
+    @include b(561) {
+      grid-template-columns: 1fr;
+    }
+
+    .box.box__center {
+      @include b(800) {
+        grid-row: inherit !important;
+      }
+    }
+  }
+
+  :not(&__solo) {
+    @include b(1100) {
+      grid-template-columns: 3fr 3fr;
+    }
+
+    @include b(800) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+
+  .box {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l);
+
+    &__center {
+      @include b(800) {
+        grid-row: 1;
+
+        .form-container .window-container {
+          background: transparent;
+        }
+      }
+    }
+
+    &__right {
+      @include b(1100) {
+        flex-direction: row;
+        grid-column: 1 / -1;
+
+        > * {
+          flex: 0 1 50%;
+        }
+      }
+
+      @include b(800) {
+        flex-direction: column;
+      }
+    }
+  }
+}

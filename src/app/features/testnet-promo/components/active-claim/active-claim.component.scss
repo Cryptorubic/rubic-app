@@ -1,0 +1,37 @@
+.round {
+  display: flex;
+  flex-direction: column;
+
+  font-weight: 400;
+  font-size: 15px;
+
+  &__top,
+  &__main {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__main {
+    margin-top: var(--tui-padding-m);
+  }
+
+  .week {
+    color: var(--tui-primary);
+  }
+
+  .rbc-logo {
+    width: 25px;
+    height: 25px;
+  }
+
+  .info {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+    height: var(--tui-height-m);
+    padding: 0 var(--tui-padding, 1.5rem);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
+  }
+}

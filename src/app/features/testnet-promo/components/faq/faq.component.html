@@ -1,0 +1,13 @@
+<tui-accordion class="faq-accordion" [rounded]="false">
+  <tui-accordion-item
+    *ngFor="let question of questions"
+    [noPadding]="true"
+    [borders]="null"
+    size="s"
+  >
+    {{ question.title }}
+    <ng-template tuiAccordionItemContent>
+      <div [innerHTML]="question.answer"></div>
+    </ng-template>
+  </tui-accordion-item>
+</tui-accordion>

@@ -419,6 +419,7 @@ export class SwapsControllerService {
     txHash: string,
     onSwap?: (params?: CrossChainSwapAdditionalParams) => void
   ): Promise<void> {
+    // @TODO Remove params
     const params: CrossChainSwapAdditionalParams = {};
 
     if (trade.uniqueInfo.changenowId) {

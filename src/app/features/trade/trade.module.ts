@@ -104,7 +104,7 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     AlternativeRoutesListComponent,
     RefundAddressComponent
   ],
-  exports: [],
+  exports: [ActionButtonComponent],
   imports: [
     TradeRoutingModule,
     CommonModule,

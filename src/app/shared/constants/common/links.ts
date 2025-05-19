@@ -9,6 +9,7 @@ export enum ROUTE_PATH {
   AIRDROP = 'airdrop',
   RETRODROP = 'retrodrop',
   STAKING = 'staking',
+  TESTNET_PROMO = 'testnet-promo',
   REST = '**'
 }
 

@@ -372,6 +372,7 @@ export class PreviewSwapService {
                 }
               },
               onSwap: () => {
+                // @TODO Refactor
                 if (this.useCallback) {
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this.setNextTxState({

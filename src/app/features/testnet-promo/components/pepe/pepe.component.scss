@@ -1,0 +1,27 @@
+@use 'src/scss/core' as *;
+
+.pepe {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin-top: -60px;
+
+  @include b(1200) {
+    margin-top: -40px;
+  }
+
+  @include b(800) {
+    margin-top: 0;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -12px;
+}

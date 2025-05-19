@@ -1,0 +1,13 @@
+<div class="round">
+  <div class="round__top">
+    <div class="week">Week #{{ round.week }}</div>
+    <div class="date">05.04.23 – 20.07.23</div>
+  </div>
+  <div class="round__main">
+    <div class="info">
+      <img class="rbc-logo" src="assets/images/rbc-white.png" alt="" />
+      <span appTokenAmount [decimals]="18">{{ round.amount }}</span>
+      <span>RBC</span>
+    </div>
+  </div>
+</div>

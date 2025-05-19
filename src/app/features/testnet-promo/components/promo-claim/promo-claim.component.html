@@ -1,0 +1,14 @@
+<div class="claim">
+  <app-active-claim [round]="proofs.activeRound"></app-active-claim>
+  <tui-accordion class="faq-accordion" [rounded]="false">
+    <tui-accordion-item [noPadding]="true" [borders]="null" size="s">
+      Show old rounds
+      <ng-template tuiAccordionItemContent>
+        <app-inactive-claim
+          *ngFor="let proof of proofs.completed"
+          [round]="proof"
+        ></app-inactive-claim>
+      </ng-template>
+    </tui-accordion-item>
+  </tui-accordion>
+</div>
