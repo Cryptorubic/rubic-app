@@ -45,10 +45,10 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
 }
 
 const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList, string[]> = {
-  [BLOCKCHAIN_NAME.ICP]: ['ICP'],
+  // [BLOCKCHAIN_NAME.ICP]: ['ICP'],
   [BLOCKCHAIN_NAME.CARDANO]: ['ADA'],
 
-  [BLOCKCHAIN_NAME.DOGECOIN]: ['DOGE'],
+  // [BLOCKCHAIN_NAME.DOGECOIN]: ['DOGE'],
   [BLOCKCHAIN_NAME.POLKADOT]: ['DOT'],
   [BLOCKCHAIN_NAME.LITECOIN]: ['LTC'],
   [BLOCKCHAIN_NAME.MONERO]: ['XMR'],
@@ -56,30 +56,30 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.ZILLIQA]: ['ZIL'],
   [BLOCKCHAIN_NAME.DASH]: ['DASH'],
   [BLOCKCHAIN_NAME.TEZOS]: ['XTZ'],
-  [BLOCKCHAIN_NAME.ASTAR]: ['ASTR'],
+  // [BLOCKCHAIN_NAME.ASTAR]: ['ASTR'],
   [BLOCKCHAIN_NAME.STELLAR]: ['XLM'],
   [BLOCKCHAIN_NAME.NEO]: ['NEO'],
   [BLOCKCHAIN_NAME.NEAR]: ['NEAR'],
   [BLOCKCHAIN_NAME.SOLANA]: ['SOL', BlockchainTags.POPULAR],
   [BLOCKCHAIN_NAME.BITCOIN]: ['BTC'],
-  [BLOCKCHAIN_NAME.ALGORAND]: ['ALGO'],
+  // [BLOCKCHAIN_NAME.ALGORAND]: ['ALGO'],
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: ['KAVA'],
   [BLOCKCHAIN_NAME.APTOS]: ['APT'],
   [BLOCKCHAIN_NAME.COSMOS]: ['ATOM'],
-  [BLOCKCHAIN_NAME.FLOW]: ['FLOW'],
-  [BLOCKCHAIN_NAME.HEDERA]: ['HBAR'],
+  // [BLOCKCHAIN_NAME.FLOW]: ['FLOW'],
+  // [BLOCKCHAIN_NAME.HEDERA]: ['HBAR'],
   [BLOCKCHAIN_NAME.IOTA]: ['IOTA'],
-  [BLOCKCHAIN_NAME.KUSAMA]: ['KSM'],
-  [BLOCKCHAIN_NAME.MINA_PROTOCOL]: ['MINA'],
-  [BLOCKCHAIN_NAME.OSMOSIS]: ['OSMO'],
-  [BLOCKCHAIN_NAME.SIA]: ['SC'],
-  [BLOCKCHAIN_NAME.SECRET]: ['SCRT'],
+  // [BLOCKCHAIN_NAME.KUSAMA]: ['KSM'],
+  // [BLOCKCHAIN_NAME.MINA_PROTOCOL]: ['MINA'],
+  // [BLOCKCHAIN_NAME.OSMOSIS]: ['OSMO'],
+  // [BLOCKCHAIN_NAME.SIA]: ['SC'],
+  // [BLOCKCHAIN_NAME.SECRET]: ['SCRT'],
   [BLOCKCHAIN_NAME.TON]: ['TON'],
-  [BLOCKCHAIN_NAME.WAVES]: ['WAVES'],
-  [BLOCKCHAIN_NAME.WAX]: ['WAXP'],
-  [BLOCKCHAIN_NAME.EOS]: ['EOS'],
+  // [BLOCKCHAIN_NAME.WAVES]: ['WAVES'],
+  // [BLOCKCHAIN_NAME.WAX]: ['WAXP'],
+  // [BLOCKCHAIN_NAME.EOS]: ['EOS'],
   [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
-  [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
+  // [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
   [BLOCKCHAIN_NAME.XDC]: ['XDC'],
   [BLOCKCHAIN_NAME.SUI]: ['SUI']
 };
@@ -90,37 +90,37 @@ export const notEvmChangeNowBlockchainsList = {
   [BLOCKCHAIN_NAME.CARDANO]: BLOCKCHAIN_NAME.CARDANO,
   [BLOCKCHAIN_NAME.COSMOS]: BLOCKCHAIN_NAME.COSMOS,
   [BLOCKCHAIN_NAME.LITECOIN]: BLOCKCHAIN_NAME.LITECOIN,
-  [BLOCKCHAIN_NAME.OSMOSIS]: BLOCKCHAIN_NAME.OSMOSIS,
-  [BLOCKCHAIN_NAME.HEDERA]: BLOCKCHAIN_NAME.HEDERA,
+  // [BLOCKCHAIN_NAME.OSMOSIS]: BLOCKCHAIN_NAME.OSMOSIS,
+  // [BLOCKCHAIN_NAME.HEDERA]: BLOCKCHAIN_NAME.HEDERA,
   [BLOCKCHAIN_NAME.RIPPLE]: BLOCKCHAIN_NAME.RIPPLE,
-  [BLOCKCHAIN_NAME.DOGECOIN]: BLOCKCHAIN_NAME.DOGECOIN,
+  // [BLOCKCHAIN_NAME.DOGECOIN]: BLOCKCHAIN_NAME.DOGECOIN,
   [BLOCKCHAIN_NAME.APTOS]: BLOCKCHAIN_NAME.APTOS,
   [BLOCKCHAIN_NAME.POLKADOT]: BLOCKCHAIN_NAME.POLKADOT,
-  [BLOCKCHAIN_NAME.ALGORAND]: BLOCKCHAIN_NAME.ALGORAND,
+  // [BLOCKCHAIN_NAME.ALGORAND]: BLOCKCHAIN_NAME.ALGORAND,
   [BLOCKCHAIN_NAME.STELLAR]: BLOCKCHAIN_NAME.STELLAR,
-  [BLOCKCHAIN_NAME.EOS]: BLOCKCHAIN_NAME.EOS,
+  // [BLOCKCHAIN_NAME.EOS]: BLOCKCHAIN_NAME.EOS,
   [BLOCKCHAIN_NAME.NEAR]: BLOCKCHAIN_NAME.NEAR,
-  [BLOCKCHAIN_NAME.ASTAR]: BLOCKCHAIN_NAME.ASTAR,
+  // [BLOCKCHAIN_NAME.ASTAR]: BLOCKCHAIN_NAME.ASTAR,
 
-  [BLOCKCHAIN_NAME.FLOW]: BLOCKCHAIN_NAME.FLOW,
-  [BLOCKCHAIN_NAME.ICP]: BLOCKCHAIN_NAME.ICP,
+  // [BLOCKCHAIN_NAME.FLOW]: BLOCKCHAIN_NAME.FLOW,
+  // [BLOCKCHAIN_NAME.ICP]: BLOCKCHAIN_NAME.ICP,
   [BLOCKCHAIN_NAME.IOTA]: BLOCKCHAIN_NAME.IOTA,
   [BLOCKCHAIN_NAME.KAVA_COSMOS]: BLOCKCHAIN_NAME.KAVA_COSMOS,
-  [BLOCKCHAIN_NAME.KUSAMA]: BLOCKCHAIN_NAME.KUSAMA,
-  [BLOCKCHAIN_NAME.MINA_PROTOCOL]: BLOCKCHAIN_NAME.MINA_PROTOCOL,
+  // [BLOCKCHAIN_NAME.KUSAMA]: BLOCKCHAIN_NAME.KUSAMA,
+  // [BLOCKCHAIN_NAME.MINA_PROTOCOL]: BLOCKCHAIN_NAME.MINA_PROTOCOL,
   [BLOCKCHAIN_NAME.NEO]: BLOCKCHAIN_NAME.NEO,
-  [BLOCKCHAIN_NAME.ONTOLOGY]: BLOCKCHAIN_NAME.ONTOLOGY,
+  // [BLOCKCHAIN_NAME.ONTOLOGY]: BLOCKCHAIN_NAME.ONTOLOGY,
   [BLOCKCHAIN_NAME.ZILLIQA]: BLOCKCHAIN_NAME.ZILLIQA,
   [BLOCKCHAIN_NAME.TEZOS]: BLOCKCHAIN_NAME.TEZOS,
 
   [BLOCKCHAIN_NAME.BITCOIN]: BLOCKCHAIN_NAME.BITCOIN,
   [BLOCKCHAIN_NAME.SOLANA]: BLOCKCHAIN_NAME.SOLANA,
 
-  [BLOCKCHAIN_NAME.SIA]: BLOCKCHAIN_NAME.SIA,
-  [BLOCKCHAIN_NAME.SECRET]: BLOCKCHAIN_NAME.SECRET,
+  // [BLOCKCHAIN_NAME.SIA]: BLOCKCHAIN_NAME.SIA,
+  // [BLOCKCHAIN_NAME.SECRET]: BLOCKCHAIN_NAME.SECRET,
   [BLOCKCHAIN_NAME.TON]: BLOCKCHAIN_NAME.TON,
-  [BLOCKCHAIN_NAME.WAVES]: BLOCKCHAIN_NAME.WAVES,
-  [BLOCKCHAIN_NAME.WAX]: BLOCKCHAIN_NAME.WAX,
+  // [BLOCKCHAIN_NAME.WAVES]: BLOCKCHAIN_NAME.WAVES,
+  // [BLOCKCHAIN_NAME.WAX]: BLOCKCHAIN_NAME.WAX,
   [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI,
   // [BLOCKCHAIN_NAME.CASPER]: BLOCKCHAIN_NAME.CASPER,
 
@@ -173,13 +173,7 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   const chainTags = [...notEvmChangeNowBlockchainsTagsList[blockchain], BlockchainTags.NON_EVM];
 
   if (blockchain === BLOCKCHAIN_NAME.TON) {
-    chainTags.push(BlockchainTags.NEW, BlockchainTags.POPULAR);
-  }
-  if (blockchain === BLOCKCHAIN_NAME.SUI) {
-    chainTags.push(BlockchainTags.NEW);
-  }
-  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-    chainTags.push(BlockchainTags.PROMO);
+    chainTags.push(BlockchainTags.POPULAR);
   }
   if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     chainTags.push(BlockchainTags.POPULAR);
@@ -225,13 +219,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BERACHAIN,
     rank: 0.75,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.NEW,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
@@ -241,12 +229,12 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
     rank: 0.75,
-    tags: [BlockchainTags.EVM, BlockchainTags.PROMO, BlockchainTags.POPULAR]
+    tags: [BlockchainTags.EVM, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.UNICHAIN,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   // @DELETE
   // {
@@ -262,18 +250,12 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.MORPH,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.POPULAR
-    ]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.FRAXTAL,
     rank: 0.5,
-    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['frxETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   // {
   //   name: BLOCKCHAIN_NAME.SONIC,
@@ -283,7 +265,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SONEIUM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
@@ -293,13 +275,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.5,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.MODE,
@@ -352,30 +328,18 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
     rank: 0.45,
-    tags: [
-      'RBTC',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.PROMO
-    ]
+    tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  {
-    name: BLOCKCHAIN_NAME.BITLAYER,
-    rank: 0.45,
-    tags: [
-      'BTC',
-      BlockchainTags.EVM,
-      BlockchainTags.LAYER_2,
-      BlockchainTags.NEW,
-      BlockchainTags.POPULAR
-    ]
-  },
-  {
-    name: BLOCKCHAIN_NAME.MERLIN,
-    rank: 0.45,
-    tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.BITLAYER,
+  //   rank: 0.45,
+  //   tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.POPULAR]
+  // },
+  // {
+  //   name: BLOCKCHAIN_NAME.MERLIN,
+  //   rank: 0.45,
+  //   tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
   {
     name: BLOCKCHAIN_NAME.KROMA,
     rank: 0.45,
@@ -389,23 +353,23 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SEI,
     rank: 0.4,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
   },
-  {
-    name: BLOCKCHAIN_NAME.ZK_LINK,
-    rank: 0.4,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
-    name: BLOCKCHAIN_NAME.ZK_FAIR,
-    rank: 0.4,
-    tags: ['USDC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
-    name: BLOCKCHAIN_NAME.HORIZEN_EON,
-    rank: 0.4,
-    tags: ['ZEN', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.ZK_LINK,
+  //   rank: 0.4,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
+  // {
+  //   name: BLOCKCHAIN_NAME.ZK_FAIR,
+  //   rank: 0.4,
+  //   tags: ['USDC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
+  // {
+  //   name: BLOCKCHAIN_NAME.HORIZEN_EON,
+  //   rank: 0.4,
+  //   tags: ['ZEN', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
   {
     name: BLOCKCHAIN_NAME.ZETACHAIN,
     rank: 0.4,
@@ -416,40 +380,40 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.4,
     tags: ['FTN', BlockchainTags.EVM]
   },
-  { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },
   { name: BLOCKCHAIN_NAME.CELO, rank: 0.4, tags: [BlockchainTags.EVM] },
-  {
-    name: BLOCKCHAIN_NAME.ASTAR_EVM,
-    rank: 0.35,
-    tags: ['ASTR', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.ASTAR_EVM,
+  //   rank: 0.35,
+  //   tags: ['ASTR', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
   {
     name: BLOCKCHAIN_NAME.AURORA,
     rank: 0.35,
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  {
-    name: BLOCKCHAIN_NAME.BOBA,
-    rank: 0.35,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  { name: BLOCKCHAIN_NAME.FUSE, rank: 0.3, tags: [BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.KAVA, rank: 0.2, tags: [BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.KLAYTN, rank: 0.2, tags: [BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.OASIS, rank: 0.1, tags: ['ROSE', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.OKE_X_CHAIN, rank: 0.1, tags: ['OKT', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.TELOS, rank: 0, tags: ['TLOS', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.VELAS, rank: 0, tags: ['VLX', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.SYSCOIN, rank: 0, tags: [BlockchainTags.EVM] },
+  // {
+  //   name: BLOCKCHAIN_NAME.BOBA,
+  //   rank: 0.35,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
+  // { name: BLOCKCHAIN_NAME.FUSE, rank: 0.3, tags: [BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.KAVA, rank: 0.2, tags: [BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.KLAYTN, rank: 0.2, tags: [BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.OASIS, rank: 0.1, tags: ['ROSE', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.OKE_X_CHAIN, rank: 0.1, tags: ['OKT', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.TELOS, rank: 0, tags: ['TLOS', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.VELAS, rank: 0, tags: ['VLX', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.SYSCOIN, rank: 0, tags: [BlockchainTags.EVM] },
 
-  {
-    name: BLOCKCHAIN_NAME.CORE,
-    rank: 0,
-    tags: ['CORE', BlockchainTags.EVM]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.CORE,
+  //   rank: 0,
+  //   tags: ['CORE', BlockchainTags.EVM]
+  // },
 
-  { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2] },
+  // { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2] },
 
   { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: ['XDAI', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.BITGERT,
@@ -475,3 +439,15 @@ export const blockchainRanks: Record<BlockchainName, number> = {
 
 export type NotEvmChangeNowBlockchainsList =
   (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];
+
+export const temporarelyDisabledBlockchains: BlockchainName[] = [
+  BLOCKCHAIN_NAME.GRAVITY,
+  BLOCKCHAIN_NAME.ZETACHAIN,
+  BLOCKCHAIN_NAME.CRONOS,
+  BLOCKCHAIN_NAME.CELO,
+  BLOCKCHAIN_NAME.ROOTSTOCK,
+  BLOCKCHAIN_NAME.AURORA,
+  BLOCKCHAIN_NAME.APTOS,
+  BLOCKCHAIN_NAME.SEI,
+  BLOCKCHAIN_NAME.MORPH
+];
