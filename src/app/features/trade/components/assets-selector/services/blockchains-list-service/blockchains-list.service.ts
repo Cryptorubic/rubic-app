@@ -227,13 +227,12 @@ export class BlockchainsListService {
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
     if (blockchain.disabledConfiguration || this.isDisabledFrom(blockchain)) {
-      return 'Temporary disabled';
+      return temporarelyDisabledBlockchains.includes(blockchain.name)
+        ? 'Сoming soon'
+        : 'Temporary disabled';
     }
     if (this.isDisabledTo(blockchain)) {
       return 'Cannot trade with fiats';
-    }
-    if (temporarelyDisabledBlockchains.includes(blockchain.name)) {
-      return 'Сoming soon';
     }
     return null;
   }
