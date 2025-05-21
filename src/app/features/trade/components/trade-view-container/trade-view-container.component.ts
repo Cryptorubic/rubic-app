@@ -17,6 +17,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
+import { Banner } from '@hypelab/sdk-react';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -37,6 +38,18 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
   ]
 })
 export class TradeViewContainerComponent {
+  public readonly BannerReactComp = Banner;
+
+  public readonly BannerProps = {
+    placement: 'banner_placement',
+    onReady(): void {
+      console.log('BannerReactComp READY');
+    },
+    onError(e: Error): void {
+      console.log('BannerReactComp ERROR ==> ', e);
+    }
+  };
+
   public readonly formContent$ = this.tradePageService.formContent$;
 
   public readonly providers$ = this.swapsState.tradesStore$.pipe(
