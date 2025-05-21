@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProofInfo } from '@features/testnet-promo/interfaces/api-models';
 import { TestnetPromoClaimService } from '@features/testnet-promo/services/testnet-promo-claim.service';
 import { Web3Pure } from 'rubic-sdk';
@@ -9,7 +9,7 @@ import { Web3Pure } from 'rubic-sdk';
   styleUrls: ['./active-claim.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ActiveClaimComponent {
+export class ActiveClaimComponent implements AfterViewInit {
   public readonly buttonState$ = this.claimService.buttonState$;
 
   public readonly buttonLabel$ = this.claimService.buttonLabel$;
@@ -28,5 +28,9 @@ export class ActiveClaimComponent {
       },
       this.round.proof
     );
+  }
+
+  public ngAfterViewInit() {
+    this.claimService.setClaimStatus(this.round.contractAddress, this.round.index);
   }
 }

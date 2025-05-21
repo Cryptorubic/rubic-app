@@ -13,11 +13,17 @@
         *ngIf="
           data.pageState !== 'noWallet' &&
           data.proofs &&
-          (data.proofs.activeRound || data.proofs.completed.length)
+          (data.weekInfo || data.proofs.activeRound || data.proofs.completed.length)
         "
       >
         <!-- Snapshots -->
-        <app-window-container *ngIf="data.pageState !== 'notVerifiedUser'" class="form-container">
+        <app-window-container
+          *ngIf="
+            data.pageState !== 'notVerifiedUser' &&
+            (data.proofs.activeRound || data.proofs.completed.length)
+          "
+          class="form-container"
+        >
           <ng-container header> Snapshots </ng-container>
 
           <app-promo-claim [proofs]="data.proofs"></app-promo-claim>
@@ -25,11 +31,11 @@
 
         <!-- Total claim -->
         <app-window-container
-          *ngIf="data.pageState !== 'notVerifiedUser'"
+          *ngIf="data.pageState !== 'notVerifiedUser' && data.weekInfo"
           class="form-container claim-card"
         >
           <ng-container header> Claim </ng-container>
-          <app-total-rbc *ngIf="data.weekInfo" [weekInfo]="data.weekInfo"></app-total-rbc>
+          <app-total-rbc [weekInfo]="data.weekInfo"></app-total-rbc>
         </app-window-container>
       </ng-container>
     </div>

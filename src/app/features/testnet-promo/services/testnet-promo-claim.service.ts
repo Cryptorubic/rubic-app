@@ -14,7 +14,7 @@ import { ClaimButtonState } from '@features/testnet-promo/interfaces/claim-butto
 
 @Injectable()
 export class TestnetPromoClaimService {
-  private readonly _buttonStatus$ = new BehaviorSubject<ClaimButtonState>('active');
+  private readonly _buttonStatus$ = new BehaviorSubject<ClaimButtonState>('loading');
 
   public readonly buttonState$ = this._buttonStatus$.asObservable();
 
@@ -34,6 +34,15 @@ export class TestnetPromoClaimService {
     private readonly translateService: TranslateService,
     private readonly notificationsService: NotificationsService
   ) {}
+
+  public async setClaimStatus(contractAddress: string, nodeIndex: number): Promise<void> {
+    try {
+      const isClaimed = await this.checkClaimed(contractAddress, nodeIndex);
+      this._buttonStatus$.next(isClaimed ? 'claimed' : 'active');
+    } catch (err) {
+      this._buttonStatus$.next('claimed');
+    }
+  }
 
   public async claimTokens(
     contractAddress: string,
@@ -93,7 +102,7 @@ export class TestnetPromoClaimService {
     }
   }
 
-  private async checkClaimed(contractAddress: string, index: number): Promise<boolean> {
+  public async checkClaimed(contractAddress: string, index: number): Promise<boolean> {
     const isPaused = await Injector.web3PublicService
       .getWeb3Public(newRubicToken.blockchain)
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
