@@ -9,7 +9,13 @@
   <main class="promo-page" [ngClass]="{ 'promo-page__solo': data.pageState === 'noWallet' }">
     <!-- Left -->
     <div class="box">
-      <ng-container *ngIf="data.pageState !== 'noWallet' && data.proofs">
+      <ng-container
+        *ngIf="
+          data.pageState !== 'noWallet' &&
+          data.proofs &&
+          (data.proofs.activeRound || data.proofs.completed.length)
+        "
+      >
         <!-- Snapshots -->
         <app-window-container *ngIf="data.pageState !== 'notVerifiedUser'" class="form-container">
           <ng-container header> Snapshots </ng-container>
