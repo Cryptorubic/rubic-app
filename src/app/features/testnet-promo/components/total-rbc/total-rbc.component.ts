@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { WeekInfo } from '@features/testnet-promo/interfaces/api-models';
+import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
 
 @Component({
   selector: 'app-total-rbc',

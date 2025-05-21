@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import {
   PrizePool,
+  SwapsInfo,
   UserProofs,
-  UserStats,
   VerificationStatus
 } from '@features/testnet-promo/interfaces/api-models';
 import { ENVIRONMENT } from '../../../../environments/environment';
@@ -13,12 +13,14 @@ import { Web3Pure } from 'rubic-sdk';
 
 @Injectable()
 export class TestnetPromoApiService {
-  private readonly url = `${ENVIRONMENT.apiTokenUrl}/v2/promo_campaigns/testnet_mainnet_promotion`;
+  private readonly mainnetUrl = `${ENVIRONMENT.apiTokenUrl}/v2/promo_campaigns/testnet_mainnet_promotion`;
+
+  private readonly testnetUrl = `${ENVIRONMENT.testnetUrl}/v2/promo_campaigns/testnet_mainnet_promotion`;
 
   constructor(private readonly httpService: HttpService) {}
 
   public fetchPrizePool(): Observable<PrizePool> {
-    return this.httpService.get<PrizePool>(`/prize_pool`, {}, this.url).pipe(
+    return this.httpService.get<PrizePool>(`/prize_pool`, {}, this.mainnetUrl).pipe(
       catchError(() =>
         of({
           left: 0,
@@ -29,16 +31,13 @@ export class TestnetPromoApiService {
   }
 
   private activateUser(address: string): void {
-    this.httpService.get(`/activate_user?address=${address}`, {}, this.url).subscribe();
+    this.httpService.get(`/activate_user?address=${address}`, {}, this.mainnetUrl).subscribe();
   }
 
   public getUserVerification(address: string): Observable<VerificationStatus> {
+    const path = 'https://api.guild.xyz/v1/guild/access/34457';
     return this.httpService
-      .get<[{ roleId: number; access: boolean }]>(
-        `/${address}`,
-        {},
-        'https://api.guild.xyz/v1/guild/access/34457'
-      )
+      .get<[{ roleId: number; access: boolean }]>(`/${address}`, {}, path)
       .pipe(
         map(users => {
           const isVerified = users.some(el => el.roleId === 172354 && el.access);
@@ -48,30 +47,27 @@ export class TestnetPromoApiService {
       );
   }
 
-  public fetchUserStats(address: string): Observable<UserStats> {
-    return this.httpService.get<UserStats>(`/user_stats?address=${address}`, {}, this.url).pipe(
-      catchError(() =>
-        of({
-          currentWeek: {
-            week: 0,
-            earned: 0,
-            max: 0,
-            mainnetSwaps: 0,
-            testnetSwaps: 0
-          },
-          completedWeeks: []
-        })
-      )
-    );
+  public fetchMainnetSwaps(address: string): Observable<SwapsInfo> {
+    return this.httpService
+      .get<SwapsInfo>(`/trades_counter?address=${address}`, {}, this.mainnetUrl)
+      .pipe(catchError(() => of({ totalTrades: 0 })));
+  }
+
+  public fetchTestnetSwaps(address: string): Observable<SwapsInfo> {
+    return this.httpService
+      .get<SwapsInfo>(`/trades_counter?address=${address}`, {}, this.testnetUrl)
+      .pipe(catchError(() => of({ totalTrades: 0 })));
   }
 
   public fetchProofs(address: string): Observable<UserProofs> {
-    return this.httpService.get<UserProofs>(`/proofs?address=${address}`, {}, this.url).pipe(
+    return this.httpService.get<UserProofs>(`/proofs?address=${address}`, {}, this.mainnetUrl).pipe(
       map(el => ({
-        activeRound: {
-          ...el.activeRound,
-          amount: Web3Pure.fromWei(el.activeRound.amount, 18).toFixed()
-        },
+        activeRound: el?.activeRound
+          ? {
+              ...el.activeRound,
+              amount: Web3Pure.fromWei(el.activeRound.amount, 18).toFixed()
+            }
+          : null,
         completed: el.completed.map(completed => ({
           ...completed,
           amount: Web3Pure.fromWei(completed.amount || 0, 18).toFixed()
@@ -87,7 +83,9 @@ export class TestnetPromoApiService {
             address: '',
             index: 0,
             amount: '0',
-            proof: []
+            proof: [],
+            startDatetime: '',
+            endDatetime: ''
           },
           completed: []
         })

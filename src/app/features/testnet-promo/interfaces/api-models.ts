@@ -8,19 +8,6 @@ export interface VerificationStatus {
   isVerified: boolean;
 }
 
-export interface WeekInfo {
-  week: number;
-  earned: number;
-  max: number;
-  mainnetSwaps: number;
-  testnetSwaps: number;
-}
-
-export interface UserStats {
-  currentWeek: WeekInfo;
-  completedWeeks: WeekInfo[];
-}
-
 export interface ProofInfo {
   week: number;
   active: boolean;
@@ -30,9 +17,15 @@ export interface ProofInfo {
   index: number;
   amount: string;
   proof: string[];
+  startDatetime: string;
+  endDatetime: string;
 }
 
 export interface UserProofs {
-  activeRound: ProofInfo;
+  activeRound: ProofInfo | null;
   completed: ProofInfo[];
+}
+
+export interface SwapsInfo {
+  totalTrades: number;
 }
