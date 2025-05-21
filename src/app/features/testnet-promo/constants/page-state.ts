@@ -1,6 +1,7 @@
-import { promoState } from '@features/testnet-promo/constants/promo-state';
-
 export const pageState = {
-  ...promoState,
-  noWallet: 'noWallet'
+  notVerifiedUser: 'notVerifiedUser',
+  inAction: 'inAction',
+  ended: 'ended',
+  noWallet: 'noWallet',
+  verifying: 'verifying'
 } as const;

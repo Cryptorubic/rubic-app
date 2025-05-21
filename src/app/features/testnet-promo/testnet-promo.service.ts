@@ -31,7 +31,8 @@ export class TestnetPromoService {
             } else {
               return of(pageState.notVerifiedUser);
             }
-          })
+          }),
+          startWith(pageState.verifying)
         );
       }
     }),

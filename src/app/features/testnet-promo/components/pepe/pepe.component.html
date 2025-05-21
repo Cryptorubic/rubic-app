@@ -11,6 +11,14 @@
     src="assets/images/testnet-promo/pepe-connect-walelt.png"
     alt="No wallet conencted"
   />
+  <ng-container *ngSwitchCase="'verifying'">
+    <tui-loader [showLoader]="true" [overlay]="false"></tui-loader>
+    <img
+      class="pepe pepe__transparent"
+      src="assets/images/testnet-promo/pepe-verify.png"
+      alt="Verifying is in process"
+    />
+  </ng-container>
   <a *ngSwitchCase="'notVerifiedUser'" target="_blank" class="pepe" href=" https://guild.xyz/rubic">
     <img src="assets/images/testnet-promo/pepe-verify.png" alt="Verify user in discord" />
   </a>
