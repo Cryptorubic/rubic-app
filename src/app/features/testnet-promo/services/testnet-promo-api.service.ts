@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import {
   PrizePool,
@@ -10,6 +10,8 @@ import { ENVIRONMENT } from '../../../../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Web3Pure } from 'rubic-sdk';
+import { WINDOW } from '@ng-web-apis/common';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Injectable()
 export class TestnetPromoApiService {
@@ -23,7 +25,10 @@ export class TestnetPromoApiService {
     external: true
   };
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    @Inject(WINDOW) private window: RubicWindow
+  ) {}
 
   public fetchPrizePool(): Observable<PrizePool> {
     return this.httpService
@@ -95,6 +100,71 @@ export class TestnetPromoApiService {
             amount: Web3Pure.fromWei(completed.amount || 0, 18).toFixed()
           }))
         })),
+        // @TODO REMOVE AFTER TESTS
+        map(el => {
+          const params = new URLSearchParams(this.window.location.search);
+          const test = params.has('test') ? params.get('test') : null;
+          if (!test) {
+            return el;
+          }
+          if (test === '1') {
+            return {
+              activeRound: {
+                week: 1,
+                active: true,
+                isParticipant: true,
+                contractAddress: '',
+                address: '',
+                index: 0,
+                amount: '0',
+                proof: [],
+                startDatetime: '01.01.2025',
+                endDatetime: '12.12.2025'
+              },
+              completed: []
+            };
+          }
+          return {
+            activeRound: {
+              week: 3,
+              active: true,
+              isParticipant: true,
+              contractAddress: '',
+              address: '',
+              index: 0,
+              amount: '0',
+              proof: [],
+              startDatetime: '01.01.2025',
+              endDatetime: '12.12.2025'
+            },
+            completed: [
+              {
+                week: 2,
+                active: false,
+                isParticipant: true,
+                contractAddress: '',
+                address: '',
+                index: 0,
+                amount: '0',
+                proof: [],
+                startDatetime: '01.01.2025',
+                endDatetime: '12.12.2025'
+              },
+              {
+                week: 1,
+                active: false,
+                isParticipant: true,
+                contractAddress: '',
+                address: '',
+                index: 0,
+                amount: '0',
+                proof: [],
+                startDatetime: '01.01.2025',
+                endDatetime: '12.12.2025'
+              }
+            ]
+          };
+        }),
         catchError(() =>
           of({
             activeRound: {
