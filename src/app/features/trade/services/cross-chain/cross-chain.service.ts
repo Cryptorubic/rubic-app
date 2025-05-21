@@ -280,7 +280,6 @@ export class CrossChainService {
 
       if (parsedError instanceof ExecutionRevertedError && trade.getTradeInfo().slippage < 5) {
         const slippageErr = new LowSlippageError(0.05);
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, slippageErr);
         throw slippageErr;
       }
 

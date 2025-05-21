@@ -39,7 +39,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
@@ -233,16 +232,8 @@ export class OnChainService {
         await this.onChainApiService.patchTrade(transactionHash, false);
       }
 
-      if (
-        err?.message?.includes('execution reverted') &&
-        this.settingsService.instantTradeValue.slippageTolerance < 0.5
-      ) {
-        throw new RubicError('Please, increase the slippage and try again!');
-      }
-
       if (parsedError instanceof ExecutionRevertedError && trade.getTradeInfo().slippage < 3) {
         const slippageErr = new LowSlippageError(0.03);
-        this.gtmService.fireSwapError(trade, this.authService.userAddress, slippageErr);
         throw slippageErr;
       }
 
