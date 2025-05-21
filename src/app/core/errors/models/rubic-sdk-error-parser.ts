@@ -152,7 +152,8 @@ export class RubicSdkErrorParser {
       err.message.includes('insufficient funds for gas * price + value') ||
       err.message.includes('insufficient balance for transfer') ||
       err.message.includes('Sender balance too low for value specified') ||
-      err.message.includes('execution reverted\n0x')
+      err.message.includes('execution reverted\n0x') ||
+      err.message.includes('gas required exceeds allowance')
     ) {
       return new InsufficientGasError();
     }
