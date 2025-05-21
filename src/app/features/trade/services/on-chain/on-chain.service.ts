@@ -47,6 +47,8 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
 import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
+import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -236,6 +238,12 @@ export class OnChainService {
         this.settingsService.instantTradeValue.slippageTolerance < 0.5
       ) {
         throw new RubicError('Please, increase the slippage and try again!');
+      }
+
+      if (parsedError instanceof ExecutionRevertedError && trade.getTradeInfo().slippage < 3) {
+        const slippageErr = new LowSlippageError(0.03);
+        this.gtmService.fireSwapError(trade, this.authService.userAddress, slippageErr);
+        throw slippageErr;
       }
 
       throw parsedError;
