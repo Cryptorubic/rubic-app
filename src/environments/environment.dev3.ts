@@ -4,7 +4,7 @@ export const ENVIRONMENT = {
   environmentName: 'dev3',
   production: false,
 
-  apiBaseUrl: '//testnet-api.rubic.exchange/api',
+  apiBaseUrl: '//dev-testnet-api.rubic.exchange/api',
   apiTokenUrl: 'https://testnet-tokens.rubic.exchange/api',
   websocketBaseUrl: 'wss://dev-api.rubic.exchange/ws',
 
