@@ -274,11 +274,15 @@ export class CrossChainService {
       }
 
       const parsedError = RubicSdkErrorParser.parseError(error);
-      if (!(parsedError instanceof UserRejectError)) {
+      if (!(error instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (parsedError instanceof ExecutionRevertedError && trade.getTradeInfo().slippage < 5) {
+      if (
+        parsedError instanceof ExecutionRevertedError &&
+        !(error instanceof UserRejectError) &&
+        trade.getTradeInfo().slippage < 5
+      ) {
         const slippageErr = new LowSlippageError(0.05);
         throw slippageErr;
       }

@@ -232,7 +232,11 @@ export class OnChainService {
         await this.onChainApiService.patchTrade(transactionHash, false);
       }
 
-      if (parsedError instanceof ExecutionRevertedError && trade.getTradeInfo().slippage < 3) {
+      if (
+        parsedError instanceof ExecutionRevertedError &&
+        !(err instanceof UserRejectError) &&
+        trade.getTradeInfo().slippage < 3
+      ) {
         const slippageErr = new LowSlippageError(0.03);
         throw slippageErr;
       }
