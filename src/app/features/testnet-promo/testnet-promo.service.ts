@@ -1,5 +1,13 @@
 import { Injectable } from '@angular/core';
-import { distinctUntilChanged, forkJoin, interval, Observable, of, shareReplay } from 'rxjs';
+import {
+  distinctUntilChanged,
+  forkJoin,
+  interval,
+  Observable,
+  of,
+  shareReplay,
+  Subscription
+} from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { map, startWith, switchMap, takeWhile } from 'rxjs/operators';
 import { pageState } from '@features/testnet-promo/constants/page-state';
@@ -8,11 +16,26 @@ import { TestnetPromoApiService } from '@features/testnet-promo/services/testnet
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { PageState } from '@features/testnet-promo/interfaces/page-state.interface';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
+import { CHAIN_TYPE } from 'rubic-sdk';
+import { TuiNotification } from '@taiga-ui/core';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Injectable()
 export class TestnetPromoService {
+  private wrongWalletTypeSubscription: Subscription | null = null;
+
   private readonly currentUser$ = this.authService.currentUser$.pipe(
-    distinctUntilChanged((prev, curr) => prev?.address === curr?.address)
+    distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
+    map(user => {
+      if (user?.chainType === CHAIN_TYPE.EVM) {
+        return user;
+      }
+      if (user?.address) {
+        this.showWrongWalletNotification();
+      }
+
+      return { ...user, address: '' };
+    })
   );
 
   public readonly pageState$: Observable<PageState> = this.currentUser$.pipe(
@@ -95,6 +118,22 @@ export class TestnetPromoService {
 
   constructor(
     private readonly authService: AuthService,
-    private readonly apiService: TestnetPromoApiService
+    private readonly apiService: TestnetPromoApiService,
+    private readonly notificationsService: NotificationsService
   ) {}
+
+  private showWrongWalletNotification(): void {
+    if (!this.wrongWalletTypeSubscription) {
+      this.wrongWalletTypeSubscription = this.notificationsService.show(
+        'Wrong wallet. You should connect EVM wallet to participate in the Promo.',
+        {
+          status: TuiNotification.Error,
+          autoClose: 10000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        }
+      );
+    }
+  }
 }

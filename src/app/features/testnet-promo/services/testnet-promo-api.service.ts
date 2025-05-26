@@ -50,13 +50,16 @@ export class TestnetPromoApiService {
   }
 
   public getUserVerification(address: string): Observable<VerificationStatus> {
-    const path = 'https://api.guild.xyz/v1/guild/access/34457';
+    const path = 'https://api.guild.xyz/v2/guilds/34457/members';
     return this.httpService
       .get<[{ roleId: number; access: boolean }]>(`/${address}`, {}, path, this.defaultRetryOptions)
       .pipe(
-        map(users => {
-          const isVerified = users.some(el => el.roleId === 172354 && el.access);
-          return { address, isVerified };
+        map(roles => {
+          const roleObject = roles.find(role => role.roleId === 172354);
+          return {
+            address,
+            isVerified: roleObject ? roleObject.access : false
+          };
         }),
         tap(() => this.activateUser(address))
       );

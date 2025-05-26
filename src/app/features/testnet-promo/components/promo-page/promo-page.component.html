@@ -19,7 +19,7 @@
         <!-- Snapshots -->
         <app-window-container
           *ngIf="
-            data.pageState !== 'notVerifiedUser' &&
+            (data.pageState === 'inAction' || data.pageState === 'ended') &&
             (data.proofs.activeRound || data.proofs.completed.length)
           "
           class="form-container"
@@ -31,7 +31,7 @@
 
         <!-- Total claim -->
         <app-window-container
-          *ngIf="data.pageState !== 'notVerifiedUser' && data.weekInfo"
+          *ngIf="data.weekInfo && data.pageState === 'inAction'"
           class="form-container claim-card"
         >
           <ng-container header> Claim </ng-container>
