@@ -49,6 +49,7 @@ import { BannerTaikoComponent } from './components/header/components/banner-taik
 import { BannerBirthdayComponent } from '@core/header/components/header/components/banner-bday/banner-birthday.component';
 import { BannerMonadTestnetComponent } from './components/header/components/banner-monad-testnet/banner-monad-testnet.component';
 import { ZeroFeesBannerComponent } from './components/header/components/zero-fees-banner/zero-fees-banner.component';
+import { BannerTestPromoComponent } from '@core/header/components/header/components/banner-testnet-promo/banner-test-promo.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { ZeroFeesBannerComponent } from './components/header/components/zero-fee
     BannerTaikoComponent,
     BannerBirthdayComponent,
     BannerMonadTestnetComponent,
-    ZeroFeesBannerComponent
+    ZeroFeesBannerComponent,
+    BannerTestPromoComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,66 @@
+@use 'src/scss/core' as *;
+
+.banner {
+  text-decoration: none;
+
+  &:hover {
+    .banner__text {
+      text-decoration: underline;
+    }
+  }
+
+  &__container {
+    @include flex(row, center, center);
+    width: 100vw;
+    height: 57px;
+    max-height: 57px;
+    overflow: hidden;
+    gap: 24px;
+
+    background-image: url('/assets/banner/bg-testnet-promo.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+    @include hide-unused-ui {
+      display: none;
+    }
+
+    @include b($mobile-md) {
+      background-image: url('/assets/banner/bg-testnet-promo-mobile.jpg');
+    }
+
+    @include b(460) {
+      height: 49px;
+      gap: 10px;
+    }
+  }
+
+  .banner__text {
+    @include font(18px, 140%, 800, #ffffff);
+    letter-spacing: 1px;
+
+    @include b($mobile-md) {
+      text-align: left;
+    }
+
+    @include b(460) {
+      font-size: 12px;
+    }
+  }
+
+  .banner__button {
+    display: block;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 5px 10px;
+    background: var(--tui-primary);
+    border-radius: 8px;
+    text-shadow: 0 2px 5px rgba(0,0,0, 0.5);
+    text-decoration: none;
+
+    @include b(460) {
+      font-size: 12px;
+    }
+  }
+}
