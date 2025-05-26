@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 import { TestnetPromoService } from '@features/testnet-promo/testnet-promo.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-promo-page',
@@ -10,7 +9,7 @@ import { tap } from 'rxjs/operators';
   encapsulation: ViewEncapsulation.None
 })
 export class PromoPageComponent {
-  public readonly pageState$ = this.pageService.pageState$.pipe(tap(el => console.log('!!!', el)));
+  public readonly pageState$ = this.pageService.pageState$;
 
   public readonly prizePool$ = this.pageService.prizePool$;
 

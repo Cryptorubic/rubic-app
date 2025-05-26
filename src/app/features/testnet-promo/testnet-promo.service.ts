@@ -45,15 +45,14 @@ export class TestnetPromoService {
       } else {
         return this.verification$.pipe(
           switchMap(verification => {
-            if (verification?.isVerified) {
-              return this.prizePool$.pipe(
-                map(prizePool => {
-                  return prizePool.left > 0 ? pageState.inAction : pageState.ended;
-                })
-              );
-            } else {
-              return of(pageState.notVerifiedUser);
-            }
+            return this.prizePool$.pipe(
+              map(prizePool => {
+                if (prizePool.left <= 0) {
+                  return pageState.ended;
+                }
+                return verification?.isVerified ? pageState.inAction : pageState.notVerifiedUser;
+              })
+            );
           }),
           startWith(pageState.verifying)
         );
