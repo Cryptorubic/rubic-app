@@ -44,7 +44,15 @@
       text-align: left;
     }
 
-    @include b(460) {
+    @include b(421) {
+      font-size: 14px;
+    }
+
+    @include b(361) {
+      font-size: 13px;
+    }
+
+    @include b(321) {
       font-size: 12px;
     }
   }
@@ -61,7 +69,15 @@
     background: var(--tui-primary);
     border-radius: 8px;
 
-    @include b(460) {
+    @include b(421) {
+      font-size: 14px;
+    }
+
+    @include b(361) {
+      font-size: 13px;
+    }
+
+    @include b(321) {
       font-size: 12px;
     }
   }
