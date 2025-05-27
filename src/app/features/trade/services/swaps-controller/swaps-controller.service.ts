@@ -33,7 +33,6 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
-  // ALGB_TOKEN,
   BLOCKCHAIN_NAME,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
@@ -69,7 +68,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
-import { CrossChainSwapAdditionalParams } from '../preview-swap/models/swap-controller-service-types';
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
@@ -221,7 +219,7 @@ export class SwapsControllerService {
     tradeState: SelectedTrade,
     callback?: {
       onHash?: (hash: string) => void;
-      onSwap?: (additionalInfo: CrossChainSwapAdditionalParams) => void;
+      onSwap?: () => void;
       onError?: () => void;
     }
   ): Promise<void> {
@@ -281,11 +279,7 @@ export class SwapsControllerService {
 
     if (!txHash) return;
 
-    if (trade instanceof CrossChainTrade) {
-      await this.handleCrossChainSwapResponse(trade, txHash, callback.onSwap);
-    } else {
-      await this.handleOnChainSwapResponse(txHash, callback.onSwap);
-    }
+    await this.handleSwapResponse(txHash, callback.onSwap);
   }
 
   public async approve(
@@ -414,43 +408,9 @@ export class SwapsControllerService {
     return false;
   }
 
-  private async handleCrossChainSwapResponse(
-    trade: CrossChainTrade,
-    txHash: string,
-    onSwap?: (params?: CrossChainSwapAdditionalParams) => void
-  ): Promise<void> {
-    // @TODO Remove params
-    const params: CrossChainSwapAdditionalParams = {};
-
-    if (trade.uniqueInfo.changenowId) {
-      params.changenowId = trade.uniqueInfo.changenowId;
-    }
-    if (trade.uniqueInfo.rangoRequestId) {
-      params.rangoRequestId = trade.uniqueInfo.rangoRequestId;
-    }
-    if (trade.uniqueInfo.squidrouterRequestId) {
-      params.rangoRequestId = trade.uniqueInfo.squidrouterRequestId;
-    }
-    if (trade.uniqueInfo.retroBridgeId) {
-      params.rangoRequestId = trade.uniqueInfo.retroBridgeId;
-    }
-    if (trade.uniqueInfo.simpleSwapId) {
-      params.rangoRequestId = trade.uniqueInfo.simpleSwapId;
-    }
-    if (trade.uniqueInfo.changellyId) {
-      params.rangoRequestId = trade.uniqueInfo.changellyId;
-    }
-
-    onSwap?.(params);
-    await this.crossChainApiService.patchTrade(txHash, true);
-  }
-
-  private async handleOnChainSwapResponse(
-    txHash: string,
-    onSwap?: (params?: CrossChainSwapAdditionalParams) => void
-  ): Promise<void> {
+  private async handleSwapResponse(txHash: string, onSwap?: () => void): Promise<void> {
     onSwap?.();
-    await this.onChainApiService.patchTrade(txHash, true);
+    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(

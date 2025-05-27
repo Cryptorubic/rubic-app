@@ -9,11 +9,7 @@ export const blockchainsPromoLinks: BlockchainsPromoLinks = {
   [BLOCKCHAIN_NAME.TAIKO]:
     'https://rubic.exchange/blog/how-to-bridge-to-and-from-taiko-and-get-taiko-airdrop/',
   [BLOCKCHAIN_NAME.SCROLL]: 'https://rubic.exchange/birthday4',
-  [BLOCKCHAIN_NAME.OPTIMISM]:
-    'https://app.layer3.xyz/quests/supercharge-op-rubic?slug=supercharge-op-rubic',
-  [BLOCKCHAIN_NAME.SOLANA]:
-    'https://solana.layer3.xyz/quests/solana-ecosystem-rubic?slug=solana-ecosystem-rubic',
-  [BLOCKCHAIN_NAME.LINEA]: 'https://nomis.cc/quests?group=24',
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: 'https://app.galxe.com/quest/Rubic/GC5w9tKX65'
+  [BLOCKCHAIN_NAME.UNICHAIN]: 'https://app.layer3.xyz/activations/unichain-rubic',
+  [BLOCKCHAIN_NAME.SONEIUM]: 'https://app.layer3.xyz/activations/superchain-enjoyeers-rubic'
 };
 type BlockchainsPromoLinks = Partial<Record<BlockchainName, string>>;
