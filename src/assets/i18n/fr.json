@@ -897,5 +897,17 @@
       "modalDescription": "The address in your wallet and the address to stake tokens are different. Do you agree to claim tokens at a different address?",
       "unauthorized": "You have to be logged in to add the Token"
     }
+  },
+  "testnetPromo": {
+    "notification": {
+      "progress": "Claim in progress",
+      "success": "Claim is success",
+      "paused": "The token claim is temporarily unavailable. Please try again later",
+      "claimed": "Your tokens have already been successfully claimed",
+      "unknown": "Oops, something went wrong, please try again later",
+      "reject": "You rejected the execution of the transaction. Please confirm it first in order to complete the claim",
+      "modalDescription": "The address in your wallet and the address to claim tokens are different. Do you agree to claim tokens at a different address?",
+      "unauthorized": "You have to be logged in to add the Token"
+    }
   }
 }

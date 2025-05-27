@@ -1,0 +1,40 @@
+@use 'src/scss/core' as *;
+
+.pepe {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin-top: -60px;
+
+  transition: 0.2s ease-in-out;
+
+  @include b(1200) {
+    margin-top: -40px;
+  }
+
+  @include b(800) {
+    margin-top: 0;
+  }
+
+  &__transparent {
+    opacity: 0.5;
+  }
+
+  img {
+    width: 100%;
+  }
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -12px;
+}
+
+tui-loader {
+  position: absolute;
+
+  width: 100%;
+}
