@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TestnetPromoRoutingModule } from '@features/testnet-promo/testnet-promo-routing.module';
 import { PromoPageComponent } from './components/promo-page/promo-page.component';
-import { TestnetPromoService } from '@features/testnet-promo/testnet-promo.service';
+import { TestnetPromoStateService } from '@features/testnet-promo/services/testnet-promo-state.service';
 import { SharedModule } from '@shared/shared.module';
 import { PepeComponent } from './components/pepe/pepe.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
@@ -18,6 +18,7 @@ import { FinishComponent } from '@features/testnet-promo/components/finish/finis
 import { ActiveClaimComponent } from './components/active-claim/active-claim.component';
 import { TestnetPromoClaimService } from '@features/testnet-promo/services/testnet-promo-claim.service';
 import { InactiveClaimComponent } from '@features/testnet-promo/components/inactive-claim/inactive-claim.component';
+import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,11 @@ import { InactiveClaimComponent } from '@features/testnet-promo/components/inact
     TuiScrollbarModule,
     TuiLoaderModule
   ],
-  providers: [TestnetPromoService, TestnetPromoApiService, TestnetPromoClaimService]
+  providers: [
+    TestnetPromoStateService,
+    TestnetPromoApiService,
+    TestnetPromoClaimService,
+    TestnetPromoNotificationService
+  ]
 })
 export class TestnetPromoModule {}

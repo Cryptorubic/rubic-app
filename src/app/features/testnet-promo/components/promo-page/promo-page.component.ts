@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
-import { TestnetPromoService } from '@features/testnet-promo/testnet-promo.service';
+import { TestnetPromoStateService } from '@features/testnet-promo/services/testnet-promo-state.service';
 
 @Component({
   selector: 'app-promo-page',
@@ -9,13 +9,13 @@ import { TestnetPromoService } from '@features/testnet-promo/testnet-promo.servi
   encapsulation: ViewEncapsulation.None
 })
 export class PromoPageComponent {
-  public readonly pageState$ = this.pageService.pageState$;
+  public readonly pageState$ = this.stateService.pageState$;
 
-  public readonly prizePool$ = this.pageService.prizePool$;
+  public readonly prizePool$ = this.stateService.prizePool$;
 
-  public readonly proofs$ = this.pageService.userProofs$;
+  public readonly proofs$ = this.stateService.userProofs$;
 
-  public readonly weekInfo$ = this.pageService.weekInfo$;
+  public readonly weekInfo$ = this.stateService.weekInfo$;
 
-  constructor(private readonly pageService: TestnetPromoService) {}
+  constructor(private readonly stateService: TestnetPromoStateService) {}
 }

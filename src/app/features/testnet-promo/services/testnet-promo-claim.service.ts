@@ -1,16 +1,13 @@
 import { Injectable } from '@angular/core';
 import { AirdropNode } from '@features/airdrop/models/airdrop-node';
-import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector, UserRejectError } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from 'rubic-sdk';
 import { airdropContractAbi } from '@features/airdrop/constants/airdrop-contract-abi';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { TuiNotification } from '@taiga-ui/core';
-import { InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError } from 'rubic-sdk/lib/common/errors/cross-chain/insufficient-funds-gas-price-value.error';
-import { TranslateService } from '@ngx-translate/core';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { map } from 'rxjs/operators';
 import { ClaimButtonState } from '@features/testnet-promo/interfaces/claim-button-state.interface';
+import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 
 @Injectable()
 export class TestnetPromoClaimService {
@@ -31,8 +28,7 @@ export class TestnetPromoClaimService {
 
   constructor(
     private readonly gasService: GasService,
-    private readonly translateService: TranslateService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationService: TestnetPromoNotificationService
   ) {}
 
   public async setClaimStatus(contractAddress: string, nodeIndex: number): Promise<void> {
@@ -57,12 +53,12 @@ export class TestnetPromoClaimService {
         await this.checkPause(contractAddress);
         await this.checkClaimed(contractAddress, node.index);
         await this.executeClaim(contractAddress, node, proof, () => {
-          claimInProgressNotification = this.showProgressNotification();
+          claimInProgressNotification = this.notificationService.showProgressNotification();
         });
         this._buttonStatus$.next('claimed');
-        this.showSuccessNotification();
+        this.notificationService.showSuccessNotification();
       } catch (err) {
-        this.handleError(err);
+        this.notificationService.showErrorNotification(err);
         this._buttonStatus$.next('active');
       } finally {
         claimInProgressNotification?.unsubscribe();
@@ -108,70 +104,5 @@ export class TestnetPromoClaimService {
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
 
     return Boolean(isPaused);
-  }
-
-  private showProgressNotification(): Subscription {
-    return this.notificationsService.show(
-      this.translateService.instant(`testnetPromo.notification.progress`),
-      {
-        status: TuiNotification.Info,
-        autoClose: false,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      }
-    );
-  }
-
-  private showSuccessNotification(): Subscription {
-    return this.notificationsService.show(
-      this.translateService.instant(`testnetPromo.notification.success`),
-      {
-        status: TuiNotification.Success,
-        autoClose: 10000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      }
-    );
-  }
-
-  private handleError(err: unknown): void {
-    if (err instanceof Error) {
-      let label: string;
-      let status: TuiNotification;
-
-      if (err.message === 'paused') {
-        label = this.translateService.instant('testnetPromo.notification.paused');
-        status = TuiNotification.Warning;
-      } else if (err.message === 'claimed') {
-        label = this.translateService.instant('testnetPromo.notification.claimed');
-        status = TuiNotification.Warning;
-      } else if (err.message.includes('User denied transaction signature')) {
-        label = this.translateService.instant('testnetPromo.notification.reject');
-        status = TuiNotification.Error;
-      } else {
-        label = this.translateService.instant('testnetPromo.notification.unknown');
-        status = TuiNotification.Error;
-      }
-
-      if (err instanceof UserRejectError) {
-        label = this.translateService.instant('testnetPromo.notification.reject');
-        status = TuiNotification.Error;
-      }
-
-      if (err instanceof SdkInsufficientFundsGasPriceValueError) {
-        label = this.translateService.instant('testnetPromo.notification.notEnoughBalance');
-        status = TuiNotification.Error;
-      }
-
-      this.notificationsService.show(label, {
-        autoClose: 10000,
-        status,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      });
-    }
   }
 }

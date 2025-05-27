@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  distinctUntilChanged,
-  forkJoin,
-  interval,
-  Observable,
-  of,
-  shareReplay,
-  Subscription
-} from 'rxjs';
+import { distinctUntilChanged, forkJoin, interval, Observable, of, shareReplay } from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { map, startWith, switchMap, takeWhile } from 'rxjs/operators';
 import { pageState } from '@features/testnet-promo/constants/page-state';
@@ -17,13 +9,10 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 import { PageState } from '@features/testnet-promo/interfaces/page-state.interface';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
 import { CHAIN_TYPE } from 'rubic-sdk';
-import { TuiNotification } from '@taiga-ui/core';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 
 @Injectable()
-export class TestnetPromoService {
-  private wrongWalletTypeSubscription: Subscription | null = null;
-
+export class TestnetPromoStateService {
   private readonly currentUser$ = this.authService.currentUser$.pipe(
     distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
     map(user => {
@@ -31,7 +20,7 @@ export class TestnetPromoService {
         return user;
       }
       if (user?.address) {
-        this.showWrongWalletNotification();
+        this.notificationService.showWrongWalletNotification();
       }
 
       return { ...user, address: '' };
@@ -68,7 +57,7 @@ export class TestnetPromoService {
         interval(30_000).pipe(
           startWith(-1),
           switchMap(() => this.apiService.getUserVerification(user.address)),
-          takeWhile(status => !status.isVerified, true)
+          takeWhile(status => !status?.isVerified, true)
         ),
       () => of(null)
     ),
@@ -77,7 +66,7 @@ export class TestnetPromoService {
 
   public readonly weekInfo$: Observable<WeekInfo> = this.verification$.pipe(
     switchIif(
-      verification => verification.isVerified,
+      verification => verification?.isVerified,
       () =>
         forkJoin([
           this.apiService.fetchMainnetSwaps(this.authService.userAddress),
@@ -104,7 +93,7 @@ export class TestnetPromoService {
 
   public readonly userProofs$ = this.verification$.pipe(
     switchIif(
-      verification => verification.isVerified,
+      verification => verification?.isVerified,
       () => this.apiService.fetchProofs(this.authService.userAddress),
       () => of(null)
     ),
@@ -118,21 +107,6 @@ export class TestnetPromoService {
   constructor(
     private readonly authService: AuthService,
     private readonly apiService: TestnetPromoApiService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationService: TestnetPromoNotificationService
   ) {}
-
-  private showWrongWalletNotification(): void {
-    if (!this.wrongWalletTypeSubscription) {
-      this.wrongWalletTypeSubscription = this.notificationsService.show(
-        'Wrong wallet. You should connect EVM wallet to participate in the Promo.',
-        {
-          status: TuiNotification.Error,
-          autoClose: 10000,
-          data: null,
-          icon: '',
-          defaultAutoCloseTime: 0
-        }
-      );
-    }
-  }
 }
