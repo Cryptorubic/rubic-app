@@ -74,7 +74,7 @@ export class TestnetPromoStateService {
         ]).pipe(
           map(([mainnet, testnet]) => {
             const combos = Math.min(mainnet.totalTrades, Math.floor(testnet.totalTrades / 5));
-            let earnedPoints = combos * 12;
+            let earnedPoints = combos * 28;
             if (earnedPoints > 420) {
               earnedPoints = 420;
             }
