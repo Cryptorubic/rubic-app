@@ -6,8 +6,9 @@
     alt="Make swaps and collect your tokens!"
   />
   <img
+    (click)="connectWallet()"
     *ngSwitchCase="'noWallet'"
-    class="pepe"
+    class="pepe pepe__clickable"
     src="assets/images/testnet-promo/pepe-connect-walelt.png"
     alt="No wallet conencted"
   />
