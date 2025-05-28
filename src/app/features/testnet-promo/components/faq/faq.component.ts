@@ -34,7 +34,7 @@ export class FaqComponent {
         'Yes — before preparing the claim contract, we will reverify that your wallet has a connected Discord account. Any wallet without a valid Discord connection at that time will be excluded from the claim list.'
     },
     {
-      title: 'How much time i’ve to claim my reward?',
+      title: 'How much time I’ve to claim my reward?',
       answer:
         'The Rubic team will make a separate announcement specifying the timeframe for claiming your reward and add this information here.'
     }
