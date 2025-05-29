@@ -38,6 +38,14 @@
           <app-total-rbc [weekInfo]="data.weekInfo"></app-total-rbc>
         </app-window-container>
       </ng-container>
+      <!-- Mock -->
+      <app-window-container
+        *ngIf="data.pageState === 'verifying' || data.pageState === 'notVerifiedUser'"
+        class="form-container claim-card"
+      >
+        <ng-container header> The Chain </ng-container>
+        <app-mock-rbc></app-mock-rbc>
+      </app-window-container>
     </div>
     <!-- Center -->
     <div class="box box__center">

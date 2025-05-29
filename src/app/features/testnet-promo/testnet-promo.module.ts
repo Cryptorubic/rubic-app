@@ -19,6 +19,7 @@ import { ActiveClaimComponent } from './components/active-claim/active-claim.com
 import { TestnetPromoClaimService } from '@features/testnet-promo/services/testnet-promo-claim.service';
 import { InactiveClaimComponent } from '@features/testnet-promo/components/inactive-claim/inactive-claim.component';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
+import { MockRbcComponent } from '@features/testnet-promo/components/mock-rbc/mock-rbc.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { TestnetPromoNotificationService } from '@features/testnet-promo/service
     PromoClaimComponent,
     FinishComponent,
     ActiveClaimComponent,
-    InactiveClaimComponent
+    InactiveClaimComponent,
+    MockRbcComponent
   ],
   imports: [
     CommonModule,
