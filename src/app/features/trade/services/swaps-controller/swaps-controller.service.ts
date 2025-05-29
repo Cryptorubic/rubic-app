@@ -595,6 +595,9 @@ export class SwapsControllerService {
               container.value.calculated
             );
           }
+          if (container.value.tradeType) {
+            this.swapsStateService.removeOldProvider(container.value.tradeType);
+          }
           return of(null);
         }),
         catchError((_err: unknown) => {
