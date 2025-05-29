@@ -61,7 +61,11 @@ export class TestnetPromoApiService {
             isVerified: roleObject ? roleObject.access : false
           };
         }),
-        tap(() => this.activateUser(address))
+        tap(state => {
+          if (state.isVerified) {
+            this.activateUser(address);
+          }
+        })
       );
   }
 
