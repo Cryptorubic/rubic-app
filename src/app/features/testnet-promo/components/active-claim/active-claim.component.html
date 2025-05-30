@@ -1,0 +1,30 @@
+<div
+  class="round"
+  *ngLet="{ buttonState: buttonState$ | async, buttonLabel: buttonLabel$ | async } as data"
+>
+  <div class="round__top">
+    <div class="week">Week #{{ round.week }}</div>
+    <div class="date">{{ round.startDatetime }} – {{ round.endDatetime }}</div>
+  </div>
+  <div class="round__main">
+    <div class="info">
+      <img class="rbc-logo" src="assets/images/rbc-white.png" alt="" />
+      <span appTokenAmount [decimals]="18">{{ round.amount }}</span>
+      <span>RBC</span>
+    </div>
+    <tui-loader [showLoader]="data.buttonState === 'loading'" [overlay]="true">
+      <button
+        tuiButton
+        class="round__button"
+        appearance="primary"
+        type="button"
+        size="m"
+        tuiHintAppearance="onDark"
+        [disabled]="data.buttonState === 'claimed'"
+        (click)="handleButtonClick()"
+      >
+        {{ data.buttonLabel }}
+      </button>
+    </tui-loader>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+@use 'src/scss/core' as *;
+
+.buttons-container {
+  display: flex;
+  gap: var(--tui-padding-l);
+  justify-content: space-between;
+}
+
+.button {
+  display: flex;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  justify-content: space-between;
+  height: var(--tui-height-l);
+  padding: 0 var(--tui-padding, 2.25rem);
+
+  color: var(--tui-text-01);
+  font: var(--tui-font-text-m);
+  font-weight: bold;
+
+  border-radius: var(--tui-radius-m);
+
+  @include b(1200) {
+    padding: var(--tui-padding, 1.25rem);
+  }
+
+  @include b(1120) {
+    padding: var(--tui-padding, 1rem);
+  }
+
+  @include b(1085) {
+    padding: var(--tui-padding, 0.75rem);
+  }
+
+  &__mainnet {
+    background: #c4220d;
+  }
+
+  &__testnet {
+    background: #112094;
+  }
+}

@@ -1,0 +1,20 @@
+.faq-accordion {
+  --tui-base-06: var(--tui-primary);
+  --tui-base-07: var(--tui-primary-hover);
+
+  ::ng-deep tui-accordion-item > .t-wrapper {
+    &::after {
+      border: none;
+    }
+
+    .t-title {
+      font-size: 15px;
+      white-space: inherit;
+    }
+
+    .t-content {
+      font-size: 14px;
+      font-style: italic;
+    }
+  }
+}

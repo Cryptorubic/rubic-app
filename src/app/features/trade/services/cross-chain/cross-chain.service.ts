@@ -50,6 +50,8 @@ import { IframeService } from '@app/core/services/iframe-service/iframe.service'
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { RefundService } from '../refund-service/refund.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
+import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
+import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 
 @Injectable()
 export class CrossChainService {
@@ -272,8 +274,17 @@ export class CrossChainService {
       }
 
       const parsedError = RubicSdkErrorParser.parseError(error);
-      if (!(parsedError instanceof UserRejectError)) {
+      if (!(error instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+      }
+
+      if (
+        parsedError instanceof ExecutionRevertedError &&
+        !(error instanceof UserRejectError) &&
+        trade.getTradeInfo().slippage < 5
+      ) {
+        const slippageErr = new LowSlippageError(0.05);
+        throw slippageErr;
       }
 
       throw parsedError;

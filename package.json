@@ -91,7 +91,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "rpc-websockets": "7.9.0",
-    "rubic-sdk": "6.0.0-alpha-new-sdk-fixes.41",
+    "rubic-sdk": "6.0.0-alpha-new-sdk-fixes.42",
     "rxjs": "7.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "^1.21.1",

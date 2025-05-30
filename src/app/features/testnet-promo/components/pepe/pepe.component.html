@@ -1,0 +1,33 @@
+<ng-container [ngSwitch]="state">
+  <img
+    *ngSwitchCase="'inAction'"
+    class="pepe"
+    src="assets/images/testnet-promo/pepe-ready.png"
+    alt="Make swaps and collect your tokens!"
+  />
+  <img
+    (click)="connectWallet()"
+    *ngSwitchCase="'noWallet'"
+    class="pepe pepe__clickable"
+    src="assets/images/testnet-promo/pepe-connect-walelt.png"
+    alt="No wallet conencted"
+  />
+  <ng-container *ngSwitchCase="'verifying'">
+    <tui-loader [showLoader]="true" [overlay]="false"></tui-loader>
+    <img
+      class="pepe pepe__transparent"
+      src="assets/images/testnet-promo/pepe-verify.png"
+      alt="Verifying is in process"
+    />
+  </ng-container>
+  <a *ngSwitchCase="'notVerifiedUser'" target="_blank" class="pepe" href=" https://guild.xyz/rubic">
+    <img src="assets/images/testnet-promo/pepe-verify.png" alt="Verify user in discord" />
+  </a>
+
+  <img
+    *ngSwitchCase="'ended'"
+    class="pepe"
+    src="assets/images/testnet-promo/pepe-finished.png"
+    alt="The promo has ended"
+  />
+</ng-container>
