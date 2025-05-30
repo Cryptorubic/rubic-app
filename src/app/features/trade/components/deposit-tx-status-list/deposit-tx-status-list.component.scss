@@ -1,0 +1,42 @@
+@use 'src/scss/core' as *;
+
+
+.status-wrapper {
+  padding: var(--tui-padding-l);
+  
+  background: var(--primary-background);
+  border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+  
+  transition: all 100ms;
+  
+  &__inactive {
+    margin-top: var(--tui-padding-l);
+  
+    border-radius: var(--tui-radius-m);
+  }
+}
+  
+.row {
+  display: flex;
+  gap: var(--tui-padding-s);
+  align-items: center;
+  justify-content: space-between;
+  
+  &:first-of-type {
+    margin-top: 0;
+  }
+  
+  &__recent-trades {
+    margin-top: var(--tui-padding-s);
+  }
+}
+
+.row-status {
+  @include b($mobile-md) {
+    flex-direction: column;
+  
+    .arrow-step {
+      rotate: 90deg;
+    }
+  }
+}
