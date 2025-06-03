@@ -87,8 +87,8 @@ export class TestnetPromoStateService {
               mainnet: mainnet.totalTrades,
               max: this.tokensPerWeek,
               earned: earnedPoints,
-              fromDate: mainnet.startDatetime,
-              toDate: mainnet.endDatetime
+              fromDate: mainnet.startDatetime.replace(/\.\d{4}/, ''),
+              toDate: mainnet.endDatetime.replace(/\.\d{4}/, '')
             };
           })
         ),
