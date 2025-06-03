@@ -46,7 +46,7 @@ export class ProxyFeeService {
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
-      if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
+      if (fromPriceAmount.lte(1) && fromPriceAmount.isFinite()) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
