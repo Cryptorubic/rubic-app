@@ -24,6 +24,7 @@ import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 import { percentAddress } from './const/fee-type-address-mapping';
+import { isWrapUnwrap } from '@app/shared/utils/is-wrap-unwrap';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -43,10 +44,14 @@ export class ProxyFeeService {
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
       const referral = this.sessionStorage.getItem('referral');
 
+      if (isWrapUnwrap(fromToken, toToken)) {
+        return percentAddress.zeroFee;
+      }
+
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
-      if (fromPriceAmount.lte(1) && fromPriceAmount.isFinite()) {
+      if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
