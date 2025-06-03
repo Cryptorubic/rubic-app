@@ -20,7 +20,13 @@
       alt="Verifying is in process"
     />
   </ng-container>
-  <a *ngSwitchCase="'notVerifiedUser'" target="_blank" class="pepe" href=" https://guild.xyz/rubic">
+  <a
+    (click)="onVerifyLinkClick()"
+    *ngSwitchCase="'notVerifiedUser'"
+    target="_blank"
+    class="pepe"
+    href=" https://guild.xyz/rubic"
+  >
     <img src="assets/images/testnet-promo/pepe-verify.png" alt="Verify user in discord" />
   </a>
 

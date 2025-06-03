@@ -54,6 +54,12 @@
         <app-pepe [state]="data.pageState"></app-pepe>
       </app-window-container>
 
+      <!-- Promo info -->
+      <app-promo-info
+        *ngIf="data.pageState === 'noWallet'"
+        [prizePool]="data?.prizePool || null"
+      ></app-promo-info>
+
       <!-- Buttons -->
       <app-action-buttons
         *ngIf="data.pageState === 'inAction' && data.weekInfo"

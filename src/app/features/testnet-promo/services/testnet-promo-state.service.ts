@@ -13,6 +13,10 @@ import { TestnetPromoNotificationService } from '@features/testnet-promo/service
 
 @Injectable()
 export class TestnetPromoStateService {
+  public readonly tokensPerWeek = 500;
+
+  public readonly tokensPerAction = 100;
+
   private readonly currentUser$ = this.authService.currentUser$.pipe(
     distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
     map(user => {
@@ -74,15 +78,17 @@ export class TestnetPromoStateService {
         ]).pipe(
           map(([mainnet, testnet]) => {
             const combos = Math.min(mainnet.totalTrades, Math.floor(testnet.totalTrades / 5));
-            let earnedPoints = combos * 28;
-            if (earnedPoints > 420) {
-              earnedPoints = 420;
+            let earnedPoints = combos * this.tokensPerAction;
+            if (earnedPoints > this.tokensPerWeek) {
+              earnedPoints = this.tokensPerWeek;
             }
             return {
               testnet: testnet.totalTrades,
               mainnet: mainnet.totalTrades,
-              max: 420,
-              earned: earnedPoints
+              max: this.tokensPerWeek,
+              earned: earnedPoints,
+              fromDate: mainnet.startDatetime,
+              toDate: mainnet.endDatetime
             };
           })
         ),

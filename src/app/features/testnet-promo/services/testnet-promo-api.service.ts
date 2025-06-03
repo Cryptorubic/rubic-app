@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import {
   PrizePool,
-  SwapsInfo,
+  SwapsMainnetInfo,
+  SwapsTestnetInfo,
   UserProofs,
   VerificationStatus
 } from '@features/testnet-promo/interfaces/api-models';
@@ -69,20 +70,38 @@ export class TestnetPromoApiService {
       );
   }
 
-  public fetchMainnetSwaps(address: string): Observable<SwapsInfo> {
+  public fetchMainnetSwaps(address: string): Observable<SwapsMainnetInfo> {
     return this.httpService
-      .get<SwapsInfo>(
+      .get<SwapsMainnetInfo>(
         `/trades_counter?address=${address}`,
         {},
         this.mainnetUrl,
         this.defaultRetryOptions
       )
-      .pipe(catchError(() => of({ totalTrades: 0 })));
+      .pipe(
+        catchError(() => {
+          const dateNow = new Date()
+            .toLocaleString('en-GB', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false // 24-hour format
+            })
+            .replace(',', '');
+          return of({
+            totalTrades: 0,
+            startDatetime: dateNow,
+            endDatetime: dateNow
+          });
+        })
+      );
   }
 
-  public fetchTestnetSwaps(address: string): Observable<SwapsInfo> {
+  public fetchTestnetSwaps(address: string): Observable<SwapsTestnetInfo> {
     return this.httpService
-      .get<SwapsInfo>(
+      .get<SwapsTestnetInfo>(
         `/trades_counter?address=${address}`,
         {},
         this.testnetUrl,

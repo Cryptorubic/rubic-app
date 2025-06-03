@@ -13,8 +13,6 @@
   padding-bottom: var(--tui-padding-4xl);
 
   &__solo {
-    grid-template-columns: 1fr minmax(0, 600px) 1fr;
-
     @include b(561) {
       grid-template-columns: 1fr;
     }
