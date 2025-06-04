@@ -13,8 +13,16 @@
   padding-bottom: var(--tui-padding-4xl);
 
   &__solo {
-    @include b(561) {
-      grid-template-columns: 1fr;
+    @include b(1287) {
+      grid-template-columns: 3fr 5fr 3fr;
+    }
+
+    @include b(800) {
+      grid-template-columns: 1fr 5fr 1fr;
+    }
+
+    @include b(560) {
+      grid-template-columns: 0fr 1fr 0fr;
     }
 
     .box.box__center {
