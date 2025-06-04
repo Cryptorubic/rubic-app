@@ -70,6 +70,10 @@ export class TestnetPromoNotificationService {
       } else if (err.message.includes('User denied transaction signature')) {
         label = this.translateService.instant('testnetPromo.notification.reject');
         status = TuiNotification.Error;
+      } else if (err.message === 'wrong chain') {
+        label =
+          'Please make sure to select the Arbitrum network in your wallet. Other networks are not supported.';
+        status = TuiNotification.Error;
       } else {
         label = this.translateService.instant('testnetPromo.notification.unknown');
         status = TuiNotification.Error;
