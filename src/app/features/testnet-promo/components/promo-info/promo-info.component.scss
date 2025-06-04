@@ -1,0 +1,25 @@
+.info {
+  padding: var(--tui-padding-m) calc(var(--tui-padding-m) * 4);
+
+  text-align: center;
+
+  background: var(--secondary-background);
+  border-radius: var(--tui-radius-m);
+
+  &__title {
+    margin-bottom: var(--tui-padding-s);
+
+    color: var(--tui-primary);
+    font-weight: 500;
+    font-size: 1.25rem;
+  }
+
+  &__content {
+
+    margin-bottom: var(--tui-padding-s);
+
+    span {
+      color: var(--tui-primary);
+    }
+  }
+}

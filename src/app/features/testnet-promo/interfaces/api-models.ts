@@ -26,6 +26,12 @@ export interface UserProofs {
   completed: ProofInfo[];
 }
 
-export interface SwapsInfo {
+export interface SwapsMainnetInfo {
+  totalTrades: number;
+  startDatetime: string;
+  endDatetime: string;
+}
+
+export interface SwapsTestnetInfo {
   totalTrades: number;
 }
