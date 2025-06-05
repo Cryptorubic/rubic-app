@@ -2288,29 +2288,29 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.7.18-alpha-xflows.0":
-  version "0.7.18-alpha-xflows.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.18-alpha-xflows.0.tgz#8795050502ea90345ada634195fa64c804bf979b"
-  integrity sha512-bN+EdUbQdlLzKtnmlZ+WcokAp4QA1CgSwppbGDy1xWz3FJ6/Njdf1rCxQ9oPNbyx+ZBFFvUEhmo21PRYsFzfLw==
+"@cryptorubic/core@0.7.18":
+  version "0.7.18"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.7.18.tgz#9bfc22aac7a4914e3f2904c20c2d3dcee366a681"
+  integrity sha512-33yFoirov/ivdJQC50oOzdbM7DHKfb+PWGYaPeN08cZMwNxs5CiFXnCv8EF+zlVTIaRx+65SlM9cbqwhyA8x1A==
   dependencies:
     bignumber.js "9.1.2"
     jest-mock-promise "^2.0.2"
     tslib "^2.3.0"
 
-"@cryptorubic/tron-types@0.7.18-alpha-xflows.0":
-  version "0.7.18-alpha-xflows.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.18-alpha-xflows.0.tgz#0dfa055e93e701d474c11ab92866f2d1ddae7f95"
-  integrity sha512-nUo+fc03orTK7hB+cGOXbp6jpkkeTlSeTQXFV+1Fdw+5sg+CDXQsv+sj+/tYoQIJiEslgSSvhvCj+HwfgS3KdQ==
+"@cryptorubic/tron-types@0.7.18":
+  version "0.7.18"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/tron-types/-/tron-types-0.7.18.tgz#8e58f99e3c4bce22059a5b0d140e19aea90e1aba"
+  integrity sha512-Co4FC7AYRBzU/lGOREaA8SXT0QQnhAljQf1TA6uXFDx5zQw3abmUpC8zi5thLP6OuJiz2NiOrnc6+8d7MTTYfQ==
   dependencies:
     "@ethersproject/bignumber" "^5.7.0"
 
-"@cryptorubic/web3@0.7.18-alpha-xflows.0":
-  version "0.7.18-alpha-xflows.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.18-alpha-xflows.0.tgz#02873613f1faf08cdd4589799f066a8805826966"
-  integrity sha512-5XI6kANYs4l2WRS1Ie5OeszqxLz9H7YSG7zS80V68HVLUMIGmqtFrdGiJTTSyyh9RztXobu8v0MT1X+CR3CbOw==
+"@cryptorubic/web3@0.7.18":
+  version "0.7.18"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.7.18.tgz#6e67f0164a1146f21a1f7e267dffdaa9394d3fc3"
+  integrity sha512-QNyGT5gQn22WB+J4wGS4AzidJBRcYrgE8R60qbgVVvSc9M0xnrVQ9FjGEkSvdIOGOxg0xxTzborytNCokgjspQ==
   dependencies:
-    "@cryptorubic/core" "0.7.18-alpha-xflows.0"
-    "@cryptorubic/tron-types" "0.7.18-alpha-xflows.0"
+    "@cryptorubic/core" "0.7.18"
+    "@cryptorubic/tron-types" "0.7.18"
     "@ethersproject/bignumber" "^5.7.0"
     "@mysten/sui" "^1.24.0"
     "@solana/spl-token" "0.2.0"
@@ -17677,15 +17677,15 @@ rpc-websockets@^9.0.2:
     bufferutil "^4.0.1"
     utf-8-validate "^5.0.2"
 
-rubic-sdk@6.0.0-alpha-xflows.1:
-  version "6.0.0-alpha-xflows.1"
-  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-xflows.1.tgz#f0ab7a6f19a7855393dd9d524df8cba8748895ef"
-  integrity sha512-V/GDqya5Df7czwSfLpY6XJeQ+Z9BmJzXcxL7MFLdtP8mi1n8Kkd9kQXPuA3rowKXQMajDq/NGgdU26bugHaGYA==
+rubic-sdk@6.0.0-alpha-new-sdk-fixes.43:
+  version "6.0.0-alpha-new-sdk-fixes.43"
+  resolved "https://registry.yarnpkg.com/rubic-sdk/-/rubic-sdk-6.0.0-alpha-new-sdk-fixes.43.tgz#cfa4cc35da7f9aebb5432a0e691ebaea846ae104"
+  integrity sha512-7wawevuGSobzFpoA6z2gJb1uoueWh8GGmYFSbxHK2vdW9T0CfJwr1F1TUUrkktiEM0L7Rswb0mQFbnOjGu5D9g==
   dependencies:
     "@1inch/limit-order-protocol-utils" "3.0.1"
     "@arbitrum/sdk" "^3.1.3"
-    "@cryptorubic/core" "0.7.18-alpha-xflows.0"
-    "@cryptorubic/web3" "0.7.18-alpha-xflows.0"
+    "@cryptorubic/core" "0.7.18"
+    "@cryptorubic/web3" "0.7.18"
     "@debridge-finance/debridge-external-call" "^1.0.7"
     "@dedust/sdk" "^0.8.7"
     "@layerzerolabs/scan-client" "0.0.8"
