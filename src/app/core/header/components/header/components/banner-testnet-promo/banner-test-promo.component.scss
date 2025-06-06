@@ -3,12 +3,6 @@
 .banner {
   text-decoration: none;
 
-  @include b(460) {
-    &__mobile-br {
-      display: block;
-    }
-  }
-
   &:hover {
     .banner__text {
       text-decoration: underline;
@@ -81,6 +75,14 @@
 
     @include b(321) {
       font-size: 12px;
+    }
+  }
+}
+
+@include b(460) {
+  .banner {
+    &__mobile-br {
+      display: block;
     }
   }
 }
