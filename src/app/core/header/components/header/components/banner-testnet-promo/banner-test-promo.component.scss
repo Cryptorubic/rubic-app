@@ -3,6 +3,13 @@
 .banner {
   text-decoration: none;
 
+
+  @include b(460) {
+    &__mobile-br {
+      display: block;
+    }
+  }
+
   &:hover {
     .banner__text {
       text-decoration: underline;
@@ -44,15 +51,11 @@
       text-align: left;
     }
 
-    @include b(421) {
-      font-size: 14px;
-    }
-
-    @include b(361) {
+    @include b(430) {
       font-size: 13px;
     }
 
-    @include b(321) {
+    @include b(390) {
       font-size: 12px;
     }
   }
@@ -70,15 +73,15 @@
     border-radius: 8px;
 
     @include b(421) {
-      font-size: 14px;
-    }
-
-    @include b(361) {
       font-size: 13px;
     }
 
     @include b(321) {
       font-size: 12px;
     }
+  }
+
+  &__mobile-br {
+    display: none;
   }
 }
