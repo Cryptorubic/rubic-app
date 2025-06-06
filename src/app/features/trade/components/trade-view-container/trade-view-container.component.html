@@ -27,12 +27,20 @@
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
+
     <app-spindle-banner
       *ngIf="state.showSpindl"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
     ></app-spindle-banner>
+    <hype-banner id="hypelab-banner" placement="banner_placement"></hype-banner>
+    <!-- <div
+      reactRenderer
+      [reactComponent]="BannerReactComp"
+      [props]="BannerProps"
+      style="width: 500px; height: 300px"
+    ></div> -->
   </div>
 
   <app-providers-list-general
