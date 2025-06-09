@@ -217,6 +217,13 @@ export class SwapsControllerService {
     let txHash: string;
 
     try {
+      const isEqulaFromAmount = this.checkIsEqualFromAmount(
+        trade.from.tokenAmount,
+        trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
+      );
+      if (!isEqulaFromAmount) {
+        throw new Error('Trade has invalid from amount');
+      }
       const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
         trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
@@ -501,23 +508,24 @@ export class SwapsControllerService {
               wrappedTrade.trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
             );
 
+            if (!isEqualFromAmount) {
+              wrappedTrade.trade = null;
+            }
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$,
-              of(isEqualFromAmount)
+              isNotLinkedAccount$
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount, isEqualAmount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-                    if (!isEqualAmount) {
-                      trade.trade = null;
-                    }
+
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
