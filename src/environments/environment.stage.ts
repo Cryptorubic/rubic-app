@@ -1,12 +1,14 @@
 import { STAKING_CONFIG_DEVELOP } from './constants/staking';
+import { Env } from './models/env';
 
-export const ENVIRONMENT = {
+export const ENVIRONMENT: Env = {
   environmentName: 'stage',
   production: true,
 
   apiBaseUrl: '//stage-api.rubic.exchange/api',
   apiTokenUrl: 'https://stage-api.rubic.exchange/api',
   websocketBaseUrl: 'wss://api.rubic.exchange/ws',
+  testnetUrl: '//testnet-api.rubic.exchange/api',
 
   staking: STAKING_CONFIG_DEVELOP,
 

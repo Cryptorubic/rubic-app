@@ -92,7 +92,7 @@ export class ClaimRoundRowComponent {
     }
 
     if (this.round.status === 'soon') {
-      return 'The staking round will start soon.';
+      return 'The round will start soon.';
     }
 
     if (!this.round.isParticipantOfPrevRounds && this.round.claimName !== 'airdrop') {
