@@ -1,0 +1,17 @@
+<div
+  class="blockchain-button"
+  [class.blockchain-button__selected]="
+    blockchainItem.name && selectedAssetType === blockchainItem.name
+  "
+>
+  <ng-container *ngIf="!blockchainItem.name; else icon">All</ng-container>
+  <ng-template #icon>
+    <img
+      class="blockchain-button__img"
+      [src]="blockchainItem.icon"
+      [alt]="blockchainItem.label"
+      width="30"
+      height="30"
+    />
+  </ng-template>
+</div>

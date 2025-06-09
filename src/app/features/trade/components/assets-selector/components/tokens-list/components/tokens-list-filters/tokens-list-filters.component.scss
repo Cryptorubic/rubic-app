@@ -70,7 +70,10 @@
 
   .token-filter__text {
     line-height: 15px;
-  }
 
-  // .token-filter__icon {}
+    @include b(mobile) {
+      font-size: 11px;
+      white-space: no-wrap;
+    }
+  }
 }

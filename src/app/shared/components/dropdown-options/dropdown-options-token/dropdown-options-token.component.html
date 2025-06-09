@@ -1,109 +1,111 @@
-<tui-hosted-dropdown
-  #dropdown
-  [content]="content"
-  [(open)]="isDropdownOpen"
-  *ngIf="
-    canBeAddedToFavorite ||
-    showCopyToClipboardOption ||
-    securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
-  "
->
-  <button
-    appearance="flat"
-    icon="tuiIconMoreVertical"
-    tuiIconButton
-    type="button"
-    [size]="'s'"
-    [pseudoHover]="dropdown.open || null"
-  ></button>
-</tui-hosted-dropdown>
+<ng-container *ngLet="isMobile$ | async as isMobile">
+  <tui-hosted-dropdown
+    #dropdown
+    [content]="content"
+    [(open)]="isDropdownOpen"
+    *ngIf="
+      canBeAddedToFavorite ||
+      showCopyToClipboardOption ||
+      securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN
+    "
+  >
+    <button
+      appearance="flat"
+      icon="tuiIconMoreVertical"
+      tuiIconButton
+      type="button"
+      [size]="isMobile ? 'm' : 's'"
+      [pseudoHover]="dropdown.open || null"
+    ></button>
+  </tui-hosted-dropdown>
 
-<ng-template #content let-activeZone>
-  <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
-    <div class="dropdown-content__wrapper">
-      <div class="dropdown-content">
-        <ng-container *ngIf="showCopyToClipboardOption">
-          <div
-            class="dropdown-content__element"
-            (click)="copyToClipboard()"
-            [tuiHint]="copyHint"
-            tuiHintAppearance="onDark"
-            [tuiHintShowDelay]="50"
-            tuiHintDirection="top-right"
-            [tuiHintHideDelay]="100"
-          >
-            <ng-container *ngIf="!isCopyClicked; else copyClicked">
-              <span
-                class="dropdown-content__copy-icon"
-                [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
-              ></span>
-            </ng-container>
-            <span class="auto-height">Copy address</span>
-            <ng-template #copyHint>
-              <span class="dropdown-content__container-address-hint">{{ token.address }}</span>
-            </ng-template>
-          </div>
-
-          <ng-template #copyClicked>
-            <span class="dropdown-content__container-copied-container">
-              <span
-                class="dropdown-content__container-copied-icon"
-                [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
-              ></span>
-            </span>
-          </ng-template>
-        </ng-container>
-        <ng-container *ngIf="canBeAddedToFavorite">
-          <tui-loader
-            (click.stop)="toggleFavorite()"
-            class="dropdown-content__favorite-container"
-            [showLoader]="loadingFavoriteToken"
-            [overlay]="true"
-            [size]="'s'"
-          >
-            <div class="dropdown-content__element">
-              <div
-                class="dropdown-content__favorite"
-                [ngClass]="{
-                  'dropdown-content__favorite_active': token?.favorite
-                }"
-                [inlineSVG]="'assets/images/icons/star2.svg'"
-              ></div>
-              <span class="auto-height">Save to favorites</span>
-            </div>
-          </tui-loader>
-        </ng-container>
-        <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
-          <div class="dropdown-content__security-container">
-            <a
-              class="dropdown-content__element security-content"
-              [href]="goPlusLabsLink"
-              target="_blank"
+  <ng-template #content let-activeZone>
+    <tui-data-list tuiDataListDropdownManager size="m" [tuiActiveZoneParent]="activeZone">
+      <div class="dropdown-content__wrapper">
+        <div class="dropdown-content">
+          <ng-container *ngIf="showCopyToClipboardOption">
+            <div
+              class="dropdown-content__element"
+              (click)="copyToClipboard()"
+              [tuiHint]="copyHint"
+              tuiHintAppearance="onDark"
+              [tuiHintShowDelay]="50"
+              tuiHintDirection="top-right"
+              [tuiHintHideDelay]="100"
             >
-              <span
-                class="dropdown-content__security-container-icon"
-                [inlineSVG]="
-                  'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
-                "
-                tuiHintAppearance="onDark"
-                tuiHintDirection="top-right"
-                rel="noopener noreferrer"
+              <ng-container *ngIf="!isCopyClicked; else copyClicked">
+                <span
+                  class="dropdown-content__copy-icon"
+                  [inlineSVG]="'assets/images/swaps/swaps-info/copy-icon.svg'"
+                ></span>
+              </ng-container>
+              <span class="auto-height">Copy address</span>
+              <ng-template #copyHint>
+                <span class="dropdown-content__container-address-hint">{{ token.address }}</span>
+              </ng-template>
+            </div>
+
+            <ng-template #copyClicked>
+              <span class="dropdown-content__container-copied-container">
+                <span
+                  class="dropdown-content__container-copied-icon"
+                  [inlineSVG]="'assets/images/swaps/swaps-info/tick.svg'"
+                ></span>
+              </span>
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="canBeAddedToFavorite">
+            <tui-loader
+              (click.stop)="toggleFavorite()"
+              class="dropdown-content__favorite-container"
+              [showLoader]="loadingFavoriteToken"
+              [overlay]="true"
+              [size]="'s'"
+            >
+              <div class="dropdown-content__element">
+                <div
+                  class="dropdown-content__favorite"
+                  [ngClass]="{
+                    'dropdown-content__favorite_active': token?.favorite
+                  }"
+                  [inlineSVG]="'assets/images/icons/star2.svg'"
+                ></div>
+                <span class="auto-height">Save to favorites</span>
+              </div>
+            </tui-loader>
+          </ng-container>
+          <ng-container *ngIf="securityStatus !== TokenSecurityStatus.UNSUPPORTED_BLOCKCHAIN">
+            <div class="dropdown-content__security-container">
+              <a
+                class="dropdown-content__element security-content"
+                [href]="goPlusLabsLink"
                 target="_blank"
-                (click)="$event.stopPropagation()"
               >
-              </span>
-              <span class="dropdown-content__security-container-label">
-                <span class="auto-height">{{ securityMessages[securityStatus] }}</span>
-                <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
-                  <span class="dropdown-content__security-label-powered-by auto-height">
-                    Powered by Go+</span
-                  >
-                </ng-container>
-              </span>
-            </a>
-          </div>
-        </ng-container>
+                <span
+                  class="dropdown-content__security-container-icon"
+                  [inlineSVG]="
+                    'assets/images/swaps/swaps-info/token-security-' + securityStatus + '-icon.svg'
+                  "
+                  tuiHintAppearance="onDark"
+                  tuiHintDirection="top-right"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  (click)="$event.stopPropagation()"
+                >
+                </span>
+                <span class="dropdown-content__security-container-label">
+                  <span class="auto-height">{{ securityMessages[securityStatus] }}</span>
+                  <ng-container *ngIf="securityStatus !== TokenSecurityStatus.PLATFORM_TOKEN">
+                    <span class="dropdown-content__security-label-powered-by auto-height">
+                      Powered by Go+</span
+                    >
+                  </ng-container>
+                </span>
+              </a>
+            </div>
+          </ng-container>
+        </div>
       </div>
-    </div>
-  </tui-data-list>
-</ng-template>
+    </tui-data-list>
+  </ng-template>
+</ng-container>
