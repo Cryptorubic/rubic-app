@@ -11,7 +11,7 @@ export class HypelabBannerComponent {
   private readonly isMobile = this.headerStore.isMobile;
 
   public get iframeUrl(): string {
-    return `assets/hype-lab-banner/index.html/?placement=${
+    return `https://banners.rubic.exchange/index.html/?placement=${
       this.isMobile ? 'a74ae05143' : '1ea374aff0'
     }&isMobile=${this.isMobile}`;
   }

@@ -27,7 +27,7 @@
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
-
+   
     <tui-carousel
       class="banner-carousel"
       [duration]="60000"
@@ -35,8 +35,8 @@
         display: state.content === 'form' ? 'block' : 'none'
       }"
     >
-      <ng-container *tuiItem>
-        <app-spindle-banner *ngIf="state.showSpindl"></app-spindle-banner>
+      <ng-container *ngIf="state.showSpindl">
+        <app-spindle-banner *tuiItem></app-spindle-banner>
       </ng-container>
       <app-hypelab-banner *tuiItem></app-hypelab-banner>
     </tui-carousel>
