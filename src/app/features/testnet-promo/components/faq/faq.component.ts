@@ -37,6 +37,11 @@ export class FaqComponent {
       title: 'How much time I’ve to claim my reward?',
       answer:
         'The Rubic team will make a separate announcement specifying the timeframe for claiming your reward and add this information here.'
+    },
+    {
+      title: 'For how long can I join the event?',
+      answer:
+        'You can join the event until all 300,000 RBC are distributed. You can track the current week’s progress and your rewards in the snapshot window on the left side of the page.'
     }
   ];
 }

@@ -237,4 +237,8 @@ export class GoogleTagManagerService {
 
     return [nativeBalance, fromTokenBalance];
   }
+
+  public fireClickOnVerifyEvent(): void {
+    this.angularGtmService.gtag('event', 'click_verify');
+  }
 }

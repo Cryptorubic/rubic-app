@@ -8,6 +8,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ClaimButtonState } from '@features/testnet-promo/interfaces/claim-button-state.interface';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
+import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class TestnetPromoClaimService {
@@ -28,7 +29,8 @@ export class TestnetPromoClaimService {
 
   constructor(
     private readonly gasService: GasService,
-    private readonly notificationService: TestnetPromoNotificationService
+    private readonly notificationService: TestnetPromoNotificationService,
+    private readonly walletConnectorService: WalletConnectorService
   ) {}
 
   public async setClaimStatus(contractAddress: string, nodeIndex: number): Promise<void> {
@@ -50,6 +52,7 @@ export class TestnetPromoClaimService {
       let claimInProgressNotification: Subscription;
 
       try {
+        this.checkBlockchain();
         await this.checkPause(contractAddress);
         await this.checkClaimed(contractAddress, node.index);
         await this.executeClaim(contractAddress, node, proof, () => {
@@ -104,5 +107,11 @@ export class TestnetPromoClaimService {
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
 
     return Boolean(isPaused);
+  }
+
+  private checkBlockchain(): void {
+    if (this.walletConnectorService.network !== BLOCKCHAIN_NAME.ARBITRUM) {
+      throw new Error('wrong chain');
+    }
   }
 }

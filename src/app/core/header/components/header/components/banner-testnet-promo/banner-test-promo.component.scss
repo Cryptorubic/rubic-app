@@ -36,6 +36,10 @@
     }
   }
 
+  &__mobile-br {
+    display: none;
+  }
+
   .banner__text {
     @include font(18px, 140%, 800, #ffffff);
     letter-spacing: 1px;
@@ -44,15 +48,11 @@
       text-align: left;
     }
 
-    @include b(421) {
-      font-size: 14px;
-    }
-
-    @include b(361) {
+    @include b(430) {
       font-size: 13px;
     }
 
-    @include b(321) {
+    @include b(390) {
       font-size: 12px;
     }
   }
@@ -70,15 +70,19 @@
     border-radius: 8px;
 
     @include b(421) {
-      font-size: 14px;
-    }
-
-    @include b(361) {
       font-size: 13px;
     }
 
     @include b(321) {
       font-size: 12px;
+    }
+  }
+}
+
+@include b(460) {
+  .banner {
+    &__mobile-br {
+      display: block;
     }
   }
 }
