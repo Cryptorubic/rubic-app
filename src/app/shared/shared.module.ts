@@ -79,7 +79,6 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
-import { ReactRendererDirective } from './directives/react-renderer/react-renderer.directive';
 import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 
 @NgModule({
@@ -135,7 +134,6 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    ReactRendererDirective,
     HypelabBannerComponent
   ],
   imports: [
@@ -217,7 +215,6 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    ReactRendererDirective,
     HypelabBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
