@@ -21,7 +21,6 @@ import {
   switchMap,
   tap
 } from 'rxjs/operators';
-import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
@@ -29,11 +28,13 @@ import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -72,6 +73,7 @@ import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class SwapsControllerService {
@@ -95,13 +97,11 @@ export class SwapsControllerService {
 
   constructor(
     private readonly swapFormService: SwapsFormService,
-    private readonly sdkService: SdkService,
     private readonly crossChainService: CrossChainService,
     private readonly onChainService: OnChainService,
     private readonly swapsStateService: SwapsStateService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly tradePageService: TradePageService,
     private readonly refreshService: RefreshService,
     private readonly modalService: ModalService,
     private readonly settingsService: SettingsService,
@@ -128,13 +128,6 @@ export class SwapsControllerService {
     });
   }
 
-  private get receiverAddress(): string | null {
-    if (!this.settingsService.crossChainRoutingValue.showReceiverAddress) {
-      return null;
-    }
-    return this.targetNetworkAddressService.address;
-  }
-
   private startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
   }
@@ -143,7 +136,7 @@ export class SwapsControllerService {
     this.handleWs();
     this.calculateTrade$
       .pipe(
-        debounceTime(200),
+        debounceTime(220),
         map(calculateData => {
           if (calculateData.stop || !this.swapFormService.isFilled) {
             this.refreshService.setStopped();
@@ -227,6 +220,14 @@ export class SwapsControllerService {
     let txHash: string;
 
     try {
+      const isEqulaFromAmount = this.checkIsEqualFromAmount(
+        trade.from.tokenAmount,
+        trade.from.blockchain,
+        trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
+      );
+      if (!isEqulaFromAmount) {
+        throw new Error('Trade has invalid from amount');
+      }
       const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
         trade instanceof CrossChainTrade
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
@@ -506,6 +507,16 @@ export class SwapsControllerService {
               wrappedTrade?.error
             );
 
+            const isEqualFromAmount = this.checkIsEqualFromAmount(
+              wrappedTrade.trade.from.tokenAmount,
+              wrappedTrade.trade.from.blockchain,
+              wrappedTrade.trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
+            );
+
+            if (!isEqualFromAmount) {
+              wrappedTrade.trade = null;
+            }
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
@@ -519,6 +530,7 @@ export class SwapsControllerService {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
+
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
@@ -556,6 +568,9 @@ export class SwapsControllerService {
               container.value.calculated
             );
           }
+          if (container.value.tradeType) {
+            this.swapsStateService.removeOldProvider(container.value.tradeType);
+          }
           return of(null);
         }),
         catchError((_err: unknown) => {
@@ -573,5 +588,20 @@ export class SwapsControllerService {
       .subscribe(isFilled => {
         if (!isFilled) Injector.rubicApiService.stopCalculation();
       });
+  }
+
+  private checkIsEqualFromAmount(
+    fromAmount: BigNumber,
+    fromBlockchain: BlockchainName,
+    percent: number
+  ): boolean {
+    const rubicPercent =
+      BlockchainsInfo.getChainType(fromBlockchain) === CHAIN_TYPE.EVM ? percent : 0;
+
+    const formFromTokenAmount = this.swapFormService.inputValue.fromAmount.actualValue.multipliedBy(
+      1 - rubicPercent / 100
+    );
+
+    return formFromTokenAmount.eq(fromAmount);
   }
 }
