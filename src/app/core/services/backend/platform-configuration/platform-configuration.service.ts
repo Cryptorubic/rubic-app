@@ -5,13 +5,10 @@ import { ENVIRONMENT } from 'src/environments/environment';
 import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
 import {
   BlockchainName,
-  CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
-  LifiSubProvider,
   BLOCKCHAIN_NAME,
   FROM_BACKEND_BLOCKCHAINS,
-  BackendBlockchain,
-  RangoTradeType
+  BackendBlockchain
 } from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
@@ -19,17 +16,10 @@ import { CrossChainProviderStatus } from '@core/services/backend/platform-config
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { timeout } from 'rxjs/operators';
-import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled-providers';
 import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 
-interface DisabledSubProvidersType {
-  [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiSubProvider[];
-  [CROSS_CHAIN_TRADE_TYPE.RANGO]: RangoTradeType[];
-}
-
 interface ProvidersConfiguration {
-  disabledSubProviders: DisabledSubProvidersType;
   disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
@@ -52,10 +42,6 @@ const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
 })
 export class PlatformConfigurationService {
   private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
-    disabledSubProviders: {
-      [CROSS_CHAIN_TRADE_TYPE.LIFI]: [],
-      [CROSS_CHAIN_TRADE_TYPE.RANGO]: RANGO_CROSS_CHAIN_DISABLED_PROVIDERS
-    },
     disabledCrossChainTradeTypes: undefined
   });
 
@@ -190,33 +176,7 @@ export class PlatformConfigurationService {
       .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
       .filter(provider => Boolean(provider));
 
-    const disabledSubProviders = crossChainProvidersEntries
-      .filter(([_, { active }]) => Boolean(active))
-      .reduce((acc, [providerName, { disabledProviders }]) => {
-        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.LIFI) {
-          acc[CROSS_CHAIN_TRADE_TYPE.LIFI] = disabledProviders as LifiSubProvider[];
-        }
-
-        if (FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName] === CROSS_CHAIN_TRADE_TYPE.RANGO) {
-          acc[CROSS_CHAIN_TRADE_TYPE.RANGO] = this.getRangoDisabledProviders(
-            disabledProviders as RangoTradeType[]
-          );
-        }
-
-        return acc;
-      }, {} as DisabledSubProvidersType);
-
-    return { disabledSubProviders, disabledCrossChainTradeTypes: disabledCrossChainProviders };
-  }
-
-  /**
-   * Combine disabled providers from server and client
-   */
-  private getRangoDisabledProviders(disabledFromServer: RangoTradeType[]): RangoTradeType[] {
-    const disabledProviders = this._disabledProviders$.getValue();
-    const disabledFromClient =
-      disabledProviders.disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] ?? [];
-    return [...disabledFromClient, ...disabledFromServer];
+    return { disabledCrossChainTradeTypes: disabledCrossChainProviders };
   }
 
   private mapAverageProvidersTime(crossChainProviders: {
