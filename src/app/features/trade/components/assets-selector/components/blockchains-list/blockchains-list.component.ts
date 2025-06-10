@@ -66,7 +66,6 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public onItemClick(blockchainName: BlockchainName | null): void {
-    console.log('onItemClick ==>', blockchainName);
     if (blockchainName === null) this.assetsSelectorService.onAllChainsSelect();
     else this.assetsSelectorService.onBlockchainSelect(blockchainName);
 
