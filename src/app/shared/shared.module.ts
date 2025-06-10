@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -80,6 +80,7 @@ import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { ReactRendererDirective } from './directives/react-renderer/react-renderer.directive';
+import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { ReactRendererDirective } from './directives/react-renderer/react-render
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    ReactRendererDirective
+    ReactRendererDirective,
+    HypelabBannerComponent
   ],
   imports: [
     CommonModule,
@@ -215,8 +217,10 @@ import { ReactRendererDirective } from './directives/react-renderer/react-render
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    ReactRendererDirective
+    ReactRendererDirective,
+    HypelabBannerComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

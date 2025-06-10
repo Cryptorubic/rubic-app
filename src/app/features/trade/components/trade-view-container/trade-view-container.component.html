@@ -28,19 +28,18 @@
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
 
-    <app-spindle-banner
-      *ngIf="state.showSpindl"
+    <tui-carousel
+      class="banner-carousel"
+      [duration]="60000"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
-    ></app-spindle-banner>
-    <hype-banner id="hypelab-banner" placement="banner_placement"></hype-banner>
-    <!-- <div
-      reactRenderer
-      [reactComponent]="BannerReactComp"
-      [props]="BannerProps"
-      style="width: 500px; height: 300px"
-    ></div> -->
+    >
+      <ng-container *tuiItem>
+        <app-spindle-banner *ngIf="state.showSpindl"></app-spindle-banner>
+      </ng-container>
+        <app-hypelab-banner *tuiItem></app-hypelab-banner>
+    </tui-carousel>
   </div>
 
   <app-providers-list-general

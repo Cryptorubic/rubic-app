@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
@@ -23,7 +23,13 @@ import {
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import {
+  TuiCarouselModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -126,7 +132,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     TuiLoaderModule,
     AssetsSelectorModule,
     TuiNotificationModule,
-    TuiModeModule
+    TuiModeModule,
+    TuiCarouselModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,
@@ -179,7 +186,6 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     // TradeService,
     // TargetNetworkAddressService,
     // TonPromoService
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  ]
 })
 export class TradeModule {}
