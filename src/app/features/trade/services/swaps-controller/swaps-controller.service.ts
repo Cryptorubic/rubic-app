@@ -32,6 +32,9 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -219,6 +222,7 @@ export class SwapsControllerService {
     try {
       const isEqulaFromAmount = this.checkIsEqualFromAmount(
         trade.from.tokenAmount,
+        trade.from.blockchain,
         trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
       );
       if (!isEqulaFromAmount) {
@@ -505,6 +509,7 @@ export class SwapsControllerService {
 
             const isEqualFromAmount = this.checkIsEqualFromAmount(
               wrappedTrade.trade.from.tokenAmount,
+              wrappedTrade.trade.from.blockchain,
               wrappedTrade.trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
             );
 
@@ -585,10 +590,18 @@ export class SwapsControllerService {
       });
   }
 
-  private checkIsEqualFromAmount(fromAmount: BigNumber, percent: number): boolean {
+  private checkIsEqualFromAmount(
+    fromAmount: BigNumber,
+    fromBlockchain: BlockchainName,
+    percent: number
+  ): boolean {
+    const rubicPercent =
+      BlockchainsInfo.getChainType(fromBlockchain) === CHAIN_TYPE.EVM ? percent : 0;
+
     const formFromTokenAmount = this.swapFormService.inputValue.fromAmount.actualValue.multipliedBy(
-      1 - percent / 100
+      1 - rubicPercent / 100
     );
+
     return formFromTokenAmount.eq(fromAmount);
   }
 }
