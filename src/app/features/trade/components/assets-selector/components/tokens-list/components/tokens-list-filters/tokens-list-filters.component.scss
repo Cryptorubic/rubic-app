@@ -14,6 +14,7 @@
 
     @include b($mobile-md) {
       margin-top: 5px;
+      margin-left: 5px;
 
       background-color: transparent;
       border-radius: var(--tui-radius-m);
@@ -74,6 +75,7 @@
     @include b(mobile) {
       font-size: 11px;
       white-space: no-wrap;
+      text-align: center;
     }
   }
 }
