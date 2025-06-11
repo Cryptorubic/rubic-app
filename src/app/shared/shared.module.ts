@@ -80,6 +80,7 @@ import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
+import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +135,8 @@ import { SmallBlockchainButtonComponent } from './components/small-blockchain-bu
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    SmallBlockchainButtonComponent
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent
   ],
   imports: [
     CommonModule,
@@ -215,7 +217,8 @@ import { SmallBlockchainButtonComponent } from './components/small-blockchain-bu
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    SmallBlockchainButtonComponent
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
