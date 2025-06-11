@@ -38,7 +38,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     private readonly modalService: ModalService,
     private readonly el: ElementRef<HTMLElement>,
     @Inject(DOCUMENT) private readonly document: Document,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService // private readonly tokensListService: TokensListService
   ) {
     this.subscribeOnModal();
   }
@@ -134,7 +134,8 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
         (title === 'Select Chain and Token' ||
           title === 'Select Blockchain' ||
           title === 'Account' ||
-          title === 'Menu')
+          title === 'Menu' ||
+          title === '')
       ) {
         return;
       }

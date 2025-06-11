@@ -1,0 +1,22 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .blockchain-button {
+    @include flex(row, center, center);
+    width: 51px;
+    height: 51px;
+
+    padding: 5px;
+
+    background: var(--primary-background);
+    border-radius: 35%;
+
+    &__img {
+      border-radius: 50%;
+    }
+
+    &__selected {
+      background: var(--tui-secondary-hover);
+    }
+  }
+}

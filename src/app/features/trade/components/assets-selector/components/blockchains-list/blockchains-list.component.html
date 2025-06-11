@@ -5,36 +5,15 @@
 
   <tui-scrollbar class="scrollbar">
     <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
-      <ng-container *ngFor="let blockchain of blockchainsList">
-        <ng-container *ngLet="blockchain | functionCall : isDisabled : this as disabled">
-          <button
-            tuiButton
-            appearance="flat"
-            type="button"
-            size="m"
-            class="list__element"
-            (click)="!disabled && onBlockchainSelect(blockchain.name)"
-            [tuiHint]="blockchain | functionCall : getHintText : this"
-            tuiHintAppearance="error"
-            [disabled]="disabled"
-          >
-            <div class="list__element-container">
-              <div class="list__element-wrapper">
-                <div class="list__image-container">
-                  <img [src]="blockchain.icon" [alt]="blockchain.label" />
-                </div>
-                <span class="list__label">{{ blockchain.label }}</span>
-              </div>
-              <ng-container *ngIf="isMobile && getBlockchainTag(blockchain) as tag">
-                <div class="list__badge-container">
-                  <app-blockchains-promo-badge
-                    [tag]="tag"
-                    [blockchain]="blockchain.name"
-                  ></app-blockchains-promo-badge>
-                </div>
-              </ng-container>
-            </div>
-          </button>
+      <ng-container
+        *ngTemplateOutlet="chainItem; context: { item: allChainsSelectorItem, disabled: false }"
+      ></ng-container>
+
+      <ng-container *ngFor="let blockchainItem of blockchainsList">
+        <ng-container *ngLet="blockchainItem | functionCall : isDisabled : this as disabled">
+          <ng-container
+            *ngTemplateOutlet="chainItem; context: { item: blockchainItem, disabled: false }"
+          ></ng-container>
         </ng-container>
       </ng-container>
       <ng-container *ngIf="blockchainsList.length === 0">
@@ -43,3 +22,34 @@
     </div>
   </tui-scrollbar>
 </div>
+
+<ng-template #chainItem let-blockchainItem="item" let-disabled="disabled">
+  <button
+    tuiButton
+    appearance="flat"
+    type="button"
+    size="m"
+    class="list__element"
+    (click)="!disabled && onItemClick(blockchainItem.name)"
+    [tuiHint]="blockchainItem | functionCall : getHintText : this"
+    tuiHintAppearance="error"
+    [disabled]="disabled"
+  >
+    <div class="list__element-container">
+      <div class="list__element-wrapper">
+        <div class="list__image-container">
+          <img [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
+        </div>
+        <span class="list__label">{{ blockchainItem.label }}</span>
+      </div>
+      <ng-container *ngIf="isMobile && getBlockchainTag(blockchainItem) as tag">
+        <div class="list__badge-container">
+          <app-blockchains-promo-badge
+            [tag]="tag"
+            [blockchain]="blockchainItem.name"
+          ></app-blockchains-promo-badge>
+        </div>
+      </ng-container>
+    </div>
+  </button>
+</ng-template>

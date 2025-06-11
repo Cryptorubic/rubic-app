@@ -7,13 +7,9 @@
 }
 
 .list-container {
-  display: flex;
+  @include flex(column, center, normal);
   width: 100%;
   height: 100%;
-
-  &__search {
-    display: none;
-  }
 }
 
 .list {
@@ -109,5 +105,11 @@ app-no-result {
         padding: 0 var(--tui-padding-l) !important;
       }
     }
+  }
+
+  .list-container__search {
+    width: 100%;
+    height: 56px;
+    padding: 0 var(--tui-padding-l);
   }
 }

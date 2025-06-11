@@ -33,7 +33,6 @@ import { ThemeSwitcherComponent } from './components/header/components/theme-swi
 import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
 import { BannerZkLinkComponent } from '@core/header/components/header/components/banner-zk-link/banner-zk-link.component';
-import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
 import { MobileUserProfileComponent } from './components/header/components/mobile-user-profile/mobile-user-profile.component';
@@ -61,7 +60,6 @@ import { BannerTestPromoComponent } from '@core/header/components/header/compone
     ExternalLinkBannerComponent,
     BannerDirective,
     BannerZkLinkComponent,
-    MobileMenuComponent,
     RubicMenuTogglerComponent,
     MobileUserProfileComponent,
     MobileNavigationMenuComponent,

@@ -48,7 +48,7 @@ export class ModalService {
     return this.showDialog<TokenSelectorPageComponent, void>(
       TokenSelectorPageComponent,
       {
-        title: 'Select Chain and Token',
+        title: '',
         size: 'l',
         data: {
           formType
@@ -185,7 +185,7 @@ export class ModalService {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
       {
-        title: 'Select Blockchain',
+        title: '',
         scrollableContent: true
       },
       _injector

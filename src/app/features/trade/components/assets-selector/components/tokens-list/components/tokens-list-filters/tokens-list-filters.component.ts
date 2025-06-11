@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TOKEN_FILTERS_UI, TokenFilterUI } from './constants/token-filters';
 import { TokenFilter } from '../../../../models/token-filters';
+import { HeaderStore } from '@app/core/header/services/header.store';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-tokens-list-filters',
@@ -13,11 +15,17 @@ export class TokensListFiltersComponent {
 
   @Output() onSelect: EventEmitter<TokenFilter> = new EventEmitter();
 
-  public readonly ITEMS_PER_SLIDE = 3;
+  public ITEMS_PER_SLIDE = 3;
 
   public readonly TOKEN_FILTERS_UI = TOKEN_FILTERS_UI;
 
+  public readonly isMobile$ = this.headerStore
+    .getMobileDisplayStatus()
+    .pipe(tap(isMobile => (this.ITEMS_PER_SLIDE = isMobile ? 4 : 3)));
+
   public currentIdx: number = 0;
+
+  constructor(private readonly headerStore: HeaderStore) {}
 
   public prev(): void {
     if (!this.currentIdx) return;

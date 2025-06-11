@@ -7,8 +7,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
   concatMap,
+  debounceTime,
   distinctUntilChanged,
   filter,
+  finalize,
   map,
   switchMap,
   takeUntil,
@@ -200,6 +202,7 @@ export class TokensListStoreService {
 
     return timer(300).pipe(
       distinctUntilChanged(),
+      debounceTime(200),
       tap(() => this.tokensUpdaterService.setTokensLoading(true)),
       concatMap(() => this.tryParseQueryAsBackendTokens(skipRefetch)),
       switchMap(async backendTokens => {
@@ -214,7 +217,7 @@ export class TokensListStoreService {
 
         return { tokensToShow: [] };
       }),
-      tap(() => this.tokensUpdaterService.setTokensLoading(false))
+      finalize(() => this.tokensUpdaterService.setTokensLoading(false))
     );
   }
 

@@ -149,6 +149,12 @@
   &__blockchain-header {
     display: none;
   }
+
+  &__mobile-chain-type-row {
+    @include flex(row, center, space-between);
+    gap: 7px;
+    width: 100%;
+  }
 }
 
 .open-selector {
@@ -179,7 +185,6 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding: 0 16px;
   }
 
   .icon-container {
@@ -190,7 +195,6 @@
   .asset-types-aside {
     display: flex;
     flex-direction: column;
-    gap: 16px;
     align-items: flex-start;
     justify-content: center;
     width: 100%;

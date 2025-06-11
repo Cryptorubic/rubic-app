@@ -136,7 +136,6 @@ export class BlockchainsListService {
     ])
       .pipe(debounceTime(200), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(([filterQuery, searchQuery]) => {
-        this.blockchainsToShow = this.filterBlockchains(filterQuery);
         this.assetsBlockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
           return (
             blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -145,9 +144,7 @@ export class BlockchainsListService {
               blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
           );
         });
-        if (!this.isMobile) {
-          this.blockchainsToShow = this.assetsBlockchainsToShow;
-        }
+        this.blockchainsToShow = this.assetsBlockchainsToShow;
       });
   }
 

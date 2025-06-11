@@ -1,5 +1,5 @@
-<div class="filters-wrapper">
-  <button class="filters-wrapper__prev-btn" (click)="prev()">
+<div *ngLet="isMobile$ | async as isMobile" class="filters-wrapper">
+  <button *ngIf="!isMobile" class="filters-wrapper__prev-btn" (click)="prev()">
     <img src="assets/images/icons/chevron.svg" alt="prev-button" />
   </button>
 
@@ -18,7 +18,7 @@
     </ng-container>
   </tui-carousel>
 
-  <button class="filters-wrapper__next-btn" (click)="next()">
+  <button *ngIf="!isMobile" class="filters-wrapper__next-btn" (click)="next()">
     <img src="assets/images/icons/chevron.svg" alt="prev-button" />
   </button>
 </div>
