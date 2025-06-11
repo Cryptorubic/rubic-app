@@ -26,12 +26,18 @@
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
-    <app-spindle-banner
-      *ngIf="state.showSpindl"
+    <tui-carousel
+      class="banner-carousel"
+      [duration]="60000"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
-    ></app-spindle-banner>
+    >
+      <ng-container *ngIf="state.showSpindl">
+        <app-spindle-banner *tuiItem></app-spindle-banner>
+      </ng-container>
+      <app-hypelab-banner *tuiItem></app-hypelab-banner>
+    </tui-carousel>
   </div>
 
   <app-providers-list-general

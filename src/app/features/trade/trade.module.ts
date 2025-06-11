@@ -23,7 +23,13 @@ import {
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import {
+  TuiCarouselModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -126,31 +132,8 @@ import { MonadSuccessSwapInfoComponent } from './components/monad-success-swap-i
     TuiLoaderModule,
     AssetsSelectorModule,
     TuiNotificationModule,
-    TuiModeModule
-    // SwapsRoutingModule,
-    // SwapsSharedModule,
-    // InstantTradeModule,
-    // CrossChainModule,
-    // OnramperExchangerModule,
-    // LimitOrderModule,
-    // TuiHostedDropdownModule,
-    // TuiDataListModule,
-    // TuiSvgModule,
-    // TuiDropdownModule,
-    // ReactiveFormsModule,
-    // TuiInputModule,
-    // TuiSliderModule,
-    // TuiToggleModule,
-    // TuiInputNumberModule,
-    // TuiTextfieldControllerModule,
-    // InlineSVGModule,
-    // TuiHintModule,
-    // AssetsSelectorModule,
-    // FormsModule,
-    // TuiLoaderModule,
-    // ClipboardModule,
-    // TuiAccordionModule,
-    // TuiHintModule
+    TuiModeModule,
+    TuiCarouselModule
   ],
   providers: [
     SwapsStateService,
@@ -176,11 +159,6 @@ import { MonadSuccessSwapInfoComponent } from './components/monad-success-swap-i
     BlockchainsListService,
     FormsTogglerService,
     SoundsService
-    // SettingsService,
-    // RefreshService,
-    // TradeService,
-    // TargetNetworkAddressService,
-    // TonPromoService
   ]
 })
 export class TradeModule {}

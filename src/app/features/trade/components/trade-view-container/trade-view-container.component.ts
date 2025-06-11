@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { map, tap } from 'rxjs/operators';
+import { combineLatestWith, map, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -17,6 +17,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -56,7 +57,10 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  public readonly showSpindl$ = this.spindlService.showSpindl$;
+  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
+    combineLatestWith(this.authService.currentUser$),
+    map(([showSpindl, currUser]) => showSpindl && Boolean(currUser?.address))
+  );
 
   constructor(
     private readonly swapsState: SwapsStateService,
@@ -69,7 +73,8 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly spindlService: SpindlService
+    private readonly spindlService: SpindlService,
+    private readonly authService: AuthService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
