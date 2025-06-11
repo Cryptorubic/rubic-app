@@ -121,7 +121,7 @@ export class SdkService {
       'stage-app.rubic.exchange': 'rubic',
       'beta-app.rubic.exchange': 'rubic',
       'app.rubic.exchange': 'rubic',
-      'local.rubic.exchange': 'dev2'
+      'local.rubic.exchange': 'local'
     };
 
     const host = this?.window?.location?.hostname;
