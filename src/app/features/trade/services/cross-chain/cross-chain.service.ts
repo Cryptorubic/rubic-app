@@ -131,10 +131,8 @@ export class CrossChainService {
     fromAmount: BigNumber
   ): Promise<QuoteOptionsInterface> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledSubProviders } =
+    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes } =
       this.platformConfigurationService.disabledProviders;
-    const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
-    const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProvidersFromApiAndQuery = Array.from(
@@ -152,16 +150,6 @@ export class CrossChainService {
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: disabledProvidersFromApiAndQuery,
-      foreignBlacklist: {
-        lifi: [
-          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
-          ...(queryLifiDisabledBridges || [])
-        ],
-        rango: [
-          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
-          ...(queryRangoDisabledBridges || [])
-        ]
-      },
       integratorAddress: providerAddress
     };
 
