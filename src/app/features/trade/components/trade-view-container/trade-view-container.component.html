@@ -6,7 +6,9 @@
     selectedForm: selectedForm$ | async,
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
-    showSpindl: showSpindl$ | async
+    showSpindl: showSpindl$ | async,
+    resetCarouselIndex: resetCarouselIndex$ | async,
+    resetCarouselDuration: resetCarouselDuration$ | async
   } as state"
 >
   <div
@@ -28,7 +30,8 @@
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <tui-carousel
       class="banner-carousel"
-      [duration]="10000"
+      [duration]="state.resetCarouselDuration"
+      [(index)]="state.resetCarouselIndex"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
