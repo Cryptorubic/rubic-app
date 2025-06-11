@@ -37,6 +37,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: () => true
     }
   ],
+
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
@@ -109,6 +110,24 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'ATTENTION',
       getHint: () => 'Waiting funds in target chain for 7 days',
       showLabel: showAttentionLabelArbitrumBridge
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: [
+    {
+      getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
+      bgColor: '#2a74db',
+      fromSdk: false,
+      getLabel: () => 'Earn $WON!',
+      showLabel: () => true
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: [
+    {
+      getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
+      bgColor: '#2a74db',
+      fromSdk: false,
+      getLabel: () => 'Earn $WON!',
+      showLabel: () => true
     }
   ]
 };
