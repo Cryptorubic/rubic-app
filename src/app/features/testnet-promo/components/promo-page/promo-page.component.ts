@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/
 import { TestnetPromoStateService } from '@features/testnet-promo/services/testnet-promo-state.service';
 
 @Component({
-  selector: 'app-promo-page',
+  selector: 'app-berachella-page',
   templateUrl: './promo-page.component.html',
   styleUrls: ['./promo-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

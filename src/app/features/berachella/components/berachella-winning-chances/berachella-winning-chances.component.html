@@ -1,0 +1,9 @@
+<p *ngIf="winningChance !== null" class="chances">
+  <span
+    class="chances__image"
+    [inlineSVG]="'/assets/images/icons/hint.svg'"
+    [tuiHint]="'Your chances to win'"
+    tuiHintAppearance="onDark"
+  ></span
+  >Winning chance: {{ winningChance }} %
+</p>

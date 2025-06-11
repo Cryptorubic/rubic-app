@@ -1,0 +1,13 @@
+.berachella-wallet-button {
+  --tui-secondary: var(--tui-base-01);
+  --tui-secondary-hover: var(--tui-secondary);
+  --tui-secondary-active: #2c2d36;
+
+  &__avatar {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+}
+
+

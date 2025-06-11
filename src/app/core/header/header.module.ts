@@ -103,6 +103,6 @@ import { BannerTestPromoComponent } from '@core/header/components/header/compone
     TuiCarouselModule
   ],
   providers: [TuiDestroyService],
-  exports: [HeaderComponent]
+  exports: [HeaderComponent, UserProfileComponent]
 })
 export class HeaderModule {}

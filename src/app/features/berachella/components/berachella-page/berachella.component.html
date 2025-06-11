@@ -1,0 +1,30 @@
+<div
+  class="berachella"
+  *ngLet="{ tickets: userTickets$ | async, winChance: winChance$ | async } as data"
+>
+  <div class="berachella__box">
+    <img class="blurred-bg" src="assets/images/berachella/blurred-bg.png" alt="" />
+    <img class="ticket" src="assets/images/berachella/ticket.png" alt="" />
+    <app-window-container>
+      <div class="berachella__action-row">
+        <app-berachella-wallet-button></app-berachella-wallet-button>
+        <app-berachella-tickets-input></app-berachella-tickets-input>
+        <app-berachella-tickets-button
+          (handleClick)="signMessage()"
+        ></app-berachella-tickets-button>
+      </div>
+      <div class="berachella__separator"></div>
+      <div class="berachella__info-row">
+        <app-berachella-tickets-info
+          *ngIf="data.tickets !== null"
+          [tickets]="data.tickets"
+        ></app-berachella-tickets-info>
+        <app-berachella-winning-chances
+          *ngIf="data.winChance !== null"
+          [winningChance]="data.winChance"
+        ></app-berachella-winning-chances>
+      </div>
+    </app-window-container>
+    <img class="beads" src="assets/images/berachella/beads.png" alt="" />
+  </div>
+</div>

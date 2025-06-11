@@ -1,0 +1,14 @@
+
+.chances {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+
+  font-size: 15px;
+
+  &__image {
+    display: flex;
+    align-items: center;
+    margin-right: var(--tui-padding-xs);
+  }
+}

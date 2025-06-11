@@ -1,0 +1,13 @@
+<form [formGroup]="ticketsForm">
+  <tui-input-number
+    class="berachella-input"
+    [tuiTextfieldLabelOutside]="true"
+    formControlName="tickets"
+    [min]="0"
+    [max]="100000"
+    decimal="never"
+    tuiTextfieldSize="m"
+  >
+    Enter amount of tickets
+  </tui-input-number>
+</form>
