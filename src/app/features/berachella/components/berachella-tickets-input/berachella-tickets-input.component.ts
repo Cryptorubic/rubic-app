@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
 
 @Component({
@@ -9,6 +9,8 @@ import { BerachellaStateService } from '@features/berachella/services/berachella
 })
 export class BerachellaTicketsInputComponent {
   public readonly ticketsForm = this.berachellaStateService.ticketsForm;
+
+  @Input({ required: true }) public readonly tickets: number = 100000;
 
   constructor(private readonly berachellaStateService: BerachellaStateService) {}
 }

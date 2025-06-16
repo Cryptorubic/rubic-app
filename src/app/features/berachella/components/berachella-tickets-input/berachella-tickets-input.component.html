@@ -4,9 +4,10 @@
     [tuiTextfieldLabelOutside]="true"
     formControlName="tickets"
     [min]="0"
-    [max]="100000"
+    [max]="tickets"
     decimal="never"
     tuiTextfieldSize="m"
+    [disabled]="tickets === 0"
   >
     Enter amount of tickets
   </tui-input-number>

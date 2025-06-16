@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-import { combineLatestWith, map, startWith, tap } from 'rxjs/operators';
+import { combineLatestWith, map, startWith } from 'rxjs/operators';
 import { basePath, blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { AuthService } from '@core/services/auth/auth.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -14,7 +14,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BerachellaWalletButtonComponent {
-  public readonly currentUser$ = this.authService.currentUser$.pipe(tap(console.log));
+  public readonly currentUser$ = this.authService.currentUser$;
 
   public readonly profileText$: Observable<string> = this.currentUser$.pipe(
     map(user => (user?.name ? user.name : user?.address)),

@@ -54,12 +54,12 @@ export class BerachellaStateService {
   );
 
   public readonly winChances$: Observable<null | number> = this.userTickets$.pipe(
-    combineLatestWith(this.allTickets$),
-    map(([userTickets, allTickets]) => {
-      if (userTickets === null || allTickets === null) {
+    combineLatestWith(this.ticketsForm.controls.tickets.valueChanges),
+    map(([userTickets, selectedTickets]) => {
+      if (userTickets === null || selectedTickets === null || selectedTickets === 0) {
         return null;
       }
-      const chance = (userTickets / allTickets) * 100;
+      const chance = (userTickets / selectedTickets) * 100;
       return Math.round(chance * 100) / 100;
     })
   );

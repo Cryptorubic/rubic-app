@@ -8,7 +8,7 @@
     <app-window-container>
       <div class="berachella__action-row">
         <app-berachella-wallet-button></app-berachella-wallet-button>
-        <app-berachella-tickets-input></app-berachella-tickets-input>
+        <app-berachella-tickets-input [tickets]="data.tickets"></app-berachella-tickets-input>
         <app-berachella-tickets-button
           (handleClick)="signMessage()"
         ></app-berachella-tickets-button>

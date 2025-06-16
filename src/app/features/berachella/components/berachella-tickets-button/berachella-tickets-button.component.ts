@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
 import { BerachellaActionService } from '@features/berachella/services/berachella-action.service';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-berachella-tickets-button',
@@ -9,7 +10,7 @@ import { BerachellaActionService } from '@features/berachella/services/berachell
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BerachellaTicketsButtonComponent {
-  public readonly isValid$ = this.stateService.isValid$;
+  public readonly isValid$ = this.stateService.isValid$.pipe(map(Boolean));
 
   @Output() public readonly handleClick = new EventEmitter<void>();
 

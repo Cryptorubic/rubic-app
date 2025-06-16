@@ -19,9 +19,7 @@ export class BerachellaComponent {
     private readonly actionService: BerachellaActionService
   ) {}
 
-  public signMessage(): void {
-    this.actionService.signMessage().then(el => {
-      console.log(el);
-    });
+  public async signMessage(): Promise<void> {
+    await this.actionService.signMessage();
   }
 }
