@@ -117,7 +117,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
       bgColor: '#2a74db',
       fromSdk: false,
-      getLabel: () => 'Earn $WON!',
+      getLabel: () => 'Earn $WAN!',
       showLabel: () => true
     }
   ],
@@ -126,7 +126,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
       bgColor: '#2a74db',
       fromSdk: false,
-      getLabel: () => 'Earn $WON!',
+      getLabel: () => 'Earn $WAN!',
       showLabel: () => true
     }
   ]
