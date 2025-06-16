@@ -5,6 +5,7 @@
   appearance="secondary"
   type="button"
   size="m"
+  (click)="logout()"
 >
   <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
     <div class="berachella-wallet-button__avatar">

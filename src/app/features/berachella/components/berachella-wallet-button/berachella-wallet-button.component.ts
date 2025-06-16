@@ -44,4 +44,8 @@ export class BerachellaWalletButtonComponent {
     this.gtmService.fireClickOnConnectWalletButtonEvent();
     this.modalService.openWalletModal(this.injector).subscribe();
   }
+
+  public logout(): void {
+    this.authService.disconnectWallet();
+  }
 }
