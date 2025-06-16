@@ -67,7 +67,7 @@ export class TradeViewContainerComponent {
   );
 
   public readonly resetCarouselDuration$ = this.authService.currentUser$.pipe(
-    switchMap(() => concat(of(0), of(10000).pipe(delay(100))))
+    switchMap(() => concat(of(0), of(60000).pipe(delay(100))))
   );
 
   public readonly resetCarouselIndex$ = this.authService.currentUser$.pipe(switchMap(() => of(0)));
