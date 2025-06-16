@@ -40,6 +40,12 @@
   }
 }
 
+@mixin berachella {
+  html.berachella & {
+    @content;
+  }
+}
+
 @mixin ios {
   @content;
 }

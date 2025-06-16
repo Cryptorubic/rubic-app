@@ -79,6 +79,7 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
+import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berachella.directive';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
     DepositRateChangedModalComponent,
     ShowPriceChangePipe,
     ShortenTextPipe,
-    MathAbsPipe
+    MathAbsPipe,
+    NoBerachellaDirective
   ],
   imports: [
     CommonModule,
@@ -212,7 +214,8 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
     SpindleBannerComponent,
     ShowPriceChangePipe,
     ShortenTextPipe,
-    MathAbsPipe
+    MathAbsPipe,
+    NoBerachellaDirective
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })

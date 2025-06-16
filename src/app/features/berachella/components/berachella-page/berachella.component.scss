@@ -4,6 +4,10 @@
   display: flex;
   justify-content: center;
 
+  @include berachella {
+    margin-top: 50px;
+  }
+
   &__box {
     position: relative;
 
@@ -48,11 +52,3 @@
   filter: drop-shadow(4px 4px 10px rgba(17, 13, 29, 0.35));
 }
 
-.beads {
-  position: absolute;
-  bottom: -80px;
-  left: -55px;
-  z-index: -1;
-
-  filter: drop-shadow(4px 4px 10px rgba(17, 13, 29, 0.35));
-}

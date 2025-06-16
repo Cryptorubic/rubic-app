@@ -99,7 +99,9 @@
     </ng-template>
   </div>
 
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
+  <ng-container *noBerachella>
+    <ng-container *noFrame>
+      <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
+    </ng-container>
   </ng-container>
 </header>
