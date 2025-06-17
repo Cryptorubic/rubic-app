@@ -40,7 +40,7 @@ export class BerachellaStateService {
       } else {
         return this.apiService
           .fetchUserTickets(user.address)
-          .pipe(map(el => Math.min(0, el.totalBerachellaTickets - el.totalSubmittedTickets)));
+          .pipe(map(el => Math.max(0, el.totalBerachellaTickets - el.totalSubmittedTickets)));
       }
     }),
     startWith(null),
