@@ -59,6 +59,10 @@
 
     transition: all 100ms;
 
+    @include b(mobile) {
+      gap: 2px;
+    }
+
     &:hover {
       background: var(--tui-secondary-hover);
       cursor: pointer;

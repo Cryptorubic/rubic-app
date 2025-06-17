@@ -27,6 +27,8 @@ import { IframeService } from '@core/services/iframe-service/iframe.service';
 export class MobileNativeModalComponent implements OnInit, OnDestroy {
   public title: string = this.context.title;
 
+  public showMobileMenu: boolean = this.context.showMobileMenu;
+
   public state: ModalStates;
 
   public readonly isIframe$ = this.iframeService.isIframe$;
@@ -41,6 +43,7 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
     private readonly iframeService: IframeService // private readonly tokensListService: TokensListService
   ) {
     this.subscribeOnModal();
+    this.modalService.setModalEl({ elRef: el, context: context });
   }
 
   ngOnInit(): void {

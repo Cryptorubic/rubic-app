@@ -16,5 +16,5 @@
     <div *polymorpheusOutlet="context.content; context: context"></div>
   </div>
 
-  <app-mobile-menu></app-mobile-menu>
+  <app-mobile-menu *ngIf="showMobileMenu"></app-mobile-menu>
 </div>
