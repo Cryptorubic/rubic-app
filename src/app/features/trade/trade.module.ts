@@ -23,7 +23,13 @@ import {
   TuiScrollbarModule,
   TuiTextfieldControllerModule
 } from '@taiga-ui/core';
-import { TuiInputModule, TuiInputNumberModule, TuiTagModule, TuiToggleModule } from '@taiga-ui/kit';
+import {
+  TuiCarouselModule,
+  TuiInputModule,
+  TuiInputNumberModule,
+  TuiTagModule,
+  TuiToggleModule
+} from '@taiga-ui/kit';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { PreviewSwapComponent } from './components/preview-swap/preview-swap.component';
 import { ActionButtonComponent } from './components/action-button/action-button.component';
@@ -126,7 +132,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     TuiLoaderModule,
     AssetsSelectorModule,
     TuiNotificationModule,
-    TuiModeModule
+    TuiModeModule,
+    TuiCarouselModule
     // SwapsRoutingModule,
     // SwapsSharedModule,
     // InstantTradeModule,

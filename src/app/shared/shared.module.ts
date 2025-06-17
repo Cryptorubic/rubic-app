@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -79,6 +79,7 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
+import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 
 @NgModule({
   declarations: [
@@ -132,7 +133,8 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
     DepositRateChangedModalComponent,
     ShowPriceChangePipe,
     ShortenTextPipe,
-    MathAbsPipe
+    MathAbsPipe,
+    HypelabBannerComponent
   ],
   imports: [
     CommonModule,
@@ -212,8 +214,10 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
     SpindleBannerComponent,
     ShowPriceChangePipe,
     ShortenTextPipe,
-    MathAbsPipe
+    MathAbsPipe,
+    HypelabBannerComponent
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}
