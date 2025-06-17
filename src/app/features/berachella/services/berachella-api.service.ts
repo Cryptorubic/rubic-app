@@ -59,7 +59,7 @@ export class BerachellaApiService {
   public verifySignature(data: ApiVerifySignatureRequest): Observable<ApiVerifySignatureResponse> {
     return this.httpService
       .post<ApiVerifySignatureResponse>(
-        `/verify_message`,
+        `/verify_signature`,
         data,
         this.mainnetUrl,
         this.defaultRetryOptions
