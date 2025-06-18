@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { combineLatestWith, map, startWith, switchMap } from 'rxjs/operators';
 import { distinctUntilChanged, Observable, of, shareReplay } from 'rxjs';
@@ -10,6 +10,8 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 
 @Injectable()
 export class BerachellaStateService {
+  public readonly updateTickets$ = new EventEmitter<void>();
+
   private readonly currentUser$ = this.authService.currentUser$.pipe(
     distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
     map(user => {
@@ -34,7 +36,8 @@ export class BerachellaStateService {
   );
 
   public readonly userTickets$: Observable<null | number> = this.currentUser$.pipe(
-    switchMap(user => {
+    combineLatestWith(this.updateTickets$.pipe(startWith(null))),
+    switchMap(([user]) => {
       if (!user?.address) {
         return of(null);
       } else {
@@ -47,20 +50,23 @@ export class BerachellaStateService {
     shareReplay(shareReplayConfig)
   );
 
-  private readonly allTickets$: Observable<null | number> = this.apiService.fetchStats().pipe(
-    map(el => (el ? el.totalBerachellaTickets : null)),
-    startWith(null),
-    shareReplay(shareReplayConfig)
-  );
+  private readonly allSubmittedTickets$: Observable<null | number> = this.apiService
+    .fetchStats()
+    .pipe(
+      map(el => (el ? el.totalSubmittedTickets : null)),
+      startWith(null),
+      shareReplay(shareReplayConfig)
+    );
 
-  public readonly winChances$: Observable<null | number> = this.userTickets$.pipe(
+  public readonly winChances$: Observable<null | number> = this.allSubmittedTickets$.pipe(
     combineLatestWith(this.ticketsForm.controls.tickets.valueChanges),
     map(([userTickets, selectedTickets]) => {
       if (userTickets === null || selectedTickets === null || selectedTickets === 0) {
         return null;
       }
-      const chance = (userTickets / selectedTickets) * 100;
-      return Math.round(chance * 100) / 100;
+      const chance = (selectedTickets / userTickets) * 100;
+      const roundedChance = Math.round(chance * 100) / 100;
+      return Math.min(100, roundedChance);
     })
   );
 

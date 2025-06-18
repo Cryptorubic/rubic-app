@@ -35,6 +35,7 @@ export class BerachellaActionService {
         throw new Error('Invalid signature');
       }
       this.notificationService.showSuccessNotification();
+      this.stateService.updateTickets$.emit();
     } catch (error) {
       this.notificationService.showErrorNotification(error);
     } finally {
