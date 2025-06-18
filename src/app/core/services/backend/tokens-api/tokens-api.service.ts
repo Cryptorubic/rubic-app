@@ -306,7 +306,8 @@ export class TokensApiService {
           const repeated = acc.find(t => compareTokens(t, token));
           return repeated ? acc : acc.push(token);
         }, List() as List<Token>);
-      })
+      }),
+      catchError(() => of(List() as List<Token>))
     );
   }
 
