@@ -10,7 +10,7 @@ import { filter, pairwise } from 'rxjs/operators';
 import { CoreModule } from '@core/core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgxGoogleAnalyticsModule, provideGoogleAnalytics } from '@hakimio/ngx-google-analytics';
+import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
 import * as Sentry from '@sentry/angular-ivy';
 
@@ -34,7 +34,6 @@ import * as Sentry from '@sentry/angular-ivy';
   ],
   providers: [
     MOBILE_NATIVE_MODAL_PROVIDER,
-    provideGoogleAnalytics('G-QHYCGJXV8G'),
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({

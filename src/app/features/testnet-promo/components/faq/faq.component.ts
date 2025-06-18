@@ -42,6 +42,11 @@ export class FaqComponent {
       title: 'For how long can I join the event?',
       answer:
         'You can join the event until all 300,000 RBC are distributed. You can track the current week’s progress and your rewards in the snapshot window on the left side of the page.'
+    },
+    {
+      title: 'Can I use multiple wallets to participate?',
+      answer:
+        'No, using multiple wallets to farm this event is strictly prohibited. The Rubic team will detect and exclude additional wallets from the claim list, allowing only the original wallet to remain eligible.<br/><br/>If you have any questions or need clarification, feel free to reach out to Rubic Support'
     }
   ];
 }
