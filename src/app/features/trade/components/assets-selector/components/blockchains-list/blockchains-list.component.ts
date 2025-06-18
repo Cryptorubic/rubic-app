@@ -10,9 +10,9 @@ import { FormType } from '@app/features/trade/models/form-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
+import { allChainsSelectorItem } from '../../constants/all-chains';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -25,7 +25,7 @@ export class BlockchainsListComponent implements OnDestroy {
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  private readonly blockchainsTags = BlockchainTags;
+  public readonly allChainsSelectorItem = allChainsSelectorItem;
 
   constructor(
     @Optional()
@@ -65,8 +65,10 @@ export class BlockchainsListComponent implements OnDestroy {
     }
   }
 
-  public onBlockchainSelect(blockchainName: BlockchainName): void {
-    this.assetsSelectorService.onBlockchainSelect(blockchainName);
+  public onItemClick(blockchainName: BlockchainName | null): void {
+    if (blockchainName === null) this.assetsSelectorService.onAllChainsSelect();
+    else this.assetsSelectorService.onBlockchainSelect(blockchainName);
+
     this.mobileNativeService.forceClose();
   }
 

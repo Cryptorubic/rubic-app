@@ -15,7 +15,7 @@ export class TokensListTypeService {
     return this._listType$.value;
   }
 
-  public set listType(value: TokensListType) {
+  private set listType(value: TokensListType) {
     this._listType$.next(value);
   }
 

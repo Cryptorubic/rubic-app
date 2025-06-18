@@ -1,6 +1,5 @@
 import { Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ModalService } from './services/modal.service';
 import { modalServiceFactory } from './modal-service-factory';
 import { WindowWidthService } from '../services/widnow-width-service/window-width.service';
 import { AbstractModalService } from './services/abstract-modal.service';
@@ -14,7 +13,6 @@ import { SharedModule } from '@app/shared/shared.module';
   imports: [CommonModule, SharedModule, PolymorpheusModule, InlineSVGModule, TuiSwipeModule],
   declarations: [MobileNativeModalComponent],
   providers: [
-    ModalService,
     {
       provide: AbstractModalService,
       useFactory: modalServiceFactory,

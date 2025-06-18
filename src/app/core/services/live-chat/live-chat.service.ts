@@ -3,6 +3,7 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WindowWidthService } from '@core/services/widnow-width-service/window-width.service';
 import { WindowSize } from '@core/services/widnow-width-service/models/window-size';
+import { ModalService } from '@app/core/modals/services/modal.service';
 
 @Injectable({ providedIn: 'root' })
 export class LiveChatService {
@@ -18,7 +19,8 @@ export class LiveChatService {
 
   constructor(
     @Inject(WINDOW) private readonly window: RubicWindow,
-    private readonly windowWidth: WindowWidthService
+    private readonly windowWidth: WindowWidthService,
+    private readonly modalService: ModalService
   ) {}
 
   public initMessageListener(): void {
@@ -77,6 +79,7 @@ export class LiveChatService {
       this.closeLiveChat(livechat);
     }
     if (action === 'show') {
+      this.modalService.closeModal();
       this.openLiveChat(livechat, customPosition);
     }
   }
@@ -110,12 +113,6 @@ export class LiveChatService {
     liveChat.style.top = top;
     liveChat.style.bottom = bottom;
     liveChat.contentWindow.postMessage({ type: 'lc_visibility', value: 'maximize' }, '*');
-    setTimeout(() => {
-      liveChat.height = height;
-      liveChat.width = '100%';
-      liveChat.style.top = top;
-      liveChat.style.bottom = bottom;
-    }, 100);
     this._isIframeOpened = true;
   }
 }

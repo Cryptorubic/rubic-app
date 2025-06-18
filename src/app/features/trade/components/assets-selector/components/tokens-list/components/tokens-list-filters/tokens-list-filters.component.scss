@@ -14,6 +14,7 @@
 
     @include b($mobile-md) {
       margin-top: 5px;
+      margin-left: 5px;
 
       background-color: transparent;
       border-radius: var(--tui-radius-m);
@@ -58,6 +59,10 @@
 
     transition: all 100ms;
 
+    @include b(mobile) {
+      gap: 2px;
+    }
+
     &:hover {
       background: var(--tui-secondary-hover);
       cursor: pointer;
@@ -70,7 +75,11 @@
 
   .token-filter__text {
     line-height: 15px;
-  }
 
-  // .token-filter__icon {}
+    @include b(mobile) {
+      font-size: 11px;
+      white-space: no-wrap;
+      text-align: center;
+    }
+  }
 }
