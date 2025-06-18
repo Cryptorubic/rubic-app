@@ -27,12 +27,25 @@
     gap: var(--tui-padding-s);
     justify-content: space-between;
     padding-top: 30px;
+
+    @include b(599) {
+      flex-direction: column;
+      align-items: center;
+      max-width: 300px;
+      margin: 0 auto;
+    }
   }
 
   &__info-row {
     display: flex;
     justify-content: space-between;
     height: 24px;
+
+    @include b(430) {
+      flex-direction: column;
+      align-items: center;
+      height: 48px;
+    }
   }
 }
 
@@ -50,5 +63,11 @@
   z-index: 1;
 
   filter: drop-shadow(4px 4px 10px rgba(17, 13, 29, 0.35));
+
+  @include b(860) {
+    top: -23px;
+
+    width: 70px;
+  }
 }
 

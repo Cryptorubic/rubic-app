@@ -1,9 +1,15 @@
+@use 'src/scss/core' as *;
+
+:host {
+  @include b(599) {
+    width: 100%;
+  }
+}
+
 .berachella-input {
-  //background:  var(--tui-base-01);
-  //border-radius: var(--tui-radius-m);
-  //border: none;
-  //height: var(--tui-height-m);
-  //font: var(--tui-font-text-m);
-  //padding: 0 var(--tui-padding, 1.5rem);
   width: 228px;
+
+  @include b(599) {
+    width: 100%;
+  }
 }
