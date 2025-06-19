@@ -25,6 +25,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -52,6 +53,13 @@ export class WalletsModalComponent implements OnInit {
     const isChromiumProviders = this.isChromium
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
+
+    // Show only supported EVM networks for berachella promo
+    if (this.queryParamsService.isBerachella) {
+      return isChromiumProviders.filter(
+        el => el.supportBerachella && (this.isMobile ? el.supportsMobile : el.supportsDesktop)
+      );
+    }
 
     return this.isMobile
       ? isChromiumProviders.filter(provider => provider.supportsMobile)
@@ -88,7 +96,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly browserService: BrowserService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
-    private readonly iframeService: IframeService
+    private readonly iframeService: IframeService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   ngOnInit() {

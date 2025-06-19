@@ -19,7 +19,14 @@
 </button>
 
 <ng-template #noWallet>
-  <button tuiButton type="button" size="m" (click)="showModal()" appearance="primary">
+  <button
+    class="login-button"
+    tuiButton
+    type="button"
+    size="m"
+    (click)="showModal()"
+    appearance="primary"
+  >
     {{ 'navigation.login' | translate }}
   </button>
 </ng-template>

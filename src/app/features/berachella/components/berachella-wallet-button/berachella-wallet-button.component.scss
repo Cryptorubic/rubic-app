@@ -7,10 +7,10 @@
 }
 
 .berachella-wallet-button {
-
   --tui-secondary: var(--tui-base-01);
   --tui-secondary-hover: var(--tui-secondary);
   --tui-secondary-active: #2c2d36;
+
   @include b(599) {
     width: 100%;
   }
@@ -22,4 +22,9 @@
   }
 }
 
+.login-button {
+  @include b(599) {
+    width: 100%;
+  }
+}
 

@@ -9,7 +9,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: true
   },
   {
     name: 'TronLink',
@@ -18,7 +19,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Trust Wallet',
@@ -27,16 +29,18 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: false,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: true
   },
   {
     name: 'Coinbase Wallet',
     value: WALLET_NAME.COIN_BASE,
     img: './assets/images/icons/wallets/coinbase.png',
-    supportsDesktop: true,
+    supportsDesktop: false,
     supportsMobile: false,
-    display: true,
-    disabled: false
+    display: false,
+    disabled: true,
+    supportBerachella: false
   },
   {
     name: 'WalletConnect',
@@ -45,7 +49,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: true
   },
   {
     name: 'Argent',
@@ -54,7 +59,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'BitGet',
@@ -63,7 +69,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Phantom',
@@ -72,7 +79,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Solflare',
@@ -81,7 +89,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Safe',
@@ -90,7 +99,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: false,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'TokenPocket',
@@ -99,7 +109,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'TonConnect',
@@ -108,7 +119,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'HoldStation',
@@ -117,7 +129,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Ctrl Wallet',
@@ -126,7 +139,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Slush',
@@ -135,7 +149,8 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   },
   {
     name: 'Suiet Wallet',
@@ -144,6 +159,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: false,
     display: true,
-    disabled: false
+    disabled: false,
+    supportBerachella: false
   }
 ];
