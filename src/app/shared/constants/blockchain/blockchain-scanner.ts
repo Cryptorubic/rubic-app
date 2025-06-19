@@ -772,11 +772,11 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.TON]: {
-    baseUrl: 'https://tonviewer.com/',
+    baseUrl: 'https://tonscan.org/',
     nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: '',
-    [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'jetton/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.VE_CHAIN]: {
@@ -1256,14 +1256,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
-  [BLOCKCHAIN_NAME.SUI]: {
-    baseUrl: 'https://suiscan.xyz/mainnet/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'account/',
-    [ADDRESS_TYPE.TOKEN]: 'coin/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   }
