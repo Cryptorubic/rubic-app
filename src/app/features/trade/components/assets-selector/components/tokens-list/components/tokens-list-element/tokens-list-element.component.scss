@@ -54,6 +54,11 @@
     gap: 10px;
   }
 
+  &__right {
+    @include flex(column, center, center);
+    gap: 2px;
+  }
+
   &__actions {
     display: flex;
     gap: 5px;
@@ -80,6 +85,7 @@
     color: var(--tui-text-03);
     font-size: 12px;
     line-height: 12px;
+    white-space: nowrap;
   }
 
   &__price-change-container {
@@ -114,8 +120,9 @@
 
 @include b($mobile-md) {
   .token-card {
-    gap: var(--tui-padding-l);
-    padding: var(--tui-padding-s) var(--tui-padding-l);
+    gap: var(--tui-padding-s);
+    width: 290px;
+    padding: var(--tui-padding-s);
 
     background: var(--io-background);
     border-radius: var(--tui-radius-m);
@@ -133,6 +140,10 @@
       }
     }
 
+    &__symbol-name-container {
+      margin-right: 0;
+    }
+
     &__symbol {
       font-weight: 500;
       font-size: 18px;
@@ -141,7 +152,7 @@
 
     &__amount {
       font-weight: 500;
-      font-size: 18px;
+      font-size: 14px;
       letter-spacing: 0.54px;
     }
   }
