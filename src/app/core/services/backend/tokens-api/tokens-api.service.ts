@@ -6,6 +6,7 @@ import { Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
+  BackendTokenForAllChains,
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
@@ -21,9 +22,17 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import {
+  BackendBlockchain,
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  FROM_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_BLOCKCHAINS
+} from 'rubic-sdk';
+import { ENVIRONMENT } from 'src/environments/environment';
+
+import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
 
 /**
  * Perform backend requests and transforms to get valid tokens.
@@ -210,25 +219,32 @@ export class TokensApiService {
   }
 
   /**
-   * Fetches specific tokens by symbol or address.
-   * @param requestOptions Request options to search tokens by.
-   * @return Observable<TokensListResponse> Tokens response from backend with count.
+   * Fetches specific tokens by symbol/address from specific chain or from all chains
    */
-  public fetchQueryTokens(requestOptions: TokensRequestQueryOptions): Observable<List<Token>> {
+  public fetchQueryTokens(
+    query: string,
+    blockchain: BlockchainName | null
+  ): Observable<List<Token>> {
     const options = {
-      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
-      ...(requestOptions.symbol && { query: requestOptions.symbol.toLowerCase() }),
-      ...(requestOptions.address && { address: requestOptions.address.toLowerCase() })
+      query,
+      ...(blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[blockchain] })
     };
-    return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
-      .pipe(
-        map(tokensResponse =>
-          tokensResponse.results.length
-            ? TokensApiService.prepareTokens(tokensResponse.results)
-            : List()
-        )
-      );
+
+    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
+      catchError(() => {
+        return of({
+          count: 0,
+          next: '0',
+          previous: '0',
+          results: [] as BackendToken[]
+        });
+      }),
+      map(tokensResponse =>
+        tokensResponse.results.length
+          ? TokensApiService.prepareTokens(tokensResponse.results)
+          : List()
+      )
+    );
   }
 
   /**
@@ -238,7 +254,7 @@ export class TokensApiService {
    */
   public fetchTokenSecurity(requestOptions: TokensRequestQueryOptions): Observable<TokenSecurity> {
     const options = {
-      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+      ...(requestOptions.network && { network: TO_BACKEND_BLOCKCHAINS[requestOptions.network] }),
       ...(requestOptions.address && { address: requestOptions.address })
     };
 
@@ -276,6 +292,32 @@ export class TokensApiService {
           };
         })
       );
+  }
+
+  public fetchTokensListForAllChains(): Observable<List<Token>> {
+    return forkJoin([
+      this.httpService
+        .get<TokensBackendResponse>('v2/tokens/top')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
+      this.httpService
+        .get<BackendTokenForAllChains[]>('v2/tokens/allchains')
+        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+    ]).pipe(
+      map(([topTokens, allChainsTokens]) => {
+        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
+        return topTokens.concat(allChainsTokens).reduce((acc, token) => {
+          // not show 2nd metis native token in selector
+          if (
+            token.blockchain === BLOCKCHAIN_NAME.METIS &&
+            compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+          ) {
+            return acc;
+          }
+          const repeated = acc.find(t => compareTokens(t, token));
+          return repeated ? acc : acc.push(token);
+        }, List() as List<Token>);
+      })
+    );
   }
 
   public getFakeTokens(): BackendToken[] {

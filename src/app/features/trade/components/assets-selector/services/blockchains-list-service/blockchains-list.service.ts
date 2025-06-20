@@ -32,6 +32,7 @@ import { AssetsSearchQueryService } from '../assets-search-query-service/assets-
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { isNil } from '@app/shared/utils/utils';
+import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 
 @Injectable()
 export class BlockchainsListService {
@@ -76,6 +77,7 @@ export class BlockchainsListService {
     private readonly queryParamsService: QueryParamsService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly assetsSearchQueryService: AssetsSearchQueryService,
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
@@ -179,9 +181,13 @@ export class BlockchainsListService {
 
   private setChainInTopOfAssetsBlockchains(fromToken: TokenAmount, toToken: TokenAmount): void {
     let firstSelectedChainName =
-      this.assetsSelectorService.formType === 'from' ? fromToken?.blockchain : toToken?.blockchain;
+      this.assetsSelectorStateService.formType === 'from'
+        ? fromToken?.blockchain
+        : toToken?.blockchain;
     const chainFromOppositeSelector =
-      this.assetsSelectorService.formType === 'from' ? toToken?.blockchain : fromToken?.blockchain;
+      this.assetsSelectorStateService.formType === 'from'
+        ? toToken?.blockchain
+        : fromToken?.blockchain;
     if (!firstSelectedChainName) firstSelectedChainName = chainFromOppositeSelector;
     const firstAssetIndex = this.assetsBlockchainsToShow.findIndex(
       asset => asset?.name === firstSelectedChainName
@@ -207,11 +213,11 @@ export class BlockchainsListService {
   }
 
   public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
-    return this.assetsSelectorService.formType === 'from' && blockchain.disabledFrom;
+    return this.assetsSelectorStateService.formType === 'from' && blockchain.disabledFrom;
   }
 
   public isDisabledTo(_blockchain: AvailableBlockchain): boolean {
-    if (this.assetsSelectorService.formType !== 'to') {
+    if (this.assetsSelectorStateService.formType !== 'to') {
       return false;
     }
     const fromAssetType = this.assetsSelectorService.getAssetType('from');
@@ -219,14 +225,11 @@ export class BlockchainsListService {
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
-    if (this.isDisabledFrom(blockchain)) {
-      return 'Select as target network';
+    if (blockchain.disabledConfiguration || this.isDisabledFrom(blockchain)) {
+      return 'Temporary disabled';
     }
     if (this.isDisabledTo(blockchain)) {
       return 'Cannot trade with fiats';
-    }
-    if (blockchain.disabledConfiguration) {
-      return 'Temporary disabled';
     }
     return null;
   }

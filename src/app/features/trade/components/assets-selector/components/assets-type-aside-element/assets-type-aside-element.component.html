@@ -1,0 +1,27 @@
+<ng-container *ngLet="blockchainItem | functionCall : isItemDisabled : this as isDisabled">
+  <button
+    class="asset-types-aside__list-element"
+    [class.disabled]="isDisabled"
+    [class.selected]="isSelected"
+    [id]="id"
+    tuiButton
+    size="l"
+    type="button"
+    appearance="secondary"
+    [disabled]="isDisabled"
+    [tuiHint]="blockchainItem | functionCall : getHintText : this"
+    (click)="onItemClick(blockchainItem)"
+  >
+    <div class="icon">
+      <img class="icon-img" [src]="blockchainItem.icon" [alt]="blockchainItem.label" />
+      <span class="icon-label">{{ blockchainItem.label }}</span>
+    </div>
+
+    <ng-container *ngIf="!isMobile && getBlockchainTag(blockchainItem) as tag">
+      <app-blockchains-promo-badge
+        [tag]="tag"
+        [blockchain]="blockchainItem.name"
+      ></app-blockchains-promo-badge>
+    </ng-container>
+  </button>
+</ng-container>

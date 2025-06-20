@@ -11,6 +11,9 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { List } from 'immutable';
 import { Token } from '@shared/models/tokens/token';
+import { BalanceLoaderService } from './balance-loader.service';
+import { BalanceLoadingStateService } from './balance-loading-state.service';
+import { TokensUpdaterService } from './tokens-updater.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,8 +48,11 @@ export class TokensNetworkService {
 
   constructor(
     private readonly tokensStoreService: TokensStoreService,
+    private readonly balanceLoaderService: BalanceLoaderService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly tokensApiService: TokensApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly tokensUpdaterService: TokensUpdaterService
   ) {
     this.setupSubscriptions();
   }
@@ -59,7 +65,7 @@ export class TokensNetworkService {
         }),
         tap(backendTokens => {
           this.tokensStoreService.updateStorageTokens(backendTokens);
-          this.tokensStoreService.patchTokens(backendTokens, false);
+          this.tokensStoreService.patchTokens(backendTokens);
         }),
         switchMap(backendTokens => {
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
@@ -83,9 +89,9 @@ export class TokensNetworkService {
         bT.blockchain === blockchain &&
         !this.tokensStoreService.tokens.some(t => compareTokens(bT, t))
     );
-    if (newAddedTokens.size && this.tokensStoreService.balanceCalculatingStarted(blockchain)) {
+    if (newAddedTokens.size && this.balanceLoadingStateService.isBalanceCalculated(blockchain)) {
       this.tokensStoreService.patchTokensBalances(
-        await this.tokensStoreService.getTokensWithBalance(newAddedTokens)
+        await this.balanceLoaderService.getTokensWithBalance(newAddedTokens)
       );
     }
   }
@@ -124,7 +130,7 @@ export class TokensNetworkService {
         tap(() => this.updateNetworkPage(blockchain)),
         switchMap(async ([_, tokensResponse]) => {
           if (this.userAddress) {
-            const tokensWithBalance = await this.tokensStoreService.getTokensWithBalance(
+            const tokensWithBalance = await this.balanceLoaderService.getTokensWithBalance(
               tokensResponse.result
             );
             if (tokensWithBalance.size) {
@@ -138,7 +144,8 @@ export class TokensNetworkService {
         })
       )
       .subscribe((tokens: TokenAmount[]) => {
-        this.tokensStoreService.patchTokens(List(tokens), false);
+        this.tokensStoreService.patchTokens(List(tokens));
+        this.tokensUpdaterService.triggerUpdateTokens();
       });
   }
 }

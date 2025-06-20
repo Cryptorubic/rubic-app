@@ -214,6 +214,17 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.BERACHAIN,
+    rank: 0.75,
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.NEW,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2
+    ]
+  },
+  {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.75,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
@@ -241,9 +252,19 @@ export const blockchainsList: RankedBlockchain[] = [
     ]
   },
   {
+    name: BLOCKCHAIN_NAME.FRAXTAL,
+    rank: 0.5,
+    tags: ['frxETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  },
+  {
     name: BLOCKCHAIN_NAME.SONIC,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
+  },
+  {
+    name: BLOCKCHAIN_NAME.SONEIUM,
+    rank: 0.5,
+    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
@@ -421,6 +442,17 @@ export const blockchainsList: RankedBlockchain[] = [
   // BLOCKCHAIN_NAME.THETA,
   ...notEvmChangeNowFormattedBlockchainsList
 ];
+
+export const blockchainRanks: Record<BlockchainName, number> = {
+  ...Object.values(BLOCKCHAIN_NAME).reduce(
+    (acc, name) => ({ ...acc, [name]: 0 }),
+    {} as Record<BlockchainName, number>
+  ),
+  ...blockchainsList.reduce(
+    (acc, chainConfig) => ({ ...acc, [chainConfig.name]: chainConfig.rank }),
+    {} as Record<BlockchainName, number>
+  )
+};
 
 export type NotEvmChangeNowBlockchainsList =
   (typeof notEvmChangeNowBlockchainsList)[keyof typeof notEvmChangeNowBlockchainsList];

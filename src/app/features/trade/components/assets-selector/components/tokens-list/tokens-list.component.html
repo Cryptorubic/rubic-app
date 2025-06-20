@@ -3,6 +3,9 @@
     <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
+
+  <!-- <app-tokens-list-filters> </app-tokens-list-filters> -->
+
   <tui-scrollbar
     class="tokens-container"
     [ngClass]="{ 'large-iframe-token-container': useLargeIframe }"
@@ -38,6 +41,7 @@
               >
                 <app-tokens-list-element
                   [token]="token"
+                  [showAll]="showAll"
                   [balanceLoading]="isBalanceLoading$ | async"
                   (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>

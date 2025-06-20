@@ -230,5 +230,17 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MORPH]: {
     name: 'Morph',
     rpc: 'https://rpc-quicknode.morphl2.io'
+  },
+  [BLOCKCHAIN_NAME.FRAXTAL]: {
+    name: 'Fraxtal',
+    rpc: 'https://rpc.frax.com'
+  },
+  [BLOCKCHAIN_NAME.BERACHAIN]: {
+    name: 'Berachain',
+    rpc: 'https://rpc.berachain.com/'
+  },
+  [BLOCKCHAIN_NAME.SONEIUM]: {
+    name: 'Soneium',
+    rpc: 'https://rpc.soneium.org/'
   }
 };

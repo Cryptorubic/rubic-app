@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -14,6 +14,11 @@ import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SpindlService } from './core/services/spindl-ads/spindl.service';
+import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokensStoreService } from './core/services/tokens/tokens-store.service';
+import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
+import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
+import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 
 @Component({
   selector: 'app-root',
@@ -35,17 +40,41 @@ export class AppComponent implements AfterViewInit {
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly spindlService: SpindlService
+    private readonly spindlService: SpindlService,
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensStoreService: TokensStoreService,
+    private readonly balanceLoadingStateService: BalanceLoadingStateService,
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly tradePageService: TradePageService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
     this.spindlService.initSpindlAds();
+    this.subscribeOnWalletChanges();
   }
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+  }
+
+  private subscribeOnWalletChanges(): void {
+    this.walletConnectorService.addressChange$.subscribe(() => {
+      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+
+      // load allchains in background if token's selector closed if not loaded yet
+      if (
+        this.assetsSelectorStateService.assetType !== 'allChains' &&
+        this.tradePageService.formContent === 'form' &&
+        !this.balanceLoadingStateService.isBalanceCalculated('allChains')
+      ) {
+        this.tokensStoreService.startBalanceCalculating('allChains');
+      }
+
+      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+    });
   }
 
   /**
