@@ -271,9 +271,9 @@ export class SwapsControllerService {
       }
     }
 
-    if (!txHash) return;
-
-    await this.handleSwapResponse(txHash, callback.onSwap);
+    if (txHash) {
+      callback.onSwap?.();
+    }
   }
 
   public async approve(
@@ -400,11 +400,6 @@ export class SwapsControllerService {
       return trade.needAuthWallet;
     }
     return false;
-  }
-
-  private async handleSwapResponse(txHash: string, onSwap?: () => void): Promise<void> {
-    onSwap?.();
-    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(
