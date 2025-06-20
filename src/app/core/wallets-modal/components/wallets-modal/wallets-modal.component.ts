@@ -49,13 +49,17 @@ export class WalletsModalComponent implements OnInit {
     return !tuiIsFirefox(this.userAgent);
   }
 
+  public get isBerachella(): boolean {
+    return this.queryParamsService.isBerachella;
+  }
+
   public get providers(): ReadonlyArray<WalletProvider> {
     const isChromiumProviders = this.isChromium
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
 
     // Show only supported EVM networks for berachella promo
-    if (this.queryParamsService.isBerachella) {
+    if (this.isBerachella) {
       return isChromiumProviders.filter(
         el => el.supportBerachella && (this.isMobile ? el.supportsMobile : el.supportsDesktop)
       );
