@@ -29,16 +29,13 @@ export class BerachellaNotificationService {
   }
 
   public showProgressNotification(): Subscription {
-    return this.notificationsService.show(
-      this.translateService.instant(`testnetPromo.notification.progress`),
-      {
-        status: TuiNotification.Info,
-        autoClose: false,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      }
-    );
+    return this.notificationsService.show('Submit in progress', {
+      status: TuiNotification.Info,
+      autoClose: false,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
   }
 
   public showSuccessNotification(): Subscription {
