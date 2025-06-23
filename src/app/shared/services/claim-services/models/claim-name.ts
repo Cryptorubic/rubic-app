@@ -1,1 +1,1 @@
-export type ClaimName = 'airdrop' | 'retrodrop';
+export type ClaimName = 'airdrop' | 'retrodrop' | 'testnet-promo';

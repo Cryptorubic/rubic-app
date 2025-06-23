@@ -50,6 +50,8 @@ import { IframeService } from '@app/core/services/iframe-service/iframe.service'
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { RefundService } from '../refund-service/refund.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
+import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
+import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 
 @Injectable()
 export class CrossChainService {
@@ -129,10 +131,8 @@ export class CrossChainService {
     fromAmount: BigNumber
   ): Promise<QuoteOptionsInterface> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
-    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes, disabledSubProviders } =
+    const { disabledCrossChainTradeTypes: apiDisabledTradeTypes } =
       this.platformConfigurationService.disabledProviders;
-    const queryLifiDisabledBridges = this.queryParamsService.disabledLifiBridges;
-    const queryRangoDisabledBridges = this.queryParamsService.disabledRangoBridges;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProvidersFromApiAndQuery = Array.from(
@@ -150,16 +150,6 @@ export class CrossChainService {
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: disabledProvidersFromApiAndQuery,
-      foreignBlacklist: {
-        lifi: [
-          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.LIFI] || []),
-          ...(queryLifiDisabledBridges || [])
-        ],
-        rango: [
-          ...(disabledSubProviders[CROSS_CHAIN_TRADE_TYPE.RANGO] || []),
-          ...(queryRangoDisabledBridges || [])
-        ]
-      },
       integratorAddress: providerAddress
     };
 
@@ -256,14 +246,6 @@ export class CrossChainService {
       return transactionHash;
     } catch (error) {
       if (
-        transactionHash &&
-        error instanceof Error &&
-        error.message.includes('Transaction was not mined')
-      ) {
-        await this.crossChainApiService.patchTrade(transactionHash, false);
-      }
-
-      if (
         error instanceof NotWhitelistedProviderError ||
         error instanceof UnapprovedContractError ||
         error instanceof UnapprovedMethodError
@@ -272,8 +254,17 @@ export class CrossChainService {
       }
 
       const parsedError = RubicSdkErrorParser.parseError(error);
-      if (!(parsedError instanceof UserRejectError)) {
+      if (!(error instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
+      }
+
+      if (
+        parsedError instanceof ExecutionRevertedError &&
+        !(error instanceof UserRejectError) &&
+        trade.getTradeInfo().slippage < 5
+      ) {
+        const slippageErr = new LowSlippageError(0.05);
+        throw slippageErr;
       }
 
       throw parsedError;

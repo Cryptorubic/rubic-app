@@ -39,7 +39,6 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { RubicError } from '@core/errors/models/rubic-error';
 import { ON_CHAIN_LONG_TIMEOUT_CHAINS } from './constants/long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
@@ -47,6 +46,8 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
 import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
+import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -227,15 +228,13 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (transactionHash && !this.isNotMinedError(err)) {
-        await this.onChainApiService.patchTrade(transactionHash, false);
-      }
-
       if (
-        err?.message?.includes('execution reverted') &&
-        this.settingsService.instantTradeValue.slippageTolerance < 0.5
+        parsedError instanceof ExecutionRevertedError &&
+        !(err instanceof UserRejectError) &&
+        trade.getTradeInfo().slippage < 3
       ) {
-        throw new RubicError('Please, increase the slippage and try again!');
+        const slippageErr = new LowSlippageError(0.03);
+        throw slippageErr;
       }
 
       throw parsedError;

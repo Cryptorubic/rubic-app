@@ -50,6 +50,7 @@ import {
   hasCentralizationStatus
 } from '../../constants/centralization-status';
 import { RefundService } from '../refund-service/refund.service';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
 
 @Injectable()
 export class SwapsStateService {
@@ -229,6 +230,17 @@ export class SwapsStateService {
     } else {
       this.setCalculationProgress(0, 0);
     }
+  }
+
+  public removeOldProvider(tradeType: CrossChainTradeType | OnChainTradeType): void {
+    let currentTrades = this._tradesStore$.getValue();
+
+    const providerIndex = currentTrades.findIndex(provider => provider?.trade?.type === tradeType);
+    if (providerIndex !== -1) {
+      currentTrades.splice(providerIndex, 1);
+    }
+
+    this._tradesStore$.next(currentTrades);
   }
 
   public pickProvider(isCalculationEnd: boolean): void {

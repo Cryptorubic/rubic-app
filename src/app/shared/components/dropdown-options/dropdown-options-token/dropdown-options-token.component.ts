@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
+import { HeaderStore } from '@app/core/header/services/header.store';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TokensListTypeService } from '@app/features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
@@ -49,13 +50,16 @@ export class DropdownOptionsTokenComponent {
 
   public readonly securityMessages = securityMessages;
 
+  public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
+
   constructor(
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private cdr: ChangeDetectorRef,
     private readonly tokensStoreService: TokensStoreService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
-    private readonly tokensListTypeService: TokensListTypeService
+    private readonly tokensListTypeService: TokensListTypeService,
+    private readonly headerStore: HeaderStore
   ) {}
 
   public get canBeAddedToFavorite(): boolean {

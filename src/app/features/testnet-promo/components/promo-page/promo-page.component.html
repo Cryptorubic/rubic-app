@@ -1,0 +1,95 @@
+<ng-container
+  *ngLet="{
+    pageState: pageState$ | async,
+    prizePool: prizePool$ | async,
+    proofs: proofs$ | async,
+    weekInfo: weekInfo$ | async
+  } as data"
+>
+  <main class="promo-page" [ngClass]="{ 'promo-page__solo': data.pageState === 'noWallet' }">
+    <!-- Left -->
+    <div class="box">
+      <ng-container
+        *ngIf="
+          data.pageState !== 'noWallet' &&
+          data.proofs &&
+          (data.weekInfo || data.proofs.activeRound || data.proofs.completed.length)
+        "
+      >
+        <!-- Snapshots -->
+        <app-window-container
+          *ngIf="
+            (data.pageState === 'inAction' || data.pageState === 'ended') &&
+            (data.proofs.activeRound || data.proofs.completed.length)
+          "
+          class="form-container"
+        >
+          <ng-container header> Snapshots </ng-container>
+
+          <app-promo-claim [proofs]="data.proofs"></app-promo-claim>
+        </app-window-container>
+
+        <!-- Total claim -->
+        <app-window-container
+          *ngIf="data.weekInfo && data.pageState === 'inAction'"
+          class="form-container claim-card"
+        >
+          <ng-container header> Claim </ng-container>
+          <app-total-rbc [weekInfo]="data.weekInfo"></app-total-rbc>
+        </app-window-container>
+      </ng-container>
+      <!-- Mock -->
+      <app-window-container
+        *ngIf="data.pageState === 'verifying' || data.pageState === 'notVerifiedUser'"
+        class="form-container claim-card"
+      >
+        <ng-container header> The Chain </ng-container>
+        <app-mock-rbc></app-mock-rbc>
+      </app-window-container>
+    </div>
+    <!-- Center -->
+    <div class="box box__center">
+      <!-- Pepe -->
+      <app-window-container class="form-container">
+        <app-pepe [state]="data.pageState"></app-pepe>
+      </app-window-container>
+
+      <!-- Promo info -->
+      <app-promo-info
+        *ngIf="data.pageState === 'noWallet'"
+        [prizePool]="data?.prizePool || null"
+      ></app-promo-info>
+
+      <!-- Buttons -->
+      <app-action-buttons
+        *ngIf="data.pageState === 'inAction' && data.weekInfo"
+        [weekInfo]="data.weekInfo"
+      ></app-action-buttons>
+    </div>
+    <!-- Right -->
+    <div class="box box__right">
+      <ng-container *ngIf="data.pageState !== 'noWallet'">
+        <!-- Finish -->
+        <app-window-container *ngIf="data.pageState === 'ended'; else rules" class="form-container">
+          <ng-container header> Rules </ng-container>
+          <!-- Promo finished -->
+          <app-finish></app-finish>
+        </app-window-container>
+
+        <ng-template #rules>
+          <!-- Rules -->
+          <app-window-container *ngIf="data.prizePool" class="form-container">
+            <ng-container header> Rules </ng-container>
+            <app-rules [prizePool]="data.prizePool"></app-rules>
+          </app-window-container>
+        </ng-template>
+
+        <!-- FAQ -->
+        <app-window-container class="form-container">
+          <ng-container header> FAQ </ng-container>
+          <app-faq></app-faq>
+        </app-window-container>
+      </ng-container>
+    </div>
+  </main>
+</ng-container>
