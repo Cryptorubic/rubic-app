@@ -228,10 +228,6 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (transactionHash && !this.isNotMinedError(err)) {
-        await this.onChainApiService.patchTrade(transactionHash, false);
-      }
-
       if (
         parsedError instanceof ExecutionRevertedError &&
         !(err instanceof UserRejectError) &&
