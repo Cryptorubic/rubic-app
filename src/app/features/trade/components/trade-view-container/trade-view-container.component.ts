@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { map, tap } from 'rxjs/operators';
+import { combineLatestWith, delay, map, switchMap, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -9,7 +9,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
-import { firstValueFrom } from 'rxjs';
+import { concat, firstValueFrom, of } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -17,6 +17,7 @@ import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -56,7 +57,16 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  public readonly showSpindl$ = this.spindlService.showSpindl$;
+  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
+    combineLatestWith(this.authService.currentUser$),
+    map(([showSpindl, currUser]) => showSpindl && Boolean(currUser?.address))
+  );
+
+  public readonly resetCarouselDuration$ = this.authService.currentUser$.pipe(
+    switchMap(() => concat(of(0), of(60000).pipe(delay(100))))
+  );
+
+  public readonly resetCarouselIndex$ = this.authService.currentUser$.pipe(switchMap(() => of(0)));
 
   constructor(
     private readonly swapsState: SwapsStateService,
@@ -69,7 +79,8 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly formsTogglerService: FormsTogglerService,
-    private readonly spindlService: SpindlService
+    private readonly spindlService: SpindlService,
+    private readonly authService: AuthService
   ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
@@ -116,5 +127,12 @@ export class TradeViewContainerComponent {
         }
       }
     }
+  }
+
+  ngAfterViewInit() {
+    // tui-carousel stop scrolling and reset duration when mouse enter on element
+    const carousel = document.querySelector('.banner-carousel');
+    carousel.removeAllListeners('mouseenter');
+    carousel.removeAllListeners('mouseleave');
   }
 }
