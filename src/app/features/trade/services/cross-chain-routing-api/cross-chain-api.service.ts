@@ -108,6 +108,7 @@ export class CrossChainApiService {
     } = TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const slippage = trade.getTradeInfo().slippage;
+    const providerIds = Object.values(trade.uniqueInfo || {});
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
@@ -132,16 +133,7 @@ export class CrossChainApiService {
           ? this.window.document.referrer
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
-      ...(trade.uniqueInfo.changenowId && { changenow_id: trade.uniqueInfo.changenowId }),
-      ...(trade.uniqueInfo.rangoRequestId && { rango_request_id: trade.uniqueInfo.rangoRequestId }),
-      ...(trade.uniqueInfo.simpleSwapId && { simpleswap_id: trade.uniqueInfo.simpleSwapId }),
-      ...(trade.uniqueInfo.changellyId && { changelly_id: trade.uniqueInfo.changellyId }),
-      ...(trade.uniqueInfo.squidrouterRequestId && {
-        squidrouter_request_id: trade.uniqueInfo.squidrouterRequestId
-      }),
-      ...(trade.uniqueInfo.retroBridgeId && {
-        retrobridge_transaction_id: trade.uniqueInfo.retroBridgeId
-      }),
+      ...(providerIds.length && { provider_trade_id: providerIds[0] }),
       ...(referral && { referrer: referral })
     };
 
