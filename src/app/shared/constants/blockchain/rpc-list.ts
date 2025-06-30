@@ -33,8 +33,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/polygon'
   ],
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: [
-    'https://rpc.ankr.com/polygon_zkevm/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    // 'https://nd-286-108-077.p2pify.com/2bf96e69ad7bef27f9598f04c61ed737',
+    'https://x-api.rubic.exchange/polygon_zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://go.getblock.io/709661d31f3d436bb87a56de04bb4116',
     'https://zkevm-rpc.com',
     'https://1rpc.io/polygon/zkevm',
@@ -64,9 +63,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/ftm'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
+    'https://arb1.arbitrum.io/rpc',
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.ankr.com/arbitrum',
-    'https://arb1.arbitrum.io/rpc',
     'https://arbitrum.llamarpc.com',
     'https://go.getblock.io/5b7518d3e4474263a1813426f10cc7b8'
   ],
@@ -206,7 +205,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.MANTLE]: [
     'https://rpc.ankr.com/mantle/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://rpc.ankr.com/mantle',
+    'https://1rpc.io/mantle',
     'https://mantle-mainnet.public.blastapi.io',
     'https://mantle.publicnode.com'
   ],
@@ -352,14 +351,14 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1301.rpc.thirdweb.com/'
   ],
   [BLOCKCHAIN_NAME.BITCOIN]: [''],
-  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
-  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
-  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
   [BLOCKCHAIN_NAME.FRAXTAL]: [
     'https://rpc.frax.com',
     'https://fraxtal-rpc.publicnode.com',
     'https://fraxtal.drpc.org'
   ],
+  [BLOCKCHAIN_NAME.SONIC]: ['https://rpc.soniclabs.com', 'https://sonic.drpc.org'],
+  [BLOCKCHAIN_NAME.SONEIUM_TESTNET]: ['https://rpc.minato.soneium.org/'],
+  [BLOCKCHAIN_NAME.MORPH]: ['https://rpc-quicknode.morphl2.io', 'https://rpc.morphl2.io'],
   [BLOCKCHAIN_NAME.BERACHAIN]: ['https://rpc.berachain.com/'],
   [BLOCKCHAIN_NAME.SONEIUM]: [
     'https://1868.rpc.thirdweb.com/',
