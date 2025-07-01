@@ -19,6 +19,13 @@ export class SolanaStandardAdapter
     super(wallet);
   }
 
+  public get publicKey(): { toBytes: () => Uint8Array; toString: () => string } | undefined {
+    const account = this.wallet.accounts[0];
+    return account?.publicKey
+      ? { toBytes: () => account.publicKey as Uint8Array, toString: () => account.address }
+      : undefined;
+  }
+
   public async signTransaction(tx: Transaction): Promise<Transaction> {
     const account = this.wallet.accounts[0];
 

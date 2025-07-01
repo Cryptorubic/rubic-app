@@ -9,6 +9,7 @@ import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { Wallet } from '@mysten/wallet-standard';
 import { StandardEventsFeature } from '@wallet-standard/features/src/events';
 import { StandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-adapter';
+import { WalletError } from '@core/errors/models/provider/wallet-error';
 
 export abstract class StandardWalletAdapter<
   SpecificFeatures extends Wallet['features']
@@ -40,15 +41,20 @@ export abstract class StandardWalletAdapter<
     const standardWallet = all.find(
       el => el.name === this.name && el.chains.includes(this.chainName)
     );
-    const { accounts } = await (standardWallet.features['standard:connect'] as RubicAny).connect();
 
-    this.wallet = new this.ChainAdapter(standardWallet as RubicAny);
+    const wallet = new this.ChainAdapter(standardWallet as RubicAny);
+    const isConnected = await wallet.connect();
+    if (!isConnected) {
+      throw new WalletError();
+    }
+    this.wallet = wallet;
     this.isEnabled = true;
 
-    const firstAccount = accounts[0];
-    const { address } = firstAccount;
-
-    this.selectedAddress = address as string;
+    const address = this.wallet.accounts?.[0];
+    if (!address) {
+      throw WalletError;
+    }
+    this.selectedAddress = address;
     this.selectedChain = this.blockchainName;
 
     this.onNetworkChanges$.next(this.selectedChain);
@@ -61,16 +67,19 @@ export abstract class StandardWalletAdapter<
     if (events?.on) {
       events.on('change', changes => {
         this.selectedAddress = changes.accounts[0]?.address || null;
-        if (!this.selectedAddress) {
-          this.deactivate();
-        }
-        this.selectedChain = this.blockchainName;
+        if (this.selectedAddress) {
+          this.selectedChain = this.blockchainName;
 
-        this.onNetworkChanges$.next(this.selectedChain);
-        this.onAddressChanges$.next(this.selectedAddress);
+          this.onNetworkChanges$.next(this.selectedChain);
+          this.onAddressChanges$.next(this.selectedAddress);
+        }
       });
     } else {
       console.warn('Wallet does not support standard:events');
     }
+  }
+
+  public override deactivate(): void {
+    this.wallet?.disconnect().then(() => super.deactivate());
   }
 }

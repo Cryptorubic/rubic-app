@@ -13,24 +13,27 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
     this.wallet = wallet;
   }
 
-  public get publicKey(): { toBytes: () => Uint8Array; toString: () => string } | undefined {
-    const account = this.wallet.accounts[0];
-    return account?.publicKey
-      ? { toBytes: () => account.publicKey as Uint8Array, toString: () => account.address }
-      : undefined;
-  }
-
   public get isConnected(): boolean {
     return this._isConnected;
   }
 
+  private _accounts: string[] = [];
+
+  public get accounts(): string[] {
+    return this._accounts;
+  }
+
   public async connect(): Promise<boolean> {
     try {
-      await this.wallet.features['standard:connect']?.connect();
+      const { accounts } = await this.wallet.features['standard:connect']?.connect();
       this._isConnected = true;
       this.listeners['connect']?.forEach(cb => cb());
+      const firstAccount = accounts[0];
+      const { address } = firstAccount;
+      this._accounts = [address];
       return true;
     } catch {
+      this._accounts = [];
       return false;
     }
   }
@@ -40,7 +43,7 @@ export abstract class StandardAdapter<SpecificFeatures extends Wallet['features'
       await this.wallet.features['standard:disconnect']?.disconnect?.();
       this._isConnected = false;
       this.listeners['disconnect']?.forEach(cb => cb());
-      return true;
+      this._accounts = [];
     } catch {
       return false;
     }
