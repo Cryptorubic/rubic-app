@@ -29,7 +29,7 @@ export const FOOTER_LINKS: FooterLink[] = [
     dark: 'assets/images/contacts/dune.svg',
     light: 'assets/images/contacts/dune_light.svg',
     altText: 'Dune',
-    link: 'https://dune.com/rubic_exchange/rubic-general-dashboard'
+    link: 'https://dune.com/rubic/rubic-general-dashboard'
   },
   {
     dark: 'assets/images/contacts/mail.svg',
