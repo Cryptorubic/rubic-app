@@ -1,0 +1,45 @@
+<ng-container
+  *ngLet="{
+    loggedIn: loggedIn$ | async,
+    loading: discordLoading$ | async,
+    discordConnected: discordConnected$ | async
+  } as data"
+>
+  <tui-loader *ngIf="data.loggedIn" [showLoader]="data.loading" [overlay]="true">
+    <div class="discord-block">
+      <div class="bg"></div>
+      <ng-container *ngIf="!data.discordConnected; else connected">
+        <p class="discord-block__text">
+          Connect your Discord to unlock extra quests & earn community roles!
+          <br />(We only use this to give you access & rewards in our Discord)
+        </p>
+        <button
+          class="discord-block__button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="authDiscord()"
+        >
+          Connect discord
+        </button>
+      </ng-container>
+      <ng-template #connected>
+        <p class="discord-block__text">
+          You’ve unlocked the Berachella Player role! 🎸 <br />
+          You now have access to secret quests, raffles and Discord only rewards.
+        </p>
+        <button
+          class="discord-block__button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="openDiscord()"
+        >
+          Join the action in Discord now!
+        </button>
+      </ng-template>
+    </div>
+  </tui-loader>
+</ng-container>

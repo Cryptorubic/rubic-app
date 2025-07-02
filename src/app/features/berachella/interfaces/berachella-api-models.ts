@@ -22,6 +22,12 @@ export interface ApiVerifySignatureRequest {
   signature: string;
 }
 
+export interface ApiDiscordSignatureRequest {
+  message: string;
+  address: string;
+  signature: string;
+}
+
 export interface ApiVerifySignatureResponse {
   valid: boolean;
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { combineLatestWith, map, startWith, switchMap } from 'rxjs/operators';
+import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, distinctUntilChanged, Observable, of, shareReplay } from 'rxjs';
 import { CHAIN_TYPE } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -10,13 +10,19 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 
 @Injectable()
 export class BerachellaStateService {
+  private readonly _discordLoading$ = new BehaviorSubject<boolean>(true);
+
+  public readonly discordLoading$ = this._discordLoading$
+    .asObservable()
+    .pipe(shareReplay(shareReplayConfig));
+
   private readonly _sessionSubmittedTickets$ = new BehaviorSubject<Record<string, number> | null>(
     {}
   );
 
   public readonly sessionSubmittedTickets$ = this._sessionSubmittedTickets$.asObservable();
 
-  private readonly currentUser$ = this.authService.currentUser$.pipe(
+  public readonly currentUser$ = this.authService.currentUser$.pipe(
     distinctUntilChanged((prev, curr) => prev?.address === curr?.address),
     map(user => {
       if (user?.chainType === CHAIN_TYPE.EVM) {
@@ -28,6 +34,14 @@ export class BerachellaStateService {
 
       return { ...user, address: '' };
     })
+  );
+
+  public readonly discordConnected$ = this.currentUser$.pipe(
+    switchMap(user => this.apiService.checkDiscordConnection(user.address || '')),
+    tap(() => {
+      this._discordLoading$.next(false);
+    }),
+    startWith(false)
   );
 
   public readonly ticketsForm = new FormGroup({

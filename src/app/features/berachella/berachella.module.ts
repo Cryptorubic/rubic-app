@@ -5,7 +5,12 @@ import { SharedModule } from '@shared/shared.module';
 import { BerachellaWalletButtonComponent } from './components/berachella-wallet-button/berachella-wallet-button.component';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { TuiButtonModule, TuiHintModule, TuiTextfieldControllerModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiHintModule,
+  TuiLoaderModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { BerachellaTicketsInputComponent } from './components/berachella-tickets-input/berachella-tickets-input.component';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +21,7 @@ import { BerachellaWinningChancesComponent } from './components/berachella-winni
 import { BerachellaApiService } from '@features/berachella/services/berachella-api.service';
 import { BerachellaNotificationService } from '@features/berachella/services/berachella-notification.service';
 import { BerachellaActionService } from '@features/berachella/services/berachella-action.service';
+import { BerachellaDiscordComponent } from './components/berachella-discord/berachella-discord.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +30,8 @@ import { BerachellaActionService } from '@features/berachella/services/berachell
     BerachellaTicketsInputComponent,
     BerachellaTicketsButtonComponent,
     BerachellaTicketsInfoComponent,
-    BerachellaWinningChancesComponent
+    BerachellaWinningChancesComponent,
+    BerachellaDiscordComponent
   ],
   imports: [
     BerachellaRoutingModule,
@@ -36,7 +43,8 @@ import { BerachellaActionService } from '@features/berachella/services/berachell
     ReactiveFormsModule,
     TuiInputNumberModule,
     TuiTextfieldControllerModule,
-    TuiHintModule
+    TuiHintModule,
+    TuiLoaderModule
   ],
   providers: [
     BerachellaStateService,
