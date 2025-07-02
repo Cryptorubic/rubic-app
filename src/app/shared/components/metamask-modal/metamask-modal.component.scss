@@ -1,6 +1,12 @@
+@use '../../../../scss/core' as *;
+
 .modals {
   --tui-secondary: var(--tui-secondary-hover);
   position: relative;
+
+  @include b(650) {
+    width: 100%;
+  }
 
   ::ng-deep .window-container {
     padding: 0;
@@ -112,6 +118,11 @@
 
     line-height: normal;
     text-align: center;
+
+    @include b(650) {
+      max-width: 100%;
+      padding: 0 var(--tui-padding-l);
+    }
   }
 
   &__buttons {
