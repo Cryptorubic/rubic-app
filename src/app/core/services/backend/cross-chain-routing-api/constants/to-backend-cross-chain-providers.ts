@@ -31,7 +31,8 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: 'changelly',
   [CROSS_CHAIN_TRADE_TYPE.TELE_SWAP]: 'teleswap',
   [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: 'wanchain_bridge',
-  [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: 'xflows'
+  [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: 'xflows',
+  [CROSS_CHAIN_TRADE_TYPE.RELAY]: 'relay'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {

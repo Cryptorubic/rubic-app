@@ -123,7 +123,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Dune',
       type: 'external',
-      link: 'https://dune.com/rubic_exchange/rubic-general-dashboard'
+      link: 'https://dune.com/rubic/rubic-general-dashboard'
     },
     {
       translateKey: 'Mail',
