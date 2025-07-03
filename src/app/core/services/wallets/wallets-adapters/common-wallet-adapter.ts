@@ -46,7 +46,7 @@ export abstract class CommonWalletAdapter<T = RubicAny> {
   }
 
   /**
-   * Gets detailed provider name if it's possible. Otherwise, returns common name.
+   * Gets detailed provider name if it's possible. Otherwise, returns standard-adapter name.
    */
   public get detailedWalletName(): string {
     return this.walletName;
