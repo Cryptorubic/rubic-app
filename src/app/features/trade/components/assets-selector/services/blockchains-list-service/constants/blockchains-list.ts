@@ -341,11 +341,6 @@ export const blockchainsList: RankedBlockchain[] = [
   //   tags: ['BTC', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   // },
   {
-    name: BLOCKCHAIN_NAME.KROMA,
-    rank: 0.45,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
-  {
     name: BLOCKCHAIN_NAME.XLAYER,
     rank: 0.4,
     tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2]
