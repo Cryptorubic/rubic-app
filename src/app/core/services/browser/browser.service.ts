@@ -10,12 +10,14 @@ export class BrowserService {
   private readonly mobileBreakpoint = 500;
 
   public get currentBrowser(): BROWSER {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(this.window.navigator.userAgent);
+
     switch (true) {
       case this.window.innerWidth >= this.mobileBreakpoint:
         return BROWSER.DESKTOP;
       case !this.window.ethereum:
         return BROWSER.MOBILE;
-      case this.window.ethereum?.isMetaMask:
+      case this.window.ethereum?.isMetaMask && isMobile:
         return BROWSER.METAMASK;
       case this.window.ethereum?.isWalletLink || this.window.ethereum?.isCoinbaseWallet:
         return BROWSER.COINBASE;

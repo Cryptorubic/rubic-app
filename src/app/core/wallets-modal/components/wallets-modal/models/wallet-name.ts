@@ -19,5 +19,6 @@ export enum WALLET_NAME {
   SLUSH = 'slush',
   SUIET_WALLET = 'suiet',
   BEST_WALLET = 'best_wallet',
-  SUI_WALLET = 'sui_wallet'
+  SUI_WALLET = 'sui_wallet',
+  METAMASK_SOLANA = 'metamask_solana'
 }
