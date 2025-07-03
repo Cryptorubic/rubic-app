@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpService } from '@core/services/http/http.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { Observable, of, timer } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
   ApiDiscordSignatureRequest,
@@ -71,15 +71,21 @@ export class BerachellaApiService {
   public sendDiscordInfo(data: ApiDiscordSignatureRequest): Observable<ApiVerifySignatureResponse> {
     return this.httpService
       .post<ApiVerifySignatureResponse>(
-        `/verify_signature`,
+        '',
         data,
-        this.mainnetUrl,
+        `https://dev2-api.rubic.exchange/api/v3/discord_users/add_discord_user/`,
         this.defaultRetryOptions
       )
       .pipe(catchError(() => of(null)));
   }
 
-  public checkDiscordConnection(_wallet: string): Observable<boolean> {
-    return timer(2_000).pipe(map(() => false));
+  public checkDiscordConnection(wallet: string): Observable<boolean> {
+    return this.httpService
+      .get<{ discordIsConnected: boolean }>(
+        '',
+        {},
+        `https://dev2-api.rubic.exchange/api/v3/discord_users/check_discord_user/${wallet}`
+      )
+      .pipe(map(res => res?.discordIsConnected));
   }
 }
