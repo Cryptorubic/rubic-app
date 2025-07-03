@@ -1025,9 +1025,6 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   [BLOCKCHAIN_NAME.MERLIN]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MERLIN], ...defaultTokenParams } as Token
   ],
-  [BLOCKCHAIN_NAME.KROMA]: [
-    { ...nativeTokensList[BLOCKCHAIN_NAME.KROMA], ...defaultTokenParams } as Token
-  ],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.ROOTSTOCK], ...defaultTokenParams } as Token
   ],
