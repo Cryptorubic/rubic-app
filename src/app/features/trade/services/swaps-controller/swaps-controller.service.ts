@@ -41,8 +41,6 @@ import {
   NotSupportedTokensError,
   OnChainTrade,
   OnChainTradeType,
-  RetroBridgeEvmTrade,
-  RetroBridgeTonTrade,
   RubicSdkError,
   SymbiosisEvmCcrTrade,
   UnsupportedReceiverAddressError,
@@ -310,7 +308,7 @@ export class SwapsControllerService {
       onError?: () => void;
     }
   ): Promise<void> {
-    const trade = tradeState.trade as RetroBridgeEvmTrade | RetroBridgeTonTrade;
+    const trade = tradeState.trade as CrossChainTrade;
     try {
       await trade.authWallet();
       callback.onSwap();

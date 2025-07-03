@@ -32,7 +32,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.SCROLL,
   BLOCKCHAIN_NAME.MANTA_PACIFIC,
   BLOCKCHAIN_NAME.BLAST,
-  BLOCKCHAIN_NAME.KROMA,
   BLOCKCHAIN_NAME.MERLIN,
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_LINK,
@@ -86,7 +85,6 @@ export class GasService {
     [BLOCKCHAIN_NAME.SCROLL]: this.fetchScrollGas.bind(this),
     [BLOCKCHAIN_NAME.MANTA_PACIFIC]: this.fetchMantaPacificGas.bind(this),
     [BLOCKCHAIN_NAME.BLAST]: this.fetchBlastGas.bind(this),
-    [BLOCKCHAIN_NAME.KROMA]: this.fetchKromaGas.bind(this),
     [BLOCKCHAIN_NAME.MERLIN]: this.fetchMerlinGas.bind(this),
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
@@ -376,20 +374,6 @@ export class GasService {
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
-    );
-  }
-
-  @Cacheable({
-    maxAge: GasService.requestInterval
-  })
-  private fetchKromaGas(): Observable<GasPrice> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.KROMA);
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map((gasPriceInWei: string) => {
-        return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
-        };
-      })
     );
   }
 

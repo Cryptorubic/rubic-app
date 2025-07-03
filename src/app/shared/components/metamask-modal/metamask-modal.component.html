@@ -1,0 +1,24 @@
+<div class="modals">
+  <h4 class="modals__text">
+    MetaMask supports different chain types, such as EVM and Solana. Please select the one you wish
+    to use.
+  </h4>
+  <div class="modals__buttons">
+    <button
+      *ngFor="let metamask of metamasks"
+      tuiButton
+      appearance="secondary"
+      type="button"
+      size="m"
+      (click)="confirm(metamask.value)"
+      class="modals__button"
+    >
+      <div>
+        <div class="modals__provider-icon">
+          <img src="{{ metamask.icon }}" alt="{{ metamask.label }} provider" />
+        </div>
+        <span>{{ metamask.label }}</span>
+      </div>
+    </button>
+  </div>
+</div>

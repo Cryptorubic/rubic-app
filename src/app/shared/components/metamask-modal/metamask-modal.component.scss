@@ -1,0 +1,133 @@
+@use '../../../../scss/core' as *;
+
+.modals {
+  --tui-secondary: var(--tui-secondary-hover);
+  position: relative;
+
+  @include b(650) {
+    width: 100%;
+  }
+
+  ::ng-deep .window-container {
+    padding: 0;
+
+    header {
+      padding-bottom: var(--tui-padding-l);
+    }
+  }
+
+  &__header {
+    margin-right: 40px;
+  }
+
+  &__form {
+    display: flex;
+    gap: var(--tui-padding-m);
+    margin-bottom: var(--tui-padding-4xl);
+    margin-left: var(--tui-padding-l);
+
+    tui-checkbox {
+      margin-top: 3px;
+
+      ::ng-deep [tuiWrapper][data-appearance='outline']::after {
+        color: white;
+      }
+    }
+  }
+
+  &__body {
+    display: grid;
+    grid-row-gap: var(--tui-padding-4xl);
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+
+  &__provider {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-xs);
+    align-items: center;
+
+    &.disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+
+      user-select: none;
+      pointer-events: none;
+    }
+  }
+
+  &__provider-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+
+    background-color: var(--primary-background);
+    border-radius: var(--tui-radius-s);
+
+    img {
+      width: 28px;
+    }
+
+    &:hover {
+      background-color: var(--tui-secondary);
+    }
+  }
+
+  &__button {
+    flex: 1;
+
+    text-decoration: none;
+
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      scale: 1.05;
+    }
+
+
+    ::ng-deep {
+      .t-wrapper {
+        background: none;
+
+        &:hover {
+          background: none;
+        }
+      }
+
+      .t-content {
+        display: flex;
+        flex-direction: column;
+        gap: var(--tui-padding-s);
+        justify-content: center;
+
+        white-space: nowrap;
+      }
+    }
+  }
+
+  &__link {
+    color: var(--tui-primary);
+  }
+
+  &__text {
+    max-width: 300px;
+    margin-top: 0;
+
+    line-height: normal;
+    text-align: center;
+
+    @include b(650) {
+      max-width: 100%;
+      padding: 0 var(--tui-padding-l);
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    padding: var(--tui-padding-l) 0;
+  }
+}

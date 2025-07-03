@@ -37,6 +37,8 @@ import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippa
 import { DepositRateChangedModalComponent } from '@app/shared/components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -348,6 +350,16 @@ export class ModalService {
         size: 'm',
         data: { trade },
         closeable: false
+      })
+    );
+  }
+
+  public openMetamaskModal(): Promise<WALLET_NAME> {
+    return firstValueFrom(
+      this.showDialog(MetamaskModalComponent, {
+        size: 'auto',
+        closeable: true,
+        fitContent: true
       })
     );
   }

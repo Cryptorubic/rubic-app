@@ -147,6 +147,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     disabled: false
   },
   {
+    name: 'MetaMask',
+    value: WALLET_NAME.METAMASK_SOLANA,
+    img: './assets/images/icons/wallets/metamask.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: false,
+    disabled: false
+  },
+  {
     name: 'Binance Wallet',
     value: WALLET_NAME.BINANCE_WALLET,
     img: './assets/images/icons/wallets/binance.png',
