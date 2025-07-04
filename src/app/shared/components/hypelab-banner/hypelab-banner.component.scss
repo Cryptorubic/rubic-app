@@ -1,0 +1,7 @@
+@use 'src/scss/core' as *;
+
+@include b(460) {
+  .banner {
+    height: 250px;
+  }
+}
