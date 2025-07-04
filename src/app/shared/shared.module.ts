@@ -80,6 +80,8 @@ import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
+import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
+import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 
 @NgModule({
   declarations: [
@@ -134,7 +136,9 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent
+    HypelabBannerComponent,
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent
   ],
   imports: [
     CommonModule,
@@ -215,7 +219,9 @@ import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-bann
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent
+    HypelabBannerComponent,
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

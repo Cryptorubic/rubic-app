@@ -49,6 +49,7 @@ import { CtrlWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/c
 import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapter';
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
+import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -134,6 +135,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
+    }
+
+    if (walletName === WALLET_NAME.METAMASK_SOLANA) {
+      return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {

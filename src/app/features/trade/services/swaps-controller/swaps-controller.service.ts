@@ -32,9 +32,6 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
   BLOCKCHAIN_NAME,
-  BlockchainName,
-  BlockchainsInfo,
-  CHAIN_TYPE,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
   CrossChainTradeType,
@@ -44,8 +41,6 @@ import {
   NotSupportedTokensError,
   OnChainTrade,
   OnChainTradeType,
-  RetroBridgeEvmTrade,
-  RetroBridgeTonTrade,
   RubicSdkError,
   SymbiosisEvmCcrTrade,
   UnsupportedReceiverAddressError,
@@ -220,11 +215,7 @@ export class SwapsControllerService {
     let txHash: string;
 
     try {
-      const isEqulaFromAmount = this.checkIsEqualFromAmount(
-        trade.from.tokenAmount,
-        trade.from.blockchain,
-        trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
-      );
+      const isEqulaFromAmount = this.checkIsEqualFromAmount(trade.from.tokenAmount);
       if (!isEqulaFromAmount) {
         throw new Error('Trade has invalid from amount');
       }
@@ -278,9 +269,9 @@ export class SwapsControllerService {
       }
     }
 
-    if (!txHash) return;
-
-    await this.handleSwapResponse(txHash, callback.onSwap);
+    if (txHash) {
+      callback.onSwap?.();
+    }
   }
 
   public async approve(
@@ -317,7 +308,7 @@ export class SwapsControllerService {
       onError?: () => void;
     }
   ): Promise<void> {
-    const trade = tradeState.trade as RetroBridgeEvmTrade | RetroBridgeTonTrade;
+    const trade = tradeState.trade as CrossChainTrade;
     try {
       await trade.authWallet();
       callback.onSwap();
@@ -407,11 +398,6 @@ export class SwapsControllerService {
       return trade.needAuthWallet;
     }
     return false;
-  }
-
-  private async handleSwapResponse(txHash: string, onSwap?: () => void): Promise<void> {
-    onSwap?.();
-    await this.crossChainApiService.patchTrade(txHash, true);
   }
 
   private catchSwapError(
@@ -508,9 +494,7 @@ export class SwapsControllerService {
             );
 
             const isEqualFromAmount = this.checkIsEqualFromAmount(
-              wrappedTrade.trade.from.tokenAmount,
-              wrappedTrade.trade.from.blockchain,
-              wrappedTrade.trade.feeInfo?.rubicProxy?.platformFee?.percent || 0
+              wrappedTrade.trade.from.tokenAmount
             );
 
             if (!isEqualFromAmount) {
@@ -590,18 +574,7 @@ export class SwapsControllerService {
       });
   }
 
-  private checkIsEqualFromAmount(
-    fromAmount: BigNumber,
-    fromBlockchain: BlockchainName,
-    percent: number
-  ): boolean {
-    const rubicPercent =
-      BlockchainsInfo.getChainType(fromBlockchain) === CHAIN_TYPE.EVM ? percent : 0;
-
-    const formFromTokenAmount = this.swapFormService.inputValue.fromAmount.actualValue.multipliedBy(
-      1 - rubicPercent / 100
-    );
-
-    return formFromTokenAmount.eq(fromAmount);
+  private checkIsEqualFromAmount(fromAmount: BigNumber): boolean {
+    return this.swapFormService.inputValue.fromAmount.actualValue.eq(fromAmount);
   }
 }

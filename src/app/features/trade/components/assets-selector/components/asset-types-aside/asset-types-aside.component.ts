@@ -6,6 +6,8 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
 import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
+import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
+import { allChainsSelectorItem } from '../../constants/all-chains';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -14,15 +16,7 @@ import { AssetsSelectorStateService } from '../../services/assets-selector-state
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssetTypesAsideComponent {
-  public readonly allChainsSelectorItem: BlockchainItem = {
-    icon: 'assets/images/icons/blockchain-filters/all-chains.svg',
-    name: null,
-    label: 'All Chains',
-    rank: 1,
-    tags: [],
-    disabledConfiguration: false,
-    disabledFrom: false
-  };
+  public readonly allChainsSelectorItem = allChainsSelectorItem;
 
   public readonly selectedAssetType$ = this.assetsSelectorStateService.assetType$;
 
@@ -45,6 +39,7 @@ export class AssetTypesAsideComponent {
   constructor(
     private readonly blockchainsListService: BlockchainsListService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly queryParamsService: QueryParamsService,
     private readonly headerStore: HeaderStore,
     private readonly filterQueryService: FilterQueryService
@@ -52,5 +47,10 @@ export class AssetTypesAsideComponent {
 
   public setBlockchainFilterAll(): void {
     this.filterQueryService.filterQuery = BlockchainTags.ALL;
+  }
+
+  public onBlockchainItemClick(item: BlockchainItem): void {
+    if (item.name === null) this.assetsSelectorService.onAllChainsSelect();
+    else this.assetsSelectorService.onBlockchainSelect(item.name);
   }
 }

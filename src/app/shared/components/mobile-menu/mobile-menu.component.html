@@ -1,23 +1,23 @@
 <div class="native-mobile-menu">
-  <button class="native-mobile-menu__item" (click)="openRubicMenu()">
+  <button class="native-mobile-menu__item" (click)="openModal($event, 'rubic-menu')">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/rubic-menu-button.svg'"></span>
   </button>
   <button class="native-mobile-menu__item" (click)="toggleLiveChat()">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/chat-button.svg'"></span>
   </button>
-  <button class="native-mobile-menu__item" (click)="openNavigationMenu()">
+  <button class="native-mobile-menu__item" (click)="openModal($event, 'navigation')">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/main-button.svg'"></span>
   </button>
-  <button class="native-mobile-menu__item" (click)="openSettings()">
+  <button class="native-mobile-menu__item" (click)="openModal($event, 'settings')">
     <span [inlineSVG]="'assets/images/icons/mobile-menu/settings-button.svg'"></span>
   </button>
   <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
-    <button class="native-mobile-menu__item" (click)="openWallet()">
+    <button class="native-mobile-menu__item" (click)="openModal($event, 'wallet')">
       <span [inlineSVG]="'assets/images/icons/mobile-menu/wallet-button.svg'"></span>
     </button>
   </ng-container>
   <ng-template #loggedIn>
-    <button class="native-mobile-menu__item" (click)="openProfile()">
+    <button class="native-mobile-menu__item" (click)="openModal($event, 'profile')">
       <span [inlineSVG]="'assets/images/icons/mobile-menu/profile-button.svg'"></span>
     </button>
   </ng-template>

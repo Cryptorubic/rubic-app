@@ -145,5 +145,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false
+  },
+  {
+    name: 'MetaMask',
+    value: WALLET_NAME.METAMASK_SOLANA,
+    img: './assets/images/icons/wallets/metamask.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: false,
+    disabled: false
   }
 ];
