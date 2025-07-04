@@ -21,6 +21,8 @@ export class BerachellaDiscordComponent {
     startWith(false)
   );
 
+  public readonly buttonState$ = this.actionService.discordButtonState$;
+
   constructor(
     @Inject(WINDOW) private window: RubicWindow,
     private readonly stateService: BerachellaStateService,

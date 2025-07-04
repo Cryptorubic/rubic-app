@@ -13,6 +13,10 @@ export class BerachellaActionService {
 
   public readonly buttonState$ = this._buttonStatus$.asObservable();
 
+  private readonly _discordButtonStatus$ = new BehaviorSubject<BerachellaButtonState>('active');
+
+  public readonly discordButtonState$ = this._discordButtonStatus$.asObservable();
+
   constructor(
     private readonly stateService: BerachellaStateService,
     private readonly apiService: BerachellaApiService,
@@ -46,31 +50,33 @@ export class BerachellaActionService {
   }
 
   public async signWallet(code: string): Promise<void> {
-    // let claimInProgressNotification: Subscription;
+    let inProgressNotification: Subscription;
     try {
-      // this._buttonStatus$.next('loading');
-      //
-      // claimInProgressNotification = this.notificationService.showProgressNotification();
+      this._discordButtonStatus$.next('loading');
+
+      inProgressNotification = this.notificationService.showDiscordProgressNotification();
       const web3 = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
 
       const signature = await web3.signMessage(code);
       const address = await firstValueFrom(
         this.stateService.currentUser$.pipe(map(el => el.address))
       );
-      const { valid } = await firstValueFrom(
+      const res = await firstValueFrom(
         this.apiService.sendDiscordInfo({ message: code, signature, address })
       );
-      if (!valid) {
+      if (res.detail) {
         throw new Error('Invalid signature');
       }
-      // this.notificationService.showSuccessNotification();
-      // this.stateService.submitTicketsAmount();
-      // this.stateService.
+      if (res.discordIsReconnected) {
+        this.notificationService.showDiscordReconnectedNotification(res.newAddress);
+      }
+      this.stateService.conenctDistord();
+      this.notificationService.showDiscordSuccessNotification();
     } catch (error) {
-      // this.notificationService.showErrorNotification(error);
+      this.notificationService.showDiscordErrorNotification(error);
     } finally {
-      // claimInProgressNotification?.unsubscribe();
-      // this._buttonStatus$.next('active');
+      inProgressNotification?.unsubscribe();
+      this._discordButtonStatus$.next('active');
     }
   }
 }

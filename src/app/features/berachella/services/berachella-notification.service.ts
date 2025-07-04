@@ -69,4 +69,59 @@ export class BerachellaNotificationService {
       });
     }
   }
+
+  public showDiscordProgressNotification(): Subscription {
+    return this.notificationsService.show('Discord connection in progress', {
+      status: TuiNotification.Info,
+      autoClose: false,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
+  }
+
+  public showDiscordReconnectedNotification(address: string): Subscription {
+    return this.notificationsService.show(
+      `Your discord account successfully reconnected with the new address (${address})`,
+      {
+        status: TuiNotification.Info,
+        autoClose: false,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      }
+    );
+  }
+
+  public showDiscordSuccessNotification(): Subscription {
+    return this.notificationsService.show('Discord successfully connected', {
+      status: TuiNotification.Success,
+      autoClose: 10000,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
+  }
+
+  public showDiscordErrorNotification(err: unknown): void {
+    if (err instanceof Error) {
+      let label = 'An error occurred while processing discord connection. Please try again.';
+      let status: TuiNotification = TuiNotification.Error;
+
+      if (err.message.includes('User rejected the request')) {
+        label =
+          'You rejected the request. Please confirm message signature in order to complete discord connection.';
+      } else if (err instanceof Error && err.message.includes('Invalid signature')) {
+        label = 'Invalid signature. Please sign the message again.';
+      }
+
+      this.notificationsService.show(label, {
+        autoClose: 10000,
+        status,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      });
+    }
+  }
 }

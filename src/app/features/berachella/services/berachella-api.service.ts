@@ -6,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import {
   ApiDiscordSignatureRequest,
+  ApiDiscordSignatureResponse,
   ApiMessageRequest,
   ApiMessageResponse,
   ApiTicketsStats,
@@ -68,12 +69,14 @@ export class BerachellaApiService {
       .pipe(catchError(() => of(null)));
   }
 
-  public sendDiscordInfo(data: ApiDiscordSignatureRequest): Observable<ApiVerifySignatureResponse> {
+  public sendDiscordInfo(
+    data: ApiDiscordSignatureRequest
+  ): Observable<ApiDiscordSignatureResponse> {
     return this.httpService
-      .post<ApiVerifySignatureResponse>(
+      .post<ApiDiscordSignatureResponse>(
         '',
         data,
-        `https://dev2-api.rubic.exchange/api/v3/discord_users/add_discord_user/`,
+        `https://dev2-api.rubic.exchange/api/v3/discord_users/add_discord_user`,
         this.defaultRetryOptions
       )
       .pipe(catchError(() => of(null)));

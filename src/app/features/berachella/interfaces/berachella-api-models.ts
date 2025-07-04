@@ -28,6 +28,13 @@ export interface ApiDiscordSignatureRequest {
   signature: string;
 }
 
+export interface ApiDiscordSignatureResponse {
+  discordIsReconnected: boolean;
+  newAddress: 'string';
+  previousAddress: 'string' | null;
+  detail?: string;
+}
+
 export interface ApiVerifySignatureResponse {
   valid: boolean;
 }

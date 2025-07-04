@@ -10,6 +10,10 @@ import { shareReplayConfig } from '@shared/constants/common/share-replay-config'
 
 @Injectable()
 export class BerachellaStateService {
+  private readonly _sessionDiscordConnect$ = new BehaviorSubject<boolean>(false);
+
+  public readonly sessionDiscordConnect$ = this._sessionDiscordConnect$.asObservable();
+
   private readonly _discordLoading$ = new BehaviorSubject<boolean>(true);
 
   public readonly discordLoading$ = this._discordLoading$
@@ -37,7 +41,10 @@ export class BerachellaStateService {
   );
 
   public readonly discordConnected$ = this.currentUser$.pipe(
-    switchMap(user => this.apiService.checkDiscordConnection(user.address || '')),
+    combineLatestWith(this.sessionDiscordConnect$),
+    switchMap(([user, isConnected]) =>
+      isConnected ? of(true) : this.apiService.checkDiscordConnection(user.address || '')
+    ),
     tap(() => {
       this._discordLoading$.next(false);
     }),
@@ -129,5 +136,9 @@ export class BerachellaStateService {
       ...this._sessionSubmittedTickets$.value,
       [address]: oldAmount + tickets
     });
+  }
+
+  public conenctDistord(): void {
+    this._sessionDiscordConnect$.next(true);
   }
 }

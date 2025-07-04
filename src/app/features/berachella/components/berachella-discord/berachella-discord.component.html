@@ -2,7 +2,8 @@
   *ngLet="{
     loggedIn: loggedIn$ | async,
     loading: discordLoading$ | async,
-    discordConnected: discordConnected$ | async
+    discordConnected: discordConnected$ | async,
+    buttonState: buttonState$ | async
   } as data"
 >
   <tui-loader *ngIf="data.loggedIn" [showLoader]="data.loading" [overlay]="true">
@@ -19,6 +20,7 @@
           appearance="primary"
           type="button"
           size="m"
+          [showLoader]="data.buttonState === 'loading'"
           (click)="authDiscord()"
         >
           Connect discord
