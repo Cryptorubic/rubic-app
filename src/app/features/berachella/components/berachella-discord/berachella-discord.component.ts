@@ -4,6 +4,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
 import { map, startWith } from 'rxjs/operators';
 import { BerachellaActionService } from '@features/berachella/services/berachella-action.service';
+import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 
 @Component({
   selector: 'app-berachella-discord',
@@ -26,7 +27,8 @@ export class BerachellaDiscordComponent {
   constructor(
     @Inject(WINDOW) private window: RubicWindow,
     private readonly stateService: BerachellaStateService,
-    private readonly actionService: BerachellaActionService
+    private readonly actionService: BerachellaActionService,
+    private readonly gtmService: GoogleTagManagerService
   ) {
     const code = this.getCode();
     if (code) {
@@ -36,7 +38,7 @@ export class BerachellaDiscordComponent {
 
   public authDiscord(): void {
     let authUrl =
-      'https://discord.com/oauth2/authorize?client_id=1389833731149135932&response_type=code&redirect_uri=https%3A%2F%2Fapp.rubic.exchange%2Fberachella&scope=guilds.join+identify';
+      'https://discord.com/oauth2/authorize?client_id=1390655881078636695&response_type=code&redirect_uri=https%3A%2F%2Fapp.rubic.exchange%2Fberachella&scope=identify+guilds.join';
     const origin = `${this.window.location.origin}/`;
     if (origin.includes('local')) {
       authUrl =
@@ -44,9 +46,9 @@ export class BerachellaDiscordComponent {
     }
     if (origin.includes('dev-app')) {
       authUrl =
-        'https://discord.com/oauth2/authorize?client_id=1389833731149135932&response_type=code&redirect_uri=https%3A%2F%2Fdev-app.rubic.exchange%2Fberachella&scope=guilds.join+identify';
+        'https://discord.com/oauth2/authorize?client_id=1390655881078636695&response_type=code&redirect_uri=https%3A%2F%2Fdev-app.rubic.exchange%2Fberachella&scope=identify+guilds.join';
     }
-
+    this.gtmService.fireBerachaellaEvent('connect_discord');
     this.window.open(authUrl);
   }
 
@@ -55,7 +57,7 @@ export class BerachellaDiscordComponent {
   }
 
   private getCode(): string | null {
-    const search = this.window.location.search; // убираем leading '#'
+    const search = this.window.location.search;
     const params = new URLSearchParams(search);
     const code = params.get('code');
     return code || null;

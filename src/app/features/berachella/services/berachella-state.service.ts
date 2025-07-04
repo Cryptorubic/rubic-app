@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { combineLatestWith, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { combineLatestWith, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { BehaviorSubject, distinctUntilChanged, Observable, of, shareReplay } from 'rxjs';
 import { CHAIN_TYPE } from 'rubic-sdk';
 import { AuthService } from '@core/services/auth/auth.service';
 import { BerachellaNotificationService } from '@features/berachella/services/berachella-notification.service';
 import { BerachellaApiService } from '@features/berachella/services/berachella-api.service';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
+import { UserInterface } from '@core/services/auth/models/user.interface';
 
 @Injectable()
 export class BerachellaStateService {
@@ -41,9 +42,10 @@ export class BerachellaStateService {
   );
 
   public readonly discordConnected$ = this.currentUser$.pipe(
+    filter((el: UserInterface) => Boolean(el?.address)),
     combineLatestWith(this.sessionDiscordConnect$),
-    switchMap(([user, isConnected]) =>
-      isConnected ? of(true) : this.apiService.checkDiscordConnection(user.address || '')
+    switchMap(([user, isConnected]: [UserInterface, boolean]) =>
+      isConnected ? of(true) : this.apiService.checkDiscordConnection(user?.address || '')
     ),
     tap(() => {
       this._discordLoading$.next(false);
