@@ -6,6 +6,7 @@ import { BerachellaApiService } from '@features/berachella/services/berachella-a
 import { BerachellaNotificationService } from '@features/berachella/services/berachella-notification.service';
 import { BerachellaButtonState } from '@features/berachella/interfaces/berachella-state.interface';
 import { map } from 'rxjs/operators';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class BerachellaActionService {
@@ -20,7 +21,9 @@ export class BerachellaActionService {
   constructor(
     private readonly stateService: BerachellaStateService,
     private readonly apiService: BerachellaApiService,
-    private readonly notificationService: BerachellaNotificationService
+    private readonly notificationService: BerachellaNotificationService,
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   public async signMessage(): Promise<void> {
@@ -72,6 +75,13 @@ export class BerachellaActionService {
       }
       this.stateService.conenctDistord();
       this.notificationService.showDiscordSuccessNotification();
+      // Remove Code query from URI
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { code: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
     } catch (error) {
       this.notificationService.showDiscordErrorNotification(error);
     } finally {
