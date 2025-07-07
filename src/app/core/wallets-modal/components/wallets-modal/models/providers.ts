@@ -154,5 +154,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: false,
     disabled: false
+  },
+  {
+    name: 'Binance Wallet',
+    value: WALLET_NAME.BINANCE_WALLET,
+    img: './assets/images/icons/wallets/binance.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];
