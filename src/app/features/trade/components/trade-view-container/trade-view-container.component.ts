@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { combineLatestWith, delay, map, switchMap, tap } from 'rxjs/operators';
+import { combineLatestWith, delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -9,7 +9,7 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
-import { concat, firstValueFrom, of } from 'rxjs';
+import { concat, firstValueFrom, fromEvent, of } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
@@ -64,6 +64,11 @@ export class TradeViewContainerComponent {
     combineLatestWith(this.authService.currentUser$),
     map(([showSpindl, currUser]) => showSpindl && Boolean(currUser?.address)),
     map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
+  );
+
+  public readonly showHypelab$ = fromEvent<MessageEvent>(window, 'message').pipe(
+    map(e => e.data?.type === 'bannerReady'),
+    startWith(false)
   );
 
   public readonly resetCarouselDuration$ = this.authService.currentUser$.pipe(

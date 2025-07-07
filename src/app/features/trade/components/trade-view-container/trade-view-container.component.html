@@ -8,7 +8,8 @@
     transactionState: transactionState$ | async,
     showSpindl: showSpindl$ | async,
     resetCarouselIndex: resetCarouselIndex$ | async,
-    resetCarouselDuration: resetCarouselDuration$ | async
+    resetCarouselDuration: resetCarouselDuration$ | async,
+    showHypelab: showHypelab$ | async
   } as state"
 >
   <div
@@ -31,7 +32,7 @@
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
     <tui-carousel
       class="banner-carousel"
-      [duration]="state.resetCarouselDuration"
+      [duration]="state.showHypelab ? state.resetCarouselDuration : 0"
       [(index)]="state.resetCarouselIndex"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
