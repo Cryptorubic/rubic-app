@@ -30,25 +30,25 @@ export class BerachellaApiService {
 
   public fetchUserTickets(address: string): Observable<ApiUserTickets | null> {
     return this.httpService
-      .get<ApiUserTickets>(`/user_tickets?address=${address}`, {}, '', this.defaultRetryOptions)
+      .get<ApiUserTickets>(`user_tickets?address=${address}`, {}, '', this.defaultRetryOptions)
       .pipe(catchError(() => of(null)));
   }
 
   public fetchStats(): Observable<ApiTicketsStats | null> {
     return this.httpService
-      .get<ApiUserTickets>(`/tickets_stats`, {}, '', this.defaultRetryOptions)
+      .get<ApiUserTickets>(`tickets_stats`, {}, '', this.defaultRetryOptions)
       .pipe(catchError(() => of(null)));
   }
 
   public fetchMessage(info: ApiMessageRequest): Observable<ApiMessageResponse | null> {
     return this.httpService
-      .post<ApiMessageResponse>(`/generate_message`, info, '', this.defaultRetryOptions)
+      .post<ApiMessageResponse>(`generate_message`, info, '', this.defaultRetryOptions)
       .pipe(catchError(() => of(null)));
   }
 
   public verifySignature(data: ApiVerifySignatureRequest): Observable<ApiVerifySignatureResponse> {
     return this.httpService
-      .post<ApiVerifySignatureResponse>(`/verify_signature`, data, '', this.defaultRetryOptions)
+      .post<ApiVerifySignatureResponse>(`verify_signature`, data, '', this.defaultRetryOptions)
       .pipe(catchError(() => of(null)));
   }
 
