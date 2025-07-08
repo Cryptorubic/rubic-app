@@ -6,7 +6,10 @@
     selectedForm: selectedForm$ | async,
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
-    showSpindl: showSpindl$ | async
+    showSpindl: showSpindl$ | async,
+    resetCarouselIndex: resetCarouselIndex$ | async,
+    resetCarouselDuration: resetCarouselDuration$ | async,
+    showHypelab: showHypelab$ | async
   } as state"
 >
   <div
@@ -26,12 +29,19 @@
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
-    <app-spindle-banner
-      *ngIf="state.showSpindl"
+    <tui-carousel
+      class="banner-carousel"
+      [duration]="state.showHypelab ? state.resetCarouselDuration : 0"
+      [(index)]="state.resetCarouselIndex"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
-    ></app-spindle-banner>
+    >
+      <ng-container *ngIf="state.showSpindl">
+        <app-spindle-banner *tuiItem></app-spindle-banner>
+      </ng-container>
+      <app-hypelab-banner *tuiItem></app-hypelab-banner>
+    </tui-carousel>
   </div>
 
   <app-providers-list-general
