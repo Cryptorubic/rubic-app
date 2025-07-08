@@ -23,6 +23,10 @@ export class BerachellaApiService {
     external: true
   };
 
+  private readonly v2ApiBaseUrl = 'v2/promo_campaigns/berachella';
+
+  private readonly v3ApiBaseUrl = 'v3/discord_users';
+
   constructor(
     private readonly httpService: HttpService,
     @Inject(WINDOW) private window: RubicWindow
@@ -30,25 +34,40 @@ export class BerachellaApiService {
 
   public fetchUserTickets(address: string): Observable<ApiUserTickets | null> {
     return this.httpService
-      .get<ApiUserTickets>(`user_tickets?address=${address}`, {}, '', this.defaultRetryOptions)
+      .get<ApiUserTickets>(
+        `${this.v2ApiBaseUrl}/user_tickets?address=${address}`,
+        {},
+        '',
+        this.defaultRetryOptions
+      )
       .pipe(catchError(() => of(null)));
   }
 
   public fetchStats(): Observable<ApiTicketsStats | null> {
     return this.httpService
-      .get<ApiUserTickets>(`tickets_stats`, {}, '', this.defaultRetryOptions)
+      .get<ApiUserTickets>(`${this.v2ApiBaseUrl}/tickets_stats`, {}, '', this.defaultRetryOptions)
       .pipe(catchError(() => of(null)));
   }
 
   public fetchMessage(info: ApiMessageRequest): Observable<ApiMessageResponse | null> {
     return this.httpService
-      .post<ApiMessageResponse>(`generate_message`, info, '', this.defaultRetryOptions)
+      .post<ApiMessageResponse>(
+        `${this.v2ApiBaseUrl}/generate_message`,
+        info,
+        '',
+        this.defaultRetryOptions
+      )
       .pipe(catchError(() => of(null)));
   }
 
   public verifySignature(data: ApiVerifySignatureRequest): Observable<ApiVerifySignatureResponse> {
     return this.httpService
-      .post<ApiVerifySignatureResponse>(`verify_signature`, data, '', this.defaultRetryOptions)
+      .post<ApiVerifySignatureResponse>(
+        `${this.v2ApiBaseUrl}/verify_signature`,
+        data,
+        '',
+        this.defaultRetryOptions
+      )
       .pipe(catchError(() => of(null)));
   }
 
@@ -57,7 +76,7 @@ export class BerachellaApiService {
   ): Observable<ApiDiscordSignatureResponse> {
     return this.httpService
       .post<ApiDiscordSignatureResponse>(
-        'v3/discord_users/add_discord_user',
+        `${this.v3ApiBaseUrl}/add_discord_user`,
         data,
         '',
         this.defaultRetryOptions
@@ -68,7 +87,7 @@ export class BerachellaApiService {
   public checkDiscordConnection(wallet: string): Observable<boolean> {
     return this.httpService
       .get<{ discordIsConnected: boolean }>(
-        `v3/discord_users/check_discord_user/${wallet}`,
+        `${this.v3ApiBaseUrl}/check_discord_user/${wallet}`,
         {},
         '',
         this.defaultRetryOptions
