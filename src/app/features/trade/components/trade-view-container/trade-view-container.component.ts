@@ -137,7 +137,9 @@ export class TradeViewContainerComponent {
   ngAfterViewInit() {
     // tui-carousel stop scrolling and reset duration when mouse enter on element
     const carousel = document.querySelector('.banner-carousel');
-    carousel.removeAllListeners('mouseenter');
-    carousel.removeAllListeners('mouseleave');
+    if (carousel) {
+      carousel.removeAllListeners('mouseenter');
+      carousel.removeAllListeners('mouseleave');
+    }
   }
 }
