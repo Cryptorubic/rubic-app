@@ -50,6 +50,7 @@ import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapt
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
+import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/binance-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -226,6 +227,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+
+    if (walletName === WALLET_NAME.BINANCE_WALLET) {
+      return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
