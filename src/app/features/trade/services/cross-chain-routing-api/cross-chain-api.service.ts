@@ -23,7 +23,6 @@ import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
 import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SettingsService } from '../settings-service/settings.service';
 import { ProviderCcrStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
@@ -109,6 +108,7 @@ export class CrossChainApiService {
     } = TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const slippage = trade.getTradeInfo().slippage;
+    const providerIds = Object.values(trade.uniqueInfo || {});
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
@@ -133,43 +133,13 @@ export class CrossChainApiService {
           ? this.window.document.referrer
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
-      ...(trade.uniqueInfo.changenowId && { changenow_id: trade.uniqueInfo.changenowId }),
-      ...(trade.uniqueInfo.rangoRequestId && { rango_request_id: trade.uniqueInfo.rangoRequestId }),
-      ...(trade.uniqueInfo.simpleSwapId && { simpleswap_id: trade.uniqueInfo.simpleSwapId }),
-      ...(trade.uniqueInfo.changellyId && { changelly_id: trade.uniqueInfo.changellyId }),
-      ...(trade.uniqueInfo.squidrouterRequestId && {
-        squidrouter_request_id: trade.uniqueInfo.squidrouterRequestId
-      }),
-      ...(trade.uniqueInfo.retroBridgeId && {
-        retrobridge_transaction_id: trade.uniqueInfo.retroBridgeId
-      }),
+      ...(providerIds.length && { provider_trade_id: providerIds[0] }),
       ...(referral && { referrer: referral })
     };
 
     await firstValueFrom(
       this.httpService.post<void>(this.apiEndpoint, tradeInfo).pipe(delay(1000))
     );
-  }
-
-  /**
-   * Sends request to update trade's status.
-   * @param hash Hash of transaction what we want to update.
-   * @param success If true status is `completed`, otherwise `cancelled`.
-   * @return InstantTradesResponseApi Instant trade object.
-   */
-  public async patchTrade(hash: string, success: boolean): Promise<void> {
-    try {
-      const body = {
-        success,
-        hash,
-        user: this.authService.userAddress
-      };
-      const res = await firstValueFrom(this.httpService.patch<void>(this.apiEndpoint, body));
-
-      return res;
-    } catch (err) {
-      throw new RubicError(err);
-    }
   }
 
   public sendMesonSwapId(dstStatusInfo: CrossChainStatus, srcTxHash: string): void {

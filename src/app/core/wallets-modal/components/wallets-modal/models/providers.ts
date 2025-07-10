@@ -160,6 +160,26 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: false,
     display: true,
     disabled: false,
-    supportBerachella: false
+    supportBerachella: true
+  },
+  {
+    name: 'MetaMask',
+    value: WALLET_NAME.METAMASK_SOLANA,
+    img: './assets/images/icons/wallets/metamask.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: false,
+    disabled: false,
+    supportBerachella: true
+  },
+  {
+    name: 'Binance Wallet',
+    value: WALLET_NAME.BINANCE_WALLET,
+    img: './assets/images/icons/wallets/binance.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false,
+    supportBerachella: true
   }
 ];

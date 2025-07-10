@@ -1,0 +1,14 @@
+<div
+  class="blockchain-button"
+  [class.blockchain-button__selected]="
+    blockchainItem.name && selectedAssetType === blockchainItem.name
+  "
+>
+  <img
+    class="blockchain-button__img"
+    [src]="blockchainItem.icon"
+    [alt]="blockchainItem.label"
+    width="30"
+    height="30"
+  />
+</div>

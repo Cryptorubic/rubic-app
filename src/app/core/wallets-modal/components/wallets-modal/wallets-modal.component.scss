@@ -121,7 +121,7 @@
 
     &__body {
       grid-template-rows: auto;
-      grid-template-columns: repeat(3, calc(100% / 3));
+      grid-template-columns: repeat(2, 50%);
     }
 
     &__provider-icon {

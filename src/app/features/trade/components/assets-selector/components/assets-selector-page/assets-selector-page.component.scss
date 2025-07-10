@@ -46,9 +46,6 @@ app-search-bar {
   .assets-selector {
     padding-top: var(--tui-padding-l);
 
-    border-top: 1px solid var(--tui-base-04);
-
-
     &__row {
       > .assets-selector__row {
         gap: 12px;

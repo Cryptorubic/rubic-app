@@ -1,7 +1,8 @@
 @use 'src/scss/core' as *;
 
 :host {
-  position: relative;
+  position: fixed;
+  z-index: 100000000000000000;
 
   width: 100vw;
 }

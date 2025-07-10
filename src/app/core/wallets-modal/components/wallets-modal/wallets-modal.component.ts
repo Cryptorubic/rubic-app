@@ -21,10 +21,10 @@ import { firstValueFrom, from, of, startWith } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
 import { TuiDestroyService, tuiIsEdge, tuiIsEdgeOlderThan, tuiIsFirefox } from '@taiga-ui/cdk';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
+import { ModalService } from '@core/modals/services/modal.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
@@ -101,6 +101,7 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
+    private readonly modalService: ModalService,
     private readonly queryParamsService: QueryParamsService
   ) {}
 
@@ -143,8 +144,16 @@ export class WalletsModalComponent implements OnInit {
     this.window.location.assign(this.coinbaseDeeplink);
   }
 
-  public async connectProvider(provider: WALLET_NAME): Promise<void> {
+  public async connectProvider(providerName: WALLET_NAME): Promise<void> {
     if (this.rulesCheckbox.value) {
+      let provider = providerName;
+      if (provider === WALLET_NAME.METAMASK) {
+        provider = await this.getMetamaskBasedOnNetwork();
+        if (!provider) {
+          return;
+        }
+      }
+
       this.gtmService.fireClickOnWalletProviderEvent(provider);
 
       if (this.browserService.currentBrowser === BROWSER.MOBILE) {
@@ -177,5 +186,11 @@ export class WalletsModalComponent implements OnInit {
     this.context.completeWith();
   }
 
-  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
+  public async getMetamaskBasedOnNetwork(): Promise<WALLET_NAME | null> {
+    try {
+      return this.modalService.openMetamaskModal();
+    } catch {
+      return null;
+    }
+  }
 }

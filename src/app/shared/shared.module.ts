@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -79,6 +79,9 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
+import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
+import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
+import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berachella.directive';
 
 @NgModule({
@@ -134,6 +137,9 @@ import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berac
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
+    HypelabBannerComponent,
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent,
     NoBerachellaDirective
   ],
   imports: [
@@ -215,8 +221,12 @@ import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berac
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
+    HypelabBannerComponent,
+    SmallBlockchainButtonComponent,
+    MobileMenuComponent,
     NoBerachellaDirective
   ],
-  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
+  providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule {}

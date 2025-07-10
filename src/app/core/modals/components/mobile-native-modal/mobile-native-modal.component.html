@@ -1,4 +1,4 @@
-<div class="mobile-native-backdrop" (click)="close()"></div>
+<div class="mobile-native-backdrop"></div>
 <div
   class="mobile-native-content"
   (tuiSwipe)="onSwipe($event, title, 'content')"
@@ -11,15 +11,10 @@
   >
     <div class="mobile-native-chevron-rectangle"></div>
   </div>
-  <ng-container>
-    <div class="mobile-native__header" (tuiSwipe)="onSwipe($event, title, 'header')">
-      <div class="mobile-native__back" *ngIf="context.previousComponent || (isIframe$ | async)">
-        <app-back-button [isMobile]="true" (onClick)="close()"></app-back-button>
-      </div>
-      <div class="mobile-native__title">{{ title }}</div>
-    </div>
-  </ng-container>
+
   <div class="mobile-native-content__inner">
     <div *polymorpheusOutlet="context.content; context: context"></div>
   </div>
+
+  <app-mobile-menu *ngIf="showMobileMenu"></app-mobile-menu>
 </div>

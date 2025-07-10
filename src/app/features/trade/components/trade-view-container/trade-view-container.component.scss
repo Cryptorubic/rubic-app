@@ -52,6 +52,7 @@
   }
 
   app-spindle-banner,
+  app-hypelab-banner,
   app-token-selector-page {
     width: 100%;
   }
@@ -114,5 +115,14 @@
       background: none;
       border-radius: 0;
     }
+  }
+}
+
+.banner-carousel {
+  width: 100%;
+
+  ::ng-deep fieldset {
+    height: fit-content;
+    padding: 0;
   }
 }

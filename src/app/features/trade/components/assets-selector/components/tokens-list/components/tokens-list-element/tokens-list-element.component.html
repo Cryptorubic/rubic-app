@@ -37,34 +37,36 @@
         </div>
       </div>
 
-      <span class="token-card__name">{{ token.name | shortenText : 20 }}</span>
+      <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
     </div>
 
-    <ng-container *ngLet="token | showPriceChange : tokenFilter : assetType as pcPercent">
-      <div
-        *ngIf="pcPercent !== null"
-        class="token-card__price-change-container"
-        [class.green]="pcPercent >= 0"
-        [class.red]="pcPercent < 0"
-      >
-        <span class="arrow" [style.transform]="pcPercent > 0 && 'rotateZ(180deg)'">▾</span>
-        <span class="price-change">{{ pcPercent + '%' | mathAbs }}</span>
-      </div>
-    </ng-container>
-
-    <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
-      <div class="token-card__amount" *ngIf="token.amount.gt(0)">
-        <span
-          [tuiHint]="tokenAmountTooltip"
-          tuiHintDirection="top-left"
-          tuiHintAppearance="onDark"
-          >{{ token.amount | bigNumberFormat | shortenAmount : 6 : 4 }}</span
+    <div class="token-card__right">
+      <ng-container *ngLet="token | showPriceChange : tokenFilter : assetType as pcPercent">
+        <div
+          *ngIf="pcPercent !== null"
+          class="token-card__price-change-container"
+          [class.green]="pcPercent >= 0"
+          [class.red]="pcPercent < 0"
         >
-        <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+          <span class="arrow" [style.transform]="pcPercent > 0 && 'rotateZ(180deg)'">▾</span>
+          <span class="price-change">{{ pcPercent + '%' | mathAbs }}</span>
+        </div>
+      </ng-container>
+
+      <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
+        <div class="token-card__amount" *ngIf="token.amount.gt(0)">
+          <span
+            [tuiHint]="tokenAmountTooltip"
+            tuiHintDirection="top-left"
+            tuiHintAppearance="onDark"
+            >{{ token.amount | bigNumberFormat | shortenAmount : 6 : 4 }}</span
+          >
+          <ng-template #tokenAmountTooltip>{{ token.amount | bigNumberFormat }}</ng-template>
+        </div>
+        <span class="token-card__dollar-amount" *ngIf="token.amount.gt(0) && token.price"
+          >~{{ token.amount.multipliedBy(token.price).toFixed(2) }} $</span
+        >
       </div>
-      <span class="token-card__dollar-amount" *ngIf="token.amount.gt(0) && token.price"
-        >~{{ token.amount.multipliedBy(token.price).toFixed(2) }} $</span
-      >
     </div>
   </div>
 

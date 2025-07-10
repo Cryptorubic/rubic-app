@@ -133,7 +133,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BLAST]: 'rgba(252, 252, 3, 1)',
   [BLOCKCHAIN_NAME.HOLESKY]: '#627DEA',
   [BLOCKCHAIN_NAME.ROOTSTOCK]: 'rgba(255, 145, 0, 1)',
-  [BLOCKCHAIN_NAME.KROMA]: '#ffffff',
   [BLOCKCHAIN_NAME.HORIZEN_EON]: '#041742',
   [BLOCKCHAIN_NAME.MERLIN]: '#7438ff',
   [BLOCKCHAIN_NAME.MODE]: '#000000',
