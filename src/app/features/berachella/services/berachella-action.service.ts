@@ -7,6 +7,7 @@ import { BerachellaNotificationService } from '@features/berachella/services/ber
 import { BerachellaButtonState } from '@features/berachella/interfaces/berachella-state.interface';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RubicWindow } from '@shared/utils/rubic-window';
 
 @Injectable()
 export class BerachellaActionService {
@@ -52,7 +53,15 @@ export class BerachellaActionService {
     }
   }
 
-  public async signWallet(code: string): Promise<void> {
+  public async signWallet(window: RubicWindow): Promise<void> {
+    await waitFor(3_000);
+
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const code = params.get('code');
+
+    if (!code) return;
+
     let inProgressNotification: Subscription;
     try {
       this._discordButtonStatus$.next('loading');
@@ -60,7 +69,6 @@ export class BerachellaActionService {
       inProgressNotification = this.notificationService.showDiscordProgressNotification();
       const web3 = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
 
-      await waitFor(1000);
       const signature = await web3.signMessage(code);
       const address = await firstValueFrom(
         this.stateService.currentUser$.pipe(map(el => el.address))
