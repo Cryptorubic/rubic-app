@@ -1,0 +1,80 @@
+@use 'src/scss/core' as *;
+
+.banner {
+  @include flex(row, center, center);
+  gap: 16px;
+  width: 100vw;
+  height: 57px;
+  max-height: 57px;
+  overflow: hidden;
+
+  text-decoration: none;
+
+  background-image: url('/assets/banner/berachella.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @include b($mobile-md) {
+    justify-content: left;
+    padding: 0 20px;
+
+    background-image: url('/assets/banner/berachella-mob.jpg');
+  }
+
+  @include b(460) {
+    gap: 10px;
+    height: 49px;
+  }
+
+  &__container {
+    font-weight: 700;
+    @include hide-unused-ui {
+      display: none;
+    }
+
+    @include b($mobile-md) {
+      width: 220px;
+
+      line-height: normal;
+      text-align: left;
+    };
+  }
+
+  &__mobile-br {
+    display: none;
+  }
+
+  .banner__text {
+    color: #d67a0e;
+  }
+
+  .banner__button {
+    display: block;
+    padding: 5px 10px;
+
+    font-weight: 500;
+    font-size: 15px;
+    text-decoration: none;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+    background: var(--tui-primary);
+    border-radius: 8px;
+
+    @include b(421) {
+      font-size: 13px;
+    }
+
+    @include b(321) {
+      font-size: 12px;
+    }
+  }
+}
+
+@include b(460) {
+  .banner {
+    &__mobile-br {
+      display: block;
+    }
+  }
+}
