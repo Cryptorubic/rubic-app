@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
@@ -12,7 +12,7 @@ import { GoogleTagManagerService } from '@core/services/google-tag-manager/googl
   styleUrls: ['./berachella-discord.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BerachellaDiscordComponent {
+export class BerachellaDiscordComponent implements AfterViewInit {
   public readonly discordLoading$ = this.stateService.discordLoading$;
 
   public readonly discordConnected$ = this.stateService.discordConnected$;
@@ -29,12 +29,7 @@ export class BerachellaDiscordComponent {
     private readonly stateService: BerachellaStateService,
     private readonly actionService: BerachellaActionService,
     private readonly gtmService: GoogleTagManagerService
-  ) {
-    const code = this.getCode();
-    if (code) {
-      this.actionService.signWallet(code);
-    }
-  }
+  ) {}
 
   public authDiscord(): void {
     let authUrl =
@@ -61,5 +56,12 @@ export class BerachellaDiscordComponent {
     const params = new URLSearchParams(search);
     const code = params.get('code');
     return code || null;
+  }
+
+  ngAfterViewInit() {
+    const code = this.getCode();
+    if (code) {
+      this.actionService.signWallet(code);
+    }
   }
 }
