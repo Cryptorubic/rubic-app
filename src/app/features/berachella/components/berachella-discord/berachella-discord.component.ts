@@ -51,17 +51,7 @@ export class BerachellaDiscordComponent implements AfterViewInit {
     this.window.open('https://discord.gg/rubic-finance', '_blank');
   }
 
-  private getCode(): string | null {
-    const search = this.window.location.search;
-    const params = new URLSearchParams(search);
-    const code = params.get('code');
-    return code || null;
-  }
-
   ngAfterViewInit() {
-    const code = this.getCode();
-    if (code) {
-      this.actionService.signWallet(code);
-    }
+    this.actionService.signWallet(this.window);
   }
 }
