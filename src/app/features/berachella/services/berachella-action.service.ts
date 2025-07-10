@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BerachellaStateService } from '@features/berachella/services/berachella-state.service';
 import { BehaviorSubject, firstValueFrom, Subscription } from 'rxjs';
-import { CHAIN_TYPE, Injector } from 'rubic-sdk';
+import { CHAIN_TYPE, Injector, waitFor } from 'rubic-sdk';
 import { BerachellaApiService } from '@features/berachella/services/berachella-api.service';
 import { BerachellaNotificationService } from '@features/berachella/services/berachella-notification.service';
 import { BerachellaButtonState } from '@features/berachella/interfaces/berachella-state.interface';
@@ -60,6 +60,7 @@ export class BerachellaActionService {
       inProgressNotification = this.notificationService.showDiscordProgressNotification();
       const web3 = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
 
+      await waitFor(1000);
       const signature = await web3.signMessage(code);
       const address = await firstValueFrom(
         this.stateService.currentUser$.pipe(map(el => el.address))
