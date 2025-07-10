@@ -74,6 +74,7 @@ import { SkipDefaultDirective } from './directives/skip-default/skip-default.dir
 import { MevBotModalComponent } from './components/mev-bot-modal/mev-bot-modal.component';
 import { ProgressBarComponent } from './components/progress-bar/progress-bar.component';
 import { SpindleBannerComponent } from './components/spindle-banner/spindle-banner.component';
+import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 
 @NgModule({
   declarations: [
@@ -122,7 +123,8 @@ import { SpindleBannerComponent } from './components/spindle-banner/spindle-bann
     SkipDefaultDirective,
     MevBotModalComponent,
     ProgressBarComponent,
-    SpindleBannerComponent
+    SpindleBannerComponent,
+    HypelabBannerComponent
   ],
   imports: [
     CommonModule,
@@ -198,7 +200,8 @@ import { SpindleBannerComponent } from './components/spindle-banner/spindle-bann
     SlippageFormatPipe,
     SkipDefaultDirective,
     ProgressBarComponent,
-    SpindleBannerComponent
+    SpindleBannerComponent,
+    HypelabBannerComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe]
 })
