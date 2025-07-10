@@ -1,6 +1,7 @@
 <tui-carousel [duration]="0" [draggable]="false">
   <ng-container *tuiItem>
-    <app-banner-test-promo></app-banner-test-promo>
+    <app-banner-zero-fees></app-banner-zero-fees>
+    <!--    <app-berachella-banner></app-berachella-banner>-->
   </ng-container>
 </tui-carousel>
 
@@ -99,7 +100,9 @@
     </ng-template>
   </div>
 
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
+  <ng-container *noBerachella>
+    <ng-container *noFrame>
+      <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
+    </ng-container>
   </ng-container>
 </header>

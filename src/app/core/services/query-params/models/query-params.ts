@@ -43,6 +43,7 @@ interface AllQueryParams {
   swapId: string;
   useSafe: string;
   hideBranding: string;
+  isBerachella: string;
 }
 
 export type QueryParams = {

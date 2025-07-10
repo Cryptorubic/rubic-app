@@ -10,6 +10,7 @@ export enum ROUTE_PATH {
   RETRODROP = 'retrodrop',
   STAKING = 'staking',
   TESTNET_PROMO = 'enter-the-chain',
+  BERACHELLA = 'berachella',
   REST = '**'
 }
 
