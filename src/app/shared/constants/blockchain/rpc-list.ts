@@ -371,6 +371,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://gwan2-ssl.wandevs.org',
     'https://gwan-ssl.wandevs.org:56891'
   ],
-  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://mainnet.unichain.org/']
+  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://mainnet.unichain.org/'],
+  [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc']
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: ['https://testnet-rpc.monad.xyz']
 };

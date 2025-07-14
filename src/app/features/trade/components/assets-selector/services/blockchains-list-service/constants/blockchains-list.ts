@@ -126,8 +126,7 @@ export const notEvmChangeNowBlockchainsList = {
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
 
-  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC,
-  [BLOCKCHAIN_NAME.SUI]: BLOCKCHAIN_NAME.SUI
+  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC
   // [BLOCKCHAIN_NAME.KADENA]: BLOCKCHAIN_NAME.KADENA,
   // [BLOCKCHAIN_NAME.AION]: BLOCKCHAIN_NAME.AION,
   // [BLOCKCHAIN_NAME.ARDOR]: BLOCKCHAIN_NAME.ARDOR,
@@ -324,6 +323,11 @@ export const blockchainsList: RankedBlockchain[] = [
     name: BLOCKCHAIN_NAME.TAIKO,
     rank: 0.45,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  },
+  {
+    name: BLOCKCHAIN_NAME.HEMI,
+    rank: 0.45,
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
   },
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
