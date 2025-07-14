@@ -1,0 +1,32 @@
+<button
+  *ngIf="(currentUser$ | async)?.address; else noWallet"
+  class="berachella-wallet-button"
+  tuiButton
+  appearance="secondary"
+  type="button"
+  size="m"
+  (click)="logout()"
+>
+  <ng-container *ngLet="{ text: profileText$ | async, img: avatar$ | async } as profile">
+    <div class="berachella-wallet-button__avatar">
+      <img [src]="profile.img" alt="User avatar" width="24" height="24" />
+    </div>
+
+    <div class="berachella-wallet-button__text">
+      {{ profile.text?.length > 20 ? (profile.text | shortAddress : 5 : 3) : profile.text }}
+    </div>
+  </ng-container>
+</button>
+
+<ng-template #noWallet>
+  <button
+    class="login-button"
+    tuiButton
+    type="button"
+    size="m"
+    (click)="showModal()"
+    appearance="primary"
+  >
+    {{ 'navigation.login' | translate }}
+  </button>
+</ng-template>

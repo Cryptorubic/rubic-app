@@ -1,0 +1,73 @@
+@use 'src/scss/core' as *;
+
+.berachella {
+  display: flex;
+  justify-content: center;
+
+  @include berachella {
+    margin-top: 50px;
+  }
+
+  &__box {
+    position: relative;
+
+    width: 600px;
+  }
+
+  &__separator {
+    width: 100%;
+    height: 1px;
+    margin: var(--tui-padding-m) 0;
+
+    background: var(--tui-secondary-hover);
+  }
+
+  &__action-row {
+    display: flex;
+    gap: var(--tui-padding-s);
+    justify-content: space-between;
+    padding-top: 30px;
+
+    @include b(599) {
+      flex-direction: column;
+      align-items: center;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+  }
+
+  &__info-row {
+    display: flex;
+    justify-content: space-between;
+    height: 24px;
+
+    @include b(430) {
+      flex-direction: column;
+      align-items: center;
+      height: 48px;
+    }
+  }
+}
+
+.blurred-bg {
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  z-index: -1;
+}
+
+.ticket {
+  position: absolute;
+  top: -40px;
+  right: 50px;
+  z-index: 1;
+
+  filter: drop-shadow(4px 4px 10px rgba(17, 13, 29, 0.35));
+
+  @include b(860) {
+    top: -23px;
+
+    width: 70px;
+  }
+}
+

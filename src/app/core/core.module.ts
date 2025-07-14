@@ -59,6 +59,6 @@ import { ModalsModule } from './modals/modals.module';
     }),
     ModalsModule
   ],
-  exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent]
+  exports: [MaintenanceComponent, RouterModule, HeaderComponent, RubicFooterComponent, HeaderModule]
 })
 export class CoreModule {}

@@ -1,0 +1,11 @@
+<p *ngIf="winningChance !== null" class="chances">
+  <span
+    class="chances__image"
+    [inlineSVG]="'/assets/images/icons/hint.svg'"
+    [tuiHint]="
+      'The winning chance shows your odds of winning the raffle based on the ticket you submitted.'
+    "
+    tuiHintAppearance="onDark"
+  ></span
+  >Winning chance: {{ winningChance }} %
+</p>
