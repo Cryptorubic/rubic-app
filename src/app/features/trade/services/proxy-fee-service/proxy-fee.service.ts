@@ -25,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 import { percentAddress } from './const/fee-type-address-mapping';
 import { isWrapUnwrap } from '@app/shared/utils/is-wrap-unwrap';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -46,6 +47,16 @@ export class ProxyFeeService {
 
       if (isWrapUnwrap(fromToken, toToken)) {
         return percentAddress.zeroFee;
+      }
+
+      // TEMPORARY FEE FOR BERACHELLA PROMO
+      if (
+        (fromToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN ||
+          toToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN) &&
+        fromPriceAmount.isFinite() &&
+        fromPriceAmount.gt(100)
+      ) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
       }
 
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
