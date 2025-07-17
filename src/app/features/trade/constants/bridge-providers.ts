@@ -207,6 +207,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}orbiter.png`,
     name: 'Orbiter'
   },
+  orbiter_bridge_v2: {
+    averageTime: 5,
+    color: 'white',
+    image: `${imageBasePath}orbiter.png`,
+    name: 'Orbiter V2'
+  },
   osmosis: {
     averageTime: 5,
     color: '#5E12A0',
