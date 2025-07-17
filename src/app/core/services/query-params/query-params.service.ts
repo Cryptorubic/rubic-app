@@ -62,6 +62,8 @@ export class QueryParamsService {
 
   public domain: string;
 
+  public isBerachella: boolean = false;
+
   public disabledLifiBridges: LifiSubProvider[] | undefined;
 
   public disabledRangoBridges: RangoTradeType[] | undefined;
@@ -105,6 +107,7 @@ export class QueryParamsService {
     this.slippageIt = parseFloat(queryParams.slippageIt);
     this.headerStore.forceDesktopResolution = queryParams.isDesktop;
     this.hideTokenSwitcher = queryParams.hideTokenSwitcher === 'true';
+    this.setBerachellaParams(queryParams);
     this.setHideSelectionStatus(queryParams);
     this.setIframeInfo(queryParams);
 
@@ -284,5 +287,13 @@ export class QueryParamsService {
     }
 
     return [];
+  }
+
+  private setBerachellaParams(queryParams: QueryParams): void {
+    this.isBerachella = queryParams.isBerachella === 'true';
+    if (this.isBerachella) {
+      const html = this.window.document.getElementsByTagName('html')[0];
+      html.classList.add('berachella');
+    }
   }
 }

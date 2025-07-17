@@ -575,6 +575,16 @@ export class SwapsControllerService {
   }
 
   private checkIsEqualFromAmount(fromAmount: BigNumber): boolean {
-    return this.swapFormService.inputValue.fromAmount.actualValue.eq(fromAmount);
+    // In API values of tokenAmount are limited by token decimals. Now we compare amounts taking this into accounts
+    const formSourceToken = this.swapFormService.inputValue;
+    const formSourceTokenAmount = formSourceToken.fromAmount.actualValue;
+    const formSourceTokenDecimals = formSourceToken.fromToken.decimals;
+    const formSourceTokenWeiAmount = Web3Pure.toWei(formSourceTokenAmount, formSourceTokenDecimals);
+    const formSourceTokenNonWeiAmount = Web3Pure.fromWei(
+      formSourceTokenWeiAmount,
+      formSourceTokenDecimals
+    );
+
+    return fromAmount.eq(formSourceTokenNonWeiAmount);
   }
 }
