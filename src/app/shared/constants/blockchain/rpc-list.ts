@@ -32,7 +32,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://x-api.rubic.exchange/polygon_zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://zkevm-rpc.com',
     'https://1rpc.io/polygon/zkevm',
-    'https://polygon-zkevm-mainnet.public.blastapi.io'
+    'https://polygon-zkevm-mainnet.public.blastapi.io',
+    'https://x-api.rubic.exchange/drpc/polygon-zkevm?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.HARMONY]: [
     'https://rpc.ankr.com/harmony/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -48,7 +49,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://moonriver.public.blastapi.io',
     'https://moonriver.unitedbloc.com:2000',
     'https://moonriver-rpc.publicnode.com',
-    'https://moonriver.api.onfinality.io/public'
+    'https://moonriver.api.onfinality.io/public',
+    'https://x-api.rubic.exchange/drpc/moonriver?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.FANTOM]: [
     'https://rpc.ankr.com/fantom/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -60,7 +62,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/arbitrum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.AURORA]: ['https://mainnet.aurora.dev'],
+  [BLOCKCHAIN_NAME.AURORA]: [
+    'https://mainnet.aurora.dev',
+    'https://x-api.rubic.exchange/drpc/aurora?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+  ],
   [BLOCKCHAIN_NAME.TELOS]: [
     'https://mainnet.telos.net/evm',
     'https://rpc1.eu.telos.net/evm',
@@ -78,7 +83,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
   [BLOCKCHAIN_NAME.GNOSIS]: [
-    'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
+    'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://x-api.rubic.exchange/drpc/xdai?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.FUSE]: [
     'https://fuse-pokt.nodies.app',
@@ -102,11 +108,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.ASTAR_EVM]: [
     'https://evm.astar.network/',
     'https://astar.public.blastapi.io',
-    'https://rpc.astar.network:8545'
+    'https://rpc.astar.network:8545',
+    'https://x-api.rubic.exchange/drpc/blast'
   ],
   [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.KAVA]: [
-    'https://rpc.ankr.com/premium-http/kava_api/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://evm.kava.io',
     'https://x-api.rubic.exchange/drpc/kava?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
@@ -143,14 +149,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.KLAYTN]: [
     'https://rpc.ankr.com/klaytn/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://public-en-cypress.klaytn.net/',
-    'https://public-node-api.klaytnapi.com/v1/cypress',
-    'https://cypress.fandom.finance/archive',
-    'https://klaytn01.fandom.finance',
-    'https://klaytn02.fandom.finance',
-    'https://klaytn03.fandom.finance',
-    'https://klaytn04.fandom.finance',
-    'https://klaytn05.fandom.finance'
+    'https://x-api.rubic.exchange/drpc/klaytn?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.VELAS]: ['https://evmexplorer.velas.com/rpc', 'https://explorer.velas.com/rpc'],
   [BLOCKCHAIN_NAME.SYSCOIN]: [
@@ -231,7 +230,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
     'https://pacific-rpc.manta.network/http',
     'https://1rpc.io/manta',
-    'https://pacific-rpc.manta.network/http'
+    'https://x-api.rubic.exchange/drpc/manta-pacific?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.SCROLL]: [
     'https://rpc.ankr.com/scroll/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
@@ -260,7 +259,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.blast.io',
     'https://blast.din.dev/rpc',
     'https://blastl2-mainnet.public.blastapi.io',
-    'https://blast.blockpi.network/v1/rpc/public'
+    'https://blast.blockpi.network/v1/rpc/public',
+    'https://x-api.rubic.exchange/drpc/blast?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.HOLESKY]: [
     'https://ethereum-holesky.publicnode.com',
@@ -272,9 +272,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://eon-rpc.horizenlabs.io/ethv1'
   ],
   [BLOCKCHAIN_NAME.MERLIN]: [
-    'https://merlin.blockpi.network/v1/rpc/aa364c7e72eeaaf93c1a4c288928298c5895aec4',
     'https://rpc.merlinchain.io',
-    'https://merlin.blockpi.network/v1/rpc/public'
+    'https://merlin.blockpi.network/v1/rpc/public',
+    'https://x-api.rubic.exchange/drpc/merlin?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.ROOTSTOCK]: [
     'https://mycrypto.rsk.co',
@@ -301,13 +301,15 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://x-api.rubic.exchange/drpc/xlayer?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.TAIKO]: [
-    'https://taiko.blockpi.network/v1/rpc/fc222c6da14117b3d1c6f1b2a1ad25484162854b',
     'https://rpc.ankr.com/taiko/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://rpc.mainnet.taiko.xyz',
     'https://rpc.taiko.xyz',
     'https://x-api.rubic.exchange/drpc/taiko?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.SEI]: ['https://evm-rpc.sei-apis.com'],
+  [BLOCKCHAIN_NAME.SEI]: [
+    'https://evm-rpc.sei-apis.com',
+    'https://x-api.rubic.exchange/drpc/sei?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+  ],
   [BLOCKCHAIN_NAME.CORE]: [
     'https://rpc.ankr.com/core/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://1rpc.io/core',
@@ -352,7 +354,8 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.SONEIUM]: [
     'https://1868.rpc.thirdweb.com/',
     'https://rpc.soneium.org/',
-    'https://soneium.drpc.org'
+    'https://soneium.drpc.org',
+    'https://x-api.rubic.exchange/drpc/soneium?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.WANCHAIN]: [
     'https://gwan2-ssl.wandevs.org',
