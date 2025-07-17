@@ -9,7 +9,6 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.XY]: 'xy',
   [CROSS_CHAIN_TRADE_TYPE.CELER_BRIDGE]: 'celer_bridge',
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: 'changenow',
-  [CROSS_CHAIN_TRADE_TYPE.STARGATE]: 'stargate',
   [CROSS_CHAIN_TRADE_TYPE.ARBITRUM]: 'rbc_arbitrum_bridge',
   [CROSS_CHAIN_TRADE_TYPE.SQUIDROUTER]: 'squidrouter',
   [CROSS_CHAIN_TRADE_TYPE.SCROLL_BRIDGE]: 'scroll_sepolia',
@@ -32,7 +31,8 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.TELE_SWAP]: 'teleswap',
   [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: 'wanchain_bridge',
   [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: 'xflows',
-  [CROSS_CHAIN_TRADE_TYPE.RELAY]: 'relay'
+  [CROSS_CHAIN_TRADE_TYPE.RELAY]: 'relay',
+  [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2]: 'orbiter_bridge_v2'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
