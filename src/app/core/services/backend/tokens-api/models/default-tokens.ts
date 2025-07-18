@@ -4,7 +4,7 @@ import {
   BlockchainName,
   nativeTokensList,
   wrappedNativeTokensList
-} from 'rubic-sdk';
+} from '@cryptorubic/core';
 
 const defaultTokenParams = {
   rank: 0.001,
@@ -15,7 +15,7 @@ const defaultTokenParams = {
 
 export const defaultTokens: Record<BlockchainName, Token[]> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: [] }),
+    (acc, blockchain) => ({ ...acc, [blockchain]: [] as Token[] }),
     {} as Record<BlockchainName, Token[]>
   ),
   [BLOCKCHAIN_NAME.ETHEREUM]: [
@@ -193,36 +193,6 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       address: '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
       name: 'TetherToken',
       symbol: 'USDt',
-      decimals: 6,
-      image: 'assets/images/icons/default-tokens/usdt.png',
-      ...defaultTokenParams
-    }
-  ],
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: [
-    {
-      ...nativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/ethw.png'
-    } as Token,
-    {
-      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.ETHEREUM_POW],
-      ...defaultTokenParams,
-      image: 'assets/images/icons/default-tokens/weth.png'
-    } as Token,
-    {
-      blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
-      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-      name: 'USD Coin',
-      symbol: 'USDC',
-      decimals: 6,
-      image: 'assets/images/icons/default-tokens/usdc.png',
-      ...defaultTokenParams
-    },
-    {
-      blockchain: BLOCKCHAIN_NAME.ETHEREUM_POW,
-      address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      name: 'Tether USD',
-      symbol: 'USDT',
       decimals: 6,
       image: 'assets/images/icons/default-tokens/usdt.png',
       ...defaultTokenParams

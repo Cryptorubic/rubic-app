@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName, TronBlockchainName } from '@cryptorubic/core';
 
 const nonOnChainNetworks = [
   BLOCKCHAIN_NAME.BITGERT,

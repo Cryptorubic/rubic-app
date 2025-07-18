@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
-  BlockchainName,
   CrossChainStatus,
   CrossChainTrade,
-  CrossChainTradeType,
   NotWhitelistedProviderError,
   TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
@@ -21,11 +19,15 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { WINDOW } from '@ng-web-apis/common';
 import { getSignature } from '@shared/utils/get-signature';
 import { TradeParser } from '@features/trade/utils/trade-parser';
-import { TO_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
 import { SettingsService } from '../settings-service/settings.service';
 import { ProviderCcrStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
+import {
+  BlockchainName,
+  CrossChainTradeType,
+  TO_BACKEND_CROSS_CHAIN_PROVIDERS
+} from '@cryptorubic/core';
 
 @Injectable()
 export class CrossChainApiService {

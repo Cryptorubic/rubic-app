@@ -1,5 +1,6 @@
-import { BLOCKCHAIN_NAME, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SupportedOnChainNetworks } from '@features/trade/constants/instant-trade.type';
+import { BLOCKCHAIN_NAME } from 'rubic-sdk';
 
 const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [ON_CHAIN_TRADE_TYPE.CURVE],
@@ -21,7 +22,6 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.MOONBEAM]: [],
   [BLOCKCHAIN_NAME.CELO]: [ON_CHAIN_TRADE_TYPE.CURVE],
   [BLOCKCHAIN_NAME.BOBA]: [],
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: [],
   [BLOCKCHAIN_NAME.KAVA]: [],
   [BLOCKCHAIN_NAME.TRON]: [],
   [BLOCKCHAIN_NAME.OASIS]: [],

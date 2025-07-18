@@ -1,6 +1,6 @@
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { BlockchainName } from 'rubic-sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 class CrossChainUnsupportedBlockchainError extends RubicError<ERROR_TYPE.TEXT> {

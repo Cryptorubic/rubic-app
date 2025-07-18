@@ -4,22 +4,17 @@ import { firstValueFrom, timer } from 'rxjs';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
   EvmBasicTransactionOptions,
-  EvmCrossChainTrade,
   NotWhitelistedProviderError,
   PriceToken,
   SwapTransactionOptions,
-  TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
   UnapprovedMethodError,
   UnnecessaryApproveError,
   UserRejectError,
   Web3Pure,
-  Injector as SdkInjector
+  Injector as SdkInjector,
+  EvmCrossChainTrade
 } from 'rubic-sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -49,7 +44,14 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { RefundService } from '../refund-service/refund.service';
-import { QuoteOptionsInterface } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  QuoteOptionsInterface,
+  TO_BACKEND_BLOCKCHAINS
+} from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 

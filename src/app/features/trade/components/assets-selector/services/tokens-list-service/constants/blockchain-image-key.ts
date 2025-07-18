@@ -2,7 +2,7 @@ import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
 
 export const blockchainImageKey: Record<BlockchainName, string> = {
   ...Object.values(BLOCKCHAIN_NAME).reduce(
-    (acc, blockchain) => ({ ...acc, [blockchain]: null }),
+    (acc, blockchain) => ({ ...acc, [blockchain]: null } as Record<BlockchainName, string>),
     {} as Record<BlockchainName, string>
   ),
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ethereum',
@@ -26,7 +26,6 @@ export const blockchainImageKey: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA]: 'boba',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'astar_evm',
   [BLOCKCHAIN_NAME.BITCOIN]: 'bitcoin',
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'ethereum-pow',
   [BLOCKCHAIN_NAME.TRON]: 'tron',
   [BLOCKCHAIN_NAME.KAVA]: 'kava',
   [BLOCKCHAIN_NAME.BITGERT]: 'bitgert',
