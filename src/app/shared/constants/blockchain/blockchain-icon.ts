@@ -44,7 +44,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.E_CASH]: `${basePath}e-cash.svg`,
   [BLOCKCHAIN_NAME.EOS]: `${basePath}eos.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM]: `${basePath}eth-contrast.svg`,
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: `${basePath}ethereum-pow.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM_CLASSIC]: `${basePath}ethereum-classic.svg`,
   [BLOCKCHAIN_NAME.FANTOM]: `${basePath}fantom.svg`,
   [BLOCKCHAIN_NAME.FILECOIN]: `${basePath}filecoin.svg`,

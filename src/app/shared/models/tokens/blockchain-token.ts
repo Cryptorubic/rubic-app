@@ -1,4 +1,4 @@
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/core';
 
 export interface BlockchainToken {
   blockchain: BlockchainName;
