@@ -8,9 +8,10 @@ import {
   OnChainTrade,
   OnChainTradeType
 } from 'rubic-sdk';
-import { INFO_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
+import { INFO_COLOR, PINK_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
 import {
   showAttentionLabelArbitrumBridge,
+  showBerachainLabel,
   showNoSlippageLabelArbitrumBridge
 } from './common/badges-for-providers-conditions';
 
@@ -37,7 +38,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: () => true
     }
   ],
-
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
@@ -77,15 +77,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: () => true
     }
   ],
-  // [BRIDGE_TYPE.XY]: [
-  //   {
-  //     href: 'https://twitter.com/xyfinance/status/1788862005736288497',
-  //     bgColor: POSITIVE_COLOR,
-  //     fromSdk: false,
-  //     getLabel: () => 'Get Blast Points!',
-  //     showLabel: showXyBlastPromoLabel
-  //   }
-  // ],
   [BRIDGE_TYPE.MESON]: [
     {
       bgColor: INFO_COLOR,
@@ -112,13 +103,23 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       showLabel: showAttentionLabelArbitrumBridge
     }
   ],
-  [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: [
+  [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: [],
+  [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE]: [
     {
-      getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
-      bgColor: '#2a74db',
+      bgColor: PINK_COLOR,
       fromSdk: false,
-      getLabel: () => 'Earn $WAN!',
-      showLabel: () => true
+      getLabel: () => 'Reward',
+      getUrl: () => 'https://www.orbiter.finance/quest/41',
+      showLabel: showBerachainLabel
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2]: [
+    {
+      bgColor: PINK_COLOR,
+      fromSdk: false,
+      getLabel: () => 'Reward',
+      getUrl: () => 'https://www.orbiter.finance/quest/41',
+      showLabel: showBerachainLabel
     }
   ],
   [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: [
