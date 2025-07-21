@@ -183,7 +183,7 @@ export class CrossChainService {
    * @param trade trade data
    * @param callbackOnHash function call with hash-string and 'sourcePending'-status
    * @param useCacheData Use cached data or not
-   * @returns transactionHash - on successfull swap
+   * @returns transactionHash - on successful swap
    */
   public async swapTrade(
     trade: CrossChainTrade<unknown>,
