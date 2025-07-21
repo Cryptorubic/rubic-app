@@ -121,14 +121,5 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getUrl: () => 'https://www.orbiter.finance/quest/41',
       showLabel: showBerachainLabel
     }
-  ],
-  [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: [
-    {
-      getUrl: () => 'https://x.com/wanchain_org/status/1930619643502170506',
-      bgColor: '#2a74db',
-      fromSdk: false,
-      getLabel: () => 'Earn $WAN!',
-      showLabel: () => true
-    }
   ]
 };
