@@ -33,7 +33,7 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.XFLOWS]: 'xflows',
   [CROSS_CHAIN_TRADE_TYPE.RELAY]: 'relay',
   [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2]: 'orbiter_bridge_v2',
-  [CROSS_CHAIN_TRADE_TYPE.WORMHOLE]: 'wormhole'
+  [CROSS_CHAIN_TRADE_TYPE.WORMHOLE]: 'wormhole_mayan'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
