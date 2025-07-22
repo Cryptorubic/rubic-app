@@ -314,9 +314,10 @@ export class TokensService {
 
         // allChains
         if (!blockchain) {
-          this.balanceLoaderService.updateBalancesForAllChains(tokensWithNullBalances, {
-            onChainLoaded
-          });
+          // @TODO HERE
+          // this.balanceLoaderService.updateBalancesForAllChains(tokensWithNullBalances, {
+          //   onChainLoaded
+          // });
         } else {
           this.balanceLoaderService.updateBalancesForSpecificChain(
             tokensWithNullBalances,
