@@ -79,7 +79,7 @@ export class ProxyFeeService {
 
       if (typeof feeValue === 'string') {
         // BERA SWAP, REMOVE AFTER PROMO
-        if (isBeraSwap && feeValue !== percentAddress.zeroFee) {
+        if (isBeraSwap && percentAddress[feeValue] !== percentAddress.zeroFee) {
           return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
         }
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
@@ -92,7 +92,7 @@ export class ProxyFeeService {
       }
 
       // BERA SWAP, REMOVE AFTER PROMO
-      if (isBeraSwap && suitableLimit.type !== percentAddress.zeroFee) {
+      if (isBeraSwap && percentAddress[suitableLimit.type] !== percentAddress.zeroFee) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
       }
 
