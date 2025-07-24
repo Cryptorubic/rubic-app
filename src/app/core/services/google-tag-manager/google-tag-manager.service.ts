@@ -241,10 +241,4 @@ export class GoogleTagManagerService {
   public fireClickOnVerifyEvent(): void {
     this.angularGtmService.gtag('event', 'click_verify');
   }
-
-  public fireBerachaellaEvent(
-    type: 'connect_wallet' | 'input_click' | 'tickets_send' | 'connect_discord'
-  ): void {
-    this.angularGtmService.gtag('event', `berachella_${type}`);
-  }
 }

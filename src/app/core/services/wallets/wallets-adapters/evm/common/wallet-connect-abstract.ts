@@ -64,11 +64,6 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
 
   public async activate(): Promise<void> {
     try {
-      const isBera = this.window.location.search.includes('isBerachella=true');
-      if (isBera) {
-        this.window?.parent.postMessage('walletConnectOpen', '*');
-      }
-
       this.wallet = await EthereumProvider.init({
         ...this.providerConfig
       });
@@ -84,10 +79,6 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
       this.onNetworkChanges$.next(this.selectedChain);
 
       this.initSubscriptionsOnChanges();
-
-      if (isBera) {
-        this.window?.parent.postMessage('walletConnectClosed', '*');
-      }
     } catch (error) {
       throw new WalletlinkError();
     }

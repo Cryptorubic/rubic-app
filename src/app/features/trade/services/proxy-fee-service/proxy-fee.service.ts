@@ -49,15 +49,10 @@ export class ProxyFeeService {
         return percentAddress.zeroFee;
       }
 
-      // TEMPORARY FEE FOR BERACHELLA PROMO
-      if (
+      const isBeraSwap =
         (fromToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN ||
           toToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN) &&
-        fromPriceAmount.isFinite() &&
-        fromPriceAmount.gt(100)
-      ) {
-        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
-      }
+        fromPriceAmount.isFinite();
 
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
@@ -83,6 +78,10 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
+        // BERA SWAP, REMOVE AFTER PROMO
+        if (isBeraSwap && feeValue !== percentAddress.zeroFee) {
+          return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
+        }
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
       }
 
@@ -90,6 +89,11 @@ export class ProxyFeeService {
       const suitableLimit = sortedLimits.find(el => fromPriceAmount.gt(el.limit));
       if (!suitableLimit) {
         throw new Error('Limit not found');
+      }
+
+      // BERA SWAP, REMOVE AFTER PROMO
+      if (isBeraSwap && suitableLimit.type !== percentAddress.zeroFee) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
       }
 
       return this.handlePromoIntegrator(fromToken, toToken, percentAddress[suitableLimit.type]);

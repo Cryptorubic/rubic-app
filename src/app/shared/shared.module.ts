@@ -82,7 +82,6 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
-import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berachella.directive';
 
 @NgModule({
   declarations: [
@@ -139,8 +138,7 @@ import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berac
     MathAbsPipe,
     HypelabBannerComponent,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
-    NoBerachellaDirective
+    MobileMenuComponent
   ],
   imports: [
     CommonModule,
@@ -223,8 +221,7 @@ import { NoBerachellaDirective } from '@shared/directives/no-berachella/no-berac
     MathAbsPipe,
     HypelabBannerComponent,
     SmallBlockchainButtonComponent,
-    MobileMenuComponent,
-    NoBerachellaDirective
+    MobileMenuComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
