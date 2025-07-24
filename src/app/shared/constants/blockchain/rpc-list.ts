@@ -111,7 +111,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.astar.network:8545',
     'https://x-api.rubic.exchange/drpc/blast'
   ],
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: ['https://mainnet.ethereumpow.org/'],
   [BLOCKCHAIN_NAME.KAVA]: [
     'https://evm.kava.io',
     'https://x-api.rubic.exchange/drpc/kava?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'

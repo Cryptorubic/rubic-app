@@ -3,13 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
-import {
-  BlockchainName,
-  CrossChainTradeType,
-  BLOCKCHAIN_NAME,
-  FROM_BACKEND_BLOCKCHAINS,
-  BackendBlockchain
-} from 'rubic-sdk';
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
@@ -18,6 +11,13 @@ import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain
 import { timeout } from 'rxjs/operators';
 import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
+import {
+  BackendBlockchain,
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CrossChainTradeType,
+  FROM_BACKEND_BLOCKCHAINS
+} from '@cryptorubic/core';
 
 interface ProvidersConfiguration {
   disabledCrossChainTradeTypes: CrossChainTradeType[];
@@ -27,7 +27,6 @@ const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
   BLOCKCHAIN_NAME.TRON,
   BLOCKCHAIN_NAME.BITCOIN,
   BLOCKCHAIN_NAME.BITGERT,
-  BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.MOONBEAM,
   BLOCKCHAIN_NAME.FUSE,
   BLOCKCHAIN_NAME.OKE_X_CHAIN,

@@ -1,6 +1,6 @@
+import { BackendBlockchain, BlockchainName } from '@cryptorubic/core';
 import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BackendBlockchain, BlockchainName } from 'rubic-sdk';
 
 export enum ENDPOINTS {
   TOKENS = 'v2/tokens/',

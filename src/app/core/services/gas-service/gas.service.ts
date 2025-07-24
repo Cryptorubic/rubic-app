@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { BLOCKCHAIN_NAME, BlockchainName, GasPrice, Injector, Web3Pure } from 'rubic-sdk';
+import { GasPrice, Injector, Web3Pure } from 'rubic-sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';
@@ -13,6 +13,7 @@ import { GasInfo } from './models/gas-info';
 import { MetaMaskGasResponse } from './models/metamask-gas-response';
 import { calculateAverageValue, calculateDeviation } from '@app/shared/utils/gas-price-deviation';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -21,7 +22,6 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.AVALANCHE,
   BLOCKCHAIN_NAME.TELOS,
   BLOCKCHAIN_NAME.FANTOM,
-  BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.OPTIMISM,
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.ZK_SYNC,
@@ -74,7 +74,6 @@ export class GasService {
     [BLOCKCHAIN_NAME.AVALANCHE]: this.fetchAvalancheGas.bind(this),
     [BLOCKCHAIN_NAME.TELOS]: this.fetchTelosGas.bind(this),
     [BLOCKCHAIN_NAME.FANTOM]: this.fetchFantomGas.bind(this),
-    [BLOCKCHAIN_NAME.ETHEREUM_POW]: this.fetchEthereumPowGas.bind(this),
     [BLOCKCHAIN_NAME.OPTIMISM]: this.fetchOptimismGas.bind(this),
     [BLOCKCHAIN_NAME.ARBITRUM]: this.fetchArbitrumGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_SYNC]: this.fetchZkSyncGas.bind(this),
@@ -324,26 +323,6 @@ export class GasService {
     return from(blockchainAdapter.getPriorityFeeGas()).pipe(
       map(formatEIP1559Gas),
       catchError(() => of(null))
-    );
-  }
-
-  /**
-   * Gets Ethereum PoW gas from blockchain.
-   * @return Observable<number> Average gas price in Gwei.
-   */
-  @Cacheable({
-    maxAge: GasService.requestInterval
-  })
-  private fetchEthereumPowGas(): Observable<GasPrice | null> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
-      BLOCKCHAIN_NAME.ETHEREUM_POW
-    );
-    return from(blockchainAdapter.getGasPrice()).pipe(
-      map((gasPriceInWei: string) => {
-        return {
-          gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 9).toFixed()
-        };
-      })
     );
   }
 
