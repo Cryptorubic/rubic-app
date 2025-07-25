@@ -299,7 +299,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.JUPITER]: {
     name: 'Jupiter',
-    image: `${imageBasePath}jupiter.svg`,
+    image: `${imageBasePath}jupiter-solana.svg`,
     color: '#34A5F5'
   },
   [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: {
