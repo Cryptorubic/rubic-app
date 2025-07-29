@@ -325,6 +325,11 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
+    name: BLOCKCHAIN_NAME.HEMI,
+    rank: 0.45,
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+  },
+  {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
     rank: 0.45,
     tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
