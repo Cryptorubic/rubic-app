@@ -8,5 +8,4 @@ export interface WalletProvider {
   supportsMobile: boolean;
   display: boolean;
   disabled: boolean;
-  supportBerachella: boolean;
 }

@@ -34,11 +34,6 @@ const routes: Routes = [
       import('./features/testnet-promo/testnet-promo.module').then(m => m.TestnetPromoModule)
   },
   {
-    path: ROUTE_PATH.BERACHELLA,
-    loadChildren: () =>
-      import('./features/berachella/berachella.module').then(m => m.BerachellaModule)
-  },
-  {
     path: ROUTE_PATH.REST,
     redirectTo: '/'
   }

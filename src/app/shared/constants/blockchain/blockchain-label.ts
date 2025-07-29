@@ -23,7 +23,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'Boba BNB',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'Astar EVM',
   [BLOCKCHAIN_NAME.ASTAR]: 'Astar',
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'Eth PoW',
   [BLOCKCHAIN_NAME.KAVA]: 'Kava',
   [BLOCKCHAIN_NAME.TRON]: 'Tron',
   [BLOCKCHAIN_NAME.BITCOIN]: 'Bitcoin',

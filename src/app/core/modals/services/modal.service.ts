@@ -32,13 +32,14 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { BlockchainName, TonOnChainTrade } from 'rubic-sdk';
+import { TonOnChainTrade } from 'rubic-sdk';
 import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { DepositRateChangedModalComponent } from '@app/shared/components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
+import { BlockchainName } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'

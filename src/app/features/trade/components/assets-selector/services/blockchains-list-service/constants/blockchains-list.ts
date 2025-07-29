@@ -416,7 +416,6 @@ export const blockchainsList: RankedBlockchain[] = [
 
   { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: ['XDAI', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.BITGERT,
-  // BLOCKCHAIN_NAME.ETHEREUM_POW,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,
   // BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,
   { name: BLOCKCHAIN_NAME.FLARE, rank: 0, tags: ['FLR', BlockchainTags.EVM] },
