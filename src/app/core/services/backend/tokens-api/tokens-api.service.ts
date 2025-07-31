@@ -22,17 +22,17 @@ import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
+import { ENVIRONMENT } from 'src/environments/environment';
+
+import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
   BlockchainName,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
-} from 'rubic-sdk';
-import { ENVIRONMENT } from 'src/environments/environment';
-
-import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
-import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
+} from '@cryptorubic/core';
 
 /**
  * Perform backend requests and transforms to get valid tokens.

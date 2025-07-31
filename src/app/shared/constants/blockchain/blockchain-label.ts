@@ -23,7 +23,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BOBA_BSC]: 'Boba BNB',
   [BLOCKCHAIN_NAME.ASTAR_EVM]: 'Astar EVM',
   [BLOCKCHAIN_NAME.ASTAR]: 'Astar',
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: 'Eth PoW',
   [BLOCKCHAIN_NAME.KAVA]: 'Kava',
   [BLOCKCHAIN_NAME.TRON]: 'Tron',
   [BLOCKCHAIN_NAME.BITCOIN]: 'Bitcoin',
@@ -154,6 +153,7 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SUI]: 'Sui',
   [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
   [BLOCKCHAIN_NAME.WANCHAIN]: 'Wanchain',
-  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain'
+  [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
+  [BLOCKCHAIN_NAME.HEMI]: 'Hemi'
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'Monad'
 };

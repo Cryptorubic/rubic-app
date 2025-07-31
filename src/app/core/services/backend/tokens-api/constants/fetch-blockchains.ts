@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
 export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.ETHEREUM,
@@ -21,7 +21,6 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.CELO,
   // BLOCKCHAIN_NAME.BOBA,
   // BLOCKCHAIN_NAME.BOBA_BSC,
-  BLOCKCHAIN_NAME.ETHEREUM_POW,
   BLOCKCHAIN_NAME.TRON,
   // BLOCKCHAIN_NAME.KAVA,
   BLOCKCHAIN_NAME.BITGERT,
@@ -64,7 +63,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.SONEIUM,
   BLOCKCHAIN_NAME.WANCHAIN,
   BLOCKCHAIN_NAME.UNICHAIN,
-  BLOCKCHAIN_NAME.MORPH
+  BLOCKCHAIN_NAME.MORPH,
+  BLOCKCHAIN_NAME.HEMI
   // BLOCKCHAIN_NAME.SONIC,
 ];
 

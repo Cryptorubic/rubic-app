@@ -250,5 +250,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.UNICHAIN]: {
     name: 'Unichain',
     rpc: 'https://mainnet.unichain.org/'
+  },
+  [BLOCKCHAIN_NAME.HEMI]: {
+    name: 'Hemi',
+    rpc: 'https://rpc.hemi.network/rpc'
   }
 };

@@ -12,7 +12,6 @@ import {
   ViewChild
 } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { UserInterface } from 'src/app/core/services/auth/models/user.interface';
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Router } from '@angular/router';
@@ -44,7 +43,7 @@ export class HeaderComponent implements AfterViewInit {
 
   public readonly isMobileMenuOpened$: Observable<boolean>;
 
-  public currentUser$: Observable<UserInterface>;
+  public readonly currentUser$ = this.authService.currentUser$;
 
   public readonly swapType$: Observable<SWAP_PROVIDER_TYPE>;
 
@@ -100,7 +99,6 @@ export class HeaderComponent implements AfterViewInit {
     private readonly themeService: ThemeService
   ) {
     this.advertisementType = 'default';
-    this.currentUser$ = this.authService.currentUser$;
     this.isMobileMenuOpened$ = this.headerStore.getMobileMenuOpeningStatus();
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
     if (isPlatformBrowser(platformId)) {

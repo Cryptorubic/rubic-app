@@ -9,12 +9,12 @@ import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
-import { BlockchainName, nativeTokensList } from 'rubic-sdk';
 
 import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { Router } from '@angular/router';
+import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
 
 interface ContextData {
   tradesHistory: TradesHistory;

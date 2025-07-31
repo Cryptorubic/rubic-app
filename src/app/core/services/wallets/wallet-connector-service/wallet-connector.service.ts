@@ -13,16 +13,6 @@ import { TUI_IS_IOS } from '@taiga-ui/cdk';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
 import { TrustWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/trust-wallet-adapter';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
-import {
-  BLOCKCHAIN_NAME,
-  blockchainId,
-  BlockchainName,
-  CHAIN_TYPE,
-  ChainType,
-  EVM_BLOCKCHAIN_NAME,
-  EvmBlockchainName,
-  nativeTokensList
-} from 'rubic-sdk';
 import { TronLinkAdapter } from '@core/services/wallets/wallets-adapters/tron/tron-link-adapter';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
@@ -50,6 +40,17 @@ import { BitgetWalletAdapter } from '../wallets-adapters/evm/bitget-wallet-adapt
 import { SlushWalletAdapter } from '../wallets-adapters/sui/slush-wallet-adapter';
 import { SuietWalletAdapter } from '../wallets-adapters/sui/suiet-wallet-adapter';
 import { MetamaskSolanaWalletAdapter } from '@core/services/wallets/wallets-adapters/solana/metamask-solana-wallet-adapter';
+import { BinanceWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/binance-wallet-adapter';
+import {
+  BLOCKCHAIN_NAME,
+  blockchainId,
+  BlockchainName,
+  CHAIN_TYPE,
+  ChainType,
+  EVM_BLOCKCHAIN_NAME,
+  EvmBlockchainName,
+  nativeTokensList
+} from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -226,6 +227,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.HOLD_STATION) {
       return new HoldstationWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+
+    if (walletName === WALLET_NAME.BINANCE_WALLET) {
+      return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

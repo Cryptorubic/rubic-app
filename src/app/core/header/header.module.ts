@@ -49,6 +49,7 @@ import { BannerBirthdayComponent } from '@core/header/components/header/componen
 import { BannerTestApiComponent } from './components/header/components/banner-test-api/banner-test-api.component';
 import { BannerZeroFeesComponent } from './components/header/components/banner-zero-fees/banner-zero-fees.component';
 import { BannerTestPromoComponent } from '@core/header/components/header/components/banner-testnet-promo/banner-test-promo.component';
+import { BerachellaBannerComponent } from '@core/header/components/header/components/berachella-banner/berachella-banner.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { BannerTestPromoComponent } from '@core/header/components/header/compone
     BannerBirthdayComponent,
     BannerTestApiComponent,
     BannerZeroFeesComponent,
-    BannerTestPromoComponent
+    BannerTestPromoComponent,
+    BerachellaBannerComponent
   ],
   imports: [
     CommonModule,
@@ -101,6 +103,6 @@ import { BannerTestPromoComponent } from '@core/header/components/header/compone
     TuiCarouselModule
   ],
   providers: [TuiDestroyService],
-  exports: [HeaderComponent]
+  exports: [HeaderComponent, UserProfileComponent]
 })
 export class HeaderModule {}

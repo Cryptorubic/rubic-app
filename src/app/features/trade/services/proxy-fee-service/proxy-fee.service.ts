@@ -25,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 import { percentAddress } from './const/fee-type-address-mapping';
 import { isWrapUnwrap } from '@app/shared/utils/is-wrap-unwrap';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
@@ -47,6 +48,11 @@ export class ProxyFeeService {
       if (isWrapUnwrap(fromToken, toToken)) {
         return percentAddress.zeroFee;
       }
+
+      const isBeraSwap =
+        (fromToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN ||
+          toToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN) &&
+        fromPriceAmount.isFinite();
 
       if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
@@ -72,6 +78,10 @@ export class ProxyFeeService {
       const feeValue = this.getFeeValue(fromToken, fromType, toToken, toType);
 
       if (typeof feeValue === 'string') {
+        // BERA SWAP, REMOVE AFTER PROMO
+        if (isBeraSwap && percentAddress[feeValue] !== percentAddress.zeroFee) {
+          return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
+        }
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
       }
 
@@ -79,6 +89,11 @@ export class ProxyFeeService {
       const suitableLimit = sortedLimits.find(el => fromPriceAmount.gt(el.limit));
       if (!suitableLimit) {
         throw new Error('Limit not found');
+      }
+
+      // BERA SWAP, REMOVE AFTER PROMO
+      if (isBeraSwap && percentAddress[suitableLimit.type] !== percentAddress.zeroFee) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
       }
 
       return this.handlePromoIntegrator(fromToken, toToken, percentAddress[suitableLimit.type]);

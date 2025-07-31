@@ -25,6 +25,7 @@ import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { ModalService } from '@core/modals/services/modal.service';
+import { QueryParamsService } from '@core/services/query-params/query-params.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -89,7 +90,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly queryParamsService: QueryParamsService
   ) {}
 
   ngOnInit() {

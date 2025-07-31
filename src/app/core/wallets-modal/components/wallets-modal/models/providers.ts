@@ -33,10 +33,10 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Coinbase Wallet',
     value: WALLET_NAME.COIN_BASE,
     img: './assets/images/icons/wallets/coinbase.png',
-    supportsDesktop: true,
+    supportsDesktop: false,
     supportsMobile: false,
-    display: true,
-    disabled: false
+    display: false,
+    disabled: true
   },
   {
     name: 'WalletConnect',
@@ -153,6 +153,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsDesktop: true,
     supportsMobile: true,
     display: false,
+    disabled: false
+  },
+  {
+    name: 'Binance Wallet',
+    value: WALLET_NAME.BINANCE_WALLET,
+    img: './assets/images/icons/wallets/binance.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
     disabled: false
   }
 ];

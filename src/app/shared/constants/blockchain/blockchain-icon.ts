@@ -44,7 +44,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.E_CASH]: `${basePath}e-cash.svg`,
   [BLOCKCHAIN_NAME.EOS]: `${basePath}eos.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM]: `${basePath}eth-contrast.svg`,
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: `${basePath}ethereum-pow.svg`,
   [BLOCKCHAIN_NAME.ETHEREUM_CLASSIC]: `${basePath}ethereum-classic.svg`,
   [BLOCKCHAIN_NAME.FANTOM]: `${basePath}fantom.svg`,
   [BLOCKCHAIN_NAME.FILECOIN]: `${basePath}filecoin.svg`,
@@ -156,6 +155,7 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SUI]: `${basePath}sui.svg`,
   [BLOCKCHAIN_NAME.SONEIUM]: `${basePath}soneium.svg`,
   [BLOCKCHAIN_NAME.WANCHAIN]: `${basePath}wanchain.svg`,
-  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`
+  [BLOCKCHAIN_NAME.UNICHAIN]: `${basePath}unichain.png`,
+  [BLOCKCHAIN_NAME.HEMI]: `${basePath}hemi.svg`
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`
 };

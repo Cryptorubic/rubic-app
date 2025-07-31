@@ -210,14 +210,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.ETHEREUM_POW]: {
-    baseUrl: 'https://www.oklink.com/en/ethw/',
-    nativeCoinUrl: 'stat/supply/',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.TRON]: {
     baseUrl: 'https://tronscan.org/#/',
     nativeCoinUrl: 'token/0/transfers',
@@ -1245,6 +1237,14 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
   },
   [BLOCKCHAIN_NAME.WANCHAIN]: {
     baseUrl: 'https://wanscan.org/',
+    nativeCoinUrl: '',
+    [ADDRESS_TYPE.WALLET]: 'address/',
+    [ADDRESS_TYPE.TOKEN]: 'token/',
+    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
+    [ADDRESS_TYPE.BLOCK]: 'block/'
+  },
+  [BLOCKCHAIN_NAME.HEMI]: {
+    baseUrl: 'https://explorer.hemi.xyz/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
