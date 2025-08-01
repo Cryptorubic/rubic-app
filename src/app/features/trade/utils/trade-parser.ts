@@ -11,7 +11,6 @@ export class TradeParser {
     fromDecimals: number;
     toAddress: string;
     toSymbol: string;
-    toAmount: BigNumber;
     toPrice: number;
     toDecimals: number;
     fromBlockchain: BlockchainName;
@@ -26,7 +25,6 @@ export class TradeParser {
       fromDecimals: trade.from.decimals,
       toAddress: trade.to.address,
       toSymbol: trade.to.symbol,
-      toAmount: trade.to.tokenAmount,
       toPrice: trade.to.price.toNumber(),
       toDecimals: trade.to.decimals,
       fromBlockchain: trade.from.blockchain,
@@ -43,7 +41,6 @@ export class TradeParser {
     fromDecimals: number;
     toAddress: string;
     toSymbol: string;
-    toAmount: BigNumber;
     toPrice: number;
     toDecimals: number;
     blockchain: BlockchainName;
@@ -57,7 +54,6 @@ export class TradeParser {
       fromDecimals: trade.from.decimals,
       toAddress: trade.to.address,
       toSymbol: trade.to.symbol,
-      toAmount: trade.to.tokenAmount,
       toPrice: trade.to.price.toNumber(),
       toDecimals: trade.to.decimals,
       blockchain: trade.from.blockchain,
