@@ -22,7 +22,7 @@ import {
   NoLinkedAccountError,
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';

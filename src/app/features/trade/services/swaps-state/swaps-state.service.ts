@@ -20,9 +20,9 @@ import {
   nativeTokensList,
   OnChainTrade,
   Token,
-  WrappedCrossChainTradeOrNull
-} from 'rubic-sdk';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+  WrappedCrossChainTradeOrNull,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { finalize, forkJoin, Observable } from 'rxjs';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';

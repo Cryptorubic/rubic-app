@@ -5,7 +5,7 @@ import { debounceTime, filter, map, share, startWith, switchMap, takeUntil } fro
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from 'rubic-sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from '@cryptorubic/sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';

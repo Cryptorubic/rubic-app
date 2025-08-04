@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from '@cryptorubic/sdk';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 
 export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<

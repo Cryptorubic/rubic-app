@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BRIDGE_TYPE } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BRIDGE_TYPE } from '@cryptorubic/sdk';
 import { TableRowWithActionButton } from '../model/types';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 

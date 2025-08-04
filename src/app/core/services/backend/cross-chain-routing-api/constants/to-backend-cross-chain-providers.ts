@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from '@cryptorubic/sdk';
 
 const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS]: 'symbiosis',

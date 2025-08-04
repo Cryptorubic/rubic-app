@@ -1,5 +1,5 @@
 import { AsyncValidatorFn } from '@angular/forms';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { AssetType } from '@features/trade/models/asset';
 import { correctAddressValidator } from '@features/trade/components/target-network-address/utils/correct-address-validator';
 

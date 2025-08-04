@@ -3,7 +3,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, Injector, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, Injector, Web3Pure, CHAIN_TYPE } from '@cryptorubic/sdk';
 import {
   BehaviorSubject,
   catchError,
@@ -21,7 +21,6 @@ import {
   tap,
   timer
 } from 'rxjs';
-import { TransactionReceipt } from 'web3-core';
 import { Deposit } from '../models/deposit.inteface';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { StatisticsService } from './statistics.service';
@@ -29,10 +28,10 @@ import { StakingNotificationService } from './staking-notification.service';
 import { NavigationEnd, Router } from '@angular/router';
 import { SECONDS_IN_MONTH } from '@app/shared/constants/time/time';
 import { TableTotal } from '../models/table-total.interface';
-import { CHAIN_TYPE } from 'rubic-sdk/lib/core/blockchain/models/chain-type';
 import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THREE';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
+import { TransactionReceipt } from 'viem';
 
 // const STAKING_END_TIMESTAMP = new Date(2024, 7, 14).getTime();
 

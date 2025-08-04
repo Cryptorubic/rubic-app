@@ -7,7 +7,7 @@ import {
   BitcoinBlockchainName,
   SuiBlockchainName
 } from '@cryptorubic/core';
-import { TronWebProvider } from 'rubic-sdk';
+import { TronWebProvider } from '@cryptorubic/sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &

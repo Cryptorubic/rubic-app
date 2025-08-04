@@ -5,7 +5,7 @@ import {
   ItSettingsFormControls
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { FormGroup } from '@angular/forms';
-import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 import { HeaderStore } from '@core/header/services/header.store';
 import { distinctUntilChanged, pairwise, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ModalService } from '@core/modals/services/modal.service';

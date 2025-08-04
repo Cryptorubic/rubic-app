@@ -3,13 +3,13 @@ import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockch
 import {
   BLOCKCHAIN_NAME,
   ERC20_TOKEN_ABI,
-  MethodDecoder,
   Injector,
   EvmBlockchainName,
   RubicSdkError,
   UserRejectError,
-  compareAddresses
-} from 'rubic-sdk';
+  compareAddresses,
+  Any
+} from '@cryptorubic/sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
 import { SupportedBlockchain, supportedBlockchains } from '../constants/supported-blockchains';
@@ -249,7 +249,7 @@ export class ApproveScannerService {
       await Injector.web3PrivateService
         .getWeb3PrivateByBlockchain(blockchain)
         .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
-          onTransactionHash: _hash => {
+          onTransactionHash: (_hash: Any) => {
             revokeProgressNotification = this.showProgressNotification();
           },
           ...(shouldCalculateGasPrice && { gasPriceOptions })
@@ -307,33 +307,35 @@ export class ApproveScannerService {
   }
 
   private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
-    if (typeof response.result === 'string') {
-      throw new Error('Exceed limits');
-    }
-    const approveTransactions = response.result
-      .filter(tx => tx?.functionName.includes('approve'))
-      .reverse();
-    const uniqueTokens = new Map<string, Omit<ApproveTransaction, 'token'>>();
-    approveTransactions.forEach(tx => {
-      const decodedData = MethodDecoder.decodeMethod(
-        ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
-        tx.input
-      );
-      const spender = decodedData.params.find(param => param.name === '_spender')!.value;
-      const value = decodedData.params.find(param => param.name === '_value')!.value;
-
-      const key = `${tx.to}${spender}`;
-      if (!uniqueTokens.has(key)) {
-        uniqueTokens.set(key, {
-          hash: tx.hash,
-          tokenAddress: tx.to,
-          spender,
-          value,
-          timeStamp: tx.timeStamp * 1000
-        });
-      }
-    });
-    return Array.from(uniqueTokens.values());
+    //   // @TODO VIEM
+    return [];
+    // if (typeof response.result === 'string') {
+    //   throw new Error('Exceed limits');
+    // }
+    // const approveTransactions = response.result
+    //   .filter(tx => tx?.functionName.includes('approve'))
+    //   .reverse();
+    // const uniqueTokens = new Map<string, Omit<ApproveTransaction, 'token'>>();
+    // approveTransactions.forEach(tx => {
+    //   const decodedData = MethodDecoder.decodeMethod(
+    //     ERC20_TOKEN_ABI.find(method => method.name === 'approve')!,
+    //     tx.input
+    //   );
+    //   const spender = decodedData.params.find(param => param.name === '_spender')!.value;
+    //   const value = decodedData.params.find(param => param.name === '_value')!.value;
+    //
+    //   const key = `${tx.to}${spender}`;
+    //   if (!uniqueTokens.has(key)) {
+    //     uniqueTokens.set(key, {
+    //       hash: tx.hash,
+    //       tokenAddress: tx.to,
+    //       spender,
+    //       value,
+    //       timeStamp: tx.timeStamp * 1000
+    //     });
+    //   }
+    // });
+    // return Array.from(uniqueTokens.values());
   }
 
   private findTokensForApproves(

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BridgeType, CrossChainTradeType, OnChainTradeType, RubicStep } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType, OnChainTradeType, RubicStep } from '@cryptorubic/sdk';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { BRIDGE_PROVIDERS } from '@features/trade/constants/bridge-providers';

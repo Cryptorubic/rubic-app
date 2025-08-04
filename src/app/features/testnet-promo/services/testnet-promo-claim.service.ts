@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AirdropNode } from '@features/airdrop/models/airdrop-node';
-import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from '@cryptorubic/sdk';
 import { airdropContractAbi } from '@features/airdrop/constants/airdrop-contract-abi';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
 import { GasService } from '@core/services/gas-service/gas.service';

@@ -6,7 +6,7 @@ import {
   Injector,
   Web3Public,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 export function isNativeAddressSafe(token: TokenAmount): boolean {

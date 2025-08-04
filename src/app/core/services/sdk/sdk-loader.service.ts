@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, tap } from 'rxjs/operators';
-import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from 'rubic-sdk';
+import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from '@cryptorubic/sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
@@ -61,6 +61,7 @@ export class SdkLoaderService {
           };
           const core = chainTypeMap?.[chainType];
           const walletProviderCore: WalletProviderCore = { address, core };
+          // @ts-ignore @TODO VIEM
           this.sdkService.updateWallet(chainType, walletProviderCore);
         })
       )

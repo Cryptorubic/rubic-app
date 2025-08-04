@@ -1,5 +1,5 @@
 import { ButtonLabel, ButtonState } from '@shared/models/claim/claim-button';
-import { BlockchainName, EvmWeb3Pure } from 'rubic-sdk';
+import { BlockchainName, EvmWeb3Pure } from '@cryptorubic/sdk';
 import { ClaimStatus } from '@shared/models/claim/claim-round';
 import { ClaimName } from '@shared/services/claim-services/models/claim-name';
 import { newRubicToken } from '@features/airdrop/constants/airdrop-token';

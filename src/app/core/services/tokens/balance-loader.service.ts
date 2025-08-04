@@ -10,7 +10,7 @@ import {
   waitFor,
   Web3Public,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { AuthService } from '../auth/auth.service';
 import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains';
 import { BalanceLoadingStateService } from './balance-loading-state.service';

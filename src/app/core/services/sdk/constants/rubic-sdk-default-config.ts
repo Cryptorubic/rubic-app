@@ -1,4 +1,4 @@
-import { Configuration, RpcProviders } from 'rubic-sdk';
+import { Configuration, RpcProviders } from '@cryptorubic/sdk';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
 const rpcProviders = Object.keys(rpcList).reduce((acc, blockchain: keyof typeof rpcList) => {

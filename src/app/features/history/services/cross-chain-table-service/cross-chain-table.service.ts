@@ -8,7 +8,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { CrossChainTableRequest } from '@features/history/models/cross-chain-table-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from 'rubic-sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from '@cryptorubic/sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';

@@ -16,7 +16,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
-import { CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 
 @Component({
   selector: 'app-providers-list',
