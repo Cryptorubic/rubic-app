@@ -59,15 +59,9 @@ export class ProvidersListComponent {
     trade: CrossChainTrade | OnChainTrade,
     tradeError?: Error
   ): void {
-    const element = event.target as HTMLElement;
     const isZeroOrNegativeAmount = trade.to.tokenAmount.lte(0);
 
-    if (
-      element?.parentElement?.className?.includes?.('element__expander') ||
-      element?.parentElement?.parentElement?.className?.includes?.('element__expander') ||
-      isZeroOrNegativeAmount ||
-      tradeError
-    ) {
+    if (isZeroOrNegativeAmount || tradeError) {
       event.preventDefault();
       return;
     }

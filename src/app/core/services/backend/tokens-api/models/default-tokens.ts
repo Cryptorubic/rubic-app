@@ -1045,5 +1045,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.SUI]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.SUI], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.HEMI]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.HEMI], ...defaultTokenParams } as Token
   ]
 };

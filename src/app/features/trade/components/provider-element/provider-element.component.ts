@@ -29,6 +29,7 @@ export class ProviderElementComponent {
 
   public toggleExpand(event: Event): void {
     event.preventDefault();
+    event.stopPropagation();
     this.expanded = !this.expanded;
   }
 
