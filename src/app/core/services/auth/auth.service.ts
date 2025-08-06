@@ -175,7 +175,6 @@ export class AuthService {
 
       const publicClient = Injector.web3PublicService.getWeb3Public(currentBlockchain).publicClient;
       const [rpcUrl] = rpcList[currentBlockchain];
-      // @TODO VIEM
       const oneID = new OneID({
         provider: publicClient.transport as Any,
         ...(rpcUrl && { rpcUrl })

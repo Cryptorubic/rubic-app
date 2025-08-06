@@ -467,6 +467,7 @@ export class SwapsControllerService {
     Injector.rubicApiService
       .handleQuotesAsync()
       .pipe(
+        // @ts-ignore
         tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
