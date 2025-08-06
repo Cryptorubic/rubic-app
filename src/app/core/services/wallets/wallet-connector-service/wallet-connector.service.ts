@@ -51,6 +51,7 @@ import {
   EvmBlockchainName,
   nativeTokensList
 } from '@cryptorubic/core';
+import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -231,6 +232,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.BINANCE_WALLET) {
       return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+
+    if (walletName === WALLET_NAME.BACKPACK) {
+      return new BackpackSolanaWalletAdapter(...defaultConstructorParameters);
     }
 
     this.errorService.catch(new WalletNotInstalledError());
