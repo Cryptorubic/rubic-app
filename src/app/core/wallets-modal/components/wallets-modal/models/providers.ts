@@ -163,5 +163,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Backpack',
+    value: WALLET_NAME.BACKPACK,
+    img: './assets/images/icons/wallets/backpack.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];
