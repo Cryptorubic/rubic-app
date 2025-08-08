@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith, delay, map, startWith, switchMap, tap } from 'rxjs/operators';
@@ -18,6 +18,7 @@ import { PreviewSwapService } from '../../services/preview-swap/preview-swap.ser
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
+import { ChartService } from '../../services/chart-service/chart.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -77,6 +78,8 @@ export class TradeViewContainerComponent {
 
   public readonly resetCarouselIndex$ = this.authService.currentUser$.pipe(switchMap(() => of(0)));
 
+  public readonly showChart$ = this.chartService.showChart$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -89,8 +92,12 @@ export class TradeViewContainerComponent {
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly spindlService: SpindlService,
-    private readonly authService: AuthService
-  ) {}
+    private readonly authService: AuthService,
+    private readonly chartService: ChartService,
+    renderer2: Renderer2
+  ) {
+    this.chartService.setRenderer(renderer2);
+  }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);
