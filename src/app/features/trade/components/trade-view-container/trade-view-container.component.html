@@ -9,7 +9,8 @@
     showSpindl: showSpindl$ | async,
     resetCarouselIndex: resetCarouselIndex$ | async,
     resetCarouselDuration: resetCarouselDuration$ | async,
-    showHypelab: showHypelab$ | async
+    showHypelab: showHypelab$ | async,
+    showChart: showChart$ | async
   } as state"
 >
   <div
@@ -30,6 +31,11 @@
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
+
+    <div class="chart-container" [style.display]="state.showChart ? 'block' : 'none'">
+      <app-crypto-rate-chart ></app-crypto-rate-chart>
+    </div>
+
     <tui-carousel
       class="banner-carousel"
       [duration]="state.showHypelab ? state.resetCarouselDuration : 0"
