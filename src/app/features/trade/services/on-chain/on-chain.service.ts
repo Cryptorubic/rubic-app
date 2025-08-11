@@ -46,8 +46,8 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
 import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -228,11 +228,7 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(err instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 3
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
         const slippageErr = new LowSlippageError(0.03);
         throw slippageErr;
       }
