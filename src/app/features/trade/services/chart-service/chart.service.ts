@@ -122,24 +122,17 @@ export class ChartService {
 
   // @FIX handle symbols USDC.e axelUSDC etc.
   private getChartSymbol(srcToken: { symbol: string }, dstToken: { symbol: string }): string {
-    if (srcToken.symbol.toLowerCase().startsWith('usdc')) {
-      return `${dstToken.symbol}USDC`;
-    }
-    if (dstToken.symbol.toLowerCase().startsWith('usdc')) {
-      return `${srcToken.symbol}USDC`;
-    }
-    if (srcToken.symbol.toLowerCase().startsWith('usdt')) {
-      return `${dstToken.symbol}USDT`;
-    }
-    if (dstToken.symbol.toLowerCase().startsWith('usdt')) {
-      return `${srcToken.symbol}USDT`;
-    }
-    if (dstToken.symbol.toLowerCase().includes('usd')) {
-      return `${srcToken.symbol}USDT`;
-    }
-    if (srcToken.symbol.toLowerCase().includes('usd')) {
-      return `${dstToken.symbol}USDT`;
-    }
+    const contains = (substr: string, token: { symbol: string }): boolean => {
+      return (
+        token.symbol.toLowerCase().startsWith(substr) || token.symbol.toLowerCase().includes(substr)
+      );
+    };
+
+    if (contains('usdc', srcToken)) return `${dstToken.symbol}USDC`;
+    if (contains('usdc', dstToken)) return `${srcToken.symbol}USDC`;
+    if (contains('usdt', srcToken)) return `${dstToken.symbol}USDT`;
+    if (contains('usdt', dstToken)) return `${srcToken.symbol}USDT`;
+
     return `${srcToken.symbol}USDT/${dstToken.symbol}USDT`;
   }
 
