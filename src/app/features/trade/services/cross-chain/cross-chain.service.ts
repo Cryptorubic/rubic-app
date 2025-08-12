@@ -238,7 +238,11 @@ export class CrossChainService {
       ...(referrer && { referrer }),
       refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck
+      skipAmountCheck: params.skipAmountCheck,
+      solanaSponsorParams: {
+        feePayer: '4G7scocEJ7FuaGBm1C8MTBYXBFobYqr5pC5xqvKHGhbv',
+        tradeId: trade.rubicId
+      }
     };
 
     try {

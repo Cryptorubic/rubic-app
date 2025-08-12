@@ -21,6 +21,7 @@ export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<
     zone: NgZone,
     window: RubicWindow
   ) {
+    // @ts-ignore
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window, SolanaStandardAdapter);
   }
 }
