@@ -208,6 +208,7 @@ export class StakingService {
           STAKING_ROUND_THREE.TOKEN.address,
           STAKING_ROUND_THREE.NFT.address,
           'infinity',
+          BLOCKCHAIN_NAME.ARBITRUM,
           { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
         );
 
