@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ApiBanner } from '@app/core/header/models/banners';
 import { BannersService } from '@app/core/header/services/banners.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-banners',
@@ -11,7 +10,7 @@ import { tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BannersComponent {
-  public readonly banners$ = this.bannersService.banners$.pipe(tap(console.log));
+  public readonly banners$ = this.bannersService.banners$;
 
   public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
