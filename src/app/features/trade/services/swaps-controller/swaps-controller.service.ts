@@ -363,7 +363,7 @@ export class SwapsControllerService {
     }
 
     const parsedError = error && RubicSdkErrorParser.parseError(error);
-    if (!parsedError || parsedError instanceof ExecutionRevertedError) {
+    if (!parsedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
       return parsedError;
