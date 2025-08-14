@@ -1,0 +1,14 @@
+<div class="content">
+  Transaction failed.
+  <span
+    class="content__icon"
+    [inlineSVG]="'assets/images/icons/copy.svg'"
+    (click)="copyToClipboard()"
+    [tuiHint]="template"
+    [tuiHintManual]="hintShown"
+  ></span>
+  <br />
+  Copy error and send to support team to resolve issue.
+</div>
+
+<ng-template #template>Error copied on clipboard. Please, send it to our support!</ng-template>

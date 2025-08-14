@@ -248,7 +248,7 @@ export class ApproveScannerService {
 
       await Injector.web3PrivateService
         .getWeb3PrivateByBlockchain(blockchain)
-        .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
+        .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), blockchain, {
           onTransactionHash: _hash => {
             revokeProgressNotification = this.showProgressNotification();
           },

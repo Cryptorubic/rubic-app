@@ -23,6 +23,7 @@ import { BitKeepErrorComponent } from '@core/errors/components/bitkeep-error/bit
 import { TokenPocketErrorComponent } from './components/token-pocket-error/token-pocket-error.component';
 import { NoLinkedAccountErrorComponent } from './components/no-linked-account-error/no-linked-account-error.component';
 import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-error.component';
+import { SimulationFailedErrorComponent } from './components/simulation-failed-error/simulation-failed-error.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-err
     TransactionFailedErrorComponent,
     TokenPocketErrorComponent,
     NoLinkedAccountErrorComponent,
-    CoinbaseErrorComponent
+    CoinbaseErrorComponent,
+    SimulationFailedErrorComponent
   ],
   imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
 })
