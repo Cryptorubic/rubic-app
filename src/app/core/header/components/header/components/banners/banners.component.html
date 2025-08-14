@@ -1,5 +1,5 @@
 <ng-container *ngLet="{ mobile: mobile$ | async, banners: banners$ | async } as state">
-  <tui-carousel [duration]="state.banners.length > 1 ? 3000 : 0" [draggable]="false">
+  <tui-carousel [duration]="state.banners.length > 1 ? 10000 : 0" [draggable]="false">
     <ng-container *ngFor="let banner of state.banners">
       <ng-container *tuiItem>
         <a
