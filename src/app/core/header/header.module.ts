@@ -30,9 +30,7 @@ import { UserProfileComponent } from './components/header/components/user-profil
 import { HeaderComponent } from './components/header/header.component';
 import { RubicMenuComponent } from './components/header/components/rubic-menu/rubic-menu.component';
 import { ThemeSwitcherComponent } from './components/header/components/theme-switcher/theme-switcher.component';
-import { ExternalLinkBannerComponent } from './components/header/components/external-link-banner/external-link-banner.component';
 import { BannerDirective } from './components/header/directives/banner.directive';
-import { BannerZkLinkComponent } from '@core/header/components/header/components/banner-zk-link/banner-zk-link.component';
 import { MobileMenuComponent } from './components/header/components/mobile-menu/mobile-menu.component';
 import { ModalsModule } from '../modals/modals.module';
 import { RubicMenuTogglerComponent } from './components/header/components/rubic-menu-toggler/rubic-menu-toggler.component';
@@ -45,12 +43,8 @@ import { LanguageSelectorComponent } from './components/header/components/langua
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
-import { BannerTaikoComponent } from './components/header/components/banner-taiko/banner-taiko.component';
-import { BannerBirthdayComponent } from '@core/header/components/header/components/banner-bday/banner-birthday.component';
-import { BannerMonadTestnetComponent } from './components/header/components/banner-monad-testnet/banner-monad-testnet.component';
-import { ZeroFeesBannerComponent } from './components/header/components/zero-fees-banner/zero-fees-banner.component';
-import { BannerTestPromoComponent } from '@core/header/components/header/components/banner-testnet-promo/banner-test-promo.component';
-import { BerachellaBannerComponent } from '@core/header/components/header/components/berachella-banner/berachella-banner.component';
+import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
+import { BannersService } from './services/banners.service';
 
 @NgModule({
   declarations: [
@@ -59,9 +53,7 @@ import { BerachellaBannerComponent } from '@core/header/components/header/compon
     MobileMenuTogglerComponent,
     RubicMenuComponent,
     ThemeSwitcherComponent,
-    ExternalLinkBannerComponent,
     BannerDirective,
-    BannerZkLinkComponent,
     MobileMenuComponent,
     RubicMenuTogglerComponent,
     MobileUserProfileComponent,
@@ -71,12 +63,7 @@ import { BerachellaBannerComponent } from '@core/header/components/header/compon
     SettingsComponent,
     ProfileMenuTogglerComponent,
     HistoryButtonComponent,
-    BannerTaikoComponent,
-    BannerBirthdayComponent,
-    BannerMonadTestnetComponent,
-    ZeroFeesBannerComponent,
-    BannerTestPromoComponent,
-    BerachellaBannerComponent
+    BannersComponent
   ],
   imports: [
     CommonModule,
@@ -104,7 +91,7 @@ import { BerachellaBannerComponent } from '@core/header/components/header/compon
     TuiButtonModule,
     TuiCarouselModule
   ],
-  providers: [TuiDestroyService],
-  exports: [HeaderComponent]
+  providers: [TuiDestroyService, BannersService],
+  exports: [HeaderComponent, UserProfileComponent]
 })
 export class HeaderModule {}
