@@ -16,11 +16,6 @@ export class BrowserService {
       .get()
       .find(wallet => wallet.name?.toLowerCase() === 'metamask');
 
-    alert(
-      getWallets()
-        .get()
-        .map(v => v.name)
-    );
     switch (true) {
       case this.window.innerWidth >= this.mobileBreakpoint:
         return BROWSER.DESKTOP;
