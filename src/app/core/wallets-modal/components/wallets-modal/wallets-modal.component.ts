@@ -97,13 +97,15 @@ export class WalletsModalComponent implements OnInit {
   ngOnInit() {
     this.rulesCheckbox.patchValue(this.getStorageValue());
 
-    if (this.browserService.currentBrowser === BROWSER.METAMASK && !this.iframeService.isIframe) {
-      this.connectProvider(WALLET_NAME.METAMASK);
-      return;
-    }
+    if (!this.iframeService.isIframe) {
+      if (this.browserService.currentBrowser === BROWSER.METAMASK) {
+        this.connectProvider(WALLET_NAME.METAMASK);
+        return;
+      }
 
-    if (this.browserService.currentBrowser === BROWSER.COINBASE && !this.iframeService.isIframe) {
-      this.connectProvider(WALLET_NAME.COIN_BASE);
+      if (this.browserService.currentBrowser === BROWSER.COINBASE) {
+        this.connectProvider(WALLET_NAME.COIN_BASE);
+      }
     }
   }
 

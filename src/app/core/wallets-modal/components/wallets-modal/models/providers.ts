@@ -70,7 +70,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.PHANTOM,
     img: './assets/images/icons/wallets/phantom.svg',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -79,7 +79,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.SOLFLARE,
     img: './assets/images/icons/wallets/solflare.svg',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
