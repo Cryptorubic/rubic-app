@@ -1,7 +1,17 @@
-<div
-  *ngLet="chartSize$ | async as chartSize"
-  class="tradingview-widget-container"
-  [style.height]="chartSize.height + 'px'"
-  [style.width]="chartSize.width + 'px'"
-  id="tradingview-widget-container"
-></div>
+<ng-container *ngLet="chartInfo$ | async as chartInfo">
+  <div
+    class="tradingview-widget-container"
+    [style.height]="chartInfo.size.height + 'px'"
+    [style.width]="chartInfo.size.width + 'px'"
+    [style.display]="chartInfo.status.loaded ? 'block' : 'none'"
+    id="tradingview-widget-container"
+  ></div>
+
+  <div 
+    *ngIf="!chartInfo.status.loaded" 
+    class="boilerplate"
+    [style.height]="chartInfo.size.height + 'px'"
+    [style.width]="chartInfo.size.width + 'px'"
+  >Select tokens to see rates.</div>
+</ng-container>
+

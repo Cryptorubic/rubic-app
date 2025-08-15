@@ -1,4 +1,4 @@
-<div *ngLet="selectedForm$ | async as selectedForm" class="form-header">
+<div *ngLet="chartInfo$ | async as chartInfo" class="form-header">
   <div class="form-header__links">
     <ng-container
       *ngTemplateOutlet="formTypeSelector; context: { type: 'swapForm', text: 'Swap' }"
@@ -6,13 +6,13 @@
   </div>
 
   <div class="form-header__actions">
-    <app-refresh-button [isRotating$]="isRefreshRotating$" (onRefresh)="refreshTrades()">
-    </app-refresh-button>
+    <app-chart-toggler [showChart]="chartInfo.status.opened" (handleClick)="toggleChart()"></app-chart-toggler>
+    <app-refresh-button [isRotating$]="isRefreshRotating$" (onRefresh)="refreshTrades()"></app-refresh-button>
     <app-settings-container></app-settings-container>
   </div>
 
   <ng-template #formTypeSelector let-type="type" let-text="text">
-    <div class="form-header__link" [class.selected]="selectedForm === type">
+    <div class="form-header__link">
       <span class="form-header__link-title">
         {{ text }}
       </span>

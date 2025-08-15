@@ -1,28 +1,26 @@
 import { Inject, Injectable, Renderer2 } from '@angular/core';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { BehaviorSubject, distinctUntilChanged, takeUntil } from 'rxjs';
-import { ChartSize } from './models';
+import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DOCUMENT } from '@angular/common';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { compareAssets } from '../../utils/compare-assets';
+import { WINDOW } from '@ng-web-apis/common';
+import { TradePageService } from '../trade-page/trade-page.service';
 
 @Injectable()
 export class ChartService {
-  private readonly _chartSize$ = new BehaviorSubject<ChartSize>({
-    height: 250,
-    width: 600
+  private readonly _chartInfo$ = new BehaviorSubject<ChartInfo>({
+    size: { height: 250, width: 600 },
+    status: { loaded: false, opened: false, lastOpened: false }
   });
 
-  private readonly _showChart$ = new BehaviorSubject(false);
+  public readonly chartInfo$ = this._chartInfo$.asObservable();
 
-  public readonly chartSize$ = this._chartSize$.asObservable();
-
-  public readonly showChart$ = this._showChart$.asObservable();
-
-  public get chartSize(): ChartSize {
-    return this._chartSize$.value;
+  public get chartInfo(): ChartInfo {
+    return this._chartInfo$.value;
   }
 
   private renderer: Renderer2 | null = null;
@@ -32,7 +30,9 @@ export class ChartService {
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly headerStore: HeaderStore,
+    private readonly tradePageService: TradePageService,
     @Inject(DOCUMENT) private readonly document: Document,
+    @Inject(WINDOW) private readonly window: Window,
     destroy$: TuiDestroyService
   ) {
     this.swapsFormService.inputValue$
@@ -50,21 +50,36 @@ export class ChartService {
         const container = this.document.getElementById(
           'tradingview-widget-container'
         ) as HTMLElement;
+
         if (inputValue.fromToken && inputValue.toToken && container) {
           this.createAndInvokeScript();
         }
       });
+
     this.headerStore
       .getMobileDisplayStatus()
       .pipe(distinctUntilChanged(), takeUntil(destroy$))
       .subscribe(mobile => {
-        this.setChartSize(mobile ? { height: 250, width: 300 } : { height: 250, width: 600 });
+        this.setChartSize(
+          mobile ? { height: 250, width: this.window.innerWidth - 20 } : { height: 250, width: 600 }
+        );
         const inputValue = this.swapsFormService.inputValue;
         const container = this.document.getElementById(
           'tradingview-widget-container'
         ) as HTMLElement;
+
         if (inputValue.fromToken && inputValue.toToken && container) {
           this.createAndInvokeScript();
+        }
+      });
+
+    this.tradePageService.formContent$
+      .pipe(distinctUntilChanged(), takeUntil(destroy$))
+      .subscribe(formContent => {
+        if (formContent === 'form' && this.chartInfo.status.lastOpened) {
+          this.setChartOpened(true, true);
+        } else {
+          this.setChartOpened(false);
         }
       });
   }
@@ -75,12 +90,34 @@ export class ChartService {
     this.renderer = renderer;
   }
 
-  public setShowChart(show: boolean): void {
-    this._showChart$.next(show);
+  /**
+   * @param opened set to open/close chart
+   * @param rewriteLastOpened stores last manual selection of open/close chart state
+   * restores that state after opening 'form' after being in preview swap or in selectors
+   */
+  public setChartOpened(opened: boolean, rewriteLastOpened?: boolean): void {
+    this._chartInfo$.next({
+      size: this._chartInfo$.value.size,
+      status: {
+        ...this._chartInfo$.value.status,
+        ...(rewriteLastOpened && { lastOpened: opened }),
+        opened
+      }
+    });
+  }
+
+  private setChartLoaded(loaded: boolean): void {
+    this._chartInfo$.next({
+      size: this._chartInfo$.value.size,
+      status: { ...this._chartInfo$.value.status, loaded }
+    });
   }
 
   private setChartSize(size: ChartSize): void {
-    this._chartSize$.next(size);
+    this._chartInfo$.next({
+      status: this._chartInfo$.value.status,
+      size
+    });
   }
 
   public createAndInvokeScript(): void {
@@ -97,6 +134,7 @@ export class ChartService {
     this.script.async = true;
     this.script.text = `{
         "symbol": "${this.getChartSymbol(fromToken, toToken)}",
+        "style": "3",
         "locale": "en",
         "dateRange": "1D",
         "colorTheme": "dark",
@@ -107,17 +145,23 @@ export class ChartService {
         "isTransparent": false,
         "chartOnly": false,
         "noTimeScale": false,
-        "height": "${this.chartSize.height}",
-        "width": "${this.chartSize.width}"
+        "height": "${this.chartInfo.size.height}",
+        "width": "${this.chartInfo.size.width}",
+        "hide_side_toolbar": true,
+        "hide_top_toolbar": true,
+        "allow_symbol_change": false,
+        "calendar": false,
+        "details": false
     }`;
     this.script.addEventListener('load', () => {
       this.script.remove();
       this.script = null;
-      this.setShowChart(true);
+      this.setChartLoaded(true);
     });
 
     // calls script and creates iframe with TradingView widget
     this.renderer.appendChild(container, this.script);
+    this.roundIframeBorderOnLoad(container);
   }
 
   // @FIX handle symbols USDC.e axelUSDC etc.
@@ -136,45 +180,18 @@ export class ChartService {
     return `${srcToken.symbol}USDT/${dstToken.symbol}USDT`;
   }
 
-  private isChartSymbolNotFound(node: {
-    childNodes: NodeListOf<ChildNode>;
-    textContent: string;
-  }): boolean {
-    const childNodes = node.childNodes;
-    if (node.textContent.trim() === 'Invalid symbol') return true;
-    if (!childNodes.length) return false;
-
-    let notFound: boolean = false;
-    childNodes.forEach(child => {
-      console.log('child ==>', { child, textContent: child.textContent });
-      if (child.textContent.trim() === 'Invalid symbol') {
-        return true;
-      }
-
-      notFound = this.isChartSymbolNotFound(child);
-      if (notFound) return notFound;
-    });
-
-    return false;
-  }
-
-  // NOT FOUND addr - Ey59PH7Z4BFU4HjyKnyMdWt5GGN76KazTAwQihoUXRnk(PASTERNAK)
-  // NOT FOUND addr - 6CAsXfiCXZfP8APCG6Vma2DFMindopxiqYQN4LSQfhoC(POKT-USDC) (TDCCP)
-  private hasInvalidSymbol(node: Node): boolean {
-    // Check current node's text content (trim whitespace for accurate matching)
-    if (node.textContent?.trim() === 'Invalid symbol') {
-      return true;
-    }
-
-    // If element node, check its child nodes recursively
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      for (let i = 0; i < node.childNodes.length; i++) {
-        if (this.hasInvalidSymbol(node.childNodes[i])) {
-          return true; // Early exit if found in subtree
+  private roundIframeBorderOnLoad(parentNode: HTMLElement): void {
+    const observer = new MutationObserver(mutationsList => {
+      for (const mutation of mutationsList) {
+        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+          const iframe = parentNode.querySelector('iframe');
+          if (iframe) {
+            iframe.style.borderRadius = 'var(--tui-radius-m)';
+            observer.disconnect();
+          }
         }
       }
-    }
-
-    return false;
+    });
+    observer.observe(parentNode, { childList: true });
   }
 }

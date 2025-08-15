@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
 import { RefreshService } from '../../services/refresh-service/refresh.service';
 import { REFRESH_STATUS } from '../../models/refresh-status';
 import { map } from 'rxjs';
+import { ChartService } from '../../services/chart-service/chart.service';
 
 @Component({
   selector: 'app-form-header',
@@ -11,18 +11,23 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FormHeaderComponent {
-  public selectedForm$ = this.formsTogglerService.selectedForm$;
-
   public readonly isRefreshRotating$ = this.refreshService.status$.pipe(
     map(status => status !== REFRESH_STATUS.STOPPED)
   );
 
+  public readonly chartInfo$ = this.chartService.chartInfo$;
+
   constructor(
-    private readonly formsTogglerService: FormsTogglerService,
-    private readonly refreshService: RefreshService
+    private readonly refreshService: RefreshService,
+    private readonly chartService: ChartService
   ) {}
 
   public refreshTrades(): void {
     this.refreshService.onButtonClick();
+  }
+
+  public toggleChart(): void {
+    const opened = this.chartService.chartInfo.status.opened;
+    this.chartService.setChartOpened(!opened, true);
   }
 }

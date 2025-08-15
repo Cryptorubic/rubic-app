@@ -8,7 +8,7 @@ import { ChartService } from '../../services/chart-service/chart.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CryptoRateChartComponent {
-  public readonly chartSize$ = this.chartService.chartSize$;
+  public readonly chartInfo$ = this.chartService.chartInfo$;
 
   constructor(private readonly chartService: ChartService) {}
 }

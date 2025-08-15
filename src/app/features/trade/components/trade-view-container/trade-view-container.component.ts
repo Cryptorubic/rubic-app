@@ -50,7 +50,7 @@ export class TradeViewContainerComponent {
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
-  public readonly isMobile = this.headerStore.isMobile;
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
@@ -78,7 +78,7 @@ export class TradeViewContainerComponent {
 
   public readonly resetCarouselIndex$ = this.authService.currentUser$.pipe(switchMap(() => of(0)));
 
-  public readonly showChart$ = this.chartService.showChart$;
+  public readonly chartInfo$ = this.chartService.chartInfo$;
 
   constructor(
     private readonly swapsState: SwapsStateService,

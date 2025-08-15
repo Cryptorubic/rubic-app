@@ -1,0 +1,17 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .boilerplate {
+    @include flex(row, center, center);
+    font-size: 18px;
+        
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+    
+  .tradingview-widget-container {
+    iframe {
+      border-radius: var(--tui-radius-m);
+    }
+  }
+}
