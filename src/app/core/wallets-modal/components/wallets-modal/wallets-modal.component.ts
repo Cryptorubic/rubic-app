@@ -114,7 +114,7 @@ export class WalletsModalComponent implements OnInit {
     const deepLinkFn = WALLETS_DEEP_LINK_MAPPING[provider];
 
     if (deepLinkFn) {
-      const deepLink = deepLinkFn();
+      const deepLink = deepLinkFn(this.window);
       this.window.location.assign(deepLink);
       return true;
     }
