@@ -34,20 +34,20 @@
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
 
     <app-providers-list-general
-    *ngIf="
-      state.mobile &&
-      state.calculationStatus &&
-      state.calculationStatus.showSidebar &&
-      state.content === 'form' &&
-      !useLargeIframe
-    "
-    @inOutAnimation
-    [states]="state.providers"
-    [selectedTradeType]="selectedTradeType$ | async"
-    (selectTrade)="selectTrade($event)"
-    [calculationStatus]="state.calculationStatus"
-    [showCalculation]="true"
-  ></app-providers-list-general>
+      *ngIf="
+        state.mobile &&
+        state.calculationStatus &&
+        state.calculationStatus.showSidebar &&
+        state.content === 'form' &&
+        !useLargeIframe
+      "
+      @inOutAnimation
+      [states]="state.providers"
+      [selectedTradeType]="selectedTradeType$ | async"
+      (selectTrade)="selectTrade($event)"
+      [calculationStatus]="state.calculationStatus"
+      [showCalculation]="true"
+    ></app-providers-list-general>
 
     <div class="chart-container" [style.display]="state.chartInfo.status.opened ? 'block' : 'none'">
       <app-crypto-rate-chart></app-crypto-rate-chart>
