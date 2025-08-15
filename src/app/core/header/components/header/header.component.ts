@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -17,7 +16,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { map, startWith, takeUntil } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -31,7 +30,7 @@ import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService]
 })
-export class HeaderComponent implements AfterViewInit {
+export class HeaderComponent {
   @ViewChild('headerPage') public headerPage: TemplateRef<unknown>;
 
   /**
@@ -109,12 +108,6 @@ export class HeaderComponent implements AfterViewInit {
         };
       });
     }
-  }
-
-  public ngAfterViewInit(): void {
-    this.authService.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.cdr.detectChanges());
   }
 
   /**
