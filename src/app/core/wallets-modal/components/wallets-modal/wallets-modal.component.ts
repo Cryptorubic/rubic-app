@@ -25,7 +25,7 @@ import { FormControl } from '@angular/forms';
 import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { ModalService } from '@core/modals/services/modal.service';
-import { QueryParamsService } from '@core/services/query-params/query-params.service';
+import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -66,8 +66,6 @@ export class WalletsModalComponent implements OnInit {
   // How make link on coinbase deeplink https://github.com/walletlink/walletlink/issues/128
   public readonly coinbaseDeeplink = 'https://go.cb-w.com/cDgO1V5aDlb';
 
-  private readonly metamaskAppLink = 'https://metamask.app.link/dapp/';
-
   public readonly shouldRenderAsLink = (provider: WALLET_NAME): boolean => {
     return this.isMobile && provider === WALLET_NAME.COIN_BASE;
   };
@@ -90,8 +88,7 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly modalService: ModalService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly modalService: ModalService
   ) {}
 
   ngOnInit() {
@@ -114,25 +111,14 @@ export class WalletsModalComponent implements OnInit {
   }
 
   private async deepLinkRedirectIfSupported(provider: WALLET_NAME): Promise<boolean> {
-    switch (provider) {
-      case WALLET_NAME.METAMASK:
-        await this.redirectToMetamaskBrowser();
-        return true;
-      case WALLET_NAME.COIN_BASE:
-        this.redirectToCoinbaseBrowser();
-        return true;
-      default:
-        return false;
+    const deepLinkFn = WALLETS_DEEP_LINK_MAPPING[provider];
+
+    if (deepLinkFn) {
+      const deepLink = deepLinkFn();
+      this.window.location.assign(deepLink);
+      return true;
     }
-  }
-
-  private async redirectToMetamaskBrowser(): Promise<void> {
-    const queryUrl = `${this.window.location.host}${this.window.location.search}`;
-    this.window.location.assign(`${this.metamaskAppLink}${queryUrl}`);
-  }
-
-  private redirectToCoinbaseBrowser(): void {
-    this.window.location.assign(this.coinbaseDeeplink);
+    return false;
   }
 
   public async connectProvider(providerName: WALLET_NAME): Promise<void> {
