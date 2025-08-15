@@ -20,7 +20,6 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { defaultBlockchainData } from '@core/services/wallets/wallet-connector-service/constants/default-blockchain-data';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { blockchainLabel } from '@app/shared/constants/blockchain/blockchain-label';
-import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { UserRejectNetworkSwitchError } from '@core/errors/models/provider/user-reject-network-switch-error';
 import { ArgentWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/argent-wallet-adapter';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
@@ -51,6 +50,7 @@ import {
   EvmBlockchainName,
   nativeTokensList
 } from '@cryptorubic/core';
+import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -92,7 +92,6 @@ export class WalletConnectorService {
   public readonly addressChange$ = this.addressChangeSubject$.asObservable();
 
   constructor(
-    private readonly notificationsService: NotificationsService,
     private readonly storeService: StoreService,
     private readonly errorService: ErrorsService,
     private readonly httpService: HttpService,
@@ -139,7 +138,7 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
-      return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters);
+      return new MetamaskSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
 
     if (walletName === WALLET_NAME.WALLET_CONNECT) {
@@ -231,6 +230,10 @@ export class WalletConnectorService {
 
     if (walletName === WALLET_NAME.BINANCE_WALLET) {
       return new BinanceWalletAdapter(...defaultConstructorParameters, chainId);
+    }
+
+    if (walletName === WALLET_NAME.BACKPACK) {
+      return new BackpackSolanaWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
 
     this.errorService.catch(new WalletNotInstalledError());

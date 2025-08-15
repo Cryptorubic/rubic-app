@@ -6,6 +6,7 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { SolanaStandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/solana-standard-adapter';
+import { StoreService } from '@app/core/services/store/store.service';
 
 export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<SolanaFeatures> {
   public readonly chainType = CHAIN_TYPE.SOLANA;
@@ -19,8 +20,17 @@ export abstract class SolanaStandardWalletAdapter extends StandardWalletAdapter<
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow
+    window: RubicWindow,
+    storeService: StoreService
   ) {
-    super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window, SolanaStandardAdapter);
+    super(
+      onAddressChanges$,
+      onNetworkChanges$,
+      errorsService,
+      zone,
+      window,
+      storeService,
+      SolanaStandardAdapter
+    );
   }
 }

@@ -10,6 +10,7 @@ import { Wallet } from '@mysten/wallet-standard';
 import { StandardEventsFeature } from '@wallet-standard/features/src/events';
 import { StandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-adapter';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
+import { StoreService } from '@app/core/services/store/store.service';
 
 export abstract class StandardWalletAdapter<
   SpecificFeatures extends Wallet['features']
@@ -26,6 +27,7 @@ export abstract class StandardWalletAdapter<
     errorsService: ErrorsService,
     zone: NgZone,
     window: RubicWindow,
+    private storeService: StoreService,
     protected readonly ChainAdapter: new (wallet: Wallet) => StandardAdapter<SpecificFeatures>
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
@@ -72,6 +74,10 @@ export abstract class StandardWalletAdapter<
 
           this.onNetworkChanges$.next(this.selectedChain);
           this.onAddressChanges$.next(this.selectedAddress);
+        } else {
+          this.storeService.deleteItem('RUBIC_PROVIDER');
+          this.storeService.deleteItem('RUBIC_CHAIN_ID');
+          this.deactivate();
         }
       });
     } else {

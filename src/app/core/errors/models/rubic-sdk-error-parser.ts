@@ -57,6 +57,10 @@ export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    // @TODO VIEM
+    // if (err instanceof SdkSimulationFailedError) {
+    //   return new SimulationFailedError(err.apiError);
+    // }
     if (err instanceof NotSupportedRegionError) {
       return new NotSupportedRegionRubicError();
     }

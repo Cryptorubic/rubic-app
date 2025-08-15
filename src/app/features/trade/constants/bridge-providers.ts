@@ -111,6 +111,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/on-chain/eddyfinance.ico',
     name: 'Eddy Finance'
   },
+  exolix: {
+    averageTime: 5,
+    color: 'black',
+    image: `${imageBasePath}exolix.svg`,
+    name: 'Exolix'
+  },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
     averageTime: 5,

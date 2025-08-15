@@ -249,7 +249,7 @@ export class ApproveScannerService {
       await Injector.web3PrivateService
         .getWeb3PrivateByBlockchain(blockchain)
         .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), blockchain, {
-          onTransactionHash: (_hash: Any) => {
+          onTransactionHash: _hash => {
             revokeProgressNotification = this.showProgressNotification();
           },
           ...(shouldCalculateGasPrice && { gasPriceOptions })
@@ -307,7 +307,7 @@ export class ApproveScannerService {
   }
 
   private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
-    //   // @TODO VIEM
+    // @TODO VIEM
     return [];
     // if (typeof response.result === 'string') {
     //   throw new Error('Exceed limits');

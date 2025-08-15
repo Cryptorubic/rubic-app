@@ -42,6 +42,12 @@ export class ProxyFeeService {
     toToken: PriceToken
   ): Promise<string> {
     try {
+      if (
+        fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
+        toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
+      ) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
+      }
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
       const referral = this.sessionStorage.getItem('referral');
 

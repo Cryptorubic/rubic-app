@@ -1,13 +1,12 @@
 import { Inject, Injectable } from '@angular/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { filter, tap } from 'rxjs/operators';
-import { CHAIN_TYPE, WalletProviderCore } from '@cryptorubic/sdk';
+import { delay, filter, tap } from 'rxjs/operators';
+import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from '@cryptorubic/sdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
 import { createWalletClient, custom } from 'viem';
-import { WalletProvider } from '@cryptorubic/web3';
 
 @Injectable()
 export class SdkLoaderService {
@@ -50,12 +49,13 @@ export class SdkLoaderService {
     this.walletConnectorService.addressChange$
       .pipe(
         filter(Boolean),
+        delay(1000),
         tap(address => {
           const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
           const provider = this.walletConnectorService.provider;
           const chainTypeMap = {
+            [CHAIN_TYPE.TRON]: provider.wallet?.tronWeb,
             [CHAIN_TYPE.EVM]: createWalletClient({ transport: custom(provider.wallet) }),
-            [CHAIN_TYPE.TRON]: provider.wallet.tronWeb,
             [CHAIN_TYPE.SOLANA]: provider.wallet,
             [CHAIN_TYPE.TON]: provider.wallet,
             [CHAIN_TYPE.BITCOIN]: provider.wallet,

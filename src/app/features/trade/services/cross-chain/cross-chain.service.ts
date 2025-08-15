@@ -53,7 +53,7 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 @Injectable()
 export class CrossChainService {
@@ -260,11 +260,7 @@ export class CrossChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(error instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 5
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
         const slippageErr = new LowSlippageError(0.05);
         throw slippageErr;
       }

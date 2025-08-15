@@ -9,7 +9,7 @@ export interface RankedBlockchain {
 
 function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
   if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-    return 0.75;
+    return 0.74;
   }
   if (blockchain === BLOCKCHAIN_NAME.SUI) {
     return 0.7;
@@ -18,7 +18,7 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
     return 0.6;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
-    return 0.75;
+    return 0.73;
   }
   if (blockchain === BLOCKCHAIN_NAME.FILECOIN) {
     return 0.45;
@@ -217,17 +217,17 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   {
     name: BLOCKCHAIN_NAME.BERACHAIN,
-    rank: 0.75,
+    rank: 0.73,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
-    rank: 0.75,
+    rank: 0.73,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
-    rank: 0.75,
+    rank: 0.73,
     tags: [BlockchainTags.EVM, BlockchainTags.POPULAR]
   },
   {
