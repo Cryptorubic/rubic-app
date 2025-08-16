@@ -1,11 +1,5 @@
 @use 'src/scss/core' as *;
 
-:host::ng-deep {
-  tui-carousel fieldset {
-    padding: 0 !important;
-  }
-}
-
 .rubic-header {
   position: relative;
 
