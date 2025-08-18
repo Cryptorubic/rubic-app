@@ -1,6 +1,6 @@
 import { Inject, Injectable, Renderer2 } from '@angular/core';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
-import { BehaviorSubject, distinctUntilChanged, takeUntil } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { DOCUMENT } from '@angular/common';
@@ -9,6 +9,7 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { compareAssets } from '../../utils/compare-assets';
 import { WINDOW } from '@ng-web-apis/common';
 import { TradePageService } from '../trade-page/trade-page.service';
+import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 
 @Injectable()
 export class ChartService {
@@ -18,6 +19,11 @@ export class ChartService {
   });
 
   public readonly chartInfo$ = this._chartInfo$.asObservable();
+
+  public readonly chartVisibilty$ = this.chartInfo$.pipe(
+    map(info => info.status.opened),
+    distinctUntilChanged()
+  );
 
   public get chartInfo(): ChartInfo {
     return this._chartInfo$.value;
@@ -31,6 +37,7 @@ export class ChartService {
     private readonly swapsFormService: SwapsFormService,
     private readonly headerStore: HeaderStore,
     private readonly tradePageService: TradePageService,
+    private readonly gtmService: GoogleTagManagerService,
     @Inject(DOCUMENT) private readonly document: Document,
     @Inject(WINDOW) private readonly window: Window,
     destroy$: TuiDestroyService
@@ -82,6 +89,14 @@ export class ChartService {
           this.setChartOpened(false);
         }
       });
+
+    this.chartVisibilty$.pipe(takeUntil(destroy$)).subscribe(opened => {
+      if (opened)
+        this.gtmService.fireOpenChart(
+          this.swapsFormService.inputValue.fromToken,
+          this.swapsFormService.inputValue.toToken
+        );
+    });
   }
 
   /* Invoke only once on app init in any component to get access to renderer object in ChartService */
