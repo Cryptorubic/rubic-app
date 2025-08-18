@@ -135,16 +135,19 @@ export class BalanceLoaderService {
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
-        const web3Public = getWeb3PublicSafe(chain);
+        const web3Public = getWeb3PublicSafe(chain, this.authService.userAddress);
 
-        const balancesPromise = web3Public
-          ? web3Public
-              .getTokensBalances(
-                this.authService.userAddress,
-                chainTokens.map(t => t.address)
-              )
-              .catch(() => chainTokens.map(() => new BigNumber(NaN)))
-          : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
+        const balancesPromise = web3Public.then(chainAdapter => {
+          if (!chainAdapter) {
+            return chainTokens.map(() => new BigNumber(NaN));
+          }
+          return chainAdapter
+            .getTokensBalances(
+              this.authService.userAddress,
+              chainTokens.map(t => t.address)
+            )
+            .catch(() => chainTokens.map(() => new BigNumber(NaN)));
+        });
 
         balancesPromise
           .then(balances => {
