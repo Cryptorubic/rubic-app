@@ -70,7 +70,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.PHANTOM,
     img: './assets/images/icons/wallets/phantom.svg',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -79,7 +79,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.SOLFLARE,
     img: './assets/images/icons/wallets/solflare.svg',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   },
@@ -159,6 +159,15 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     name: 'Binance Wallet',
     value: WALLET_NAME.BINANCE_WALLET,
     img: './assets/images/icons/wallets/binance.png',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
+  },
+  {
+    name: 'Backpack',
+    value: WALLET_NAME.BACKPACK,
+    img: './assets/images/icons/wallets/backpack.svg',
     supportsDesktop: true,
     supportsMobile: true,
     display: true,
