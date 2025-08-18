@@ -91,10 +91,10 @@ export class GoogleTagManagerService {
   /**
    * Fires click on tokenIn/tokenOut rate chart.
    */
-  public fireOpenChart(from: TokenAmount, to: TokenAmount): void {
+  public fireOpenChart(from: TokenAmount | null, to: TokenAmount | null): void {
     this.angularGtmService.gtag('event', 'open_chart', {
-      input: JSON.stringify({ blockchain: from.blockchain, symbol: from.symbol }),
-      output: JSON.stringify({ blockchain: to.blockchain, symbol: to.symbol })
+      input: JSON.stringify({ blockchain: from?.blockchain ?? null, symbol: from?.symbol ?? null }),
+      output: JSON.stringify({ blockchain: to?.blockchain ?? null, symbol: to?.symbol ?? null })
     });
   }
 
