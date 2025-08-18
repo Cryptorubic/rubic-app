@@ -22,4 +22,8 @@ export class BannersComponent {
   public getBannerText(banner: ApiBanner, mobile: boolean): string {
     return mobile ? banner.textMobile : banner.text;
   }
+
+  public getButtonText(banner: ApiBanner): string {
+    return banner.buttonText ? banner.buttonText : 'Go!';
+  }
 }
