@@ -36,6 +36,8 @@
 
     position: relative;
 
+    gap: 10px;
+
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
@@ -51,10 +53,6 @@
     }
   }
 
-  .chart-container {
-    margin-bottom: 20px;
-  }
-
   app-spindle-banner,
   app-hypelab-banner,
   app-token-selector-page {
@@ -63,13 +61,13 @@
 
   app-swap-form-page {
     width: 100%;
-    margin-bottom: 20px;
+    // margin-bottom: 10px;
   }
 
   app-preview-swap,
   app-cn-preview-swap {
     width: 100%;
-    margin-bottom: 20px;
+    // margin-bottom: 10px;
   }
 
   app-input-output-container:first-child {
@@ -114,7 +112,7 @@
     app-providers-list-general {
       width: 360px;
       height: auto;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       overflow: hidden;
 
       background: none;
