@@ -12,4 +12,5 @@ export interface ChartStatus {
   loaded: boolean;
   opened: boolean;
   lastOpened: boolean;
+  forceClosed: boolean;
 }

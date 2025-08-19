@@ -10,8 +10,6 @@
   }
     
   .tradingview-widget-container {
-    iframe {
-      border-radius: var(--tui-radius-m);
-    }
+    width: 100%;
   }
 }

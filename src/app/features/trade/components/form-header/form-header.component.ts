@@ -27,7 +27,10 @@ export class FormHeaderComponent {
   }
 
   public toggleChart(): void {
-    const opened = this.chartService.chartInfo.status.opened;
-    this.chartService.setChartOpened(!opened, true);
+    const lastOpened = this.chartService.chartInfo.status.opened;
+    this.chartService.setChartOpened(!lastOpened, {
+      rewriteLastOpened: true,
+      forceClosed: lastOpened
+    });
   }
 }
