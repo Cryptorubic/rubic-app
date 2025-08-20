@@ -24,12 +24,12 @@ export class BannersService {
   public readonly banners$: Observable<ApiBanner[]> = timer(0, REFETCH_AFTER).pipe(
     switchMap(() =>
       this.httpService
-        .get<ApiBanner[]>('v2/info/banners', {}, '', { retry: 2 })
+        .get<ApiBanner[]>('v2/info/banners', {}, '')
         .pipe(catchError(() => of(DEFAULT_BANNERS)))
     ),
     map(banners => (banners.length ? banners : DEFAULT_BANNERS)),
     shareReplay(shareReplayConfig),
-    startWith(DEFAULT_BANNERS)
+    startWith([])
   );
 
   constructor(private readonly httpService: HttpService) {}
