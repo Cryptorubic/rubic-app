@@ -14,7 +14,10 @@
             class="banner__container"
             [innerHTML]="getBannerText(banner, state.mobile) | safeSanitizer"
           ></div>
-          <button class="banner__button" [innerHTML]="getButtonText(banner)| safeSanitizer"></button>
+          <button
+            class="banner__button"
+            [innerHTML]="getButtonText(banner) | safeSanitizer"
+          ></button>
         </a>
       </ng-container>
     </ng-container>
