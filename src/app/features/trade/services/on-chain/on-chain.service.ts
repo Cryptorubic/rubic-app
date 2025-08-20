@@ -173,8 +173,8 @@ export class OnChainService {
       ...(referrer && { referrer }),
       solanaSponsorParams: {
         feePayer: '4G7scocEJ7FuaGBm1C8MTBYXBFobYqr5pC5xqvKHGhbv',
-        // @ts-ignore
-        tradeId: trade.rubicId
+        // @ts-ignore trade api type
+        tradeId: trade.apiResponse.id
       }
     };
 

@@ -94,6 +94,7 @@
     "querystring-es3": "^0.2.1",
     "rpc-websockets": "7.9.0",
     "rubic-sdk": "file:../rubic-sdk",
+    "rubic-sdk-next": "6.0.0-alpha-new-sdk-fixes-alpha-x.65",
     "rxjs": "7.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "^1.21.1",
