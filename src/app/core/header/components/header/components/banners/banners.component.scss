@@ -24,7 +24,7 @@
   background-size: cover;
 
   @include b($mobile-md) {
-    justify-content: left;
+    @include flex(row, center, space-between);
     padding: 0 20px;
   }
 
