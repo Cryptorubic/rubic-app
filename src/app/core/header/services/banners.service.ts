@@ -29,7 +29,7 @@ export class BannersService {
     ),
     map(banners => (banners.length ? banners : DEFAULT_BANNERS)),
     shareReplay(shareReplayConfig),
-    startWith(DEFAULT_BANNERS)
+    startWith([])
   );
 
   constructor(private readonly httpService: HttpService) {}
