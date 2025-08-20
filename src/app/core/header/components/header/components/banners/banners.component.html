@@ -1,0 +1,23 @@
+<ng-container *ngLet="{ mobile: mobile$ | async, banners: banners$ | async } as state">
+  <tui-carousel [duration]="state.banners.length > 1 ? 15000 : 0" [draggable]="false">
+    <ng-container *ngFor="let banner of state.banners">
+      <ng-container *tuiItem>
+        <a
+          class="banner"
+          [ngStyle]="{
+            'background-image':
+              'url(' + (state.mobile ? banner.imageUrlMobile : banner.imageUrlDesktop) + ')'
+          }"
+          [safetyLink]="banner.linkUrl"
+        >
+          <div
+            class="banner__container"
+            [innerHTML]="getBannerText(banner, state.mobile) | safeSanitizer"
+          ></div>
+          <button class="banner__button" [innerHTML]="getButtonText(banner)| safeSanitizer"></button>
+        </a>
+      </ng-container>
+    </ng-container>
+  </tui-carousel>
+</ng-container>
+
