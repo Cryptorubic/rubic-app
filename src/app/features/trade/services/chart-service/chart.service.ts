@@ -57,9 +57,6 @@ export class ChartService {
         ) as HTMLElement;
 
         if (inputValue.fromToken && inputValue.toToken && container) {
-          if (!this.chartInfo.status.lastOpened && !this.chartInfo.status.forceClosed) {
-            this.setChartOpened(true, { forceClosed: false, rewriteLastOpened: true });
-          }
           this.createAndInvokeScript();
         }
       });
@@ -176,10 +173,15 @@ export class ChartService {
         "calendar": false,
         "details": false
     }`;
+
     this.script.addEventListener('load', () => {
       this.script.remove();
       this.script = null;
       this.setChartLoaded(true);
+      // automatically show chart on first load if hidden
+      if (!this.chartInfo.status.lastOpened && !this.chartInfo.status.forceClosed) {
+        this.setChartOpened(true, { forceClosed: false, rewriteLastOpened: true });
+      }
     });
 
     // calls script and creates iframe with TradingView widget
