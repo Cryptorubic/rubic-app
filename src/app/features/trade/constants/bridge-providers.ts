@@ -374,7 +374,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: 'white',
     image: `${imageBasePath}wormhole.svg`,
-    name: 'Wormhole'
+    name: 'Wormhole Mayan'
   },
 
   xflows: {
