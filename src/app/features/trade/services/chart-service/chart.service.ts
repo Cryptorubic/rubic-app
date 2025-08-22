@@ -38,61 +38,9 @@ export class ChartService {
     private readonly tradePageService: TradePageService,
     private readonly gtmService: GoogleTagManagerService,
     @Inject(DOCUMENT) private readonly document: Document,
-    destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService
   ) {
-    this.swapsFormService.inputValue$
-      .pipe(
-        distinctUntilChanged(
-          (prev, next) =>
-            prev.toBlockchain === next.toBlockchain &&
-            prev.fromBlockchain === next.fromBlockchain &&
-            compareAssets(prev.fromToken, next.fromToken) &&
-            compareTokens(prev.toToken, next.toToken)
-        ),
-        takeUntil(destroy$)
-      )
-      .subscribe(inputValue => {
-        const container = this.document.getElementById(
-          'tradingview-widget-container'
-        ) as HTMLElement;
-
-        if (inputValue.fromToken && inputValue.toToken && container) {
-          this.createAndInvokeScript();
-        }
-      });
-
-    this.headerStore
-      .getMobileDisplayStatus()
-      .pipe(distinctUntilChanged(), takeUntil(destroy$))
-      .subscribe(mobile => {
-        this.setChartSize(mobile ? { height: 250, width: 360 } : { height: 250, width: 600 });
-        const inputValue = this.swapsFormService.inputValue;
-        const container = this.document.getElementById(
-          'tradingview-widget-container'
-        ) as HTMLElement;
-
-        if (inputValue.fromToken && inputValue.toToken && container) {
-          this.createAndInvokeScript();
-        }
-      });
-
-    this.tradePageService.formContent$
-      .pipe(distinctUntilChanged(), takeUntil(destroy$))
-      .subscribe(formContent => {
-        if (formContent === 'form' && this.chartInfo.status.lastOpened) {
-          this.setChartOpened(true, { rewriteLastOpened: true, forceClosed: false });
-        } else {
-          this.setChartOpened(false);
-        }
-      });
-
-    this.chartVisibilty$.pipe(takeUntil(destroy$)).subscribe(opened => {
-      if (opened)
-        this.gtmService.fireOpenChart(
-          this.swapsFormService.inputValue.fromToken,
-          this.swapsFormService.inputValue.toToken
-        );
-    });
+    this.initSubscriptions();
   }
 
   /* Invoke only once on app init in any component to get access to renderer object in ChartService */
@@ -132,6 +80,62 @@ export class ChartService {
     this._chartInfo$.next({
       status: this._chartInfo$.value.status,
       size
+    });
+  }
+
+  public initSubscriptions(): void {
+    this.swapsFormService.inputValue$
+      .pipe(
+        distinctUntilChanged(
+          (prev, next) =>
+            prev.toBlockchain === next.toBlockchain &&
+            prev.fromBlockchain === next.fromBlockchain &&
+            compareAssets(prev.fromToken, next.fromToken) &&
+            compareTokens(prev.toToken, next.toToken)
+        ),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(inputValue => {
+        const container = this.document.getElementById(
+          'tradingview-widget-container'
+        ) as HTMLElement;
+
+        if (inputValue.fromToken && inputValue.toToken && container) {
+          this.createAndInvokeScript();
+        }
+      });
+
+    this.headerStore
+      .getMobileDisplayStatus()
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(mobile => {
+        this.setChartSize(mobile ? { height: 250, width: 360 } : { height: 250, width: 600 });
+        const inputValue = this.swapsFormService.inputValue;
+        const container = this.document.getElementById(
+          'tradingview-widget-container'
+        ) as HTMLElement;
+
+        if (inputValue.fromToken && inputValue.toToken && container) {
+          this.createAndInvokeScript();
+        }
+      });
+
+    this.tradePageService.formContent$
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(formContent => {
+        if (formContent === 'form' && this.chartInfo.status.lastOpened) {
+          this.setChartOpened(true, { rewriteLastOpened: true, forceClosed: false });
+        } else {
+          this.setChartOpened(false);
+        }
+      });
+
+    this.chartVisibilty$.pipe(takeUntil(this.destroy$)).subscribe(opened => {
+      if (opened)
+        this.gtmService.fireOpenChart(
+          this.swapsFormService.inputValue.fromToken,
+          this.swapsFormService.inputValue.toToken
+        );
     });
   }
 
