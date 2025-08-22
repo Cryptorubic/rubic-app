@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { TokenAmountDirective } from '@shared/directives/token-amount/token-amount.directive';
+import { CurrencyConverterService } from '@app/features/trade/components/currency-converter-button/services/currency-converter.service';
 
 @Component({
   selector: 'app-amount-transput',
@@ -23,7 +22,7 @@ export class AmountTransputComponent {
 
   public readonly defaultDecimals = 18;
 
-  @Input() public selectedToken: TokenAmount | null;
+  @Input() public tokenDecimals: number | null;
 
   @Input() public formType: FormType;
 
@@ -48,7 +47,7 @@ export class AmountTransputComponent {
 
       newAmount = value?.actualValue ? shortenPipe.transform(value?.visibleValue, 12, 6, true) : '';
 
-      newAmount = TokenAmountDirective.transformValue(newAmount, this.selectedToken?.decimals);
+      newAmount = TokenAmountDirective.transformValue(newAmount, this.tokenDecimals);
     }
     this.amount.setValue(newAmount, { emitViewToModelChange: false });
   }
@@ -57,9 +56,11 @@ export class AmountTransputComponent {
     return this.amount?.value.split(',').join('');
   }
 
+  public readonly isDollarMode$ = this.currencyConverterService.isDollarMode$;
+
   constructor(
     private readonly translateService: TranslateService,
-    public readonly swapFormService: SwapsFormService
+    private readonly currencyConverterService: CurrencyConverterService
   ) {}
 
   public handleAmountChange(amount: string): void {

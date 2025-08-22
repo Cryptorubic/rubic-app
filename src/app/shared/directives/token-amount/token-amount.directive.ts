@@ -99,20 +99,4 @@ export class TokenAmountDirective {
 
     return newCaretPosition;
   }
-
-  @HostListener('keyup')
-  @HostListener('click')
-  private onCaretPositionChange(): void {
-    this.prevCaretPosition = this.elementRef.nativeElement.selectionStart;
-  }
-
-  @HostListener('focus')
-  private onFocus(): void {
-    this.isFocused = true;
-  }
-
-  @HostListener('focusout')
-  private onFocusOut(): void {
-    this.isFocused = false;
-  }
 }

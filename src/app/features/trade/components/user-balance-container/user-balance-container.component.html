@@ -1,12 +1,16 @@
-<div class="user-balance-container" *ngLet="token$ | async as token">
-  <ng-container *ngIf="token?.amount?.gt(0)">
+<div
+  class="user-balance-container"
+  *ngLet="{ tokenAmount: tokenAmount$ | async, isDollarMode: isDollarMode$ | async } as state"
+>
+  <ng-container *ngIf="state.tokenAmount?.gt(0)">
     <span class="user-balance-container__balance" *ngIf="hide !== 'balance'"
       >Balance:
       <span
         class="user-balance-container__balance_amount"
         (click)="isMobile ? maxButtonClickEvent.emit() : null"
       >
-        {{ token?.amount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }}
+        {{ state.tokenAmount | bigNumberFormat | withRound : 'fixedValue' : { decimals: 6 } }}
+        <span *ngIf="state.isDollarMode">$</span>
       </span>
     </span>
 

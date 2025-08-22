@@ -1,15 +1,18 @@
-<label class="amount-transput">
+<label class="amount-transput" *ngLet="isDollarMode$ | async as isDollarMode">
   <input
     appTokenAmount
     autocomplete="off"
     class="amount-transput__input"
     name="token-amount"
-    [placeholder]="inputMode !== 'output' ? (inputPlaceholder$ | async) : outputPlaceholder"
+    [placeholder]="
+      inputMode !== 'output' && !isDollarMode ? (inputPlaceholder$ | async) : outputPlaceholder
+    "
     [formControl]="amount"
-    [decimals]="selectedToken?.decimals || defaultDecimals"
+    [decimals]="tokenDecimals"
     (amountChange)="handleAmountChange($event)"
     inputmode="decimal"
     id="token-amount-input-element"
     [readonly]="inputMode === 'output'"
   />
+  <span class="amount-transput__postfix" *ngIf="inputMode !== 'output' && isDollarMode">$</span>
 </label>

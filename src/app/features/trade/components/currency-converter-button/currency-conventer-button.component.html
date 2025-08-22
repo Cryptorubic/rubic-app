@@ -1,0 +1,15 @@
+<ng-container
+  *ngLet="{ isDollarMode: isDollarMode$ | async, isDisabled: isDisabled$ | async } as state"
+>
+  <button
+    [ngClass]="{ 'dollar-mode-button-inactive': !state.isDollarMode }"
+    (click)="switchCurrencyMode(!state.isDollarMode)"
+    [disabled]="state.isDisabled"
+  >
+    <div
+      [ngClass]="{ 'dollar-mode-active': state.isDollarMode }"
+      class="image"
+      inlineSVG="/assets/images/icons/dollar-button.svg"
+    ></div>
+  </button>
+</ng-container>
