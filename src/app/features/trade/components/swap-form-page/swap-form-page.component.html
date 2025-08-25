@@ -5,7 +5,8 @@
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async
+    toAmount: toAmount$ | async,
+    isDollarMode: isDollarMode$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -24,7 +25,7 @@
       <div right class="input-container">
         <app-amount-transput
           formType="from"
-          [selectedToken]="state.fromAsset"
+          [tokenDecimals]="state.isDollarMode ? USD_DECIMALS : state.fromAsset?.decimals"
           inputMode="input"
           (amountUpdated)="updateInputValue($event)"
           [amountValue]="state.fromAmount"
@@ -45,7 +46,7 @@
       <div right class="input-container">
         <app-amount-transput
           formType="to"
-          [selectedToken]="state.toAsset"
+          [tokenDecimals]="state.toAsset?.decimals"
           inputMode="output"
           [amountValue]="state.toAmount"
         ></app-amount-transput>

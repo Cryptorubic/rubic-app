@@ -75,6 +75,8 @@ import { AlternativeRouteElementComponent } from './components/alternative-route
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
+import { CurrencyConverterService } from './components/currency-converter-button/services/currency-converter.service';
+import { CurrencyConventerButtonComponent } from './components/currency-converter-button/currency-conventer-button.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +110,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     FormHeaderComponent,
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
-    RefundAddressComponent
+    RefundAddressComponent,
+    CurrencyConventerButtonComponent
   ],
   exports: [ActionButtonComponent],
   imports: [
@@ -180,12 +183,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     BlockchainsListService,
     FormsTogglerService,
     AlternativeRoutesService,
-    RefundService
-    // SettingsService,
-    // RefreshService,
-    // TradeService,
-    // TargetNetworkAddressService,
-    // TonPromoService
+    RefundService,
+    CurrencyConverterService
   ]
 })
 export class TradeModule {}

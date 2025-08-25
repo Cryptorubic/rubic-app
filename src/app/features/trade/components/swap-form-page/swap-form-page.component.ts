@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { combineLatestWith } from 'rxjs';
-import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
+import { combineLatest, combineLatestWith } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, startWith, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -14,6 +14,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
+import { CONVERSION_DIRECTION } from '../currency-converter-button/constants/currency-mode';
+import { CurrencyConverterService } from '../currency-converter-button/services/currency-converter.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -34,13 +36,35 @@ import { RefundService } from '../../services/refund-service/refund.service';
   ]
 })
 export class SwapFormPageComponent {
+  public readonly USD_DECIMALS = 2;
+
   public readonly isMobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly fromAsset$ = this.swapFormService.fromToken$;
 
   public readonly toAsset$ = this.swapFormService.toToken$;
 
-  public readonly fromAmount$ = this.swapFormService.fromAmount$;
+  public readonly isDollarMode$ = this.currencyConverterService.isDollarMode$;
+
+  public readonly fromAmount$ = combineLatest([
+    this.swapFormService.fromAmount$,
+    this.isDollarMode$
+  ]).pipe(
+    filter(([fromAmount]) => !!fromAmount),
+    map(([fromAmount, _]) => {
+      const convertedAmount = this.currencyConverterService.convertAmount(
+        {
+          ...this.swapFormService.inputValue.fromToken,
+          amount: fromAmount.actualValue
+        },
+        CONVERSION_DIRECTION.TO
+      );
+      return {
+        actualValue: convertedAmount,
+        visibleValue: convertedAmount.toFixed()
+      };
+    })
+  );
 
   public readonly toAmount$ = this.swapFormService.toAmount$.pipe(
     map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null))
@@ -81,7 +105,8 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly swapsStateService: SwapsStateService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly currencyConverterService: CurrencyConverterService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -107,11 +132,24 @@ export class SwapFormPageComponent {
   }
 
   public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
+    let newAmount = value;
     const isValueCorrect = !value.actualValue?.isNaN();
     const oldValue = this.swapFormService.inputValue?.fromAmount?.actualValue;
-    if (!oldValue || !oldValue.eq(value?.actualValue)) {
+
+    if (isValueCorrect) {
+      const convertedAmount = this.currencyConverterService.convertAmount(
+        { ...this.swapFormService.inputValue.fromToken, amount: value.actualValue },
+        CONVERSION_DIRECTION.FROM
+      );
+
+      newAmount = {
+        actualValue: convertedAmount,
+        visibleValue: convertedAmount?.toFixed()
+      };
+    }
+    if (!oldValue || !oldValue.eq(newAmount?.actualValue)) {
       this.swapFormService.inputControl.patchValue({
-        fromAmount: isValueCorrect ? value : null
+        fromAmount: isValueCorrect ? newAmount : null
       });
     }
   }

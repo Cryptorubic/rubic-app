@@ -3,10 +3,12 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { debounceTime, distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { BehaviorSubject, combineLatest, combineLatestWith } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { CONVERSION_DIRECTION } from '../currency-converter-button/constants/currency-mode';
+import { CurrencyConverterService } from '../currency-converter-button/services/currency-converter.service';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -17,13 +19,24 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 export class UserBalanceContainerComponent {
   private readonly _triggerRefresh$ = new BehaviorSubject(null);
 
-  public readonly token$ = this.swapsFormService.fromToken$.pipe(
+  public readonly isDollarMode$ = this.currencyConventerService.isDollarMode$;
+
+  public readonly tokenAmount$ = combineLatest([
+    this.swapsFormService.fromToken$,
+    this.currencyConventerService.isDollarMode$
+  ]).pipe(
     combineLatestWith(this._triggerRefresh$.pipe(startWith()), this.tokensStoreService.tokens$),
     filter(() => !!this.tokensStoreService.tokens),
     distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-    map(([fromToken]) =>
-      this.tokensStoreService.tokens.find(token => compareTokens(fromToken, token))
-    )
+    map(([[fromToken]]) => {
+      const currToken = this.tokensStoreService.tokens.find(token =>
+        compareTokens(fromToken, token)
+      );
+
+      return currToken
+        ? this.currencyConventerService.convertAmount(currToken, CONVERSION_DIRECTION.TO)
+        : null;
+    })
   );
 
   @Input() public hide: 'maxButton' | 'balance';
@@ -37,7 +50,8 @@ export class UserBalanceContainerComponent {
     private readonly tokensStoreService: TokensStoreService,
     private readonly swapsFormService: SwapsFormService,
     private readonly previewSwapService: PreviewSwapService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly currencyConventerService: CurrencyConverterService
   ) {
     this.tokensStoreService.tokens$
       .pipe(

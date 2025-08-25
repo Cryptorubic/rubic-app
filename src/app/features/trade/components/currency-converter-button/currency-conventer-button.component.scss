@@ -1,0 +1,27 @@
+@use 'src/scss/core' as *;
+
+:host {
+  height: 16px;
+}
+
+.dollar-mode-active {
+  ::ng-deep {
+    svg path {
+      fill: var(--tui-primary);
+    }
+  }
+}
+
+.dollar-mode-button-inactive { 
+  &::after {
+    display: flex;
+    width: 3px;
+    height: 3px;
+
+    background-color: var(--tui-primary);
+    border-radius: 50%;
+    transform: translate(16px, -24px);
+
+    content: '';
+  }
+}

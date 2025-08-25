@@ -28,24 +28,20 @@
           <div right class="input-container">
             <app-amount-transput
               formType="from"
-              [selectedToken]="fromAsset"
+              [tokenDecimals]="fromAsset?.decimals"
               inputMode="output"
               [amountValue]="fromAmount$ | async"
             ></app-amount-transput>
           </div>
         </app-input-output-container>
         <app-form-switcher></app-form-switcher>
-        <app-input-output-container round="bottom">
-          <app-asset-selector
-            left
-            selectorType="to"
-            [asset]="toAsset$ | async"
-          ></app-asset-selector>
+        <app-input-output-container round="bottom" *ngLet="toAsset$ | async as toAsset">
+          <app-asset-selector left selectorType="to" [asset]="toAsset"></app-asset-selector>
           <div right class="input-container">
             <app-amount-transput
               [class.tui-skeleton]="!state.isToAmountCalculated"
               formType="to"
-              [selectedToken]="toAsset$ | async"
+              [tokenDecimals]="toAsset?.decimals"
               inputMode="output"
               [amountValue]="toAmount$ | async"
             ></app-amount-transput>
