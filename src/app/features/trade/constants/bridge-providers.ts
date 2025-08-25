@@ -151,6 +151,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}layerzero.svg`,
     name: 'LayerZero'
   },
+  lets_exchange: {
+    averageTime: 5,
+    color: '#999999',
+    image: `${imageBasePath}lets-exchange.png`,
+    name: "Let's Exchange"
+  },
   lifi: {
     averageTime: 5,
     color: '#bf38ee',
