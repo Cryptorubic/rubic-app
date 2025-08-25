@@ -24,7 +24,7 @@ export class BannersService {
   public readonly banners$: Observable<ApiBanner[]> = timer(0, REFETCH_AFTER).pipe(
     switchMap(() =>
       this.httpService
-        .get<ApiBanner[]>('v2/info/banners', {}, '')
+        .get<ApiBanner[]>('', {}, 'https://api.rubic.exchange/api/v2/info/banners')
         .pipe(catchError(() => of(DEFAULT_BANNERS)))
     ),
     map(banners => (banners.length ? banners : DEFAULT_BANNERS)),
