@@ -2331,20 +2331,22 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.10.0-alpha.8":
-  version "0.10.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.8.tgz#1c07949ba49968f893e672bb0932a9f938291711"
-  integrity sha512-HkON79drL0hKMyv1m6cmdLumXODW72lT1RLm3VZPoruqqxcmwfopSipiJ3LKEw/Ht9+HmFtenzAS/I1WOf2q1g==
+"@cryptorubic/core@0.10.0-alpha.9":
+  version "0.10.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.9.tgz#8703192e657ee3f09d3088146a1d370829dea1b3"
+  integrity sha512-M/LrXLLt4OauEWQk1nNqNJDgXMpR+WQu2YRjwrVU2IMtkRpx66tiAT7r0JKDeIgNA/fD66bhZzKvckBYcIDKSA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "^2.3.0"
 
-"@cryptorubic/sdk@0.10.0-alpha.8":
-  version "0.10.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.8.tgz#df5dd6b249b60193b0cb2fd24b2ad99ae25121cf"
-  integrity sha512-TV4rCASR4XUc0/V2SAGRq08sdQIbs2DjiX7aHFEfRdegCLA9z3usLlGTrS0Btb2imf1swaZ7Jdm5NJD19ktnVw==
+"@cryptorubic/sdk@0.10.0-alpha.9":
+  version "0.10.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.9.tgz#3f220dc4bbbc3277067cd9eea652eed98953e0cf"
+  integrity sha512-7j91TY5a+NuyzQTTwsghZXhfioIMdPeYzs8hXhTk9JHN7TCewyvd/qgDKBx10mG+bNyFMqyo3gF6z2pHfOiRQw==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
+    "@cryptorubic/core" "0.10.0-alpha.9"
+    "@cryptorubic/web3" "0.10.0-alpha.9"
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
     "@ethersproject/providers" "*"
@@ -2367,13 +2369,12 @@
     socket.io-client "^4.8.1"
     tronweb "^6.0.0-beta.4"
     ts-essentials "^10.1.1"
-    tslib "^2.3.0"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.10.0-alpha.8":
-  version "0.10.0-alpha.8"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.8.tgz#dcd41178ed931ee205e7054a5001c44ceb1cb7d5"
-  integrity sha512-eYHZFU/8+YaDtdnfrKpCQ8H18j2Z334TCeLX4EIggJS69zXY4ZRVSymBwL8VgM+2XEb1xnbQK5bLkbHc0cVDog==
+"@cryptorubic/web3@0.10.0-alpha.9":
+  version "0.10.0-alpha.9"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.9.tgz#37b4e2f1804d7af8a64ab93866ea9fd6b0e39065"
+  integrity sha512-qJMjxUxOeGLqcUSHcZqgMON97e6eJVTk/ELfFNl4OE/hCufjeoLywncRoeXODsFsBl0HhyGv4DhRaAS5DXwU4A==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
