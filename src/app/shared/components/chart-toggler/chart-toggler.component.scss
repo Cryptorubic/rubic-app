@@ -1,0 +1,36 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .chart-toggler {
+    position: relative;
+
+    width: 18px;
+    height: 18px;
+
+    cursor: pointer;
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      width: 18px;
+      height: 16px;
+    }
+
+    &__new {
+      position: absolute;
+      top: -5px;
+      left: 50%;
+
+      width: 5px;
+      height: 5px;
+            
+      background: var(--tui-primary);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .chart-toggler-tooltip {
+    font-size: 15px;
+  }
+}
