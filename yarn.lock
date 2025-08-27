@@ -2331,22 +2331,20 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.10.0-alpha.13":
-  version "0.10.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.13.tgz#16593dd9313fa7dff426bb2ad4a9bcd25601beee"
-  integrity sha512-KayBh/ZsDG3jkT6y8GvfVkfrBDMRTmUQ1Eo+Yz36nBkG7yvtAomqYdb9Ls1G4huRBMvLozAGPuN+lbhK/aPdVA==
+"@cryptorubic/core@0.10.0-alpha.15":
+  version "0.10.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.15.tgz#3b32cc37a0182f86b8318756291abe8a4681b77f"
+  integrity sha512-fuMeiJ8d/IGiF3IAQOTgxlbupAtkT9mr2fv6mPToiK76PiWCmwz3o5mTMOqu6/Chv10QTcldvlaKroEe2fmDUQ==
   dependencies:
     bignumber.js "9.1.2"
-    tslib "^2.3.0"
+    tslib "*"
 
-"@cryptorubic/sdk@0.10.0-alpha.13":
-  version "0.10.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.13.tgz#92cac4a07e883d0507be58c08ade40475b1f14d0"
-  integrity sha512-G9Sr9mmHuZORgEId+owIOH+IH/BZklQ/jacGoiFVi7W+5CDHJVxRadJ38FbgNNVypzhdGY8veBIyMAKajOJsxQ==
+"@cryptorubic/sdk@0.10.0-alpha.15":
+  version "0.10.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.15.tgz#da5d83e9e63d02dacf16c8762123bfdefdf2903f"
+  integrity sha512-Fy6HsJkTYnLN5RkMtig5CmRTXfB1B/jqfkpgDFCBh1ZU2rE4VfSfngiOXLxA1hjAaN830iTLE2hx34pU5R/UpA==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
-    "@cryptorubic/core" "0.10.0-alpha.13"
-    "@cryptorubic/web3" "0.10.0-alpha.13"
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
     "@ethersproject/providers" "*"
@@ -2369,12 +2367,13 @@
     socket.io-client "^4.8.1"
     tronweb "^6.0.0-beta.4"
     ts-essentials "^10.1.1"
+    tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.10.0-alpha.13":
-  version "0.10.0-alpha.13"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.13.tgz#e2ee60f57627bfc818879cf4ee23298afb726a5a"
-  integrity sha512-kQkLXAkG18Fbz/X8DK6s2i1oJJ8Iq6xbpqFxxewclnMS3LqIqdHbjQDgB5Cq44RAEdbJ2bPH2EJWdzbKQ2fGBw==
+"@cryptorubic/web3@0.10.0-alpha.15":
+  version "0.10.0-alpha.15"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.15.tgz#107277fb74948e3ed16c49412d7a91cd9d8f430f"
+  integrity sha512-yQuMEwn8ge9huPEIODMrpyt9PiCodwTfalanYFx6jpFvjSMYap3QqCb2T1Q9v+vo3+zb/KR1onPTXFSJSB/BIw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -2389,7 +2388,7 @@
     bs58 "^6.0.0"
     crc-32 "^1.2.2"
     tronweb "^6.0.0-beta.4"
-    tslib "^2.3.0"
+    tslib "*"
     viem "^2.33.1"
 
 "@cspotcode/source-map-support@^0.8.0":
@@ -19701,6 +19700,11 @@ tsconfig-paths@^4.1.0, tsconfig-paths@^4.1.2:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
+tslib@*, tslib@>=2.0.0, tslib@>=2.7.0, tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.4.1, tslib@^2.6.2, tslib@^2.8.0:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
+  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
+
 tslib@1.14.1, tslib@^1.13.0, tslib@^1.14.1, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
@@ -19720,11 +19724,6 @@ tslib@2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.7.0.tgz#d9b40c5c40ab59e8738f297df3087bf1a2690c01"
   integrity sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==
-
-tslib@>=2.0.0, tslib@>=2.7.0, tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.4.0, tslib@^2.4.1, tslib@^2.6.2, tslib@^2.8.0:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
-  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
 tslint@~6.1.0:
   version "6.1.3"
