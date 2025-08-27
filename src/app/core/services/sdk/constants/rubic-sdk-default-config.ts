@@ -17,8 +17,7 @@ const viemConfig = Object.keys(rpcList)
       ...acc,
       [blockchain]: {
         transportConfig: {
-          // batch: { batchSize: 2_000, wait: 10 },
-          batch: false,
+          batch: { batchSize: 2_000, wait: 10 },
           onFetchResponse: console.error,
           retryCount: 0,
           timeout: 5_000

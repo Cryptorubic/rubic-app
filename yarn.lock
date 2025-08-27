@@ -2331,20 +2331,22 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.10.0-alpha.11":
-  version "0.10.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.11.tgz#67955e1df81ce20505d95fe1cc1e30ebbcce209c"
-  integrity sha512-2oOXk+DHbVxROPxVFp/FFPy7KLfH5EswQg7TLLG7I7Khl9G1dCAPhJxaEFmuZUrMWimzQjYt4s70Titke9Pikg==
+"@cryptorubic/core@0.10.0-alpha.13":
+  version "0.10.0-alpha.13"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.13.tgz#16593dd9313fa7dff426bb2ad4a9bcd25601beee"
+  integrity sha512-KayBh/ZsDG3jkT6y8GvfVkfrBDMRTmUQ1Eo+Yz36nBkG7yvtAomqYdb9Ls1G4huRBMvLozAGPuN+lbhK/aPdVA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "^2.3.0"
 
-"@cryptorubic/sdk@0.10.0-alpha.11":
-  version "0.10.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.11.tgz#5c20e45b8e345e83c5c6a27697fe0fa53a99ac6e"
-  integrity sha512-UGhZQZU3p8sRFqwjrVp2o+MBEv6uB+wFo0VezhG8rB0kKqHhwgDAMlBt7fA6H+Jw7OH+7e84ERuzWjTQ+Hp9Sw==
+"@cryptorubic/sdk@0.10.0-alpha.13":
+  version "0.10.0-alpha.13"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.13.tgz#92cac4a07e883d0507be58c08ade40475b1f14d0"
+  integrity sha512-G9Sr9mmHuZORgEId+owIOH+IH/BZklQ/jacGoiFVi7W+5CDHJVxRadJ38FbgNNVypzhdGY8veBIyMAKajOJsxQ==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
+    "@cryptorubic/core" "0.10.0-alpha.13"
+    "@cryptorubic/web3" "0.10.0-alpha.13"
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
     "@ethersproject/providers" "*"
@@ -2367,13 +2369,12 @@
     socket.io-client "^4.8.1"
     tronweb "^6.0.0-beta.4"
     ts-essentials "^10.1.1"
-    tslib "^2.3.0"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.10.0-alpha.11":
-  version "0.10.0-alpha.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.11.tgz#362ac322b99314282ed14d21ead6ad6b69c5d7ab"
-  integrity sha512-DnuJFIXltib/AqR6Jyc5/yXpzS1qfEixt0Ih4VOU1CVqBmESCmJWov0NsP66cCXMHOj1uZWHB6cPcf56gh+TRQ==
+"@cryptorubic/web3@0.10.0-alpha.13":
+  version "0.10.0-alpha.13"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.13.tgz#e2ee60f57627bfc818879cf4ee23298afb726a5a"
+  integrity sha512-kQkLXAkG18Fbz/X8DK6s2i1oJJ8Iq6xbpqFxxewclnMS3LqIqdHbjQDgB5Cq44RAEdbJ2bPH2EJWdzbKQ2fGBw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
