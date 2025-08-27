@@ -35,7 +35,6 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.OKC_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ONE_MOON]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ONE_SOL]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.OSMOSIS_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP_V3]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'unknown',
@@ -155,7 +154,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   //[ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut',
   [ON_CHAIN_TRADE_TYPE.KODIAK]: 'kodiak',
   [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: 'kyo_finance',
-  [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus'
+  [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus',
+  [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'orca'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {
