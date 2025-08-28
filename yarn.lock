@@ -2331,18 +2331,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.10.0-alpha.15":
-  version "0.10.0-alpha.15"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0-alpha.15.tgz#3b32cc37a0182f86b8318756291abe8a4681b77f"
-  integrity sha512-fuMeiJ8d/IGiF3IAQOTgxlbupAtkT9mr2fv6mPToiK76PiWCmwz3o5mTMOqu6/Chv10QTcldvlaKroEe2fmDUQ==
+"@cryptorubic/core@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.10.0.tgz#3d25fe51c77906f4fe9aa9681f734482f596904d"
+  integrity sha512-IWGRaXaDp4yQr0hmBuEqXZCiRvL9JVPcV4By/AhP7z65xQ3vzgNUYQQQmjGEfGoovRxLxtCwr6YI2JKoH21khw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.10.0-alpha.15":
-  version "0.10.0-alpha.15"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0-alpha.15.tgz#da5d83e9e63d02dacf16c8762123bfdefdf2903f"
-  integrity sha512-Fy6HsJkTYnLN5RkMtig5CmRTXfB1B/jqfkpgDFCBh1ZU2rE4VfSfngiOXLxA1hjAaN830iTLE2hx34pU5R/UpA==
+"@cryptorubic/sdk@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.10.0.tgz#d1fdcd4829f3ff41c2d46d48b6b5e7f053aac48c"
+  integrity sha512-encLOXnuapLef8uMTO3NkvjZaVZDBQfzfN+Sumpb3LPE0yvCTaKxwP4RW3dWNzh6Pc/aiRnY0o2ro4ZFNQQPaA==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2370,10 +2370,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.10.0-alpha.15":
-  version "0.10.0-alpha.15"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0-alpha.15.tgz#107277fb74948e3ed16c49412d7a91cd9d8f430f"
-  integrity sha512-yQuMEwn8ge9huPEIODMrpyt9PiCodwTfalanYFx6jpFvjSMYap3QqCb2T1Q9v+vo3+zb/KR1onPTXFSJSB/BIw==
+"@cryptorubic/web3@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.10.0.tgz#c42062b8694745bf8a44a47ca013bb1aabdf11ca"
+  integrity sha512-/4lkFpPSY0UcYJfUsHu3UVMHSYYjlOVY5JkhVcie5ijhmH//3G0qHU0Z3xY4FWaaT8akRCXhHKN6s8rgnEFY0A==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -2387,6 +2387,7 @@
     bitcoin-address-validation "^2.2.3"
     bs58 "^6.0.0"
     crc-32 "^1.2.2"
+    js-base64 "^3.7.8"
     tronweb "^6.0.0-beta.4"
     tslib "*"
     viem "^2.33.1"
