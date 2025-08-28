@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from '@cryptorubic/sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -81,9 +81,7 @@ export class AssetsSelectorService {
   }
 
   public setSelectorListTypeByAssetType(): void {
-    this.assetsSelectorStateService.setSelectorListType(
-      this.assetType === 'fiat' ? 'fiats' : 'tokens'
-    );
+    this.assetsSelectorStateService.setSelectorListType('tokens');
   }
 
   public onAllChainsSelect(): void {

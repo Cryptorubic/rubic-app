@@ -4,7 +4,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ModalService } from '@app/core/modals/services/modal.service';

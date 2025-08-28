@@ -1,5 +1,5 @@
 import { BadgeInfo } from '@app/features/trade/models/trade-state';
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
 import {
   showScrollMarksPromoLabel,
   showTaikoPointsPromoLabel,

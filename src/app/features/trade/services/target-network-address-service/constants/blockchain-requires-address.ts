@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
 
 export const blockchainRequiresAddress: BlockchainName[] = [
   BLOCKCHAIN_NAME.SOLANA,

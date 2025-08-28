@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';

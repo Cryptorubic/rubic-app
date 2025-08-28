@@ -3,7 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { timer } from 'rxjs';
-import { SwapErrorResponseInterface } from 'rubic-sdk';
+import { SwapErrorResponseInterface } from '@cryptorubic/sdk';
 
 @Component({
   selector: 'app-simulation-failed-error',

@@ -16,7 +16,7 @@ import {
   PriceTokenAmount,
   Web3Public,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 
 type SupportedSwapProviderType =

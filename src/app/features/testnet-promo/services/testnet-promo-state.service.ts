@@ -8,7 +8,7 @@ import { TestnetPromoApiService } from '@features/testnet-promo/services/testnet
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { PageState } from '@features/testnet-promo/interfaces/page-state.interface';
 import { WeekInfo } from '@features/testnet-promo/interfaces/week-info';
-import { CHAIN_TYPE } from 'rubic-sdk';
+import { CHAIN_TYPE } from '@cryptorubic/sdk';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 
 @Injectable()

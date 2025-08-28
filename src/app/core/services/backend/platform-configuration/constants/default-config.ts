@@ -1,6 +1,6 @@
 import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
-import { FROM_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { FROM_BACKEND_BLOCKCHAINS } from '@cryptorubic/sdk';
 
 export const defaultConfig: PlatformConfig = {
   server_is_active: true,

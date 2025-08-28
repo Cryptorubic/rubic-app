@@ -3,7 +3,7 @@ import { CrossChainTableService } from '@features/history/services/cross-chain-t
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { CommonTableService } from '../../services/common-table-service/common-table.service';
-import { BLOCKCHAIN_NAME, BRIDGE_TYPE, EvmBlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BRIDGE_TYPE, EvmBlockchainName } from '@cryptorubic/sdk';
 import { tableRowsWithActionButtons } from './constants/status-to-action-cases';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ActionButtonLoadingStatus } from './model/types';

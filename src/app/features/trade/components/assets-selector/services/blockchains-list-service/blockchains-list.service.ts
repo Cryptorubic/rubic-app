@@ -218,8 +218,7 @@ export class BlockchainsListService {
     if (this.assetsSelectorStateService.formType !== 'to') {
       return false;
     }
-    const fromAssetType = this.assetsSelectorService.getAssetType('from');
-    return fromAssetType === 'fiat';
+    return false;
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {

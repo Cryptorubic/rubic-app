@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, from, of } from 'rxjs';
 import { RetrodropUserInfo } from '@features/retrodrop/models/retrodrop-user-info';
 import { catchError } from 'rxjs/operators';
-import { BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, Web3Pure } from '@cryptorubic/sdk';
 import { RetrodropApiService } from '@features/retrodrop/services/retrodrop-api.service';
 import { retrodropContractAddress } from '@features/retrodrop/constants/retrodrop-contract-address';
 import { retrodropRounds } from '@features/retrodrop/constants/retrodrop-rounds';

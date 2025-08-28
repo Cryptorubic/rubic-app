@@ -14,7 +14,7 @@ import {
   getDepositStatus,
   CrossChainTradeType,
   OnChainTradeType
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';

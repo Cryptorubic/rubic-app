@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from '@cryptorubic/sdk';
 import { BehaviorSubject, combineLatest, from, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';

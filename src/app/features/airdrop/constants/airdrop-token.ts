@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/sdk';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 
 type Token = Omit<BlockchainToken, 'blockchain'> & { blockchain: EvmBlockchainName };

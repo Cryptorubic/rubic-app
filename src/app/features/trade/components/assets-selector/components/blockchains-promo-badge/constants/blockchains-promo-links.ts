@@ -1,4 +1,4 @@
-import { BlockchainName, BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BlockchainName, BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 
 export const blockchainsPromoLinks: BlockchainsPromoLinks = {
   [BLOCKCHAIN_NAME.POLYGON_ZKEVM]: 'https://app.layer3.xyz/streaks/swap-on-rubic',

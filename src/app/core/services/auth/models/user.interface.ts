@@ -1,4 +1,4 @@
-import { ChainType } from 'rubic-sdk';
+import { ChainType } from '@cryptorubic/sdk';
 
 export interface WalletLoginInterface {
   code: string;

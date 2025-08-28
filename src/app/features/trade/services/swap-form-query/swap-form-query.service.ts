@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import { BlockchainName, BlockchainsInfo, CHAIN_TYPE, EvmWeb3Pure, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  CHAIN_TYPE,
+  EvmWeb3Pure,
+  Web3Pure
+} from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';

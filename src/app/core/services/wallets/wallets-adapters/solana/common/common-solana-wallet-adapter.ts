@@ -1,6 +1,6 @@
 import { SolanaWallet } from '@core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainName, CHAIN_TYPE } from 'rubic-sdk';
+import { BlockchainName, CHAIN_TYPE } from '@cryptorubic/sdk';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';

@@ -23,7 +23,7 @@ import {
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
   SimulationFailedError as SdkSimulationFailedError
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -53,7 +53,7 @@ import { LowSlippageError } from './common/low-slippage-error';
 import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
-import { SimulationFailedError } from './common/simulation-failed.error';
+import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(

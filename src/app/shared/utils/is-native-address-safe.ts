@@ -6,7 +6,7 @@ import {
   Injector,
   Web3Public,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 
 export function isNativeAddressSafe(token: TokenAmount): boolean {
@@ -20,9 +20,18 @@ export function isNativeAddressSafe(token: TokenAmount): boolean {
   return Web3Pure[chainType].isNativeAddress(token.address);
 }
 
-export function getWeb3PublicSafe(chain: BlockchainName): Web3Public | null {
+export async function getWeb3PublicSafe(
+  chain: BlockchainName,
+  walletAddress: string
+): Promise<Web3Public | null> {
   try {
     const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+    const chainType = BlockchainsInfo.getChainType(chain);
+    const isBlockchainCorrect = await Web3Pure[chainType].isAddressCorrect(walletAddress);
+    if (!isBlockchainCorrect) {
+      return null;
+    }
+
     return web3Public;
   } catch {
     return null;

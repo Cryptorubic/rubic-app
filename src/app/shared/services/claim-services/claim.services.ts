@@ -11,7 +11,7 @@ import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { inject, Injectable } from '@angular/core';
 import { ClaimRound } from '@shared/models/claim/claim-round';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 
 @Injectable({ providedIn: 'root' })
 export abstract class ClaimService {

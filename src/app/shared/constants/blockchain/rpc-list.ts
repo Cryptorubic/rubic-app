@@ -7,7 +7,7 @@ import {
   BitcoinBlockchainName,
   SuiBlockchainName
 } from '@cryptorubic/core';
-import { TronWebProvider } from 'rubic-sdk';
+import { TronWebProvider } from '@cryptorubic/sdk';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
@@ -237,12 +237,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/scroll',
     'https://x-api.rubic.exchange/drpc/scroll?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.STARKNET]: [
-    'https://rpc.starknet.lava.build',
-    'https://starknet-mainnet.public.blastapi.io',
-    'https://data.voyager.online/',
-    'https://starknet-mainnet.s.chainbase.com/v1/2Z4bzrFJWgzsqK5mltnTKKtjEK4'
-  ],
+  [BLOCKCHAIN_NAME.STARKNET]: [],
   [BLOCKCHAIN_NAME.SOLANA]: [
     'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://rpc.ankr.com/solana',

@@ -12,7 +12,12 @@ import {
   SendTransactionsParams,
   SendTransactionsResponse
 } from '@safe-global/safe-apps-sdk/src/types';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName, EvmEncodeConfig } from 'rubic-sdk';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  EvmBlockchainName,
+  EvmEncodeConfig
+} from '@cryptorubic/sdk';
 
 export class SafeWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.SAFE;

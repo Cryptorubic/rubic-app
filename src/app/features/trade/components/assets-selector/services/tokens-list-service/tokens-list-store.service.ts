@@ -2,7 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, timer } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, EvmWeb3Pure } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  EvmWeb3Pure,
+  Token as SdkToken
+} from '@cryptorubic/sdk';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
@@ -16,7 +22,6 @@ import {
   takeUntil,
   tap
 } from 'rxjs/operators';
-import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
 import BigNumber from 'bignumber.js';
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';

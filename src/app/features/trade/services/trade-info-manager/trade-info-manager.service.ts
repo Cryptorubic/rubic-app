@@ -9,7 +9,7 @@ import {
   TonOnChainTrade,
   Web3Pure,
   nativeTokensList
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';

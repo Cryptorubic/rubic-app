@@ -4,7 +4,7 @@ import {
   CrossChainDepositStatus,
   CrossChainPaymentInfo,
   getDepositStatus
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';

@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ProofInfo } from '@features/testnet-promo/interfaces/api-models';
 import { TestnetPromoClaimService } from '@features/testnet-promo/services/testnet-promo-claim.service';
-import { Web3Pure } from 'rubic-sdk';
+import { Web3Pure } from '@cryptorubic/sdk';
 
 @Component({
   selector: 'app-active-claim',
