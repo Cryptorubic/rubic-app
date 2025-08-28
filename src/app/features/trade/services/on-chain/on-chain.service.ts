@@ -47,7 +47,6 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 type NotWhitelistedProviderErrors =

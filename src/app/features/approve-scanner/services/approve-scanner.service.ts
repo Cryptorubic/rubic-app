@@ -7,8 +7,7 @@ import {
   EvmBlockchainName,
   RubicSdkError,
   UserRejectError,
-  compareAddresses,
-  Any
+  compareAddresses
 } from '@cryptorubic/sdk';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
@@ -306,7 +305,7 @@ export class ApproveScannerService {
     }
   }
 
-  private handleScannerResponse(response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
+  private handleScannerResponse(_response: ScannerResponse): Omit<ApproveTransaction, 'token'>[] {
     // @TODO VIEM
     return [];
     // if (typeof response.result === 'string') {
