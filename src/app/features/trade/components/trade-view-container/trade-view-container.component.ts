@@ -97,6 +97,7 @@ export class TradeViewContainerComponent {
     renderer2: Renderer2
   ) {
     this.chartService.setRenderer(renderer2);
+    this.chartService.initSubscriptions(swapFormService);
   }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {

@@ -5,7 +5,7 @@
       <main class="main-content">
         <router-outlet></router-outlet>
       </main>
-      <app-rubic-footer *noFrame class="footer"></app-rubic-footer>
+      <app-rubic-footer *noFrame [class.footer-static]="chartVisibile$ | async"></app-rubic-footer>
     </div>
     <ng-container *noFrame>
       <app-live-chat *ngIf="!useLargeIframe"></app-live-chat>

@@ -76,7 +76,6 @@ import { AlternativeRoutesListComponent } from './components/alternative-routes-
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
 import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
-import { ChartService } from './services/chart-service/chart.service';
 
 @NgModule({
   declarations: [
@@ -183,8 +182,7 @@ import { ChartService } from './services/chart-service/chart.service';
     BlockchainsListService,
     FormsTogglerService,
     AlternativeRoutesService,
-    RefundService,
-    ChartService
+    RefundService
     // SettingsService,
     // RefreshService,
     // TradeService,

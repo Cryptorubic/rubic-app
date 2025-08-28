@@ -1,5 +1,4 @@
 import { Inject, Injectable, Renderer2 } from '@angular/core';
-import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { BehaviorSubject, distinctUntilChanged, map, takeUntil } from 'rxjs';
 import { ChartInfo, ChartSize } from './models';
 import { HeaderStore } from '@app/core/header/services/header.store';
@@ -9,8 +8,11 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { compareAssets } from '../../utils/compare-assets';
 import { TradePageService } from '../trade-page/trade-page.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
+import { SwapsFormService } from '../swaps-form/swaps-form.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ChartService {
   private readonly _chartInfo$ = new BehaviorSubject<ChartInfo>({
     size: { height: 250, width: 600 },
@@ -19,7 +21,7 @@ export class ChartService {
 
   public readonly chartInfo$ = this._chartInfo$.asObservable();
 
-  public readonly chartVisibilty$ = this.chartInfo$.pipe(
+  public readonly chartVisibile$ = this.chartInfo$.pipe(
     map(info => info.status.opened),
     distinctUntilChanged()
   );
@@ -33,14 +35,13 @@ export class ChartService {
   private script: HTMLScriptElement | null = null;
 
   constructor(
-    private readonly swapsFormService: SwapsFormService,
     private readonly headerStore: HeaderStore,
     private readonly tradePageService: TradePageService,
     private readonly gtmService: GoogleTagManagerService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly destroy$: TuiDestroyService
   ) {
-    this.initSubscriptions();
+    // this.initSubscriptions();
   }
 
   /* Invoke only once on app init in any component to get access to renderer object in ChartService */
@@ -83,8 +84,8 @@ export class ChartService {
     });
   }
 
-  public initSubscriptions(): void {
-    this.swapsFormService.inputValue$
+  public initSubscriptions(swapsFormService: SwapsFormService): void {
+    swapsFormService.inputValue$
       .pipe(
         distinctUntilChanged(
           (prev, next) =>
@@ -101,7 +102,7 @@ export class ChartService {
         ) as HTMLElement;
 
         if (inputValue.fromToken && inputValue.toToken && container) {
-          this.createAndInvokeScript();
+          this.createAndInvokeScript(swapsFormService);
         }
       });
 
@@ -110,13 +111,13 @@ export class ChartService {
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(mobile => {
         this.setChartSize(mobile ? { height: 250, width: 360 } : { height: 250, width: 600 });
-        const inputValue = this.swapsFormService.inputValue;
+        const inputValue = swapsFormService.inputValue;
         const container = this.document.getElementById(
           'tradingview-widget-container'
         ) as HTMLElement;
 
         if (inputValue.fromToken && inputValue.toToken && container) {
-          this.createAndInvokeScript();
+          this.createAndInvokeScript(swapsFormService);
         }
       });
 
@@ -130,19 +131,19 @@ export class ChartService {
         }
       });
 
-    this.chartVisibilty$.pipe(takeUntil(this.destroy$)).subscribe(opened => {
+    this.chartVisibile$.pipe(takeUntil(this.destroy$)).subscribe(opened => {
       if (opened)
         this.gtmService.fireOpenChart(
-          this.swapsFormService.inputValue.fromToken,
-          this.swapsFormService.inputValue.toToken
+          swapsFormService.inputValue.fromToken,
+          swapsFormService.inputValue.toToken
         );
     });
   }
 
-  public createAndInvokeScript(): void {
+  public createAndInvokeScript(swapsFormService: SwapsFormService): void {
     const container = this.document.getElementById('tradingview-widget-container') as HTMLElement;
     const oldChart = container.querySelector('iframe');
-    const { fromToken, toToken } = this.swapsFormService.inputValue;
+    const { fromToken, toToken } = swapsFormService.inputValue;
 
     if (oldChart) oldChart.remove();
 
