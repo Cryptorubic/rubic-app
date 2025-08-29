@@ -156,7 +156,7 @@ export class ChartService {
         "symbol": "${this.getChartSymbol(fromToken, toToken)}",
         "style": "3",
         "locale": "en",
-        "from": "2025-08-28",
+        "range": "1D",
         "timezone": "Europe/Istanbul",
         "dateRange": "1H",
         "interval": "1H",
