@@ -6,10 +6,10 @@ import {
   CrossChainTrade,
   NotWhitelistedProviderError,
   TO_BACKEND_BLOCKCHAINS,
+  Web3Pure,
   UnapprovedContractError,
-  UnapprovedMethodError,
-  Web3Pure
-} from 'rubic-sdk';
+  UnapprovedMethodError
+} from '@cryptorubic/sdk';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';

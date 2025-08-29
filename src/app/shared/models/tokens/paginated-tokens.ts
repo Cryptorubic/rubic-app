@@ -1,5 +1,5 @@
 import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
-import { BlockchainName, BlockchainsInfo } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo } from '@cryptorubic/sdk';
 
 export interface PaginatedPage {
   page: number | null;

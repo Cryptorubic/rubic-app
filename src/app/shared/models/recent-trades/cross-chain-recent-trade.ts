@@ -1,4 +1,4 @@
-import { BridgeType, CrossChainTradeType } from 'rubic-sdk';
+import { BridgeType, CrossChainTradeType } from '@cryptorubic/sdk';
 import { CommonRecentTrade } from '@shared/models/recent-trades/common-recent-trade';
 import { Token } from '@shared/models/tokens/token';
 

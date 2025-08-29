@@ -10,7 +10,7 @@ import {
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Web3Pure } from 'rubic-sdk';
+import { Web3Pure } from '@cryptorubic/sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 

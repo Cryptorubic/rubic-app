@@ -1,6 +1,6 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, CrossChainTransferTrade } from 'rubic-sdk';
+import { BlockchainsInfo, CrossChainTransferTrade } from '@cryptorubic/sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';

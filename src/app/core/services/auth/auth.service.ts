@@ -7,7 +7,7 @@ import { UserInterface } from './models/user.interface';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
-import { BlockchainsInfo, ChainType, Injector, blockchainId } from 'rubic-sdk';
+import { BlockchainsInfo, ChainType, Injector, blockchainId, Any } from '@cryptorubic/sdk';
 import { SpaceIdGetMetadataResponse, spaceIdDomains } from './models/space-id-types';
 import { createWeb3Name } from '@web3-name-sdk/core';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
@@ -173,9 +173,12 @@ export class AuthService {
         return false;
       }
 
-      const web3 = Injector.web3PublicService.getWeb3Public(currentBlockchain).web3Provider;
+      const publicClient = Injector.web3PublicService.getWeb3Public(currentBlockchain).publicClient;
       const [rpcUrl] = rpcList[currentBlockchain];
-      const oneID = new OneID({ provider: web3.currentProvider, ...(rpcUrl && { rpcUrl }) });
+      const oneID = new OneID({
+        provider: publicClient.transport as Any,
+        ...(rpcUrl && { rpcUrl })
+      });
       const name = await oneID.getPrimaryName(this.userAddress);
 
       if (!name) {

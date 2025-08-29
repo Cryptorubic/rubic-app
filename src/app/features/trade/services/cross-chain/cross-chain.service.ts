@@ -14,15 +14,15 @@ import {
   UserRejectError,
   Web3Pure,
   Injector as SdkInjector,
-  EvmCrossChainTrade
-} from 'rubic-sdk';
+  EvmCrossChainTrade,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -53,7 +53,7 @@ import {
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 @Injectable()
 export class CrossChainService {
@@ -264,11 +264,7 @@ export class CrossChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(error instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 5
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
         const slippageErr = new LowSlippageError(0.05);
         throw slippageErr;
       }

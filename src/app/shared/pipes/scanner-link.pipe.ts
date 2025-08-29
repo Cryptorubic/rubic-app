@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, ChainType, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, ChainType, Web3Pure } from '@cryptorubic/sdk';
 import ADDRESS_TYPE from 'src/app/shared/models/blockchain/address-type';
 import { blockchainScanner } from '@shared/constants/blockchain/blockchain-scanner';
 

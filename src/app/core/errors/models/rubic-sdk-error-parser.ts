@@ -21,8 +21,9 @@ import {
   SdkSwapErrorOnProviderSide,
   NoLinkedAccountError,
   NotSupportedRegionError,
-  LowSlippageError as SdkLowSlippageError
-} from 'rubic-sdk';
+  LowSlippageError as SdkLowSlippageError,
+  SimulationFailedError as SdkSimulationFailedError
+} from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -52,11 +53,15 @@ import { LowSlippageError } from './common/low-slippage-error';
 import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
+import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof SdkSimulationFailedError) {
+      return new SimulationFailedError(err.apiError);
+    }
     if (err instanceof NotSupportedRegionError) {
       return new NotSupportedRegionRubicError();
     }

@@ -4,7 +4,7 @@ import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-ada
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 
 export class TrustWalletAdapter extends WalletConnectAbstractAdapter {

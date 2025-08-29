@@ -7,7 +7,7 @@ import {
   ON_CHAIN_TRADE_TYPE,
   OnChainTrade,
   OnChainTradeType
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { INFO_COLOR, PINK_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
 import {
   showAttentionLabelArbitrumBridge,

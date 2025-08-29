@@ -25,7 +25,7 @@ export default (
       if (sdkBundleExists) {
         config.resolve.alias = {
           ...config.resolve.alias,
-          'rubic-sdk': path.resolve(__dirname, sdkDirectory)
+          '@cryptorubic/sdk': path.resolve(__dirname, sdkDirectory)
         };
       } else {
         throw new Error(

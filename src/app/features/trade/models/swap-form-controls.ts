@@ -1,4 +1,4 @@
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { FormGroup } from '@angular/forms';

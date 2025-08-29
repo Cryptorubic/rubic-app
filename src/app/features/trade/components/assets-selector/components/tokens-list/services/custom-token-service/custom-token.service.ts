@@ -1,7 +1,11 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { switchMap } from 'rxjs';
-import { Injector as RubicInjector } from 'rubic-sdk/lib/core/injector/injector';
-import { BlockchainsInfo, Web3PublicSupportedBlockchain, Web3Pure } from 'rubic-sdk';
+import {
+  BlockchainsInfo,
+  Web3PublicSupportedBlockchain,
+  Web3Pure,
+  Injector as RubicInjector
+} from '@cryptorubic/sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { AuthService } from '@core/services/auth/auth.service';

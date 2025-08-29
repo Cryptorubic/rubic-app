@@ -1,4 +1,4 @@
-import { BridgeType, OnChainTradeType } from 'rubic-sdk';
+import { BridgeType, OnChainTradeType } from '@cryptorubic/sdk';
 
 export interface CrossChainRoute {
   fromProvider: OnChainTradeType | undefined;

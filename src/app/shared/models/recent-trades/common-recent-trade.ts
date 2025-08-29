@@ -1,4 +1,4 @@
-import { ChangenowApiStatus, TxStatus } from 'rubic-sdk';
+import { ChangenowApiStatus, TxStatus } from '@cryptorubic/sdk';
 import { Token } from '@shared/models/tokens/token';
 
 export interface CommonRecentTrade {

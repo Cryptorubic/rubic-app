@@ -24,7 +24,6 @@ import {
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { CrossChainService } from '@features/trade/services/cross-chain/cross-chain.service';
 import { OnChainService } from '@features/trade/services/on-chain/on-chain.service';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { ErrorsService } from '@core/errors/errors.service';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -45,8 +44,9 @@ import {
   SymbiosisEvmCcrTrade,
   UnsupportedReceiverAddressError,
   UserRejectError,
-  Web3Pure
-} from 'rubic-sdk';
+  Web3Pure,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
@@ -363,7 +363,7 @@ export class SwapsControllerService {
     }
 
     const parsedError = error && RubicSdkErrorParser.parseError(error);
-    if (!parsedError || parsedError instanceof ExecutionRevertedError) {
+    if (!parsedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
       return parsedError;
@@ -467,6 +467,7 @@ export class SwapsControllerService {
     Injector.rubicApiService
       .handleQuotesAsync()
       .pipe(
+        // @ts-ignore
         tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;

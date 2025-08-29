@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 import { PaginatedPage, TokensNetworkState } from '@shared/models/tokens/paginated-tokens';
 
 const defaultState: PaginatedPage = { page: 1, maxPage: 1 };

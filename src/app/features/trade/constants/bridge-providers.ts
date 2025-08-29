@@ -1,4 +1,4 @@
-import { BridgeType } from 'rubic-sdk';
+import { BridgeType } from '@cryptorubic/sdk';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
@@ -110,6 +110,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: 'black',
     image: 'assets/images/icons/providers/on-chain/eddyfinance.ico',
     name: 'Eddy Finance'
+  },
+  exolix: {
+    averageTime: 5,
+    color: 'black',
+    image: `${imageBasePath}exolix.svg`,
+    name: 'Exolix'
   },
   //GGGGGGGGGGGGGGGGG
   gnosis: {
@@ -368,7 +374,7 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     averageTime: 5,
     color: 'white',
     image: `${imageBasePath}wormhole.svg`,
-    name: 'Wormhole'
+    name: 'Wormhole Mayan'
   },
 
   xflows: {

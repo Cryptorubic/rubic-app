@@ -20,8 +20,9 @@ import {
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
   TonOnChainTrade,
-  ON_CHAIN_TRADE_TYPE
-} from 'rubic-sdk';
+  ON_CHAIN_TRADE_TYPE,
+  Injector as SdkInjector
+} from '@cryptorubic/sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -45,9 +46,8 @@ import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-tra
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { QuoteOptionsInterface } from '@cryptorubic/core';
-import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -233,11 +233,7 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(err instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 3
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
         const slippageErr = new LowSlippageError(0.03);
         throw slippageErr;
       }
