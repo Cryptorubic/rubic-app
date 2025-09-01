@@ -40,9 +40,7 @@ export class ChartService {
     private readonly gtmService: GoogleTagManagerService,
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly destroy$: TuiDestroyService
-  ) {
-    // this.initSubscriptions();
-  }
+  ) {}
 
   /* Invoke only once on app init in any component to get access to renderer object in ChartService */
   public setRenderer(renderer: Renderer2): void {
