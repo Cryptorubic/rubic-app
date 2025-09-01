@@ -1,4 +1,4 @@
-import { WrappedCrossChainTrade } from 'rubic-sdk';
+import { WrappedCrossChainTrade } from '@cryptorubic/sdk';
 import { CrossChainRoute } from '@features/trade/models/cross-chain-route';
 
 export type CrossChainCalculatedTrade = WrappedCrossChainTrade & {

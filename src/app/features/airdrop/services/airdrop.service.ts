@@ -5,7 +5,7 @@ import { AirdropUserClaimInfo } from '@features/airdrop/models/airdrop-user-info
 import { AirdropApiService } from '@features/airdrop/services/airdrop-api.service';
 import { airdropContractAddress } from '@features/airdrop/constants/airdrop-contract-address';
 import { defaultUserClaimInfo } from '@shared/services/claim-services/constants/default-user-claim-info';
-import { BlockchainName, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, Web3Pure } from '@cryptorubic/sdk';
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber/lib/bignumber';
 import { airdropRounds } from '@features/airdrop/constants/airdrop-rounds';
 import { catchError } from 'rxjs/operators';

@@ -11,7 +11,7 @@ import {
   LifiSubProvider,
   RANGO_TO_RUBIC_PROVIDERS,
   LIFI_API_CROSS_CHAIN_PROVIDERS
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';

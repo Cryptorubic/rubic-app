@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 
 export function showTaikoPointsPromoLabel(trade: CrossChainTrade): boolean {
   return (

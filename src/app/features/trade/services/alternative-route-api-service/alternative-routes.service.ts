@@ -24,7 +24,7 @@ import { compareAddresses, notNull } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { TO_BACKEND_BLOCKCHAINS } from 'rubic-sdk';
+import { TO_BACKEND_BLOCKCHAINS } from '@cryptorubic/sdk';
 
 @Injectable()
 export class AlternativeRoutesService {

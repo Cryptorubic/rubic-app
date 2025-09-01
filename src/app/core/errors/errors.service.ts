@@ -11,7 +11,7 @@ import { EIP_1193 } from '@core/errors/models/standard/eip-1193';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import { RubicWarning } from '@core/errors/models/rubic-warning';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
-import { RubicSdkError } from 'rubic-sdk';
+import { RubicSdkError } from '@cryptorubic/sdk';
 
 interface Question {
   title: string;

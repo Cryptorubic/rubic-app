@@ -8,7 +8,7 @@ import {
   BlockchainsInfo,
   EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { RubicWindow } from '@shared/utils/rubic-window';

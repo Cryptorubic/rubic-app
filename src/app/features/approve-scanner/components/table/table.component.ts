@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import { first, map, startWith } from 'rxjs/operators';
 import { combineLatestWith, firstValueFrom, lastValueFrom } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { EvmBlockchainName } from 'rubic-sdk';
+import { EvmBlockchainName } from '@cryptorubic/sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 

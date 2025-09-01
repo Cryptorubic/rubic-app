@@ -1,6 +1,6 @@
 import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SupportedOnChainNetworks } from '@features/trade/constants/instant-trade.type';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 
 const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [ON_CHAIN_TRADE_TYPE.CURVE],

@@ -1,7 +1,7 @@
 import { ProviderInfo } from '@app/features/trade/models/provider-info';
 import { HistoryBlockchain, HistoryToken } from '@features/history/models/data-types';
 import { TxStatus } from '@features/history/models/tx-status-mapping';
-import { CrossChainTradeType, OnChainTradeType } from 'rubic-sdk';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/sdk';
 
 export interface DepositTableData {
   fromToken: HistoryToken;

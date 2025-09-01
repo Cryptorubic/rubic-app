@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';

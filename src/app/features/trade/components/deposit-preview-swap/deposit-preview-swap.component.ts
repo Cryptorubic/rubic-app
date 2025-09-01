@@ -7,6 +7,7 @@ import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/ope
 import {
   CROSS_CHAIN_DEPOSIT_STATUS,
   CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTrade,
   CrossChainTradeType,
   CrossChainTransferTrade,
   EvmCrossChainTrade,
@@ -15,12 +16,11 @@ import {
   nativeTokensList,
   OnChainTrade,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import BigNumber from 'bignumber.js';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';

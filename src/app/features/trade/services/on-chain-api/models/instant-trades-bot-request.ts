@@ -1,4 +1,4 @@
-import { BlockchainName, OnChainTradeType } from 'rubic-sdk';
+import { BlockchainName, OnChainTradeType } from '@cryptorubic/sdk';
 
 export interface InstantTradeBotRequest {
   txHash: string;

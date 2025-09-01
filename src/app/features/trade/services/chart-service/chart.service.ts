@@ -158,7 +158,6 @@ export class ChartService {
         "locale": "en",
         "range": "1D",
         "timezone": "Europe/Istanbul",
-        "dateRange": "1H",
         "interval": "1H",
         "theme": "dark",
         "lineColor": "#00e28d",

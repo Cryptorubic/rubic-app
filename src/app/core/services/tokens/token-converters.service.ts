@@ -6,7 +6,7 @@ import { isTokenAmount } from '@app/shared/utils/is-token';
 import { compareAddresses } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
-import { BLOCKCHAIN_NAME, EvmWeb3Pure } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, EvmWeb3Pure } from '@cryptorubic/sdk';
 import { StorageToken } from './models/storage-token';
 
 @Injectable({

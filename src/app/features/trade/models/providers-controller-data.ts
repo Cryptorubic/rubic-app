@@ -1,6 +1,6 @@
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
-import { OnChainTrade, OnChainTradeType } from 'rubic-sdk';
+import { OnChainTrade, OnChainTradeType } from '@cryptorubic/sdk';
 import { INSTANT_TRADE_STATUS } from '@features/trade/models/instant-trades-trade-status';
 
 export interface InstantTradeProviderData {

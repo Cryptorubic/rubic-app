@@ -12,7 +12,7 @@ import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/tok
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { GO_PLUS_AVAILABLE_NETWORKS } from '../../../../constants/go-plus-available-networks';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
-import { compareAddresses } from 'rubic-sdk';
+import { compareAddresses } from '@cryptorubic/sdk';
 import {
   ARBITRUM_PLATFORM_TOKEN_ADDRESS,
   ETHEREUM_PLATFORM_TOKEN_ADDRESS

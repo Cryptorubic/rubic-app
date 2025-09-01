@@ -7,8 +7,14 @@ import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.s
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName, Injector, Web3Pure } from 'rubic-sdk';
-import { Token as SdkToken } from 'rubic-sdk/lib/common/tokens/token';
+import {
+  BlockchainName,
+  BlockchainsInfo,
+  EvmBlockchainName,
+  Injector,
+  Web3Pure,
+  Token as SdkToken
+} from '@cryptorubic/sdk';
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
 import { StorageToken } from '@core/services/tokens/models/storage-token';

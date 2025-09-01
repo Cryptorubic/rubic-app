@@ -4,7 +4,7 @@ import { UndefinedError } from '@core/errors/models/undefined.error';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { ProviderInterface } from '@coinbase/wallet-sdk';

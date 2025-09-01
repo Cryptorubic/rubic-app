@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { distinctUntilChanged, first, map, startWith } from 'rxjs/operators';
-import { OnChainTrade, TradeInfo } from 'rubic-sdk';
+import { OnChainTrade, TradeInfo, CrossChainTrade } from '@cryptorubic/sdk';
 import { Observable } from 'rxjs';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { transactionInfoText } from '@features/trade/constants/transaction-info-text';
