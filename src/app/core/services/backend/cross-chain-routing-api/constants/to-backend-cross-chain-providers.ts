@@ -34,7 +34,8 @@ const toProviders = {
   [CROSS_CHAIN_TRADE_TYPE.RELAY]: 'relay',
   [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2]: 'orbiter_bridge_v2',
   [CROSS_CHAIN_TRADE_TYPE.WORMHOLE]: 'wormhole_mayan',
-  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: 'exolix'
+  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: 'exolix',
+  [CROSS_CHAIN_TRADE_TYPE.USDT_ZERO_BRIDGE]: 'usdt_zero_bridge'
 } as const;
 
 export const TO_BACKEND_CROSS_CHAIN_PROVIDERS: Record<CrossChainTradeType, string> = {
