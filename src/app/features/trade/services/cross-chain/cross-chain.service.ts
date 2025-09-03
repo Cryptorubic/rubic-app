@@ -49,11 +49,13 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
+  ErrorInterface,
   QuoteOptionsInterface,
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Injectable()
 export class CrossChainService {
@@ -84,7 +86,8 @@ export class CrossChainService {
     private readonly gasService: GasService,
     private readonly proxyService: ProxyFeeService,
     private readonly iframeService: IframeService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -221,6 +224,15 @@ export class CrossChainService {
       );
     };
 
+    const onWarning = (warnings: ErrorInterface[]) => {
+      warnings.forEach(warning => {
+        // Check for 50XX domain of errors - sponsorship errors
+        if (warning.code.toString().startsWith('50')) {
+          this.notificationsService.showSwapWarning(warning);
+        }
+      });
+    };
+
     const blockchain = trade.from.blockchain;
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
@@ -232,6 +244,7 @@ export class CrossChainService {
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
+      onWarning,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
