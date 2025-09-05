@@ -1,4 +1,3 @@
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import {
   CrossChainRewardConvertedData,
   CrossChainRewardResponse,
@@ -6,13 +5,14 @@ import {
   OnChainRewardResponse,
   ProviderRewardData
 } from '../models/airdrop-api-types';
-import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { CrossChainTradeType } from '@cryptorubic/sdk';
 import {
+  FROM_BACKEND_CROSS_CHAIN_PROVIDERS,
   FROM_BACKEND_ON_CHAIN_PROVIDERS,
   FromBackendOnChainProvider,
+  ToBackendCrossChainProviders,
   ToBackendOnChainProvider
-} from '@app/features/trade/services/on-chain-api/constants/backend-providers';
+} from '@cryptorubic/core';
 
 export class AirdropUtils {
   public static convertCrosschainRewardData(
