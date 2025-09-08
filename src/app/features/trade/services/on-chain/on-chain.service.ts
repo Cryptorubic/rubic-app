@@ -184,7 +184,7 @@ export class OnChainService {
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),
       solanaSponsorParams: {
-        feePayer: '4G7scocEJ7FuaGBm1C8MTBYXBFobYqr5pC5xqvKHGhbv',
+        feePayer: 'CDv1EBL6hsQJ29myHEy1aZWxXjbc86LHkALY3gr1qKr',
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
       }
