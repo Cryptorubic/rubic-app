@@ -56,6 +56,7 @@ import {
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 
 @Injectable()
 export class CrossChainService {
@@ -253,7 +254,7 @@ export class CrossChainService {
       useCacheData: params.useCacheData,
       skipAmountCheck: params.skipAmountCheck,
       solanaSponsorParams: {
-        feePayer: 'CDv1EBL6hsQJ29myHEy1aZWxXjbc86LHkALY3gr1qKr',
+        feePayer: SOLANA_SPONSOR,
         tradeId: trade.rubicId
       }
     };

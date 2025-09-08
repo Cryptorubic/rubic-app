@@ -49,6 +49,7 @@ import { ErrorInterface, QuoteOptionsInterface } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -184,7 +185,7 @@ export class OnChainService {
       // skipAmountCheck: params.skipAmountCheck,
       ...(referrer && { referrer }),
       solanaSponsorParams: {
-        feePayer: 'CDv1EBL6hsQJ29myHEy1aZWxXjbc86LHkALY3gr1qKr',
+        feePayer: SOLANA_SPONSOR,
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
       }

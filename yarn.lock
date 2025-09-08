@@ -2331,18 +2331,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.11.0-alpha-gasless.9":
-  version "0.11.0-alpha-gasless.9"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.11.0-alpha-gasless.9.tgz#b3960e4ddb0681c8449080f3084d9402910b57e7"
-  integrity sha512-c4NAw48piiNHnoncZYAU3rBZOivDJhBrdN3SUhUJfjC4ZSOT/5lQhWR+TDb4fA30ALHsBvjYb31PT8pKjXX0uQ==
+"@cryptorubic/core@0.11.0-alpha-gasless.11":
+  version "0.11.0-alpha-gasless.11"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.11.0-alpha-gasless.11.tgz#494cf52471fe5cbc6b4b517ecf7b622e1c8743cf"
+  integrity sha512-BIqwzeD7CYPq7dNZFJoJyn69ORZaqXGvpRSwjyc5dyiYFPlyMgIUQuJ+OwjgjZWWAUTywvdmAn3KyxsbYjBRuA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.11.0-alpha-gasless.9":
-  version "0.11.0-alpha-gasless.9"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.11.0-alpha-gasless.9.tgz#ad17a8a6a7a1a04e0ece80454d9d759ab06f54f5"
-  integrity sha512-vIjIbgornicrVyYTLtoASll36xPTK5gXFDzTR4jLzWS8+WQU1sqJJHZ+Llx/0gbSAMUiqbbhXnoG3ebg4E/SIw==
+"@cryptorubic/sdk@0.11.0-alpha-gasless.11":
+  version "0.11.0-alpha-gasless.11"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.11.0-alpha-gasless.11.tgz#9a92b1664fd2760d317e88ceebd04d59350a38ea"
+  integrity sha512-1X5yUXH4+ptB6/1/00WJMGuZave0QLvBJg58oRg//RLr4/UgS3ejucHQ4BYgO6l/4eK2ShWlNjgUNilYtGYGMg==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2370,10 +2370,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.11.0-alpha-gasless.9":
-  version "0.11.0-alpha-gasless.9"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.11.0-alpha-gasless.9.tgz#6709e483f5cfa91d19a4d9b300891ed7b9a25ad7"
-  integrity sha512-1+6sfRTeBQeTb5CCrxli19e7a1qIWnB4JO+V5mc724UgIrBpzV4tf0cysDgHcdX52bVPOLWYNLxyEnpj/G7IhA==
+"@cryptorubic/web3@0.11.0-alpha-gasless.11":
+  version "0.11.0-alpha-gasless.11"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.11.0-alpha-gasless.11.tgz#3f30e33aec61e666fb164d30003f598b712a7b06"
+  integrity sha512-D5w+mEDDSn5yqQEd2/WLMjBlSzJVn1dSFu46+BAHNnn0+Y4yT0qQ2zLOZoxDFjr3SW6ORdrl9hgObmJEc8QDDA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
