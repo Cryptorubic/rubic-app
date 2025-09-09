@@ -343,7 +343,6 @@ export class SwapsStateService {
         bValue = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
       }
 
-      console.log(a.trade.type, b.trade.type, aValue.toFixed(), bValue.toFixed());
       if (aValue.gt(bValue)) {
         return -1;
       } else if (bValue.gt(aValue)) {
