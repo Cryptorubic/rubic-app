@@ -126,6 +126,7 @@ export class RubicSdkErrorParser {
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 
+  // eslint-disable-next-line complexity
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
@@ -173,6 +174,14 @@ export class RubicSdkErrorParser {
 
     if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
       return new CrossChainSwapUnavailableWarning();
+    }
+
+    // Backpack wallet tx errors
+    if (
+      err.message.toLowerCase().includes('approval denied') ||
+      err.message.toLowerCase().includes('plugin closed')
+    ) {
+      return new UserRejectError();
     }
 
     return new ExecutionRevertedError(err.message);
