@@ -1,1 +1,1 @@
-export const SOLANA_SPONSOR = '4G7scocEJ7FuaGBm1C8MTBYXBFobYqr5pC5xqvKHGhbv';
+export const SOLANA_SPONSOR = 'CDv1EBL6hsQJ29myHEy1aZWxXjbc86LHkALY3gr1qKr';
