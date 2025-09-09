@@ -343,22 +343,15 @@ export class SwapsStateService {
         bValue = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
       }
 
-      // @TODO remove after lifi fix
-      if (!isThereTokenWithoutPrice) {
-        if (aValue.dp(2).eq(bValue.dp(2))) {
-          if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
-          if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
-        }
-      }
-
+      console.log(a.trade.type, b.trade.type, aValue.toFixed(), bValue.toFixed());
       if (aValue.gt(bValue)) {
         return -1;
       } else if (bValue.gt(aValue)) {
         return 1;
       } else {
         // @TODO remove after lifi fix
-        if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
-        if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
+        if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
+        if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
 
         return 0;
       }
