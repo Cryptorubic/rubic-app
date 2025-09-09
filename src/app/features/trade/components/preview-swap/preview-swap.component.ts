@@ -186,7 +186,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
       return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
     } else {
-      return tradeState instanceof CrossChainTrade ? '30 M' : '3 M';
+      return tradeState instanceof CrossChainTrade ? '30 M' : '1 M';
     }
   }
 

@@ -39,7 +39,7 @@ export class TradeInfoManager {
     const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
     return {
       ...provider,
-      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime | 5 // Default average time if not specified
+      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime || 1 // Default average time if not specified
     };
   }
 
