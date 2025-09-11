@@ -17,7 +17,7 @@ import {
   Token as SdkToken,
   Web3PublicService,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';

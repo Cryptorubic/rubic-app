@@ -1,6 +1,11 @@
-import { BlockchainName, OnChainTrade, OnChainTradeType, CrossChainTradeType } from 'rubic-sdk';
+import {
+  BlockchainName,
+  OnChainTrade,
+  OnChainTradeType,
+  CrossChainTradeType,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 export class TradeParser {
   public static getCrossChainSwapParams(trade: CrossChainTrade): {

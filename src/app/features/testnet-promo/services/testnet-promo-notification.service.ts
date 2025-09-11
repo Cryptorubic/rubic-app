@@ -2,8 +2,10 @@ import { TuiNotification } from '@taiga-ui/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { Subscription } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { UserRejectError } from 'rubic-sdk';
-import { InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError } from 'rubic-sdk/lib/common/errors/cross-chain/insufficient-funds-gas-price-value.error';
+import {
+  UserRejectError,
+  InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError
+} from '@cryptorubic/sdk';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()

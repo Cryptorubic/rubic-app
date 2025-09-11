@@ -1,4 +1,4 @@
-import { BlockchainName, BlockchainsInfo, Web3Pure } from 'rubic-sdk';
+import { BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
 import { AssetType } from '@features/trade/models/asset';
 

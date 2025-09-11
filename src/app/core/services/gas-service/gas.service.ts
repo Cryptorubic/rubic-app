@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, from, Observable, of } from 'rxjs';
 import { catchError, map, timeout } from 'rxjs/operators';
 import { PolygonGasResponse } from 'src/app/core/services/gas-service/models/polygon-gas-response';
-import { GasPrice, Injector, Web3Pure } from 'rubic-sdk';
+import { GasPrice, Injector, Web3Pure } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
 import { HttpClient } from '@angular/common/http';
 import { Cacheable } from 'ts-cacheable';

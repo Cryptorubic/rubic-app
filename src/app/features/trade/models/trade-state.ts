@@ -1,5 +1,5 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
-import { CrossChainTrade, OnChainTrade, RubicStep } from 'rubic-sdk';
+import { CrossChainTrade, OnChainTrade, RubicStep } from '@cryptorubic/sdk';
 import { CentralizationStatus } from '../constants/centralization-status';
 
 interface TradefullState {

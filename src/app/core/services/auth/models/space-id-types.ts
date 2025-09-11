@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 
 export const spaceIdDomains = {
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'bnb',

@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
 
 export const CHAINS_TO_LOAD_FIRSTLY = [
   BLOCKCHAIN_NAME.ETHEREUM,

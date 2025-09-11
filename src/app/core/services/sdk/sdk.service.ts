@@ -1,23 +1,22 @@
 import { Inject, Injectable } from '@angular/core';
-import {
-  CHAIN_TYPE,
-  Configuration,
-  CrossChainManager,
-  CrossChainStatusManager,
-  CrossChainSymbiosisManager,
-  DeflationTokenManager,
-  EnvType,
-  OnChainManager,
-  OnChainStatusManager,
-  SDK,
-  WalletProvider,
-  WalletProviderCore
-} from 'rubic-sdk';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 import { WINDOW } from '@ng-web-apis/common';
+import {
+  CrossChainSymbiosisManager,
+  OnChainManager,
+  DeflationTokenManager,
+  SDK,
+  CrossChainStatusManager,
+  CrossChainManager,
+  OnChainStatusManager,
+  Configuration,
+  EnvType
+} from '@cryptorubic/sdk';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
 
 @Injectable()
 export class SdkService {

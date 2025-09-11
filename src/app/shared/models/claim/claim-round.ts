@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { ClaimTokensData } from '@shared/models/claim/claim-tokens-data';
 import { ClaimName } from '@shared/services/claim-services/models/claim-name';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 
 export type ClaimStatus = 'closed' | 'soon' | 'active' | 'expired';
 

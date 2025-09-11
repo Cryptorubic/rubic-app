@@ -15,7 +15,7 @@ import {
   UnapprovedContractError,
   UnapprovedMethodError,
   Web3Pure
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';

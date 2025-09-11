@@ -30,15 +30,15 @@ import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import BigNumber from 'bignumber.js';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   EvmBlockchainName,
   TX_STATUS,
-  Web3PublicSupportedBlockchain
-} from 'rubic-sdk';
+  Web3PublicSupportedBlockchain,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';

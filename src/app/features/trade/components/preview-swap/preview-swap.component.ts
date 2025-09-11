@@ -8,6 +8,7 @@ import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
+  CrossChainTrade,
   CrossChainTradeType,
   EvmBlockchainName,
   EvmOnChainTrade,
@@ -15,12 +16,11 @@ import {
   nativeTokensList,
   ON_CHAIN_TRADE_TYPE,
   OnChainTrade
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -186,7 +186,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
       return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
     } else {
-      return tradeState instanceof CrossChainTrade ? '30 M' : '3 M';
+      return tradeState instanceof CrossChainTrade ? '30 M' : '1 M';
     }
   }
 

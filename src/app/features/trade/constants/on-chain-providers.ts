@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
@@ -299,7 +299,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   },
   [ON_CHAIN_TRADE_TYPE.JUPITER]: {
     name: 'Jupiter',
-    image: `${imageBasePath}jupiter.svg`,
+    image: `${imageBasePath}jupiter-solana.svg`,
     color: '#34A5F5'
   },
   [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: {
@@ -443,7 +443,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#15D9E1'
   },
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: {
-    name: 'OrcaSwap',
+    name: 'Orca',
     image: `${imageBasePath}orcaswap.svg`,
     color: '#F2C45B'
   },

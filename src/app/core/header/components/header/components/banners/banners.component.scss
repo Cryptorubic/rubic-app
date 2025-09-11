@@ -1,5 +1,12 @@
 @use 'src/scss/core' as *;
 
+
+:host::ng-deep {
+  tui-carousel fieldset {
+    padding: 0 !important;
+  }
+}
+
 .banner {
   @include flex(row, center, center);
   gap: 16px;
@@ -8,18 +15,17 @@
   max-height: 57px;
   overflow: hidden;
 
+  font-size: 18px;
+
   text-decoration: none;
 
-  background-image: url('/assets/banner/berachella.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 
   @include b($mobile-md) {
-    justify-content: left;
+    @include flex(row, center, space-between);
     padding: 0 20px;
-
-    background-image: url('/assets/banner/berachella-mob.jpg');
   }
 
   @include b(460) {
@@ -28,7 +34,6 @@
   }
 
   &__container {
-    font-weight: 700;
     @include hide-unused-ui {
       display: none;
     }
@@ -41,21 +46,13 @@
     };
   }
 
-  &__mobile-br {
-    display: none;
-  }
-
-  .banner__text {
-    color: #d67a0e;
-  }
-
   .banner__button {
     display: block;
-    padding: 5px 10px;
+    padding: 5px 20px;
 
-    font-weight: 500;
-    font-size: 15px;
-    text-decoration: none;
+    font-size: 18px;
+    text-align: center;
+    text-wrap: nowrap;
     text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 
     background: var(--tui-primary);
@@ -68,13 +65,11 @@
     @include b(321) {
       font-size: 12px;
     }
-  }
-}
 
-@include b(460) {
-  .banner {
-    &__mobile-br {
-      display: block;
+    &:hover {
+      transform: scale(1.1);
+
+      transition: all 0.1s;
     }
   }
 }

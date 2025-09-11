@@ -20,8 +20,9 @@ import {
   UnapprovedMethodError,
   TO_BACKEND_BLOCKCHAINS,
   TonOnChainTrade,
-  ON_CHAIN_TRADE_TYPE
-} from 'rubic-sdk';
+  ON_CHAIN_TRADE_TYPE,
+  Injector as SdkInjector
+} from '@cryptorubic/sdk';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -44,10 +45,11 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { QuoteOptionsInterface } from '@cryptorubic/core';
-import { Injector as SdkInjector } from 'rubic-sdk/lib/core/injector/injector';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { ErrorInterface, QuoteOptionsInterface } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -77,7 +79,8 @@ export class OnChainService {
     private readonly sessionStorage: SessionStorageService,
     private readonly proxyService: ProxyFeeService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -150,6 +153,15 @@ export class OnChainService {
 
     const preTradeId = await this.sendPreTradeInfo(trade);
 
+    const onWarning = (warnings: ErrorInterface[]) => {
+      warnings.forEach(warning => {
+        // Check for 50XX domain of errors - sponsorship errors
+        if (warning.code.toString().startsWith('50')) {
+          this.notificationsService.showSwapWarning(warning);
+        }
+      });
+    };
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -165,12 +177,18 @@ export class OnChainService {
 
         this.postTrade(hash, trade, preTradeId);
       },
+      onWarning,
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
-      ...(referrer && { referrer })
+      ...(referrer && { referrer }),
+      solanaSponsorParams: {
+        feePayer: SOLANA_SPONSOR,
+        // @ts-ignore trade api type
+        tradeId: trade.apiResponse.id
+      }
     };
 
     try {
@@ -228,11 +246,7 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(err instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 3
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
         const slippageErr = new LowSlippageError(0.03);
         throw slippageErr;
       }

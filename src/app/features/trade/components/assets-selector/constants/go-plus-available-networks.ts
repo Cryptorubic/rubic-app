@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
 
 export const GO_PLUS_AVAILABLE_NETWORKS: BlockchainName[] = [
   BLOCKCHAIN_NAME.ETHEREUM,

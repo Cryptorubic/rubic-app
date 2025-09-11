@@ -6,10 +6,10 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { Router } from '@angular/router';
 import { TokensService } from '@core/services/tokens/tokens.service';
-import { nativeTokensList } from 'rubic-sdk/lib/common/tokens/constants/native-tokens';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TuiDestroyService, tuiIsPresent } from '@taiga-ui/cdk';
+import { nativeTokensList } from '@cryptorubic/sdk';
 
 @Component({
   selector: 'app-approve-scanner-page',

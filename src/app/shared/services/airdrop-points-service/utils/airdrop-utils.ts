@@ -7,7 +7,7 @@ import {
   ProviderRewardData
 } from '../models/airdrop-api-types';
 import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
-import { CrossChainTradeType } from 'rubic-sdk';
+import { CrossChainTradeType } from '@cryptorubic/sdk';
 import {
   FROM_BACKEND_ON_CHAIN_PROVIDERS,
   FromBackendOnChainProvider,

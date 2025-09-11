@@ -1,5 +1,5 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from 'rubic-sdk';
+import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from '@cryptorubic/sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { fromEvent } from 'rxjs';

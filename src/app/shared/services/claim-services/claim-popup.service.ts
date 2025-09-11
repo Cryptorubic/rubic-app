@@ -3,7 +3,7 @@ import { TuiDialogService, TuiNotification } from '@taiga-ui/core';
 import {
   InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError,
   UserRejectError
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { NotificationsService } from '@core/services/notifications/notifications.service';

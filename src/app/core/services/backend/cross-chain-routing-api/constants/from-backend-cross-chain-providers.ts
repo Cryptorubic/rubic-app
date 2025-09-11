@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType } from '@cryptorubic/sdk';
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 
 export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
@@ -37,5 +37,6 @@ export const FROM_BACKEND_CROSS_CHAIN_PROVIDERS: Record<
   xflows: CROSS_CHAIN_TRADE_TYPE.XFLOWS,
   relay: CROSS_CHAIN_TRADE_TYPE.RELAY,
   orbiter_bridge_v2: CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2,
-  wormhole_mayan: CROSS_CHAIN_TRADE_TYPE.WORMHOLE
+  wormhole_mayan: CROSS_CHAIN_TRADE_TYPE.WORMHOLE,
+  exolix: CROSS_CHAIN_TRADE_TYPE.EXOLIX
 };

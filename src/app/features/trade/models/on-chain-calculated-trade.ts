@@ -1,4 +1,4 @@
-import { WrappedOnChainTradeOrNull } from 'rubic-sdk';
+import { WrappedOnChainTradeOrNull } from '@cryptorubic/sdk';
 
 export interface OnChainCalculatedTradeData {
   calculationTime: number;

@@ -1,4 +1,4 @@
-import { GasPrice } from 'rubic-sdk';
+import { GasPrice } from '@cryptorubic/sdk';
 
 export interface GasInfo {
   shouldCalculateGasPrice: boolean;

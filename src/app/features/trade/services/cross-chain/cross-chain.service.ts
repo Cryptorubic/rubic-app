@@ -14,15 +14,15 @@ import {
   UserRejectError,
   Web3Pure,
   Injector as SdkInjector,
-  EvmCrossChainTrade
-} from 'rubic-sdk';
+  EvmCrossChainTrade,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -49,11 +49,14 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
+  ErrorInterface,
   QuoteOptionsInterface,
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { ExecutionRevertedError } from '@app/core/errors/models/common/execution-reverted-error';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 
 @Injectable()
 export class CrossChainService {
@@ -84,7 +87,8 @@ export class CrossChainService {
     private readonly gasService: GasService,
     private readonly proxyService: ProxyFeeService,
     private readonly iframeService: IframeService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -221,6 +225,15 @@ export class CrossChainService {
       );
     };
 
+    const onWarning = (warnings: ErrorInterface[]) => {
+      warnings.forEach(warning => {
+        // Check for 50XX domain of errors - sponsorship errors
+        if (warning.code.toString().startsWith('50')) {
+          this.notificationsService.showSwapWarning(warning);
+        }
+      });
+    };
+
     const blockchain = trade.from.blockchain;
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
@@ -232,13 +245,18 @@ export class CrossChainService {
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
+      onWarning,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
       refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck
+      skipAmountCheck: params.skipAmountCheck,
+      solanaSponsorParams: {
+        feePayer: SOLANA_SPONSOR,
+        tradeId: trade.rubicId
+      }
     };
 
     try {
@@ -260,11 +278,7 @@ export class CrossChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (
-        parsedError instanceof ExecutionRevertedError &&
-        !(error instanceof UserRejectError) &&
-        trade.getTradeInfo().slippage < 5
-      ) {
+      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
         const slippageErr = new LowSlippageError(0.05);
         throw slippageErr;
       }

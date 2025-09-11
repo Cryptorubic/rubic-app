@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 
 export const supportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,

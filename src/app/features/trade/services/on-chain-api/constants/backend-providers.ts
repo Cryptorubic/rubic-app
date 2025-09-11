@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
 
 export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes
@@ -25,7 +25,6 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.ECHO_DEX]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.FINKUJIRA]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.JET_SWAP]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.JUPITER]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.KYBER_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.LUA_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.MAVERICK]: 'unknown',
@@ -36,7 +35,6 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.OKC_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ONE_MOON]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ONE_SOL]: 'unknown',
-  [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.OSMOSIS_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.PANCAKE_SWAP_V3]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.PARA_SWAP]: 'unknown',
@@ -84,6 +82,7 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.ZRX]: 'zerox',
   [ON_CHAIN_TRADE_TYPE.OOLONG_SWAP]: 'oolong',
   [ON_CHAIN_TRADE_TYPE.JUPITER_SWAP]: 'jupiter',
+  [ON_CHAIN_TRADE_TYPE.JUPITER]: 'jupiter_solana',
   [ON_CHAIN_TRADE_TYPE.PHOTON_SWAP]: 'photon',
   [ON_CHAIN_TRADE_TYPE.OMNIDEX]: 'omnidex',
   [ON_CHAIN_TRADE_TYPE.YUZU_SWAP]: 'yuzuswap',
@@ -155,7 +154,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   //[ON_CHAIN_TRADE_TYPE.UNISWAP_BAHAMUT]: 'uniswap_bahamut',
   [ON_CHAIN_TRADE_TYPE.KODIAK]: 'kodiak',
   [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: 'kyo_finance',
-  [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus'
+  [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus',
+  [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'orca'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PriceToken } from 'rubic-sdk';
+import { PriceToken } from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -42,6 +42,12 @@ export class ProxyFeeService {
     toToken: PriceToken
   ): Promise<string> {
     try {
+      if (
+        fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
+        toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
+      ) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
+      }
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
       const referral = this.sessionStorage.getItem('referral');
 

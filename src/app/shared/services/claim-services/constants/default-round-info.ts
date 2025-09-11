@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 import { DefaultRoundInfo } from '@shared/models/claim/claim-round';
 
 export const defaultRoundInfo: DefaultRoundInfo = {
