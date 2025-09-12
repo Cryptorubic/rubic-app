@@ -46,12 +46,12 @@ export class OnChainApiService {
     trade: OnChainTrade;
     txHash: string;
   }): Promise<void> {
-    const { fromAmount, toAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
+    const { fromAmount, fromSymbol, toSymbol, fromPrice, blockchain, type } =
       TradeParser.getItSwapParams(body.trade);
     const { txHash, walletAddress } = body;
     const req: InstantTradeBotRequest = {
       fromAmount: fromAmount.toNumber(),
-      toAmount: toAmount.toNumber(),
+      toAmount: body.trade.lastTo.tokenAmount.toNumber(),
       fromSymbol: fromSymbol,
       toSymbol: toSymbol,
       price: fromPrice,
@@ -74,33 +74,27 @@ export class OnChainApiService {
     trade: OnChainTrade,
     preTradeId?: string
   ): Observable<InstantTradesResponseApi> {
-    const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
-      TradeParser.getItSwapParams(trade);
+    const { blockchain, fromAddress, toAddress } = TradeParser.getItSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const swapId = this.sessionStorage.getItem('swapId');
-    const options = {
-      blockchain: blockchain,
-      fromAddress: fromAddress,
-      fromAmount: Web3Pure.toWei(fromAmount, fromDecimals),
-      toAddress: toAddress,
-      toAmount: Web3Pure.toWei(toAmount, toDecimals)
-    };
+    const slippage = trade.getTradeInfo().slippage / 100;
+
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[provider];
 
     const tradeInfo: OnChainTradeCreationToBackend = {
       price_impact: trade.getTradeInfo().priceImpact,
       walletName: this.walletConnectorService.provider.walletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop',
-      slippage: trade.slippageTolerance,
-      expected_amount: options.toAmount,
+      slippage,
+      expected_amount: trade.lastTo.stringWeiAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
-      to_amount_min: trade.toTokenAmountMin.stringWeiAmount,
-      network: TO_BACKEND_BLOCKCHAINS[options.blockchain],
+      to_amount_min: trade.lastTo.weiAmountMinusSlippage(slippage).toFixed(0),
+      network: TO_BACKEND_BLOCKCHAINS[blockchain],
       provider: backendProvider,
-      from_token: options.fromAddress,
-      to_token: options.toAddress,
-      from_amount: options.fromAmount,
-      to_amount: options.toAmount,
+      from_token: fromAddress,
+      to_token: toAddress,
+      from_amount: trade.from.stringWeiAmount,
+      to_amount: trade.lastTo.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       hash,
@@ -160,17 +154,18 @@ export class OnChainApiService {
   }
 
   public sendPreTradeInfo(trade: OnChainTrade): Promise<string> {
-    const { blockchain, fromAmount, fromAddress, fromDecimals, toAmount, toDecimals, toAddress } =
+    const { blockchain, fromAmount, fromAddress, fromDecimals, toAddress } =
       TradeParser.getItSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const backendProvider = TO_BACKEND_ON_CHAIN_PROVIDERS[trade.type];
+    const slippage = trade.getTradeInfo().slippage / 100;
 
     const preTradeInfo: Omit<OnChainTradeCreationToBackend, 'pretrade_id'> = {
       price_impact: trade.getTradeInfo().priceImpact,
       walletName: this.walletConnectorService.provider.walletName,
       deviceType: this.isMobile ? 'mobile' : 'desktop',
-      slippage: trade.slippageTolerance,
-      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      slippage,
+      expected_amount: trade.to.stringWeiAmount,
       mevbot_protection: this.settingsService.instantTradeValue.useMevBotProtection,
       to_amount_min: trade.toTokenAmountMin.stringWeiAmount,
       network: TO_BACKEND_BLOCKCHAINS[blockchain],
@@ -178,7 +173,7 @@ export class OnChainApiService {
       from_token: fromAddress,
       to_token: toAddress,
       from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
-      to_amount: Web3Pure.toWei(toAmount, toDecimals),
+      to_amount: trade.to.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       ...(referral && { referrer: referral })
