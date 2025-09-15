@@ -214,6 +214,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}defiswap.webp`,
     color: '#012C70'
   },
+  [ON_CHAIN_TRADE_TYPE.DFLOW]: {
+    name: 'DFlow',
+    image: `${imageBasePath}dflow.svg`,
+    color: '#ebab34'
+  },
   [ON_CHAIN_TRADE_TYPE.DFYN]: {
     name: 'Dfyn',
     image: `${imageBasePath}dfyn.svg`,
