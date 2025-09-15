@@ -1,7 +1,8 @@
+import { EnvType } from '@cryptorubic/sdk';
 import { STAKING_CONFIG_DEVELOP } from '../constants/staking';
 
 export interface Env {
-  environmentName: string;
+  environmentName: EnvType;
   production: boolean;
 
   apiBaseUrl: string;

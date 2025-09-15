@@ -17,6 +17,7 @@ import {
 } from '@cryptorubic/sdk';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class SdkService {
@@ -92,6 +93,7 @@ export class SdkService {
     };
 
     const envType = this.getEnvType();
+    console.log('%cENV_TYPE', 'color: aqua;', { ENVIRONMENT, envType });
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
@@ -113,19 +115,6 @@ export class SdkService {
   }
 
   private getEnvType(): EnvType | null {
-    const map: Record<string, string> = {
-      'dev-app.rubic.exchange': 'dev',
-      'dev2-app.rubic.exchange': 'dev2',
-      'dev3-app.rubic.exchange': 'dev3',
-      'stage-app.rubic.exchange': 'rubic',
-      'beta-app.rubic.exchange': 'rubic',
-      'app.rubic.exchange': 'rubic',
-      'local.rubic.exchange': 'local'
-    };
-
-    const host = this?.window?.location?.hostname;
-    const apiEnv = map?.[host] as EnvType | undefined;
-
-    return apiEnv || null;
+    return ENVIRONMENT.environmentName || null;
   }
 }

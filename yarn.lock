@@ -2335,18 +2335,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.0.tgz#b8e827ce23fd0dc65ad4dc42be4c5748e1231670"
-  integrity sha512-7uNr9LlRz9NZxmM4tlsButmiC3JCBT7xGn4BwVNouRupOntnt2DycLfOXqztOFg6ukgYV5txvN8zh7B+lzW6sg==
+"@cryptorubic/core@0.12.1-alpha.devs.2":
+  version "0.12.1-alpha.devs.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.1-alpha.devs.2.tgz#ce54506d1a04581f79e91e270cf8250b50092e2a"
+  integrity sha512-YkmzsG++f+mzp6fBgE1LOmT7MYeWQG+Smo2clQZ08q3XI1Ek2b5dzf6wr8HiEtdCnA/3SHxIsew8zI+IgPvrtw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.0.tgz#76af2304c33b8690de86803c92850af52af6793b"
-  integrity sha512-EqEjODSlCi/twajNoTF6TmjEuBLqWuPqOW5vVMidNCR9e7gVYG3MJP8JsmQ6RkG7ahuSh/X2bj4SWAtZRxPB2Q==
+"@cryptorubic/sdk@0.12.1-alpha.devs.2":
+  version "0.12.1-alpha.devs.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.1-alpha.devs.2.tgz#e4e190dc1fbe9c7e4de52b8059323ff90cfa08ec"
+  integrity sha512-PQ2yWBU7su32LASx8zGPhuS1Ae+vcZu9fJMw7OeUnI7Scl2kSFogUn0nfehhNDwXy07/vi6BJCEN0rt3EIow+g==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2374,10 +2374,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.12.0":
-  version "0.12.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.0.tgz#ae8b32919b1605d579fbb106d7fd075f98b70c96"
-  integrity sha512-0SUtuOznsS3rOdhU4HgZbNI4Hlxq4cdUvU0BbFY1uWhf14BnZFrlI4HuMQ2gzpihP0QDvbsgEf9N++XXutoRKA==
+"@cryptorubic/web3@0.12.1-alpha.devs.2":
+  version "0.12.1-alpha.devs.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.1-alpha.devs.2.tgz#90ed057fd5cbb9643dafd1102a8a1ea5f543ca09"
+  integrity sha512-CZ2bafZiDWEwfAJo+Rffn7OMwwzt0YKY4UwxwOyQSdZysLAIliOCMzAC/QqxD2N1bWsar38R/gh/e7YLshtynA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
