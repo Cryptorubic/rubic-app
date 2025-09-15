@@ -58,7 +58,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://x-api.rubic.exchange/drpc/fantom?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.ARBITRUM]: [
-    'https://arb1.arbitrum.io/rpc',
+    'https://arbitrum-one-rpc.publicnode.com',
     'https://rpc.ankr.com/arbitrum/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/arbitrum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
@@ -185,7 +185,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.BASE]: [
     'https://rpc.ankr.com/base/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://mainnet.base.org',
+    'https://base-public.nodies.app',
     'https://1rpc.io/base',
     'https://base.blockpi.network/v1/rpc/public',
     'https://base-mainnet.public.blastapi.io',
