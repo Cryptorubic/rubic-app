@@ -32,7 +32,11 @@
 
 .main-content {
   width: 100%;
-  padding: 0 20px 60px;
+  padding: 0 20px;
+
+  @include bh(800) {
+    padding: 0 20px 60px;
+  }
 
   @include hide-unused-ui {
     margin: 0;
@@ -50,21 +54,12 @@
   }
 }
 
-.footer-static {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  z-index: -1;
-
-  transform: translateX(-50%);
-}
-
 @include b($mobile-md) {
   .main-content {
     padding: 0 var(--tui-padding-l) 60px;
   }
 
-  .footer-static {
+  .footer {
     display: none;
   }
 }
