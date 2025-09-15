@@ -19,7 +19,7 @@ import { DestinationTxStatus } from '@features/history/models/destination-tx-sta
 import { FormControl } from '@angular/forms';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
 import { TableService } from '@features/history/models/table-service';
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@cryptorubic/core';
 
 @Injectable()
 export class CrossChainTableService extends TableService<
