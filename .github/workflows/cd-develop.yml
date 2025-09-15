@@ -12,6 +12,9 @@ on:
           - dev
           - dev2
           - dev3
+          - dev4
+          - dev5
+          - dev6
           - stage
           - beta
 
@@ -29,30 +32,38 @@ jobs:
           echo "USER=${{ secrets.DEV_USER }}" >> $GITHUB_ENV
           echo "PASS=${{ secrets.DEV_PASS }}" >> $GITHUB_ENV
 
-      - name: Set dev target path
-        if: ${{ inputs.env_id == 'dev' }}
+      - name: Set target path based on env_id
         run: |
-          echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
-
-      - name: Set dev2 target path
-        if: ${{ inputs.env_id == 'dev2' }}
-        run: |
-          echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
-
-      - name: Set dev3 target path
-        if: ${{ inputs.env_id == 'dev3' }}
-        run: |
-          echo "TARGET_PATH=${{ secrets.DEV3_TARGET_PATH }}" >> $GITHUB_ENV
-
-      - name: Set stage target path
-        if: ${{ inputs.env_id == 'stage' }}
-        run: |
-          echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
-
-      - name: Set stage target path
-        if: ${{ inputs.env_id == 'beta' }}
-        run: |
-          echo "TARGET_PATH=${{ secrets.BETA_TARGET_PATH }}" >> $GITHUB_ENV
+          case "${{ inputs.env_id }}" in
+            "dev")
+              echo "TARGET_PATH=${{ secrets.DEV_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "dev2")
+              echo "TARGET_PATH=${{ secrets.DEV2_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "dev3")
+              echo "TARGET_PATH=${{ secrets.DEV3_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "dev4")
+              echo "TARGET_PATH=${{ secrets.DEV4_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "dev5")
+              echo "TARGET_PATH=${{ secrets.DEV5_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "dev6")
+              echo "TARGET_PATH=${{ secrets.DEV6_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "stage")
+              echo "TARGET_PATH=${{ secrets.STAGE_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            "beta")
+              echo "TARGET_PATH=${{ secrets.BETA_TARGET_PATH }}" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "Unknown env_id: ${{ inputs.env_id }}"
+              exit 1
+              ;;
+          esac
 
       - name: Install sshpass
         run: |
@@ -75,7 +86,7 @@ jobs:
           restore-keys: npm-
 
       - name: Install dependencies
-        run: yarn --frozen-lockfile 
+        run: yarn --frozen-lockfile
 
       - name: Run build
         run: yarn run build:${{ inputs.env_id }}

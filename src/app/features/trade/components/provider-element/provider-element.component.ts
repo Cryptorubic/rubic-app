@@ -39,7 +39,7 @@ export class ProviderElementComponent {
     }
 
     const info = this.getProviderInfo(this.tradeState.tradeType);
-    const time = `${info?.averageTime || 3} M`;
+    const time = `${info?.averageTime || 1} M`;
 
     return time;
   }
