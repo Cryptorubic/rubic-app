@@ -33,14 +33,16 @@ export class SolanaGaslessService {
         this.pollingSub = this.pollGaslessTxCount(userAddress);
 
         this.solanaGaslessStateService.setGaslessTxCount24hrs(count);
-        this.solanaGaslessStateService.markInfoAsNotShown();
+        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
       });
   }
 
   public onSwapFormInputChanged(inputValue: SwapFormInput): void {
     const isSrcTokenSelected =
       inputValue.fromToken && inputValue.fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA;
+    const userAddress = this.walletConnectorService.address;
     if (
+      userAddress &&
       isSrcTokenSelected &&
       this.solanaGaslessStateService.madeLessThan5Txs &&
       this.solanaGaslessStateService.showInfo
