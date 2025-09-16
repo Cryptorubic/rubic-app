@@ -57,6 +57,7 @@ import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-er
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
+import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 
 @Injectable()
 export class CrossChainService {
@@ -88,7 +89,8 @@ export class CrossChainService {
     private readonly proxyService: ProxyFeeService,
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly solanaGaslessStateService: SolanaGaslessStateService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -263,6 +265,10 @@ export class CrossChainService {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA) {
+        this.handleGaslessSolanaAfterSwap(trade);
+      }
+
       return transactionHash;
     } catch (error) {
       if (
@@ -360,6 +366,13 @@ export class CrossChainService {
     }
     if (!this.platformConfigurationService.isAvailableBlockchain(toBlockchain)) {
       throw new BlockchainIsUnavailableWarning(blockchainLabel[toBlockchain]);
+    }
+  }
+
+  private handleGaslessSolanaAfterSwap(trade: CrossChainTrade): void {
+    const swapAmountUsd = trade.from.tokenAmount.multipliedBy(trade.from.price);
+    if (this.solanaGaslessStateService.madeLessThan5Txs && swapAmountUsd.gte(100)) {
+      this.solanaGaslessStateService.incrementGaslessTxCount24hrs();
     }
   }
 

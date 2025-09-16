@@ -30,8 +30,8 @@ export type TradeState = (TradefullState | TradelessState) & {
 
 export interface BadgeInfo {
   fromSdk: boolean;
-  bgColor?: string;
   showLabel: (trade: CrossChainTrade | OnChainTrade) => boolean;
+  getBgColor?: (trade: CrossChainTrade | OnChainTrade) => string;
   getLabel: (trade: CrossChainTrade | OnChainTrade) => string;
   getHint?: (trade: CrossChainTrade | OnChainTrade) => string;
   getUrl?: (trade: CrossChainTrade | OnChainTrade) => string;

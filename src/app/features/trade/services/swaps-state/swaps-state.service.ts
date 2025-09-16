@@ -496,17 +496,15 @@ export class SwapsStateService {
     const tradeSpecificBadges = allBadges
       .filter(Boolean)
       .filter(info => {
-        if (!info.showLabel(trade)) {
-          return false;
-        }
+        if (!info.showLabel(trade)) return false;
         return !!(
           !info.fromSdk ||
           (info.fromSdk && 'promotions' in trade && trade.promotions?.length)
         );
       })
       .map(info => ({
-        bgColor: info.bgColor,
         label: info.getLabel(trade),
+        bgColor: info?.getBgColor(trade),
         hint: info?.getHint?.(trade),
         href: info?.getUrl?.(trade)
       }));

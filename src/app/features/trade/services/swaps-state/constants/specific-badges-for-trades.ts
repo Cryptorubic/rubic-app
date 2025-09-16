@@ -20,9 +20,9 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
 > = {
   [CROSS_CHAIN_TRADE_TYPE.OWL_TO_BRIDGE]: [
     {
-      getUrl: () => 'https://owlto.finance/',
-      bgColor: INFO_COLOR,
       fromSdk: false,
+      getUrl: () => 'https://owlto.finance/',
+      getBgColor: () => INFO_COLOR,
       getLabel: () => '+Points!',
       getHint: () => 'Complete swap using Owlto and recieve Owlto points!',
       showLabel: () => true
@@ -30,9 +30,9 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   ],
   [ON_CHAIN_TRADE_TYPE.ODOS]: [
     {
-      getUrl: () => 'https://x.com/odosdao/status/1869962497694036358',
-      bgColor: '#FF510199',
       fromSdk: false,
+      getUrl: () => 'https://x.com/odosdao/status/1869962497694036358',
+      getBgColor: () => '#FF510199',
       getLabel: () => '+Points!',
       getHint: () => 'Complete swap using Odos and recieve Odos points!',
       showLabel: () => true
@@ -40,6 +40,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   ],
   [BRIDGE_TYPE.SYMBIOSIS]: [
     {
+      fromSdk: true,
       getUrl: (trade: CrossChainTrade | OnChainTrade) => {
         const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
         const [symbol] = symbolAmount.split('_');
@@ -51,7 +52,6 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
         }
         return '';
       },
-      fromSdk: true,
       getLabel: (trade: CrossChainTrade | OnChainTrade) => {
         const symbolAmount = trade instanceof CrossChainTrade ? trade.promotions?.[0] : null;
         const [symbol] = symbolAmount.split('_');
@@ -79,8 +79,8 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   ],
   [BRIDGE_TYPE.MESON]: [
     {
-      bgColor: INFO_COLOR,
       fromSdk: false,
+      getBgColor: () => INFO_COLOR,
       getLabel: () => 'INFO',
       getHint: () => `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
       If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
@@ -90,14 +90,14 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   ],
   [BRIDGE_TYPE.ARBITRUM]: [
     {
-      bgColor: POSITIVE_COLOR,
       fromSdk: false,
+      getBgColor: () => POSITIVE_COLOR,
       getLabel: () => 'NO SLIPPAGE',
       showLabel: showNoSlippageLabelArbitrumBridge
     },
     {
-      bgColor: WARNING_COLOR,
       fromSdk: false,
+      getBgColor: () => WARNING_COLOR,
       getLabel: () => 'ATTENTION',
       getHint: () => 'Waiting funds in target chain for 7 days',
       showLabel: showAttentionLabelArbitrumBridge
@@ -106,8 +106,8 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   [CROSS_CHAIN_TRADE_TYPE.WANCHAIN_BRIDGE]: [],
   [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE]: [
     {
-      bgColor: PINK_COLOR,
       fromSdk: false,
+      getBgColor: () => PINK_COLOR,
       getLabel: () => 'Reward',
       getUrl: () => 'https://www.orbiter.finance/quest/41',
       showLabel: showBerachainLabel
@@ -115,8 +115,8 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   ],
   [CROSS_CHAIN_TRADE_TYPE.ORBITER_BRIDGE_V2]: [
     {
-      bgColor: PINK_COLOR,
       fromSdk: false,
+      getBgColor: () => PINK_COLOR,
       getLabel: () => 'Reward',
       getUrl: () => 'https://www.orbiter.finance/quest/41',
       showLabel: showBerachainLabel
