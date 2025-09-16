@@ -51,6 +51,7 @@ import {
 } from '../../constants/centralization-status';
 import { RefundService } from '../refund-service/refund.service';
 import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -144,7 +145,8 @@ export class SwapsStateService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly solanaGaslessStateService: SolanaGaslessStateService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -504,7 +506,9 @@ export class SwapsStateService {
       })
       .map(info => ({
         label: info.getLabel(trade),
-        bgColor: info?.getBgColor(trade),
+        bgColor: info?.getBgColor(trade, {
+          solanaGaslessStateService: this.solanaGaslessStateService
+        }),
         hint: info?.getHint?.(trade),
         href: info?.getUrl?.(trade)
       }));

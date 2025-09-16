@@ -1,4 +1,4 @@
-import { BadgeInfo } from '@app/features/trade/models/trade-state';
+import { BadgeInfo, BadgeInfoServices } from '@app/features/trade/models/trade-state';
 import { BLOCKCHAIN_NAME, BlockchainName, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 import {
   showScrollMarksPromoLabel,
@@ -44,9 +44,10 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
   [BLOCKCHAIN_NAME.SOLANA]: [
     {
       fromSdk: false,
-      getBgColor: (trade: CrossChainTrade | OnChainTrade) => {
+      getBgColor: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => {
         const swapAmountUsd = trade.from.tokenAmount.multipliedBy(trade.from.price);
-        return swapAmountUsd.gte(100)
+        const madeLessThan5GaslessSwaps = services.solanaGaslessStateService.madeLessThan5Txs;
+        return swapAmountUsd.gte(100) && madeLessThan5GaslessSwaps
           ? 'linear-gradient(0deg, rgba(193,9,255,1) 6%, rgba(4,200,133,1) 100%)'
           : '#3B3D4E';
       },

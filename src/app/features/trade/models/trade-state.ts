@@ -1,6 +1,7 @@
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { CrossChainTrade, OnChainTrade, RubicStep } from '@cryptorubic/sdk';
 import { CentralizationStatus } from '../constants/centralization-status';
+import { SolanaGaslessStateService } from '../services/solana-gasless/solana-gasless-state.service';
 
 interface TradefullState {
   trade: WrappedSdkTrade['trade'];
@@ -31,12 +32,15 @@ export type TradeState = (TradefullState | TradelessState) & {
 export interface BadgeInfo {
   fromSdk: boolean;
   showLabel: (trade: CrossChainTrade | OnChainTrade) => boolean;
-  getBgColor?: (trade: CrossChainTrade | OnChainTrade) => string;
+  getBgColor?: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => string;
   getLabel: (trade: CrossChainTrade | OnChainTrade) => string;
   getHint?: (trade: CrossChainTrade | OnChainTrade) => string;
   getUrl?: (trade: CrossChainTrade | OnChainTrade) => string;
 }
 
+export interface BadgeInfoServices {
+  solanaGaslessStateService: SolanaGaslessStateService;
+}
 export interface BadgeInfoForComponent {
   label: string;
   bgColor?: string;
