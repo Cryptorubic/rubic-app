@@ -36,6 +36,7 @@ export class ProxyFeeService {
     private readonly sessionStorage: SessionStorageService
   ) {}
 
+  // eslint-disable-next-line complexity
   public async getIntegratorAddress(
     fromToken: PriceToken,
     fromAmount: BigNumber,
@@ -88,6 +89,16 @@ export class ProxyFeeService {
         if (isBeraSwap && percentAddress[feeValue] !== percentAddress.zeroFee) {
           return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
         }
+
+        // XRP ZERO FEE PROMO
+        if (
+          (fromToken.blockchain === BLOCKCHAIN_NAME.RIPPLE ||
+            toToken.blockchain === BLOCKCHAIN_NAME.RIPPLE) &&
+          percentAddress[feeValue] !== percentAddress.zeroFee
+        ) {
+          return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
+        }
+
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress[feeValue]);
       }
 
@@ -100,6 +111,15 @@ export class ProxyFeeService {
       // BERA SWAP, REMOVE AFTER PROMO
       if (isBeraSwap && percentAddress[suitableLimit.type] !== percentAddress.zeroFee) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.onePercent);
+      }
+
+      // XRP ZERO FEE PROMO
+      if (
+        (fromToken.blockchain === BLOCKCHAIN_NAME.RIPPLE ||
+          toToken.blockchain === BLOCKCHAIN_NAME.RIPPLE) &&
+        percentAddress[suitableLimit.type] !== percentAddress.zeroFee
+      ) {
+        return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
       return this.handlePromoIntegrator(fromToken, toToken, percentAddress[suitableLimit.type]);
