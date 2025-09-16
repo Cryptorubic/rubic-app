@@ -90,6 +90,30 @@
                 }
               ]
             },
+            "dev4": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev4.ts"
+                }
+              ]
+            },
+            "dev5": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev5.ts"
+                }
+              ]
+            },
+            "dev6": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev6.ts"
+                }
+              ]
+            },
             "prod-api": {
               "fileReplacements": [
                 {
@@ -173,6 +197,15 @@
             },
             "dev3": {
               "browserTarget": "rubic:build:dev3"
+            },
+            "dev4": {
+              "browserTarget": "rubic:build:dev4"
+            },
+            "dev5": {
+              "browserTarget": "rubic:build:dev5"
+            },
+            "dev6": {
+              "browserTarget": "rubic:build:dev6"
             },
             "prod-api": {
               "browserTarget": "rubic:build:prod-api"

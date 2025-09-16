@@ -75,6 +75,7 @@ import { AlternativeRouteElementComponent } from './components/alternative-route
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
+import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     FormHeaderComponent,
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
-    RefundAddressComponent
+    RefundAddressComponent,
+    CryptoRateChartComponent
   ],
   exports: [ActionButtonComponent],
   imports: [
