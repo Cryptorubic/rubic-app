@@ -41,6 +41,7 @@ export interface BadgeInfo {
 export interface BadgeInfoServices {
   solanaGaslessStateService: SolanaGaslessStateService;
 }
+
 export interface BadgeInfoForComponent {
   label: string;
   bgColor?: string;

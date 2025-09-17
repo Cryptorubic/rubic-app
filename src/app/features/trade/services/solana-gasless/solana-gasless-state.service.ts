@@ -19,8 +19,6 @@ export class SolanaGaslessStateService {
     return this._gaslessTxCount24hrs$.value;
   }
 
-  constructor() {}
-
   public markInfoAsShown(): void {
     this._showInfo$.next(false);
   }

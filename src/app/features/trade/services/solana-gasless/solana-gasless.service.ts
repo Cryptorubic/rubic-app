@@ -22,19 +22,7 @@ export class SolanaGaslessService {
     private readonly destroy$: TuiDestroyService,
     private readonly walletConnectorService: WalletConnectorService
   ) {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        switchMap(userAddress => this.fetchGaslessTxCount(userAddress)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(count => {
-        if (this.pollingSub) this.pollingSub.unsubscribe();
-        const userAddress = this.walletConnectorService.address;
-        this.pollingSub = this.pollGaslessTxCount(userAddress);
-
-        this.solanaGaslessStateService.setGaslessTxCount24hrs(count);
-        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
-      });
+    this.subscribeOnUserAddressChange();
   }
 
   public onSwapFormInputChanged(inputValue: SwapFormInput): void {
@@ -74,6 +62,22 @@ export class SolanaGaslessService {
       .catch(err => {
         console.log('[SolanaGaslessService_fetchGaslessTxCount] err ==>', err);
         return 0;
+      });
+  }
+
+  private subscribeOnUserAddressChange(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        switchMap(userAddress => this.fetchGaslessTxCount(userAddress)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(count => {
+        if (this.pollingSub) this.pollingSub.unsubscribe();
+        const userAddress = this.walletConnectorService.address;
+        this.pollingSub = this.pollGaslessTxCount(userAddress);
+
+        this.solanaGaslessStateService.setGaslessTxCount24hrs(count);
+        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
       });
   }
 }
