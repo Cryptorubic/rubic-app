@@ -3,18 +3,13 @@ import { SwapFormInput } from '../../models/swap-form-controls';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { SolanaGaslessStateService } from './solana-gasless-state.service';
 import { HttpService } from '@app/core/services/http/http.service';
-import { firstValueFrom, interval, Subscription, switchMap, takeUntil } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
-// refetch banners every 5 minutes
-const REFETCH_AFTER = 60 * 5 * 1_000;
-
 @Injectable()
 export class SolanaGaslessService {
-  private pollingSub: Subscription | null = null;
-
   constructor(
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
@@ -40,19 +35,13 @@ export class SolanaGaslessService {
     }
   }
 
-  public pollGaslessTxCount(userAddress: string): Subscription {
-    return interval(REFETCH_AFTER)
-      .pipe(
-        switchMap(() => this.fetchGaslessTxCount(userAddress)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(count => this.solanaGaslessStateService.setGaslessTxCount24hrs(count));
-  }
+  public async updateGaslessTxCount24Hrs(userAddress: string): Promise<void> {
+    if (!userAddress) {
+      this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
+      return;
+    }
 
-  private fetchGaslessTxCount(userAddress: string): Promise<number> {
-    if (!userAddress) return Promise.resolve(0);
-
-    return firstValueFrom(
+    const txCount24Hrs = await firstValueFrom(
       this.httpService.get<{ count: number }>(
         'v3/tmp/via_rubic_api_trades/get_user_solana_gasless_trades_for_last_24_hours',
         { user: userAddress }
@@ -63,21 +52,15 @@ export class SolanaGaslessService {
         console.log('[SolanaGaslessService_fetchGaslessTxCount] err ==>', err);
         return 0;
       });
+
+    this.solanaGaslessStateService.setGaslessTxCount24hrs(txCount24Hrs);
   }
 
   private subscribeOnUserAddressChange(): void {
-    this.walletConnectorService.addressChange$
-      .pipe(
-        switchMap(userAddress => this.fetchGaslessTxCount(userAddress)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(count => {
-        if (this.pollingSub) this.pollingSub.unsubscribe();
-        const userAddress = this.walletConnectorService.address;
-        this.pollingSub = this.pollGaslessTxCount(userAddress);
-
-        this.solanaGaslessStateService.setGaslessTxCount24hrs(count);
-        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
-      });
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      const userAddress = this.walletConnectorService.address;
+      this.updateGaslessTxCount24Hrs(userAddress);
+      if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
+    });
   }
 }

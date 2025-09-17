@@ -50,7 +50,7 @@ import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-er
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
+import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -82,7 +82,7 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly solanaGaslessService: SolanaGaslessService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -231,8 +231,11 @@ export class OnChainService {
         }
       }
 
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA) {
-        this.handleGaslessSolanaAfterSwap(trade);
+      const swapAmountUsd = trade.from.tokenAmount
+        .multipliedBy(trade.from.price)
+        .decimalPlaces(0, BigNumber.ROUND_DOWN);
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && swapAmountUsd.gte(100)) {
+        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
 
       return transactionHash;
@@ -348,13 +351,6 @@ export class OnChainService {
         'Transaction was not mined within 50 blocks, please make sure your transaction was properly sent. Be aware that it might still be mined!'
       )
     );
-  }
-
-  private handleGaslessSolanaAfterSwap(trade: OnChainTrade): void {
-    const swapAmountUsd = trade.from.tokenAmount.multipliedBy(trade.from.price);
-    if (this.solanaGaslessStateService.madeLessThan5Txs && swapAmountUsd.gte(100)) {
-      this.solanaGaslessStateService.incrementGaslessTxCount24hrs();
-    }
   }
 
   private async handlePreSwapModal(trade: OnChainTrade): Promise<void> {
