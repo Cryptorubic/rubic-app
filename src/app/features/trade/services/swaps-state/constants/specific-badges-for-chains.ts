@@ -6,6 +6,7 @@ import {
   showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
+import BigNumber from 'bignumber.js';
 
 export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInfo[]>> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [
