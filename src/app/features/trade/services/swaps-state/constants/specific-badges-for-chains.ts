@@ -45,7 +45,10 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
     {
       fromSdk: false,
       getBgColor: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => {
-        const swapAmountUsd = trade.from.tokenAmount.multipliedBy(trade.from.price);
+        const swapAmountUsd = trade.from.tokenAmount
+          .multipliedBy(trade.from.price)
+          .decimalPlaces(0, BigNumber.ROUND_DOWN);
+        console.log('%cswapAmountUsd ==>', 'color: aqua;', swapAmountUsd.toFixed());
         const madeLessThan5GaslessSwaps = services.solanaGaslessStateService.madeLessThan5Txs;
         return swapAmountUsd.gte(100) && madeLessThan5GaslessSwaps
           ? 'linear-gradient(0deg, rgba(193,9,255,1) 6%, rgba(4,200,133,1) 100%)'
