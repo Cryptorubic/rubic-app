@@ -6,7 +6,7 @@ import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom, takeUntil } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, CHAIN_TYPE } from '@cryptorubic/core';
 
 @Injectable()
 export class SolanaGaslessService {
@@ -59,8 +59,14 @@ export class SolanaGaslessService {
   private subscribeOnUserAddressChange(): void {
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       const userAddress = this.walletConnectorService.address;
-      this.updateGaslessTxCount24Hrs(userAddress);
+      const chainType = this.walletConnectorService.chainType;
+
       if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
+      if (chainType === CHAIN_TYPE.SOLANA) {
+        this.updateGaslessTxCount24Hrs(userAddress);
+      } else {
+        this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
+      }
     });
   }
 }
