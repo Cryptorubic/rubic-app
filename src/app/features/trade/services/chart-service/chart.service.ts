@@ -211,12 +211,16 @@ export class ChartService {
 
   // @FIX handle symbols USDC.e axelUSDC etc.
   private getChartSymbol(srcToken: { symbol: string }, dstToken: { symbol: string }): string {
+    const isSameSymbol = (): boolean => {
+      return srcToken.symbol.toLowerCase() === dstToken.symbol.toLowerCase();
+    };
     const contains = (substr: string, token: { symbol: string }): boolean => {
       return (
         token.symbol.toLowerCase().startsWith(substr) || token.symbol.toLowerCase().includes(substr)
       );
     };
 
+    if (isSameSymbol()) return `${srcToken.symbol}-${dstToken.symbol}`;
     if (contains('usdc', srcToken)) return `${dstToken.symbol}USDC`;
     if (contains('usdc', dstToken)) return `${srcToken.symbol}USDC`;
     if (contains('usdt', srcToken)) return `${dstToken.symbol}USDT`;
