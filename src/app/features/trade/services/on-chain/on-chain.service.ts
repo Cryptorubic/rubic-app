@@ -51,6 +51,7 @@ import { SimulationFailedError } from '@app/core/errors/models/common/simulation
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
+import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -231,10 +232,7 @@ export class OnChainService {
         }
       }
 
-      const swapAmountUsd = trade.from.tokenAmount
-        .multipliedBy(trade.from.price)
-        .decimalPlaces(0, BigNumber.ROUND_DOWN);
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && swapAmountUsd.gte(100)) {
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
 

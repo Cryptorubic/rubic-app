@@ -6,7 +6,7 @@ import {
   showTaikoPointsPromoLabel,
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
-import BigNumber from 'bignumber.js';
+import { checkAmountGte100Usd } from '../../solana-gasless/utils/solana-utils';
 
 export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInfo[]>> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [
@@ -46,12 +46,8 @@ export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInf
     {
       fromSdk: false,
       getBgColor: (trade: CrossChainTrade | OnChainTrade, services: BadgeInfoServices) => {
-        const swapAmountUsd = trade.from.tokenAmount
-          .multipliedBy(trade.from.price)
-          .decimalPlaces(0, BigNumber.ROUND_DOWN);
-        console.log('%cswapAmountUsd ==>', 'color: aqua;', swapAmountUsd.toFixed());
         const madeLessThan5GaslessSwaps = services.solanaGaslessStateService.madeLessThan5Txs;
-        return swapAmountUsd.gte(100) && madeLessThan5GaslessSwaps
+        return checkAmountGte100Usd(trade) && madeLessThan5GaslessSwaps
           ? 'linear-gradient(0deg, rgba(193,9,255,1) 6%, rgba(4,200,133,1) 100%)'
           : '#3B3D4E';
       },
