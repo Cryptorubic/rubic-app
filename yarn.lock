@@ -2335,18 +2335,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.11.3-alpha-squid-fix.0":
-  version "0.11.3-alpha-squid-fix.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.11.3-alpha-squid-fix.0.tgz#329e694723655f0c8f17cd09e2d3c499f55f0133"
-  integrity sha512-OU18hpfXhTR9ref/JZhFVGk3kOQ94PjdaMiLUgIkN0lJd94N3ECKo1Cch8mPTp/cAh9wSif0zix71OdfzEYGfQ==
+"@cryptorubic/core@0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.2.tgz#67c9787136dbe99c555f04064d55b84b781a25ba"
+  integrity sha512-Dt6jsv+OiMp42VLRT9td1muUU5S2AT7uPwYP8Gkivz3Dyf3w2q82AKajGQZkZDPOqNJjTDp6s6a+lsB1nz8RdQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
-
-"@cryptorubic/sdk@0.11.3-alpha-squid-fix.0":
-  version "0.11.3-alpha-squid-fix.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.11.3-alpha-squid-fix.0.tgz#21910d86b0138127fad9642e4b2da805b53625c7"
-  integrity sha512-/6i0s6yZ6HrcNufEZ6smKaHW2mlHh326+V0onrUVYhbPN2zhz2fNcdio5oWBINCal5Fn+HwcwYlYckyxSzfHPw==
+    
+"@cryptorubic/sdk@0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.2.tgz#22272f854d0ee26df9be95e38fe891f93d29e03c"
+  integrity sha512-b49Wi5zYAxtoAnivgZUqfB09RnrvFPiJVssgupAEjLUB6zOFZ9doUEYgNXZTjdeIrp1vOkSLJfa+wRQdebq0Zg==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2374,10 +2374,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.11.3-alpha-squid-fix.0":
-  version "0.11.3-alpha-squid-fix.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.11.3-alpha-squid-fix.0.tgz#cf885df4242811d30d7b644810aeb521cbf3a08b"
-  integrity sha512-g6TJsv/mPFGqzFz7rqVichevohxIppIvjdfiluL7tY7V/QxSq2bm1A1i5mdyt1N50W3ldn7Vh93Bi4V2un9FfQ==
+"@cryptorubic/web3@0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.2.tgz#152f8fdd9fc2b65ae545a1c23a69710f299483ec"
+  integrity sha512-it4HOkfsSrhzZ8EeuDx2aQnTM9mfmIvBX39xPkfVv73EtlvtTiHwbz4aTwbz5zzV4NTri1TUf4BEMhMT0H/4ZA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -19151,7 +19151,14 @@ strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   dependencies:
     ansi-regex "^5.0.1"
 
-strip-ansi@^7.0.1, strip-ansi@^7.1.0:
+strip-ansi@^7.0.1:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.1.0.tgz#d5b6568ca689d8561370b0707685d22434faff45"
+  integrity sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==
+  dependencies:
+    ansi-regex "^6.0.1"
+
+strip-ansi@^7.1.0:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.1.2.tgz#132875abde678c7ea8d691533f2e7e22bb744dba"
   integrity sha512-gmBGslpoQJtgnMAvOVqGZpEz9dyoKTCzy2nfz/n8aIFhN/jCE/rCmcxabB6jOOHV+0WNnylOxaxBQPSvcWklhA==

@@ -1,0 +1,13 @@
+<div
+  *ngLet="isMobile$ | async as mobile"
+  class="chart-toggler"
+  tuiHintAppearance="onDark"
+  [tuiHint]="mobile ? '' : tooltip"
+>
+  <div class="chart-toggler__icon" [inlineSVG]="icon" (click)="handleClick.emit()"></div>
+  <div class="chart-toggler__new"></div>
+</div>
+
+<ng-template #tooltip>
+  <span class="chart-toggler-tooltip">{{ showChart ? 'Close chart' : 'Open chart' }}</span>
+</ng-template>

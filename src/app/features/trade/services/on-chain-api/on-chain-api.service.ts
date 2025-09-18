@@ -16,7 +16,6 @@ import {
   UnapprovedMethodError,
   Web3Pure
 } from '@cryptorubic/sdk';
-import { TO_BACKEND_ON_CHAIN_PROVIDERS } from './constants/backend-providers';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
@@ -26,6 +25,7 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
+import { TO_BACKEND_ON_CHAIN_PROVIDERS } from '@cryptorubic/core';
 
 @Injectable()
 export class OnChainApiService {
