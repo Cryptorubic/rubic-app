@@ -57,16 +57,16 @@ export class SolanaGaslessService {
   }
 
   private subscribeOnUserAddressChange(): void {
-    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const userAddress = this.walletConnectorService.address;
-      const chainType = this.walletConnectorService.chainType;
-
-      if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
-      if (chainType === CHAIN_TYPE.SOLANA) {
-        this.updateGaslessTxCount24Hrs(userAddress);
-      } else {
-        this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
-      }
-    });
+    this.walletConnectorService.addressChange$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(userAddress => {
+        const chainType = this.walletConnectorService.chainType;
+        if (userAddress) this.solanaGaslessStateService.markInfoAsNotShown();
+        if (chainType === CHAIN_TYPE.SOLANA) {
+          this.updateGaslessTxCount24Hrs(userAddress);
+        } else {
+          this.solanaGaslessStateService.setGaslessTxCount24hrs(0);
+        }
+      });
   }
 }
