@@ -2335,18 +2335,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.2.tgz#67c9787136dbe99c555f04064d55b84b781a25ba"
-  integrity sha512-Dt6jsv+OiMp42VLRT9td1muUU5S2AT7uPwYP8Gkivz3Dyf3w2q82AKajGQZkZDPOqNJjTDp6s6a+lsB1nz8RdQ==
+"@cryptorubic/core@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.4.tgz#dcfd1917130ac87a533107e873db54c8eac2114f"
+  integrity sha512-ZF9vp4EaERgBOsEnSyDw3dVuUt2Ree/H7rGldCw/+7sa3SGnqcL9u+TLw9DTozy71F28HQRZLhRzCmQOfazWeg==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.2.tgz#22272f854d0ee26df9be95e38fe891f93d29e03c"
-  integrity sha512-b49Wi5zYAxtoAnivgZUqfB09RnrvFPiJVssgupAEjLUB6zOFZ9doUEYgNXZTjdeIrp1vOkSLJfa+wRQdebq0Zg==
+"@cryptorubic/sdk@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.4.tgz#54e2d1559b24f57478b34603d5c72b6146a8ed84"
+  integrity sha512-wvLRYAmLtvNZf4LxPkVdeLl5iMenORosYCFX2a56rBbYE+vVZlF2Y3I9JmwOk0UYjfTVMADLPk9m5oDBQY1Jqw==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2374,10 +2374,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.12.2":
-  version "0.12.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.2.tgz#152f8fdd9fc2b65ae545a1c23a69710f299483ec"
-  integrity sha512-it4HOkfsSrhzZ8EeuDx2aQnTM9mfmIvBX39xPkfVv73EtlvtTiHwbz4aTwbz5zzV4NTri1TUf4BEMhMT0H/4ZA==
+"@cryptorubic/web3@^0.12.4":
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.4.tgz#d7699ebc37f98bbd5a70dcdf66ad7f3537188bd3"
+  integrity sha512-O74Qex23X24Nr09eYfh5qzzgrFz0ZCT+UAvaJg1JVw0O0ACaZTwTml+ifQv0eqia5dJb9gMojZhEqc/ZpZgRiQ==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
