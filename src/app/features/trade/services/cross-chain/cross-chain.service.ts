@@ -151,6 +151,8 @@ export class CrossChainService {
         ...(queryDisabledTradeTypes || [])
       ])
     );
+    const preferredProvider = this.queryParamsService.preferredCrossChainProvider;
+
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
@@ -159,7 +161,8 @@ export class CrossChainService {
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: disabledProvidersFromApiAndQuery,
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      preferredProvider: preferredProvider
     };
 
     return options;

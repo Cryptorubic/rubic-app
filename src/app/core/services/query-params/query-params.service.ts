@@ -80,6 +80,10 @@ export class QueryParamsService {
 
   public hideBranding: boolean;
 
+  public preferredCrossChainProvider: CrossChainTradeType;
+
+  public preferredOnChainProvider: OnChainTradeType;
+
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly tokensNetworkStateService: TokensNetworkStateService,
@@ -125,6 +129,10 @@ export class QueryParamsService {
         whitelistOnChain.map(provider => provider.toLowerCase()),
         blacklistOnChain.map(provider => provider.toLowerCase())
       );
+    }
+
+    if (queryParams?.provider) {
+      this.handlePreferredProviders();
     }
 
     if (queryParams?.whitelistCrossChain || queryParams?.blacklistCrossChain) {
@@ -284,5 +292,23 @@ export class QueryParamsService {
     }
 
     return [];
+  }
+
+  private handlePreferredProviders(): void {
+    const urlParams = new URLSearchParams(this.window.location.search);
+    const provider = urlParams.get('provider');
+    const isOnChainProvider = Object.values(ON_CHAIN_TRADE_TYPE).includes(
+      provider as OnChainTradeType
+    );
+    if (isOnChainProvider) {
+      this.preferredOnChainProvider = provider as OnChainTradeType;
+      return;
+    }
+    const isCrossChainProvider = Object.values(CROSS_CHAIN_TRADE_TYPE).includes(
+      provider as CrossChainTradeType
+    );
+    if (isCrossChainProvider) {
+      this.preferredCrossChainProvider = provider as CrossChainTradeType;
+    }
   }
 }

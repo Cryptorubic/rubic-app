@@ -425,11 +425,13 @@ export class OnChainService {
       fromAmount,
       toSdkToken
     );
+    const preferredProvider = this.queryParamsService.preferredOnChainProvider;
 
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: [...disabledTradeTypes],
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      preferredProvider
     };
 
     return options;

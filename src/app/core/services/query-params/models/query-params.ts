@@ -43,6 +43,7 @@ interface AllQueryParams {
   swapId: string;
   useSafe: string;
   hideBranding: string;
+  provider: string; // Preferred provider
 }
 
 export type QueryParams = {
