@@ -83,4 +83,15 @@ export class NotificationsService {
       defaultAutoCloseTime: 0
     });
   }
+
+  public showSolanaGaslessInfo(): Subscription {
+    return this.show(this.translateService.instant('notifications.solanaGaslessContent'), {
+      label: this.translateService.instant('notifications.solanaGaslessTitle'),
+      status: 'success',
+      autoClose: 10_000,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
+  }
 }

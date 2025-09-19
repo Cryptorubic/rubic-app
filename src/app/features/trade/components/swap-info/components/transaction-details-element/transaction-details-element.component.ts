@@ -10,4 +10,6 @@ export class TransactionDetailsElementComponent {
   @Input() public title: string;
 
   @Input() public description: string;
+
+  @Input() public icon: string = 'assets/images/icons/hint.svg';
 }

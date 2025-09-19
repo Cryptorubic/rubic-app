@@ -33,5 +33,10 @@ export const transactionInfoText = {
     label: 'Minimum Received',
     description:
       'Minimum amount of tokens you will receive in target blockchain. Depends on slippage'
+  },
+  gaslessSolana: {
+    label: 'Gasless',
+    description:
+      'Gasless? Yep. On Solana, Rubic pays your gas fees for 5 swaps over $100 every day!'
   }
 } as const;
