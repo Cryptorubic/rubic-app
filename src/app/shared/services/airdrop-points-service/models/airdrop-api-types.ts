@@ -1,8 +1,8 @@
-import { ToBackendCrossChainProviders } from '@app/core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import {
   FromBackendOnChainProvider,
+  ToBackendCrossChainProviders,
   ToBackendOnChainProvider
-} from './../../../../features/trade/services/on-chain-api/constants/backend-providers';
+} from '@cryptorubic/core';
 import { BackendBlockchain, CrossChainTradeType } from '@cryptorubic/sdk';
 
 export type OnChainRewardResponse = {

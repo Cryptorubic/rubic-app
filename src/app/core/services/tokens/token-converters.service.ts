@@ -15,10 +15,6 @@ import { StorageToken } from './models/storage-token';
 export class TokenConvertersService {
   constructor() {}
 
-  /**
-   * from https://assets.rubic.exchange/assets/ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
-   * @returns ethereum-pow/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png
-   */
   public getTokenKeyInMap(t: Token | StorageToken): string {
     // show only one native token in selector for METIS
     if (

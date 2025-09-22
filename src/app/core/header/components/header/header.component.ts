@@ -52,6 +52,8 @@ export class HeaderComponent {
 
   public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 
+  public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }

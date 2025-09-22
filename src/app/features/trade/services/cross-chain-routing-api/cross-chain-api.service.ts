@@ -98,35 +98,28 @@ export class CrossChainApiService {
     trade: CrossChainTrade,
     preTradeId?: string
   ): Promise<void> {
-    const {
-      fromBlockchain,
-      toBlockchain,
-      fromAmount,
-      fromAddress,
-      fromDecimals,
-      toAmount,
-      toDecimals,
-      toAddress
-    } = TradeParser.getCrossChainSwapParams(trade);
+    const { fromBlockchain, toBlockchain, fromAddress, toAddress } =
+      TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
-    const slippage = trade.getTradeInfo().slippage;
-    const providerIds = Object.values(trade.uniqueInfo || {});
+    const slippage = trade.getTradeInfo().slippage / 100;
+    const { additionalData: _, ...ids } = trade.uniqueInfo || {};
+    const providerIds = Object.values(ids);
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
       slippage,
       wallet_name: this.walletConnectorService.provider.walletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
-      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      expected_amount: trade.lastTo.stringWeiAmount,
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
-      to_amount_min: Web3Pure.toWei(trade.toTokenAmountMin, toDecimals),
+      to_amount_min: trade.lastTo.weiAmountMinusSlippage(slippage).toFixed(0),
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
       provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],
       from_token: fromAddress,
       to_token: toAddress,
-      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
-      to_amount: Web3Pure.toWei(toAmount, toDecimals),
+      from_amount: trade.from.stringWeiAmount,
+      to_amount: trade.lastTo.stringWeiAmount,
       user: this.authService.userAddress,
       tx_hash: hash,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
@@ -160,19 +153,18 @@ export class CrossChainApiService {
       fromAmount,
       fromAddress,
       fromDecimals,
-      toAmount,
       toDecimals,
       toAddress
     } = TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
-    const slippage = trade.getTradeInfo().slippage;
+    const slippage = trade.getTradeInfo().slippage / 100;
 
     const preTradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
       slippage,
       wallet_name: this.walletConnectorService.provider.walletName,
       device_type: this.isMobile ? 'mobile' : 'desktop',
-      expected_amount: Web3Pure.toWei(toAmount, toDecimals),
+      expected_amount: trade.to.stringWeiAmount,
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
       to_amount_min: Web3Pure.toWei(trade.toTokenAmountMin, toDecimals),
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
@@ -181,7 +173,7 @@ export class CrossChainApiService {
       from_token: fromAddress,
       to_token: toAddress,
       from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
-      to_amount: Web3Pure.toWei(toAmount, toDecimals),
+      to_amount: trade.to.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,
       domain:
