@@ -63,6 +63,14 @@
             "namedChunks": true
           },
           "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
             "sdk": {
               "fileReplacements": [
                 {
@@ -188,6 +196,9 @@
           "configurations": {
             "production": {
               "browserTarget": "rubic:build:production"
+            },
+            "local": {
+              "browserTarget": "rubic:build:local"
             },
             "sdk": {
               "browserTarget": "rubic:build:sdk"
