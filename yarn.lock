@@ -2335,18 +2335,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.11.0-alpha-log.7":
-  version "0.11.0-alpha-log.7"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.11.0-alpha-log.7.tgz#37a36461fc5fdeb6a8e8ee5d9ef13779471bfb85"
-  integrity sha512-aeTAsy72sDP81mKG2yojN/LDr1EuhYtLgcZpyp8lYKeb7ELM3ofcQPFDcJX3fqewQQT5BXH/aDedMt8i/yaR8Q==
+"@cryptorubic/core@0.11.0-alpha-log.12":
+  version "0.11.0-alpha-log.12"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.11.0-alpha-log.12.tgz#f46b0cec7b57ea01320be42ebd436e80047afe21"
+  integrity sha512-XuZ1/LGaPPQsHgY3V5AYVI7EAsWoHytHFHirvhozMkz/i/dbPiYAvI/ezsFqej7tXH98z1TdCwekTIAb2N38+g==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.11.0-alpha-log.7":
-  version "0.11.0-alpha-log.7"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.11.0-alpha-log.7.tgz#52329723b9c32f0f3b4599bf2a5a38058dd8ec67"
-  integrity sha512-/XhYolSDg8ykkWDWIhzzyr74dZvu/bv+0S70VuYroiCnuzv0XiRdoK8HlWBt8pumkRA86FVYr67Cyw+KmQ6FNg==
+"@cryptorubic/sdk@0.11.0-alpha-log.12":
+  version "0.11.0-alpha-log.12"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.11.0-alpha-log.12.tgz#24f81279983ebe4a8c44d9dbae484787cfaa7627"
+  integrity sha512-pA6LuGOfEzQRvcrZGpwKkgMEve554xregbtMGP2mQfRs5Cnvn1rMBq16IleP9m4Hm7DU5AkwcHtivSwV+dRTAA==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2374,10 +2374,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.11.0-alpha-log.7":
-  version "0.11.0-alpha-log.7"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.11.0-alpha-log.7.tgz#4473eaf2ff13213c60772b094321019aa71c405e"
-  integrity sha512-US29BAFe4x5gKNv0G4bOGL/TYClmeAaBPUJGncCF7+DoH88TCSeIn8qhUIvWTD5CYdnmYU7l6AdT2S7YngEtlw==
+"@cryptorubic/web3@0.11.0-alpha-log.12":
+  version "0.11.0-alpha-log.12"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.11.0-alpha-log.12.tgz#2c3b3953cdec161d6e743d739b3fe9d7c45e6a1b"
+  integrity sha512-cr9+GEl0xCB8dDZ0atK4ZqMdmdgXrdX+SR2ONehrmQpWZUyl5lFEcfvfhMIxHUKSGs3va9Lfqxt2DpY3gSDGDw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"

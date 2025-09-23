@@ -129,7 +129,8 @@ export class CrossChainApiService {
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
       ...(providerIds.length && { provider_trade_id: providerIds[0] }),
-      ...(referral && { referrer: referral })
+      ...(referral && { referrer: referral }),
+      rubic_id: trade.rubicId
     };
 
     await firstValueFrom(
