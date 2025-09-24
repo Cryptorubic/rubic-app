@@ -36,20 +36,26 @@ export class ProxyFeeService {
     private readonly sessionStorage: SessionStorageService
   ) {}
 
+  // eslint-disable-next-line complexity
   public async getIntegratorAddress(
     fromToken: PriceToken,
     fromAmount: BigNumber,
     toToken: PriceToken
   ): Promise<string> {
     try {
+      const referral = this.sessionStorage.getItem('referral');
       if (
         fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
         toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
       ) {
+        if (referral) {
+          const referralIntegrator = await this.getIntegratorByReferralName(referral);
+
+          if (referralIntegrator) return referralIntegrator;
+        }
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
       const fromPriceAmount = fromToken.price.multipliedBy(fromAmount);
-      const referral = this.sessionStorage.getItem('referral');
 
       if (isWrapUnwrap(fromToken, toToken)) {
         return percentAddress.zeroFee;
