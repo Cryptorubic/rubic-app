@@ -48,8 +48,9 @@ export class ProxyFeeService {
         fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
         toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
       ) {
-        if (referral) {
-          const referralIntegrator = await this.getIntegratorByReferralName(referral);
+        const referrer = this.sessionStorage.getItem('referrer');
+        if (referrer) {
+          const referralIntegrator = await this.getIntegratorByReferralName(referrer);
 
           if (referralIntegrator) return referralIntegrator;
         }
