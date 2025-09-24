@@ -43,12 +43,11 @@ export class ProxyFeeService {
     toToken: PriceToken
   ): Promise<string> {
     try {
-      const referral = this.sessionStorage.getItem('referral');
+      const referrer = this.sessionStorage.getItem('referrer');
       if (
         fromToken.blockchain === BLOCKCHAIN_NAME.SOLANA ||
         toToken.blockchain === BLOCKCHAIN_NAME.SOLANA
       ) {
-        const referrer = this.sessionStorage.getItem('referrer');
         if (referrer) {
           const referralIntegrator = await this.getIntegratorByReferralName(referrer);
 
@@ -67,15 +66,15 @@ export class ProxyFeeService {
           toToken.blockchain === BLOCKCHAIN_NAME.BERACHAIN) &&
         fromPriceAmount.isFinite();
 
-      if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referral) {
+      if ((fromPriceAmount.lte(0) || !fromPriceAmount.isFinite()) && !referrer) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.default);
       }
       if (fromPriceAmount.lte(100) && fromPriceAmount.isFinite()) {
         return this.handlePromoIntegrator(fromToken, toToken, percentAddress.zeroFee);
       }
 
-      if (referral) {
-        const referralIntegrator = await this.getIntegratorByReferralName(referral);
+      if (referrer) {
+        const referralIntegrator = await this.getIntegratorByReferralName(referrer);
 
         if (referralIntegrator) return referralIntegrator;
       }
