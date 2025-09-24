@@ -22,35 +22,50 @@
     ></app-rubic-menu>
   </app-rubic-menu-toggler>
 
-  <button
-    class="swap-button"
-    tuiButton
-    appearance="secondary"
-    type="button"
-    size="m"
-    [pseudoActive]="
-      rootPath &&
-      ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||
-        (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)
-    "
-    (click)="navigateToSwaps()"
-    [ngStyle]="{ 'margin-right': useLargeIframe ? 'auto' : 'unset' }"
-  >
-    Swaps
-  </button>
+  <!--  <button-->
+  <!--    class="swap-button"-->
+  <!--    tuiButton-->
+  <!--    appearance="secondary"-->
+  <!--    type="button"-->
+  <!--    size="m"-->
+  <!--    [pseudoActive]="-->
+  <!--      rootPath &&-->
+  <!--      ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||-->
+  <!--        (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)-->
+  <!--    "-->
+  <!--    (click)="navigateToSwaps()"-->
+  <!--    [ngStyle]="{ 'margin-right': useLargeIframe ? 'auto' : 'unset' }"-->
+  <!--  >-->
+  <!--    Swaps-->
+  <!--  </button>-->
+
+  <!--  <button-->
+  <!--    *ngIf="!useLargeIframe && !isMobile"-->
+  <!--    class="testnets-button"-->
+  <!--    tuiButton-->
+  <!--    appearance="secondary"-->
+  <!--    type="button"-->
+  <!--    size="m"-->
+  <!--    (click)="navigateToTestnets()"-->
+  <!--  >-->
+  <!--    Testnets-->
+  <!--  </button>-->
 
   <button
     *ngIf="!useLargeIframe && !isMobile"
-    class="testnets-button"
+    class="birthday-button"
     tuiButton
     appearance="secondary"
     type="button"
     size="m"
-    (click)="navigateToTestnets()"
+    (click)="navigateToBirthdayPage()"
   >
-    Testnets
+    Birthday&nbsp;<img
+      class="active-lang"
+      src="./assets/images/birthday-five.png"
+      alt="Rubic turns 5!"
+    />
   </button>
-
   <!--  <button-->
   <!--    tuiButton-->
   <!--    appearance="secondary"-->
