@@ -4,6 +4,11 @@
   --tui-data-list-padding: 5px;
 }
 
+.birthday-five {
+  border: 1px solid var(--tui-base-04);
+  border-bottom: 0;
+}
+
 ::ng-deep {
   tui-accordion {
     tui-accordion-item {
