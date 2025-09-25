@@ -95,7 +95,8 @@ export class CrossChainService {
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
-    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
+      this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
       this.tokensService.getTokenPrice(fromToken, true),
       this.tokensService.getTokenPrice(toToken, true)
@@ -109,7 +110,11 @@ export class CrossChainService {
       price: toPrice
     });
 
-    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
+    const disabledProviders = this.getDisabledProviders(
+      disabledTradeTypes,
+      fromBlockchain,
+      toBlockchain
+    );
     const options = await this.getOptions(
       disabledProviders,
       fromSdkCompatibleToken,
@@ -429,7 +434,8 @@ export class CrossChainService {
 
   private getDisabledProviders(
     disabledTradesTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): CrossChainTradeType[] {
     const isNonEvmCNChain = (
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
@@ -444,7 +450,7 @@ export class CrossChainService {
     const referral = this.sessionStorage.getItem('referral');
 
     // @TODO remove after birthday promo
-    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       disabledProviders = [
         ...disabledProviders,
         CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
