@@ -100,7 +100,8 @@ export class OnChainApiService {
       hash,
       ...(preTradeId && { pretrade_id: preTradeId }),
       ...(referral && { referrer: referral }),
-      ...(swapId && { swap_id: swapId })
+      ...(swapId && { swap_id: swapId }),
+      rubic_id: trade.lastSwapResponse.quote.id
     };
 
     return this.httpService

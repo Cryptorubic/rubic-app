@@ -115,6 +115,9 @@ export class QueryParamsService {
     if (queryParams?.referral) {
       this.sessionStorage.setItem('referral', queryParams?.referral);
     }
+    if (queryParams?.referrer) {
+      this.sessionStorage.setItem('referrer', queryParams?.referrer);
+    }
 
     if (queryParams?.swapId) {
       this.sessionStorage.setItem('swapId', queryParams?.swapId);
