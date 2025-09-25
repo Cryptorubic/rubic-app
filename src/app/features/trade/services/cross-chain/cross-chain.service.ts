@@ -443,6 +443,17 @@ export class CrossChainService {
 
     const referral = this.sessionStorage.getItem('referral');
 
+    // @TODO remove after birthday promo
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      disabledProviders = [
+        ...disabledProviders,
+        CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+        CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+        CROSS_CHAIN_TRADE_TYPE.EXOLIX,
+        CROSS_CHAIN_TRADE_TYPE.CHANGENOW
+      ];
+    }
+
     if (referral) {
       const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
 
