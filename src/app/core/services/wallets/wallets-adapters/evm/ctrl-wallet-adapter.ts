@@ -49,7 +49,7 @@ export class CtrlWalletAdapter extends CommonWalletAdapter<BtcWallet> {
   private handleEvents(): void {
     this.wallet.on('chainChanged', async (chain: string) => await this.handleChainChanged(chain));
     // buggy listener, when you switch between accounts having bitcoin wallets,
-    // it doesn't see updated bitcoin address and returns ampty `accounts` object
+    // it doesn't see updated bitcoin address and returns empty `accounts` object
     this.wallet.on(
       'accountsChanged',
       async (accounts: string[]) => await this.handleAccountChanged(accounts)
