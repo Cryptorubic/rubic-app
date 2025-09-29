@@ -5706,21 +5706,21 @@
     teslabot "^1.3.0"
     zod "^3.21.4"
 
-"@tonconnect/isomorphic-eventsource@0.0.2":
+"@tonconnect/isomorphic-eventsource@0.0.2", "@tonconnect/isomorphic-eventsource@^0.0.2":
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/@tonconnect/isomorphic-eventsource/-/isomorphic-eventsource-0.0.2.tgz#e58c44cf9953e090f2c35da9a638946ddb614be5"
   integrity sha512-B4UoIjPi0QkvIzZH5fV3BQLWrqSYABdrzZQSI9sJA9aA+iC0ohOzFwVVGXanlxeDAy1bcvPbb29f6sVUk0UnnQ==
   dependencies:
     eventsource "^2.0.2"
 
-"@tonconnect/isomorphic-fetch@0.0.3":
+"@tonconnect/isomorphic-fetch@0.0.3", "@tonconnect/isomorphic-fetch@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@tonconnect/isomorphic-fetch/-/isomorphic-fetch-0.0.3.tgz#31978e04ddc4428eff532c23d20229ed5ddb6417"
   integrity sha512-jIg5nTrDwnite4fXao3dD83eCpTvInTjZon/rZZrIftIegh4XxyVb5G2mpMqXrVGk1e8SVXm3Kj5OtfMplQs0w==
   dependencies:
     node-fetch "^2.6.9"
 
-"@tonconnect/protocol@2.3.0":
+"@tonconnect/protocol@2.3.0", "@tonconnect/protocol@^2.3.0":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/protocol/-/protocol-2.3.0.tgz#3b1ab9a56185ad676f52889a5fb44a611cf7a059"
   integrity sha512-OxrmcXF/EsSdGeASP9VpTRojuMtTV87DKYFLRq4ZJvF/Hirfm2cgcxzzj2uksEGm5IIR010UWo6b38RuokNwFQ==
@@ -5737,7 +5737,27 @@
     "@tonconnect/isomorphic-fetch" "0.0.3"
     "@tonconnect/protocol" "2.3.0"
 
-"@tonconnect/ui@^*", "@tonconnect/ui@^2.0.5":
+"@tonconnect/sdk@3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.2.0.tgz#e560e2c0aa663870f248dd513aa85b7196d1e9a1"
+  integrity sha512-lh4bKpSdWDNtlKy2mv7uhdLLqnIoKRgRKbANRa/liQoPb8nDftQo6TbU1BYEmOAF32GbFn+9Sw9azPup4vfzxg==
+  dependencies:
+    "@tonconnect/isomorphic-eventsource" "^0.0.2"
+    "@tonconnect/isomorphic-fetch" "^0.0.3"
+    "@tonconnect/protocol" "^2.3.0"
+
+"@tonconnect/ui@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.2.0.tgz#4208223317399086dbae627dcbf4e1ee5dec914e"
+  integrity sha512-a6D1iOteOkHHbOfDNZDRrCT8cZOTImh1Qdloq57iUGdXiCCrxD9sLhZ5He1qksKSlvhEUJBS1UypYxcYr9/vdw==
+  dependencies:
+    "@tonconnect/sdk" "3.2.0"
+    classnames "^2.3.2"
+    csstype "^3.1.1"
+    deepmerge "^4.2.2"
+    ua-parser-js "^1.0.35"
+
+"@tonconnect/ui@^*":
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.3.0.tgz#5874a18f5f31b00430e7a9bdc353a08e312ccef4"
   integrity sha512-oRcfZHTt5WLXCpXMz0JWWg50Bkx0GiT9JodzT94XuqQdsuLHTUKc0pPqOgvCii98kMRmxhbVu5OiKJIJmdr/6A==
@@ -8844,7 +8864,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@^2.5.1:
+classnames@^2.3.2, classnames@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
   integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
@@ -9500,7 +9520,7 @@ cssstyle@^2.2.0, cssstyle@^2.3.0:
   dependencies:
     cssom "~0.3.6"
 
-csstype@^3.1.3:
+csstype@^3.1.1, csstype@^3.1.3:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.3.tgz#d80ff294d114fb0e6ac500fbf85b60137d7eff81"
   integrity sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==
@@ -9734,7 +9754,7 @@ deep-is@^0.1.3, deep-is@~0.1.3:
   resolved "https://registry.yarnpkg.com/deep-is/-/deep-is-0.1.4.tgz#a6f2dce612fadd2ef1f519b73551f17e85199831"
   integrity sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==
 
-deepmerge@^4.3.1:
+deepmerge@^4.2.2, deepmerge@^4.3.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
   integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==

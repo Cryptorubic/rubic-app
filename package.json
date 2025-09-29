@@ -86,7 +86,7 @@
     "@tinkoff/ng-polymorpheus": "4.1.0",
     "@ton/core": "^0.61.0",
     "@ton/crypto": "^3.2.0",
-    "@tonconnect/ui": "^2.0.5",
+    "@tonconnect/ui": "2.2.0",
     "@wallet-standard/app": "^1.1.0",
     "@wallet-standard/base": "^1.1.0",
     "@wallet-standard/features": "^1.1.0",
