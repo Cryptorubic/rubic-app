@@ -45,9 +45,13 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { QuoteOptionsInterface } from '@cryptorubic/core';
+import { ErrorInterface, QuoteOptionsInterface } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
+import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
+import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -77,7 +81,9 @@ export class OnChainService {
     private readonly sessionStorage: SessionStorageService,
     private readonly proxyService: ProxyFeeService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly notificationsService: NotificationsService,
+    private readonly solanaGaslessService: SolanaGaslessService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -150,6 +156,15 @@ export class OnChainService {
 
     const preTradeId = await this.sendPreTradeInfo(trade);
 
+    const onWarning = (warnings: ErrorInterface[]) => {
+      warnings.forEach(warning => {
+        // Check for 50XX domain of errors - sponsorship errors
+        if (warning.code.toString().startsWith('50')) {
+          this.notificationsService.showSwapWarning(warning);
+        }
+      });
+    };
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -165,12 +180,18 @@ export class OnChainService {
 
         this.postTrade(hash, trade, preTradeId);
       },
+      onWarning,
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
       useCacheData: params.useCacheData,
       // skipAmountCheck: params.skipAmountCheck,
-      ...(referrer && { referrer })
+      ...(referrer && { referrer }),
+      solanaSponsorParams: {
+        feePayer: SOLANA_SPONSOR,
+        // @ts-ignore trade api type
+        tradeId: trade.apiResponse.id
+      }
     };
 
     try {
@@ -185,7 +206,6 @@ export class OnChainService {
       await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (
-        trade instanceof OnChainTrade &&
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
         trade.type === ON_CHAIN_TRADE_TYPE.BRIDGERS
       ) {
@@ -210,6 +230,10 @@ export class OnChainService {
         if (txStatusData.status !== TX_STATUS.SUCCESS) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
         }
+      }
+
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
 
       return transactionHash;
@@ -401,11 +425,13 @@ export class OnChainService {
       fromAmount,
       toSdkToken
     );
+    const preferredProvider = this.queryParamsService.preferredOnChainProvider;
 
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: [...disabledTradeTypes],
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      preferredProvider
     };
 
     return options;

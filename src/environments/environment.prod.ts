@@ -2,7 +2,7 @@ import { STAKING_CONFIG_PROD } from './constants/staking';
 import { Env } from './models/env';
 
 export const ENVIRONMENT: Env = {
-  environmentName: 'prod',
+  environmentName: 'rubic',
   production: true,
 
   apiBaseUrl: '//api.rubic.exchange/api',

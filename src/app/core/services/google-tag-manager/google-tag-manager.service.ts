@@ -18,6 +18,7 @@ import {
   Web3Pure
 } from '@cryptorubic/sdk';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -84,6 +85,16 @@ export class GoogleTagManagerService {
   public fireClickOnBannerEvent(banner_type: string): void {
     this.angularGtmService.gtag('event', 'click_banner', {
       banner_type
+    });
+  }
+
+  /**
+   * Fires click on tokenIn/tokenOut rate chart.
+   */
+  public fireOpenChart(from: TokenAmount | null, to: TokenAmount | null): void {
+    this.angularGtmService.gtag('event', 'open_chart', {
+      input: from ? JSON.stringify({ blockchain: from.blockchain, symbol: from.symbol }) : null,
+      output: to ? JSON.stringify({ blockchain: to.blockchain, symbol: to.symbol }) : null
     });
   }
 

@@ -52,6 +52,8 @@ export class HeaderComponent {
 
   public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 
+  public readonly hideUnusedUI = this.queryParamsService.hideUnusedUI;
+
   public get noFrameLink(): string {
     return `${this.window.origin}${this.queryParamsService.noFrameLink}`;
   }
@@ -131,6 +133,10 @@ export class HeaderComponent {
 
   public navigateToTestnets(): void {
     this.window.open('https://testnet.rubic.exchange', '_blank');
+  }
+
+  public navigateToBirthdayPage(): void {
+    this.window.open('http://rubic.exchange/birthday5', '_blank');
   }
 
   public handleMenuButtonClick(): void {

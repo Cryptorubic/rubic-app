@@ -49,11 +49,16 @@ import {
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
+  ErrorInterface,
   QuoteOptionsInterface,
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
+import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
+import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
+import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 
 @Injectable()
 export class CrossChainService {
@@ -84,11 +89,14 @@ export class CrossChainService {
     private readonly gasService: GasService,
     private readonly proxyService: ProxyFeeService,
     private readonly iframeService: IframeService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly notificationsService: NotificationsService,
+    private readonly solanaGaslessService: SolanaGaslessService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
-    const { fromToken, toToken, fromAmount, fromBlockchain } = this.swapFormService.inputValue;
+    const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
+      this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
       this.tokensService.getTokenPrice(fromToken, true),
       this.tokensService.getTokenPrice(toToken, true)
@@ -102,7 +110,11 @@ export class CrossChainService {
       price: toPrice
     });
 
-    const disabledProviders = this.getDisabledProviders(disabledTradeTypes, fromBlockchain);
+    const disabledProviders = this.getDisabledProviders(
+      disabledTradeTypes,
+      fromBlockchain,
+      toBlockchain
+    );
     const options = await this.getOptions(
       disabledProviders,
       fromSdkCompatibleToken,
@@ -144,6 +156,8 @@ export class CrossChainService {
         ...(queryDisabledTradeTypes || [])
       ])
     );
+    const preferredProvider = this.queryParamsService.preferredCrossChainProvider;
+
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
@@ -152,7 +166,8 @@ export class CrossChainService {
     const options: QuoteOptionsInterface = {
       slippage: slippageTolerance,
       nativeBlacklist: disabledProvidersFromApiAndQuery,
-      integratorAddress: providerAddress
+      integratorAddress: providerAddress,
+      preferredProvider: preferredProvider
     };
 
     return options;
@@ -221,6 +236,15 @@ export class CrossChainService {
       );
     };
 
+    const onWarning = (warnings: ErrorInterface[]) => {
+      warnings.forEach(warning => {
+        // Check for 50XX domain of errors - sponsorship errors
+        if (warning.code.toString().startsWith('50')) {
+          this.notificationsService.showSwapWarning(warning);
+        }
+      });
+    };
+
     const blockchain = trade.from.blockchain;
 
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
@@ -232,19 +256,29 @@ export class CrossChainService {
     const receiverAddress = this.receiverAddress;
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
+      onWarning,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(referrer && { referrer }),
       refundAddress: this.refundService.refundAddress,
       useCacheData: params.useCacheData,
-      skipAmountCheck: params.skipAmountCheck
+      skipAmountCheck: params.skipAmountCheck,
+      solanaSponsorParams: {
+        feePayer: SOLANA_SPONSOR,
+        tradeId: trade.rubicId
+      }
     };
 
     try {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
+        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
+      }
+
       return transactionHash;
     } catch (error) {
       if (
@@ -400,7 +434,8 @@ export class CrossChainService {
 
   private getDisabledProviders(
     disabledTradesTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName
   ): CrossChainTradeType[] {
     const isNonEvmCNChain = (
       Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
@@ -413,6 +448,17 @@ export class CrossChainService {
     }
 
     const referral = this.sessionStorage.getItem('referral');
+
+    // @TODO remove after birthday promo
+    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
+      disabledProviders = [
+        ...disabledProviders,
+        CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+        CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+        CROSS_CHAIN_TRADE_TYPE.EXOLIX,
+        CROSS_CHAIN_TRADE_TYPE.CHANGENOW
+      ];
+    }
 
     if (referral) {
       const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());

@@ -14,6 +14,8 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { compareTokens } from '@shared/utils/utils';
 import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { RefundService } from '../../services/refund-service/refund.service';
+import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
+import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -81,7 +83,9 @@ export class SwapFormPageComponent {
     private readonly authService: AuthService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly swapsStateService: SwapsStateService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly solanaGaslessStateService: SolanaGaslessStateService
   ) {
     this.swapFormService.fromBlockchain$.subscribe(blockchain => {
       if (blockchain) {
@@ -95,6 +99,7 @@ export class SwapFormPageComponent {
     });
     this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
+      this.solanaGaslessService.onSwapFormInputChanged(inputValue);
     });
   }
 

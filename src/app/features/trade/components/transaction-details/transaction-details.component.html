@@ -68,4 +68,12 @@
       </button>
     </div>
   </app-transaction-details-element>
+
+  <app-transaction-details-element
+    *ngIf="state.trade?.from.blockchain === 'SOLANA'"
+    [title]="text.gaslessSolana.label"
+    [description]="text.gaslessSolana.description"
+  >
+    {{ gaslessTxCount24hrs }}/5 transactions today
+  </app-transaction-details-element>
 </div>
