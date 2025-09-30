@@ -14,7 +14,6 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
-  compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
   nativeTokensList,
@@ -50,7 +49,8 @@ import {
   hasCentralizationStatus
 } from '../../constants/centralization-status';
 import { RefundService } from '../refund-service/refund.service';
-import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
+import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 
 @Injectable()
@@ -349,8 +349,13 @@ export class SwapsStateService {
         return -1;
       } else if (bValue.gt(aValue)) {
         return 1;
+      } else {
+        // @TODO remove after lifi fix
+        if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
+        if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
+
+        return 0;
       }
-      return 0;
     });
   }
 
