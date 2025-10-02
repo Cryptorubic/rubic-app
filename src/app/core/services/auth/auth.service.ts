@@ -8,7 +8,6 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { compareAddresses } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ChainType } from '@cryptorubic/sdk';
-import { createWeb3Name } from '@web3-name-sdk/core';
 
 /**
  * Service that provides methods for working with authentication and user interaction.
@@ -17,8 +16,6 @@ import { createWeb3Name } from '@web3-name-sdk/core';
   providedIn: 'root'
 })
 export class AuthService {
-  private web3Name = createWeb3Name();
-
   private readonly _currentUser$ = new BehaviorSubject<UserInterface | undefined>(undefined);
 
   public readonly currentUser$ = this._currentUser$.asObservable();

@@ -82,7 +82,6 @@
     "@wallet-standard/features": "^1.1.0",
     "@walletconnect/ethereum-provider": "^2.13.3",
     "@walletconnect/modal": "^2.5.9",
-    "@web3-name-sdk/core": "^0.1.13",
     "bignumber.js": "9.1.2",
     "browserify-zlib": "^0.2.0",
     "bs58": "^6.0.0",
