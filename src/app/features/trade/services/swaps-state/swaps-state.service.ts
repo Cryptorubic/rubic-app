@@ -14,7 +14,6 @@ import {
 import {
   BlockchainName,
   BlockchainsInfo,
-  compareCrossChainTrades,
   CROSS_CHAIN_TRADE_TYPE,
   EvmWrapTrade,
   nativeTokensList,
@@ -50,7 +49,9 @@ import {
   hasCentralizationStatus
 } from '../../constants/centralization-status';
 import { RefundService } from '../refund-service/refund.service';
-import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
+import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
+import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
+import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -144,7 +145,8 @@ export class SwapsStateService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
-    private readonly refundService: RefundService
+    private readonly refundService: RefundService,
+    private readonly solanaGaslessStateService: SolanaGaslessStateService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -347,8 +349,13 @@ export class SwapsStateService {
         return -1;
       } else if (bValue.gt(aValue)) {
         return 1;
+      } else {
+        // @TODO remove after lifi fix
+        if (a.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return 1;
+        if (b.trade.type === ON_CHAIN_TRADE_TYPE.LIFI) return -1;
+
+        return 0;
       }
-      return 0;
     });
   }
 
@@ -496,17 +503,17 @@ export class SwapsStateService {
     const tradeSpecificBadges = allBadges
       .filter(Boolean)
       .filter(info => {
-        if (!info.showLabel(trade)) {
-          return false;
-        }
+        if (!info.showLabel(trade)) return false;
         return !!(
           !info.fromSdk ||
           (info.fromSdk && 'promotions' in trade && trade.promotions?.length)
         );
       })
       .map(info => ({
-        bgColor: info.bgColor,
         label: info.getLabel(trade),
+        bgColor: info?.getBgColor(trade, {
+          solanaGaslessStateService: this.solanaGaslessStateService
+        }),
         hint: info?.getHint?.(trade),
         href: info?.getUrl?.(trade)
       }));

@@ -9,7 +9,9 @@
     showSpindl: showSpindl$ | async,
     resetCarouselIndex: resetCarouselIndex$ | async,
     resetCarouselDuration: resetCarouselDuration$ | async,
-    showHypelab: showHypelab$ | async
+    showHypelab: showHypelab$ | async,
+    chartInfo: chartInfo$ | async,
+    mobile: mobile$ | async
   } as state"
 >
   <div
@@ -30,6 +32,27 @@
     ></app-swap-form-page>
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
+
+    <app-providers-list-general
+      *ngIf="
+        state.mobile &&
+        state.calculationStatus &&
+        state.calculationStatus.showSidebar &&
+        state.content === 'form' &&
+        !useLargeIframe
+      "
+      @inOutAnimation
+      [states]="state.providers"
+      [selectedTradeType]="selectedTradeType$ | async"
+      (selectTrade)="selectTrade($event)"
+      [calculationStatus]="state.calculationStatus"
+      [showCalculation]="true"
+    ></app-providers-list-general>
+
+    <div class="chart-container" [style.display]="state.chartInfo.status.opened ? 'block' : 'none'">
+      <app-crypto-rate-chart></app-crypto-rate-chart>
+    </div>
+
     <tui-carousel
       class="banner-carousel"
       [duration]="state.showHypelab ? state.resetCarouselDuration : 0"
@@ -47,6 +70,7 @@
 
   <app-providers-list-general
     *ngIf="
+      !state.mobile &&
       state.calculationStatus &&
       state.calculationStatus.showSidebar &&
       state.content === 'form' &&

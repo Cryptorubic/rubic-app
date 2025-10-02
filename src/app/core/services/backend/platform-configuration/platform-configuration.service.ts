@@ -3,11 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '../cross-chain-routing-api/constants/from-backend-cross-chain-providers';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
-import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { timeout } from 'rxjs/operators';
 import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -16,7 +14,9 @@ import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
-  FROM_BACKEND_BLOCKCHAINS
+  FROM_BACKEND_BLOCKCHAINS,
+  FROM_BACKEND_CROSS_CHAIN_PROVIDERS,
+  ToBackendCrossChainProviders
 } from '@cryptorubic/core';
 
 interface ProvidersConfiguration {

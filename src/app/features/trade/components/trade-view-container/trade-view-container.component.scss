@@ -1,5 +1,7 @@
 @use 'src/scss/core' as *;
 
+$mobile-width: 360px;
+
 :host {
   display: flex;
 
@@ -36,6 +38,8 @@
 
     position: relative;
 
+    gap: 10px;
+
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
@@ -47,7 +51,7 @@
     }
 
     &_small {
-      width: 360px;
+      width: $mobile-width;
     }
   }
 
@@ -59,13 +63,13 @@
 
   app-swap-form-page {
     width: 100%;
-    margin-bottom: 20px;
+    // margin-bottom: 10px;
   }
 
   app-preview-swap,
   app-cn-preview-swap {
     width: 100%;
-    margin-bottom: 20px;
+    // margin-bottom: 10px;
   }
 
   app-input-output-container:first-child {
@@ -75,7 +79,7 @@
 
   app-providers-list-general {
     display: block;
-    width: 360px;
+    width: $mobile-width;
     height: 510px;
 
     background: var(--secondary-background);
@@ -103,17 +107,26 @@
     margin: 0 auto;
 
     .form {
-      width: 360px;
+      width: $mobile-width;
       overflow: hidden;
     }
 
     app-providers-list-general {
-      width: 360px;
+      width: $mobile-width;
       height: auto;
+      margin-bottom: 10px;
       overflow: hidden;
 
       background: none;
       border-radius: 0;
+    }
+
+    .chart-container {
+      width: $mobile-width;
+      
+      app-crypto-rate-chart {
+        width: 100%;
+      }
     }
   }
 }
