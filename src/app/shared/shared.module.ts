@@ -57,7 +57,6 @@ import { WindowContainerComponent } from './components/window-container/window-c
 import { InputOutputContainerComponent } from './components/input-output-container/input-output-container.component';
 import { AmountTransputComponent } from './components/amount-transput/amount-transput.component';
 import { NoResultComponent } from './components/no-result/no-result.component';
-import { ClaimRoundRowComponent } from '@shared/components/claim-round-row/claim-round-row.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import { NoFrameDirective } from '@shared/directives/no-frame/no-frame.directive';
 import { RubicBadgeComponent } from './components/rubic-badge/rubic-badge.component';
@@ -98,7 +97,6 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
     RefreshButtonComponent,
     SuccessWithdrawModalComponent,
     ArbitrumBridgeWarningModalComponent,
-    ClaimRoundRowComponent,
     BigNumberFormatPipe,
     ScannerLinkPipe,
     ShortAddressPipe,
@@ -202,7 +200,6 @@ import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.compon
     InputOutputContainerComponent,
     AmountTransputComponent,
     NoResultComponent,
-    ClaimRoundRowComponent,
     RateChangedModalComponent,
     NoFrameDirective,
     RubicBadgeComponent,

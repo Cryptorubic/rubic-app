@@ -90,7 +90,6 @@
     "ethers": "5.8.0",
     "global": "^4.4.0",
     "immutable": "^4.1.0",
-    "merkletreejs": "^0.2.24",
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
