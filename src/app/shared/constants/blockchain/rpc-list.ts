@@ -239,6 +239,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.STARKNET]: [],
   [BLOCKCHAIN_NAME.SOLANA]: [
+    // 'https://mainnet.helius-rpc.com/?api-key=57811715-bc56-431e-a19e-7181ca73849c',
     'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://rpc.ankr.com/solana',
     'https://api.mainnet-beta.solana.com'

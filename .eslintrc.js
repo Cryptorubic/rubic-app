@@ -31,7 +31,8 @@ module.exports = {
             vars: 'all',
             args: 'all',
             ignoreRestSiblings: false,
-            argsIgnorePattern: '^_'
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_'
           }
         ],
         '@angular-eslint/no-output-on-prefix': 'off',

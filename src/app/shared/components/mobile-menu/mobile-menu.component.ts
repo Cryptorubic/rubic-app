@@ -26,7 +26,7 @@ export class MobileMenuComponent {
 
   public openModal(e: Event, modalName: ModalName): void {
     e.stopPropagation();
-    if (this.modalService.openedModal.name === modalName) return;
+    if (this.modalService?.openedModal && this.modalService.openedModal.name === modalName) return;
     this.hideLiveChat();
 
     switch (modalName) {

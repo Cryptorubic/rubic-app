@@ -41,6 +41,20 @@
   </ng-template>
 
   <ng-template #mobileMenu>
+    <div class="birthday-five">
+      <a
+        tuiButton
+        appearance="secondary"
+        type="button"
+        size="m"
+        [href]="'https://rubic.exchange/birthday5'"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <button class="data-list__option" (click)="handleButtonClick()">Birthday&nbsp;</button>
+        <img class="active-lang" src="./assets/images/birthday-five.png" alt="Rubic turns 5!" />
+      </a>
+    </div>
     <tui-accordion [closeOthers]="false" [rounded]="false">
       <tui-accordion-item
         *ngFor="let item of mobileNavigationList | keyvalue : keepOriginalOrder; index as i"

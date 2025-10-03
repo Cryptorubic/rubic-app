@@ -61,6 +61,7 @@ export abstract class StandardWalletAdapter<
 
     this.onNetworkChanges$.next(this.selectedChain);
     this.onAddressChanges$.next(this.selectedAddress);
+    // @ts-ignore
     this.handleEvents(standardWallet);
   }
 

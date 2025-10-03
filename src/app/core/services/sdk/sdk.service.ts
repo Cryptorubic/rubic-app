@@ -17,6 +17,7 @@ import {
 } from '@cryptorubic/sdk';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable()
 export class SdkService {
@@ -90,8 +91,8 @@ export class SdkService {
       crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
       onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
     };
-
     const envType = this.getEnvType();
+
     return {
       ...rubicSdkDefaultConfig,
       httpClient: new SdkHttpClient(this.angularHttpClient),
@@ -113,19 +114,6 @@ export class SdkService {
   }
 
   private getEnvType(): EnvType | null {
-    const map: Record<string, string> = {
-      'dev-app.rubic.exchange': 'dev',
-      'dev2-app.rubic.exchange': 'dev2',
-      'dev3-app.rubic.exchange': 'dev3',
-      'stage-app.rubic.exchange': 'rubic',
-      'beta-app.rubic.exchange': 'rubic',
-      'app.rubic.exchange': 'rubic',
-      'local.rubic.exchange': 'local'
-    };
-
-    const host = this?.window?.location?.hostname;
-    const apiEnv = map?.[host] as EnvType | undefined;
-
-    return apiEnv || null;
+    return ENVIRONMENT.environmentName || null;
   }
 }

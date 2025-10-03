@@ -40,9 +40,11 @@ interface AllQueryParams {
   crossChainIntegratorAddress: string;
   onChainIntegratorAddress: string;
   referral: string;
+  referrer: string;
   swapId: string;
   useSafe: string;
   hideBranding: string;
+  provider: string; // Preferred provider
 }
 
 export type QueryParams = {

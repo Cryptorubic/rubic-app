@@ -26,7 +26,9 @@ export class SolanaStandardAdapter
       : undefined;
   }
 
-  public async signTransaction(tx: Transaction): Promise<Transaction> {
+  public async signTransaction(
+    tx: Transaction | VersionedTransaction
+  ): Promise<Transaction | VersionedTransaction> {
     const account = this.wallet.accounts[0];
 
     const serialized = tx.serialize({
@@ -39,6 +41,10 @@ export class SolanaStandardAdapter
       account,
       chain: 'solana:mainnet'
     });
+
+    if ('version' in tx && tx.version === 0) {
+      return VersionedTransaction.deserialize(signed.signedTransaction);
+    }
 
     return Transaction.from(signed.signedTransaction);
   }

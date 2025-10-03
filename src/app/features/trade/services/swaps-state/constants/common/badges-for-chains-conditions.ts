@@ -1,4 +1,9 @@
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import {
+  BLOCKCHAIN_NAME,
+  CrossChainTrade,
+  OnChainTrade,
+  transferTradeSupportedProviders
+} from '@cryptorubic/sdk';
 
 export function showTaikoPointsPromoLabel(trade: CrossChainTrade): boolean {
   return (
@@ -19,4 +24,14 @@ export function showScrollMarksPromoLabel(trade: CrossChainTrade): boolean {
 
 export function showZkLinkPointsLabel(trade: OnChainTrade | CrossChainTrade): boolean {
   return trade.to.blockchain === BLOCKCHAIN_NAME.ZK_LINK;
+}
+
+export function showSolanaGaslessLabel(trade: OnChainTrade | CrossChainTrade): boolean {
+  const isTransferTrade = transferTradeSupportedProviders.some(
+    providerName => providerName === trade.type
+  );
+  if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && !isTransferTrade) {
+    return true;
+  }
+  return false;
 }
