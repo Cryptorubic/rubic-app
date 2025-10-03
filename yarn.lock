@@ -398,17 +398,6 @@
     async-mutex "^0.4.0"
     ethers "^5.1.0"
 
-"@arbitrum/sdk@^3.1.3":
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/@arbitrum/sdk/-/sdk-3.7.3.tgz#329f07bd1006c36abc138979406a5dc465a5370d"
-  integrity sha512-7nyPm7032+RyjfIFpJf7EKN6EQTtjEzGGemz6NgFzEFLmKj1q+QMRVj9yYKVjIM2lPMKh7Qv+DX6emsxy/5FdQ==
-  dependencies:
-    "@ethersproject/address" "^5.0.8"
-    "@ethersproject/bignumber" "^5.1.1"
-    "@ethersproject/bytes" "^5.0.8"
-    async-mutex "^0.4.0"
-    ethers "^5.1.0"
-
 "@argent/login@^0.1.0-beta.4":
   version "0.1.0-beta.4"
   resolved "https://registry.yarnpkg.com/@argent/login/-/login-0.1.0-beta.4.tgz#4225a7cee309b39f83c03bcd56070e25a2dabac1"
