@@ -27,6 +27,8 @@
     "build:dev6": "npm run build:base -- --configuration=dev6",
     "build:stage": "npm run build:base -- --configuration=stage",
     "build:analyze": "ng build --stats-json && webpack-bundle-analyzer dist/rubic/stats.json",
+    "build:analyze:sme": "npm run build && npm run analyze:sme",
+    "analyze:sme": "source-map-explorer dist/rubic/**/*.js --no-border-checks > bundle-analysis.html",
     "test": "ng test",
     "test:ci": "ng test --karma-config=src/karma-ci.conf.js --no-progress",
     "lint": "ng lint",
