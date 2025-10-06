@@ -18,7 +18,12 @@
   }
 }
 
-.testnets-button {
+.birthday-button {
+  --tui-secondary-hover: linear-gradient(90deg, rgba(193, 9, 255, 1) 6%, rgba(4, 200, 133, 1) 100%);
+}
+
+.testnets-button,
+.birthday-button {
   margin-right: auto;
 }
 

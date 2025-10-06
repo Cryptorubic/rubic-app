@@ -102,7 +102,8 @@ export class CrossChainApiService {
       TradeParser.getCrossChainSwapParams(trade);
     const referral = this.sessionStorage.getItem('referral');
     const slippage = trade.getTradeInfo().slippage / 100;
-    const providerIds = Object.values(trade.uniqueInfo || {});
+    const { additionalData: _, ...ids } = trade.uniqueInfo || {};
+    const providerIds = Object.values(ids);
 
     const tradeInfo = {
       price_impact: trade.getTradeInfo().priceImpact,
@@ -128,7 +129,8 @@ export class CrossChainApiService {
           : this.window.document.location.href,
       ...(preTradeId && { pretrade_id: preTradeId }),
       ...(providerIds.length && { provider_trade_id: providerIds[0] }),
-      ...(referral && { referrer: referral })
+      ...(referral && { referrer: referral }),
+      rubic_id: trade.rubicId
     };
 
     await firstValueFrom(

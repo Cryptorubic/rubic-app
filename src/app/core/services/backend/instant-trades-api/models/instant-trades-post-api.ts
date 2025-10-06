@@ -17,4 +17,5 @@ export interface OnChainTradeCreationToBackend {
   from_amount?: string;
   to_amount?: string;
   influencer?: string;
+  rubic_id?: string;
 }

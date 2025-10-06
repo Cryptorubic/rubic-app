@@ -76,6 +76,8 @@ import { AlternativeRoutesListComponent } from './components/alternative-routes-
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
 import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
+import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
+import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 
 @NgModule({
   declarations: [
@@ -182,7 +184,9 @@ import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-
     BlockchainsListService,
     FormsTogglerService,
     AlternativeRoutesService,
-    RefundService
+    RefundService,
+    SolanaGaslessService,
+    SolanaGaslessStateService
     // SettingsService,
     // RefreshService,
     // TradeService,
