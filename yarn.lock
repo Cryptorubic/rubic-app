@@ -2334,18 +2334,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.12.7-alpha.solana-fail.5":
-  version "0.12.7-alpha.solana-fail.5"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.7-alpha.solana-fail.5.tgz#65a1e8f7c92ba70b2affd6b619c0dce46ee0fb95"
-  integrity sha512-ujT8O9Bo5hmE/v+OSFHxN5W9eXb7SuHs9YtjKV2HQ0gCLWVXgTZgcZVH2vWiFt0ifx3/pfMc2Ap3wr7CsZKHXA==
+"@cryptorubic/core@0.12.7-alpha.solana-fail.6":
+  version "0.12.7-alpha.solana-fail.6"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.7-alpha.solana-fail.6.tgz#20e963b692c74e70295606a92c2715b6be951c95"
+  integrity sha512-PSmvl+8WjlG4rwPicYW0bg3UG2IOscxi6k4EGGkESiFTcOeKio3jpBPasyX8NNCr2nCl3raNsCXoIXrN96gc5w==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.12.7-alpha.solana-fail.5":
-  version "0.12.7-alpha.solana-fail.5"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.7-alpha.solana-fail.5.tgz#11583114b9970204d3e306c8c9697fd91ae7fb3e"
-  integrity sha512-bGP5i5Jq1yW9i3kFi78SSUWrPLeboBlEjFtRFWxsc/CWfLzl5GaXE4uoaTxNVzSSoAKShW7LWnXoKcWfs0N8FQ==
+"@cryptorubic/sdk@0.12.7-alpha.solana-fail.6":
+  version "0.12.7-alpha.solana-fail.6"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.7-alpha.solana-fail.6.tgz#0faddb3d4ee2f3b0cf201888df2ba816647bee0b"
+  integrity sha512-9k7lmuCnmf10NpBaLMhF7CjxNYu5Flf6omInvBwvE0KoWvyKMjuTh4sfSepze5wtyzmzt9UVf5+Tgxjm6x7pug==
   dependencies:
     "@arbitrum/sdk" "^2.0.0"
     "@ethersproject/abstract-provider" "^5.8.0"
@@ -2373,10 +2373,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.12.7-alpha.solana-fail.5":
-  version "0.12.7-alpha.solana-fail.5"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.7-alpha.solana-fail.5.tgz#fe4bfaf5dbc0c11da89b8b140d366af816bbd207"
-  integrity sha512-2cdi5XiSdc++4QUIm92CqSxsaLzwF+2spWJZ3bpXzx6v+sYI+tsix7R0KtjB3TrnjfBOsg1JINlZYL8tMJWKSA==
+"@cryptorubic/web3@0.12.7-alpha.solana-fail.6":
+  version "0.12.7-alpha.solana-fail.6"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.7-alpha.solana-fail.6.tgz#858fefe82b667577b8337845102412178c4321c5"
+  integrity sha512-tde8B0IYX2chwcJ+IMS88adEjc4RkFj/uviDos2FqxYW0uSU6lioeoVyTUxlQQ8Lyx/woYASmBhnQi34pBbBEw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
