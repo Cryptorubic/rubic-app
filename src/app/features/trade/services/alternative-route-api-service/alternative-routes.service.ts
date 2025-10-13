@@ -19,19 +19,19 @@ import {
   AlternativeTokenPairs
 } from './models/alternative-route';
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { compareAddresses, notNull } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TO_BACKEND_BLOCKCHAINS } from '@cryptorubic/sdk';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class AlternativeRoutesService {
   constructor(
     private readonly httpClient: HttpClient,
     private readonly swapFormService: SwapsFormService,
-    private readonly tokenStoreService: TokensStoreService
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   private readonly _alternativeRouteStatus$ = new BehaviorSubject<AlternativeRouteStatus>(
@@ -105,12 +105,12 @@ export class AlternativeRoutesService {
         const alternativeRoutes = currentRoutes
           .sort((a, b) => b.totalRank - a.totalRank)
           .map(route => {
-            const fromToken = this.tokenStoreService.tokens.find(
+            const fromToken = this.tokensFacade.tokens.find(
               token =>
                 compareAddresses(token.address, route.sourceTokenAddress) &&
                 TO_BACKEND_BLOCKCHAINS[token.blockchain] === route.sourceTokenNetwork.toLowerCase()
             );
-            const toToken = this.tokenStoreService.tokens.find(
+            const toToken = this.tokensFacade.tokens.find(
               token =>
                 compareAddresses(token.address, route.destinationTokenAddress) &&
                 TO_BACKEND_BLOCKCHAINS[token.blockchain] ===

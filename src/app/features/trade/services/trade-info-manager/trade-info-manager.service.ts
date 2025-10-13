@@ -10,23 +10,23 @@ import {
   Web3Pure,
   nativeTokensList
 } from '@cryptorubic/sdk';
-import { compareTokens } from '@app/shared/utils/utils';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
 import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class TradeInfoManager {
   constructor(
-    private readonly tokensStoreService: TokensStoreService,
-    private readonly platformConfigurationService: PlatformConfigurationService
+    private readonly platformConfigurationService: PlatformConfigurationService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public getFeeInfo(trade: CrossChainTrade | OnChainTrade): AppFeeInfo {
-    const nativeToken = this.tokensStoreService.getNativeToken(trade.from.blockchain);
+    const nativeBaseToken = nativeTokensList[trade.from.blockchain];
+    const nativeToken = this.tokensFacade.findTokenSync(nativeBaseToken);
     return {
       fee: trade.feeInfo,
       nativeToken: nativeToken
@@ -50,9 +50,7 @@ export class TradeInfoManager {
 
     const blockchain = trade.from.blockchain;
     const nativeToken = nativeTokensList[blockchain];
-    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
-      compareTokens(token, { blockchain, address: nativeToken.address })
-    ).price;
+    const nativeTokenPrice = this.tokensFacade.findTokenSync(nativeToken).price;
 
     if (estimatedGasInWei) {
       const estimatedGas = Web3Pure.fromWei(estimatedGasInWei, nativeToken.decimals);

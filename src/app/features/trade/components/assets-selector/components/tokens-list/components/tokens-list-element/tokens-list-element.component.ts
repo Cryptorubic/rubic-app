@@ -6,7 +6,6 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/token-security';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
@@ -21,6 +20,7 @@ import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 import { TokenFilter } from '../../../../models/token-filters';
 import { AssetType } from '@app/features/trade/models/asset';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -98,12 +98,9 @@ export class TokensListElementComponent {
     return TokenSecurityStatus.LOW_RISK;
   }
 
-  constructor(
-    private readonly tokensService: TokensService,
-    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
-  ) {}
+  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 }

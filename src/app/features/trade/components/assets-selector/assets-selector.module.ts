@@ -32,9 +32,7 @@ import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.
 import { AssetsSelectorService } from './services/assets-selector-service/assets-selector.service';
 import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
-import { FilterQueryService } from './services/filter-query-service/filter-query.service';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
-import { AssetsSearchQueryService } from './services/assets-search-query-service/assets-search-query.service';
 import { AssetsTypeAsideElementComponent } from './components/assets-type-aside-element/assets-type-aside-element.component';
 import { TokensListFiltersComponent } from './components/tokens-list/components/tokens-list-filters/tokens-list-filters.component';
 
@@ -79,12 +77,6 @@ import { TokensListFiltersComponent } from './components/tokens-list/components/
     TuiCarouselModule
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [
-    SearchQueryService,
-    FormsTogglerService,
-    AssetsSelectorService,
-    FilterQueryService,
-    AssetsSearchQueryService
-  ]
+  providers: [SearchQueryService, FormsTogglerService, AssetsSelectorService]
 })
 export class AssetsSelectorModule {}

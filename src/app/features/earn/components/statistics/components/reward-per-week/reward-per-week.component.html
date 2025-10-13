@@ -1,9 +1,0 @@
-<div class="element">
-  <div class="element__label">
-    {{ 'staking.overview.estYieldPerWeek' | translate }}
-  </div>
-  <div class="element__value" [class.tui-skeleton]="!value">
-    {{ value?.isFinite() ? (value | bigNumberFormat : 2) : '--.--' }}
-    <span *ngIf="value?.isFinite()">ETH</span>
-  </div>
-</div>

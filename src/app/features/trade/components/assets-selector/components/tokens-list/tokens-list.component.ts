@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Self, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, Self, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { distinctUntilChanged, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
@@ -10,13 +10,12 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
-import { BalanceLoadingStateService } from '@app/core/services/tokens/balance-loading-state.service';
 import { TokenFilter } from '../../models/token-filters';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
-import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
 import { AssetType } from '@app/features/trade/models/asset';
 import { SearchQueryService } from '../../services/search-query-service/search-query.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,11 +26,28 @@ import { SearchQueryService } from '../../services/search-query-service/search-q
   providers: [TuiDestroyService]
 })
 export class TokensListComponent {
+  @Input({ required: true }) type: 'from' | 'to';
+
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
     this.tokensListService.setListScrollSubject(scroll);
   }
 
-  public readonly tokensLoading$ = this.tokensUpdaterService.tokensLoading$;
+  public get tokensLoading$(): Observable<boolean> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).assetListType$.pipe(
+      switchMap(el => {
+        if (el === 'allChains') {
+          // return this.tokensFacade.isAllTokensLoading$;
+        }
+        // @TODO TOKENS
+        if (el === 'gainers' || el === 'losers' || el === 'trending') {
+          return of(false);
+        }
+        // if (el) {
+        //   return this.tokensFacade.tokens$(el);
+        // }
+      })
+    );
+  }
 
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
@@ -40,11 +56,13 @@ export class TokensListComponent {
   public readonly isMobile = this.headerStore.isMobile;
 
   public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
-    switchMap(() =>
-      this.balanceLoadingStateService.isBalanceLoading$({
-        assetType: this.assetsSelectorStateService.assetType,
-        tokenFilter: this.assetsSelectorStateService.tokenFilter
-      })
+    switchMap(
+      () => of(false)
+      // @TODO TOKENS BALANCES
+      // this.balanceLoadingStateService.isBalanceLoading$({
+      //   assetType: this.assetsSelectorStateService.assetType,
+      //   tokenFilter: this.assetsSelectorStateService.tokenFilter
+      // })
     )
   );
 
@@ -70,18 +88,15 @@ export class TokensListComponent {
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly searchQueryService: SearchQueryService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {
     this.assetsSelectorStateService.tokenFilter$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
         this.searchQueryService.setSearchQuery('');
-        this.tokensStoreService.startBalanceCalculating('allChains');
-        this.tokensUpdaterService.triggerUpdateTokens();
       });
   }
 

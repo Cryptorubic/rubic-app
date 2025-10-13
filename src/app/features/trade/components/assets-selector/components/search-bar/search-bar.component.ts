@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, Injector, Input } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
-import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
-import { BlockchainsListService } from '../../services/blockchains-list-service/blockchains-list.service';
-import { AssetsSearchQueryService } from '../../services/assets-search-query-service/assets-search-query.service';
 import { Observable } from 'rxjs';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 
 @Component({
   selector: 'app-search-bar',
@@ -19,6 +17,8 @@ export class SearchBarComponent {
 
   @Input({ required: true }) searchBarType: 'blockchains' | 'tokens';
 
+  @Input({ required: true }) type: 'from' | 'to';
+
   public isExpanded = false;
 
   public searchQuery$: Observable<string>;
@@ -27,23 +27,22 @@ export class SearchBarComponent {
 
   public readonly searchBarSize: TuiSizeS = this.headerStore.isMobile ? 'm' : 's';
 
-  ngOnInit(): void {
+  ngOnInit() {
+    const service = this.assetsSelectorFacade.getAssetsService(this.type);
     this.searchBarText =
       this.searchBarType === 'blockchains'
-        ? `Search among ${this.blockchainListService.availableBlockchains.length} Chains`
+        ? `Search among ${service.availableBlockchains.length} Chains`
         : 'modals.tokensListModal.searchPlaceholder';
 
     this.searchQuery$ =
       this.searchBarType === 'blockchains'
-        ? this.assetsSearchQueryService.assetsQuery$
-        : this.searchQueryService.query$;
+        ? this.assetsSelectorFacade.getAssetsService(this.type).assetTypeQuery$
+        : this.assetsSelectorFacade.getAssetsService(this.type).assetsQuery$;
   }
 
   constructor(
-    private readonly searchQueryService: SearchQueryService,
-    private readonly assetsSearchQueryService: AssetsSearchQueryService,
     private readonly headerStore: HeaderStore,
-    private readonly blockchainListService: BlockchainsListService
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {}
 
   /**
@@ -52,9 +51,9 @@ export class SearchBarComponent {
    */
   public onQueryChanges(model: string): void {
     if (this.searchBarType === 'tokens') {
-      this.searchQueryService.setSearchQuery(model);
+      this.assetsSelectorFacade.getAssetsService(this.type).assetsQuery = model;
     } else if (this.searchBarType === 'blockchains') {
-      this.assetsSearchQueryService.assetsQuery = model;
+      this.assetsSelectorFacade.getAssetsService(this.type).assetTypeQuery = model;
     }
   }
 

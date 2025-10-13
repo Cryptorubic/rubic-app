@@ -9,7 +9,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { ActionButtonLoadingStatus } from './model/types';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 const crossChainCols = ['from', 'to', 'date', 'statusFrom', 'statusTo', 'provider'] as const;
 
@@ -46,8 +46,7 @@ export class CrossChainDesktopTableComponent {
     private readonly crossChainTableSrvice: CrossChainTableService,
     private readonly commonTableService: CommonTableService,
     private readonly walletConnector: WalletConnectorService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly tokensService: TokensService
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public changeDirection(direction: 1 | -1): void {
@@ -105,7 +104,7 @@ export class CrossChainDesktopTableComponent {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 
   private startLoadingOnAction(item: CrossChainTableData): ActionButtonLoadingStatus {

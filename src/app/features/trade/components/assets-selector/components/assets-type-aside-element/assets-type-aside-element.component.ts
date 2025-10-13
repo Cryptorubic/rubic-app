@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 import { AssetType } from '@app/features/trade/models/asset';
-import { BlockchainsListService } from '../../services/blockchains-list-service/blockchains-list.service';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
+import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 
 @Component({
   selector: 'app-assets-type-aside-element',
@@ -17,6 +17,8 @@ export class AssetsTypeAsideElementComponent {
   @Input({ required: true }) selectedAssetType: AssetType;
 
   @Input({ required: true }) isMobile: boolean = false;
+
+  @Input({ required: true }) type: 'from' | 'to';
 
   private get isAllChains(): boolean {
     return this.blockchainItem.name === null;
@@ -34,18 +36,18 @@ export class AssetsTypeAsideElementComponent {
   }
 
   constructor(
-    private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly blockchainsListService: BlockchainsListService
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService,
+    private readonly assetsSelectorService: AssetsSelectorService
   ) {}
 
   public isItemDisabled(item: BlockchainItem): boolean {
     if (this.isAllChains) return false;
-    return this.blockchainsListService.isDisabled(item);
+    return this.assetsSelectorFacade.getAssetsService(this.type).isDisabled(item);
   }
 
   public getHintText(item: BlockchainItem): string | null {
     if (this.isAllChains) return 'Show tokens of all chains.';
-    return this.blockchainsListService.getHintText(item);
+    return this.assetsSelectorFacade.getAssetsService(this.type).getHintText(item);
   }
 
   public getBlockchainTag(item: BlockchainItem): string | null {

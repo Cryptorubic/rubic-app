@@ -9,10 +9,8 @@ import {
   Output,
   Self
 } from '@angular/core';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
 
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, takeUntil } from 'rxjs/operators';
@@ -23,6 +21,7 @@ import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -32,9 +31,7 @@ import { AssetsSelectorStateService } from '../../services/assets-selector-state
   providers: [AssetsSelectorServices, TuiDestroyService]
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
-  @Input() set type(type: 'from' | 'to') {
-    this.assetsSelectorService.initParameters({ formType: type });
-  }
+  @Input({ required: true }) type: 'from' | 'to';
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
@@ -47,15 +44,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
-    private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly tradePageService: TradePageService
+    private readonly tradePageService: TradePageService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnAssetsSelect();
   }
@@ -95,7 +91,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(selectedAsset => {
         if (isMinimalToken(selectedAsset)) {
-          this.tokensStoreService.addToken(selectedAsset);
+          this.tokensFacade.addToken(selectedAsset);
         }
         this.tokenSelect.emit(selectedAsset);
       });

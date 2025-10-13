@@ -14,13 +14,8 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TokensStoreService } from './core/services/tokens/tokens-store.service';
-import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
 import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
-import { TOKEN_FILTERS } from './features/trade/components/assets-selector/models/token-filters';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
-import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
-import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
 
 @Component({
@@ -46,11 +41,8 @@ export class AppComponent implements AfterViewInit {
     private readonly iframeService: IframeService,
     private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokensStoreService: TokensStoreService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tradePageService: TradePageService,
-    private readonly tokensNetworkService: TokensNetworkService,
     private readonly chartService: ChartService
   ) {
     this.printTimestamp();
@@ -58,36 +50,10 @@ export class AppComponent implements AfterViewInit {
 
     this.initApp();
     this.spindlService.initSpindlAds();
-    this.subscribeOnWalletChanges();
-    this.tokensNetworkService.setupSubscriptions();
   }
 
   ngAfterViewInit() {
     this.setupIframeSettings();
-  }
-
-  private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$.subscribe(userAddress => {
-      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
-
-      const allTokensAssetData: BalanceLoadingAssetData = {
-        assetType: 'allChains',
-        tokenFilter: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
-      };
-
-      // load ALL_CHAINS_ALL_TOKENS assets in background if token's selector closed
-      // and if ALL_CHAINS_ALL_TOKENS balances not loaded yet
-      if (
-        userAddress &&
-        this.tradePageService.formContent === 'form' &&
-        !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData)
-      ) {
-        this.tokensStoreService.startBalanceCalculating('allChains', {
-          allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
-        });
-      }
-    });
   }
 
   /**

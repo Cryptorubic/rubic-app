@@ -16,12 +16,11 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { AssetType } from '@features/trade/models/asset';
 import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -36,10 +35,9 @@ export class SwapFormQueryService {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -62,7 +60,7 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnQueryParams(): void {
-    this.tokensStoreService.tokens$
+    this.tokensFacade.tokens$
       .pipe(first(tuiIsPresent))
       .pipe(
         switchMap(tokens => {
@@ -174,7 +172,7 @@ export class SwapFormQueryService {
       switchMap(foundToken =>
         forkJoin([
           of(foundToken),
-          from(this.tokensService.getAndUpdateTokenBalance(foundToken)).pipe(
+          from(this.tokensFacade.getAndUpdateTokenBalance(foundToken)).pipe(
             catchError(() => of(new BigNumber(NaN)))
           )
         ])
@@ -196,7 +194,7 @@ export class SwapFormQueryService {
     );
 
     if (!similarTokens.size) {
-      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
+      return this.tokensFacade.fetchQueryTokens(symbol, chain).pipe(
         map(foundTokens => {
           if (foundTokens?.size) {
             const token =
@@ -207,7 +205,7 @@ export class SwapFormQueryService {
               return null;
             }
             const newToken = { ...token, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
+            this.tokensFacade.addToken(newToken);
             return newToken;
           }
           return null;
@@ -229,15 +227,15 @@ export class SwapFormQueryService {
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.fetchQueryTokens(address, chain).pipe(
+      : this.tokensFacade.fetchQueryTokens(address, chain).pipe(
           switchIif(
             backendTokens => Boolean(backendTokens?.size),
             backendTokens => of(backendTokens.first()),
-            () => this.tokensStoreService.addTokenByAddress(address, chain).pipe(first())
+            () => this.tokensFacade.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
             const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
+            this.tokensFacade.addToken(newToken);
             return newToken;
           })
         );

@@ -25,7 +25,6 @@ import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-bl
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
-import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
@@ -47,8 +46,7 @@ export class TokensApiService {
 
   constructor(
     private readonly httpService: HttpService,
-    private readonly authService: AuthService,
-    private readonly tokensNetworkStateService: TokensNetworkStateService
+    private readonly authService: AuthService
   ) {}
 
   /**
@@ -144,18 +142,19 @@ export class TokensApiService {
       this.httpService
         .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
         .pipe(
-          tap(networkTokens => {
-            if (networkTokens?.results) {
-              const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
-              const oldState = this.tokensNetworkStateService.tokensNetworkState;
-              this.tokensNetworkStateService.updateTokensNetworkState({
-                ...oldState,
-                [blockchain]: {
-                  page: options.page,
-                  maxPage: Math.ceil(networkTokens.count / options.pageSize)
-                }
-              });
-            }
+          tap(_networkTokens => {
+            // @TODO TOKENS
+            // if (networkTokens?.results) {
+            //   const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
+            //   const oldState = this.tokensNetworkStateService.tokensNetworkState;
+            //   this.tokensNetworkStateService.updateTokensNetworkState({
+            //     ...oldState,
+            //     [blockchain]: {
+            //       page: options.page,
+            //       maxPage: Math.ceil(networkTokens.count / options.pageSize)
+            //     }
+            //   });
+            // }
           }),
           catchError(() => {
             return of(null);
@@ -195,15 +194,16 @@ export class TokensApiService {
       .pipe(
         tap(networkTokens => {
           if (networkTokens?.results) {
-            blockchainsWithOnePage.forEach(blockchain => {
-              const oldState = this.tokensNetworkStateService.tokensNetworkState;
-              this.tokensNetworkStateService.updateTokensNetworkState({
-                ...oldState,
-                [blockchain]: {
-                  page: 1,
-                  maxPage: 1
-                }
-              });
+            blockchainsWithOnePage.forEach(_blockchain => {
+              // @TODO TOKENS
+              // const oldState = this.tokensNetworkStateService.tokensNetworkState;
+              // this.tokensNetworkStateService.updateTokensNetworkState({
+              //   ...oldState,
+              //   [blockchain]: {
+              //     page: 1,
+              //     maxPage: 1
+              //   }
+              // });
             });
           }
         }),

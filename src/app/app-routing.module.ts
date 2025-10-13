@@ -8,15 +8,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
-    path: ROUTE_PATH.STAKING,
-    loadChildren: () => import('./features/earn/staking.module').then(m => m.StakingModule)
-  },
-  {
-    path: ROUTE_PATH.REVOKE_APPROVAL,
-    loadChildren: () =>
-      import('./features/approve-scanner/approve-scanner.module').then(m => m.ApproveScannerModule)
-  },
-  {
     path: ROUTE_PATH.AIRDROP,
     loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
   },

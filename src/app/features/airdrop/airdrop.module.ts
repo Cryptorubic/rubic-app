@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@shared/shared.module';
-import { ApproveScannerService } from '@features/approve-scanner/services/approve-scanner.service';
 import { PointsContainerComponent } from './components/points-container/points-container.component';
 import {
   TuiButtonModule,
@@ -46,12 +45,6 @@ import { AirdropService } from '@features/airdrop/services/airdrop.service';
     TuiLoaderModule,
     TuiButtonModule
   ],
-  providers: [
-    ApproveScannerService,
-    ClaimPopupService,
-    ClaimWeb3Service,
-    AirdropApiService,
-    AirdropService
-  ]
+  providers: [ClaimPopupService, ClaimWeb3Service, AirdropApiService, AirdropService]
 })
 export class AirdropModule {}

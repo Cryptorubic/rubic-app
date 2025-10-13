@@ -27,7 +27,6 @@ import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchai
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
@@ -52,6 +51,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -71,7 +71,6 @@ export class OnChainService {
     private readonly swapFormService: SwapsFormService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly gasService: GasService,
-    private readonly tokensService: TokensService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -83,14 +82,15 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getTokenPrice(fromToken, true),
-      this.tokensService.getTokenPrice(toToken, true)
+      this.tokensFacade.getLatestPrice(fromToken),
+      this.tokensFacade.getLatestPrice(toToken)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -198,12 +198,12 @@ export class OnChainService {
       await trade.swap(options);
 
       const [fromToken, toToken] = await Promise.all([
-        this.tokensService.findToken(trade.from),
-        this.tokensService.findToken(trade.to)
+        this.tokensFacade.findToken(trade.from),
+        this.tokensFacade.findToken(trade.to)
       ]);
 
       await this.conditionalAwait(fromBlockchain);
-      await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
+      await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&

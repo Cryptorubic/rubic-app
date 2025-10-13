@@ -22,13 +22,11 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareAddresses } from '@shared/utils/utils';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -38,6 +36,7 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { AppGasData } from '../../models/provider-info';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -93,10 +92,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
     private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
@@ -296,6 +293,6 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 }

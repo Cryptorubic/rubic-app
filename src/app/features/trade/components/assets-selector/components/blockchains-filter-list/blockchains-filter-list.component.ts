@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
 import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-blockchains-filter-list',
   templateUrl: './blockchains-filter-list.component.html',
@@ -11,16 +12,20 @@ import { blockchainFilters, BlockchainFilters } from './models/BlockchainFilters
 export class BlockchainsFilterListComponent {
   public readonly BLOCKCHAIN_FILTERS = blockchainFilters;
 
-  public readonly currentFilter$ = this.filterQueryService.filterQuery$;
+  public get currentFilter$(): Observable<BlockchainFilters> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).filterQuery$;
+  }
 
   public readonly isMobile = this.headerStore.isMobile;
 
+  @Input({ required: true }) type: 'from' | 'to';
+
   constructor(
-    private readonly filterQueryService: FilterQueryService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {}
 
   public onSelectFilter(filter: BlockchainFilters): void {
-    this.filterQueryService.filterQuery = filter;
+    this.assetsSelectorFacade.getAssetsService(this.type).filterQuery = filter;
   }
 }

@@ -6,7 +6,6 @@ import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { FormType } from '@features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { ModalService } from '@core/modals/services/modal.service';
@@ -16,6 +15,7 @@ import { SwapsStateService } from '../../services/swaps-state/swaps-state.servic
 import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -77,7 +77,6 @@ export class SwapFormPageComponent {
     private readonly tradePageService: TradePageService,
     private readonly swapFormService: SwapsFormService,
     private readonly settingsService: SettingsService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly modalService: ModalService,
     private readonly authService: AuthService,
@@ -85,18 +84,9 @@ export class SwapFormPageComponent {
     private readonly swapsStateService: SwapsStateService,
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly solanaGaslessStateService: SolanaGaslessStateService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
-    this.swapFormService.fromBlockchain$.subscribe(blockchain => {
-      if (blockchain) {
-        this.tokensStoreService.startBalanceCalculating(blockchain);
-      }
-    });
-    this.swapFormService.toBlockchain$.subscribe(blockchain => {
-      if (blockchain) {
-        this.tokensStoreService.startBalanceCalculating(blockchain);
-      }
-    });
     this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
       this.solanaGaslessService.onSwapFormInputChanged(inputValue);
@@ -159,7 +149,7 @@ export class SwapFormPageComponent {
       .pipe(
         first(),
         tap(fromToken => {
-          const token = this.tokensStoreService.tokens.find(currentToken =>
+          const token = this.tokensFacade.tokens.find(currentToken =>
             compareTokens(fromToken, currentToken)
           );
 

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  BLOCKCHAIN_NAME,
   BlockchainName,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
@@ -20,7 +19,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
-import { TokensNetworkStateService } from '../tokens/tokens-network-state.service';
 
 @Injectable({
   providedIn: 'root'
@@ -86,7 +84,6 @@ export class QueryParamsService {
 
   constructor(
     private readonly headerStore: HeaderStore,
-    private readonly tokensNetworkStateService: TokensNetworkStateService,
     private readonly router: Router,
     private readonly translateService: TranslateService,
     private readonly iframeService: IframeService,
@@ -194,26 +191,7 @@ export class QueryParamsService {
     });
 
     this.setHideSelectionStatus(queryParams);
-    this.setAdditionalIframeTokens(queryParams);
     this.setLanguage(queryParams);
-  }
-
-  private setAdditionalIframeTokens(queryParams: QueryParams): void {
-    if (!this.iframeService.isIframe) {
-      return;
-    }
-
-    const tokensFilterKeys = Object.values(BLOCKCHAIN_NAME).map(el => el.toLowerCase());
-
-    const tokensQueryParams = Object.fromEntries(
-      Object.entries(queryParams).filter(([key]) =>
-        tokensFilterKeys.includes(key as BlockchainName)
-      )
-    );
-
-    if (Object.keys(tokensQueryParams).length !== 0) {
-      this.tokensNetworkStateService.setTokensRequestParameters(tokensQueryParams);
-    }
   }
 
   private setDisabledLifiBridges(disabledBridges: string[]): void {

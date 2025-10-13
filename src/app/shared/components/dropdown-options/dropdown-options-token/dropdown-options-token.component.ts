@@ -9,7 +9,6 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { WalletError } from '@app/core/errors/models/provider/wallet-error';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TokensListTypeService } from '@app/features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
 import {
@@ -28,6 +27,7 @@ import {
   EvmBlockchainName
 } from '@cryptorubic/sdk';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-dropdown-options-token',
@@ -55,11 +55,11 @@ export class DropdownOptionsTokenComponent {
   constructor(
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private cdr: ChangeDetectorRef,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly errorsService: ErrorsService,
     private readonly authService: AuthService,
     private readonly tokensListTypeService: TokensListTypeService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public get canBeAddedToFavorite(): boolean {
@@ -98,8 +98,8 @@ export class DropdownOptionsTokenComponent {
 
     this.loadingFavoriteToken = true;
     const request$ = this.token.favorite
-      ? this.tokensStoreService.removeFavoriteToken(this.token)
-      : this.tokensStoreService.addFavoriteToken(this.token);
+      ? this.tokensFacade.removeFavoriteToken(this.token)
+      : this.tokensFacade.addFavoriteToken(this.token);
 
     request$.subscribe({
       error: () => {

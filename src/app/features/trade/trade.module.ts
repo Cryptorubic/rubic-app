@@ -59,14 +59,12 @@ import { TargetNetworkAddressComponent } from '@features/trade/components/target
 import { TokensRateComponent } from '@features/trade/components/tokens-rate/tokens-rate.component';
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
-import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { MevBotComponent } from './components/mev-bot/mev-bot.component';
 import { PromotionBadgeComponent } from './components/provider-element/promotion-badge/promotion-badge.component';
 import { ActionButtonService } from '@features/trade/services/action-button-service/action-button.service';
 import { FormHeaderComponent } from './components/form-header/form-header.component';
 import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
 import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
-import { BlockchainsListService } from './components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { DepositService } from './services/deposit/deposit.service';
 import { DepositPreviewSwapComponent } from './components/deposit-preview-swap/deposit-preview-swap.component';
 import { DepositTradeInfoComponent } from './components/deposit-trade-info/deposit-trade-info.component';
@@ -176,12 +174,10 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     RefreshService,
     PreviewSwapService,
     OnChainApiService,
-    SwapTokensUpdaterService,
     DepositService,
     ActionButtonService,
     FormsTogglerService,
     TradeInfoManager,
-    BlockchainsListService,
     FormsTogglerService,
     AlternativeRoutesService,
     RefundService,

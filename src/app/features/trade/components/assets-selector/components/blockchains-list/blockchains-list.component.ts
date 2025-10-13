@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  Input,
+  OnDestroy,
+  Optional
+} from '@angular/core';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
@@ -13,6 +19,8 @@ import { HeaderStore } from '@app/core/header/services/header.store';
 import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { allChainsSelectorItem } from '../../constants/all-chains';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -21,7 +29,11 @@ import { allChainsSelectorItem } from '../../constants/all-chains';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlockchainsListComponent implements OnDestroy {
-  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$;
+  @Input({ required: true }) type: 'from' | 'to';
+
+  public get blockchainsToShow$(): Observable<AvailableBlockchain[]> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).blockchainsToShow$;
+  }
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -31,12 +43,12 @@ export class BlockchainsListComponent implements OnDestroy {
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { formType: FormType }>,
-    private readonly blockchainsListService: BlockchainsListService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
     public readonly formsTogglerService: FormsTogglerService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {}
 
   public get formType(): FormType {
@@ -52,11 +64,11 @@ export class BlockchainsListComponent implements OnDestroy {
   }
 
   public isDisabled(blockchain: AvailableBlockchain): boolean {
-    return this.blockchainsListService.isDisabled(blockchain);
+    return this.assetsSelectorFacade.getAssetsService(this.type).isDisabled(blockchain);
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
-    return this.blockchainsListService.getHintText(blockchain);
+    return this.assetsSelectorFacade.getAssetsService(this.type).getHintText(blockchain);
   }
 
   public closeBlockchainsList(): void {

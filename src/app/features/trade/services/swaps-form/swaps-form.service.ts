@@ -17,9 +17,9 @@ import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { compareAssets } from '@features/trade/utils/compare-assets';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class SwapsFormService {
@@ -72,7 +72,7 @@ export class SwapsFormService {
       const chainType = BlockchainsInfo.getChainType(blockchain);
       const address = Web3Pure[chainType].nativeTokenAddress;
 
-      return this.tokensService.findToken({ address, blockchain });
+      return this.tokensFacade.findToken({ address, blockchain });
     })
   );
 
@@ -147,9 +147,9 @@ export class SwapsFormService {
   }
 
   constructor(
-    private readonly tokensService: TokensService,
     @Inject(DOCUMENT) private document: Document,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnFormValueChange();
   }

@@ -2,7 +2,7 @@
   *ngLet="{ tokensToShow: tokensToShow$ | async, tokenFilter: tokenFilter$ | async } as state"
 >
   <div *ngIf="!isMobile" class="tokens-list__search-bar-container">
-    <app-search-bar [searchBarType]="'tokens'"></app-search-bar>
+    <app-search-bar [type]="type" [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
   </div>
 

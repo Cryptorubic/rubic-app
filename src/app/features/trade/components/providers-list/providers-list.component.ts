@@ -11,7 +11,6 @@ import { TradeState } from '@features/trade/models/trade-state';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
@@ -88,7 +87,6 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
     private readonly providerHintService: ProviderHintService
   ) {}
 }

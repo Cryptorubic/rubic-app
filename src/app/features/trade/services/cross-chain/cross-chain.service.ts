@@ -19,7 +19,6 @@ import {
 } from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 
@@ -59,6 +58,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class CrossChainService {
@@ -79,7 +79,6 @@ export class CrossChainService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     private readonly sessionStorage: SessionStorageService,
-    private readonly tokensService: TokensService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly dialogService: ModalService,
@@ -91,15 +90,16 @@ export class CrossChainService {
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getTokenPrice(fromToken, true),
-      this.tokensService.getTokenPrice(toToken, true)
+      this.tokensFacade.getLatestPrice(fromToken),
+      this.tokensFacade.getLatestPrice(toToken)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -214,8 +214,8 @@ export class CrossChainService {
     this.checkBlockchainsAvailable(trade);
 
     const [fromToken, toToken] = await Promise.all([
-      this.tokensService.findToken(trade.from),
-      this.tokensService.findToken(trade.to)
+      this.tokensFacade.findToken(trade.from),
+      this.tokensFacade.findToken(trade.to)
     ]);
     await this.handlePreSwapModal(trade);
 
@@ -273,7 +273,7 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
-      await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+      await this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);

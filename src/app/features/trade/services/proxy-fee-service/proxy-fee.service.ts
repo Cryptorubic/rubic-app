@@ -3,7 +3,6 @@ import { PriceToken } from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokenType } from '@features/trade/services/proxy-fee-service/models/token-type';
 import { FeeValue } from '@features/trade/services/proxy-fee-service/models/fee-value';
 import {
@@ -26,14 +25,15 @@ import { SessionStorageService } from '@app/core/services/session-storage/sessio
 import { percentAddress } from './const/fee-type-address-mapping';
 import { isWrapUnwrap } from '@app/shared/utils/is-wrap-unwrap';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {
   constructor(
     private readonly configService: PlatformConfigurationService,
-    private readonly tokensStore: TokensStoreService,
     private readonly httpService: HttpService,
-    private readonly sessionStorage: SessionStorageService
+    private readonly sessionStorage: SessionStorageService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   // eslint-disable-next-line complexity
@@ -174,7 +174,7 @@ export class ProxyFeeService {
   }
 
   private getTokenType(soughtToken: PriceToken): TokenType {
-    const token = this.tokensStore.tokens.find(
+    const token = this.tokensFacade.tokens.find(
       t => t.blockchain === soughtToken.blockchain && t.address === soughtToken.address
     );
     const backendType = token.type;
