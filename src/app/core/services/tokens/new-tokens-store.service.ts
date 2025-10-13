@@ -10,7 +10,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
   providedIn: 'root'
 })
 export class NewTokensStoreService {
-  tokens: TokensState;
+  public readonly tokens = this.createTokenStore();
 
   // gainers: UtilityState;
   //
@@ -20,9 +20,7 @@ export class NewTokensStoreService {
   //
   // popular: UtilityState;
 
-  constructor() {
-    this.tokens = this.createTokenStore();
-  }
+  constructor() {}
 
   public addBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
     const currentTokens = this.tokens[blockchain]._tokens$;
@@ -56,14 +54,14 @@ export class NewTokensStoreService {
       acc[blockchain] = {
         _loading$: loadingSubject$,
         loading$: loadingSubject$.asObservable(),
+
         _tokens$: tokensSubject$,
-        tokens$: tokensSubject$.asObservable()
+        tokens$: tokensSubject$.asObservable(),
+
+        totalTokens: null,
+        page: 1
       };
       return acc;
     }, {} as unknown as TokensState);
-  }
-
-  public findToken(blockchain: BlockchainName, address: string): TokenAmount | undefined {
-    return this.tokens[blockchain]._tokens$.value[address];
   }
 }

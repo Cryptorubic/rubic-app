@@ -16,6 +16,9 @@ export type TokensState = Record<
 
     readonly _tokens$: BehaviorSubject<Record<string, TokenAmount>>;
     readonly tokens$: Observable<Record<string, TokenAmount>>;
+
+    totalTokens: number | null;
+    page: number;
   }
 >;
 

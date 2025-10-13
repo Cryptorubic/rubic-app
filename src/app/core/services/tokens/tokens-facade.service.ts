@@ -42,6 +42,8 @@ export class TokensFacadeService {
 
   public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
 
+  public readonly blockchainTokens = this.tokensStore.tokens;
+
   /**
    * Current tokens list.
    */
