@@ -55,7 +55,10 @@ export class SdkLoaderService {
           const provider = this.walletConnectorService.provider;
           const chainTypeMap = {
             [CHAIN_TYPE.TRON]: provider.wallet?.tronWeb,
-            [CHAIN_TYPE.EVM]: createWalletClient({ transport: custom(provider.wallet) }),
+            [CHAIN_TYPE.EVM]:
+              'request' in provider.wallet
+                ? createWalletClient({ transport: custom(provider.wallet) })
+                : null,
             [CHAIN_TYPE.SOLANA]: provider.wallet,
             [CHAIN_TYPE.TON]: provider.wallet,
             [CHAIN_TYPE.BITCOIN]: provider.wallet,
