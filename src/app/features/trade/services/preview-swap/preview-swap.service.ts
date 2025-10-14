@@ -60,6 +60,9 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { SwapTimeoutError } from '@app/core/errors/models/common/swap-timeout.error';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -82,6 +85,10 @@ export class PreviewSwapService {
 
   private readonly subscriptions$: Subscription[] = [];
 
+  /*
+   * used to change state of preview swap and redirect user back to form onError
+   * onDestroy PreviewSwapComponent - it will prevent to unexpected side actions on UI
+   */
   private useCallback = false;
 
   public get transactionState(): TransactionState {
@@ -389,15 +396,19 @@ export class PreviewSwapService {
                       }
                     });
                   }
-
-                  this.spindlService.sendSwapEvent(txHash);
-                  this.recentTradesStoreService.updateUnreadTrades();
                 }
+
+                this.spindlService.sendSwapEvent(txHash);
+                this.recentTradesStoreService.updateUnreadTrades();
               },
-              onError: () => {
+              onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
-                  this.setNextTxState({ step: 'inactive', data: {} });
-                  this.tradePageService.setState('form');
+                  if (err instanceof SwapTimeoutError) {
+                    this.setNextTxState({ step: 'error', data: this.transactionState.data });
+                  } else {
+                    this.setNextTxState({ step: 'inactive', data: {} });
+                    this.tradePageService.setState('form');
+                  }
                 }
               }
             })

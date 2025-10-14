@@ -46,11 +46,16 @@ export class SdkLoaderService {
   }
 
   private subscribeOnAddressChange(): void {
+    console.log('%csubscribeOnAddressChange', 'color: orange; font-size: 20px;');
     this.walletConnectorService.addressChange$
       .pipe(
+        tap(() =>
+          console.log('%csubscribeOnAddressChange_tap_start', 'color: orange; font-size: 20px;')
+        ),
         filter(Boolean),
         delay(1000),
         tap(address => {
+          console.log('%csubscribeOnAddressChange_tap_end', 'color: orange; font-size: 20px;');
           const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
           const provider = this.walletConnectorService.provider;
           const chainTypeMap = {
