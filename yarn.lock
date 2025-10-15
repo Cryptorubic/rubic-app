@@ -2262,18 +2262,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.12.7-alpha.opimize.2":
-  version "0.12.7-alpha.opimize.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.12.7-alpha.opimize.2.tgz#f7d81122ed35f2c30900462e5338012d96c513be"
-  integrity sha512-91THb873cCi53BANIhmkIG1gwl6XUTsl7YVxYGtfsm0NcdrjVA06D8q4ggSMRCgKMkAXQFgHrtuuJzVVW3ZNxA==
+"@cryptorubic/core@0.13.0-alpha.opimize.1":
+  version "0.13.0-alpha.opimize.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.0-alpha.opimize.1.tgz#83bbb60dd3a89311032b4e212f7e05c19fdd9149"
+  integrity sha512-kFDxDlNw9RDQDHSuYinfIxSXz2Fbw8Fr5u8QiqN34uLYCrOPAcwEXJbxICUQu9xLMM5y3M/WxDXdenmL7R6EgQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.12.7-alpha.opimize.2":
-  version "0.12.7-alpha.opimize.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.12.7-alpha.opimize.2.tgz#2e777df79b0ca46b4039b067417ca3d5174f3853"
-  integrity sha512-XmKa5ZFOqsaBaNUHj11zYxk3wCEmjTxEQZe9sQkdeyHJ7jF6GyoUJ2S0lyvd8+DTNngJdtvi/BnEZviC3U1BRA==
+"@cryptorubic/sdk@0.13.0-alpha.opimize.1":
+  version "0.13.0-alpha.opimize.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.0-alpha.opimize.1.tgz#4c36e3ffeecee51b4b8d1e8efa8b9712a40b8991"
+  integrity sha512-7WJJ9rCDJjzfejEbZFpbeiMV3R2YBDNMGCRpob1AdQ1YBJilTmMZ92nrJCc+nU8tCQwUPLkGfLvvFCWK1B4vQA==
   dependencies:
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
@@ -2300,10 +2300,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.12.7-alpha.opimize.2":
-  version "0.12.7-alpha.opimize.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.12.7-alpha.opimize.2.tgz#5d0de22a99b33b6aa6825758a92d39af649ea9c3"
-  integrity sha512-LWT1qu/cy+dWA9ZekZMSOPZf55gzLOTIXcKCo0+aBkAmyk2ATcSfBtGkkgGurD9dm4lMDRgbN6oyuxSFwlxxKQ==
+"@cryptorubic/web3@0.13.0-alpha.opimize.1":
+  version "0.13.0-alpha.opimize.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.0-alpha.opimize.1.tgz#8716cf8585c2c6f1bb91f7668738bb5373115828"
+  integrity sha512-DCKpUZDujXZF/8zJC4vhX1HvUS0qinhKEgKTH+aMTwsgYA+JzKgTL1Nd46kmk/yd/57Rv2bOSFw+cEg2f2z70g==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
