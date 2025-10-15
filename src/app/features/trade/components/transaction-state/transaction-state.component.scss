@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .state {
   position: relative;
 
@@ -26,12 +28,9 @@
   }
 
   &__element-icon {
+    @include flex(row, center, center);
     position: relative;
     z-index: 1;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     width: 16px;
     height: 16px;
@@ -73,7 +72,6 @@
       height: 10px;
       
       path {
-        // fill: var(--tui-text-01);
         stroke: var(--tui-text-01);
       }
     }
