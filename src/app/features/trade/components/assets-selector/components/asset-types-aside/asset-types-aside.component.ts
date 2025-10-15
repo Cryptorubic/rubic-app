@@ -7,10 +7,10 @@ import {
   BlockchainTags
 } from '../blockchains-filter-list/models/BlockchainFilters';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
 import { allChainsSelectorItem } from '../../constants/all-chains';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 import { Observable } from 'rxjs';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -23,9 +23,9 @@ export class AssetTypesAsideComponent {
 
   public readonly allChainsSelectorItem = allChainsSelectorItem;
 
-  public readonly selectedAssetType$ = this.assetsSelectorStateService.assetType$;
-
-  public readonly formType = this.assetsSelectorStateService.formType;
+  public get selectedAssetType$(): Observable<AssetListType> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).assetListType$;
+  }
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -49,7 +49,6 @@ export class AssetTypesAsideComponent {
 
   constructor(
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly queryParamsService: QueryParamsService,
     private readonly headerStore: HeaderStore,
     private readonly assetsSelectorFacade: AssetsSelectorFacadeService
@@ -60,7 +59,10 @@ export class AssetTypesAsideComponent {
   }
 
   public onBlockchainItemClick(item: BlockchainItem): void {
-    if (item.name === null) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(item.name);
+    if (item.name === null) {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
+    } else {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = item.name;
+    }
   }
 }

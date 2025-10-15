@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensState } from '@core/services/tokens/models/new-token-types';
+import { TokensState, UtilityState } from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
@@ -12,17 +12,33 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 export class NewTokensStoreService {
   public readonly tokens = this.createTokenStore();
 
-  // gainers: UtilityState;
-  //
-  // losers: UtilityState;
-  //
-  // trending: UtilityState;
-  //
-  // popular: UtilityState;
+  public readonly gainers = this.createUtilityStore();
+
+  public readonly losers = this.createUtilityStore();
+
+  public readonly trending = this.createUtilityStore();
+
+  public readonly all = this.createUtilityStore();
 
   constructor() {}
 
-  public addBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
+  public addInitialBlockchainTokens(
+    blockchain: BlockchainName,
+    tokens: ReadonlyArray<Token>
+  ): void {
+    try {
+      this.tokens[blockchain]._loading$.next(true);
+      const currentTokens = this.tokens[blockchain]._tokens$;
+      const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
+      currentTokens.next({ ...currentTokens.value, ...newValues });
+      this.tokens[blockchain]._loading$.next(false);
+      console.log(`tokens added to ${blockchain} store`);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  public addNewBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
     const currentTokens = this.tokens[blockchain]._tokens$;
     const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
     currentTokens.next({ ...currentTokens.value, ...newValues });
@@ -63,5 +79,17 @@ export class NewTokensStoreService {
       };
       return acc;
     }, {} as unknown as TokensState);
+  }
+
+  private createUtilityStore(): UtilityState {
+    const loadingSubject$ = new BehaviorSubject(true);
+
+    return {
+      _loading$: loadingSubject$,
+      loading$: loadingSubject$.asObservable(),
+
+      refs: [],
+      tokens$: new BehaviorSubject<TokenAmount[]>([]).asObservable()
+    };
   }
 }

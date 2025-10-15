@@ -15,7 +15,6 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, takeUntil } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
@@ -44,7 +43,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   public readonly isMobile = this.headerStore.isMobile;
 
   constructor(
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,

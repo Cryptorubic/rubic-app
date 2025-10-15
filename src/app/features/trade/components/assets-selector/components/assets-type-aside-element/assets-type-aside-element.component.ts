@@ -3,7 +3,6 @@ import { AssetType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 
 @Component({
   selector: 'app-assets-type-aside-element',
@@ -35,10 +34,7 @@ export class AssetsTypeAsideElementComponent {
     return !this.isAllChains ? `idPrefixNetwork_${this.blockchainItem.name}` : 'allChainsSelector';
   }
 
-  constructor(
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService,
-    private readonly assetsSelectorService: AssetsSelectorService
-  ) {}
+  constructor(private readonly assetsSelectorFacade: AssetsSelectorFacadeService) {}
 
   public isItemDisabled(item: BlockchainItem): boolean {
     if (this.isAllChains) return false;
@@ -56,7 +52,10 @@ export class AssetsTypeAsideElementComponent {
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (this.isAllChains) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(item.name);
+    if (this.isAllChains) {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
+    } else {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = item.name;
+    }
   }
 }

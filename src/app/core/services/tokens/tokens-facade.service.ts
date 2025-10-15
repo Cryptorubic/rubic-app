@@ -27,6 +27,14 @@ export class TokensFacadeService {
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
+  public readonly allTokens = this.tokensStore.all;
+
+  public readonly trending = this.tokensStore.trending;
+
+  public readonly gainers = this.tokensStore.gainers;
+
+  public readonly losers = this.tokensStore.losers;
+
   public static onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
     if (target.src !== DEFAULT_TOKEN_IMAGE) {
@@ -63,7 +71,13 @@ export class TokensFacadeService {
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
     private readonly authService: AuthService
-  ) {}
+  ) {
+    this.apiService.getTopTokens().subscribe(tokens => {
+      Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
+        this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
+      });
+    });
+  }
 
   public async findToken(token: MinimalToken, _searchBackend = false): Promise<TokenAmount> {
     const foundToken = this.tokensStore.tokens[token.blockchain]._tokens$.value[token.address];

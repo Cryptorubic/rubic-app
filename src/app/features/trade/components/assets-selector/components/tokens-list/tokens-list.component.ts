@@ -4,18 +4,16 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { distinctUntilChanged, Observable, of, switchMap, takeUntil } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
 import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
-import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
-import { TokenFilter } from '../../models/token-filters';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { AssetType } from '@app/features/trade/models/asset';
-import { SearchQueryService } from '../../services/search-query-service/search-query.service';
+import { AssetListType, AssetType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
+import { BlockchainsInfo } from '@cryptorubic/sdk';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-tokens-list',
@@ -34,37 +32,37 @@ export class TokensListComponent {
 
   public get tokensLoading$(): Observable<boolean> {
     return this.assetsSelectorFacade.getAssetsService(this.type).assetListType$.pipe(
-      switchMap(el => {
-        if (el === 'allChains') {
-          // return this.tokensFacade.isAllTokensLoading$;
+      switchMap(type => {
+        if (type === 'allChains') {
+          return this.tokensFacade.allTokens.loading$;
         }
-        // @TODO TOKENS
-        if (el === 'gainers' || el === 'losers' || el === 'trending') {
-          return of(false);
+        if (type === 'trending') {
+          return this.tokensFacade.trending.loading$;
         }
-        // if (el) {
-        //   return this.tokensFacade.tokens$(el);
-        // }
+        if (type === 'gainers') {
+          return this.tokensFacade.gainers.loading$;
+        }
+        if (type === 'losers') {
+          return this.tokensFacade.losers.loading$;
+        }
+        if (BlockchainsInfo.isBlockchainName(type)) {
+          return this.tokensFacade.allTokens.loading$;
+        }
+        console.error(`Unknown asset list type: ${type}`);
       })
     );
   }
 
   public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
 
-  public readonly customToken$ = this.tokensListStoreService.customToken$;
+  public get customToken$(): Observable<AvailableTokenAmount> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).customToken$;
+  }
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
-    switchMap(
-      () => of(false)
-      // @TODO TOKENS BALANCES
-      // this.balanceLoadingStateService.isBalanceLoading$({
-      //   assetType: this.assetsSelectorStateService.assetType,
-      //   tokenFilter: this.assetsSelectorStateService.tokenFilter
-      // })
-    )
-  );
+  // @TODO TOKENS
+  public readonly isBalanceLoading$ = of(false);
 
   public get isAllChainsOpened(): boolean {
     return this.assetsSelectorStateService.assetType === 'allChains';
@@ -74,7 +72,28 @@ export class TokensListComponent {
     return this.assetsSelectorStateService.assetType;
   }
 
-  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
+  public get tokensToShow$(): Observable<AvailableTokenAmount[]> {
+    if (!this.type) {
+      return of([]);
+    }
+    return this.assetsSelectorFacade
+      .getAssetsService(this.type)
+      .assetListType$.pipe(
+        switchMap(type => {
+          if (BlockchainsInfo.isBlockchainName(type)) {
+            return this.tokensFacade.blockchainTokens[type].tokens$.pipe(
+              map(tokensObject => {
+                return Object.values(tokensObject);
+              })
+            );
+          }
+          if (type === 'allChains') {
+            return this.tokensFacade.allTokens.tokens$;
+          }
+        })
+      )
+      .pipe(tap(console.log));
+  }
 
   public readonly tokenFilter$ = this.assetsSelectorStateService.tokenFilter$;
 
@@ -82,13 +101,10 @@ export class TokensListComponent {
 
   constructor(
     private readonly tokensListService: TokensListService,
-    private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
-    private readonly searchQueryService: SearchQueryService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly assetsSelectorFacade: AssetsSelectorFacadeService
@@ -96,7 +112,7 @@ export class TokensListComponent {
     this.assetsSelectorStateService.tokenFilter$
       .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.searchQueryService.setSearchQuery('');
+        this.assetsSelectorFacade.getAssetsService(this.type).assetsQuery = '';
       });
   }
 
@@ -114,11 +130,12 @@ export class TokensListComponent {
     this.mobileNativeService.forceClose();
 
     if (token.available) {
-      this.assetsSelectorService.onAssetSelect(token);
+      // @TODO SELECT
+      // this.assetsSelectorService.onAssetSelect(token);
     }
   }
 
-  public selectTokenFilter(filter: TokenFilter): void {
-    this.assetsSelectorStateService.setTokenFilter(filter);
+  public selectTokenFilter(filter: AssetListType): void {
+    this.assetsSelectorFacade.getAssetsService(this.type).assetListType = filter;
   }
 }

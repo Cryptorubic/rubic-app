@@ -21,8 +21,28 @@ import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { debounceTime, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
 
 export abstract class AssetsService {
+  // List scroll (virtual scroll)
+  private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
+
+  // List animation type
+  private readonly _listAnimationType$ = new BehaviorSubject<ListAnimationType>('shown');
+
+  public readonly listAnimationType$ = this._listAnimationType$.asObservable();
+
+  private set listAnimationType(value: ListAnimationType) {
+    this._listAnimationType$.next(value);
+  }
+
+  // Custom token
+  protected readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount | null>(null);
+
+  public readonly customToken$ = this._customToken$.asObservable();
+
   // Assets query (tokens)
 
   protected readonly _assetsQuery$ = new BehaviorSubject<string>('');

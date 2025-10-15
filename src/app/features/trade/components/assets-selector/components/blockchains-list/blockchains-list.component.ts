@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
@@ -44,7 +43,6 @@ export class BlockchainsListComponent implements OnDestroy {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { formType: FormType }>,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
     public readonly formsTogglerService: FormsTogglerService,
     private readonly headerStore: HeaderStore,
@@ -52,7 +50,7 @@ export class BlockchainsListComponent implements OnDestroy {
   ) {}
 
   public get formType(): FormType {
-    return this.context?.data?.formType || this.assetsSelectorStateService.formType;
+    return this.context?.data?.formType || this.type;
   }
 
   ngOnDestroy(): void {
@@ -71,15 +69,14 @@ export class BlockchainsListComponent implements OnDestroy {
     return this.assetsSelectorFacade.getAssetsService(this.type).getHintText(blockchain);
   }
 
-  public closeBlockchainsList(): void {
-    if (!this.isMobile) {
-      this.assetsSelectorService.setSelectorListTypeByAssetType();
-    }
-  }
+  public closeBlockchainsList(): void {}
 
   public onItemClick(blockchainName: BlockchainName | null): void {
-    if (blockchainName === null) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(blockchainName);
+    if (blockchainName === null) {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
+    } else {
+      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = blockchainName;
+    }
 
     this.mobileNativeService.forceClose();
   }

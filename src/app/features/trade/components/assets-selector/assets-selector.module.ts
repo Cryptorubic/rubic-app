@@ -27,9 +27,7 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
-import { SearchQueryService } from './services/search-query-service/search-query.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { AssetsSelectorService } from './services/assets-selector-service/assets-selector.service';
 import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
@@ -77,6 +75,6 @@ import { TokensListFiltersComponent } from './components/tokens-list/components/
     TuiCarouselModule
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [SearchQueryService, FormsTogglerService, AssetsSelectorService]
+  providers: [FormsTogglerService]
 })
 export class AssetsSelectorModule {}

@@ -90,8 +90,15 @@ export class NewTokensApiService {
     const options = { page: 1, pageSize: 50 };
     const tier1Blockchains = [
       BLOCKCHAIN_NAME.ETHEREUM,
+      BLOCKCHAIN_NAME.ARBITRUM,
+      BLOCKCHAIN_NAME.POLYGON,
       BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.POLYGON
+      BLOCKCHAIN_NAME.BASE,
+      BLOCKCHAIN_NAME.SOLANA,
+      BLOCKCHAIN_NAME.BERACHAIN,
+      BLOCKCHAIN_NAME.ZK_SYNC,
+      BLOCKCHAIN_NAME.OPTIMISM,
+      BLOCKCHAIN_NAME.BITCOIN
     ].map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
 
     return forkJoin(
@@ -105,7 +112,7 @@ export class NewTokensApiService {
     ).pipe(
       map(chains => {
         return chains.reduce((acc, backendResponse, index) => {
-          const blockchain = tier1Blockchains[index];
+          const blockchain = FROM_BACKEND_BLOCKCHAINS[tier1Blockchains[index]];
           return {
             ...acc,
             [blockchain]: NewTokensApiService.prepareTokens(backendResponse.results)

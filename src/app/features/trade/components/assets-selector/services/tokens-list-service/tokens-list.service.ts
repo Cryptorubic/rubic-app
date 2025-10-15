@@ -1,19 +1,14 @@
 import { Injectable } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { BehaviorSubject } from 'rxjs';
 import { combineLatestWith, takeUntil } from 'rxjs/operators';
-import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
-import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
-import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import {
   assertTokensNetworkStateKey,
   TokensNetworkStateKey
 } from '@app/shared/models/tokens/paginated-tokens';
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 
 @Injectable()
 export class TokensListService {
@@ -22,30 +17,11 @@ export class TokensListService {
     return false;
   }
 
-  private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
-
-  private readonly _listAnimationType$ = new BehaviorSubject<ListAnimationType>('shown');
-
-  public readonly listAnimationType$ = this._listAnimationType$.asObservable();
-
-  private set listAnimationType(value: ListAnimationType) {
-    this._listAnimationType$.next(value);
-  }
-
-  private get listType(): TokensListType {
-    return this.tokensListTypeService.listType;
-  }
-
-  private get tokensToShow(): AvailableTokenAmount[] {
-    return this.tokensListStoreService.tokensToShow;
-  }
-
   constructor(
-    private readonly tokensListStoreService: TokensListStoreService,
     private readonly tokensListTypeService: TokensListTypeService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly searchQueryService: SearchQueryService,
-    private readonly destroy$: TuiDestroyService
+    private readonly destroy$: TuiDestroyService,
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {
     this.subscribeOnTokensToShow();
   }
@@ -71,8 +47,9 @@ export class TokensListService {
   }
 
   private subscribeOnTokensToShow(): void {
-    this.assetsSelectorStateService.assetType$
-      .pipe(
+    this.assetsSelectorFacade
+      .getAssetsService(this.type)
+      .assetType$.pipe(
         combineLatestWith(this.assetsSelectorStateService.tokenFilter$),
         takeUntil(this.destroy$)
       )

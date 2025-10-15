@@ -10,8 +10,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
+
+import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 
 @Injectable()
 export class CustomTokenService {
@@ -20,7 +21,7 @@ export class CustomTokenService {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly authService: AuthService,
-    private readonly assetsSelectorService: AssetsSelectorService
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
   ) {}
 
   public openModal(customToken: AvailableTokenAmount): void {
@@ -60,7 +61,8 @@ export class CustomTokenService {
       )
       .subscribe(token => {
         if (token) {
-          this.assetsSelectorService.onAssetSelect(token);
+          // @TODO TOKENS
+          // this.assetsSelectorFacade.getAssetsService(this.type).selectCustomToken();
         }
       });
   }
