@@ -51,6 +51,7 @@ import {
   nativeTokensList
 } from '@cryptorubic/core';
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
+import { Web3AuthWalletAdapter } from '@core/services/wallets/wallets-adapters/web3-auth-wallet-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -132,6 +133,8 @@ export class WalletConnectorService {
       this.zone,
       this.window
     ] as const;
+
+    return new Web3AuthWalletAdapter(...defaultConstructorParameters);
 
     if (walletName === WALLET_NAME.METAMASK) {
       return new MetamaskWalletAdapter(...defaultConstructorParameters);
@@ -285,6 +288,9 @@ export class WalletConnectorService {
     evmBlockchainName: EvmBlockchainName,
     customRpcUrl?: string
   ): Promise<boolean> {
+    if (this.provider.walletName === WALLET_NAME.WEB3AUTH) {
+      return (this.provider as Web3AuthWalletAdapter).switchChain(evmBlockchainName);
+    }
     if (!(this.provider instanceof EvmWalletAdapter)) {
       throw new RubicError("Can't switch chain in non evm wallet!");
     }

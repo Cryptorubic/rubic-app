@@ -3,6 +3,7 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { TuiAppearance } from '@taiga-ui/core';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
+import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 
 @Component({
   selector: 'app-login-button',
@@ -24,6 +25,7 @@ export class LoginButtonComponent {
 
   public showModal(): void {
     this.gtmService.fireClickOnConnectWalletButtonEvent();
-    this.modalService.openWalletModal(this.injector).subscribe();
+    this.authService.connectWallet({ walletName: WALLET_NAME.WEB3AUTH });
+    // this.modalService.openWalletModal(this.injector).subscribe();
   }
 }

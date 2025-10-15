@@ -5,7 +5,7 @@ import { NgZone } from '@angular/core';
 import { blockchainId, BlockchainName } from '@cryptorubic/sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
-import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 export class HoldstationWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.HOLD_STATION;

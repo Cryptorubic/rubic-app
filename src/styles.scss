@@ -238,3 +238,23 @@ html.dark {
 .text-nowrap {
   white-space: nowrap;
 }
+
+.w3a-parent-container {
+  --app-gray-900: var(--tui-elevation-01) !important;
+  --app-gray-800: var(--io-background) !important;
+  --app-gray-700: white !important;
+
+  .w3a--h-screen {
+    //margin-bottom: calc(-66px - 1rem);
+  }
+
+  .w3a--btn:hover:is(.w3a--dark *) {
+    background-color: var(--app-gray-800);
+    border-color: var(--app-gray-800);
+    box-shadow: none !important;
+  }
+
+  .w3a--mx-auto.w3a--mt-auto.w3a--flex.w3a--flex-col.w3a--items-center.w3a--justify-center.w3a--gap-y-4.w3a--pt-5 {
+    display: none;
+  }
+}

@@ -12,11 +12,11 @@ import {
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { RubicWindow } from '@shared/utils/rubic-window';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
-import { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/types';
-import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import { EthereumProvider, EthereumProviderOptions } from '@walletconnect/ethereum-provider';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
-export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
+// Should be IEthereumProvider instead of RubicAny
+export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<RubicAny> {
   protected providerConfig: EthereumProviderOptions;
 
   protected constructor(
@@ -64,9 +64,9 @@ export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEth
 
   public async activate(): Promise<void> {
     try {
-      this.wallet = await EthereumProvider.init({
+      this.wallet = (await EthereumProvider.init({
         ...this.providerConfig
-      });
+      })) as RubicAny as typeof EthereumProvider;
       const [address] = await this.wallet.enable();
       const chainId = (await this.wallet.request({ method: 'eth_chainId' })) as string;
 

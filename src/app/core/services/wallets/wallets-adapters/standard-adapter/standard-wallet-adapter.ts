@@ -7,7 +7,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { getWallets } from '@wallet-standard/core';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { Wallet } from '@mysten/wallet-standard';
-import { StandardEventsFeature } from '@wallet-standard/features/src/events';
+import { StandardEventsFeature } from '@wallet-standard/features';
 import { StandardAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-adapter';
 import { WalletError } from '@core/errors/models/provider/wallet-error';
 import { StoreService } from '@app/core/services/store/store.service';

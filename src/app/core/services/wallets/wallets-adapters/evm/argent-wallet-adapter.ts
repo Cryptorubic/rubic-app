@@ -6,9 +6,8 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
-import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { EthereumProvider, EthereumProviderOptions } from '@walletconnect/ethereum-provider';
 
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;

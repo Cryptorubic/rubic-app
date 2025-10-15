@@ -90,9 +90,10 @@
     "@wallet-standard/app": "^1.1.0",
     "@wallet-standard/base": "^1.1.0",
     "@wallet-standard/features": "^1.1.0",
-    "@walletconnect/ethereum-provider": "^2.13.3",
+    "@walletconnect/ethereum-provider": "^2.22.4",
     "@walletconnect/modal": "^2.5.9",
-    "@web3-name-sdk/core": "^0.1.13",
+    "@web3-name-sdk/core": "^0.4.1",
+    "@web3auth/modal": "^10.4.0",
     "bignumber.js": "9.1.2",
     "browserify-zlib": "^0.2.0",
     "bs58": "^6.0.0",
@@ -106,11 +107,13 @@
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
     "querystring-es3": "^0.2.1",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
     "rpc-websockets": "7.9.0",
     "rxjs": "7.8.1",
     "socket.io-client": "^4.8.1",
     "ts-cacheable": "^1.0.5",
-    "viem": "^1.21.1",
+    "viem": "2.37.13",
     "walletlink": "^2.1.0",
     "web3": "1.8.1",
     "zone.js": "~0.13.1"
@@ -179,5 +182,8 @@
     "typescript": "~5.1.6",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.4.2"
+  },
+  "resolutions": {
+    "viem": "2.37.13"
   }
 }

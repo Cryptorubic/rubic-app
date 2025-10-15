@@ -11,7 +11,7 @@ import {
   Communicator,
   SendTransactionsParams,
   SendTransactionsResponse
-} from '@safe-global/safe-apps-sdk/src/types';
+} from '@safe-global/safe-apps-sdk';
 import {
   BlockchainName,
   BlockchainsInfo,
