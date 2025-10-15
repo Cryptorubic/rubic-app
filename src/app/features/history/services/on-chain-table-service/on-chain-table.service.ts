@@ -54,7 +54,7 @@ export class OnChainTableService extends TableService<
 
   public readonly totalPages$ = this.total$.pipe(
     combineLatestWith(this.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
+    map(([total, size]) => Math.ceil(total / size))
   );
 
   public readonly data$ = this.request$.pipe(
