@@ -74,7 +74,7 @@ export class Web3AuthWalletAdapter extends CommonWalletAdapter<IProvider | Solan
 
         const client = createWalletClient({ transport: custom(provider) });
         const accounts = await client.getAddresses();
-        address = accounts?.[1];
+        address = accounts?.[1] || accounts?.[0];
 
         chain = BlockchainsInfo.getBlockchainNameById(currentChain?.chainId || 1);
         this.chainType = CHAIN_TYPE.EVM;
