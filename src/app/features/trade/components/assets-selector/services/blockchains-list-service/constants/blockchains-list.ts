@@ -221,7 +221,7 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
   },
   {
-    name: BLOCKCHAIN_NAME.BERACHAIN,
+    name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.73,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
@@ -277,7 +277,7 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW, BlockchainTags.POPULAR]
   },
   {
-    name: BLOCKCHAIN_NAME.LINEA,
+    name: BLOCKCHAIN_NAME.BERACHAIN,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
