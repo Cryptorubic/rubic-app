@@ -37,19 +37,23 @@
 
   &__amounts-container {
     display: flex;
+    gap: var(--tui-padding-s);
     align-items: center;
     justify-content: space-between;
   }
 
   &__amount {
     display: flex;
+    flex: auto;
     align-items: center;
+    min-width: 0;
   }
 
   &__token {
     display: flex;
     flex-direction: column;
     gap: var(--tui-padding-xs);
+    min-width: 0;
   }
 
   &__token-info {
@@ -71,7 +75,7 @@
   }
 
   &__token-amount {
-    max-width: 145px;
+    max-width: max-content;
     overflow: hidden;
 
     font-weight: 700;
@@ -162,9 +166,11 @@
 
   &__right {
     display: flex;
+    flex: none;
     flex-direction: column;
     gap: var(--tui-padding-xs);
     align-items: flex-end;
+    min-width: 0;
   }
 
   &__expandable {
