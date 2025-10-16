@@ -25,9 +25,9 @@ import {
   blockchainId,
   BlockchainsInfo,
   compareAddresses,
-  EvmBlockchainName,
-  wrappedNativeTokensList
-} from 'rubic-sdk';
+  EvmBlockchainName
+} from '@cryptorubic/sdk';
+import { wrappedNativeTokensList } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-dropdown-options-token',

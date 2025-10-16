@@ -1,6 +1,6 @@
 import { Token } from '@app/shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { FeeInfo } from 'rubic-sdk';
+import { FeeInfo } from '@cryptorubic/sdk';
 
 export type ProviderInfo = {
   name: string;

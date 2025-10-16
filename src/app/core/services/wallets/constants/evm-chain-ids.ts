@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, blockchainId } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME, blockchainId } from '@cryptorubic/sdk';
 
 export const WALLET_CONNECT_SUPPORTED_CHAINS = [
   blockchainId[BLOCKCHAIN_NAME.ETHEREUM],

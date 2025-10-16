@@ -1,9 +1,9 @@
-import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { SourceTxStatus } from '@features/history/models/source-tx-status';
 import { DestinationTxStatus } from '@features/history/models/destination-tx-status';
 import { HistoryRequestToken } from '@features/history/models/history-request-token';
 import { HistoryRequestTx } from '@features/history/models/history-request-tx';
-import { BackendBlockchain } from 'rubic-sdk';
+import { BackendBlockchain } from '@cryptorubic/sdk';
+import { ToBackendCrossChainProviders } from '@cryptorubic/core';
 
 export interface CrossChainTableResponse {
   count: number;

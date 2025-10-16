@@ -14,7 +14,7 @@ import {
   getDepositStatus,
   CrossChainTradeType,
   OnChainTradeType
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -51,7 +51,7 @@ export class DepositTableService extends TableService<
 
   public readonly totalPages$ = this.total$.pipe(
     combineLatestWith(this.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
+    map(([total, size]) => Math.ceil(total / size))
   );
 
   public readonly data$: Observable<DepositTableData[]> = this.request$.pipe(

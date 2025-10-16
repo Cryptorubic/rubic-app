@@ -1,4 +1,4 @@
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 import { AssetType } from '@features/trade/models/asset';
 
@@ -40,9 +40,11 @@ interface AllQueryParams {
   crossChainIntegratorAddress: string;
   onChainIntegratorAddress: string;
   referral: string;
+  referrer: string;
   swapId: string;
   useSafe: string;
   hideBranding: string;
+  provider: string; // Preferred provider
 }
 
 export type QueryParams = {

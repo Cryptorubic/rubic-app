@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith, delay, map, startWith, switchMap, tap } from 'rxjs/operators';
@@ -6,7 +6,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { ON_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/sdk';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
 import { concat, firstValueFrom, fromEvent, of } from 'rxjs';
@@ -18,6 +18,8 @@ import { PreviewSwapService } from '../../services/preview-swap/preview-swap.ser
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
+import { ChartService } from '../../services/chart-service/chart.service';
+import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -49,7 +51,7 @@ export class TradeViewContainerComponent {
 
   public readonly selectedTradeType$ = this.swapsState.tradeState$.pipe(map(el => el.tradeType));
 
-  public readonly isMobile = this.headerStore.isMobile;
+  public readonly mobile$ = this.headerStore.getMobileDisplayStatus();
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
@@ -77,6 +79,8 @@ export class TradeViewContainerComponent {
 
   public readonly resetCarouselIndex$ = this.authService.currentUser$.pipe(switchMap(() => of(0)));
 
+  public readonly chartInfo$ = this.chartService.chartInfo$;
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -89,8 +93,14 @@ export class TradeViewContainerComponent {
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
     private readonly spindlService: SpindlService,
-    private readonly authService: AuthService
-  ) {}
+    private readonly authService: AuthService,
+    private readonly chartService: ChartService,
+    private readonly solanaGaslessService: SolanaGaslessService,
+    renderer2: Renderer2
+  ) {
+    this.chartService.setRenderer(renderer2);
+    this.chartService.initSubscriptions(swapFormService);
+  }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);

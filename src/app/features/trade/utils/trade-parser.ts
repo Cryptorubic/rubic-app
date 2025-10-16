@@ -1,6 +1,11 @@
-import { BlockchainName, OnChainTrade, OnChainTradeType, CrossChainTradeType } from 'rubic-sdk';
+import {
+  BlockchainName,
+  OnChainTrade,
+  OnChainTradeType,
+  CrossChainTradeType,
+  CrossChainTrade
+} from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 export class TradeParser {
   public static getCrossChainSwapParams(trade: CrossChainTrade): {
@@ -11,7 +16,6 @@ export class TradeParser {
     fromDecimals: number;
     toAddress: string;
     toSymbol: string;
-    toAmount: BigNumber;
     toPrice: number;
     toDecimals: number;
     fromBlockchain: BlockchainName;
@@ -26,7 +30,6 @@ export class TradeParser {
       fromDecimals: trade.from.decimals,
       toAddress: trade.to.address,
       toSymbol: trade.to.symbol,
-      toAmount: trade.to.tokenAmount,
       toPrice: trade.to.price.toNumber(),
       toDecimals: trade.to.decimals,
       fromBlockchain: trade.from.blockchain,
@@ -43,7 +46,6 @@ export class TradeParser {
     fromDecimals: number;
     toAddress: string;
     toSymbol: string;
-    toAmount: BigNumber;
     toPrice: number;
     toDecimals: number;
     blockchain: BlockchainName;
@@ -57,7 +59,6 @@ export class TradeParser {
       fromDecimals: trade.from.decimals,
       toAddress: trade.to.address,
       toSymbol: trade.to.symbol,
-      toAmount: trade.to.tokenAmount,
       toPrice: trade.to.price.toNumber(),
       toDecimals: trade.to.decimals,
       blockchain: trade.from.blockchain,

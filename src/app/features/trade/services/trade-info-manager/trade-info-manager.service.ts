@@ -9,7 +9,7 @@ import {
   TonOnChainTrade,
   Web3Pure,
   nativeTokensList
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { compareTokens } from '@app/shared/utils/utils';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
@@ -39,7 +39,7 @@ export class TradeInfoManager {
     const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
     return {
       ...provider,
-      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime | 5 // Default average time if not specified
+      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime || 1 // Default average time if not specified
     };
   }
 

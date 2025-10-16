@@ -5,7 +5,7 @@ import { BehaviorSubject, map, takeUntil } from 'rxjs';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';
 import { SwapFormInput } from '../../models/swap-form-controls';
 import { SelectedTrade } from '../../models/selected-trade';
-import { CROSS_CHAIN_TRADE_TYPE } from 'rubic-sdk';
+import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/sdk';
 
 @Injectable()
 export class RefundService {

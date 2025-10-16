@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';

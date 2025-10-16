@@ -3,7 +3,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME } from 'rubic-sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 import { Observable } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
 

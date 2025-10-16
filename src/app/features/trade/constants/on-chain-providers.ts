@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from 'rubic-sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
@@ -213,6 +213,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'DefiSwap',
     image: `${imageBasePath}defiswap.webp`,
     color: '#012C70'
+  },
+  [ON_CHAIN_TRADE_TYPE.DFLOW]: {
+    name: 'DFlow',
+    image: `${imageBasePath}dflow.svg`,
+    color: '#ebab34'
   },
   [ON_CHAIN_TRADE_TYPE.DFYN]: {
     name: 'Dfyn',
@@ -443,7 +448,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#15D9E1'
   },
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: {
-    name: 'OrcaSwap',
+    name: 'Orca',
     image: `${imageBasePath}orcaswap.svg`,
     color: '#F2C45B'
   },

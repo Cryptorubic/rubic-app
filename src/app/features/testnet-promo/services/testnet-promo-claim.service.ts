@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { AirdropNode } from '@features/airdrop/models/airdrop-node';
-import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from 'rubic-sdk';
-import { airdropContractAbi } from '@features/airdrop/constants/airdrop-contract-abi';
-import { newRubicToken } from '@features/airdrop/constants/airdrop-token';
+import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from '@cryptorubic/sdk';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ClaimButtonState } from '@features/testnet-promo/interfaces/claim-button-state.interface';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { rbcCoin } from '../constants/rbc-coin';
+import { AirdropNode } from '../interfaces/common-types';
+import { airdropContractAbi } from '../constants/airdrop-abi';
 
 @Injectable()
 export class TestnetPromoClaimService {
@@ -94,7 +94,7 @@ export class TestnetPromoClaimService {
 
   private async checkPause(contractAddress: string): Promise<void> {
     const isPaused = await Injector.web3PublicService
-      .getWeb3Public(newRubicToken.blockchain)
+      .getWeb3Public(rbcCoin.blockchain)
       .callContractMethod(contractAddress, airdropContractAbi, 'paused', []);
     if (isPaused) {
       throw new Error('paused');
@@ -103,7 +103,7 @@ export class TestnetPromoClaimService {
 
   public async checkClaimed(contractAddress: string, index: number): Promise<boolean> {
     const isPaused = await Injector.web3PublicService
-      .getWeb3Public(newRubicToken.blockchain)
+      .getWeb3Public(rbcCoin.blockchain)
       .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
 
     return Boolean(isPaused);

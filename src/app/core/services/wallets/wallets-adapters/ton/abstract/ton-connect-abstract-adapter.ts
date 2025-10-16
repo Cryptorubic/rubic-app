@@ -1,6 +1,11 @@
 import { TonConnectUI } from '@tonconnect/ui';
 import { CommonWalletAdapter } from '../../common-wallet-adapter';
-import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE, RetroBridgeApiService } from 'rubic-sdk';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  CHAIN_TYPE,
+  RetroBridgeApiService
+} from '@cryptorubic/sdk';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';

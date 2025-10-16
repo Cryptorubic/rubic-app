@@ -1,6 +1,6 @@
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { CrossChainTradeType, OnChainTradeType } from 'rubic-sdk';
+import { CrossChainTradeType, OnChainTradeType } from '@cryptorubic/sdk';
 
 export interface CrossChainTransferTrade {
   id: string;

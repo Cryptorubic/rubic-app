@@ -1,4 +1,4 @@
-import { BridgeType } from 'rubic-sdk';
+import { BridgeType } from '@cryptorubic/sdk';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';

@@ -63,6 +63,14 @@
             "namedChunks": true
           },
           "configurations": {
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
             "sdk": {
               "fileReplacements": [
                 {
@@ -90,6 +98,30 @@
                 }
               ]
             },
+            "dev4": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev4.ts"
+                }
+              ]
+            },
+            "dev5": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev5.ts"
+                }
+              ]
+            },
+            "dev6": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev6.ts"
+                }
+              ]
+            },
             "prod-api": {
               "fileReplacements": [
                 {
@@ -111,7 +143,7 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
               "budgets": [
                 {
@@ -165,6 +197,9 @@
             "production": {
               "browserTarget": "rubic:build:production"
             },
+            "local": {
+              "browserTarget": "rubic:build:local"
+            },
             "sdk": {
               "browserTarget": "rubic:build:sdk"
             },
@@ -173,6 +208,15 @@
             },
             "dev3": {
               "browserTarget": "rubic:build:dev3"
+            },
+            "dev4": {
+              "browserTarget": "rubic:build:dev4"
+            },
+            "dev5": {
+              "browserTarget": "rubic:build:dev5"
+            },
+            "dev6": {
+              "browserTarget": "rubic:build:dev6"
             },
             "prod-api": {
               "browserTarget": "rubic:build:prod-api"

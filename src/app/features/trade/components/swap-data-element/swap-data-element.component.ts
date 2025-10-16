@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FeeInfo } from 'rubic-sdk';
+import { FeeInfo } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';

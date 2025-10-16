@@ -3,7 +3,7 @@
     <img
       *ngIf="description"
       class="details-element__text-icon"
-      src="assets/images/icons/hint.svg"
+      [src]="icon"
       [alt]="title"
       [tuiHint]="description"
     />

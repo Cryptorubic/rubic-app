@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { ApproveTransaction } from '@features/approve-scanner/services/approve-scanner.service';
 import { FormControl } from '@angular/forms';
 import ADDRESS_TYPE from '@app/shared/models/blockchain/address-type';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { TokensService } from '@core/services/tokens/tokens.service';
 
 @Component({

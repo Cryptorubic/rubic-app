@@ -23,7 +23,7 @@ import {
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
   SimulationFailedError as SdkSimulationFailedError
-} from 'rubic-sdk';
+} from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -53,7 +53,7 @@ import { LowSlippageError } from './common/low-slippage-error';
 import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
-import { SimulationFailedError } from './common/simulation-failed.error';
+import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -126,6 +126,7 @@ export class RubicSdkErrorParser {
     return RubicSdkErrorParser.parseErrorByMessage(err);
   }
 
+  // eslint-disable-next-line complexity
   private static parseErrorByMessage(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
@@ -173,6 +174,14 @@ export class RubicSdkErrorParser {
 
     if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
       return new CrossChainSwapUnavailableWarning();
+    }
+
+    // Backpack wallet tx errors
+    if (
+      err.message.toLowerCase().includes('approval denied') ||
+      err.message.toLowerCase().includes('plugin closed')
+    ) {
+      return new UserRejectError();
     }
 
     return new ExecutionRevertedError(err.message);

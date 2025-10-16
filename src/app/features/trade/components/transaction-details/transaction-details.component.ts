@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { distinctUntilChanged, first, map, startWith } from 'rxjs/operators';
-import { OnChainTrade, TradeInfo } from 'rubic-sdk';
+import { OnChainTrade, TradeInfo, CrossChainTrade } from '@cryptorubic/sdk';
 import { Observable } from 'rxjs';
-import { CrossChainTrade } from 'rubic-sdk/lib/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { transactionInfoText } from '@features/trade/constants/transaction-info-text';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { isNil } from '@shared/utils/utils';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
+import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 
 @Component({
   selector: 'app-transaction-details',
@@ -35,12 +35,15 @@ export class TransactionDetailsComponent {
 
   public isWalletCopied = false;
 
+  public readonly gaslessTxCount24hrs = this.solanaGaslessStateService.gaslessTxCount24hrs;
+
   constructor(
     private readonly swapsStateService: SwapsStateService,
     private readonly walletConnector: WalletConnectorService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly solanaGaslessStateService: SolanaGaslessStateService
   ) {}
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;

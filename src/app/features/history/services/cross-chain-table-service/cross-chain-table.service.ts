@@ -8,7 +8,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { CrossChainTableRequest } from '@features/history/models/cross-chain-table-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from 'rubic-sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from '@cryptorubic/sdk';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -19,7 +19,7 @@ import { DestinationTxStatus } from '@features/history/models/destination-tx-sta
 import { FormControl } from '@angular/forms';
 import { OnChainTableRequest } from '@features/history/models/on-chain-table-request';
 import { TableService } from '@features/history/models/table-service';
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@app/core/services/backend/cross-chain-routing-api/constants/from-backend-cross-chain-providers';
+import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@cryptorubic/core';
 
 @Injectable()
 export class CrossChainTableService extends TableService<
@@ -60,7 +60,7 @@ export class CrossChainTableService extends TableService<
 
   public readonly totalPages$ = this.total$.pipe(
     combineLatestWith(this.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
+    map(([total, size]) => Math.ceil(total / size))
   );
 
   public readonly data$: Observable<CrossChainTableData[]> = this.request$.pipe(

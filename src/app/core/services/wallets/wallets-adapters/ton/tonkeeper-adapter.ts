@@ -1,7 +1,7 @@
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { TonConnectAbstractAdapter } from './abstract/ton-connect-abstract-adapter';
 import { BehaviorSubject } from 'rxjs';
-import { BlockchainName } from 'rubic-sdk';
+import { BlockchainName } from '@cryptorubic/sdk';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@app/shared/utils/rubic-window';

@@ -832,7 +832,9 @@
     "successfulWithdraw": "Retrait réussi",
     "withdrawInProgress": "Retrait en cours",
     "openMobileWallet": "Veuillez signer la transaction dans votre portefeuille",
-    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature"
+    "cancelRpcSwitch": "To enable MEV-Bot protection, please switch your network to a more secure one, with private RPC. Accept the network switch request in your wallet or disable the feature",
+    "solanaGaslessTitle": "You swap on Solana!",
+    "solanaGaslessContent": "That means 5 gasless swaps today. Just trade $100+ and Rubic covers your gas. Come back tomorrow for 5 more free swaps!"
   },
   "buyTokens": {
     "default": "Acheter RBC",

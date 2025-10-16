@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 import { PolymorpheusContent } from '@tinkoff/ng-polymorpheus';
 import { TranslateService } from '@ngx-translate/core';
 import { TuiBaseDialogContext } from '@taiga-ui/cdk/interfaces';
+import { ErrorInterface } from '@cryptorubic/core';
 
 type DialogOptions<I> = Omit<TuiAlertOptions<I>, 'label' | 'hasCloseButton' | 'hasIcon'> &
   Partial<TuiAlertOptions<I>>;
@@ -22,6 +23,20 @@ export class NotificationsService {
     private readonly ngZone: NgZone,
     private readonly translateService: TranslateService
   ) {}
+
+  public showSwapWarning(error: ErrorInterface): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(error.reason, {
+          status: 'info',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
 
   public show<I = unknown, O = undefined>(
     content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
@@ -63,6 +78,17 @@ export class NotificationsService {
     return this.show(this.translateService.instant('notifications.openMobileWallet'), {
       status: options?.status ?? 'info',
       autoClose: options?.autoClose ?? this.SHORT_DELAY,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
+  }
+
+  public showSolanaGaslessInfo(): Subscription {
+    return this.show(this.translateService.instant('notifications.solanaGaslessContent'), {
+      label: this.translateService.instant('notifications.solanaGaslessTitle'),
+      status: 'success',
+      autoClose: 10_000,
       data: null,
       icon: '',
       defaultAutoCloseTime: 0

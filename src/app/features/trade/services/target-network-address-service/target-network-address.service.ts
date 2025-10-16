@@ -8,7 +8,7 @@ import {
   skip,
   tap
 } from 'rxjs';
-import { BlockchainsInfo, ChainType } from 'rubic-sdk';
+import { BlockchainsInfo, ChainType } from '@cryptorubic/sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormControl } from '@angular/forms';
 import { getCorrectAddressValidator } from '../../components/target-network-address/utils/get-correct-address-validator';

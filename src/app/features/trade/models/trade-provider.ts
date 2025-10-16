@@ -1,3 +1,3 @@
-import { BridgeType, OnChainTradeType } from 'rubic-sdk';
+import { BridgeType, OnChainTradeType } from '@cryptorubic/sdk';
 
 export type TradeProvider = OnChainTradeType | BridgeType;
