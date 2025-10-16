@@ -18,9 +18,8 @@ import {
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
-import { TokenFilter } from '../../../../models/token-filters';
-import { AssetType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -35,9 +34,7 @@ export class TokensListElementComponent {
 
   @Input() showAll: boolean = false;
 
-  @Input({ required: true }) tokenFilter: TokenFilter;
-
-  @Input({ required: true }) assetType: AssetType;
+  @Input({ required: true }) assetType: AssetListType;
 
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
 

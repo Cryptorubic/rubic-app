@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { AssetType } from '@app/features/trade/models/asset';
+import { AssetListType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
@@ -13,7 +13,7 @@ import { AssetsSelectorFacadeService } from '@features/trade/components/assets-s
 export class AssetsTypeAsideElementComponent {
   @Input({ required: true }) blockchainItem: BlockchainItem;
 
-  @Input({ required: true }) selectedAssetType: AssetType;
+  @Input({ required: true }) selectedAssetType: AssetListType;
 
   @Input({ required: true }) isMobile: boolean = false;
 

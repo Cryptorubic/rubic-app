@@ -1,19 +1,19 @@
 import { ChangeDetectionStrategy, Component, Input, Self, ViewChild } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { distinctUntilChanged, Observable, of, switchMap, takeUntil } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
-import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { AssetListType, AssetType } from '@app/features/trade/models/asset';
+import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { map, tap } from 'rxjs/operators';
+import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,7 +27,7 @@ export class TokensListComponent {
   @Input({ required: true }) type: 'from' | 'to';
 
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-    this.tokensListService.setListScrollSubject(scroll);
+    this.assetsSelectorFacade.getAssetsService(this.type).setListScrollSubject(scroll);
   }
 
   public get tokensLoading$(): Observable<boolean> {
@@ -53,7 +53,9 @@ export class TokensListComponent {
     );
   }
 
-  public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
+  public get listAnimationState$(): Observable<ListAnimationType> {
+    return this.assetsSelectorFacade.getAssetsService(this.type).listAnimationType$;
+  }
 
   public get customToken$(): Observable<AvailableTokenAmount> {
     return this.assetsSelectorFacade.getAssetsService(this.type).customToken$;
@@ -65,11 +67,11 @@ export class TokensListComponent {
   public readonly isBalanceLoading$ = of(false);
 
   public get isAllChainsOpened(): boolean {
-    return this.assetsSelectorStateService.assetType === 'allChains';
+    return this.assetsSelectorFacade.getAssetsService(this.type).assetListType === 'allChains';
   }
 
-  public get assetType(): AssetType {
-    return this.assetsSelectorStateService.assetType;
+  public get assetType(): AssetListType {
+    return this.assetsSelectorFacade.getAssetsService(this.type).assetListType;
   }
 
   public get tokensToShow$(): Observable<AvailableTokenAmount[]> {
@@ -95,12 +97,9 @@ export class TokensListComponent {
       .pipe(tap(console.log));
   }
 
-  public readonly tokenFilter$ = this.assetsSelectorStateService.tokenFilter$;
-
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
   constructor(
-    private readonly tokensListService: TokensListService,
     private readonly mobileNativeService: MobileNativeModalService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly headerStore: HeaderStore,
@@ -108,13 +107,7 @@ export class TokensListComponent {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tokensFacade: TokensFacadeService,
     private readonly assetsSelectorFacade: AssetsSelectorFacadeService
-  ) {
-    this.assetsSelectorStateService.tokenFilter$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.assetsSelectorFacade.getAssetsService(this.type).assetsQuery = '';
-      });
-  }
+  ) {}
 
   /**
    * Function to track list element by unique key: token blockchain and address.

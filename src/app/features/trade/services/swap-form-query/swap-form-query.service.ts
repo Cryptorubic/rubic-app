@@ -17,10 +17,10 @@ import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { AssetType } from '@features/trade/models/asset';
 import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -114,7 +114,7 @@ export class SwapFormQueryService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
-    let fromChain: AssetType;
+    let fromChain: AssetListType;
     if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
     } else if (this.walletConnectorService.network) {

@@ -315,4 +315,37 @@ export abstract class AssetsService {
     }
     return null;
   }
+
+  public setListScrollSubject(scroll: CdkVirtualScrollViewport): void {
+    if (scroll) {
+      this.listScrollSubject$.next(scroll);
+    }
+  }
+
+  private resetScrollToTop(): void {
+    if (this.listScrollSubject$.value) {
+      this.listScrollSubject$.value.scrollToIndex(0);
+    }
+  }
+
+  // @TODO TOKENS
+  // private getTokensNetworkStateKey(): TokensNetworkStateKey {
+  //   assertTokensNetworkStateKey(this.assetsSelectorStateService.assetType);
+  //   return this.assetsSelectorStateService.assetType;
+  // }
+
+  // @TODO TOKENS
+  // private subscribeOnTokensToShow(): void {
+  //   this.assetType$.pipe(
+  //       combineLatestWith(this.assetsSelectorStateService.tokenFilter$),
+  //       takeUntil(this.destroy$)
+  //     )
+  //     .subscribe(() => {
+  //       this.resetScrollToTop();
+  //       this.listAnimationType = 'hidden';
+  //       setTimeout(() => {
+  //         this.listAnimationType = 'shown';
+  //       });
+  //     });
+  // }
 }

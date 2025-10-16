@@ -1,8 +1,6 @@
 <div>Test</div>
 
-<ng-container
-  *ngLet="{ tokensToShow: tokensToShow$ | async, tokenFilter: tokenFilter$ | async } as state"
->
+<ng-container *ngLet="{ tokensToShow: tokensToShow$ | async } as state">
   <div *ngIf="!isMobile" class="tokens-list__search-bar-container">
     <app-search-bar [type]="type" [searchBarType]="'tokens'"></app-search-bar>
     <app-switch-list-type-button></app-switch-list-type-button>
@@ -10,7 +8,7 @@
 
   <app-tokens-list-filters
     *ngIf="isAllChainsOpened"
-    [tokenFilter]="state.tokenFilter"
+    [assetListType]="assetType"
     (onSelect)="selectTokenFilter($event)"
   >
   </app-tokens-list-filters>
@@ -58,7 +56,6 @@
                   [token]="token"
                   [showAll]="isAllChainsOpened"
                   [balanceLoading]="isBalanceLoading$ | async"
-                  [tokenFilter]="state.tokenFilter"
                   [assetType]="assetType"
                   (selectToken)="onTokenSelect(token)"
                 ></app-tokens-list-element>

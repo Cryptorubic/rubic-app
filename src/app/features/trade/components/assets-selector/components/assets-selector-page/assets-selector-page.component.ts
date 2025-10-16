@@ -13,14 +13,14 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { map, takeUntil } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset } from '@features/trade/models/asset';
-import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -34,7 +34,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
-  public readonly selectorListType$ = this.assetsSelectorStateService.selectorListType$;
+  public readonly selectorListType$ = of('tokens');
 
   public readonly headerText$ = this.selectorListType$.pipe(
     map(type => (type === 'blockchains' ? 'Blockchains List' : 'Select Chain and Token'))
@@ -85,13 +85,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   private subscribeOnAssetsSelect(): void {
-    this.assetsSelectorStateService.assetSelected$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(selectedAsset => {
-        if (isMinimalToken(selectedAsset)) {
-          this.tokensFacade.addToken(selectedAsset);
-        }
-        this.tokenSelect.emit(selectedAsset);
-      });
+    // @TODO TOKENS
+    // this.assetsSelectorStateService.assetSelected$
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe(selectedAsset => {
+    //     if (isMinimalToken(selectedAsset)) {
+    //       this.tokensFacade.addToken(selectedAsset);
+    //     }
+    //     this.tokenSelect.emit(selectedAsset);
+    //   });
   }
 }

@@ -41,7 +41,7 @@
     </div>
 
     <div class="token-card__right">
-      <ng-container *ngLet="token | showPriceChange : tokenFilter : assetType as pcPercent">
+      <ng-container *ngLet="token | showPriceChange : assetType as pcPercent">
         <div
           *ngIf="pcPercent !== null"
           class="token-card__price-change-container"
