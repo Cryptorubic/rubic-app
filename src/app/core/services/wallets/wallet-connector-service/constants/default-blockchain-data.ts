@@ -254,5 +254,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.HEMI]: {
     name: 'Hemi',
     rpc: 'https://rpc.hemi.network/rpc'
+  },
+  [BLOCKCHAIN_NAME.PLASMA]: {
+    name: 'Plasma',
+    rpc: 'https://rpc.plasma.to'
   }
 };
