@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FormType } from '@features/trade/models/form-type';
@@ -23,7 +23,7 @@ export class AmountTransputComponent {
 
   public readonly defaultDecimals = 18;
 
-  @Input() public selectedToken: TokenAmount | null;
+  @Input() public selectedToken: BalanceToken | null;
 
   @Input() public formType: FormType;
 

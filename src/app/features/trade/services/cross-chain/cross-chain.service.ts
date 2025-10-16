@@ -28,7 +28,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -394,8 +394,8 @@ export class CrossChainService {
 
   private notifyGtmAfterSignTx(
     txHash: string,
-    fromToken: TokenAmount,
-    toToken: TokenAmount,
+    fromToken: BalanceToken,
+    toToken: BalanceToken,
     fromAmount: BigNumber,
     useMevBotProtection: boolean
   ): void {

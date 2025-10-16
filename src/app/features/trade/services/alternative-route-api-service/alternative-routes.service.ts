@@ -21,7 +21,7 @@ import {
 import { SwapsFormService } from '../swaps-form/swaps-form.service';
 import { compareAddresses, notNull } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { TO_BACKEND_BLOCKCHAINS } from '@cryptorubic/sdk';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -146,7 +146,7 @@ export class AlternativeRoutesService {
   }
 
   private getFromTokenAmount(
-    newFromToken: TokenAmount,
+    newFromToken: BalanceToken,
     alternativeTokenUsdPrice: number | null
   ): BigNumber {
     const prevFromToken = this.swapFormService.inputValue.fromToken;

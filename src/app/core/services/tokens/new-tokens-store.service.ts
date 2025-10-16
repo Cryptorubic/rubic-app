@@ -4,7 +4,7 @@ import { TokensState, UtilityState } from '@core/services/tokens/models/new-toke
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 
 @Injectable({
   providedIn: 'root'
@@ -65,7 +65,7 @@ export class NewTokensStoreService {
 
   private createTokenStore(): TokensState {
     return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
-      const tokensSubject$ = new BehaviorSubject<Record<string, TokenAmount>>({});
+      const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
       const loadingSubject$ = new BehaviorSubject(true);
       acc[blockchain] = {
         _loading$: loadingSubject$,
@@ -89,7 +89,7 @@ export class NewTokensStoreService {
       loading$: loadingSubject$.asObservable(),
 
       refs: [],
-      tokens$: new BehaviorSubject<TokenAmount[]>([]).asObservable()
+      tokens$: new BehaviorSubject<BalanceToken[]>([]).asObservable()
     };
   }
 }

@@ -1,7 +1,7 @@
 import { BlockchainName } from '@cryptorubic/sdk';
 import { Token } from '@shared/models/tokens/token';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 
 export interface TokenRef {
   readonly blockchain: BlockchainName;
@@ -14,8 +14,8 @@ export type TokensState = Record<
     readonly _loading$: BehaviorSubject<boolean>;
     readonly loading$: Observable<boolean>;
 
-    readonly _tokens$: BehaviorSubject<Record<string, TokenAmount>>;
-    readonly tokens$: Observable<Record<string, TokenAmount>>;
+    readonly _tokens$: BehaviorSubject<Record<string, BalanceToken>>;
+    readonly tokens$: Observable<Record<string, BalanceToken>>;
 
     totalTokens: number | null;
     page: number;
@@ -27,7 +27,7 @@ export type UtilityState = {
   readonly loading$: Observable<boolean>;
 
   readonly refs: TokenRef[];
-  readonly tokens$: Observable<TokenAmount[]>;
+  readonly tokens$: Observable<BalanceToken[]>;
 };
 
 export interface TokensStore {

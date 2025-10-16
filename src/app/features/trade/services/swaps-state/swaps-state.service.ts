@@ -36,7 +36,7 @@ import BigNumber from 'bignumber.js';
 import { compareAddresses, compareObjects, compareTokens } from '@shared/utils/utils';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -382,7 +382,7 @@ export class SwapsStateService {
     this._calculationProgress$.next({ total, current });
   }
 
-  private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
+  private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {
     if (!fromToken?.address || !toToken?.address) {
       return false;
     }
@@ -470,7 +470,7 @@ export class SwapsStateService {
     return calculationResult;
   }
 
-  private shouldEmitToken(oldToken: TokenAmount, newToken: TokenAmount): boolean {
+  private shouldEmitToken(oldToken: BalanceToken, newToken: BalanceToken): boolean {
     return Boolean(oldToken && newToken) ?? compareTokens(oldToken, newToken);
   }
 

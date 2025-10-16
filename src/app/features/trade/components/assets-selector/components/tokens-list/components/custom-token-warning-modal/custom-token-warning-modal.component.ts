@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MobileNativeModalService } from '@core/modals/services/mobile-native-modal.service';
 
 @Component({
@@ -11,11 +11,11 @@ import { MobileNativeModalService } from '@core/modals/services/mobile-native-mo
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CustomTokenWarningModalComponent {
-  public token: TokenAmount;
+  public token: BalanceToken;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
-    private readonly context: TuiDialogContext<boolean, { token: TokenAmount }>,
+    private readonly context: TuiDialogContext<boolean, { token: BalanceToken }>,
     private readonly mobileNativeService: MobileNativeModalService
   ) {
     this.token = context.data.token;

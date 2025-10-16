@@ -17,7 +17,7 @@ import {
   TokensRequestQueryOptions
 } from 'src/app/core/services/backend/tokens-api/models/tokens';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { HttpService } from '../../http/http.service';
 import { AuthService } from '../../auth/auth.service';
 import { defaultTokens } from './models/default-tokens';
@@ -108,7 +108,7 @@ export class TokensApiService {
    * Adds favorite token on backend.
    * @param token Tokens to add.
    */
-  public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+  public addFavoriteToken(token: BalanceToken): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
@@ -121,7 +121,7 @@ export class TokensApiService {
    * Deletes favorite token on backend.
    * @param token Tokens to delete.
    */
-  public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+  public deleteFavoriteToken(token: BalanceToken): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,

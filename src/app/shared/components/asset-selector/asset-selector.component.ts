@@ -14,7 +14,7 @@ import { AssetSelector } from '@shared/models/asset-selector';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
@@ -30,7 +30,7 @@ export class AssetSelectorComponent implements OnInit {
 
   @Input({ required: true }) selectorType: 'from' | 'to';
 
-  @Input() set asset(value: TokenAmount | null) {
+  @Input() set asset(value: BalanceToken | null) {
     if (value) {
       this.visibleAsset = this.getTokenAsset(value);
     } else {
@@ -70,7 +70,7 @@ export class AssetSelectorComponent implements OnInit {
       });
   }
 
-  private getTokenAsset(token: TokenAmount): AssetSelector {
+  private getTokenAsset(token: BalanceToken): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
     const color = blockchainColor[token.blockchain];
 

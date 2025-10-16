@@ -19,7 +19,7 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpService } from '@core/services/http/http.service';
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { List } from 'immutable';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 
 @Injectable({
@@ -137,7 +137,7 @@ export class NewTokensApiService {
     );
   }
 
-  public addFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+  public addFavoriteToken(token: BalanceToken): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,
@@ -146,7 +146,7 @@ export class NewTokensApiService {
     return this.httpService.post(ENDPOINTS.FAVORITE_TOKENS, body, this.tokensApiUrl);
   }
 
-  public deleteFavoriteToken(token: TokenAmount): Observable<unknown | null> {
+  public deleteFavoriteToken(token: BalanceToken): Observable<unknown | null> {
     const body: FavoriteTokenRequestParams = {
       network: TO_BACKEND_BLOCKCHAINS[token.blockchain],
       address: token.address,

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TokenAmount } from '../models/tokens/token-amount';
+import { BalanceToken } from '../models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { isTokenAmountWithPriceChange } from '../utils/is-token';
@@ -8,7 +8,7 @@ import { isTokenAmountWithPriceChange } from '../utils/is-token';
   name: 'showPriceChange'
 })
 export class ShowPriceChangePipe implements PipeTransform {
-  transform(token: TokenAmount, listType: AssetListType): number {
+  transform(token: BalanceToken, listType: AssetListType): number {
     if (listType !== 'allChains' && listType !== 'gainers' && listType !== 'losers') {
       return null;
     }

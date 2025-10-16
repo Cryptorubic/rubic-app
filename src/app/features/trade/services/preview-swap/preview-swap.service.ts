@@ -24,7 +24,7 @@ import {
   timeout
 } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AssetSelector } from '@shared/models/asset-selector';
 import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
@@ -140,7 +140,7 @@ export class PreviewSwapService {
     private readonly spindlService: SpindlService
   ) {}
 
-  private getTokenAsset(token: TokenAmount): AssetSelector {
+  private getTokenAsset(token: BalanceToken): AssetSelector {
     const blockchain = BLOCKCHAINS[token.blockchain];
     const color = blockchainColor[token.blockchain];
 

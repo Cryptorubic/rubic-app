@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
@@ -23,7 +23,7 @@ import { compareTokens } from '@shared/utils/utils';
   providedIn: 'root'
 })
 export class TokensFacadeService {
-  private readonly _favoriteTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+  private readonly _favoriteTokens$ = new BehaviorSubject<List<BalanceToken>>(List());
 
   public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
 
@@ -46,16 +46,16 @@ export class TokensFacadeService {
     return this.authService.userAddress;
   }
 
-  private readonly _tokens$ = new BehaviorSubject<List<TokenAmount>>(List());
+  private readonly _tokens$ = new BehaviorSubject<List<BalanceToken>>(List());
 
-  public readonly tokens$: Observable<List<TokenAmount>> = this._tokens$.asObservable();
+  public readonly tokens$: Observable<List<BalanceToken>> = this._tokens$.asObservable();
 
   public readonly blockchainTokens = this.tokensStore.tokens;
 
   /**
    * Current tokens list.
    */
-  public get tokens(): List<TokenAmount> {
+  public get tokens(): List<BalanceToken> {
     return this._tokens$.getValue();
   }
 
@@ -79,7 +79,7 @@ export class TokensFacadeService {
     });
   }
 
-  public async findToken(token: MinimalToken, _searchBackend = false): Promise<TokenAmount> {
+  public async findToken(token: MinimalToken, _searchBackend = false): Promise<BalanceToken> {
     const foundToken = this.tokensStore.tokens[token.blockchain]._tokens$.value[token.address];
     if (foundToken) {
       return foundToken;
@@ -97,7 +97,7 @@ export class TokensFacadeService {
     return null;
   }
 
-  public findTokenSync(token: MinimalToken, _searchBackend = false): TokenAmount | null {
+  public findTokenSync(token: MinimalToken, _searchBackend = false): BalanceToken | null {
     const foundToken = this.tokensStore.tokens[token.blockchain]._tokens$.value[token.address];
     if (foundToken) {
       return foundToken;
@@ -217,7 +217,7 @@ export class TokensFacadeService {
   public fetchQueryTokens(
     query: string,
     blockchain: BlockchainName | null
-  ): Observable<List<TokenAmount>> {
+  ): Observable<List<BalanceToken>> {
     return this.apiService.fetchQueryTokens(query, blockchain).pipe(
       switchMap(backendTokens => {
         const _filteredTokens = backendTokens.filter(
@@ -236,7 +236,7 @@ export class TokensFacadeService {
    * Adds token to list of favorite tokens.
    * @param favoriteToken Favorite token to add.
    */
-  public addFavoriteToken(favoriteToken: TokenAmount): Observable<unknown> {
+  public addFavoriteToken(favoriteToken: BalanceToken): Observable<unknown> {
     return this.apiService.addFavoriteToken(favoriteToken).pipe(
       tap((_avoriteTokenBalance: BigNumber) => {
         // @TODO TOKENS USE NEW SCHEME
@@ -251,7 +251,7 @@ export class TokensFacadeService {
    * Removes token from list of favorite tokens.
    * @param token Favorite token to remove.
    */
-  public removeFavoriteToken(token: TokenAmount): Observable<unknown> {
+  public removeFavoriteToken(token: BalanceToken): Observable<unknown> {
     // @TODO TOKENS USE NEW SCHEME
     const filteredTokens = this._favoriteTokens$.value.filter(el => !compareTokens(el, token));
     return this.apiService.deleteFavoriteToken(token).pipe(
@@ -269,7 +269,7 @@ export class TokensFacadeService {
    * Adds new token to tokens list.
    * @param token Tokens to add.
    */
-  public addToken(_token: TokenAmount): void {
+  public addToken(_token: BalanceToken): void {
     // @TODO TOKENS ADD TOKEN
     // if (!this.tokens.find(t => compareTokens(t, token))) {
     //   const tokens = this.tokens.push(token);
@@ -277,7 +277,10 @@ export class TokensFacadeService {
     // }
   }
 
-  public addTokenByAddress(_address: string, _blockchain: BlockchainName): Observable<TokenAmount> {
+  public addTokenByAddress(
+    _address: string,
+    _blockchain: BlockchainName
+  ): Observable<BalanceToken> {
     // @TODO TOKENS
     throw Error('Method not implemented.');
     // const blockchainAdapter = Injector.web3PublicService.getWeb3Public(

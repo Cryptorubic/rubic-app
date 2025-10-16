@@ -12,7 +12,7 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
@@ -82,13 +82,13 @@ export class SwapsFormService {
     shareReplay(shareReplayConfig)
   );
 
-  public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
+  public readonly fromToken$: Observable<BalanceToken | null> = this.inputValue$.pipe(
     map(inputValue => inputValue.fromToken),
     distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)
   );
 
-  public readonly toToken$: Observable<TokenAmount> = this.inputValue$.pipe(
+  public readonly toToken$: Observable<BalanceToken> = this.inputValue$.pipe(
     map(inputValue => inputValue.toToken),
     distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)

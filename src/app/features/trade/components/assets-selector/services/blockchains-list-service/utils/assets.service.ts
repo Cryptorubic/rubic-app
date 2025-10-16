@@ -20,7 +20,7 @@ import { disabledFromBlockchains } from '@features/trade/components/assets-selec
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { debounceTime, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
@@ -264,7 +264,7 @@ export abstract class AssetsService {
   //     });
   // }
 
-  protected setChainInTopOfAssetsBlockchains(fromToken: TokenAmount, toToken: TokenAmount): void {
+  protected setChainInTopOfAssetsBlockchains(fromToken: BalanceToken, toToken: BalanceToken): void {
     let firstSelectedChainName = fromToken?.blockchain;
     const chainFromOppositeSelector = toToken?.blockchain;
 

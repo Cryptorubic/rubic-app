@@ -18,7 +18,7 @@ import {
   Web3Pure
 } from '@cryptorubic/sdk';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { TokenAmount } from '@app/shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -91,7 +91,7 @@ export class GoogleTagManagerService {
   /**
    * Fires click on tokenIn/tokenOut rate chart.
    */
-  public fireOpenChart(from: TokenAmount | null, to: TokenAmount | null): void {
+  public fireOpenChart(from: BalanceToken | null, to: BalanceToken | null): void {
     this.angularGtmService.gtag('event', 'open_chart', {
       input: from ? JSON.stringify({ blockchain: from.blockchain, symbol: from.symbol }) : null,
       output: to ? JSON.stringify({ blockchain: to.blockchain, symbol: to.symbol }) : null

@@ -7,9 +7,9 @@ import {
   Web3Public,
   Web3Pure
 } from '@cryptorubic/sdk';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 
-export function isNativeAddressSafe(token: TokenAmount): boolean {
+export function isNativeAddressSafe(token: BalanceToken): boolean {
   let chainType: ChainType;
   try {
     chainType = BlockchainsInfo.getChainType(token.blockchain);

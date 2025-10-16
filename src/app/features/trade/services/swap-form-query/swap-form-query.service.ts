@@ -12,7 +12,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -145,10 +145,10 @@ export class SwapFormQueryService {
   }
 
   private getTokenBySymbolOrAddress(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     token: string,
     chain: BlockchainName
-  ): Observable<TokenAmount> {
+  ): Observable<BalanceToken> {
     if (!token) {
       return of(null);
     }
@@ -185,10 +185,10 @@ export class SwapFormQueryService {
   }
 
   private searchTokenBySymbol(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     symbol: string,
     chain: BlockchainName
-  ): Observable<TokenAmount | null> {
+  ): Observable<BalanceToken | null> {
     const similarTokens = tokens.filter(
       token => token.symbol.toLowerCase() === symbol.toLowerCase() && token.blockchain === chain
     );
@@ -217,10 +217,10 @@ export class SwapFormQueryService {
   }
 
   private searchTokenByAddress(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     address: string,
     chain: BlockchainName
-  ): Observable<TokenAmount> {
+  ): Observable<BalanceToken> {
     const searchingToken = tokens.find(
       token => compareAddresses(token.address, address) && token.blockchain === chain
     );
