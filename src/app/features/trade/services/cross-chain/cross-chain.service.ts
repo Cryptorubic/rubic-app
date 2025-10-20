@@ -452,11 +452,11 @@ export class CrossChainService {
     // @TODO remove after birthday promo
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       disabledProviders = [
-        ...disabledProviders,
-        CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-        CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-        CROSS_CHAIN_TRADE_TYPE.EXOLIX,
-        CROSS_CHAIN_TRADE_TYPE.CHANGENOW
+        ...disabledProviders
+        // CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+        // CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+        // CROSS_CHAIN_TRADE_TYPE.EXOLIX,
+        // CROSS_CHAIN_TRADE_TYPE.CHANGENOW
       ];
     }
 
