@@ -154,5 +154,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.UNICHAIN]: '#F50DB4',
   [BLOCKCHAIN_NAME.SUI]: '#FFFFFF',
   [BLOCKCHAIN_NAME.WANCHAIN]: '#2a74db',
-  [BLOCKCHAIN_NAME.HEMI]: '#FFFFFF'
+  [BLOCKCHAIN_NAME.HEMI]: '#FFFFFF',
+  [BLOCKCHAIN_NAME.HYPER_EVM]: '#1e1e1e'
 };
