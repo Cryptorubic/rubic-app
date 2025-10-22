@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map } from 'rxjs/operators';
+import { catchError, first, map, tap } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -17,6 +17,7 @@ import { WalletConnectorService } from './core/services/wallets/wallet-connector
 import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-root',
@@ -43,7 +44,8 @@ export class AppComponent implements AfterViewInit {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tradePageService: TradePageService,
-    private readonly chartService: ChartService
+    private readonly chartService: ChartService,
+    private readonly tokensFacadeService: TokensFacadeService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -116,13 +118,15 @@ export class AppComponent implements AfterViewInit {
    * Waits for all initializing observables to complete.
    */
   private initApp(): void {
-    forkJoin([this.loadPlatformConfig(), this.initQueryParamsSubscription()]).subscribe(
-      ([isBackendAvailable]) => {
-        this.isBackendAvailable = isBackendAvailable;
-        document.getElementById('loader')?.classList.add('disabled');
-        setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-      }
-    );
+    forkJoin([
+      this.loadPlatformConfig(),
+      this.initQueryParamsSubscription(),
+      this.tokensFacadeService.tier1TokensLoaded$.pipe(tap(console.log), first(Boolean))
+    ]).subscribe(([isBackendAvailable]) => {
+      this.isBackendAvailable = isBackendAvailable;
+      document.getElementById('loader')?.classList.add('disabled');
+      setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
+    });
   }
 
   /**

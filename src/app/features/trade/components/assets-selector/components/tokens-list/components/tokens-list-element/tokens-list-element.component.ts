@@ -28,13 +28,11 @@ import { AssetListType } from '@features/trade/models/asset';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
-  @Input() token: AvailableTokenAmount;
+  @Input({ required: true }) token: AvailableTokenAmount;
 
-  @Input() balanceLoading = false;
+  @Input({ required: true }) balanceLoading = false;
 
-  @Input() showAll: boolean = false;
-
-  @Input({ required: true }) assetType: AssetListType;
+  @Input({ required: true }) listType: AssetListType;
 
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
 

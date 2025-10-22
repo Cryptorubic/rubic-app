@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 
 @Component({
   selector: 'app-assets-type-aside-element',
@@ -19,6 +18,12 @@ export class AssetsTypeAsideElementComponent {
 
   @Input({ required: true }) type: 'from' | 'to';
 
+  @Input({ required: true }) isDisabled: boolean;
+
+  @Input({ required: true }) hintText: string;
+
+  @Output() handleClick = new EventEmitter<BlockchainItem>();
+
   private get isAllChains(): boolean {
     return this.blockchainItem.name === null;
   }
@@ -34,17 +39,7 @@ export class AssetsTypeAsideElementComponent {
     return !this.isAllChains ? `idPrefixNetwork_${this.blockchainItem.name}` : 'allChainsSelector';
   }
 
-  constructor(private readonly assetsSelectorFacade: AssetsSelectorFacadeService) {}
-
-  public isItemDisabled(item: BlockchainItem): boolean {
-    if (this.isAllChains) return false;
-    return this.assetsSelectorFacade.getAssetsService(this.type).isDisabled(item);
-  }
-
-  public getHintText(item: BlockchainItem): string | null {
-    if (this.isAllChains) return 'Show tokens of all chains.';
-    return this.assetsSelectorFacade.getAssetsService(this.type).getHintText(item);
-  }
+  constructor() {}
 
   public getBlockchainTag(item: BlockchainItem): string | null {
     if (this.isAllChains) return null;
@@ -52,10 +47,12 @@ export class AssetsTypeAsideElementComponent {
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (this.isAllChains) {
-      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
-    } else {
-      this.assetsSelectorFacade.getAssetsService(this.type).assetListType = item.name;
-    }
+    this.handleClick.emit(item);
+    // @TODO TOKENS
+    // if (this.isAllChains) {
+    //   this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
+    // } else {
+    //   this.assetsSelectorFacade.getAssetsService(this.type).assetListType = item.name;
+    // }
   }
 }

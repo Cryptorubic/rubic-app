@@ -5,9 +5,10 @@ import {
   BackendToken,
   ENDPOINTS,
   FavoriteTokenRequestParams,
+  RatedBackendToken,
   TokensBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
-import { Token } from '@shared/models/tokens/token';
+import { RatedToken, Token } from '@shared/models/tokens/token';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
@@ -27,6 +28,21 @@ import { AuthService } from '@core/services/auth/auth.service';
 })
 export class NewTokensApiService {
   private readonly tokensApiUrl = `${ENVIRONMENT.apiTokenUrl}/`;
+
+  private readonly pageSize = 50;
+
+  private readonly topTierChains: BlockchainName[] = [
+    BLOCKCHAIN_NAME.ETHEREUM,
+    BLOCKCHAIN_NAME.ARBITRUM,
+    BLOCKCHAIN_NAME.POLYGON,
+    BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
+    BLOCKCHAIN_NAME.BASE,
+    BLOCKCHAIN_NAME.SOLANA,
+    BLOCKCHAIN_NAME.BERACHAIN,
+    BLOCKCHAIN_NAME.ZK_SYNC,
+    BLOCKCHAIN_NAME.OPTIMISM,
+    BLOCKCHAIN_NAME.BITCOIN
+  ];
 
   constructor(
     private readonly tokensApiService: TokensApiService,
@@ -86,20 +102,11 @@ export class NewTokensApiService {
       .filter(token => token.address && token.blockchain);
   }
 
-  public getTopTokens(): Observable<Partial<Record<BlockchainName, Token[]>>> {
-    const options = { page: 1, pageSize: 50 };
-    const tier1Blockchains = [
-      BLOCKCHAIN_NAME.ETHEREUM,
-      BLOCKCHAIN_NAME.ARBITRUM,
-      BLOCKCHAIN_NAME.POLYGON,
-      BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
-      BLOCKCHAIN_NAME.BASE,
-      BLOCKCHAIN_NAME.SOLANA,
-      BLOCKCHAIN_NAME.BERACHAIN,
-      BLOCKCHAIN_NAME.ZK_SYNC,
-      BLOCKCHAIN_NAME.OPTIMISM,
-      BLOCKCHAIN_NAME.BITCOIN
-    ].map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
+  public getTopTokens(): Observable<
+    Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
+  > {
+    const options = { page: 1, pageSize: this.pageSize };
+    const tier1Blockchains = this.topTierChains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
 
     return forkJoin(
       tier1Blockchains.map((network: BackendBlockchain) =>
@@ -115,7 +122,44 @@ export class NewTokensApiService {
           const blockchain = FROM_BACKEND_BLOCKCHAINS[tier1Blockchains[index]];
           return {
             ...acc,
-            [blockchain]: NewTokensApiService.prepareTokens(backendResponse.results)
+            [blockchain]: {
+              list: NewTokensApiService.prepareTokens(backendResponse.results),
+              total: backendResponse.count,
+              haveMore: Boolean(backendResponse.next)
+            }
+          };
+        }, {});
+      })
+    );
+  }
+
+  public getRestTokens(): Observable<
+    Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
+  > {
+    const options = { page: 1, pageSize: this.pageSize };
+    const tier2blockchains = Object.values(BLOCKCHAIN_NAME)
+      .filter(chain => !this.topTierChains.includes(chain))
+      .map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
+
+    return forkJoin(
+      tier2blockchains.map((network: BackendBlockchain) =>
+        this.httpService.get<TokensBackendResponse>(
+          ENDPOINTS.TOKENS,
+          { ...options, network },
+          this.tokensApiUrl
+        )
+      )
+    ).pipe(
+      map(chains => {
+        return chains.reduce((acc, backendResponse, index) => {
+          const blockchain = FROM_BACKEND_BLOCKCHAINS[tier2blockchains[index]];
+          return {
+            ...acc,
+            [blockchain]: {
+              list: NewTokensApiService.prepareTokens(backendResponse.results),
+              total: backendResponse.count,
+              haveMore: Boolean(backendResponse.next)
+            }
           };
         }, {});
       })
@@ -153,5 +197,42 @@ export class NewTokensApiService {
       user: this.authService.userAddress
     };
     return this.httpService.delete(ENDPOINTS.FAVORITE_TOKENS, { body }, this.tokensApiUrl);
+  }
+
+  public fetchTrendTokens(): Observable<RatedToken[]> {
+    return this.httpService
+      .get<RatedBackendToken[]>('v2/tokens/trending', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(backendTokens =>
+          NewTokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
+        ),
+        catchError(() => of([]))
+      );
+  }
+
+  public fetchGainersTokens(): Observable<RatedToken[]> {
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/gainers', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          NewTokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of([]))
+      );
+  }
+
+  public fetchLosersTokens(): Observable<RatedToken[]> {
+    return this.httpService
+      .get<TokensBackendResponse>('v2/tokens/losers', {}, '', { retry: 2, timeoutMs: 15_000 })
+      .pipe(
+        map(resp =>
+          NewTokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
+            resp.results as RatedBackendToken[]
+          )
+        ),
+        catchError(() => of([]))
+      );
   }
 }

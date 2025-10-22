@@ -1,7 +1,5 @@
 <div class="nothing-to-show-message">
-  <ng-container
-    *ngIf="(hasSearchQuery$ | async) || (listType$ | async) === 'default'; else noFavoriteTokens"
-  >
+  <ng-container *ngIf="hasQuery || (listType$ | async) === 'default'; else noFavoriteTokens">
     {{ 'modals.tokensListModal.noSearchData' | translate }}
   </ng-container>
 

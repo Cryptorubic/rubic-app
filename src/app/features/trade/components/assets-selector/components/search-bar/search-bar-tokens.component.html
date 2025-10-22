@@ -1,0 +1,27 @@
+<ng-container>
+  <tui-input
+    *ngIf="!expandableField; else expandableInputTpl"
+    [ngModel]="searchQuery"
+    (ngModelChange)="onQueryChanges($event)"
+    [tuiTextfieldIconLeft]="'tuiIconSearch'"
+    [tuiTextfieldSize]="'m'"
+    [tuiTextfieldLabelOutside]="true"
+    [focusable]="false"
+  >
+    {{ searchBarPlaceholder | translate }}
+  </tui-input>
+
+  <ng-template #expandableInputTpl>
+    <div class="expandable-input" [class.expandable-input_expanded]="isExpanded" (click)="expand()">
+      <tui-input
+        [ngModel]="searchQuery"
+        (ngModelChange)="onQueryChanges($event)"
+        [tuiTextfieldIcon]="'tuiIconSearch'"
+        tuiTextfieldSize="l"
+        [tuiTextfieldCleaner]="true"
+      >
+        {{ 'modals.tokensListModal.searchPlaceholder' | translate }}
+      </tui-input>
+    </div>
+  </ng-template>
+</ng-container>

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokensState, UtilityState } from '@core/services/tokens/models/new-token-types';
+import { TokenRef, TokensState, UtilityState } from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -24,14 +25,22 @@ export class NewTokensStoreService {
 
   public addInitialBlockchainTokens(
     blockchain: BlockchainName,
-    tokens: ReadonlyArray<Token>
+    tokens: { list: Token[]; total: number; haveMore: boolean }
   ): void {
     try {
-      this.tokens[blockchain]._loading$.next(true);
-      const currentTokens = this.tokens[blockchain]._tokens$;
-      const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
+      const chainObject = this.tokens[blockchain];
+
+      chainObject._pageLoading$.next(true);
+      const currentTokens = chainObject._tokensObject$;
+
+      const newValues = tokens.list.reduce(
+        (acc, token) => ({ ...acc, [token.address]: token }),
+        {}
+      );
       currentTokens.next({ ...currentTokens.value, ...newValues });
-      this.tokens[blockchain]._loading$.next(false);
+      chainObject._pageLoading$.next(false);
+      chainObject.page = chainObject.page + 1;
+
       console.log(`tokens added to ${blockchain} store`);
     } catch (err) {
       console.log(err);
@@ -39,13 +48,13 @@ export class NewTokensStoreService {
   }
 
   public addNewBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
-    const currentTokens = this.tokens[blockchain]._tokens$;
+    const currentTokens = this.tokens[blockchain]._tokensObject$;
     const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
     currentTokens.next({ ...currentTokens.value, ...newValues });
   }
 
   public updateBlockchainTokens(blockchain: BlockchainName, newTokens: ReadonlyArray<Token>): void {
-    const tokens = this.tokens[blockchain]._tokens$;
+    const tokens = this.tokens[blockchain]._tokensObject$;
     newTokens.forEach(token => {
       if (tokens.value[token.address]) {
         tokens.value[token.address] = { ...tokens.value[token.address], ...token };
@@ -67,15 +76,24 @@ export class NewTokensStoreService {
     return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
       const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
       const loadingSubject$ = new BehaviorSubject(true);
-      acc[blockchain] = {
-        _loading$: loadingSubject$,
-        loading$: loadingSubject$.asObservable(),
+      const balanceLoadingSubject$ = new BehaviorSubject(false);
 
-        _tokens$: tokensSubject$,
-        tokens$: tokensSubject$.asObservable(),
+      acc[blockchain] = {
+        _pageLoading$: loadingSubject$,
+        pageLoading$: loadingSubject$.asObservable(),
+
+        _balanceLoading$: balanceLoadingSubject$,
+        balanceLoading$: balanceLoadingSubject$.asObservable(),
+
+        blockchain,
+
+        _tokensObject$: tokensSubject$,
+        tokensObject$: tokensSubject$.asObservable(),
+        tokens$: tokensSubject$.asObservable().pipe(map(el => Object.values(el))),
 
         totalTokens: null,
-        page: 1
+        page: 0,
+        allowFetching: true
       };
       return acc;
     }, {} as unknown as TokensState);
@@ -83,13 +101,42 @@ export class NewTokensStoreService {
 
   private createUtilityStore(): UtilityState {
     const loadingSubject$ = new BehaviorSubject(true);
+    const balanceLoadingSubject$ = new BehaviorSubject(false);
+    const refsSubject$ = new BehaviorSubject<TokenRef[]>([]);
 
     return {
-      _loading$: loadingSubject$,
-      loading$: loadingSubject$.asObservable(),
+      _pageLoading$: loadingSubject$,
+      pageLoading$: loadingSubject$.asObservable(),
 
-      refs: [],
-      tokens$: new BehaviorSubject<BalanceToken[]>([]).asObservable()
+      _balanceLoading$: balanceLoadingSubject$,
+      balanceLoading$: balanceLoadingSubject$.asObservable(),
+
+      _refs$: refsSubject$,
+      refs$: refsSubject$.asObservable(),
+
+      tokens$: refsSubject$.asObservable().pipe(
+        tap(el => {
+          console.log(el);
+        }),
+        combineLatestWith(
+          ...Object.values(this.tokens).map(t =>
+            t.tokens$.pipe(map(el => ({ chain: t.blockchain, list: el })))
+          )
+        ),
+        map(([utilityTokens, ...allTokens]) => {
+          return utilityTokens.map(ref => {
+            const chainTokens = allTokens.find(el => el.chain === ref.blockchain)!;
+            const foundToken = chainTokens.list.find(t => t.address === ref.address);
+
+            if (!foundToken) {
+              throw new Error(
+                `Token not found in all tokens store: ${ref.blockchain} - ${ref.address}`
+              );
+            }
+            return foundToken;
+          });
+        })
+      )
     };
   }
 }

@@ -1,4 +1,4 @@
-<ng-container *ngLet="searchQuery$ | async as searchQuery">
+<ng-container>
   <tui-input
     *ngIf="!expandableField; else expandableInputTpl"
     [ngModel]="searchQuery"
@@ -8,7 +8,7 @@
     [tuiTextfieldLabelOutside]="true"
     [focusable]="false"
   >
-    {{ searchBarText | translate }}
+    {{ searchBarPlaceholder | translate }}
   </tui-input>
 
   <ng-template #expandableInputTpl>

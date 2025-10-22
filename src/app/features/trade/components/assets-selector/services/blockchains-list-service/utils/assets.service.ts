@@ -24,8 +24,14 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
+import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 
 export abstract class AssetsService {
+  // Tokens type (default or favorite)
+  private readonly _tokensType$ = new BehaviorSubject<TokensListType>('default');
+
+  public readonly tokensType$ = this._tokensType$.asObservable();
+
   // List scroll (virtual scroll)
   private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
 
@@ -43,46 +49,45 @@ export abstract class AssetsService {
 
   public readonly customToken$ = this._customToken$.asObservable();
 
-  // Assets query (tokens)
+  // Tokens search query (tokens)
+  protected readonly _tokensSearchQuery$ = new BehaviorSubject<string>('');
 
-  protected readonly _assetsQuery$ = new BehaviorSubject<string>('');
+  public readonly tokensSearchQuery$ = this._tokensSearchQuery$.asObservable();
 
-  public readonly assetsQuery$ = this._assetsQuery$.asObservable();
-
-  public get assetsQuery(): string {
-    return this._assetsQuery$.value;
+  public get tokensSearchQuery(): string {
+    return this._tokensSearchQuery$.value;
   }
 
-  public set assetsQuery(value: string) {
-    this._assetsQuery$.next(value.trim());
+  public set tokensSearchQuery(value: string) {
+    this._tokensSearchQuery$.next(value.trim());
   }
 
-  // Asset type query (blockchains or allChains or utility)
+  // Blockchains search query
 
-  private readonly _assetTypeQuery$ = new BehaviorSubject<string>('');
+  private readonly _blockchainSearchQuery$ = new BehaviorSubject<string>('');
 
-  public readonly assetTypeQuery$ = this._assetTypeQuery$.asObservable();
+  public readonly blockchainSearchQuery$ = this._blockchainSearchQuery$.asObservable();
 
-  public get assetTypeQuery(): string {
-    return this._assetTypeQuery$.value;
+  public get blockchainSearchQuery(): string {
+    return this._blockchainSearchQuery$.value;
   }
 
-  public set assetTypeQuery(value: string) {
-    this._assetTypeQuery$.next(value.trim());
+  public set blockchainSearchQuery(value: string) {
+    this._blockchainSearchQuery$.next(value.trim());
   }
 
   // Assets list type (allChains or specific blockchain or utility)
-
   protected readonly _assetListType$ = new BehaviorSubject<AssetListType>('allChains');
 
-  public readonly assetListType$ = this._assetListType$.asObservable();
+  public readonly assetListType$ = this._assetListType$
+    .asObservable()
+    .pipe(tap(el => console.log('ASSET_LIST_SUBS', el)));
 
   public set assetListType(value: AssetListType) {
     this._assetListType$.next(value);
   }
 
   // Selected asset
-
   private readonly _selectedAsset$ = new Subject<Asset>();
 
   public readonly selectedAsset$ = this._selectedAsset$.asObservable();
@@ -92,7 +97,6 @@ export abstract class AssetsService {
   }
 
   // Avaialble blockchains
-
   protected _availableBlockchains: AvailableBlockchain[] = [];
 
   public get availableBlockchains(): AvailableBlockchain[] {
@@ -100,7 +104,6 @@ export abstract class AssetsService {
   }
 
   // Blockchains to show
-
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
   public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable();
@@ -127,11 +130,10 @@ export abstract class AssetsService {
     this._assetsBlockchainsToShow$.next(value);
   }
 
-  // Chain filter
+  // Blockchain filter
+  protected readonly _blockchainFilter$ = new BehaviorSubject<BlockchainFilters>('All');
 
-  protected readonly _filterQuery$ = new BehaviorSubject<BlockchainFilters>('All');
-
-  public readonly filterQuery$ = this._filterQuery$.asObservable();
+  public readonly blockchainFilter$ = this._blockchainFilter$.asObservable();
 
   // Services
 
@@ -148,10 +150,10 @@ export abstract class AssetsService {
   private readonly destroy$ = inject(TuiDestroyService);
 
   public set filterQuery(value: BlockchainFilters) {
-    if (value === this._filterQuery$.getValue() && value !== BlockchainTags.ALL) {
-      this._filterQuery$.next(BlockchainTags.ALL);
+    if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
+      this._blockchainFilter$.next(BlockchainTags.ALL);
     } else {
-      this._filterQuery$.next(value);
+      this._blockchainFilter$.next(value);
       this.modalService.openMobileBlockchainList(this.injector);
     }
   }
@@ -167,8 +169,8 @@ export abstract class AssetsService {
   }
 
   public closeSelector(): void {
-    this.assetsQuery = '';
-    this.assetTypeQuery = '';
+    this.tokensSearchQuery = '';
+    this.blockchainSearchQuery = '';
     this.assetListType = 'allChains';
   }
 
@@ -220,7 +222,7 @@ export abstract class AssetsService {
   }
 
   protected subscribeOnSearchQuery(): void {
-    combineLatest([this.filterQuery$, this.assetsQuery$])
+    combineLatest([this.blockchainFilter$, this.tokensSearchQuery$])
       .pipe(debounceTime(200), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe(([filterQuery, searchQuery]) => {
         this.assetsBlockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
@@ -236,7 +238,7 @@ export abstract class AssetsService {
   }
 
   protected subscribeOnFilterQuery(): void {
-    this.filterQuery$
+    this.blockchainFilter$
       .pipe(
         tap(filterQuery => {
           if (filterQuery === BlockchainTags.ALL || !filterQuery) {

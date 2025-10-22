@@ -1,77 +1,75 @@
-<div>Test</div>
+<div *ngIf="!isMobile" class="tokens-list__search-bar-container">
+  <app-search-tokens-bar
+    [searchQuery]="tokensSearchQuery"
+    [totalBlockchains]="totalBlockchains"
+  ></app-search-tokens-bar>
+  <app-switch-list-type-button></app-switch-list-type-button>
+</div>
 
-<ng-container *ngLet="{ tokensToShow: tokensToShow$ | async } as state">
-  <div *ngIf="!isMobile" class="tokens-list__search-bar-container">
-    <app-search-bar [type]="type" [searchBarType]="'tokens'"></app-search-bar>
-    <app-switch-list-type-button></app-switch-list-type-button>
-  </div>
+<app-tokens-list-filters
+  *ngIf="isUtility"
+  [assetListType]="listType"
+  (onSelect)="selectTokenFilter($event)"
+>
+</app-tokens-list-filters>
 
-  <app-tokens-list-filters
-    *ngIf="isAllChainsOpened"
-    [assetListType]="assetType"
-    (onSelect)="selectTokenFilter($event)"
-  >
-  </app-tokens-list-filters>
-
-  <tui-scrollbar
-    class="tokens-container"
-    [ngClass]="{
-      'large-iframe-token-container': useLargeIframe,
-      'tokens-container__all-chains': isAllChainsOpened
-    }"
-  >
-    <tui-loader *ngLet="tokensLoading$ | async as loading" [showLoader]="loading" [overlay]="true">
-      <ng-container *ngIf="(customToken$ | async) === null; else customTokenTmpl">
-        <!--standard mode -->
-        <div
-          class="tokens-container__empty-list"
-          *ngIf="!state.tokensToShow?.length; else tokenList"
-        >
-          <app-empty-list [type]="type"></app-empty-list>
-        </div>
-
-        <ng-template #tokenList>
-          <ul class="tokens-list" [@listAnimation]="listAnimationState$ | async">
-            <cdk-virtual-scroll-viewport
-              tuiScrollable
-              itemSize="50"
-              class="tokens-scrollbar tui-zero-scrollbar"
-              [ngClass]="{ 'tokens-scrollbar__empty': !state.tokensToShow?.length }"
-              [style.overflow]="loading ? 'hidden' : 'auto'"
-            >
-              <li
-                *cdkVirtualFor="
-                  let token of state.tokensToShow;
-                  let i = index;
-                  templateCacheSize: 0;
-                  trackBy: trackByFn
-                "
-                class="tokens-list__item"
-                [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
-                [tuiHint]="!token.available ? disabledTokenHint : null"
-                tuiHintAppearance="error"
-                tuiHintDirection="bottom-right"
-              >
-                <app-tokens-list-element
-                  [token]="token"
-                  [showAll]="isAllChainsOpened"
-                  [balanceLoading]="isBalanceLoading$ | async"
-                  [assetType]="assetType"
-                  (selectToken)="onTokenSelect(token)"
-                ></app-tokens-list-element>
-              </li>
-            </cdk-virtual-scroll-viewport>
-          </ul>
-        </ng-template>
-      </ng-container>
+<tui-scrollbar
+  class="tokens-container"
+  [ngClass]="{
+    'large-iframe-token-container': useLargeIframe,
+    'tokens-container__all-chains': isUtility
+  }"
+>
+  <tui-loader [showLoader]="loading" [overlay]="true">
+    <ng-container *ngIf="customToken === null; else customTokenTmpl">
       <!--standard mode -->
+      <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
+        <app-empty-list
+          [tokensType]="tokensType"
+          [hasQuery]="Boolean(tokensSearchQuery.length)"
+        ></app-empty-list>
+      </div>
 
-      <ng-template #customTokenTmpl>
-        <app-custom-token [type]="type"></app-custom-token>
+      <ng-template #tokenList>
+        <ul class="tokens-list">
+          <cdk-virtual-scroll-viewport
+            tuiScrollable
+            itemSize="50"
+            class="tokens-scrollbar tui-zero-scrollbar"
+            [ngClass]="{ 'tokens-scrollbar__empty': !tokensToShow?.length }"
+            [style.overflow]="loading ? 'hidden' : 'auto'"
+          >
+            <li
+              *cdkVirtualFor="
+                let token of tokensToShow;
+                let i = index;
+                templateCacheSize: 0;
+                trackBy: trackByFn
+              "
+              class="tokens-list__item"
+              [ngClass]="{ 'tokens-list__item_disabled': !token.available }"
+              [tuiHint]="!token.available ? disabledTokenHint : null"
+              tuiHintAppearance="error"
+              tuiHintDirection="bottom-right"
+            >
+              <app-tokens-list-element
+                [token]="token"
+                [listType]="listType"
+                [balanceLoading]="balanceLoading"
+                (selectToken)="onTokenSelect(token)"
+              ></app-tokens-list-element>
+            </li>
+          </cdk-virtual-scroll-viewport>
+        </ul>
       </ng-template>
-    </tui-loader>
-  </tui-scrollbar>
-</ng-container>
+    </ng-container>
+    <!--standard mode -->
+
+    <ng-template #customTokenTmpl>
+      <app-custom-token [listType]="listType" [customToken]="customToken"></app-custom-token>
+    </ng-template>
+  </tui-loader>
+</tui-scrollbar>
 
 <ng-template #disabledTokenHint>
   <div>

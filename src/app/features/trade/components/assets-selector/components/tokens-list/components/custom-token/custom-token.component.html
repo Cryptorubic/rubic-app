@@ -1,14 +1,15 @@
-<div *ngLet="customToken$ | async as customToken" class="custom-token">
+<div class="custom-token">
   <div
     class="custom-token__element"
     [ngClass]="{ 'custom-token__element_disabled': !customToken?.available }"
   >
     <app-tokens-list-element
+      [listType]="listType"
       [token]="customToken"
-      [assetType]="assetType"
       [tuiHint]="!customToken?.available ? disabledTokenHint : null"
       tuiHintAppearance="error"
       tuiHintDirection="bottom-right"
+      [balanceLoading]="false"
     >
     </app-tokens-list-element>
   </div>

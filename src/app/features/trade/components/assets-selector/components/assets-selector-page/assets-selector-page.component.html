@@ -1,46 +1,87 @@
-<section class="assets-selector">
-  <ng-container header *ngIf="!isMobile">
-    <div class="assets-selector__header">
-      <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-      <span class="back-button__text">{{ headerText$ | async }}</span>
-    </div>
-  </ng-container>
-
-  <ng-container *ngLet="selectorListType$ | async as selectorListType">
-    <app-blockchains-filter-list
-      *ngIf="!isMobile && selectorListType !== 'blockchains'"
-      [type]="type"
-    ></app-blockchains-filter-list>
-    <ng-container
-      *ngIf="!isMobile && selectorListType === 'blockchains'; then searchBar"
-    ></ng-container>
-    <div class="assets-selector__row">
-      <ng-container *ngIf="selectorListType !== 'blockchains'">
-        <app-asset-types-aside [type]="type"></app-asset-types-aside>
-        <ng-container *ngIf="selectorListType === 'fiats'">
-          <app-search-bar
-            [type]="type"
-            class="vertical-iframe-token-search"
-            [searchBarType]="'tokens'"
-          ></app-search-bar>
-        </ng-container>
-
-        <ng-container *ngIf="isMobile; then searchBar"></ng-container>
-
-        <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
-          <div class="token-list-container__list">
-            <app-tokens-list [type]="type"></app-tokens-list>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-
-    <ng-template #searchBar>
-      <div class="assets-selector__row">
-        <app-search-bar [type]="type" [searchBarType]="'tokens'"></app-search-bar>
-        <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
-        </app-switch-list-type-button>
+<ng-container
+  *ngLet="{
+    headerText: headerText$ | async,
+    selectorListType: selectorListType$ | async,
+    tokensSearchQuery: tokensSearchQuery$ | async,
+    assetListType: assetListType$ | async,
+    tokensToShow: tokensToShow$ | async,
+    tokensType: tokensType$ | async,
+    pageLoading: pageLoading$ | async,
+    balanceLoading: balanceLoading$ | async,
+    customToken: customToken$ | async,
+    blockchainFilter: blockchainFilter$ | async,
+    blockchainsToShow: blockchainsToShow$ | async
+  } as state"
+>
+  <section class="assets-selector">
+    <ng-container header *ngIf="!isMobile">
+      <div class="assets-selector__header">
+        <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
+        <span class="back-button__text">{{ headerText$ | async }}</span>
       </div>
-    </ng-template>
-  </ng-container>
-</section>
+    </ng-container>
+
+    <ng-container *ngLet="selectorListType$ | async as selectorListType">
+      <app-blockchains-filter-list
+        *ngIf="!isMobile && selectorListType !== 'blockchains'"
+        [selectedFilter]="state.blockchainFilter"
+        (selectFilter)="handleBlockchainFilterSelection($event)"
+      ></app-blockchains-filter-list>
+      <ng-container
+        *ngIf="!isMobile && selectorListType === 'blockchains'; then searchBar"
+      ></ng-container>
+      <div class="assets-selector__row">
+        <ng-container *ngIf="selectorListType !== 'blockchains'">
+          <app-asset-types-aside
+            [type]="type"
+            [blockchainsToShow]="state.blockchainsToShow"
+            [searchQuery]="state.tokensSearchQuery"
+            [blockchainFilter]="state.blockchainFilter"
+            [totalBlockchains]="totalBlockchains"
+            [assetListType]="state.assetListType"
+            (handleBlockchainSelect)="selectAssetList($event)"
+            (handleFilterSelect)="handleBlockchainFilterSelection($event)"
+            [hintText]=""
+            [isDisabled]=""
+          ></app-asset-types-aside>
+          <ng-container *ngIf="selectorListType === 'fiats'">
+            <app-search-tokens-bar
+              class="vertical-iframe-token-search"
+              [searchQuery]="state.tokensSearchQuery"
+              [totalBlockchains]="totalBlockchains"
+            ></app-search-tokens-bar>
+          </ng-container>
+
+          <ng-container *ngIf="isMobile; then searchBar"></ng-container>
+
+          <div class="token-list-container" *ngIf="selectorListType === 'tokens'">
+            <div class="token-list-container__list">
+              <app-tokens-list
+                [balanceLoading]="state.balanceLoading"
+                [customToken]="state.customToken"
+                [listType]="state.assetListType"
+                [loading]="state.pageLoading"
+                [tokensSearchQuery]="state.tokensSearchQuery"
+                [tokensToShow]="state.tokensToShow"
+                [tokensType]="state.tokensType"
+                [totalBlockchains]="totalBlockchains"
+                (selectAssetList)="selectAssetList($event)"
+              ></app-tokens-list>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-template #searchBar>
+        <div class="assets-selector__row">
+          <app-search-tokens-bar
+            [searchQuery]="state.tokensSearchQuery"
+            [totalBlockchains]="totalBlockchains"
+          ></app-search-tokens-bar>
+          <app-switch-list-type-button *ngIf="selectorListType === 'tokens'">
+          </app-switch-list-type-button>
+        </div>
+      </ng-template>
+    </ng-container>
+  </section>
+</ng-container>

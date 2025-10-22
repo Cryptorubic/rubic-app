@@ -1,54 +1,59 @@
-<ng-container *ngLet="selectedAssetType$ | async as selectedAssetType">
-  <div
-    [ngClass]="{
-      'asset-types-aside__search-bar': !isMobile,
-      'asset-types-aside__search-bar-mobile': isMobile
-    }"
-  >
-    <div *ngIf="isMobile" class="asset-types-aside__mobile-chain-type-row">
-      <ng-container *ngLet="blockchainsToShow$ | async as blockchainsToShow">
-        <div *ngFor="let blockchainItem of blockchainsToShow.slice(0, 5)">
-          <app-small-blockchain-button
-            [blockchainItem]="blockchainItem"
-            [selectedAssetType]="selectedAssetType"
-            (click)="onBlockchainItemClick(blockchainItem)"
-          ></app-small-blockchain-button>
-        </div>
-
+<div
+  [ngClass]="{
+    'asset-types-aside__search-bar': !isMobile,
+    'asset-types-aside__search-bar-mobile': isMobile
+  }"
+>
+  <div *ngIf="isMobile" class="asset-types-aside__mobile-chain-type-row">
+    <ng-container>
+      <div *ngFor="let blockchainItem of blockchainsToShow.slice(0, 5)">
         <app-small-blockchain-button
-          [blockchainItem]="allChainsSelectorItem"
-          [selectedAssetType]="selectedAssetType"
-          (click)="setBlockchainFilterAll()"
+          [blockchainItem]="blockchainItem"
+          [selectedAssetType]="assetListType"
+          (click)="onBlockchainItemClick(blockchainItem)"
         ></app-small-blockchain-button>
-      </ng-container>
-    </div>
+      </div>
 
-    <app-search-bar
-      *ngIf="!isMobile"
-      [type]="type"
-      [searchBarType]="'blockchains'"
-    ></app-search-bar>
+      <app-small-blockchain-button
+        [blockchainItem]="allChainsSelectorItem"
+        [selectedAssetType]="assetListType"
+        (click)="setBlockchainFilterAll()"
+      ></app-small-blockchain-button>
+    </ng-container>
   </div>
 
-  <aside *ngIf="!isMobile" class="asset-types-aside" [class.large-iframe-asset]="useLargeIframe">
-    <tui-scrollbar class="asset-types-aside__scroll">
-      <ul class="asset-types-aside__list">
+  <app-search-blockchains-bar
+    *ngIf="!isMobile"
+    [type]="type"
+    [searchQuery]="searchQuery"
+    [totalBlockchains]="totalBlockchains"
+  ></app-search-blockchains-bar>
+</div>
+
+<aside *ngIf="!isMobile" class="asset-types-aside" [class.large-iframe-asset]="useLargeIframe">
+  <tui-scrollbar class="asset-types-aside__scroll">
+    <ul class="asset-types-aside__list">
+      <app-assets-type-aside-element
+        [type]="type"
+        [blockchainItem]="allChainsSelectorItem"
+        [selectedAssetType]="assetListType"
+        [isMobile]="isMobile"
+        [hintText]="hintText"
+        [isDisabled]="isDisabled"
+        (handleClick)="onBlockchainItemClick($event)"
+      ></app-assets-type-aside-element>
+
+      <ng-container *ngFor="let blockchainItem of blockchainsToShow">
         <app-assets-type-aside-element
           [type]="type"
-          [blockchainItem]="allChainsSelectorItem"
-          [selectedAssetType]="selectedAssetType"
+          [blockchainItem]="blockchainItem"
+          [selectedAssetType]="assetListType"
           [isMobile]="isMobile"
+          [hintText]="hintText"
+          [isDisabled]="isDisabled"
+          (handleClick)="onBlockchainItemClick($event)"
         ></app-assets-type-aside-element>
-
-        <ng-container *ngFor="let blockchainItem of blockchainsToShow$ | async">
-          <app-assets-type-aside-element
-            [type]="type"
-            [blockchainItem]="blockchainItem"
-            [selectedAssetType]="selectedAssetType"
-            [isMobile]="isMobile"
-          ></app-assets-type-aside-element>
-        </ng-container>
-      </ul>
-    </tui-scrollbar>
-  </aside>
-</ng-container>
+      </ng-container>
+    </ul>
+  </tui-scrollbar>
+</aside>

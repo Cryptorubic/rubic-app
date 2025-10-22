@@ -18,6 +18,13 @@ import { map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { List } from 'immutable';
 import { compareTokens } from '@shared/utils/utils';
+import { AssetListType } from '@features/trade/models/asset';
+import {
+  BlockchainTokenState,
+  TokenRef,
+  UtilityState
+} from '@core/services/tokens/models/new-token-types';
+import { RatedToken, Token } from '@shared/models/tokens/token';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +59,10 @@ export class TokensFacadeService {
 
   public readonly blockchainTokens = this.tokensStore.tokens;
 
+  private readonly _tier1TokensLoaded$ = new BehaviorSubject<boolean>(false);
+
+  public readonly tier1TokensLoaded$ = this._tier1TokensLoaded$.asObservable();
+
   /**
    * Current tokens list.
    */
@@ -59,20 +70,34 @@ export class TokensFacadeService {
     return this._tokens$.getValue();
   }
 
-  // public readonly tokens$ = combineLatest(
-  //   Object.values(this.tokensStore.tokens).map(el => el.tokens$)
-  // );
-
-  // public get tokens(): TokenAmount[] {
-  //   return Object.values(this.tokensStore.tokens).flatMap(el => Object.values(el._tokens$.value));
-  // }
-
   constructor(
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
     private readonly authService: AuthService
   ) {
+    this.buildTokenLists();
+  }
+
+  private buildTokenLists(): void {
+    this.buildTier1List();
+    this.buildTier2List();
+    this.buildTrendingList();
+    this.buildGainersList();
+    this.buildLosersList();
+  }
+
+  private buildTier1List(): void {
     this.apiService.getTopTokens().subscribe(tokens => {
+      Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
+        this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
+      });
+      this.buildAllTokensList(tokens);
+      this._tier1TokensLoaded$.next(true);
+    });
+  }
+
+  private buildTier2List(): void {
+    this.apiService.getRestTokens().subscribe(tokens => {
       Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
         this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
       });
@@ -80,7 +105,8 @@ export class TokensFacadeService {
   }
 
   public async findToken(token: MinimalToken, _searchBackend = false): Promise<BalanceToken> {
-    const foundToken = this.tokensStore.tokens[token.blockchain]._tokens$.value[token.address];
+    const foundToken =
+      this.tokensStore.tokens[token.blockchain]._tokensObject$.value[token.address];
     if (foundToken) {
       return foundToken;
     }
@@ -98,7 +124,8 @@ export class TokensFacadeService {
   }
 
   public findTokenSync(token: MinimalToken, _searchBackend = false): BalanceToken | null {
-    const foundToken = this.tokensStore.tokens[token.blockchain]._tokens$.value[token.address];
+    const foundToken =
+      this.tokensStore.tokens[token.blockchain]._tokensObject$.value[token.address];
     if (foundToken) {
       return foundToken;
     }
@@ -312,4 +339,100 @@ export class TokensFacadeService {
     //   })
     // );
   }
+
+  public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | UtilityState {
+    if (type === 'allChains') {
+      return this.allTokens;
+    }
+    if (type === 'trending') {
+      return this.trending;
+    }
+    if (type === 'gainers') {
+      return this.gainers;
+    }
+    if (type === 'losers') {
+      return this.losers;
+    }
+    if (BlockchainsInfo.isBlockchainName(type)) {
+      return this.blockchainTokens[type];
+    }
+  }
+
+  private buildAllTokensList(
+    tokens: Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
+  ): void {
+    this.allTokens._pageLoading$.next(true);
+    const allTokens: TokenRef[] = [];
+    const metaTokensArray = Object.values(tokens);
+
+    metaTokensArray.forEach(blockchainTokens => {
+      blockchainTokens.list.forEach(token => {
+        allTokens.push({
+          address: token.address,
+          blockchain: token.blockchain
+        });
+      });
+    });
+    this.allTokens._refs$.next(allTokens);
+    this.allTokens._pageLoading$.next(false);
+  }
+
+  private buildTrendingList(): void {
+    this.trending._pageLoading$.next(true);
+    this.apiService.fetchTrendTokens().subscribe(tokens => {
+      this.addMissedUtilityTokens(tokens);
+      const trendingTokens: TokenRef[] = tokens.map(token => ({
+        address: token.address,
+        blockchain: token.blockchain
+      }));
+      this.trending._refs$.next(trendingTokens);
+      this.trending._pageLoading$.next(false);
+    });
+  }
+
+  private buildGainersList(): void {
+    this.gainers._pageLoading$.next(true);
+    this.apiService.fetchGainersTokens().subscribe(tokens => {
+      this.addMissedUtilityTokens(tokens);
+      const gainersTokens: TokenRef[] = tokens.map(token => ({
+        address: token.address,
+        blockchain: token.blockchain
+      }));
+      this.gainers._refs$.next(gainersTokens);
+      this.gainers._pageLoading$.next(false);
+    });
+  }
+
+  private buildLosersList(): void {
+    this.losers._pageLoading$.next(true);
+    this.apiService.fetchLosersTokens().subscribe(tokens => {
+      this.addMissedUtilityTokens(tokens);
+      const losersTokens: TokenRef[] = tokens.map(token => ({
+        address: token.address,
+        blockchain: token.blockchain
+      }));
+      this.losers._refs$.next(losersTokens);
+      this.losers._pageLoading$.next(false);
+    });
+  }
+
+  private addMissedUtilityTokens(tokens: RatedToken[]): void {
+    const chainObject = {} as Partial<Record<BlockchainName, RatedToken[]>>;
+    tokens.forEach(token => {
+      if (token.blockchain in chainObject === false) {
+        Object.assign(chainObject, { [token.blockchain]: [] });
+      }
+      chainObject[token.blockchain] = [...chainObject?.[token.blockchain], token];
+    });
+    Object.entries(chainObject).forEach(([blockchain, blockchainTokens]) => {
+      const existingTokens =
+        this.tokensStore.tokens[blockchain as BlockchainName]._tokensObject$.value;
+      const missedTokens = blockchainTokens.filter(token => !existingTokens[token.address]);
+      if (missedTokens.length) {
+        this.tokensStore.addNewBlockchainTokens(blockchain as BlockchainName, missedTokens);
+      }
+    });
+  }
+
+  public fetchNewPage(tokenState: BlockchainTokenState): void {}
 }

@@ -8,25 +8,35 @@ export interface TokenRef {
   readonly address: string;
 }
 
-export type TokensState = Record<
-  BlockchainName,
-  {
-    readonly _loading$: BehaviorSubject<boolean>;
-    readonly loading$: Observable<boolean>;
+export type BlockchainTokenState = {
+  readonly _pageLoading$: BehaviorSubject<boolean>;
+  readonly pageLoading$: Observable<boolean>;
 
-    readonly _tokens$: BehaviorSubject<Record<string, BalanceToken>>;
-    readonly tokens$: Observable<Record<string, BalanceToken>>;
+  readonly _balanceLoading$: BehaviorSubject<boolean>;
+  readonly balanceLoading$: Observable<boolean>;
 
-    totalTokens: number | null;
-    page: number;
-  }
->;
+  readonly _tokensObject$: BehaviorSubject<Record<string, BalanceToken>>;
+  readonly tokensObject$: Observable<Record<string, BalanceToken>>;
+  readonly tokens$: Observable<BalanceToken[]>;
+
+  readonly blockchain: BlockchainName;
+  totalTokens: number | null;
+  page: number;
+  allowFetching: boolean;
+};
+
+export type TokensState = Record<BlockchainName, BlockchainTokenState>;
 
 export type UtilityState = {
-  readonly _loading$: BehaviorSubject<boolean>;
-  readonly loading$: Observable<boolean>;
+  readonly _pageLoading$: BehaviorSubject<boolean>;
+  readonly pageLoading$: Observable<boolean>;
 
-  readonly refs: TokenRef[];
+  readonly _balanceLoading$: BehaviorSubject<boolean>;
+  readonly balanceLoading$: Observable<boolean>;
+
+  readonly _refs$: BehaviorSubject<TokenRef[]>;
+  readonly refs$: Observable<TokenRef[]>;
+
   readonly tokens$: Observable<BalanceToken[]>;
 };
 

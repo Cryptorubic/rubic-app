@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom, forkJoin, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 
-import { RatedToken, Token } from '@shared/models/tokens/token';
+import { Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
@@ -10,7 +10,6 @@ import {
   DEFAULT_PAGE_SIZE,
   ENDPOINTS,
   FavoriteTokenRequestParams,
-  RatedBackendToken,
   TokensBackendResponse,
   TokenSecurityBackendResponse,
   TokensRequestNetworkOptions,
@@ -309,42 +308,5 @@ export class TokensApiService {
       }),
       catchError(() => of(List() as List<Token>))
     );
-  }
-
-  public fetchTrendTokens(): Observable<List<RatedToken>> {
-    return this.httpService
-      .get<RatedBackendToken[]>('v2/tokens/trending', {}, '', { retry: 2, timeoutMs: 15_000 })
-      .pipe(
-        map(backendTokens =>
-          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(backendTokens)
-        ),
-        catchError(() => of(List() as List<RatedToken>))
-      );
-  }
-
-  public fetchGainersTokens(): Observable<List<RatedToken>> {
-    return this.httpService
-      .get<TokensBackendResponse>('v2/tokens/gainers', {}, '', { retry: 2, timeoutMs: 15_000 })
-      .pipe(
-        map(resp =>
-          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
-            resp.results as RatedBackendToken[]
-          )
-        ),
-        catchError(() => of(List() as List<RatedToken>))
-      );
-  }
-
-  public fetchLosersTokens(): Observable<List<RatedToken>> {
-    return this.httpService
-      .get<TokensBackendResponse>('v2/tokens/losers', {}, '', { retry: 2, timeoutMs: 15_000 })
-      .pipe(
-        map(resp =>
-          TokensApiService.prepareTokens<RatedBackendToken, RatedToken>(
-            resp.results as RatedBackendToken[]
-          )
-        ),
-        catchError(() => of(List() as List<RatedToken>))
-      );
   }
 }

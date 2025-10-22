@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { CustomTokenService } from '@features/trade/components/assets-selector/components/tokens-list/services/custom-token-service/custom-token.service';
-import { AssetsSelectorStateService } from '../../../../services/assets-selector-state/assets-selector-state.service';
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
-import { Observable } from 'rxjs';
 import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
@@ -14,21 +11,11 @@ import { AssetListType } from '@features/trade/models/asset';
   providers: [CustomTokenService]
 })
 export class CustomTokenComponent {
-  @Input({ required: true }) type: 'from' | 'to';
+  @Input({ required: true }) customToken: AvailableTokenAmount;
 
-  public get assetType(): AssetListType {
-    return this.assetsSelectorFacade.getAssetsService(this.type).assetListType;
-  }
+  @Input({ required: true }) listType: AssetListType;
 
-  public get customToken$(): Observable<AvailableTokenAmount | null> {
-    return this.assetsSelectorFacade.getAssetsService(this.type).customToken$;
-  }
-
-  constructor(
-    private readonly customTokenService: CustomTokenService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
-  ) {}
+  constructor(private readonly customTokenService: CustomTokenService) {}
 
   /**
    * Opens 'accept import' modal and adds token to local token collection in case of acceptation.
