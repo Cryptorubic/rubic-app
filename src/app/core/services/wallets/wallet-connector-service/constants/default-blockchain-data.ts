@@ -254,5 +254,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.HEMI]: {
     name: 'Hemi',
     rpc: 'https://rpc.hemi.network/rpc'
+  },
+  [BLOCKCHAIN_NAME.HYPER_EVM]: {
+    name: 'HyperEVM',
+    rpc: 'https://rpc.hyperliquid.xyz/evm'
   }
 };

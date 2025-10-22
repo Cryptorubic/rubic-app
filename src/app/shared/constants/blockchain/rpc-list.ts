@@ -360,6 +360,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://mainnet.unichain.org/',
     'https://x-api.rubic.exchange/drpc/unichain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc']
+  [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
+  [BLOCKCHAIN_NAME.HYPER_EVM]: ['https://rpc.hyperliquid.xyz/evm']
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: ['https://testnet-rpc.monad.xyz']
 };
