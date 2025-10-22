@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -73,7 +73,8 @@ export class TokensFacadeService {
   constructor(
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly zone: NgZone
   ) {
     this.buildTokenLists();
   }
@@ -434,5 +435,18 @@ export class TokensFacadeService {
     });
   }
 
-  public fetchNewPage(tokenState: BlockchainTokenState): void {}
+  public fetchNewPage(tokenState: BlockchainTokenState, skipLoading: boolean): void {
+    if (!tokenState.allowFetching) {
+      return;
+    }
+    const blockchain = tokenState.blockchain;
+    if (!skipLoading) {
+      this.blockchainTokens[blockchain]._pageLoading$.next(true);
+    }
+
+    this.apiService.getNewPage(tokenState.page + 1, blockchain).subscribe(response => {
+      this.tokensStore.addInitialBlockchainTokens(blockchain, response);
+      this.blockchainTokens[blockchain]._pageLoading$.next(false);
+    });
+  }
 }

@@ -40,7 +40,8 @@ export class NewTokensStoreService {
       currentTokens.next({ ...currentTokens.value, ...newValues });
       chainObject._pageLoading$.next(false);
       chainObject.page = chainObject.page + 1;
-
+      chainObject.totalTokens = tokens.total;
+      chainObject.allowFetching = tokens.haveMore;
       console.log(`tokens added to ${blockchain} store`);
     } catch (err) {
       console.log(err);

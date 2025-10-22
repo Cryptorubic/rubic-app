@@ -1,10 +1,13 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
   Output,
-  Self
+  Self,
+  ViewChild,
+  OnInit
 } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
@@ -15,9 +18,11 @@ import { AssetsSelectorStateService } from '../../services/assets-selector-state
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-tokens-list',
@@ -27,14 +32,32 @@ import { TokensListType } from '@features/trade/components/assets-selector/model
   animations: [LIST_ANIMATION],
   providers: [TuiDestroyService]
 })
-export class TokensListComponent {
+export class TokensListComponent implements OnInit {
+  @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
+    this.scrollSubject$.next(scroll);
+  }
+
+  private readonly scrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport | null>(null);
+
   @Input({ required: true }) tokensToShow: AvailableTokenAmount[];
 
   @Input({ required: true }) customToken: AvailableTokenAmount | null;
 
   @Input({ required: true }) loading: boolean;
 
-  @Input({ required: true }) listType: AssetListType;
+  private _listType: AssetListType;
+
+  @Input({ required: true }) set listType(value: AssetListType) {
+    if (value !== this._listType) {
+      this.resetScrollToTop();
+    }
+
+    this._listType = value;
+  }
+
+  public get listType(): AssetListType {
+    return this._listType;
+  }
 
   @Input({ required: true }) balanceLoading: boolean;
 
@@ -64,8 +87,14 @@ export class TokensListComponent {
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
-  ) {}
+    private readonly cdr: ChangeDetectorRef
+  ) {
+    this.subscribeOnScroll();
+  }
+
+  ngOnInit() {
+    this.resetScrollToTop();
+  }
 
   /**
    * Function to track list element by unique key: token blockchain and address.
@@ -158,5 +187,54 @@ export class TokensListComponent {
   //       tap(console.log)
   //     );
   // }
-  protected readonly Boolean = Boolean;
+
+  private subscribeOnScroll(): void {
+    this.scrollSubject$
+      .pipe(
+        filter(value => Boolean(value)),
+        switchMap(sub => sub.renderedRangeStream),
+        filter(range => {
+          return !this.skipTokensFetching(range.end);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        const assetType = this.listType;
+        if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
+        const tokensNetworkStateByAsset = this.tokensFacade.blockchainTokens[assetType];
+        this.tokensFacade.fetchNewPage(tokensNetworkStateByAsset, false);
+        this.cdr.detectChanges();
+      });
+  }
+
+  private skipTokensFetching(currentIndex: number): boolean {
+    const assetType = this.listType;
+    if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
+
+    const tokensNetworkStateByAsset = this.tokensFacade.blockchainTokens[assetType];
+
+    if (
+      Boolean(
+        tokensNetworkStateByAsset._pageLoading$.value ||
+          this.tokensSearchQuery ||
+          this.tokensType === 'favorite' ||
+          !tokensNetworkStateByAsset ||
+          !tokensNetworkStateByAsset.allowFetching
+      )
+    ) {
+      return true;
+    }
+
+    const maxBufferToEnd = 10;
+    const listSize = Object.values(tokensNetworkStateByAsset._tokensObject$.value).length;
+    const shouldSkip = listSize - currentIndex > maxBufferToEnd;
+
+    return shouldSkip;
+  }
+
+  private resetScrollToTop(): void {
+    if (this.scrollSubject$.value) {
+      this.scrollSubject$.value.scrollToIndex(0);
+    }
+  }
 }

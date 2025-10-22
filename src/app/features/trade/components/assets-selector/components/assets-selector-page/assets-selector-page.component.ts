@@ -13,7 +13,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
 import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset, AssetListType } from '@features/trade/models/asset';
@@ -97,6 +97,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setWindowHeight();
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
+      distinctUntilChanged(),
       share(),
       startWith('allChains' as AssetListType)
     );
@@ -115,20 +116,25 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.tokensToShow$ = this.assetListType$.pipe(
       switchMap(type => this.tokensFacade.getTokensBasedOnType(type).tokens$),
       map((tokens: BalanceToken[]) =>
+        // @TODO TOKENS
         tokens.map(token => ({ ...token, available: true, amount: new BigNumber(NaN) }))
       ),
-      tap(() => {
+      tap(el => {
+        console.log('TRIGGER FETCH');
         const type = this.assetsSelectorService.assetListType;
         if (BlockchainsInfo.isBlockchainName(type)) {
           const tokensObject = this.tokensFacade.getTokensBasedOnType(type) as BlockchainTokenState;
           if (tokensObject.page === 1 && tokensObject.allowFetching) {
-            this.tokensFacade.fetchNewPage(tokensObject);
+            this.tokensFacade.fetchNewPage(tokensObject, true);
           }
         }
       })
     );
     this.pageLoading$ = this.assetListType$.pipe(
-      switchMap(type => this.tokensFacade.getTokensBasedOnType(type).pageLoading$)
+      switchMap(type => this.tokensFacade.getTokensBasedOnType(type).pageLoading$),
+      tap(el => {
+        console.log('TOKENS LOADING: ', el);
+      })
     );
   }
 

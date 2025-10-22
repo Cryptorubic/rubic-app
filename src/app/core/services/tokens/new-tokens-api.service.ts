@@ -102,6 +102,29 @@ export class NewTokensApiService {
       .filter(token => token.address && token.blockchain);
   }
 
+  public getNewPage(
+    page: number,
+    chain: BlockchainName
+  ): Observable<{ list: Token[]; total: number; haveMore: boolean }> {
+    const options = { page: page, pageSize: this.pageSize };
+
+    return this.httpService
+      .get<TokensBackendResponse>(
+        ENDPOINTS.TOKENS,
+        { ...options, network: chain },
+        this.tokensApiUrl
+      )
+      .pipe(
+        map(backendResponse => {
+          return {
+            list: NewTokensApiService.prepareTokens(backendResponse.results),
+            total: backendResponse.count,
+            haveMore: Boolean(backendResponse.next)
+          };
+        })
+      );
+  }
+
   public getTopTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {

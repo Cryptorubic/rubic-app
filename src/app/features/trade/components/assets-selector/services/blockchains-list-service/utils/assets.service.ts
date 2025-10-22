@@ -25,6 +25,7 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
 import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 export abstract class AssetsService {
   // Tokens type (default or favorite)
@@ -79,12 +80,14 @@ export abstract class AssetsService {
   // Assets list type (allChains or specific blockchain or utility)
   protected readonly _assetListType$ = new BehaviorSubject<AssetListType>('allChains');
 
-  public readonly assetListType$ = this._assetListType$
-    .asObservable()
-    .pipe(tap(el => console.log('ASSET_LIST_SUBS', el)));
+  public readonly assetListType$ = this._assetListType$.asObservable();
 
   public set assetListType(value: AssetListType) {
     this._assetListType$.next(value);
+  }
+
+  public get assetListType(): AssetListType {
+    return this._assetListType$.value;
   }
 
   // Selected asset
@@ -149,6 +152,8 @@ export abstract class AssetsService {
 
   private readonly destroy$ = inject(TuiDestroyService);
 
+  private readonly tokensFacade = inject(TokensFacadeService);
+
   public set filterQuery(value: BlockchainFilters) {
     if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
       this._blockchainFilter$.next(BlockchainTags.ALL);
@@ -165,7 +170,7 @@ export abstract class AssetsService {
 
     this.subscribeOnSearchQuery();
     this.subscribeOnFilterQuery();
-    // this.subscribeOnTokenSelection();
+    // this.subscribeOnTokensToShow();
   }
 
   public closeSelector(): void {
@@ -316,18 +321,6 @@ export abstract class AssetsService {
       return 'Cannot trade with fiats';
     }
     return null;
-  }
-
-  public setListScrollSubject(scroll: CdkVirtualScrollViewport): void {
-    if (scroll) {
-      this.listScrollSubject$.next(scroll);
-    }
-  }
-
-  private resetScrollToTop(): void {
-    if (this.listScrollSubject$.value) {
-      this.listScrollSubject$.value.scrollToIndex(0);
-    }
   }
 
   // @TODO TOKENS
