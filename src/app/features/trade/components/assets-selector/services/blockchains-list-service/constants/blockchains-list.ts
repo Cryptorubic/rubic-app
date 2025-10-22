@@ -246,9 +246,9 @@ export const blockchainsList: RankedBlockchain[] = [
   //   rank: 0.5,
   //   tags: ['WAN', BlockchainTags.NEW, BlockchainTags.EVM]
   {
-    name: BLOCKCHAIN_NAME.HEMI,
+    name: BLOCKCHAIN_NAME.HYPER_EVM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['HYPE', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
   },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
