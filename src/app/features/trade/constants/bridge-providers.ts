@@ -188,6 +188,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}multichain.png`,
     name: 'Multichain'
   },
+  //NNNNNNNNNNNNNNNNNN
+  near_intents: {
+    averageTime: 5,
+    color: '#452fbf',
+    image: `assets/images/icons/coins/near.svg`,
+    name: 'Near Intents'
+  },
   //OOOOOOOOOOOOOOOOOO
   omni: {
     averageTime: 5,
