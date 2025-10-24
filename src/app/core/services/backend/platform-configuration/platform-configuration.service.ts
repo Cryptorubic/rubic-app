@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
-import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of, retry, tap } from 'rxjs';
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
 import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
 import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
@@ -18,6 +18,8 @@ import {
   FROM_BACKEND_CROSS_CHAIN_PROVIDERS,
   ToBackendCrossChainProviders
 } from '@cryptorubic/core';
+import { defaultInfoV3Config } from './constants/defauls-info-v3-config';
+import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/platform-config-v3';
 
 interface ProvidersConfiguration {
   disabledCrossChainTradeTypes: CrossChainTradeType[];
@@ -46,14 +48,14 @@ export class PlatformConfigurationService {
 
   public readonly disabledProviders$ = this._disabledProviders$.asObservable();
 
-  private readonly _providersAverageTime$ = new BehaviorSubject<
-    Record<CrossChainTradeType, number>
+  private readonly _ccrProvidersInfo$ = new BehaviorSubject<
+    Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>
   >(undefined);
 
-  public readonly providersAverageTime$ = this._providersAverageTime$.asObservable();
+  public readonly ccrProvidersInfo$ = this._ccrProvidersInfo$.asObservable();
 
-  public get providersAverageTime(): Record<CrossChainTradeType, number> {
-    return this._providersAverageTime$.getValue();
+  public get providersAverageTime(): Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo> {
+    return this._ccrProvidersInfo$.getValue();
   }
 
   public get disabledProviders(): ProvidersConfiguration {
@@ -96,27 +98,35 @@ export class PlatformConfigurationService {
   }
 
   public loadPlatformConfig(): Observable<boolean> {
-    return this.httpClient
-      .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info_with_tier`)
-      .pipe(
-        timeout(5_000),
-        retry(1),
-        catchError(() => of(defaultConfig)),
-        tap(response => {
-          if (response.server_is_active === true) {
-            this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
-            this._disabledProviders$.next(
-              this.mapDisabledProviders(response.cross_chain_providers)
-            );
-            this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
-            this._providersAverageTime$.next(
-              this.mapAverageProvidersTime(response.cross_chain_providers)
-            );
-            this.handleCrossChainProxyProviders(response.cross_chain_providers);
-          }
-        }),
-        map(response => response.server_is_active)
-      );
+    return forkJoin([
+      this.httpClient
+        .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info_with_tier`)
+        .pipe(
+          timeout(5_000),
+          retry(1),
+          catchError(() => of(defaultConfig))
+        ),
+      this.httpClient
+        .get<PlatformConfigV3>(`${ENVIRONMENT.apiBaseUrl}/v2/info/status_info_v3`)
+        .pipe(
+          timeout(5_000),
+          retry(1),
+          catchError(() => of(defaultInfoV3Config))
+        )
+    ]).pipe(
+      tap(([infoResponse, infoV3Response]) => {
+        if (infoResponse.server_is_active === true) {
+          this._availableBlockchains$.next(this.mapAvailableBlockchains(infoResponse.networks));
+          this._disabledProviders$.next(
+            this.mapDisabledProviders(infoResponse.cross_chain_providers)
+          );
+          this._useOnChainProxy$.next(infoResponse.on_chain_providers.proxy.active);
+          this.handleCcrProvidersInfo(infoV3Response.crosschainProviders);
+          this.handleCrossChainProxyProviders(infoResponse.cross_chain_providers);
+        }
+      }),
+      map(([infoResponse]) => infoResponse.server_is_active)
+    );
   }
 
   public isAvailableBlockchain(blockchain: BlockchainName): boolean {
@@ -178,22 +188,17 @@ export class PlatformConfigurationService {
     return { disabledCrossChainTradeTypes: disabledCrossChainProviders };
   }
 
-  private mapAverageProvidersTime(crossChainProviders: {
-    [k in string]: CrossChainProviderStatus;
-  }): Record<CrossChainTradeType, number> {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+  private handleCcrProvidersInfo(
+    crossChainProviders: Record<ToBackendCrossChainProviders, PlatformConfigV3CcrProviderInfo>
+  ): void {
+    const entries = Object.entries(crossChainProviders) as [
       ToBackendCrossChainProviders,
-      CrossChainProviderStatus
+      PlatformConfigV3CcrProviderInfo
     ][];
-    if (!crossChainProvidersEntries.length) {
-      return;
-    }
+    const info = Object.fromEntries(
+      entries.map(([provider, status]) => [FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider], status])
+    ) as Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>;
 
-    return Object.fromEntries(
-      crossChainProvidersEntries.map(([provider, status]) => [
-        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
-        status.average_execution_time
-      ])
-    ) as Record<CrossChainTradeType, number>;
+    this._ccrProvidersInfo$.next(info);
   }
 }
