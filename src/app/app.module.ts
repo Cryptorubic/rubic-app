@@ -1,5 +1,5 @@
 import { BrowserModule, Meta } from '@angular/platform-browser';
-import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Inject, NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiAlertModule, TuiDialogModule, TuiRootModule } from '@taiga-ui/core';
@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
-import * as Sentry from '@sentry/angular-ivy';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,19 +34,9 @@ import * as Sentry from '@sentry/angular-ivy';
   providers: [
     MOBILE_NATIVE_MODAL_PROVIDER,
     {
-      provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        showDialog: false
-      })
-    },
-    {
-      provide: Sentry.TraceService,
-      deps: [Router]
-    },
-    {
       provide: APP_INITIALIZER,
       useFactory: () => () => {},
-      deps: [Sentry.TraceService],
+      deps: [],
       multi: true
     }
   ],
