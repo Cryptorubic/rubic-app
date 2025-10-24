@@ -34,18 +34,13 @@ export class ProviderElementComponent {
   }
 
   public getAverageTimeString(): string {
-    if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) {
-      return '7 D';
-    }
-
-    const info = this.getProviderInfo(this.tradeState.tradeType);
-    const time = `${info?.averageTime || 1} M`;
-
-    return time;
+    if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
+    const avgTime = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
+    return `${avgTime} ${avgTime > 1 ? 'mins' : 'min'}`;
   }
 
-  public getProviderInfo(tradeProvider: TradeProvider): ProviderInfo {
-    return this.tradeInfoManager.getProviderInfo(tradeProvider);
+  public getProviderInfo(): ProviderInfo {
+    return this.tradeInfoManager.getProviderInfo(this.tradeState.trade);
   }
 
   public getFeeInfo(): AppFeeInfo {

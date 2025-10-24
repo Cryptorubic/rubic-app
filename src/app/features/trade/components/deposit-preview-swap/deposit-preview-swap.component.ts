@@ -8,7 +8,6 @@ import {
   CROSS_CHAIN_DEPOSIT_STATUS,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
-  CrossChainTradeType,
   CrossChainTransferTrade,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -23,7 +22,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
@@ -33,6 +31,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -143,7 +142,8 @@ export class DepositPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly tradeInfoManager: TradeInfoManager
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
@@ -180,13 +180,10 @@ export class DepositPreviewSwapComponent {
 
   public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (trade?.tradeType) {
-      const provider = TRADES_PROVIDERS[trade.tradeType];
-      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
-
-      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
+      const avgTime = this.tradeInfoManager.getAverageSwapTimeMinutes(trade.trade);
+      return `${avgTime} ${avgTime > 1 ? 'mins' : 'min'}`;
     } else {
-      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
+      return trade instanceof CrossChainTrade ? '30 mins' : '1 min';
     }
   }
 

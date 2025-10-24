@@ -14,7 +14,6 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
-import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 
@@ -33,14 +32,30 @@ export class TradeInfoManager {
     };
   }
 
-  public getProviderInfo(tradeType: TradeProvider): ProviderInfo {
-    const provider = TRADES_PROVIDERS[tradeType];
+  public getProviderInfo(trade: CrossChainTrade | OnChainTrade): ProviderInfo {
+    const provider = TRADES_PROVIDERS[trade.type];
+    return { ...provider, averageTime: this.getAverageSwapTimeMinutes(trade) };
+  }
+
+  public getAverageSwapTimeMinutes(trade: CrossChainTrade | OnChainTrade): number {
+    const provider = TRADES_PROVIDERS[trade.type];
     const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-    const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
-    return {
-      ...provider,
-      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime || 1 // Default average time if not specified
-    };
+    const currentProviderInfo = providerAverageTime?.[trade.type as CrossChainTradeType];
+
+    let averageTime: number;
+    const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
+    const betweenChainsInfo = currentProviderInfo.betweenNetworksStats[fromToChainKey];
+    if (betweenChainsInfo) {
+      averageTime = Math.ceil(betweenChainsInfo['95_percentile'] / 60);
+    } else if (currentProviderInfo['95_percentile']) {
+      averageTime = Math.ceil(currentProviderInfo['95_percentile'] / 60);
+    } else if (currentProviderInfo.averageExecutionTime) {
+      averageTime = currentProviderInfo.averageExecutionTime;
+    } else {
+      averageTime = provider?.averageTime || 1; // Default average time if not specified
+    }
+
+    return averageTime;
   }
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
