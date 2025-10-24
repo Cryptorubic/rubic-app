@@ -49,9 +49,6 @@ export class SdkLoaderService {
     console.log('%csubscribeOnAddressChange', 'color: orange; font-size: 20px;');
     this.walletConnectorService.addressChange$
       .pipe(
-        tap(() =>
-          console.log('%csubscribeOnAddressChange_tap_start', 'color: orange; font-size: 20px;')
-        ),
         filter(Boolean),
         delay(1000),
         tap(address => {
