@@ -26,7 +26,7 @@ export class PlatformConfigurationService {
     disabledCrossChainTradeTypes: undefined
   });
 
-  public readonly disabledProviders$ = this._disabledCcrProviders$.asObservable();
+  public readonly disabledCcrProviders$ = this._disabledCcrProviders$.asObservable();
 
   public get disabledCcrProviders(): ProvidersConfiguration {
     return this._disabledCcrProviders$.getValue();
