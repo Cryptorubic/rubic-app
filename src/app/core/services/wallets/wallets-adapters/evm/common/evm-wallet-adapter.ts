@@ -38,8 +38,12 @@ export abstract class EvmWalletAdapter<T = RubicAny>
       }
     );
 
-    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() =>
-      this.deactivate()
+    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(
+      (reason: { code: number; message: string }) => {
+        this.deactivate();
+        // code 1013 when chain switched
+        if (reason.code === 1013) this.activate();
+      }
     );
   }
 
