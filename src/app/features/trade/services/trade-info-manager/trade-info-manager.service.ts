@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   CrossChainTrade,
-  CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
   OnChainTrade,
@@ -39,18 +38,25 @@ export class TradeInfoManager {
 
   public getAverageSwapTimeMinutes(trade: CrossChainTrade | OnChainTrade): number {
     const provider = TRADES_PROVIDERS[trade.type];
-    const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-    const currentProviderInfo = providerAverageTime?.[trade.type as CrossChainTradeType];
 
     let averageTime: number;
-    const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
-    const betweenChainsInfo = currentProviderInfo.betweenNetworksStats[fromToChainKey];
-    if (betweenChainsInfo) {
-      averageTime = Math.ceil(betweenChainsInfo['95_percentile'] / 60);
-    } else if (currentProviderInfo['95_percentile']) {
-      averageTime = Math.ceil(currentProviderInfo['95_percentile'] / 60);
-    } else if (currentProviderInfo.averageExecutionTime) {
-      averageTime = currentProviderInfo.averageExecutionTime;
+    if (trade instanceof CrossChainTrade) {
+      const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
+      const ccrProviderInfo = ccrProviders[trade.type];
+      const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
+      const betweenChainsInfo = ccrProviderInfo.betweenNetworksStats[fromToChainKey];
+
+      if (betweenChainsInfo) {
+        averageTime = Math.ceil(betweenChainsInfo['95_percentile'] / 60);
+      } else if (ccrProviderInfo['95_percentile']) {
+        averageTime = Math.ceil(ccrProviderInfo['95_percentile'] / 60);
+      } else if (ccrProviderInfo.average) {
+        averageTime = Number(ccrProviderInfo.average);
+      } else if (ccrProviderInfo.averageExecutionTime) {
+        averageTime = ccrProviderInfo.averageExecutionTime;
+      } else {
+        averageTime = provider?.averageTime || 5;
+      }
     } else {
       averageTime = provider?.averageTime || 1; // Default average time if not specified
     }

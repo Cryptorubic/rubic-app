@@ -17,7 +17,7 @@ export interface PlatformConfigV3 {
 export interface PlatformConfigV3ChainInfo {
   isActive: boolean;
   isActiveInApi: boolean;
-  tier: string;
+  tier: 'TIER_ONE' | 'TIER_TWO';
   proxyIsAvailable: boolean;
   proxyIsAvailableInApi: boolean;
   rank: number;
