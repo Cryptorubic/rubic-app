@@ -67,19 +67,19 @@ export class TransactionStateComponent {
   }
 
   private setStepStates(value: TransactionStep): void {
-    const stateIndex = this.steps.findIndex(el => el.key === value);
+    const stateIdx = this.steps.findIndex(el => el.key === value);
+    const successStateIdx = this.steps.findIndex(el => el.key === transactionStep.success);
+
     this.steps = this.steps.map((step, index) => {
-      if (
-        index < stateIndex ||
-        value === transactionStep.success ||
-        value === transactionStep.error
-      ) {
+      if (value === transactionStep.error) {
+        if (step.key === transactionStep.success) return { ...step, status: 'failed' };
+        // every step before success supposed to be succeeded
+        if (index < successStateIdx) return { ...step, status: 'fullfilled' };
+      }
+      if (index < stateIdx || value === transactionStep.success) {
         return { ...step, status: 'fullfilled' };
       }
-
-      if (index === stateIndex) {
-        return { ...step, status: 'pending' };
-      }
+      if (index === stateIdx) return { ...step, status: 'pending' };
 
       return { ...step, status: 'default' };
     });

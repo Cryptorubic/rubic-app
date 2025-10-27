@@ -1,3 +1,5 @@
+@use 'src/scss/core' as *;
+
 .state {
   position: relative;
 
@@ -26,12 +28,9 @@
   }
 
   &__element-icon {
+    @include flex(row, center, center);
     position: relative;
     z-index: 1;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     width: 16px;
     height: 16px;
@@ -51,17 +50,30 @@
     &_done {
       background: var(--tui-success-fill);
     }
+
+    &_fail {
+      background: var(--tui-error-fill);
+    }
   }
 
   &__element-text {
     color: var(--tui-text-03);
 
-    &_focus {
+    &_white {
       color: var(--tui-text-01);
     }
+  }
+}
 
-    &_done {
-      color: var(--tui-text-01);
+.failed-icon {
+  ::ng-deep {
+    svg {
+      width: 10px;
+      height: 10px;
+      
+      path {
+        stroke: var(--tui-text-01);
+      }
     }
   }
 }
