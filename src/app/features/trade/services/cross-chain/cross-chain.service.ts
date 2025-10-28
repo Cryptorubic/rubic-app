@@ -295,7 +295,7 @@ export class CrossChainService {
       }
 
       if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
-        const slippageErr = new LowSlippageError(0.05);
+        const slippageErr = new LowSlippageError();
         throw slippageErr;
       }
 
