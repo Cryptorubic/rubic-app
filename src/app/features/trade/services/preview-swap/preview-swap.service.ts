@@ -43,7 +43,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
-import { AirdropPointsService } from '@shared/services/airdrop-points-service/airdrop-points.service';
 import { UnreadTradesService } from '@core/services/unread-trades-service/unread-trades.service';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
@@ -60,6 +59,9 @@ import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
 import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api.service';
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
+import { ERROR_TYPE } from '@app/core/errors/models/error-type';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { SwapTimeoutError } from '@app/core/errors/models/common/swap-timeout.error';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -82,6 +84,10 @@ export class PreviewSwapService {
 
   private readonly subscriptions$: Subscription[] = [];
 
+  /*
+   * used to change state of preview swap and redirect user back to form onError
+   * onDestroy PreviewSwapComponent - it will prevent to unexpected side actions on UI
+   */
   private useCallback = false;
 
   public get transactionState(): TransactionState {
@@ -130,7 +136,6 @@ export class PreviewSwapService {
     private readonly sdkService: SdkService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly airdropPointsService: AirdropPointsService,
     private readonly recentTradesStoreService: UnreadTradesService,
     private readonly settingsService: SettingsService,
     private readonly notificationsService: NotificationsService,
@@ -389,15 +394,19 @@ export class PreviewSwapService {
                       }
                     });
                   }
-
-                  this.spindlService.sendSwapEvent(txHash);
-                  this.recentTradesStoreService.updateUnreadTrades();
                 }
+
+                this.spindlService.sendSwapEvent(txHash);
+                this.recentTradesStoreService.updateUnreadTrades();
               },
-              onError: () => {
+              onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
-                  this.setNextTxState({ step: 'inactive', data: {} });
-                  this.tradePageService.setState('form');
+                  if (err instanceof SwapTimeoutError) {
+                    this.setNextTxState({ step: 'error', data: this.transactionState.data });
+                  } else {
+                    this.setNextTxState({ step: 'inactive', data: {} });
+                    this.tradePageService.setState('form');
+                  }
                 }
               }
             })

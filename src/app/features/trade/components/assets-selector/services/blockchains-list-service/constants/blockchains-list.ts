@@ -15,7 +15,7 @@ function setRankToNonEvmBlockchain(blockchain: BlockchainName): number {
     return 0.7;
   }
   if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
-    return 0.6;
+    return 0.74;
   }
   if (blockchain === BLOCKCHAIN_NAME.TON) {
     return 0.73;
@@ -203,7 +203,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.POLYGON,
     rank: 0.75,
-    tags: ['MATIC', BlockchainTags.POPULAR, BlockchainTags.EVM]
+    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
@@ -216,7 +216,12 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
-    name: BLOCKCHAIN_NAME.BERACHAIN,
+    name: BLOCKCHAIN_NAME.TRON,
+    rank: 0.74,
+    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
+  },
+  {
+    name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.73,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
@@ -272,7 +277,7 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW, BlockchainTags.POPULAR]
   },
   {
-    name: BLOCKCHAIN_NAME.LINEA,
+    name: BLOCKCHAIN_NAME.BERACHAIN,
     rank: 0.5,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
@@ -313,11 +318,6 @@ export const blockchainsList: RankedBlockchain[] = [
     name: BLOCKCHAIN_NAME.PULSECHAIN,
     rank: 0.5,
     tags: ['PLS', BlockchainTags.POPULAR, BlockchainTags.EVM]
-  },
-  {
-    name: BLOCKCHAIN_NAME.TRON,
-    rank: 0.5,
-    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.TAIKO,

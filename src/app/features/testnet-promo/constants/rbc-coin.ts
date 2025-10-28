@@ -1,9 +1,9 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/sdk';
-import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
+import { BlockchainToken } from '@app/shared/models/tokens/blockchain-token';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/core';
 
 type Token = Omit<BlockchainToken, 'blockchain'> & { blockchain: EvmBlockchainName };
 
-export const newRubicToken: Token = {
+export const rbcCoin: Token = {
   decimals: 18,
   symbol: 'RBC',
   name: 'RUBIC TOKEN',
