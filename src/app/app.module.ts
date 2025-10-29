@@ -1,5 +1,5 @@
 import { BrowserModule, Meta } from '@angular/platform-browser';
-import { APP_INITIALIZER, Inject, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, Inject, NgModule } from '@angular/core';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TuiAlertModule, TuiDialogModule, TuiRootModule } from '@taiga-ui/core';
@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
+import { createErrorHandler } from '@sentry/angular';
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,6 +39,10 @@ import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-p
       useFactory: () => () => {},
       deps: [],
       multi: true
+    },
+    {
+      provide: ErrorHandler,
+      useValue: createErrorHandler()
     }
   ],
   bootstrap: [AppComponent]

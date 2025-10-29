@@ -22,6 +22,8 @@ import { TradePageService } from './features/trade/services/trade-page/trade-pag
 import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
 import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
+import { logger } from '@sentry/angular';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -64,6 +66,17 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+
+    this.checkSentryLogging();
+  }
+
+  private checkSentryLogging(): void {
+    logger.trace(`rubic-app sentry 'trace' test on ${ENVIRONMENT.environmentName}`);
+    logger.debug(`rubic-app sentry 'debug' test on ${ENVIRONMENT.environmentName}`);
+    logger.info(`rubic-app sentry 'info' test on ${ENVIRONMENT.environmentName}`);
+    logger.warn(`rubic-app sentry 'warning' test on ${ENVIRONMENT.environmentName}`);
+    logger.error(`rubic-app sentry 'error' test on ${ENVIRONMENT.environmentName}`);
+    logger.fatal(`rubic-app sentry 'fatal' test on ${ENVIRONMENT.environmentName}`);
   }
 
   private subscribeOnWalletChanges(): void {
