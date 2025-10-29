@@ -1,24 +1,24 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
 import {
   BlockchainName,
   BlockchainsInfo,
+  compareAddresses,
   Injector,
   Web3PublicService,
   Web3Pure
 } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { List } from 'immutable';
-import { compareTokens } from '@shared/utils/utils';
-import { AssetListType } from '@features/trade/models/asset';
+import { AssetListType, UtilityAssetType } from '@features/trade/models/asset';
 import {
   BlockchainTokenState,
   TokenRef,
@@ -30,10 +30,6 @@ import { RatedToken, Token } from '@shared/models/tokens/token';
   providedIn: 'root'
 })
 export class TokensFacadeService {
-  private readonly _favoriteTokens$ = new BehaviorSubject<List<BalanceToken>>(List());
-
-  public readonly favoriteTokens$ = this._favoriteTokens$.asObservable();
-
   public readonly allTokens = this.tokensStore.all;
 
   public readonly trending = this.tokensStore.trending;
@@ -41,6 +37,10 @@ export class TokensFacadeService {
   public readonly gainers = this.tokensStore.gainers;
 
   public readonly losers = this.tokensStore.losers;
+
+  public readonly favorite = this.tokensStore.favorite;
+
+  public readonly searched = this.tokensStore.searched;
 
   public static onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
@@ -73,8 +73,7 @@ export class TokensFacadeService {
   constructor(
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
-    private readonly authService: AuthService,
-    private readonly zone: NgZone
+    private readonly authService: AuthService
   ) {
     this.buildTokenLists();
   }
@@ -85,6 +84,7 @@ export class TokensFacadeService {
     this.buildTrendingList();
     this.buildGainersList();
     this.buildLosersList();
+    this.buildFavoriteTokenList();
   }
 
   private buildTier1List(): void {
@@ -242,20 +242,16 @@ export class TokensFacadeService {
     await Promise.all(balancePromises);
   }
 
-  public fetchQueryTokens(
-    query: string,
-    blockchain: BlockchainName | null
-  ): Observable<List<BalanceToken>> {
+  public fetchQueryTokens(query: string, blockchain: BlockchainName | null): Observable<Token[]> {
     return this.apiService.fetchQueryTokens(query, blockchain).pipe(
-      switchMap(backendTokens => {
-        const _filteredTokens = backendTokens.filter(
+      map(backendTokens => {
+        return backendTokens.filter(
           token =>
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
-
-        // @TODO TOKENS ADD BALANCE FETCHING
-        throw Error('Method not implemented.');
-        // return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
+        // // @TODO TOKENS ADD BALANCE FETCHING
+        // throw Error('Method not implemented.');
+        // // return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
       })
     );
   }
@@ -265,12 +261,15 @@ export class TokensFacadeService {
    * @param favoriteToken Favorite token to add.
    */
   public addFavoriteToken(favoriteToken: BalanceToken): Observable<unknown> {
+    this.favorite._pageLoading$.next(true);
     return this.apiService.addFavoriteToken(favoriteToken).pipe(
-      tap((_avoriteTokenBalance: BigNumber) => {
-        // @TODO TOKENS USE NEW SCHEME
-        if (!this._favoriteTokens$.value.some(token => compareTokens(token, favoriteToken))) {
-          this._favoriteTokens$.next(this._favoriteTokens$.value.push(favoriteToken));
-        }
+      tap(() => {
+        const oldTokens = this.favorite._refs$.value;
+        this.favorite._refs$.next([
+          ...oldTokens,
+          { address: favoriteToken.address, blockchain: favoriteToken.blockchain }
+        ]);
+        this.favorite._pageLoading$.next(false);
       })
     );
   }
@@ -280,15 +279,13 @@ export class TokensFacadeService {
    * @param token Favorite token to remove.
    */
   public removeFavoriteToken(token: BalanceToken): Observable<unknown> {
-    // @TODO TOKENS USE NEW SCHEME
-    const filteredTokens = this._favoriteTokens$.value.filter(el => !compareTokens(el, token));
+    this.favorite._pageLoading$.next(true);
     return this.apiService.deleteFavoriteToken(token).pipe(
       tap(() => {
-        if (
-          this._favoriteTokens$.value.some(favoriteToken => compareTokens(token, favoriteToken))
-        ) {
-          this._favoriteTokens$.next(filteredTokens);
-        }
+        const filteredTokens = this.favorite._refs$.value.filter(
+          el => !compareAddresses(el.address, token.address)
+        );
+        this.favorite._refs$.next(filteredTokens);
       })
     );
   }
@@ -341,22 +338,23 @@ export class TokensFacadeService {
     // );
   }
 
-  public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | UtilityState {
-    if (type === 'allChains') {
-      return this.allTokens;
-    }
-    if (type === 'trending') {
-      return this.trending;
-    }
-    if (type === 'gainers') {
-      return this.gainers;
-    }
-    if (type === 'losers') {
-      return this.losers;
-    }
+  public getTokensBasedOnType(
+    type: AssetListType,
+    searchTokens: boolean = false
+  ): BlockchainTokenState | UtilityState {
     if (BlockchainsInfo.isBlockchainName(type)) {
-      return this.blockchainTokens[type];
+      return searchTokens ? this.searched : this.blockchainTokens[type];
     }
+
+    const utilityMap: Record<UtilityAssetType, UtilityState> = {
+      allChains: this.allTokens,
+      trending: this.trending,
+      gainers: this.gainers,
+      losers: this.losers,
+      favorite: this.favorite
+    };
+
+    return utilityMap[type];
   }
 
   private buildAllTokensList(
@@ -364,16 +362,19 @@ export class TokensFacadeService {
   ): void {
     this.allTokens._pageLoading$.next(true);
     const allTokens: TokenRef[] = [];
-    const metaTokensArray = Object.values(tokens);
+    const metaTokensArray = Object.values(tokens)
+      .map(el => el.list)
+      .flat();
 
-    metaTokensArray.forEach(blockchainTokens => {
-      blockchainTokens.list.forEach(token => {
+    metaTokensArray
+      .sort((a, b) => (a.rank > b.rank ? -1 : 1))
+      .forEach(token => {
         allTokens.push({
           address: token.address,
           blockchain: token.blockchain
         });
       });
-    });
+
     this.allTokens._refs$.next(allTokens);
     this.allTokens._pageLoading$.next(false);
   }
@@ -417,8 +418,8 @@ export class TokensFacadeService {
     });
   }
 
-  private addMissedUtilityTokens(tokens: RatedToken[]): void {
-    const chainObject = {} as Partial<Record<BlockchainName, RatedToken[]>>;
+  private addMissedUtilityTokens(tokens: (RatedToken | Token)[]): void {
+    const chainObject = {} as Partial<Record<BlockchainName, (RatedToken | Token)[]>>;
     tokens.forEach(token => {
       if (token.blockchain in chainObject === false) {
         Object.assign(chainObject, { [token.blockchain]: [] });
@@ -430,6 +431,7 @@ export class TokensFacadeService {
         this.tokensStore.tokens[blockchain as BlockchainName]._tokensObject$.value;
       const missedTokens = blockchainTokens.filter(token => !existingTokens[token.address]);
       if (missedTokens.length) {
+        console.log('added missed tokens: ', missedTokens);
         this.tokensStore.addNewBlockchainTokens(blockchain as BlockchainName, missedTokens);
       }
     });
@@ -447,6 +449,46 @@ export class TokensFacadeService {
     this.apiService.getNewPage(tokenState.page + 1, blockchain).subscribe(response => {
       this.tokensStore.addInitialBlockchainTokens(blockchain, response);
       this.blockchainTokens[blockchain]._pageLoading$.next(false);
+    });
+  }
+
+  private buildFavoriteTokenList(): void {
+    this.authService.currentUser$
+      .pipe(
+        distinctUntilChanged((a, b) => a?.address === b?.address),
+        tap(user => {
+          if (user?.address) {
+            this.favorite._pageLoading$.next(true);
+          }
+        }),
+        switchMap(user => (user?.address ? this.apiService.fetchFavoriteTokens() : of([]))),
+        tap(tokens => {
+          this.addMissedUtilityTokens(tokens);
+          const favoriteTokens: TokenRef[] = tokens.map(token => ({
+            address: token.address,
+            blockchain: token.blockchain
+          }));
+          this.favorite._refs$.next(favoriteTokens);
+          this.favorite._pageLoading$.next(false);
+        })
+      )
+      .subscribe();
+  }
+
+  public startLoadingSearchList(): void {
+    this.searched._pageLoading$.next(true);
+  }
+
+  public buildSearchedList(query: string, blockchain: BlockchainName | null): void {
+    this.searched._pageLoading$.next(true);
+    this.apiService.fetchQueryTokens(query, blockchain).subscribe(tokens => {
+      this.addMissedUtilityTokens(tokens);
+      const searchedTokens: TokenRef[] = tokens.map(token => ({
+        address: token.address,
+        blockchain: token.blockchain
+      }));
+      this.searched._refs$.next(searchedTokens);
+      this.searched._pageLoading$.next(false);
     });
   }
 }

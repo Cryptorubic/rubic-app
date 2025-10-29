@@ -15,16 +15,14 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { Observable, of } from 'rxjs';
+import { combineLatestWith, Observable, of } from 'rxjs';
 import { AssetsService } from '@features/trade/components/assets-selector/services/blockchains-list-service/utils/assets.service';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainFilters } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import {
@@ -34,6 +32,8 @@ import {
 import BigNumber from 'bignumber.js';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { BlockchainTokenState } from '@core/services/tokens/models/new-token-types';
+import { compareTokens } from '@shared/utils/utils';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -43,6 +43,8 @@ import { BlockchainTokenState } from '@core/services/tokens/models/new-token-typ
   providers: [AssetsSelectorServices, TuiDestroyService]
 })
 export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
+  private lastDefaultMode: AssetListType;
+
   @Input({ required: true }) type: 'from' | 'to';
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
@@ -59,6 +61,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     return this.assetsSelectorFacade.getAssetsService(this.type);
   }
 
+  public get oppositeSelectorService(): AssetsService {
+    return this.assetsSelectorFacade.getAssetsService(this.type === 'from' ? 'to' : 'from');
+  }
+
   public tokensSearchQuery$: Observable<string>;
 
   public blockchainsSearchQuery$: Observable<string>;
@@ -66,8 +72,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   public balanceLoading$: Observable<boolean>;
 
   public tokensToShow$: Observable<AvailableTokenAmount[]>;
-
-  public tokensType$: Observable<TokensListType>;
 
   public pageLoading$: Observable<boolean>;
 
@@ -83,13 +87,13 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
+    private readonly assetsSelectorFacade: AssetsSelectorFacadeService,
+    private readonly formService: SwapsFormService
   ) {
     this.subscribeOnAssetsSelect();
   }
@@ -104,25 +108,66 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
     this.tokensSearchQuery$ = this.assetsSelectorService.tokensSearchQuery$;
     this.blockchainsSearchQuery$ = this.assetsSelectorService.blockchainSearchQuery$;
-    this.tokensType$ = this.assetsSelectorService.tokensType$;
     this.customToken$ = this.assetsSelectorService.customToken$;
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
     this.blockchainFilter$ = this.assetsSelectorService.blockchainFilter$;
-    this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$;
+    this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(share());
 
     this.balanceLoading$ = this.assetListType$.pipe(
       switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$)
     );
     this.tokensToShow$ = this.assetListType$.pipe(
-      switchMap(type => this.tokensFacade.getTokensBasedOnType(type).tokens$),
-      map((tokens: BalanceToken[]) =>
-        // @TODO TOKENS
-        tokens.map(token => ({ ...token, available: true, amount: new BigNumber(NaN) }))
-      ),
-      tap(el => {
-        console.log('TRIGGER FETCH');
+      combineLatestWith(this.tokensSearchQuery$),
+      switchMap(([type, query]) => {
+        return this.tokensFacade
+          .getTokensBasedOnType(type, Boolean(query && query?.length > 2))
+          .tokens$.pipe(
+            map((tokens: BalanceToken[]) =>
+              // @TODO TOKENS
+              tokens
+                .map(token => {
+                  const oppositeToken =
+                    this.type === 'from'
+                      ? this.formService.inputValue.toToken
+                      : this.formService.inputValue.fromToken;
+                  const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+                  return {
+                    ...token,
+                    available: isAvailable,
+                    amount: new BigNumber(NaN)
+                  };
+                })
+                .sort((a, b) => {
+                  const oppositeToken =
+                    this.type === 'from'
+                      ? this.formService.inputValue.toToken
+                      : this.formService.inputValue.fromToken;
+                  if (oppositeToken) {
+                    if (
+                      a.address === oppositeToken.address &&
+                      a.blockchain === oppositeToken.blockchain
+                    ) {
+                      return 1;
+                    }
+                    if (
+                      b.address === oppositeToken.address &&
+                      b.blockchain === oppositeToken.blockchain
+                    ) {
+                      return -1;
+                    }
+                  }
+
+                  return a.rank > b.rank ? -1 : 1;
+                })
+            )
+          );
+      }),
+      tap(() => {
         const type = this.assetsSelectorService.assetListType;
-        if (BlockchainsInfo.isBlockchainName(type)) {
+        if (
+          BlockchainsInfo.isBlockchainName(type) &&
+          !this.assetsSelectorService.tokensSearchQuery
+        ) {
           const tokensObject = this.tokensFacade.getTokensBasedOnType(type) as BlockchainTokenState;
           if (tokensObject.page === 1 && tokensObject.allowFetching) {
             this.tokensFacade.fetchNewPage(tokensObject, true);
@@ -131,9 +176,12 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       })
     );
     this.pageLoading$ = this.assetListType$.pipe(
-      switchMap(type => this.tokensFacade.getTokensBasedOnType(type).pageLoading$),
-      tap(el => {
-        console.log('TOKENS LOADING: ', el);
+      combineLatestWith(this.tokensSearchQuery$),
+      switchMap(([type, query]) => {
+        if (query && query.length > 2) {
+          return this.tokensFacade.getTokensBasedOnType(type, true).pageLoading$;
+        }
+        return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
       })
     );
   }
@@ -189,6 +237,32 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       this.assetsSelectorService.assetListType = item.name;
     } else {
       this.assetsSelectorService.assetListType = 'allChains';
+    }
+  }
+
+  public selectToken(token: AvailableTokenAmount): void {
+    this.tokenSelect.emit(token);
+  }
+
+  public switchMode(): void {
+    if (this.assetsSelectorService.assetListType === 'favorite') {
+      this.assetsSelectorService.assetListType = this.lastDefaultMode;
+    } else {
+      this.lastDefaultMode = this.assetsSelectorService.assetListType;
+      this.assetsSelectorService.assetListType = 'favorite';
+    }
+  }
+
+  public onBlockchainsQuery(value: string): void {
+    this.assetsSelectorService.blockchainSearchQuery = value;
+  }
+
+  public onTokensQuery(value: string): void {
+    this.assetsSelectorService.tokensSearchQuery = value;
+    if (value.length > 2) {
+      const assetListType = this.assetsSelectorService.assetListType;
+      const isBlockchain = BlockchainsInfo.isBlockchainName(assetListType);
+      this.tokensFacade.buildSearchedList(value, isBlockchain ? assetListType : null);
     }
   }
 }

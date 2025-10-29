@@ -25,6 +25,20 @@ export type BlockchainTokenState = {
   allowFetching: boolean;
 };
 
+export type BlockchainUtilityTokenState = {
+  readonly _pageLoading$: BehaviorSubject<boolean>;
+  readonly pageLoading$: Observable<boolean>;
+
+  readonly _balanceLoading$: BehaviorSubject<boolean>;
+  readonly balanceLoading$: Observable<boolean>;
+
+  readonly _tokensObject$: BehaviorSubject<Record<string, BalanceToken>>;
+  readonly tokensObject$: Observable<Record<string, BalanceToken>>;
+  readonly tokens$: Observable<BalanceToken[]>;
+
+  readonly blockchain: BlockchainName;
+};
+
 export type TokensState = Record<BlockchainName, BlockchainTokenState>;
 
 export type UtilityState = {
@@ -39,6 +53,8 @@ export type UtilityState = {
 
   readonly tokens$: Observable<BalanceToken[]>;
 };
+
+export type BlockchainUtilityState = Record<BlockchainName, BlockchainUtilityTokenState>;
 
 export interface TokensStore {
   tokens: TokensState;

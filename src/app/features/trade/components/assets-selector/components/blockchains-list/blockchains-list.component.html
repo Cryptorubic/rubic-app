@@ -9,7 +9,7 @@
   </div>
 
   <tui-scrollbar class="scrollbar">
-    <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
+    <div class="list" *ngLet="blockchainsToShow as blockchainsList">
       <ng-container
         *ngTemplateOutlet="chainItem; context: { item: allChainsSelectorItem, disabled: false }"
       ></ng-container>

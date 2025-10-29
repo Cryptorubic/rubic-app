@@ -15,11 +15,10 @@ import {
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
-import { firstValueFrom, forkJoin, Observable, of } from 'rxjs';
+import { forkJoin, Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpService } from '@core/services/http/http.service';
 import { ENVIRONMENT } from '../../../../environments/environment';
-import { List } from 'immutable';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 
@@ -189,19 +188,17 @@ export class NewTokensApiService {
     );
   }
 
-  public fetchFavoriteTokens(): Promise<List<Token>> {
-    return firstValueFrom(
-      this.httpService
-        .get<BackendToken[]>(
-          ENDPOINTS.FAVORITE_TOKENS,
-          { user: this.authService.userAddress },
-          this.tokensApiUrl
-        )
-        .pipe(
-          map(tokens => TokensApiService.prepareTokens(tokens)),
-          catchError(() => of(List([])))
-        )
-    );
+  public fetchFavoriteTokens(): Observable<Token[]> {
+    return this.httpService
+      .get<BackendToken[]>(
+        ENDPOINTS.FAVORITE_TOKENS,
+        { user: this.authService.userAddress },
+        this.tokensApiUrl
+      )
+      .pipe(
+        map(resp => NewTokensApiService.prepareTokens<BackendToken, Token>(resp)),
+        catchError(() => of([]))
+      );
   }
 
   public addFavoriteToken(token: BalanceToken): Observable<unknown | null> {

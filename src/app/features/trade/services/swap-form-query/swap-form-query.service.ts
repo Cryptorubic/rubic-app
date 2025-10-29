@@ -196,15 +196,16 @@ export class SwapFormQueryService {
     if (!similarTokens.size) {
       return this.tokensFacade.fetchQueryTokens(symbol, chain).pipe(
         map(foundTokens => {
-          if (foundTokens?.size) {
+          if (foundTokens?.length) {
             const token =
-              foundTokens?.size > 1
+              foundTokens?.length > 1
                 ? foundTokens.find(el => el.symbol.toLowerCase() === symbol.toLowerCase())
-                : foundTokens.first();
+                : foundTokens?.[0];
             if (!token) {
               return null;
             }
-            const newToken = { ...token, amount: new BigNumber(NaN) };
+            // @TODO TOKENS
+            const newToken = { ...token, amount: new BigNumber(NaN) } as unknown as BalanceToken;
             this.tokensFacade.addToken(newToken);
             return newToken;
           }
@@ -229,12 +230,16 @@ export class SwapFormQueryService {
       ? of(searchingToken)
       : this.tokensFacade.fetchQueryTokens(address, chain).pipe(
           switchIif(
-            backendTokens => Boolean(backendTokens?.size),
-            backendTokens => of(backendTokens.first()),
+            backendTokens => Boolean(backendTokens?.length),
+            backendTokens => of(backendTokens?.[0]),
             () => this.tokensFacade.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
-            const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
+            // @TODO TOKENS
+            const newToken = {
+              ...fetchedToken,
+              amount: new BigNumber(NaN)
+            } as unknown as BalanceToken;
             this.tokensFacade.addToken(newToken);
             return newToken;
           })

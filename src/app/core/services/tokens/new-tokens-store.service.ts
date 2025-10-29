@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import { TokenRef, TokensState, UtilityState } from '@core/services/tokens/models/new-token-types';
+import {
+  BlockchainUtilityState,
+  TokenRef,
+  TokensState,
+  UtilityState
+} from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +22,11 @@ export class NewTokensStoreService {
 
   public readonly losers = this.createUtilityStore();
 
+  public readonly favorite = this.createUtilityStore();
+
   public readonly trending = this.createUtilityStore();
+
+  public readonly searched = this.createUtilityStore();
 
   public readonly all = this.createUtilityStore();
 
@@ -42,9 +51,8 @@ export class NewTokensStoreService {
       chainObject.page = chainObject.page + 1;
       chainObject.totalTokens = tokens.total;
       chainObject.allowFetching = tokens.haveMore;
-      console.log(`tokens added to ${blockchain} store`);
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 
@@ -72,6 +80,29 @@ export class NewTokensStoreService {
   //     Object.values(tokens).forEach(token => (token.b = undefined)
   //   });
   // }
+
+  private createBlockchainUtilityStore(): BlockchainUtilityState {
+    return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
+      const tokensSubject$ = new BehaviorSubject<Record<string, BalanceToken>>({});
+      const loadingSubject$ = new BehaviorSubject(true);
+      const balanceLoadingSubject$ = new BehaviorSubject(false);
+
+      acc[blockchain] = {
+        _pageLoading$: loadingSubject$,
+        pageLoading$: loadingSubject$.asObservable(),
+
+        _balanceLoading$: balanceLoadingSubject$,
+        balanceLoading$: balanceLoadingSubject$.asObservable(),
+
+        blockchain,
+
+        _tokensObject$: tokensSubject$,
+        tokensObject$: tokensSubject$.asObservable(),
+        tokens$: tokensSubject$.asObservable().pipe(map(el => Object.values(el)))
+      };
+      return acc;
+    }, {} as unknown as BlockchainUtilityState);
+  }
 
   private createTokenStore(): TokensState {
     return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
@@ -116,9 +147,6 @@ export class NewTokensStoreService {
       refs$: refsSubject$.asObservable(),
 
       tokens$: refsSubject$.asObservable().pipe(
-        tap(el => {
-          console.log(el);
-        }),
         combineLatestWith(
           ...Object.values(this.tokens).map(t =>
             t.tokens$.pipe(map(el => ({ chain: t.blockchain, list: el })))

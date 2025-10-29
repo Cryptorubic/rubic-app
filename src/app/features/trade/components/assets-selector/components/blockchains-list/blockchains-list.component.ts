@@ -15,8 +15,6 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { allChainsSelectorItem } from '../../constants/all-chains';
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
-import { Observable } from 'rxjs';
 import { AssetListType } from '@features/trade/models/asset';
 import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 
@@ -37,13 +35,11 @@ export class BlockchainsListComponent {
 
   @Input({ required: true }) totalBlockchains: number;
 
+  @Input({ required: true }) blockchainsToShow: AvailableBlockchain[];
+
   @Output() handleSearchQuery = new EventEmitter<string>();
 
   @Output() handleSelection = new EventEmitter<AssetListType>();
-
-  public get blockchainsToShow$(): Observable<AvailableBlockchain[]> {
-    return this.assetsSelectorFacade.getAssetsService(this.type).blockchainsToShow$;
-  }
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -54,8 +50,7 @@ export class BlockchainsListComponent {
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { formType: FormType }>,
     private readonly mobileNativeService: MobileNativeModalService,
-    private readonly headerStore: HeaderStore,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
+    private readonly headerStore: HeaderStore
   ) {}
 
   public onItemClick(blockchainName: BlockchainName | null): void {

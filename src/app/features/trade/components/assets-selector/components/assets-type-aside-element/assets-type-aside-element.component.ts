@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 import { AssetListType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
+import { temporarelyDisabledBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
+import { BlockchainsInfo } from '@cryptorubic/sdk';
 
 @Component({
   selector: 'app-assets-type-aside-element',
@@ -18,21 +20,31 @@ export class AssetsTypeAsideElementComponent {
 
   @Input({ required: true }) type: 'from' | 'to';
 
-  @Input({ required: true }) isDisabled: boolean;
-
-  @Input({ required: true }) hintText: string;
-
   @Output() handleClick = new EventEmitter<BlockchainItem>();
 
   private get isAllChains(): boolean {
-    return this.blockchainItem.name === null;
+    const isBlocklchain = BlockchainsInfo.isBlockchainName(this.selectedAssetType);
+    return this.blockchainItem.name === null && !isBlocklchain;
   }
 
   public get isSelected(): boolean {
+    return this.selectedAssetType === this.blockchainItem.name || this.isAllChains;
+  }
+
+  public get isDisabled(): boolean {
     return (
-      this.selectedAssetType === this.blockchainItem.name ||
-      (this.isAllChains && this.selectedAssetType === 'allChains')
+      this.blockchainItem.disabledConfiguration ||
+      (this.type === 'from' && this.blockchainItem.disabledFrom)
     );
+  }
+
+  public get hintText(): string | null {
+    if (this.isDisabled) {
+      return temporarelyDisabledBlockchains.includes(this.blockchainItem.name)
+        ? 'Сoming soon'
+        : 'Temporary disabled';
+    }
+    return null;
   }
 
   public get id(): string {
@@ -48,11 +60,5 @@ export class AssetsTypeAsideElementComponent {
 
   public onItemClick(item: BlockchainItem): void {
     this.handleClick.emit(item);
-    // @TODO TOKENS
-    // if (this.isAllChains) {
-    //   this.assetsSelectorFacade.getAssetsService(this.type).assetListType = 'allChains';
-    // } else {
-    //   this.assetsSelectorFacade.getAssetsService(this.type).assetListType = item.name;
-    // }
   }
 }

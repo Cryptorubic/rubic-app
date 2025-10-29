@@ -2,8 +2,12 @@
   <app-search-tokens-bar
     [searchQuery]="tokensSearchQuery"
     [totalBlockchains]="totalBlockchains"
+    (queryChange)="onTokenSearch.emit($event)"
   ></app-search-tokens-bar>
-  <app-switch-list-type-button></app-switch-list-type-button>
+  <app-switch-list-type-button
+    [assetListType]="listType"
+    (switchListType)="switchMode.emit()"
+  ></app-switch-list-type-button>
 </div>
 
 <app-tokens-list-filters
@@ -25,8 +29,8 @@
       <!--standard mode -->
       <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
         <app-empty-list
-          [tokensType]="tokensType"
-          [hasQuery]="!!tokensSearchQuery.length"
+          [assetListType]="listType"
+          [hasQuery]="!!tokensSearchQuery?.length"
         ></app-empty-list>
       </div>
 

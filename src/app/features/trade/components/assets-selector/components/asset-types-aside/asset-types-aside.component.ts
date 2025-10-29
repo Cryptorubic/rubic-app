@@ -28,13 +28,11 @@ export class AssetTypesAsideComponent {
 
   @Input({ required: true }) assetListType: AssetListType;
 
-  @Input({ required: true }) isDisabled: boolean;
-
-  @Input({ required: true }) hintText: string;
-
   @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
 
   @Output() handleFilterSelect = new EventEmitter<BlockchainFilters>();
+
+  @Output() onSearchQuery = new EventEmitter<string>();
 
   public readonly allChainsSelectorItem = allChainsSelectorItem;
 

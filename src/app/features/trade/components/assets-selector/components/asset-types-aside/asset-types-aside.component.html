@@ -27,6 +27,7 @@
     [type]="type"
     [searchQuery]="searchQuery"
     [totalBlockchains]="totalBlockchains"
+    (handleSearchQuery)="onSearchQuery.emit($event)"
   ></app-search-blockchains-bar>
 </div>
 
@@ -38,8 +39,6 @@
         [blockchainItem]="allChainsSelectorItem"
         [selectedAssetType]="assetListType"
         [isMobile]="isMobile"
-        [hintText]="hintText"
-        [isDisabled]="isDisabled"
         (handleClick)="onBlockchainItemClick($event)"
       ></app-assets-type-aside-element>
 
@@ -49,8 +48,6 @@
           [blockchainItem]="blockchainItem"
           [selectedAssetType]="assetListType"
           [isMobile]="isMobile"
-          [hintText]="hintText"
-          [isDisabled]="isDisabled"
           (handleClick)="onBlockchainItemClick($event)"
         ></app-assets-type-aside-element>
       </ng-container>

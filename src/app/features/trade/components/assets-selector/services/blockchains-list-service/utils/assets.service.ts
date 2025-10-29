@@ -1,8 +1,12 @@
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { Asset, AssetListType } from '@features/trade/models/asset';
-import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { AssetListType } from '@features/trade/models/asset';
+import {
+  AvailableBlockchain,
+  BlockchainItem
+} from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import {
   BlockchainFilters,
+  BlockchainTag,
   BlockchainTags
 } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
@@ -19,13 +23,15 @@ import {
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, distinctUntilChanged, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
 import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { BlockchainsInfo } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 
 export abstract class AssetsService {
   // Tokens type (default or favorite)
@@ -53,7 +59,9 @@ export abstract class AssetsService {
   // Tokens search query (tokens)
   protected readonly _tokensSearchQuery$ = new BehaviorSubject<string>('');
 
-  public readonly tokensSearchQuery$ = this._tokensSearchQuery$.asObservable();
+  public readonly tokensSearchQuery$ = this._tokensSearchQuery$
+    .asObservable()
+    .pipe(debounceTime(200));
 
   public get tokensSearchQuery(): string {
     return this._tokensSearchQuery$.value;
@@ -90,33 +98,11 @@ export abstract class AssetsService {
     return this._assetListType$.value;
   }
 
-  // Selected asset
-  private readonly _selectedAsset$ = new Subject<Asset>();
-
-  public readonly selectedAsset$ = this._selectedAsset$.asObservable();
-
-  public set selectedAsset(value: Asset) {
-    this._selectedAsset$.next(value);
-  }
-
   // Avaialble blockchains
   protected _availableBlockchains: AvailableBlockchain[] = [];
 
   public get availableBlockchains(): AvailableBlockchain[] {
     return this._availableBlockchains;
-  }
-
-  // Blockchains to show
-  protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
-
-  public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable();
-
-  public get blockchainsToShow(): AvailableBlockchain[] {
-    return this._blockchainsToShow$.getValue();
-  }
-
-  protected set blockchainsToShow(value: AvailableBlockchain[]) {
-    this._blockchainsToShow$.next(value);
   }
 
   // assetsBlockchainsToShow
@@ -163,13 +149,31 @@ export abstract class AssetsService {
     }
   }
 
+  // Blockchains to show
+  protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
+
+  public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable().pipe(
+    combineLatestWith(this.blockchainSearchQuery$, this.blockchainFilter$),
+    map(([chains, query, filters]) =>
+      chains.filter(
+        chain => this.filterQueryBlockchain(query, chain) && this.filterByType(filters, chain)
+      )
+    )
+  );
+
+  public get blockchainsToShow(): AvailableBlockchain[] {
+    return this._blockchainsToShow$.getValue();
+  }
+
+  protected set blockchainsToShow(value: AvailableBlockchain[]) {
+    this._blockchainsToShow$.next(value);
+  }
+
   protected constructor() {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
     this.assetsBlockchainsToShow = this._availableBlockchains;
 
-    this.subscribeOnSearchQuery();
-    this.subscribeOnFilterQuery();
     // this.subscribeOnTokensToShow();
   }
 
@@ -201,7 +205,6 @@ export abstract class AssetsService {
       );
     }
     const availableBlockchains = blockchains.map(blockchain => {
-      // // @TODO REMOVE
       const disabledConfiguration = !this.platformConfigurationService.isAvailableBlockchain(
         blockchain.name
       );
@@ -225,51 +228,6 @@ export abstract class AssetsService {
       return 0;
     });
   }
-
-  protected subscribeOnSearchQuery(): void {
-    combineLatest([this.blockchainFilter$, this.tokensSearchQuery$])
-      .pipe(debounceTime(200), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(([filterQuery, searchQuery]) => {
-        this.assetsBlockchainsToShow = this.filterBlockchains(filterQuery).filter(blockchain => {
-          return (
-            blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            blockchain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (blockchain.tags.length &&
-              blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
-          );
-        });
-        this.blockchainsToShow = this.assetsBlockchainsToShow;
-      });
-  }
-
-  protected subscribeOnFilterQuery(): void {
-    this.blockchainFilter$
-      .pipe(
-        tap(filterQuery => {
-          if (filterQuery === BlockchainTags.ALL || !filterQuery) {
-            this.blockchainsToShow = this.availableBlockchains;
-          } else {
-            this.blockchainsToShow = this.availableBlockchains.filter(blockchain =>
-              blockchain.tags.includes(filterQuery)
-            );
-          }
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe();
-  }
-
-  // private subscribeOnTokenSelection(): void {
-  //   this.swapFormService.fromToken$
-  //     .pipe(
-  //       combineLatestWith(this.swapFormService.toToken$),
-  //       filter(([fromToken, toToken]) => !isNil(fromToken) || !isNil(toToken)),
-  //       takeUntil(this.destroy$)
-  //     )
-  //     .subscribe(([fromToken, toToken]) => {
-  //       this.setChainInTopOfAssetsBlockchains(fromToken, toToken);
-  //     });
-  // }
 
   protected setChainInTopOfAssetsBlockchains(fromToken: BalanceToken, toToken: BalanceToken): void {
     let firstSelectedChainName = fromToken?.blockchain;
@@ -299,16 +257,10 @@ export abstract class AssetsService {
     );
   }
 
-  public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
-    return blockchain.disabledFrom;
-  }
+  public abstract isDisabledFrom(blockchain: AvailableBlockchain): boolean;
 
   public isDisabledTo(_blockchain: AvailableBlockchain): boolean {
     return false;
-    // if (this.assetsSelectorStateService.formType !== 'to') {
-    //   return false;
-    // }
-    // return false;
   }
 
   public getHintText(blockchain: AvailableBlockchain): string | null {
@@ -323,24 +275,30 @@ export abstract class AssetsService {
     return null;
   }
 
-  // @TODO TOKENS
-  // private getTokensNetworkStateKey(): TokensNetworkStateKey {
-  //   assertTokensNetworkStateKey(this.assetsSelectorStateService.assetType);
-  //   return this.assetsSelectorStateService.assetType;
-  // }
+  private filterQueryBlockchain(searchQuery: string, blockchain: BlockchainItem): boolean {
+    return (
+      blockchain.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      blockchain.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (blockchain.tags.length &&
+        blockchain.tags.join(' ').toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+  }
 
-  // @TODO TOKENS
-  // private subscribeOnTokensToShow(): void {
-  //   this.assetType$.pipe(
-  //       combineLatestWith(this.assetsSelectorStateService.tokenFilter$),
-  //       takeUntil(this.destroy$)
-  //     )
-  //     .subscribe(() => {
-  //       this.resetScrollToTop();
-  //       this.listAnimationType = 'hidden';
-  //       setTimeout(() => {
-  //         this.listAnimationType = 'shown';
-  //       });
-  //     });
-  // }
+  private filterByType(filter: null | BlockchainTag, chain: AvailableBlockchain): boolean {
+    if (filter === BlockchainTags.ALL || !filter) {
+      return true;
+    } else {
+      return chain.tags.includes(filter);
+    }
+  }
+
+  public fetchSearchQueryTokens(): void {
+    this.tokensSearchQuery$.pipe(distinctUntilChanged(), debounceTime(200)).subscribe(query => {
+      const isBlockchain = BlockchainsInfo.isBlockchainName(this.assetListType);
+      this.tokensFacade.fetchQueryTokens(
+        query,
+        isBlockchain ? (this.assetListType as BlockchainName) : null
+      );
+    });
+  }
 }

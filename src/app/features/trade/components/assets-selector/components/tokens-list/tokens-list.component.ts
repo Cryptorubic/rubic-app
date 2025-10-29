@@ -19,7 +19,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
@@ -65,11 +64,13 @@ export class TokensListComponent implements OnInit {
 
   @Input({ required: true }) totalBlockchains: number = 100;
 
-  @Input({ required: true }) tokensType: TokensListType;
-
   @Output() selectAssetList = new EventEmitter<AssetListType>();
 
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
+
+  @Output() switchMode = new EventEmitter<void>();
+
+  @Output() onTokenSearch = new EventEmitter<string>();
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -108,16 +109,16 @@ export class TokensListComponent implements OnInit {
 
   public onTokenSelect(token: AvailableTokenAmount): void {
     this.mobileNativeService.forceClose();
-    this.selectToken.emit(token);
 
     if (token.available) {
+      this.selectToken.emit(token);
       // @TODO TOKENS
       // this.assetsSelectorService.onAssetSelect(token);
     }
   }
 
-  public selectTokenFilter(filter: AssetListType): void {
-    this.selectAssetList.emit(filter);
+  public selectTokenFilter(assetFilter: AssetListType): void {
+    this.selectAssetList.emit(assetFilter);
     // this.assetsSelectorFacade.getAssetsService(this.type).assetListType = filter;
   }
 
@@ -217,7 +218,7 @@ export class TokensListComponent implements OnInit {
       Boolean(
         tokensNetworkStateByAsset._pageLoading$.value ||
           this.tokensSearchQuery ||
-          this.tokensType === 'favorite' ||
+          this.listType === 'favorite' ||
           !tokensNetworkStateByAsset ||
           !tokensNetworkStateByAsset.allowFetching
       )
