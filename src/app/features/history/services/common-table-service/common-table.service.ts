@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { TuiNotification } from '@taiga-ui/core';
-import { BlockchainName, EvmBlockchainName, EvmEncodeConfig, Injector } from '@cryptorubic/sdk';
+import { BlockchainName, CHAIN_TYPE, EvmBlockchainName, Injector } from '@cryptorubic/sdk';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -9,7 +9,6 @@ import { ErrorsService } from '@core/errors/errors.service';
 import { HttpService } from '@app/core/services/http/http.service';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TransactionReceipt } from 'viem';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Injectable()
 export class CommonTableService {
@@ -26,52 +25,61 @@ export class CommonTableService {
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
     private readonly sdkService: SdkService,
-    private readonly http: HttpService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly http: HttpService
   ) {}
 
-  public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
-    // @TODO API
-    throw new Error('Not implemented');
-    // let tradeInProgressSubscription$: Subscription;
-    // let transactionReceipt: TransactionReceipt;
-    // const onTransactionHash = () => {
-    //   tradeInProgressSubscription$ = this.notificationsService.show(
-    //     this.translateService.instant('bridgePage.progressMessage'),
-    //     {
-    //       label: this.translateService.instant('notifications.tradeInProgress'),
-    //       status: TuiNotification.Info,
-    //       autoClose: false,
-    //       data: null,
-    //       icon: '',
-    //       defaultAutoCloseTime: 0
-    //     }
-    //   );
-    // };
-    //
-    // try {
-    //   transactionReceipt = await ArbitrumRbcBridgeTrade.claimTargetTokens(srcTxHash, {
-    //     onConfirm: onTransactionHash
-    //   });
-    //
-    //   await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
-    //   tradeInProgressSubscription$.unsubscribe();
-    //   this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
-    //     label: this.translateService.instant('notifications.successfulTradeTitle'),
-    //     status: TuiNotification.Success,
-    //     autoClose: 15000,
-    //     data: null,
-    //     icon: '',
-    //     defaultAutoCloseTime: 0
-    //   });
-    // } catch (error) {
-    //   console.debug('[ArbitrumBridge] Transaction claim error: ', error);
-    //   this.errorService.catch(error);
-    // } finally {
-    //   tradeInProgressSubscription$?.unsubscribe();
-    // }
-    //
-    // return transactionReceipt;
+  public async claimArbitrumBridgeTokens(
+    srcTxHash: string,
+    fromBlockchain: BlockchainName
+  ): Promise<TransactionReceipt> {
+    let transactionReceipt: TransactionReceipt;
+    let tradeInProgressSubscription$: Subscription;
+
+    const onTransactionHash = () => {
+      tradeInProgressSubscription$ = this.notificationsService.show(
+        this.translateService.instant('bridgePage.progressMessage'),
+        {
+          label: this.translateService.instant('notifications.tradeInProgress'),
+          status: TuiNotification.Info,
+          autoClose: false,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        }
+      );
+    };
+
+    try {
+      const data = await Injector.rubicApiService.claimOrRedeemCoins(
+        srcTxHash,
+        fromBlockchain as EvmBlockchainName
+      );
+
+      transactionReceipt = await Injector.web3PrivateService
+        .getWeb3Private(CHAIN_TYPE.EVM)
+        .trySendTransaction(data.to, {
+          ...data,
+          onTransactionHash
+        });
+
+      await this.sendHashesOnClaimSuccess(srcTxHash, transactionReceipt.transactionHash);
+
+      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
+        label: this.translateService.instant('notifications.successfulTradeTitle'),
+        status: TuiNotification.Success,
+        autoClose: 15000,
+        data: null,
+        icon: '',
+        defaultAutoCloseTime: 0
+      });
+    } catch (error) {
+      console.debug('[ArbitrumBridge] Transaction revert error: ', error);
+      this.errorService.catch(error);
+    } finally {
+      tradeInProgressSubscription$?.unsubscribe();
+    }
+
+    return transactionReceipt;
   }
 
   private async sendHashesOnClaimSuccess(
@@ -188,39 +196,5 @@ export class CommonTableService {
     // }
     //
     // return transactionReceipt;
-  }
-
-  public async redeemArbitrum(srcTxHash: string): Promise<EvmEncodeConfig> {
-    let evmConfig: EvmEncodeConfig;
-
-    this.notificationsService.show(this.translateService.instant('bridgePage.progressMessage'), {
-      label: this.translateService.instant('notifications.tradeInProgress'),
-      status: TuiNotification.Info,
-      autoClose: 15000,
-      data: null,
-      icon: '',
-      defaultAutoCloseTime: 0
-    });
-
-    try {
-      const resp = await Injector.rubicApiService.claimOrRedeemCoins(
-        srcTxHash,
-        this.walletConnectorService.network as EvmBlockchainName
-      );
-      evmConfig = resp.transaction as EvmEncodeConfig;
-      this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
-        label: this.translateService.instant('notifications.successfulTradeTitle'),
-        status: TuiNotification.Success,
-        autoClose: 15000,
-        data: null,
-        icon: '',
-        defaultAutoCloseTime: 0
-      });
-    } catch (error) {
-      console.debug('[Cbridge] Transaction revert error: ', error);
-      this.errorService.catch(error);
-    }
-
-    return evmConfig;
   }
 }
