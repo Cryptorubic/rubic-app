@@ -78,7 +78,6 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
-import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
@@ -135,7 +134,6 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
     ChartTogglerComponent
@@ -218,7 +216,6 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
     ChartTogglerComponent
