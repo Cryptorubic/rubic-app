@@ -25,6 +25,9 @@ import {
   UtilityState
 } from '@core/services/tokens/models/new-token-types';
 import { RatedToken, Token } from '@shared/models/tokens/token';
+import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { compareTokens } from '@shared/utils/utils';
+import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 
 @Injectable({
   providedIn: 'root'
@@ -357,6 +360,48 @@ export class TokensFacadeService {
     return utilityMap[type];
   }
 
+  public getTokensList(
+    type: AssetListType,
+    query: string,
+    direction: 'from' | 'to',
+    inputValue: SwapFormInput
+  ): Observable<AvailableTokenAmount[]> {
+    return this.getTokensBasedOnType(type, Boolean(query && query?.length > 2)).tokens$.pipe(
+      map((tokens: BalanceToken[]) =>
+        // @TODO TOKENS
+        tokens
+          .map(token => {
+            const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
+            const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+            return {
+              ...token,
+              available: isAvailable,
+              amount: new BigNumber(NaN)
+            };
+          })
+          .sort((a, b) => {
+            const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
+            if (oppositeToken) {
+              if (
+                a.address === oppositeToken.address &&
+                a.blockchain === oppositeToken.blockchain
+              ) {
+                return 1;
+              }
+              if (
+                b.address === oppositeToken.address &&
+                b.blockchain === oppositeToken.blockchain
+              ) {
+                return -1;
+              }
+            }
+
+            return a.rank > b.rank ? -1 : 1;
+          })
+      )
+    );
+  }
+
   private buildAllTokensList(
     tokens: Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   ): void {
@@ -490,5 +535,14 @@ export class TokensFacadeService {
       this.searched._refs$.next(searchedTokens);
       this.searched._pageLoading$.next(false);
     });
+  }
+
+  public runFetchConditionally(listType: AssetListType, searchQuery: string | null): void {
+    if (BlockchainsInfo.isBlockchainName(listType) && !searchQuery) {
+      const tokensObject = this.getTokensBasedOnType(listType) as BlockchainTokenState;
+      if (tokensObject.page === 1 && tokensObject.allowFetching) {
+        this.fetchNewPage(tokensObject, true);
+      }
+    }
   }
 }

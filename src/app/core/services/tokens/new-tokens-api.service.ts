@@ -5,6 +5,7 @@ import {
   BackendToken,
   ENDPOINTS,
   FavoriteTokenRequestParams,
+  NewTokensBackendResponse,
   RatedBackendToken,
   TokensBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
@@ -13,9 +14,10 @@ import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
   FROM_BACKEND_BLOCKCHAINS,
-  TO_BACKEND_BLOCKCHAINS
+  TO_BACKEND_BLOCKCHAINS,
+  TEST_EVM_BLOCKCHAIN_NAME
 } from '@cryptorubic/core';
-import { forkJoin, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpService } from '@core/services/http/http.service';
 import { ENVIRONMENT } from '../../../../environments/environment';
@@ -127,65 +129,65 @@ export class NewTokensApiService {
   public getTopTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
-    const options = { page: 1, pageSize: this.pageSize };
-    const tier1Blockchains = this.topTierChains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
+    // const tier1Blockchains = this.topTierChains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
 
-    return forkJoin(
-      tier1Blockchains.map((network: BackendBlockchain) =>
-        this.httpService.get<TokensBackendResponse>(
-          ENDPOINTS.TOKENS,
-          { ...options, network },
-          this.tokensApiUrl
-        )
+    return this.httpService
+      .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
+        ENDPOINTS.NEW_TOKENS,
+        { networks: this.topTierChains.join(',') },
+        this.tokensApiUrl
       )
-    ).pipe(
-      map(chains => {
-        return chains.reduce((acc, backendResponse, index) => {
-          const blockchain = FROM_BACKEND_BLOCKCHAINS[tier1Blockchains[index]];
-          return {
-            ...acc,
-            [blockchain]: {
-              list: NewTokensApiService.prepareTokens(backendResponse.results),
-              total: backendResponse.count,
-              haveMore: Boolean(backendResponse.next)
-            }
-          };
-        }, {});
-      })
-    );
+      .pipe(
+        map(response => {
+          return this.topTierChains.reduce((acc, blockchain) => {
+            // const blockchain = FROM_BACKEND_BLOCKCHAINS[chain];
+            const chainResponse = response[blockchain];
+            if (!chainResponse) return acc;
+
+            return {
+              ...acc,
+              [blockchain]: {
+                list: NewTokensApiService.prepareTokens(chainResponse.tokens),
+                total: chainResponse.count,
+                haveMore: Boolean(chainResponse.next_page)
+              }
+            };
+          }, {});
+        })
+      );
   }
 
   public getRestTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
-    const options = { page: 1, pageSize: this.pageSize };
-    const tier2blockchains = Object.values(BLOCKCHAIN_NAME)
-      .filter(chain => !this.topTierChains.includes(chain))
-      .map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
-
-    return forkJoin(
-      tier2blockchains.map((network: BackendBlockchain) =>
-        this.httpService.get<TokensBackendResponse>(
-          ENDPOINTS.TOKENS,
-          { ...options, network },
-          this.tokensApiUrl
-        )
-      )
-    ).pipe(
-      map(chains => {
-        return chains.reduce((acc, backendResponse, index) => {
-          const blockchain = FROM_BACKEND_BLOCKCHAINS[tier2blockchains[index]];
-          return {
-            ...acc,
-            [blockchain]: {
-              list: NewTokensApiService.prepareTokens(backendResponse.results),
-              total: backendResponse.count,
-              haveMore: Boolean(backendResponse.next)
-            }
-          };
-        }, {});
-      })
+    const excludedChains = [...Object.values(TEST_EVM_BLOCKCHAIN_NAME), ...this.topTierChains];
+    const tier2blockchains = Object.values(BLOCKCHAIN_NAME).filter(
+      chain => !excludedChains.includes(chain)
     );
+
+    return this.httpService
+      .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
+        ENDPOINTS.NEW_TOKENS,
+        { networks: tier2blockchains.join(',') },
+        this.tokensApiUrl
+      )
+      .pipe(
+        map(response => {
+          return tier2blockchains.reduce((acc, blockchain) => {
+            const chainResponse = response[blockchain];
+            if (!chainResponse) return acc;
+
+            return {
+              ...acc,
+              [blockchain]: {
+                list: NewTokensApiService.prepareTokens(chainResponse.tokens),
+                total: chainResponse.count,
+                haveMore: Boolean(chainResponse.next_page)
+              }
+            };
+          }, {});
+        })
+      );
   }
 
   public fetchFavoriteTokens(): Observable<Token[]> {

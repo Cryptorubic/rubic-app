@@ -22,17 +22,13 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
 import { combineLatestWith, Observable, of } from 'rxjs';
 import { AssetsService } from '@features/trade/components/assets-selector/services/blockchains-list-service/utils/assets.service';
 import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
-import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainFilters } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import {
   AvailableBlockchain,
   BlockchainItem
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import BigNumber from 'bignumber.js';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
-import { BlockchainTokenState } from '@core/services/tokens/models/new-token-types';
-import { compareTokens } from '@shared/utils/utils';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Component({
@@ -118,62 +114,11 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     );
     this.tokensToShow$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),
-      switchMap(([type, query]) => {
-        return this.tokensFacade
-          .getTokensBasedOnType(type, Boolean(query && query?.length > 2))
-          .tokens$.pipe(
-            map((tokens: BalanceToken[]) =>
-              // @TODO TOKENS
-              tokens
-                .map(token => {
-                  const oppositeToken =
-                    this.type === 'from'
-                      ? this.formService.inputValue.toToken
-                      : this.formService.inputValue.fromToken;
-                  const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
-                  return {
-                    ...token,
-                    available: isAvailable,
-                    amount: new BigNumber(NaN)
-                  };
-                })
-                .sort((a, b) => {
-                  const oppositeToken =
-                    this.type === 'from'
-                      ? this.formService.inputValue.toToken
-                      : this.formService.inputValue.fromToken;
-                  if (oppositeToken) {
-                    if (
-                      a.address === oppositeToken.address &&
-                      a.blockchain === oppositeToken.blockchain
-                    ) {
-                      return 1;
-                    }
-                    if (
-                      b.address === oppositeToken.address &&
-                      b.blockchain === oppositeToken.blockchain
-                    ) {
-                      return -1;
-                    }
-                  }
-
-                  return a.rank > b.rank ? -1 : 1;
-                })
-            )
-          );
-      }),
-      tap(() => {
-        const type = this.assetsSelectorService.assetListType;
-        if (
-          BlockchainsInfo.isBlockchainName(type) &&
-          !this.assetsSelectorService.tokensSearchQuery
-        ) {
-          const tokensObject = this.tokensFacade.getTokensBasedOnType(type) as BlockchainTokenState;
-          if (tokensObject.page === 1 && tokensObject.allowFetching) {
-            this.tokensFacade.fetchNewPage(tokensObject, true);
-          }
-        }
-      })
+      switchMap(([type, query]) =>
+        this.tokensFacade
+          .getTokensList(type, query, this.type, this.formService.inputValue)
+          .pipe(tap(() => this.tokensFacade.runFetchConditionally(type, query)))
+      )
     );
     this.pageLoading$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),

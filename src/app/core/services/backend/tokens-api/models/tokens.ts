@@ -5,7 +5,8 @@ import { TokenSecurity } from '@shared/models/tokens/token-security';
 export enum ENDPOINTS {
   TOKENS = 'v2/tokens/',
   FAVORITE_TOKENS = 'v2/tokens/favorite/',
-  TOKENS_SECURITY = 'v2/tokens_security/unknown_token'
+  TOKENS_SECURITY = 'v2/tokens_security/unknown_token',
+  NEW_TOKENS = 'v3/tmp/tokens/all'
 }
 
 export interface FavoriteTokenRequestParams {
@@ -45,6 +46,12 @@ export interface TokensBackendResponse {
   readonly next: string | null;
   readonly previous: string | null;
   readonly results: BackendToken[];
+}
+
+export interface NewTokensBackendResponse {
+  readonly count: number;
+  readonly next_page: string | null;
+  readonly tokens: BackendToken[];
 }
 
 export interface TokenSecurityBackendResponse {
