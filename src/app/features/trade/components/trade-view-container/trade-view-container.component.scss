@@ -56,7 +56,6 @@ $mobile-width: 360px;
   }
 
   app-spindle-banner,
-  app-hypelab-banner,
   app-token-selector-page {
     width: 100%;
   }
@@ -131,7 +130,7 @@ $mobile-width: 360px;
   }
 }
 
-.banner-carousel {
+.banner-container {
   width: 100%;
 
   ::ng-deep fieldset {
