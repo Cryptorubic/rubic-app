@@ -50,7 +50,9 @@ export class SwapDataElementComponent {
 
   @Input({ required: true }) gasInfo: AppGasData | null;
 
-  @Input({ required: true }) time: string | number;
+  @Input({ required: true }) averageTimeMins: string | number;
+
+  @Input({ required: true }) time95PercentSwapsMins: string | number;
 
   @Input() hideHint: boolean = false;
 }

@@ -1,4 +1,4 @@
-<ng-container *ngLet="getProviderInfo(tradeState.tradeType) as providerInfo">
+<ng-container *ngLet="getProviderInfo() as providerInfo">
   <div
     *ngLet="hideHint$ | async as hideHint"
     class="element"
@@ -101,7 +101,8 @@
     <app-swap-data-element
       [gasInfo]="getGasData()"
       [feeInfoChange]="getFeeInfo()"
-      [time]="getAverageTimeString()"
+      [averageTimeMins]="getAverageTimeString()"
+      [time95PercentSwapsMins]="getTime95PercentsSwapsString()"
       [hideHint]="hideHint"
     ></app-swap-data-element>
   </div>

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   CrossChainTrade,
-  CrossChainTradeType,
   EvmCrossChainTrade,
   EvmOnChainTrade,
   OnChainTrade,
@@ -14,7 +13,6 @@ import { compareTokens } from '@app/shared/utils/utils';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
 import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info';
-import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 
@@ -33,14 +31,42 @@ export class TradeInfoManager {
     };
   }
 
-  public getProviderInfo(tradeType: TradeProvider): ProviderInfo {
-    const provider = TRADES_PROVIDERS[tradeType];
-    const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-    const currentProviderTime = providerAverageTime?.[tradeType as CrossChainTradeType];
-    return {
-      ...provider,
-      averageTime: currentProviderTime ? currentProviderTime : provider?.averageTime || 1 // Default average time if not specified
-    };
+  public getProviderInfo(trade: CrossChainTrade | OnChainTrade): ProviderInfo {
+    const provider = TRADES_PROVIDERS[trade.type];
+    return { ...provider, averageTime: this.getAverageSwapTimeMinutes(trade).averageTimeMins };
+  }
+
+  public getAverageSwapTimeMinutes(trade: CrossChainTrade | OnChainTrade): {
+    averageTimeMins: number;
+    time95PercentsSwapsMins: number;
+  } {
+    const provider = TRADES_PROVIDERS[trade.type];
+
+    if (trade instanceof CrossChainTrade) {
+      const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
+      const ccrProviderInfo = ccrProviders[trade.type];
+      const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
+      const betweenChainsInfo = ccrProviderInfo.betweenNetworksStats[fromToChainKey];
+
+      const averageTimeMins = Math.min(
+        Math.ceil(Number(ccrProviderInfo.average) / 60) || provider.averageTime || 5,
+        Math.ceil(Number(ccrProviderInfo.median) / 60) || provider.averageTime || 5
+      );
+
+      const time95PercentsSwapsMins = betweenChainsInfo
+        ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
+        : Math.ceil(ccrProviderInfo['95_percentile'] / 60)
+        ? Math.ceil(ccrProviderInfo['95_percentile'] / 60)
+        : averageTimeMins;
+
+      return { averageTimeMins, time95PercentsSwapsMins };
+    } else {
+      return {
+        // Default average time if not specified
+        averageTimeMins: provider?.averageTime || 1,
+        time95PercentsSwapsMins: provider?.averageTime || 1
+      };
+    }
   }
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
