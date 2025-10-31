@@ -31,7 +31,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -142,8 +141,7 @@ export class DepositPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly modalService: ModalService,
-    private readonly tradeInfoManager: TradeInfoManager
+    private readonly modalService: ModalService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
@@ -176,15 +174,6 @@ export class DepositPreviewSwapComponent {
       queryParamsHandling: 'preserve',
       state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
     });
-  }
-
-  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
-    if (trade?.tradeType) {
-      const avgTime = this.tradeInfoManager.getAverageSwapTimeMinutes(trade.trade);
-      return `${avgTime} ${avgTime > 1 ? 'mins' : 'min'}`;
-    } else {
-      return trade instanceof CrossChainTrade ? '30 mins' : '1 min';
-    }
   }
 
   public getGasData(

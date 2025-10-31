@@ -33,35 +33,40 @@ export class TradeInfoManager {
 
   public getProviderInfo(trade: CrossChainTrade | OnChainTrade): ProviderInfo {
     const provider = TRADES_PROVIDERS[trade.type];
-    return { ...provider, averageTime: this.getAverageSwapTimeMinutes(trade) };
+    return { ...provider, averageTime: this.getAverageSwapTimeMinutes(trade).averageTimeMins };
   }
 
-  public getAverageSwapTimeMinutes(trade: CrossChainTrade | OnChainTrade): number {
+  public getAverageSwapTimeMinutes(trade: CrossChainTrade | OnChainTrade): {
+    averageTimeMins: number;
+    time95PercentsSwapsMins: number;
+  } {
     const provider = TRADES_PROVIDERS[trade.type];
 
-    let averageTime: number;
     if (trade instanceof CrossChainTrade) {
       const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
       const ccrProviderInfo = ccrProviders[trade.type];
       const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
       const betweenChainsInfo = ccrProviderInfo.betweenNetworksStats[fromToChainKey];
 
-      if (betweenChainsInfo) {
-        averageTime = Math.ceil(betweenChainsInfo['95_percentile'] / 60);
-      } else if (ccrProviderInfo['95_percentile']) {
-        averageTime = Math.ceil(ccrProviderInfo['95_percentile'] / 60);
-      } else if (ccrProviderInfo.average) {
-        averageTime = Number(ccrProviderInfo.average);
-      } else if (ccrProviderInfo.averageExecutionTime) {
-        averageTime = ccrProviderInfo.averageExecutionTime;
-      } else {
-        averageTime = provider?.averageTime || 5;
-      }
-    } else {
-      averageTime = provider?.averageTime || 1; // Default average time if not specified
-    }
+      const averageTimeMins = Math.min(
+        Math.ceil(Number(ccrProviderInfo.average) / 60) || provider.averageTime || 5,
+        Math.ceil(Number(ccrProviderInfo.median) / 60) || provider.averageTime || 5
+      );
 
-    return averageTime;
+      const time95PercentsSwapsMins = betweenChainsInfo
+        ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
+        : Math.ceil(ccrProviderInfo['95_percentile'] / 60)
+        ? Math.ceil(ccrProviderInfo['95_percentile'] / 60)
+        : averageTimeMins;
+
+      return { averageTimeMins, time95PercentsSwapsMins };
+    } else {
+      return {
+        // Default average time if not specified
+        averageTimeMins: provider?.averageTime || 1,
+        time95PercentsSwapsMins: provider?.averageTime || 1
+      };
+    }
   }
 
   public getGasData(trade: CrossChainTrade | OnChainTrade): AppGasData | null {
