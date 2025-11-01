@@ -5,45 +5,48 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import {
   BlockchainName,
   BlockchainsInfo,
-  compareAddresses,
   Injector,
   Web3PublicService,
   Web3Pure
 } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { List } from 'immutable';
 import { AssetListType, UtilityAssetType } from '@features/trade/models/asset';
-import {
-  BlockchainTokenState,
-  TokenRef,
-  UtilityState
-} from '@core/services/tokens/models/new-token-types';
-import { RatedToken, Token } from '@shared/models/tokens/token';
+import { BlockchainTokenState } from '@core/services/tokens/models/new-token-types';
+import { Token } from '@shared/models/tokens/token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { compareTokens } from '@shared/utils/utils';
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
+import { LosersUtilityStore } from '@core/services/tokens/models/losers-utility-store';
+import { TrendingUtilityStore } from '@core/services/tokens/models/tranding-utility-store';
+import { GainersUtilityStore } from '@core/services/tokens/models/gainers-utility-store';
+import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-utility-store';
+import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
+import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
+import { SearchQueryUtilityStore } from '@core/services/tokens/models/search-query-utility-store';
+import { BasicUtilityStore } from '@core/services/tokens/models/basic-utility-store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensFacadeService {
-  public readonly allTokens = this.tokensStore.all;
+  public readonly allTokens: AllTokensUtilityStore;
 
-  public readonly trending = this.tokensStore.trending;
+  public readonly trending: BasicUtilityStore;
 
-  public readonly gainers = this.tokensStore.gainers;
+  public readonly gainers: BasicUtilityStore;
 
-  public readonly losers = this.tokensStore.losers;
+  public readonly losers: BasicUtilityStore;
 
-  public readonly favorite = this.tokensStore.favorite;
+  public readonly favorite: FavoriteUtilityStore;
 
-  public readonly searched = this.tokensStore.searched;
+  public readonly searched: SearchQueryUtilityStore;
 
   public static onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
@@ -79,15 +82,17 @@ export class TokensFacadeService {
     private readonly authService: AuthService
   ) {
     this.buildTokenLists();
+    this.allTokens = new AllTokensUtilityStore(tokensStore, apiService).init();
+    this.trending = new TrendingUtilityStore(tokensStore, apiService).init();
+    this.gainers = new GainersUtilityStore(tokensStore, apiService).init();
+    this.losers = new LosersUtilityStore(tokensStore, apiService).init();
+    this.favorite = new FavoriteUtilityStore(tokensStore, apiService, authService).init();
+    this.searched = new SearchQueryUtilityStore(tokensStore, apiService).init();
   }
 
   private buildTokenLists(): void {
     this.buildTier1List();
     this.buildTier2List();
-    this.buildTrendingList();
-    this.buildGainersList();
-    this.buildLosersList();
-    this.buildFavoriteTokenList();
   }
 
   private buildTier1List(): void {
@@ -95,7 +100,10 @@ export class TokensFacadeService {
       Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
         this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
       });
-      this.buildAllTokensList(tokens);
+      const tokensArray = Object.values(tokens)
+        .map(el => el.list)
+        .flat();
+      this.allTokens.updateTokenSync(tokensArray);
       this._tier1TokensLoaded$.next(true);
     });
   }
@@ -259,38 +267,12 @@ export class TokensFacadeService {
     );
   }
 
-  /**
-   * Adds token to list of favorite tokens.
-   * @param favoriteToken Favorite token to add.
-   */
   public addFavoriteToken(favoriteToken: BalanceToken): Observable<unknown> {
-    this.favorite._pageLoading$.next(true);
-    return this.apiService.addFavoriteToken(favoriteToken).pipe(
-      tap(() => {
-        const oldTokens = this.favorite._refs$.value;
-        this.favorite._refs$.next([
-          ...oldTokens,
-          { address: favoriteToken.address, blockchain: favoriteToken.blockchain }
-        ]);
-        this.favorite._pageLoading$.next(false);
-      })
-    );
+    return this.favorite.addFavoriteToken(favoriteToken);
   }
 
-  /**
-   * Removes token from list of favorite tokens.
-   * @param token Favorite token to remove.
-   */
   public removeFavoriteToken(token: BalanceToken): Observable<unknown> {
-    this.favorite._pageLoading$.next(true);
-    return this.apiService.deleteFavoriteToken(token).pipe(
-      tap(() => {
-        const filteredTokens = this.favorite._refs$.value.filter(
-          el => !compareAddresses(el.address, token.address)
-        );
-        this.favorite._refs$.next(filteredTokens);
-      })
-    );
+    return this.favorite.removeFavoriteToken(token);
   }
 
   /**
@@ -344,12 +326,12 @@ export class TokensFacadeService {
   public getTokensBasedOnType(
     type: AssetListType,
     searchTokens: boolean = false
-  ): BlockchainTokenState | UtilityState {
+  ): BlockchainTokenState | CommonUtilityStore {
     if (BlockchainsInfo.isBlockchainName(type)) {
       return searchTokens ? this.searched : this.blockchainTokens[type];
     }
 
-    const utilityMap: Record<UtilityAssetType, UtilityState> = {
+    const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
       allChains: this.allTokens,
       trending: this.trending,
       gainers: this.gainers,
@@ -402,86 +384,6 @@ export class TokensFacadeService {
     );
   }
 
-  private buildAllTokensList(
-    tokens: Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
-  ): void {
-    this.allTokens._pageLoading$.next(true);
-    const allTokens: TokenRef[] = [];
-    const metaTokensArray = Object.values(tokens)
-      .map(el => el.list)
-      .flat();
-
-    metaTokensArray
-      .sort((a, b) => (a.rank > b.rank ? -1 : 1))
-      .forEach(token => {
-        allTokens.push({
-          address: token.address,
-          blockchain: token.blockchain
-        });
-      });
-
-    this.allTokens._refs$.next(allTokens);
-    this.allTokens._pageLoading$.next(false);
-  }
-
-  private buildTrendingList(): void {
-    this.trending._pageLoading$.next(true);
-    this.apiService.fetchTrendTokens().subscribe(tokens => {
-      this.addMissedUtilityTokens(tokens);
-      const trendingTokens: TokenRef[] = tokens.map(token => ({
-        address: token.address,
-        blockchain: token.blockchain
-      }));
-      this.trending._refs$.next(trendingTokens);
-      this.trending._pageLoading$.next(false);
-    });
-  }
-
-  private buildGainersList(): void {
-    this.gainers._pageLoading$.next(true);
-    this.apiService.fetchGainersTokens().subscribe(tokens => {
-      this.addMissedUtilityTokens(tokens);
-      const gainersTokens: TokenRef[] = tokens.map(token => ({
-        address: token.address,
-        blockchain: token.blockchain
-      }));
-      this.gainers._refs$.next(gainersTokens);
-      this.gainers._pageLoading$.next(false);
-    });
-  }
-
-  private buildLosersList(): void {
-    this.losers._pageLoading$.next(true);
-    this.apiService.fetchLosersTokens().subscribe(tokens => {
-      this.addMissedUtilityTokens(tokens);
-      const losersTokens: TokenRef[] = tokens.map(token => ({
-        address: token.address,
-        blockchain: token.blockchain
-      }));
-      this.losers._refs$.next(losersTokens);
-      this.losers._pageLoading$.next(false);
-    });
-  }
-
-  private addMissedUtilityTokens(tokens: (RatedToken | Token)[]): void {
-    const chainObject = {} as Partial<Record<BlockchainName, (RatedToken | Token)[]>>;
-    tokens.forEach(token => {
-      if (token.blockchain in chainObject === false) {
-        Object.assign(chainObject, { [token.blockchain]: [] });
-      }
-      chainObject[token.blockchain] = [...chainObject?.[token.blockchain], token];
-    });
-    Object.entries(chainObject).forEach(([blockchain, blockchainTokens]) => {
-      const existingTokens =
-        this.tokensStore.tokens[blockchain as BlockchainName]._tokensObject$.value;
-      const missedTokens = blockchainTokens.filter(token => !existingTokens[token.address]);
-      if (missedTokens.length) {
-        console.log('added missed tokens: ', missedTokens);
-        this.tokensStore.addNewBlockchainTokens(blockchain as BlockchainName, missedTokens);
-      }
-    });
-  }
-
   public fetchNewPage(tokenState: BlockchainTokenState, skipLoading: boolean): void {
     if (!tokenState.allowFetching) {
       return;
@@ -497,44 +399,8 @@ export class TokensFacadeService {
     });
   }
 
-  private buildFavoriteTokenList(): void {
-    this.authService.currentUser$
-      .pipe(
-        distinctUntilChanged((a, b) => a?.address === b?.address),
-        tap(user => {
-          if (user?.address) {
-            this.favorite._pageLoading$.next(true);
-          }
-        }),
-        switchMap(user => (user?.address ? this.apiService.fetchFavoriteTokens() : of([]))),
-        tap(tokens => {
-          this.addMissedUtilityTokens(tokens);
-          const favoriteTokens: TokenRef[] = tokens.map(token => ({
-            address: token.address,
-            blockchain: token.blockchain
-          }));
-          this.favorite._refs$.next(favoriteTokens);
-          this.favorite._pageLoading$.next(false);
-        })
-      )
-      .subscribe();
-  }
-
-  public startLoadingSearchList(): void {
-    this.searched._pageLoading$.next(true);
-  }
-
   public buildSearchedList(query: string, blockchain: BlockchainName | null): void {
-    this.searched._pageLoading$.next(true);
-    this.apiService.fetchQueryTokens(query, blockchain).subscribe(tokens => {
-      this.addMissedUtilityTokens(tokens);
-      const searchedTokens: TokenRef[] = tokens.map(token => ({
-        address: token.address,
-        blockchain: token.blockchain
-      }));
-      this.searched._refs$.next(searchedTokens);
-      this.searched._pageLoading$.next(false);
-    });
+    return this.searched.handleSearchQuery(query, blockchain);
   }
 
   public runFetchConditionally(listType: AssetListType, searchQuery: string | null): void {

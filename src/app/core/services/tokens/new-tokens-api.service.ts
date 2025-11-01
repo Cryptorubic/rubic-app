@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.service';
 import { BlockchainName } from '@cryptorubic/sdk';
 import {
   BackendToken,
@@ -46,7 +45,6 @@ export class NewTokensApiService {
   ];
 
   constructor(
-    private readonly tokensApiService: TokensApiService,
     private readonly httpService: HttpService,
     private readonly authService: AuthService
   ) {}

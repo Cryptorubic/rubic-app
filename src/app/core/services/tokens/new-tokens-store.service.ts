@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
-import {
-  BlockchainUtilityState,
-  TokenRef,
-  TokensState,
-  UtilityState
-} from '@core/services/tokens/models/new-token-types';
+import { BlockchainUtilityState, TokensState } from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { map } from 'rxjs/operators';
@@ -17,18 +12,6 @@ import { map } from 'rxjs/operators';
 })
 export class NewTokensStoreService {
   public readonly tokens = this.createTokenStore();
-
-  public readonly gainers = this.createUtilityStore();
-
-  public readonly losers = this.createUtilityStore();
-
-  public readonly favorite = this.createUtilityStore();
-
-  public readonly trending = this.createUtilityStore();
-
-  public readonly searched = this.createUtilityStore();
-
-  public readonly all = this.createUtilityStore();
 
   constructor() {}
 
@@ -129,43 +112,5 @@ export class NewTokensStoreService {
       };
       return acc;
     }, {} as unknown as TokensState);
-  }
-
-  private createUtilityStore(): UtilityState {
-    const loadingSubject$ = new BehaviorSubject(true);
-    const balanceLoadingSubject$ = new BehaviorSubject(false);
-    const refsSubject$ = new BehaviorSubject<TokenRef[]>([]);
-
-    return {
-      _pageLoading$: loadingSubject$,
-      pageLoading$: loadingSubject$.asObservable(),
-
-      _balanceLoading$: balanceLoadingSubject$,
-      balanceLoading$: balanceLoadingSubject$.asObservable(),
-
-      _refs$: refsSubject$,
-      refs$: refsSubject$.asObservable(),
-
-      tokens$: refsSubject$.asObservable().pipe(
-        combineLatestWith(
-          ...Object.values(this.tokens).map(t =>
-            t.tokens$.pipe(map(el => ({ chain: t.blockchain, list: el })))
-          )
-        ),
-        map(([utilityTokens, ...allTokens]) => {
-          return utilityTokens.map(ref => {
-            const chainTokens = allTokens.find(el => el.chain === ref.blockchain)!;
-            const foundToken = chainTokens.list.find(t => t.address === ref.address);
-
-            if (!foundToken) {
-              throw new Error(
-                `Token not found in all tokens store: ${ref.blockchain} - ${ref.address}`
-              );
-            }
-            return foundToken;
-          });
-        })
-      )
-    };
   }
 }
