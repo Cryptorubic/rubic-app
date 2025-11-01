@@ -135,7 +135,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       combineLatestWith(this.tokensSearchQuery$),
       switchMap(([type, query]) => {
         if (query && query.length > 2) {
-          return this.tokensFacade.getTokensBasedOnType(type, true).pageLoading$;
+          return this.tokensFacade.getTokensBasedOnType(type, query).pageLoading$;
         }
         return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
       })

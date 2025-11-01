@@ -322,8 +322,10 @@ export class TokensFacadeService {
 
   public getTokensBasedOnType(
     type: AssetListType,
-    searchTokens: boolean = false
+    query: string = ''
   ): BlockchainTokenState | CommonUtilityStore {
+    const searchTokens = Boolean(query && query?.length > 2);
+
     if (BlockchainsInfo.isBlockchainName(type)) {
       return searchTokens ? this.searched : this.blockchainTokens[type];
     }
@@ -336,7 +338,10 @@ export class TokensFacadeService {
       favorite: this.favorite
     };
 
-    return utilityMap[type];
+    const store = utilityMap[type];
+    store.setQuery(query);
+
+    return store;
   }
 
   public getTokensList(
@@ -345,7 +350,7 @@ export class TokensFacadeService {
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    return this.getTokensBasedOnType(type, Boolean(query && query?.length > 2)).tokens$.pipe(
+    return this.getTokensBasedOnType(type, query).tokens$.pipe(
       map((tokens: BalanceToken[]) =>
         // @TODO TOKENS
         tokens

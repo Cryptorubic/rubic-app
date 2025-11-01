@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { BlockchainName } from '@cryptorubic/sdk';
+import { compareAddresses } from '@shared/utils/utils';
 
 export abstract class CommonUtilityStore {
   protected readonly _pageLoading$ = new BehaviorSubject(true);
@@ -18,14 +19,19 @@ export abstract class CommonUtilityStore {
 
   public readonly refs$ = this._refs$.asObservable();
 
+  private readonly _searchQuery$ = new BehaviorSubject('');
+
+  public readonly searchQuery$ = this._searchQuery$.asObservable();
+
   public readonly tokens$ = this.refs$.pipe(
     combineLatestWith(
+      this.searchQuery$,
       ...Object.values(this.tokensStore.tokens).map(t =>
         t.tokens$.pipe(map(el => ({ chain: t.blockchain, list: el })))
       )
     ),
-    map(([utilityTokens, ...allTokens]) => {
-      return utilityTokens.map(ref => {
+    map(([utilityTokens, searchQuery, ...allTokens]) => {
+      const tokens = utilityTokens.map(ref => {
         const chainTokens = allTokens.find(el => el.chain === ref.blockchain)!;
         const foundToken = chainTokens.list.find(t => t.address === ref.address);
 
@@ -36,6 +42,16 @@ export abstract class CommonUtilityStore {
         }
         return foundToken;
       });
+      const filteredTokens =
+        searchQuery && searchQuery.length > 2
+          ? tokens.filter(
+              token =>
+                token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                compareAddresses(searchQuery, token.address)
+            )
+          : tokens;
+      return filteredTokens;
     })
   );
 
@@ -84,5 +100,9 @@ export abstract class CommonUtilityStore {
     const refs = this.getTokenRefs(tokens);
     this._refs$.next(refs);
     this._pageLoading$.next(false);
+  }
+
+  public setQuery(value: string): void {
+    this._searchQuery$.next(value);
   }
 }
