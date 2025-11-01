@@ -103,9 +103,10 @@ export class NewTokensApiService {
 
   public getNewPage(
     page: number,
-    chain: BlockchainName
+    chain: BlockchainName,
+    pageSize = this.pageSize
   ): Observable<{ list: Token[]; total: number; haveMore: boolean }> {
-    const options = { page: page, pageSize: this.pageSize };
+    const options = { page: page, pageSize };
 
     return this.httpService
       .get<TokensBackendResponse>(

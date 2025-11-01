@@ -13,7 +13,15 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  share,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
@@ -21,7 +29,6 @@ import { AssetsSelectorStateService } from '../../services/assets-selector-state
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { combineLatestWith, Observable, of } from 'rxjs';
 import { AssetsService } from '@features/trade/components/assets-selector/services/blockchains-list-service/utils/assets.service';
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainFilters } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
 import {
@@ -30,6 +37,8 @@ import {
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
+import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -54,11 +63,11 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   public readonly isMobile = this.headerStore.isMobile;
 
   public get assetsSelectorService(): AssetsService {
-    return this.assetsSelectorFacade.getAssetsService(this.type);
+    return this.type === 'from' ? this.fromAssetsService : this.toAssetsService;
   }
 
   public get oppositeSelectorService(): AssetsService {
-    return this.assetsSelectorFacade.getAssetsService(this.type === 'from' ? 'to' : 'from');
+    return this.type === 'from' ? this.toAssetsService : this.fromAssetsService;
   }
 
   public tokensSearchQuery$: Observable<string>;
@@ -88,8 +97,9 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tradePageService: TradePageService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService,
-    private readonly formService: SwapsFormService
+    private readonly formService: SwapsFormService,
+    private readonly fromAssetsService: FromAssetsService,
+    private readonly toAssetsService: ToAssetsService
   ) {
     this.subscribeOnAssetsSelect();
   }
@@ -115,9 +125,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.tokensToShow$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),
       switchMap(([type, query]) =>
-        this.tokensFacade
-          .getTokensList(type, query, this.type, this.formService.inputValue)
-          .pipe(tap(() => this.tokensFacade.runFetchConditionally(type, query)))
+        this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue).pipe(
+          debounceTime(50),
+          tap(() => this.tokensFacade.runFetchConditionally(type, query))
+        )
       )
     );
     this.pageLoading$ = this.assetListType$.pipe(

@@ -26,31 +26,11 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { BlockchainName } from '@cryptorubic/core';
 
 export abstract class AssetsService {
-  // Tokens type (default or favorite)
-  private readonly _tokensType$ = new BehaviorSubject<TokensListType>('default');
-
-  public readonly tokensType$ = this._tokensType$.asObservable();
-
-  // List scroll (virtual scroll)
-  private readonly listScrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport>(undefined);
-
-  // List animation type
-  private readonly _listAnimationType$ = new BehaviorSubject<ListAnimationType>('shown');
-
-  public readonly listAnimationType$ = this._listAnimationType$.asObservable();
-
-  private set listAnimationType(value: ListAnimationType) {
-    this._listAnimationType$.next(value);
-  }
-
   // Custom token
   protected readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount | null>(null);
 
@@ -183,20 +163,6 @@ export abstract class AssetsService {
     this.assetListType = 'allChains';
   }
 
-  // private subscribeOnAssetChange(): void {
-  //   this.assetListType$.pipe(distinctUntilChanged()).subscribe(assetListType => {
-  //     this.assetsQuery = '';
-  //     if (
-  //       BlockchainsInfo.isBlockchainName(assetListType) &&
-  //       !this.swapFormService.inputValue.fromBlockchain
-  //     ) {
-  //       this.swapFormService.inputControl.patchValue({
-  //         fromBlockchain: assetListType
-  //       });
-  //     }
-  //   });
-  // }
-
   protected setAvailableBlockchains(): void {
     let blockchains: readonly RankedBlockchain[] = blockchainsList;
     if (this.queryParamsService.enabledBlockchains) {
@@ -239,22 +205,6 @@ export abstract class AssetsService {
     );
     const [firstAsset] = this.assetsBlockchainsToShow.splice(firstAssetIndex, 1);
     this.assetsBlockchainsToShow.unshift(firstAsset);
-  }
-
-  private filterBlockchains(filterQuery: BlockchainFilters): AvailableBlockchain[] {
-    if (filterQuery === BlockchainTags.ALL || !filterQuery) {
-      return this.availableBlockchains;
-    } else {
-      return this.availableBlockchains.filter(blockchain => blockchain.tags.includes(filterQuery));
-    }
-  }
-
-  public isDisabled(blockchain: AvailableBlockchain): boolean {
-    return (
-      blockchain.disabledConfiguration ||
-      this.isDisabledFrom(blockchain) ||
-      this.isDisabledTo(blockchain)
-    );
   }
 
   public abstract isDisabledFrom(blockchain: AvailableBlockchain): boolean;

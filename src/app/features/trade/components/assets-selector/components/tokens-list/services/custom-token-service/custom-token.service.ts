@@ -12,16 +12,13 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 
-import { AssetsSelectorFacadeService } from '@features/trade/components/assets-selector/services/assets-selector-facade.service';
-
 @Injectable()
 export class CustomTokenService {
   constructor(
     private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
-    private readonly authService: AuthService,
-    private readonly assetsSelectorFacade: AssetsSelectorFacadeService
+    private readonly authService: AuthService
   ) {}
 
   public openModal(customToken: AvailableTokenAmount): void {

@@ -396,6 +396,15 @@ export class TokensFacadeService {
     });
   }
 
+  public fetchSecondPage(tokenState: BlockchainTokenState): void {
+    const blockchain = tokenState.blockchain;
+
+    this.apiService.getNewPage(tokenState.page + 1, blockchain).subscribe(response => {
+      this.tokensStore.addInitialBlockchainTokens(blockchain, response);
+      this.blockchainTokens[blockchain]._pageLoading$.next(false);
+    });
+  }
+
   public buildSearchedList(query: string, blockchain: BlockchainName | null): void {
     return this.searched.handleSearchQuery(query, blockchain);
   }
@@ -404,7 +413,7 @@ export class TokensFacadeService {
     if (BlockchainsInfo.isBlockchainName(listType) && !searchQuery) {
       const tokensObject = this.getTokensBasedOnType(listType) as BlockchainTokenState;
       if (tokensObject.page === 1 && tokensObject.allowFetching) {
-        this.fetchNewPage(tokensObject, true);
+        this.fetchSecondPage(tokensObject);
       }
     }
   }
