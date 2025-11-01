@@ -30,23 +30,26 @@ import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-u
 import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
 import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
 import { SearchQueryUtilityStore } from '@core/services/tokens/models/search-query-utility-store';
-import { BasicUtilityStore } from '@core/services/tokens/models/basic-utility-store';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensFacadeService {
-  public readonly allTokens: AllTokensUtilityStore;
+  public readonly allTokens = new AllTokensUtilityStore(this.tokensStore, this.apiService).init();
 
-  public readonly trending: BasicUtilityStore;
+  public readonly trending = new TrendingUtilityStore(this.tokensStore, this.apiService).init();
 
-  public readonly gainers: BasicUtilityStore;
+  public readonly gainers = new GainersUtilityStore(this.tokensStore, this.apiService).init();
 
-  public readonly losers: BasicUtilityStore;
+  public readonly losers = new LosersUtilityStore(this.tokensStore, this.apiService).init();
 
-  public readonly favorite: FavoriteUtilityStore;
+  public readonly favorite = new FavoriteUtilityStore(
+    this.tokensStore,
+    this.apiService,
+    this.authService
+  ).init();
 
-  public readonly searched: SearchQueryUtilityStore;
+  public readonly searched = new SearchQueryUtilityStore(this.tokensStore, this.apiService).init();
 
   public static onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
@@ -82,12 +85,6 @@ export class TokensFacadeService {
     private readonly authService: AuthService
   ) {
     this.buildTokenLists();
-    this.allTokens = new AllTokensUtilityStore(tokensStore, apiService).init();
-    this.trending = new TrendingUtilityStore(tokensStore, apiService).init();
-    this.gainers = new GainersUtilityStore(tokensStore, apiService).init();
-    this.losers = new LosersUtilityStore(tokensStore, apiService).init();
-    this.favorite = new FavoriteUtilityStore(tokensStore, apiService, authService).init();
-    this.searched = new SearchQueryUtilityStore(tokensStore, apiService).init();
   }
 
   private buildTokenLists(): void {
