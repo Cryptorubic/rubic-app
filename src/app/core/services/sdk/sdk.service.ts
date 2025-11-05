@@ -4,20 +4,22 @@ import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
 import { WINDOW } from '@ng-web-apis/common';
+import { BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
 import {
-  CrossChainSymbiosisManager,
-  OnChainManager,
-  DeflationTokenManager,
-  SDK,
-  CrossChainStatusManager,
-  CrossChainManager,
-  OnChainStatusManager,
-  Configuration,
-  EnvType
-} from '@cryptorubic/sdk';
-import { CHAIN_TYPE } from '@cryptorubic/core';
-import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
+  BlockchainAdapterFactoryService as SdkAdapterFactory,
+  EnvType,
+  WalletProviderCore
+} from '@cryptorubic/web3';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { Configuration } from './sdk-legacy/features/common/models/sdk-models/configuration';
+import { CrossChainSymbiosisManager } from './sdk-legacy/features/cross-chain/symbiosis-manager/cross-chain-symbiosis-manager';
+import { OnChainManager } from './sdk-legacy/features/on-chain/calculation-manager/on-chain-manager';
+import { CrossChainManager } from './sdk-legacy/features/cross-chain/calculation-manager/cross-chain-manager';
+import { OnChainStatusManager } from './sdk-legacy/features/on-chain/status-manager/on-chain-status-manager';
+import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/status-manager/cross-chain-status-manager';
+import { SdkLegacyService } from './sdk-legacy/sdk-legacy.service';
+import { RubicError } from '@app/core/errors/models/rubic-error';
+import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 
 @Injectable()
 export class SdkService {
@@ -25,42 +27,28 @@ export class SdkService {
 
   public readonly sdkLoading$ = this._sdkLoading$.asObservable();
 
-  private _SDK: SDK | null;
+  // private _SDK: SDK | null;
 
-  private get SDK(): SDK {
-    if (!this._SDK) {
-      throw new Error('Rubic SDK is not initiated.');
-    }
-    return this._SDK;
-  }
+  // private get SDK(): SDK {
+  //   if (!this._SDK) {
+  //     throw new Error('Rubic SDK is not initiated.');
+  //   }
+  //   return this._SDK;
+  // }
 
-  public get symbiosis(): CrossChainSymbiosisManager {
-    return this.SDK.crossChainSymbiosisManager;
-  }
+  public readonly symbiosis: CrossChainSymbiosisManager;
 
-  public get instantTrade(): OnChainManager {
-    return this.SDK.onChainManager;
-  }
+  public readonly instantTrade: OnChainManager;
 
-  public get deflationTokenManager(): DeflationTokenManager {
-    return this.SDK.deflationTokenManager;
-  }
+  public readonly crossChain: CrossChainManager;
 
-  public get crossChain(): CrossChainManager {
-    return this.SDK.crossChainManager;
-  }
+  public readonly onChainStatusManager: OnChainStatusManager;
 
-  public get onChainStatusManager(): OnChainStatusManager {
-    return this.SDK.onChainStatusManager;
-  }
+  public readonly crossChainStatusManager: CrossChainStatusManager;
 
-  public get crossChainStatusManager(): CrossChainStatusManager {
-    return this.SDK.crossChainStatusManager;
-  }
-
-  private set SDK(value: SDK) {
-    this._SDK = value;
-  }
+  // private set SDK(value: SDK) {
+  //   this._SDK = value;
+  // }
 
   private _currentConfig: Configuration;
 
@@ -70,9 +58,16 @@ export class SdkService {
 
   constructor(
     private readonly angularHttpClient: HttpClient,
-    @Inject(WINDOW) private readonly window: Window
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
-    this._SDK = null;
+    if (!this._currentConfig) {
+      throw new RubicError('_currentConfig is not initialized.');
+    }
+    this.instantTrade = new OnChainManager(this._currentConfig.providerAddress, sdkLegacyService);
+    this.crossChain = new CrossChainManager(this._currentConfig.providerAddress, sdkLegacyService);
+    this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
+    this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService);
+    this.symbiosis = new CrossChainSymbiosisManager(sdkLegacyService);
   }
 
   public async initSDK(params: {
@@ -80,7 +75,26 @@ export class SdkService {
     onChainIntegratorAddress?: string;
   }): Promise<void> {
     this._currentConfig = this.getConfig(params);
-    this.SDK = await SDK.createSDK(this.currentConfig);
+    const adapterFactory = await SdkAdapterFactory.createFactory({
+      rpcList,
+      httpClient: new SdkHttpClient(this.angularHttpClient),
+      tonParams: {
+        tonApiConfig: {
+          tonApiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+          tonApiUrl: `https://x-api.rubic.exchange/tonapi`
+        },
+        tonClientConfig: {
+          apiKey: '65e9a5af974c9f8e00b726fc25972fd228a49236d960b7bdce9f24ed6c54a45e',
+          endpoint: 'https://toncenter.com/api/v2/jsonRPC'
+        }
+      },
+      clientParams: {
+        envType: ENVIRONMENT.environmentName
+      }
+    });
+
+    this.sdkLegacyService.adaptersFactoryService.setAdapterFactory(adapterFactory);
+    // this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
   public getConfig(params: {
@@ -106,11 +120,12 @@ export class SdkService {
     };
   }
 
-  public updateWallet(
-    chainType: keyof WalletProvider,
-    walletProviderCore: WalletProviderCore
-  ): void {
-    this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
+  public updateWallet(blockchain: BlockchainName, walletProviderCore: WalletProviderCore): void {
+    this.sdkLegacyService.adaptersFactoryService.adapterFactory.connectWallet(
+      blockchain,
+      walletProviderCore
+    );
+    // this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
   }
 
   private getEnvType(): EnvType | null {

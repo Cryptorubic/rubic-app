@@ -2262,22 +2262,20 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.13.4":
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.4.tgz#2b475da933246276f2ecdbd992b967daacd49300"
-  integrity sha512-vKArCCs4mmqoRpQENTE49aF83fXm08was2uKiTezD8S5Rd2fzAT36V5rLcZxqBgm6ZxzrM6xB7RFX+yFjaY8zw==
+"@cryptorubic/core@1.0.0-alpha.no-sdk.9":
+  version "1.0.0-alpha.no-sdk.9"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.0.0-alpha.no-sdk.9.tgz#65d70e916a329f1a85991882d900e5f3999ca950"
+  integrity sha512-vkcpKRJMFBoyT9qFLPwROMOLSFdNWmQ4NKyPMsYxmONGQ/aUEnjYGGAte3Bob+nW2Tp37eDphKOjvVY9Y1Z78Q==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.13.4":
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.4.tgz#d2da43077ce39429057adfc36a1e9ae32348f089"
-  integrity sha512-UGxmo/o8hgi9o5F23UPmhvfR05abRYHoU7LTufNaWweEi4pSnHCRlVi2SFSo/U6PPj1wtJgQRt1j/B9Ga03dEw==
+"@cryptorubic/web3@1.0.0-alpha.no-sdk.9":
+  version "1.0.0-alpha.no-sdk.9"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.0.0-alpha.no-sdk.9.tgz#6e4bfd9bf004b41bf6cb15fa2bcc3cd6938cd884"
+  integrity sha512-y/Ly0zp+dn4chs8uglcYt7St1Id2PjZIcbVb4s4cG+bgRCiPudK+K4JQhFQiHO5UjwmGRzwNZOYjMvJQuUZ3jA==
   dependencies:
-    "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
-    "@ethersproject/providers" "*"
     "@mysten/sui" "^1.24.0"
     "@solana/spl-token" "*"
     "@solana/web3.js" "1.95.3"
@@ -2285,33 +2283,7 @@
     "@suiet/wallet-sdk" "^0.3.3"
     "@ton/core" "^0.59.1"
     "@ton/ton" "^15.1.0"
-    "@tonconnect/sdk" "*"
-    "@tonconnect/ui" "^*"
-    axios "*"
-    bignumber.js "9.1.2"
-    bitcoin-address-validation "^2.2.3"
-    bs58 "^6.0.0"
-    crc-32 "^1.2.2"
-    js-base64 "^3.7.8"
-    rxjs "^7.8.1"
-    socket.io-client "^4.8.1"
-    tronweb "^6.0.0-beta.4"
-    ts-essentials "^10.1.1"
-    tslib "*"
-    viem "^2.33.1"
-
-"@cryptorubic/web3@0.13.4":
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.4.tgz#615bca60d8bc293a6bad404055d930c4b119a6c5"
-  integrity sha512-HBoL1Qcz/8OGE9V3QWLLegDyzXHbPG0vkHWPuJ0IiBXsFh2XTKO9fO9aCmq4QwBsiPyetKbE23TgD/TH02IVNQ==
-  dependencies:
-    "@ethersproject/bignumber" "^5.8.0"
-    "@mysten/sui" "^1.24.0"
-    "@solana/spl-token" "*"
-    "@solana/web3.js" "1.95.3"
-    "@solflare-wallet/utl-sdk" "^1.4.0"
-    "@suiet/wallet-sdk" "^0.3.3"
-    "@ton/ton" "^15.1.0"
+    "@tonconnect/ui" "^2.2.0"
     axios "*"
     bignumber.js "9.1.2"
     bitcoin-address-validation "^2.2.3"
@@ -2777,7 +2749,7 @@
   dependencies:
     "@ethersproject/logger" "^5.8.0"
 
-"@ethersproject/providers@*", "@ethersproject/providers@5.8.0":
+"@ethersproject/providers@5.8.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.8.0.tgz#6c2ae354f7f96ee150439f7de06236928bc04cb4"
   integrity sha512-3Il3oTzEx3o6kzcg9ZzbE+oCZYyY+3Zh83sKkn4s1DZfTUjIegHnN2Cm0kbn9YFy45FDVcuCLLONhU7ny0SsCw==
@@ -5323,15 +5295,6 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@tonconnect/sdk@*", "@tonconnect/sdk@3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.3.1.tgz#794ed21667aabfb0c6c722f0dc339bb52ee143ce"
-  integrity sha512-lhXJu95VvbD36u5mMPg2sg+w4GQwkrYnHeJ8rVveu2N7UPwt0jvrEqKlvf7Ss1gh5RDtzs35SS3GbJlaIOAJNA==
-  dependencies:
-    "@tonconnect/isomorphic-eventsource" "0.0.2"
-    "@tonconnect/isomorphic-fetch" "0.0.3"
-    "@tonconnect/protocol" "2.3.0"
-
 "@tonconnect/sdk@3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.2.0.tgz#e560e2c0aa663870f248dd513aa85b7196d1e9a1"
@@ -5340,6 +5303,15 @@
     "@tonconnect/isomorphic-eventsource" "^0.0.2"
     "@tonconnect/isomorphic-fetch" "^0.0.3"
     "@tonconnect/protocol" "^2.3.0"
+
+"@tonconnect/sdk@3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@tonconnect/sdk/-/sdk-3.3.1.tgz#794ed21667aabfb0c6c722f0dc339bb52ee143ce"
+  integrity sha512-lhXJu95VvbD36u5mMPg2sg+w4GQwkrYnHeJ8rVveu2N7UPwt0jvrEqKlvf7Ss1gh5RDtzs35SS3GbJlaIOAJNA==
+  dependencies:
+    "@tonconnect/isomorphic-eventsource" "0.0.2"
+    "@tonconnect/isomorphic-fetch" "0.0.3"
+    "@tonconnect/protocol" "2.3.0"
 
 "@tonconnect/ui@2.2.0":
   version "2.2.0"
@@ -5352,7 +5324,7 @@
     deepmerge "^4.2.2"
     ua-parser-js "^1.0.35"
 
-"@tonconnect/ui@^*":
+"@tonconnect/ui@^2.2.0":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@tonconnect/ui/-/ui-2.3.1.tgz#5fcaea484d2da519528955dcfaf681721a4b8f73"
   integrity sha512-G1hKn5TrqFYztbR94EG8YuhGUpp7wY8PjC1Fu7/d8rFg7XnPGlUcGmuqH8+2lYrb9Ms0M7v6+5U6S4q4+yCQtQ==
@@ -16725,7 +16697,7 @@ rxjs@7.8.1:
   dependencies:
     tslib "^2.1.0"
 
-rxjs@7.8.2, rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.8.0, rxjs@^7.8.1:
+rxjs@7.8.2, rxjs@^7.5.1, rxjs@^7.5.5, rxjs@^7.8.0:
   version "7.8.2"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-7.8.2.tgz#955bc473ed8af11a002a2be52071bf475638607b"
   integrity sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==
@@ -18455,11 +18427,6 @@ ts-cacheable@^1.0.5:
   version "1.0.19"
   resolved "https://registry.yarnpkg.com/ts-cacheable/-/ts-cacheable-1.0.19.tgz#4035760ab293a5e7e9f63487d907596d9864ebbb"
   integrity sha512-GU9bxrd57q/lwAcn60iEDJ2L59uHAUfCR/zfhNZk71EkwFeAO27HQ1nUbv0OiLmuVW4VryJ0aOJsNjljZd9DNw==
-
-ts-essentials@^10.1.1:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-10.1.1.tgz#4e1d29b7c9b33c1a2744482376634c4fafba5210"
-  integrity sha512-4aTB7KLHKmUvkjNj8V+EdnmuVTiECzn3K+zIbRthumvHu+j44x3w63xpfs0JL3NGIzGXqoQ7AV591xHO+XrOTw==
 
 ts-morph@10.0.2:
   version "10.0.2"

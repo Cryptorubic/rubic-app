@@ -66,7 +66,7 @@ export class SdkLoaderService {
           } as const;
           const core = chainTypeMap?.[chainType as keyof typeof chainTypeMap];
           const walletProviderCore: WalletProviderCore = { address, core };
-          this.sdkService.updateWallet(chainType, walletProviderCore);
+          this.sdkService.updateWallet(this.walletConnectorService.network, walletProviderCore);
         })
       )
       .subscribe();
