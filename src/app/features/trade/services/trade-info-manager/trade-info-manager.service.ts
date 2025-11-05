@@ -48,16 +48,39 @@ export class TradeInfoManager {
       const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
       const betweenChainsInfo = ccrProviderInfo.betweenNetworksStats[fromToChainKey];
 
-      const averageTimeMins = Math.min(
-        Math.ceil(Number(ccrProviderInfo.average) / 60) || provider.averageTime || 5,
-        Math.ceil(Number(ccrProviderInfo.median) / 60) || provider.averageTime || 5
-      );
+      const getAverageTimeMinutes = (): number => {
+        let averageTimeMinutes = 0;
+        if (betweenChainsInfo) {
+          averageTimeMinutes = Math.min(
+            Math.ceil(Number(betweenChainsInfo.average) / 60),
+            Math.ceil(Number(betweenChainsInfo.median) / 60)
+          );
+        } else if (ccrProviderInfo.median) {
+          averageTimeMinutes = Math.ceil(Number(ccrProviderInfo.median) / 60);
+        } else if (ccrProviderInfo.average) {
+          averageTimeMinutes = Math.ceil(Number(ccrProviderInfo.average) / 60);
+        } else if (ccrProviderInfo.averageExecutionTime) {
+          averageTimeMinutes = ccrProviderInfo.averageExecutionTime;
+        } else {
+          averageTimeMinutes = 5;
+        }
 
+        return averageTimeMinutes;
+      };
+
+      const averageTimeMins = getAverageTimeMinutes();
       const time95PercentsSwapsMins = betweenChainsInfo
         ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
         : Math.ceil(ccrProviderInfo['95_percentile'] / 60)
         ? Math.ceil(ccrProviderInfo['95_percentile'] / 60)
         : averageTimeMins;
+
+      console.log(`%c${trade.type}`, 'color: orange;', {
+        ccrProviderInfo,
+        betweenChainsInfo,
+        averageTimeMins,
+        time95PercentsSwapsMins
+      });
 
       return { averageTimeMins, time95PercentsSwapsMins };
     } else {
