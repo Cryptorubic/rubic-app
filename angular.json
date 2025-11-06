@@ -24,6 +24,9 @@
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
             "aot": true,
+            "customWebpackConfig": {
+              "path": "./sentry-webpack.config.ts"
+            },
             "outputPath": "dist/rubic",
             "index": "src/index.html",
             "main": "src/main.ts",
