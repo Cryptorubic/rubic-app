@@ -14,7 +14,6 @@ import { CrossChainTrade } from '../cross-chain-trade';
 import { GasData } from './models/gas-data';
 
 import { transferTradeSupportedProviders } from '../cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
-import { StringToBytesErrorType, TransactionReceipt } from 'viem';
 import {
   EvmAdapter,
   EvmBasicTransactionOptions,
@@ -102,8 +101,8 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
   }
 
   public override async approve(
-    options: EvmBasicTransactionOptions,
-    checkNeedApprove = true,
+    _options: EvmBasicTransactionOptions,
+    checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
     if (checkNeedApprove) {

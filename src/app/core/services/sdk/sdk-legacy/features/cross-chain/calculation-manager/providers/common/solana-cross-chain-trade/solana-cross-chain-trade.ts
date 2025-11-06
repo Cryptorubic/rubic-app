@@ -64,8 +64,8 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
 
   public override async approve(
     _options: EvmBasicTransactionOptions,
-    _checkNeedApprove = true,
-    _amount: BigNumber | 'infinity' = 'infinity'
+    _checkNeedApprove: boolean,
+    _amount: BigNumber
   ): Promise<string> {
     throw new Error('Method is not supported');
   }
@@ -84,7 +84,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
       gasPriceOptions: options?.gasPriceOptions
     };
 
-    await this.approve(approveOptions, false);
+    await this.approve(approveOptions, false, this.from.weiAmount);
   }
 
   /**

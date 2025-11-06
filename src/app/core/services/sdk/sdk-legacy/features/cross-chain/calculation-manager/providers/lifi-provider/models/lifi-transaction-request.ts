@@ -1,5 +1,5 @@
 export interface LifiTransactionRequest {
-    data: string;
-    value: string;
-    to: string;
+  data: string;
+  value: string;
+  to: string;
 }

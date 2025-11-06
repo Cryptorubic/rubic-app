@@ -19,7 +19,7 @@ export class EddyBridgeTrade extends EvmApiCrossChainTrade {
 
   public override async approve(
     options: EvmBasicTransactionOptions,
-    checkNeedApprove = true,
+    checkNeedApprove: boolean,
     amount: BigNumber = new BigNumber(0)
   ): Promise<string> {
     if (checkNeedApprove) {

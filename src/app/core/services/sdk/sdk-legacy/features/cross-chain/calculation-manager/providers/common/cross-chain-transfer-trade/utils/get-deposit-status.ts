@@ -16,34 +16,6 @@ import { RubicSdkError } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
-export type getDepositStatusFn = (
-  id: string,
-  httpClient: HttpClient
-) => Promise<CrossChainDepositData>;
-
-const getDepositStatusFnMap: Partial<
-  Record<CrossChainTradeType | OnChainTradeType, getDepositStatusFn>
-> = {
-  [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: ChangeNowCrossChainApiService.getTxStatus,
-  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: SimpleSwapApiService.getTxStatus,
-  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: ChangellyApiService.getTxStatus,
-  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus
-};
-
-export function getDepositStatus(
-  id: string,
-  tradeType: CrossChainTradeType | OnChainTradeType,
-  httpClient: HttpClient
-): Promise<CrossChainDepositData> {
-  const getDepositStatusFn = getDepositStatusFnMap[tradeType];
-
-  if (!getDepositStatusFn) {
-    throw new RubicSdkError('Unsupported cross chain provider');
-  }
-
-  return getDepositStatusFn(id, httpClient);
-}
-
 async function getExolixStatus(id: string, httpClient: HttpClient): Promise<CrossChainDepositData> {
   const { status, hashOut } = await firstValueFrom(
     httpClient.get<{
@@ -77,4 +49,32 @@ async function getExolixStatus(id: string, httpClient: HttpClient): Promise<Cros
     status: status as CrossChainDepositStatus,
     dstHash: hashOut?.hash || null
   };
+}
+
+export type getDepositStatusFn = (
+  id: string,
+  httpClient: HttpClient
+) => Promise<CrossChainDepositData>;
+
+const getDepositStatusFnMap: Partial<
+  Record<CrossChainTradeType | OnChainTradeType, getDepositStatusFn>
+> = {
+  [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: ChangeNowCrossChainApiService.getTxStatus,
+  [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: SimpleSwapApiService.getTxStatus,
+  [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: ChangellyApiService.getTxStatus,
+  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus
+};
+
+export function getDepositStatus(
+  id: string,
+  tradeType: CrossChainTradeType | OnChainTradeType,
+  httpClient: HttpClient
+): Promise<CrossChainDepositData> {
+  const getDepositStatusFn = getDepositStatusFnMap[tradeType];
+
+  if (!getDepositStatusFn) {
+    throw new RubicSdkError('Unsupported cross chain provider');
+  }
+
+  return getDepositStatusFn(id, httpClient);
 }

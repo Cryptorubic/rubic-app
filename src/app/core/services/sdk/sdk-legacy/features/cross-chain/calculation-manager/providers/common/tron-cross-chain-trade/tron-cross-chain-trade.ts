@@ -40,9 +40,9 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
   }
 
   public override async approve(
-    options: TronTransactionOptions,
-    checkNeedApprove = true,
-    weiAmount?: BigNumber
+    _options: TronTransactionOptions,
+    checkNeedApprove: boolean,
+    weiAmount: BigNumber
   ): Promise<string> {
     if (checkNeedApprove) {
       const needApprove = await this.needApprove();
@@ -74,7 +74,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
       onTransactionHash: options?.onApprove,
       feeLimit: options?.approveFeeLimit
     };
-    await this.approve(approveOptions, false);
+    await this.approve(approveOptions, false, this.from.weiAmount);
   }
 
   public async swap(
@@ -141,8 +141,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
   public async encodeApprove(
     tokenAddress: string,
     spenderAddress: string,
-    value: BigNumber,
-    options: TronTransactionOptions = {}
+    value: BigNumber
   ): Promise<TronTransactionConfig> {
     return this.chainAdapter.client.encodeApprove(tokenAddress, spenderAddress, value.toFixed(0));
   }

@@ -3,7 +3,7 @@ import { RpcProviders } from './rpc-provider';
 import { WalletProvider } from './wallet-provider';
 
 import { EnvType } from './env-type';
-import { ViemChainConfig, ViemConfig } from './viem-config';
+import { ViemChainConfig } from './viem-config';
 import { HttpClient } from '@cryptorubic/core';
 
 /**

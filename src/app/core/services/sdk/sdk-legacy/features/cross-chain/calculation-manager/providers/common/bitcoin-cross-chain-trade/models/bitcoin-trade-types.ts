@@ -1,5 +1,5 @@
 export interface BitcoinTransferTxApiResp {
-    extraFields: { memo: string };
-    depositAddress: string;
-    value: string;
+  extraFields: { memo: string };
+  depositAddress: string;
+  value: string;
 }

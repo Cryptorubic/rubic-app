@@ -1,9 +1,8 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
-import { WINDOW } from '@ng-web-apis/common';
 import { BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
 import {
   BlockchainAdapterFactoryService as SdkAdapterFactory,

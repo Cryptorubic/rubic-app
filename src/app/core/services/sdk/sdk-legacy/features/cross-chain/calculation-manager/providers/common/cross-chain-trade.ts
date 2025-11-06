@@ -177,8 +177,8 @@ export abstract class CrossChainTrade<T = unknown> {
    */
   public async approve(
     _options: BasicSendTransactionOptions,
-    _checkNeedApprove?: boolean,
-    _amount?: BigNumber | 'infinity'
+    _checkNeedApprove: boolean,
+    _amount: BigNumber
   ): Promise<string> {
     return undefined;
   }
@@ -379,26 +379,26 @@ export abstract class CrossChainTrade<T = unknown> {
     return config;
   }
 
-  protected async fetchSwapData<T>(
+  protected async fetchSwapData<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
-  ): Promise<SwapResponseInterface<T>> {
+  ): Promise<SwapResponseInterface<Data>> {
     try {
-      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<T>(body);
+      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<Data>(body);
       this.lastSwapResponse = res as any;
       return res;
     } catch (err) {
       if (err instanceof TradeExpiredError) {
-        return this.refetchTrade<T>(body);
+        return this.refetchTrade<Data>(body);
       }
 
       throw err;
     }
   }
 
-  private refetchTrade<T>(
+  private refetchTrade<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
-  ): Promise<SwapResponseInterface<T>> {
-    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<T>({
+  ): Promise<SwapResponseInterface<Data>> {
+    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });

@@ -100,7 +100,7 @@ export class CrossChainManager {
       toToken,
       this.sdkLegacyService.tokenService
     );
-    const { disabledProviders, ...providerOptions } = this.getFullOptions(from.blockchain, options);
+    const providerOptions = this.getFullOptions(from.blockchain, options);
 
     // @TODO API
     const request: QuoteRequestInterface = {

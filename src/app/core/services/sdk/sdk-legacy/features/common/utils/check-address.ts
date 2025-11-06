@@ -8,7 +8,7 @@ import {
   ChangenowCrossChainSupportedBlockchain
 } from '../../cross-chain/calculation-manager/providers/changenow-provider/constants/changenow-api-blockchain';
 import { OnChainTradeType } from '../../on-chain/calculation-manager/models/on-chain-trade-type';
-import { BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
+import { BlockchainName } from '@cryptorubic/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Web3Pure, web3PureStore } from '@cryptorubic/web3';
@@ -18,9 +18,9 @@ async function checkAllChainsAddressCorrect(address: string): Promise<boolean> {
   const resp = await Promise.all(
     we3PureClasses.map(web3Pure => web3Pure.isAddressCorrect(address))
   );
-  const isAddressCorrect = resp.some(isAddress => isAddress);
+  const isCorrect = resp.some(isAddress => isAddress);
 
-  return isAddressCorrect;
+  return isCorrect;
 }
 
 /**

@@ -122,8 +122,8 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
 
   public async approve(
     _options: EvmBasicTransactionOptions,
-    _checkNeedApprove = true,
-    _amount: BigNumber | 'infinity' = 'infinity'
+    _checkNeedApprove: boolean,
+    _amount: BigNumber
   ): Promise<unknown> {
     throw new Error('Method is not supported');
   }

@@ -151,8 +151,8 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
   }
 
   public async approve(
-    options: EvmBasicTransactionOptions,
-    checkNeedApprove = true,
+    _options: EvmBasicTransactionOptions,
+    checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
     if (checkNeedApprove) {

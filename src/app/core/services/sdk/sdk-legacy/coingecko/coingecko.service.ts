@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BlockchainName, Cache, TO_BACKEND_BLOCKCHAINS } from '@cryptorubic/core';
+import { BlockchainName, Cache as Memo, TO_BACKEND_BLOCKCHAINS } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { firstValueFrom } from 'rxjs';
 
@@ -16,7 +16,7 @@ interface TokenPriceFromBackend {
 export class CoingeckoService {
   constructor(private readonly httpClient: HttpClient) {}
 
-  @Cache({
+  @Memo({
     maxAge: 1000 * 60 * 5
   })
   private async getTokenPriceFromBackend(

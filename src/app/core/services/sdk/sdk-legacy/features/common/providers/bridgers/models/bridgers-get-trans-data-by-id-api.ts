@@ -1,10 +1,10 @@
 export interface BridgersGetTransDataByIdRequest {
-    orderId: string;
+  orderId: string;
 }
 
 export interface BridgersGetTransDataByIdResponse {
-    data: {
-        status: string;
-        toHash: string;
-    };
+  data: {
+    status: string;
+    toHash: string;
+  };
 }

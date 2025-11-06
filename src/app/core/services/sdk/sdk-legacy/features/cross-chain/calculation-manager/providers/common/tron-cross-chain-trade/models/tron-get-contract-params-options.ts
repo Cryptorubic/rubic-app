@@ -1,4 +1,4 @@
 export interface TronGetContractParamsOptions {
-    fromAddress?: string;
-    receiverAddress: string;
+  fromAddress?: string;
+  receiverAddress: string;
 }

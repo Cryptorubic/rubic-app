@@ -9,7 +9,6 @@ import { ContractParams } from '../../../../../common/models/contract-params';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { CrossChainTrade } from '../cross-chain-trade';
 import { BitcoinTransferTxApiResp } from './models/bitcoin-trade-types';
-import { TransactionReceipt } from 'viem';
 import {
   BitcoinAdapter,
   BitcoinPsbtEncodedConfig,
@@ -53,8 +52,8 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
 
   public override async approve(
     _options: EvmBasicTransactionOptions,
-    _checkNeedApprove = true,
-    _amount: BigNumber | 'infinity' = 'infinity'
+    _checkNeedApprove: boolean,
+    _amount: BigNumber
   ): Promise<string> {
     throw new Error('Method is not supported');
   }

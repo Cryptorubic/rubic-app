@@ -1,5 +1,5 @@
 export interface SymbiosisSwapRequestOptions {
-    slippage: number;
-    receiverAddress?: string;
-    fromAddress?: string;
+  slippage: number;
+  receiverAddress?: string;
+  fromAddress?: string;
 }

@@ -1,7 +1,7 @@
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  Cache,
+  Cache as Memo,
   PriceTokenAmount,
   SwapRequestInterface
 } from '@cryptorubic/core';
@@ -104,7 +104,7 @@ export abstract class OnChainTrade<T = unknown> {
   /**
    * Price impact, based on tokens' usd prices.
    */
-  @Cache
+  @Memo
   public get priceImpact(): number | null {
     return this.from.calculatePriceImpactPercent(this.to);
   }
@@ -291,22 +291,24 @@ export abstract class OnChainTrade<T = unknown> {
     }
   }
 
-  protected async fetchSwapData<T>(body: SwapRequestInterface): Promise<SwapResponseInterface<T>> {
+  protected async fetchSwapData<Data>(
+    body: SwapRequestInterface
+  ): Promise<SwapResponseInterface<Data>> {
     try {
-      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<T>(body);
+      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<Data>(body);
       this.lastSwapResponse = res as any;
       return res;
     } catch (err) {
       if (err instanceof TradeExpiredError) {
-        return this.refetchTrade<T>(body);
+        return this.refetchTrade<Data>(body);
       }
 
       throw err;
     }
   }
 
-  private refetchTrade<T>(body: SwapRequestInterface): Promise<SwapResponseInterface<T>> {
-    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<T>({
+  private refetchTrade<Data>(body: SwapRequestInterface): Promise<SwapResponseInterface<Data>> {
+    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });

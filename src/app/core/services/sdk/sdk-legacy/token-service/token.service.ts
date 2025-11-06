@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   BlockchainName,
   BlockchainsInfo,
-  Cache,
+  Cache as Memo,
   CHAIN_TYPE,
   EvmBlockchainName,
   HttpClient,
@@ -36,7 +36,7 @@ export class TokenService {
     private readonly adaptersFactoryService: BlockchainAdapterFactoryService
   ) {}
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async createTokens<T extends BlockchainName = BlockchainName>(
     addresses: string[],
     blockchain: T
@@ -46,7 +46,7 @@ export class TokenService {
     return adapter.callForTokensInfo(addresses);
   }
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async createToken(tokenBaseStruct: TokenBaseStruct): Promise<Token> {
     const chainType = BlockchainsInfo.getChainType(tokenBaseStruct.blockchain);
 
@@ -91,7 +91,7 @@ export class TokenService {
     throw new Error(errorMessage);
   }
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async createTokenAmount(
     tokenBaseStruct: TokenBaseStruct,
     tokenAmount: BigNumber
@@ -108,7 +108,7 @@ export class TokenService {
     return new TokenAmount({ ...token, weiAmount });
   }
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async createPriceToken<T extends BlockchainName = BlockchainName>(
     tokenBaseStruct: TokenBaseStruct<T>
   ): Promise<PriceToken<BlockchainName>> {
@@ -123,7 +123,7 @@ export class TokenService {
     return new PriceToken({ ...results[0], price: results[1] });
   }
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async createPriceTokenAmount<T extends BlockchainName = BlockchainName>(
     tokenBaseStruct: TokenBaseStruct<T>,
     amount: BigNumber | string
@@ -151,7 +151,7 @@ export class TokenService {
     }
   }
 
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   private async getTokenPriceFromBackend(
     blockchain: BlockchainName,
     tokenAddress: string
@@ -175,7 +175,7 @@ export class TokenService {
    * Gets price of common token or native coin in usd from rubic backend.
    * @param token Token to get price for.
    */
-  @Cache({ maxAge: 60_000 })
+  @Memo({ maxAge: 60_000 })
   public async getTokenPrice(token: {
     address: string;
     blockchain: BlockchainName;

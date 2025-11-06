@@ -3,8 +3,8 @@ import { WrappedCrossChainTradeOrNull } from '../../cross-chain/calculation-mana
 import { WrappedOnChainTradeOrNull } from '../../on-chain/calculation-manager/models/wrapped-on-chain-trade-or-null';
 
 export interface WrappedAsyncTradeOrNull {
-    total: number;
-    calculated: number;
-    wrappedTrade: WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull;
-    tradeType?: CrossChainTradeType | OnChainTradeType;
+  total: number;
+  calculated: number;
+  wrappedTrade: WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull;
+  tradeType?: CrossChainTradeType | OnChainTradeType;
 }

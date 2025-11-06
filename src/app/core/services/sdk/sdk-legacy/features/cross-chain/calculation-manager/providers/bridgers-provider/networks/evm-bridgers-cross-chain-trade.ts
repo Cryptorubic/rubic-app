@@ -36,12 +36,10 @@ import {
 import { MarkRequired } from '../../../models/cross-chain-manager-options';
 import {
   EvmAdapter,
-  EvmWeb3Pure,
   NotSupportedRegionError,
   NotSupportedTokensError,
   TronWeb3Pure
 } from '@cryptorubic/web3';
-import { Abi } from 'viem';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { firstValueFrom } from 'rxjs';
 

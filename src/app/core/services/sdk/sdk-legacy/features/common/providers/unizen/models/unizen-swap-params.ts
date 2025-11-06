@@ -1,9 +1,9 @@
 export interface UniZenOnChainSwapParams {
-    transactionData: Object;
-    nativeValue: string;
-    account: string;
-    receiver: string;
-    tradeType: number;
+  transactionData: Object;
+  nativeValue: string;
+  account: string;
+  receiver: string;
+  tradeType: number;
 }
 
 export type UniZenCcrSwapParams = Omit<UniZenOnChainSwapParams, 'tradeType'>;

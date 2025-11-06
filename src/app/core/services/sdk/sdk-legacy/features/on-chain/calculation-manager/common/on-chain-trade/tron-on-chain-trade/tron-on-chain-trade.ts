@@ -47,8 +47,8 @@ export abstract class TronOnChainTrade extends OnChainTrade {
   }
 
   public async approve(
-    options: TronTransactionOptions,
-    checkNeedApprove = true,
+    _options: TronTransactionOptions,
+    checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
     if (checkNeedApprove) {

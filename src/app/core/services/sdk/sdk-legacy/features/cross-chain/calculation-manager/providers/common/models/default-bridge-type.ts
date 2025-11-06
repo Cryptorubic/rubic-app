@@ -1,49 +1,49 @@
 import { CROSS_CHAIN_TRADE_TYPE } from '../../../models/cross-chain-trade-type';
 
 export const DEFAULT_BRIDGE_TYPE = {
-    ...CROSS_CHAIN_TRADE_TYPE,
+  ...CROSS_CHAIN_TRADE_TYPE,
 
-    ACROSS: 'across',
-    AMAROK: 'connext',
-    ANY_SWAP: 'anyswap',
-    ARBITRUM_BRIDGE: 'arbitrum',
-    AVALANCHE_BRIDGE: 'avalanche',
+  ACROSS: 'across',
+  AMAROK: 'connext',
+  ANY_SWAP: 'anyswap',
+  ARBITRUM_BRIDGE: 'arbitrum',
+  AVALANCHE_BRIDGE: 'avalanche',
 
-    CONNEXT: 'connext',
-    CELERIM: 'celerim',
+  CONNEXT: 'connext',
+  CELERIM: 'celerim',
 
-    HOP: 'hop',
-    HYPHEN: 'hyphen',
+  HOP: 'hop',
+  HYPHEN: 'hyphen',
 
-    IBC: 'ibc',
+  IBC: 'ibc',
 
-    LI_FUEL: 'lifuel',
+  LI_FUEL: 'lifuel',
 
-    MAKERS_WORMHOLE: 'maker',
-    MAYA_PROTOCOL: 'mayaprotocol',
-    MULTICHAIN: 'multichain',
+  MAKERS_WORMHOLE: 'maker',
+  MAYA_PROTOCOL: 'mayaprotocol',
+  MULTICHAIN: 'multichain',
 
-    OPEN_OCEAN: 'openocean',
-    OPTIMISM_GATEWAY: 'optimism',
-    OSMOSIS_BRIDGE: 'osmosis',
+  OPEN_OCEAN: 'openocean',
+  OPTIMISM_GATEWAY: 'optimism',
+  OSMOSIS_BRIDGE: 'osmosis',
 
-    POLYGON: 'polygon',
+  POLYGON: 'polygon',
 
-    RAINBOW: 'rainbow',
-    REFUEL: 'refuel',
+  RAINBOW: 'rainbow',
+  REFUEL: 'refuel',
 
-    SATELLITE: 'satellite',
-    STARGATE: 'stargate',
-    SYMBIOSIS: 'symbiosis',
-    SYNAPSE: 'synapse',
+  SATELLITE: 'satellite',
+  STARGATE: 'stargate',
+  SYMBIOSIS: 'symbiosis',
+  SYNAPSE: 'synapse',
 
-    THORCHAIN: 'thorchain',
+  THORCHAIN: 'thorchain',
 
-    VOYAGER: 'voyager',
+  VOYAGER: 'voyager',
 
-    WORMHOLE: 'wormhole',
+  WORMHOLE: 'wormhole',
 
-    YPOOL: 'ypool'
+  YPOOL: 'ypool'
 } as const;
 
 export type DefaultBridgeType = (typeof DEFAULT_BRIDGE_TYPE)[keyof typeof DEFAULT_BRIDGE_TYPE];
