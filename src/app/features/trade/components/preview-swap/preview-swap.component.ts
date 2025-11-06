@@ -234,6 +234,10 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.authWalletReady) {
       state.disabled = false;
       state.action = this.authWallet.bind(this);
+    } else if (el.step === transactionStep.error) {
+      state.disabled = false;
+      state.label = 'Back to form';
+      state.action = this.backToForm.bind(this);
     }
 
     if (
