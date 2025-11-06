@@ -58,7 +58,12 @@ export class TransformUtils {
       throw new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     const tradeType = (res?.providerType || err?.type) as WrappedCrossChainTrade['tradeType'];
-    const tradeParams = await RubicApiUtils.getTradeParams(quote, res, tradeType);
+    const tradeParams = await RubicApiUtils.getTradeParams(
+      quote,
+      res,
+      tradeType,
+      sdkLegacyService.tokenService
+    );
 
     const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
     const parsedWarnings = RubicApiParser.parseRubicApiWarnings(res?.warnings || []);
@@ -101,7 +106,10 @@ export class TransformUtils {
         sdkLegacyService
       );
     } else if (chainType === CHAIN_TYPE.TRON) {
-      trade = new TronApiCrossChainTrade(tradeParams as TronApiCrossChainConstructor);
+      trade = new TronApiCrossChainTrade(
+        tradeParams as TronApiCrossChainConstructor,
+        sdkLegacyService
+      );
     } else if (chainType === CHAIN_TYPE.BITCOIN) {
       trade = new BitcoinApiCrossChainTrade(
         {
@@ -141,7 +149,12 @@ export class TransformUtils {
       throw new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
     const tradeType = (response?.providerType || err?.type) as OnChainTradeType;
-    const tradeParams = await RubicApiUtils.getTradeParams(quote, response, tradeType);
+    const tradeParams = await RubicApiUtils.getTradeParams(
+      quote,
+      response,
+      tradeType,
+      sdkLegacyService.tokenService
+    );
 
     const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
     const parsedWarningsError = RubicApiParser.parseRubicApiWarnings(

@@ -2,11 +2,12 @@ import { Inject, Injectable } from '@angular/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { delay, filter, tap } from 'rxjs/operators';
-import { CHAIN_TYPE, WalletProvider, WalletProviderCore } from '@cryptorubic/sdk';
+import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
 import { createWalletClient, custom } from 'viem';
+import { CHAIN_TYPE } from '@cryptorubic/core';
 
 @Injectable()
 export class SdkLoaderService {

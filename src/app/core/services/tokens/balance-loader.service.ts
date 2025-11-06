@@ -3,23 +3,18 @@ import { Token } from '@app/shared/models/tokens/token';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  Injector,
-  waitFor,
-  Web3Public,
-  Web3Pure
-} from '@cryptorubic/sdk';
+import { waitFor } from '@cryptorubic/web3';
 import { AuthService } from '../auth/auth.service';
 import { ChainsToLoadFirstly, isTopChain } from './constants/first-loaded-chains';
 import { BalanceLoadingStateService } from './balance-loading-state.service';
 import { AssetType } from '@app/features/trade/models/asset';
-import { getWeb3PublicSafe } from '@app/shared/utils/is-native-address-safe';
+import { getChainAdapterSafe } from '@app/shared/utils/is-native-address-safe';
 import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { BalanceLoadingAssetData } from './models/balance-loading-types';
 import { TokenFilter } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { Iterable } from './utils/iterable';
+import { BlockchainName, BlockchainsInfo, Token as MonorepoToken } from '@cryptorubic/core';
+import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -36,7 +31,8 @@ export class BalanceLoaderService {
   constructor(
     private readonly authService: AuthService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService
+    private readonly assetsSelectorStateService: AssetsSelectorStateService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public updateBalancesForAllChains(
@@ -96,8 +92,8 @@ export class BalanceLoaderService {
           ([chain, tokens]: [BlockchainName, Token[]]) => {
             if (!this.isChainSupportedByWallet(chain)) return tokens.map(() => new BigNumber(NaN));
 
-            const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-            return web3Public
+            const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as any);
+            return adapter
               .getTokensBalances(
                 this.authService.userAddress,
                 tokens.map(t => t.address)
@@ -114,7 +110,7 @@ export class BalanceLoaderService {
               flattenTokens.map((token, idx) => ({
                 ...token,
                 amount: flattenBalances[idx]
-                  ? Web3Pure.fromWei(flattenBalances[idx], token.decimals)
+                  ? MonorepoToken.fromWei(flattenBalances[idx], token.decimals)
                   : new BigNumber(NaN)
               })) as TokenAmount[]
             );
@@ -135,19 +131,20 @@ export class BalanceLoaderService {
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
-        const web3Public = getWeb3PublicSafe(chain, this.authService.userAddress);
+        const chainAdapter = getChainAdapterSafe(
+          chain,
+          this.authService.userAddress,
+          this.sdkLegacyService
+        );
 
-        const balancesPromise = web3Public.then(chainAdapter => {
-          if (!chainAdapter) {
-            return chainTokens.map(() => new BigNumber(NaN));
-          }
-          return chainAdapter
-            .getTokensBalances(
-              this.authService.userAddress,
-              chainTokens.map(t => t.address)
-            )
-            .catch(() => chainTokens.map(() => new BigNumber(NaN)));
-        });
+        const balancesPromise = chainAdapter
+          ? chainAdapter
+              .getTokensBalances(
+                this.authService.userAddress,
+                chainTokens.map(t => t.address)
+              )
+              .catch(() => chainTokens.map(() => new BigNumber(NaN)))
+          : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
 
         balancesPromise
           .then(balances => {
@@ -155,7 +152,7 @@ export class BalanceLoaderService {
               chainTokens.map((token, idx) => ({
                 ...token,
                 amount: balances[idx]
-                  ? Web3Pure.fromWei(balances[idx], token.decimals)
+                  ? MonorepoToken.fromWei(balances[idx], token.decimals)
                   : new BigNumber(NaN)
               })) as TokenAmount[]
             );
@@ -205,8 +202,8 @@ export class BalanceLoaderService {
         ([chain, tokens]: [BlockchainName, Token[]]) => {
           if (!this.isChainSupportedByWallet(chain)) return tokens.map(() => new BigNumber(NaN));
 
-          const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-          const chainBalancesPromise = web3Public
+          const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as any);
+          const chainBalancesPromise = adapter
             .getTokensBalances(
               this.authService.userAddress,
               tokens.map(t => t.address)
@@ -224,7 +221,7 @@ export class BalanceLoaderService {
         .map((token, index) => ({
           ...token,
           amount: allTokensBalances[index]
-            ? Web3Pure.fromWei(allTokensBalances[index], token.decimals)
+            ? MonorepoToken.fromWei(allTokensBalances[index], token.decimals)
             : new BigNumber(NaN)
         })) as TokenAmount[];
 

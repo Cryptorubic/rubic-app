@@ -1,15 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  CrossChainTrade,
-  CrossChainTradeType,
-  EvmCrossChainTrade,
-  EvmOnChainTrade,
-  OnChainTrade,
-  Token,
-  TonOnChainTrade,
-  Web3Pure,
-  nativeTokensList
-} from '@cryptorubic/sdk';
+import { CrossChainTradeType, Token, nativeTokensList } from '@cryptorubic/core';
 import { compareTokens } from '@app/shared/utils/utils';
 import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { TRADES_PROVIDERS } from '../../constants/trades-providers';
@@ -17,6 +7,11 @@ import { AppFeeInfo, AppGasData, ProviderInfo } from '../../models/provider-info
 import { TradeProvider } from '../../models/trade-provider';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
+import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 
 @Injectable()
 export class TradeInfoManager {
@@ -55,7 +50,7 @@ export class TradeInfoManager {
     ).price;
 
     if (estimatedGasInWei) {
-      const estimatedGas = Web3Pure.fromWei(estimatedGasInWei, nativeToken.decimals);
+      const estimatedGas = Token.fromWei(estimatedGasInWei, nativeToken.decimals);
       return {
         amount: estimatedGas,
         amountInUsd: estimatedGas.multipliedBy(nativeTokenPrice),
@@ -102,7 +97,7 @@ export class TradeInfoManager {
 
     if (!gasFeeWei) return null;
 
-    return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
+    return Token.fromWei(gasFeeWei, nativeToken.decimals);
   }
 
   /**
@@ -120,7 +115,7 @@ export class TradeInfoManager {
     const gasData = trade.gasFeeInfo;
     if (!gasData) return null;
 
-    if (gasData.totalGas) return Web3Pure.fromWei(gasData.totalGas, nativeToken.decimals);
+    if (gasData.totalGas) return Token.fromWei(gasData.totalGas, nativeToken.decimals);
 
     if (!gasData.gasLimit) return null;
 
@@ -131,6 +126,6 @@ export class TradeInfoManager {
       gasFeeWei = gasData.gasLimit.multipliedBy(gasData.maxFeePerGas);
     }
 
-    return Web3Pure.fromWei(gasFeeWei, nativeToken.decimals);
+    return Token.fromWei(gasFeeWei, nativeToken.decimals);
   }
 }

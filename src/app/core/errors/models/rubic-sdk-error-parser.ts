@@ -1,5 +1,4 @@
 import {
-  nativeTokensList,
   RubicSdkError,
   TransactionRevertedError as SdkTransactionRevertedError,
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
@@ -24,7 +23,7 @@ import {
   LowSlippageError as SdkLowSlippageError,
   SimulationFailedError as SdkSimulationFailedError,
   TimeoutError as SdkTimeoutError
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -56,6 +55,7 @@ import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-err
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import { SwapTimeoutError } from './common/swap-timeout.error';
+import { nativeTokensList } from '@cryptorubic/core';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(

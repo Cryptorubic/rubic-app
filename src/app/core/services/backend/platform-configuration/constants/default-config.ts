@@ -1,6 +1,5 @@
 import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
-import { FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@cryptorubic/core';
-import { FROM_BACKEND_BLOCKCHAINS } from '@cryptorubic/sdk';
+import { FROM_BACKEND_BLOCKCHAINS, FROM_BACKEND_CROSS_CHAIN_PROVIDERS } from '@cryptorubic/core';
 
 export const defaultConfig: PlatformConfig = {
   server_is_active: true,

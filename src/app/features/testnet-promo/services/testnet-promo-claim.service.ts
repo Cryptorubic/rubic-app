@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, CHAIN_TYPE, Injector } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ClaimButtonState } from '@features/testnet-promo/interfaces/claim-button-state.interface';
 import { TestnetPromoNotificationService } from '@features/testnet-promo/services/testnet-promo-notification.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { rbcCoin } from '../constants/rbc-coin';
 import { AirdropNode } from '../interfaces/common-types';
 import { airdropContractAbi } from '../constants/airdrop-abi';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class TestnetPromoClaimService {
@@ -30,7 +30,8 @@ export class TestnetPromoClaimService {
   constructor(
     private readonly gasService: GasService,
     private readonly notificationService: TestnetPromoNotificationService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async setClaimStatus(contractAddress: string, nodeIndex: number): Promise<void> {
@@ -75,12 +76,14 @@ export class TestnetPromoClaimService {
     proof: string[],
     onTransactionHash: (hash: string) => void
   ): Promise<void> {
-    const web3 = Injector.web3PrivateService.getWeb3Private(CHAIN_TYPE.EVM);
+    const arbitrumAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
       BLOCKCHAIN_NAME.ARBITRUM
     );
 
-    await web3.executeContractMethod(
+    await arbitrumAdapter.client.executeContractMethod(
       contractAddress,
       airdropContractAbi,
       'claim',
@@ -93,18 +96,30 @@ export class TestnetPromoClaimService {
   }
 
   private async checkPause(contractAddress: string): Promise<void> {
-    const isPaused = await Injector.web3PublicService
-      .getWeb3Public(rbcCoin.blockchain)
-      .callContractMethod(contractAddress, airdropContractAbi, 'paused', []);
+    const arbitrumAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
+    const isPaused = await arbitrumAdapter.callContractMethod(
+      contractAddress,
+      airdropContractAbi,
+      'paused',
+      []
+    );
     if (isPaused) {
       throw new Error('paused');
     }
   }
 
   public async checkClaimed(contractAddress: string, index: number): Promise<boolean> {
-    const isPaused = await Injector.web3PublicService
-      .getWeb3Public(rbcCoin.blockchain)
-      .callContractMethod(contractAddress, airdropContractAbi, 'isClaimed', [index]);
+    const arbitrumAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
+    const isPaused = await arbitrumAdapter.callContractMethod(
+      contractAddress,
+      airdropContractAbi,
+      'isClaimed',
+      [index]
+    );
 
     return Boolean(isPaused);
   }

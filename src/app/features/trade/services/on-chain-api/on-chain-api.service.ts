@@ -7,15 +7,10 @@ import { InstantTradeBotRequest } from '@core/services/backend/instant-trades-ap
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { BOT_URL } from 'src/app/core/services/backend/constants/bot-url';
 import {
-  BlockchainName,
   NotWhitelistedProviderError,
-  OnChainTrade,
-  OnChainTradeType,
-  TO_BACKEND_BLOCKCHAINS,
   UnapprovedContractError,
-  UnapprovedMethodError,
-  Web3Pure
-} from '@cryptorubic/sdk';
+  UnapprovedMethodError
+} from '@cryptorubic/web3';
 import { HttpService } from '@core/services/http/http.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { TradeParser } from '@features/trade/utils/trade-parser';
@@ -25,7 +20,14 @@ import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
 import { ProviderOnChainStatistic } from '@app/core/services/backend/cross-chain-routing-api/models/providers-statistics';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
-import { TO_BACKEND_ON_CHAIN_PROVIDERS } from '@cryptorubic/core';
+import {
+  BlockchainName,
+  OnChainTradeType,
+  TO_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_ON_CHAIN_PROVIDERS,
+  Token
+} from '@cryptorubic/core';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 @Injectable()
 export class OnChainApiService {
@@ -173,7 +175,7 @@ export class OnChainApiService {
       provider: backendProvider,
       from_token: fromAddress,
       to_token: toAddress,
-      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
+      from_amount: Token.toWei(fromAmount, fromDecimals),
       to_amount: trade.to.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,

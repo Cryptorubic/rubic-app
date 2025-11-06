@@ -31,14 +31,7 @@ import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import BigNumber from 'bignumber.js';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  EvmBlockchainName,
-  TX_STATUS,
-  Web3PublicSupportedBlockchain,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+import { TX_STATUS } from '@cryptorubic/web3';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -62,6 +55,8 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SwapTimeoutError } from '@app/core/errors/models/common/swap-timeout.error';
+import { BLOCKCHAIN_NAME, BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -241,7 +236,7 @@ export class PreviewSwapService {
             this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
               (tradeState.trade as CrossChainTrade).rubicId,
               srcHash,
-              tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain
+              tradeState.trade.from.blockchain
             )
           ).pipe(
             timeout(29_000),

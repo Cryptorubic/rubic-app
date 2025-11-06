@@ -8,15 +8,11 @@ import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
-  CrossChainTrade,
   CrossChainTradeType,
   EvmBlockchainName,
-  EvmOnChainTrade,
-  FeeInfo,
   nativeTokensList,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTrade
-} from '@cryptorubic/sdk';
+  ON_CHAIN_TRADE_TYPE
+} from '@cryptorubic/core';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -38,6 +34,10 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { AppGasData } from '../../models/provider-info';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 
 @Component({
   selector: 'app-preview-swap',

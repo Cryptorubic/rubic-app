@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpService } from '@app/core/services/http/http.service';
 import { firstValueFrom } from 'rxjs';
 
 interface SignMessage {
@@ -11,9 +11,11 @@ export class RetroBridgeApiService {
 
   private static API_KEY = 'rubic';
 
-  public static async getMessageToAuthWallet(httpClient: HttpClient): Promise<string> {
+  public static async getMessageToAuthWallet(httpService: HttpService): Promise<string> {
     const { data } = await firstValueFrom(
-      httpClient.get<{ data: SignMessage }>(`${this.RETRO_BRIDGE_API_ENDPOINT}/wallet_auth/message`)
+      httpService.get<{ data: SignMessage }>(
+        `${this.RETRO_BRIDGE_API_ENDPOINT}/wallet_auth/message`
+      )
     );
     return data.message.value;
   }
@@ -22,20 +24,19 @@ export class RetroBridgeApiService {
     walletAddress: string,
     signature: string,
     networkType: string,
-    httpClient: HttpClient
+    httpService: HttpService
   ): Promise<never | void> {
     try {
       await firstValueFrom(
-        httpClient.post(
+        httpService.post(
           `${this.RETRO_BRIDGE_API_ENDPOINT}/wallet_auth/message`,
           {
             wallet_address: walletAddress,
             network_type: networkType,
             signature
           },
-          {
-            withCredentials: true
-          }
+          '',
+          { withCredentials: true }
         )
       );
     } catch (err) {
@@ -46,10 +47,10 @@ export class RetroBridgeApiService {
   public static async checkWallet(
     walletAddress: string,
     networkType: string,
-    httpClient: HttpClient
+    httpService: HttpService
   ): Promise<string> {
     const { message } = await firstValueFrom(
-      httpClient.get<{ message: string }>(
+      httpService.get<{ message: string }>(
         `${this.RETRO_BRIDGE_API_ENDPOINT}/wallet_auth/wallet/${walletAddress}`,
         {
           headers: {

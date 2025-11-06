@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { BlockchainTags } from '../../../components/blockchains-filter-list/models/BlockchainFilters';
 
 export interface RankedBlockchain {

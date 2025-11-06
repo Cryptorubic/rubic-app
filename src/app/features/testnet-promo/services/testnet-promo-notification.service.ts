@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 import {
   UserRejectError,
   InsufficientFundsGasPriceValueError as SdkInsufficientFundsGasPriceValueError
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/web3';
 import { TranslateService } from '@ngx-translate/core';
 
 @Injectable()

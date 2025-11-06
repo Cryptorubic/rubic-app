@@ -1,5 +1,4 @@
 import { BadgeInfo, BadgeInfoServices } from '@app/features/trade/models/trade-state';
-import { BLOCKCHAIN_NAME, BlockchainName, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
 import {
   showScrollMarksPromoLabel,
   showSolanaGaslessLabel,
@@ -7,6 +6,9 @@ import {
   showZkLinkPointsLabel
 } from './common/badges-for-chains-conditions';
 import { checkAmountGte100Usd } from '../../solana-gasless/utils/solana-utils';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 export const SPECIFIC_BADGES_FOR_CHAINS: Partial<Record<BlockchainName, BadgeInfo[]>> = {
   [BLOCKCHAIN_NAME.ZK_LINK]: [

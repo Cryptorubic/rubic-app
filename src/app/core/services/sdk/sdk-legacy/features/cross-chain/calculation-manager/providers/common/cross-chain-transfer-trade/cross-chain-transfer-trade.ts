@@ -74,8 +74,6 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
   }
 
-  private readonly proxyCcrEvmTrade: ProxyCrossChainEvmTrade;
-
   constructor(
     providerAddress: string,
     routePath: RubicStep[],
@@ -99,8 +97,6 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     this.feeInfo = feeInfo;
     this.priceImpact = priceImpact;
     this.actualTokenAmount = to.tokenAmount;
-
-    this.proxyCcrEvmTrade = new ProxyCrossChainEvmTrade(sdkLegacyService);
   }
 
   public async getTransferTrade(
@@ -233,7 +229,7 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
       address: Web3Pure.getInstance(this.to.blockchain).emptyAddress
     });
 
-    const bridgeData = this.proxyCcrEvmTrade.getBridgeData(
+    const bridgeData = ProxyCrossChainEvmTrade.getBridgeData(
       {
         ...options,
         receiverAddress: this.walletAddress
@@ -253,13 +249,17 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
 
     const swapData =
       this.onChainTrade &&
-      (await this.proxyCcrEvmTrade.getSwapData(options, {
-        walletAddress: this.walletAddress,
-        contractAddress: rubicProxyContractAddress[this.from.blockchain].router,
-        fromTokenAmount: this.from,
-        toTokenAmount: this.onChainTrade.to,
-        onChainEncodeFn: this.onChainTrade.encode.bind(this.onChainTrade)
-      }));
+      (await ProxyCrossChainEvmTrade.getSwapData(
+        options,
+        {
+          walletAddress: this.walletAddress,
+          contractAddress: rubicProxyContractAddress[this.from.blockchain].router,
+          fromTokenAmount: this.from,
+          toTokenAmount: this.onChainTrade.to,
+          onChainEncodeFn: this.onChainTrade.encode.bind(this.onChainTrade)
+        },
+        this.sdkLegacyService
+      ));
 
     const methodArguments = swapData
       ? [bridgeData, swapData, providerData]

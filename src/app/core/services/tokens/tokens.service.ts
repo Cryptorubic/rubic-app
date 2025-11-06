@@ -9,15 +9,6 @@ import { TokensRequestQueryOptions } from 'src/app/core/services/backend/tokens-
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  Injector,
-  isAddressCorrect,
-  Token as SdkToken,
-  Web3PublicService,
-  Web3Pure
-} from '@cryptorubic/sdk';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { List } from 'immutable';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -28,6 +19,10 @@ import { BalancePatcherFacade } from './utils/balance-patcher-facade';
 import { AssetsSelectorStateService } from '@app/features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { TokenConvertersService } from './token-converters.service';
 import { TOKEN_FILTERS } from '@app/features/trade/components/assets-selector/models/token-filters';
+import { BlockchainName, BlockchainsInfo, Token } from '@cryptorubic/core';
+import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
+import { Web3Pure } from '@cryptorubic/web3';
+import { isAddressCorrect } from '../sdk/sdk-legacy/features/common/utils/check-address';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -49,7 +44,8 @@ export class TokensService {
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly tokensUpdaterService: TokensUpdaterService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tokenConverters: TokenConvertersService
+    private readonly tokenConverters: TokenConvertersService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.balancePatcherFacade = new BalancePatcherFacade(
       this.tokensStoreService,
@@ -79,7 +75,7 @@ export class TokensService {
       compareTokens(token, { blockchain, address: nativeCoinAddress })
     );
 
-    const nativeCoinPrice = await Injector.coingeckoApi.getTokenPrice({
+    const nativeCoinPrice = await this.sdkLegacyService.coingeckoApi.getTokenPrice({
       blockchain,
       address: nativeCoinAddress
     });
@@ -100,7 +96,7 @@ export class TokensService {
     searchBackend = false
   ): Promise<BigNumber | null> {
     return firstValueFrom(
-      from(Injector.coingeckoApi.getTokenPrice(token)).pipe(
+      from(this.sdkLegacyService.coingeckoApi.getTokenPrice(token)).pipe(
         switchMap(tokenPrice => {
           if (tokenPrice) return of(tokenPrice);
           if (searchBackend) {
@@ -123,19 +119,25 @@ export class TokensService {
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
-    const isAddressCorrectValue = await Web3Pure[chainType].isAddressCorrect(this.userAddress);
+    const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
+      token.blockchain,
+      this.userAddress
+    );
+    const adaptersFactoryService = this.sdkLegacyService.adaptersFactoryService;
 
     if (
       !this.userAddress ||
       !chainType ||
       !isAddressCorrectValue ||
-      !Web3PublicService.isSupportedBlockchain(token.blockchain)
+      !adaptersFactoryService.adapterFactory.hasAdapterFor(token.blockchain)
     ) {
       return null;
     }
 
     try {
-      const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
+      const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        token.blockchain as any
+      );
       const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 
       const foundTokenInCommonList = this.tokensStoreService.tokens.find(t =>
@@ -163,7 +165,7 @@ export class TokensService {
 
       if (!foundToken) return new BigNumber(NaN);
 
-      const balance = Web3Pure.fromWei(balanceInWei, foundToken.decimals);
+      const balance = Token.fromWei(balanceInWei, foundToken.decimals);
       if (foundToken && !foundToken.amount.eq(balance)) {
         const newToken = { ...foundToken, amount: balance };
         this.balancePatcherFacade.patchTokenInLists(newToken);
@@ -187,9 +189,7 @@ export class TokensService {
       blockchain: BlockchainName;
     }
   ): Promise<void> {
-    const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-
-    if (Web3Pure[chainType].isNativeAddress(fromToken.address)) {
+    if (Web3Pure.isNativeAddress(fromToken.blockchain, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
       await this.getAndUpdateTokenBalance(toToken);
     } else {
@@ -197,7 +197,7 @@ export class TokensService {
         this.getAndUpdateTokenBalance(fromToken),
         this.getAndUpdateTokenBalance(toToken),
         this.getAndUpdateTokenBalance({
-          address: Web3Pure[chainType].nativeTokenAddress,
+          address: Web3Pure.getNativeTokenAddress(fromToken.blockchain),
           blockchain: fromToken.blockchain
         })
       ]);
@@ -218,16 +218,14 @@ export class TokensService {
       this.getAndUpdateTokenBalance(fromToken),
       this.getAndUpdateTokenBalance(toToken)
     ];
-    const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const web3Pure = Web3Pure[fromChainType];
 
     if (
-      !web3Pure.isNativeAddress(fromToken.address) &&
-      !web3Pure.isNativeAddress(toToken.address)
+      !Web3Pure.isNativeAddress(fromToken.blockchain, fromToken.address) &&
+      !Web3Pure.isNativeAddress(fromToken.blockchain, toToken.address)
     ) {
       balancePromises.concat(
         this.getAndUpdateTokenBalance({
-          address: web3Pure.nativeTokenAddress,
+          address: Web3Pure.getNativeTokenAddress(fromToken.blockchain),
           blockchain: fromToken.blockchain
         })
       );
@@ -245,7 +243,7 @@ export class TokensService {
     address: string,
     blockchain: BlockchainName
   ): Promise<TokenSecurity> {
-    const isAddress = isAddressCorrect(address, blockchain);
+    const isAddress = isAddressCorrect(address, blockchain, this.sdkLegacyService.httpClient);
 
     const params: TokensRequestQueryOptions = {
       network: blockchain,
@@ -266,7 +264,7 @@ export class TokensService {
       return foundToken?.symbol;
     }
 
-    const token = await SdkToken.createToken({
+    const token = await this.sdkLegacyService.tokenService.createToken({
       blockchain: blockchain,
       address: tokenAddress
     });

@@ -1,17 +1,13 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { switchMap } from 'rxjs';
-import {
-  BlockchainsInfo,
-  Web3PublicSupportedBlockchain,
-  Web3Pure,
-  Injector as RubicInjector
-} from '@cryptorubic/sdk';
+import { BlockchainsInfo, Token } from '@cryptorubic/core';
 import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class CustomTokenService {
@@ -20,7 +16,8 @@ export class CustomTokenService {
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
     private readonly authService: AuthService,
-    private readonly assetsSelectorService: AssetsSelectorService
+    private readonly assetsSelectorService: AssetsSelectorService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public openModal(customToken: AvailableTokenAmount): void {
@@ -45,12 +42,12 @@ export class CustomTokenService {
                 this.authService.userChainType ===
                   BlockchainsInfo.getChainType(customToken.blockchain)
               ) {
-                const tokenBalance = await RubicInjector.web3PublicService
-                  .getWeb3Public(customToken.blockchain as Web3PublicSupportedBlockchain)
-                  .getTokenBalance(this.authService.userAddress, customToken.address);
+                const tokenBalance = await this.sdkLegacyService.adaptersFactoryService
+                  .getAdapter(customToken.blockchain as any)
+                  .getBalance(this.authService.userAddress, customToken.address);
                 return {
                   ...customToken,
-                  amount: Web3Pure.fromWei(tokenBalance, customToken.decimals)
+                  amount: Token.fromWei(tokenBalance, customToken.decimals)
                 };
               }
             } catch {}

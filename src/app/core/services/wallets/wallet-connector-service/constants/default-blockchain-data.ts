@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/core';
 
 interface DefaultBlockchainData {
   name: string;

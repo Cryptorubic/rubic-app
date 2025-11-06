@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+/* eslint-disable @typescript-eslint/no-redeclare */
 import {
   ON_CHAIN_PROXY_DISABLED_CHAINS,
   ProxySupportedBlockchain,

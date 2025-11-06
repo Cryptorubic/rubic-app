@@ -7,6 +7,7 @@ import { OnChainSubtype } from '../../../cross-chain/calculation-manager/provide
 import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/trade-info';
 import { TronCrossChainTrade } from '../../../cross-chain/calculation-manager/providers/common/tron-cross-chain-trade/tron-cross-chain-trade';
 import { TronApiCrossChainConstructor } from './tron-api-cross-chain-constructor';
+import { SdkLegacyService } from '../../../../sdk-legacy.service';
 
 export class TronApiCrossChainTrade extends TronCrossChainTrade {
   public readonly feeInfo: FeeInfo;
@@ -31,12 +32,13 @@ export class TronApiCrossChainTrade extends TronCrossChainTrade {
 
   public readonly isAggregator = false;
 
-  constructor(params: TronApiCrossChainConstructor) {
+  constructor(params: TronApiCrossChainConstructor, sdkLegacyService: SdkLegacyService) {
     super(
       params.apiQuote.integratorAddress!,
       params.routePath,
       params.apiQuote,
-      params.apiResponse
+      params.apiResponse,
+      sdkLegacyService
     );
 
     this.type = params.apiResponse.providerType as CrossChainTradeType;

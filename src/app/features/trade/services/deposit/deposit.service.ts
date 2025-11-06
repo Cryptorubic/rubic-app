@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
-import {
-  CROSS_CHAIN_DEPOSIT_STATUS,
-  CrossChainDepositStatus,
-  CrossChainPaymentInfo,
-  getDepositStatus
-} from '@cryptorubic/sdk';
 import { BehaviorSubject, firstValueFrom, interval } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { skip, startWith, switchMap, takeWhile, tap } from 'rxjs/operators';
 import { StoreService } from '@core/services/store/store.service';
 import { PreviewSwapService } from '../preview-swap/preview-swap.service';
 import { CrossChainTransferTrade } from '../../models/cn-trade';
+import {
+  CROSS_CHAIN_DEPOSIT_STATUS,
+  CrossChainDepositStatus
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
+import { getDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class DepositService {
@@ -33,7 +34,8 @@ export class DepositService {
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly storeService: StoreService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly httpClient: HttpClient
   ) {}
 
   public async updateTrade(
@@ -67,7 +69,7 @@ export class DepositService {
         throw new Error();
       }
       const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
-      const response = await getDepositStatus(id, trade.tradeType);
+      const response = await getDepositStatus(id, trade.tradeType, this.httpClient);
 
       return response.status;
     } catch {

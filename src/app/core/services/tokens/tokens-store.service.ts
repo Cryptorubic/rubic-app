@@ -7,14 +7,7 @@ import { TokensApiService } from '@core/services/backend/tokens-api/tokens-api.s
 import { AuthService } from '@core/services/auth/auth.service';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  EvmBlockchainName,
-  Injector,
-  Web3Pure,
-  Token as SdkToken
-} from '@cryptorubic/sdk';
+
 import { compareObjects, compareTokens } from '@shared/utils/utils';
 import { StoreService } from '@core/services/store/store.service';
 import { StorageToken } from '@core/services/tokens/models/storage-token';
@@ -31,6 +24,9 @@ import {
 } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { TokenAmountWithPriceChange } from '@app/shared/models/tokens/available-token-amount';
 import { TokenConvertersService } from './token-converters.service';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
+import { Web3Pure } from '@cryptorubic/web3';
+import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable({
   providedIn: 'root'
@@ -109,7 +105,8 @@ export class TokensStoreService {
     private readonly balanceLoaderService: BalanceLoaderService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tokenConverters: TokenConvertersService
+    private readonly tokenConverters: TokenConvertersService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.balancePatcherFacade = new BalancePatcherFacade(
       this,
@@ -308,15 +305,15 @@ export class TokensStoreService {
    * @return Observable<TokenAmount> Tokens with balance.
    */
   public addTokenByAddress(address: string, blockchain: BlockchainName): Observable<TokenAmount> {
-    const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       blockchain as EvmBlockchainName
     );
     const chainType = BlockchainsInfo.getChainType(blockchain);
     const balance$ =
       this.userAddress && this.authService.userChainType === chainType
-        ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
+        ? from(blockchainAdapter.getBalance(this.userAddress, address))
         : of(null);
-    const token$ = SdkToken.createToken({ blockchain, address });
+    const token$ = this.sdkLegacyService.tokenService.createToken({ blockchain, address });
 
     return forkJoin([token$, balance$]).pipe(
       map(([token, amount]) => ({
@@ -383,9 +380,7 @@ export class TokensStoreService {
    * Find native token from storage with price by blockchain
    */
   public getNativeToken(blockchain: BlockchainName): Token {
-    const chainType = BlockchainsInfo.getChainType(blockchain);
-    const address = Web3Pure[chainType].nativeTokenAddress;
-
+    const address = Web3Pure.getNativeTokenAddress(blockchain);
     return this.tokens.find(t => compareTokens(t, { address, blockchain }));
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { TuiNotification } from '@taiga-ui/core';
-import { BlockchainName, EvmBlockchainName, EvmEncodeConfig, Injector } from '@cryptorubic/sdk';
+import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SdkService } from '@core/services/sdk/sdk.service';
@@ -10,6 +10,8 @@ import { HttpService } from '@app/core/services/http/http.service';
 import { getSignature } from '@app/shared/utils/get-signature';
 import { TransactionReceipt } from 'viem';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class CommonTableService {
@@ -27,7 +29,8 @@ export class CommonTableService {
     private readonly translateService: TranslateService,
     private readonly sdkService: SdkService,
     private readonly http: HttpService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
@@ -113,9 +116,13 @@ export class CommonTableService {
     };
 
     try {
-      transactionReceipt = await this.sdkService.symbiosis.revertTrade(srcTxHash, {
-        onConfirm: onTransactionHash
-      });
+      transactionReceipt = await this.sdkService.symbiosis.revertTrade(
+        srcTxHash,
+        this.walletConnectorService.address,
+        {
+          onConfirm: onTransactionHash
+        }
+      );
 
       tradeInProgressSubscription$.unsubscribe();
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
@@ -190,8 +197,8 @@ export class CommonTableService {
     // return transactionReceipt;
   }
 
-  public async redeemArbitrum(srcTxHash: string): Promise<EvmEncodeConfig> {
-    let evmConfig: EvmEncodeConfig;
+  public async redeemArbitrum(srcTxHash: string): Promise<EvmTransactionConfig> {
+    let evmConfig: EvmTransactionConfig;
 
     this.notificationsService.show(this.translateService.instant('bridgePage.progressMessage'), {
       label: this.translateService.instant('notifications.tradeInProgress'),
@@ -203,11 +210,11 @@ export class CommonTableService {
     });
 
     try {
-      const resp = await Injector.rubicApiService.claimOrRedeemCoins(
+      const resp = await this.sdkLegacyService.rubicApiService.claimOrRedeemCoins(
         srcTxHash,
         this.walletConnectorService.network as EvmBlockchainName
       );
-      evmConfig = resp.transaction as EvmEncodeConfig;
+      evmConfig = resp.transaction as EvmTransactionConfig;
       this.notificationsService.show(this.translateService.instant('bridgePage.successMessage'), {
         label: this.translateService.instant('notifications.successfulTradeTitle'),
         status: TuiNotification.Success,

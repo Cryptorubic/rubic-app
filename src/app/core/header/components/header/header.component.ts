@@ -122,7 +122,7 @@ export class HeaderComponent {
   /**
    * Triggering redefining status of using mobile.
    */
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }

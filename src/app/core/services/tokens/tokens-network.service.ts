@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/sdk';
 import { finalize, forkJoin, Observable } from 'rxjs';
 import { first, switchMap, tap } from 'rxjs/operators';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
@@ -18,6 +17,7 @@ import { BalanceLoadingAssetData } from './models/balance-loading-types';
 import { TokensNetworkStateService } from './tokens-network-state.service';
 import { TokensUpdaterService } from './tokens-updater.service';
 import { TokenConvertersService } from './token-converters.service';
+import { BlockchainName } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'
