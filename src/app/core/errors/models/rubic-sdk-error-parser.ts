@@ -5,6 +5,7 @@ import {
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
   UserRejectError as SdkUserRejectError,
   InsufficientFundsError as SdkInsufficientFundsError,
+  DeflationTokenLowSlippageError as SdkDeflationTokenLowSlippageError,
   LowGasError as SdkLowGasError,
   LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError,
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
@@ -55,6 +56,7 @@ import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
+import DeflationTokenLowSlippageError from './common/deflation-token-low-slippage.error';
 import { SwapTimeoutError } from './common/swap-timeout.error';
 
 export class RubicSdkErrorParser {
@@ -87,6 +89,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
+    }
+    if (err instanceof SdkDeflationTokenLowSlippageError) {
+      return new DeflationTokenLowSlippageError(err.tokenAddress);
     }
     if (err instanceof SdkLowGasError) {
       return new LowGasError();
