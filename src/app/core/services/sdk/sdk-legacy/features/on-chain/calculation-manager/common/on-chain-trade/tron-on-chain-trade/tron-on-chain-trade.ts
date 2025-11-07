@@ -19,6 +19,7 @@ import {
   UnnecessaryApproveError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class TronOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: TronTransactionConfig | null = null;
@@ -39,15 +40,16 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     integratorAddress: string,
     apiQuote: QuoteRequestInterface,
     apiResponse: QuoteResponseInterface,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(integratorAddress, sdkLegacyService);
+    super(integratorAddress, sdkLegacyService, rubicApiService);
     this.apiQuote = apiQuote || null;
     this.apiResponse = apiResponse || null;
   }
 
   public async approve(
-    _options: TronTransactionOptions,
+    options: TronTransactionOptions,
     checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
@@ -61,10 +63,11 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     this.checkWalletConnected();
     await this.checkBlockchainCorrect();
 
-    return this.chainAdapter.client.approve(
+    return this.chainAdapter.client.approveTokens(
       this.from.address,
       this.spenderAddress,
-      weiAmount.toFixed(0)
+      weiAmount,
+      options
     );
   }
 

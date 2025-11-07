@@ -7,6 +7,7 @@ import { TronOnChainTrade } from '../../../on-chain/calculation-manager/common/o
 import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { TronApiOnChainConstructor } from './tron-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class TronApiOnChainTrade extends TronOnChainTrade {
   public readonly feeInfo: FeeInfo;
@@ -37,12 +38,17 @@ export class TronApiOnChainTrade extends TronOnChainTrade {
 
   public readonly spenderAddress: string;
 
-  constructor(params: TronApiOnChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: TronApiOnChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       params.apiQuote.integratorAddress!,
       params.apiQuote,
       params.apiResponse,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as OnChainTradeType;

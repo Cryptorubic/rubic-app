@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-default-config';
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
@@ -17,8 +17,10 @@ import { CrossChainManager } from './sdk-legacy/features/cross-chain/calculation
 import { OnChainStatusManager } from './sdk-legacy/features/on-chain/status-manager/on-chain-status-manager';
 import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/status-manager/cross-chain-status-manager';
 import { SdkLegacyService } from './sdk-legacy/sdk-legacy.service';
-import { RubicError } from '@app/core/errors/models/rubic-error';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
+import { RubicApiService } from './sdk-legacy/rubic-api/rubic-api.service';
+import { WINDOW } from '@ng-web-apis/common';
+import { referralToIntegratorAddressMapping } from './constants/provider-addresses';
 
 @Injectable()
 export class SdkService {
@@ -57,23 +59,27 @@ export class SdkService {
 
   constructor(
     private readonly angularHttpClient: HttpClient,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly rubicApiService: RubicApiService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
-    if (!this._currentConfig) {
-      throw new RubicError('_currentConfig is not initialized.');
-    }
-    this.instantTrade = new OnChainManager(this._currentConfig.providerAddress, sdkLegacyService);
-    this.crossChain = new CrossChainManager(this._currentConfig.providerAddress, sdkLegacyService);
+    this._currentConfig = this.getConfig(this.getProviderAddresses());
+    this.instantTrade = new OnChainManager(
+      this._currentConfig.providerAddress,
+      sdkLegacyService,
+      rubicApiService
+    );
+    this.crossChain = new CrossChainManager(
+      this._currentConfig.providerAddress,
+      sdkLegacyService,
+      rubicApiService
+    );
     this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
-    this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService);
+    this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService, rubicApiService);
     this.symbiosis = new CrossChainSymbiosisManager(sdkLegacyService);
   }
 
-  public async initSDK(params: {
-    crossChainIntegratorAddress?: string;
-    onChainIntegratorAddress?: string;
-  }): Promise<void> {
-    this._currentConfig = this.getConfig(params);
+  public async initSDK(): Promise<void> {
     const adapterFactory = await SdkAdapterFactory.createFactory({
       rpcList,
       httpClient: new SdkHttpClient(this.angularHttpClient),
@@ -124,7 +130,23 @@ export class SdkService {
       blockchain,
       walletProviderCore
     );
-    // this.SDK.updateWalletProviderCore(chainType, walletProviderCore);
+  }
+
+  private getProviderAddresses(): {
+    crossChainIntegratorAddress: string;
+    onChainIntegratorAddress: string;
+  } {
+    const urlParams = new URLSearchParams(this.window.location.search);
+    const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
+    const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
+    const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+    const referral = urlParams.get('referral');
+    const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
+
+    return {
+      crossChainIntegratorAddress: crossChainProvider,
+      onChainIntegratorAddress: onChainProvider || onChainProviderAddress
+    };
   }
 
   private getEnvType(): EnvType | null {

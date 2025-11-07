@@ -11,7 +11,7 @@ import { getSignature } from '@app/shared/utils/get-signature';
 import { TransactionReceipt } from 'viem';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Injectable()
 export class CommonTableService {
@@ -30,7 +30,7 @@ export class CommonTableService {
     private readonly sdkService: SdkService,
     private readonly http: HttpService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
@@ -210,7 +210,7 @@ export class CommonTableService {
     });
 
     try {
-      const resp = await this.sdkLegacyService.rubicApiService.claimOrRedeemCoins(
+      const resp = await this.rubicApiService.claimOrRedeemCoins(
         srcTxHash,
         this.walletConnectorService.network as EvmBlockchainName
       );

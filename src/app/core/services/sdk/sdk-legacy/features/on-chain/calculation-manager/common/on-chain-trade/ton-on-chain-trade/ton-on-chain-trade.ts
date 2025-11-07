@@ -27,6 +27,7 @@ import {
   TonAdapter
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class TonOnChainTrade extends OnChainTrade {
   public readonly from: PriceTokenAmount<TonBlockchainName>;
@@ -62,9 +63,10 @@ export abstract class TonOnChainTrade extends OnChainTrade {
   constructor(
     tradeStruct: TonOnChainTradeStruct,
     providerAddress: string,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService);
+    super(providerAddress, sdkLegacyService, rubicApiService);
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
     this.slippageTolerance = tradeStruct.slippageTolerance;

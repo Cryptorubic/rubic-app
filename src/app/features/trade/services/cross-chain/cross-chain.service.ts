@@ -56,9 +56,9 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Injectable()
 export class CrossChainService {
@@ -92,7 +92,7 @@ export class CrossChainService {
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -131,7 +131,7 @@ export class CrossChainService {
       dstTokenAddress: toToken.address
     };
 
-    this.sdkLegacyService.rubicApiService.calculateAsync({
+    this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
       ...tradeParams,

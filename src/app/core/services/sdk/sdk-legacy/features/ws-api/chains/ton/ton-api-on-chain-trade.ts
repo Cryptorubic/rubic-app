@@ -7,6 +7,7 @@ import { TonOnChainTrade } from '../../../on-chain/calculation-manager/common/on
 import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { TonApiOnChainConstructor } from './ton-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class TonApiOnChainTrade extends TonOnChainTrade {
   public override readonly feeInfo: FeeInfo;
@@ -31,7 +32,11 @@ export class TonApiOnChainTrade extends TonOnChainTrade {
 
   public readonly dexContractAddress = '';
 
-  constructor(params: TonApiOnChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: TonApiOnChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       {
         ...params,
@@ -43,7 +48,8 @@ export class TonApiOnChainTrade extends TonOnChainTrade {
         isChangedSlippage: params.isChangedSlippage
       },
       params.apiQuote.integratorAddress!,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as OnChainTradeType;

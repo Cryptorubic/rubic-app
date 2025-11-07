@@ -6,6 +6,7 @@ import { SuiOnChainTrade } from '../../../on-chain/calculation-manager/common/on
 import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { SuiApiOnChainConstructor } from './sui-api-on-chain-trade-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class SuiApiOnChainTrade extends SuiOnChainTrade {
   public override readonly feeInfo: FeeInfo;
@@ -30,7 +31,11 @@ export class SuiApiOnChainTrade extends SuiOnChainTrade {
 
   public readonly dexContractAddress = '';
 
-  constructor(params: SuiApiOnChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: SuiApiOnChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       {
         ...params,
@@ -42,7 +47,8 @@ export class SuiApiOnChainTrade extends SuiOnChainTrade {
         withDeflation: { from: { isDeflation: false }, to: { isDeflation: false } }
       },
       params.apiQuote.integratorAddress!,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as OnChainTradeType;

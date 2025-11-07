@@ -15,7 +15,7 @@ describe('SdkService', () => {
     });
 
     httpService = TestBed.inject(HttpClient);
-    service = new SdkService(httpService, undefined);
+    service = new SdkService(httpService, undefined, undefined, undefined);
   });
 
   it('#constructor should initiate SDK as null', () => {

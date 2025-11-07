@@ -9,6 +9,7 @@ import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/co
 
 import { BitcoinApiCrossChainConstructor } from './bitcoin-api-cross-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class BitcoinApiCrossChainTrade extends BitcoinCrossChainTrade {
   public readonly type: CrossChainTradeType;
@@ -36,13 +37,18 @@ export class BitcoinApiCrossChainTrade extends BitcoinCrossChainTrade {
   //@TODO API
   public memo = '';
 
-  constructor(tradeParams: BitcoinApiCrossChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    tradeParams: BitcoinApiCrossChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       tradeParams.apiQuote.integratorAddress!,
       tradeParams.routePath,
       tradeParams.apiQuote,
       tradeParams.apiResponse,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = tradeParams.apiResponse.providerType as CrossChainTradeType;

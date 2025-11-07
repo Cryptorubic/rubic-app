@@ -45,6 +45,7 @@ import { shouldCalculateConsumedParamsProviders } from './chains/solana/constant
 import { ArbitrumRbcBridgeTrade } from '../cross-chain/calculation-manager/providers/arbitrum-rbc-bridge/arbitrum-rbc-bridge-trade';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SdkLegacyService } from '../../sdk-legacy.service';
+import { RubicApiService } from '../../rubic-api/rubic-api.service';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -52,6 +53,7 @@ export class TransformUtils {
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService,
     err?: RubicApiError
   ): Promise<WrappedCrossChainTrade> {
     if (!res && !err) {
@@ -83,32 +85,35 @@ export class TransformUtils {
       chainType !== CHAIN_TYPE.EVM;
 
     if (isTransferTrade) {
-      trade = new ApiCrossChainTransferTrade(tradeParams, sdkLegacyService);
+      trade = new ApiCrossChainTransferTrade(tradeParams, sdkLegacyService, rubicApiService);
     } else if (chainType === CHAIN_TYPE.EVM) {
       const params = tradeParams as EvmApiCrossChainConstructor;
 
       if (tradeType === CROSS_CHAIN_TRADE_TYPE.ARBITRUM) {
-        trade = new ArbitrumRbcBridgeTrade(params, sdkLegacyService);
+        trade = new ArbitrumRbcBridgeTrade(params, sdkLegacyService, rubicApiService);
       } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE) {
-        trade = new EddyBridgeTrade(params, sdkLegacyService);
+        trade = new EddyBridgeTrade(params, sdkLegacyService, rubicApiService);
       } else {
         trade = new EvmApiCrossChainTrade(
           {
             ...params,
             needAuthWallet: parsedWarnings.needAuthWallet
           },
-          sdkLegacyService
+          sdkLegacyService,
+          rubicApiService
         );
       }
     } else if (chainType === CHAIN_TYPE.TON) {
       trade = new TonApiCrossChainTrade(
         tradeParams as TonApiCrossChainConstructor,
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.TRON) {
       trade = new TronApiCrossChainTrade(
         tradeParams as TronApiCrossChainConstructor,
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.BITCOIN) {
       trade = new BitcoinApiCrossChainTrade(
@@ -116,7 +121,8 @@ export class TransformUtils {
           ...tradeParams,
           needProvidePubKey
         } as BitcoinApiCrossChainConstructor,
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.SOLANA) {
       const shouldCalculateConsumedParams =
@@ -127,7 +133,8 @@ export class TransformUtils {
           ...tradeParams,
           shouldCalculateConsumedParams
         } as SolanaApiCrossChainConstructor,
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     }
 
@@ -143,6 +150,7 @@ export class TransformUtils {
     quote: QuoteRequestInterface,
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService,
     err?: RubicApiError
   ): Promise<WrappedOnChainTradeOrNull> {
     if (!response && !err) {
@@ -168,9 +176,17 @@ export class TransformUtils {
     let trade: OnChainTrade | null = null;
 
     if (chainType === CHAIN_TYPE.EVM) {
-      trade = new EvmApiOnChainTrade(tradeParams as EvmApiOnChainConstructor, sdkLegacyService);
+      trade = new EvmApiOnChainTrade(
+        tradeParams as EvmApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
     } else if (chainType === CHAIN_TYPE.TRON) {
-      trade = new TronApiOnChainTrade(tradeParams as TronApiOnChainConstructor, sdkLegacyService);
+      trade = new TronApiOnChainTrade(
+        tradeParams as TronApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
     } else if (chainType === CHAIN_TYPE.SOLANA) {
       const shouldCalculateConsumedParams =
         shouldCalculateConsumedParamsProviders.includes(tradeType);
@@ -179,7 +195,8 @@ export class TransformUtils {
           ...tradeParams,
           shouldCalculateConsumedParams
         } as SolanaApiOnChainConstructor,
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.TON) {
       trade = new TonApiOnChainTrade(
@@ -188,10 +205,15 @@ export class TransformUtils {
           // @TODO API
           isChangedSlippage: false
         },
-        sdkLegacyService
+        sdkLegacyService,
+        rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.SUI) {
-      trade = new SuiApiOnChainTrade(tradeParams as SuiApiOnChainConstructor, sdkLegacyService);
+      trade = new SuiApiOnChainTrade(
+        tradeParams as SuiApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
     }
 
     return {

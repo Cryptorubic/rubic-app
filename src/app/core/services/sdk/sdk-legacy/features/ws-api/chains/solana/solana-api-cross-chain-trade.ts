@@ -8,6 +8,7 @@ import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/co
 import { SolanaCrossChainTrade } from '../../../cross-chain/calculation-manager/providers/common/solana-cross-chain-trade/solana-cross-chain-trade';
 import { SolanaApiCrossChainConstructor } from './solana-api-cross-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class SolanaApiCrossChainTrade extends SolanaCrossChainTrade {
   public readonly feeInfo: FeeInfo;
@@ -32,14 +33,19 @@ export class SolanaApiCrossChainTrade extends SolanaCrossChainTrade {
 
   public readonly isAggregator = false;
 
-  constructor(params: SolanaApiCrossChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: SolanaApiCrossChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       params.apiQuote.integratorAddress!,
       params.routePath,
       params.apiQuote,
       params.apiResponse,
       params.shouldCalculateConsumedParams,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as CrossChainTradeType;

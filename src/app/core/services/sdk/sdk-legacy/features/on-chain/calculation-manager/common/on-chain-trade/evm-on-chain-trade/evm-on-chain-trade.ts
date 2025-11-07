@@ -1,6 +1,7 @@
 import {
   BLOCKCHAIN_NAME,
   blockchainId,
+  BlockchainsInfo,
   EvmBlockchainName,
   nativeTokensList,
   PriceTokenAmount,
@@ -32,7 +33,9 @@ import {
   EvmAdapter,
   EvmBasicTransactionOptions,
   EvmTransactionConfig,
+  EvmTransactionOptions,
   FailedToCheckForTransactionReceiptError,
+  getViemGasOptions,
   LowSlippageDeflationaryTokenError,
   NotWhitelistedProviderError,
   parseError,
@@ -41,6 +44,7 @@ import {
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { ProxyCrossChainEvmTrade } from '../../../../../cross-chain/calculation-manager/providers/common/proxy-cross-chain-evm-facade/proxy-cross-chain-evm-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class EvmOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: EvmTransactionConfig | null = null;
@@ -104,9 +108,10 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
 
   protected constructor(
     evmOnChainTradeStruct: EvmOnChainTradeStruct,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(evmOnChainTradeStruct.apiQuote!.integratorAddress!, sdkLegacyService);
+    super(evmOnChainTradeStruct.apiQuote!.integratorAddress!, sdkLegacyService, rubicApiService);
 
     this.from = evmOnChainTradeStruct.from;
     this.to = evmOnChainTradeStruct.to;
@@ -151,7 +156,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
   }
 
   public async approve(
-    _options: EvmBasicTransactionOptions,
+    options: EvmBasicTransactionOptions,
     checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
@@ -168,19 +173,19 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     const approveAmount =
       this.from.blockchain === BLOCKCHAIN_NAME.GNOSIS ||
       this.from.blockchain === BLOCKCHAIN_NAME.CRONOS
-        ? this.from.stringWeiAmount
-        : weiAmount.toFixed(0);
+        ? this.from.weiAmount
+        : weiAmount;
 
     const fromTokenAddress =
       this.from.isNative && this.from.blockchain === BLOCKCHAIN_NAME.METIS
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    return this.chainAdapter.client.approve(
-      this.walletAddress,
+    return this.chainAdapter.client.approveTokens(
       fromTokenAddress,
       this.spenderAddress,
-      approveAmount
+      approveAmount,
+      options
     );
   }
 
@@ -274,6 +279,50 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
       }
 
       throw parseError(err);
+    }
+  }
+
+  public async getData(
+    fromAddress: string,
+    options: SwapTransactionOptions = {}
+  ): Promise<EvmTransactionOptions | never> {
+    this.apiFromAddress = fromAddress;
+    if (!options?.testMode) {
+      await this.checkWalletState(options.testMode);
+    }
+    await this.checkReceiverAddress(
+      options.receiverAddress,
+      !BlockchainsInfo.isEvmBlockchainName(this.to.blockchain)
+    );
+
+    const { data, value, to } = await this.encode({ ...options, fromAddress });
+
+    try {
+      if (!options?.testMode) {
+        const gasLimit = await this.chainAdapter.simulateTransaction(
+          {
+            to,
+            data,
+            value
+          },
+          fromAddress
+        );
+
+        const gasfulViemParams = {
+          account: fromAddress,
+          data,
+          to,
+          value,
+          ...getViemGasOptions(options),
+          gas: gasLimit
+        };
+
+        return gasfulViemParams;
+      }
+
+      return { data, value, to };
+    } catch (err) {
+      throw err;
     }
   }
 

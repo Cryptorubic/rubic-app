@@ -2,12 +2,16 @@ import { TX_STATUS, TxStatus, TxStatusData } from '@cryptorubic/web3';
 import { CrossChainStatus } from './models/cross-chain-status';
 import { BlockchainName } from '@cryptorubic/core';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
+import { RubicApiService } from '../../../rubic-api/rubic-api.service';
 
 /**
  * Contains methods for getting cross-chain trade statuses.
  */
 export class CrossChainStatusManager {
-  constructor(private readonly sdkLegacyService: SdkLegacyService) {}
+  constructor(
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly rubicApiService: RubicApiService
+  ) {}
 
   public async getCrossChainStatusExtended(
     rubicId: string,
@@ -43,8 +47,10 @@ export class CrossChainStatusManager {
       return { hash: null, status: TX_STATUS.PENDING };
     }
 
-    const txStatusData =
-      await this.sdkLegacyService.rubicApiService.fetchCrossChainTxStatusExtended(srcHash, rubicId);
+    const txStatusData = await this.rubicApiService.fetchCrossChainTxStatusExtended(
+      srcHash,
+      rubicId
+    );
 
     if (txStatusData.status === TX_STATUS.SUCCESS) {
       return {

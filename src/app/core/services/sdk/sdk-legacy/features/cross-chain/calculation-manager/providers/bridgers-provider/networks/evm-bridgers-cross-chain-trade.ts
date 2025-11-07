@@ -42,6 +42,7 @@ import {
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { firstValueFrom } from 'rxjs';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export class EvmBridgersCrossChainTrade extends EvmCrossChainTrade {
   public readonly type = CROSS_CHAIN_TRADE_TYPE.BRIDGERS;
@@ -70,9 +71,13 @@ export class EvmBridgersCrossChainTrade extends EvmCrossChainTrade {
     return 'startBridgeTokensViaGenericCrossChain';
   }
 
-  constructor(params: BridgersEvmCrossChainParams, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: BridgersEvmCrossChainParams,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     const { crossChainTrade, providerAddress, routePath, apiQuote, apiResponse } = params;
-    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService);
+    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = crossChainTrade.from;
     this.to = crossChainTrade.to;

@@ -22,6 +22,7 @@ import {
   TooLowAmountError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
   data: string;
@@ -56,9 +57,10 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
     apiQuote: QuoteRequestInterface,
     apiResponse: QuoteResponseInterface,
     shouldCalculateConsumedParams: boolean,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService);
+    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService, rubicApiService);
     this.shouldCalculateConsumedParams = shouldCalculateConsumedParams;
   }
 

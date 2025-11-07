@@ -101,7 +101,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
   }
 
   public override async approve(
-    _options: EvmBasicTransactionOptions,
+    options: EvmBasicTransactionOptions,
     checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
@@ -118,27 +118,25 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     const approveAmount =
       this.from.blockchain === BLOCKCHAIN_NAME.GNOSIS ||
       this.from.blockchain === BLOCKCHAIN_NAME.CRONOS
-        ? this.from.stringWeiAmount
-        : weiAmount.toFixed(0);
+        ? this.from.weiAmount
+        : weiAmount;
 
     const fromTokenAddress =
       this.from.isNative && this.from.blockchain === BLOCKCHAIN_NAME.METIS
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    return this.chainAdapter.client.approve(
-      this.walletAddress,
+    return this.chainAdapter.client.approveTokens(
       fromTokenAddress,
       this.contractSpender,
-      approveAmount
+      approveAmount,
+      options
     );
   }
 
   public async authWallet(): Promise<string> {
     if (this.needAuthWallet) {
-      const res = await this.sdkLegacyService.rubicApiService.getMessageToAuthWallet(
-        this.walletAddress
-      );
+      const res = await this.rubicApiService.getMessageToAuthWallet(this.walletAddress);
 
       const signature = await this.chainAdapter.client.signMessage(res.messageToAuth);
       this.signature = signature;

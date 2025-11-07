@@ -52,9 +52,9 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -87,7 +87,7 @@ export class OnChainService {
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -119,7 +119,7 @@ export class OnChainService {
       dstTokenAddress: toToken.address
     };
 
-    this.sdkLegacyService.rubicApiService.calculateAsync({
+    this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
       ...tradeParams,

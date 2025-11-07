@@ -7,6 +7,7 @@ import { ON_CHAIN_TRADE_TYPE } from '../../models/on-chain-trade-type';
 import { EvmAdapter, RubicSdkError, Web3Pure } from '@cryptorubic/web3';
 import { compareAddresses, EvmBlockchainName, wrappedAddress } from '@cryptorubic/core';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export class EvmWrapTrade extends EvmOnChainTrade {
   public get dexContractAddress(): string {
@@ -35,9 +36,10 @@ export class EvmWrapTrade extends EvmOnChainTrade {
 
   public constructor(
     evmOnChainTradeStruct: EvmOnChainTradeStruct,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(evmOnChainTradeStruct, sdkLegacyService);
+    super(evmOnChainTradeStruct, sdkLegacyService, rubicApiService);
   }
 
   public static isSupportedBlockchain(blockchain: EvmBlockchainName): boolean {

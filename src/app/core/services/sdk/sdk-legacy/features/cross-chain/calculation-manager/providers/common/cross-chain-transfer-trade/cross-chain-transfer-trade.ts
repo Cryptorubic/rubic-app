@@ -35,6 +35,7 @@ import {
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Abi } from 'viem';
 import { MarkRequired } from '../../../models/cross-chain-manager-options';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
   protected paymentInfo: CrossChainTransferData | null = null;
@@ -86,9 +87,10 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     priceImpact: number | null,
     apiQuote: QuoteRequestInterface,
     apiResponse: QuoteResponseInterface,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService);
+    super(providerAddress, routePath, apiQuote, apiResponse, sdkLegacyService, rubicApiService);
     this.onChainTrade = onChainTrade;
     this.from = from as PriceTokenAmount<EvmBlockchainName>;
     this.to = to;

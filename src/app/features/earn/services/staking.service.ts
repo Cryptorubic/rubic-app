@@ -34,7 +34,6 @@ import { GasInfo } from '@core/services/gas-service/models/gas-info';
 import { TransactionReceipt } from 'viem';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { AllowanceInfo } from '@cryptorubic/web3';
-import { infiniteApproveAmount } from '@app/core/services/sdk/sdk-legacy/features/common/utils/infinite-approve-amount';
 
 // const STAKING_END_TIMESTAMP = new Date(2024, 7, 14).getTime();
 
@@ -204,12 +203,14 @@ export class StakingService {
   }
 
   public async approveRbc(): Promise<string> {
+    const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
+
     try {
-      const hash = await this.arbitrumAdapter.client.approve(
-        this.walletAddress,
+      const hash = await this.arbitrumAdapter.client.approveTokens(
         STAKING_ROUND_THREE.TOKEN.address,
         STAKING_ROUND_THREE.NFT.address,
-        infiniteApproveAmount()
+        'infinity',
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
       );
 
       if (hash) {

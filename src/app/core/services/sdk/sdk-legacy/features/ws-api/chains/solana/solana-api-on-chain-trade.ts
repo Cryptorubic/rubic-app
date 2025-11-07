@@ -6,6 +6,7 @@ import { SolanaOnChainTrade } from '../../../on-chain/calculation-manager/common
 import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { SolanaApiOnChainConstructor } from './solana-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class SolanaApiOnChainTrade extends SolanaOnChainTrade {
   public override readonly feeInfo: FeeInfo;
@@ -30,7 +31,11 @@ export class SolanaApiOnChainTrade extends SolanaOnChainTrade {
 
   public readonly dexContractAddress = '';
 
-  constructor(params: SolanaApiOnChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: SolanaApiOnChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       {
         ...params,
@@ -43,7 +48,8 @@ export class SolanaApiOnChainTrade extends SolanaOnChainTrade {
       },
       params.apiQuote.integratorAddress!,
       params.shouldCalculateConsumedParams,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as OnChainTradeType;

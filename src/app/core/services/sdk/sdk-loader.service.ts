@@ -5,7 +5,6 @@ import { delay, filter, tap } from 'rxjs/operators';
 import { WalletProvider, WalletProviderCore } from '@cryptorubic/web3';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { referralToIntegratorAddressMapping } from '@core/services/sdk/constants/provider-addresses';
 import { createWalletClient, custom } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 
@@ -21,25 +20,8 @@ export class SdkLoaderService {
   public async initSdk(): Promise<void> {
     this.subscribeOnAddressChange();
 
-    await this.sdkService.initSDK(this.getProviderAddresses());
+    await this.sdkService.initSDK();
     await this.loadUser();
-  }
-
-  private getProviderAddresses(): {
-    crossChainIntegratorAddress: string;
-    onChainIntegratorAddress: string;
-  } {
-    const urlParams = new URLSearchParams(this.window.location.search);
-    const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
-    const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
-    const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
-    const referral = urlParams.get('referral');
-    const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
-
-    return {
-      crossChainIntegratorAddress: crossChainProvider,
-      onChainIntegratorAddress: onChainProvider || onChainProviderAddress
-    };
   }
 
   private async loadUser(): Promise<void> {

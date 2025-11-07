@@ -27,6 +27,7 @@ import {
   WrongReceiverAddressError
 } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 /**
  * Abstract class for all instant trade providers' trades.
@@ -113,7 +114,8 @@ export abstract class OnChainTrade<T = unknown> {
 
   protected constructor(
     protected readonly providerAddress: string,
-    protected readonly sdkLegacyService: SdkLegacyService
+    protected readonly sdkLegacyService: SdkLegacyService,
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   /**
@@ -295,7 +297,7 @@ export abstract class OnChainTrade<T = unknown> {
     body: SwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {
     try {
-      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<Data>(body);
+      const res = await this.rubicApiService.fetchSwapData<Data>(body);
       this.lastSwapResponse = res as any;
       return res;
     } catch (err) {
@@ -308,7 +310,7 @@ export abstract class OnChainTrade<T = unknown> {
   }
 
   private refetchTrade<Data>(body: SwapRequestInterface): Promise<SwapResponseInterface<Data>> {
-    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<Data>({
+    const res = this.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });

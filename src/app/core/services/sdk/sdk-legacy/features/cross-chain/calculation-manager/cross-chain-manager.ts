@@ -23,6 +23,7 @@ import { ProviderAddress } from '../../common/models/sdk-models/provider-address
 import { combineOptions, RubicSdkError } from '@cryptorubic/web3';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
 import pTimeout from '../../common/utils/p-timeout';
+import { RubicApiService } from '../../../rubic-api/rubic-api.service';
 
 /**
  * Contains method to calculate best cross-chain trade.
@@ -30,7 +31,8 @@ import pTimeout from '../../common/utils/p-timeout';
 export class CrossChainManager {
   constructor(
     private readonly providerAddress: ProviderAddress,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   /**
@@ -110,7 +112,7 @@ export class CrossChainManager {
       srcTokenAmount: from.stringWeiAmount,
       dstTokenAddress: to.address
     };
-    const routes = await this.sdkLegacyService.rubicApiService.fetchRoutes(request);
+    const routes = await this.rubicApiService.fetchRoutes(request);
 
     return Promise.all(
       routes.routes.map(route =>
@@ -118,7 +120,8 @@ export class CrossChainManager {
           route,
           request,
           providerOptions.providerAddress,
-          this.sdkLegacyService
+          this.sdkLegacyService,
+          this.rubicApiService
         )
       )
     );

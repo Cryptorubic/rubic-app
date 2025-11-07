@@ -165,10 +165,12 @@ export class RubicApiService {
         let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
           Promise.resolve(null);
 
-        const rubicApiError = {
-          ...data,
-          type: wsResponse.type
-        };
+        const rubicApiError = data
+          ? {
+              ...data,
+              type: wsResponse.type
+            }
+          : data;
 
         promise =
           this.latestQuoteParams?.srcTokenBlockchain !== this.latestQuoteParams?.dstTokenBlockchain
@@ -177,14 +179,16 @@ export class RubicApiService {
                 this.latestQuoteParams!,
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
-                rubicApiError
+                this,
+                rubicApiError as any
               )
             : TransformUtils.transformOnChain(
                 trade!,
                 this.latestQuoteParams!,
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
-                rubicApiError
+                this,
+                rubicApiError as any
               );
         return from(promise).pipe(
           catchError(err => {

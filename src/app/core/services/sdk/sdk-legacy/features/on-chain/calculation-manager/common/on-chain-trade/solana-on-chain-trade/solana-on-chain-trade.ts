@@ -26,6 +26,7 @@ import {
   SolanaAdapter
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class SolanaOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: EvmTransactionConfig | null = null;
@@ -81,9 +82,10 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     tradeStruct: SolanaOnChainTradeStruct,
     providerAddress: string,
     shouldCalculateConsumedParams: boolean,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService);
+    super(providerAddress, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;

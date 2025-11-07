@@ -23,6 +23,7 @@ import { combineOptions, RubicSdkError } from '@cryptorubic/web3';
 import { ProviderAddress } from '../../common/models/sdk-models/provider-address';
 import { firstValueFrom } from 'rxjs';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
+import { RubicApiService } from '../../../rubic-api/rubic-api.service';
 
 /**
  * Contains methods to calculate on-chain trades.
@@ -32,7 +33,8 @@ export class OnChainManager {
 
   public constructor(
     private readonly providerAddress: ProviderAddress,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   /**
@@ -104,7 +106,7 @@ export class OnChainManager {
       srcTokenAmount: from.stringWeiAmount,
       dstTokenAddress: to.address
     };
-    const routes = await this.sdkLegacyService.rubicApiService.fetchRoutes(request);
+    const routes = await this.rubicApiService.fetchRoutes(request);
 
     return Promise.all(
       routes.routes.map(route =>
@@ -112,7 +114,8 @@ export class OnChainManager {
           route,
           request,
           fullOptions.providerAddress,
-          this.sdkLegacyService
+          this.sdkLegacyService,
+          this.rubicApiService
         )
       )
     );
@@ -177,7 +180,8 @@ export class OnChainManager {
   public static getWrapTrade(
     from: PriceTokenAmount,
     to: PriceToken,
-    sdkLegacyService: SdkLegacyService
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
   ): EvmOnChainTrade {
     const fromToken = from as PriceTokenAmount<EvmBlockchainName>;
     const toToken = to as PriceToken<EvmBlockchainName>;
@@ -202,7 +206,8 @@ export class OnChainManager {
           to: { isDeflation: false }
         }
       },
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
   }
 
@@ -216,7 +221,12 @@ export class OnChainManager {
       tradeType: ON_CHAIN_TRADE_TYPE.WRAPPED
     };
     try {
-      wrappedTrade.trade = OnChainManager.getWrapTrade(fromToken, toToken, this.sdkLegacyService);
+      wrappedTrade.trade = OnChainManager.getWrapTrade(
+        fromToken,
+        toToken,
+        this.sdkLegacyService,
+        this.rubicApiService
+      );
     } catch (err: unknown) {
       wrappedTrade.error = err as RubicSdkError;
     }

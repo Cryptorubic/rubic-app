@@ -11,6 +11,7 @@ import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/co
 import { ApiCrossChainTransferConstructor } from './api-cross-chain-transfer-constructor';
 import { TransferSwapRequestInterface } from './models/transfer-swap-request-interface';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
   public readonly type: CrossChainTradeType;
@@ -19,7 +20,11 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
 
   public onChainSubtype: OnChainSubtype = { from: undefined, to: undefined };
 
-  constructor(tradeParams: ApiCrossChainTransferConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    tradeParams: ApiCrossChainTransferConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       tradeParams.apiQuote.integratorAddress!,
       tradeParams.routePath,
@@ -35,7 +40,8 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       tradeParams.from.calculatePriceImpactPercent(tradeParams.to),
       tradeParams.apiQuote,
       tradeParams.apiResponse,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = tradeParams.apiResponse.providerType as CrossChainTradeType;

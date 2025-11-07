@@ -33,6 +33,7 @@ import {
   WrongReceiverAddressError
 } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 /**
  * Abstract class for all cross-chain providers' trades.
@@ -155,7 +156,8 @@ export abstract class CrossChainTrade<T = unknown> {
     protected readonly routePath: RubicStep[],
     protected readonly apiQuote: QuoteRequestInterface,
     protected readonly apiResponse: QuoteResponseInterface,
-    protected readonly sdkLegacyService: SdkLegacyService
+    protected readonly sdkLegacyService: SdkLegacyService,
+    protected readonly rubicApiService: RubicApiService
   ) {
     this.useProxy = apiResponse.useRubicContract;
     this.contractSpender = apiResponse.transaction.approvalAddress!;
@@ -383,7 +385,7 @@ export abstract class CrossChainTrade<T = unknown> {
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {
     try {
-      const res = await this.sdkLegacyService.rubicApiService.fetchSwapData<Data>(body);
+      const res = await this.rubicApiService.fetchSwapData<Data>(body);
       this.lastSwapResponse = res as any;
       return res;
     } catch (err) {
@@ -398,7 +400,7 @@ export abstract class CrossChainTrade<T = unknown> {
   private refetchTrade<Data>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<Data>> {
-    const res = this.sdkLegacyService.rubicApiService.fetchBestSwapData<Data>({
+    const res = this.rubicApiService.fetchBestSwapData<Data>({
       ...body,
       preferredProvider: this.type
     });

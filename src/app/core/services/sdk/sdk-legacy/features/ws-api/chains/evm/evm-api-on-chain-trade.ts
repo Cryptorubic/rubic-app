@@ -6,6 +6,7 @@ import { EvmOnChainTrade } from '../../../on-chain/calculation-manager/common/on
 import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { EvmApiOnChainConstructor } from './evm-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class EvmApiOnChainTrade extends EvmOnChainTrade {
   public override readonly feeInfo: FeeInfo;
@@ -32,7 +33,11 @@ export class EvmApiOnChainTrade extends EvmOnChainTrade {
 
   public readonly dexContractAddress: string;
 
-  constructor(params: EvmApiOnChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: EvmApiOnChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       {
         ...params,
@@ -43,7 +48,8 @@ export class EvmApiOnChainTrade extends EvmOnChainTrade {
         withDeflation: { from: { isDeflation: false }, to: { isDeflation: false } },
         fromWithoutFee: params.from
       },
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
     this.dexContractAddress = params.apiResponse!.transaction.approvalAddress!;
 

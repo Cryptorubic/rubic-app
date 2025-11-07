@@ -33,6 +33,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { erc20TokenAbi, RubicSdkError, UserRejectError } from '@cryptorubic/web3';
+import BigNumber from 'bignumber.js';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -235,8 +236,15 @@ export class ApproveScannerService {
     }
 
     try {
-      const walletAddress = this.walletConnectorService.address;
-      await adapter.client.approve(walletAddress, tokenAddress, spenderAddress, '0');
+      const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
+        blockchain
+      );
+      await adapter.client.approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
+        onTransactionHash: _hash => {
+          revokeProgressNotification = this.showProgressNotification();
+        },
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
+      });
       this.showSuccessNotification();
       this._refreshTable$.next(tokenAddress);
     } catch (err) {

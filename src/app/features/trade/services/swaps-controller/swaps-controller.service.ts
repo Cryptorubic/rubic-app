@@ -69,7 +69,7 @@ import {
 } from '@cryptorubic/core';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -104,7 +104,7 @@ export class SwapsControllerService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly rubicApiService: RubicApiService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -396,6 +396,7 @@ export class SwapsControllerService {
     ) {
       return from(trade.checkBlockchainRequirements());
     }
+    return of(false);
   }
 
   private needAuthWallet(trade: CrossChainTrade | OnChainTrade): boolean {
@@ -469,10 +470,9 @@ export class SwapsControllerService {
   }
 
   private handleWs(): void {
-    this.sdkLegacyService.rubicApiService
+    this.rubicApiService
       .handleQuotesAsync()
       .pipe(
-        // @ts-ignore
         tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
@@ -576,7 +576,7 @@ export class SwapsControllerService {
     this.swapFormService.isFilled$
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(isFilled => {
-        if (!isFilled) this.sdkLegacyService.rubicApiService.stopCalculation();
+        if (!isFilled) this.rubicApiService.stopCalculation();
       });
   }
 

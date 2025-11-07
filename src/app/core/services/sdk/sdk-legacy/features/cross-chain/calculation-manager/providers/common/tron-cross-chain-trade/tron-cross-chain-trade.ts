@@ -40,7 +40,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
   }
 
   public override async approve(
-    _options: TronTransactionOptions,
+    options: TronTransactionOptions,
     checkNeedApprove: boolean,
     weiAmount: BigNumber
   ): Promise<string> {
@@ -54,11 +54,11 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
     this.checkWalletConnected();
     await this.checkBlockchainCorrect();
 
-    return this.chainAdapter.client.approve(
-      this.walletAddress,
+    return this.chainAdapter.client.approveTokens(
       this.from.address,
       this.contractSpender,
-      weiAmount.toFixed(0)
+      weiAmount,
+      options
     );
   }
 

@@ -8,6 +8,7 @@ import { OnChainSubtype } from '../../../cross-chain/calculation-manager/provide
 import { TradeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/trade-info';
 import { EvmApiCrossChainConstructor } from './evm-api-cross-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
+import { RubicApiService } from '../../../../rubic-api/rubic-api.service';
 
 export class EvmApiCrossChainTrade extends EvmCrossChainTrade {
   public readonly feeInfo: FeeInfo;
@@ -38,13 +39,18 @@ export class EvmApiCrossChainTrade extends EvmCrossChainTrade {
     return this.isWalletAuth;
   }
 
-  constructor(params: EvmApiCrossChainConstructor, sdkLegacyService: SdkLegacyService) {
+  constructor(
+    params: EvmApiCrossChainConstructor,
+    sdkLegacyService: SdkLegacyService,
+    rubicApiService: RubicApiService
+  ) {
     super(
       params.apiQuote.integratorAddress!,
       params.routePath,
       params.apiQuote,
       params.apiResponse,
-      sdkLegacyService
+      sdkLegacyService,
+      rubicApiService
     );
 
     this.type = params.apiResponse.providerType as CrossChainTradeType;

@@ -5,7 +5,6 @@ import {
   Cache as Memo,
   CHAIN_TYPE,
   EvmBlockchainName,
-  HttpClient,
   nativeTokensList,
   PriceToken,
   PriceTokenAmount,
@@ -20,6 +19,8 @@ import {
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { BlockchainAdapterFactoryService } from '../blockchain-adapter-factory/blockchain-adapter-factory.service';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
 interface TokenPriceFromBackend {
   network: string;
@@ -158,8 +159,10 @@ export class TokenService {
   ): Promise<TokenPriceFromBackend> {
     try {
       const backendBlockchain = TO_BACKEND_BLOCKCHAINS[blockchain];
-      const result = await this.httpClient.get<TokenPriceFromBackend>(
-        `https://api.rubic.exchange/api/v2/tokens/price/${backendBlockchain}/${tokenAddress}`
+      const result = await firstValueFrom(
+        this.httpClient.get<TokenPriceFromBackend>(
+          `https://api.rubic.exchange/api/v2/tokens/price/${backendBlockchain}/${tokenAddress}`
+        )
       );
       return result;
     } catch (error) {
