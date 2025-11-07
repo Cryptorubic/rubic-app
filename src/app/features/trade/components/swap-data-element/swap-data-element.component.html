@@ -35,7 +35,7 @@
     [tuiHintHideDelay]="hideHint ? 0 : 200"
   >
     <img src="assets/images/icons/time.svg" alt="Time for transaction" />
-    <div class="">{{ time }}</div>
+    <div class="">{{ averageTimeMins }}</div>
   </div>
 </div>
 
@@ -57,7 +57,9 @@
   </div> -->
 </ng-template>
 
-<ng-template #timeTooltip>Estimated arriving time</ng-template>
+<ng-template #timeTooltip>
+  95% of swaps with this chain are completed in {{ time95PercentSwapsMins }} with this provider
+</ng-template>
 <ng-template #gasTooltip>
   <div>
     <span> Estimated Gas: </span>
