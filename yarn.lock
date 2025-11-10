@@ -2262,18 +2262,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.13.5-alpha-rub-1031.0":
-  version "0.13.5-alpha-rub-1031.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.5-alpha-rub-1031.0.tgz#df298072e4fddb038ae69fbde84b575a7217f5cb"
-  integrity sha512-yjEEsqBqNFRuilJqQ23cd71iqBuaanfK418GwYls9LwuCWwAF9JACeL3bWcv0g03ZPxd1e7Q+fNgI3on9CPYoQ==
+"@cryptorubic/core@0.13.5-alpha-rub-1031.1":
+  version "0.13.5-alpha-rub-1031.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.5-alpha-rub-1031.1.tgz#506c3102070937f8177b0dbdd6ebbfb8c221dd61"
+  integrity sha512-wZYTgflqAvPL2zaM6FG3xc8m0BtzNXSVg5MUmTo7wAuqJ0UqCjfn6Ma5QdaVtfPt9ePWVN+yhu/0RK4YrL6Xqg==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.13.5-alpha-rub-1031.0":
-  version "0.13.5-alpha-rub-1031.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.5-alpha-rub-1031.0.tgz#998a04f5e08328798e0cdffba7380f358394bf77"
-  integrity sha512-xzeh0N1RIICLyIxEmLrvWARG5HSj0mMBxbtnA8f5dvPdrnFze0RXgAyFjHZwyuNax8AjuTx5YQahD8i+mH7bBg==
+"@cryptorubic/sdk@0.13.5-alpha-rub-1031.1":
+  version "0.13.5-alpha-rub-1031.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.5-alpha-rub-1031.1.tgz#719eaae1ded5a5bd54afaeee9c2ce00aa24be8e9"
+  integrity sha512-i+Sa3iDogS8MQUBWoEkpUNO2k8BnMFD0e49L+NqUJwHKNOwvqva8NR2M2fTlAnGOWXk3S4SGuCNEBirXc4N++Q==
   dependencies:
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
@@ -2300,10 +2300,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.13.5-alpha-rub-1031.0":
-  version "0.13.5-alpha-rub-1031.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.5-alpha-rub-1031.0.tgz#ee0dd68480ef385f9889b74d2ec32537fb4b795b"
-  integrity sha512-15vmqbXagE16UnVH5krLDBunNcakKz/f+batMbAAznEwYrB3cp/VTa3zqn/LehG+msCGlt3m0YL8g1zb7A4Phw==
+"@cryptorubic/web3@0.13.5-alpha-rub-1031.1":
+  version "0.13.5-alpha-rub-1031.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.5-alpha-rub-1031.1.tgz#5eec22accc31e2a96fd84aa9a71b84884d33bfb5"
+  integrity sha512-nIbOxNR9M7/Ijfvo14recV+lqD9lKk1lSwW7ODQ4mxMe9UpEgTg9BMp8gJrhZbhPo5w+bSejDPHWhREm7wZqqA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
