@@ -2262,18 +2262,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@1.0.0-alpha.no-sdk.22":
-  version "1.0.0-alpha.no-sdk.22"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.0.0-alpha.no-sdk.22.tgz#20c1aca25f1f9bb02195527a08d5f3a05042df4b"
-  integrity sha512-lgDrDDpJ/wvsV2X4Wz29tz8/PWJiiLATZQoQWoo/tAAUS1gh5rG68NGphluJWXkX8EjOZkMo6t6dfTWqHUczgg==
+"@cryptorubic/core@1.0.0-alpha.no-sdk.23":
+  version "1.0.0-alpha.no-sdk.23"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.0.0-alpha.no-sdk.23.tgz#6f87e2320453572c35d769d375026df07e85453b"
+  integrity sha512-m1JqA1ekRx75/ja0C4fskSIv8xIjs5bBIU2lMA5quPeFCpwTpEu/LENryRmCNUMRfiYV450oZ0W3iiODrW4ApQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.0.0-alpha.no-sdk.22":
-  version "1.0.0-alpha.no-sdk.22"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.0.0-alpha.no-sdk.22.tgz#c8dee96908fd93c8ec0648e45b5ecd6d68e4a930"
-  integrity sha512-4vcbqckeMv0jwkraOsknCtB/tHTolqdakmN3csXJNVmhaQBUbKZnruHRT5EuLWTEJiJ/vw3NhepuFihvMnrUwg==
+"@cryptorubic/web3@1.0.0-alpha.no-sdk.23":
+  version "1.0.0-alpha.no-sdk.23"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.0.0-alpha.no-sdk.23.tgz#a53c7f32bcba5b2538128b1a396278a563d3fe4a"
+  integrity sha512-Up5D4V3tV5xWbnQhOjvpstGOL6SoI242PDxv9F7jk0HUWskuG9bxsiEcivcoQ/eLnQPZWvro8A2Eef2wSGADlw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
