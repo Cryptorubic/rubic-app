@@ -2262,18 +2262,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.13.5-alpha.evm-fail.3":
-  version "0.13.5-alpha.evm-fail.3"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.5-alpha.evm-fail.3.tgz#3d30d27e73985e7553f1703b4fc40a1a69a886e2"
-  integrity sha512-KlSh2ehwMPQRGLmPHN7q/ITgjJJ5Qsw6l12gbpCL6KRHMZdcbnd9WWMU4jAwVO3gAZY/eCSQVLTs3zaTeIi3Sw==
+"@cryptorubic/core@0.13.5-alpha.evm-fail.4":
+  version "0.13.5-alpha.evm-fail.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.13.5-alpha.evm-fail.4.tgz#43d1659d4c574ef2acddfe8ab98b39aa7f90f034"
+  integrity sha512-h91Brz094rlx1SxKpfYdlOkKY3EiM+2mJUhtffQq9wNzq/Q9If8bFkN3o093/demugQ3hooMtviLFIVdKIpb+g==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.13.5-alpha.evm-fail.3":
-  version "0.13.5-alpha.evm-fail.3"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.5-alpha.evm-fail.3.tgz#a206cebf64960279871852a1f49abd3da38ea8c2"
-  integrity sha512-oLnpjmU9D7Kcv4GAVx8+3O42cFyvX5OoK4oDppKwOcxTgh1UHurxH3uqXLr9BxcaZmP/9ucov1Y+iL7n3vpWKg==
+"@cryptorubic/sdk@0.13.5-alpha.evm-fail.4":
+  version "0.13.5-alpha.evm-fail.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.13.5-alpha.evm-fail.4.tgz#b8e0f1899cf5c97182abba25f18f6eac9630af74"
+  integrity sha512-Ul5yeB8jD77OsGOkHftT34kQ4bfMrH/gd+aeGLvRBANv8BoToq7n4YUpycySCPfBHgefAGybyJYJxNjrWDaxXg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
@@ -2300,10 +2300,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.13.5-alpha.evm-fail.3":
-  version "0.13.5-alpha.evm-fail.3"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.5-alpha.evm-fail.3.tgz#8e04e928021cc1e0b424d1690190642fb1812d21"
-  integrity sha512-7WL5e7/8AazgZLqe9D8IWKZG6GnfxIHgdQkwd481vPBiqk1r3nQLEZGxG2a5U+/1l+500rshpSW1vHZtxzOJGA==
+"@cryptorubic/web3@0.13.5-alpha.evm-fail.4":
+  version "0.13.5-alpha.evm-fail.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.13.5-alpha.evm-fail.4.tgz#1825d8f99ed915e817103de296ca1fff8b899d6f"
+  integrity sha512-bDhFDVvWqaPSyAxHDhsyYo6XgBEn25BSBlXg52Luh+EyF/cahe00d9/dhplO55VnoERQssleLt7bkEYLuMDyzA==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
@@ -5487,9 +5487,9 @@
   integrity sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==
 
 "@types/express-serve-static-core@*", "@types/express-serve-static-core@^5.0.0":
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-5.0.7.tgz#2fa94879c9d46b11a5df4c74ac75befd6b283de6"
-  integrity sha512-R+33OsgWw7rOhD1emjU7dzCDHucJrgJXMA5PYCzJxVil0dsyx5iBEPHqpPfiKNJQb7lZ1vxwoLR4Z87bBUpeGQ==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-5.1.0.tgz#74f47555b3d804b54cb7030e6f9aa0c7485cfc5b"
+  integrity sha512-jnHMsrd0Mwa9Cf4IdOzbz543y4XJepXrbia2T4b6+spXC2We3t1y6K44D3mR8XMFSXMCf3/l7rCgddfx7UNVBA==
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"
@@ -5497,9 +5497,9 @@
     "@types/send" "*"
 
 "@types/express-serve-static-core@^4.17.33":
-  version "4.19.6"
-  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.19.6.tgz#e01324c2a024ff367d92c66f48553ced0ab50267"
-  integrity sha512-N4LZ2xG7DatVqhCZzOGb1Yi5lMbXSZcmdLDe9EzSndPV2HpWYWzRbaerl2n27irrm94EPpprqa8KpskPT085+A==
+  version "4.19.7"
+  resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.19.7.tgz#f1d306dcc03b1aafbfb6b4fe684cce8a31cffc10"
+  integrity sha512-FvPtiIf1LfhzsaIXhv/PHan/2FeQBbtBDtfX2QfvPxdUelMDEckK08SM6nqo1MIZY3RUlfA+HV8+hFUSio78qg==
   dependencies:
     "@types/node" "*"
     "@types/qs" "*"

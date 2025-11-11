@@ -102,7 +102,7 @@
   <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
   <div class="rubic-header__profile">
-    <ng-container *ngIf="!(currentUser$ | async)?.address; else loggedIn">
+    <ng-container *ngIf="!currentUser?.address; else loggedIn">
       <app-login-button class="rubic-header__login"></app-login-button>
     </ng-container>
     <ng-template #loggedIn>

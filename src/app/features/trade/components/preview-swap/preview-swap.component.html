@@ -204,7 +204,8 @@
             fee: state.tradeState?.feeInfo || null,
             nativeToken: nativeToken$ | async
           }"
-          [time]="getAverageTime(state?.tradeState)"
+          [averageTimeMins]="getAverageTimeString(state?.tradeState)"
+          [time95PercentSwapsMins]="getTime95PercentsSwapsString(state?.tradeState)"
         ></app-swap-data-element>
       </div>
 

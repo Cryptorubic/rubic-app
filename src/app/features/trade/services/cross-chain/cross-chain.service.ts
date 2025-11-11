@@ -146,7 +146,7 @@ export class CrossChainService {
   ): Promise<QuoteOptionsInterface> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes } =
-      this.platformConfigurationService.disabledProviders;
+      this.platformConfigurationService.disabledCcrProviders;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProvidersFromApiAndQuery = Array.from(
@@ -295,7 +295,7 @@ export class CrossChainService {
       }
 
       if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
-        const slippageErr = new LowSlippageError(0.05);
+        const slippageErr = new LowSlippageError();
         throw slippageErr;
       }
 
