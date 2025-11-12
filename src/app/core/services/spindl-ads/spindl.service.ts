@@ -3,7 +3,6 @@ import spindl from '@spindl-xyz/attribution';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { AuthService } from '../auth/auth.service';
 import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
-import { HttpService } from '../http/http.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +14,7 @@ export class SpindlService {
     return this._showSpindl$.asObservable();
   }
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly httpService: HttpService
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   public async initSpindlAds(): Promise<void> {
     this._showSpindl$.next(true);
