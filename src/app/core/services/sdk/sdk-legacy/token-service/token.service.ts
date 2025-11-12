@@ -21,6 +21,7 @@ import BigNumber from 'bignumber.js';
 import { BlockchainAdapterFactoryService } from '../blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { Web3Pure } from '@cryptorubic/web3';
 
 interface TokenPriceFromBackend {
   network: string;
@@ -82,13 +83,12 @@ export class TokenService {
       return tokensInfo![0] as Token;
     }
 
-    const nativeNonEvmToken = nativeTokensList[tokenBaseStruct.blockchain];
-
-    if (nativeNonEvmToken) {
-      return nativeNonEvmToken as Token;
+    if (Web3Pure.isNativeAddress(tokenBaseStruct.blockchain, tokenBaseStruct.address)) {
+      const nativeNonEvmToken = nativeTokensList[tokenBaseStruct.blockchain];
+      if (nativeNonEvmToken) return nativeNonEvmToken as Token;
     }
 
-    const errorMessage = 'No adapter for provided blockchain';
+    const errorMessage = `No adapter for blockchain ${tokenBaseStruct.blockchain}`;
     throw new Error(errorMessage);
   }
 
