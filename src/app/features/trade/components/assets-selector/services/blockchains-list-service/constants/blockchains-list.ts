@@ -238,7 +238,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.UNICHAIN,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM]
   },
   // @DELETE
   // {
@@ -269,12 +269,12 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SONEIUM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW, BlockchainTags.POPULAR]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.BERACHAIN,
@@ -327,7 +327,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.HEMI,
     rank: 0.45,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
