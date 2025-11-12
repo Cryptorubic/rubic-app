@@ -87,7 +87,7 @@ export class ActionButtonService {
       };
     }
 
-    if (!address && !(isTransferFromNonEvm && receiverAddress)) {
+    if (!address && !isTransferFromNonEvm) {
       return {
         type: 'action',
         text: 'Connect wallet',
