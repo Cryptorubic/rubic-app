@@ -213,7 +213,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.TRON,
@@ -223,12 +229,24 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.73,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.73,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
@@ -238,7 +256,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.UNICHAIN,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.PROMO]
   },
   // @DELETE
   // {
@@ -249,7 +267,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SCROLL,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.MORPH,
@@ -289,7 +313,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BLAST,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.MANTLE,
