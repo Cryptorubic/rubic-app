@@ -61,7 +61,7 @@ import { CrossChainApiService } from '../cross-chain-routing-api/cross-chain-api
 import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
-import { SwapTimeoutError } from '@app/core/errors/models/common/swap-timeout.error';
+import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -401,7 +401,7 @@ export class PreviewSwapService {
               },
               onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
-                  if (err instanceof SwapTimeoutError) {
+                  if (err instanceof TxRevertedInBlockchainError) {
                     this.setNextTxState({ step: 'error', data: this.transactionState.data });
                   } else {
                     this.setNextTxState({ step: 'inactive', data: {} });
