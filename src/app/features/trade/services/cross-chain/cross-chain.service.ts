@@ -146,7 +146,7 @@ export class CrossChainService {
   ): Promise<QuoteOptionsInterface> {
     const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
     const { disabledCrossChainTradeTypes: apiDisabledTradeTypes } =
-      this.platformConfigurationService.disabledProviders;
+      this.platformConfigurationService.disabledCcrProviders;
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders;
     const disabledProvidersFromApiAndQuery = Array.from(
@@ -295,7 +295,7 @@ export class CrossChainService {
       }
 
       if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
-        const slippageErr = new LowSlippageError(0.05);
+        const slippageErr = new LowSlippageError();
         throw slippageErr;
       }
 
@@ -452,11 +452,11 @@ export class CrossChainService {
     // @TODO remove after birthday promo
     if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
       disabledProviders = [
-        ...disabledProviders,
-        CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-        CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-        CROSS_CHAIN_TRADE_TYPE.EXOLIX,
-        CROSS_CHAIN_TRADE_TYPE.CHANGENOW
+        ...disabledProviders
+        // CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
+        // CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+        // CROSS_CHAIN_TRADE_TYPE.EXOLIX,
+        // CROSS_CHAIN_TRADE_TYPE.CHANGENOW
       ];
     }
 

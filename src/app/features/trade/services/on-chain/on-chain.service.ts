@@ -253,7 +253,7 @@ export class OnChainService {
       }
 
       if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-        const slippageErr = new LowSlippageError(0.03);
+        const slippageErr = new LowSlippageError();
         throw slippageErr;
       }
 
