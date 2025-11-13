@@ -261,7 +261,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.UNICHAIN,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM]
   },
   // @DELETE
   // {
