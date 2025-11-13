@@ -62,7 +62,6 @@ export class SpindlService {
     const spindlUrl = `https://e.spindlembed.com/v1/serve?publisher_id=rubic&placement_id=${placementId}&address=${this.authService.userAddress}`;
     const resp = await firstValueFrom(
       this.httpClient.get<HttpResponse<string>>(spindlUrl, {
-        headers: { 'Content-Type': 'text/html; charset=utf-8' },
         observe: 'response',
         responseType: 'text' as RubicAny
       })

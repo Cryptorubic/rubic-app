@@ -8,15 +8,4 @@
       border-radius: var(--tui-radius-m);
     }
   }
-
-  .boilerplate-banner {
-    @include flex(row, center, center);
-    background: var(--tui-base-01);
-
-    border-radius: var(--tui-radius-m);
-
-    img {
-      object-fit: fill;
-    }
-  }
 }
