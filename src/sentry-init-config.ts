@@ -7,6 +7,7 @@ export function initSentry(): void {
     dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
     sendDefaultPii: true,
     integrations: [
+      Sentry.browserTracingIntegration(),
       Sentry.httpClientIntegration(),
       Sentry.breadcrumbsIntegration({
         console: true,
