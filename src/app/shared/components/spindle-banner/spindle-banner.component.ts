@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { AuthService } from '@app/core/services/auth/auth.service';
+import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { PreviewSwapService } from '@app/features/trade/services/preview-swap/preview-swap.service';
 import { combineLatestWith, map, Observable } from 'rxjs';
 
@@ -34,6 +35,8 @@ export class SpindleBannerComponent {
       })
     );
 
+  public readonly hasNoContent$ = this.spindlService.hasNoContent$;
+
   public get isMobile(): boolean {
     return this.headerStore.isMobile;
   }
@@ -41,7 +44,8 @@ export class SpindleBannerComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly authService: AuthService,
-    private readonly previewSwapService: PreviewSwapService
+    private readonly previewSwapService: PreviewSwapService,
+    private readonly spindlService: SpindlService
   ) {}
 
   private getPlacementId(isMobile: boolean): string {

@@ -1,5 +1,11 @@
-<ng-container *ngLet="{ src: iframeSrc$ | async, size: iframeSize$ | async } as state">
-  <div *ngIf="state.src" class="spindle-banner">
+<ng-container
+  *ngLet="{
+    src: iframeSrc$ | async,
+    size: iframeSize$ | async,
+    hasNoContent: hasNoContent$ | async
+  } as state"
+>
+  <div *ngIf="state.src && !state.hasNoContent; else boilerplate" class="spindle-banner">
     <iframe
       [src]="state.src | safeSanitizer : 'resourceUrl'"
       [width]="state.size.width"
@@ -7,4 +13,10 @@
       title="SpindleAds"
     ></iframe>
   </div>
+
+  <ng-template #boilerplate>
+    <div class="boilerplate-banner">
+      <img src="/assets/images/not-found.svg" alt="" />
+    </div>
+  </ng-template>
 </ng-container>
