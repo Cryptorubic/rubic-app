@@ -7,7 +7,7 @@ export function initSentry(): void {
     dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
     sendDefaultPii: true,
     integrations: [
-      Sentry.browserTracingIntegration(),
+      Sentry.httpClientIntegration(),
       Sentry.breadcrumbsIntegration({
         console: true,
         dom: true,
@@ -23,14 +23,21 @@ export function initSentry(): void {
         eventTarget: true,
         unregisterOriginalCallbacks: true
       }),
-      Sentry.captureConsoleIntegration(),
       Sentry.httpClientIntegration(),
+      Sentry.consoleLoggingIntegration({ levels: ['error', 'debug'] }),
       Sentry.eventFiltersIntegration()
     ],
     tracesSampleRate: 1.0,
     enableLogs: true,
     allowUrls: [new RegExp(sentryAllowUrlRegexpString)],
-    denyUrls: [/extensions\//i, /^(chrome|edge):\/\//i],
+    denyUrls: [
+      //Chrome extensions
+      /^chrome(-extension)?:\/\//i,
+      //Mozilla extensions
+      /^moz-extension:\/\//i,
+      //Safari extensions
+      /^safari(-web)?-extension:\/\/|webkit-masked-url/i
+    ],
     ignoreSpans: [
       // Browser connection events
       { op: /^browser\.(cache|connect|DNS)$/ },
