@@ -64,13 +64,6 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
 
   protected actualTokenAmount: BigNumber;
 
-  //   protected override get web3Private(): EvmWeb3Private {
-  //     if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
-  //       throw new RubicSdkError('Cannot retrieve web3 private');
-  //     }
-  //     return Injector.web3PrivateService.getWeb3PrivateByBlockchain(this.from.blockchain);
-  //   }
-
   protected get chainAdapter(): EvmAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
   }

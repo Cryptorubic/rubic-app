@@ -1,9 +1,8 @@
-import { EvmBlockchainName, PriceTokenAmount } from '@cryptorubic/core';
+import { EvmBlockchainName, OnChainTradeType, PriceTokenAmount } from '@cryptorubic/core';
 import { GasData } from '../../../cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
 import { EvmOnChainTrade } from '../../../on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
-import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { EvmApiOnChainConstructor } from './evm-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';

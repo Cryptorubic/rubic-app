@@ -1,10 +1,9 @@
-import { PriceTokenAmount, TonBlockchainName } from '@cryptorubic/core';
+import { OnChainTradeType, PriceTokenAmount, TonBlockchainName } from '@cryptorubic/core';
 import { EncodeTransactionOptions } from '../../../common/models/encode-transaction-options';
 import { GasData } from '../../../cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
 import { TonOnChainTrade } from '../../../on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
-import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { TonApiOnChainConstructor } from './ton-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';

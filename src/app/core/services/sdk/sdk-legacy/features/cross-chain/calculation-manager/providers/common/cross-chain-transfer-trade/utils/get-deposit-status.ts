@@ -2,7 +2,6 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType
 } from '../../../../models/cross-chain-trade-type';
-import { OnChainTradeType } from '../../../../../../on-chain/calculation-manager/models/on-chain-trade-type';
 
 import { ChangellyApiService } from '../../../changelly-provider/services/changelly-api-service';
 import { ChangeNowCrossChainApiService } from '../../../changenow-provider/services/changenow-cross-chain-api-service';
@@ -15,6 +14,7 @@ import {
 import { RubicSdkError } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { OnChainTradeType } from '@cryptorubic/core';
 
 async function getExolixStatus(id: string, httpClient: HttpClient): Promise<CrossChainDepositData> {
   const { status, hashOut } = await firstValueFrom(

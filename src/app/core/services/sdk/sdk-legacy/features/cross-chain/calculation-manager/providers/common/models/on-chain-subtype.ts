@@ -1,4 +1,4 @@
-import { OnChainTradeType } from '../../../../../on-chain/calculation-manager/models/on-chain-trade-type';
+import { OnChainTradeType } from '@cryptorubic/core';
 
 export interface OnChainSubtype {
   from: OnChainTradeType | undefined;

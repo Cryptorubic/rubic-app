@@ -1,10 +1,9 @@
-import { PriceTokenAmount, TronBlockchainName } from '@cryptorubic/core';
+import { OnChainTradeType, PriceTokenAmount, TronBlockchainName } from '@cryptorubic/core';
 import { GasData } from '../../../cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
 import { RubicStep } from '../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
 import { TronOnChainTrade } from '../../../on-chain/calculation-manager/common/on-chain-trade/tron-on-chain-trade/tron-on-chain-trade';
-import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { TronApiOnChainConstructor } from './tron-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';

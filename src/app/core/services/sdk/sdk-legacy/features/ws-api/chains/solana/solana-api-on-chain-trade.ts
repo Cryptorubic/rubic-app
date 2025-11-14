@@ -1,9 +1,8 @@
-import { PriceTokenAmount, SolanaBlockchainName } from '@cryptorubic/core';
+import { OnChainTradeType, PriceTokenAmount, SolanaBlockchainName } from '@cryptorubic/core';
 import { GasData } from '../../../cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
 import { SolanaOnChainTrade } from '../../../on-chain/calculation-manager/common/on-chain-trade/solana-on-chain-trade/solana-on-chain-trade';
-import { OnChainTradeType } from '../../../on-chain/calculation-manager/models/on-chain-trade-type';
 import { SolanaApiOnChainConstructor } from './solana-api-on-chain-constructor';
 import { SdkLegacyService } from '../../../../sdk-legacy.service';
 import { RubicApiService } from '../../../../rubic-api/rubic-api.service';

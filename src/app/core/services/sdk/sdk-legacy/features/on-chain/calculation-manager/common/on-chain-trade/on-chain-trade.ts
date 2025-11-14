@@ -2,6 +2,7 @@ import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   Cache as Memo,
+  OnChainTradeType,
   PriceTokenAmount,
   SwapRequestInterface
 } from '@cryptorubic/core';
@@ -12,7 +13,6 @@ import { isAddressCorrect } from '../../../../common/utils/check-address';
 import { FeeInfo } from '../../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { RubicStep } from '../../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
 import { TradeInfo } from '../../../../cross-chain/calculation-manager/providers/common/models/trade-info';
-import { OnChainTradeType } from '../../models/on-chain-trade-type';
 import { SwapResponseInterface } from '../../../../ws-api/models/swap-response-interface';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import {

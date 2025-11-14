@@ -3,9 +3,13 @@ import { wrapAbi } from './wrap-abi';
 import { EvmOnChainTrade } from '../on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
 import { EvmOnChainTradeStruct } from '../on-chain-trade/evm-on-chain-trade/models/evm-on-chain-trade-struct';
 import { EvmEncodedConfigAndToAmount } from '../../models/aggregator-on-chain-types';
-import { ON_CHAIN_TRADE_TYPE } from '../../models/on-chain-trade-type';
 import { EvmAdapter, RubicSdkError, Web3Pure } from '@cryptorubic/web3';
-import { compareAddresses, EvmBlockchainName, wrappedAddress } from '@cryptorubic/core';
+import {
+  compareAddresses,
+  EvmBlockchainName,
+  ON_CHAIN_TRADE_TYPE,
+  wrappedAddress
+} from '@cryptorubic/core';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 

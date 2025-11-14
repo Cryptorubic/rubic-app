@@ -2,6 +2,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName,
+  ON_CHAIN_TRADE_TYPE,
   PriceToken,
   PriceTokenAmount,
   QuoteRequestInterface,
@@ -14,7 +15,6 @@ import { EvmWrapTrade } from './common/evm-wrap-trade/evm-wrap-trade';
 import { OnChainProxyService } from './common/on-chain-proxy-service/on-chain-proxy-service';
 import { EvmOnChainTrade } from './common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
 import { OnChainManagerCalculationOptions } from './models/on-chain-manager-calculation-options';
-import { ON_CHAIN_TRADE_TYPE } from './models/on-chain-trade-type';
 import { RequiredOnChainManagerCalculationOptions } from './models/required-on-chain-manager-calculation-options';
 import { WrappedOnChainTradeOrNull } from './models/wrapped-on-chain-trade-or-null';
 import { TransformUtils } from '../../ws-api/transform-utils';

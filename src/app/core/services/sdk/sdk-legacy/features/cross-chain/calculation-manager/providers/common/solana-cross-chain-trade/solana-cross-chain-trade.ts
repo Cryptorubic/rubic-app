@@ -30,14 +30,6 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
 }> {
   public abstract override readonly from: PriceTokenAmount<SolanaBlockchainName>;
 
-  // protected override get fromWeb3Public(): SolanaWeb3Public {
-  //     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.SOLANA);
-  // }
-
-  // protected override get web3Private(): SolanaWeb3Private {
-  //     return Injector.web3PrivateService.getWeb3PrivateByBlockchain(BLOCKCHAIN_NAME.SOLANA);
-  // }
-
   protected get chainAdapter(): SolanaAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
   }

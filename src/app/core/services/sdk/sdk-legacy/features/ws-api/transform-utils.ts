@@ -2,6 +2,7 @@ import {
   BLOCKCHAIN_NAME,
   BlockchainsInfo,
   CHAIN_TYPE,
+  OnChainTradeType,
   QuoteRequestInterface,
   QuoteResponseInterface
 } from '@cryptorubic/core';
@@ -10,7 +11,6 @@ import { CrossChainTrade } from '../cross-chain/calculation-manager/providers/co
 import { WrappedCrossChainTrade } from '../cross-chain/calculation-manager/providers/common/models/wrapped-cross-chain-trade';
 import { EddyBridgeTrade } from '../cross-chain/calculation-manager/providers/eddy-bridge/eddy-bridge-trade';
 import { OnChainTrade } from '../on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
-import { OnChainTradeType } from '../on-chain/calculation-manager/models/on-chain-trade-type';
 import { WrappedOnChainTradeOrNull } from '../on-chain/calculation-manager/models/wrapped-on-chain-trade-or-null';
 import { EvmApiCrossChainTrade } from './chains/evm/evm-api-cross-chain-trade';
 import { EvmApiOnChainTrade } from './chains/evm/evm-api-on-chain-trade';

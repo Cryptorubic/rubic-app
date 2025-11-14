@@ -2,10 +2,7 @@ import {
   BRIDGE_TYPE,
   BridgeType
 } from '../../../../cross-chain/calculation-manager/providers/common/models/bridge-type';
-import {
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType
-} from '../../../../on-chain/calculation-manager/models/on-chain-trade-type';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 
 const RANGO_TO_RUBIC_ON_CHAIN_PROVIDERS = {
   '10KSwap': ON_CHAIN_TRADE_TYPE['10K_SWAP'],

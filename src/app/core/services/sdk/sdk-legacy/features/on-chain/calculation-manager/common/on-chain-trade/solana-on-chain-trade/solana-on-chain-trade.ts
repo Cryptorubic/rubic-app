@@ -200,14 +200,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     }
 
     try {
-      //   await this.chainAdapter.client.sendTransaction(
-      //     {
-      //       data: transactionConfig.data,
-      //       onTransactionHash,
-      //       sponsorParams: options?.solanaSponsorParams
-      //     },
-      //     this.shouldCalculateConsumedParams
-      //   );
       await this.chainAdapter.client.sendTransaction({
         txOptions: {
           data: transactionConfig.data,

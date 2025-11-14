@@ -7,8 +7,7 @@ import {
   changenowApiBlockchain,
   ChangenowCrossChainSupportedBlockchain
 } from '../../cross-chain/calculation-manager/providers/changenow-provider/constants/changenow-api-blockchain';
-import { OnChainTradeType } from '../../on-chain/calculation-manager/models/on-chain-trade-type';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, OnChainTradeType } from '@cryptorubic/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Web3Pure, web3PureStore } from '@cryptorubic/web3';
