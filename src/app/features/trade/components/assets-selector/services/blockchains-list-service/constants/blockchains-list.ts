@@ -213,7 +213,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.TRON,
@@ -228,12 +234,24 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.LINEA,
     rank: 0.73,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
     rank: 0.73,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
@@ -243,7 +261,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.UNICHAIN,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM]
   },
   // @DELETE
   // {
@@ -254,7 +272,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SCROLL,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.BERACHAIN,
@@ -279,12 +303,12 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.SONEIUM,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.NEW, BlockchainTags.EVM, BlockchainTags.PROMO]
+    tags: ['ETH', BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.GRAVITY,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.NEW, BlockchainTags.POPULAR]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.MODE,
@@ -294,7 +318,13 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.BLAST,
     rank: 0.5,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.PROMO,
+      BlockchainTags.LAYER_2
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.MANTLE,
@@ -332,7 +362,7 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.HEMI,
     rank: 0.45,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
   {
     name: BLOCKCHAIN_NAME.ROOTSTOCK,
