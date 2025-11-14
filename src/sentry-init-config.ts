@@ -2,9 +2,16 @@ import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
 
 export function initSentry(): void {
+  if (!ENVIRONMENT.environmentName.match(/^prod|stage/i)) {
+    return;
+  }
+
+  const sentryProjectId = ENVIRONMENT.environmentName === 'prod' ? 1 : 3;
+  const dsnKey = `https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/${sentryProjectId}`;
   const sentryAllowUrlRegexpString = `https:\\/\\/(${ENVIRONMENT.environmentName})(\\-app)?\\.rubic\\.exchange`;
+
   Sentry.init({
-    dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
+    dsn: dsnKey,
     sendDefaultPii: true,
     integrations: [
       Sentry.browserTracingIntegration(),
