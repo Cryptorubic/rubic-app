@@ -8,14 +8,14 @@ import {
   BridgersUpdateDataAndStatusResponse
 } from '../../providers/bridgers/models/bridgers-update-data-and-status-api';
 import { TxStatusData } from '../models/tx-status-data';
-import { BridgersCrossChainSupportedBlockchain } from '../../../cross-chain/calculation-manager/providers/bridgers-provider/constants/bridgers-cross-chain-supported-blockchain';
 import { TX_STATUS } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { BlockchainName } from '@cryptorubic/core';
 
 export async function getBridgersTradeStatus(
   srcTxHash: string,
-  fromBlockchain: BridgersCrossChainSupportedBlockchain,
+  fromBlockchain: BlockchainName,
   sourceFlag: 'rubic' | 'rubic_widget',
   httpClient: HttpClient,
   slippage?: number

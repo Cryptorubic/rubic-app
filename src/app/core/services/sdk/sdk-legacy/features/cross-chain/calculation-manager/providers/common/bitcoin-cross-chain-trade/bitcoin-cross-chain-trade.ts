@@ -29,14 +29,6 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
 
   public abstract readonly memo: string;
 
-  // protected override get fromWeb3Public(): BitcoinWeb3Public {
-  //     return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.BITCOIN);
-  // }
-
-  // protected override get web3Private(): BitcoinWeb3Private {
-  //     return Injector.web3PrivateService.getWeb3PrivateByBlockchain(BLOCKCHAIN_NAME.BITCOIN);
-  // }
-
   protected get chainAdapter(): BitcoinAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
   }

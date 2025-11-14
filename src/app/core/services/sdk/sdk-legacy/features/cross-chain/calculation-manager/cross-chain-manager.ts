@@ -2,7 +2,6 @@ import {
   BlockchainName,
   BlockchainsInfo,
   PriceToken,
-  PriceTokenAmount,
   QuoteRequestInterface,
   Token
 } from '@cryptorubic/core';
@@ -14,15 +13,11 @@ import {
   CrossChainManagerCalculationOptions,
   RequiredCrossChainManagerCalculationOptions
 } from './models/cross-chain-manager-options';
-import { RequiredCrossChainOptions } from './models/cross-chain-options';
-import { WrappedCrossChainTradeOrNull } from './models/wrapped-cross-chain-trade-or-null';
-import { CrossChainProvider } from './providers/common/cross-chain-provider';
 import { WrappedCrossChainTrade } from './providers/common/models/wrapped-cross-chain-trade';
 import { TransformUtils } from '../../ws-api/transform-utils';
 import { ProviderAddress } from '../../common/models/sdk-models/provider-address';
 import { combineOptions, RubicSdkError } from '@cryptorubic/web3';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
-import pTimeout from '../../common/utils/p-timeout';
 import { RubicApiService } from '../../../rubic-api/rubic-api.service';
 
 /**
@@ -125,18 +120,6 @@ export class CrossChainManager {
         )
       )
     );
-
-    // const calculationPromises = providers.map(provider =>
-    //     this.getProviderCalculationPromise(provider, from, to, providerOptions)
-    // );
-    // const wrappedTrades = (await Promise.all(calculationPromises)).filter(notNull);
-    // if (!wrappedTrades?.length) {
-    //     throw new RubicSdkError('No success providers calculation for the trade');
-    // }
-    //
-    // return wrappedTrades.sort((nextTrade, prevTrade) =>
-    //     compareCrossChainTrades(nextTrade, prevTrade)
-    // );
   }
 
   private getFullOptions(
@@ -154,35 +137,6 @@ export class CrossChainManager {
         providerAddress
       }
     );
-  }
-
-  private async getProviderCalculationPromise(
-    provider: CrossChainProvider,
-    from: PriceTokenAmount,
-    to: PriceToken,
-    options: RequiredCrossChainOptions
-  ): Promise<WrappedCrossChainTradeOrNull> {
-    try {
-      const wrappedTrade = await pTimeout(provider.calculate(from, to, options), options.timeout);
-      if (!wrappedTrade) {
-        return null;
-      }
-
-      return {
-        ...wrappedTrade,
-        tradeType: provider.type
-      };
-    } catch (err: unknown) {
-      console.debug(
-        `[RUBIC_SDK] Trade calculation error occurred for ${provider.type} trade provider.`,
-        err
-      );
-      return {
-        trade: null,
-        tradeType: provider.type,
-        error: CrossChainProvider.parseError(err)
-      };
-    }
   }
 
   private getProviderAddress(fromBlockchain: BlockchainName): string {

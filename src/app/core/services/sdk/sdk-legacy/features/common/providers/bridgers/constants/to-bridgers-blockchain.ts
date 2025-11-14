@@ -1,7 +1,6 @@
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { BridgersCrossChainSupportedBlockchain } from '../../../../cross-chain/calculation-manager/providers/bridgers-provider/constants/bridgers-cross-chain-supported-blockchain';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
-export const toBridgersBlockchain: Record<BridgersCrossChainSupportedBlockchain, string> = {
+export const toBridgersBlockchain: Partial<Record<BlockchainName, string>> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',
   [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: 'BSC',
   [BLOCKCHAIN_NAME.POLYGON]: 'POLYGON',
