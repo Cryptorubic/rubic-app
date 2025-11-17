@@ -71,7 +71,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.SONEIUM]: [],
   [BLOCKCHAIN_NAME.WANCHAIN]: [],
   [BLOCKCHAIN_NAME.UNICHAIN]: [],
-  [BLOCKCHAIN_NAME.HEMI]: []
+  [BLOCKCHAIN_NAME.HEMI]: [],
+  [BLOCKCHAIN_NAME.PLASMA]: []
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: []
 };
 

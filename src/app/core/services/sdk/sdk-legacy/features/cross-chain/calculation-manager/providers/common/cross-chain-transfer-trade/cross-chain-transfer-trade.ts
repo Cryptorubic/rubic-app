@@ -325,7 +325,7 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
       }
 
       if (this.from.isNative) {
-        await this.chainAdapter.client.trySendTransaction({
+        await this.chainAdapter.signer.trySendTransaction({
           txOptions: {
             to: this.paymentInfo.depositAddress,
             value: this.from.weiAmount,
@@ -334,7 +334,7 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
           }
         });
       } else {
-        await this.chainAdapter.client.tryExecuteContractMethod(
+        await this.chainAdapter.signer.tryExecuteContractMethod(
           this.from.address,
           erc20TokenAbi,
           'transfer',

@@ -33,6 +33,7 @@ import { TransformUtils } from '../features/ws-api/transform-utils';
 import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-tx-status-config';
 import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
+import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 
 @Injectable({
   providedIn: 'root'
@@ -273,6 +274,12 @@ export class RubicApiService {
       }
       case 3006: {
         return new UnsupportedReceiverAddressError();
+      }
+      case 3008: {
+        // RubicError
+        return new DeflationTokenLowSlippageError(
+          (result.data as { tokenAddress: string }).tokenAddress
+        );
       }
       case 4001: {
         return new RubicSdkError('Meson only supports proxy swaps!');

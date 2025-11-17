@@ -4,19 +4,12 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
-import {
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  nativeTokensList,
-  Token
-} from '@cryptorubic/core';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
@@ -33,6 +26,7 @@ import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/c
 import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
+import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -176,18 +170,6 @@ export class DepositPreviewSwapComponent {
       queryParamsHandling: 'preserve',
       state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
     });
-  }
-
-  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
-    if (trade?.tradeType) {
-      const provider = TRADES_PROVIDERS[trade.tradeType];
-      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
-
-      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
-    } else {
-      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
-    }
   }
 
   public getGasData(

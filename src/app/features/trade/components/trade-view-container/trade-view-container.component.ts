@@ -63,8 +63,11 @@ export class TradeViewContainerComponent {
     this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
   public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
-    combineLatestWith(this.authService.currentUser$),
-    map(([showSpindl, currUser]) => showSpindl && Boolean(currUser?.address)),
+    combineLatestWith(this.authService.currentUser$, this.spindlService.hasNoContent$),
+    map(
+      ([showSpindl, currUser, hasNoContent]) =>
+        showSpindl && !hasNoContent && Boolean(currUser?.address)
+    ),
     map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
   );
 

@@ -92,7 +92,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    const allowance = await this.chainAdapter.client.getAllowance(
+    const allowance = await this.chainAdapter.getAllowance(
       fromTokenAddress,
       this.walletAddress,
       this.contractSpender
@@ -126,7 +126,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    return this.chainAdapter.client.approveTokens(
+    return this.chainAdapter.approveTokens(
       fromTokenAddress,
       this.contractSpender,
       approveAmount,
@@ -138,7 +138,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     if (this.needAuthWallet) {
       const res = await this.rubicApiService.getMessageToAuthWallet(this.walletAddress);
 
-      const signature = await this.chainAdapter.client.signMessage(res.messageToAuth);
+      const signature = await this.chainAdapter.signer.signMessage(res.messageToAuth);
       this.signature = signature;
       return signature;
     }
@@ -174,7 +174,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     };
 
     try {
-      await this.chainAdapter.client[method]({
+      await this.chainAdapter.signer[method]({
         txOptions: {
           data,
           to,

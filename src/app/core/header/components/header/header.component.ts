@@ -135,10 +135,6 @@ export class HeaderComponent {
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
-  public navigateToBirthdayPage(): void {
-    this.window.open('http://rubic.exchange/birthday5', '_blank');
-  }
-
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }
