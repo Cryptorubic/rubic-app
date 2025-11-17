@@ -63,7 +63,7 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     this.checkWalletConnected();
     await this.checkBlockchainCorrect();
 
-    return this.chainAdapter.client.approveTokens(
+    return this.chainAdapter.approveTokens(
       this.from.address,
       this.spenderAddress,
       weiAmount,
@@ -107,7 +107,7 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
 
     try {
-      await this.chainAdapter.client[method]({
+      await this.chainAdapter.signer[method]({
         txOptions: {
           onTransactionHash,
           ...(transactionData?.feeLimit && { feeLimit: transactionData.feeLimit }),
@@ -187,6 +187,6 @@ export abstract class TronOnChainTrade extends OnChainTrade {
     spenderAddress: string,
     stringWeiAmount: string
   ): Promise<TronTransactionConfig> {
-    return this.chainAdapter.client.encodeApprove(tokenAddress, spenderAddress, stringWeiAmount);
+    return this.chainAdapter.encodeApprove(tokenAddress, spenderAddress, stringWeiAmount);
   }
 }

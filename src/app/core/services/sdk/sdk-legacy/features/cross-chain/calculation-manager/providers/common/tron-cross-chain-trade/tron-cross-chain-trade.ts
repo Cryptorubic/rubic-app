@@ -30,7 +30,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
       return false;
     }
 
-    const allowance = await this.chainAdapter.client.getAllowance(
+    const allowance = await this.chainAdapter.getAllowance(
       this.from.address,
       this.walletAddress,
       this.contractSpender
@@ -54,7 +54,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
     this.checkWalletConnected();
     await this.checkBlockchainCorrect();
 
-    return this.chainAdapter.client.approveTokens(
+    return this.chainAdapter.approveTokens(
       this.from.address,
       this.contractSpender,
       weiAmount,
@@ -99,7 +99,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
     const transactionConfig = await this.encode({ ...options, fromAddress });
 
     try {
-      await this.chainAdapter.client[method]({
+      await this.chainAdapter.signer[method]({
         txOptions: {
           onTransactionHash,
           ...(transactionConfig?.feeLimit && { feeLimit: transactionConfig.feeLimit }),
@@ -143,7 +143,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
     spenderAddress: string,
     value: BigNumber
   ): Promise<TronTransactionConfig> {
-    return this.chainAdapter.client.encodeApprove(tokenAddress, spenderAddress, value.toFixed(0));
+    return this.chainAdapter.encodeApprove(tokenAddress, spenderAddress, value.toFixed(0));
   }
 
   public override getUsdPrice(): BigNumber {

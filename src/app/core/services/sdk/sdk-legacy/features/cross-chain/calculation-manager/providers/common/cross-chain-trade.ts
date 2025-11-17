@@ -116,7 +116,7 @@ export abstract class CrossChainTrade<T = unknown> {
   }
 
   protected get walletAddress(): string {
-    return this._apiFromAddress ?? this.chainAdapter.client.walletAddress;
+    return this._apiFromAddress ?? this.chainAdapter.signer.walletAddress;
   }
 
   public get networkFee(): BigNumber {
@@ -253,7 +253,7 @@ export abstract class CrossChainTrade<T = unknown> {
   }
 
   protected async checkBlockchainCorrect(): Promise<void | never> {
-    await this.chainAdapter.client.checkBlockchainCorrect(this.from.blockchain);
+    await this.chainAdapter.signer.checkBlockchainCorrect(this.from.blockchain);
   }
 
   protected async checkUserBalance(): Promise<void | never> {

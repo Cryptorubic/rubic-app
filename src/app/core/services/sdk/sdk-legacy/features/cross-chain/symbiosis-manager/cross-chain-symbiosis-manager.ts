@@ -46,7 +46,7 @@ export class CrossChainSymbiosisManager {
       blockchain as EvmBlockchainName
     );
 
-    await adapter.client.checkBlockchainCorrect(blockchain);
+    await adapter.signer.checkBlockchainCorrect(blockchain);
 
     const { onConfirm, gasLimit, gasPriceOptions } = options;
     const onTransactionHash = (hash: string) => {
@@ -55,7 +55,7 @@ export class CrossChainSymbiosisManager {
       }
     };
 
-    return adapter.client.trySendTransaction({
+    return adapter.signer.trySendTransaction({
       txOptions: {
         data: transactionRequest.data!.toString(),
         value: transactionRequest.value?.toString() || '0',

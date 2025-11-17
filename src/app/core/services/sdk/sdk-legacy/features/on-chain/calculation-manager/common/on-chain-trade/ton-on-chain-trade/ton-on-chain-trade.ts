@@ -116,7 +116,7 @@ export abstract class TonOnChainTrade extends OnChainTrade {
     };
 
     try {
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: {
           messages: transactionConfig.tonMessages,
           onTransactionHash

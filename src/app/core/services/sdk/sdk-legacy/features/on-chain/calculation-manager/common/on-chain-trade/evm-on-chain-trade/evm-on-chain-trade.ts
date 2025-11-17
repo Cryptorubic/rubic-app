@@ -181,7 +181,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    return this.chainAdapter.client.approveTokens(
+    return this.chainAdapter.approveTokens(
       fromTokenAddress,
       this.spenderAddress,
       approveAmount,
@@ -194,7 +194,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     spenderAddress: string,
     stringWeiAmount: string
   ): Promise<EvmTransactionConfig> {
-    return this.chainAdapter.client.encodeApprove(tokenAddress, spenderAddress, stringWeiAmount);
+    return this.chainAdapter.encodeApprove(tokenAddress, spenderAddress, stringWeiAmount);
   }
 
   protected async checkAllowanceAndApprove(
@@ -259,7 +259,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
 
     try {
-      await this.chainAdapter.client[method]({
+      await this.chainAdapter.signer[method]({
         txOptions: {
           data,
           to,

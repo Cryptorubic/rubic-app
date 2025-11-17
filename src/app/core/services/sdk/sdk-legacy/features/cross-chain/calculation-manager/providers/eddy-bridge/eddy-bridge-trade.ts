@@ -8,7 +8,7 @@ export class EddyBridgeTrade extends EvmApiCrossChainTrade {
     this.checkWalletConnected();
     if (this.from.isNative) return false;
 
-    const allowance = await this.chainAdapter.client.getAllowance(
+    const allowance = await this.chainAdapter.getAllowance(
       this.from.address,
       this.walletAddress,
       this.contractSpender

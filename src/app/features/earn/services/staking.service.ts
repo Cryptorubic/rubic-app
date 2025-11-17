@@ -149,7 +149,7 @@ export class StakingService {
 
   public getAllowance(): Observable<BigNumber> {
     return from(
-      this.arbitrumAdapter.client.getAllowance(
+      this.arbitrumAdapter.getAllowance(
         STAKING_ROUND_THREE.TOKEN.address,
         this.walletAddress,
         STAKING_ROUND_THREE.NFT.address
@@ -206,7 +206,7 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const hash = await this.arbitrumAdapter.client.approveTokens(
+      const hash = await this.arbitrumAdapter.approveTokens(
         STAKING_ROUND_THREE.TOKEN.address,
         STAKING_ROUND_THREE.NFT.address,
         'infinity',
@@ -231,7 +231,7 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    return this.arbitrumAdapter.client.tryExecuteContractMethod(
+    return this.arbitrumAdapter.signer.tryExecuteContractMethod(
       STAKING_ROUND_THREE.NFT.address,
       STAKING_ROUND_THREE.NFT.abi,
       'enterStaking',
@@ -244,7 +244,7 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await this.arbitrumAdapter.client.tryExecuteContractMethod(
+      const receipt = await this.arbitrumAdapter.signer.tryExecuteContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'claimRewards',
@@ -281,7 +281,7 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await this.arbitrumAdapter.client.tryExecuteContractMethod(
+      const receipt = await this.arbitrumAdapter.signer.tryExecuteContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'unstake',

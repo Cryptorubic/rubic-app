@@ -76,7 +76,7 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
         transactionHash = hash;
       };
 
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: { ...txConfig, onTransactionHash }
       });
 

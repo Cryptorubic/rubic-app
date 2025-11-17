@@ -200,7 +200,7 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     }
 
     try {
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: {
           data: transactionConfig.data,
           onTransactionHash,

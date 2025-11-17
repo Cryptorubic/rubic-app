@@ -83,7 +83,7 @@ export class TestnetPromoClaimService {
       BLOCKCHAIN_NAME.ARBITRUM
     );
 
-    await arbitrumAdapter.client.executeContractMethod(
+    await arbitrumAdapter.signer.executeContractMethod(
       contractAddress,
       airdropContractAbi,
       'claim',

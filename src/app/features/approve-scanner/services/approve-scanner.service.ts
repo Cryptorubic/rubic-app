@@ -226,7 +226,7 @@ export class ApproveScannerService {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(blockchain);
     let revokeProgressNotification: Subscription;
 
-    const allowance = await adapter.client.getAllowance(
+    const allowance = await adapter.getAllowance(
       tokenAddress,
       this.walletConnectorService.address,
       spenderAddress
@@ -239,7 +239,7 @@ export class ApproveScannerService {
       const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
         blockchain
       );
-      await adapter.client.approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
+      await adapter.approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
         onTransactionHash: _hash => {
           revokeProgressNotification = this.showProgressNotification();
         },

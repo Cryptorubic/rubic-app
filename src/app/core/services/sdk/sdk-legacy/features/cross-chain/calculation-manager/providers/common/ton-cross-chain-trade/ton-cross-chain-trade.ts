@@ -48,7 +48,7 @@ export abstract class TonCrossChainTrade extends CrossChainTrade<TonTransactionC
     };
 
     try {
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: { messages: transactionConfig.tonMessages, onTransactionHash }
       });
 

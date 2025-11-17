@@ -114,7 +114,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
         transactionHash = hash;
       };
 
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: { data, onTransactionHash, sponsorParams: options?.solanaSponsorParams },
         calculateConsumedParams: this.shouldCalculateConsumedParams
       });

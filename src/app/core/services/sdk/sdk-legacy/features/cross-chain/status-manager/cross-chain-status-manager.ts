@@ -19,7 +19,7 @@ export class CrossChainStatusManager {
     fromBlockchain: BlockchainName
   ): Promise<CrossChainStatus> {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(fromBlockchain as any);
-    let srcTxStatus = await adapter.client.getSrcTxStatus(fromBlockchain, srcHash);
+    let srcTxStatus = await adapter.signer.getSrcTxStatus(fromBlockchain, srcHash);
 
     const dstTxData = await this.getDstTxDataExtended(srcTxStatus, rubicId, srcHash);
     if (dstTxData.status === TX_STATUS.FAIL && srcTxStatus === TX_STATUS.PENDING) {

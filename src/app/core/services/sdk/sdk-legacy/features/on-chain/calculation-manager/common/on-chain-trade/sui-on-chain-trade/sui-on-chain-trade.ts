@@ -184,7 +184,7 @@ export abstract class SuiOnChainTrade extends OnChainTrade {
 
     try {
       const tx = transactionConfig.transaction;
-      await this.chainAdapter.client.sendTransaction({
+      await this.chainAdapter.signer.sendTransaction({
         txOptions: {
           // @ts-ignore
           transactionBlock: Transaction.from(tx),

@@ -14,7 +14,7 @@ export class OnChainStatusManager {
     const tronAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.TRON
     );
-    const srcTxStatus = await tronAdapter.client.getSrcTxStatus(BLOCKCHAIN_NAME.TRON, srcTxHash);
+    const srcTxStatus = await tronAdapter.signer.getSrcTxStatus(BLOCKCHAIN_NAME.TRON, srcTxHash);
     if (srcTxStatus === TX_STATUS.FAIL) {
       return {
         status: TX_STATUS.FAIL,
@@ -43,7 +43,7 @@ export class OnChainStatusManager {
     const tronAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.TRON
     );
-    const srcTxStatus = await tronAdapter.client.getSrcTxStatus(blockchain, srcTxHash);
+    const srcTxStatus = await tronAdapter.signer.getSrcTxStatus(blockchain, srcTxHash);
     if (srcTxStatus === TX_STATUS.FAIL || srcTxStatus === TX_STATUS.SUCCESS) {
       return {
         status: srcTxStatus,

@@ -18,7 +18,7 @@ import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.s
 import {
   AbstractAdapter,
   BasicSendTransactionOptions,
-  isApprovableAdapterClient,
+  isApprovableAdapter,
   RubicSdkError,
   TradeExpiredError,
   UpdatedRatesError,
@@ -95,7 +95,7 @@ export abstract class OnChainTrade<T = unknown> {
   }
 
   protected get walletAddress(): string {
-    return this._apiFromAddress ?? this.chainAdapter.client.walletAddress;
+    return this._apiFromAddress ?? this.chainAdapter.signer.walletAddress;
   }
 
   protected get httpClient(): HttpClient {
@@ -126,7 +126,7 @@ export abstract class OnChainTrade<T = unknown> {
       this.checkWalletConnected();
     }
 
-    if (!isApprovableAdapterClient(this.chainAdapter.client)) {
+    if (!isApprovableAdapter(this.chainAdapter)) {
       return false;
     }
 
@@ -141,7 +141,7 @@ export abstract class OnChainTrade<T = unknown> {
         ? '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'
         : this.from.address;
 
-    const allowance = await this.chainAdapter.client.getAllowance(
+    const allowance = await this.chainAdapter.getAllowance(
       fromTokenAddress,
       fromAddress || this.walletAddress,
       this.spenderAddress
@@ -210,7 +210,7 @@ export abstract class OnChainTrade<T = unknown> {
   }
 
   protected async checkBlockchainCorrect(): Promise<void | never> {
-    await this.chainAdapter.client.checkBlockchainCorrect(this.from.blockchain);
+    await this.chainAdapter.signer.checkBlockchainCorrect(this.from.blockchain);
   }
 
   protected async checkBalance(): Promise<void | never> {
