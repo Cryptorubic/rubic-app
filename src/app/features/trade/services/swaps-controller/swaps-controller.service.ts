@@ -208,7 +208,7 @@ export class SwapsControllerService {
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
-      onError?: () => void;
+      onError?: (err: RubicError<ERROR_TYPE> | null) => void;
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -227,7 +227,7 @@ export class SwapsControllerService {
       );
 
       if (!allowSlippageAndPI) {
-        callback.onError?.();
+        callback.onError?.(null);
         return;
       }
       if (trade instanceof CrossChainTrade) {
@@ -331,7 +331,7 @@ export class SwapsControllerService {
       });
   }
 
-  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+  private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
       return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
@@ -349,20 +349,20 @@ export class SwapsControllerService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
-    if (error?.message?.includes('No available routes')) {
+    if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
-    if (error?.message?.includes('There are no providers for trade')) {
+    if (error.message?.includes('There are no providers for trade')) {
       return new RubicError('There are no providers for trade.');
     }
-    if (error?.message?.includes('Representation of ')) {
+    if (error.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
-    if (error?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
+    if (error.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
       return new RubicError('Please, increase the slippage or amount and try again!');
     }
 
-    const parsedError = error && RubicSdkErrorParser.parseError(error);
+    const parsedError = RubicSdkErrorParser.parseError(error);
     if (!parsedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
@@ -403,7 +403,7 @@ export class SwapsControllerService {
   private catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
-    onError?: () => void
+    onError?: (err: RubicError<ERROR_TYPE> | null) => void
   ): void {
     console.error(err);
     const parsedError = this.parseCalculationError(err);
@@ -427,8 +427,8 @@ export class SwapsControllerService {
       );
       this.swapsStateService.pickProvider(true);
     }
-    onError?.();
-    this.errorsService.catch(parsedError);
+    if (parsedError.showAlert) this.errorsService.catch(parsedError);
+    onError?.(parsedError);
   }
 
   private subscribeOnSettings(): void {

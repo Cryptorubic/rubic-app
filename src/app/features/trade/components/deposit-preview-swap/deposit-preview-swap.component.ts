@@ -8,7 +8,6 @@ import {
   CROSS_CHAIN_DEPOSIT_STATUS,
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTrade,
-  CrossChainTradeType,
   CrossChainTransferTrade,
   EvmCrossChainTrade,
   EvmOnChainTrade,
@@ -23,7 +22,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
@@ -180,18 +178,6 @@ export class DepositPreviewSwapComponent {
       queryParamsHandling: 'preserve',
       state: { type: isCrossChain ? 'cross-chain' : 'on-chain' }
     });
-  }
-
-  public getAverageTime(trade: SelectedTrade & { feeInfo: FeeInfo }): string {
-    if (trade?.tradeType) {
-      const provider = TRADES_PROVIDERS[trade.tradeType];
-      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime = providerAverageTime?.[trade.tradeType as CrossChainTradeType];
-
-      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
-    } else {
-      return trade instanceof CrossChainTrade ? '30 M' : '3 M';
-    }
   }
 
   public getGasData(

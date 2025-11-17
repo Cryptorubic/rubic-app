@@ -5,6 +5,7 @@ import {
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
   UserRejectError as SdkUserRejectError,
   InsufficientFundsError as SdkInsufficientFundsError,
+  DeflationTokenLowSlippageError as SdkDeflationTokenLowSlippageError,
   LowGasError as SdkLowGasError,
   LowSlippageDeflationaryTokenError as SdkLowSlippageDeflationaryTokenError,
   InsufficientFundsOneinchError as SdkInsufficientFundsOneinchError,
@@ -22,7 +23,8 @@ import {
   NoLinkedAccountError,
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
-  SimulationFailedError as SdkSimulationFailedError
+  SimulationFailedError as SdkSimulationFailedError,
+  TxRevertedInBlockchainError as SdkTxRevertedInBlockchainError
 } from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -54,11 +56,16 @@ import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
+import DeflationTokenLowSlippageError from './common/deflation-token-low-slippage.error';
+import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof SdkTxRevertedInBlockchainError) {
+      return new TxRevertedInBlockchainError();
+    }
     if (err instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(err.apiError);
     }
@@ -82,6 +89,9 @@ export class RubicSdkErrorParser {
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
+    }
+    if (err instanceof SdkDeflationTokenLowSlippageError) {
+      return new DeflationTokenLowSlippageError(err.tokenAddress);
     }
     if (err instanceof SdkLowGasError) {
       return new LowGasError();
