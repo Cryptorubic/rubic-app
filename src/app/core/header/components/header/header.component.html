@@ -39,42 +39,17 @@
   <!--    Swaps-->
   <!--  </button>-->
 
-  <!--  <button-->
-  <!--    *ngIf="!useLargeIframe && !isMobile"-->
-  <!--    class="testnets-button"-->
-  <!--    tuiButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="navigateToTestnets()"-->
-  <!--  >-->
-  <!--    Testnets-->
-  <!--  </button>-->
-
   <button
     *ngIf="!useLargeIframe && !isMobile"
-    class="birthday-button"
+    class="testnets-button"
     tuiButton
     appearance="secondary"
     type="button"
     size="m"
-    (click)="navigateToBirthdayPage()"
+    (click)="navigateToTestnets()"
   >
-    Birthday&nbsp;<img
-      class="active-lang"
-      src="./assets/images/birthday-five.png"
-      alt="Rubic turns 5!"
-    />
+    Testnets
   </button>
-  <!--  <button-->
-  <!--    tuiButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    [pseudoActive]="(swapType$ | async) === SWAP_PROVIDER_TYPE.LIMIT_ORDER"-->
-  <!--  >-->
-  <!--    <div (click)="navigateToLimitOrder()">Limit Order</div>-->
-  <!--  </button>-->
 
   <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
