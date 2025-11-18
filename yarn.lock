@@ -2327,18 +2327,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.14.0-alpha.near.11":
-  version "0.14.0-alpha.near.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.14.0-alpha.near.11.tgz#34d806071c4e4fa55fa2ec6c6bf192f2c41def58"
-  integrity sha512-ciLahfgMSYKO99cIxYEFQNZAUrj2qmf7R8bbAh8Nnz7lcXRRS7c3HX8sIu0TIC2CjLAZJ3verKi2hn2IZbfygg==
+"@cryptorubic/core@0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.14.0.tgz#73ad5a38f1c1585a62627fc7eb5f10ec969c5ce5"
+  integrity sha512-u4YLIH/tXocO4LT8Xp2Hp1iD6joHOzVrf7KjWfBqL3m8A1Lm+7Tb41kjAWXht+zk+vxrJT+0icWvlDOz6ViRDw==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.14.0-alpha.near.11":
-  version "0.14.0-alpha.near.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.14.0-alpha.near.11.tgz#effbf31255f8917dc855fe31c23e9f89b62b1ae9"
-  integrity sha512-DE836jZL5E0M1p/3zj4IBDboK94RiLpI0GN8spVVLuypAqxPB8qNuV10Xfntqe1pD1+8Dmg8pPvG1FStZG3bqA==
+"@cryptorubic/sdk@0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.14.0.tgz#310a0312d4216a8935878f4d28a6634543ffc07b"
+  integrity sha512-nvtpsCHSLiA6TC/c606rHa2b8U3uOyXV0C3BSy4KNfwtdJKKzUW+pUWG/V0ETDlypR3nniGib2BtRO79ODHPPA==
   dependencies:
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
@@ -2365,10 +2365,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.14.0-alpha.near.11":
-  version "0.14.0-alpha.near.11"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.14.0-alpha.near.11.tgz#b2c1ade141d695fc7997f4b18f2dfb9d6bcd0921"
-  integrity sha512-P4YEHWRATzVi3B0VKRJtF6BgGf+Rac0BDqheyX6MB6GQKHGTkyYtNE44/8LsUSEzlEkLsPnzug8zrDPpT1X5DA==
+"@cryptorubic/web3@0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.14.0.tgz#6343f742a45ea61a9589b9dcf007632fe12a7fbd"
+  integrity sha512-0iyEi4oQrWfQvE2cpOax7aF7LUCxLohwgj2gdWSbXqgoa3EmqgE+GPAO00wnPb7pXm3MEMdcZLIh8ebUt1cuxw==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
