@@ -24,8 +24,6 @@ export interface OnChainTradeStruct<T extends BlockchainName> {
     from: IsDeflationToken;
     to: IsDeflationToken;
   };
-
-  usedForCrossChain?: boolean;
 }
 
 export interface EvmOnChainTradeStruct extends OnChainTradeStruct<EvmBlockchainName> {

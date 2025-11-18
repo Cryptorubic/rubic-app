@@ -55,14 +55,6 @@ export interface OnChainCalculationOptions {
 
   /**
    * @internal
-   * True, if trade must be swapped through rubic proxy contract.
-   * False, if trade must be swapped through dex directly.
-   * Default is false.
-   */
-  readonly usedForCrossChain?: boolean;
-
-  /**
-   * @internal
    * Contains information whether tokens are deflation or not.
    */
   readonly withDeflation?: {

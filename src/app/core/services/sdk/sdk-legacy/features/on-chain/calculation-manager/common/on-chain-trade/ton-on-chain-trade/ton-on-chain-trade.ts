@@ -1,17 +1,13 @@
 import {
-  BLOCKCHAIN_NAME,
-  nativeTokensList,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
   SwapRequestInterface,
-  Token,
   TonBlockchainName
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
-import { checkUnsupportedReceiverAddress } from '../../../../../common/utils/check-unsupported-receiver-address';
 import { FeeInfo } from '../../../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { RubicStep } from '../../../../../cross-chain/calculation-manager/providers/common/models/rubicStep';
 import { TonTransactionConfig } from '../../../../../cross-chain/calculation-manager/providers/common/models/ton-transaction-config';
@@ -22,7 +18,6 @@ import { OnChainTrade } from '../on-chain-trade';
 import { TonOnChainTradeStruct, TonTradeAdditionalInfo } from './models/ton-on-chian-trade-types';
 import {
   FailedToCheckForTransactionReceiptError,
-  InsufficientFundsError,
   RubicSdkError,
   TonAdapter
 } from '@cryptorubic/web3';
@@ -87,10 +82,6 @@ export abstract class TonOnChainTrade extends OnChainTrade {
 
   public async approve(): Promise<void> {
     throw new RubicSdkError('Method not implemented!');
-  }
-
-  public async encodeApprove(): Promise<unknown> {
-    throw new Error('Method is not supported');
   }
 
   public async encode(options: EncodeTransactionOptions): Promise<TonTransactionConfig> {
@@ -164,35 +155,6 @@ export abstract class TonOnChainTrade extends OnChainTrade {
 
     return { config: swapData.transaction, amount: toAmount };
   }
-
-  protected async checkNativeBalance(): Promise<void> {
-    const balanceWei = await this.chainAdapter.getBalance(this.walletAddress);
-    const requiredBalanceNonWei = this.gasFeeInfo?.totalGas
-      ? Token.fromWei(this.gasFeeInfo.totalGas, nativeTokensList.TON.decimals)
-      : new BigNumber(0);
-
-    if (balanceWei.lt(requiredBalanceNonWei)) {
-      throw new InsufficientFundsError(nativeTokensList[BLOCKCHAIN_NAME.TON].symbol);
-    }
-  }
-
-  protected async makePreSwapChecks(options: EncodeTransactionOptions): Promise<void> {
-    checkUnsupportedReceiverAddress(options.receiverAddress, this.walletAddress);
-    await this.checkFromAddress(options.fromAddress);
-    await this.checkNativeBalance();
-    await this.checkBalance();
-
-    if (!options.skipAmountCheck) {
-      this.skipAmountCheck = true;
-      const toWeiAmount = await this.calculateOutputAmount(options);
-      this.checkAmountChange(toWeiAmount, this.to.stringWeiAmount);
-    }
-  }
-
-  /**
-   * recalculates and returns output stringWeiAmount
-   */
-  protected abstract calculateOutputAmount(options: EncodeTransactionOptions): Promise<string>;
 
   public override getTradeInfo(): TradeInfo {
     return {

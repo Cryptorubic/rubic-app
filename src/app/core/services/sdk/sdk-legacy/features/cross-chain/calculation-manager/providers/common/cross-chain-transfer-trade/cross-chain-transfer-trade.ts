@@ -9,32 +9,22 @@ import {
   Token
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { ContractParams } from '../../../../../common/models/contract-params';
-import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { EvmOnChainTrade } from '../../../../../on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
 
-import { rubicProxyContractAddress } from '../constants/rubic-proxy-contract-address';
-import { evmCommonCrossChainAbi } from '../evm-cross-chain-trade/constants/evm-common-cross-chain-abi';
-import { gatewayRubicCrossChainAbi } from '../evm-cross-chain-trade/constants/gateway-rubic-cross-chain-abi';
 import { EvmCrossChainTrade } from '../evm-cross-chain-trade/evm-cross-chain-trade';
 import { GasData } from '../evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../models/fee-info';
-import { GetContractParamsOptions } from '../models/get-contract-params-options';
 import { RubicStep } from '../models/rubicStep';
-import { ProxyCrossChainEvmTrade } from '../proxy-cross-chain-evm-facade/proxy-cross-chain-evm-trade';
 import { CrossChainPaymentInfo, CrossChainTransferData } from './models/cross-chain-payment-info';
 import {
   erc20TokenAbi,
   EvmAdapter,
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
-  RubicSdkError,
-  Web3Pure
+  RubicSdkError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { Abi } from 'viem';
-import { MarkRequired } from '../../../models/cross-chain-manager-options';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
@@ -170,120 +160,6 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     fromAddress?: string,
     refundAddress?: string
   ): Promise<CrossChainTransferData>;
-
-  public override async encode(options: EncodeTransactionOptions): Promise<EvmTransactionConfig> {
-    if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
-      throw new RubicSdkError('Cannot encode trade for non-evm blockchain');
-    }
-
-    await this.checkFromAddress(options.fromAddress, true, this.type);
-    await this.checkReceiverAddress(
-      options.receiverAddress,
-      !BlockchainsInfo.isEvmBlockchainName(this.to.blockchain),
-      this.type
-    );
-
-    if (this.useProxy) {
-      const { contractAddress, contractAbi, methodName, methodArguments, value } =
-        await this.getContractParams({
-          fromAddress: options.fromAddress,
-          receiverAddress: options.receiverAddress || options.fromAddress
-        });
-
-      return EvmAdapter.encodeMethodCall(
-        contractAddress,
-        contractAbi as Abi,
-        methodName,
-        methodArguments,
-        value
-      );
-    }
-    return this.setTransactionConfig(
-      options?.skipAmountCheck || false,
-      options?.useCacheData || false,
-      options.testMode,
-      options?.receiverAddress || this.walletAddress
-    );
-  }
-
-  protected async getContractParams(
-    options: MarkRequired<GetContractParamsOptions, 'receiverAddress'>,
-    skipAmountChangeCheck?: boolean
-  ): Promise<ContractParams> {
-    await this.setTransactionConfig(
-      skipAmountChangeCheck || false,
-      options.useCacheData || false,
-      options.testMode,
-      options.receiverAddress
-    );
-    if (!this.paymentInfo) {
-      throw new Error('Deposit address is not set');
-    }
-
-    const toToken = this.to.clone({
-      address: Web3Pure.getInstance(this.to.blockchain).emptyAddress
-    });
-
-    const bridgeData = ProxyCrossChainEvmTrade.getBridgeData(
-      {
-        ...options,
-        receiverAddress: this.walletAddress
-      },
-      {
-        walletAddress: this.walletAddress,
-        fromTokenAmount: this.from,
-        toTokenAmount: toToken,
-        srcChainTrade: this.onChainTrade,
-        providerAddress: this.providerAddress,
-        type: `native:${this.bridgeType}`,
-        fromAddress: this.walletAddress
-      }
-    );
-
-    const providerData = [this.paymentInfo.depositAddress];
-
-    const swapData =
-      this.onChainTrade &&
-      (await ProxyCrossChainEvmTrade.getSwapData(
-        options,
-        {
-          walletAddress: this.walletAddress,
-          contractAddress: rubicProxyContractAddress[this.from.blockchain].router,
-          fromTokenAmount: this.from,
-          toTokenAmount: this.onChainTrade.to,
-          onChainEncodeFn: this.onChainTrade.encode.bind(this.onChainTrade)
-        },
-        this.sdkLegacyService
-      ));
-
-    const methodArguments = swapData
-      ? [bridgeData, swapData, providerData]
-      : [bridgeData, providerData];
-
-    const value = this.getSwapValue();
-
-    const transactionConfiguration = EvmAdapter.encodeMethodCall(
-      rubicProxyContractAddress[this.from.blockchain].router,
-      evmCommonCrossChainAbi,
-      this.methodName,
-      methodArguments,
-      value
-    );
-    const sendingToken = this.from.isNative ? [] : [this.from.address];
-    const sendingAmount = this.from.isNative ? [] : [this.from.stringWeiAmount];
-
-    return {
-      contractAddress: rubicProxyContractAddress[this.from.blockchain].gateway,
-      contractAbi: gatewayRubicCrossChainAbi,
-      methodName: 'startViaRubic',
-      methodArguments: [sendingToken, sendingAmount, transactionConfiguration.data],
-      value
-    };
-  }
-
-  public encodeApprove(): Promise<Partial<EvmTransactionConfig>> {
-    throw new RubicSdkError(`Cannot encode approve for ${this.type}`);
-  }
 
   public override async needApprove(): Promise<boolean> {
     if (this.useProxy) {

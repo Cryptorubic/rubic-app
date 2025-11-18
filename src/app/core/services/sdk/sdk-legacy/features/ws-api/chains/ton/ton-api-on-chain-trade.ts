@@ -1,5 +1,4 @@
 import { OnChainTradeType, PriceTokenAmount, TonBlockchainName } from '@cryptorubic/core';
-import { EncodeTransactionOptions } from '../../../common/models/encode-transaction-options';
 import { GasData } from '../../../cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../../../cross-chain/calculation-manager/providers/common/models/fee-info';
 import { OnChainSubtype } from '../../../cross-chain/calculation-manager/providers/common/models/on-chain-subtype';
@@ -59,10 +58,5 @@ export class TonApiOnChainTrade extends TonOnChainTrade {
     this.feeInfo = params.feeInfo;
     this.from = params.from;
     this.gasData = null;
-  }
-
-  protected calculateOutputAmount(_options: EncodeTransactionOptions): Promise<string> {
-    // @TODO API
-    throw new Error('Not implemented');
   }
 }

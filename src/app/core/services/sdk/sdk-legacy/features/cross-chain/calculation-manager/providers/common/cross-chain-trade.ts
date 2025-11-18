@@ -1,12 +1,10 @@
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
-  nativeTokensList,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
-  SwapRequestInterface,
-  Token
+  SwapRequestInterface
 } from '@cryptorubic/core';
 import { UniqueProviderInfoInterface } from '@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 import BigNumber from 'bignumber.js';
@@ -302,33 +300,6 @@ export abstract class CrossChainTrade<T = unknown> {
     if (!isAddressCorrectValue) {
       throw new WrongReceiverAddressError();
     }
-  }
-
-  /**
-   * Calculates value for swap transaction.
-   * @param providerValue Value, returned from cross-chain provider. Not '0' if from is native or provider has extranative
-   */
-  protected getSwapValue(providerValue?: BigNumber | string | number | null): string {
-    const nativeToken = nativeTokensList[this.from.blockchain];
-    const fixedFeeValue = Token.toWei(
-      this.feeInfo.rubicProxy?.fixedFee?.amount || 0,
-      nativeToken.decimals
-    );
-
-    let fromValue: BigNumber;
-    if (this.from.isNative) {
-      if (providerValue) {
-        fromValue = new BigNumber(providerValue).dividedBy(
-          1 - (this.feeInfo.rubicProxy?.platformFee?.percent || 0) / 100
-        );
-      } else {
-        fromValue = this.from.weiAmount;
-      }
-    } else {
-      fromValue = new BigNumber(providerValue || 0);
-    }
-    // 100 / 0.98
-    return new BigNumber(fromValue).plus(fixedFeeValue).toFixed(0, 0);
   }
 
   public getUsdPrice(providerFeeToken?: BigNumber): BigNumber {

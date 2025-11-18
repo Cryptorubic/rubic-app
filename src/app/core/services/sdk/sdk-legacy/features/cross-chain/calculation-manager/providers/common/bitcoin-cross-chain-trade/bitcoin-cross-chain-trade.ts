@@ -5,7 +5,6 @@ import {
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { ContractParams } from '../../../../../common/models/contract-params';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { CrossChainTrade } from '../cross-chain-trade';
 import { BitcoinTransferTxApiResp } from './models/bitcoin-trade-types';
@@ -14,7 +13,6 @@ import {
   BitcoinPsbtEncodedConfig,
   BitcoinTransferEncodedConfig,
   EvmBasicTransactionOptions,
-  EvmTransactionOptions,
   FailedToCheckForTransactionReceiptError,
   parseError,
   RubicSdkError,
@@ -98,19 +96,6 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
 
   public async encode(): Promise<unknown> {
     throw new Error("Method is not supported');");
-  }
-
-  public async encodeApprove(
-    _tokenAddress: string,
-    _spenderAddress: string,
-    _value: BigNumber | 'infinity',
-    _options: EvmTransactionOptions = {}
-  ): Promise<unknown> {
-    throw new Error('Method is not supported');
-  }
-
-  protected getContractParams(): Promise<ContractParams> {
-    throw new Error('Method is not supported');
   }
 
   public override getUsdPrice(providerFeeToken?: BigNumber): BigNumber {

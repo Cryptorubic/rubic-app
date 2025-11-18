@@ -162,20 +162,6 @@ export abstract class OnChainTrade<T = unknown> {
   ): Promise<unknown>;
 
   /**
-   * Builds encoded approve transaction config.
-   * @param tokenAddress Address of the smart-contract corresponding to the token.
-   * @param spenderAddress Wallet or contract address to approve.
-   * @param value Token amount to approve in wei.
-   * @param [options] Additional options.
-   * @returns Encoded approve transaction config.
-   */
-  public abstract encodeApprove(
-    tokenAddress: string,
-    spenderAddress: string,
-    stringWeiAmount: string
-  ): Promise<unknown>;
-
-  /**
    * Sends swap transaction with connected wallet.
    * If user has not enough allowance, then approve transaction will be called first.
    *

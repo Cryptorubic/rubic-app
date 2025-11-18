@@ -1,11 +1,9 @@
 import {
-  nativeTokensList,
   PriceTokenAmount,
   QuoteRequestInterface,
   QuoteResponseInterface,
   SolanaBlockchainName,
-  SwapRequestInterface,
-  Token
+  SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../../common/models/encode-transaction-options';
@@ -128,45 +126,6 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
     _amount: BigNumber
   ): Promise<unknown> {
     throw new Error('Method is not supported');
-  }
-
-  public async encodeApprove(
-    _tokenAddress: string,
-    _spenderAddress: string,
-    _stringWeiAmount: string
-  ): Promise<unknown> {
-    throw new Error('Method is not supported');
-  }
-
-  protected async checkAllowanceAndApprove(): Promise<void> {
-    throw new Error('Method is not supported');
-  }
-
-  /**
-   * Calculates value for swap transaction.
-   * @param providerValue Value, returned from cross-chain provider.
-   */
-  protected getSwapValue(providerValue?: BigNumber | string | number | null): string {
-    const nativeToken = nativeTokensList[this.from.blockchain];
-    const fixedFeeValue = Token.toWei(
-      this.feeInfo.rubicProxy?.fixedFee?.amount || 0,
-      nativeToken.decimals
-    );
-
-    let fromValue: BigNumber;
-    if (this.from.isNative) {
-      if (providerValue) {
-        fromValue = new BigNumber(providerValue).dividedBy(
-          1 - (this.feeInfo.rubicProxy?.platformFee?.percent || 0) / 100
-        );
-      } else {
-        fromValue = this.from.weiAmount;
-      }
-    } else {
-      fromValue = new BigNumber(providerValue || 0);
-    }
-
-    return new BigNumber(fromValue).plus(fixedFeeValue).toFixed(0, 0);
   }
 
   public async swap(options: SwapTransactionOptions = {}): Promise<string | never> {
