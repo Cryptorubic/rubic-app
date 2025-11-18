@@ -3,61 +3,43 @@ import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
 import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
-import { PlatformConfig } from '@core/services/backend/platform-configuration/models/platform-config';
-import { CrossChainProviderStatus } from '@core/services/backend/platform-configuration/models/cross-chain-provider-status';
-import { defaultConfig } from '@core/services/backend/platform-configuration/constants/default-config';
 import { timeout } from 'rxjs/operators';
-import { BackendBlockchainStatus } from '@core/services/backend/platform-configuration/models/backend-blockchain-status';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 import {
-  BackendBlockchain,
-  BLOCKCHAIN_NAME,
   BlockchainName,
   CrossChainTradeType,
-  FROM_BACKEND_BLOCKCHAINS,
   FROM_BACKEND_CROSS_CHAIN_PROVIDERS,
   ToBackendCrossChainProviders
 } from '@cryptorubic/core';
+import { defaultInfoV3Config } from './constants/defauls-info-v3-config';
+import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/platform-config-v3';
 
 interface ProvidersConfiguration {
   disabledCrossChainTradeTypes: CrossChainTradeType[];
 }
 
-const temporarelyDisabledBlockchains: Partial<BlockchainName[]> = [
-  BLOCKCHAIN_NAME.TRON,
-  BLOCKCHAIN_NAME.BITCOIN,
-  BLOCKCHAIN_NAME.BITGERT,
-  BLOCKCHAIN_NAME.MOONBEAM,
-  BLOCKCHAIN_NAME.FUSE,
-  BLOCKCHAIN_NAME.OKE_X_CHAIN,
-  BLOCKCHAIN_NAME.CRONOS,
-  BLOCKCHAIN_NAME.HARMONY,
-  BLOCKCHAIN_NAME.CELO,
-  BLOCKCHAIN_NAME.GNOSIS
-];
-
 @Injectable({
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
-  private readonly _disabledProviders$ = new BehaviorSubject<ProvidersConfiguration>({
+  private readonly _disabledCcrProviders$ = new BehaviorSubject<ProvidersConfiguration>({
     disabledCrossChainTradeTypes: undefined
   });
 
-  public readonly disabledProviders$ = this._disabledProviders$.asObservable();
+  public readonly disabledCcrProviders$ = this._disabledCcrProviders$.asObservable();
 
-  private readonly _providersAverageTime$ = new BehaviorSubject<
-    Record<CrossChainTradeType, number>
-  >(undefined);
-
-  public readonly providersAverageTime$ = this._providersAverageTime$.asObservable();
-
-  public get providersAverageTime(): Record<CrossChainTradeType, number> {
-    return this._providersAverageTime$.getValue();
+  public get disabledCcrProviders(): ProvidersConfiguration {
+    return this._disabledCcrProviders$.getValue();
   }
 
-  public get disabledProviders(): ProvidersConfiguration {
-    return this._disabledProviders$.getValue();
+  private readonly _ccrProvidersInfo$ = new BehaviorSubject<
+    Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>
+  >(undefined);
+
+  public readonly ccrProvidersInfo$ = this._ccrProvidersInfo$.asObservable();
+
+  public get ccrProvidersInfo(): Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo> {
+    return this._ccrProvidersInfo$.getValue();
   }
 
   private readonly _availableBlockchains$ = new BehaviorSubject<BlockchainStatus[]>(undefined);
@@ -68,54 +50,23 @@ export class PlatformConfigurationService {
     return this._availableBlockchains$.getValue();
   }
 
-  private readonly _useOnChainProxy$ = new BehaviorSubject<boolean>(undefined);
-
-  public readonly useOnChainProxy$ = this._useOnChainProxy$.asObservable();
-
-  public get useOnChainProxy(): boolean {
-    return this._useOnChainProxy$.getValue();
-  }
-
-  private readonly _useCrossChainProxy$ = new BehaviorSubject<Record<CrossChainTradeType, boolean>>(
-    undefined
-  );
-
-  public readonly useCrossChainChainProxy$ = this._useOnChainProxy$.asObservable();
-
-  public get useCrossChainChainProxy(): Record<CrossChainTradeType, boolean> {
-    return this._useCrossChainProxy$.getValue();
-  }
-
-  constructor(private httpClient: HttpClient) {
-    const availableBlockchains = Object.values(BLOCKCHAIN_NAME).map(blockchain => ({
-      tier: 2,
-      blockchain,
-      isActive: !temporarelyDisabledBlockchains.includes(blockchain)
-    })) as BlockchainStatus[];
-    this._availableBlockchains$.next(availableBlockchains);
-  }
+  constructor(private httpClient: HttpClient) {}
 
   public loadPlatformConfig(): Observable<boolean> {
     return this.httpClient
-      .get<PlatformConfig>(`${ENVIRONMENT.apiBaseUrl}/info/status_info_with_tier`)
+      .get<PlatformConfigV3>(`${ENVIRONMENT.apiBaseUrl}/v2/info/status_info_v3`)
       .pipe(
         timeout(5_000),
         retry(1),
-        catchError(() => of(defaultConfig)),
-        tap(response => {
-          if (response.server_is_active === true) {
-            this._availableBlockchains$.next(this.mapAvailableBlockchains(response.networks));
-            this._disabledProviders$.next(
-              this.mapDisabledProviders(response.cross_chain_providers)
-            );
-            this._useOnChainProxy$.next(response.on_chain_providers.proxy.active);
-            this._providersAverageTime$.next(
-              this.mapAverageProvidersTime(response.cross_chain_providers)
-            );
-            this.handleCrossChainProxyProviders(response.cross_chain_providers);
+        catchError(() => of(defaultInfoV3Config)),
+        tap(infoV3Response => {
+          if (infoV3Response.appIsActive === true) {
+            this.setBlockchainsInfo(infoV3Response.networks);
+            this.setDisabledProviders(infoV3Response.crosschainProviders);
+            this.setCcrProvidersInfo(infoV3Response.crosschainProviders);
           }
         }),
-        map(response => response.server_is_active)
+        map(infoV3Response => infoV3Response.appIsActive)
       );
   }
 
@@ -125,75 +76,48 @@ export class PlatformConfigurationService {
       : true;
   }
 
-  private mapAvailableBlockchains(availableBlockchains: {
-    [chain: string]: BackendBlockchainStatus;
-  }): BlockchainStatus[] {
+  private setBlockchainsInfo(apiBlockchainsInfo: PlatformConfigV3['networks']): void {
     const tierMap = {
       TIER_ONE: 1,
       TIER_TWO: 2
       // TIER_THREE: 3
     } as const;
-    return Object.entries(availableBlockchains).map(([blockchain, params]) => ({
-      isActive: params.is_active,
-      blockchain: FROM_BACKEND_BLOCKCHAINS[blockchain as BackendBlockchain],
-      tier: tierMap[params.tier]
-    }));
+    const blockchainStatuses = Object.entries(apiBlockchainsInfo).map(
+      ([blockchain, info]) =>
+        ({ blockchain, tier: tierMap[info.tier], isActive: info.isActive } as BlockchainStatus)
+    );
+
+    this._availableBlockchains$.next(blockchainStatuses);
   }
 
-  private handleCrossChainProxyProviders(crossChainProviders: {
-    [k in string]: CrossChainProviderStatus;
-  }): void {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
+  private setDisabledProviders(
+    crossChainProviders: Record<ToBackendCrossChainProviders, PlatformConfigV3CcrProviderInfo>
+  ): void {
+    const disabledCcrProviders = Object.entries(crossChainProviders)
+      .filter(([_, info]) => info.isForceDisabled)
+      .map(
+        ([pythonProviderName, _]) =>
+          FROM_BACKEND_CROSS_CHAIN_PROVIDERS[pythonProviderName as ToBackendCrossChainProviders]
+      );
+    if (!disabledCcrProviders.length) return;
+
+    this._disabledCcrProviders$.next({ disabledCrossChainTradeTypes: disabledCcrProviders });
+  }
+
+  private setCcrProvidersInfo(
+    crossChainProviders: Record<ToBackendCrossChainProviders, PlatformConfigV3CcrProviderInfo>
+  ): void {
+    const entries = Object.entries(crossChainProviders) as [
       ToBackendCrossChainProviders,
-      CrossChainProviderStatus
+      PlatformConfigV3CcrProviderInfo
     ][];
-    if (!crossChainProvidersEntries.length) {
-      return;
-    }
-    const providers = Object.fromEntries(
-      crossChainProvidersEntries.map(([provider, status]) => [
-        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
-        status.useProxy
+    const info = Object.fromEntries(
+      entries.map(([pythonProviderName, status]) => [
+        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[pythonProviderName],
+        status
       ])
-    ) as Record<CrossChainTradeType, boolean>;
-    this._useCrossChainProxy$.next(providers);
-  }
+    ) as Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>;
 
-  private mapDisabledProviders(crossChainProviders: {
-    [k in string]: CrossChainProviderStatus;
-  }): ProvidersConfiguration {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
-      ToBackendCrossChainProviders,
-      CrossChainProviderStatus
-    ][];
-
-    if (!crossChainProvidersEntries.length) {
-      return this._disabledProviders$.getValue();
-    }
-    const disabledCrossChainProviders = crossChainProvidersEntries
-      .filter(([_, { active }]) => !active)
-      .map(([providerName]) => FROM_BACKEND_CROSS_CHAIN_PROVIDERS[providerName])
-      .filter(provider => Boolean(provider));
-
-    return { disabledCrossChainTradeTypes: disabledCrossChainProviders };
-  }
-
-  private mapAverageProvidersTime(crossChainProviders: {
-    [k in string]: CrossChainProviderStatus;
-  }): Record<CrossChainTradeType, number> {
-    const crossChainProvidersEntries = Object.entries(crossChainProviders) as [
-      ToBackendCrossChainProviders,
-      CrossChainProviderStatus
-    ][];
-    if (!crossChainProvidersEntries.length) {
-      return;
-    }
-
-    return Object.fromEntries(
-      crossChainProvidersEntries.map(([provider, status]) => [
-        FROM_BACKEND_CROSS_CHAIN_PROVIDERS[provider],
-        status.average_execution_time
-      ])
-    ) as Record<CrossChainTradeType, number>;
+    this._ccrProvidersInfo$.next(info);
   }
 }

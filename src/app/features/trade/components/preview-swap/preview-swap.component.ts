@@ -9,7 +9,6 @@ import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
   CrossChainTrade,
-  CrossChainTradeType,
   EvmBlockchainName,
   EvmOnChainTrade,
   FeeInfo,
@@ -25,7 +24,6 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareAddresses } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
@@ -174,19 +172,23 @@ export class PreviewSwapComponent implements OnDestroy {
       .subscribe();
   }
 
-  public getAverageTime(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
+  public getAverageTimeString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
-      if (isArbitrumBridgeRbcTrade(tradeState.trade)) {
-        return '7 D';
-      }
-      const provider = TRADES_PROVIDERS[tradeState.tradeType];
-      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime =
-        providerAverageTime?.[tradeState.tradeType as CrossChainTradeType];
-
-      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
+      if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
+      return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
     } else {
-      return tradeState instanceof CrossChainTrade ? '30 M' : '1 M';
+      return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
+    }
+  }
+
+  public getTime95PercentsSwapsString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
+    if (tradeState?.tradeType) {
+      if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
+      return `${time.time95PercentsSwapsMins} ${time.time95PercentsSwapsMins > 1 ? 'mins' : 'min'}`;
+    } else {
+      return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
     }
   }
 
