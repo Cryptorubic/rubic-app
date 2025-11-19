@@ -7,12 +7,14 @@ import {
 } from '../../common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { GetDepositStatusFnParams } from '../../common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export class ChangeNowCrossChainApiService {
   public static changenowApiEndpoint = 'https://api.changenow.io/v2';
 
   public static async getTxStatus(
     changenowId: string,
+    params: GetDepositStatusFnParams,
     httpClient: HttpClient
   ): Promise<CrossChainDepositData> {
     const res = await firstValueFrom(

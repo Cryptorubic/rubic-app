@@ -5,6 +5,7 @@ import {
 } from '../../common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { ChangellyExchangeStatusResponse } from '../models/changelly-exchange-status';
 import { firstValueFrom } from 'rxjs';
+import { GetDepositStatusFnParams } from '../../common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export class ChangellyApiService {
   private static xApiKey = 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4';
@@ -13,6 +14,7 @@ export class ChangellyApiService {
 
   public static async getTxStatus(
     id: string,
+    params: GetDepositStatusFnParams,
     httpClient: HttpClient
   ): Promise<CrossChainDepositData> {
     const { result } = await firstValueFrom(

@@ -16,7 +16,11 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { OnChainTradeType } from '@cryptorubic/core';
 
-async function getExolixStatus(id: string, httpClient: HttpClient): Promise<CrossChainDepositData> {
+async function getExolixStatus(
+  id: string,
+  _params: GetDepositStatusFnParams,
+  httpClient: HttpClient
+): Promise<CrossChainDepositData> {
   const { status, hashOut } = await firstValueFrom(
     httpClient.get<{
       status: string;
@@ -51,8 +55,79 @@ async function getExolixStatus(id: string, httpClient: HttpClient): Promise<Cros
   };
 }
 
+/**
+ * @param id it's depositAddress (near_intents API checks dst status by unique depositAddress)
+ */
+async function getNearIntentsStatus(
+  id: string,
+  params: GetDepositStatusFnParams,
+  httpClient: HttpClient
+): Promise<CrossChainDepositData> {
+  const { status, swapDetails } = await firstValueFrom(
+    httpClient.get<{
+      status:
+        | 'FAILED'
+        | 'SUCCESS'
+        | 'PROCESSING'
+        | 'REFUNDED'
+        | 'PENDING_DEPOSIT'
+        | 'KNOWN_DEPOSIT_TX';
+      swapDetails: { destinationChainTxHashes: Array<{ hash: string }> };
+    }>(`https://1click.chaindefuser.com/v0/status`, {
+      headers: {
+        Authorization:
+          'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjIwMjUtMDQtMjMtdjEifQ.eyJ2IjoxLCJrZXlfdHlwZSI6ImRpc3RyaWJ1dGlvbl9jaGFubmVsIiwicGFydG5lcl9pZCI6InJ1YmljIiwiaWF0IjoxNzYxMDM3NzIzLCJleHAiOjE3OTI1NzM3MjN9.P7Hc500T0ePu8nm1FL4AoJnr0avDRpyXoKGDCNPbACv2jl_xC83B8sJIhkBErOR9T9UQP-so4yqYC_J_00I-P0je9npzDwiQT6JPP8kw8l8fcnBaupFTmKCvGA8vyXvuE6_rjh9S-ho5O1z-yq5jKYG4FhKw59ydDRxPWQFlmKJxgwMvXkuXu_dCf-e0vORN-8AiBK0JIl0Jm-0FY92moj9Zzp3SQ9y2Q41gX3iDqpVNexoAlLWlB4HjK3CcTcEu-XBQPM97J1bB45fy6yHjV7wRwN0rC3TsTJyB8Rjjt0vu0m_GZI-FrjwcyLf0W9pD8qyg3rGI_Bh2NZ4o8ToPVg'
+      },
+      params: {
+        depositAddress: id,
+        ...(params.depositMemo && { depositMemo: params.depositMemo })
+      }
+    })
+  );
+
+  if (status === 'SUCCESS') {
+    const firstDstTxHast = swapDetails.destinationChainTxHashes[0].hash;
+    return {
+      status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED,
+      dstHash: firstDstTxHast
+    };
+  }
+  if (status === 'PROCESSING') {
+    return {
+      status: CROSS_CHAIN_DEPOSIT_STATUS.EXCHANGING,
+      dstHash: null
+    };
+  }
+  if (status === 'KNOWN_DEPOSIT_TX') {
+    return {
+      status: CROSS_CHAIN_DEPOSIT_STATUS.VERIFYING,
+      dstHash: null
+    };
+  }
+  if (status === 'REFUNDED') {
+    return {
+      status: CROSS_CHAIN_DEPOSIT_STATUS.REFUNDED,
+      dstHash: null
+    };
+  }
+  if (status === 'FAILED') {
+    return {
+      status: CROSS_CHAIN_DEPOSIT_STATUS.FAILED,
+      dstHash: null
+    };
+  }
+
+  return {
+    status: CROSS_CHAIN_DEPOSIT_STATUS.WAITING,
+    dstHash: null
+  };
+}
+
+export type GetDepositStatusFnParams = { depositMemo?: string };
+
 export type getDepositStatusFn = (
   id: string,
+  params: GetDepositStatusFnParams,
   httpClient: HttpClient
 ) => Promise<CrossChainDepositData>;
 
@@ -62,12 +137,14 @@ const getDepositStatusFnMap: Partial<
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: ChangeNowCrossChainApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: SimpleSwapApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: ChangellyApiService.getTxStatus,
-  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus
+  [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus,
+  [CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS]: getNearIntentsStatus
 };
 
 export function getDepositStatus(
   id: string,
   tradeType: CrossChainTradeType | OnChainTradeType,
+  params: GetDepositStatusFnParams,
   httpClient: HttpClient
 ): Promise<CrossChainDepositData> {
   const getDepositStatusFn = getDepositStatusFnMap[tradeType];
@@ -76,5 +153,5 @@ export function getDepositStatus(
     throw new RubicSdkError('Unsupported cross chain provider');
   }
 
-  return getDepositStatusFn(id, httpClient);
+  return getDepositStatusFn(id, params, httpClient);
 }

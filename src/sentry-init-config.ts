@@ -2,6 +2,10 @@ import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
 
 export function initSentry(): void {
+  if (ENVIRONMENT.environmentName !== 'prod') {
+    return;
+  }
+
   const sentryAllowUrlRegexpString = `https:\\/\\/(${ENVIRONMENT.environmentName})(\\-app)?\\.rubic\\.exchange`;
   Sentry.init({
     dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
@@ -46,6 +50,7 @@ export function initSentry(): void {
       { op: 'resource.other', name: /.+\.(woff2|woff|ttf|eot)$/ },
       // CSS files
       { op: 'resource.link', name: /.+\.css.*$/ },
+      { op: 'resource.css' },
       // JS files
       { op: /resource\.(link|script)/, name: /.+\.js.*$/ },
       // Images
@@ -53,9 +58,17 @@ export function initSentry(): void {
         op: /resource\.(other|img)/,
         name: /.+\.(png|svg|jpe?g|gif|bmp|tiff?|webp|avif|heic?|ico).*$/
       },
+      // IFrame
+      { op: 'resource.iframe' },
       // Measure spans
       { op: 'measure' }
     ],
-    ignoreErrors: ['[webpack-dev-server]']
+    ignoreErrors: ['[webpack-dev-server]'],
+    beforeSendLog: log => {
+      if (log.level === 'info') {
+        return null;
+      }
+      return log;
+    }
   });
 }

@@ -7,7 +7,6 @@ import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
-import { OnChainTradeType } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -75,7 +74,7 @@ export class DepositTableService extends TableService<
   }> {
     const data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
     const tradeStatuses = data.map(trade => {
-      return this.getDepositStatus(trade.id, trade.tradeType);
+      return this.getDepositStatus(trade);
     });
 
     return forkJoin(tradeStatuses).pipe(
@@ -143,18 +142,20 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(
-    id: string,
-    tradeType: CrossChainTradeType | OnChainTradeType
-  ): Observable<CrossChainDepositStatus> {
-    if (!id) {
-      throw new RubicSdkError(`Must provide ${tradeType} trade id`);
+  public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
+    if (!trade.id) {
+      throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
     }
 
     try {
-      return from(getDepositStatus(id, tradeType, this.httpClient)).pipe(
-        map(el => el.status as CrossChainDepositStatus)
-      );
+      return from(
+        getDepositStatus(
+          trade.id,
+          trade.tradeType,
+          { depositMemo: trade.extraField.value },
+          this.httpClient
+        )
+      ).pipe(map(el => el.status as CrossChainDepositStatus));
     } catch {
       return of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
     }

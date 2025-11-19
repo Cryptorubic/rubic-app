@@ -5,6 +5,7 @@ import {
 } from '../../common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { SimpleSwapExchange } from '../models/simple-swap-requests';
 import { firstValueFrom } from 'rxjs';
+import { GetDepositStatusFnParams } from '../../common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export class SimpleSwapApiService {
   private static readonly xApiKey = 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4';
@@ -13,6 +14,7 @@ export class SimpleSwapApiService {
 
   public static async getTxStatus(
     id: string,
+    params: GetDepositStatusFnParams,
     httpClient: HttpClient
   ): Promise<CrossChainDepositData> {
     const res = await firstValueFrom(

@@ -76,6 +76,10 @@ export class ActionButtonService {
         action: () => {}
       };
     }
+    const isTransferFromNonEvm =
+      currentTrade.trade instanceof CrossChainTransferTrade &&
+      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
     if (currentTrade.error) {
       return {
         type: 'error',
@@ -84,7 +88,7 @@ export class ActionButtonService {
       };
     }
 
-    if (!address) {
+    if (!address && !isTransferFromNonEvm) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -98,9 +102,6 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-    const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
     if (
       currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||
