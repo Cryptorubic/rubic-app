@@ -25,6 +25,7 @@ export class CrossChainSymbiosisManager {
       .catch(() => [] as SymbiosisStuckedResponse[]);
   }
 
+  //@TODO API
   public async revertTrade(
     revertTransactionHash: string,
     userAddress: string,

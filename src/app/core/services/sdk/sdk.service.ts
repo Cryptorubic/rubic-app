@@ -12,7 +12,6 @@ import {
 import { ENVIRONMENT } from 'src/environments/environment';
 import { Configuration } from './sdk-legacy/features/common/models/sdk-models/configuration';
 import { CrossChainSymbiosisManager } from './sdk-legacy/features/cross-chain/symbiosis-manager/cross-chain-symbiosis-manager';
-import { OnChainManager } from './sdk-legacy/features/on-chain/calculation-manager/on-chain-manager';
 import { CrossChainManager } from './sdk-legacy/features/cross-chain/calculation-manager/cross-chain-manager';
 import { OnChainStatusManager } from './sdk-legacy/features/on-chain/status-manager/on-chain-status-manager';
 import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/status-manager/cross-chain-status-manager';
@@ -28,28 +27,13 @@ export class SdkService {
 
   public readonly sdkLoading$ = this._sdkLoading$.asObservable();
 
-  // private _SDK: SDK | null;
-
-  // private get SDK(): SDK {
-  //   if (!this._SDK) {
-  //     throw new Error('Rubic SDK is not initiated.');
-  //   }
-  //   return this._SDK;
-  // }
-
   public readonly symbiosis: CrossChainSymbiosisManager;
-
-  public readonly instantTrade: OnChainManager;
 
   public readonly crossChain: CrossChainManager;
 
   public readonly onChainStatusManager: OnChainStatusManager;
 
   public readonly crossChainStatusManager: CrossChainStatusManager;
-
-  // private set SDK(value: SDK) {
-  //   this._SDK = value;
-  // }
 
   private _currentConfig: Configuration;
 
@@ -64,11 +48,6 @@ export class SdkService {
     @Inject(WINDOW) private readonly window: Window
   ) {
     this._currentConfig = this.getConfig(this.getProviderAddresses());
-    this.instantTrade = new OnChainManager(
-      this._currentConfig.providerAddress,
-      sdkLegacyService,
-      rubicApiService
-    );
     this.crossChain = new CrossChainManager(
       this._currentConfig.providerAddress,
       sdkLegacyService,
@@ -99,7 +78,6 @@ export class SdkService {
     });
 
     this.sdkLegacyService.adaptersFactoryService.setAdapterFactory(adapterFactory);
-    // this.SDK = await SDK.createSDK(this.currentConfig);
   }
 
   public getConfig(params: {

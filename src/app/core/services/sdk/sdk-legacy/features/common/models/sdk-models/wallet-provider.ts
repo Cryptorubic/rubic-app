@@ -1,12 +1,13 @@
 import { WalletAdapter } from '@suiet/wallet-sdk';
 import { TonConnectUI } from '@tonconnect/ui';
-import { BtcWalletProvider } from './btc-wallet-provider';
-import { SolanaWeb3 } from './solana-web3';
 import { TronWeb } from 'tronweb';
 import { WalletClient } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
+import { BtcWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/btc-wallet';
+import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
-export interface WalletProviderCore<T = any> {
+export interface WalletProviderCore<T = RubicAny> {
   /**
    * Core provider.
    */
@@ -20,9 +21,9 @@ export interface WalletProviderCore<T = any> {
 
 export type EvmWalletProviderCore = WalletProviderCore<WalletClient>;
 export type TronWalletProviderCore = WalletProviderCore<TronWeb>;
-export type SolanaWalletProviderCore = WalletProviderCore<SolanaWeb3>;
+export type SolanaWalletProviderCore = WalletProviderCore<SolanaWallet>;
 export type TonWalletProviderCore = WalletProviderCore<TonConnectUI>;
-export type BitcoinWalletProviderCore = WalletProviderCore<BtcWalletProvider>;
+export type BitcoinWalletProviderCore = WalletProviderCore<BtcWallet>;
 export type SuiWalletProviderCore = WalletProviderCore<WalletAdapter>;
 
 /**
