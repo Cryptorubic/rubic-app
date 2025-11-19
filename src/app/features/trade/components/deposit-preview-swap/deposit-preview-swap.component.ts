@@ -121,7 +121,11 @@ export class DepositPreviewSwapComponent {
   public readonly depositTrade$ = this.depositService.depositTrade$;
 
   public readonly isRefundAddressRequired$ = this.previewSwapService.selectedTradeState$.pipe(
-    map(tradeState => tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY)
+    map(
+      tradeState =>
+        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.CHANGELLY ||
+        tradeState.tradeType === CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS
+    )
   );
 
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
