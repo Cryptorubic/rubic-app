@@ -1,7 +1,7 @@
 import { RangoTradeType } from '../../../common/providers/rango/models/rango-api-trade-types';
 import { CrossChainTradeType } from './cross-chain-trade-type';
 import { LifiSubProvider } from '../providers/lifi-provider/models/lifi-bridge-types';
-import { MarkRequired } from './cross-chain-manager-options';
+import { MarkRequired } from './utility-types';
 
 export interface CrossChainOptions {
   /**

@@ -11,7 +11,7 @@ import {
   TronTransactionOptions,
   UnnecessaryApproveError
 } from '@cryptorubic/web3';
-import { MarkRequired } from '../../../models/cross-chain-manager-options';
+import { MarkRequired } from '../../../models/utility-types';
 
 export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<TronBlockchainName>;

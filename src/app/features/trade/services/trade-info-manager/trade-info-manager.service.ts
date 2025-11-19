@@ -42,7 +42,7 @@ export class TradeInfoManager {
       const ccrProviders = this.platformConfigurationService.ccrProvidersInfo;
       const ccrProviderInfo = ccrProviders[trade.type];
       const fromToChainKey = `${trade.from.blockchain}-${trade.to.blockchain}`;
-      const betweenChainsInfo = ccrProviderInfo.betweenNetworksStats[fromToChainKey];
+      const betweenChainsInfo = ccrProviderInfo?.betweenNetworksStats[fromToChainKey];
 
       const getAverageTimeMinutes = (): number => {
         let averageTimeMinutes = 0;
@@ -51,11 +51,11 @@ export class TradeInfoManager {
             Math.ceil(Number(betweenChainsInfo.average) / 60),
             Math.ceil(Number(betweenChainsInfo.median) / 60)
           );
-        } else if (ccrProviderInfo.median) {
+        } else if (ccrProviderInfo?.median) {
           averageTimeMinutes = Math.ceil(Number(ccrProviderInfo.median) / 60);
-        } else if (ccrProviderInfo.average) {
+        } else if (ccrProviderInfo?.average) {
           averageTimeMinutes = Math.ceil(Number(ccrProviderInfo.average) / 60);
-        } else if (ccrProviderInfo.averageExecutionTime) {
+        } else if (ccrProviderInfo?.averageExecutionTime) {
           averageTimeMinutes = ccrProviderInfo.averageExecutionTime;
         } else {
           averageTimeMinutes = 5;
@@ -67,8 +67,8 @@ export class TradeInfoManager {
       const averageTimeMins = getAverageTimeMinutes();
       const time95PercentsSwapsMins = betweenChainsInfo
         ? Math.ceil(betweenChainsInfo['95_percentile'] / 60)
-        : Math.ceil(ccrProviderInfo['95_percentile'] / 60)
-        ? Math.ceil(ccrProviderInfo['95_percentile'] / 60)
+        : Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
+        ? Math.ceil(ccrProviderInfo?.['95_percentile'] / 60)
         : averageTimeMins;
 
       return { averageTimeMins, time95PercentsSwapsMins };

@@ -1,7 +1,6 @@
 import {
   BlockchainName,
   BlockchainsInfo,
-  CHAIN_TYPE,
   EvmBlockchainName,
   PriceTokenAmount,
   QuoteRequestInterface,
@@ -12,7 +11,6 @@ import BigNumber from 'bignumber.js';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { EvmOnChainTrade } from '../../../../../on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
 
-import { EvmCrossChainTrade } from '../evm-cross-chain-trade/evm-cross-chain-trade';
 import { GasData } from '../evm-cross-chain-trade/models/gas-data';
 import { FeeInfo } from '../models/fee-info';
 import { RubicStep } from '../models/rubicStep';
@@ -20,14 +18,27 @@ import { CrossChainPaymentInfo, CrossChainTransferData } from './models/cross-ch
 import {
   erc20TokenAbi,
   EvmAdapter,
-  EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
   RubicSdkError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { CrossChainTrade } from '../cross-chain-trade';
+import { CrossChainTransferConfig } from './models/cross-chain-transfer-config';
 
-export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
+export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChainTransferConfig> {
+  public swap(): Promise<string | never> {
+    throw new Error('Method not implemented.');
+  }
+
+  public encode(): Promise<unknown> {
+    throw new Error('Method not implemented.');
+  }
+
+  public authWallet(): Promise<string> {
+    throw new Error('Method not implemented.');
+  }
+
   protected paymentInfo: CrossChainTransferData | null = null;
 
   public readonly onChainTrade: EvmOnChainTrade | null;
@@ -111,7 +122,7 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     testMode?: boolean,
     receiverAddress?: string,
     refundAddress?: string
-  ): Promise<{ config: EvmTransactionConfig; amount: string }> {
+  ): Promise<{ config: CrossChainTransferConfig; amount: string }> {
     const isFromEvm = BlockchainsInfo.isEvmBlockchainName(this.from.blockchain);
 
     const res = await this.getPaymentInfo(
@@ -124,34 +135,21 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     const toAmountWei = Token.toWei(res.toAmount, this.to.decimals);
     this.paymentInfo = res;
 
-    const config: EvmTransactionConfig = { to: '', data: '', value: '' };
-
-    if (this.from.isNative) {
-      config.value = this.from.stringWeiAmount;
-      config.data = '0x';
-      config.to = this.paymentInfo.depositAddress;
-    } else {
-      const blockchainType = BlockchainsInfo.getChainType(this.from.blockchain);
-
-      if (blockchainType === CHAIN_TYPE.EVM) {
-        const encodedConfig = EvmAdapter.encodeMethodCall(
-          this.from.address,
-          erc20TokenAbi,
-          'transfer',
-          [this.paymentInfo.depositAddress, this.from.stringWeiAmount],
-          '0'
-        );
-        config.value = '0';
-        config.to = this.from.address;
-        config.data = encodedConfig.data;
-      } else {
-        config.value = '0';
-        config.data = '0x';
-        config.to = this.paymentInfo.depositAddress;
-      }
-    }
-
-    return { config, amount: toAmountWei };
+    return {
+      config: {
+        amountToSend: res.toAmount,
+        depositAddress: res.depositAddress,
+        exchangeId: res.id,
+        ...(res.depositExtraId &&
+          res.depositExtraIdName && {
+            extraFields: {
+              name: res.depositExtraIdName,
+              value: res.depositExtraId
+            }
+          })
+      },
+      amount: toAmountWei
+    };
   }
 
   protected abstract getPaymentInfo(
@@ -162,9 +160,6 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
   ): Promise<CrossChainTransferData>;
 
   public override async needApprove(): Promise<boolean> {
-    if (this.useProxy) {
-      return super.needApprove();
-    }
     return false;
   }
 
@@ -237,7 +232,7 @@ export abstract class CrossChainTransferTrade extends EvmCrossChainTrade {
     testMode?: boolean,
     receiverAddress?: string,
     refundAddress?: string
-  ): Promise<EvmTransactionConfig> {
+  ): Promise<CrossChainTransferConfig> {
     if (this.lastTransactionConfig && useCacheData) {
       return this.lastTransactionConfig;
     }

@@ -50,7 +50,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
 
   public getTradeInfo(): TradeInfo {
     return {
-      estimatedGas: this.estimatedGas,
+      estimatedGas: null,
       feeInfo: this.feeInfo,
       priceImpact: this.priceImpact ?? null,
       slippage: this.onChainTrade?.slippageTolerance

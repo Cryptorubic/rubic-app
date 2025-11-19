@@ -12,7 +12,6 @@ import {
 import { ENVIRONMENT } from 'src/environments/environment';
 import { Configuration } from './sdk-legacy/features/common/models/sdk-models/configuration';
 import { CrossChainSymbiosisManager } from './sdk-legacy/features/cross-chain/symbiosis-manager/cross-chain-symbiosis-manager';
-import { CrossChainManager } from './sdk-legacy/features/cross-chain/calculation-manager/cross-chain-manager';
 import { OnChainStatusManager } from './sdk-legacy/features/on-chain/status-manager/on-chain-status-manager';
 import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/status-manager/cross-chain-status-manager';
 import { SdkLegacyService } from './sdk-legacy/sdk-legacy.service';
@@ -29,8 +28,6 @@ export class SdkService {
 
   public readonly symbiosis: CrossChainSymbiosisManager;
 
-  public readonly crossChain: CrossChainManager;
-
   public readonly onChainStatusManager: OnChainStatusManager;
 
   public readonly crossChainStatusManager: CrossChainStatusManager;
@@ -44,15 +41,10 @@ export class SdkService {
   constructor(
     private readonly angularHttpClient: HttpClient,
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly rubicApiService: RubicApiService,
+    rubicApiService: RubicApiService,
     @Inject(WINDOW) private readonly window: Window
   ) {
     this._currentConfig = this.getConfig(this.getProviderAddresses());
-    this.crossChain = new CrossChainManager(
-      this._currentConfig.providerAddress,
-      sdkLegacyService,
-      rubicApiService
-    );
     this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
     this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService, rubicApiService);
     this.symbiosis = new CrossChainSymbiosisManager(sdkLegacyService);
