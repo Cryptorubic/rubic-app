@@ -24,7 +24,7 @@ import {
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
   SimulationFailedError as SdkSimulationFailedError,
-  TimeoutError as SdkTimeoutError
+  TxRevertedInBlockchainError as SdkTxRevertedInBlockchainError
 } from '@cryptorubic/sdk';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -57,14 +57,14 @@ import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-err
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import DeflationTokenLowSlippageError from './common/deflation-token-low-slippage.error';
-import { SwapTimeoutError } from './common/swap-timeout.error';
+import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
-    if (err instanceof SdkTimeoutError) {
-      return new SwapTimeoutError();
+    if (err instanceof SdkTxRevertedInBlockchainError) {
+      return new TxRevertedInBlockchainError();
     }
     if (err instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(err.apiError);

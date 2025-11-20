@@ -68,13 +68,20 @@ export class TransactionStateComponent {
 
   private setStepStates(value: TransactionStep): void {
     const stateIdx = this.steps.findIndex(el => el.key === value);
-    const successStateIdx = this.steps.findIndex(el => el.key === transactionStep.success);
+
+    const isSrcChainLastStep = (el: StepsType): boolean => {
+      return this.type === 'swap'
+        ? el.key === transactionStep.success
+        : el.key === transactionStep.sourcePending;
+    };
+
+    const srcChainSuccessIdx = this.steps.findIndex(el => isSrcChainLastStep(el));
 
     this.steps = this.steps.map((step, index) => {
       if (value === transactionStep.error) {
-        if (step.key === transactionStep.success) return { ...step, status: 'failed' };
+        if (isSrcChainLastStep(step)) return { ...step, status: 'failed' };
         // every step before success supposed to be succeeded
-        if (index < successStateIdx) return { ...step, status: 'fullfilled' };
+        if (index < srcChainSuccessIdx) return { ...step, status: 'fullfilled' };
       }
       if (index < stateIdx || value === transactionStep.success) {
         return { ...step, status: 'fullfilled' };
