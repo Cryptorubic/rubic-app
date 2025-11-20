@@ -21,12 +21,12 @@ export class RubicApiParser {
       const [from, to] = route.path;
 
       const fromToken = new PriceTokenAmount({
-        ...(from as any as PriceTokenAmountStruct),
+        ...(from as unknown as PriceTokenAmountStruct),
         tokenAmount: from?.amount
       });
 
       const toToken = new PriceTokenAmount({
-        ...(to as any as PriceTokenAmountStruct),
+        ...(to as unknown as PriceTokenAmountStruct),
         tokenAmount: to?.amount
       });
 

@@ -3,6 +3,7 @@ import { CrossChainStatus } from './models/cross-chain-status';
 import { BlockchainName } from '@cryptorubic/core';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
 import { RubicApiService } from '../../../rubic-api/rubic-api.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 /**
  * Contains methods for getting cross-chain trade statuses.
@@ -18,7 +19,9 @@ export class CrossChainStatusManager {
     srcHash: string,
     fromBlockchain: BlockchainName
   ): Promise<CrossChainStatus> {
-    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(fromBlockchain as any);
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      fromBlockchain as RubicAny
+    );
     let srcTxStatus = await adapter.getSrcTxStatus(fromBlockchain, srcHash);
 
     const dstTxData = await this.getDstTxDataExtended(srcTxStatus, rubicId, srcHash);

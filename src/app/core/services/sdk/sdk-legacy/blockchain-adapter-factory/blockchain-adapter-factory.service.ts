@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RubicError } from '@app/core/errors/models/rubic-error';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import {
   BitcoinBlockchainName,
   BlockchainName,
@@ -47,6 +48,6 @@ export class BlockchainAdapterFactoryService {
   public getAdapter(blockchain: SuiBlockchainName): SuiAdapter;
   public getAdapter(blockchain: BitcoinBlockchainName): BitcoinAdapter;
   public getAdapter(blockchain: BlockchainName): AbstractAdapter<unknown, unknown, BlockchainName> {
-    return this.adapterFactory.getAdapter(blockchain as any);
+    return this.adapterFactory.getAdapter(blockchain as RubicAny);
   }
 }

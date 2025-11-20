@@ -15,6 +15,7 @@ import { TokenFilter } from '@app/features/trade/components/assets-selector/mode
 import { Iterable } from './utils/iterable';
 import { BlockchainName, BlockchainsInfo, Token as MonorepoToken } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 type TokensListOfTopChainsWithOtherChains = {
   [key in BlockchainName]: Token[];
@@ -92,7 +93,9 @@ export class BalanceLoaderService {
           ([chain, tokens]: [BlockchainName, Token[]]) => {
             if (!this.isChainSupportedByWallet(chain)) return tokens.map(() => new BigNumber(NaN));
 
-            const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as any);
+            const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+              chain as RubicAny
+            );
             return adapter
               .getTokensBalances(
                 this.authService.userAddress,
@@ -202,7 +205,9 @@ export class BalanceLoaderService {
         ([chain, tokens]: [BlockchainName, Token[]]) => {
           if (!this.isChainSupportedByWallet(chain)) return tokens.map(() => new BigNumber(NaN));
 
-          const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as any);
+          const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+            chain as RubicAny
+          );
           const chainBalancesPromise = adapter
             .getTokensBalances(
               this.authService.userAddress,

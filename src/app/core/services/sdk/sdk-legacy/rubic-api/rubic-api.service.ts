@@ -34,6 +34,7 @@ import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-
 import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Injectable({
   providedIn: 'root'
@@ -95,7 +96,7 @@ export class RubicApiService {
         throw this.getApiError(result);
       }
       return result;
-    } catch (err: any) {
+    } catch (err: RubicAny) {
       if (err instanceof RubicSdkError) {
         throw err;
       }
@@ -128,7 +129,7 @@ export class RubicApiService {
         throw this.getApiError(result);
       }
       return result;
-    } catch (err: any) {
+    } catch (err: RubicAny) {
       if (err instanceof RubicSdkError) {
         throw err;
       }
@@ -181,7 +182,7 @@ export class RubicApiService {
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
                 this,
-                rubicApiError as any
+                rubicApiError as RubicAny
               )
             : TransformUtils.transformOnChain(
                 trade!,
@@ -189,7 +190,7 @@ export class RubicApiService {
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
                 this,
-                rubicApiError as any
+                rubicApiError as RubicAny
               );
         return from(promise).pipe(
           catchError(err => {

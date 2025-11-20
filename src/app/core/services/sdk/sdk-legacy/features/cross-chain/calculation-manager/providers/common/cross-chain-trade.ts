@@ -32,6 +32,7 @@ import {
 } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 /**
  * Abstract class for all cross-chain providers' trades.
@@ -109,8 +110,10 @@ export abstract class CrossChainTrade<T = unknown> {
     return this.sdkLegacyService.httpClient;
   }
 
-  protected get chainAdapter(): AbstractAdapter<any, any, BlockchainName, {}, {}> {
-    return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain as any);
+  protected get chainAdapter(): AbstractAdapter<RubicAny, RubicAny, BlockchainName, {}, {}> {
+    return this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      this.from.blockchain as RubicAny
+    );
   }
 
   protected get walletAddress(): string {
@@ -357,7 +360,7 @@ export abstract class CrossChainTrade<T = unknown> {
   ): Promise<SwapResponseInterface<Data>> {
     try {
       const res = await this.rubicApiService.fetchSwapData<Data>(body);
-      this.lastSwapResponse = res as any;
+      this.lastSwapResponse = res as RubicAny;
       return res;
     } catch (err) {
       if (err instanceof TradeExpiredError) {
@@ -375,7 +378,7 @@ export abstract class CrossChainTrade<T = unknown> {
       ...body,
       preferredProvider: this.type
     });
-    this.lastSwapResponse = res as any;
+    this.lastSwapResponse = res as RubicAny;
     return res;
   }
 }

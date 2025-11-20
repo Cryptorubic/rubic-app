@@ -14,7 +14,7 @@ export class ChangellyApiService {
 
   public static async getTxStatus(
     id: string,
-    params: GetDepositStatusFnParams,
+    _params: GetDepositStatusFnParams,
     httpClient: HttpClient
   ): Promise<CrossChainDepositData> {
     const { result } = await firstValueFrom(

@@ -120,7 +120,7 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
       });
 
       return transactionHash!;
-    } catch (err: any) {
+    } catch (err) {
       if (err?.error?.errorId === 'ERROR_LOW_GIVE_AMOUNT') {
         throw new TooLowAmountError();
       }

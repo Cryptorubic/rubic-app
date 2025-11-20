@@ -13,6 +13,7 @@ import { CrossChainTrade } from '../sdk/sdk-legacy/features/cross-chain/calculat
 import { OnChainTrade } from '../sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { BlockchainName, nativeTokensList, PriceTokenAmount, Token } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -232,7 +233,7 @@ export class GoogleTagManagerService {
     walletAddress: string
   ): Promise<[string, string]> {
     const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      fromToken.blockchain as any
+      fromToken.blockchain as RubicAny
     );
     const [nativeBalanceWei, fromTokenBalanceWei] = await Promise.all([
       adapter.getBalance(walletAddress),

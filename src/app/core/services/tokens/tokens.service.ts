@@ -23,6 +23,7 @@ import { BlockchainName, BlockchainsInfo, Token } from '@cryptorubic/core';
 import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
 import { Web3Pure } from '@cryptorubic/web3';
 import { isAddressCorrect } from '../sdk/sdk-legacy/features/common/utils/check-address';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 /**
  * Service that contains actions (transformations and fetch) with tokens.
@@ -136,7 +137,7 @@ export class TokensService {
 
     try {
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-        token.blockchain as any
+        token.blockchain as RubicAny
       );
       const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 

@@ -8,6 +8,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 @Injectable()
 export class CustomTokenService {
@@ -43,7 +44,7 @@ export class CustomTokenService {
                   BlockchainsInfo.getChainType(customToken.blockchain)
               ) {
                 const tokenBalance = await this.sdkLegacyService.adaptersFactoryService
-                  .getAdapter(customToken.blockchain as any)
+                  .getAdapter(customToken.blockchain as RubicAny)
                   .getBalance(this.authService.userAddress, customToken.address);
                 return {
                   ...customToken,

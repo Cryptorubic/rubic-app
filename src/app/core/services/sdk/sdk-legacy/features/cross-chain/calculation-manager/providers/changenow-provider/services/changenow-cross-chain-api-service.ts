@@ -14,7 +14,7 @@ export class ChangeNowCrossChainApiService {
 
   public static async getTxStatus(
     changenowId: string,
-    params: GetDepositStatusFnParams,
+    _params: GetDepositStatusFnParams,
     httpClient: HttpClient
   ): Promise<CrossChainDepositData> {
     const res = await firstValueFrom(

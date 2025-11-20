@@ -79,7 +79,7 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
       });
 
       return transactionHash!;
-    } catch (err: any) {
+    } catch (err) {
       if (err.message?.includes('User rejected the request') || err.code === 4001) {
         throw new UserRejectError();
       }
