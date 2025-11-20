@@ -30,9 +30,15 @@ export function initSentry(): void {
       }),
       Sentry.httpClientIntegration(),
       Sentry.consoleLoggingIntegration({ levels: ['error', 'debug'] }),
-      Sentry.eventFiltersIntegration()
+      Sentry.eventFiltersIntegration(),
+      Sentry.replayIntegration({
+        maskAllText: true,
+        blockAllMedia: true
+      })
     ],
     tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
     enableLogs: true,
     allowUrls: [new RegExp(sentryAllowUrlRegexpString)],
     denyUrls: [
@@ -69,6 +75,15 @@ export function initSentry(): void {
         return null;
       }
       return log;
+    },
+    beforeSend: (event, _) => {
+      event.tags = event.tags || {};
+      if (event.tags.url) {
+        const url = (event.tags.url as string) || '';
+        return url.includes('https://sentry.rubic.exchange') ? null : event;
+      }
+
+      return event;
     }
   });
 }
