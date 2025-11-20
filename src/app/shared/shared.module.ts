@@ -81,6 +81,7 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
+import { InputNumberComponent } from './components/input-number/input-number.component';
 
 @NgModule({
   declarations: [
@@ -136,7 +137,8 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     MathAbsPipe,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent
   ],
   imports: [
     CommonModule,
@@ -218,7 +220,8 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     MathAbsPipe,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
