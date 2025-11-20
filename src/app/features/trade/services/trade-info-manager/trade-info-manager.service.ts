@@ -75,13 +75,6 @@ export class TradeInfoManager {
         ? Math.ceil(ccrProviderInfo['95_percentile'] / 60)
         : averageTimeMins;
 
-      console.log(`%c${trade.type}`, 'color: orange;', {
-        ccrProviderInfo,
-        betweenChainsInfo,
-        averageTimeMins,
-        time95PercentsSwapsMins
-      });
-
       return { averageTimeMins, time95PercentsSwapsMins };
     } else {
       return {

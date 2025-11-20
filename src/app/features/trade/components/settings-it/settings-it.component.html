@@ -33,6 +33,16 @@
 
       <button
         tuiButton
+        [appearance]="formValue.slippageTolerance === 0.3 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(0.3)"
+      >
+        0.3%
+      </button>
+
+      <button
+        tuiButton
         [appearance]="formValue.slippageTolerance === 0.5 ? 'primary' : 'outline'"
         type="button"
         size="s"
@@ -41,21 +51,16 @@
         0.5%
       </button>
 
-      <tui-input-number
-        id="slippage"
-        class="settings__slippage-input"
-        tuiTextfieldSize="s"
-        tuiTextfieldPostfix="%"
-        [min]="0.1"
-        [max]="50"
-        [ngModel]="formValue.slippageTolerance"
-        [ngModelOptions]="{ standalone: true }"
-        [precision]="2"
-        [style.text-align]="'right'"
-        (ngModelChange)="onSlippageToleranceChange($event)"
-      >
-        {{ formValue.slippageTolerance }}%
-      </tui-input-number>
+      <div class="settings__slippage-input">
+        <app-input-number
+          [min]="0.1"
+          [max]="50"
+          [value]="formValue.slippageTolerance"
+          [name]="'onchain-slippage'"
+          [suffix]="'%'"
+          (inputChanged)="onSlippageToleranceChange($event)"
+        ></app-input-number>
+      </div>
     </div>
 
     <div class="settings__row">
