@@ -3,14 +3,12 @@ import { rubicSdkDefaultConfig } from '@core/services/sdk/constants/rubic-sdk-de
 import { BehaviorSubject } from 'rxjs';
 import { SdkHttpClient } from '@core/services/sdk/utils/sdk-http-client';
 import { HttpClient } from '@angular/common/http';
-import { BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
+import { BlockchainName } from '@cryptorubic/core';
 import {
   BlockchainAdapterFactoryService as SdkAdapterFactory,
-  EnvType,
   WalletProviderCore
 } from '@cryptorubic/web3';
 import { ENVIRONMENT } from 'src/environments/environment';
-import { Configuration } from './sdk-legacy/features/common/models/sdk-models/configuration';
 import { CrossChainSymbiosisManager } from './sdk-legacy/features/cross-chain/symbiosis-manager/cross-chain-symbiosis-manager';
 import { OnChainStatusManager } from './sdk-legacy/features/on-chain/status-manager/on-chain-status-manager';
 import { CrossChainStatusManager } from './sdk-legacy/features/cross-chain/status-manager/cross-chain-status-manager';
@@ -18,7 +16,6 @@ import { SdkLegacyService } from './sdk-legacy/sdk-legacy.service';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
 import { RubicApiService } from './sdk-legacy/rubic-api/rubic-api.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { referralToIntegratorAddressMapping } from './constants/provider-addresses';
 
 @Injectable()
 export class SdkService {
@@ -32,11 +29,11 @@ export class SdkService {
 
   public readonly crossChainStatusManager: CrossChainStatusManager;
 
-  private _currentConfig: Configuration;
+  // private _currentConfig: Configuration;
 
-  public get currentConfig(): Configuration {
-    return this._currentConfig;
-  }
+  // public get currentConfig(): Configuration {
+  //   return this._currentConfig;
+  // }
 
   constructor(
     private readonly angularHttpClient: HttpClient,
@@ -44,7 +41,7 @@ export class SdkService {
     rubicApiService: RubicApiService,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    this._currentConfig = this.getConfig(this.getProviderAddresses());
+    // this._currentConfig = this.getConfig(this.getProviderAddresses());
     this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
     this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService, rubicApiService);
     this.symbiosis = new CrossChainSymbiosisManager(sdkLegacyService);
@@ -65,35 +62,39 @@ export class SdkService {
         }
       },
       clientParams: {
-        envType: ENVIRONMENT.environmentName
+        envType: ENVIRONMENT.environmentName,
+        lazyLoadWeb3: true,
+        viemConfig: rubicSdkDefaultConfig.viemConfig
       }
     });
+
+    console.log('ADAPTERS_FACTORY ==>', adapterFactory.adapterStore);
 
     this.sdkLegacyService.adaptersFactoryService.setAdapterFactory(adapterFactory);
   }
 
-  public getConfig(params: {
-    crossChainIntegratorAddress?: string;
-    onChainIntegratorAddress?: string;
-  }): Configuration {
-    const defaultProvidersAddresses = {
-      crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
-      onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
-    };
-    const envType = this.getEnvType();
+  // public getConfig(params: {
+  //   crossChainIntegratorAddress?: string;
+  //   onChainIntegratorAddress?: string;
+  // }): Configuration {
+  //   const defaultProvidersAddresses = {
+  //     crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
+  //     onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
+  //   };
+  //   const envType = this.getEnvType();
 
-    return {
-      ...rubicSdkDefaultConfig,
-      httpClient: new SdkHttpClient(this.angularHttpClient),
-      ...(envType && { envType }),
-      providerAddress: {
-        [CHAIN_TYPE.EVM]: {
-          crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
-          onChain: params?.onChainIntegratorAddress || defaultProvidersAddresses.onChain
-        }
-      }
-    };
-  }
+  //   return {
+  //     ...rubicSdkDefaultConfig,
+  //     httpClient: new SdkHttpClient(this.angularHttpClient),
+  //     ...(envType && { envType }),
+  //     providerAddress: {
+  //       [CHAIN_TYPE.EVM]: {
+  //         crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
+  //         onChain: params?.onChainIntegratorAddress || defaultProvidersAddresses.onChain
+  //       }
+  //     }
+  //   };
+  // }
 
   public updateWallet(blockchain: BlockchainName, walletProviderCore: WalletProviderCore): void {
     this.sdkLegacyService.adaptersFactoryService.adapterFactory.connectWallet(
@@ -102,24 +103,24 @@ export class SdkService {
     );
   }
 
-  private getProviderAddresses(): {
-    crossChainIntegratorAddress: string;
-    onChainIntegratorAddress: string;
-  } {
-    const urlParams = new URLSearchParams(this.window.location.search);
-    const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
-    const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
-    const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
-    const referral = urlParams.get('referral');
-    const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
+  // private getProviderAddresses(): {
+  //   crossChainIntegratorAddress: string;
+  //   onChainIntegratorAddress: string;
+  // } {
+  //   const urlParams = new URLSearchParams(this.window.location.search);
+  //   const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
+  //   const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
+  //   const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
+  //   const referral = urlParams.get('referral');
+  //   const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
 
-    return {
-      crossChainIntegratorAddress: crossChainProvider,
-      onChainIntegratorAddress: onChainProvider || onChainProviderAddress
-    };
-  }
+  //   return {
+  //     crossChainIntegratorAddress: crossChainProvider,
+  //     onChainIntegratorAddress: onChainProvider || onChainProviderAddress
+  //   };
+  // }
 
-  private getEnvType(): EnvType | null {
-    return ENVIRONMENT.environmentName || null;
-  }
+  // private getEnvType(): EnvType | null {
+  //   return ENVIRONMENT.environmentName || null;
+  // }
 }

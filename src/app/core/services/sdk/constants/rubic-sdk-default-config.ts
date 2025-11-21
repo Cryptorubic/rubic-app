@@ -1,8 +1,8 @@
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { RpcProviders } from '../sdk-legacy/features/common/models/sdk-models/rpc-provider';
-import { ViemChainConfig } from '../sdk-legacy/features/common/models/sdk-models/viem-config';
 import { Configuration } from '../sdk-legacy/features/common/models/sdk-models/configuration';
+import { ViemChainConfig } from '@cryptorubic/web3';
 
 const rpcProviders = Object.keys(rpcList).reduce((acc, blockchain: keyof typeof rpcList) => {
   const provider = {

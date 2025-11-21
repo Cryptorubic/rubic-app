@@ -46,7 +46,6 @@ import {
   MevBotSupportedBlockchain,
   mevBotSupportedBlockchains
 } from './models/mevbot-data';
-import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
@@ -200,10 +199,12 @@ export class PreviewSwapService {
       .pipe(
         filter(state => state.step !== 'inactive'),
         combineLatestWith(this.selectedTradeState$.pipe(first(tuiIsPresent))),
-        distinctUntilChanged(
-          ([prevTxState, prevTradeState], [nextTxState, nextTradeState]) =>
-            prevTxState.step === nextTxState.step && compareObjects(prevTradeState, nextTradeState)
-        ),
+        distinctUntilChanged(([prevTxState, prevTradeState], [nextTxState, nextTradeState]) => {
+          return (
+            prevTxState.step === nextTxState.step &&
+            prevTradeState.tradeType === nextTradeState.tradeType
+          );
+        }),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
           if (txState.step === 'approvePending') {
