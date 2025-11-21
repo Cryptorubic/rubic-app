@@ -1,6 +1,6 @@
-import { AbiItem } from '@cryptorubic/web3';
+import { Abi } from 'viem';
 
-export const airdropContractAbi: AbiItem[] = [
+export const airdropContractAbi: Abi = [
   {
     inputs: [
       { internalType: 'uint256', name: 'index', type: 'uint256' },

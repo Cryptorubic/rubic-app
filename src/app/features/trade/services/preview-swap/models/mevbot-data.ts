@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 export const mevBotSupportedBlockchains = [
   BLOCKCHAIN_NAME.ETHEREUM,

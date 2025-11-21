@@ -1,9 +1,6 @@
-import {
-  BLOCKCHAIN_NAME,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTrade,
-  OnChainTrade
-} from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { BLOCKCHAIN_NAME, CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
 export function isArbitrumBridgeRbcTrade(trade: CrossChainTrade | OnChainTrade): boolean {
   return (

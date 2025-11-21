@@ -6,8 +6,9 @@ import { isTokenAmount } from '@app/shared/utils/is-token';
 import { compareAddresses } from '@app/shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import { List } from 'immutable';
-import { BLOCKCHAIN_NAME, EvmWeb3Pure } from '@cryptorubic/sdk';
+import { Web3Pure } from '@cryptorubic/web3';
 import { StorageToken } from './models/storage-token';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class TokenConvertersService {
     // show only one native token in selector for METIS
     if (
       t.address === BLOCKCHAIN_NAME.METIS &&
-      (compareAddresses(t.address, EvmWeb3Pure.nativeTokenAddress) ||
+      (compareAddresses(t.address, Web3Pure.getNativeTokenAddress(BLOCKCHAIN_NAME.METIS)) ||
         compareAddresses(t.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000'))
     ) {
       return 'METIS_NATIVE';

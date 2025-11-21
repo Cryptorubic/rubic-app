@@ -3,7 +3,7 @@ import { AuthService } from '@app/core/services/auth/auth.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensService } from '@app/core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
-import { BLOCKCHAIN_NAME, Injector, Web3Pure, CHAIN_TYPE } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, Token } from '@cryptorubic/core';
 import {
   BehaviorSubject,
   catchError,
@@ -32,6 +32,8 @@ import { STAKING_ROUND_THREE } from '@features/earn/constants/STAKING_ROUND_THRE
 import { GasService } from '@core/services/gas-service/gas.service';
 import { GasInfo } from '@core/services/gas-service/models/gas-info';
 import { TransactionReceipt } from 'viem';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { AllowanceInfo } from '@cryptorubic/web3';
 
 // const STAKING_END_TIMESTAMP = new Date(2024, 7, 14).getTime();
 
@@ -72,7 +74,9 @@ export class StakingService {
     map(blockchainName => blockchainName !== BLOCKCHAIN_NAME.ARBITRUM)
   );
 
-  private readonly web3Public = Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
+  private readonly arbitrumAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+    BLOCKCHAIN_NAME.ARBITRUM
+  );
 
   private readonly _deposits$ = new BehaviorSubject<Deposit[]>([]);
 
@@ -108,7 +112,8 @@ export class StakingService {
     private readonly ngZone: NgZone,
     private readonly stakingNotificationService: StakingNotificationService,
     private readonly router: Router,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.watchUserBalanceAndAllowance();
   }
@@ -144,12 +149,12 @@ export class StakingService {
 
   public getAllowance(): Observable<BigNumber> {
     return from(
-      this.web3Public.getAllowance(
+      this.arbitrumAdapter.getAllowance(
         STAKING_ROUND_THREE.TOKEN.address,
         this.walletAddress,
         STAKING_ROUND_THREE.NFT.address
       )
-    ).pipe(map((allowance: BigNumber) => Web3Pure.fromWei(allowance)));
+    ).pipe(map((allowance: AllowanceInfo) => allowance.allowanceNonWei));
   }
 
   public setAllowance(allowance: BigNumber | 'Infinity'): void {
@@ -162,16 +167,16 @@ export class StakingService {
 
   public getRbcTokenBalance(): Observable<BigNumber> {
     const amount$: Observable<BigNumber> = this.walletAddress
-      ? from(this.web3Public.getTokenBalance(this.walletAddress, STAKING_ROUND_THREE.TOKEN.address))
+      ? from(this.arbitrumAdapter.getBalance(this.walletAddress, STAKING_ROUND_THREE.TOKEN.address))
       : of(new BigNumber(0));
     return amount$.pipe(
-      map(balance => Web3Pure.fromWei(balance)),
+      map(balance => Token.fromWei(balance)),
       tap(balance => this._rbcTokenBalance$.next(balance))
     );
   }
 
   private estimatedAnnualRewardsByTokenId(tokenID: string): Promise<string> {
-    return this.web3Public.callContractMethod(
+    return this.arbitrumAdapter.callContractMethod(
       STAKING_ROUND_THREE.NFT.address,
       STAKING_ROUND_THREE.NFT.abi,
       'estimatedAnnualRewardsByTokenId',
@@ -185,7 +190,7 @@ export class StakingService {
   }
 
   public async getCurrentTimeInSeconds(): Promise<number> {
-    const currentBlock = await this.web3Public.getBlock();
+    const currentBlock = await this.arbitrumAdapter.getBlock();
     return Number(currentBlock.timestamp);
   }
 
@@ -197,28 +202,25 @@ export class StakingService {
     return { shouldCalculateGasPrice, gasPriceOptions };
   }
 
-  public async approveRbc(): Promise<TransactionReceipt> {
+  public async approveRbc(): Promise<string> {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .approveTokens(
-          STAKING_ROUND_THREE.TOKEN.address,
-          STAKING_ROUND_THREE.NFT.address,
-          'infinity',
-          BLOCKCHAIN_NAME.ARBITRUM,
-          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-        );
+      const hash = await this.arbitrumAdapter.approveTokens(
+        STAKING_ROUND_THREE.TOKEN.address,
+        STAKING_ROUND_THREE.NFT.address,
+        'infinity',
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+      );
 
-      if (receipt && receipt.status) {
+      if (hash) {
         const allowance = await firstValueFrom(this.getAllowance());
 
         this.stakingNotificationService.showSuccessApproveNotification();
         this.setAllowance(allowance);
       }
 
-      return receipt;
+      return hash;
     } catch (error) {
       this.errorService.catch(error);
       return null;
@@ -229,30 +231,26 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     const durationInSeconds = duration * SECONDS_IN_MONTH;
-    return Injector.web3PrivateService
-      .getWeb3Private(CHAIN_TYPE.EVM)
-      .tryExecuteContractMethod(
-        STAKING_ROUND_THREE.NFT.address,
-        STAKING_ROUND_THREE.NFT.abi,
-        'enterStaking',
-        [Web3Pure.toWei(amount, 18), String(durationInSeconds)],
-        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-      );
+    return this.arbitrumAdapter.signer.tryExecuteContractMethod(
+      STAKING_ROUND_THREE.NFT.address,
+      STAKING_ROUND_THREE.NFT.abi,
+      'enterStaking',
+      [Token.toWei(amount, 18), String(durationInSeconds)],
+      { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+    );
   }
 
   public async claim(deposit: Deposit): Promise<TransactionReceipt> {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(
-          STAKING_ROUND_THREE.NFT.address,
-          STAKING_ROUND_THREE.NFT.abi,
-          'claimRewards',
-          [deposit.id],
-          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-        );
+      const receipt = await this.arbitrumAdapter.signer.tryExecuteContractMethod(
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
+        'claimRewards',
+        [deposit.id],
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+      );
       if (receipt.status) {
         this.stakingNotificationService.showSuccessClaimNotification();
         this._total$.next({
@@ -283,15 +281,13 @@ export class StakingService {
     const { shouldCalculateGasPrice, gasPriceOptions } = await this.getGasInfo();
 
     try {
-      const receipt = await Injector.web3PrivateService
-        .getWeb3Private(CHAIN_TYPE.EVM)
-        .tryExecuteContractMethod(
-          STAKING_ROUND_THREE.NFT.address,
-          STAKING_ROUND_THREE.NFT.abi,
-          'unstake',
-          [deposit.id],
-          { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
-        );
+      const receipt = await this.arbitrumAdapter.signer.tryExecuteContractMethod(
+        STAKING_ROUND_THREE.NFT.address,
+        STAKING_ROUND_THREE.NFT.abi,
+        'unstake',
+        [deposit.id],
+        { ...(shouldCalculateGasPrice && { gasPriceOptions }) }
+      );
 
       if (receipt.status) {
         this.stakingNotificationService.showSuccessWithdrawNotification();
@@ -312,7 +308,7 @@ export class StakingService {
 
   public async isEmergencyStopped(): Promise<boolean> {
     try {
-      return await this.web3Public.callContractMethod(
+      return await this.arbitrumAdapter.callContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'emergencyStop'
@@ -347,7 +343,7 @@ export class StakingService {
                 const ethPrice = await this.statisticsService.getETHPrice();
                 const amountInDollars = nftInfo.amount.multipliedBy(RBCPrice);
                 const amountInETH = amountInDollars.dividedBy(ethPrice);
-                const estimatedAnnualRewards = Web3Pure.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH
+                const estimatedAnnualRewards = Token.fromWei(estimatedAnnualRewardsWithDecimals); // in ETH
                 const tokenApr = estimatedAnnualRewards.dividedBy(amountInETH).multipliedBy(100);
 
                 return {
@@ -395,7 +391,7 @@ export class StakingService {
   }
 
   public async getTokensByOwner(walletAddress: string): Promise<string[]> {
-    return this.web3Public.callContractMethod(
+    return this.arbitrumAdapter.callContractMethod(
       STAKING_ROUND_THREE.NFT.address,
       STAKING_ROUND_THREE.NFT.abi,
       'tokensOfOwner',
@@ -404,7 +400,7 @@ export class StakingService {
   }
 
   public async getNftInfo(nftId: string): Promise<{ amount: BigNumber; endTimestamp: number }> {
-    const { lockTime, amount, lockStartTime } = await this.web3Public.callContractMethod<{
+    const { lockTime, amount, lockStartTime } = await this.arbitrumAdapter.callContractMethod<{
       lockTime: string;
       lockStartTime: string;
       amount: string;
@@ -412,20 +408,20 @@ export class StakingService {
     const endTimestamp = Number(lockStartTime) + Number(lockTime);
 
     return {
-      amount: Web3Pure.fromWei(amount),
+      amount: Token.fromWei(amount),
       endTimestamp: endTimestamp * 1000
     };
   }
 
   public async getNftRewardsInfo(nftId: string): Promise<{ totalNftRewards: BigNumber }> {
     try {
-      const calculatedRewards = await this.web3Public.callContractMethod(
+      const calculatedRewards = await this.arbitrumAdapter.callContractMethod(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'calculateRewards',
         [nftId]
       );
-      return { totalNftRewards: Web3Pure.fromWei(calculatedRewards) };
+      return { totalNftRewards: Token.fromWei(calculatedRewards) };
     } catch (error) {
       return { totalNftRewards: new BigNumber(0) };
     }
@@ -436,7 +432,7 @@ export class StakingService {
   }
 
   public async getNftVotingPower(nftId: string): Promise<string> {
-    return await this.web3Public.callContractMethod(
+    return await this.arbitrumAdapter.callContractMethod(
       STAKING_ROUND_THREE.NFT.address,
       STAKING_ROUND_THREE.NFT.abi,
       'balanceOfNFT',

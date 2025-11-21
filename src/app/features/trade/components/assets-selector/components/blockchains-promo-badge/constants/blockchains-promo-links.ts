@@ -1,4 +1,4 @@
-import { BlockchainName, BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
+import { BlockchainName, BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 export const blockchainsPromoLinks: BlockchainsPromoLinks = {
   [BLOCKCHAIN_NAME.ZK_SYNC]: 'https://www.intract.io/quest/6659a29721949f76bb4714df',

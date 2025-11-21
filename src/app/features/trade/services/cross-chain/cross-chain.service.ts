@@ -6,17 +6,12 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import {
   EvmBasicTransactionOptions,
   NotWhitelistedProviderError,
-  PriceToken,
   SwapTransactionOptions,
   UnapprovedContractError,
   UnapprovedMethodError,
   UnnecessaryApproveError,
-  UserRejectError,
-  Web3Pure,
-  Injector as SdkInjector,
-  EvmCrossChainTrade,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  UserRejectError
+} from '@cryptorubic/web3';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
@@ -50,8 +45,10 @@ import {
   CROSS_CHAIN_TRADE_TYPE,
   CrossChainTradeType,
   ErrorInterface,
+  PriceToken,
   QuoteOptionsInterface,
-  TO_BACKEND_BLOCKCHAINS
+  TO_BACKEND_BLOCKCHAINS,
+  Token
 } from '@cryptorubic/core';
 import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
@@ -59,6 +56,9 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Injectable()
 export class CrossChainService {
@@ -91,7 +91,8 @@ export class CrossChainService {
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -130,7 +131,7 @@ export class CrossChainService {
       dstTokenAddress: toToken.address
     };
 
-    SdkInjector.rubicApiService.calculateAsync({
+    this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
       ...tradeParams,
@@ -316,7 +317,7 @@ export class CrossChainService {
         swapOptions = { ...swapOptions, ...(shouldCalculateGasPrice && { gasPriceOptions }) };
       }
       const { fromAmount, fromDecimals } = TradeParser.getCrossChainSwapParams(trade);
-      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      const amount = new BigNumber(Token.toWei(fromAmount, fromDecimals));
       await trade.approve(swapOptions, true, amount);
     } catch (err) {
       if (err instanceof UnnecessaryApproveError) {

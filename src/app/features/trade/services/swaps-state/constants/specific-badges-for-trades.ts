@@ -1,19 +1,19 @@
 import { BadgeInfo } from '@features/trade/models/trade-state';
 import {
-  BRIDGE_TYPE,
   CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTrade,
   CrossChainTradeType,
   ON_CHAIN_TRADE_TYPE,
-  OnChainTrade,
   OnChainTradeType
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { INFO_COLOR, PINK_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
 import {
   showAttentionLabelArbitrumBridge,
   showBerachainLabel,
   showNoSlippageLabelArbitrumBridge
 } from './common/badges-for-providers-conditions';
+import { BRIDGE_TYPE } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 
 export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
   Record<CrossChainTradeType | OnChainTradeType, BadgeInfo[]>

@@ -1,4 +1,5 @@
-import { CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import BigNumber from 'bignumber.js';
 
 export function checkAmountGte100Usd(trade: OnChainTrade | CrossChainTrade): boolean {

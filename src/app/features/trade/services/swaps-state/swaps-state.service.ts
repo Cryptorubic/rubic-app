@@ -15,13 +15,9 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  EvmWrapTrade,
   nativeTokensList,
-  OnChainTrade,
-  Token,
-  WrappedCrossChainTradeOrNull,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  Token
+} from '@cryptorubic/core';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
@@ -52,6 +48,10 @@ import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
+import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
 
 @Injectable()
 export class SwapsStateService {

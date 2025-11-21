@@ -1,6 +1,7 @@
 /* eslint-disable */
 
-import { TuiDialogContext } from "@taiga-ui/core";
+import { TuiDialogContext } from '@taiga-ui/core';
+import { RubicAny } from '../models/utility-types/rubic-any';
 
 /**
  * Decorator for Components with @Input Decorator, that are used as Polymorpheus Templates.
@@ -8,26 +9,29 @@ import { TuiDialogContext } from "@taiga-ui/core";
  * data for @Input properties is taken from @POLYMORPHEUS_CONTEXT.
  */
 
-export function PolymorpheusInput(): any {
-    return function (target: any, propertyKey: string | symbol, propertyDescriptor: PropertyDescriptor) {
-
-        const key = Symbol();
-        return {
-            get() {
-                const context: TuiDialogContext = this.context;
-                // TODO: Change type guard for something else 
-                if (context && '$implicit' in context) {
-                    return this.context.data[propertyKey];
-                }
-                return this[key];
-            },
-            set(newValue: any) {
-                this[key] = newValue;
-                if (propertyDescriptor) {
-                    propertyDescriptor.set(newValue);
-                }
-                return this;
-            }
+export function PolymorpheusInput(): RubicAny {
+  return function (
+    target: RubicAny,
+    propertyKey: string | symbol,
+    propertyDescriptor: PropertyDescriptor
+  ) {
+    const key = Symbol();
+    return {
+      get() {
+        const context: TuiDialogContext = this.context;
+        // TODO: Change type guard for something else
+        if (context && '$implicit' in context) {
+          return this.context.data[propertyKey];
         }
-    }
+        return this[key];
+      },
+      set(newValue: RubicAny) {
+        this[key] = newValue;
+        if (propertyDescriptor) {
+          propertyDescriptor.set(newValue);
+        }
+        return this;
+      }
+    };
+  };
 }

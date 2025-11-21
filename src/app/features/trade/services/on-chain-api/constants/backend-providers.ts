@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 
 export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   // Missed dexes

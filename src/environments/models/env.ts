@@ -1,4 +1,4 @@
-import { EnvType } from '@cryptorubic/sdk';
+import { EnvType } from '@cryptorubic/web3';
 import { STAKING_CONFIG_DEVELOP } from '../constants/staking';
 
 export interface Env {

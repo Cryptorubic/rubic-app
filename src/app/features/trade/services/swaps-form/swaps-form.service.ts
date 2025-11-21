@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
@@ -20,6 +20,7 @@ import { compareAssets } from '@features/trade/utils/compare-assets';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable()
 export class SwapsFormService {
@@ -69,9 +70,7 @@ export class SwapsFormService {
 
   public readonly nativeToken$ = this.fromBlockchain$.pipe(
     switchMap(blockchain => {
-      const chainType = BlockchainsInfo.getChainType(blockchain);
-      const address = Web3Pure[chainType].nativeTokenAddress;
-
+      const address = Web3Pure.getNativeTokenAddress(blockchain);
       return this.tokensService.findToken({ address, blockchain });
     })
   );

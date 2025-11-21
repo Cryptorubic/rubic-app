@@ -1,4 +1,6 @@
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 export function showNoSlippageLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade): boolean {
   return trade.from.symbol.toLowerCase() === 'rbc' && trade.to.symbol.toLowerCase() === 'rbc';

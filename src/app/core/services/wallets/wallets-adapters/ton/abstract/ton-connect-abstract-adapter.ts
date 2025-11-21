@@ -1,11 +1,6 @@
 import { TonConnectUI } from '@tonconnect/ui';
 import { CommonWalletAdapter } from '../../common-wallet-adapter';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  CHAIN_TYPE,
-  RetroBridgeApiService
-} from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NgZone } from '@angular/core';
@@ -19,6 +14,7 @@ import {
 } from '../models/ton-connect-wallets-map';
 import { WALLET_NAME } from '@app/core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { TonConnectInstance } from '../utils/ton-connect-instance';
+import { RetroBridgeApiService } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/retro-bridge/services/retro-bridge-api-service';
 
 export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonConnectUI> {
   public readonly chainType = CHAIN_TYPE.TON;
@@ -51,7 +47,7 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       const isConnected = (await this.tonConnect.connectionRestored) && this.tonConnect.connected;
 
       if (!isConnected) {
-        const payload = await RetroBridgeApiService.getMessageToAuthWallet();
+        const payload = await RetroBridgeApiService.getMessageToAuthWallet(this.httpService);
         this.tonConnect.setConnectRequestParameters({
           state: 'ready',
           value: { tonProof: this.window.btoa(payload) }
@@ -130,7 +126,8 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       await RetroBridgeApiService.sendSignedMessage(
         this.tonConnect.account.address,
         signature,
-        this.chainType
+        this.chainType,
+        this.httpService
       );
     }
   }

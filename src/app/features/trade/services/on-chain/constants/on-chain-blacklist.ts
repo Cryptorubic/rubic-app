@@ -1,6 +1,5 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType, BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { SupportedOnChainNetworks } from '@features/trade/constants/instant-trade.type';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 
 const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [ON_CHAIN_TRADE_TYPE.CURVE],
@@ -70,7 +69,6 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.FRAXTAL]: [],
   [BLOCKCHAIN_NAME.BERACHAIN]: [ON_CHAIN_TRADE_TYPE.ZRX],
   [BLOCKCHAIN_NAME.SONEIUM]: [],
-  [BLOCKCHAIN_NAME.WANCHAIN]: [],
   [BLOCKCHAIN_NAME.UNICHAIN]: [],
   [BLOCKCHAIN_NAME.HEMI]: [],
   [BLOCKCHAIN_NAME.PLASMA]: []

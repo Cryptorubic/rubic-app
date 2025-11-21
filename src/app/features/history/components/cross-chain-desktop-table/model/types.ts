@@ -1,5 +1,5 @@
 import { ProviderInfo } from '@app/features/trade/models/provider-info';
-import { EvmBlockchainName } from '@cryptorubic/sdk';
+import { EvmBlockchainName } from '@cryptorubic/core';
 
 export interface TableRowWithActionButton {
   provider: ProviderInfo;

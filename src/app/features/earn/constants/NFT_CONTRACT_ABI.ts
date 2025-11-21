@@ -1,4 +1,4 @@
-import { AbiItem } from '@cryptorubic/web3';
+import { Abi } from 'viem';
 
 export const NFT_CONTRACT_ABI = [
   {
@@ -391,4 +391,4 @@ export const NFT_CONTRACT_ABI = [
     stateMutability: 'view',
     type: 'function'
   }
-] as AbiItem[];
+] as Abi;

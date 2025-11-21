@@ -6,7 +6,7 @@ import { TradePageService } from '@features/trade/services/trade-page/trade-page
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
-import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/sdk';
+import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
 import { firstValueFrom } from 'rxjs';

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { TxStatus } from '@features/history/models/tx-status-mapping';
 
 export interface HistoryToken {

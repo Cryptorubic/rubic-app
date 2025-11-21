@@ -9,7 +9,7 @@ import {
   BlockchainName,
   BlockchainsInfo,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';

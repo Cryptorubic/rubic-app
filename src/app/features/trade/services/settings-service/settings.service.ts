@@ -4,7 +4,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AuthService } from '@core/services/auth/auth.service';
 import { filter, switchMap, tap } from 'rxjs/operators';
-import { BLOCKCHAIN_NAME, CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
@@ -19,6 +19,9 @@ import {
 } from '@features/trade/services/settings-service/models/settings-form-controls';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { SettingsWarningModalComponent } from '@features/trade/components/settings-warning-modal/settings-warning-modal.component';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class SettingsService {
@@ -64,7 +67,8 @@ export class SettingsService {
     private readonly authService: AuthService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly dialogService: ModalService
+    private readonly dialogService: ModalService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.defaultItSettings = this.getDefaultITSettings(this.queryParamsService.slippageIt);
     this.defaultCcrSettings = this.getDefaultCCRSettings(this.queryParamsService.slippageCcr);
@@ -173,8 +177,8 @@ export class SettingsService {
         : this.instantTradeValue.slippageTolerance;
 
     if (!trade.from.price.toNumber() || !trade.to.price.toNumber()) {
-      await trade.from.getAndUpdateTokenPrice();
-      await trade.to.getAndUpdateTokenPrice();
+      await trade.from.getAndUpdateTokenPrice(this.sdkLegacyService.coingeckoApi);
+      await trade.to.getAndUpdateTokenPrice(this.sdkLegacyService.coingeckoApi);
     }
 
     const priceImpact = trade.getTradeInfo().priceImpact;

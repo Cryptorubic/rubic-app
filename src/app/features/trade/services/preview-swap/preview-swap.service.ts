@@ -31,14 +31,7 @@ import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import BigNumber from 'bignumber.js';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  EvmBlockchainName,
-  TX_STATUS,
-  Web3PublicSupportedBlockchain,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+import { TX_STATUS } from '@cryptorubic/web3';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -53,7 +46,6 @@ import {
   MevBotSupportedBlockchain,
   mevBotSupportedBlockchains
 } from './models/mevbot-data';
-import { compareObjects } from '@shared/utils/utils';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { FallbackSwapError } from '@app/core/errors/models/provider/fallback-swap-error';
@@ -62,6 +54,8 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { ERROR_TYPE } from '@app/core/errors/models/error-type';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { TxRevertedInBlockchainError } from '@app/core/errors/models/common/tx-reverted-in-blockchain.error';
+import { BLOCKCHAIN_NAME, BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 
 interface TokenFiatAmount {
   tokenAmount: BigNumber;
@@ -205,10 +199,12 @@ export class PreviewSwapService {
       .pipe(
         filter(state => state.step !== 'inactive'),
         combineLatestWith(this.selectedTradeState$.pipe(first(tuiIsPresent))),
-        distinctUntilChanged(
-          ([prevTxState, prevTradeState], [nextTxState, nextTradeState]) =>
-            prevTxState.step === nextTxState.step && compareObjects(prevTradeState, nextTradeState)
-        ),
+        distinctUntilChanged(([prevTxState, prevTradeState], [nextTxState, nextTradeState]) => {
+          return (
+            prevTxState.step === nextTxState.step &&
+            prevTradeState.tradeType === nextTradeState.tradeType
+          );
+        }),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
           if (txState.step === 'approvePending') {
@@ -241,7 +237,7 @@ export class PreviewSwapService {
             this.sdkService.crossChainStatusManager.getCrossChainStatusExtended(
               (tradeState.trade as CrossChainTrade).rubicId,
               srcHash,
-              tradeState.trade.from.blockchain as Web3PublicSupportedBlockchain
+              tradeState.trade.from.blockchain
             )
           ).pipe(
             timeout(29_000),

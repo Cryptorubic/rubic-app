@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BLOCKCHAIN_NAME, EvmWeb3Public, Injector, Web3Pure } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, Token } from '@cryptorubic/core';
 import { BehaviorSubject, combineLatest, from, switchMap } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import { map } from 'rxjs/operators';
 import { STAKING_ROUND_THREE } from '../constants/STAKING_ROUND_THREE';
 import { NATIVE_TOKEN_ADDRESS } from '@shared/constants/blockchain/native-token-address';
+import { EvmAdapter } from '@cryptorubic/web3';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class StatisticsService {
@@ -63,60 +65,60 @@ export class StatisticsService {
     )
   );
 
-  constructor() {}
+  constructor(private readonly sdkLegacyService: SdkLegacyService) {}
 
-  private static get blockchainAdapter(): EvmWeb3Public {
-    return Injector.web3PublicService.getWeb3Public(BLOCKCHAIN_NAME.ARBITRUM);
+  private get blockchainAdapter(): EvmAdapter {
+    return this.sdkLegacyService.adaptersFactoryService.getAdapter(BLOCKCHAIN_NAME.ARBITRUM);
   }
 
   public getTotalSupply(): void {
     from(
-      Injector.web3PublicService
-        .getWeb3Public(BLOCKCHAIN_NAME.ETHEREUM)
+      this.sdkLegacyService.adaptersFactoryService
+        .getAdapter(BLOCKCHAIN_NAME.ETHEREUM)
         .callContractMethod<string>(
           '0x3330BFb7332cA23cd071631837dC289B09C33333',
           STAKING_ROUND_THREE.TOKEN.abi,
           'totalSupply'
         )
     ).subscribe(value => {
-      this._totalSupply$.next(Web3Pure.fromWei(value));
+      this._totalSupply$.next(Token.fromWei(value));
     });
   }
 
   public getRewardPerWeek(): void {
     from(
-      StatisticsService.blockchainAdapter.callContractMethod<string>(
+      this.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.NFT.address,
         STAKING_ROUND_THREE.NFT.abi,
         'rewardRate'
       )
     ).subscribe((value: string) => {
-      this._rewardPerWeek$.next(Web3Pure.fromWei(value).multipliedBy(this.numberOfSecondsPerWeek));
+      this._rewardPerWeek$.next(Token.fromWei(value).multipliedBy(this.numberOfSecondsPerWeek));
     });
   }
 
   public getLockedRBC(): void {
     from(
-      StatisticsService.blockchainAdapter.callContractMethod<string>(
+      this.blockchainAdapter.callContractMethod<string>(
         STAKING_ROUND_THREE.TOKEN.address,
         STAKING_ROUND_THREE.TOKEN.abi,
         'balanceOf',
         [STAKING_ROUND_THREE.NFT.address]
       )
     ).subscribe((value: string) => {
-      this._lockedRBC$.next(Web3Pure.fromWei(value));
+      this._lockedRBC$.next(Token.fromWei(value));
     });
   }
 
   public async getRBCPrice(): Promise<BigNumber> {
-    return Injector.coingeckoApi.getTokenPrice({
+    return this.sdkLegacyService.coingeckoApi.getTokenPrice({
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       address: '0x3330bfb7332ca23cd071631837dc289b09c33333'
     });
   }
 
   public async getETHPrice(): Promise<BigNumber> {
-    return Injector.coingeckoApi.getTokenPrice({
+    return this.sdkLegacyService.coingeckoApi.getTokenPrice({
       blockchain: BLOCKCHAIN_NAME.ETHEREUM,
       address: NATIVE_TOKEN_ADDRESS
     });
