@@ -81,7 +81,8 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.FILECOIN]: ['FIL'],
   // [BLOCKCHAIN_NAME.ONTOLOGY]: ['ONT'],
   [BLOCKCHAIN_NAME.XDC]: ['XDC'],
-  [BLOCKCHAIN_NAME.SUI]: ['SUI']
+  [BLOCKCHAIN_NAME.SUI]: ['SUI'],
+  [BLOCKCHAIN_NAME.ZCASH]: ['ZEC']
 };
 
 export const notEvmChangeNowBlockchainsList = {
@@ -126,7 +127,8 @@ export const notEvmChangeNowBlockchainsList = {
 
   [BLOCKCHAIN_NAME.FILECOIN]: BLOCKCHAIN_NAME.FILECOIN,
 
-  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC
+  [BLOCKCHAIN_NAME.XDC]: BLOCKCHAIN_NAME.XDC,
+  [BLOCKCHAIN_NAME.ZCASH]: BLOCKCHAIN_NAME.ZCASH
   // [BLOCKCHAIN_NAME.KADENA]: BLOCKCHAIN_NAME.KADENA,
   // [BLOCKCHAIN_NAME.AION]: BLOCKCHAIN_NAME.AION,
   // [BLOCKCHAIN_NAME.ARDOR]: BLOCKCHAIN_NAME.ARDOR,
@@ -164,7 +166,6 @@ export const notEvmChangeNowBlockchainsList = {
   // [BLOCKCHAIN_NAME.NEM]: BLOCKCHAIN_NAME.NEM,
   // [BLOCKCHAIN_NAME.VERGE]: BLOCKCHAIN_NAME.VERGE,
   // [BLOCKCHAIN_NAME.SYMBOL]: BLOCKCHAIN_NAME.SYMBOL,
-  // [BLOCKCHAIN_NAME.ZCASH]: BLOCKCHAIN_NAME.ZCASH,
   // [BLOCKCHAIN_NAME.HORIZEN]: BLOCKCHAIN_NAME.HORIZEN
 };
 
@@ -241,6 +242,11 @@ export const blockchainsList: RankedBlockchain[] = [
       BlockchainTags.PROMO,
       BlockchainTags.LAYER_2
     ]
+  },
+  {
+    name: BLOCKCHAIN_NAME.ZCASH,
+    rank: 0.73,
+    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
   },
   {
     name: BLOCKCHAIN_NAME.ZK_SYNC,
