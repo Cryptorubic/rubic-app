@@ -363,6 +363,9 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
   [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to'],
   [BLOCKCHAIN_NAME.MONAD]: [
-    'https://rpc-mainnet.monadinfra.com/rpc/ku8RBWJjRSGimJFWzeZzxMUVTznMUyrn'
+    'https://rpc.monad.xyz',
+    'https://rpc1.monad.xyz',
+    'https://rpc3.monad.xyz',
+    'https://rpc-mainnet.monadinfra.com'
   ]
 };

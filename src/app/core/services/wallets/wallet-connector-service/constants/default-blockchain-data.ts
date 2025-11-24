@@ -261,6 +261,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   },
   [BLOCKCHAIN_NAME.MONAD]: {
     name: 'Monad',
-    rpc: ''
+    rpc: 'https://rpc.monad.xyz'
   }
 };
