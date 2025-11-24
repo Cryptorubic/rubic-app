@@ -29,19 +29,12 @@ export class SdkService {
 
   public readonly crossChainStatusManager: CrossChainStatusManager;
 
-  // private _currentConfig: Configuration;
-
-  // public get currentConfig(): Configuration {
-  //   return this._currentConfig;
-  // }
-
   constructor(
     private readonly angularHttpClient: HttpClient,
     private readonly sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
     @Inject(WINDOW) private readonly window: Window
   ) {
-    // this._currentConfig = this.getConfig(this.getProviderAddresses());
     this.onChainStatusManager = new OnChainStatusManager(sdkLegacyService);
     this.crossChainStatusManager = new CrossChainStatusManager(sdkLegacyService, rubicApiService);
     this.symbiosis = new CrossChainSymbiosisManager(sdkLegacyService);
@@ -68,33 +61,8 @@ export class SdkService {
       }
     });
 
-    console.log('ADAPTERS_FACTORY ==>', adapterFactory.adapterStore);
-
     this.sdkLegacyService.adaptersFactoryService.setAdapterFactory(adapterFactory);
   }
-
-  // public getConfig(params: {
-  //   crossChainIntegratorAddress?: string;
-  //   onChainIntegratorAddress?: string;
-  // }): Configuration {
-  //   const defaultProvidersAddresses = {
-  //     crossChain: '0x3fFF9bDEb3147cE13A7FFEf85Dae81874E0AEDbE',
-  //     onChain: '0x3b9Ce17A7bD729A0abc5976bEAb6D7d150fbD0d4'
-  //   };
-  //   const envType = this.getEnvType();
-
-  //   return {
-  //     ...rubicSdkDefaultConfig,
-  //     httpClient: new SdkHttpClient(this.angularHttpClient),
-  //     ...(envType && { envType }),
-  //     providerAddress: {
-  //       [CHAIN_TYPE.EVM]: {
-  //         crossChain: params?.crossChainIntegratorAddress || defaultProvidersAddresses.crossChain,
-  //         onChain: params?.onChainIntegratorAddress || defaultProvidersAddresses.onChain
-  //       }
-  //     }
-  //   };
-  // }
 
   public updateWallet(blockchain: BlockchainName, walletProviderCore: WalletProviderCore): void {
     this.sdkLegacyService.adaptersFactoryService.adapterFactory.connectWallet(
@@ -102,25 +70,4 @@ export class SdkService {
       walletProviderCore
     );
   }
-
-  // private getProviderAddresses(): {
-  //   crossChainIntegratorAddress: string;
-  //   onChainIntegratorAddress: string;
-  // } {
-  //   const urlParams = new URLSearchParams(this.window.location.search);
-  //   const commonIntegrator = urlParams.get('feeTarget') || urlParams.get('providerAddress');
-  //   const crossChainProvider = urlParams.get('crossChainIntegratorAddress') || commonIntegrator;
-  //   const onChainProvider = urlParams.get('onChainIntegratorAddress') || commonIntegrator;
-  //   const referral = urlParams.get('referral');
-  //   const onChainProviderAddress = referralToIntegratorAddressMapping[referral?.toLowerCase()];
-
-  //   return {
-  //     crossChainIntegratorAddress: crossChainProvider,
-  //     onChainIntegratorAddress: onChainProvider || onChainProviderAddress
-  //   };
-  // }
-
-  // private getEnvType(): EnvType | null {
-  //   return ENVIRONMENT.environmentName || null;
-  // }
 }

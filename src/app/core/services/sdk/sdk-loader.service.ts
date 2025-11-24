@@ -7,6 +7,8 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { WINDOW } from '@ng-web-apis/common';
 import { createWalletClient, custom } from 'viem';
 import { CHAIN_TYPE } from '@cryptorubic/core';
+import { of } from 'rxjs';
+import { switchIif } from '@app/shared/utils/utils';
 
 @Injectable()
 export class SdkLoaderService {
@@ -21,10 +23,6 @@ export class SdkLoaderService {
     this.subscribeOnAddressChange();
 
     await this.sdkService.initSDK();
-    await this.loadUser();
-  }
-
-  private async loadUser(): Promise<void> {
     await this.authService.loadStorageUser();
   }
 
@@ -32,7 +30,11 @@ export class SdkLoaderService {
     this.walletConnectorService.addressChange$
       .pipe(
         filter(Boolean),
-        delay(1000),
+        switchIif(
+          () => this.walletConnectorService.chainType === CHAIN_TYPE.SOLANA,
+          (address: string) => of(address).pipe(delay(1_000)),
+          (address: string) => of(address)
+        ),
         tap(address => {
           const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
           const provider = this.walletConnectorService.provider;

@@ -19,7 +19,6 @@ import { RubicStep } from './models/rubicStep';
 import { TradeInfo } from './models/trade-info';
 import { TransferSwapRequestInterface } from '../../../../ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
 import { SwapResponseInterface } from '../../../../ws-api/models/swap-response-interface';
-import { WalletNotConnectedError } from '@tonconnect/ui';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import {
   AbstractAdapter,
@@ -27,6 +26,7 @@ import {
   RubicSdkError,
   TradeExpiredError,
   UpdatedRatesError,
+  WalletNotConnectedError,
   WrongFromAddressError,
   WrongReceiverAddressError
 } from '@cryptorubic/web3';
