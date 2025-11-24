@@ -67,10 +67,13 @@ export class DepositService {
         throw new Error();
       }
       const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
-      const response = await getDepositStatus(id, trade.tradeType);
+      const response = await getDepositStatus(id, trade.tradeType, {
+        depositMemo: this._depositTrade$.value.extraField?.value
+      });
 
       return response.status;
-    } catch {
+    } catch (err) {
+      console.log('[DepositService_getSwapStatus] err ==>', err);
       return CROSS_CHAIN_DEPOSIT_STATUS.WAITING;
     }
   }

@@ -42,7 +42,9 @@ export class ProviderElementComponent {
   public getTime95PercentsSwapsString(): string {
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
-    return `${time.time95PercentsSwapsMins} ${time.time95PercentsSwapsMins > 1 ? 'mins' : 'min'}`;
+    return `${time.time95PercentsSwapsMins} ${
+      time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'
+    }`;
   }
 
   public getProviderInfo(): ProviderInfo {
