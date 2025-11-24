@@ -1,10 +1,5 @@
-import { CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
+import { TransferTradeType, getDepositStatusFnMap } from '../utils/get-deposit-status';
 
-export const transferTradeSupportedProviders = [
-  CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-  CROSS_CHAIN_TRADE_TYPE.CHANGENOW,
-  CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-  CROSS_CHAIN_TRADE_TYPE.EXOLIX
-];
-
-export type TransferTradeSupportedProviders = (typeof transferTradeSupportedProviders)[number];
+export const transferTradeSupportedProviders = Object.keys(
+  getDepositStatusFnMap
+) as TransferTradeType[];

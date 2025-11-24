@@ -23,10 +23,7 @@ import { TonApiOnChainTrade } from './chains/ton/ton-api-on-chain-trade';
 import { TronApiCrossChainTrade } from './chains/tron/tron-api-cross-chain-trade';
 import { TronApiOnChainTrade } from './chains/tron/tron-api-on-chain-trade';
 
-import {
-  TransferTradeSupportedProviders,
-  transferTradeSupportedProviders
-} from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
+import { transferTradeSupportedProviders } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import { BitcoinApiCrossChainConstructor } from './chains/bitcoin/bitcoin-api-cross-chain-constructor';
 import { BitcoinApiCrossChainTrade } from './chains/bitcoin/bitcoin-api-cross-chain-trade';
 import { EvmApiCrossChainConstructor } from './chains/evm/evm-api-cross-chain-constructor';
@@ -46,6 +43,7 @@ import { ArbitrumRbcBridgeTrade } from '../cross-chain/calculation-manager/provi
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SdkLegacyService } from '../../sdk-legacy.service';
 import { RubicApiService } from '../../rubic-api/rubic-api.service';
+import { TransferTradeType } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -81,7 +79,7 @@ export class TransformUtils {
       tradeParams.from.blockchain === BLOCKCHAIN_NAME.BITCOIN;
 
     const isTransferTrade =
-      transferTradeSupportedProviders.includes(tradeType as TransferTradeSupportedProviders) &&
+      transferTradeSupportedProviders.includes(tradeType as TransferTradeType) &&
       chainType !== CHAIN_TYPE.EVM;
 
     if (isTransferTrade) {

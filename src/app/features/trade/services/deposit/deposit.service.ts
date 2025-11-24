@@ -10,7 +10,10 @@ import {
   CrossChainDepositStatus
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { CrossChainPaymentInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-payment-info';
-import { getDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
+import {
+  TransferTradeType,
+  getDepositStatus
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable()
@@ -56,7 +59,7 @@ export class DepositService {
       depositAddress: paymentInfo.depositAddress,
       receiverAddress,
       extraField: paymentInfo.extraField,
-      tradeType: selectedTrade.tradeType
+      tradeType: selectedTrade.tradeType as TransferTradeType
     };
     this._depositTrade$.next(trade);
 
@@ -71,7 +74,7 @@ export class DepositService {
       const trade = await firstValueFrom(this.previewSwapService.selectedTradeState$);
       const response = await getDepositStatus(
         id,
-        trade.tradeType,
+        trade.tradeType as TransferTradeType,
         {
           depositMemo: this._depositTrade$.value.extraField?.value
         },

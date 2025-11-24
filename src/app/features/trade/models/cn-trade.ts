@@ -1,7 +1,6 @@
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { OnChainTradeType } from '@cryptorubic/core';
-import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
+import { TransferTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export interface CrossChainTransferTrade {
   id: string;
@@ -15,7 +14,7 @@ export interface CrossChainTransferTrade {
   receiverAddress: string;
 
   timestamp: number;
-  tradeType: CrossChainTradeType | OnChainTradeType;
+  tradeType: TransferTradeType;
 
   extraField?: {
     name?: string;

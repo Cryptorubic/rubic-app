@@ -1,7 +1,4 @@
-import {
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType
-} from '../../../../models/cross-chain-trade-type';
+import { CROSS_CHAIN_TRADE_TYPE } from '../../../../models/cross-chain-trade-type';
 
 import { ChangellyApiService } from '../../../changelly-provider/services/changelly-api-service';
 import { ChangeNowCrossChainApiService } from '../../../changenow-provider/services/changenow-cross-chain-api-service';
@@ -14,7 +11,6 @@ import {
 import { RubicSdkError } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { OnChainTradeType } from '@cryptorubic/core';
 
 async function getExolixStatus(
   id: string,
@@ -131,19 +127,23 @@ export type getDepositStatusFn = (
   httpClient: HttpClient
 ) => Promise<CrossChainDepositData>;
 
-const getDepositStatusFnMap: Partial<
-  Record<CrossChainTradeType | OnChainTradeType, getDepositStatusFn>
-> = {
+const _getDepositStatusFnMap = {
   [CROSS_CHAIN_TRADE_TYPE.CHANGENOW]: ChangeNowCrossChainApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: SimpleSwapApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: ChangellyApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus,
   [CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS]: getNearIntentsStatus
-};
+} as const;
+
+export type TransferTradeType = keyof typeof _getDepositStatusFnMap;
+
+export const getDepositStatusFnMap: Record<TransferTradeType, getDepositStatusFn> = {
+  ..._getDepositStatusFnMap
+} as const;
 
 export function getDepositStatus(
   id: string,
-  tradeType: CrossChainTradeType | OnChainTradeType,
+  tradeType: TransferTradeType,
   params: GetDepositStatusFnParams,
   httpClient: HttpClient
 ): Promise<CrossChainDepositData> {
