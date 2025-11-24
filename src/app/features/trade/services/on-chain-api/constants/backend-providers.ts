@@ -156,7 +156,10 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.KYO_FINANCE]: 'kyo_finance',
   [ON_CHAIN_TRADE_TYPE.CETUS]: 'cetus',
   [ON_CHAIN_TRADE_TYPE.ORCA_SWAP]: 'orca',
-  [ON_CHAIN_TRADE_TYPE.DFLOW]: 'dflow'
+  [ON_CHAIN_TRADE_TYPE.DFLOW]: 'dflow',
+  [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: 'aethon_swap',
+  [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: 'octo_swap',
+  [ON_CHAIN_TRADE_TYPE.ATLANTIS]: 'atlantis'
 } as const;
 
 export const FROM_BACKEND_ON_CHAIN_PROVIDERS = {

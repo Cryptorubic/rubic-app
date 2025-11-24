@@ -2327,18 +2327,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.14.0.tgz#73ad5a38f1c1585a62627fc7eb5f10ec969c5ce5"
-  integrity sha512-u4YLIH/tXocO4LT8Xp2Hp1iD6joHOzVrf7KjWfBqL3m8A1Lm+7Tb41kjAWXht+zk+vxrJT+0icWvlDOz6ViRDw==
+"@cryptorubic/core@0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.14.1.tgz#7676c39fd751d143309c96ea7d06026df7c65420"
+  integrity sha512-t0ZXUfn65Td5VQbRV6UQze6vesKQKfrAjSiMbS+RfwEcgHCB67djC/e8FjTZsUFwCek9u3fQ/xPCjM3WWYvY2Q==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/sdk@0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.14.0.tgz#310a0312d4216a8935878f4d28a6634543ffc07b"
-  integrity sha512-nvtpsCHSLiA6TC/c606rHa2b8U3uOyXV0C3BSy4KNfwtdJKKzUW+pUWG/V0ETDlypR3nniGib2BtRO79ODHPPA==
+"@cryptorubic/sdk@0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/sdk/-/sdk-0.14.1.tgz#3ed0a7c194ad9dfe54bcd87a2f94cbbb94837904"
+  integrity sha512-uTnz11uXUEkirIH3lJdM6C9ED+Sr4M3o1JKEnKdtgW6qwp6V7wn7Dn+9pbVwoj9AfjV4KejSC4Hm0770mtIrNg==
   dependencies:
     "@ethersproject/abstract-provider" "^5.8.0"
     "@ethersproject/bignumber" "^5.8.0"
@@ -2365,10 +2365,10 @@
     tslib "*"
     viem "^2.33.1"
 
-"@cryptorubic/web3@0.14.0":
-  version "0.14.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.14.0.tgz#6343f742a45ea61a9589b9dcf007632fe12a7fbd"
-  integrity sha512-0iyEi4oQrWfQvE2cpOax7aF7LUCxLohwgj2gdWSbXqgoa3EmqgE+GPAO00wnPb7pXm3MEMdcZLIh8ebUt1cuxw==
+"@cryptorubic/web3@0.14.1":
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.14.1.tgz#8c8a44a1507a6ff3391f4d2ddf48fc8adc06d263"
+  integrity sha512-u5cNVQc6a49ruqCAhiOwVaY+734ykMpDCbaAwlcvJgr5FXssKFeiD53DjQ93yLeUSxS9OI0p2XzUNWlm1ozlXQ==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"

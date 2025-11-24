@@ -361,6 +361,11 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://x-api.rubic.exchange/drpc/unichain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
   [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
-  [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to']
-  // [BLOCKCHAIN_NAME.MONAD_TESTNET]: ['https://testnet-rpc.monad.xyz']
+  [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to'],
+  [BLOCKCHAIN_NAME.MONAD]: [
+    'https://rpc.monad.xyz',
+    'https://rpc1.monad.xyz',
+    'https://rpc3.monad.xyz',
+    'https://rpc-mainnet.monadinfra.com'
+  ]
 };

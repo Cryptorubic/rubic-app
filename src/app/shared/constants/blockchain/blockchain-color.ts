@@ -155,5 +155,6 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.SUI]: '#FFFFFF',
   [BLOCKCHAIN_NAME.WANCHAIN]: '#2a74db',
   [BLOCKCHAIN_NAME.HEMI]: '#FFFFFF',
-  [BLOCKCHAIN_NAME.PLASMA]: '#162f29'
+  [BLOCKCHAIN_NAME.PLASMA]: '#162f29',
+  [BLOCKCHAIN_NAME.MONAD]: '#FFFFFF'
 };

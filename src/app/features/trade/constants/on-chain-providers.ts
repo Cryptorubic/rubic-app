@@ -68,7 +68,17 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.AVNU]: {
     name: 'Avnu',
     image: `${imageBasePath}avnu.png`,
-    color: 'white'
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: {
+    name: 'AethonSwap',
+    image: `${imageBasePath}aethon_swap.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.ATLANTIS]: {
+    name: 'Atlantis',
+    image: `${imageBasePath}atlantis.svg`,
+    color: '#000000'
   },
 
   //BBBBBBBBBBBBBBBBBBBBB
@@ -456,6 +466,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'OsmosisSwap',
     image: `${imageBasePath}../bridge/osmosis.svg`,
     color: '#5E12A0'
+  },
+  [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: {
+    name: 'OctoSwap',
+    image: `${imageBasePath}octoswap.svg`,
+    color: '#FFFFFF'
   },
 
   //PPPPPPPPPPPPPPPPPPPPPPPPPP
