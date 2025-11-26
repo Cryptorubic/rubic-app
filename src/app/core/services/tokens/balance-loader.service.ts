@@ -134,20 +134,22 @@ export class BalanceLoaderService {
       } else {
         const chain = key as Exclude<keyof TokensListOfTopChainsWithOtherChains, 'TOP_CHAINS'>;
         const chainTokens = tokensByChain[chain];
+
         const chainAdapter = getChainAdapterSafe(
           chain,
           this.authService.userAddress,
           this.sdkLegacyService
         );
 
-        const balancesPromise = chainAdapter
-          ? chainAdapter
-              .getTokensBalances(
-                this.authService.userAddress,
-                chainTokens.map(t => t.address)
-              )
-              .catch(() => chainTokens.map(() => new BigNumber(NaN)))
-          : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
+        const balancesPromise =
+          chainAdapter && this.isChainSupportedByWallet(chain)
+            ? chainAdapter
+                .getTokensBalances(
+                  this.authService.userAddress,
+                  chainTokens.map(t => t.address)
+                )
+                .catch(() => chainTokens.map(() => new BigNumber(NaN)))
+            : Promise.resolve(chainTokens.map(() => new BigNumber(NaN)));
 
         balancesPromise
           .then(balances => {
