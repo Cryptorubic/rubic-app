@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map } from 'rxjs/operators';
+import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -22,6 +22,10 @@ import { TradePageService } from './features/trade/services/trade-page/trade-pag
 import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
 import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
+import { switchIif } from './shared/utils/utils';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 
 @Component({
   selector: 'app-root',
@@ -51,7 +55,8 @@ export class AppComponent implements AfterViewInit {
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tradePageService: TradePageService,
     private readonly tokensNetworkService: TokensNetworkService,
-    private readonly chartService: ChartService
+    private readonly chartService: ChartService,
+    private readonly sdkLoaderService: SdkLoaderService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -67,27 +72,39 @@ export class AppComponent implements AfterViewInit {
   }
 
   private subscribeOnWalletChanges(): void {
-    this.walletConnectorService.addressChange$.subscribe(userAddress => {
-      this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
-      this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
+    this.walletConnectorService.addressChange$
+      .pipe(
+        switchIif(
+          () =>
+            this.walletConnectorService.chainType === CHAIN_TYPE.SOLANA &&
+            this.walletConnectorService.provider.walletName === WALLET_NAME.BACKPACK,
+          (address: string) => of(address).pipe(delay(1_000)),
+          (address: string) => of(address)
+        )
+      )
+      .subscribe(userAddress => {
+        if (userAddress) this.sdkLoaderService.onAddressChange(userAddress);
 
-      const allTokensAssetData: BalanceLoadingAssetData = {
-        assetType: 'allChains',
-        tokenFilter: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
-      };
+        this.balanceLoadingStateService.resetBalanceCalculatingStatuses();
+        this.tokensStoreService.startBalanceCalculating(this.assetsSelectorStateService.assetType);
 
-      // load ALL_CHAINS_ALL_TOKENS assets in background if token's selector closed
-      // and if ALL_CHAINS_ALL_TOKENS balances not loaded yet
-      if (
-        userAddress &&
-        this.tradePageService.formContent === 'form' &&
-        !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData)
-      ) {
-        this.tokensStoreService.startBalanceCalculating('allChains', {
-          allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
-        });
-      }
-    });
+        const allTokensAssetData: BalanceLoadingAssetData = {
+          assetType: 'allChains',
+          tokenFilter: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+        };
+
+        // load ALL_CHAINS_ALL_TOKENS assets in background if token's selector closed
+        // and if ALL_CHAINS_ALL_TOKENS balances not loaded yet
+        if (
+          userAddress &&
+          this.tradePageService.formContent === 'form' &&
+          !this.balanceLoadingStateService.isBalanceCalculated(allTokensAssetData)
+        ) {
+          this.tokensStoreService.startBalanceCalculating('allChains', {
+            allChainsFilterToPatch: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+          });
+        }
+      });
   }
 
   /**
