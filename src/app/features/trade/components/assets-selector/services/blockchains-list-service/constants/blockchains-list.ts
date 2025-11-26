@@ -238,31 +238,9 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['XPL', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
   },
   {
-    name: BLOCKCHAIN_NAME.LINEA,
-    rank: 0.73,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
-  },
-  {
     name: BLOCKCHAIN_NAME.ZCASH,
     rank: 0.73,
     tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
-  },
-  {
-    name: BLOCKCHAIN_NAME.ZK_SYNC,
-    rank: 0.73,
-    tags: [
-      'ETH',
-      BlockchainTags.POPULAR,
-      BlockchainTags.EVM,
-      BlockchainTags.PROMO,
-      BlockchainTags.LAYER_2
-    ]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
