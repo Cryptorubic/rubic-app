@@ -182,6 +182,7 @@ export class BalanceLoaderService {
 
     this.balanceLoadingStateService.setBalanceCalculated({ assetType: blockchain }, true);
     this.balanceLoadingStateService.setBalanceLoading({ assetType: blockchain }, false);
+
     onFinish(tokensWithBalances);
   }
 

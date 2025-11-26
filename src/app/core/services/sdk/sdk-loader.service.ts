@@ -24,6 +24,8 @@ export class SdkLoaderService {
   public onAddressChange(address: string): void {
     const chainType = this.walletConnectorService.chainType as keyof WalletProvider;
     const provider = this.walletConnectorService.provider;
+    if (!chainType) return;
+
     const chainTypeMap = {
       [CHAIN_TYPE.TRON]: provider.wallet?.tronWeb,
       [CHAIN_TYPE.EVM]:
