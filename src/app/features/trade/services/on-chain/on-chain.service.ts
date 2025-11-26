@@ -165,6 +165,8 @@ export class OnChainService {
       });
     };
 
+    const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -191,7 +193,8 @@ export class OnChainService {
         feePayer: SOLANA_SPONSOR,
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
-      }
+      },
+      ...(gasLimitRatio && { gasLimitRatio })
     };
 
     try {
@@ -444,5 +447,13 @@ export class OnChainService {
     } catch {
       return null;
     }
+  }
+
+  private getGasLimitRatio(fromBlockchain: BlockchainName): number | null {
+    if (fromBlockchain === BLOCKCHAIN_NAME.MONAD) {
+      return 1.1;
+    }
+
+    return null;
   }
 }
