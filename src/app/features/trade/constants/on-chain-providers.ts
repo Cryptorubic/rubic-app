@@ -180,7 +180,7 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     color: '#19E0CE'
   },
   [ON_CHAIN_TRADE_TYPE.CLOBER]: {
-    name: 'Cober',
+    name: 'Clober',
     image: `${imageBasePath}clober.svg`,
     color: '#000000'
   },
