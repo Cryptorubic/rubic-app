@@ -2,14 +2,10 @@ import { Inject, Injectable } from '@angular/core';
 import { HttpService } from 'src/app/core/services/http/http.service';
 
 import {
-  CrossChainStatus,
-  CrossChainTrade,
   NotWhitelistedProviderError,
-  TO_BACKEND_BLOCKCHAINS,
-  Web3Pure,
   UnapprovedContractError,
   UnapprovedMethodError
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/web3';
 import { firstValueFrom, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
@@ -26,8 +22,12 @@ import { TargetNetworkAddressService } from '../target-network-address-service/t
 import {
   BlockchainName,
   CrossChainTradeType,
-  TO_BACKEND_CROSS_CHAIN_PROVIDERS
+  TO_BACKEND_BLOCKCHAINS,
+  TO_BACKEND_CROSS_CHAIN_PROVIDERS,
+  Token
 } from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { CrossChainStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/status-manager/models/cross-chain-status';
 
 @Injectable()
 export class CrossChainApiService {
@@ -167,13 +167,13 @@ export class CrossChainApiService {
       device_type: this.isMobile ? 'mobile' : 'desktop',
       expected_amount: trade.to.stringWeiAmount,
       mevbot_protection: this.settingsService.crossChainRoutingValue.useMevBotProtection,
-      to_amount_min: Web3Pure.toWei(trade.toTokenAmountMin, toDecimals),
+      to_amount_min: Token.toWei(trade.toTokenAmountMin, toDecimals),
       from_network: TO_BACKEND_BLOCKCHAINS[fromBlockchain],
       to_network: TO_BACKEND_BLOCKCHAINS[toBlockchain],
       provider: TO_BACKEND_CROSS_CHAIN_PROVIDERS[trade.type],
       from_token: fromAddress,
       to_token: toAddress,
-      from_amount: Web3Pure.toWei(fromAmount, fromDecimals),
+      from_amount: Token.toWei(fromAmount, fromDecimals),
       to_amount: trade.to.stringWeiAmount,
       user: this.authService.userAddress,
       receiver: this.targetNetworkAddressService.address || this.authService.userAddress,

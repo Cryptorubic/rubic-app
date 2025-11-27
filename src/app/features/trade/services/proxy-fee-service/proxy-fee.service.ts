@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { PriceToken } from '@cryptorubic/sdk';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import BigNumber from 'bignumber.js';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
@@ -25,7 +24,7 @@ import { firstValueFrom } from 'rxjs';
 import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 import { percentAddress } from './const/fee-type-address-mapping';
 import { isWrapUnwrap } from '@app/shared/utils/is-wrap-unwrap';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, PriceToken } from '@cryptorubic/core';
 
 @Injectable({ providedIn: 'root' })
 export class ProxyFeeService {

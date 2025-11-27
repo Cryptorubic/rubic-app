@@ -1,3 +1,4 @@
+/* eslint-disable unused-imports/no-unused-vars */
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -12,12 +13,8 @@ import {
   SendTransactionsParams,
   SendTransactionsResponse
 } from '@safe-global/safe-apps-sdk/src/types';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  EvmBlockchainName,
-  EvmEncodeConfig
-} from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
+import { EvmTransactionConfig } from '@cryptorubic/web3';
 
 export class SafeWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.SAFE;
@@ -87,8 +84,8 @@ export class SafeWalletAdapter extends EvmWalletAdapter {
         throw new Error('No transactions were passed');
       }
       const newTxs = txs.map(tx => {
-        // eslint-disable-next-line unused-imports/no-unused-vars
-        const { maxFeePerGas, maxPriorityFeePerGas, ...newTx } = tx as unknown as EvmEncodeConfig;
+        const { maxFeePerGas, maxPriorityFeePerGas, ...newTx } =
+          tx as unknown as EvmTransactionConfig;
         return newTx;
       });
 

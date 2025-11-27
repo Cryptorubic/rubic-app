@@ -1,10 +1,6 @@
-import {
-  BlockchainName,
-  OnChainTrade,
-  OnChainTradeType,
-  CrossChainTradeType,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { BlockchainName, OnChainTradeType, CrossChainTradeType } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 
 export class TradeParser {

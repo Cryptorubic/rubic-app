@@ -4,18 +4,6 @@ import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
 import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
-import {
-  CROSS_CHAIN_DEPOSIT_STATUS,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTrade,
-  CrossChainTransferTrade,
-  EvmCrossChainTrade,
-  EvmOnChainTrade,
-  FeeInfo,
-  nativeTokensList,
-  OnChainTrade,
-  Web3Pure
-} from '@cryptorubic/sdk';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -31,6 +19,14 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { CROSS_CHAIN_DEPOSIT_STATUS } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
+import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
+import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
+import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -199,13 +195,13 @@ export class DepositPreviewSwapComponent {
     if (gasData.gasLimit) {
       gasFeeWei = gasData.gasLimit.multipliedBy(gasData.gasPrice ?? 0);
     } else if (gasData.totalGas) {
-      gasFeeWei = Web3Pure.fromWei(gasData.totalGas, nativeToken.decimals);
+      gasFeeWei = Token.fromWei(gasData.totalGas, nativeToken.decimals);
     }
 
     if (!gasFeeWei) return null;
 
     return {
-      amount: Web3Pure.fromWei(gasFeeWei, nativeToken.decimals),
+      amount: Token.fromWei(gasFeeWei, nativeToken.decimals),
       symbol: nativeToken.symbol
     };
   }

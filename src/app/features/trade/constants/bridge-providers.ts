@@ -1,4 +1,4 @@
-import { BridgeType } from '@cryptorubic/sdk';
+import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';

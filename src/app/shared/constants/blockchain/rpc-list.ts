@@ -7,7 +7,7 @@ import {
   BitcoinBlockchainName,
   SuiBlockchainName
 } from '@cryptorubic/core';
-import { TronWebProvider } from '@cryptorubic/sdk';
+import { TronWebProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
@@ -237,7 +237,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://1rpc.io/scroll',
     'https://x-api.rubic.exchange/drpc/scroll?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.STARKNET]: [],
   [BLOCKCHAIN_NAME.SOLANA]: [
     // 'https://mainnet.helius-rpc.com/?api-key=57811715-bc56-431e-a19e-7181ca73849c',
     'https://x-api.rubic.exchange/sol_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
@@ -351,10 +350,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.soneium.org/',
     'https://soneium.drpc.org',
     'https://x-api.rubic.exchange/drpc/soneium?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
-  [BLOCKCHAIN_NAME.WANCHAIN]: [
-    'https://gwan2-ssl.wandevs.org',
-    'https://gwan-ssl.wandevs.org:56891'
   ],
   [BLOCKCHAIN_NAME.UNICHAIN]: [
     'https://mainnet.unichain.org/',
