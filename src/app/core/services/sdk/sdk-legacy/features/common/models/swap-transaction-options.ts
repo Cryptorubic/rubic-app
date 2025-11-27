@@ -36,6 +36,11 @@ export interface SwapTransactionOptions {
   gasLimit?: string;
 
   /**
+   * gasLimit multiplier (to change ratio for specific chain)
+   */
+  gasLimitRatio?: number;
+
+  /**
    * Approve evm-transaction gas limit.
    * Will be used for approve transaction, if it is called before swap.
    */

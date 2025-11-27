@@ -48,7 +48,8 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.UNICHAIN,
   BLOCKCHAIN_NAME.MORPH,
   BLOCKCHAIN_NAME.FLARE,
-  BLOCKCHAIN_NAME.HEMI
+  BLOCKCHAIN_NAME.HEMI,
+  BLOCKCHAIN_NAME.MONAD
 ] as const;
 
 type SupportedBlockchain = (typeof supportedBlockchains)[number];
@@ -99,7 +100,8 @@ export class GasService {
     [BLOCKCHAIN_NAME.SONEIUM]: this.fetchSoneiumGas.bind(this),
     [BLOCKCHAIN_NAME.UNICHAIN]: this.fetchUnichainGas.bind(this),
     [BLOCKCHAIN_NAME.FLARE]: this.fetchFlareGas.bind(this),
-    [BLOCKCHAIN_NAME.HEMI]: this.fetchHemiGas.bind(this)
+    [BLOCKCHAIN_NAME.HEMI]: this.fetchHemiGas.bind(this),
+    [BLOCKCHAIN_NAME.MONAD]: this.fetchMonadGas.bind(this)
   };
 
   private static isSupportedBlockchain(
@@ -780,6 +782,19 @@ export class GasService {
           gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
         };
       })
+    );
+  }
+
+  @Cacheable({
+    maxAge: GasService.requestInterval
+  })
+  private fetchMonadGas(): Observable<GasPrice> {
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.MONAD
+    );
+    return from(blockchainAdapter.getPriorityFeeGas()).pipe(
+      map(formatEIP1559Gas),
+      catchError(() => of(null))
     );
   }
 }

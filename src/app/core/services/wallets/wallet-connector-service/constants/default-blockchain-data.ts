@@ -254,5 +254,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.PLASMA]: {
     name: 'Plasma',
     rpc: 'https://rpc.plasma.to'
+  },
+  [BLOCKCHAIN_NAME.MONAD]: {
+    name: 'Monad',
+    rpc: 'https://rpc.monad.xyz'
   }
 };

@@ -186,7 +186,9 @@ export class PreviewSwapComponent implements OnDestroy {
     if (tradeState?.tradeType) {
       if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
       const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
-      return `${time.time95PercentsSwapsMins} ${time.time95PercentsSwapsMins > 1 ? 'mins' : 'min'}`;
+      return `${time.time95PercentsSwapsMins} ${
+        time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'
+      }`;
     } else {
       return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
     }

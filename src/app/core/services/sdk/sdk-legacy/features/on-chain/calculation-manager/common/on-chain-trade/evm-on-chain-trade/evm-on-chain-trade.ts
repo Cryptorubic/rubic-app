@@ -223,7 +223,8 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
           gasPriceOptions: options.gasPriceOptions,
           ...(options?.useEip155 && {
             chainId: `0x${blockchainId[this.from.blockchain].toString(16)}`
-          })
+          }),
+          gasLimitRatio: options.gasLimitRatio
         }
       });
 

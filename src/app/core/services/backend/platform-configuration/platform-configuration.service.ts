@@ -14,24 +14,10 @@ import {
 import { defaultInfoV3Config } from './constants/defauls-info-v3-config';
 import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/platform-config-v3';
 
-interface ProvidersConfiguration {
-  disabledCrossChainTradeTypes: CrossChainTradeType[];
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
-  private readonly _disabledCcrProviders$ = new BehaviorSubject<ProvidersConfiguration>({
-    disabledCrossChainTradeTypes: undefined
-  });
-
-  public readonly disabledCcrProviders$ = this._disabledCcrProviders$.asObservable();
-
-  public get disabledCcrProviders(): ProvidersConfiguration {
-    return this._disabledCcrProviders$.getValue();
-  }
-
   private readonly _ccrProvidersInfo$ = new BehaviorSubject<
     Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>
   >(undefined);
@@ -62,7 +48,6 @@ export class PlatformConfigurationService {
         tap(infoV3Response => {
           if (infoV3Response.appIsActive === true) {
             this.setBlockchainsInfo(infoV3Response.networks);
-            this.setDisabledProviders(infoV3Response.crosschainProviders);
             this.setCcrProvidersInfo(infoV3Response.crosschainProviders);
           }
         }),
@@ -88,20 +73,6 @@ export class PlatformConfigurationService {
     );
 
     this._availableBlockchains$.next(blockchainStatuses);
-  }
-
-  private setDisabledProviders(
-    crossChainProviders: Record<ToBackendCrossChainProviders, PlatformConfigV3CcrProviderInfo>
-  ): void {
-    const disabledCcrProviders = Object.entries(crossChainProviders)
-      .filter(([_, info]) => info.isForceDisabled)
-      .map(
-        ([pythonProviderName, _]) =>
-          FROM_BACKEND_CROSS_CHAIN_PROVIDERS[pythonProviderName as ToBackendCrossChainProviders]
-      );
-    if (!disabledCcrProviders.length) return;
-
-    this._disabledCcrProviders$.next({ disabledCrossChainTradeTypes: disabledCcrProviders });
   }
 
   private setCcrProvidersInfo(

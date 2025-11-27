@@ -34,5 +34,6 @@ export const shouldCalculateGas: Record<BlockchainName, boolean> = {
   [BLOCKCHAIN_NAME.MORPH]: true,
   // [BLOCKCHAIN_NAME.SONIC]: true,
   [BLOCKCHAIN_NAME.UNICHAIN]: true,
-  [BLOCKCHAIN_NAME.HEMI]: true
+  [BLOCKCHAIN_NAME.HEMI]: true,
+  [BLOCKCHAIN_NAME.MONAD]: true
 };
