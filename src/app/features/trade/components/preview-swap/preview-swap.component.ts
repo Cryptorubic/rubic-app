@@ -36,6 +36,7 @@ import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-st
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { AppGasData } from '../../models/provider-info';
+import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 
 @Component({
   selector: 'app-preview-swap',
@@ -175,6 +176,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public getAverageTimeString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
       if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      if (isNearIntentsTrade(tradeState.trade)) return '20+ mins';
       const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
       return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
     } else {
@@ -185,6 +187,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public getTime95PercentsSwapsString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
       if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      if (isNearIntentsTrade(tradeState.trade)) return '20+ minutes';
       const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
       return `${time.time95PercentsSwapsMins} ${
         time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'
