@@ -10,7 +10,7 @@ import {
   BlockchainsInfo,
   CHAIN_TYPE,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { NgZone } from '@angular/core';
 
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';

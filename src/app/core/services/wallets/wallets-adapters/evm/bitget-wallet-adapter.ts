@@ -16,7 +16,7 @@ import {
   CHAIN_TYPE,
   ChainType,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { NgZone } from '@angular/core';
 import { NeedDisableTokenPocketWalletError } from '@app/core/errors/models/provider/token-pocket-enabled-error';

@@ -4,9 +4,9 @@ import {
   TokenFilter
 } from '@app/features/trade/components/assets-selector/models/token-filters';
 import { AssetType } from '@app/features/trade/models/asset';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/sdk';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BalanceLoadingAssetData } from './models/balance-loading-types';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'

@@ -10,9 +10,9 @@ import {
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Web3Pure } from '@cryptorubic/sdk';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
+import { Token } from '@cryptorubic/core';
 
 @Injectable()
 export class TestnetPromoApiService {
@@ -118,12 +118,12 @@ export class TestnetPromoApiService {
           activeRound: el?.activeRound
             ? {
                 ...el.activeRound,
-                amount: Web3Pure.fromWei(el.activeRound.amount, 18).toFixed()
+                amount: Token.fromWei(el.activeRound.amount, 18).toFixed()
               }
             : null,
           completed: el.completed.map(completed => ({
             ...completed,
-            amount: Web3Pure.fromWei(completed.amount || 0, 18).toFixed()
+            amount: Token.fromWei(completed.amount || 0, 18).toFixed()
           }))
         })),
         catchError(() =>

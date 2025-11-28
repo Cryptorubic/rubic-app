@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { BlockchainTags } from '../../../components/blockchains-filter-list/models/BlockchainFilters';
 
 export interface RankedBlockchain {
@@ -255,11 +255,6 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM]
   },
-  // @DELETE
-  // {
-  //   name: BLOCKCHAIN_NAME.WANCHAIN,
-  //   rank: 0.5,
-  //   tags: ['WAN', BlockchainTags.NEW, BlockchainTags.EVM]
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,

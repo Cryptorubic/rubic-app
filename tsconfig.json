@@ -31,8 +31,7 @@
       "@core/*": ["./src/app/core/*"],
       "@features/*": ["./src/app/features/*"],
       "@shared/*": ["./src/app/shared/*"],
-      "zlib": ["node_modules/browserify-zlib"],
-      
+      "zlib": ["node_modules/browserify-zlib"]
     },
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true
