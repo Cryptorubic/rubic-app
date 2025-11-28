@@ -176,7 +176,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public getAverageTimeString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
       if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
-      if (isNearIntentsTrade(tradeState.trade)) return '20+ mins';
+      if (isNearIntentsTrade(tradeState.trade)) return '10+ mins';
       const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
       return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
     } else {
@@ -187,7 +187,7 @@ export class PreviewSwapComponent implements OnDestroy {
   public getTime95PercentsSwapsString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
       if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
-      if (isNearIntentsTrade(tradeState.trade)) return '20+ minutes';
+      if (isNearIntentsTrade(tradeState.trade)) return '10+ minutes';
       const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
       return `${time.time95PercentsSwapsMins} ${
         time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'

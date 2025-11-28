@@ -36,14 +36,14 @@ export class ProviderElementComponent {
 
   public getAverageTimeString(): string {
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
-    if (isNearIntentsTrade(this.tradeState.trade)) return '20+ mins';
+    if (isNearIntentsTrade(this.tradeState.trade)) return '10+ mins';
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
     return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
   }
 
   public getTime95PercentsSwapsString(): string {
     if (isArbitrumBridgeRbcTrade(this.tradeState.trade)) return '7 days';
-    if (isNearIntentsTrade(this.tradeState.trade)) return '20+ minutes';
+    if (isNearIntentsTrade(this.tradeState.trade)) return '10+ minutes';
     const time = this.tradeInfoManager.getAverageSwapTimeMinutes(this.tradeState.trade);
     return `${time.time95PercentsSwapsMins} ${
       time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'
