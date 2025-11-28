@@ -210,7 +210,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     };
 
     const fromAddress = this.walletAddress;
-    const { data, value, to } = await this.encode({ ...options, fromAddress });
+    const { data, value, to, gas } = await this.encode({ ...options, fromAddress });
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
 
     try {
@@ -219,6 +219,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
           data,
           to,
           value,
+          gas,
           onTransactionHash,
           gasPriceOptions: options.gasPriceOptions,
           ...(options?.useEip155 && {
@@ -259,10 +260,11 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
 
-    const config = {
+    const config: EvmTransactionConfig = {
       data: swapData.transaction.data!,
       value: swapData.transaction.value!,
-      to: swapData.transaction.to!
+      to: swapData.transaction.to!,
+      gas: swapData.fees.gasTokenFees.gas.gasLimit!
     };
 
     const amount = swapData.estimate.destinationWeiAmount;
