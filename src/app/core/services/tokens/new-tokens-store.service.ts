@@ -2,16 +2,25 @@ import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
 import { BlockchainUtilityState, TokensState } from '@core/services/tokens/models/new-token-types';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { map } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
+import BigNumber from 'bignumber.js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NewTokensStoreService {
   public readonly tokens = this.createTokenStore();
+
+  public allTokens$ = combineLatest([...Object.values(this.tokens).map(t => t.tokens$)]).pipe(
+    map(([...allArrays]) => {
+      const allTokens = allArrays.flat();
+      console.log(allTokens);
+      return allTokens;
+    })
+  );
 
   constructor() {}
 
@@ -25,10 +34,13 @@ export class NewTokensStoreService {
       chainObject._pageLoading$.next(true);
       const currentTokens = chainObject._tokensObject$;
 
-      const newValues = tokens.list.reduce(
-        (acc, token) => ({ ...acc, [token.address]: token }),
-        {}
-      );
+      const newValues = tokens.list
+        .sort((a, b) => {
+          const aTotalRank = a.rank * (a?.networkRank || 1);
+          const bTotalRank = b.rank * (b?.networkRank || 1);
+          return aTotalRank > bTotalRank ? -1 : 1;
+        })
+        .reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
       currentTokens.next({ ...currentTokens.value, ...newValues });
       chainObject._pageLoading$.next(false);
       chainObject.page = chainObject.page + 1;
@@ -43,6 +55,13 @@ export class NewTokensStoreService {
     const currentTokens = this.tokens[blockchain]._tokensObject$;
     const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
     currentTokens.next({ ...currentTokens.value, ...newValues });
+  }
+
+  public addBlockchainBalanceTokens(blockchain: BlockchainName, tokens: BalanceToken[]): void {
+    const currentTokens = this.tokens[blockchain]._tokensObject$;
+    const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
+    currentTokens.next({ ...currentTokens.value, ...newValues });
+    console.log('CHAINGE', currentTokens.value);
   }
 
   public updateBlockchainTokens(blockchain: BlockchainName, newTokens: ReadonlyArray<Token>): void {
@@ -95,10 +114,10 @@ export class NewTokensStoreService {
 
       acc[blockchain] = {
         _pageLoading$: loadingSubject$,
-        pageLoading$: loadingSubject$.asObservable(),
+        pageLoading$: loadingSubject$.asObservable().pipe(distinctUntilChanged()),
 
         _balanceLoading$: balanceLoadingSubject$,
-        balanceLoading$: balanceLoadingSubject$.asObservable(),
+        balanceLoading$: balanceLoadingSubject$.asObservable().pipe(distinctUntilChanged()),
 
         blockchain,
 
@@ -108,9 +127,26 @@ export class NewTokensStoreService {
 
         totalTokens: null,
         page: 0,
-        allowFetching: true
+        allowFetching: true,
+        getTokens: () => tokensSubject$.getValue()
       };
       return acc;
     }, {} as unknown as TokensState);
+  }
+
+  public getAllTokens(): BalanceToken[] {
+    return Object.values(this.tokens).reduce((acc, chainStore) => {
+      return [...acc, ...Object.values(chainStore._tokensObject$.getValue())];
+    }, []);
+  }
+
+  public clearAllBalances(): void {
+    Object.values(this.tokens).forEach(chainStore => {
+      const tokens = chainStore._tokensObject$.getValue();
+      Object.keys(tokens).forEach(address => {
+        tokens[address].amount = new BigNumber(NaN);
+      });
+      chainStore._tokensObject$.next(tokens);
+    });
   }
 }

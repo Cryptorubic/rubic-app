@@ -43,7 +43,7 @@ export abstract class CommonUtilityStore {
         return foundToken;
       });
       const filteredTokens =
-        searchQuery && searchQuery.length > 2
+        searchQuery && searchQuery.length >= 2
           ? tokens.filter(
               token =>
                 token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

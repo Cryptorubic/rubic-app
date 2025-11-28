@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName, Web3Pure } from '@cryptorubic/sdk';
 import {
+  BackendBalanceToken,
   BackendToken,
+  BalanceTokensBackendResponse,
   ENDPOINTS,
   FavoriteTokenRequestParams,
   NewTokensBackendResponse,
@@ -22,6 +24,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { ENVIRONMENT } from '../../../../environments/environment';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
 
 @Injectable({
   providedIn: 'root'
@@ -75,30 +78,35 @@ export class NewTokensApiService {
   public static prepareTokens<T extends BackendToken = BackendToken, K extends Token = Token>(
     tokens: T[]
   ): K[] {
-    return tokens
-      .map((token: T) => {
-        // @ts-ignore
-        return {
-          blockchain: FROM_BACKEND_BLOCKCHAINS[token.blockchainNetwork as BackendBlockchain],
-          address: token.address,
-          name: token.name,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.image,
-          rank: token.rank,
-          price: token.usdPrice,
-          tokenSecurity: token.token_security,
-          type: token.type,
-          ...('source_rank' in token && { sourceRank: token.source_rank }),
-          ...('usdPriceChangePercentage24h' in token && {
-            priceChange24h: token.usdPriceChangePercentage24h
-          }),
-          ...('usdPriceChangePercentage7d' in token && {
-            priceChange7d: token.usdPriceChangePercentage7d
-          })
-        } as K;
-      })
-      .filter(token => token.address && token.blockchain);
+    const tokenModel = tokens.map((token: T) => {
+      // @TODO Back bug, fix after
+      const backendBlockchain = (FROM_BACKEND_BLOCKCHAINS[
+        token.blockchainNetwork as BackendBlockchain
+      ] || (token as RubicAny)?.network) as BackendBlockchain;
+      // @ts-ignore
+      return {
+        blockchain: backendBlockchain,
+        address: token.address,
+        name: token.name,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        image: token.image,
+        rank: token.rank,
+        price: token.usdPrice,
+        tokenSecurity: token.token_security,
+        networkRank: token.networkRank || 1,
+        type: token.type,
+        ...('source_rank' in token && { sourceRank: token.source_rank }),
+        ...('usdPriceChangePercentage24h' in token && {
+          priceChange24h: token.usdPriceChangePercentage24h
+        }),
+        ...('usdPriceChangePercentage7d' in token && {
+          priceChange7d: token.usdPriceChangePercentage7d
+        }),
+        ...('balance' in token && { amount: Web3Pure.fromWei(token.balance) })
+      } as K;
+    });
+    return tokenModel.filter(token => token.address && token.blockchain);
   }
 
   public getNewPage(
@@ -128,8 +136,6 @@ export class NewTokensApiService {
   public getTopTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
-    // const tier1Blockchains = this.topTierChains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
-
     return this.httpService
       .get<Partial<Record<BlockchainName, NewTokensBackendResponse>>>(
         ENDPOINTS.NEW_TOKENS,
@@ -253,6 +259,37 @@ export class NewTokensApiService {
             resp.results as RatedBackendToken[]
           )
         ),
+        catchError(() => of([]))
+      );
+  }
+
+  public getBackendBalances(
+    address: string
+  ): Observable<Partial<Record<BlockchainName, BackendBalanceToken[]>>> {
+    // @ts-ignore
+    return this.httpService
+      .get<BalanceTokensBackendResponse>(
+        `v3/tmp/tokens/get_user_token_balances?userAddress=${address}`,
+        {},
+        '',
+        {
+          retry: 2,
+          timeoutMs: 15_000
+        }
+      )
+      .pipe(
+        map(resp => {
+          const q = Object.entries(resp.tokens as RubicAny).reduce(
+            (acc, [blockchain, tokens]) => ({
+              ...acc,
+              [blockchain]: NewTokensApiService.prepareTokens<BackendBalanceToken, BalanceToken>(
+                tokens as BackendBalanceToken[]
+              )
+            }),
+            {} as Partial<Record<BlockchainName, BackendBalanceToken[]>>
+          );
+          return q;
+        }),
         catchError(() => of([]))
       );
   }

@@ -21,14 +21,18 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
     this._pageLoading$.next(true);
 
     const refs: TokenRef[] = [];
-    tokens
-      .sort((a, b) => (a.rank > b.rank ? -1 : 1))
-      .forEach(token => {
-        refs.push({
-          address: token.address,
-          blockchain: token.blockchain
-        });
+    const sortedTokens = tokens.sort((a, b) => {
+      const aTotalRank = a.rank * (a?.networkRank || 1);
+      const bTotalRank = b.rank * (b?.networkRank || 1);
+      return aTotalRank > bTotalRank ? -1 : 1;
+    });
+
+    sortedTokens.forEach(token => {
+      refs.push({
+        address: token.address,
+        blockchain: token.blockchain
       });
+    });
 
     this._refs$.next(refs);
     this._pageLoading$.next(false);

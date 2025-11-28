@@ -26,5 +26,10 @@ export const TOKEN_FILTERS_UI: ReadonlyArray<TokenFilterUI> = [
     img: 'assets/images/icons/losers.svg',
     label: 'Losers',
     value: 'losers'
+  },
+  {
+    img: 'assets/images/icons/star.svg',
+    label: 'Favorite',
+    value: 'favorite'
   }
 ] as const;

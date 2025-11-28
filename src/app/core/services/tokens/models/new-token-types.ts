@@ -23,6 +23,7 @@ export type BlockchainTokenState = {
   totalTokens: number | null;
   page: number;
   allowFetching: boolean;
+  getTokens: () => Record<string, BalanceToken>;
 };
 
 export type BlockchainUtilityTokenState = {

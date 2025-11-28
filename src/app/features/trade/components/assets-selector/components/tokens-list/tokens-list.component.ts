@@ -7,14 +7,15 @@ import {
   Output,
   Self,
   ViewChild,
-  OnInit
+  OnInit,
+  ElementRef,
+  Inject
 } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
+
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -22,13 +23,15 @@ import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
+import { AnimationBuilder } from '@angular/animations';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [LIST_ANIMATION],
+  // animations: [LIST_ANIMATION, LIST_ANIMATION_2, LIST_CHANGE_ANIMATION, containerAnim, innerAnim],
   providers: [TuiDestroyService]
 })
 export class TokensListComponent implements OnInit {
@@ -36,9 +39,19 @@ export class TokensListComponent implements OnInit {
     this.scrollSubject$.next(scroll);
   }
 
+  @ViewChild('listWrapper') set listWrapper(listWrapper: ElementRef) {
+    this._listWrapper = listWrapper;
+  }
+
+  private _listWrapper: ElementRef;
+
   private readonly scrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport | null>(null);
 
-  @Input({ required: true }) tokensToShow: AvailableTokenAmount[];
+  public _tokensToShow: AvailableTokenAmount[] = [];
+
+  @Input({ required: true }) set tokensToShow(value: AvailableTokenAmount[]) {
+    this._tokensToShow = value;
+  }
 
   @Input({ required: true }) customToken: AvailableTokenAmount | null;
 
@@ -48,6 +61,7 @@ export class TokensListComponent implements OnInit {
 
   @Input({ required: true }) set listType(value: AssetListType) {
     if (value !== this._listType) {
+      this.triggerAnimation();
       this.resetScrollToTop();
     }
 
@@ -83,12 +97,13 @@ export class TokensListComponent implements OnInit {
 
   constructor(
     private readonly mobileNativeService: MobileNativeModalService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
     @Self() private readonly destroy$: TuiDestroyService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly builder: AnimationBuilder,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.subscribeOnScroll();
   }
@@ -112,82 +127,12 @@ export class TokensListComponent implements OnInit {
 
     if (token.available) {
       this.selectToken.emit(token);
-      // @TODO TOKENS
-      // this.assetsSelectorService.onAssetSelect(token);
     }
   }
 
   public selectTokenFilter(assetFilter: AssetListType): void {
     this.selectAssetList.emit(assetFilter);
-    // this.assetsSelectorFacade.getAssetsService(this.type).assetListType = filter;
   }
-
-  // @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-  //   this.assetsSelectorFacade.getAssetsService(this.type).setListScrollSubject(scroll);
-  // }
-
-  // public get tokensLoading$(): Observable<boolean> {
-  //   return this.assetsSelectorFacade.getAssetsService(this.type).assetListType$.pipe(
-  //     switchMap(type => {
-  //       if (type === 'allChains') {
-  //         return this.tokensFacade.allTokens.loading$;
-  //       }
-  //       if (type === 'trending') {
-  //         return this.tokensFacade.trending.loading$;
-  //       }
-  //       if (type === 'gainers') {
-  //         return this.tokensFacade.gainers.loading$;
-  //       }
-  //       if (type === 'losers') {
-  //         return this.tokensFacade.losers.loading$;
-  //       }
-  //       if (BlockchainsInfo.isBlockchainName(type)) {
-  //         return this.tokensFacade.blockchainTokens[type].loading$;
-  //       }
-  //       console.error(`Unknown asset list type: ${type}`);
-  //     })
-  //   );
-  // }
-
-  // public get listAnimationState$(): Observable<ListAnimationType> {
-  //   return this.assetsSelectorFacade.getAssetsService(this.type).listAnimationType$;
-  // }
-
-  // public get customToken$(): Observable<AvailableTokenAmount> {
-  //   return this.assetsSelectorFacade.getAssetsService(this.type).customToken$;
-  // }
-
-  // public get tokensToShow$(): Observable<AvailableTokenAmount[]> {
-  //   if (!this.type) {
-  //     return of([]);
-  //   }
-  //   return this.assetsSelectorFacade
-  //     .getAssetsService(this.type)
-  //     .assetListType$.pipe(
-  //       switchMap(type => {
-  //         if (BlockchainsInfo.isBlockchainName(type)) {
-  //           return this.tokensFacade.blockchainTokens[type].tokens$.pipe(
-  //             map(tokensObject => {
-  //               return Object.values(tokensObject).map(el => ({
-  //                 ...el,
-  //                 available: true,
-  //                 amount: new BigNumber(null)
-  //               }));
-  //             })
-  //           );
-  //         }
-  //         if (type === 'allChains') {
-  //           return this.tokensFacade.allTokens.tokens$;
-  //         }
-  //       })
-  //     )
-  //     .pipe(
-  //       distinctUntilChanged((prev, curr) => {
-  //         return prev.length === curr.length;
-  //       }),
-  //       tap(console.log)
-  //     );
-  // }
 
   private subscribeOnScroll(): void {
     this.scrollSubject$
@@ -236,6 +181,23 @@ export class TokensListComponent implements OnInit {
   private resetScrollToTop(): void {
     if (this.scrollSubject$.value) {
       this.scrollSubject$.value.scrollToIndex(0);
+    }
+  }
+
+  private triggerAnimation(): void {
+    const wrapper = this.document.getElementById('list-wrapper');
+    if (wrapper) {
+      wrapper.getAnimations().forEach(anim => anim.cancel());
+      wrapper.animate(
+        [
+          { opacity: 0, transform: 'scale(1.03)' },
+          { opacity: 1, transform: 'scale(1)' }
+        ],
+        {
+          duration: 1000,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+        }
+      );
     }
   }
 }

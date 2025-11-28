@@ -14,7 +14,6 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { AssetsSelectorStateService } from './features/trade/components/assets-selector/services/assets-selector-state/assets-selector-state.service';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -42,7 +41,6 @@ export class AppComponent implements AfterViewInit {
     private readonly iframeService: IframeService,
     private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tradePageService: TradePageService,
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService

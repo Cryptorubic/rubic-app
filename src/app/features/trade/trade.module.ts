@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { TradeViewContainerComponent } from '@features/trade/components/trade-view-container/trade-view-container.component';
 import { TradeRoutingModule } from '@features/trade/trade-routing.module';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
 import { SharedModule } from '@shared/shared.module';
 import { CommonModule } from '@angular/common';
@@ -163,7 +162,6 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
   ],
   providers: [
     SwapsStateService,
-    SwapsFormService,
     SwapsControllerService,
     SwapFormQueryService,
     CrossChainService,

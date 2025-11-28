@@ -59,7 +59,7 @@
       </ng-container>
 
       <div class="token-card__amount-container" [class.tui-skeleton]="balanceLoading">
-        <div class="token-card__amount" *ngIf="token.amount.gt(0)">
+        <div class="token-card__amount" *ngIf="token.amount.gt(0) || balanceLoading">
           <span
             [tuiHint]="tokenAmountTooltip"
             tuiHintDirection="top-left"

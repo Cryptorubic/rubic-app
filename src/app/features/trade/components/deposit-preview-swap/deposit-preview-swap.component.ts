@@ -33,6 +33,7 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { specificProviderStatusText } from './constants/specific-provider-status';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -100,7 +101,7 @@ export class DepositPreviewSwapComponent {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
@@ -143,7 +144,8 @@ export class DepositPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();

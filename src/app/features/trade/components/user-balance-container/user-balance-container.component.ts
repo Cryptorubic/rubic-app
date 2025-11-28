@@ -7,6 +7,7 @@ import { compareTokens } from '@shared/utils/utils';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -18,10 +19,14 @@ export class UserBalanceContainerComponent {
   private readonly _triggerRefresh$ = new BehaviorSubject(null);
 
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
-    combineLatestWith(this._triggerRefresh$.pipe(startWith()), this.tokensFacade.tokens$),
+    combineLatestWith(
+      this._triggerRefresh$.pipe(startWith(), distinctObjectUntilChanged()),
+      this.tokensFacade.tokens$
+    ),
     filter(() => !!this.tokensFacade.tokens),
-    distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-    map(([fromToken]) => this.tokensFacade.tokens.find(token => compareTokens(fromToken, token)))
+    map(([fromToken]) => {
+      return this.tokensFacade.tokens.find(token => compareTokens(fromToken, token));
+    })
   );
 
   @Input() public hide: 'maxButton' | 'balance';

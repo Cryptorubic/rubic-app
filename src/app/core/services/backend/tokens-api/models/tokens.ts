@@ -26,7 +26,14 @@ export interface BackendToken {
   coingeckoId: string;
   usdPrice: number;
   token_security: TokenSecurity | null;
+  networkRank?: number;
+  balance?: string;
   type: Token['type'];
+}
+
+export interface BackendBalanceToken extends BackendToken {
+  balance: string;
+  balanceUsd: string;
 }
 
 export interface BackendTokenForAllChains extends BackendToken {
@@ -46,6 +53,11 @@ export interface TokensBackendResponse {
   readonly next: string | null;
   readonly previous: string | null;
   readonly results: BackendToken[];
+}
+
+export interface BalanceTokensBackendResponse {
+  readonly supported_networks: BlockchainName[];
+  readonly tokens: Partial<Record<BlockchainName, BackendBalanceToken[]>>;
 }
 
 export interface NewTokensBackendResponse {

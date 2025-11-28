@@ -16,6 +16,7 @@ import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 import { CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-providers-list',
@@ -48,7 +49,7 @@ export class ProvidersListComponent {
 
   public readonly toToken$ = this.swapsFormService.toToken$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
@@ -87,6 +88,7 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly providerHintService: ProviderHintService
+    private readonly providerHintService: ProviderHintService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 }

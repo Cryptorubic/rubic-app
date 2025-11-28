@@ -27,7 +27,7 @@
   <tui-loader [showLoader]="loading" [overlay]="true">
     <ng-container *ngIf="customToken === null; else customTokenTmpl">
       <!--standard mode -->
-      <div class="tokens-container__empty-list" *ngIf="!tokensToShow?.length; else tokenList">
+      <div class="tokens-container__empty-list" *ngIf="!_tokensToShow?.length; else tokenList">
         <app-empty-list
           [assetListType]="listType"
           [hasQuery]="!!tokensSearchQuery?.length"
@@ -35,17 +35,17 @@
       </div>
 
       <ng-template #tokenList>
-        <ul class="tokens-list">
+        <ul id="list-wrapper" class="tokens-list">
           <cdk-virtual-scroll-viewport
             tuiScrollable
             itemSize="50"
             class="tokens-scrollbar tui-zero-scrollbar"
-            [ngClass]="{ 'tokens-scrollbar__empty': !tokensToShow?.length }"
+            [ngClass]="{ 'tokens-scrollbar__empty': !_tokensToShow?.length }"
             [style.overflow]="loading ? 'hidden' : 'auto'"
           >
             <li
               *cdkVirtualFor="
-                let token of tokensToShow;
+                let token of _tokensToShow;
                 let i = index;
                 templateCacheSize: 0;
                 trackBy: trackByFn

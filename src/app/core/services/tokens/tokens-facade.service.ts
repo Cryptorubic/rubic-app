@@ -5,23 +5,32 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
 import {
   BlockchainName,
   BlockchainsInfo,
+  ChainType,
   Injector,
+  Web3Public,
   Web3PublicService,
   Web3Pure
 } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
-import { map } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  switchMap
+} from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { List } from 'immutable';
 import { AssetListType, UtilityAssetType } from '@features/trade/models/asset';
 import { BlockchainTokenState } from '@core/services/tokens/models/new-token-types';
 import { Token } from '@shared/models/tokens/token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { compareTokens } from '@shared/utils/utils';
+import { compareAddresses, compareTokens } from '@shared/utils/utils';
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 import { LosersUtilityStore } from '@core/services/tokens/models/losers-utility-store';
 import { TrendingUtilityStore } from '@core/services/tokens/models/tranding-utility-store';
@@ -30,11 +39,65 @@ import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-u
 import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
 import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
 import { SearchQueryUtilityStore } from '@core/services/tokens/models/search-query-utility-store';
+import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { sorterByChain } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
+import { BLOCKCHAIN_NAME, nativeTokensList, TEST_EVM_BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensFacadeService {
+  private tier1BalanceChains: BlockchainName[] = [
+    'METIS',
+    'UNICHAIN',
+    'BLAST',
+    'FUSE',
+    'MORPH',
+    'MODE',
+    'FANTOM',
+    'AVALANCHE',
+    'CRONOS',
+    'CORE',
+    'ROOTSTOCK',
+    'BOBA',
+    'KLAYTN',
+    'BASE',
+    'MANTA_PACIFIC',
+    'MOONRIVER',
+    'GRAVITY',
+    'TELOS',
+    'GNOSIS',
+    'ETH',
+    // 'VANA',
+    'ARBITRUM',
+    'XLAYER',
+    'BERACHAIN',
+    'MOONBEAM',
+    'HEMI',
+    // 'SONIC',
+    'ZETACHAIN',
+    'MERLIN',
+    'POLYGON',
+    'SONEIUM',
+    'FLARE',
+    'ZK_SYNC',
+    'SCROLL',
+    'BSC',
+    // 'HYPER_EVM',
+    'KAVA',
+    'FRAXTAL',
+    // 'PLASMA',
+    'ASTAR_EVM',
+    'OPTIMISM',
+    'TAIKO',
+    'CELO',
+    'SEI',
+    'MANTLE',
+    'LINEA',
+    'BITLAYER'
+  ];
+
   public readonly allTokens = new AllTokensUtilityStore(this.tokensStore, this.apiService).init();
 
   public readonly trending = new TrendingUtilityStore(this.tokensStore, this.apiService).init();
@@ -51,6 +114,15 @@ export class TokensFacadeService {
 
   public readonly searched = new SearchQueryUtilityStore(this.tokensStore, this.apiService).init();
 
+  public readonly nativeToken$ = this.formService.fromBlockchain$.pipe(
+    switchMap(blockchain => {
+      const chainType = BlockchainsInfo.getChainType(blockchain);
+      const address = Web3Pure[chainType].nativeTokenAddress;
+
+      return this.findToken({ address, blockchain });
+    })
+  );
+
   public static onTokenImageError($event: Event): void {
     const target = $event.target as HTMLImageElement;
     if (target.src !== DEFAULT_TOKEN_IMAGE) {
@@ -62,9 +134,9 @@ export class TokensFacadeService {
     return this.authService.userAddress;
   }
 
-  private readonly _tokens$ = new BehaviorSubject<List<BalanceToken>>(List());
-
-  public readonly tokens$: Observable<List<BalanceToken>> = this._tokens$.asObservable();
+  public readonly tokens$: Observable<BalanceToken[]> = this.tokensStore.allTokens$.pipe(
+    debounceTime(20)
+  );
 
   public readonly blockchainTokens = this.tokensStore.tokens;
 
@@ -76,15 +148,19 @@ export class TokensFacadeService {
    * Current tokens list.
    */
   public get tokens(): List<BalanceToken> {
-    return this._tokens$.getValue();
+    const allTokens = this.tokensStore.getAllTokens();
+    return List(allTokens);
   }
 
   constructor(
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly formService: SwapsFormService
   ) {
     this.buildTokenLists();
+    this.subscribeOnWallet();
+    this.pollFormTokenBalance();
   }
 
   private buildTokenLists(): void {
@@ -107,27 +183,32 @@ export class TokensFacadeService {
 
   private buildTier2List(): void {
     this.apiService.getRestTokens().subscribe(tokens => {
+      const tokensList = Object.entries(tokens).flatMap(el => el[1].list);
       Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
         this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
       });
+      this.allTokens.updateTokenSync(tokensList);
     });
   }
 
-  public async findToken(token: MinimalToken, _searchBackend = false): Promise<BalanceToken> {
+  public async findToken(token: MinimalToken, searchBackend = false): Promise<BalanceToken | null> {
     const foundToken =
       this.tokensStore.tokens[token.blockchain]._tokensObject$.value[token.address];
     if (foundToken) {
       return foundToken;
     }
 
-    // @TODO TOKENS REFACTORING
-    // if (searchBackend) {
-    //   return firstValueFrom(
-    //     this.fetchQueryTokens(token.address, token.blockchain).pipe(
-    //       map(backendTokens => backendTokens.get(0))
-    //     )
-    //   );
-    // }
+    if (searchBackend) {
+      return firstValueFrom(
+        this.fetchQueryTokens(token.address, token.blockchain).pipe(
+          map(backendTokens =>
+            backendTokens.length
+              ? { ...backendTokens[0], amount: new BigNumber(NaN), favorite: false }
+              : null
+          )
+        )
+      );
+    }
 
     return null;
   }
@@ -146,7 +227,6 @@ export class TokensFacadeService {
     address: string;
     blockchain: BlockchainName;
   }): Promise<BigNumber | null> {
-    // @TODO TOKENS ADD UPDATE
     return firstValueFrom(
       this.apiService
         .fetchQueryTokens(token.address, token.blockchain)
@@ -324,7 +404,7 @@ export class TokensFacadeService {
     type: AssetListType,
     query: string = ''
   ): BlockchainTokenState | CommonUtilityStore {
-    const searchTokens = Boolean(query && query?.length > 2);
+    const searchTokens = Boolean(query && query?.length >= 2);
 
     if (BlockchainsInfo.isBlockchainName(type)) {
       return searchTokens ? this.searched : this.blockchainTokens[type];
@@ -352,7 +432,6 @@ export class TokensFacadeService {
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type, query).tokens$.pipe(
       map((tokens: BalanceToken[]) =>
-        // @TODO TOKENS
         tokens
           .map(token => {
             const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
@@ -360,9 +439,10 @@ export class TokensFacadeService {
             return {
               ...token,
               available: isAvailable,
-              amount: new BigNumber(NaN)
+              amount: token?.amount?.gt(0) ? token.amount : new BigNumber(NaN)
             };
           })
+          .sort(sorterByChain)
           .sort((a, b) => {
             const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
             if (oppositeToken) {
@@ -421,5 +501,143 @@ export class TokensFacadeService {
         this.fetchSecondPage(tokensObject);
       }
     }
+  }
+
+  public subscribeOnWallet(): void {
+    this.authService.currentUser$
+      .pipe(
+        distinctUntilChanged((oldValue, newValue) =>
+          compareAddresses(oldValue?.address, newValue?.address)
+        )
+      )
+      .subscribe(user => {
+        if (user?.address) {
+          Promise.all([
+            this.fetchT1Balances(user.address),
+            this.fetchT2Balances(user.address, user.chainType)
+          ]).then(([successT1request]) => {
+            if (!successT1request) {
+              this.fetchListBalances(user.address, this.tier1BalanceChains);
+            }
+          });
+        } else {
+          this.tokensStore.clearAllBalances();
+        }
+      });
+  }
+
+  private async fetchT1Balances(address: string): Promise<boolean> {
+    this.tier1BalanceChains.forEach(chain =>
+      this.tokensStore.tokens[chain]._balanceLoading$.next(true)
+    );
+    return new Promise(resolve => {
+      this.apiService
+        .getBackendBalances(address)
+        .pipe(catchError(() => of(null)))
+        .subscribe(el => {
+          if (!el) {
+            resolve(false);
+          }
+          Object.entries(el).forEach(([blockchain, tokens]) => {
+            this.tokensStore.addBlockchainBalanceTokens(
+              blockchain as BlockchainName,
+              tokens as RubicAny
+            );
+            this.tokensStore.tokens[blockchain as BlockchainName]._balanceLoading$.next(false);
+            resolve(true);
+          });
+        });
+    });
+  }
+
+  private async fetchListBalances(address: string, chains: BlockchainName[]): Promise<void> {
+    return new Promise(resolve => {
+      chains.forEach((chain, index) => {
+        const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+        firstValueFrom(
+          this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
+        ).then(() => {
+          this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+          const tokensObject = this.blockchainTokens[chain].getTokens();
+          const tokens = Object.values(tokensObject).map(token => token.address);
+
+          web3Public
+            .getTokensBalances(address, tokens)
+            .catch(() => tokens.map(() => new BigNumber(NaN)))
+            .then(balances => {
+              const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
+                ...token,
+                amount: balances?.[idx]?.gt(0)
+                  ? Web3Pure.fromWei(balances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as BalanceToken[];
+              const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
+
+              this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
+              this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+
+              if (chain.length === index) {
+                resolve();
+              }
+            });
+        });
+      });
+    });
+  }
+
+  private async fetchT2Balances(address: string, type: ChainType): Promise<void> {
+    const blChains: BlockchainName[] = Object.values(TEST_EVM_BLOCKCHAIN_NAME);
+    const chains = Object.values(BLOCKCHAIN_NAME).filter(
+      (chain: BlockchainName) =>
+        !this.tier1BalanceChains.includes(chain) &&
+        !blChains.includes(chain) &&
+        type === BlockchainsInfo.getChainType(chain)
+    );
+
+    return this.fetchListBalances(address, chains);
+  }
+
+  public async fetchTokenBalance(
+    tokenAddress: string,
+    blockchain: BlockchainName
+  ): Promise<BalanceToken> {
+    const foundToken = this.findTokenSync({ address: tokenAddress, blockchain });
+    const web3Public = Injector.web3PublicService.getWeb3Public(blockchain) as Web3Public;
+    const chainBalancesPromise = web3Public
+      .getTokenBalance(this.authService.userAddress, tokenAddress)
+      .catch(() => new BigNumber(NaN));
+    //
+    return chainBalancesPromise.then(balance => {
+      return { ...foundToken, amount: Web3Pure.fromWei(balance, foundToken.decimals) };
+    });
+  }
+
+  private pollFormTokenBalance(): void {
+    this.formService.fromToken$
+      .pipe(
+        distinctUntilChanged(compareTokens),
+        switchMap(token => {
+          if (token) {
+            return this.getAndUpdateTokenBalance({
+              address: token.address,
+              blockchain: token.blockchain
+            });
+          }
+          return of(null);
+        })
+      )
+      .subscribe();
+  }
+
+  public async updateParticipantTokens(): Promise<void> {
+    const fromToken = this.formService.inputValue.fromToken;
+    const toToken = this.formService.inputValue.toToken;
+    const nativeToken = nativeTokensList[fromToken.blockchain];
+
+    await Promise.all([
+      this.getAndUpdateTokenBalance(fromToken),
+      this.getAndUpdateTokenBalance(toToken),
+      this.getAndUpdateTokenBalance(nativeToken)
+    ]);
   }
 }

@@ -49,7 +49,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
@@ -97,7 +97,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
-    private readonly tradeInfoManager: TradeInfoManager
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();

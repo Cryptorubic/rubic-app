@@ -8,10 +8,10 @@ import {
   SwapFormOutputControl
 } from '../../models/swap-form-controls';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
@@ -19,9 +19,10 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
@@ -65,15 +66,6 @@ export class SwapsFormService {
     map(inputValue => inputValue.fromBlockchain),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)
-  );
-
-  public readonly nativeToken$ = this.fromBlockchain$.pipe(
-    switchMap(blockchain => {
-      const chainType = BlockchainsInfo.getChainType(blockchain);
-      const address = Web3Pure[chainType].nativeTokenAddress;
-
-      return this.tokensFacade.findToken({ address, blockchain });
-    })
   );
 
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
@@ -148,8 +140,7 @@ export class SwapsFormService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly walletConnectorService: WalletConnectorService
   ) {
     this.subscribeOnFormValueChange();
   }

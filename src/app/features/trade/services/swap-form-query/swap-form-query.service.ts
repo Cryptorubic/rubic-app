@@ -71,12 +71,12 @@ export class SwapFormQueryService {
           const toBlockchain = protectedParams.toChain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
+            List(tokens),
             protectedParams.from,
             fromBlockchain
           );
           const findToToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
+            List(tokens),
             protectedParams.to,
             toBlockchain
           );
@@ -204,8 +204,7 @@ export class SwapFormQueryService {
             if (!token) {
               return null;
             }
-            // @TODO TOKENS
-            const newToken = { ...token, amount: new BigNumber(NaN) } as unknown as BalanceToken;
+            const newToken = { ...token, amount: new BigNumber(NaN) } as BalanceToken;
             this.tokensFacade.addToken(newToken);
             return newToken;
           }
@@ -235,7 +234,6 @@ export class SwapFormQueryService {
             () => this.tokensFacade.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
-            // @TODO TOKENS
             const newToken = {
               ...fetchedToken,
               amount: new BigNumber(NaN)
