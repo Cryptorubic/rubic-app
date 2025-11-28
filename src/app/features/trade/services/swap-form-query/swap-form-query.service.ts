@@ -17,6 +17,8 @@ import { AssetType } from '@features/trade/models/asset';
 import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
+import { OnlyDepositSwapsAllowedError } from '@app/core/errors/models/clearswap/only-deposit-swaps.error';
+import { ErrorsService } from '@app/core/errors/errors.service';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -34,7 +36,8 @@ export class SwapFormQueryService {
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly errorsService: ErrorsService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -91,6 +94,11 @@ export class SwapFormQueryService {
         })
       )
       .subscribe(({ fromBlockchain, toToken, fromToken, toBlockchain, amount }) => {
+        if (fromBlockchain === toBlockchain) {
+          this.errorsService.catch(new OnlyDepositSwapsAllowedError());
+          return;
+        }
+
         this.gtmService.needTrackFormEventsNow = false;
 
         this.swapsFormService.inputControl.patchValue({

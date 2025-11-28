@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, Observable, shareReplay, timer } from 'rxjs';
-import { BadgeInfoForComponent, TradeState } from '@features/trade/models/trade-state';
+import { TradeState } from '@features/trade/models/trade-state';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -36,14 +36,7 @@ import { TokenAmount } from '@shared/models/tokens/token-amount';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { HeaderStore } from '@core/header/services/header.store';
-import { SPECIFIC_BADGES_FOR_PROVIDERS } from './constants/specific-badges-for-trades';
-import { SPECIFIC_BADGES_FOR_CHAINS } from './constants/specific-badges-for-chains';
 import { AlternativeRoutesService } from '../alternative-route-api-service/alternative-routes.service';
-import {
-  CENTRALIZATION_CONFIG,
-  CentralizationStatus,
-  hasCentralizationStatus
-} from '../../constants/centralization-status';
 import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
@@ -166,8 +159,7 @@ export class SwapsStateService {
           needAuthWallet,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: [],
-          centralizationStatus: null
+          routes: []
         }
       : {
           error: wrappedTrade?.error,
@@ -176,9 +168,7 @@ export class SwapsStateService {
           needAuthWallet,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
-          routes: trade.getTradeInfo().routePath || [],
-          badges: this.setSpecificBadges(trade),
-          centralizationStatus: this.setCentralizationStatus(trade)
+          routes: trade.getTradeInfo().routePath || []
         };
 
     let currentTrades = this._tradesStore$.getValue();
@@ -484,49 +474,5 @@ export class SwapsStateService {
       map(() => true),
       startWith(false)
     );
-  }
-
-  private setSpecificBadges(trade: CrossChainTrade | OnChainTrade): BadgeInfoForComponent[] {
-    const badgesByProvider = Object.entries(SPECIFIC_BADGES_FOR_PROVIDERS).find(
-      ([key]) => key === trade.type
-    );
-    const badgesByChain = Object.entries(SPECIFIC_BADGES_FOR_CHAINS)
-      .filter(([chain]) => chain === trade.to.blockchain || chain === trade.from.blockchain)
-      .flatMap(([_, badgeInfo]) => badgeInfo);
-
-    if (!badgesByProvider && !badgesByChain) return [];
-
-    const providerBadges = badgesByProvider?.[1] || [];
-    const chainBadges = badgesByChain || [];
-    const allBadges = [...providerBadges, ...chainBadges];
-
-    const tradeSpecificBadges = allBadges
-      .filter(Boolean)
-      .filter(info => {
-        if (!info.showLabel(trade)) return false;
-        return !!(
-          !info.fromSdk ||
-          (info.fromSdk && 'promotions' in trade && trade.promotions?.length)
-        );
-      })
-      .map(info => ({
-        label: info.getLabel(trade),
-        bgColor: info?.getBgColor(trade, {
-          solanaGaslessStateService: this.solanaGaslessStateService
-        }),
-        hint: info?.getHint?.(trade),
-        href: info?.getUrl?.(trade)
-      }));
-
-    return tradeSpecificBadges;
-  }
-
-  private setCentralizationStatus(
-    trade: CrossChainTrade | OnChainTrade
-  ): CentralizationStatus | null {
-    if (hasCentralizationStatus(trade.type)) {
-      return CENTRALIZATION_CONFIG[trade.type];
-    }
-    return null;
   }
 }

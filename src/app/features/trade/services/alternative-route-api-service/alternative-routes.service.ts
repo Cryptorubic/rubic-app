@@ -96,7 +96,7 @@ export class AlternativeRoutesService {
             !this.checkIsPrevRoute({
               fromAddress: route.sourceTokenAddress,
               toAddress: route.destinationTokenAddress
-            })
+            }) && route.destinationTokenNetwork !== route.sourceTokenNetwork
         );
 
         if (currentRoutes && currentRoutes.length === 0) {

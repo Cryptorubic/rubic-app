@@ -50,13 +50,9 @@ export class WalletsModalComponent implements OnInit {
   }
 
   public get providers(): ReadonlyArray<WalletProvider> {
-    const isChromiumProviders = this.isChromium
-      ? this.allProviders
-      : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
-
     return this.isMobile
-      ? isChromiumProviders.filter(provider => provider.supportsMobile)
-      : isChromiumProviders.filter(provider => provider.supportsDesktop);
+      ? this.allProviders.filter(provider => provider.supportsMobile)
+      : this.allProviders.filter(provider => provider.supportsDesktop);
   }
 
   public get isMobile(): boolean {

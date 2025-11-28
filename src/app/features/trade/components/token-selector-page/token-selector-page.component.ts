@@ -8,6 +8,8 @@ import { Asset } from '@features/trade/models/asset';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { HeaderStore } from '@core/header/services/header.store';
+import { ErrorsService } from '@app/core/errors/errors.service';
+import { OnlyDepositSwapsAllowedError } from '@app/core/errors/models/clearswap/only-deposit-swaps.error';
 
 @Component({
   selector: 'app-token-selector-page',
@@ -27,22 +29,35 @@ export class TokenSelectorPageComponent {
     @Inject(DOCUMENT) private readonly document: Document,
     private readonly swapFormService: SwapsFormService,
     private readonly tradePageService: TradePageService,
-    private readonly headerStore: HeaderStore
+    private readonly headerStore: HeaderStore,
+    private readonly errorsService: ErrorsService
   ) {
     this.formType = this.context?.data?.formType;
   }
 
   public handleTokenSelect(asset: Asset): void {
     const token = asset as TokenAmount;
+
+    if (
+      this.formType === 'from' &&
+      this.swapFormService.inputValue.toBlockchain === token.blockchain
+    ) {
+      this.errorsService.catch(new OnlyDepositSwapsAllowedError());
+      return;
+    }
+    if (
+      this.formType === 'to' &&
+      this.swapFormService.inputValue.fromBlockchain === token.blockchain
+    ) {
+      this.errorsService.catch(new OnlyDepositSwapsAllowedError());
+      return;
+    }
+
     if (token) {
       const inputElement = this.document.getElementById('token-amount-input-element');
       const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.actualValue.isFinite();
 
-      if (inputElement && isFromAmountEmpty) {
-        setTimeout(() => {
-          inputElement.focus();
-        }, 0);
-      }
+      if (inputElement && isFromAmountEmpty) setTimeout(() => inputElement.focus(), 0);
 
       if (this.formType === 'from') {
         this.swapFormService.inputControl.patchValue({
