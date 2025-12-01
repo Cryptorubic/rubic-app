@@ -26,7 +26,7 @@ import {
   BlockchainsInfo,
   compareAddresses,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
 
 @Component({

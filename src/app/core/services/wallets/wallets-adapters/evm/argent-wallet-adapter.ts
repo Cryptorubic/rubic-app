@@ -2,13 +2,13 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { NgZone } from '@angular/core';
-import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/sdk';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { WalletConnectAbstractAdapter } from '@core/services/wallets/wallets-adapters/evm/common/wallet-connect-abstract';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { WALLET_CONNECT_SUPPORTED_CHAINS } from '../../constants/evm-chain-ids';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 
 export class ArgentWalletAdapter extends WalletConnectAbstractAdapter {
   public readonly walletName = WALLET_NAME.ARGENT;
