@@ -1,10 +1,13 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
-  Output
+  Output,
+  Renderer2
 } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { ShortenAmountPipe } from '@app/shared/pipes/shorten-amount.pipe';
@@ -16,7 +19,7 @@ import BigNumber from 'bignumber.js';
   styleUrls: ['./input-number.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class InputNumberComponent implements OnInit {
+export class InputNumberComponent implements OnInit, AfterViewInit {
   /**
    * px, %, vh, vw
    */
@@ -48,8 +51,28 @@ export class InputNumberComponent implements OnInit {
 
   public readonly inputControl = new FormControl<number>(this._value, { validators: [] });
 
+  constructor(private readonly elRef: ElementRef, private readonly renderer: Renderer2) {}
+
   ngOnInit(): void {
     this.inputControl.setValidators([Validators.min(this.min), Validators.max(this.max)]);
+  }
+
+  ngAfterViewInit(): void {
+    this.setStyles();
+  }
+
+  public setStyles(): void {
+    const input = this.elRef.nativeElement.querySelector('.input-control') as HTMLInputElement;
+    const span = this.elRef.nativeElement.querySelector('.input-suffix') as HTMLSpanElement;
+    if (!input || !span) return;
+
+    if (input.value.length > 3) {
+      this.renderer.setStyle(input, 'flex', '0 0 70%');
+      this.renderer.setStyle(span, 'flex', '0 0 30%');
+    } else {
+      this.renderer.setStyle(input, 'flex', '0 0 50%');
+      this.renderer.setStyle(span, 'flex', '0 0 50%');
+    }
   }
 
   public emitValue(): void {
@@ -62,6 +85,8 @@ export class InputNumberComponent implements OnInit {
     }
 
     this.prettify();
+    this.setStyles();
+
     this.inputChanged.emit(this.inputControl.value);
     this.prevValue = this.inputControl.value;
   }

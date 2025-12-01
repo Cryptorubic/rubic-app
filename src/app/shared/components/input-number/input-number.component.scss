@@ -2,11 +2,9 @@
 
 :host {
   .input-wrapper {
-
     @include flex(row, center, center);
     position: relative;
 
-    gap: 3px;
     width: 100%;
     height: 100%;
 
@@ -15,8 +13,10 @@
     background: var(--tui-base-01);
     border-radius: var(--tui-radius-m);
 
-    input {
+    .input-control {
+      flex: 0 0 50%;
       width: 100%;
+      padding: 0;
 
       text-align: right;
 
@@ -31,6 +31,10 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+    }
+
+    .input-suffix {
+      flex: 0 0 50%;
     }
   }
 }
