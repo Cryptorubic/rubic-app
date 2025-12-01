@@ -10,7 +10,8 @@ export enum ROUTE_PATH {
   RETRODROP = 'retrodrop',
   STAKING = 'staking',
   TESTNET_PROMO = 'enter-the-chain',
-  REST = '**'
+  REST = '**',
+  FAQ = 'faq'
 }
 
 export enum EXTERNAL_LINKS {

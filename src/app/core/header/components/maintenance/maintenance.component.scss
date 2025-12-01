@@ -40,9 +40,9 @@
 
     height: 100%;
 
-    background-color: #16182c;
+    background-color: var(--io-background);
   }
-  
+
   &::after {
     z-index: -1;
 

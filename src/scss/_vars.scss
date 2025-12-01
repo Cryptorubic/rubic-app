@@ -15,43 +15,41 @@ $secondary-color: #271e34;
 $transparent-black: rgba(0, 0, 0, 0.1);
 $transparent-white: rgba(255, 255, 255, 0.1);
 
-
 // ***** vars *****
 :root {
-  --app-background: #282935;
+  --app-background: #fff;
   --primary-background: var(--tui-base-01);
   --secondary-background: var(--tui-secondary);
-  --dropdpwn-background: rgba(60, 61, 68, 0.85);
+  --dropdpwn-background: #dadada;
 
-  --io-background: #222331;
+  --io-background: #efefef;
 
-
-  --tui-primary: #00e28d;
-  --tui-primary-hover: #02b774;
-  --tui-primary-active: #02b774;
+  --tui-primary: #fff;
+  --tui-primary-hover: #d4d4d4;
+  --tui-primary-active: #d4d4d4;
   --tui-primary-text: #14141d;
 
-  --tui-secondary: #3b3d4f;
-  --tui-secondary-hover: #4c4e67;
-  --tui-secondary-active: #4c4e67;
+  --tui-secondary: #d4d4d4;
+  --tui-secondary-hover: #fff;
+  --tui-secondary-active: #fff;
 
-  --tui-elevation-01: var(--tui-secondary);
-  --tui-elevation-02: var(--tui-secondary);
+  --tui-elevation-01: var(--io-background);
+  --tui-elevation-02: var(--io-background);
   --tui-clear: var(--primary-background);
 
-  --tui-link: white;
-  --tui-link-hover: white;
+  --tui-link: #000;
+  --tui-link-hover: #000;
 
   --tui-warn: #cfa200;
 
-  --tui-base-01: #2c2d3e;
-  --tui-base-02: #2c2d3e;
-  --tui-base-03: #2c2d3e;
-  --tui-base-04: #4d4d59;
+  --tui-base-01: #d4d4d4;
+  --tui-base-02: red;
+  --tui-base-03: red;
+  --tui-base-04: red;
 
-  --tui-text-01: white;
+  --tui-text-01: #9ca3af;
   --tui-text-02: #9a9ab0;
-  --tui-text-03: #9a9ab0;
+  --tui-text-03: #000;
 
   --tui-padding-xs: 0.25rem;
   --tui-padding-s: 0.5rem;

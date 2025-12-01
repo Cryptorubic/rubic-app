@@ -1,80 +1,11 @@
-<app-banners *ngIf="!hideUnusedUI"></app-banners>
-
 <header
   class="rubic-header"
   [ngClass]="{ 'large-iframe-header': useLargeIframe }"
   *ngLet="currentUser$ | async as currentUser"
 >
-  <app-logo
-    *ngIf="!hideLogo"
-    [currentUser]="!!currentUser"
-    [isDarkTheme]="isDarkTheme$ | async"
-    [noFrameLink]="noFrameLink"
-  ></app-logo>
+  <app-logo *ngIf="!hideLogo"></app-logo>
 
-  <app-rubic-menu-toggler class="rubic-header__menu" *ngIf="!useLargeIframe">
-    <app-rubic-menu
-      [swapActive]="rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE"
-      [crossChainActive]="
-        rootPath && (swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-      "
-      (swapClick)="navigateToSwaps()"
-    ></app-rubic-menu>
-  </app-rubic-menu-toggler>
-
-  <!--  <button-->
-  <!--    class="swap-button"-->
-  <!--    tuiButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    [pseudoActive]="-->
-  <!--      rootPath &&-->
-  <!--      ((swapType$ | async) === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING ||-->
-  <!--        (swapType$ | async) === SWAP_PROVIDER_TYPE.INSTANT_TRADE)-->
-  <!--    "-->
-  <!--    (click)="navigateToSwaps()"-->
-  <!--    [ngStyle]="{ 'margin-right': useLargeIframe ? 'auto' : 'unset' }"-->
-  <!--  >-->
-  <!--    Swaps-->
-  <!--  </button>-->
-
-  <button
-    *ngIf="!useLargeIframe && !isMobile"
-    class="testnets-button"
-    tuiButton
-    appearance="secondary"
-    type="button"
-    size="m"
-    (click)="navigateToTestnets()"
-  >
-    Testnets
-  </button>
-
-  <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
-  <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
-  <!--  </button>-->
-
-  <!-- Uncomment when light theme ready -->
-  <!--  <button-->
-  <!--    class="theme-switcher"-->
-  <!--    tuiIconButton-->
-  <!--    appearance="secondary"-->
-  <!--    type="button"-->
-  <!--    size="m"-->
-  <!--    (click)="switchTheme()"-->
-  <!--  >-->
-  <!--    <div-->
-  <!--      class="image"-->
-  <!--      [inlineSVG]="-->
-  <!--        (isDarkTheme$ | async) ? '/assets/images/icons/day.svg' : '/assets/images/icons/night.svg'-->
-  <!--      "-->
-  <!--    ></div>-->
-  <!--  </button>-->
-
-  <app-language-selector *ngIf="!useLargeIframe"></app-language-selector>
-
-  <app-history-button *ngIf="!useLargeIframe"></app-history-button>
+  <!-- <app-history-button *ngIf="!useLargeIframe"></app-history-button> -->
 
   <div class="rubic-header__profile">
     <ng-container *ngIf="!currentUser?.address; else loggedIn">

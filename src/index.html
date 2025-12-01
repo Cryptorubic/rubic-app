@@ -5,14 +5,19 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QHYCGJXV8G"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag('js', new Date());
       gtag('config', 'G-QHYCGJXV8G');
     </script>
 
     <!-- common site settings -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1.0"
+    />
     <base href="/" />
     <!-- common site settings -->
 
@@ -244,19 +249,17 @@
         }
 
         if (theme && loaderElement) {
-          const loaderTextStyle = `style="color:${theme === 'dark' ? '#fff' : '#000000'}"`;
+          const loaderTextStyle = `style="color: #000000;"`;
           loaderElement.innerHTML = `<h1 ${loaderTextStyle}">Loading</h1>`;
-          loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+          loaderElement.style.backgroundColor = '#fff';
         } else {
           loaderElement.innerHTML = '<h1>Loading</h1>';
         }
       } else {
         if (theme && loaderElement) {
           loaderElement.innerHTML =
-            theme === 'dark'
-              ? '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">'
-              : '<img src="assets/images/rubic-logo-dark.png" width="138" alt="rubic-logo">';
-          loaderElement.style.backgroundColor = theme === 'dark' ? '#282935' : '#fff';
+            '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">';
+          loaderElement.style.backgroundColor = '#fff';
         } else {
           loaderElement.innerHTML =
             '<img src="assets/images/rubic-logo.png" width="138" alt="rubic-logo">';

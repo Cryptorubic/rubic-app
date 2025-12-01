@@ -6,10 +6,6 @@
   </div>
 
   <div class="form-header__actions">
-    <app-chart-toggler
-      [showChart]="chartInfo.status.opened"
-      (handleClick)="toggleChart()"
-    ></app-chart-toggler>
     <app-refresh-button
       [isRotating$]="isRefreshRotating$"
       (onRefresh)="refreshTrades()"

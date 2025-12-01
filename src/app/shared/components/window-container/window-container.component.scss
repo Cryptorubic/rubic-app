@@ -3,8 +3,10 @@
 .window-container {
   padding: var(--tui-padding-m);
 
-  background: var(--secondary-background);
+  background: var(--io-background);
+
   border-radius: var(--tui-radius-m);
+  opacity: 1 !important;
 
   ::ng-deep & > footer > *:first-child {
     display: flex;

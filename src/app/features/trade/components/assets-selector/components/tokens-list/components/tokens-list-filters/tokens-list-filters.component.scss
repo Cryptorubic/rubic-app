@@ -25,7 +25,7 @@
   .filters-wrapper__prev-btn {
     padding: 11px 5px;
 
-    background-color: #2c2d3e;
+    background-color: var(--tui-base-01);
     border-radius: var(--tui-radius-s);
 
     &:hover {
@@ -53,8 +53,8 @@
     height: 41px;
     margin: 0 auto;
     margin-left: -18px;
-    
-    background: #2c2d3e;
+
+    background: var(--tui-base-01);
     border-radius: 8px;
 
     transition: all 100ms;
@@ -67,7 +67,7 @@
       background: var(--tui-secondary-hover);
       cursor: pointer;
     }
-        
+
     &__active {
       background: var(--tui-secondary-active);
     }

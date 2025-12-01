@@ -42,8 +42,6 @@ import { LanguageSelectorComponent } from './components/header/components/langua
 import { SettingsComponent } from '@core/header/components/header/components/settings/settings.component';
 import { ProfileMenuTogglerComponent } from '@core/header/components/header/components/profile-menu-toggler/profile-menu-toggler.component';
 import { HistoryButtonComponent } from './components/header/components/hisory-button/history-button.component';
-import { BannersComponent } from '@app/core/header/components/header/components/banners/banners.component';
-import { BannersService } from './services/banners.service';
 
 @NgModule({
   declarations: [
@@ -60,8 +58,7 @@ import { BannersService } from './services/banners.service';
     LanguageSelectorComponent,
     SettingsComponent,
     ProfileMenuTogglerComponent,
-    HistoryButtonComponent,
-    BannersComponent
+    HistoryButtonComponent
   ],
   imports: [
     CommonModule,
@@ -89,7 +86,7 @@ import { BannersService } from './services/banners.service';
     TuiButtonModule,
     TuiCarouselModule
   ],
-  providers: [TuiDestroyService, BannersService],
+  providers: [TuiDestroyService],
   exports: [HeaderComponent, UserProfileComponent]
 })
 export class HeaderModule {}

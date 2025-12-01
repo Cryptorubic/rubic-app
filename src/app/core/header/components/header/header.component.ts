@@ -16,7 +16,6 @@ import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { Router } from '@angular/router';
 import { QueryParamsService } from 'src/app/core/services/query-params/query-params.service';
 import { WINDOW } from '@ng-web-apis/common';
-import { map, startWith } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
@@ -79,11 +78,6 @@ export class HeaderComponent {
   public get isMobile(): boolean {
     return this.headerStore.isMobile;
   }
-
-  public readonly isDarkTheme$ = this.themeService.theme$.pipe(
-    startWith('dark'),
-    map(theme => theme === 'dark')
-  );
 
   constructor(
     @Inject(PLATFORM_ID) platformId: Object,

@@ -87,7 +87,6 @@
       scale: 1.05;
     }
 
-
     ::ng-deep {
       .t-wrapper {
         background: none;
@@ -109,7 +108,7 @@
   }
 
   &__link {
-    color: var(--tui-primary);
+    color: var(--tui-link);
   }
 }
 

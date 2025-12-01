@@ -19,7 +19,7 @@
     gap: var(--tui-padding-xs);
     align-items: center;
 
-    color: white;
+    color: var(--tui-text-03);
     font-weight: 700;
     font-size: 21px;
   }
@@ -77,20 +77,12 @@
     margin-right: -25px;
     padding-left: 25px;
 
-    color: white;
+    color: var(--tui-text-03);
     font-weight: 700;
     font-size: 1rem;
 
     background: var(--tui-secondary);
-    border-radius: var(--tui-radius-m) 0 0 var(--tui-radius-m);
-
-    &-gas-form {
-      width: 200px;
-
-      &__disabled {
-        color: var(--tui-text-03);
-      }
-    }
+    border-radius: 3px 0 0 3px;
 
     &::after {
       position: absolute;

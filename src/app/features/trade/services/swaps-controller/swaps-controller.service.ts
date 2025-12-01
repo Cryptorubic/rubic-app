@@ -58,7 +58,6 @@ import { OnChainApiService } from '../on-chain-api/on-chain-api.service';
 import { compareObjects } from '@app/shared/utils/utils';
 import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cross-chain-swap-unavailable-warning';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
-import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import BigNumber from 'bignumber.js';
 import {
   BLOCKCHAIN_NAME,
@@ -153,12 +152,15 @@ export class SwapsControllerService {
             this.swapsStateService.patchCalculationState();
           }
         }),
+        filter(
+          () =>
+            this.swapFormService.inputValue.fromBlockchain !==
+            this.swapFormService.inputValue.toBlockchain
+        ),
         switchMap(calculateData => {
           if (calculateData.stop) {
             return of(null);
           }
-
-          const { fromToken, toToken } = this.swapFormService.inputValue;
 
           // @TODO API
           const isAlgebraWrap = false;
@@ -174,12 +176,6 @@ export class SwapsControllerService {
             ];
           }
 
-          if (fromToken?.blockchain === toToken?.blockchain) {
-            return this.onChainService.calculateTrades([
-              ...this.disabledTradesTypes.onChain,
-              ...onChainBlacklistProviders
-            ]);
-          }
           return this.crossChainService.calculateTrades([...this.disabledTradesTypes.crossChain]);
         }),
         catchError(err => {
@@ -222,9 +218,7 @@ export class SwapsControllerService {
         throw new Error('Trade has invalid from amount');
       }
       const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
-        trade instanceof CrossChainTrade
-          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+        SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING,
         trade
       );
 

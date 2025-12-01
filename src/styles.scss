@@ -81,7 +81,7 @@ input::-webkit-inner-spin-button {
   appearance: none;
 }
 
-input[type=number] {
+input[type='number'] {
   /* stylelint-disable-next-line */
   -moz-appearance: textfield;
 }
@@ -92,7 +92,6 @@ button {
   background: none;
   border: none;
   cursor: pointer;
-
 }
 
 .noscroll {
@@ -189,8 +188,8 @@ a {
   align-items: center;
   justify-content: center;
   color: #fff;
-  background-color: #282935;
-  
+  background-color: var(--io-background);
+
   font-family: Red-Hat-Display, sans-serif;
   opacity: 1;
 
@@ -201,7 +200,6 @@ a {
 
     opacity: 0;
   }
-  
 
   img,
   h1 {
