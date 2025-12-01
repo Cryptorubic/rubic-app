@@ -1,4 +1,4 @@
-import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/core';
 
 interface DefaultBlockchainData {
   name: string;
@@ -243,10 +243,6 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Soneium',
     rpc: 'https://rpc.soneium.org/'
   },
-  [BLOCKCHAIN_NAME.WANCHAIN]: {
-    name: 'Wanchain',
-    rpc: 'https://gwan-ssl.wandevs.org:56891'
-  },
   [BLOCKCHAIN_NAME.UNICHAIN]: {
     name: 'Unichain',
     rpc: 'https://mainnet.unichain.org/'
@@ -258,5 +254,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.PLASMA]: {
     name: 'Plasma',
     rpc: 'https://rpc.plasma.to'
+  },
+  [BLOCKCHAIN_NAME.MONAD]: {
+    name: 'Monad',
+    rpc: 'https://rpc.monad.xyz'
   }
 };

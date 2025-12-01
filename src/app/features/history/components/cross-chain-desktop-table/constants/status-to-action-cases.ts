@@ -1,6 +1,7 @@
-import { BLOCKCHAIN_NAME, BRIDGE_TYPE } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { TableRowWithActionButton } from '../model/types';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import { BRIDGE_TYPE } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 
 /**
  * for claim-status in arbitrum bridge needs to show button with specific action

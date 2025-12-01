@@ -1,4 +1,4 @@
-import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, OnChainTradeType } from '@cryptorubic/sdk';
+import { CROSS_CHAIN_TRADE_TYPE, CrossChainTradeType, OnChainTradeType } from '@cryptorubic/core';
 
 export const specificProviderStatusText: Partial<
   Record<CrossChainTradeType | OnChainTradeType, Record<string, string>>

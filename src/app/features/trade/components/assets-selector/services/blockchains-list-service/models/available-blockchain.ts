@@ -1,4 +1,4 @@
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { BlockchainTag } from '../../../components/blockchains-filter-list/models/BlockchainFilters';
 
 export interface AvailableBlockchain {
