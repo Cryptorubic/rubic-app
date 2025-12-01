@@ -1,6 +1,5 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import { combineLatestWith, debounceTime, map, share, startWith } from 'rxjs/operators';
-import { BlockchainsInfo, CrossChainTransferTrade } from '@cryptorubic/sdk';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -9,6 +8,8 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
+import { BlockchainsInfo } from '@cryptorubic/core';
+import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 
 type StateOptions = [SelectedTrade, boolean, boolean, string, boolean, boolean, string];
 
@@ -75,6 +76,10 @@ export class ActionButtonService {
         action: () => {}
       };
     }
+    const isTransferFromNonEvm =
+      currentTrade.trade instanceof CrossChainTransferTrade &&
+      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+
     if (currentTrade.error) {
       return {
         type: 'error',
@@ -83,7 +88,7 @@ export class ActionButtonService {
       };
     }
 
-    if (!address) {
+    if (!address && !isTransferFromNonEvm) {
       return {
         type: 'action',
         text: 'Connect wallet',
@@ -97,9 +102,6 @@ export class ActionButtonService {
         action: () => {}
       };
     }
-    const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
 
     if (
       currentTrade.status === TRADE_STATUS.READY_TO_SWAP ||

@@ -6,15 +6,6 @@ import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
 import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  ChainType,
-  Injector,
-  Web3Public,
-  Web3PublicService,
-  Web3Pure
-} from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -41,8 +32,18 @@ import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-
 import { SearchQueryUtilityStore } from '@core/services/tokens/models/search-query-utility-store';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { sorterByChain } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
-import { BLOCKCHAIN_NAME, nativeTokensList, TEST_EVM_BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  BlockchainsInfo,
+  ChainType,
+  nativeTokensList,
+  TEST_EVM_BLOCKCHAIN_NAME
+} from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { Web3Pure } from '@cryptorubic/web3';
+import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { Token as OldToken } from '@cryptorubic/core';
 
 @Injectable({
   providedIn: 'root'
@@ -117,7 +118,7 @@ export class TokensFacadeService {
   public readonly nativeToken$ = this.formService.fromBlockchain$.pipe(
     switchMap(blockchain => {
       const chainType = BlockchainsInfo.getChainType(blockchain);
-      const address = Web3Pure[chainType].nativeTokenAddress;
+      const address = Web3Pure.getNativeTokenAddress(chainType);
 
       return this.findToken({ address, blockchain });
     })
@@ -156,7 +157,8 @@ export class TokensFacadeService {
     private readonly tokensStore: NewTokensStoreService,
     private readonly apiService: NewTokensApiService,
     private readonly authService: AuthService,
-    private readonly formService: SwapsFormService
+    private readonly formService: SwapsFormService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.buildTokenLists();
     this.subscribeOnWallet();
@@ -239,25 +241,30 @@ export class TokensFacadeService {
     blockchain: BlockchainName;
   }): Promise<BigNumber> {
     const chainType = BlockchainsInfo.getChainType(token.blockchain);
-    const isAddressCorrectValue = await Web3Pure[chainType].isAddressCorrect(this.userAddress);
+    const isAddressCorrectValue = await Web3Pure.isAddressCorrect(
+      token.blockchain,
+      this.userAddress
+    );
 
     if (
       !this.userAddress ||
       !chainType ||
-      !isAddressCorrectValue ||
-      !Web3PublicService.isSupportedBlockchain(token.blockchain)
+      !isAddressCorrectValue
+      // @TODO CHECK IF BLOCKCHAIN SUPPORTED
     ) {
       return null;
     }
 
     try {
-      const blockchainAdapter = Injector.web3PublicService.getWeb3Public(token.blockchain);
+      const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        token.blockchain as RubicAny
+      );
       const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 
       const storedToken = this.findTokenSync(token);
       if (!token) return new BigNumber(NaN);
 
-      const balance = Web3Pure.fromWei(balanceInWei, storedToken.decimals);
+      const balance = OldToken.fromWei(balanceInWei, storedToken.decimals);
       if (storedToken && !storedToken.amount.eq(balance)) {
         // @TODO TOKENS
         // const newToken = { ...token, amount: balance };
@@ -284,7 +291,7 @@ export class TokensFacadeService {
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
 
-    if (Web3Pure[chainType].isNativeAddress(fromToken.address)) {
+    if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
       await this.getAndUpdateTokenBalance(toToken);
     } else {
@@ -292,7 +299,7 @@ export class TokensFacadeService {
         this.getAndUpdateTokenBalance(fromToken),
         this.getAndUpdateTokenBalance(toToken),
         this.getAndUpdateTokenBalance({
-          address: Web3Pure[chainType].nativeTokenAddress,
+          address: Web3Pure.getNativeTokenAddress(chainType),
           blockchain: fromToken.blockchain
         })
       ]);
@@ -314,7 +321,7 @@ export class TokensFacadeService {
       this.getAndUpdateTokenBalance(toToken)
     ];
     const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
-    const web3Pure = Web3Pure[fromChainType];
+    const web3Pure = Web3Pure.getInstance(fromChainType);
 
     if (
       !web3Pure.isNativeAddress(fromToken.address) &&
@@ -553,7 +560,7 @@ export class TokensFacadeService {
   private async fetchListBalances(address: string, chains: BlockchainName[]): Promise<void> {
     return new Promise(resolve => {
       chains.forEach((chain, index) => {
-        const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
+        const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
         firstValueFrom(
           this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
         ).then(() => {
@@ -561,14 +568,14 @@ export class TokensFacadeService {
           const tokensObject = this.blockchainTokens[chain].getTokens();
           const tokens = Object.values(tokensObject).map(token => token.address);
 
-          web3Public
+          adapter
             .getTokensBalances(address, tokens)
             .catch(() => tokens.map(() => new BigNumber(NaN)))
             .then(balances => {
               const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
                 ...token,
                 amount: balances?.[idx]?.gt(0)
-                  ? Web3Pure.fromWei(balances[idx], token.decimals)
+                  ? OldToken.fromWei(balances[idx], token.decimals)
                   : new BigNumber(NaN)
               })) as BalanceToken[];
               const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
@@ -602,13 +609,16 @@ export class TokensFacadeService {
     blockchain: BlockchainName
   ): Promise<BalanceToken> {
     const foundToken = this.findTokenSync({ address: tokenAddress, blockchain });
-    const web3Public = Injector.web3PublicService.getWeb3Public(blockchain) as Web3Public;
-    const chainBalancesPromise = web3Public
-      .getTokenBalance(this.authService.userAddress, tokenAddress)
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.ARBITRUM
+    );
+
+    const chainBalancesPromise = blockchainAdapter
+      .getBalance(this.authService.userAddress, tokenAddress)
       .catch(() => new BigNumber(NaN));
     //
     return chainBalancesPromise.then(balance => {
-      return { ...foundToken, amount: Web3Pure.fromWei(balance, foundToken.decimals) };
+      return { ...foundToken, amount: OldToken.fromWei(balance, foundToken.decimals) };
     });
   }
 

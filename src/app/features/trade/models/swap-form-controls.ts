@@ -1,4 +1,4 @@
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { FormGroup } from '@angular/forms';

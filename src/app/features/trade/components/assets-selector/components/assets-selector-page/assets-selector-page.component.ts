@@ -26,10 +26,10 @@ import {
   AvailableBlockchain,
   BlockchainItem
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-assets-selector-page',

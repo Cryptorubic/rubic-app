@@ -11,7 +11,7 @@ import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
@@ -19,6 +19,7 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable({
   providedIn: 'root'

@@ -8,14 +8,6 @@ const routes: Routes = [
     loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
   },
   {
-    path: ROUTE_PATH.AIRDROP,
-    loadChildren: () => import('./features/airdrop/airdrop.module').then(m => m.AirdropModule)
-  },
-  {
-    path: ROUTE_PATH.RETRODROP,
-    loadChildren: () => import('./features/retrodrop/retrodrop.module').then(m => m.RetrodropModule)
-  },
-  {
     path: ROUTE_PATH.HISTORY,
     loadChildren: () => import('./features/history/history.module').then(m => m.HistoryModule)
   },

@@ -3,8 +3,8 @@ import { BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
-import { BlockchainName } from '@cryptorubic/sdk';
 import { compareAddresses } from '@shared/utils/utils';
+import { BlockchainName } from '@cryptorubic/core';
 
 export abstract class CommonUtilityStore {
   protected readonly _pageLoading$ = new BehaviorSubject(true);

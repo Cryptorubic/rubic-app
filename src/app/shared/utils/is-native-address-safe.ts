@@ -1,38 +1,21 @@
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  CHAIN_TYPE,
-  ChainType,
-  Injector,
-  Web3Public,
-  Web3Pure
-} from '@cryptorubic/sdk';
-import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { BlockchainName } from '@cryptorubic/core';
+import { AbstractAdapter, Web3Pure } from '@cryptorubic/web3';
+import { RubicAny } from '../models/utility-types/rubic-any';
 
-export function isNativeAddressSafe(token: BalanceToken): boolean {
-  let chainType: ChainType;
-  try {
-    chainType = BlockchainsInfo.getChainType(token.blockchain);
-  } catch {
-    chainType = CHAIN_TYPE.EVM;
-  }
-
-  return Web3Pure[chainType].isNativeAddress(token.address);
-}
-
-export async function getWeb3PublicSafe(
+export function getChainAdapterSafe(
   chain: BlockchainName,
-  walletAddress: string
-): Promise<Web3Public | null> {
+  walletAddress: string,
+  sdkLegacyService: SdkLegacyService
+): AbstractAdapter<{}, {}, RubicAny> | null {
   try {
-    const web3Public = Injector.web3PublicService.getWeb3Public(chain) as Web3Public;
-    const chainType = BlockchainsInfo.getChainType(chain);
-    const isBlockchainCorrect = await Web3Pure[chainType].isAddressCorrect(walletAddress);
+    const adapter = sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
+    const isBlockchainCorrect = Web3Pure.isAddressCorrect(chain, walletAddress);
     if (!isBlockchainCorrect) {
       return null;
     }
 
-    return web3Public;
+    return adapter;
   } catch {
     return null;
   }

@@ -4,7 +4,7 @@ import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.se
 import { Observable, of } from 'rxjs';
 import { Token } from '@shared/models/tokens/token';
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 
 export class SearchQueryUtilityStore extends BasicUtilityStore {
   constructor(

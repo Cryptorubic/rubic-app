@@ -21,7 +21,6 @@ import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/se
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
 import BigNumber from 'bignumber.js';
-import { ClaimContainerComponent } from '@features/airdrop/components/claim-container/claim-container.component';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
@@ -32,7 +31,6 @@ import { MevBotModalComponent } from '@shared/components/mev-bot-modal/mev-bot-m
 import { FormType } from '@app/features/trade/models/form-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { WcChangeNetworkModalComponent } from '@shared/components/wc-change-network-modal/wc-change-network-modal.component';
-import { TonOnChainTrade } from '@cryptorubic/sdk';
 import { TonSlippageWarnModalComponent } from '@app/shared/components/ton-slippage-warn-modal/ton-slippage-warn-modal.component';
 import { DepositRateChangedModalComponent } from '@app/shared/components/deposit-rate-update-modal/deposit-rate-changed-modal.component';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
@@ -40,6 +38,7 @@ import { DOCUMENT } from '@angular/common';
 import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 
 @Injectable({
   providedIn: 'root'
@@ -89,22 +88,6 @@ export class ModalService {
         data: {
           formType
         }
-      },
-      injector
-    );
-  }
-
-  /**
-   * Show Old claims dialog.
-   */
-  public openOldClaims(isModal: boolean, injector: Injector): Observable<void> {
-    this.setOpenedModalName('claim');
-    return this.showDialog<ClaimContainerComponent, void>(
-      ClaimContainerComponent,
-      {
-        title: 'Old Claims',
-        scrollableContent: true,
-        data: { isModal }
       },
       injector
     );

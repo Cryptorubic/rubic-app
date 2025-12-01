@@ -7,7 +7,7 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { distinctUntilChanged, switchMap, tap } from 'rxjs/operators';
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { compareAddresses } from '@cryptorubic/sdk';
+import { compareAddresses } from '@cryptorubic/core';
 
 export class FavoriteUtilityStore extends BasicUtilityStore {
   constructor(

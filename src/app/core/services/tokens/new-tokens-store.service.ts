@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Token } from '@shared/models/tokens/token';
 import { BlockchainUtilityState, TokensState } from '@core/services/tokens/models/new-token-types';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { BlockchainName } from '@cryptorubic/sdk';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';

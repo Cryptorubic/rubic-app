@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, first, map, tap } from 'rxjs/operators';
+import { catchError, delay, first, map, tap } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -16,6 +16,10 @@ import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { ChartService } from './features/trade/services/chart-service/chart.service';
+import { switchIif } from './shared/utils/utils';
+import { CHAIN_TYPE } from '@cryptorubic/core';
+import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
+import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
@@ -42,6 +46,7 @@ export class AppComponent implements AfterViewInit {
     private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tradePageService: TradePageService,
+    private readonly sdkLoaderService: SdkLoaderService,
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService
   ) {
@@ -54,6 +59,22 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+  }
+
+  private subscribeOnWalletChanges(): void {
+    this.walletConnectorService.addressChange$
+      .pipe(
+        switchIif(
+          () =>
+            this.walletConnectorService.chainType === CHAIN_TYPE.SOLANA &&
+            this.walletConnectorService.provider.walletName === WALLET_NAME.BACKPACK,
+          (address: string) => of(address).pipe(delay(1_000)),
+          (address: string) => of(address)
+        )
+      )
+      .subscribe(userAddress => {
+        if (userAddress) this.sdkLoaderService.onAddressChange(userAddress);
+      });
   }
 
   /**

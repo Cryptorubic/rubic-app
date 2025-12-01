@@ -5,22 +5,22 @@
       [ngClass]="{
         'state__element-icon_focus': step.status === 'pending',
         'state__element-icon_done': step.status === 'fullfilled',
+        'state__element-icon_fail': step.status === 'failed',
     }"
     >
       <img
         *ngIf="step.status === 'fullfilled'"
         src="/assets/images/icons/checkmark/checkmark-thin-white.svg"
-        alt=""
+        alt="checkmark"
       />
+      <span
+        *ngIf="step.status === 'failed'"
+        class="failed-icon"
+        [inlineSVG]="'assets/images/icons/checkmark/failed-checkmark.svg'"
+      ></span>
       <span *ngIf="step.status === 'pending'" class="loader"></span>
     </div>
-    <div
-      class="state__element-text"
-      [ngClass]="{
-        'state__element-text_focus': step.status === 'fullfilled',
-      'state__element-text_pending': step.status === 'pending',
-    }"
-    >
+    <div class="state__element-text" [class.state__element-text_white]="step.status !== 'default'">
       {{ step.value }}
     </div>
   </div>

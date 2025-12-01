@@ -7,9 +7,6 @@
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
     showSpindl: showSpindl$ | async,
-    resetCarouselIndex: resetCarouselIndex$ | async,
-    resetCarouselDuration: resetCarouselDuration$ | async,
-    showHypelab: showHypelab$ | async,
     chartInfo: chartInfo$ | async,
     mobile: mobile$ | async
   } as state"
@@ -56,19 +53,16 @@
       <app-crypto-rate-chart></app-crypto-rate-chart>
     </div>
 
-    <tui-carousel
-      class="banner-carousel"
-      [duration]="state.showHypelab ? state.resetCarouselDuration : 0"
-      [(index)]="state.resetCarouselIndex"
+    <div
+      class="banner-container"
       [ngStyle]="{
         display: state.content === 'form' ? 'block' : 'none'
       }"
     >
       <ng-container *ngIf="state.showSpindl">
-        <app-spindle-banner *tuiItem></app-spindle-banner>
+        <app-spindle-banner></app-spindle-banner>
       </ng-container>
-      <app-hypelab-banner *tuiItem></app-hypelab-banner>
-    </tui-carousel>
+    </div>
   </div>
 
   <app-providers-list-general

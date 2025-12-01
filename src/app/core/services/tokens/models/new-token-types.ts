@@ -1,7 +1,7 @@
-import { BlockchainName } from '@cryptorubic/sdk';
 import { Token } from '@shared/models/tokens/token';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { BlockchainName } from '@cryptorubic/core';
 
 export interface TokenRef {
   readonly blockchain: BlockchainName;

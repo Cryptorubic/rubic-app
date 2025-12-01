@@ -5,7 +5,7 @@ import { debounceTime, filter, map, share, startWith, switchMap, takeUntil } fro
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { HttpService } from '@core/services/http/http.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from '@cryptorubic/sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Token } from '@cryptorubic/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -54,7 +54,7 @@ export class OnChainTableService extends TableService<
 
   public readonly totalPages$ = this.total$.pipe(
     combineLatestWith(this.size$),
-    map(([total, size]) => Math.trunc(total / size) + 1)
+    map(([total, size]) => Math.ceil(total / size))
   );
 
   public readonly data$ = this.request$.pipe(
@@ -103,13 +103,13 @@ export class OnChainTableService extends TableService<
           symbol: backendData.from_token.symbol,
 
           image: backendData.from_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.from_amount, backendData.from_token.decimals)
+          amount: Token.fromWei(backendData.from_amount, backendData.from_token.decimals)
         };
 
         const toToken = {
           symbol: backendData.to_token.symbol,
           image: backendData.to_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.to_amount, backendData.to_token.decimals)
+          amount: Token.fromWei(backendData.to_amount, backendData.to_token.decimals)
         };
 
         const blockchainName = FROM_BACKEND_BLOCKCHAINS[backendData.network as BackendBlockchain];

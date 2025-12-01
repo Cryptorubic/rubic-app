@@ -1,16 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  BlockchainName,
-  CROSS_CHAIN_TRADE_TYPE,
-  CrossChainTradeType,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTradeType,
-  RangoTradeType,
-  LifiSubProvider,
-  RANGO_TO_RUBIC_PROVIDERS,
-  LIFI_API_CROSS_CHAIN_PROVIDERS
-} from '@cryptorubic/sdk';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { QueryParams } from './models/query-params';
@@ -19,6 +8,21 @@ import { HeaderStore } from '@core/header/services/header.store';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
 import { WINDOW } from '@ng-web-apis/common';
 import { SessionStorageService } from '@core/services/session-storage/session-storage.service';
+import {
+  BlockchainName,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType
+} from '@cryptorubic/core';
+import {
+  RANGO_TO_RUBIC_PROVIDERS,
+  RangoTradeType
+} from '../sdk/sdk-legacy/features/common/providers/rango/models/rango-api-trade-types';
+import {
+  LIFI_API_CROSS_CHAIN_PROVIDERS,
+  LifiSubProvider
+} from '../sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/lifi-provider/models/lifi-bridge-types';
 
 @Injectable({
   providedIn: 'root'

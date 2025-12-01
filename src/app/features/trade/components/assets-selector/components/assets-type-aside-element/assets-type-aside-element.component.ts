@@ -3,7 +3,7 @@ import { AssetListType } from '@app/features/trade/models/asset';
 import { SelectorUtils } from '../../utils/selector-utils';
 import { BlockchainItem } from '../../services/blockchains-list-service/models/available-blockchain';
 import { temporarelyDisabledBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
-import { BlockchainsInfo } from '@cryptorubic/sdk';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-assets-type-aside-element',

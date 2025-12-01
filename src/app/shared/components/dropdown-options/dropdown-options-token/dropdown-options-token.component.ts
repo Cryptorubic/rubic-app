@@ -24,7 +24,7 @@ import {
   BlockchainsInfo,
   compareAddresses,
   EvmBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { wrappedNativeTokensList } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetListType } from '@features/trade/models/asset';

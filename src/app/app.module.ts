@@ -12,7 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgxGoogleAnalyticsModule } from '@hakimio/ngx-google-analytics';
 import { MOBILE_NATIVE_MODAL_PROVIDER } from '@core/modals/mobile-native-modal-provider';
-import * as Sentry from '@sentry/angular-ivy';
+import * as Sentry from '@sentry/angular';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,10 +35,14 @@ import * as Sentry from '@sentry/angular-ivy';
   providers: [
     MOBILE_NATIVE_MODAL_PROVIDER,
     {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [],
+      multi: true
+    },
+    {
       provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        showDialog: false
-      })
+      useValue: Sentry.createErrorHandler()
     },
     {
       provide: Sentry.TraceService,

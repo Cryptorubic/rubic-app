@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { catchError, distinctUntilChanged, first, map, switchMap } from 'rxjs/operators';
 import { BehaviorSubject, forkJoin, from, Observable, of } from 'rxjs';
-import {
-  BlockchainName,
-  BlockchainsInfo,
-  CHAIN_TYPE,
-  EvmWeb3Pure,
-  Web3Pure
-} from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';
@@ -19,6 +13,7 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { AssetListType } from '@features/trade/models/asset';
 
@@ -156,11 +151,11 @@ export class SwapFormQueryService {
     const chainType = BlockchainsInfo.getChainType(chain);
 
     // @TODO refactoring.
-    return from(Web3Pure[chainType].isAddressCorrect(token)).pipe(
+    return from(Web3Pure.isAddressCorrect(chain, token)).pipe(
       switchMap(isAddressCorrect => {
         if (chainType && isAddressCorrect) {
           const address =
-            chainType === CHAIN_TYPE.EVM ? EvmWeb3Pure.toChecksumAddress(token) : token;
+            chainType === CHAIN_TYPE.EVM ? EvmAdapter.toChecksumAddress(token) : token;
           return this.searchTokenByAddress(tokens, address, chain);
         }
 

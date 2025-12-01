@@ -13,8 +13,7 @@ import { Observable, combineLatest, forkJoin, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { Router } from '@angular/router';
-import { BlockchainName } from '@cryptorubic/core';
-import { nativeTokensList } from '@cryptorubic/sdk';
+import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 interface ContextData {

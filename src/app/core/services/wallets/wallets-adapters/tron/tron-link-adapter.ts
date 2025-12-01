@@ -6,7 +6,7 @@ import {
   CHAIN_TYPE,
   compareAddresses,
   TronBlockchainName
-} from '@cryptorubic/sdk';
+} from '@cryptorubic/core';
 import { BehaviorSubject, from, fromEvent } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';

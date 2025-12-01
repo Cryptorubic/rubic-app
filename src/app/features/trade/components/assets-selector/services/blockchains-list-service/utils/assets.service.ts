@@ -27,8 +27,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { BlockchainsInfo } from '@cryptorubic/sdk';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 
 export abstract class AssetsService {
   // Custom token

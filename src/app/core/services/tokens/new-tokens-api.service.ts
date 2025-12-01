@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BlockchainName, Web3Pure } from '@cryptorubic/sdk';
 import {
   BackendBalanceToken,
   BackendToken,
@@ -11,12 +10,14 @@ import {
   TokensBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
+import { Token as OldToken } from '@cryptorubic/core';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS,
-  TEST_EVM_BLOCKCHAIN_NAME
+  TEST_EVM_BLOCKCHAIN_NAME,
+  BlockchainName
 } from '@cryptorubic/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -103,7 +104,7 @@ export class NewTokensApiService {
         ...('usdPriceChangePercentage7d' in token && {
           priceChange7d: token.usdPriceChangePercentage7d
         }),
-        ...('balance' in token && { amount: Web3Pure.fromWei(token.balance) })
+        ...('balance' in token && { amount: OldToken.fromWei(token.balance) })
       } as K;
     });
     return tokenModel.filter(token => token.address && token.blockchain);

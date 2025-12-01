@@ -1,4 +1,4 @@
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { TransactionStep } from '@features/trade/models/transaction-steps';
 
 export interface TransactionState {

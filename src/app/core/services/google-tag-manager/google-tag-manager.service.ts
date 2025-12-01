@@ -7,18 +7,13 @@ import { addMinutes } from 'date-and-time';
 import { FormSteps } from '@core/services/google-tag-manager/models/google-tag-manager';
 import { GoogleAnalyticsService } from '@hakimio/ngx-google-analytics';
 import BigNumber from 'bignumber.js';
-import {
-  BlockchainName,
-  CrossChainTrade,
-  Injector,
-  nativeTokensList,
-  OnChainTrade,
-  PriceTokenAmount,
-  Web3Public,
-  Web3Pure
-} from '@cryptorubic/sdk';
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { CrossChainTrade } from '../sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '../sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { BlockchainName, nativeTokensList, PriceTokenAmount, Token } from '@cryptorubic/core';
+import { SdkLegacyService } from '../sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 type SupportedSwapProviderType =
   | SWAP_PROVIDER_TYPE.INSTANT_TRADE
@@ -55,7 +50,8 @@ export class GoogleTagManagerService {
 
   constructor(
     private readonly cookieService: CookieService,
-    private readonly angularGtmService: GoogleAnalyticsService
+    private readonly angularGtmService: GoogleAnalyticsService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   /**
@@ -236,15 +232,17 @@ export class GoogleTagManagerService {
     fromToken: PriceTokenAmount<BlockchainName>,
     walletAddress: string
   ): Promise<[string, string]> {
-    const web3Public = Injector.web3PublicService.getWeb3Public(fromToken.blockchain) as Web3Public;
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      fromToken.blockchain as RubicAny
+    );
     const [nativeBalanceWei, fromTokenBalanceWei] = await Promise.all([
-      web3Public.getBalance(walletAddress),
-      web3Public.getBalance(walletAddress, fromToken.address)
+      adapter.getBalance(walletAddress),
+      adapter.getBalance(walletAddress, fromToken.address)
     ]);
 
     const nativeToken = nativeTokensList[fromToken.blockchain];
-    const nativeBalance = Web3Pure.fromWei(nativeBalanceWei, nativeToken.decimals).toFixed();
-    const fromTokenBalance = Web3Pure.fromWei(fromTokenBalanceWei, fromToken.decimals).toFixed();
+    const nativeBalance = Token.fromWei(nativeBalanceWei, nativeToken.decimals).toFixed();
+    const fromTokenBalance = Token.fromWei(fromTokenBalanceWei, fromToken.decimals).toFixed();
 
     return [nativeBalance, fromTokenBalance];
   }

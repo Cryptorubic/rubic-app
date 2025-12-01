@@ -19,12 +19,12 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { AssetListType } from '@app/features/trade/models/asset';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { BlockchainsInfo } from '@cryptorubic/sdk';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { AnimationBuilder } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-tokens-list',

@@ -4,7 +4,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { BehaviorSubject } from 'rxjs';
 import { PublicKey } from '@solana/web3.js';
 import { ErrorsService } from '@core/errors/errors.service';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 import { NgZone } from '@angular/core';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import CustomError from '@core/errors/models/custom-error';

@@ -15,7 +15,8 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
-import { CrossChainTrade, OnChainTrade } from '@cryptorubic/sdk';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({

@@ -7,7 +7,7 @@ import {
   Optional,
   Output
 } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { FormType } from '@app/features/trade/models/form-type';

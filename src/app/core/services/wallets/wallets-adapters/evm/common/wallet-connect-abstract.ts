@@ -2,19 +2,19 @@ import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { WalletlinkError } from '@core/errors/models/provider/walletlink-error';
 import { NgZone } from '@angular/core';
-import {
-  blockchainId,
-  BlockchainName,
-  BlockchainsInfo,
-  EVM_BLOCKCHAIN_NAME,
-  EvmBlockchainName
-} from '@cryptorubic/sdk';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/types';
 import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
+import {
+  blockchainId,
+  BlockchainName,
+  BlockchainsInfo,
+  EVM_BLOCKCHAIN_NAME,
+  EvmBlockchainName
+} from '@cryptorubic/core';
 
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
   protected providerConfig: EthereumProviderOptions;
