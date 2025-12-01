@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { distinctUntilChanged, first, map, startWith } from 'rxjs/operators';
-import { OnChainTrade, TradeInfo, CrossChainTrade } from '@cryptorubic/sdk';
 import { Observable } from 'rxjs';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
@@ -10,6 +9,9 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
 import { isNil } from '@shared/utils/utils';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { TradeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/trade-info';
 
 @Component({
   selector: 'app-transaction-details',

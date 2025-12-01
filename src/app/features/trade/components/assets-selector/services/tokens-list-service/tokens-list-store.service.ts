@@ -2,13 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, timer } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
-import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
-  BlockchainsInfo,
-  EvmWeb3Pure,
-  Token as SdkToken
-} from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
@@ -43,6 +37,8 @@ import { TokensListBuilder } from './utils/tokens-list-builder';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
 import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
+import { EvmAdapter } from '@cryptorubic/web3';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class TokensListStoreService {
@@ -101,7 +97,8 @@ export class TokensListStoreService {
     private readonly swapFormService: SwapsFormService,
     private readonly destroy$: TuiDestroyService,
     private readonly tokensUpdaterService: TokensUpdaterService,
-    private readonly tokenConverters: TokenConvertersService
+    private readonly tokenConverters: TokenConvertersService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.subscribeOnUpdateTokens();
     this.subscribeOnTokensChange();
@@ -271,13 +268,14 @@ export class TokensListStoreService {
           this.blockchain === BLOCKCHAIN_NAME.SOLANA
             ? this.searchQuery
             : this.searchQuery.toLowerCase();
-        const token = await SdkToken.createToken({
+        const token = await this.sdkLegacyService.tokenService.createToken({
           blockchain: this.blockchain,
           address
         });
 
         if (token?.name && token?.symbol && token?.decimals) {
-          let image = token.image;
+          let image: string;
+          if ('image' in token) image = token.image as string;
           if (!image) image = await this.fetchTokenImage(token).catch(() => DEFAULT_TOKEN_IMAGE);
 
           return {
@@ -308,7 +306,7 @@ export class TokensListStoreService {
     }
 
     const tokenAddress = BlockchainsInfo.isEvmBlockchainName(token.blockchain)
-      ? EvmWeb3Pure.toChecksumAddress(token.address)
+      ? EvmAdapter.toChecksumAddress(token.address)
       : token.address;
     const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchainKey}/assets/${tokenAddress}/logo.png`;
 

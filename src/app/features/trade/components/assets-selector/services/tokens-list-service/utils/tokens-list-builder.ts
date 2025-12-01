@@ -4,7 +4,7 @@ import { Token } from '@shared/models/tokens/token';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { List } from 'immutable';
 import { TokenAmount } from '@app/shared/models/tokens/token-amount';
-import { BlockchainName, BlockchainsInfo, Web3Pure } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
@@ -18,6 +18,7 @@ import {
 import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
 import { TOKEN_FILTERS, TokenFilter } from '../../../models/token-filters';
 import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
+import { Web3Pure } from '@cryptorubic/web3';
 
 export class TokensListBuilder {
   private tempTokensList: List<AvailableTokenAmount> = List([]);
@@ -149,11 +150,9 @@ export class TokensListBuilder {
     tokens: AvailableTokenAmount[],
     sorter: TokensSorter
   ): List<AvailableTokenAmount> {
-    const nativeTokenIndex = tokens.findIndex(token => {
-      const chainType = BlockchainsInfo.getChainType(token.blockchain);
-      return Web3Pure[chainType].isNativeAddress(token.address);
-    });
-
+    const nativeTokenIndex = tokens.findIndex(token =>
+      Web3Pure.isNativeAddress(token.blockchain, token.address)
+    );
     if (nativeTokenIndex === -1 || this.assetsSelectorStateService.assetType === 'allChains') {
       return List(tokens.sort(sorter));
     } else {
@@ -161,7 +160,6 @@ export class TokensListBuilder {
         ...tokens.slice(0, nativeTokenIndex),
         ...tokens.slice(nativeTokenIndex + 1, tokens.length)
       ];
-
       return List([tokens[nativeTokenIndex], ...slicedTokensArray.sort(sorter)]);
     }
   }

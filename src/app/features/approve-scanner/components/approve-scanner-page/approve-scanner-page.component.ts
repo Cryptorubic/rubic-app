@@ -9,7 +9,7 @@ import { TokensService } from '@core/services/tokens/tokens.service';
 import { ROUTE_PATH } from '@shared/constants/common/links';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TuiDestroyService, tuiIsPresent } from '@taiga-ui/cdk';
-import { nativeTokensList } from '@cryptorubic/sdk';
+import { nativeTokensList } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-approve-scanner-page',

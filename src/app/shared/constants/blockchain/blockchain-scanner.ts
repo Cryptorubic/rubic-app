@@ -868,11 +868,11 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.ZCASH]: {
-    baseUrl: 'https://explorer.zcha.in/',
+    baseUrl: 'https://blockchair.com/zcash/',
     nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'accounts/',
+    [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: '',
-    [ADDRESS_TYPE.TRANSACTION]: 'transactions/',
+    [ADDRESS_TYPE.TRANSACTION]: 'transaction/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
   [BLOCKCHAIN_NAME.HORIZEN]: {
@@ -1224,14 +1224,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'account/',
     [ADDRESS_TYPE.TOKEN]: 'coin/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
-  [BLOCKCHAIN_NAME.WANCHAIN]: {
-    baseUrl: 'https://wanscan.org/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'token/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },

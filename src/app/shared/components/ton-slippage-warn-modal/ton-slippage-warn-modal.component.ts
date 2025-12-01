@@ -3,7 +3,8 @@ import { TokensStoreService } from '@app/core/services/tokens/tokens-store.servi
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
-import { compareAddresses, Token, TokenAmount, TonOnChainTrade } from '@cryptorubic/sdk';
+import { compareAddresses, Token, TokenAmount } from '@cryptorubic/core';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 
 interface TxStep {
   img: string;

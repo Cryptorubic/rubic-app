@@ -8,7 +8,7 @@ import { HttpService } from '@core/services/http/http.service';
 import { CrossChainTableRequest } from '@features/history/models/cross-chain-table-request';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { CrossChainTableData } from '@features/history/models/cross-chain-table-data';
-import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Web3Pure } from '@cryptorubic/sdk';
+import { BackendBlockchain, FROM_BACKEND_BLOCKCHAINS, Token } from '@cryptorubic/core';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
@@ -115,13 +115,13 @@ export class CrossChainTableService extends TableService<
           symbol: backendData.from_token.symbol,
 
           image: backendData.from_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.from_amount, backendData.from_token.decimals)
+          amount: Token.fromWei(backendData.from_amount, backendData.from_token.decimals)
         };
 
         const toToken = {
           symbol: backendData.to_token.symbol,
           image: backendData.to_token.logo_url,
-          amount: Web3Pure.fromWei(backendData.to_amount, backendData.to_token.decimals)
+          amount: Token.fromWei(backendData.to_amount, backendData.to_token.decimals)
         };
 
         const fromBlockchainName =

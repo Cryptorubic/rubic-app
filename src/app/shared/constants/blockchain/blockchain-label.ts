@@ -152,7 +152,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.BERACHAIN]: 'Berachain',
   [BLOCKCHAIN_NAME.SUI]: 'Sui',
   [BLOCKCHAIN_NAME.SONEIUM]: 'Soneium',
-  [BLOCKCHAIN_NAME.WANCHAIN]: 'Wanchain',
   [BLOCKCHAIN_NAME.UNICHAIN]: 'Unichain',
   [BLOCKCHAIN_NAME.HEMI]: 'Hemi',
   [BLOCKCHAIN_NAME.PLASMA]: 'Plasma',

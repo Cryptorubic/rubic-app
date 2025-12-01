@@ -37,6 +37,7 @@ export class SolanaStandardAdapter
     });
 
     const [signed] = await this.wallet.features['solana:signTransaction'].signTransaction({
+      // @ts-ignore
       transaction: serialized,
       account,
       chain: 'solana:mainnet'
@@ -80,6 +81,7 @@ export class SolanaStandardAdapter
       'solana:signAndSendTransaction'
     ].signAndSendTransaction({
       account,
+      // @ts-ignore
       transaction: serialized,
       chain: 'solana:mainnet'
     });
