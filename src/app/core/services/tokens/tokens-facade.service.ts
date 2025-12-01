@@ -44,6 +44,7 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import { Web3Pure } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Token as OldToken } from '@cryptorubic/core';
+import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 
 @Injectable({
   providedIn: 'root'
@@ -149,8 +150,8 @@ export class TokensFacadeService {
    * Current tokens list.
    */
   public get tokens(): List<BalanceToken> {
-    const allTokens = this.tokensStore.getAllTokens();
-    return List(allTokens);
+    const tokensList = this.tokensStore.getAllTokens();
+    return List(tokensList);
   }
 
   constructor(
@@ -163,34 +164,37 @@ export class TokensFacadeService {
     this.buildTokenLists();
     this.subscribeOnWallet();
     this.pollFormTokenBalance();
+    this.subscribeOnFormTokens();
   }
 
   private buildTokenLists(): void {
-    this.buildTier1List();
-    this.buildTier2List();
+    Promise.all([this.buildTier1List(), this.buildTier2List()]).then(
+      ([tier1Tokens, tier2Tokens]) => {
+        this.allTokens.updateTokenSync([...tier1Tokens, ...tier2Tokens]);
+      }
+    );
   }
 
-  private buildTier1List(): void {
-    this.apiService.getTopTokens().subscribe(tokens => {
-      Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
-        this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
-      });
-      const tokensArray = Object.values(tokens)
-        .map(el => el.list)
-        .flat();
-      this.allTokens.updateTokenSync(tokensArray);
-      this._tier1TokensLoaded$.next(true);
+  private async buildTier1List(): Promise<Token[]> {
+    const tokens = await firstValueFrom(this.apiService.getTopTokens());
+    Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
+      this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
     });
+    const tokensArray = Object.values(tokens)
+      .map(el => el.list)
+      .flat();
+    this._tier1TokensLoaded$.next(true);
+
+    return tokensArray;
   }
 
-  private buildTier2List(): void {
-    this.apiService.getRestTokens().subscribe(tokens => {
-      const tokensList = Object.entries(tokens).flatMap(el => el[1].list);
-      Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
-        this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
-      });
-      this.allTokens.updateTokenSync(tokensList);
+  private async buildTier2List(): Promise<Token[]> {
+    const tokens = await firstValueFrom(this.apiService.getRestTokens());
+    const tokensArray = Object.entries(tokens).flatMap(el => el[1].list);
+    Object.entries(tokens).forEach(([blockchain, blockchainTokens]) => {
+      this.tokensStore.addInitialBlockchainTokens(blockchain as BlockchainName, blockchainTokens);
     });
+    return tokensArray;
   }
 
   public async findToken(token: MinimalToken, searchBackend = false): Promise<BalanceToken | null> {
@@ -266,9 +270,11 @@ export class TokensFacadeService {
 
       const balance = OldToken.fromWei(balanceInWei, storedToken.decimals);
       if (storedToken && !storedToken.amount.eq(balance)) {
-        // @TODO TOKENS
-        // const newToken = { ...token, amount: balance };
-        // this.updateBalance(newToken)
+        const tokensObject = this.tokensStore.tokens[token.blockchain]._tokensObject$;
+        this.tokensStore.tokens[token.blockchain]._tokensObject$.next({
+          ...tokensObject.getValue(),
+          [token.address]: { ...storedToken, amount: balance }
+        });
       }
 
       return new BigNumber(balance);
@@ -640,14 +646,41 @@ export class TokensFacadeService {
   }
 
   public async updateParticipantTokens(): Promise<void> {
-    const fromToken = this.formService.inputValue.fromToken;
-    const toToken = this.formService.inputValue.toToken;
-    const nativeToken = nativeTokensList[fromToken.blockchain];
+    const fromToken = this.formService.inputValue?.fromToken;
+    const toToken = this.formService.inputValue?.toToken;
+    const nativeToken = nativeTokensList?.[fromToken?.blockchain];
 
     await Promise.all([
-      this.getAndUpdateTokenBalance(fromToken),
-      this.getAndUpdateTokenBalance(toToken),
-      this.getAndUpdateTokenBalance(nativeToken)
+      ...(fromToken ? [this.getAndUpdateTokenBalance(fromToken)] : []),
+      ...(toToken ? [this.getAndUpdateTokenBalance(toToken)] : []),
+      ...(nativeToken && !compareTokens(nativeToken, fromToken)
+        ? [this.getAndUpdateTokenBalance(nativeToken)]
+        : [])
     ]);
+  }
+
+  private subscribeOnFormTokens(): void {
+    let fromInterval: NodeJS.Timeout;
+    let toInterval: NodeJS.Timeout;
+
+    this.formService.fromToken$
+      .pipe(debounceTime(200), distinctObjectUntilChanged())
+      .subscribe(fromToken => {
+        // fromInterval.clear
+        clearInterval(fromInterval);
+        fromInterval = setInterval(() => {
+          this.getAndUpdateTokenBalance(fromToken);
+        }, 30_000);
+      });
+
+    this.formService.toToken$
+      .pipe(debounceTime(200), distinctObjectUntilChanged())
+      .subscribe(toToken => {
+        // fromInterval.clear
+        clearInterval(toInterval);
+        toInterval = setInterval(() => {
+          this.getAndUpdateTokenBalance(toToken);
+        }, 30_000);
+      });
   }
 }

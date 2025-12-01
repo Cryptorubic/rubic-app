@@ -243,6 +243,11 @@ export class OnChainService {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
 
+      // Update tokens prices after 3 sec
+      setTimeout(() => {
+        this.tokensFacade.updateParticipantTokens();
+      }, 3_000);
+
       return transactionHash;
     } catch (err) {
       if (
