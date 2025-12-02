@@ -2,7 +2,7 @@ import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 export const defaultFormParameters = {
   swap: {
-    fromChain: BLOCKCHAIN_NAME.ETHEREUM,
+    fromChain: BLOCKCHAIN_NAME.SOLANA,
     toChain: BLOCKCHAIN_NAME.ETHEREUM,
     from: {
       [BLOCKCHAIN_NAME.ETHEREUM]: 'ETH',

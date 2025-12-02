@@ -1,12 +1,12 @@
 @use 'src/scss/core' as *;
 
-
 .filter-list-element {
   ::ng-deep {
     .t-wrapper {
       width: 90px;
       padding: 0 !important;
 
+      font-weight: 400;
       background: var(--tui-base-01);
     }
   }
@@ -14,15 +14,13 @@
   ::ng-deep {
     .t-content {
       gap: 8px;
-
       font-size: 12px;
     }
   }
 
   &__icon {
-    filter: invert(0);
-
-    transition: filter var(--tui-duration, 300ms) ease-in-out;
+    filter: invert(1);
+    // transition: filter var(--tui-duration, 100ms) ease-in-out;
   }
 
   &__clicked-element {
@@ -43,4 +41,3 @@
     }
   }
 }
-

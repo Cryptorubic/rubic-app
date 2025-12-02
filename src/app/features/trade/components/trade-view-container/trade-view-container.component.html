@@ -6,8 +6,6 @@
     providers: providers$ | async,
     calculationStatus: calculationStatus$ | async,
     transactionState: transactionState$ | async,
-    showSpindl: showSpindl$ | async,
-    chartInfo: chartInfo$ | async,
     mobile: mobile$ | async
   } as state"
 >
@@ -45,21 +43,6 @@
       [calculationStatus]="state.calculationStatus"
       [showCalculation]="true"
     ></app-providers-list-general>
-
-    <div class="chart-container" [style.display]="state.chartInfo.status.opened ? 'block' : 'none'">
-      <app-crypto-rate-chart></app-crypto-rate-chart>
-    </div>
-
-    <div
-      class="banner-container"
-      [ngStyle]="{
-        display: state.content === 'form' ? 'block' : 'none'
-      }"
-    >
-      <ng-container *ngIf="state.showSpindl">
-        <app-spindle-banner></app-spindle-banner>
-      </ng-container>
-    </div>
   </div>
 
   <app-providers-list-general

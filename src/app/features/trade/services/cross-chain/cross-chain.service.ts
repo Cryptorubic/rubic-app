@@ -54,8 +54,6 @@ import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-er
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
-import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
-import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -91,7 +89,6 @@ export class CrossChainService {
     private readonly iframeService: IframeService,
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService
   ) {}
 
@@ -134,6 +131,7 @@ export class CrossChainService {
     this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
+      depositTradeParams: 'onlyDeposits',
       ...tradeParams,
       ...options
     });
@@ -269,10 +267,6 @@ export class CrossChainService {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
       await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
-
-      if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
-        this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
-      }
 
       return transactionHash;
     } catch (error) {
@@ -432,40 +426,29 @@ export class CrossChainService {
     fromBlockchain: BlockchainName,
     toBlockchain: BlockchainName
   ): CrossChainTradeType[] {
-    const isNonEvmCNChain = (
-      Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
-    ).includes(fromBlockchain);
+    // const isNonEvmCNChain = (
+    //   Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]
+    // ).includes(fromBlockchain);
 
     let disabledProviders = [...disabledTradesTypes];
 
-    if (isNonEvmCNChain && this.iframeService.isIframe) {
-      disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
-    }
+    // if (isNonEvmCNChain && this.iframeService.isIframe) {
+    //   disabledProviders = [...disabledProviders, CROSS_CHAIN_TRADE_TYPE.CHANGENOW];
+    // }
 
-    const referral = this.sessionStorage.getItem('referral');
+    // const referral = this.sessionStorage.getItem('referral');
 
-    // @TODO remove after birthday promo
-    if (fromBlockchain === BLOCKCHAIN_NAME.SOLANA || toBlockchain === BLOCKCHAIN_NAME.SOLANA) {
-      disabledProviders = [
-        ...disabledProviders
-        // CROSS_CHAIN_TRADE_TYPE.CHANGELLY,
-        // CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-        // CROSS_CHAIN_TRADE_TYPE.EXOLIX,
-        // CROSS_CHAIN_TRADE_TYPE.CHANGENOW
-      ];
-    }
+    // if (referral) {
+    //   const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
 
-    if (referral) {
-      const integratorAddress = this.sessionStorage.getItem(referral.toLowerCase());
-
-      if (integratorAddress) {
-        disabledProviders = [
-          ...disabledProviders,
-          CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
-          CROSS_CHAIN_TRADE_TYPE.CHANGELLY
-        ];
-      }
-    }
+    //   if (integratorAddress) {
+    //     disabledProviders = [
+    //       ...disabledProviders,
+    //       CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP,
+    //       CROSS_CHAIN_TRADE_TYPE.CHANGELLY
+    //     ];
+    //   }
+    // }
 
     return disabledProviders;
   }

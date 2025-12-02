@@ -40,14 +40,14 @@ export class TokenSelectorPageComponent {
 
     if (
       this.formType === 'from' &&
-      this.swapFormService.inputValue.toBlockchain === token.blockchain
+      this.swapFormService.inputValue.toToken?.blockchain === token.blockchain
     ) {
       this.errorsService.catch(new OnlyDepositSwapsAllowedError());
       return;
     }
     if (
       this.formType === 'to' &&
-      this.swapFormService.inputValue.fromBlockchain === token.blockchain
+      this.swapFormService.inputValue.fromToken?.blockchain === token.blockchain
     ) {
       this.errorsService.catch(new OnlyDepositSwapsAllowedError());
       return;

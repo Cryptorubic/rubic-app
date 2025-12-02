@@ -12,7 +12,6 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { IframeService } from '@core/services/iframe-service/iframe.service';
-import { SpindlService } from './core/services/spindl-ads/spindl.service';
 import { WalletConnectorService } from './core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensStoreService } from './core/services/tokens/tokens-store.service';
 import { BalanceLoadingStateService } from './core/services/tokens/balance-loading-state.service';
@@ -21,7 +20,6 @@ import { TOKEN_FILTERS } from './features/trade/components/assets-selector/model
 import { TradePageService } from './features/trade/services/trade-page/trade-page.service';
 import { BalanceLoadingAssetData } from './core/services/tokens/models/balance-loading-types';
 import { TokensNetworkService } from './core/services/tokens/tokens-network.service';
-import { ChartService } from './features/trade/services/chart-service/chart.service';
 import { switchIif } from './shared/utils/utils';
 import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
@@ -37,8 +35,6 @@ export class AppComponent implements AfterViewInit {
 
   public useLargeIframe = false;
 
-  public readonly chartVisibile$ = this.chartService.chartVisibile$;
-
   constructor(
     @Inject(DOCUMENT) private document: Document,
     private readonly translateService: TranslateService,
@@ -48,21 +44,18 @@ export class AppComponent implements AfterViewInit {
     @Inject(WINDOW) private window: RubicWindow,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
-    private readonly spindlService: SpindlService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly balanceLoadingStateService: BalanceLoadingStateService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
     private readonly tradePageService: TradePageService,
     private readonly tokensNetworkService: TokensNetworkService,
-    private readonly chartService: ChartService,
     private readonly sdkLoaderService: SdkLoaderService
   ) {
     this.printTimestamp();
     this.setupLanguage();
 
     this.initApp();
-    this.spindlService.initSpindlAds();
     this.subscribeOnWalletChanges();
     this.tokensNetworkService.setupSubscriptions();
   }

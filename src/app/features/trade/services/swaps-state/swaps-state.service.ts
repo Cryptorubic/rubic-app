@@ -41,7 +41,6 @@ import { AlternativeRoutesService } from '../alternative-route-api-service/alter
 import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
-import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
@@ -127,11 +126,6 @@ export class SwapsStateService {
   // @ts-ignore
   public readonly calculationStatus$ = this.initCalculationStatus();
 
-  /**
-   * Receiver address
-   */
-  private receiverAddress: string | null;
-
   constructor(
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
@@ -139,8 +133,7 @@ export class SwapsStateService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
-    private readonly refundService: RefundService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly refundService: RefundService
   ) {
     this.subscribeOnTradeChange();
   }

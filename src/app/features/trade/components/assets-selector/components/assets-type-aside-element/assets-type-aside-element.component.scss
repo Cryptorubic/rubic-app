@@ -1,7 +1,6 @@
 @use 'src/scss/core' as *;
 
 :host {
-
   @include b($mobile-md) {
     .asset-types-aside__list-element {
       width: 80px;
@@ -27,6 +26,7 @@
     height: 41px;
 
     border-radius: 8px;
+    font-weight: 400;
     cursor: pointer;
 
     &:hover {
@@ -68,6 +68,7 @@
   .icon-label {
     font-size: 12px;
     line-height: 1;
+    letter-spacing: 0.3px;
   }
 
   .icon-img {

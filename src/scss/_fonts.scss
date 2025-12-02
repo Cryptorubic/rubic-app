@@ -1,6 +1,6 @@
 @use 'src/scss/mixins' as *;
 
-@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-Light', 300);
-@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-Regular', 400);
-@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-Medium', 500);
-@include font-face('Red-Hat-Display', '/assets/fonts/red-hat/RedHatDisplay-SemiBold', 600);
+@include font-face('Space-Grotesk', '/assets/fonts/space-grotesk/SpaceGrotesk-Light', 300);
+@include font-face('Space-Grotesk', '/assets/fonts/space-grotesk/SpaceGrotesk-Regular', 400);
+@include font-face('Space-Grotesk', '/assets/fonts/space-grotesk/SpaceGrotesk-Medium', 500);
+@include font-face('Space-Grotesk', '/assets/fonts/space-grotesk/SpaceGrotesk-SemiBold', 600);

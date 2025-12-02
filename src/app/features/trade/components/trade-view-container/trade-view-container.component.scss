@@ -119,14 +119,6 @@ $mobile-width: 360px;
       background: none;
       border-radius: 0;
     }
-
-    .chart-container {
-      width: $mobile-width;
-      
-      app-crypto-rate-chart {
-        width: 100%;
-      }
-    }
   }
 }
 

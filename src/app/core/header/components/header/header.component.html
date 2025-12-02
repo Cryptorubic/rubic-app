@@ -5,7 +5,7 @@
 >
   <app-logo *ngIf="!hideLogo"></app-logo>
 
-  <!-- <app-history-button *ngIf="!useLargeIframe"></app-history-button> -->
+  <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
   <div class="rubic-header__profile">
     <ng-container *ngIf="!currentUser?.address; else loggedIn">

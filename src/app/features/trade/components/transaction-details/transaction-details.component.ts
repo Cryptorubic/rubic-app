@@ -8,7 +8,6 @@ import { transactionInfoText } from '@features/trade/constants/transaction-info-
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { isNil } from '@shared/utils/utils';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
-import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TradeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/trade-info';
@@ -37,15 +36,12 @@ export class TransactionDetailsComponent {
 
   public isWalletCopied = false;
 
-  public readonly gaslessTxCount24hrs = this.solanaGaslessStateService.gaslessTxCount24hrs;
-
   constructor(
     private readonly swapsStateService: SwapsStateService,
     private readonly walletConnector: WalletConnectorService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly settingsService: SettingsService,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   public readonly ADDRESS_TYPE = ADDRESS_TYPE;

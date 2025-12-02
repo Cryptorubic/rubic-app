@@ -45,7 +45,7 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-base-01: #d4d4d4;
   --tui-base-02: red;
   --tui-base-03: red;
-  --tui-base-04: red;
+  --tui-base-04: #9ca3af;
 
   --tui-text-01: #9ca3af;
   --tui-text-02: #9a9ab0;
@@ -55,6 +55,9 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-padding-s: 0.5rem;
   --tui-padding-xl: 1.25rem;
   --tui-padding-4xl: 2rem; // 32px
+
+  --tui-font-text-m: normal 1rem / 1.5rem Space-Grotesk, sans-serif;
+  --tui-font-text-s: normal 0.8125rem / 1.25rem Space-Grotesk, sans-serif;
 
   //--scroll-size: 0px;
   //--primary-color: #{$primary-color};
@@ -118,7 +121,7 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 $sf-pro-font: SF-Pro, sans-serif;
 $roboto-font: Roboto, sans-serif;
 $montserrat-font: Montserrat, sans-serif;
-$red-hat-display: Red-Hat-Display, sans-serif;
+$space-grotesk: Space-Grotesk, sans-serif;
 
 // ***** colors *****
 $rubic-base-11: #808080;

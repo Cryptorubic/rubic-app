@@ -75,9 +75,6 @@ import { AlternativeRouteElementComponent } from './components/alternative-route
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
-import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
-import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
-import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 
 @NgModule({
   declarations: [
@@ -111,8 +108,7 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     FormHeaderComponent,
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
-    RefundAddressComponent,
-    CryptoRateChartComponent
+    RefundAddressComponent
   ],
   exports: [ActionButtonComponent],
   imports: [
@@ -184,9 +180,7 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     BlockchainsListService,
     FormsTogglerService,
     AlternativeRoutesService,
-    RefundService,
-    SolanaGaslessService,
-    SolanaGaslessStateService
+    RefundService
     // SettingsService,
     // RefreshService,
     // TradeService,

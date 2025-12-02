@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
-import { combineLatestWith, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapFormQueryService } from '@features/trade/services/swap-form-query/swap-form-query.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -16,10 +16,7 @@ import { NotificationsService } from '@core/services/notifications/notifications
 import { TuiNotification } from '@taiga-ui/core';
 import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
-import { ChartService } from '../../services/chart-service/chart.service';
-import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -59,20 +56,6 @@ export class TradeViewContainerComponent {
 
   public readonly transactionState$ = this.previewSwapService.transactionState$;
 
-  private readonly hideIframeBanner =
-    this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
-
-  public readonly showSpindl$ = this.spindlService.showSpindl$.pipe(
-    combineLatestWith(this.authService.currentUser$, this.spindlService.hasNoContent$),
-    map(
-      ([showSpindl, currUser, hasNoContent]) =>
-        showSpindl && !hasNoContent && Boolean(currUser?.address)
-    ),
-    map(showSpindl => (this.hideIframeBanner ? false : showSpindl))
-  );
-
-  public readonly chartInfo$ = this.chartService.chartInfo$;
-
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -84,15 +67,8 @@ export class TradeViewContainerComponent {
     private readonly actionButtonService: ActionButtonService,
     private readonly notificationsService: NotificationsService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly spindlService: SpindlService,
-    private readonly authService: AuthService,
-    private readonly chartService: ChartService,
-    private readonly solanaGaslessService: SolanaGaslessService,
-    renderer2: Renderer2
-  ) {
-    this.chartService.setRenderer(renderer2);
-    this.chartService.initSubscriptions(swapFormService);
-  }
+    private readonly authService: AuthService
+  ) {}
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     await this.swapsState.selectTrade(tradeType);

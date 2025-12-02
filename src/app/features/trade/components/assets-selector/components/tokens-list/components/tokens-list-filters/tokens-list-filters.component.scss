@@ -2,7 +2,7 @@
 
 :host {
   .filters-wrapper {
-    @include flex(row, end, space-between);
+    @include flex(row, center, space-between);
     gap: 5px;
 
     width: 100%;
@@ -23,10 +23,12 @@
 
   .filters-wrapper__next-btn,
   .filters-wrapper__prev-btn {
-    padding: 11px 5px;
+    padding: 10px 7px;
 
     background-color: var(--tui-base-01);
     border-radius: var(--tui-radius-s);
+
+    transition: all 300ms;
 
     &:hover {
       background-color: var(--tui-secondary-hover);
@@ -53,11 +55,12 @@
     height: 41px;
     margin: 0 auto;
     margin-left: -18px;
+    color: var(--tui-text-03);
 
     background: var(--tui-base-01);
-    border-radius: 8px;
+    border-radius: 12px;
 
-    transition: all 100ms;
+    transition: all 300ms;
 
     @include b(mobile) {
       gap: 2px;
@@ -70,6 +73,10 @@
 
     &__active {
       background: var(--tui-secondary-active);
+    }
+
+    &__icon {
+      filter: invert(1);
     }
   }
 

@@ -13,7 +13,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
   providers: [TuiDestroyService],
   animations: [
     trigger('moveLabel', [
-      state('true', style({ color: '#02b774', fontSize: '12px', top: '-5px' })),
+      state('true', style({ color: '#000', fontSize: '12px', top: '-5px' })),
       state('false', style({ color: '#9a9ab0', fontSize: '16px', top: '0px' })),
       transition(`true <=> false`, animate('0.2s ease-out'))
     ])

@@ -1,5 +1,5 @@
 <tui-loader [overlay]="true" [showLoader]="loading$ | async">
-  <ng-container
+  <!-- <ng-container
     *ngLet="{
       device: device$ | async,
       isCrossChain: isCrossChain$ | async,
@@ -7,8 +7,8 @@
       isCn: isCn$ | async,
       isUserActive: isUserActive$ | async
     } as state"
-  >
-    <ng-container *ngIf="state.isCrossChain">
+  > -->
+  <!-- <ng-container *ngIf="state.isCrossChain">
       <app-cross-chain-desktop-table
         *ngIf="state.isUserActive; else noUser"
         [device]="state.device"
@@ -19,11 +19,9 @@
         *ngIf="state.isUserActive; else noUser"
         [device]="state.device"
       ></app-on-chain-desktop-table>
-    </ng-container>
-    <ng-container *ngIf="state.isCn">
-      <app-deposit-table [device]="state.device"></app-deposit-table>
-    </ng-container>
-  </ng-container>
+    </ng-container> -->
+  <app-deposit-table [device]="device$ | async"></app-deposit-table>
+  <!-- </ng-container> -->
 </tui-loader>
 
 <ng-template #noUser>

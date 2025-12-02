@@ -31,7 +31,7 @@
 }
 
 html {
-  --tui-font-text: #{$red-hat-display} !important;
+  --tui-font-text: #{$space-grotesk} !important;
 
   box-sizing: border-box;
   height: auto !important;
@@ -59,7 +59,8 @@ html {
     button,
     select,
     textarea {
-      font-family: $red-hat-display !important;
+      font-family: $space-grotesk !important;
+      font-weight: 400;
     }
   }
 }
@@ -190,7 +191,7 @@ a {
   color: #fff;
   background-color: var(--io-background);
 
-  font-family: Red-Hat-Display, sans-serif;
+  font-family: Space-Grotesk, sans-serif;
   opacity: 1;
 
   transition: opacity 0.4s ease-in-out, z-index 0.4s step-end;
