@@ -4,13 +4,15 @@
   display: flex;
   height: 50px;
 
+  color: var(--tui-text-01);
+  font-weight: 600;
+
   &:hover {
     cursor: pointer;
   }
 
   &__second-label {
     color: var(--tui-text-03);
-    font-weight: 400;
     font-size: 15px;
   }
 
@@ -20,7 +22,6 @@
     align-items: center;
 
     color: var(--tui-text-03);
-    font-weight: 700;
     font-size: 21px;
   }
 
@@ -64,6 +65,10 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+
+    img {
+      filter: invert(1);
+    }
   }
 
   &__empty {
@@ -77,8 +82,6 @@
     margin-right: -25px;
     padding-left: 25px;
 
-    color: var(--tui-text-03);
-    font-weight: 700;
     font-size: 1rem;
 
     background: var(--tui-secondary);

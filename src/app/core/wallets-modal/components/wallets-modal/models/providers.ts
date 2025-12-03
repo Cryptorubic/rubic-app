@@ -55,23 +55,5 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
-  },
-  {
-    name: 'Ctrl Wallet',
-    value: WALLET_NAME.CTRL,
-    img: './assets/images/icons/wallets/ctrl.svg',
-    supportsDesktop: true,
-    supportsMobile: false,
-    display: true,
-    disabled: false
-  },
-  {
-    name: 'Suiet Wallet',
-    value: WALLET_NAME.SUIET_WALLET,
-    img: './assets/images/icons/wallets/suiet.png',
-    supportsDesktop: true,
-    supportsMobile: false,
-    display: true,
-    disabled: false
   }
 ];

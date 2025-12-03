@@ -45,6 +45,7 @@ export class TokensListStoreService {
   private readonly _tokensToShow$ = new BehaviorSubject<AvailableTokenAmount[]>([]);
 
   public readonly tokensToShow$ = this._tokensToShow$.asObservable();
+  // .pipe(tap(t => console.log('%cTOKENS_TO_SHOW', 'color: red;', t)));
 
   public get tokensToShow(): AvailableTokenAmount[] {
     return this._tokensToShow$.value;
@@ -167,6 +168,7 @@ export class TokensListStoreService {
         takeUntil(this.destroy$)
       )
       .subscribe((tokensList: TokensList) => {
+        console.log('%ctokensList', 'color: yellow;', tokensList);
         if ('tokensToShow' in tokensList) {
           this.tokensToShow = tokensList.tokensToShow;
           this.customToken = null;

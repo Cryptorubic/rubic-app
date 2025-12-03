@@ -14,6 +14,7 @@ $primary-color: rgb(0, 226, 142);
 $secondary-color: #271e34;
 $transparent-black: rgba(0, 0, 0, 0.1);
 $transparent-white: rgba(255, 255, 255, 0.1);
+$transparent-gray: rgba(255, 255, 255, 0.49);
 
 // ***** vars *****
 :root {
@@ -24,9 +25,9 @@ $transparent-white: rgba(255, 255, 255, 0.1);
 
   --io-background: #efefef;
 
-  --tui-primary: #fff;
-  --tui-primary-hover: #d4d4d4;
-  --tui-primary-active: #d4d4d4;
+  --tui-primary: #d4d4d4;
+  --tui-primary-hover: #fff;
+  --tui-primary-active: #fff;
   --tui-primary-text: #14141d;
 
   --tui-secondary: #d4d4d4;
@@ -43,13 +44,15 @@ $transparent-white: rgba(255, 255, 255, 0.1);
   --tui-warn: #cfa200;
 
   --tui-base-01: #d4d4d4;
-  --tui-base-02: red;
-  --tui-base-03: red;
+  --tui-base-02: #d4d4d4;
+  --tui-base-03: #d4d4d4;
   --tui-base-04: #9ca3af;
 
-  --tui-text-01: #9ca3af;
+  // --tui-text-01: #9ca3af;
+  --tui-text-01: #000;
   --tui-text-02: #9a9ab0;
-  --tui-text-03: #000;
+  // --tui-text-03: #000;
+  --tui-text-03: #9ca3af;
 
   --tui-padding-xs: 0.25rem;
   --tui-padding-s: 0.5rem;

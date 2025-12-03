@@ -30,6 +30,7 @@ $mobile-width: 360px;
 
 .swap-container {
   display: flex;
+  gap: 32px;
   align-items: flex-start;
   margin: 0 auto;
 
@@ -38,9 +39,9 @@ $mobile-width: 360px;
 
     position: relative;
 
-    gap: 10px;
+    gap: 32px;
 
-    width: 600px;
+    width: 640px;
     margin-right: 10px;
     margin-left: 10px;
 

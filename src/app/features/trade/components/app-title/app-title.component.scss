@@ -1,0 +1,36 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .title {
+    @include flex(column, center, center);
+    gap: 8px;
+
+    color: var(--tui-text-01);
+    text-align: center;
+
+    &-big,
+    &-small {
+      margin: 0;
+
+      font-weight: 400;
+    }
+
+    &-big {
+      font-size: 38px;
+      line-height: 120%;
+
+      @include b($mobile-md) {
+        font-size: 24px;
+      }
+    }
+
+    &-small {
+      font-size: $rubic-font-size-01;
+      line-height: 170%;
+
+      @include b($mobile-md) {
+        font-size: 13px;
+      }
+    }
+  }
+}

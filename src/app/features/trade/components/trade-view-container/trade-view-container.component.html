@@ -17,6 +17,8 @@
     }"
     [ngSwitch]="state.content"
   >
+    <app-title *ngIf="state.content === 'form' && !state.calculationStatus.showSidebar"></app-title>
+
     <app-token-selector-page
       *ngSwitchCase="'fromSelector'"
       formType="from"

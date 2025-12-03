@@ -35,6 +35,12 @@
       padding-right: 25px !important;
     }
   }
+
+  tui-checkbox {
+    ::ng-deep [tuiWrapper][data-appearance='primary']::after {
+      color: red;
+    }
+  }
 }
 
 @include b($mobile-md) {

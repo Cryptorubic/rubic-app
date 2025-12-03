@@ -3,7 +3,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, startWith, takeUntil, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -68,7 +68,10 @@ export class DepositPreviewSwapComponent {
 
   public readonly toAsset$ = this.swapsFormService.toToken$.pipe(first());
 
-  public readonly fromAmount$ = this.swapsFormService.fromAmount$.pipe(first());
+  public readonly fromAmount$ = this.swapsFormService.fromAmount$.pipe(
+    first(),
+    tap(fromAm => console.log('FROM_AMOUNT ==> ', fromAm))
+  );
 
   private readonly calculatedToAmount$ = this.swapsFormService.toAmount$
     .pipe(map(amount => (amount ? { actualValue: amount, visibleValue: amount?.toFixed() } : null)))

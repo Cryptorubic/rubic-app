@@ -1,0 +1,7 @@
+@use 'src/scss/core' as *;
+
+:host {
+  button {
+    background: var(--tui-primary-hover);
+  }
+}

@@ -8,7 +8,8 @@
   [state]="{ type: 'cross-chain' }"
 >
   <div class="history-button__container">
-    <img src="/assets/images/icons/navigation/history.svg" alt="Trades history" />
+    <span [inlineSVG]="'assets/images/icons/navigation/history.svg'" alt="Trades history"></span>
+    <!-- <img src="/assets/images/icons/navigation/history.svg" alt="Trades history" /> -->
     <app-notification-badge
       class="history-button__badge"
       *ngIf="(unreadTrades$ | async) && (currentUser$ | async)"

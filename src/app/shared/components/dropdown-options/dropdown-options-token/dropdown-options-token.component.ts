@@ -63,10 +63,13 @@ export class DropdownOptionsTokenComponent {
   ) {}
 
   public get canBeAddedToFavorite(): boolean {
-    const tokenChainType = BlockchainsInfo.getChainType(this.token.blockchain);
-    const walletChainType = this.authService.userChainType;
-
-    return tokenChainType === walletChainType;
+    try {
+      const tokenChainType = BlockchainsInfo.getChainType(this.token.blockchain);
+      const walletChainType = this.authService.userChainType;
+      return tokenChainType === walletChainType;
+    } catch {
+      return false;
+    }
   }
 
   public get showCopyToClipboardOption(): boolean {

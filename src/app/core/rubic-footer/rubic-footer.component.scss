@@ -1,11 +1,13 @@
 @use 'src/scss/core' as *;
 
 .rubic-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @include flex(row, center, space-around);
+  width: 100%;
+
   margin-bottom: 10px;
   padding: 0 20px;
+
+  color: var(--tui-text-02);
 
   font-weight: 300;
 
@@ -13,11 +15,14 @@
     display: none;
   }
 
-  &__nav {
-    display: flex;
+  &__nav,
+  &__pdfs,
+  &__copyright {
+    @include flex(row, center, center);
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
+    gap: 3px;
+
+    width: max(300px, 30vw);
 
     @include b($mobile-sm-plus) {
       max-width: 320px;

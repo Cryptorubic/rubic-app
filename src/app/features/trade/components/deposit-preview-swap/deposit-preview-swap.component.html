@@ -78,6 +78,7 @@
           (click)="copyToClipboard(state.depositTrade.depositAddress)"
           [tuiHint]="template"
           [tuiHintManual]="hintShown"
+          tuiHintAppearance="onDark"
         ></button>
       </div>
     </div>
@@ -275,7 +276,9 @@
   </div>
 </ng-template>
 
-<ng-template #template>Address copied on clipboard!</ng-template>
+<ng-template #template
+  ><span class="copy-address-hint">Address copied on clipboard!</span></ng-template
+>
 
 <ng-template #defaultFailedStatusText>
   <tui-notification status="error">

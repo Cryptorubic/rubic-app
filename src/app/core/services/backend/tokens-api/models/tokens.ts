@@ -3,7 +3,7 @@ import { Token } from '@shared/models/tokens/token';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 
 export enum ENDPOINTS {
-  TOKENS = 'v2/tokens/',
+  TOKENS = 'v3/tmp/tokens/clearswap',
   FAVORITE_TOKENS = 'v2/tokens/favorite/',
   TOKENS_SECURITY = 'v2/tokens_security/unknown_token'
 }
@@ -63,3 +63,23 @@ export interface TokensRequestNetworkOptions {
 }
 
 export const DEFAULT_PAGE_SIZE = 200;
+
+export type ClearswapTokensBackendResponse = {
+  [key in BlockchainName]: {
+    readonly count: number;
+    readonly tokens: ClearswapApiToken[];
+  };
+};
+
+export interface ClearswapApiToken {
+  address: string;
+  name: string;
+  symbol: string;
+  network: BlockchainName;
+  decimals: number;
+  image: string;
+  rank: number;
+  type: Token['type'];
+  usdPrice: number | null;
+  tokenSecurity: TokenSecurity | null;
+}

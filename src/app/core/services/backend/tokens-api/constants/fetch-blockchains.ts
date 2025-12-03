@@ -1,6 +1,8 @@
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
 
-export const blockchainsToFetch: BlockchainName[] = [
+export const blockchainsToFetch: BlockchainName[] = [];
+
+export const blockchainsWithOnePage: BlockchainName[] = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
   BLOCKCHAIN_NAME.POLYGON,
@@ -65,11 +67,8 @@ export const blockchainsToFetch: BlockchainName[] = [
   BLOCKCHAIN_NAME.MORPH,
   BLOCKCHAIN_NAME.HEMI,
   BLOCKCHAIN_NAME.PLASMA,
-  BLOCKCHAIN_NAME.MONAD
+  BLOCKCHAIN_NAME.MONAD,
   // BLOCKCHAIN_NAME.SONIC,
-];
-
-export const blockchainsWithOnePage: BlockchainName[] = [
   // BLOCKCHAIN_NAME.ASTAR,
   // BLOCKCHAIN_NAME.EOS,
   BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,

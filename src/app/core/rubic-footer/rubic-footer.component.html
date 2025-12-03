@@ -1,5 +1,5 @@
 <footer class="rubic-footer">
-  <app-rubic-volume></app-rubic-volume>
+  <!-- <app-rubic-volume></app-rubic-volume> -->
   <nav class="rubic-footer__nav">
     <a
       *ngFor="let link of footerLinks"
@@ -11,8 +11,10 @@
       <img [src]="link[theme$ | async]" width="22" height="20" [alt]="link.altText" />
     </a>
   </nav>
-  <div class="rubic-footer__copyright">
-    © Copyright Rubic {{ year }},
+
+  <div class="rubic-footer__copyright">© {{ year }} Clearswap. All Rights Reserved.</div>
+
+  <nav class="rubic-footer__pdfs">
     <a
       [href]="landingDomain + '/pdf/privacy-policy.pdf'"
       rel="noopener"
@@ -20,7 +22,7 @@
       class="rubic-footer__policy"
       >{{ 'common.privacyPolicy' | translate }}</a
     >
-    {{ ' | ' }}
+    <span>|</span>
     <a
       [href]="landingDomain + '/pdf/terms-of-use.pdf'"
       rel="noopener"
@@ -28,5 +30,5 @@
       class="rubic-footer__policy"
       >{{ 'common.termsOfUse' | translate }}</a
     >
-  </div>
+  </nav>
 </footer>

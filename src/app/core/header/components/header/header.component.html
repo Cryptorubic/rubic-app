@@ -5,18 +5,20 @@
 >
   <app-logo *ngIf="!hideLogo"></app-logo>
 
-  <app-history-button *ngIf="!useLargeIframe"></app-history-button>
+  <div class="rubic-header__right">
+    <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
-  <div class="rubic-header__profile">
-    <ng-container *ngIf="!currentUser?.address; else loggedIn">
-      <app-login-button class="rubic-header__login"></app-login-button>
+    <div class="rubic-header__profile">
+      <ng-container *ngIf="!currentUser?.address; else loggedIn">
+        <app-login-button class="rubic-header__login" [appearance]="'secondary'"></app-login-button>
+      </ng-container>
+      <ng-template #loggedIn>
+        <app-user-profile class="rubic-header__profile-user"></app-user-profile>
+      </ng-template>
+    </div>
+
+    <ng-container *noFrame>
+      <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
     </ng-container>
-    <ng-template #loggedIn>
-      <app-user-profile class="rubic-header__profile-user"></app-user-profile>
-    </ng-template>
   </div>
-
-  <ng-container *noFrame>
-    <app-mobile-menu *ngIf="isMobile"></app-mobile-menu>
-  </ng-container>
 </header>

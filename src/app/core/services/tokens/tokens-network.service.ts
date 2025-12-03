@@ -58,6 +58,7 @@ export class TokensNetworkService {
           });
         }),
         switchMap(backendTokens => {
+          console.log('%cbackendTokens', 'color: red;', backendTokens.toArray());
           const uniqueBlockchains = [...new Set(backendTokens.map(bT => bT.blockchain))];
           return Promise.all(
             uniqueBlockchains.map(blockchain =>

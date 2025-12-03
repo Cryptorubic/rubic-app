@@ -18,6 +18,11 @@
       display: block;
     }
   }
+
+  &__right {
+    @include flex(row, center, center);
+    gap: 20px;
+  }
 }
 
 .birthday-button {

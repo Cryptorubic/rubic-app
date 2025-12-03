@@ -28,10 +28,10 @@
     }
   }
 
-  &:hover {
-    background: var(--tui-secondary);
-    border-radius: var(--tui-radius-m);
-  }
+  // &:hover {
+  //   background: var(--tui-primary);
+  //   border-radius: var(--tui-radius-m);
+  // }
 
   &__element {
     display: flex;
@@ -39,7 +39,7 @@
     align-items: center;
     padding: 5px;
 
-    color: white;
+    // color: white;
     font-size: 13px;
 
     &:active {
@@ -49,7 +49,7 @@
     &:hover {
       text-decoration: none;
 
-      background: pink;
+      background: var(--tui-primary-hover);
       border-radius: var(--tui-radius-s);
     }
 
@@ -80,7 +80,7 @@
   }
 
   &__security-label-powered-by {
-    color: #9a9ab0;
+    color: var(--tui-text-02);
     font-weight: 400;
   }
 

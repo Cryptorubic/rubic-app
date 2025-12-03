@@ -54,7 +54,12 @@ export class AssetsTypeAsideElementComponent {
   }
 
   public onItemClick(item: BlockchainItem): void {
-    if (this.isAllChains) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(item.name);
+    if (this.isAllChains) {
+      if (this.selectedAssetType === 'allChains') return;
+      this.assetsSelectorService.onAllChainsSelect();
+    } else {
+      if (this.selectedAssetType === item.name) return;
+      this.assetsSelectorService.onBlockchainSelect(item.name);
+    }
   }
 }

@@ -3,9 +3,13 @@
 .element {
   overflow: hidden;
 
-  background: var(--primary-background);
+  font-weight: 400;
+
+  background: $transparent-gray;
+
   border-radius: var(--tui-radius-m);
   cursor: pointer;
+  backdrop-filter: blur(44px);
 
   &_disabled {
     cursor: no-drop;
@@ -18,7 +22,13 @@
     border-bottom: 1px solid var(--tui-secondary);
 
     &_selected {
-      background: var(--io-background);
+      background: var(--tui-primary-active);
+    }
+
+    &_selected + app-swap-data-element {
+      ::ng-deep .provider-info {
+        background: var(--tui-primary-active);
+      }
     }
   }
 
@@ -77,19 +87,19 @@
   }
 
   &__token-amount {
-    font-weight: 700;
+    // font-weight: 700;
     font-size: 18px;
   }
 
   &__token-symbol {
-    font-weight: 400;
+    // font-weight: 400;
     font-size: 14px;
     line-height: 14px;
   }
 
   &__amount-price {
     color: var(--tui-text-03);
-    font-weight: 400;
+    // font-weight: 400;
     font-size: 14px;
   }
 

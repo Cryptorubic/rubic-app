@@ -7,6 +7,16 @@
     display: flex;
     align-items: center;
 
+    span {
+      width: 24px;
+      height: 24px;
+
+      ::ng-deep svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
     img {
       width: 24px;
       height: 24px;

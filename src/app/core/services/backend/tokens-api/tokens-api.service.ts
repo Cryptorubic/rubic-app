@@ -7,7 +7,8 @@ import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
   BackendTokenForAllChains,
-  DEFAULT_PAGE_SIZE,
+  ClearswapApiToken,
+  ClearswapTokensBackendResponse,
   ENDPOINTS,
   FavoriteTokenRequestParams,
   RatedBackendToken,
@@ -30,6 +31,7 @@ import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
   BlockchainName,
+  Cache as Memo,
   FROM_BACKEND_BLOCKCHAINS,
   TO_BACKEND_BLOCKCHAINS
 } from '@cryptorubic/core';
@@ -87,6 +89,23 @@ export class TokensApiService {
     );
   }
 
+  public static convertClearswapResponseToAppTokens(
+    clearswapResp: ClearswapTokensBackendResponse
+  ): List<Token> {
+    const apiTokens = Object.values(clearswapResp).flatMap(t => t.tokens);
+    return List(
+      apiTokens
+        .map((apiToken: ClearswapApiToken) => {
+          return {
+            ...apiToken,
+            blockchain: apiToken.network,
+            price: apiToken.usdPrice
+          };
+        })
+        .filter(token => token.address && token.blockchain)
+    );
+  }
+
   /**
    * Fetches favorite tokens from backend.
    * @return Observable<BackendToken[]> Favorite Tokens.
@@ -137,37 +156,36 @@ export class TokensApiService {
    * Sets maxPage for each assetType of selector.
    */
   public fetchBasicTokensOnPageInit(): Observable<List<Token>> {
-    const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
-    const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
+    // const options = { page: 1, pageSize: DEFAULT_PAGE_SIZE };
+    // const blockchains = blockchainsToFetch.map(bF => TO_BACKEND_BLOCKCHAINS[bF]);
 
-    const requests$ = blockchains.map((network: BackendBlockchain) =>
-      this.httpService
-        .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
-        .pipe(
-          tap(networkTokens => {
-            if (networkTokens?.results) {
-              const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
-              const oldState = this.tokensNetworkStateService.tokensNetworkState;
-              this.tokensNetworkStateService.updateTokensNetworkState({
-                ...oldState,
-                [blockchain]: {
-                  page: options.page,
-                  maxPage: Math.ceil(networkTokens.count / options.pageSize)
-                }
-              });
-            }
-          }),
-          catchError(() => {
-            return of(null);
-          })
-        )
-    );
+    // const requests$ = blockchains.map((network: BackendBlockchain) =>
+    //   this.httpService
+    //     .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { ...options, network }, this.tokensApiUrl)
+    //     .pipe(
+    //       tap(networkTokens => {
+    //         if (networkTokens?.results) {
+    //           const blockchain = FROM_BACKEND_BLOCKCHAINS[network];
+    //           const oldState = this.tokensNetworkStateService.tokensNetworkState;
+    //           this.tokensNetworkStateService.updateTokensNetworkState({
+    //             ...oldState,
+    //             [blockchain]: {
+    //               page: options.page,
+    //               maxPage: Math.ceil(networkTokens.count / options.pageSize)
+    //             }
+    //           });
+    //         }
+    //       }),
+    //       catchError(() => {
+    //         return of(null);
+    //       })
+    //     )
+    // );
     // @FIX add loading of gainers/losers
-    requests$.push(this.fetchTokensFromOnePageBlockchains());
 
-    return forkJoin(requests$).pipe(
-      map(results => {
-        if (results.every(el => el === null)) {
+    return this.fetchClearswapTokens().pipe(
+      map(clearswapResponse => {
+        if (!clearswapResponse) {
           this.needRefetchTokens = true;
           return List(
             blockchainsToFetch
@@ -178,67 +196,66 @@ export class TokensApiService {
         }
 
         this.needRefetchTokens = false;
-        const backendTokens = results.flatMap(el => el?.results || []);
 
-        return TokensApiService.prepareTokens(backendTokens);
+        return TokensApiService.convertClearswapResponseToAppTokens(clearswapResponse);
       })
     );
   }
 
-  private fetchTokensFromOnePageBlockchains(): Observable<TokensBackendResponse> {
-    const blockchains = [...blockchainsWithOnePage];
-    const backendBlockchains = blockchains.map(chain => TO_BACKEND_BLOCKCHAINS[chain]);
-    const queryString = backendBlockchains.join(',');
-
-    return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, { networks: queryString }, this.tokensApiUrl)
-      .pipe(
-        tap(networkTokens => {
-          if (networkTokens?.results) {
-            blockchainsWithOnePage.forEach(blockchain => {
-              const oldState = this.tokensNetworkStateService.tokensNetworkState;
-              this.tokensNetworkStateService.updateTokensNetworkState({
-                ...oldState,
-                [blockchain]: {
-                  page: 1,
-                  maxPage: 1
-                }
-              });
+  private fetchClearswapTokens(): Observable<ClearswapTokensBackendResponse> {
+    return this.httpService.get<ClearswapTokensBackendResponse>(ENDPOINTS.TOKENS).pipe(
+      tap(clearswapTokens => {
+        if (Object.keys(clearswapTokens).length) {
+          blockchainsWithOnePage.forEach(blockchain => {
+            const oldState = this.tokensNetworkStateService.tokensNetworkState;
+            this.tokensNetworkStateService.updateTokensNetworkState({
+              ...oldState,
+              [blockchain]: {
+                page: 1,
+                maxPage: 1
+              }
             });
-          }
-        }),
-        catchError(() => {
-          return of(null);
-        })
-      );
+          });
+        }
+      }),
+      catchError(() => {
+        return of(null);
+      })
+    );
   }
 
   /**
    * Fetches specific tokens by symbol/address from specific chain or from all chains
    */
+  @Memo({ maxAge: 60_000 })
   public fetchQueryTokens(
     query: string,
     blockchain: BlockchainName | null
   ): Observable<List<Token>> {
-    const options = {
-      query,
-      ...(blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[blockchain] })
-    };
-
-    return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(
+    return this.httpService.get<ClearswapTokensBackendResponse>(ENDPOINTS.TOKENS).pipe(
       catchError(() => {
-        return of({
-          count: 0,
-          next: '0',
-          previous: '0',
-          results: [] as BackendToken[]
-        });
+        return of(
+          Object.fromEntries(
+            Object.values(BLOCKCHAIN_NAME).map(chain => [
+              chain,
+              { count: 0, tokens: [] as ClearswapApiToken[] }
+            ])
+          ) as ClearswapTokensBackendResponse
+        );
       }),
-      map(tokensResponse =>
-        tokensResponse.results.length
-          ? TokensApiService.prepareTokens(tokensResponse.results)
-          : List()
-      )
+      map(clearswapResponse => {
+        // manually finds tokens cause clearswap returns list for every network only
+        if (blockchain) {
+          return TokensApiService.convertClearswapResponseToAppTokens(clearswapResponse).filter(
+            t =>
+              t.blockchain === blockchain &&
+              (compareAddresses(t.address, query) ||
+                t.symbol.toLowerCase().includes(query.toLowerCase()) ||
+                t.name.toLowerCase().includes(query.toLowerCase()))
+          );
+        }
+        return TokensApiService.convertClearswapResponseToAppTokens(clearswapResponse);
+      })
     );
   }
 
@@ -268,16 +285,18 @@ export class TokensApiService {
    * @param requestOptions Request options to get tokens by.
    */
   public fetchSpecificBackendTokens(
-    requestOptions: TokensRequestNetworkOptions
+    _requestOptions: TokensRequestNetworkOptions
   ): Observable<List<Token>> {
-    const options = {
-      network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
-      page: requestOptions.page,
-      pageSize: DEFAULT_PAGE_SIZE
-    };
+    // const options = {
+    //   network: TO_BACKEND_BLOCKCHAINS[requestOptions.network],
+    //   page: requestOptions.page,
+    //   pageSize: DEFAULT_PAGE_SIZE
+    // };
     return this.httpService
-      .get<TokensBackendResponse>(ENDPOINTS.TOKENS, options, this.tokensApiUrl)
-      .pipe(map(tokensResponse => TokensApiService.prepareTokens(tokensResponse.results)));
+      .get<ClearswapTokensBackendResponse>(ENDPOINTS.TOKENS)
+      .pipe(
+        map(clearswapResp => TokensApiService.convertClearswapResponseToAppTokens(clearswapResp))
+      );
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {

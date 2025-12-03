@@ -75,6 +75,7 @@ import { AlternativeRouteElementComponent } from './components/alternative-route
 import { AlternativeRoutesListComponent } from './components/alternative-routes-list/alternative-routes-list.component';
 import { RefundService } from './services/refund-service/refund.service';
 import { RefundAddressComponent } from './components/refund-address/refund-address.component';
+import { AppTitleComponent } from './components/app-title/app-title.component';
 
 @NgModule({
   declarations: [
@@ -108,7 +109,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
     FormHeaderComponent,
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
-    RefundAddressComponent
+    RefundAddressComponent,
+    AppTitleComponent
   ],
   exports: [ActionButtonComponent],
   imports: [

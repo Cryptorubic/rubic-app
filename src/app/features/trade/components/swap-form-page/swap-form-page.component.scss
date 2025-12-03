@@ -58,7 +58,10 @@ app-form-switcher {
   justify-content: center;
   height: 2px;
 
-  background: linear-gradient(90deg, var(--io-background) 0%, rgba(0, 0, 0, 0) 50%, var(--io-background) 100%);
+  background: linear-gradient(90deg,
+  rgba(0, 0, 0, 0) 0%,
+  var(--tui-secondary) 50%,
+  rgba(0, 0, 0, 0) 100%);
 }
 
 @include b($mobile-md) {

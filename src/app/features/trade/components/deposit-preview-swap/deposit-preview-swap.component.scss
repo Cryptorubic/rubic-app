@@ -60,7 +60,6 @@ app-form-switcher {
   }
 }
 
-
 .row {
   display: flex;
   gap: var(--tui-padding-s);
@@ -229,13 +228,11 @@ app-form-switcher {
   &_green {
     ::ng-deep svg {
       path {
-        stroke: var(--tui-primary);
+        stroke: var(--tui-link);
       }
     }
   }
 }
-
-
 
 @keyframes dual-ring {
   0% {
