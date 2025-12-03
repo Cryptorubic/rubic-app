@@ -52,7 +52,7 @@ export class AppComponent implements AfterViewInit {
   ) {
     this.printTimestamp();
     this.setupLanguage();
-
+    this.subscribeOnWalletChanges();
     this.initApp();
     this.spindlService.initSpindlAds();
   }
