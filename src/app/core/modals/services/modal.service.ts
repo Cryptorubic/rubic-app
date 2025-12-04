@@ -39,6 +39,7 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { SwapRetryModalComponent } from '@app/shared/components/swap-retry-modal/swap-retry-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -230,6 +231,20 @@ export class ModalService {
       { title: 'Connect wallet', size: 'm', fitContent: true },
       injector
     );
+  }
+
+  /**
+   * Show Swap Retry Modal dialog.
+   * @param backups$
+   */
+  public openSwapRetryModal(backups$: Observable<TradeState[]>): Observable<void> {
+    this.setOpenedModalName('swap-retry');
+    return this.showDialog<SwapRetryModalComponent, void>(SwapRetryModalComponent, {
+      title: 'Swap Retry',
+      size: 's',
+      fitContent: true,
+      data: { backups$ }
+    });
   }
 
   /**

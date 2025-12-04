@@ -46,8 +46,6 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token
 } from '@cryptorubic/core';
-import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
@@ -259,10 +257,10 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-        const slippageErr = new LowSlippageError();
-        throw slippageErr;
-      }
+      // if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
+      //   const slippageErr = new LowSlippageError();
+      //   throw slippageErr;
+      // }
 
       throw parsedError;
     }

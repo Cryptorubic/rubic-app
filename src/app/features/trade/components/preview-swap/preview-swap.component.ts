@@ -107,6 +107,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
+    this.swapsStateService.resetTrades();
     this.previewSwapService.setNextTxState({
       step: 'inactive',
       data: {}
@@ -226,6 +227,9 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.swapReady) {
       state.disabled = false;
       state.action = this.swap.bind(this);
+    } else if (el.step === transactionStep.swapRetry) {
+      state.disabled = true;
+      state.action = () => {};
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);

@@ -35,6 +35,7 @@ import {
   NoLinkedAccountError,
   NotSupportedTokensError,
   RubicSdkError,
+  SimulationFailedError as SdkSimulationFailedError,
   UnsupportedReceiverAddressError,
   UserRejectError
 } from '@cryptorubic/web3';
@@ -70,6 +71,7 @@ import {
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -351,6 +353,9 @@ export class SwapsControllerService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
+    if (error instanceof SdkSimulationFailedError) {
+      return new SimulationFailedError(error.apiError);
+    }
     if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
@@ -433,8 +438,16 @@ export class SwapsControllerService {
       );
       this.swapsStateService.pickProvider(true);
     }
-    if (parsedError.showAlert) this.errorsService.catch(parsedError);
+
+    if (this.showErrorAlert(parsedError)) this.errorsService.catch(parsedError);
     onError?.(parsedError);
+  }
+
+  private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
+    return (
+      error.showAlert &&
+      !(error instanceof SimulationFailedError && this.swapsStateService.backupTrades.length > 1)
+    );
   }
 
   private subscribeOnSettings(): void {

@@ -1,0 +1,20 @@
+<div class="modal" *ngLet="backups$ | async as backups">
+  <div class="modal__content">
+    <main class="modal__body">
+      <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
+      <div class="modal__hints" *ngLet="isFirstSlide$ | async as isFirstSlide">
+        <div class="modal__hint" *ngIf="isFirstSlide" @inOutAnimation>
+          <p>Provider is not responding.</p>
+          <p>We are urgently looking for a profitable alternative⚡</p>
+        </div>
+        <div class="modal__hint" *ngIf="!isFirstSlide" @inOutAnimation>
+          <span
+            >We've already selected {{ backups.length }} providers - interviewing them in order of
+            priority based on the most favorable rate (currently on
+            {{ getCurrentBackupProviderName(backups) }}).</span
+          >
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

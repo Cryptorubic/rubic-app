@@ -1,0 +1,48 @@
+@use '../../../../scss/core' as *;
+
+.modal {
+  max-width: 360px;
+
+  &__content {
+    text-align: center;
+
+    @include b($tablet) {
+      padding: 10px;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
+  &__spinner {
+    animation: spin 2s linear infinite;
+  }
+
+  &__hints {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  p,
+  span {
+    margin: 0;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}

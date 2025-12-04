@@ -57,6 +57,7 @@ export class TransactionStateComponent {
       authWalletReady: 'Wallet authorized',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
+      swapRetry: 'Swap Retry',
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
