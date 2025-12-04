@@ -1,7 +1,7 @@
-import { AbiItem } from '@cryptorubic/web3';
+import { Abi } from 'viem';
 
 export interface RoundContract {
   address: string;
-  abi: AbiItem[];
+  abi: Abi;
   active?: boolean;
 }

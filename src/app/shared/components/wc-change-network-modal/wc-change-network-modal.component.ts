@@ -3,7 +3,7 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { takeUntil, timer } from 'rxjs';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 
 @Component({

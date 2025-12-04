@@ -7,14 +7,6 @@ import { FormControl } from '@angular/forms';
 import { TableService } from '@features/history/models/table-service';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import { StoreService } from '@core/services/store/store.service';
-import {
-  RubicSdkError,
-  CrossChainDepositStatus,
-  CROSS_CHAIN_DEPOSIT_STATUS,
-  getDepositStatus,
-  CrossChainTradeType,
-  OnChainTradeType
-} from '@cryptorubic/sdk';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
@@ -23,6 +15,14 @@ import { TxStatus } from '@features/history/models/tx-status-mapping';
 import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
+import {
+  CROSS_CHAIN_DEPOSIT_STATUS,
+  CrossChainDepositStatus
+} from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
+import { RubicSdkError } from '@cryptorubic/web3';
+import { getDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
+import { HttpClient } from '@angular/common/http';
+import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 
 @Injectable()
 export class DepositTableService extends TableService<
@@ -62,7 +62,8 @@ export class DepositTableService extends TableService<
 
   constructor(
     protected readonly walletConnector: WalletConnectorService,
-    private readonly storeService: StoreService
+    private readonly storeService: StoreService,
+    private readonly httpClient: HttpClient
   ) {
     super('date');
   }
@@ -73,7 +74,7 @@ export class DepositTableService extends TableService<
   }> {
     const data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
     const tradeStatuses = data.map(trade => {
-      return this.getDepositStatus(trade.id, trade.tradeType);
+      return this.getDepositStatus(trade);
     });
 
     return forkJoin(tradeStatuses).pipe(
@@ -141,18 +142,20 @@ export class DepositTableService extends TableService<
   @Cacheable({
     maxAge: 13_000
   })
-  public getDepositStatus(
-    id: string,
-    tradeType: CrossChainTradeType | OnChainTradeType
-  ): Observable<CrossChainDepositStatus> {
-    if (!id) {
-      throw new RubicSdkError(`Must provide ${tradeType} trade id`);
+  public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
+    if (!trade.id) {
+      throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
     }
 
     try {
-      return from(getDepositStatus(id, tradeType)).pipe(
-        map(el => el.status as CrossChainDepositStatus)
-      );
+      return from(
+        getDepositStatus(
+          trade.id,
+          trade.tradeType,
+          { depositMemo: trade.extraField.value },
+          this.httpClient
+        )
+      ).pipe(map(el => el.status as CrossChainDepositStatus));
     } catch {
       return of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
     }

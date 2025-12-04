@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FeeInfo } from '@cryptorubic/sdk';
 import BigNumber from 'bignumber.js';
 import { BigNumberFormatPipe } from '@shared/pipes/big-number-format.pipe';
 import { ShortenAmountPipe } from '@shared/pipes/shorten-amount.pipe';
 import { Token } from '@shared/models/tokens/token';
 import { AppGasData } from '../../models/provider-info';
 import { HintAppearance, HintDirection } from './model';
+import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 
 @Component({
   selector: 'app-swap-data-element',
@@ -50,7 +50,9 @@ export class SwapDataElementComponent {
 
   @Input({ required: true }) gasInfo: AppGasData | null;
 
-  @Input({ required: true }) time: string | number;
+  @Input({ required: true }) averageTimeMins: string | number;
+
+  @Input({ required: true }) time95PercentSwapsMins: string | number;
 
   @Input() hideHint: boolean = false;
 }

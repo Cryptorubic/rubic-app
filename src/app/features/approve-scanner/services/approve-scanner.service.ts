@@ -1,14 +1,6 @@
 import { Inject, Injectable, Injector as AngularInjector, INJECTOR } from '@angular/core';
 import { Blockchain, BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
-import {
-  BLOCKCHAIN_NAME,
-  ERC20_TOKEN_ABI,
-  Injector,
-  EvmBlockchainName,
-  RubicSdkError,
-  UserRejectError,
-  compareAddresses
-} from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, EvmBlockchainName, compareAddresses } from '@cryptorubic/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormControlType } from '@shared/models/utils/angular-forms-types';
 import { SupportedBlockchain, supportedBlockchains } from '../constants/supported-blockchains';
@@ -29,7 +21,6 @@ import { HttpClient } from '@angular/common/http';
 import { TuiNotification } from '@taiga-ui/core';
 import { Cacheable } from 'ts-cacheable';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import BigNumber from 'bignumber.js';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -40,6 +31,9 @@ import { switchTap } from '@shared/utils/utils';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { tuiIsPresent } from '@taiga-ui/cdk';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { erc20TokenAbi, RubicSdkError, UserRejectError } from '@cryptorubic/web3';
+import BigNumber from 'bignumber.js';
 
 interface ApproveForm {
   blockchain: Blockchain;
@@ -188,7 +182,8 @@ export class ApproveScannerService {
     private readonly tokensStoreService: TokensStoreService,
     private readonly notificationsService: NotificationsService,
     private readonly translateService: TranslateService,
-    private readonly gasService: GasService
+    private readonly gasService: GasService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.visibleApproves$.subscribe();
   }
@@ -228,15 +223,15 @@ export class ApproveScannerService {
 
   async revokeApprove(tokenAddress: string, spenderAddress: string): Promise<void> {
     const blockchain = this.form.controls.blockchain.value.key as EvmBlockchainName;
-    const web3 = Injector.web3PublicService.getWeb3Public(blockchain);
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(blockchain);
     let revokeProgressNotification: Subscription;
 
-    const allowance = await web3.getAllowance(
+    const allowance = await adapter.getAllowance(
       tokenAddress,
       this.walletConnectorService.address,
       spenderAddress
     );
-    if (allowance.eq(0)) {
+    if (allowance.allowanceWei.eq(0)) {
       throw new RubicSdkError('Approve already revoked, token has 0 allowance');
     }
 
@@ -244,15 +239,12 @@ export class ApproveScannerService {
       const { shouldCalculateGasPrice, gasPriceOptions } = await this.gasService.getGasInfo(
         blockchain
       );
-
-      await Injector.web3PrivateService
-        .getWeb3PrivateByBlockchain(blockchain)
-        .approveTokens(tokenAddress, spenderAddress, new BigNumber(0), blockchain, {
-          onTransactionHash: _hash => {
-            revokeProgressNotification = this.showProgressNotification();
-          },
-          ...(shouldCalculateGasPrice && { gasPriceOptions })
-        });
+      await adapter.approveTokens(tokenAddress, spenderAddress, new BigNumber(0), {
+        onTransactionHash: _hash => {
+          revokeProgressNotification = this.showProgressNotification();
+        },
+        ...(shouldCalculateGasPrice && { gasPriceOptions })
+      });
       this.showSuccessNotification();
       this._refreshTable$.next(tokenAddress);
     } catch (err) {
@@ -365,11 +357,11 @@ export class ApproveScannerService {
     approves: ApproveTransaction[],
     blockchain: Blockchain
   ): Promise<ApproveTransaction[]> {
-    const web3Public = Injector.web3PublicService.getWeb3Public(
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       blockchain.key as EvmBlockchainName
     );
-    const allowances = await web3Public.multicallContractsMethods<string>(
-      ERC20_TOKEN_ABI,
+    const allowances = await adapter.multicallContractsMethods<string>(
+      erc20TokenAbi,
       approves.map(approve => ({
         contractAddress: approve.tokenAddress,
         methodsData: [

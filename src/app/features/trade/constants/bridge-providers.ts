@@ -1,4 +1,4 @@
-import { BridgeType } from '@cryptorubic/sdk';
+import { BridgeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/bridge/';
@@ -187,6 +187,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#452fbf',
     image: `${imageBasePath}multichain.png`,
     name: 'Multichain'
+  },
+  //NNNNNNNNNNNNNNNNNN
+  near_intents: {
+    averageTime: 5,
+    color: '#452fbf',
+    image: `assets/images/icons/coins/near.svg`,
+    name: 'Near Intents'
   },
   //OOOOOOOOOOOOOOOOOO
   omni: {

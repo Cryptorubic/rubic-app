@@ -30,23 +30,14 @@ import { AuthService } from '@core/services/auth/auth.service';
 
 import { RefreshService } from '@features/trade/services/refresh-service/refresh.service';
 import {
-  BLOCKCHAIN_NAME,
-  CROSS_CHAIN_TRADE_TYPE,
   CrossChainIsUnavailableError,
-  CrossChainTradeType,
-  Injector,
   LowSlippageError,
   NoLinkedAccountError,
   NotSupportedTokensError,
-  OnChainTrade,
-  OnChainTradeType,
   RubicSdkError,
-  SymbiosisEvmCcrTrade,
   UnsupportedReceiverAddressError,
-  UserRejectError,
-  Web3Pure,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  UserRejectError
+} from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import CrossChainIsUnavailableWarning from '@core/errors/models/cross-chain/cross-chainIs-unavailable-warning';
@@ -69,6 +60,16 @@ import CrossChainSwapUnavailableWarning from '@core/errors/models/cross-chain/cr
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
 import { onChainBlacklistProviders } from '@features/trade/services/on-chain/constants/on-chain-blacklist';
 import BigNumber from 'bignumber.js';
+import {
+  BLOCKCHAIN_NAME,
+  CROSS_CHAIN_TRADE_TYPE,
+  CrossChainTradeType,
+  OnChainTradeType,
+  Token
+} from '@cryptorubic/core';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -102,7 +103,8 @@ export class SwapsControllerService {
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
-    private readonly onChainApiService: OnChainApiService
+    private readonly onChainApiService: OnChainApiService,
+    private readonly rubicApiService: RubicApiService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -208,7 +210,7 @@ export class SwapsControllerService {
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
-      onError?: () => void;
+      onError?: (err: RubicError<ERROR_TYPE> | null) => void;
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -227,7 +229,7 @@ export class SwapsControllerService {
       );
 
       if (!allowSlippageAndPI) {
-        callback.onError?.();
+        callback.onError?.(null);
         return;
       }
       if (trade instanceof CrossChainTrade) {
@@ -239,8 +241,8 @@ export class SwapsControllerService {
       if (err instanceof AmountChangeWarning) {
         const allowSwap = await firstValueFrom(
           this.modalService.openRateChangedModal(
-            Web3Pure.fromWei(err.oldAmount, trade.to.decimals),
-            Web3Pure.fromWei(err.newAmount, trade.to.decimals),
+            Token.fromWei(err.oldAmount, trade.to.decimals),
+            Token.fromWei(err.newAmount, trade.to.decimals),
             trade.to.symbol
           )
         );
@@ -331,7 +333,7 @@ export class SwapsControllerService {
       });
   }
 
-  private parseCalculationError(error?: RubicSdkError): RubicError<ERROR_TYPE> {
+  private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
     if (error instanceof NotSupportedTokensError) {
       return new RubicError('Currently, Rubic does not support swaps between these tokens.');
     }
@@ -349,20 +351,20 @@ export class SwapsControllerService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
-    if (error?.message?.includes('No available routes')) {
+    if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
-    if (error?.message?.includes('There are no providers for trade')) {
+    if (error.message?.includes('There are no providers for trade')) {
       return new RubicError('There are no providers for trade.');
     }
-    if (error?.message?.includes('Representation of ')) {
+    if (error.message?.includes('Representation of ')) {
       return new RubicError('The swap between this pair of blockchains is currently unavailable.');
     }
-    if (error?.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
+    if (error.message?.includes('INSUFFICIENT_OUTPUT_AMOUNT')) {
       return new RubicError('Please, increase the slippage or amount and try again!');
     }
 
-    const parsedError = error && RubicSdkErrorParser.parseError(error);
+    const parsedError = RubicSdkErrorParser.parseError(error);
     if (!parsedError) {
       return new CrossChainPairCurrentlyUnavailableError();
     } else {
@@ -387,7 +389,11 @@ export class SwapsControllerService {
     if (error && error instanceof NoLinkedAccountError) {
       return of(true);
     }
-    if (trade instanceof SymbiosisEvmCcrTrade && trade.to.blockchain === BLOCKCHAIN_NAME.SEI) {
+    if (
+      trade instanceof CrossChainTrade &&
+      trade.type === CROSS_CHAIN_TRADE_TYPE.SYMBIOSIS &&
+      trade.to.blockchain === BLOCKCHAIN_NAME.SEI
+    ) {
       return from(trade.checkBlockchainRequirements());
     }
     return of(false);
@@ -403,7 +409,7 @@ export class SwapsControllerService {
   private catchSwapError(
     err: RubicSdkError,
     tradeState: SelectedTrade,
-    onError?: () => void
+    onError?: (err: RubicError<ERROR_TYPE> | null) => void
   ): void {
     console.error(err);
     const parsedError = this.parseCalculationError(err);
@@ -427,8 +433,8 @@ export class SwapsControllerService {
       );
       this.swapsStateService.pickProvider(true);
     }
-    onError?.();
-    this.errorsService.catch(parsedError);
+    if (parsedError.showAlert) this.errorsService.catch(parsedError);
+    onError?.(parsedError);
   }
 
   private subscribeOnSettings(): void {
@@ -464,10 +470,9 @@ export class SwapsControllerService {
   }
 
   private handleWs(): void {
-    Injector.rubicApiService
+    this.rubicApiService
       .handleQuotesAsync()
       .pipe(
-        // @ts-ignore
         tap(() => this.refreshService.setRefreshing()),
         map(wrap => {
           const { fromToken, toToken } = this.swapFormService.inputValue;
@@ -571,7 +576,7 @@ export class SwapsControllerService {
     this.swapFormService.isFilled$
       .pipe(debounceTime(400), distinctUntilChanged())
       .subscribe(isFilled => {
-        if (!isFilled) Injector.rubicApiService.stopCalculation();
+        if (!isFilled) this.rubicApiService.stopCalculation();
       });
   }
 
@@ -580,8 +585,8 @@ export class SwapsControllerService {
     const formSourceToken = this.swapFormService.inputValue;
     const formSourceTokenAmount = formSourceToken.fromAmount.actualValue;
     const formSourceTokenDecimals = formSourceToken.fromToken.decimals;
-    const formSourceTokenWeiAmount = Web3Pure.toWei(formSourceTokenAmount, formSourceTokenDecimals);
-    const formSourceTokenNonWeiAmount = Web3Pure.fromWei(
+    const formSourceTokenWeiAmount = Token.toWei(formSourceTokenAmount, formSourceTokenDecimals);
+    const formSourceTokenNonWeiAmount = Token.fromWei(
       formSourceTokenWeiAmount,
       formSourceTokenDecimals
     );
