@@ -14,7 +14,15 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  share,
+  startWith,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -29,7 +37,6 @@ import {
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
-import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-assets-selector-page',
@@ -99,11 +106,16 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.setWindowHeight();
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
       distinctUntilChanged(),
-      share(),
+      // share(),
       startWith('allChains' as AssetListType)
     );
 
-    this.tokensSearchQuery$ = this.assetsSelectorService.tokensSearchQuery$;
+    this.tokensSearchQuery$ = this.assetListType$.pipe(
+      switchMap(type => {
+        return this.tokensFacade.getTokensBasedOnType(type).searchQuery$;
+      }),
+      debounceTime(200)
+    );
     this.blockchainsSearchQuery$ = this.assetsSelectorService.blockchainSearchQuery$;
     this.customToken$ = this.assetsSelectorService.customToken$;
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
@@ -131,8 +143,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.pageLoading$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),
       switchMap(([type, query]) => {
-        if (query && query.length >= 2) {
-          return this.tokensFacade.getTokensBasedOnType(type, query).pageLoading$;
+        if (query && query.length > 2) {
+          return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
         }
         return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
       }),
@@ -218,11 +230,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   public onTokensQuery(value: string): void {
-    this.assetsSelectorService.tokensSearchQuery = value;
-    if (value.length > 2) {
-      const assetListType = this.assetsSelectorService.assetListType;
-      const isBlockchain = BlockchainsInfo.isBlockchainName(assetListType);
-      this.tokensFacade.buildSearchedList(value, isBlockchain ? assetListType : null);
-    }
+    this.tokensFacade.buildSearchedList(value, this.assetsSelectorService.assetListType);
   }
 }

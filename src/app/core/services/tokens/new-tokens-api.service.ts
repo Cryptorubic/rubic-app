@@ -104,7 +104,7 @@ export class NewTokensApiService {
         ...('usdPriceChangePercentage7d' in token && {
           priceChange7d: token.usdPriceChangePercentage7d
         }),
-        ...('balance' in token && { amount: OldToken.fromWei(token.balance) })
+        ...('balance' in token && { amount: OldToken.fromWei(token.balance, token.decimals) })
       } as K;
     });
     return tokenModel.filter(token => token.address && token.blockchain);

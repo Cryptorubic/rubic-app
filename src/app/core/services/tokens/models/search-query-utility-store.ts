@@ -26,7 +26,7 @@ export class SearchQueryUtilityStore extends BasicUtilityStore {
         address: token.address,
         blockchain: token.blockchain
       }));
-      this._refs$.next(searchedTokens);
+      this._storedRefs$.next(searchedTokens);
       this._pageLoading$.next(false);
     });
   }

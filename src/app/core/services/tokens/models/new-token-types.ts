@@ -19,6 +19,11 @@ export type BlockchainTokenState = {
   readonly tokensObject$: Observable<Record<string, BalanceToken>>;
   readonly tokens$: Observable<BalanceToken[]>;
 
+  readonly _searchRefs$: BehaviorSubject<TokenRef[]>;
+  readonly searchRefs$: Observable<TokenRef[]>;
+  readonly _searchQuery$: BehaviorSubject<string>;
+  readonly searchQuery$: Observable<string>;
+
   readonly blockchain: BlockchainName;
   totalTokens: number | null;
   page: number;

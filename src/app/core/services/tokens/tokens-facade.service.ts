@@ -29,13 +29,16 @@ import { GainersUtilityStore } from '@core/services/tokens/models/gainers-utilit
 import { AllTokensUtilityStore } from '@core/services/tokens/models/all-tokens-utility-store';
 import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-utility-store';
 import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
-import { SearchQueryUtilityStore } from '@core/services/tokens/models/search-query-utility-store';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
-import { sorterByChain } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
+import {
+  sorterByChain,
+  sorterByTokenRank
+} from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
 import {
   BLOCKCHAIN_NAME,
   BlockchainName,
   BlockchainsInfo,
+  CHAIN_TYPE,
   ChainType,
   nativeTokensList,
   TEST_EVM_BLOCKCHAIN_NAME
@@ -89,7 +92,7 @@ export class TokensFacadeService {
     // 'HYPER_EVM',
     'KAVA',
     'FRAXTAL',
-    // 'PLASMA',
+    'PLASMA',
     'ASTAR_EVM',
     'OPTIMISM',
     'TAIKO',
@@ -113,8 +116,6 @@ export class TokensFacadeService {
     this.apiService,
     this.authService
   ).init();
-
-  public readonly searched = new SearchQueryUtilityStore(this.tokensStore, this.apiService).init();
 
   public readonly nativeToken$ = this.formService.fromBlockchain$.pipe(
     switchMap(blockchain => {
@@ -207,11 +208,11 @@ export class TokensFacadeService {
     if (searchBackend) {
       return firstValueFrom(
         this.fetchQueryTokens(token.address, token.blockchain).pipe(
-          map(backendTokens =>
-            backendTokens.length
+          map(backendTokens => {
+            return backendTokens.length
               ? { ...backendTokens[0], amount: new BigNumber(NaN), favorite: false }
-              : null
-          )
+              : null;
+          })
         )
       );
     }
@@ -345,14 +346,12 @@ export class TokensFacadeService {
 
   public fetchQueryTokens(query: string, blockchain: BlockchainName | null): Observable<Token[]> {
     return this.apiService.fetchQueryTokens(query, blockchain).pipe(
-      map(backendTokens => {
-        return backendTokens.filter(
+      switchMap(backendTokens => {
+        const tokensWithoutBalance = backendTokens.filter(
           token =>
             !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
         );
-        // // @TODO TOKENS ADD BALANCE FETCHING
-        // throw Error('Method not implemented.');
-        // // return this.balanceLoaderService.getTokensWithBalance(filteredTokens);
+        return this.fetchDifferentChainsBalances(tokensWithoutBalance);
       })
     );
   }
@@ -413,14 +412,9 @@ export class TokensFacadeService {
     // );
   }
 
-  public getTokensBasedOnType(
-    type: AssetListType,
-    query: string = ''
-  ): BlockchainTokenState | CommonUtilityStore {
-    const searchTokens = Boolean(query && query?.length >= 2);
-
+  public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {
     if (BlockchainsInfo.isBlockchainName(type)) {
-      return searchTokens ? this.searched : this.blockchainTokens[type];
+      return this.blockchainTokens[type];
     }
 
     const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
@@ -432,50 +426,44 @@ export class TokensFacadeService {
     };
 
     const store = utilityMap[type];
-    store.setQuery(query);
 
     return store;
   }
 
   public getTokensList(
     type: AssetListType,
-    query: string,
+    _query: string,
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    return this.getTokensBasedOnType(type, query).tokens$.pipe(
-      map((tokens: BalanceToken[]) =>
-        tokens
-          .map(token => {
-            const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
-            const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
-            return {
-              ...token,
-              available: isAvailable,
-              amount: token?.amount?.gt(0) ? token.amount : new BigNumber(NaN)
-            };
-          })
-          .sort(sorterByChain)
-          .sort((a, b) => {
-            const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
-            if (oppositeToken) {
-              if (
-                a.address === oppositeToken.address &&
-                a.blockchain === oppositeToken.blockchain
-              ) {
-                return 1;
-              }
-              if (
-                b.address === oppositeToken.address &&
-                b.blockchain === oppositeToken.blockchain
-              ) {
-                return -1;
-              }
-            }
+    return this.getTokensBasedOnType(type).tokens$.pipe(
+      map((tokens: BalanceToken[]) => {
+        const mappedTokens = tokens.map(token => {
+          const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
+          const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+          return {
+            ...token,
+            available: isAvailable,
+            amount: token?.amount?.gt(0) ? token.amount : new BigNumber(NaN)
+          };
+        });
 
-            return a.rank > b.rank ? -1 : 1;
-          })
-      )
+        const sortedByOpposite = mappedTokens.sort((a, b) => {
+          const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
+          if (oppositeToken) {
+            if (a.address === oppositeToken.address && a.blockchain === oppositeToken.blockchain) {
+              return 1;
+            }
+            if (b.address === oppositeToken.address && b.blockchain === oppositeToken.blockchain) {
+              return -1;
+            }
+          }
+
+          return a.rank > b.rank ? -1 : 1;
+        });
+
+        return sortedByOpposite.sort(sorterByChain);
+      })
     );
   }
 
@@ -503,8 +491,21 @@ export class TokensFacadeService {
     });
   }
 
-  public buildSearchedList(query: string, blockchain: BlockchainName | null): void {
-    return this.searched.handleSearchQuery(query, blockchain);
+  public buildSearchedList(query: string, assetListType: AssetListType): void {
+    if (BlockchainsInfo.isBlockchainName(assetListType)) {
+      this.tokensStore.setQueryAndFetch(assetListType, query);
+    } else {
+      const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
+        allChains: this.allTokens,
+        trending: this.trending,
+        gainers: this.gainers,
+        losers: this.losers,
+        favorite: this.favorite
+      };
+
+      const store = utilityMap[assetListType];
+      store.setQuery(query);
+    }
   }
 
   public runFetchConditionally(listType: AssetListType, searchQuery: string | null): void {
@@ -525,13 +526,17 @@ export class TokensFacadeService {
       )
       .subscribe(user => {
         if (user?.address) {
+          this.allTokens.setBalanceLoading(true);
           Promise.all([
-            this.fetchT1Balances(user.address),
+            this.fetchT1Balances(user.address, user.chainType),
             this.fetchT2Balances(user.address, user.chainType)
           ]).then(([successT1request]) => {
             if (!successT1request) {
-              this.fetchListBalances(user.address, this.tier1BalanceChains);
+              this.fetchListBalances(user.address, this.tier1BalanceChains).then(() => {
+                this.allTokens.setBalanceLoading(false);
+              });
             }
+            this.allTokens.setBalanceLoading(false);
           });
         } else {
           this.tokensStore.clearAllBalances();
@@ -539,7 +544,10 @@ export class TokensFacadeService {
       });
   }
 
-  private async fetchT1Balances(address: string): Promise<boolean> {
+  private async fetchT1Balances(address: string, chainType: ChainType): Promise<boolean> {
+    if (chainType !== CHAIN_TYPE.EVM) {
+      return false;
+    }
     this.tier1BalanceChains.forEach(chain =>
       this.tokensStore.tokens[chain]._balanceLoading$.next(true)
     );
@@ -561,6 +569,46 @@ export class TokensFacadeService {
           });
         });
     });
+  }
+
+  public async fetchDifferentChainsBalances(tokens: Token[]): Promise<BalanceToken[]> {
+    const chainTokens: Partial<Record<BlockchainName, Token[]>> = {};
+    tokens.forEach(token => {
+      if (!chainTokens[token.blockchain]) {
+        chainTokens[token.blockchain] = [];
+      }
+      chainTokens[token.blockchain].push(token);
+    });
+    const promises = Object.entries(chainTokens).map(([chain]: [BlockchainName, Token[]]) => {
+      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
+      return firstValueFrom(
+        this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
+      ).then(() => {
+        this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+        const tokensObject = this.blockchainTokens[chain].getTokens();
+        const tokensState = Object.values(tokensObject).map(token => token.address);
+
+        return adapter
+          .getTokensBalances(this.authService.userAddress, tokensState)
+          .catch(() => tokensState.map(() => new BigNumber(NaN)))
+          .then(balances => {
+            const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
+              ...token,
+              amount: balances?.[idx]?.gt(0)
+                ? OldToken.fromWei(balances[idx], token.decimals)
+                : new BigNumber(NaN)
+            })) as BalanceToken[];
+            const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
+
+            this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
+            this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+
+            return tokensWithBalances;
+          });
+      });
+    });
+    const tokensWithBalances = await Promise.all(promises);
+    return tokensWithBalances.flat().sort(sorterByTokenRank);
   }
 
   private async fetchListBalances(address: string, chains: BlockchainName[]): Promise<void> {
@@ -668,19 +716,22 @@ export class TokensFacadeService {
       .subscribe(fromToken => {
         // fromInterval.clear
         clearInterval(fromInterval);
-        fromInterval = setInterval(() => {
-          this.getAndUpdateTokenBalance(fromToken);
-        }, 30_000);
+        if (fromToken) {
+          fromInterval = setInterval(() => {
+            this.getAndUpdateTokenBalance(fromToken);
+          }, 30_000);
+        }
       });
 
     this.formService.toToken$
       .pipe(debounceTime(200), distinctObjectUntilChanged())
       .subscribe(toToken => {
-        // fromInterval.clear
         clearInterval(toInterval);
-        toInterval = setInterval(() => {
-          this.getAndUpdateTokenBalance(toToken);
-        }, 30_000);
+        if (toToken) {
+          toInterval = setInterval(() => {
+            this.getAndUpdateTokenBalance(toToken);
+          }, 30_000);
+        }
       });
   }
 }

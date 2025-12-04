@@ -23,32 +23,16 @@ import {
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 
 export abstract class AssetsService {
   // Custom token
   protected readonly _customToken$ = new BehaviorSubject<AvailableTokenAmount | null>(null);
 
   public readonly customToken$ = this._customToken$.asObservable();
-
-  // Tokens search query (tokens)
-  protected readonly _tokensSearchQuery$ = new BehaviorSubject<string>('');
-
-  public readonly tokensSearchQuery$ = this._tokensSearchQuery$
-    .asObservable()
-    .pipe(debounceTime(200));
-
-  public get tokensSearchQuery(): string {
-    return this._tokensSearchQuery$.value;
-  }
-
-  public set tokensSearchQuery(value: string) {
-    this._tokensSearchQuery$.next(value.trim());
-  }
 
   // Blockchains search query
 
@@ -157,9 +141,10 @@ export abstract class AssetsService {
   }
 
   public closeSelector(): void {
-    this.tokensSearchQuery = '';
+    // @TODO TOKENS
+    // this.tokensFacade = '';
     this.blockchainSearchQuery = '';
-    this.assetListType = 'allChains';
+    // this.assetListType = 'allChains';
   }
 
   protected setAvailableBlockchains(): void {
@@ -239,15 +224,5 @@ export abstract class AssetsService {
     } else {
       return chain.tags.includes(filter);
     }
-  }
-
-  public fetchSearchQueryTokens(): void {
-    this.tokensSearchQuery$.pipe(distinctUntilChanged(), debounceTime(200)).subscribe(query => {
-      const isBlockchain = BlockchainsInfo.isBlockchainName(this.assetListType);
-      this.tokensFacade.fetchQueryTokens(
-        query,
-        isBlockchain ? (this.assetListType as BlockchainName) : null
-      );
-    });
   }
 }
