@@ -1,0 +1,7 @@
+<div class="faq-item" [attr.data-opened]="opened ? 'true' : 'false'" (click)="onClick()">
+  <div class="faq-item__header">
+    <div class="faq-item__toggler">{{ opened ? '-' : '+' }}</div>
+    <div class="faq-item__title">{{ info.title }}</div>
+  </div>
+  <div *ngIf="opened" class="faq-item__body">{{ info.body }}</div>
+</div>

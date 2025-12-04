@@ -7,6 +7,7 @@
       padding: 0 !important;
 
       font-weight: 400;
+
       background: var(--tui-base-01);
     }
   }
@@ -14,13 +15,13 @@
   ::ng-deep {
     .t-content {
       gap: 8px;
+
       font-size: 12px;
     }
   }
 
   &__icon {
     filter: invert(1);
-    // transition: filter var(--tui-duration, 100ms) ease-in-out;
   }
 
   &__clicked-element {
@@ -28,10 +29,10 @@
       .t-wrapper {
         color: black;
 
-        background: var(--tui-primary);
+        background: var(--tui-primary-hover);
 
         &:hover {
-          background-color: var(--tui-primary);
+          background: var(--tui-primary-hover);
         }
       }
     }

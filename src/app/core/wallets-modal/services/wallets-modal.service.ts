@@ -13,7 +13,7 @@ export class WalletsModalService {
   public open(): Observable<void> {
     return this.dialogService.showDialog(
       WalletsModalComponent,
-      { title: 'Connect Wallet', size: 's', fitContent: true },
+      { title: 'Connect Wallet', size: 'l', fitContent: true },
       this.injector
     );
   }

@@ -42,7 +42,11 @@ export class TokensListBuilder {
         this.tokensStoreService.allChainsTokens[allChainsFilter]
       );
     } else {
-      this.tempTokensList = this.addAvailableFavoriteFields(this.tokensStoreService.tokens);
+      this.tempTokensList = this.addAvailableFavoriteFields(
+        this.tokensStoreService.tokens.filter(
+          t => t.blockchain === this.assetsSelectorStateService.assetType
+        )
+      );
     }
 
     return this;
@@ -150,9 +154,14 @@ export class TokensListBuilder {
     tokens: AvailableTokenAmount[],
     sorter: TokensSorter
   ): List<AvailableTokenAmount> {
-    const nativeTokenIndex = tokens.findIndex(token =>
-      Web3Pure.isNativeAddress(token.blockchain, token.address)
-    );
+    const nativeTokenIndex = tokens.findIndex(token => {
+      try {
+        const isNative = Web3Pure.isNativeAddress(token.blockchain, token.address);
+        return isNative;
+      } catch {
+        return false;
+      }
+    });
     if (nativeTokenIndex === -1 || this.assetsSelectorStateService.assetType === 'allChains') {
       return List(tokens.sort(sorter));
     } else {

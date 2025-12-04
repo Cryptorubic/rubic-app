@@ -9,7 +9,7 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.FAQ,
-    loadChildren: () => import('./features/trade/trade.module').then(m => m.TradeModule)
+    loadChildren: () => import('./features/faq/faq.module').then(m => m.FaqModule)
   },
   {
     path: ROUTE_PATH.HISTORY,

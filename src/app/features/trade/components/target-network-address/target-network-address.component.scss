@@ -13,6 +13,6 @@
   }
 
   tui-input {
-    border-radius: var(--tui-radius-m);
+    border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
   }
 }

@@ -1,0 +1,89 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .faq-item {
+    @include flex(column, end, center);
+    gap: 24px;
+    padding: 24px;
+
+    border-radius: 14px;
+
+    transition: all 0.1s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.49);
+
+      border: 1px #d8d8d8;
+      box-shadow: inset 0 0 5.5px 2px rgba(255, 255, 255, 0.49);
+      cursor: pointer;
+    }
+
+    &__header,
+    &__body {
+      width: 100%;
+
+      font-size: 16px;
+    }
+
+    &__header {
+      @include flex(row, center, flex-start);
+      gap: 16px;
+    }
+
+    &__toggler {
+      @include flex(row, center, center);
+      width: 24px;
+      height: 24px;
+    }
+
+    &__title {
+      max-width: 500px;
+
+      @include b($mobile-md) {
+        max-width: 270px;
+      }
+    }
+  }
+
+  .faq-item[data-opened='false'] {
+    height: 86px;
+
+    .faq-item__toggler {
+      color: var(--tui-primary-active);
+      font-weight: 400;
+
+      background: var(--tui-text-01);
+      border-radius: 50%;
+    }
+
+    .faq-item__title {
+      font-weight: 400;
+    }
+  }
+
+  .faq-item[data-opened='true'] {
+    height: 170px;
+
+    background: rgba(255, 255, 255, 0.49);
+
+    border: 1px #d8d8d8;
+    box-shadow: inset 0 0 5.5px 2px rgba(255, 255, 255, 0.49);
+
+    @include b($mobile-md) {
+      max-height: auto;
+    }
+
+    .faq-item__toggler {
+      width: 24px;
+      height: 24px;
+
+      font-weight: 600;
+
+      background: none;
+    }
+
+    .faq-item__title {
+      font-weight: 600;
+    }
+  }
+}

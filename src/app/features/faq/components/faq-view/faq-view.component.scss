@@ -1,0 +1,54 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .faq-view__wrapper {
+    @include flex(row, flex-start, center);
+    gap: clamp(20px, 5vw, 64px);
+
+    width: 100%;
+
+    @include b($mobile-md) {
+      @include flex(column, center, center);
+    }
+  }
+
+  .faq-view__left {
+    @include flex(column, flex-start, center);
+    gap: 32px;
+    max-width: 336px;
+
+    border-radius: 2px;
+
+    &-title {
+      font-weight: 400;
+      font-size: 38px;
+      line-height: 120%;
+
+      @include b($mobile-md) {
+        font-size: 24px;
+      }
+    }
+
+    ::ng-deep {
+      [tuiButton] {
+        .t-wrapper {
+          background: var(--tui-primary-active);
+
+          &:hover {
+            background: var(--tui-primary);
+          }
+        }
+      }
+    }
+  }
+
+  .faq-view__right {
+    @include flex(column, flex-start, center);
+    gap: clamp(10px, 3vw, 16px);
+    width: min(600px, 100%);
+
+    app-faq-list-item {
+      width: min(600px, 100%);
+    }
+  }
+}

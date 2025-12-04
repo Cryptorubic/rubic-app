@@ -6,11 +6,12 @@
   <app-logo *ngIf="!hideLogo"></app-logo>
 
   <div class="rubic-header__right">
+    <button tuiButton appearance="icon" type="button" size="m" [routerLink]="'/faq'">FAQ</button>
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
 
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">
-        <app-login-button class="rubic-header__login" [appearance]="'secondary'"></app-login-button>
+        <app-login-button class="rubic-header__login"></app-login-button>
       </ng-container>
       <ng-template #loggedIn>
         <app-user-profile class="rubic-header__profile-user"></app-user-profile>

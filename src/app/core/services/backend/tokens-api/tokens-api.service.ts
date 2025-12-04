@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { firstValueFrom, forkJoin, Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { List } from 'immutable';
 
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   BackendToken,
-  BackendTokenForAllChains,
   ClearswapApiToken,
   ClearswapTokensBackendResponse,
   ENDPOINTS,
@@ -25,7 +24,7 @@ import { defaultTokens } from './models/default-tokens';
 import { blockchainsToFetch, blockchainsWithOnePage } from './constants/fetch-blockchains';
 import { ENVIRONMENT } from 'src/environments/environment';
 
-import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { compareAddresses } from '@app/shared/utils/utils';
 import { TokensNetworkStateService } from '../../tokens/tokens-network-state.service';
 import {
   BackendBlockchain,
@@ -300,34 +299,39 @@ export class TokensApiService {
   }
 
   public fetchTokensListForAllChains(): Observable<List<Token>> {
-    return forkJoin([
-      this.httpService
-        .get<TokensBackendResponse>('v2/tokens/top', {}, '', { retry: 2, timeoutMs: 15_000 })
-        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
-      this.httpService
-        .get<BackendTokenForAllChains[]>('v2/tokens/allchains', {}, '', {
-          retry: 2,
-          timeoutMs: 15_000
-        })
-        .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
-    ]).pipe(
-      map(([topTokens, allChainsTokens]) => {
-        // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
-        return topTokens.concat(allChainsTokens).reduce((acc, token) => {
-          // not show 2nd metis native token in selector
-          if (
-            token.blockchain === BLOCKCHAIN_NAME.METIS &&
-            compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
-          ) {
-            return acc;
-          }
-
-          const repeated = acc.find(t => compareTokens(t, token));
-          return repeated ? acc : acc.push(token);
-        }, List() as List<Token>);
-      }),
-      catchError(() => of(List() as List<Token>))
+    return this.fetchClearswapTokens().pipe(
+      map(clearswapResponse =>
+        TokensApiService.convertClearswapResponseToAppTokens(clearswapResponse)
+      )
     );
+    // return forkJoin([
+    //   this.httpService
+    //     .get<TokensBackendResponse>('v2/tokens/top', {}, '', { retry: 2, timeoutMs: 15_000 })
+    //     .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens.results))),
+    //   this.httpService
+    //     .get<BackendTokenForAllChains[]>('v2/tokens/allchains', {}, '', {
+    //       retry: 2,
+    //       timeoutMs: 15_000
+    //     })
+    //     .pipe(map(backendTokens => TokensApiService.prepareTokens(backendTokens)))
+    // ]).pipe(
+    //   map(([topTokens, allChainsTokens]) => {
+    //     // filters unique tokens from v2/tokens/allchains and api/v2/tokens/?pageSize=5000
+    //     return topTokens.concat(allChainsTokens).reduce((acc, token) => {
+    //       // not show 2nd metis native token in selector
+    //       if (
+    //         token.blockchain === BLOCKCHAIN_NAME.METIS &&
+    //         compareAddresses(token.address, '0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000')
+    //       ) {
+    //         return acc;
+    //       }
+
+    //       const repeated = acc.find(t => compareTokens(t, token));
+    //       return repeated ? acc : acc.push(token);
+    //     }, List() as List<Token>);
+    //   }),
+    //   catchError(() => of(List() as List<Token>))
+    // );
   }
 
   public fetchTrendTokens(): Observable<List<RatedToken>> {

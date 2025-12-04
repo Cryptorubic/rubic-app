@@ -1,17 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of, timer } from 'rxjs';
+import { BehaviorSubject, combineLatest, firstValueFrom, Observable, of } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokenSecurity } from '@shared/models/tokens/token-security';
 import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   catchError,
-  concatMap,
-  debounceTime,
   distinctUntilChanged,
   filter,
-  finalize,
-  map,
   switchMap,
   takeUntil,
   tap
@@ -39,6 +35,7 @@ import { TOKEN_FILTERS, TokenFilter } from '../../models/token-filters';
 import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
 import { EvmAdapter } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { searchByQueryOnClient } from './utils/searcher';
 
 @Injectable()
 export class TokensListStoreService {
@@ -168,7 +165,6 @@ export class TokensListStoreService {
         takeUntil(this.destroy$)
       )
       .subscribe((tokensList: TokensList) => {
-        console.log('%ctokensList', 'color: yellow;', tokensList);
         if ('tokensToShow' in tokensList) {
           this.tokensToShow = tokensList.tokensToShow;
           this.customToken = null;
@@ -182,55 +178,12 @@ export class TokensListStoreService {
   /**
    * Handles search query requests to APIs and gets parsed tokens.
    */
-  private getDefaultTokensByQuery(skipRefetch?: boolean): Observable<TokensList> {
-    if (
-      this.assetsSelectorStateService.assetType === 'allChains' &&
-      this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
-    ) {
-      const query = this.searchQuery.toLowerCase();
-      const tlb = new TokensListBuilder(
-        this.tokensStoreService,
-        this.assetsSelectorStateService,
-        this.swapFormService,
-        this.tokenConverters
-      );
-
-      return of({
-        tokensToShow: tlb
-          .initList()
-          .applyFilterByQueryOnClient(query)
-          .applySortByTokenRank()
-          .toArray()
-      });
-    }
-
-    return timer(300).pipe(
-      distinctUntilChanged(),
-      debounceTime(200),
-      tap(() => this.tokensUpdaterService.setTokensLoading(true)),
-      concatMap(() => this.tryParseQueryAsBackendTokens(skipRefetch)),
-      switchMap(async backendTokens => {
-        if (backendTokens?.length) {
-          return { tokensToShow: backendTokens };
-        }
-
-        const customToken = await this.tryParseQueryAsCustomToken();
-        if (customToken) {
-          return { customToken };
-        }
-
-        return { tokensToShow: [] };
-      }),
-      finalize(() => this.tokensUpdaterService.setTokensLoading(false))
-    );
-  }
-
-  /**
-   * Fetches tokens form backend by search query.
-   */
-  private tryParseQueryAsBackendTokens(skipRefetch?: boolean): Observable<AvailableTokenAmount[]> {
-    if (!this.searchQuery) return of([]);
-
+  private getDefaultTokensByQuery(_skipRefetch?: boolean): Observable<TokensList> {
+    // if (
+    //   this.assetsSelectorStateService.assetType === 'allChains' &&
+    //   this.assetsSelectorStateService.tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
+    // ) {
+    const query = this.searchQuery.toLowerCase();
     const tlb = new TokensListBuilder(
       this.tokensStoreService,
       this.assetsSelectorStateService,
@@ -238,26 +191,75 @@ export class TokensListStoreService {
       this.tokenConverters
     );
 
-    // used to prevent infinite triggering this.tokensUpdaterService.updateTokensList$
-    if (skipRefetch) {
-      const sortedTokensToShow = tlb
-        .initList(this.tokensStoreService.lastQueriedTokens)
+    return of({
+      tokensToShow: tlb
+        .initList()
+        .applyFilterByQueryOnClient(query)
         .applySortByTokenRank()
-        .toArray();
+        .toArray()
+    });
+    // }
 
-      return of(sortedTokensToShow);
-    }
+    // return timer(300).pipe(
+    //   distinctUntilChanged(),
+    //   debounceTime(200),
+    //   tap(() => this.tokensUpdaterService.setTokensLoading(true)),
+    //   concatMap(() => this.tryParseQueryAsBackendTokens(skipRefetch)),
+    //   switchMap(async backendTokens => {
+    //     if (backendTokens?.length) {
+    //       return { tokensToShow: backendTokens };
+    //     }
 
-    return this.tokensService
-      .fetchQueryTokensDynamicallyAndPatch(this.searchQuery, this.blockchain)
-      .pipe(
-        map(backendTokens => {
-          if (backendTokens.size) {
-            return tlb.initList(backendTokens).applySortByTokenRank().toArray();
-          }
-          return [];
-        })
-      );
+    //     const customToken = await this.tryParseQueryAsCustomToken();
+    //     if (customToken) {
+    //       return { customToken };
+    //     }
+
+    //     return { tokensToShow: [] };
+    //   }),
+    //   finalize(() => this.tokensUpdaterService.setTokensLoading(false))
+    // );
+  }
+
+  /**
+   * Fetches tokens form backend by search query.
+   */
+  private tryParseQueryAsBackendTokens(_skipRefetch?: boolean): Observable<AvailableTokenAmount[]> {
+    if (!this.searchQuery) return of([]);
+
+    return of(
+      this.tokensToShow.filter(t =>
+        searchByQueryOnClient(t, this.searchQuery, this.assetsSelectorStateService.assetType)
+      )
+    );
+
+    // const tlb = new TokensListBuilder(
+    //   this.tokensStoreService,
+    //   this.assetsSelectorStateService,
+    //   this.swapFormService,
+    //   this.tokenConverters
+    // );
+
+    // // used to prevent infinite triggering this.tokensUpdaterService.updateTokensList$
+    // if (skipRefetch) {
+    //   const sortedTokensToShow = tlb
+    //     .initList(this.tokensStoreService.lastQueriedTokens)
+    //     .applySortByTokenRank()
+    //     .toArray();
+
+    //   return of(sortedTokensToShow);
+    // }
+
+    // return this.tokensService
+    //   .fetchQueryTokensDynamicallyAndPatch(this.searchQuery, this.blockchain)
+    //   .pipe(
+    //     map(backendTokens => {
+    //       if (backendTokens.size) {
+    //         return tlb.initList(backendTokens).applySortByTokenRank().toArray();
+    //       }
+    //       return [];
+    //     })
+    //   );
   }
 
   /**

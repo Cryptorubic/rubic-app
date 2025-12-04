@@ -4,4 +4,16 @@
   button {
     background: var(--tui-primary-hover);
   }
+
+  ::ng-deep {
+    [tuiButton] {
+      .t-wrapper {
+        background: var(--tui-primary-active);
+
+        &:hover {
+          background: var(--tui-primary);
+        }
+      }
+    }
+  }
 }

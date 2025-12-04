@@ -1,0 +1,23 @@
+<div class="faq-view__wrapper">
+  <div class="faq-view__left">
+    <button
+      tuiButton
+      class="faq-view__left-back"
+      type="button"
+      size="m"
+      (click)="backToSwap()"
+      [appearance]="'primary'"
+    >
+      ← Back to Swap
+    </button>
+
+    <h1 class="faq-view__left-title">
+      Frequently<br />
+      Asked<br />
+      Questions
+    </h1>
+  </div>
+  <div class="faq-view__right">
+    <app-faq-list-item *ngFor="let faqItem of FAQS" [info]="faqItem"></app-faq-list-item>
+  </div>
+</div>

@@ -6,6 +6,8 @@
 
   &__element:not(:last-child) {
     margin-bottom: 5px;
+
+    background: var(--tui-primary-hover);
   }
 
   &__link-container {
