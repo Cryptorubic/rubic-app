@@ -6,6 +6,7 @@
     [name]="name"
     [formControl]="inputControl"
     (blur)="emitValue()"
+    (keydown)="onKeyDown($event)"
   />
   <span class="input-suffix">{{ suffix }}</span>
 </div>
