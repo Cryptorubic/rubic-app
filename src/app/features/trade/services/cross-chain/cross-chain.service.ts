@@ -6,7 +6,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import {
   EvmBasicTransactionOptions,
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
   UnapprovedContractError,
   UnapprovedMethodError,
   UnnecessaryApproveError,
@@ -57,6 +56,7 @@ import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 
 @Injectable()
 export class CrossChainService {

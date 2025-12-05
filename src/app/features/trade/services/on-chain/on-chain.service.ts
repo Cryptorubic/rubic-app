@@ -6,7 +6,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
   TX_STATUS,
   UnnecessaryApproveError,
   UserRejectError,
@@ -53,6 +52,7 @@ import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
