@@ -64,6 +64,10 @@ export class InputNumberComponent implements OnInit, AfterViewInit {
     this.setStyles();
   }
 
+  public onWrapperClick(): void {
+    this.inputEl.focus();
+  }
+
   public onKeyDown(e: KeyboardEvent): void {
     if (/^[eE+-]$/.test(e.key)) {
       e.preventDefault();
