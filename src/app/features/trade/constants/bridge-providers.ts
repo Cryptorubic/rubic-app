@@ -118,12 +118,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     name: 'Exolix'
   },
   //GGGGGGGGGGGGGGGGG
-  gnosis: {
-    averageTime: 5,
-    color: '#7F38A9',
-    image: `${imageBasePath}gnosisbridge.png`,
-    name: 'Gnosis Bridge'
-  },
+  // gnosis: {
+  //   averageTime: 5,
+  //   color: '#7F38A9',
+  //   image: `${imageBasePath}gnosisbridge.png`,
+  //   name: 'Gnosis Bridge'
+  // },
   //HHHHHHHHHH
   hop: {
     averageTime: 5,
