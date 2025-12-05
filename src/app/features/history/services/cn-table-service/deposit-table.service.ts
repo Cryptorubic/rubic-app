@@ -23,6 +23,7 @@ import { RubicSdkError } from '@cryptorubic/web3';
 import { getDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 import { HttpClient } from '@angular/common/http';
 import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
+import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 
 @Injectable()
 export class DepositTableService extends TableService<
@@ -85,7 +86,7 @@ export class DepositTableService extends TableService<
           const fromToken = {
             symbol: tradeData.fromToken.symbol,
             image: tradeData.fromToken.image,
-            amount: new BigNumber(tradeData.fromAmount)
+            amount: new BigNumber(TokenAmountDirective.replaceCommas(tradeData.fromAmount))
           };
 
           const toToken = {
