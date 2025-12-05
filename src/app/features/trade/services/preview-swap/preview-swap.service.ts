@@ -233,18 +233,6 @@ export class PreviewSwapService {
     this._continueSwapTrigger$?.next(allowedToContinue);
   }
 
-  // private async test(): Promise<void> {
-  //   console.log('start test');
-
-  //   const testCondition = await this.modalService.openSwapRetryProviderSelectModal(this.swapsStateService.currentTrade, this.tradeInfo$, {newAmount: BigNumber(1), oldAmount: BigNumber(2), tokenSymbol: 'TMP'}, this.injector);
-  //   if (testCondition) {
-  //     console.log('test confirm');
-  //   } else {
-  //     console.log('test cancel');
-  //   }
-  //   console.log('test finalize');
-  // }
-
   private handleTransactionState(): void {
     let retriesCount: number = 0;
     const transactionStateSubscription$ = this.transactionState$
@@ -261,9 +249,6 @@ export class PreviewSwapService {
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
           retriesCount = (txState.level ?? 0) === 0 ? 0 : retriesCount;
-          // if (txState.step === 'idle') {
-          //   return this.test();
-          // }
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
