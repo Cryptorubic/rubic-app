@@ -23,15 +23,15 @@ export class HistoryTableComponent {
     map(loadings => loadings.some(Boolean))
   );
 
-  // public readonly isCrossChain$ = this.commonTableService.activeItemIndex$.pipe(
-  //   map(index => index === 0)
-  // );
+  public readonly isCrossChain$ = this.commonTableService.activeItemIndex$.pipe(
+    map(index => index === 0)
+  );
 
-  // public readonly isOnChain$ = this.commonTableService.activeItemIndex$.pipe(
-  //   map(index => index === 1)
-  // );
+  public readonly isOnChain$ = this.commonTableService.activeItemIndex$.pipe(
+    map(index => index === 1)
+  );
 
-  // public readonly isCn$ = this.commonTableService.activeItemIndex$.pipe(map(index => index === 2));
+  public readonly isCn$ = this.commonTableService.activeItemIndex$.pipe(map(index => index === 2));
 
   public readonly device$ = of(this.window.innerWidth).pipe(
     map(height => {

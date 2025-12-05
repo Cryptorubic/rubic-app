@@ -1,10 +1,10 @@
 <div class="header">
   <tui-tabs class="tabs" [underline]="false" size="s" [activeItemIndex]="activeItemIndex$ | async">
-    <!-- <button tuiTab (click)="onClick(0)">
+    <button tuiTab (click)="onClick(0)">
       <div class="icon" inlineSVG="assets/images/icons/history/cross.svg"></div>
       Cross Chain
     </button>
-    <button tuiTab (click)="onClick(1)">
+    <!-- <button tuiTab (click)="onClick(1)">
       <div class="icon" inlineSVG="assets/images/icons/history/onchain.svg"></div>
       On Chain
     </button> -->
@@ -13,7 +13,7 @@
       Deposits
     </button>
   </tui-tabs>
-  <!-- <div class="filter">
+  <div class="filter">
     <form class="b-form">
       <tui-select
         *ngIf="isCrossChain$ | async"
@@ -26,5 +26,5 @@
         <tui-data-list-wrapper *tuiDataList [items]="items"></tui-data-list-wrapper>
       </tui-select>
     </form>
-  </div> -->
+  </div>
 </div>

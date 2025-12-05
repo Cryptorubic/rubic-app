@@ -30,7 +30,6 @@ export class AmountTransputComponent {
   @Input() public inputMode: 'input' | 'output' | 'combined';
 
   @Input() set amountValue(value: { visibleValue: string; actualValue: BigNumber } | null) {
-    console.log('%cAMOUNT_VALUE', 'color: red;', value);
     if (this.inputMode !== 'input' || (value?.actualValue && value?.actualValue.gt(0))) {
       this.updateAmountValue(value);
     }
