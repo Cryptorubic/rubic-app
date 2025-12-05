@@ -115,11 +115,6 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     this.checkWalletConnected();
     await this.checkBlockchainCorrect();
 
-    // const approveAmount =
-    //   this.from.blockchain === BLOCKCHAIN_NAME.GNOSIS ||
-    //   this.from.blockchain === BLOCKCHAIN_NAME.CRONOS
-    //     ? this.from.weiAmount
-    //     : weiAmount;
     const approveAmount = weiAmount;
 
     const fromTokenAddress =

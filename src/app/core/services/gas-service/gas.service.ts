@@ -37,13 +37,11 @@ const supportedBlockchains = [
   BLOCKCHAIN_NAME.MODE,
   BLOCKCHAIN_NAME.ZK_LINK,
   BLOCKCHAIN_NAME.TAIKO,
-  // BLOCKCHAIN_NAME.ROOTSTOCK,
   BLOCKCHAIN_NAME.SEI,
   BLOCKCHAIN_NAME.BITLAYER,
   BLOCKCHAIN_NAME.GRAVITY,
   BLOCKCHAIN_NAME.FRAXTAL,
   BLOCKCHAIN_NAME.BERACHAIN,
-  // BLOCKCHAIN_NAME.SONIC,
   BLOCKCHAIN_NAME.SONEIUM,
   BLOCKCHAIN_NAME.UNICHAIN,
   BLOCKCHAIN_NAME.MORPH,
@@ -89,11 +87,9 @@ export class GasService {
     [BLOCKCHAIN_NAME.MODE]: this.fetchModeGas.bind(this),
     [BLOCKCHAIN_NAME.ZK_LINK]: this.fetchZkLinkGas.bind(this),
     [BLOCKCHAIN_NAME.TAIKO]: this.fetchTaikoGas.bind(this),
-    // [BLOCKCHAIN_NAME.ROOTSTOCK]: this.fetchRootstockGas.bind(this),
     [BLOCKCHAIN_NAME.SEI]: this.fetchSeiGas.bind(this),
     [BLOCKCHAIN_NAME.BITLAYER]: this.fetchBitlayerGas.bind(this),
     [BLOCKCHAIN_NAME.GRAVITY]: this.fetchGravityGas.bind(this),
-    // [BLOCKCHAIN_NAME.SONIC]: this.fetchSonicGas.bind(this),
     [BLOCKCHAIN_NAME.MORPH]: this.fetchMorphGas.bind(this),
     [BLOCKCHAIN_NAME.FRAXTAL]: this.fetchFraxtalGas.bind(this),
     [BLOCKCHAIN_NAME.BERACHAIN]: this.fetchBerachainGas.bind(this),
@@ -576,26 +572,6 @@ export class GasService {
       })
     );
   }
-
-  // /**
-  //  * Gets Rootstock gas.
-  //  * @return Observable<number> Average gas price in Gwei.
-  //  */
-  // @Cacheable({
-  //   maxAge: GasService.requestInterval
-  // })
-  // private fetchRootstockGas(): Observable<GasPrice> {
-  //   const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-  //     BLOCKCHAIN_NAME.ROOTSTOCK
-  //   );
-  //   return from(blockchainAdapter.getGasPrice()).pipe(
-  //     map((gasPriceInWei: string) => {
-  //       return {
-  //         gasPrice: new BigNumber(gasPriceInWei).dividedBy(10 ** 18).toFixed()
-  //       };
-  //     })
-  //   );
-  // }
 
   @Cacheable({
     maxAge: GasService.requestInterval

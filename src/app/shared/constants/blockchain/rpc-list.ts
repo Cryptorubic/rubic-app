@@ -77,15 +77,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/optimism/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/optimistic-ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  // [BLOCKCHAIN_NAME.CRONOS]: [
-  //   'https://evm-cronos.crypto.org',
-  //   'https://x-api.rubic.exchange/drpc/cronos?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  // ],
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: ['https://exchainrpc.okex.org'],
-  // [BLOCKCHAIN_NAME.GNOSIS]: [
-  //   'https://rpc.ankr.com/gnosis/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-  //   'https://x-api.rubic.exchange/drpc/xdai?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  // ],
   [BLOCKCHAIN_NAME.FUSE]: [
     'https://fuse-pokt.nodies.app',
     'https://rpc.fuse.io',
@@ -270,10 +262,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://merlin.blockpi.network/v1/rpc/public',
     'https://x-api.rubic.exchange/drpc/merlin?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  // [BLOCKCHAIN_NAME.ROOTSTOCK]: [
-  //   'https://mycrypto.rsk.co',
-  //   'https://x-api.rubic.exchange/drpc/rootstock?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  // ],
   [BLOCKCHAIN_NAME.MODE]: [
     'https://mode-mainnet.blastapi.io/f2a2318c-ed4d-4366-9675-ccfd49434359',
     'https://mainnet.mode.network',
