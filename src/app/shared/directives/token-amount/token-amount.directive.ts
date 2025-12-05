@@ -67,7 +67,14 @@ export class TokenAmountDirective {
     this.prevCaretPosition = caretPosition;
   }
 
+  public static replaceCommas(visibleValue: string): string {
+    return visibleValue.replaceAll(',', '');
+  }
+
   public static transformValue(value: string, decimals: number): string {
+    if (value.includes(',')) {
+      value = this.replaceCommas(value);
+    }
     if (value.includes('.')) {
       const decimalsStartIndex = value.indexOf('.') + 1;
       value = value.slice(0, decimalsStartIndex + decimals);
@@ -77,7 +84,7 @@ export class TokenAmountDirective {
     if (integerPart.length) {
       value =
         new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
-        (value.includes('.') ? '.' : '') +
+        (decimalPart ? '.' : '') +
         (decimalPart || '');
     }
 
