@@ -122,24 +122,8 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.CRONOS]: {
-    baseUrl: 'https://cronoscan.com/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
     baseUrl: 'https://www.oklink.com/en/okc/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
-  [BLOCKCHAIN_NAME.GNOSIS]: {
-    baseUrl: 'https://blockscout.com/xdai/mainnet/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'address/',
@@ -1064,14 +1048,6 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',
     [ADDRESS_TYPE.TOKEN]: 'token/',
-    [ADDRESS_TYPE.TRANSACTION]: 'tx/',
-    [ADDRESS_TYPE.BLOCK]: 'block/'
-  },
-  [BLOCKCHAIN_NAME.ROOTSTOCK]: {
-    baseUrl: 'https://explorer.rsk.co/',
-    nativeCoinUrl: '',
-    [ADDRESS_TYPE.WALLET]: 'address/',
-    [ADDRESS_TYPE.TOKEN]: 'address/',
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
