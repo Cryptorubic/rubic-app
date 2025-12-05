@@ -26,7 +26,6 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
-import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
@@ -58,7 +57,6 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
-      first(tuiIsPresent),
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
         return {
@@ -106,16 +104,15 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public backToForm(): void {
-    this.tradePageService.setState('form');
-    this.swapsStateService.resetTrades();
-    this.previewSwapService.setNextTxState({
-      step: 'inactive',
-      data: {}
-    });
+    this.previewSwapService.backToForm();
   }
 
   public async startTrade(): Promise<void> {
     await this.previewSwapService.requestTxSign();
+  }
+
+  public continueBackupSwap(allowedToContinue: boolean = true): void {
+    this.previewSwapService.continueBackupSwap(allowedToContinue);
   }
 
   public async swap(): Promise<void> {
@@ -230,6 +227,9 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.swapRetry) {
       state.disabled = true;
       state.action = () => {};
+    } else if (el.step === transactionStep.swapBackupSelected) {
+      state.disabled = false;
+      state.action = this.continueBackupSwap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);

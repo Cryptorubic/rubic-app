@@ -81,7 +81,6 @@ import { MathAbsPipe } from './pipes/math-abs.pipe';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
-import { SwapRetryModalComponent } from './components/swap-retry-modal/swap-retry-modal.component';
 
 @NgModule({
   declarations: [
@@ -137,8 +136,7 @@ import { SwapRetryModalComponent } from './components/swap-retry-modal/swap-retr
     MathAbsPipe,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent,
-    SwapRetryModalComponent
+    ChartTogglerComponent
   ],
   imports: [
     CommonModule,

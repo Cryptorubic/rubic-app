@@ -26,7 +26,8 @@ import {
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
   parseError,
-  UnnecessaryApproveError
+  UnnecessaryApproveError,
+  UserRejectError
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
@@ -200,7 +201,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     await this.checkWalletState(options?.testMode);
     await this.checkAllowanceAndApprove(options);
 
-    const { onConfirm } = options;
+    const { onConfirm, onSimulationSuccess } = options;
     let transactionHash: string;
     const onTransactionHash = (hash: string) => {
       if (onConfirm) {
@@ -211,6 +212,10 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
 
     const fromAddress = this.walletAddress;
     const { data, value, to, gas } = await this.encode({ ...options, fromAddress });
+
+    const allowedToSign = await onSimulationSuccess?.();
+    if (!allowedToSign) throw new UserRejectError();
+
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
 
     try {

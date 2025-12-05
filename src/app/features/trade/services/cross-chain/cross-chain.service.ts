@@ -198,6 +198,7 @@ export class CrossChainService {
   public async swapTrade(
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
+    onSimulationSuccess?: () => Promise<boolean>,
     params: { useCacheData: boolean; skipAmountCheck: boolean } = {
       useCacheData: false,
       skipAmountCheck: false
@@ -250,6 +251,7 @@ export class CrossChainService {
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
+      onSimulationSuccess,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),

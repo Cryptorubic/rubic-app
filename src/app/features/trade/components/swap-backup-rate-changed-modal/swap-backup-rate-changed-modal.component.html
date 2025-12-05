@@ -1,0 +1,191 @@
+<div class="modal">
+  <div class="modal__content" *ngLet="tradeInfo$ | async as tradeInfo">
+    <main class="modal__body">
+      <img
+        class="modal__warning-image"
+        src="assets/images/bridge/warning-image-small.svg"
+        alt="Warning"
+      />
+      <div *ngIf="tradeState" class="modal__data-container modal__data-container_with-line">
+        <ng-container *ngIf="(isMobile$ | async) === false; else mobileInputTokenContainer">
+          <div class="modal__io-container">
+            <div class="modal__token-container">
+              <div
+                class="modal__second-image-container"
+                [style]="{ background: tradeInfo.fromAsset.secondColor }"
+              >
+                <img
+                  [src]="tradeInfo.fromAsset.secondImage"
+                  [alt]="tradeInfo.fromAsset.secondImage"
+                />
+              </div>
+              <img
+                class="modal__main-image"
+                [src]="tradeInfo.fromAsset.mainImage"
+                [alt]="tradeInfo.fromAsset.mainLabel"
+                (error)="onImageError($event)"
+              />
+            </div>
+            <div class="modal__amount-container">
+              <div class="modal__token-amount">
+                {{
+                  tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ tradeInfo.fromAsset.mainLabel }}
+              </div>
+              <div *ngIf="tradeInfo.fromValue.fiatAmount as amount" class="modal__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="modal__token-info">
+                on
+                {{ tradeInfo.fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileInputTokenContainer>
+          <div class="modal__io-container">
+            <div class="modal__token-and-amount-container">
+              <div class="modal__token-container">
+                <div
+                  class="modal__second-image-container"
+                  [style]="{ background: tradeInfo.fromAsset.secondColor }"
+                >
+                  <img
+                    [src]="tradeInfo.fromAsset.secondImage"
+                    [alt]="tradeInfo.fromAsset.secondImage"
+                  />
+                </div>
+                <img
+                  class="modal__main-image"
+                  [src]="tradeInfo.fromAsset.mainImage"
+                  [alt]="tradeInfo.fromAsset.mainLabel"
+                  (error)="onImageError($event)"
+                />
+              </div>
+              <div class="modal__token-amount">
+                {{
+                  tradeInfo.fromValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ tradeInfo.fromAsset.mainLabel }}
+              </div>
+            </div>
+            <div class="modal__fiat-container">
+              <div *ngIf="tradeInfo.fromValue.fiatAmount as amount" class="modal__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="modal__token-info">
+                on
+                {{ tradeInfo.fromAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+
+        <app-route-element
+          [routes]="tradeState?.routes || []"
+          [tradeType]="tradeState.tradeType"
+        ></app-route-element>
+
+        <ng-container *ngIf="(isMobile$ | async) === false; else mobileOutputTokenContainer">
+          <div class="modal__io-container">
+            <div class="modal__token-container">
+              <div
+                class="modal__second-image-container"
+                [style]="{ background: tradeInfo.toAsset.secondColor }"
+              >
+                <img [src]="tradeInfo.toAsset.secondImage" [alt]="tradeInfo.toAsset.secondImage" />
+              </div>
+              <img
+                class="modal__main-image"
+                [src]="tradeInfo.toAsset.mainImage"
+                [alt]="tradeInfo.toAsset.mainLabel"
+                (error)="onImageError($event)"
+              />
+            </div>
+            <div class="modal__amount-container">
+              <div class="modal__token-amount">
+                {{
+                  tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ tradeInfo.toAsset.mainLabel }}
+              </div>
+              <div *ngIf="tradeInfo.toValue.fiatAmount as amount" class="modal__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="modal__token-info">on {{ tradeInfo.toAsset.secondLabel }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #mobileOutputTokenContainer>
+          <div class="modal__io-container">
+            <div class="modal__token-and-amount-container">
+              <div class="modal__token-container">
+                <div
+                  class="modal__second-image-container"
+                  [style]="{ background: tradeInfo.toAsset.secondColor }"
+                >
+                  <img
+                    [src]="tradeInfo.toAsset.secondImage"
+                    [alt]="tradeInfo.toAsset.secondImage"
+                  />
+                </div>
+                <img
+                  class="modal__main-image"
+                  [src]="tradeInfo.toAsset.mainImage"
+                  [alt]="tradeInfo.toAsset.mainLabel"
+                  (error)="onImageError($event)"
+                />
+              </div>
+              <div class="modal__token-amount">
+                {{
+                  tradeInfo.toValue.tokenAmount | bigNumberFormat | shortenAmount : 8 : 6
+                }}&nbsp;{{ tradeInfo.toAsset.mainLabel }}
+              </div>
+            </div>
+            <div class="modal__fiat-container">
+              <div *ngIf="tradeInfo.toValue.fiatAmount as amount" class="modal__fiat-amount">
+                ~ ${{ amount }}&nbsp;-&nbsp;
+              </div>
+              <div class="modal__token-info">
+                on
+                {{ tradeInfo.toAsset.secondLabel }}
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <h3>A new provider has been selected</h3>
+      <p>The rate has changed. You should the new rate in order to continue the transaction.</p>
+      <div class="modal__rate-info">
+        <div class="modal__rate">
+          <span class="modal__rate-title">Quoted amount:</span>
+          <span class="modal__rate-value"
+            >{{ rateChangeInfo.oldAmount | bigNumberFormat | shortenAmount : 8 : 6 }}
+            {{ rateChangeInfo.tokenSymbol }}</span
+          >
+        </div>
+        <div class="modal__rate">
+          <span class="modal__rate-title">Current amount:</span>
+          <span class="modal__rate-value"
+            >{{ rateChangeInfo.newAmount | bigNumberFormat | shortenAmount : 8 : 6 }}
+            {{ rateChangeInfo.tokenSymbol }}</span
+          >
+        </div>
+        <div class="modal__rate">
+          <span class="modal__rate-title">Rate change:</span>
+          <span class="modal__rate-value"
+            >{{ difference | bigNumberFormat | shortenAmount : 8 : 6 }}%</span
+          >
+        </div>
+      </div>
+    </main>
+    <footer class="modal__footer">
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="outline" type="button" size="m" (click)="onCancel()">
+          {{ 'common.cancel' | translate }}
+        </button>
+        <button tuiButton appearance="primary" type="button" size="m" (click)="onConfirm()">
+          {{ 'common.OK' | translate }}
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>

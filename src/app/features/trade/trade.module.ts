@@ -78,6 +78,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
 import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
+import { SwapRetryPendingModalComponent } from './components/swap-retry-pending-modal/swap-retry-pending-modal.component';
+import { SwapBackupRateChangedModalComponent } from './components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +114,9 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
     RefundAddressComponent,
-    CryptoRateChartComponent
+    CryptoRateChartComponent,
+    SwapRetryPendingModalComponent,
+    SwapBackupRateChangedModalComponent
   ],
   exports: [ActionButtonComponent],
   imports: [

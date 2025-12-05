@@ -1,8 +1,6 @@
-@use '../../../../scss/core' as *;
+@use 'src/scss/core' as *;
 
 .modal {
-  max-width: 360px;
-
   &__content {
     text-align: center;
 
@@ -24,7 +22,8 @@
     animation: spin 2s linear infinite;
   }
 
-  &__hints {
+  &__hints,
+  &__hint {
     display: flex;
     flex-direction: column;
     gap: 20px;

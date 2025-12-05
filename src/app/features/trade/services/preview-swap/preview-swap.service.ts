@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {
   BehaviorSubject,
   firstValueFrom,
@@ -7,6 +7,7 @@ import {
   interval,
   Observable,
   of,
+  Subject,
   Subscription
 } from 'rxjs';
 import {
@@ -30,7 +31,6 @@ import { BLOCKCHAINS } from '@shared/constants/blockchain/ui-blockchains';
 import { blockchainColor } from '@shared/constants/blockchain/blockchain-color';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { SwapsControllerService } from '@features/trade/services/swaps-controller/swaps-controller.service';
-import BigNumber from 'bignumber.js';
 import { TX_STATUS } from '@cryptorubic/web3';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -57,18 +57,9 @@ import { BLOCKCHAIN_NAME, BlockchainName, EvmBlockchainName } from '@cryptorubic
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { ModalService } from '@app/core/modals/services/modal.service';
-
-interface TokenFiatAmount {
-  tokenAmount: BigNumber;
-  fiatAmount: string;
-}
-
-interface TradeInfo {
-  fromAsset: AssetSelector;
-  fromValue: TokenFiatAmount;
-  toAsset: AssetSelector;
-  toValue: TokenFiatAmount;
-}
+import { TradeInfo } from '../../models/trade-info';
+import { TransactionStep } from '../../models/transaction-steps';
+import { RateChangeInfo } from '../../models/rate-change-info';
 
 @Injectable()
 export class PreviewSwapService {
@@ -95,7 +86,9 @@ export class PreviewSwapService {
 
   public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
 
-  private readonly _isRetryModalOpen$ = new BehaviorSubject<boolean>(false);
+  private readonly _isRetryModalOpen$ = new Subject<boolean>();
+
+  private _continueSwapTrigger$: Subject<boolean>;
 
   private set isRetryModalOpen(isOpen: boolean) {
     this._isRetryModalOpen$.next(isOpen);
@@ -144,7 +137,8 @@ export class PreviewSwapService {
     private readonly errorService: ErrorsService,
     private readonly ccrApiService: CrossChainApiService,
     private readonly spindlService: SpindlService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    @Inject(Injector) private readonly injector: Injector
   ) {}
 
   private getTokenAsset(token: TokenAmount): AssetSelector {
@@ -187,6 +181,17 @@ export class PreviewSwapService {
     this.setNextTxState({ step: 'approvePending', data: this.transactionState.data });
   }
 
+  public backToForm(): void {
+    this.tradePageService.setState('form');
+    this.swapsStateService.resetTrades();
+    this.continueBackupSwap(false);
+
+    this.setNextTxState({
+      step: 'inactive',
+      data: {}
+    });
+  }
+
   public activatePage(): void {
     this.resetTransactionState();
     this.subscribeOnNetworkChange();
@@ -209,9 +214,12 @@ export class PreviewSwapService {
         distinctUntilChanged(),
         switchMap(isOpen => {
           if (isOpen) {
-            return this.modalService.openSwapRetryModal(this.swapsStateService.backupTrades$);
+            return this.modalService.openSwapRetryPendingModal(
+              this.swapsStateService.backupTrades$
+            );
           }
-          this.modalService.closeModal();
+          this.modalService.closeSwapRetryModal();
+          this.backToForm();
 
           return of(null);
         })
@@ -220,6 +228,22 @@ export class PreviewSwapService {
 
     this.subscriptions$.push(retryModalSubscription$);
   }
+
+  public continueBackupSwap(allowedToContinue: boolean): void {
+    this._continueSwapTrigger$?.next(allowedToContinue);
+  }
+
+  // private async test(): Promise<void> {
+  //   console.log('start test');
+
+  //   const testCondition = await this.modalService.openSwapRetryProviderSelectModal(this.swapsStateService.currentTrade, this.tradeInfo$, {newAmount: BigNumber(1), oldAmount: BigNumber(2), tokenSymbol: 'TMP'}, this.injector);
+  //   if (testCondition) {
+  //     console.log('test confirm');
+  //   } else {
+  //     console.log('test cancel');
+  //   }
+  //   console.log('test finalize');
+  // }
 
   private handleTransactionState(): void {
     let retriesCount: number = 0;
@@ -237,6 +261,9 @@ export class PreviewSwapService {
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
           retriesCount = (txState.level ?? 0) === 0 ? 0 : retriesCount;
+          // if (txState.step === 'idle') {
+          //   return this.test();
+          // }
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
@@ -244,11 +271,11 @@ export class PreviewSwapService {
             return this.handleAuthMessage(tradeState);
           }
           if (txState.step === 'swapRequest') {
-            return this.makeSwapRequest(tradeState);
+            return this.makeSwapRequest(tradeState, txState.step);
           }
           if (txState.step === 'swapRetry' && txState.level !== retriesCount) {
             retriesCount = txState.level;
-            return this.retrySwap(tradeState);
+            return this.retrySwap(tradeState, txState.step);
           }
           return of(null);
         })
@@ -373,12 +400,12 @@ export class PreviewSwapService {
     this._selectedTradeState$.next(this.swapsStateService.tradeState);
   }
 
-  public retrySwap(prevState: SelectedTrade): Observable<void> {
+  public retrySwap(prevState: SelectedTrade, txStep: TransactionStep): Observable<void> {
     this.swapsStateService.addFailedTrade(prevState);
     this.isRetryModalOpen = true;
     const backupTrade = this.swapsStateService.selectNextBackupTrade();
     this._selectedTradeState$.next(backupTrade);
-    return this.makeSwapRequest(backupTrade);
+    return this.makeSwapRequest(backupTrade, txStep);
   }
 
   private async catchSwitchCancel(): Promise<void> {
@@ -393,7 +420,7 @@ export class PreviewSwapService {
     this.resetTransactionState();
   }
 
-  private makeSwapRequest(tradeState: SelectedTrade): Observable<void> {
+  private makeSwapRequest(tradeState: SelectedTrade, txStep: TransactionStep): Observable<void> {
     let txHash: string;
     this.useCallback = true;
     const useMevProtection =
@@ -458,6 +485,28 @@ export class PreviewSwapService {
                     this.tradePageService.setState('form');
                   }
                 }
+              },
+              onSimulationSuccess: () => {
+                if (txStep === 'swapRequest') return Promise.resolve(true);
+
+                this._continueSwapTrigger$ = new Subject<boolean>();
+                this.setNextTxState({
+                  step: 'swapBackupSelected',
+                  data: this.transactionState.data
+                });
+                this.isRetryModalOpen = false;
+
+                return firstValueFrom(this._continueSwapTrigger$);
+              },
+              onRateChange: (rateChangeInfo: RateChangeInfo) => {
+                return txStep === 'swapRequest'
+                  ? firstValueFrom(this.modalService.openRateChangedModal(rateChangeInfo))
+                  : this.modalService.openSwapRetryProviderSelectModal(
+                      tradeState,
+                      this.tradeInfo$,
+                      rateChangeInfo,
+                      this.injector
+                    );
               }
             })
           : this.catchSwitchCancel();

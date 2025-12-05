@@ -11,9 +11,9 @@ import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { interval, map, Observable, startWith, takeUntil } from 'rxjs';
 
 @Component({
-  selector: 'app-swap-retry-modal',
-  templateUrl: './swap-retry-modal.component.html',
-  styleUrls: ['./swap-retry-modal.component.scss'],
+  selector: 'app-swap-retry-pending-modal',
+  templateUrl: './swap-retry-pending-modal.component.html',
+  styleUrls: ['./swap-retry-pending-modal.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TuiDestroyService],
   animations: [
@@ -33,7 +33,7 @@ import { interval, map, Observable, startWith, takeUntil } from 'rxjs';
     ])
   ]
 })
-export class SwapRetryModalComponent {
+export class SwapRetryPendingModalComponent {
   private readonly SLIDE_UPDATE_INTERVAL: number = 5000;
 
   public readonly backups$: Observable<TradeState[]>;

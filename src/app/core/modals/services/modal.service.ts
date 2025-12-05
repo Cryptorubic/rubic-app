@@ -20,7 +20,6 @@ import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
-import BigNumber from 'bignumber.js';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
@@ -39,7 +38,10 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
-import { SwapRetryModalComponent } from '@app/shared/components/swap-retry-modal/swap-retry-modal.component';
+import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
+import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
+import { TradeInfo } from '@app/features/trade/models/trade-info';
+import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +66,11 @@ export class ModalService {
     this.openedModal.elRef.nativeElement.classList.add('hidden');
     this.openedModal.elRef.nativeElement.classList.remove('opened');
     this.openedModal.elRef.nativeElement.classList.remove('collapsed');
+    this.openedModal.context.completeWith(null);
+  }
+
+  public closeSwapRetryModal(): void {
+    if (!this.openedModal) return;
     this.openedModal.context.completeWith(null);
   }
 
@@ -235,16 +242,44 @@ export class ModalService {
 
   /**
    * Show Swap Retry Modal dialog.
-   * @param backups$
+   * @param backups$ Backup Trades observable
    */
-  public openSwapRetryModal(backups$: Observable<TradeState[]>): Observable<void> {
-    this.setOpenedModalName('swap-retry');
-    return this.showDialog<SwapRetryModalComponent, void>(SwapRetryModalComponent, {
-      title: 'Swap Retry',
+  public openSwapRetryPendingModal(backups$: Observable<TradeState[]>): Observable<void> {
+    this.setOpenedModalName('swap-retry-pending');
+    return this.showDialog<SwapRetryPendingModalComponent, void>(SwapRetryPendingModalComponent, {
+      title: 'Swap Retry Pending',
       size: 's',
       fitContent: true,
       data: { backups$ }
     });
+  }
+
+  /**
+   * Show Swap Retry Modal dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openSwapRetryProviderSelectModal(
+    trade: SelectedTrade,
+    tradeInfo$: Observable<TradeInfo>,
+    rateChangeInfo: RateChangeInfo,
+    injector: Injector
+  ): Promise<boolean> {
+    this.setOpenedModalName('swap-backup-rate-changed');
+    return firstValueFrom(
+      this.showDialog(
+        SwapBackupRateChangedModalComponent,
+        {
+          title: 'Swap Retry Provider Select',
+          size: 's',
+          fitContent: true,
+          data: { trade, tradeInfo$, rateChangeInfo }
+        },
+        injector
+      )
+    );
   }
 
   /**
@@ -307,15 +342,11 @@ export class ModalService {
     );
   }
 
-  public openRateChangedModal(
-    oldAmount: BigNumber,
-    newAmount: BigNumber,
-    tokenSymbol: string
-  ): Observable<boolean> {
+  public openRateChangedModal(rateChangeInfo: RateChangeInfo): Observable<boolean> {
     this.setOpenedModalName('rate-change');
     return this.showDialog(RateChangedModalComponent, {
       size: 's',
-      data: { oldAmount, newAmount, tokenSymbol },
+      data: { ...rateChangeInfo },
       required: true
     });
   }

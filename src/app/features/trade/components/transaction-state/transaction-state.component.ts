@@ -58,6 +58,7 @@ export class TransactionStateComponent {
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
       swapRetry: 'Swap Retry',
+      swapBackupSelected: 'Swap',
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
