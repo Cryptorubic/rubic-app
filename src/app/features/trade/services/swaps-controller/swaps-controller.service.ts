@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  combineLatestWith,
-  concatMap,
-  firstValueFrom,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject
-} from 'rxjs';
+import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -35,6 +26,7 @@ import {
   NoLinkedAccountError,
   NotSupportedTokensError,
   RubicSdkError,
+  SimulationFailedError as SdkSimulationFailedError,
   UnsupportedReceiverAddressError,
   UserRejectError
 } from '@cryptorubic/web3';
@@ -70,6 +62,8 @@ import {
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import { RateChangeInfo } from '../../models/rate-change-info';
 
 @Injectable()
 export class SwapsControllerService {
@@ -211,6 +205,8 @@ export class SwapsControllerService {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
       onError?: (err: RubicError<ERROR_TYPE> | null) => void;
+      onSimulationSuccess?: () => Promise<boolean>;
+      onRateChange?: (rateChangeInfo: RateChangeInfo) => Promise<boolean>;
     }
   ): Promise<void> {
     const trade = tradeState.trade;
@@ -233,32 +229,50 @@ export class SwapsControllerService {
         return;
       }
       if (trade instanceof CrossChainTrade) {
-        txHash = await this.crossChainService.swapTrade(trade, callback.onHash);
+        txHash = await this.crossChainService.swapTrade(
+          trade,
+          callback.onHash,
+          callback.onSimulationSuccess
+        );
       } else {
-        txHash = await this.onChainService.swapTrade(trade, callback.onHash);
+        txHash = await this.onChainService.swapTrade(
+          trade,
+          callback.onHash,
+          callback.onSimulationSuccess
+        );
       }
     } catch (err) {
       if (err instanceof AmountChangeWarning) {
-        const allowSwap = await firstValueFrom(
-          this.modalService.openRateChangedModal(
-            Token.fromWei(err.oldAmount, trade.to.decimals),
-            Token.fromWei(err.newAmount, trade.to.decimals),
-            trade.to.symbol
-          )
-        );
+        const rateChangeInfo = {
+          oldAmount: Token.fromWei(err.oldAmount, trade.to.decimals),
+          newAmount: Token.fromWei(err.newAmount, trade.to.decimals),
+          tokenSymbol: trade.to.symbol
+        };
+
+        const allowSwap = await callback.onRateChange(rateChangeInfo);
 
         if (allowSwap) {
           try {
             if (trade instanceof CrossChainTrade) {
-              txHash = await this.crossChainService.swapTrade(trade, callback.onHash, {
-                skipAmountCheck: true,
-                useCacheData: true
-              });
+              txHash = await this.crossChainService.swapTrade(
+                trade,
+                callback.onHash,
+                callback.onSimulationSuccess,
+                {
+                  skipAmountCheck: true,
+                  useCacheData: true
+                }
+              );
             } else {
-              txHash = await this.onChainService.swapTrade(trade, callback.onHash, {
-                skipAmountCheck: true,
-                useCacheData: true
-              });
+              txHash = await this.onChainService.swapTrade(
+                trade,
+                callback.onHash,
+                callback.onSimulationSuccess,
+                {
+                  skipAmountCheck: true,
+                  useCacheData: true
+                }
+              );
             }
           } catch (innerErr) {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
@@ -351,6 +365,9 @@ export class SwapsControllerService {
         "The swap can't be executed with the entered amount of tokens. Please change it to the greater amount."
       );
     }
+    if (error instanceof SdkSimulationFailedError) {
+      return new SimulationFailedError(error.apiError);
+    }
     if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
@@ -433,8 +450,16 @@ export class SwapsControllerService {
       );
       this.swapsStateService.pickProvider(true);
     }
-    if (parsedError.showAlert) this.errorsService.catch(parsedError);
+
+    if (this.showErrorAlert(parsedError)) this.errorsService.catch(parsedError);
     onError?.(parsedError);
+  }
+
+  private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
+    return (
+      error.showAlert &&
+      !(error instanceof SimulationFailedError && this.swapsStateService.backupTrades.length > 1)
+    );
   }
 
   private subscribeOnSettings(): void {

@@ -10,4 +10,5 @@ export interface TransactionState {
     activeWallet?: boolean;
     points?: number;
   };
+  level?: number;
 }

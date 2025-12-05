@@ -35,7 +35,9 @@ export type ModalName =
   | 'rate-change'
   | 'mev-bot'
   | 'wc-change-network'
-  | 'ton-slippage-warning';
+  | 'ton-slippage-warning'
+  | 'swap-retry-pending'
+  | 'swap-backup-rate-changed';
 
 export interface ModalStruct {
   name: ModalName;

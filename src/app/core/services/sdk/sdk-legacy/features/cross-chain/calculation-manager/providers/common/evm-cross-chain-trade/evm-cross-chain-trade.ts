@@ -20,7 +20,8 @@ import {
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
   RubicSdkError,
-  UnnecessaryApproveError
+  UnnecessaryApproveError,
+  UserRejectError
 } from '@cryptorubic/web3';
 
 export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionConfig> {
@@ -164,7 +165,11 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
 
     const { data, value, to, gas } = await this.encode({ ...options, fromAddress });
 
-    const { onConfirm, gasPriceOptions } = options;
+    const { onConfirm, onSimulationSuccess, gasPriceOptions } = options;
+
+    const allowedToSign = await onSimulationSuccess?.();
+    if (!allowedToSign) throw new UserRejectError();
+
     let transactionHash: string;
     const onTransactionHash = (hash: string) => {
       if (onConfirm) {

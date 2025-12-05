@@ -123,6 +123,28 @@ export class SwapsStateService {
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
 
+  private readonly _backupTrades$ = new BehaviorSubject<TradeState[]>([]);
+
+  public readonly backupTrades$ = this._backupTrades$.asObservable();
+
+  private set backupTrades(trades: TradeState[]) {
+    this._backupTrades$.next(trades);
+  }
+
+  public get backupTrades(): TradeState[] {
+    return this._backupTrades$.getValue();
+  }
+
+  private readonly _failedTrades$ = new BehaviorSubject<SelectedTrade[]>([]);
+
+  private set failedTrades(trades: SelectedTrade[]) {
+    this._failedTrades$.next(trades);
+  }
+
+  public get failedTrades(): SelectedTrade[] {
+    return this._failedTrades$.getValue();
+  }
+
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
     current: 0
@@ -362,10 +384,51 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    this.setBackupTrades();
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
+  }
+
+  public setBackupTrades(): void {
+    this.resetTrades();
+    this.updateBackupTrades();
+  }
+
+  public updateBackupTrades(): void {
+    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    this.backupTrades = source.filter(
+      t => !this.failedTrades.some(fT => fT.tradeType === t.tradeType)
+    );
+  }
+
+  public selectNextBackupTrade(): SelectedTrade {
+    const trade: SelectedTrade = {
+      ...this.backupTrades[0],
+      selectedByUser: false,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+
+    return trade;
+  }
+
+  public addFailedTrade(trade: SelectedTrade): void {
+    this.failedTrades.push(trade);
+    this.updateBackupTrades();
+  }
+
+  public resetTrades(): void {
+    this.failedTrades = [];
+    this.backupTrades = [];
   }
 
   private subscribeOnTradeChange(): void {
