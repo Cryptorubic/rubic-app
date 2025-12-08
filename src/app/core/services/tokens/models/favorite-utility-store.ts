@@ -4,7 +4,14 @@ import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.se
 import { combineLatestWith, Observable, of } from 'rxjs';
 import { Token } from '@shared/models/tokens/token';
 import { AuthService } from '@core/services/auth/auth.service';
-import { debounceTime, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  switchMap,
+  tap
+} from 'rxjs/operators';
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses } from '@cryptorubic/core';
@@ -26,7 +33,7 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
         .filter(Boolean);
       const searchQuery = this._searchQuery$.value;
       const filteredTokens =
-        searchQuery && searchQuery.length > 2 && tokens.length && this.useLocalSearch
+        searchQuery && searchQuery.length >= 2 && tokens.length && this.useLocalSearch
           ? tokens.filter(
               token =>
                 token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -91,6 +98,10 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
           { address: favoriteToken.address, blockchain: favoriteToken.blockchain }
         ]);
         this._pageLoading$.next(false);
+      }),
+      catchError(() => {
+        this._pageLoading$.next(false);
+        return of(null);
       })
     );
   }
@@ -108,6 +119,10 @@ export class FavoriteUtilityStore extends BasicUtilityStore {
         );
         this._storedRefs$.next(filteredTokens);
         this._pageLoading$.next(false);
+      }),
+      catchError(() => {
+        this._pageLoading$.next(false);
+        return of(null);
       })
     );
   }

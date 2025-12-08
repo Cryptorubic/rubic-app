@@ -132,7 +132,7 @@ export class NewTokensStoreService {
           combineLatestWith(searchQuery$),
           switchMap(([tokens, searchQuery]) => {
             const allTokens = Object.values(tokens);
-            if (searchQuery && searchQuery.length > 2) {
+            if (searchQuery && searchQuery.length >= 2) {
               const filteredTokens = allTokens.filter(
                 token =>
                   token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

@@ -55,6 +55,12 @@ export interface TokensBackendResponse {
   readonly results: BackendToken[];
 }
 
+export interface UtilityBackendResponse {
+  trending: RatedBackendToken[];
+  gainers: RatedBackendToken[];
+  losers: RatedBackendToken[];
+}
+
 export interface BalanceTokensBackendResponse {
   readonly supported_networks: BlockchainName[];
   readonly tokens: Partial<Record<BlockchainName, BackendBalanceToken[]>>;

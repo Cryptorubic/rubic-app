@@ -31,7 +31,7 @@ export abstract class CommonUtilityStore {
 
   public readonly refs$ = this.searchQuery$.pipe(
     switchMap(query =>
-      query && query?.length > 2 && !this.useLocalSearch ? this.searchRefs$ : this.storedRefs$
+      query && query?.length >= 2 && !this.useLocalSearch ? this.searchRefs$ : this.storedRefs$
     ),
     debounceTime(20)
   );
@@ -51,7 +51,7 @@ export abstract class CommonUtilityStore {
         .filter(Boolean);
       const searchQuery = this._searchQuery$.value;
       const filteredTokens =
-        searchQuery && searchQuery.length > 2 && tokens.length && this.useLocalSearch
+        searchQuery && searchQuery.length >= 2 && tokens.length && this.useLocalSearch
           ? tokens.filter(
               token =>
                 token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -67,7 +67,6 @@ export abstract class CommonUtilityStore {
   constructor(protected readonly tokensStore: NewTokensStoreService) {}
 
   public init(): this {
-    this.buildInitialList();
     return this;
   }
 
@@ -75,7 +74,7 @@ export abstract class CommonUtilityStore {
 
   public abstract fetchTokens(): Observable<Token[]>;
 
-  protected addMissedUtilityTokens(tokens: (RatedToken | Token)[]): void {
+  public addMissedUtilityTokens(tokens: (RatedToken | Token)[]): void {
     const chainObject = {} as Partial<Record<BlockchainName, (RatedToken | Token)[]>>;
     tokens.forEach(token => {
       if (token.blockchain in chainObject === false) {

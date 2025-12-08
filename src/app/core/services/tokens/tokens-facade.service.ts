@@ -103,6 +103,13 @@ export class TokensFacadeService {
     'BITLAYER'
   ];
 
+  private readonly _tokenQuery$ = new BehaviorSubject<{
+    listType: AssetListType;
+    query: string;
+  } | null>(null);
+
+  public readonly tokenQuery$ = this._tokenQuery$.asObservable().pipe(debounceTime(200));
+
   public readonly allTokens = new AllTokensUtilityStore(this.tokensStore, this.apiService).init();
 
   public readonly trending = new TrendingUtilityStore(this.tokensStore, this.apiService).init();
@@ -166,6 +173,7 @@ export class TokensFacadeService {
     this.subscribeOnWallet();
     this.pollFormTokenBalance();
     this.subscribeOnFormTokens();
+    this.subscribeOnQuery();
   }
 
   private buildTokenLists(): void {
@@ -174,6 +182,7 @@ export class TokensFacadeService {
         this.allTokens.updateTokenSync([...tier1Tokens, ...tier2Tokens]);
       }
     );
+    this.buildUtilityList();
   }
 
   private async buildTier1List(): Promise<Token[]> {
@@ -382,16 +391,6 @@ export class TokensFacadeService {
   ): Observable<BalanceToken> {
     // @TODO TOKENS
     throw Error('Method not implemented.');
-    // const blockchainAdapter = Injector.web3PublicService.getWeb3Public(
-    //   blockchain as EvmBlockchainName
-    // );
-    // const chainType = BlockchainsInfo.getChainType(blockchain);
-    // const balance$ =
-    //   this.userAddress && this.authService.userChainType === chainType
-    //     ? from(blockchainAdapter.getTokenBalance(this.userAddress, address))
-    //     : of(null);
-    // const token$ = SdkToken.createToken({ blockchain, address });
-    //
     // return forkJoin([token$, balance$]).pipe(
     //   map(([token, amount]) => ({
     //     blockchain,
@@ -492,20 +491,7 @@ export class TokensFacadeService {
   }
 
   public buildSearchedList(query: string, assetListType: AssetListType): void {
-    if (BlockchainsInfo.isBlockchainName(assetListType)) {
-      this.tokensStore.setQueryAndFetch(assetListType, query);
-    } else {
-      const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
-        allChains: this.allTokens,
-        trending: this.trending,
-        gainers: this.gainers,
-        losers: this.losers,
-        favorite: this.favorite
-      };
-
-      const store = utilityMap[assetListType];
-      store.setQuery(query);
-    }
+    this._tokenQuery$.next({ listType: assetListType, query });
   }
 
   public runFetchConditionally(listType: AssetListType, searchQuery: string | null): void {
@@ -733,5 +719,41 @@ export class TokensFacadeService {
           }, 30_000);
         }
       });
+  }
+
+  private buildUtilityList(): void {
+    this.apiService.getUtilityTokenList().subscribe(utilityTokens => {
+      this.allTokens.addMissedUtilityTokens([
+        ...utilityTokens.gainers,
+        ...utilityTokens.losers,
+        ...utilityTokens.trending
+      ]);
+      this.gainers.updateTokenSync(utilityTokens.gainers);
+      this.losers.updateTokenSync(utilityTokens.losers);
+      this.trending.updateTokenSync(utilityTokens.trending);
+    });
+  }
+
+  private subscribeOnQuery(): void {
+    this.tokenQuery$.subscribe(object => {
+      if (!object) {
+        return;
+      }
+      const { listType, query } = object;
+      if (BlockchainsInfo.isBlockchainName(listType)) {
+        this.tokensStore.setQueryAndFetch(listType, query);
+      } else {
+        const utilityMap: Record<UtilityAssetType, CommonUtilityStore> = {
+          allChains: this.allTokens,
+          trending: this.trending,
+          gainers: this.gainers,
+          losers: this.losers,
+          favorite: this.favorite
+        };
+
+        const store = utilityMap[listType];
+        store.setQuery(query);
+      }
+    });
   }
 }

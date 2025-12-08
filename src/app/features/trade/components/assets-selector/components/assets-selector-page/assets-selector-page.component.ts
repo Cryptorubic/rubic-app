@@ -143,7 +143,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.pageLoading$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),
       switchMap(([type, query]) => {
-        if (query && query.length > 2) {
+        if (query && query.length >= 2) {
           return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
         }
         return this.tokensFacade.getTokensBasedOnType(type).pageLoading$;
@@ -201,14 +201,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   public selectAssetList(item: BlockchainItem | AssetListType): void {
+    const oldAssetList = this.assetsSelectorService.assetListType;
+
     if (typeof item === 'string') {
       this.assetsSelectorService.assetListType = item;
-      return;
-    }
-    if (item?.name) {
-      this.assetsSelectorService.assetListType = item.name;
+      this.tokensFacade.buildSearchedList('', oldAssetList);
     } else {
-      this.assetsSelectorService.assetListType = 'allChains';
+      this.assetsSelectorService.assetListType = item.name;
+      this.tokensFacade.buildSearchedList('', oldAssetList);
     }
   }
 

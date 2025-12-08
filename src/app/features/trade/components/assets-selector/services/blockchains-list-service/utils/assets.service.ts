@@ -144,6 +144,7 @@ export abstract class AssetsService {
     // @TODO TOKENS
     // this.tokensFacade = '';
     this.blockchainSearchQuery = '';
+    this.tokensFacade.buildSearchedList('', this.assetListType);
     // this.assetListType = 'allChains';
   }
 

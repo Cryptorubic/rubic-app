@@ -15,7 +15,7 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
   //
   // public readonly conditionRefs$ = this.searchQuery$.pipe(
   //   switchMap(searchQuery =>
-  //     iif(() => !!searchQuery && searchQuery.length > 2, this.searchRefs$, this._refs$)
+  //     iif(() => !!searchQuery && searchQuery.length >= 2, this.searchRefs$, this._refs$)
   //   )
   // );
   //
@@ -39,7 +39,7 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
   //       return foundToken;
   //     });
   //     const filteredTokens =
-  //       searchQuery && searchQuery.length > 2
+  //       searchQuery && searchQuery.length >= 2
   //         ? tokens.filter(
   //             token =>
   //               token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -103,7 +103,7 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
 
   public override setQuery(query: string): void {
     super.setQuery(query);
-    if (query.length > 2) {
+    if (query.length >= 2) {
       this.fetchQueryTokens(query, null);
     } else {
       this._searchRefs$.next([]);
