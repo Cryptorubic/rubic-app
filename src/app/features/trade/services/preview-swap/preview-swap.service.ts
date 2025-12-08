@@ -18,6 +18,7 @@ import {
   filter,
   first,
   map,
+  skip,
   startWith,
   switchMap,
   takeWhile,
@@ -86,9 +87,13 @@ export class PreviewSwapService {
 
   public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
 
-  private readonly _isRetryModalOpen$ = new Subject<boolean>();
+  private readonly _isRetryModalOpen$ = new BehaviorSubject<boolean>(false);
 
   private _continueSwapTrigger$: Subject<boolean>;
+
+  private get isRetryModalOpen(): boolean {
+    return this._isRetryModalOpen$.getValue();
+  }
 
   private set isRetryModalOpen(isOpen: boolean) {
     this._isRetryModalOpen$.next(isOpen);
@@ -211,6 +216,7 @@ export class PreviewSwapService {
   private handleRetryModal(): void {
     const retryModalSubscription$ = this._isRetryModalOpen$
       .pipe(
+        skip(1),
         distinctUntilChanged(),
         switchMap(isOpen => {
           if (isOpen) {
@@ -393,6 +399,12 @@ export class PreviewSwapService {
     return this.makeSwapRequest(backupTrade, txStep);
   }
 
+  public closeRetryModal(): void {
+    if (this.isRetryModalOpen) {
+      this.isRetryModalOpen = false;
+    }
+  }
+
   private async catchSwitchCancel(): Promise<void> {
     const warningText = this.translateService.instant('notifications.cancelRpcSwitch');
     this.notificationsService.show(warningText, {
@@ -420,7 +432,7 @@ export class PreviewSwapService {
           ? this.swapsControllerService.swap(tradeState, {
               onHash: (hash: string) => {
                 if (this.useCallback) {
-                  this.isRetryModalOpen = false;
+                  this.closeRetryModal();
                   txHash = hash;
                   this.setNextTxState({
                     step: 'sourcePending',
@@ -431,7 +443,7 @@ export class PreviewSwapService {
               onSwap: () => {
                 // @TODO Refactor
                 if (this.useCallback) {
-                  this.isRetryModalOpen = false;
+                  this.closeRetryModal();
                   if (tradeState.trade instanceof CrossChainTrade) {
                     this.setNextTxState({
                       step: 'destinationPending',
@@ -479,7 +491,7 @@ export class PreviewSwapService {
                   step: 'swapBackupSelected',
                   data: this.transactionState.data
                 });
-                this.isRetryModalOpen = false;
+                this.closeRetryModal();
 
                 return firstValueFrom(this._continueSwapTrigger$);
               },
