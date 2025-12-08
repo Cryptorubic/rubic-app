@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, firstValueFrom, from, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -42,6 +42,7 @@ import { SwapRetryPendingModalComponent } from '@app/features/trade/components/s
 import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
 import { TradeInfo } from '@app/features/trade/models/trade-info';
 import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
+import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -241,21 +242,41 @@ export class ModalService {
   }
 
   /**
-   * Show Swap Retry Modal dialog.
-   * @param backups$ Backup Trades observable
+   * Show All Swap Backups Failed dialog.
    */
-  public openSwapRetryPendingModal(backups$: Observable<TradeState[]>): Observable<void> {
-    this.setOpenedModalName('swap-retry-pending');
-    return this.showDialog<SwapRetryPendingModalComponent, void>(SwapRetryPendingModalComponent, {
-      title: 'Swap Retry Pending',
+  public openAllSwapBackupsFailedModal(): Observable<void> {
+    this.setOpenedModalName('all-swap-backups-failed');
+    return this.openClosableDialog(AllSwapBackupsFailedModalComponent, {
+      title: 'All Swap Backups Failed',
       size: 's',
-      fitContent: true,
-      data: { backups$ }
+      fitContent: true
     });
   }
 
   /**
-   * Show Swap Retry Modal dialog.
+   * Show Swap Retry dialog.
+   * @param backups$ Backup Trades observable
+   */
+  public openSwapRetryPendingModal(
+    backupsCount: number,
+    failedStatesCount$: Observable<number>,
+    injector: Injector
+  ): Observable<void> {
+    this.setOpenedModalName('swap-retry-pending');
+    return this.openClosableDialog(
+      SwapRetryPendingModalComponent,
+      {
+        title: 'Swap Retry Pending',
+        size: 's',
+        fitContent: true,
+        data: { backupsCount, failedStatesCount$ }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
    * @param trade Selected Backup Trade
    * @param tradeInfo$ Trade Info
    * @param rateChangeInfo Rate Change Info
@@ -319,7 +340,22 @@ export class ModalService {
         currentComponent: component,
         ...options
       })
-      .pipe(finalize(() => this.setOpenedModalName(null)));
+      .pipe(
+        finalize(() => {
+          this.setOpenedModalName(null);
+        })
+      );
+  }
+
+  public openClosableDialog<Component>(
+    component: Type<Component & object>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    injector?: Injector
+  ): Observable<void> {
+    //made it like that because it keeps throwing an exception by completing without firing any value
+    return from(firstValueFrom(this.showDialog(component, options, injector))).pipe(
+      catchError(() => of(null))
+    ) as Observable<void>;
   }
 
   /**

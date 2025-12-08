@@ -80,6 +80,7 @@ import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.s
 import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
 import { SwapRetryPendingModalComponent } from './components/swap-retry-pending-modal/swap-retry-pending-modal.component';
 import { SwapBackupRateChangedModalComponent } from './components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
+import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 
 @NgModule({
   declarations: [
@@ -116,7 +117,8 @@ import { SwapBackupRateChangedModalComponent } from './components/swap-backup-ra
     RefundAddressComponent,
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
-    SwapBackupRateChangedModalComponent
+    SwapBackupRateChangedModalComponent,
+    AllSwapBackupsFailedModalComponent
   ],
   exports: [ActionButtonComponent],
   imports: [

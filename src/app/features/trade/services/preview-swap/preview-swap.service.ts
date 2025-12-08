@@ -61,6 +61,7 @@ import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradeInfo } from '../../models/trade-info';
 import { TransactionStep } from '../../models/transaction-steps';
 import { RateChangeInfo } from '../../models/rate-change-info';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 
 @Injectable()
 export class PreviewSwapService {
@@ -187,14 +188,10 @@ export class PreviewSwapService {
   }
 
   public backToForm(): void {
-    this.tradePageService.setState('form');
-    this.swapsStateService.resetTrades();
     this.continueBackupSwap(false);
 
-    this.setNextTxState({
-      step: 'inactive',
-      data: {}
-    });
+    this.swapsStateService.resetTrades();
+    this.tradePageService.setState('form');
   }
 
   public activatePage(): void {
@@ -220,14 +217,21 @@ export class PreviewSwapService {
         distinctUntilChanged(),
         switchMap(isOpen => {
           if (isOpen) {
-            return this.modalService.openSwapRetryPendingModal(
-              this.swapsStateService.backupTrades$
-            );
+            return this.modalService
+              .openSwapRetryPendingModal(
+                this.swapsStateService.backupTrades.length,
+                this.swapsStateService.failedTradesCount$,
+                this.injector
+              )
+              .pipe(switchMap(() => of(true)));
           }
+          return of(false);
+        }),
+        tap(isManualClose => {
           this.modalService.closeSwapRetryModal();
-          this.backToForm();
-
-          return of(null);
+          if (isManualClose) {
+            this.backToForm();
+          }
         })
       )
       .subscribe();
@@ -476,8 +480,10 @@ export class PreviewSwapService {
                       level: (this.transactionState.level ?? 0) + 1
                     });
                   } else if (err instanceof TxRevertedInBlockchainError) {
+                    this.closeRetryModal();
                     this.setNextTxState({ step: 'error', data: this.transactionState.data });
-                  } else {
+                  } else if (!(err instanceof UserRejectError)) {
+                    this.closeRetryModal();
                     this.setNextTxState({ step: 'inactive', data: {} });
                     this.tradePageService.setState('form');
                   }

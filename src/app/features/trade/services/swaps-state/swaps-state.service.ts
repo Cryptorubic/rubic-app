@@ -125,8 +125,6 @@ export class SwapsStateService {
 
   private readonly _backupTrades$ = new BehaviorSubject<TradeState[]>([]);
 
-  public readonly backupTrades$ = this._backupTrades$.asObservable();
-
   private set backupTrades(trades: TradeState[]) {
     this._backupTrades$.next(trades);
   }
@@ -136,6 +134,14 @@ export class SwapsStateService {
   }
 
   private readonly _failedTrades$ = new BehaviorSubject<SelectedTrade[]>([]);
+
+  public readonly failedTrades$ = this._failedTrades$.asObservable();
+
+  public readonly failedTradesCount$ = this.failedTrades$.pipe(
+    map(trades => {
+      return trades.length;
+    })
+  );
 
   private set failedTrades(trades: SelectedTrade[]) {
     this._failedTrades$.next(trades);
@@ -422,7 +428,7 @@ export class SwapsStateService {
   }
 
   public addFailedTrade(trade: SelectedTrade): void {
-    this.failedTrades.push(trade);
+    this.failedTrades = [...this.failedTrades, trade];
     this.updateBackupTrades();
   }
 

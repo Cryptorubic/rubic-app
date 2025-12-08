@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import {
+  combineLatestWith,
+  concatMap,
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject
+} from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -28,7 +37,7 @@ import {
   RubicSdkError,
   SimulationFailedError as SdkSimulationFailedError,
   UnsupportedReceiverAddressError,
-  UserRejectError
+  UserRejectError as SdkUserRejectError
 } from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -64,6 +73,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
+import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -278,9 +288,16 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(new UserRejectError(), tradeState, callback?.onError);
+          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
+        if (
+          err instanceof SimulationFailedError &&
+          this.swapsStateService.backupTrades.length === 1
+        ) {
+          await firstValueFrom(this.modalService.openAllSwapBackupsFailedModal());
+        }
+
         this.catchSwapError(err, tradeState, callback?.onError);
       }
     }
@@ -458,7 +475,8 @@ export class SwapsControllerService {
   private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
     return (
       error.showAlert &&
-      !(error instanceof SimulationFailedError && this.swapsStateService.backupTrades.length > 1)
+      !(error instanceof UserRejectError) &&
+      !(error instanceof SimulationFailedError)
     );
   }
 

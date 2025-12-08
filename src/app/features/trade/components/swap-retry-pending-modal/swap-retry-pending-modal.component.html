@@ -1,19 +1,20 @@
-<div class="modal" *ngLet="backups$ | async as backups">
+<div class="modal" *ngLet="failedStatesCount$ | async as failedStatesCount">
   <div class="modal__content">
     <main class="modal__body">
       <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
-      <div class="modal__hints" *ngLet="isFirstSlide$ | async as isFirstSlide">
-        <div class="modal__hint" *ngIf="isFirstSlide" @inOutAnimation>
-          <p>Provider is not responding.</p>
-          <p>We are urgently looking for a profitable alternative⚡</p>
+      <div class="modal__hints">
+        <div class="modal__hint" *ngIf="failedStatesCount < 2; else furtherRetries">
+          <p>Provider Unavailable</p>
+          <p>We’re switching to the next one with the best rate!</p>
         </div>
-        <div class="modal__hint" *ngIf="!isFirstSlide" @inOutAnimation>
-          <span
-            >We've already selected {{ backups.length }} providers - interviewing them in order of
-            priority based on the most favorable rate (currently on
-            {{ getCurrentBackupProviderName(backups) }}).</span
-          >
-        </div>
+        <ng-template #furtherRetries>
+          <div class="modal__hint">
+            <span
+              >{{ failedStatesCount - 1 }}/{{ backupsCount }} providers checked. Searching for the
+              next best route.</span
+            >
+          </div>
+        </ng-template>
       </div>
     </main>
   </div>
