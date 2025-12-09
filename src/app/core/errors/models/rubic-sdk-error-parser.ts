@@ -56,6 +56,7 @@ import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import { nativeTokensList } from '@cryptorubic/core';
 import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
+import { GettingSwapDataError } from './common/getting-swap-data-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -83,7 +84,7 @@ export class RubicSdkErrorParser {
       return new FailedToCheckForTransactionReceiptError();
     }
     if (err instanceof SdkUserRejectError) {
-      return new UserRejectError();
+      return new UserRejectError(err.message);
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
@@ -181,12 +182,20 @@ export class RubicSdkErrorParser {
       return new CrossChainSwapUnavailableWarning();
     }
 
+    if (err.message.includes('Fail while getting data from provider')) {
+      return new GettingSwapDataError('Fail while getting data from provider');
+    }
+
     // Backpack wallet tx errors
     if (
       err.message.toLowerCase().includes('approval denied') ||
       err.message.toLowerCase().includes('plugin closed')
     ) {
       return new UserRejectError();
+    }
+
+    if (err.message.toLowerCase().includes('manual swap reject')) {
+      return new UserRejectError(err.message);
     }
 
     return new ExecutionRevertedError(err.message);

@@ -168,7 +168,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     const { onConfirm, onSimulationSuccess, gasPriceOptions } = options;
 
     const allowedToSign = await onSimulationSuccess?.();
-    if (!allowedToSign) throw new UserRejectError('manual');
+    if (!allowedToSign) throw new UserRejectError('manual transaction reject');
 
     let transactionHash: string;
     const onTransactionHash = (hash: string) => {

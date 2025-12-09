@@ -63,6 +63,7 @@ import { TradeInfo } from '../../models/trade-info';
 import { TransactionStep } from '../../models/transaction-steps';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { GettingSwapDataError } from '@app/core/errors/models/common/getting-swap-data-error';
 
 @Injectable()
 export class PreviewSwapService {
@@ -480,7 +481,7 @@ export class PreviewSwapService {
               onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
                   if (
-                    err instanceof SimulationFailedError &&
+                    (err instanceof SimulationFailedError || err instanceof GettingSwapDataError) &&
                     this.swapsStateService.backupTrades.length > 0
                   ) {
                     this.setNextTxState({

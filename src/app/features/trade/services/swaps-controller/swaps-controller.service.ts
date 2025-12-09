@@ -65,6 +65,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { GettingSwapDataError } from '@app/core/errors/models/common/getting-swap-data-error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -279,7 +280,11 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(new SdkUserRejectError('manual'), tradeState, callback?.onError);
+          this.catchSwapError(
+            new SdkUserRejectError('manual transaction reject'),
+            tradeState,
+            callback?.onError
+          );
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -369,11 +374,20 @@ export class SwapsControllerService {
     if (error instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(error.apiError);
     }
-    if (error instanceof SdkUserRejectError && error?.message === 'manual') {
+    if (
+      error instanceof SdkUserRejectError &&
+      error?.message.includes('manual transaction reject')
+    ) {
       const manualReject = new UserRejectError();
       manualReject.showAlert = false;
       return manualReject;
     }
+
+    if (error instanceof UserRejectError && error?.message.includes('manual transaction reject')) {
+      error.showAlert = false;
+      return error;
+    }
+
     if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
@@ -462,7 +476,11 @@ export class SwapsControllerService {
   }
 
   private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
-    return error.showAlert && !(error instanceof SimulationFailedError);
+    return (
+      error.showAlert &&
+      !(error instanceof SimulationFailedError) &&
+      !(error instanceof GettingSwapDataError)
+    );
   }
 
   private subscribeOnSettings(): void {

@@ -214,7 +214,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     const { data, value, to, gas } = await this.encode({ ...options, fromAddress });
 
     const allowedToSign = await onSimulationSuccess?.();
-    if (!allowedToSign) throw new UserRejectError('manual');
+    if (!allowedToSign) throw new UserRejectError('manual transaction reject');
 
     const method = options?.testMode ? 'sendTransaction' : 'trySendTransaction';
 
