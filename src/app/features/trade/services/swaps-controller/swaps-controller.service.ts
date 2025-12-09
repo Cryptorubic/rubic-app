@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  combineLatestWith,
-  concatMap,
-  firstValueFrom,
-  forkJoin,
-  from,
-  Observable,
-  of,
-  Subject
-} from 'rxjs';
+import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -291,13 +282,6 @@ export class SwapsControllerService {
           this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
-        if (
-          err instanceof SimulationFailedError &&
-          this.swapsStateService.backupTrades.length === 1
-        ) {
-          await firstValueFrom(this.modalService.openAllSwapBackupsFailedModal());
-        }
-
         this.catchSwapError(err, tradeState, callback?.onError);
       }
     }

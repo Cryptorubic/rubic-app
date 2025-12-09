@@ -403,13 +403,17 @@ export class SwapsStateService {
   }
 
   public updateBackupTrades(): void {
-    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    const source = this.failedTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
     this.backupTrades = source.filter(
       t => !this.failedTrades.some(fT => fT.tradeType === t.tradeType)
     );
   }
 
   public selectNextBackupTrade(): SelectedTrade {
+    if (this.backupTrades.length === 0) {
+      return null;
+    }
+
     const trade: SelectedTrade = {
       ...this.backupTrades[0],
       selectedByUser: false,

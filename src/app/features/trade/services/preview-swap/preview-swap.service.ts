@@ -16,6 +16,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  finalize,
   first,
   map,
   skip,
@@ -399,8 +400,16 @@ export class PreviewSwapService {
     this.swapsStateService.addFailedTrade(prevState);
     this.isRetryModalOpen = true;
     const backupTrade = this.swapsStateService.selectNextBackupTrade();
-    this._selectedTradeState$.next(backupTrade);
-    return this.makeSwapRequest(backupTrade, txStep);
+
+    if (backupTrade) {
+      this._selectedTradeState$.next(backupTrade);
+      return this.makeSwapRequest(backupTrade, txStep);
+    } else {
+      this.closeRetryModal();
+      return this.modalService
+        .openAllSwapBackupsFailedModal()
+        .pipe(finalize(() => this.backToForm()));
+    }
   }
 
   public closeRetryModal(): void {
@@ -472,7 +481,7 @@ export class PreviewSwapService {
                 if (this.useCallback) {
                   if (
                     err instanceof SimulationFailedError &&
-                    this.swapsStateService.backupTrades.length > 1
+                    this.swapsStateService.backupTrades.length > 0
                   ) {
                     this.setNextTxState({
                       step: 'swapRetry',
