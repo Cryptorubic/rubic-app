@@ -279,7 +279,7 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
+          this.catchSwapError(new SdkUserRejectError('manual'), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -369,6 +369,11 @@ export class SwapsControllerService {
     if (error instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(error.apiError);
     }
+    if (error instanceof SdkUserRejectError && error?.message === 'manual') {
+      const manualReject = new UserRejectError();
+      manualReject.showAlert = false;
+      return manualReject;
+    }
     if (error.message?.includes('No available routes')) {
       return new RubicError('No available routes.');
     }
@@ -457,11 +462,7 @@ export class SwapsControllerService {
   }
 
   private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
-    return (
-      error.showAlert &&
-      !(error instanceof UserRejectError) &&
-      !(error instanceof SimulationFailedError)
-    );
+    return error.showAlert && !(error instanceof SimulationFailedError);
   }
 
   private subscribeOnSettings(): void {
