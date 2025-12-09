@@ -491,7 +491,7 @@ export class PreviewSwapService {
                   } else if (err instanceof TxRevertedInBlockchainError) {
                     this.closeRetryModal();
                     this.setNextTxState({ step: 'error', data: this.transactionState.data });
-                  } else if (!(err instanceof UserRejectError)) {
+                  } else if (!(err instanceof UserRejectError && !err.showAlert)) {
                     this.closeRetryModal();
                     this.setNextTxState({ step: 'inactive', data: {} });
                     this.tradePageService.setState('form');
