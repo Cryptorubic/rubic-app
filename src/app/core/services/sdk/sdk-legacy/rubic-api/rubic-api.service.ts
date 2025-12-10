@@ -35,6 +35,7 @@ import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { GettingSwapDataError } from '@app/core/errors/models/common/getting-swap-data-error';
 
 @Injectable({
   providedIn: 'root'
@@ -275,6 +276,9 @@ export class RubicApiService {
       }
       case 3006: {
         return new UnsupportedReceiverAddressError();
+      }
+      case 3007: {
+        return new GettingSwapDataError();
       }
       case 3008: {
         // RubicError

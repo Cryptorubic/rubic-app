@@ -56,7 +56,6 @@ import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import { nativeTokensList } from '@cryptorubic/core';
 import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
-import { GettingSwapDataError } from './common/getting-swap-data-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -180,10 +179,6 @@ export class RubicSdkErrorParser {
 
     if (err.message.includes('Rubic proxy does not support non proxy Rango routers')) {
       return new CrossChainSwapUnavailableWarning();
-    }
-
-    if (err.message.includes('Fail while getting data from provider')) {
-      return new GettingSwapDataError('Fail while getting data from provider');
     }
 
     // Backpack wallet tx errors
