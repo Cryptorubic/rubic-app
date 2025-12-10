@@ -126,24 +126,35 @@
     color: var(--tui-text-03);
   }
 
-  // &__best-badge {
-  //   display: flex;
-  //   align-items: center;
+  &__best-badge {
+    display: flex;
+    align-items: center;
 
-  //   font-weight: 700 !important;
-  //   text-transform: uppercase;
+    font-weight: 700 !important;
+    text-transform: uppercase;
 
-  //   background: #05cc05;
-  //   cursor: pointer;
-  // }
+    background: #009b4799;
+    cursor: pointer;
+  }
 
-  // &__warning-badge {
-  //   font-weight: 700 !important;
-  //   text-transform: uppercase;
+  &__warning-badge {
+    font-weight: 700 !important;
+    text-transform: uppercase;
 
-  //   background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
-  //   cursor: pointer;
-  // }
+    background: linear-gradient(90deg, rgba(204, 141, 23, 0.83) 0%, rgba(213, 185, 5, 0.94) 99.18%);
+    cursor: pointer;
+  }
+
+  &__best-badge,
+  &__warning-badge {
+    color: #fff;
+
+    ::ng-deep {
+      .t-tag {
+        border-radius: 12px;
+      }
+    }
+  }
 
   ::ng-deep &__expander {
     display: flex;

@@ -6,11 +6,6 @@
 .image {
   display: flex;
   align-items: center;
-
-  ::ng-deep svg {
-    width: 20px;
-    height: 20px;
-  }
 }
 
 .image-container {

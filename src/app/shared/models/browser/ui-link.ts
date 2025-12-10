@@ -1,4 +1,4 @@
-export interface FooterLink {
+export interface UILink {
   dark: string;
   light: string;
   altText: string;

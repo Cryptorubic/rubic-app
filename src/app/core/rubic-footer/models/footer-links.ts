@@ -1,9 +1,9 @@
-import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
+import { UILink } from '@shared/models/browser/ui-link';
 
-export const FOOTER_LINKS: FooterLink[] = [
+export const FOOTER_LINKS: UILink[] = [
   {
-    dark: 'assets/images/contacts/brand-x.svg',
-    light: 'assets/images/contacts/brand-x.svg',
+    dark: 'assets/images/contacts/x-light.svg',
+    light: 'assets/images/contacts/x-light.svg',
     altText: 'X (Twitter)',
     link: 'https://twitter.com/clearswap',
     label: 'X (Twitter)'

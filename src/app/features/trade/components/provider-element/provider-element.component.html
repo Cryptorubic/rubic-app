@@ -41,7 +41,7 @@
             ~ {{ trade.to.tokenAmount | getUsdPrice : trade.to.price : 2 : true }}&nbsp;$
           </div>
           <div class="element__row">
-            <!-- <div class="element__row-badges">
+            <div class="element__row-badges">
               <tui-tag
                 *ngIf="isBest"
                 class="element__best-badge"
@@ -64,7 +64,7 @@
                 value="Warn"
                 [tuiHint]="tradeState.error?.message"
               ></tui-tag>
-            </div> -->
+            </div>
 
             <div
               (click)="toggleExpand($event)"
