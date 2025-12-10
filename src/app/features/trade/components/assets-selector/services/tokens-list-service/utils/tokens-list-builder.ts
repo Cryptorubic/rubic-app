@@ -8,15 +8,8 @@ import { BlockchainName } from '@cryptorubic/core';
 import { compareTokens } from '@app/shared/utils/utils';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { isMinimalToken } from '@app/shared/utils/is-token';
-import {
-  sorterByChain,
-  sorterForGainers,
-  sorterByTokenRank,
-  TokensSorter,
-  sorterForLosers
-} from './sorters';
+import { sorterByChain, sorterByTokenRank, TokensSorter } from './sorters';
 import { AssetsSelectorStateService } from '../../assets-selector-state/assets-selector-state.service';
-import { TOKEN_FILTERS, TokenFilter } from '../../../models/token-filters';
 import { TokenConvertersService } from '@app/core/services/tokens/token-converters.service';
 import { Web3Pure } from '@cryptorubic/web3';
 
@@ -89,19 +82,6 @@ export class TokensListBuilder {
     return this;
   }
 
-  public applyShowFavoriteTokensIf(needFilter: boolean): TokensListBuilder {
-    if (!needFilter) return this;
-
-    const favoriteTokensMap = this.tokenConverters.convertTokensListToMap(
-      this.tokensStoreService.favoriteTokens
-    );
-    this.tempTokensList = this.tempTokensList.filter(
-      t => !!favoriteTokensMap.get(this.tokenConverters.getTokenKeyInMap(t))
-    );
-
-    return this;
-  }
-
   /**
    * used when you sure tokens has filled 'available' field
    */
@@ -116,24 +96,6 @@ export class TokensListBuilder {
     const tokensArr = this.tempTokensList.toArray();
     this.tempTokensList = this.sortTokens(tokensArr, sorterByTokenRank);
 
-    return this;
-  }
-
-  public applySortByMostGainer(tokenFilter: TokenFilter): TokensListBuilder {
-    if (tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
-      throw new Error(`[applySortByMostGainer] Invalid tokenFilter ${tokenFilter}`);
-    }
-    const tokensArr = this.tempTokensList.toArray();
-    this.tempTokensList = this.sortTokens(tokensArr, sorterForGainers);
-    return this;
-  }
-
-  public applySortByMostLoser(tokenFilter: TokenFilter): TokensListBuilder {
-    if (tokenFilter !== TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
-      throw new Error(`[applySortByMostLoser] Invalid tokenFilter ${tokenFilter}`);
-    }
-    const tokensArr = this.tempTokensList.toArray();
-    this.tempTokensList = this.sortTokens(tokensArr, sorterForLosers);
     return this;
   }
 

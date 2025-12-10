@@ -89,10 +89,11 @@ export class TokensApiService {
   }
 
   public static convertClearswapResponseToAppTokens(
-    clearswapResp: ClearswapTokensBackendResponse
+    clearswapResp: ClearswapTokensBackendResponse,
+    onlyPrivate: boolean = false
   ): List<Token> {
     const apiTokens = Object.values(clearswapResp).flatMap(t => t.tokens);
-    return List(
+    let results = List(
       apiTokens
         .map((apiToken: ClearswapApiToken) => {
           return {
@@ -103,6 +104,11 @@ export class TokensApiService {
         })
         .filter(token => token.address && token.blockchain)
     );
+
+    if (onlyPrivate) {
+      results = results.filter(t => t.private);
+    }
+    return results;
   }
 
   /**
@@ -202,25 +208,27 @@ export class TokensApiService {
   }
 
   private fetchClearswapTokens(): Observable<ClearswapTokensBackendResponse> {
-    return this.httpService.get<ClearswapTokensBackendResponse>(ENDPOINTS.TOKENS).pipe(
-      tap(clearswapTokens => {
-        if (Object.keys(clearswapTokens).length) {
-          blockchainsWithOnePage.forEach(blockchain => {
-            const oldState = this.tokensNetworkStateService.tokensNetworkState;
-            this.tokensNetworkStateService.updateTokensNetworkState({
-              ...oldState,
-              [blockchain]: {
-                page: 1,
-                maxPage: 1
-              }
+    return this.httpService
+      .get<ClearswapTokensBackendResponse>(ENDPOINTS.TOKENS, {}, this.tokensApiUrl)
+      .pipe(
+        tap(clearswapTokens => {
+          if (Object.keys(clearswapTokens).length) {
+            blockchainsWithOnePage.forEach(blockchain => {
+              const oldState = this.tokensNetworkStateService.tokensNetworkState;
+              this.tokensNetworkStateService.updateTokensNetworkState({
+                ...oldState,
+                [blockchain]: {
+                  page: 1,
+                  maxPage: 1
+                }
+              });
             });
-          });
-        }
-      }),
-      catchError(() => {
-        return of(null);
-      })
-    );
+          }
+        }),
+        catchError(_ => {
+          return of(null);
+        })
+      );
   }
 
   /**

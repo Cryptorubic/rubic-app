@@ -21,6 +21,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { X_LINK } from './constants/x-link';
 
 @Component({
   selector: 'app-header',
@@ -48,6 +49,8 @@ export class HeaderComponent {
   public settingsOpened = false;
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
+
+  public readonly xLink = X_LINK;
 
   public readonly hideLogo = this.queryParamsService.hideBranding && this.useLargeIframe;
 

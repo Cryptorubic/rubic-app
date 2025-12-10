@@ -2,7 +2,8 @@
 
 .blockchains-filter-list {
   display: flex;
-  justify-content: space-between;
+  gap: 5px;
+  justify-content: flex-start;
   margin-top: 12px;
 }
 

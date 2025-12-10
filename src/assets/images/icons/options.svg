@@ -1,15 +1,6 @@
-<svg width="27" height="23" viewBox="0 0 27 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_1626_154)">
-<path d="M13.5 4.2085H25.1667" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-<path d="M1.83325 4.2085H7.66661" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-<path d="M20.7917 18.7915H25.1667" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-<path d="M1.83325 18.7915H13.4999" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-<path d="M10.5833 7.12483C12.1942 7.12483 13.5 5.81903 13.5 4.20813C13.5 2.59734 12.1942 1.2915 10.5833 1.2915C8.97255 1.2915 7.66675 2.59734 7.66675 4.20813C7.66675 5.81903 8.97255 7.12483 10.5833 7.12483Z" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-<path d="M17.875 21.7083C19.4858 21.7083 20.7917 20.4025 20.7917 18.7917C20.7917 17.1808 19.4858 15.875 17.875 15.875C16.2642 15.875 14.9583 17.1808 14.9583 18.7917C14.9583 20.4025 16.2642 21.7083 17.875 21.7083Z" stroke="var(--tui-text-03)" stroke-width="2" stroke-linecap="round"/>
-</g>
-<defs>
-<clipPath id="clip0_1626_154">
-<rect width="27" height="23" fill="var(--tui-text-03)"/>
-</clipPath>
-</defs>
+<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M0.680664 3.16602H17.0161" stroke="black" stroke-width="1.36135" stroke-linecap="round"/>
+<path d="M17.0811 14.0557H0.744839" stroke="black" stroke-width="1.36135" stroke-linecap="round"/>
+<path d="M11.1494 0.680664C12.5221 0.680892 13.6348 1.79421 13.6348 3.16699C13.6345 4.53958 12.522 5.65212 11.1494 5.65234C9.77663 5.65234 8.66331 4.53972 8.66309 3.16699C8.66309 1.79407 9.77649 0.680664 11.1494 0.680664Z" fill="black" stroke="black" stroke-width="1.36135"/>
+<path d="M6.48633 11.5723C5.1136 11.5725 4.00098 12.6858 4.00098 14.0586C4.0012 15.4312 5.11374 16.5437 6.48633 16.5439C7.85911 16.5439 8.97243 15.4313 8.97266 14.0586C8.97266 12.6857 7.85925 11.5723 6.48633 11.5723Z" fill="black" stroke="black" stroke-width="1.36135"/>
 </svg>

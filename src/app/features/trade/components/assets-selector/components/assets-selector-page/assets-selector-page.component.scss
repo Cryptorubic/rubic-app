@@ -58,19 +58,6 @@ app-search-bar {
             height: 51px;
           }
         }
-
-        ::ng-deep app-switch-list-type-button {
-          height: 51px;
-
-          .t-wrapper {
-            width: 51px;
-            height: 51px;
-          }
-
-          button {
-            width: auto;
-          }
-        }
       }
     }
 

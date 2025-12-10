@@ -16,18 +16,8 @@ export const TOKEN_FILTERS_UI: ReadonlyArray<TokenFilterUI> = [
     value: TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
   },
   {
-    img: 'assets/images/icons/trending.svg',
-    label: 'Trending',
-    value: TOKEN_FILTERS.ALL_CHAINS_TRENDING
-  },
-  {
-    img: 'assets/images/icons/gainers.svg',
-    label: 'Gainers',
-    value: TOKEN_FILTERS.ALL_CHAINS_GAINERS
-  },
-  {
-    img: 'assets/images/icons/losers.svg',
-    label: 'Losers',
-    value: TOKEN_FILTERS.ALL_CHAINS_LOSERS
+    img: 'assets/images/icons/private.svg',
+    label: 'Privacy',
+    value: TOKEN_FILTERS.ALL_CHAINS_PRIVATE
   }
 ] as const;

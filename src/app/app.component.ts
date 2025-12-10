@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
+import { Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -6,7 +6,6 @@ import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
@@ -30,10 +29,8 @@ import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent {
   public isBackendAvailable: boolean;
-
-  public useLargeIframe = false;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
@@ -58,10 +55,6 @@ export class AppComponent implements AfterViewInit {
     this.initApp();
     this.subscribeOnWalletChanges();
     this.tokensNetworkService.setupSubscriptions();
-  }
-
-  ngAfterViewInit() {
-    this.setupIframeSettings();
   }
 
   private subscribeOnWalletChanges(): void {
@@ -104,9 +97,10 @@ export class AppComponent implements AfterViewInit {
    * Setups list of languages and current language.
    */
   private setupLanguage(): void {
-    let userRegionLanguage = navigator.language?.split('-')[0];
-    userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
-    const lng = this.cookieService.get('lng') || userRegionLanguage;
+    // let userRegionLanguage = navigator.language?.split('-')[0];
+    // userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
+    // const lng = this.cookieService.get('lng') || userRegionLanguage;
+    const lng = 'en';
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
   }
@@ -124,36 +118,6 @@ export class AppComponent implements AfterViewInit {
           console.debug('timestamp file is not found');
         });
     }
-  }
-
-  /**
-   * Setups settings for app in iframe.
-   */
-  private setupIframeSettings(): void {
-    if (this.iframeService.isIframe) {
-      this.removeLiveChatInIframe();
-    }
-    this.queryParamsService.queryParams$
-      .pipe(first(queryParams => Boolean(Object.keys(queryParams).length)))
-      .subscribe(params => {
-        this.useLargeIframe = params.useLargeIframe === 'true';
-      });
-  }
-
-  private removeLiveChatInIframe(): void {
-    const observer = new MutationObserver(() => {
-      const liveChat = this.document.getElementById('chat-widget-container');
-      if (liveChat) {
-        liveChat.remove();
-        observer.disconnect();
-      }
-    });
-    observer.observe(this.document.body, {
-      attributes: false,
-      childList: true,
-      characterData: false,
-      subtree: false
-    });
   }
 
   /**

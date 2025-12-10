@@ -147,22 +147,11 @@ export class TokensService {
       const foundTokenInAllTokens = this.tokensStoreService.allChainsTokens[
         TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
       ].find(t => compareTokens(t, token));
-      const foundTokenInTrending = this.tokensStoreService.allChainsTokens[
-        TOKEN_FILTERS.ALL_CHAINS_TRENDING
-      ].find(t => compareTokens(t, token));
-      const foundTokenInGainers = this.tokensStoreService.allChainsTokens[
-        TOKEN_FILTERS.ALL_CHAINS_GAINERS
-      ].find(t => compareTokens(t, token));
-      const foundTokenInLosers = this.tokensStoreService.allChainsTokens[
-        TOKEN_FILTERS.ALL_CHAINS_LOSERS
+      const foundTokenInPrivate = this.tokensStoreService.allChainsTokens[
+        TOKEN_FILTERS.ALL_CHAINS_PRIVATE
       ].find(t => compareTokens(t, token));
 
-      const foundToken =
-        foundTokenInCommonList ||
-        foundTokenInAllTokens ||
-        foundTokenInTrending ||
-        foundTokenInGainers ||
-        foundTokenInLosers;
+      const foundToken = foundTokenInCommonList || foundTokenInAllTokens || foundTokenInPrivate;
 
       if (!foundToken) return new BigNumber(NaN);
 

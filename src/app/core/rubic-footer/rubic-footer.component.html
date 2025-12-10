@@ -8,7 +8,8 @@
       rel="noopener"
       target="_blank"
     >
-      <img [src]="link[theme$ | async]" width="22" height="20" [alt]="link.altText" />
+      <img [src]="link[theme$ | async]" [alt]="link.altText" />
+      <span>{{ link.label }}</span>
     </a>
   </nav>
 
@@ -22,13 +23,18 @@
       class="rubic-footer__policy"
       >{{ 'common.privacyPolicy' | translate }}</a
     >
-    <span>|</span>
     <a
       [href]="landingDomain + '/pdf/terms-of-use.pdf'"
       rel="noopener"
       target="_blank"
       class="rubic-footer__policy"
       >{{ 'common.termsOfUse' | translate }}</a
+    >
+    <a
+      href="#"
+      rel="noopener"
+      class="rubic-footer__policy"
+      >{{ 'common.support' | translate }}</a
     >
   </nav>
 </footer>

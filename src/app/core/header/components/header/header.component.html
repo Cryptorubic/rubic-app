@@ -8,6 +8,16 @@
   <div class="rubic-header__right">
     <button tuiButton appearance="icon" type="button" size="m" [routerLink]="'/faq'">FAQ</button>
     <app-history-button *ngIf="!useLargeIframe"></app-history-button>
+    <a
+      tuiButton
+      apearance="primary"
+      size="m"
+      target="_blank"
+      [href]="xLink.link"
+      class="rubic-header__x-link"
+    >
+      <img [src]="xLink.dark" alt="xLink.altText" />
+    </a>
 
     <div class="rubic-header__profile">
       <ng-container *ngIf="!currentUser?.address; else loggedIn">

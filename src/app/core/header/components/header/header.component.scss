@@ -1,6 +1,8 @@
 @use 'src/scss/core' as *;
 
 .rubic-header {
+  --border-color-primary: #fff;
+
   position: relative;
 
   display: flex;
@@ -22,6 +24,12 @@
   &__right {
     @include flex(row, center, center);
     gap: 20px;
+  }
+
+  &__x-link {
+    --tui-padding: 12px;
+    --tui-primary: transparent;
+    border: 1px solid var(--border-color-primary);
   }
 }
 

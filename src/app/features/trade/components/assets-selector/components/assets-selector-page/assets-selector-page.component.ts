@@ -18,7 +18,6 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { map, takeUntil } from 'rxjs/operators';
 import { AssetsSelectorServices } from '@features/trade/components/assets-selector/constants/assets-selector-services';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { Asset } from '@features/trade/models/asset';
 import { isMinimalToken } from '@shared/utils/is-token';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
@@ -51,7 +50,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly tokensStoreService: TokensStoreService,
     private readonly assetsSelectorService: AssetsSelectorService,
     private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly tokensListTypeService: TokensListTypeService,
     private readonly headerStore: HeaderStore,
     @Inject(DOCUMENT) private readonly document: Document,
     @Self() private readonly destroy$: TuiDestroyService,

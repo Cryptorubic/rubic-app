@@ -1,23 +1,5 @@
 <div class="nothing-to-show-message">
-  <ng-container
-    *ngIf="(hasSearchQuery$ | async) || (listType$ | async) === 'default'; else noFavoriteTokens"
-  >
+  <ng-container *ngIf="(hasSearchQuery$ | async)">
     {{ 'modals.tokensListModal.noSearchData' | translate }}
   </ng-container>
-
-  <ng-template #noFavoriteTokens>
-    <ng-container *ngIf="user$ | async; else noAuth">
-      {{ 'modals.tokensListModal.noFavoriteData' | translate }}
-      <button class="nothing-to-show-message__link" (click)="switchToDefaultList()">
-        {{ 'modals.tokensListModal.backToTokens' | translate }}
-      </button>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #noAuth>
-    {{ 'modals.tokensListModal.unauthorized' | translate }}
-    <button class="nothing-to-show-message__link" (click)="openAuthModal()">
-      {{ 'navigation.login' | translate }}
-    </button>
-  </ng-template>
 </div>
