@@ -10,8 +10,6 @@ export const BlockchainTags = {
 } as const;
 export const blockchainFilters = [
   BlockchainTags.ALL,
-  BlockchainTags.POPULAR,
-  BlockchainTags.PROMO,
   BlockchainTags.LAYER_2,
   BlockchainTags.EVM,
   BlockchainTags.NON_EVM

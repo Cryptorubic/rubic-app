@@ -6,7 +6,6 @@ import { DOCUMENT } from '@angular/common';
 import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
 import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
@@ -104,9 +103,10 @@ export class AppComponent implements AfterViewInit {
    * Setups list of languages and current language.
    */
   private setupLanguage(): void {
-    let userRegionLanguage = navigator.language?.split('-')[0];
-    userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
-    const lng = this.cookieService.get('lng') || userRegionLanguage;
+    // let userRegionLanguage = navigator.language?.split('-')[0];
+    // userRegionLanguage = isSupportedLanguage(userRegionLanguage) ? userRegionLanguage : 'en';
+    // const lng = this.cookieService.get('lng') || userRegionLanguage;
+    const lng = 'en';
     this.translateService.setDefaultLang(lng);
     this.translateService.use(lng);
   }
