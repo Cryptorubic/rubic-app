@@ -2,7 +2,7 @@
 
 :host {
   .filters-wrapper {
-    @include flex(row, center, space-between);
+    @include flex(row, center, flex-start);
     gap: 5px;
 
     width: 100%;
@@ -51,10 +51,9 @@
     @include flex(row, center, center);
     gap: 7px;
 
-    width: 155%;
+    width: 96px;
     height: 41px;
-    margin: 0 auto;
-    margin-left: -18px;
+
     color: var(--tui-text-03);
 
     background: var(--tui-base-01);
@@ -76,11 +75,14 @@
     }
 
     &__icon {
+      color: var(--tui-text-01);
+
       filter: invert(1);
     }
   }
 
   .token-filter__text {
+    color: var(--tui-text-01);
     line-height: 15px;
 
     @include b(mobile) {

@@ -23,8 +23,6 @@ import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { TokensList } from '@features/trade/components/assets-selector/services/tokens-list-service/models/tokens-list';
 import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
@@ -75,16 +73,11 @@ export class TokensListStoreService {
     return assetType;
   }
 
-  private get listType(): TokensListType {
-    return this.tokensListTypeService.listType;
-  }
-
   private get tokenFilter(): TokenFilter {
     return this.assetsSelectorStateService.tokenFilter;
   }
 
   constructor(
-    private readonly tokensListTypeService: TokensListTypeService,
     private readonly searchQueryService: SearchQueryService,
     private readonly tokensService: TokensService,
     private readonly tokensStoreService: TokensStoreService,
@@ -101,7 +94,6 @@ export class TokensListStoreService {
     this.subscribeOnTokensChange();
     this.subscribeOnSearchQueryChange();
     this.subscribeOnBlockchainChange();
-    this.subscribeOnListType();
   }
 
   private subscribeOnTokensChange(): void {
@@ -136,13 +128,6 @@ export class TokensListStoreService {
       });
   }
 
-  private subscribeOnListType(): void {
-    this.tokensListTypeService.listType$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.searchQueryService.setSearchQuery('');
-      this.tokensUpdaterService.triggerUpdateTokens();
-    });
-  }
-
   /**
    * Handles tokens list update.
    * Can be called only from constructor.
@@ -153,11 +138,7 @@ export class TokensListStoreService {
         tap(),
         switchMap(({ skipRefetch }) => {
           if (this.searchQuery.length) {
-            if (this.listType === 'default') {
-              return this.getDefaultTokensByQuery(skipRefetch);
-            } else {
-              return of({ tokensToShow: this.getFavoriteTokensByQuery() });
-            }
+            return this.getDefaultTokensByQuery(skipRefetch);
           }
           return of({ tokensToShow: this.getSortedTokens() });
         }),
@@ -332,17 +313,11 @@ export class TokensListStoreService {
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
-      return tlb
-        .initList()
-        .applyShowFavoriteTokensIf(true)
-        .applyFilterByQueryOnClient(query)
-        .applyDefaultSort()
-        .toArray();
+      return tlb.initList().applyFilterByQueryOnClient(query).applyDefaultSort().toArray();
     }
 
     return tlb
       .initList()
-      .applyShowFavoriteTokensIf(true)
       .applyFilterByChain(this.blockchain)
       .applyFilterByQueryOnClient(query)
       .applyDefaultSort()
@@ -361,41 +336,14 @@ export class TokensListStoreService {
     );
 
     if (this.assetsSelectorStateService.assetType === 'allChains') {
-      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_TRENDING) {
-        return tlb
-          .initList()
-          .applyShowFavoriteTokensIf(this.listType === 'favorite')
-          .toArray();
-      }
-      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_GAINERS) {
-        return tlb
-          .initList()
-          .applyShowFavoriteTokensIf(this.listType === 'favorite')
-          .applySortByMostGainer(this.tokenFilter)
-          .toArray();
-      }
-      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_LOSERS) {
-        return tlb
-          .initList()
-          .applyShowFavoriteTokensIf(this.listType === 'favorite')
-          .applySortByMostLoser(this.tokenFilter)
-          .toArray();
+      if (this.tokenFilter === TOKEN_FILTERS.ALL_CHAINS_PRIVATE) {
+        return tlb.initList().toArray();
       }
 
-      return tlb
-        .initList()
-        .applyFilterOnlyWithBalancesAndTopTokens()
-        .applyShowFavoriteTokensIf(this.listType === 'favorite')
-        .applyDefaultSort()
-        .toArray();
+      return tlb.initList().applyFilterOnlyWithBalancesAndTopTokens().applyDefaultSort().toArray();
     }
 
-    return tlb
-      .initList()
-      .applyShowFavoriteTokensIf(this.listType === 'favorite')
-      .applyFilterByChain(this.blockchain)
-      .applyDefaultSort()
-      .toArray();
+    return tlb.initList().applyFilterByChain(this.blockchain).applyDefaultSort().toArray();
   }
 
   private isTokenFavorite(token: BlockchainToken): boolean {

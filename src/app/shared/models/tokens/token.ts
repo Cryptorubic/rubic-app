@@ -5,6 +5,7 @@ export interface Token extends BlockchainToken {
   image: string;
   rank: number;
   price: number;
+  private?: boolean;
 
   /**
    * Security information about token.

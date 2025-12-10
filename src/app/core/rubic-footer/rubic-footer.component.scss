@@ -15,10 +15,14 @@
     display: none;
   }
 
+  @include bh($tablet) {
+    @include flex(column, center, center);
+    gap: 8px;
+  }
+
   &__nav,
   &__pdfs,
   &__copyright {
-    @include flex(row, center, center);
     flex-wrap: wrap;
     gap: 3px;
 
@@ -27,18 +31,43 @@
     @include b($mobile-sm-plus) {
       max-width: 320px;
     }
+
+    @include bh($tablet) {
+      @include flex(row, center, center);
+
+      width: auto;
+    }
+  }
+
+  &__nav {
+    @include flex(row, center, flex-start);
+  }
+
+  &__copyright {
+    @include flex(row, center, center);
+
+    @include bh($tablet) {
+      order: 3;
+    }
+  }
+
+  &__pdfs {
+    @include flex(row, center, flex-end);
+    gap: 32px;
+
+    @include bh($tablet) {
+      order: 2;
+    }
   }
 
   &__link {
-    margin-right: 21px;
-    margin-bottom: 16px;
+    @include flex(row, center, center);
 
     transition: 0.1s ease-in-out;
 
     img {
       display: block;
-      width: 22px;
-      height: 22px;
+      width: 14px;
     }
 
     &:hover {

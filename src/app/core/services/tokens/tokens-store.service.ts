@@ -22,7 +22,6 @@ import {
   TOKEN_FILTERS,
   TokenFilter
 } from '@app/features/trade/components/assets-selector/models/token-filters';
-import { TokenAmountWithPriceChange } from '@app/shared/models/tokens/available-token-amount';
 import { TokenConvertersService } from './token-converters.service';
 import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic/core';
 import { Web3Pure } from '@cryptorubic/web3';
@@ -41,9 +40,7 @@ export class TokensStoreService {
 
   private readonly _allChainsTokens$ = new BehaviorSubject<AllChainsTokensLists>({
     ALL_CHAINS_ALL_TOKENS: List(),
-    ALL_CHAINS_GAINERS: List(),
-    ALL_CHAINS_LOSERS: List(),
-    ALL_CHAINS_TRENDING: List()
+    ALL_CHAINS_PRIVATE: List()
   });
 
   private readonly _lastQueriedTokens$ = new BehaviorSubject<List<TokenAmount>>(List());
@@ -132,28 +129,21 @@ export class TokensStoreService {
 
   private async setupTokensForAllChainsTab(): Promise<void> {
     this.tokensUpdaterService.setTokensLoading(true);
-    // firstly load tokens without balances for ALL_CHAINS_ALL_TOKENS, TRENDING, GAINERS, LOSERS
-    const [allTokens, trendingTokens, gainersTokens, losersTokens] = await Promise.all([
-      firstValueFrom(this.tokensApiService.fetchTokensListForAllChains()).then(val =>
-        this.tokenConverters.getTokensWithNullBalances(val, false)
-      ),
-      firstValueFrom(this.tokensApiService.fetchTrendTokens()).then(val =>
-        this.tokenConverters.getTokensWithNullBalances(val, false)
-      ),
-      firstValueFrom(this.tokensApiService.fetchGainersTokens()).then(val =>
-        this.tokenConverters.getTokensWithNullBalances(val, false)
-      ),
-      firstValueFrom(this.tokensApiService.fetchLosersTokens()).then(val =>
-        this.tokenConverters.getTokensWithNullBalances(val, false)
-      )
-    ]);
+    // firstly load tokens without balances for ALL_CHAINS_ALL_TOKENS, PRIVATE
+    try {
+      const allTokens = await firstValueFrom(
+        this.tokensApiService.fetchTokensListForAllChains()
+      ).then(val => this.tokenConverters.getTokensWithNullBalances(val, false));
 
-    this._allChainsTokens$.next({
-      ALL_CHAINS_ALL_TOKENS: allTokens,
-      ALL_CHAINS_TRENDING: trendingTokens as List<TokenAmountWithPriceChange>,
-      ALL_CHAINS_GAINERS: gainersTokens as List<TokenAmountWithPriceChange>,
-      ALL_CHAINS_LOSERS: losersTokens as List<TokenAmountWithPriceChange>
-    });
+      const privateTokens = allTokens.filter(t => t.private);
+
+      this._allChainsTokens$.next({
+        ALL_CHAINS_ALL_TOKENS: allTokens,
+        ALL_CHAINS_PRIVATE: privateTokens
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
     // load balances at first loading for allchains
     if (this.userAddress) {

@@ -8,9 +8,7 @@ import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TokensNetworkService } from '@core/services/tokens/tokens-network.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { ListAnimationType } from '@features/trade/components/assets-selector/services/tokens-list-service/models/list-animation-type';
-import { TokensListType } from '@features/trade/components/assets-selector/models/tokens-list-type';
 import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
-import { TokensListTypeService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-type.service';
 import { SearchQueryService } from '@features/trade/components/assets-selector/services/search-query-service/search-query.service';
 import { AssetsSelectorStateService } from '../assets-selector-state/assets-selector-state.service';
 import {
@@ -36,17 +34,12 @@ export class TokensListService {
     this._listAnimationType$.next(value);
   }
 
-  private get listType(): TokensListType {
-    return this.tokensListTypeService.listType;
-  }
-
   private get tokensToShow(): AvailableTokenAmount[] {
     return this.tokensListStoreService.tokensToShow;
   }
 
   constructor(
     private readonly tokensListStoreService: TokensListStoreService,
-    private readonly tokensListTypeService: TokensListTypeService,
     private readonly tokensStoreService: TokensStoreService,
     private readonly tokensNetworkService: TokensNetworkService,
     private readonly tokensNetworkStateService: TokensNetworkStateService,
@@ -122,7 +115,6 @@ export class TokensListService {
       Boolean(
         this.loading ||
           this.searchQueryService.query ||
-          this.listType === 'favorite' ||
           !tokensNetworkStateByAsset ||
           tokensNetworkStateByAsset.maxPage === tokensNetworkStateByAsset.page
       )

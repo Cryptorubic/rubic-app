@@ -37,7 +37,6 @@ import { CALCULATION_TIMEOUT_MS } from '../../constants/calculation';
 import { CCR_LONG_TIMEOUT_CHAINS } from './ccr-long-timeout-chains';
 import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/proxy-fee.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
-import { notEvmChangeNowBlockchainsList } from '../../components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
 import { RefundService } from '../refund-service/refund.service';
 import {
   BLOCKCHAIN_NAME,
@@ -423,8 +422,8 @@ export class CrossChainService {
 
   private getDisabledProviders(
     disabledTradesTypes: CrossChainTradeType[],
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName
+    _: BlockchainName,
+    __: BlockchainName
   ): CrossChainTradeType[] {
     // const isNonEvmCNChain = (
     //   Object.values(notEvmChangeNowBlockchainsList) as BlockchainName[]

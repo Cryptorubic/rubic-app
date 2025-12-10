@@ -141,16 +141,8 @@ export class BalancePatcherFacade {
       this.tokensStoreService.allChainsTokens.ALL_CHAINS_ALL_TOKENS,
       false
     );
-    const nullGainers = this.tokenConverters.getTokensWithNullBalances(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_GAINERS,
-      false
-    );
-    const nullLosers = this.tokenConverters.getTokensWithNullBalances(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_LOSERS,
-      false
-    );
-    const nullTrendings = this.tokenConverters.getTokensWithNullBalances(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_TRENDING,
+    const nullPrivateTokens = this.tokenConverters.getTokensWithNullBalances(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_PRIVATE,
       false
     );
 
@@ -159,13 +151,8 @@ export class BalancePatcherFacade {
       TOKEN_FILTERS.ALL_CHAINS_ALL_TOKENS
     );
     this.tokensStoreService.updateAllChainsTokensState(
-      nullGainers,
-      TOKEN_FILTERS.ALL_CHAINS_GAINERS
-    );
-    this.tokensStoreService.updateAllChainsTokensState(nullLosers, TOKEN_FILTERS.ALL_CHAINS_LOSERS);
-    this.tokensStoreService.updateAllChainsTokensState(
-      nullTrendings,
-      TOKEN_FILTERS.ALL_CHAINS_TRENDING
+      nullPrivateTokens,
+      TOKEN_FILTERS.ALL_CHAINS_PRIVATE
     );
   }
 
@@ -242,57 +229,21 @@ export class BalancePatcherFacade {
       );
     }
 
-    const trendingListData = findIdxAndTokenInList(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_TRENDING,
+    const privateListData = findIdxAndTokenInList(
+      this.tokensStoreService.allChainsTokens.ALL_CHAINS_PRIVATE,
       token
     );
-    if (trendingListData.idx !== -1) {
-      const newTrendingList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_TRENDING.splice(
-        trendingListData.idx,
+    if (privateListData.idx !== -1) {
+      const newTrendingList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_PRIVATE.splice(
+        privateListData.idx,
         1
       ).push({
-        ...trendingListData.token,
+        ...privateListData.token,
         ...token
       });
       this.tokensStoreService.updateAllChainsTokensState(
         newTrendingList,
-        TOKEN_FILTERS.ALL_CHAINS_TRENDING
-      );
-    }
-
-    const gainersListData = findIdxAndTokenInList(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_GAINERS,
-      token
-    );
-    if (gainersListData.idx !== -1) {
-      const newGainersList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_GAINERS.splice(
-        gainersListData.idx,
-        1
-      ).push({
-        ...gainersListData.token,
-        ...token
-      });
-      this.tokensStoreService.updateAllChainsTokensState(
-        newGainersList,
-        TOKEN_FILTERS.ALL_CHAINS_GAINERS
-      );
-    }
-
-    const losersListData = findIdxAndTokenInList(
-      this.tokensStoreService.allChainsTokens.ALL_CHAINS_LOSERS,
-      token
-    );
-    if (gainersListData.idx !== -1) {
-      const newLosersList = this.tokensStoreService.allChainsTokens.ALL_CHAINS_LOSERS.splice(
-        losersListData.idx,
-        1
-      ).push({
-        ...losersListData.token,
-        ...token
-      });
-      this.tokensStoreService.updateAllChainsTokensState(
-        newLosersList,
-        TOKEN_FILTERS.ALL_CHAINS_LOSERS
+        TOKEN_FILTERS.ALL_CHAINS_PRIVATE
       );
     }
   }

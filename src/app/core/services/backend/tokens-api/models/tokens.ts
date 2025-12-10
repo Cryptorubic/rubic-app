@@ -20,6 +20,7 @@ export interface BackendToken {
   symbol: string;
   blockchainNetwork: BackendBlockchain;
   decimals: number;
+  private?: boolean;
   rank: number;
   image: string;
   coingeckoId: string;
@@ -77,6 +78,7 @@ export interface ClearswapApiToken {
   symbol: string;
   network: BlockchainName;
   decimals: number;
+  private: boolean;
   image: string;
   rank: number;
   type: Token['type'];
