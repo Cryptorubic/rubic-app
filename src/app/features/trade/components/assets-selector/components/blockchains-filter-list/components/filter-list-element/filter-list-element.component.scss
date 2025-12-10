@@ -20,10 +20,6 @@
     }
   }
 
-  &__icon {
-    filter: invert(1);
-  }
-
   &__clicked-element {
     ::ng-deep {
       .t-wrapper {
@@ -36,9 +32,13 @@
         }
       }
     }
+  }
 
-    .filter-list-element__icon {
-      filter: invert(1);
+  &__first-element {
+    ::ng-deep {
+      .t-wrapper {
+        width: 40px;
+      }
     }
   }
 }

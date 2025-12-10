@@ -69,7 +69,7 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   // [BLOCKCHAIN_NAME.STELLAR]: ['XLM'],
   // [BLOCKCHAIN_NAME.NEO]: ['NEO'],
   // [BLOCKCHAIN_NAME.NEAR]: ['NEAR'],
-  [BLOCKCHAIN_NAME.SOLANA]: ['SOL', BlockchainTags.POPULAR],
+  [BLOCKCHAIN_NAME.SOLANA]: ['SOL'],
   [BLOCKCHAIN_NAME.BITCOIN]: ['BTC'],
   // [BLOCKCHAIN_NAME.ALGORAND]: ['ALGO'],
   // [BLOCKCHAIN_NAME.KAVA_COSMOS]: ['KAVA'],
@@ -185,6 +185,15 @@ function setNonEvmChainTag(blockchain: NotEvmChangeNowBlockchainsList): string[]
   if (blockchain === BLOCKCHAIN_NAME.BITCOIN) {
     chainTags.push(BlockchainTags.POPULAR);
   }
+  if (blockchain === BLOCKCHAIN_NAME.MONERO) {
+    chainTags.push(BlockchainTags.PRIVATE);
+  }
+  if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    chainTags.push(BlockchainTags.PRIVATE);
+  }
+  if (blockchain === BLOCKCHAIN_NAME.DASH) {
+    chainTags.push(BlockchainTags.PRIVATE);
+  }
 
   return chainTags;
 }
@@ -201,32 +210,32 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ETHEREUM,
     rank: 0.9,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.PRIVATE]
   },
   {
     name: BLOCKCHAIN_NAME.ARBITRUM,
     rank: 0.75,
-    tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
   {
     name: BLOCKCHAIN_NAME.POLYGON,
     rank: 0.75,
-    tags: ['POL', BlockchainTags.POPULAR, BlockchainTags.EVM]
+    tags: ['POL', BlockchainTags.EVM, BlockchainTags.PRIVATE]
   },
   {
     name: BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN,
     rank: 0.75,
-    tags: ['BNB', BlockchainTags.POPULAR, BlockchainTags.EVM]
+    tags: ['BNB', BlockchainTags.EVM, BlockchainTags.PRIVATE]
   },
   {
     name: BLOCKCHAIN_NAME.BASE,
     rank: 0.75,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2, BlockchainTags.PRIVATE]
   },
   {
     name: BLOCKCHAIN_NAME.TRON,
     rank: 0.84,
-    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
+    tags: ['TRX', BlockchainTags.NON_EVM]
   },
   // {
   //   name: BLOCKCHAIN_NAME.MONAD,
@@ -241,12 +250,12 @@ export const blockchainsList: RankedBlockchain[] = [
   {
     name: BLOCKCHAIN_NAME.ZCASH,
     rank: 0.88,
-    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
+    tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.PRIVATE]
   },
   {
     name: BLOCKCHAIN_NAME.OPTIMISM,
     rank: 0.73,
-    tags: [BlockchainTags.EVM, BlockchainTags.POPULAR]
+    tags: [BlockchainTags.EVM]
   },
   // {
   //   name: BLOCKCHAIN_NAME.BERACHAIN,

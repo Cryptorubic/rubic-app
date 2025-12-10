@@ -1,6 +1,9 @@
 <button
   class="filter-list-element"
-  [ngClass]="{ 'filter-list-element__clicked-element': isSelected }"
+  [ngClass]="{
+    'filter-list-element__clicked-element': isSelected,
+    'filter-list-element__first-element': isFirst
+  }"
   tuiButton
   type="button"
   appearance="secondary"

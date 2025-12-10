@@ -73,12 +73,6 @@
     &__active {
       background: var(--tui-secondary-active);
     }
-
-    &__icon {
-      color: var(--tui-text-01);
-
-      filter: invert(1);
-    }
   }
 
   .token-filter__text {

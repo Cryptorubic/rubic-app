@@ -11,4 +11,6 @@ export class FilterListElementComponent {
   @Input({ required: true }) blockchainFilter!: BlockchainFilters;
 
   @Input({ required: true }) isSelected: boolean;
+
+  @Input() isFirst: boolean = false;
 }

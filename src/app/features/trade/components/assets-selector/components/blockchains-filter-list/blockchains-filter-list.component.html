@@ -6,6 +6,7 @@
         [blockchainFilter]="filter"
         (click)="onSelectFilter(filter)"
         [isSelected]="currentFilter === filter"
+        [isFirst]="filter === 'All'"
       ></app-filter-list-element>
     </ng-container>
   </ng-container>
