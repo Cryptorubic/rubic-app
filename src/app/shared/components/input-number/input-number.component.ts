@@ -43,6 +43,8 @@ export class InputNumberComponent implements OnInit, AfterViewInit {
     this.inputControl.setValue(newValue);
   }
 
+  public readonly TUI_PRECISION: number = Infinity;
+
   @Output() inputChanged: EventEmitter<number> = new EventEmitter();
 
   private _value: number = 0;

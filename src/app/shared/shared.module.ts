@@ -10,6 +10,7 @@ import {
   TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
+  TuiInputNumberModule,
   TuiProgressModule,
   TuiTabsModule,
   TuiTagModule,
@@ -172,7 +173,8 @@ import { InputNumberComponent } from './components/input-number/input-number.com
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
     TuiHoveredModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    TuiInputNumberModule
   ],
   exports: [
     BigNumberFormatPipe,

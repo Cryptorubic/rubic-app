@@ -13,15 +13,10 @@
     background: var(--tui-base-01);
     border-radius: var(--tui-radius-m);
 
-    .input-control {
-      flex: 0 0 50%;
-      width: 100%;
-      padding: 0;
+    tui-input-number {
+      flex: 0 0 75%;
 
       text-align: right;
-
-      background: var(--tui-base-01);
-      border: solid transparent;
     }
 
     input[type='number']::-webkit-inner-spin-button,
@@ -31,10 +26,6 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
-    }
-
-    .input-suffix {
-      flex: 0 0 50%;
     }
   }
 }
