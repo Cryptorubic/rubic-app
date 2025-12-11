@@ -15,6 +15,7 @@ import {
   getDepositStatus
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 import { HttpClient } from '@angular/common/http';
+import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
 
 @Injectable()
 export class DepositService {
@@ -52,7 +53,7 @@ export class DepositService {
 
       fromToken,
       toToken,
-      fromAmount: fromAmount.visibleValue,
+      fromAmount: TokenAmountDirective.replaceCommas(fromAmount.visibleValue),
       toAmount: paymentInfo.toAmount,
       timestamp: Date.now(),
 

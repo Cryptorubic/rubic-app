@@ -162,7 +162,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
 
     const fromAddress = this.walletAddress;
 
-    const { data, value, to } = await this.encode({ ...options, fromAddress });
+    const { data, value, to, gas } = await this.encode({ ...options, fromAddress });
 
     const { onConfirm, gasPriceOptions } = options;
     let transactionHash: string;
@@ -179,6 +179,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
           data,
           to,
           value,
+          gas,
           onTransactionHash,
           gasLimitRatio: this.gasLimitRatio,
           gasPriceOptions,
@@ -233,7 +234,8 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
     const config = {
       data: swapData.transaction.data!,
       value: swapData.transaction.value!,
-      to: swapData.transaction.to!
+      to: swapData.transaction.to!,
+      gas: swapData.fees.gasTokenFees.gas.gasLimit!
     };
 
     return { config, amount };

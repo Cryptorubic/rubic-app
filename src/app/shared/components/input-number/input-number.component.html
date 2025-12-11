@@ -1,11 +1,12 @@
-<div class="input-wrapper">
-  <tui-input-number
+<div class="input-wrapper" (click)="onWrapperClick()">
+  <input
+    class="input-control"
+    type="number"
+    step="0.1"
+    [name]="name"
     [formControl]="inputControl"
-    (focusedChange)="emitValue()"
-    tuiTextfieldSize="s"
-    [precision]="TUI_PRECISION"
-    tuiTextfieldInputMode="decimal"
-  >
-  </tui-input-number>
+    (blur)="emitValue()"
+    (keydown)="onKeyDown($event)"
+  />
   <span class="input-suffix">{{ suffix }}</span>
 </div>

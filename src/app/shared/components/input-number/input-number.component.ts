@@ -51,6 +51,8 @@ export class InputNumberComponent implements OnInit, AfterViewInit {
 
   private prevValue: number = this._value;
 
+  private inputEl: HTMLInputElement;
+
   public readonly inputControl = new FormControl<number>(this._value, { validators: [] });
 
   constructor(private readonly elRef: ElementRef, private readonly renderer: Renderer2) {}
@@ -60,29 +62,30 @@ export class InputNumberComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.inputEl = this.elRef.nativeElement.querySelector('.input-control') as HTMLInputElement;
     this.setStyles();
   }
 
-  public setStyles(): void {
-    const input = this.elRef.nativeElement.querySelector('.input-control') as HTMLInputElement;
-    const span = this.elRef.nativeElement.querySelector('.input-suffix') as HTMLSpanElement;
-    if (!input || !span) return;
+  public onWrapperClick(): void {
+    this.inputEl.focus();
+  }
 
-    if (input.value.length > 3) {
-      this.renderer.setStyle(input, 'flex', '0 0 70%');
-      this.renderer.setStyle(span, 'flex', '0 0 30%');
-    } else {
-      this.renderer.setStyle(input, 'flex', '0 0 50%');
-      this.renderer.setStyle(span, 'flex', '0 0 50%');
+  public onKeyDown(e: KeyboardEvent): void {
+    if (/^[eE+-]$/.test(e.key)) {
+      e.preventDefault();
+    }
+    if (/[0-9\.,]/.test(e.key) && this.inputEl.value.length >= 10) {
+      e.preventDefault();
+      return;
     }
   }
 
   public emitValue(): void {
     if (this.inputControl.value === this.prevValue) return;
 
-    if (this.inputControl.hasError('min')) {
+    if (new BigNumber(this.inputControl.value).lt(this.min)) {
       this.inputControl.setValue(this.min);
-    } else if (this.inputControl.hasError('max')) {
+    } else if (new BigNumber(this.inputControl.value).gt(this.max)) {
       this.inputControl.setValue(this.max);
     }
 
@@ -91,6 +94,19 @@ export class InputNumberComponent implements OnInit, AfterViewInit {
 
     this.inputChanged.emit(this.inputControl.value);
     this.prevValue = this.inputControl.value;
+  }
+
+  public setStyles(): void {
+    const span = this.elRef.nativeElement.querySelector('.input-suffix') as HTMLSpanElement;
+    if (!this.inputEl || !span) return;
+
+    if (this.inputEl.value.length > 3) {
+      this.renderer.setStyle(this.inputEl, 'flex', '0 0 70%');
+      this.renderer.setStyle(span, 'flex', '0 0 30%');
+    } else {
+      this.renderer.setStyle(this.inputEl, 'flex', '0 0 50%');
+      this.renderer.setStyle(span, 'flex', '0 0 50%');
+    }
   }
 
   private prettify(): void {

@@ -13,8 +13,12 @@
     background: var(--tui-base-01);
     border-radius: var(--tui-radius-m);
 
-    tui-input-number {
-      flex: 0 0 75%;
+    cursor: text;
+
+    .input-control {
+      flex: 0 0 50%;
+      width: 100%;
+      padding: 0;
 
       text-align: right;
     }
