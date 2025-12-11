@@ -65,7 +65,6 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
-import { GettingSwapDataError } from '@app/core/errors/models/common/getting-swap-data-error';
 
 @Injectable()
 export class SwapsControllerService {
@@ -476,11 +475,7 @@ export class SwapsControllerService {
   }
 
   private showErrorAlert(error: RubicError<ERROR_TYPE>): boolean {
-    return (
-      error.showAlert &&
-      !(error instanceof SimulationFailedError) &&
-      !(error instanceof GettingSwapDataError)
-    );
+    return error.showAlert && !(error instanceof SimulationFailedError);
   }
 
   private subscribeOnSettings(): void {
