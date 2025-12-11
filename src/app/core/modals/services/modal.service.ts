@@ -259,7 +259,7 @@ export class ModalService {
    */
   public openSwapRetryPendingModal(
     backupsCount: number,
-    failedStatesCount$: Observable<number>,
+    backupTradesCount$: Observable<number>,
     injector: Injector
   ): Observable<void> {
     this.setOpenedModalName('swap-retry-pending');
@@ -269,7 +269,7 @@ export class ModalService {
         title: 'Swap Retry Pending',
         size: 's',
         fitContent: true,
-        data: { backupsCount, failedStatesCount$ }
+        data: { backupsCount, backupTradesCount$ }
       },
       injector
     );

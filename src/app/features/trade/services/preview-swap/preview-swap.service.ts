@@ -192,7 +192,7 @@ export class PreviewSwapService {
   public backToForm(): void {
     this.continueBackupSwap(false);
 
-    this.swapsStateService.resetTrades();
+    this.swapsStateService.resetBackupTrades();
     this.tradePageService.setState('form');
   }
 
@@ -222,7 +222,7 @@ export class PreviewSwapService {
             return this.modalService
               .openSwapRetryPendingModal(
                 this.swapsStateService.backupTrades.length,
-                this.swapsStateService.failedTradesCount$,
+                this.swapsStateService.backupTradesCount$,
                 this.injector
               )
               .pipe(switchMap(() => of(true)));
@@ -272,7 +272,7 @@ export class PreviewSwapService {
           }
           if (txState.step === 'swapRetry' && txState.level !== retriesCount) {
             retriesCount = txState.level;
-            return this.retrySwap(tradeState, txState.step);
+            return this.tryRetrySwap(tradeState, txState.step);
           }
           return of(null);
         })
@@ -393,16 +393,16 @@ export class PreviewSwapService {
   }
 
   public setSelectedProvider(): void {
-    this.swapsStateService.setBackupTrades();
+    this.swapsStateService.setBackupsForTrade(this.swapsStateService.tradeState);
     this._selectedTradeState$.next(this.swapsStateService.tradeState);
   }
 
-  public retrySwap(prevState: SelectedTrade, txStep: TransactionStep): Observable<void> {
-    this.swapsStateService.addFailedTrade(prevState);
-    this.isRetryModalOpen = true;
+  public tryRetrySwap(prevState: SelectedTrade, txStep: TransactionStep): Observable<void> {
+    this.swapsStateService.updateBackups(prevState);
     const backupTrade = this.swapsStateService.selectNextBackupTrade();
 
     if (backupTrade) {
+      this.isRetryModalOpen = true;
       this._selectedTradeState$.next(backupTrade);
       return this.makeSwapRequest(backupTrade, txStep);
     } else {
@@ -480,10 +480,7 @@ export class PreviewSwapService {
               },
               onError: (err: RubicError<ERROR_TYPE> | null) => {
                 if (this.useCallback) {
-                  if (
-                    (err instanceof SimulationFailedError || err instanceof GettingSwapDataError) &&
-                    this.swapsStateService.backupTrades.length > 0
-                  ) {
+                  if (err instanceof SimulationFailedError || err instanceof GettingSwapDataError) {
                     this.setNextTxState({
                       step: 'swapRetry',
                       data: this.transactionState.data,

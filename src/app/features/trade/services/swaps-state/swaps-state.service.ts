@@ -133,23 +133,11 @@ export class SwapsStateService {
     return this._backupTrades$.getValue();
   }
 
-  private readonly _failedTrades$ = new BehaviorSubject<SelectedTrade[]>([]);
-
-  public readonly failedTrades$ = this._failedTrades$.asObservable();
-
-  public readonly failedTradesCount$ = this.failedTrades$.pipe(
+  public readonly backupTradesCount$ = this._backupTrades$.pipe(
     map(trades => {
       return trades.length;
     })
   );
-
-  private set failedTrades(trades: SelectedTrade[]) {
-    this._failedTrades$.next(trades);
-  }
-
-  public get failedTrades(): SelectedTrade[] {
-    return this._failedTrades$.getValue();
-  }
 
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
@@ -390,23 +378,21 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
-    this.setBackupTrades();
+    this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
   }
 
-  public setBackupTrades(): void {
-    this.resetTrades();
-    this.updateBackupTrades();
+  public setBackupsForTrade(trade: TradeState): void {
+    this.backupTrades = [];
+    this.updateBackups(trade);
   }
 
-  public updateBackupTrades(): void {
-    const source = this.failedTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
-    this.backupTrades = source.filter(
-      t => !this.failedTrades.some(fT => fT.tradeType === t.tradeType)
-    );
+  public updateBackups(tradeToExclude: TradeState): void {
+    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    this.backupTrades = source.filter(t => t.tradeType !== tradeToExclude.tradeType);
   }
 
   public selectNextBackupTrade(): SelectedTrade {
@@ -431,13 +417,7 @@ export class SwapsStateService {
     return trade;
   }
 
-  public addFailedTrade(trade: SelectedTrade): void {
-    this.failedTrades = [...this.failedTrades, trade];
-    this.updateBackupTrades();
-  }
-
-  public resetTrades(): void {
-    this.failedTrades = [];
+  public resetBackupTrades(): void {
     this.backupTrades = [];
   }
 

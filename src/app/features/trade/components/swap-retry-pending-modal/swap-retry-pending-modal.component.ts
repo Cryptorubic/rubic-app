@@ -11,21 +11,21 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SwapRetryPendingModalComponent implements OnDestroy {
-  public readonly backupsCount: number;
+  public readonly initialBackupsCount: number;
 
-  public readonly failedStatesCount$: Observable<number>;
+  public readonly backupTradesCount$: Observable<number>;
 
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<
       void,
-      { backupsCount: number; failedStatesCount$: Observable<number> }
+      { backupsCount: number; backupTradesCount$: Observable<number> }
     >,
     private readonly modalService: ModalService,
     private readonly el: ElementRef<HTMLElement>
   ) {
-    this.backupsCount = this.context.data.backupsCount;
-    this.failedStatesCount$ = this.context.data.failedStatesCount$;
+    this.initialBackupsCount = this.context.data.backupsCount;
+    this.backupTradesCount$ = this.context.data.backupTradesCount$;
 
     this.modalService.setModalEl({ elRef: el, context: context });
   }
