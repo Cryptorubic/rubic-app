@@ -13,14 +13,10 @@
     background: var(--tui-base-01);
     border-radius: var(--tui-radius-m);
 
-    cursor: text;
+    tui-input-number {
+      flex: 1;
 
-    .input-control {
-      flex: 0 0 50%;
-      width: 100%;
-      padding: 0;
-
-      text-align: right;
+      text-align: center;
     }
 
     input[type='number']::-webkit-inner-spin-button,
