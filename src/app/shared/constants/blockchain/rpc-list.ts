@@ -19,10 +19,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
-    'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
-    'https://x-api.rubic.exchange/drpc/binance-smart-chain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: ['https://bsc.blockrazor.xyz'],
   [BLOCKCHAIN_NAME.POLYGON]: [
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://1rpc.io/matic',
@@ -351,10 +348,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://soneium.drpc.org',
     'https://x-api.rubic.exchange/drpc/soneium?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.UNICHAIN]: [
-    'https://mainnet.unichain.org/',
-    'https://x-api.rubic.exchange/drpc/unichain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
+  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://unichain-rpc.publicnode.com'],
   [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
   [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to'],
   [BLOCKCHAIN_NAME.MONAD]: [

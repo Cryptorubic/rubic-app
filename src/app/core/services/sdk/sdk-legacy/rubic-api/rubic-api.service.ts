@@ -276,6 +276,9 @@ export class RubicApiService {
       case 3006: {
         return new UnsupportedReceiverAddressError();
       }
+      case 3007: {
+        return new SimulationFailedError(err);
+      }
       case 3008: {
         // RubicError
         return new DeflationTokenLowSlippageError(
