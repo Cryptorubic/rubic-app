@@ -3,15 +3,18 @@
     <main class="modal__body">
       <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
       <div class="modal__hints">
-        <div class="modal__hint" *ngIf="backupTradesCount == initialBackupsCount; else furtherRetries">
+        <div
+          class="modal__hint"
+          *ngIf="backupTradesCount === initialBackupsCount; else furtherRetries"
+        >
           <p>Provider Unavailable</p>
           <p>We’re switching to the next one with the best rate!</p>
         </div>
         <ng-template #furtherRetries>
           <div class="modal__hint">
             <span
-              >{{ initialBackupsCount - backupTradesCount }}/{{ initialBackupsCount }} providers checked. Searching for the
-              next best route.</span
+              >{{ initialBackupsCount - backupTradesCount }}/{{ initialBackupsCount }} providers 
+              checked. Searching for the next best route.</span
             >
           </div>
         </ng-template>
