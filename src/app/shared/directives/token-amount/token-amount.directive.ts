@@ -84,7 +84,7 @@ export class TokenAmountDirective {
     if (integerPart.length) {
       value =
         new BigNumber(integerPart).toFormat(BIG_NUMBER_FORMAT) +
-        (decimalPart ? '.' : '') +
+        (value.includes('.') ? '.' : '') +
         (decimalPart || '');
     }
 
