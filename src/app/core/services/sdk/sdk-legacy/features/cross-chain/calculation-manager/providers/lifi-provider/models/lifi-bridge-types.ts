@@ -7,6 +7,7 @@ export const LIFI_API_CROSS_CHAIN_PROVIDERS = {
   STARGATE: 'stargate',
   ALLBRIDGE: 'allbridge',
   OMNI_BRIDGE: 'omni',
+  GNOSIS_BRIDGE: 'gnosis',
   CONNEXT_AMAROK: 'amarok',
   CIRCLE_CELER_BRIDGE: 'celercircle',
   CELERIM: 'celerim',

@@ -425,6 +425,57 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
       ...defaultTokenParams
     }
   ],
+  [BLOCKCHAIN_NAME.CRONOS]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.CRONOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/cro.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.CRONOS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wcro.png'
+    } as Token,
+    {
+      blockchain: BLOCKCHAIN_NAME.CRONOS,
+      address: '0xc21223249ca28397b4b6541dffaecc539bff0c59',
+      name: 'USD Coin',
+      symbol: 'USDC',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
+      ...defaultTokenParams
+    },
+    {
+      blockchain: BLOCKCHAIN_NAME.CRONOS,
+      address: '0x66e428c3f67a68878562e79a0234c1f83c208770',
+      name: 'Tether USD',
+      symbol: 'USDT',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdt.png',
+      ...defaultTokenParams
+    }
+  ],
+  [BLOCKCHAIN_NAME.GNOSIS]: [
+    {
+      ...nativeTokensList[BLOCKCHAIN_NAME.GNOSIS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/xdai.png'
+    } as Token,
+    {
+      ...wrappedNativeTokensList[BLOCKCHAIN_NAME.GNOSIS],
+      ...defaultTokenParams,
+      image: 'assets/images/icons/default-tokens/wxdai.png'
+    } as Token,
+    {
+      blockchain: BLOCKCHAIN_NAME.GNOSIS,
+      address: '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
+      name: 'USDC on xDai',
+      symbol: 'USDC',
+      decimals: 6,
+      image: 'assets/images/icons/default-tokens/usdc.png',
+      ...defaultTokenParams
+    }
+  ],
   [BLOCKCHAIN_NAME.FUSE]: [
     {
       ...nativeTokensList[BLOCKCHAIN_NAME.FUSE],
@@ -943,6 +994,9 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.MERLIN]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MERLIN], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.ROOTSTOCK], ...defaultTokenParams } as Token
   ],
   [BLOCKCHAIN_NAME.MODE]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MODE], ...defaultTokenParams } as Token

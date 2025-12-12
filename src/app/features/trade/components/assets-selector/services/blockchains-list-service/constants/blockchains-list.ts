@@ -347,6 +347,7 @@ export const blockchainsList: RankedBlockchain[] = [
   },
 
   { name: BLOCKCHAIN_NAME.FANTOM, rank: 0.5, tags: ['FTM', BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.CRONOS, rank: 0.5, tags: ['CRO', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.POLYGON_ZKEVM,
     rank: 0.5,
@@ -367,6 +368,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.45,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM]
   },
+  // {
+  //   name: BLOCKCHAIN_NAME.ROOTSTOCK,
+  //   rank: 0.45,
+  //   tags: ['RBTC', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
   // {
   //   name: BLOCKCHAIN_NAME.BITLAYER,
   //   rank: 0.45,
@@ -402,11 +408,11 @@ export const blockchainsList: RankedBlockchain[] = [
   //   rank: 0.4,
   //   tags: ['ZEN', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   // },
-  {
-    name: BLOCKCHAIN_NAME.ZETACHAIN,
-    rank: 0.4,
-    tags: ['ZETA', BlockchainTags.POPULAR, BlockchainTags.EVM]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.ZETACHAIN,
+  //   rank: 0.4,
+  //   tags: ['ZETA', BlockchainTags.POPULAR, BlockchainTags.EVM]
+  // },
   {
     name: BLOCKCHAIN_NAME.BAHAMUT,
     rank: 0.4,
@@ -447,6 +453,7 @@ export const blockchainsList: RankedBlockchain[] = [
 
   // { name: BLOCKCHAIN_NAME.BOBA_BSC, rank: 0, tags: [BlockchainTags.EVM, BlockchainTags.LAYER_2] },
 
+  // { name: BLOCKCHAIN_NAME.GNOSIS, rank: 0, tags: ['XDAI', BlockchainTags.EVM] },
   // BLOCKCHAIN_NAME.BITGERT,
   // BLOCKCHAIN_NAME.BITCOIN_CASH,
   // BLOCKCHAIN_NAME.ETHEREUM_CLASSIC,
@@ -473,7 +480,9 @@ export type NotEvmChangeNowBlockchainsList =
 export const temporarelyDisabledBlockchains: BlockchainName[] = [
   BLOCKCHAIN_NAME.GRAVITY,
   BLOCKCHAIN_NAME.ZETACHAIN,
+  BLOCKCHAIN_NAME.CRONOS,
   BLOCKCHAIN_NAME.CELO,
+  BLOCKCHAIN_NAME.ROOTSTOCK,
   BLOCKCHAIN_NAME.AURORA,
   BLOCKCHAIN_NAME.APTOS,
   BLOCKCHAIN_NAME.SEI,

@@ -55,9 +55,17 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'Optimism',
     rpc: 'https://rpc.ankr.com/optimism'
   },
+  [BLOCKCHAIN_NAME.CRONOS]: {
+    name: 'Cronos Mainnet Beta',
+    rpc: 'https://evm.cronos.org'
+  },
   [BLOCKCHAIN_NAME.OKE_X_CHAIN]: {
     name: 'OKXChain Mainnet',
     rpc: 'https://exchainrpc.okex.org'
+  },
+  [BLOCKCHAIN_NAME.GNOSIS]: {
+    name: 'Gnosis Chain',
+    rpc: 'https://rpc.gnosischain.com'
   },
   [BLOCKCHAIN_NAME.FUSE]: {
     name: 'Fuse Mainnet',
@@ -154,6 +162,10 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MERLIN]: {
     name: 'Merlin',
     rpc: 'https://rpc.merlinchain.io'
+  },
+  [BLOCKCHAIN_NAME.ROOTSTOCK]: {
+    name: 'Rootstock',
+    rpc: 'https://public-node.rsk.co'
   },
   [BLOCKCHAIN_NAME.MODE]: {
     name: 'Mode',
