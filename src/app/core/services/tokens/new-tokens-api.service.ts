@@ -283,16 +283,19 @@ export class NewTokensApiService {
       )
       .pipe(
         map(resp => {
-          const q = Object.entries(resp.tokens as RubicAny).reduce(
+          const supportedChainObject = Object.fromEntries(
+            resp.supported_networks.map(chain => [chain, []])
+          );
+          const resultTokens = Object.entries(resp.tokens as RubicAny).reduce(
             (acc, [blockchain, tokens]) => ({
               ...acc,
               [blockchain]: NewTokensApiService.prepareTokens<BackendBalanceToken, BalanceToken>(
                 tokens as BackendBalanceToken[]
               )
             }),
-            {} as Partial<Record<BlockchainName, BackendBalanceToken[]>>
+            supportedChainObject as Partial<Record<BlockchainName, BackendBalanceToken[]>>
           );
-          return q;
+          return resultTokens;
         }),
         catchError(() => of([]))
       );

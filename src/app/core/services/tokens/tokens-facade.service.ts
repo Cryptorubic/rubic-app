@@ -49,61 +49,13 @@ import { Web3Pure } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Token as OldToken } from '@cryptorubic/core';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
+import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
+import { BackendBalanceToken } from '@core/services/backend/tokens-api/models/tokens';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensFacadeService {
-  private tier1BalanceChains: BlockchainName[] = [
-    'METIS',
-    'UNICHAIN',
-    'BLAST',
-    'FUSE',
-    'MORPH',
-    'MODE',
-    'FANTOM',
-    'AVALANCHE',
-    'CRONOS',
-    'CORE',
-    'ROOTSTOCK',
-    'BOBA',
-    'KLAYTN',
-    'BASE',
-    'MANTA_PACIFIC',
-    'MOONRIVER',
-    'GRAVITY',
-    'TELOS',
-    'GNOSIS',
-    'ETH',
-    // 'VANA',
-    'ARBITRUM',
-    'XLAYER',
-    'BERACHAIN',
-    'MOONBEAM',
-    'HEMI',
-    // 'SONIC',
-    'ZETACHAIN',
-    'MERLIN',
-    'POLYGON',
-    'SONEIUM',
-    'FLARE',
-    'ZK_SYNC',
-    'SCROLL',
-    'BSC',
-    // 'HYPER_EVM',
-    'KAVA',
-    'FRAXTAL',
-    'PLASMA',
-    'ASTAR_EVM',
-    'OPTIMISM',
-    'TAIKO',
-    'CELO',
-    'SEI',
-    'MANTLE',
-    'LINEA',
-    'BITLAYER'
-  ];
-
   private readonly _tokenQuery$ = new BehaviorSubject<{
     listType: AssetListType;
     query: string;
@@ -168,7 +120,8 @@ export class TokensFacadeService {
     private readonly apiService: NewTokensApiService,
     private readonly authService: AuthService,
     private readonly formService: SwapsFormService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly configService: PlatformConfigurationService
   ) {
     this.buildTokenLists();
     this.subscribeOnWallet();
@@ -521,10 +474,11 @@ export class TokensFacadeService {
           this.allTokens.setBalanceLoading(true);
           Promise.all([
             this.fetchT1Balances(user.address, user.chainType),
+            firstValueFrom(this.configService.balanceNetworks$),
             this.fetchT2Balances(user.address, user.chainType)
-          ]).then(([successT1request]) => {
+          ]).then(([successT1request, networks]) => {
             if (!successT1request) {
-              this.fetchListBalances(user.address, this.tier1BalanceChains).then(() => {
+              this.fetchListBalances(user.address, networks).then(() => {
                 this.allTokens.setBalanceLoading(false);
               });
             }
@@ -540,9 +494,11 @@ export class TokensFacadeService {
     if (chainType !== CHAIN_TYPE.EVM) {
       return false;
     }
-    this.tier1BalanceChains.forEach(chain =>
-      this.tokensStore.tokens[chain]._balanceLoading$.next(true)
+    const availableNetworks = (await firstValueFrom(this.configService.balanceNetworks$)).filter(
+      chain => this.tokensStore.tokens?.[chain]
     );
+
+    availableNetworks.forEach(chain => this.tokensStore.tokens[chain]._balanceLoading$.next(true));
     return new Promise(resolve => {
       this.apiService
         .getBackendBalances(address)
@@ -551,14 +507,18 @@ export class TokensFacadeService {
           if (!el) {
             resolve(false);
           }
-          Object.entries(el).forEach(([blockchain, tokens]) => {
-            this.tokensStore.addBlockchainBalanceTokens(
-              blockchain as BlockchainName,
-              tokens as RubicAny
-            );
-            this.tokensStore.tokens[blockchain as BlockchainName]._balanceLoading$.next(false);
-            resolve(true);
-          });
+          Object.entries(el)
+            .filter(
+              ([chain]: [BlockchainName, BackendBalanceToken[]]) => this.tokensStore.tokens?.[chain]
+            )
+            .forEach(([blockchain, tokens]) => {
+              this.tokensStore.addBlockchainBalanceTokens(
+                blockchain as BlockchainName,
+                tokens as RubicAny
+              );
+              this.tokensStore.tokens[blockchain as BlockchainName]._balanceLoading$.next(false);
+              resolve(true);
+            });
         });
     });
   }
@@ -640,9 +600,11 @@ export class TokensFacadeService {
 
   private async fetchT2Balances(address: string, type: ChainType): Promise<void> {
     const blChains: BlockchainName[] = Object.values(TEST_EVM_BLOCKCHAIN_NAME);
+    const availableNetworks = await firstValueFrom(this.configService.balanceNetworks$);
+
     const chains = Object.values(BLOCKCHAIN_NAME).filter(
       (chain: BlockchainName) =>
-        !this.tier1BalanceChains.includes(chain) &&
+        !availableNetworks.includes(chain) &&
         !blChains.includes(chain) &&
         type === BlockchainsInfo.getChainType(chain)
     );
