@@ -21,7 +21,5 @@ export function isTokenAmount(asset: unknown): asset is BalanceToken {
 }
 
 export function isTokenAmountWithPriceChange(asset: unknown): asset is TokenAmountWithPriceChange {
-  return (
-    isToken(asset) && 'priceChange24h' in asset && 'priceChange7d' in asset && 'sourceRank' in asset
-  );
+  return isToken(asset) && ('priceChange24h' in asset || 'priceChange7d' in asset);
 }
