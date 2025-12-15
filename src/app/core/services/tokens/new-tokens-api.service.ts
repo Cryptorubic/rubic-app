@@ -143,7 +143,7 @@ export class NewTokensApiService {
         ENDPOINTS.NEW_TOKENS,
         { networks: this.topTierChains.join(',') },
         this.tokensApiUrl,
-        { retry: 2, timeoutMs: 15_000 }
+        { retry: 2, timeoutMs: 15_000, external: true }
       )
       .pipe(
         map(response => {
@@ -178,7 +178,7 @@ export class NewTokensApiService {
         ENDPOINTS.NEW_TOKENS,
         { networks: tier2blockchains.join(',') },
         this.tokensApiUrl,
-        { retry: 2, timeoutMs: 15_000 }
+        { retry: 2, timeoutMs: 15_000, external: true }
       )
       .pipe(
         map(response => {

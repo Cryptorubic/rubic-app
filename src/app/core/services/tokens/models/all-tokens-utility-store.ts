@@ -9,47 +9,6 @@ import { BlockchainName } from '@cryptorubic/core';
 
 export class AllTokensUtilityStore extends BasicUtilityStore {
   protected override readonly useLocalSearch = false;
-  // private readonly _searchRefs$ = new BehaviorSubject<TokenRef[]>([]);
-  //
-  // public readonly searchRefs$ = this._searchRefs$.asObservable();
-  //
-  // public readonly conditionRefs$ = this.searchQuery$.pipe(
-  //   switchMap(searchQuery =>
-  //     iif(() => !!searchQuery && searchQuery.length >= 2, this.searchRefs$, this._refs$)
-  //   )
-  // );
-  //
-  // public readonly tokens$ = this.conditionRefs$.pipe(
-  //   combineLatestWith(
-  //     this.searchQuery$,
-  //     ...Object.values(this.tokensStore.tokens).map(t =>
-  //       t.tokens$.pipe(map(el => ({ chain: t.blockchain, list: el })))
-  //     )
-  //   ),
-  //   map(([utilityTokens, searchQuery, ...allTokens]) => {
-  //     const tokens = utilityTokens.map(ref => {
-  //       const chainTokens = allTokens.find(el => el.chain === ref.blockchain)!;
-  //       const foundToken = chainTokens.list.find(t => t.address === ref.address);
-  //
-  //       if (!foundToken) {
-  //         throw new Error(
-  //           `Token not found in all tokens store: ${ref.blockchain} - ${ref.address}`
-  //         );
-  //       }
-  //       return foundToken;
-  //     });
-  //     const filteredTokens =
-  //       searchQuery && searchQuery.length >= 2
-  //         ? tokens.filter(
-  //             token =>
-  //               token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //               token.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //               compareAddresses(searchQuery, token.address)
-  //           )
-  //         : tokens;
-  //     return filteredTokens;
-  //   })
-  // );
 
   constructor(
     tokensStore: NewTokensStoreService,

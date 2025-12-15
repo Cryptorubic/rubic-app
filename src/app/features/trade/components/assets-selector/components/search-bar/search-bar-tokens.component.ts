@@ -4,16 +4,21 @@ import {
   EventEmitter,
   Injector,
   Input,
-  Output
+  Output,
+  Self
 } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-search-tokens-bar',
   templateUrl: './search-bar-tokens.component.html',
   styleUrls: ['./search-bar-tokens.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
 export class SearchBarTokensComponent {
   @Input() expandableField: boolean = false;
@@ -32,17 +37,30 @@ export class SearchBarTokensComponent {
 
   public readonly searchBarPlaceholder = 'modals.tokensListModal.searchPlaceholder';
 
-  constructor(private readonly headerStore: HeaderStore) {}
+  private readonly query$ = new Subject<string>();
+
+  constructor(
+    private readonly headerStore: HeaderStore,
+    @Self() private readonly destroy$: TuiDestroyService
+  ) {
+    this.handleQuerySubscribe();
+  }
 
   /**
    * Handles input query change.
    * @param model Input string.
    */
   public onQueryChanges(model: string): void {
-    this.queryChange.emit(model);
+    this.query$.next(model);
   }
 
   public expand(): void {
     this.isExpanded = !this.isExpanded;
+  }
+
+  private handleQuerySubscribe(): void {
+    this.query$
+      .pipe(debounceTime(100), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(value => this.queryChange.emit(value));
   }
 }

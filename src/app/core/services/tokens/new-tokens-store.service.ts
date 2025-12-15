@@ -177,7 +177,9 @@ export class NewTokensStoreService {
 
   public setQueryAndFetch(blockchain: BlockchainName, query: string): void {
     this.tokens[blockchain]._searchQuery$.next(query);
-    this.fetchQueryTokens(query, blockchain);
+    if (query.length >= 2) {
+      this.fetchQueryTokens(query, blockchain);
+    }
   }
 
   private fetchQueryTokens(query: string, blockchain: BlockchainName): void {

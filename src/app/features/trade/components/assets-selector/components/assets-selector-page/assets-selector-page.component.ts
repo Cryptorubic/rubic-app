@@ -14,15 +14,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  share,
-  startWith,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -111,10 +103,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     );
 
     this.tokensSearchQuery$ = this.assetListType$.pipe(
-      switchMap(type => {
-        return this.tokensFacade.getTokensBasedOnType(type).searchQuery$;
-      }),
-      debounceTime(200)
+      switchMap(type => this.tokensFacade.getTokensBasedOnType(type).searchQuery$)
     );
     this.blockchainsSearchQuery$ = this.assetsSelectorService.blockchainSearchQuery$;
     this.customToken$ = this.assetsSelectorService.customToken$;

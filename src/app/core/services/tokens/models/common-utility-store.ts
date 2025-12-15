@@ -1,5 +1,5 @@
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
-import { BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
+import { auditTime, BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
@@ -38,6 +38,7 @@ export abstract class CommonUtilityStore {
 
   public readonly tokens$ = this.refs$.pipe(
     combineLatestWith(this.tokensStore.allTokens$),
+    auditTime(0),
     map(([refs, allTokens]) => {
       const tokens = refs
         .map(ref =>
