@@ -349,12 +349,12 @@ export class ModalService {
       );
   }
 
-  public openClosableDialog<Component, Output>(
+  public openClosableDialog<Component, ClosableDialogOutput>(
     component: Type<Component & object>,
     options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
     injector?: Injector
-  ): Observable<Output> {
-    return this.showDialog<Component, Output>(component, options, injector).pipe(
+  ): Observable<ClosableDialogOutput> {
+    return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(
       first(),
       catchError(() => of(null))
     );
