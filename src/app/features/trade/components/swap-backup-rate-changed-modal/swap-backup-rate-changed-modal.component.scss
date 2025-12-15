@@ -1,0 +1,242 @@
+@use 'src/scss/core' as *;
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tui-padding-m);
+  margin-bottom: var(--tui-padding-m);
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    @include b($tablet) {
+      padding: 10px;
+    }
+  }
+  
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  &__warning-image {
+    align-self: center;
+    width: 55px;
+  }
+
+  &__body > p,
+  &__body > h3 {
+    margin: 0;
+
+    text-align: center;
+  }
+  
+  &__rate-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  &__rate {
+    display: flex;
+    justify-content: space-between;
+
+    > span {
+      margin: 0;
+    }
+  }
+
+  &__data-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-s);
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+
+    app-route-element {
+      margin-left: var(--tui-padding-l);
+
+      ::ng-deep .route-element__provider-data-info {
+        align-items: center;
+      }
+    }
+  }
+
+  &__io-container {
+    display: flex;
+    gap: var(--tui-padding-s);
+    align-items: center;
+  }
+
+  &__token-container {
+    display: flex;
+    height: 30px;
+  }
+
+  &__second-image-container {
+    display: flex;
+    align-items: center;
+    width: 45px;
+    height: 100%;
+    overflow: hidden;
+
+    border-radius: var(--tui-radius-s) 0 0 var(--tui-radius-s);
+
+    img {
+      width: 25px;
+      height: 100%;
+      height: 25px;
+      margin-left: 3px;
+    }
+  }
+
+  &__main-image {
+    width: 30px;
+    margin-left: -15px;
+
+    background: var(--primary-background);
+
+    border-radius: 100%;
+    outline: 2px solid var(--primary-background);
+  }
+
+  &__amount-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+
+    > * {
+      line-height: 1rem;
+    }
+  }
+
+  &__token-amount {
+    width: 100%;
+
+    font-weight: 500;
+  }
+
+  &__fiat-amount {
+    color: var(--tui-text-03);
+  }
+
+  &__token-info {
+    color: var(--tui-text-03);
+  }
+
+  &__success-info {
+    overflow: hidden;
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+
+  &__footer {
+    &-actions {
+      display: flex;
+      gap: var(--tui-padding-xl);
+      padding-top: var(--tui-padding-xl);
+
+      button {
+        flex: 0 50%;
+      }
+    }
+  }
+}
+
+app-swap-data-element ::ng-deep {
+  .provider-info {
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+}
+
+@include b($mobile-md) {
+  app-route-element {
+    z-index: 1;
+
+    ::ng-deep .route-element {
+      gap: var(--tui-padding-xl);
+
+      &__provider-icon {
+        background: var(--io-background);
+      }
+    }
+  }
+
+  app-transaction-state {
+    margin: var(--tui-padding-s) var(--tui-padding-l) var(--tui-padding-l) var(--tui-padding-l);
+  }
+
+  .modal {
+    &__data-container {
+      position: relative;
+
+      gap: 0;
+      margin-top: 2px;
+
+      &_with-line {
+        gap: 24px;
+
+        &::before {
+          position: absolute;
+          top: 16px;
+          left: 27px;
+          z-index: 0;
+
+          width: 2px;
+          height: calc(100% - 70px);
+
+          background: var(--tui-base-04);
+
+          content: '';
+        }
+      }
+
+      app-route-element {
+        margin-left: 0;
+      }
+    }
+
+    &__io-container {
+      z-index: 1;
+
+      display: flex;
+      flex-direction: column;
+      gap: var(--tui-padding-xs);
+      align-items: flex-start;
+    }
+
+    &__token-and-amount-container {
+      display: flex;
+      gap: var(--tui-padding-s);
+      align-items: center;
+    }
+
+    &__fiat-container {
+      display: flex;
+      margin-left: 63px;
+    }
+
+    &__token-container {
+      height: 25px;
+    }
+
+    &__token-amount {
+      @include font(18px, 18px, 500, var(--tui-text-01), 0.54px);
+    }
+
+    &__main-image {
+      width: 25px;
+    }
+  }
+}
+

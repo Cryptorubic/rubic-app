@@ -11,6 +11,8 @@ export const transactionStep = {
 
   swapReady: 'swapReady',
   swapRequest: 'swapRequest',
+  swapRetry: 'swapRetry',
+  swapBackupSelected: 'swapBackupSelected',
 
   sourcePending: 'sourcePending',
   destinationPending: 'destinationPending',
