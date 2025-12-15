@@ -205,11 +205,14 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
     if (typeof item === 'string') {
       this.assetsSelectorService.assetListType = item;
-      this.tokensFacade.buildSearchedList('', oldAssetList);
     } else {
-      this.assetsSelectorService.assetListType = item.name;
-      this.tokensFacade.buildSearchedList('', oldAssetList);
+      if (item?.name) {
+        this.assetsSelectorService.assetListType = item.name;
+      } else {
+        this.assetsSelectorService.assetListType = 'allChains';
+      }
     }
+    this.tokensFacade.buildSearchedList('', oldAssetList);
   }
 
   public selectToken(token: AvailableTokenAmount): void {

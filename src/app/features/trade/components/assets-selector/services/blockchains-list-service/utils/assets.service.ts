@@ -23,7 +23,7 @@ import {
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { map } from 'rxjs/operators';
+import { debounceTime, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -51,7 +51,7 @@ export abstract class AssetsService {
   // Assets list type (allChains or specific blockchain or utility)
   protected readonly _assetListType$ = new BehaviorSubject<AssetListType>('allChains');
 
-  public readonly assetListType$ = this._assetListType$.asObservable();
+  public readonly assetListType$ = this._assetListType$.asObservable().pipe(debounceTime(20));
 
   public set assetListType(value: AssetListType) {
     this._assetListType$.next(value);

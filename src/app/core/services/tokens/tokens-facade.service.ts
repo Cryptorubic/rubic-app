@@ -31,6 +31,7 @@ import { FavoriteUtilityStore } from '@core/services/tokens/models/favorite-util
 import { CommonUtilityStore } from '@core/services/tokens/models/common-utility-store';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import {
+  sorterByBalance,
   sorterByChain,
   sorterByTokenRank
 } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
@@ -458,10 +459,15 @@ export class TokensFacadeService {
             }
           }
 
-          return a.rank > b.rank ? -1 : 1;
+          return 0;
         });
-
-        return sortedByOpposite.sort(sorterByChain);
+        if (BlockchainsInfo.isBlockchainName(type)) {
+          return sortedByOpposite.sort(sorterByChain);
+        }
+        if (type === 'allChains') {
+          return sortedByOpposite.sort(sorterByBalance);
+        }
+        return sortedByOpposite;
       })
     );
   }
