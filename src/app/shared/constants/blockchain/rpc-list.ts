@@ -19,7 +19,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: ['https://bsc.blockrazor.xyz'],
+  [BLOCKCHAIN_NAME.BINANCE_SMART_CHAIN]: [
+    'https://rpc.ankr.com/bsc/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
+    'https://x-api.rubic.exchange/drpc/binance-smart-chain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+  ],
   [BLOCKCHAIN_NAME.POLYGON]: [
     'https://rpc.ankr.com/polygon/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://1rpc.io/matic',
