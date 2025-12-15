@@ -23,15 +23,14 @@
   }
 
   &__slippage-input {
-    min-width: 75px;
-
-    ::ng-deep input {
-      padding-right: 25px !important;
-    }
+    width: 75px;
+    height: 32px;
   }
 
   &__deadline-input {
     min-width: 50px;
+
+    text-align: center;
   }
 
   &__toggle {

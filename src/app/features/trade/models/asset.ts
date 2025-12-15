@@ -1,5 +1,5 @@
 import { FiatAsset } from '@shared/models/fiats/fiat-asset';
-import { BlockchainName } from '@cryptorubic/sdk';
+import { BlockchainName } from '@cryptorubic/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 
 export type Asset = FiatAsset | AvailableTokenAmount;

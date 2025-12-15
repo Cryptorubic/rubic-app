@@ -7,21 +7,21 @@
 >
   <ng-container header>
     <app-back-button [isMobile]="false" (onClick)="backToForm()"></app-back-button>
-    <span class="back-button__text">
-      <ng-container *ngIf="state.transaction.step === 'idle'">Preview Swap</ng-container>
-      <ng-container *ngIf="state.transaction.step === 'success'">Success Swap</ng-container>
-      <ng-container
-        *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
-      >
-        Swap
-      </ng-container>
+    <span class="back-button__text" [ngSwitch]="state.transaction.step">
+      <ng-container *ngSwitchCase="'idle'">Preview Swap</ng-container>
+      <ng-container *ngSwitchCase="'success'">Success Swap</ng-container>
+      <ng-container *ngSwitchCase="'error'">Swap Failed</ng-container>
+      <ng-container *ngSwitchDefault>Swap</ng-container>
     </span>
   </ng-container>
   <ng-container>
     <div class="preview">
       <div
         class="preview__data-container"
-        [ngClass]="{ 'preview__data-container_with-line': state.transaction.step === 'idle' }"
+        [ngClass]="{
+          'preview__data-container_with-line':
+            state.transaction.step === 'idle' || state.transaction.step === 'swapBackupSelected'
+        }"
       >
         <ng-container *ngIf="(isMobile$ | async) === false; else mobileInputTokenContainer">
           <div class="preview__io-container">
@@ -103,13 +103,21 @@
         </ng-template>
 
         <app-route-element
-          *ngIf="state.transaction.step === 'idle'"
+          *ngIf="
+            state.transaction.step === 'idle' ||
+            state.transaction.step === 'swapBackupSelected' ||
+            state.transaction.step === 'success'
+          "
           [routes]="state.tradeState?.routes || []"
           [tradeType]="state.tradeState.tradeType"
         ></app-route-element>
 
         <app-transaction-state
-          *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+          *ngIf="
+            state.transaction.step !== 'idle' &&
+            state.transaction.step !== 'success' &&
+            state.transaction.step !== 'swapBackupSelected'
+          "
           [transactionData]="{
             type:
               state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel
@@ -197,14 +205,18 @@
           </div>
         </ng-template>
       </div>
-      <div *ngIf="state.transaction.step !== 'success'" class="preview__swap-info">
+      <div
+        *ngIf="state.transaction.step !== 'success' && state.transaction.step !== 'error'"
+        class="preview__swap-info"
+      >
         <app-swap-data-element
           [gasInfo]="getGasData(state?.tradeState?.trade)"
           [feeInfoChange]="{
             fee: state.tradeState?.feeInfo || null,
             nativeToken: nativeToken$ | async
           }"
-          [time]="getAverageTime(state?.tradeState)"
+          [averageTimeMins]="getAverageTimeString(state?.tradeState)"
+          [time95PercentSwapsMins]="getTime95PercentsSwapsString(state?.tradeState)"
         ></app-swap-data-element>
       </div>
 

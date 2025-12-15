@@ -1,4 +1,4 @@
-import { PriceToken } from '@cryptorubic/sdk';
+import { PriceToken } from '@cryptorubic/core';
 
 export function isWrapUnwrap(fromToken: PriceToken, toToken: PriceToken): boolean {
   return (

@@ -1,6 +1,6 @@
 import { StandardWalletAdapter } from '@core/services/wallets/wallets-adapters/standard-adapter/standard-wallet-adapter';
 import { SolanaFeatures } from '@core/services/wallets/wallets-adapters/standard-adapter/models/solana-features';
-import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from '@cryptorubic/sdk';
+import { BLOCKCHAIN_NAME, BlockchainName, CHAIN_TYPE } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@core/errors/errors.service';
 import { NgZone } from '@angular/core';

@@ -15,13 +15,9 @@ import {
   BlockchainName,
   BlockchainsInfo,
   CROSS_CHAIN_TRADE_TYPE,
-  EvmWrapTrade,
   nativeTokensList,
-  OnChainTrade,
-  Token,
-  WrappedCrossChainTradeOrNull,
-  CrossChainTrade
-} from '@cryptorubic/sdk';
+  Token
+} from '@cryptorubic/core';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TRADE_STATUS } from '@shared/models/swaps/trade-status';
 import { WrappedSdkTrade } from '@features/trade/models/wrapped-sdk-trade';
@@ -52,6 +48,10 @@ import { RefundService } from '../refund-service/refund.service';
 import { compareCrossChainTrades } from '../../utils/compare-cross-chain-trades';
 import { CrossChainTradeType, ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { SolanaGaslessStateService } from '../solana-gasless/solana-gasless-state.service';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
+import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
 
 @Injectable()
 export class SwapsStateService {
@@ -122,6 +122,22 @@ export class SwapsStateService {
   private readonly _tradesStore$ = new BehaviorSubject<TradeState[]>([]);
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
+
+  private readonly _backupTrades$ = new BehaviorSubject<TradeState[]>([]);
+
+  private set backupTrades(trades: TradeState[]) {
+    this._backupTrades$.next(trades);
+  }
+
+  public get backupTrades(): TradeState[] {
+    return this._backupTrades$.getValue();
+  }
+
+  public readonly backupTradesCount$ = this._backupTrades$.pipe(
+    map(trades => {
+      return trades.length;
+    })
+  );
 
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
@@ -362,10 +378,47 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
+  }
+
+  public setBackupsForTrade(trade: TradeState): void {
+    this.backupTrades = [];
+    this.updateBackups(trade);
+  }
+
+  public updateBackups(tradeToExclude: TradeState): void {
+    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    this.backupTrades = source.filter(t => t.tradeType !== tradeToExclude.tradeType);
+  }
+
+  public selectNextBackupTrade(): SelectedTrade {
+    if (this.backupTrades.length === 0) {
+      return null;
+    }
+
+    const trade: SelectedTrade = {
+      ...this.backupTrades[0],
+      selectedByUser: false,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+
+    return trade;
+  }
+
+  public resetBackupTrades(): void {
+    this.backupTrades = [];
   }
 
   private subscribeOnTradeChange(): void {

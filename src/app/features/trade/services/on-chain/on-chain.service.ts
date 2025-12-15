@@ -5,24 +5,13 @@ import { catchError, first, switchMap } from 'rxjs/operators';
 import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
-  BLOCKCHAIN_NAME,
-  BlockchainName,
   NotWhitelistedProviderError,
-  OnChainTrade,
-  OnChainTradeType,
-  PriceToken,
-  SwapTransactionOptions,
   TX_STATUS,
   UnnecessaryApproveError,
   UserRejectError,
-  Web3Pure,
   UnapprovedContractError,
-  UnapprovedMethodError,
-  TO_BACKEND_BLOCKCHAINS,
-  TonOnChainTrade,
-  ON_CHAIN_TRADE_TYPE,
-  Injector as SdkInjector
-} from '@cryptorubic/sdk';
+  UnapprovedMethodError
+} from '@cryptorubic/web3';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
@@ -45,13 +34,25 @@ import { ProxyFeeService } from '@features/trade/services/proxy-fee-service/prox
 import { OnChainCalculatedTradeData } from '../../models/on-chain-calculated-trade';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { ErrorInterface, QuoteOptionsInterface } from '@cryptorubic/core';
-import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
+import {
+  BLOCKCHAIN_NAME,
+  BlockchainName,
+  ErrorInterface,
+  ON_CHAIN_TRADE_TYPE,
+  OnChainTradeType,
+  PriceToken,
+  QuoteOptionsInterface,
+  TO_BACKEND_BLOCKCHAINS,
+  Token
+} from '@cryptorubic/core';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
 import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -83,7 +84,8 @@ export class OnChainService {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
-    private readonly solanaGaslessService: SolanaGaslessService
+    private readonly solanaGaslessService: SolanaGaslessService,
+    private readonly rubicApiService: RubicApiService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -115,7 +117,7 @@ export class OnChainService {
       dstTokenAddress: toToken.address
     };
 
-    SdkInjector.rubicApiService.calculateAsync({
+    this.rubicApiService.calculateAsync({
       calculationTimeout: 60,
       showDangerousRoutes: true,
       ...tradeParams,
@@ -129,6 +131,7 @@ export class OnChainService {
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
+    onSimulationSuccess?: () => Promise<boolean>,
     params: { useCacheData: boolean; skipAmountCheck: boolean } = {
       useCacheData: false,
       skipAmountCheck: false
@@ -165,6 +168,8 @@ export class OnChainService {
       });
     };
 
+    const gasLimitRatio = this.getGasLimitRatio(trade.from.blockchain);
+
     const options: SwapTransactionOptions = {
       onConfirm: (hash: string) => {
         transactionHash = hash;
@@ -181,6 +186,7 @@ export class OnChainService {
         this.postTrade(hash, trade, preTradeId);
       },
       onWarning,
+      onSimulationSuccess,
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
@@ -191,7 +197,8 @@ export class OnChainService {
         feePayer: SOLANA_SPONSOR,
         // @ts-ignore trade api type
         tradeId: trade.apiResponse.id
-      }
+      },
+      ...(gasLimitRatio && { gasLimitRatio })
     };
 
     try {
@@ -252,11 +259,6 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-        const slippageErr = new LowSlippageError(0.03);
-        throw slippageErr;
-      }
-
       throw parsedError;
     }
   }
@@ -280,7 +282,7 @@ export class OnChainService {
     };
 
     try {
-      const amount = new BigNumber(Web3Pure.toWei(fromAmount, fromDecimals));
+      const amount = new BigNumber(Token.toWei(fromAmount, fromDecimals));
 
       await trade.approve(transactionOptions, true, amount);
     } catch (err) {
@@ -419,7 +421,10 @@ export class OnChainService {
     );
 
     const settings = this.settingsService.instantTradeValue;
-    const slippageTolerance = settings.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(settings.slippageTolerance)
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
@@ -444,5 +449,13 @@ export class OnChainService {
     } catch {
       return null;
     }
+  }
+
+  private getGasLimitRatio(fromBlockchain: BlockchainName): number | null {
+    if (fromBlockchain === BLOCKCHAIN_NAME.MONAD) {
+      return 1.1;
+    }
+
+    return null;
   }
 }

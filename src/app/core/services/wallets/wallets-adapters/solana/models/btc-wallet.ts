@@ -6,7 +6,7 @@ export interface BtcWallet {
       method: string;
       params: unknown[];
     },
-    fn: (error: Error, accounts: string[]) => unknown
+    fn: (error: Error, txHash: string | {}) => unknown
   ): Promise<{ error: null | Error; result: T }>;
   getAccounts(): Promise<string[]>;
 }

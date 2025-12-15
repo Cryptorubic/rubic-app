@@ -122,7 +122,7 @@ export class HeaderComponent {
   /**
    * Triggering redefining status of using mobile.
    */
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   public onResize(): void {
     this.headerStore.setMobileDisplayStatus(this.window.innerWidth <= this.headerStore.mobileWidth);
   }
@@ -133,10 +133,6 @@ export class HeaderComponent {
 
   public navigateToTestnets(): void {
     this.window.open('https://testnet.rubic.exchange', '_blank');
-  }
-
-  public navigateToBirthdayPage(): void {
-    this.window.open('http://rubic.exchange/birthday5', '_blank');
   }
 
   public handleMenuButtonClick(): void {

@@ -1,5 +1,6 @@
 import { Injector, Component, Type, ElementRef } from '@angular/core';
 import { TuiDialog } from '@taiga-ui/cdk';
+import { TuiDialogContext } from '@taiga-ui/core';
 import { Observable } from 'rxjs';
 
 export interface IMobileNativeOptions {
@@ -35,10 +36,13 @@ export type ModalName =
   | 'rate-change'
   | 'mev-bot'
   | 'wc-change-network'
-  | 'ton-slippage-warning';
+  | 'ton-slippage-warning'
+  | 'swap-retry-pending'
+  | 'swap-backup-rate-changed'
+  | 'all-swap-backups-failed';
 
 export interface ModalStruct {
   name: ModalName;
   elRef: ElementRef<HTMLElement>;
-  context: TuiDialog<IMobileNativeOptions, void>;
+  context: TuiDialog<IMobileNativeOptions, void> | TuiDialogContext<void, object>;
 }

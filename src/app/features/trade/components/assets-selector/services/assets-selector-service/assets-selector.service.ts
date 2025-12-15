@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { BlockchainName, BlockchainsInfo } from '@cryptorubic/sdk';
+import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';

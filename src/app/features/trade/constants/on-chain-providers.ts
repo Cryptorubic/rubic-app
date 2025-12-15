@@ -1,4 +1,4 @@
-import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/sdk';
+import { ON_CHAIN_TRADE_TYPE, OnChainTradeType } from '@cryptorubic/core';
 import { ProviderInfo } from '@features/trade/models/provider-info';
 
 const imageBasePath = 'assets/images/icons/providers/on-chain/';
@@ -68,7 +68,17 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
   [ON_CHAIN_TRADE_TYPE.AVNU]: {
     name: 'Avnu',
     image: `${imageBasePath}avnu.png`,
-    color: 'white'
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: {
+    name: 'AethonSwap',
+    image: `${imageBasePath}aethon_swap.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.ATLANTIS]: {
+    name: 'Atlantis',
+    image: `${imageBasePath}atlantis.svg`,
+    color: '#000000'
   },
 
   //BBBBBBBBBBBBBBBBBBBBB
@@ -168,6 +178,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Curve',
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
+  },
+  [ON_CHAIN_TRADE_TYPE.CLOBER]: {
+    name: 'Clober',
+    image: `${imageBasePath}clober.svg`,
+    color: '#000000'
   },
 
   //EEEEEEEEEEEEEEEEEEEE
@@ -282,6 +297,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'HorizonDEX',
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
+  },
+  [ON_CHAIN_TRADE_TYPE.HYPERCAT]: {
+    name: 'HyperCat',
+    image: `${imageBasePath}hypercat.svg`,
+    color: '#1a2833'
   },
 
   //IIIIIIIIIIIIIIIIIIIIIIII
@@ -456,6 +476,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'OsmosisSwap',
     image: `${imageBasePath}../bridge/osmosis.svg`,
     color: '#5E12A0'
+  },
+  [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: {
+    name: 'OctoSwap',
+    image: `${imageBasePath}octoswap.svg`,
+    color: '#FFFFFF'
   },
 
   //PPPPPPPPPPPPPPPPPPPPPPPPPP

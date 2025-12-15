@@ -1,5 +1,4 @@
 import {
-  nativeTokensList,
   RubicSdkError,
   TransactionRevertedError as SdkTransactionRevertedError,
   FailedToCheckForTransactionReceiptError as SdkFailedToCheckForTransactionReceiptError,
@@ -22,8 +21,9 @@ import {
   NoLinkedAccountError,
   NotSupportedRegionError,
   LowSlippageError as SdkLowSlippageError,
-  SimulationFailedError as SdkSimulationFailedError
-} from '@cryptorubic/sdk';
+  SimulationFailedError as SdkSimulationFailedError,
+  TxRevertedInBlockchainError as SdkTxRevertedInBlockchainError
+} from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
 import TransactionRevertedError from '@core/errors/models/common/transaction-reverted-error';
@@ -54,11 +54,16 @@ import { InsufficientGasError } from './common/insufficient-gas-error';
 import { OneinchUnavailableError } from './instant-trade/oneinch-unavailable-error';
 import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
+import { nativeTokensList } from '@cryptorubic/core';
+import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
     err: RubicError<ERROR_TYPE> | RubicSdkError
   ): RubicError<ERROR_TYPE> {
+    if (err instanceof SdkTxRevertedInBlockchainError) {
+      return new TxRevertedInBlockchainError();
+    }
     if (err instanceof SdkSimulationFailedError) {
       return new SimulationFailedError(err.apiError);
     }
@@ -78,7 +83,7 @@ export class RubicSdkErrorParser {
       return new FailedToCheckForTransactionReceiptError();
     }
     if (err instanceof SdkUserRejectError) {
-      return new UserRejectError();
+      return new UserRejectError(err.message);
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
@@ -182,6 +187,10 @@ export class RubicSdkErrorParser {
       err.message.toLowerCase().includes('plugin closed')
     ) {
       return new UserRejectError();
+    }
+
+    if (err.message.toLowerCase().includes('manual swap reject')) {
+      return new UserRejectError(err.message);
     }
 
     return new ExecutionRevertedError(err.message);

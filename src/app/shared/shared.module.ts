@@ -10,6 +10,7 @@ import {
   TuiDataListWrapperModule,
   TuiInputCountModule,
   TuiInputModule,
+  TuiInputNumberModule,
   TuiProgressModule,
   TuiTabsModule,
   TuiTagModule,
@@ -78,10 +79,10 @@ import { DepositRateChangedModalComponent } from './components/deposit-rate-upda
 import { ShowPriceChangePipe } from './pipes/show-price-change.pipe';
 import { ShortenTextPipe } from './pipes/shorten-text.pipe';
 import { MathAbsPipe } from './pipes/math-abs.pipe';
-import { HypelabBannerComponent } from './components/hypelab-banner/hypelab-banner.component';
 import { SmallBlockchainButtonComponent } from './components/small-blockchain-button/small-blockchain-button.component';
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
+import { InputNumberComponent } from './components/input-number/input-number.component';
 
 @NgModule({
   declarations: [
@@ -135,10 +136,10 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent
   ],
   imports: [
     CommonModule,
@@ -172,7 +173,8 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     TuiTextfieldControllerModule,
     TuiScrollbarModule,
     TuiHoveredModule,
-    NgOptimizedImage
+    NgOptimizedImage,
+    TuiInputNumberModule
   ],
   exports: [
     BigNumberFormatPipe,
@@ -218,10 +220,10 @@ import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.
     ShowPriceChangePipe,
     ShortenTextPipe,
     MathAbsPipe,
-    HypelabBannerComponent,
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
-    ChartTogglerComponent
+    ChartTogglerComponent,
+    InputNumberComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -8,15 +8,10 @@ import { first, map, startWith, switchMap } from 'rxjs/operators';
 import { transactionStep } from '@features/trade/models/transaction-steps';
 import {
   BlockchainsInfo,
-  CrossChainTrade,
-  CrossChainTradeType,
   EvmBlockchainName,
-  EvmOnChainTrade,
-  FeeInfo,
   nativeTokensList,
-  ON_CHAIN_TRADE_TYPE,
-  OnChainTrade
-} from '@cryptorubic/sdk';
+  ON_CHAIN_TRADE_TYPE
+} from '@cryptorubic/core';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -25,19 +20,22 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { TRADES_PROVIDERS } from '@features/trade/constants/trades-providers';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareAddresses } from '@shared/utils/utils';
 import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
-import { tuiIsPresent } from '@taiga-ui/cdk';
 import { mevBotSupportedBlockchains } from '../../services/preview-swap/models/mevbot-data';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { isArbitrumBridgeRbcTrade } from '../../utils/is-arbitrum-bridge-rbc-trade';
 import { TradeInfoManager } from '../../services/trade-info-manager/trade-info-manager.service';
 import { AppGasData } from '../../models/provider-info';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/evm-on-chain-trade/evm-on-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
+import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 
 @Component({
   selector: 'app-preview-swap',
@@ -59,7 +57,6 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
-      first(tuiIsPresent),
       map(tradeState => {
         const info = tradeState.trade.getTradeInfo();
         return {
@@ -107,15 +104,15 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public backToForm(): void {
-    this.tradePageService.setState('form');
-    this.previewSwapService.setNextTxState({
-      step: 'inactive',
-      data: {}
-    });
+    this.previewSwapService.backToForm();
   }
 
   public async startTrade(): Promise<void> {
     await this.previewSwapService.requestTxSign();
+  }
+
+  public continueBackupSwap(allowedToContinue: boolean = true): void {
+    this.previewSwapService.continueBackupSwap(allowedToContinue);
   }
 
   public async swap(): Promise<void> {
@@ -174,19 +171,27 @@ export class PreviewSwapComponent implements OnDestroy {
       .subscribe();
   }
 
-  public getAverageTime(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
+  public getAverageTimeString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
     if (tradeState?.tradeType) {
-      if (isArbitrumBridgeRbcTrade(tradeState.trade)) {
-        return '7 D';
-      }
-      const provider = TRADES_PROVIDERS[tradeState.tradeType];
-      const providerAverageTime = this.platformConfigurationService.providersAverageTime;
-      const currentProviderTime =
-        providerAverageTime?.[tradeState.tradeType as CrossChainTradeType];
-
-      return currentProviderTime ? `${currentProviderTime} M` : `${provider.averageTime} M`;
+      if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      if (isNearIntentsTrade(tradeState.trade)) return '10+ mins';
+      const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
+      return `${time.averageTimeMins} ${time.averageTimeMins > 1 ? 'mins' : 'min'}`;
     } else {
-      return tradeState instanceof CrossChainTrade ? '30 M' : '1 M';
+      return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
+    }
+  }
+
+  public getTime95PercentsSwapsString(tradeState: SelectedTrade & { feeInfo: FeeInfo }): string {
+    if (tradeState?.tradeType) {
+      if (isArbitrumBridgeRbcTrade(tradeState.trade)) return '7 days';
+      if (isNearIntentsTrade(tradeState.trade)) return '10+ minutes';
+      const time = this.tradeInfoManager.getAverageSwapTimeMinutes(tradeState.trade);
+      return `${time.time95PercentsSwapsMins} ${
+        time.time95PercentsSwapsMins > 1 ? 'minutes' : 'minute'
+      }`;
+    } else {
+      return tradeState instanceof CrossChainTrade ? '30 mins' : '1 min';
     }
   }
 
@@ -219,6 +224,12 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.swapReady) {
       state.disabled = false;
       state.action = this.swap.bind(this);
+    } else if (el.step === transactionStep.swapRetry) {
+      state.disabled = true;
+      state.action = () => {};
+    } else if (el.step === transactionStep.swapBackupSelected) {
+      state.disabled = false;
+      state.action = this.continueBackupSwap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);
@@ -232,6 +243,10 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.authWalletReady) {
       state.disabled = false;
       state.action = this.authWallet.bind(this);
+    } else if (el.step === transactionStep.error) {
+      state.disabled = false;
+      state.label = 'Back to form';
+      state.action = this.backToForm.bind(this);
     }
 
     if (

@@ -1,4 +1,4 @@
-import { ChainType } from '@cryptorubic/sdk';
+import { ChainType } from '@cryptorubic/core';
 
 export interface WalletLoginInterface {
   code: string;

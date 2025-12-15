@@ -1,0 +1,31 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .input-wrapper {
+    @include flex(row, center, center);
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 0 var(--tui-padding-s);
+
+    background: var(--tui-base-01);
+    border-radius: var(--tui-radius-m);
+
+    tui-input-number {
+      flex: 1;
+
+      text-align: center;
+    }
+
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+      margin: 0;
+
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+  }
+}

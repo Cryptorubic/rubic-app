@@ -1,11 +1,11 @@
 import { CommonWalletAdapter } from '@core/services/wallets/wallets-adapters/common-wallet-adapter';
-import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from '@cryptorubic/sdk';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { AddEvmChainParams } from '@core/services/wallets/models/add-evm-chain-params';
 import { fromEvent } from 'rxjs';
 import { SupportsManyChains } from '../../../models/abstract-interfaces';
 import { EIP6963AnnounceProviderEvent } from './models/eip-6963-provider-event';
 import { EvmWalletProviderStore } from './evm-wallet-provider-store';
+import { BlockchainsInfo, CHAIN_TYPE, EvmBlockchainName } from '@cryptorubic/core';
 
 export abstract class EvmWalletAdapter<T = RubicAny>
   extends CommonWalletAdapter<T>
@@ -38,8 +38,12 @@ export abstract class EvmWalletAdapter<T = RubicAny>
       }
     );
 
-    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(() =>
-      this.deactivate()
+    this.onDisconnectSub = fromEvent(this.wallet as RubicAny, 'disconnect').subscribe(
+      (reason: { code: number; message: string }) => {
+        this.deactivate();
+        // code 1013 when chain switched
+        if (reason.code === 1013) this.activate();
+      }
     );
   }
 

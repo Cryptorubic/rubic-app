@@ -1,6 +1,6 @@
-import { BlockchainName } from '@cryptorubic/sdk';
 import { SupportedLanguages } from '@shared/models/languages/supported-languages';
 import { AssetType } from '@features/trade/models/asset';
+import { BlockchainName } from '@cryptorubic/core';
 
 interface AllQueryParams {
   from: string;
