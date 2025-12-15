@@ -259,11 +259,6 @@ export class OnChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      // if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-      //   const slippageErr = new LowSlippageError();
-      //   throw slippageErr;
-      // }
-
       throw parsedError;
     }
   }

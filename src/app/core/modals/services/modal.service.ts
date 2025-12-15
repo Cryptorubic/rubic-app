@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, firstValueFrom, from, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -249,6 +249,7 @@ export class ModalService {
     return this.openClosableDialog(AllSwapBackupsFailedModalComponent, {
       title: 'All Swap Backups Failed',
       size: 's',
+      dismissible: true,
       fitContent: true
     });
   }
@@ -269,6 +270,7 @@ export class ModalService {
         title: 'Swap Retry Pending',
         size: 's',
         fitContent: true,
+        dismissible: true,
         data: { backupsCount, backupTradesCount$ }
       },
       injector
@@ -347,15 +349,15 @@ export class ModalService {
       );
   }
 
-  public openClosableDialog<Component>(
+  public openClosableDialog<Component, Output>(
     component: Type<Component & object>,
     options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
     injector?: Injector
-  ): Observable<void> {
-    //made it like that because it keeps throwing an exception by completing without firing any value
-    return from(firstValueFrom(this.showDialog(component, options, injector))).pipe(
+  ): Observable<Output> {
+    return this.showDialog<Component, Output>(component, options, injector).pipe(
+      first(),
       catchError(() => of(null))
-    ) as Observable<void>;
+    );
   }
 
   /**

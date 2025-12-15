@@ -289,11 +289,6 @@ export class CrossChainService {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
       }
 
-      // if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
-      //   const slippageErr = new LowSlippageError();
-      //   throw slippageErr;
-      // }
-
       throw parsedError;
     }
   }

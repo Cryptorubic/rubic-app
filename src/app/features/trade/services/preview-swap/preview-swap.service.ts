@@ -224,14 +224,15 @@ export class PreviewSwapService {
                 this.swapsStateService.backupTradesCount$,
                 this.injector
               )
-              .pipe(switchMap(() => of(true)));
+              .pipe(map(() => of(true)));
           }
           return of(false);
         }),
         tap(isManualClose => {
-          this.modalService.closeSwapRetryModal();
           if (isManualClose) {
             this.backToForm();
+          } else {
+            this.modalService.closeSwapRetryModal();
           }
         })
       )
@@ -259,7 +260,7 @@ export class PreviewSwapService {
         }),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
-          retriesCount = (txState.level ?? 0) === 0 ? 0 : retriesCount;
+          retriesCount = txState.level ? 0 : retriesCount;
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
@@ -406,9 +407,7 @@ export class PreviewSwapService {
       return this.makeSwapRequest(backupTrade, txStep);
     } else {
       this.closeRetryModal();
-      return this.modalService
-        .openAllSwapBackupsFailedModal()
-        .pipe(finalize(() => this.backToForm()));
+      return this.modalService.openAllSwapBackupsFailedModal().pipe(finalize(this.backToForm));
     }
   }
 
