@@ -143,7 +143,12 @@ export class CrossChainService {
     toSdkToken: PriceToken,
     fromAmount: BigNumber
   ): Promise<QuoteOptionsInterface> {
-    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(
+      this.settingsService.crossChainRoutingValue.slippageTolerance
+    )
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders || [];
     const disabledProvidersFromApiAndQuery = Array.from(

@@ -421,7 +421,10 @@ export class OnChainService {
     );
 
     const settings = this.settingsService.instantTradeValue;
-    const slippageTolerance = settings.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(settings.slippageTolerance)
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,
