@@ -229,10 +229,9 @@ export class PreviewSwapService {
           return of(false);
         }),
         tap(isManualClose => {
+          this.modalService.closeSwapRetryModal();
           if (isManualClose) {
             this.backToForm();
-          } else {
-            this.modalService.closeSwapRetryModal();
           }
         })
       )
@@ -260,7 +259,7 @@ export class PreviewSwapService {
         }),
         debounceTime(10),
         switchMap(([txState, tradeState]) => {
-          retriesCount = txState.level ? 0 : retriesCount;
+          retriesCount = txState.level ? retriesCount : 0;
           if (txState.step === 'approvePending') {
             return this.handleApprove(tradeState);
           }
@@ -407,7 +406,9 @@ export class PreviewSwapService {
       return this.makeSwapRequest(backupTrade, txStep);
     } else {
       this.closeRetryModal();
-      return this.modalService.openAllSwapBackupsFailedModal().pipe(finalize(this.backToForm));
+      return this.modalService
+        .openAllSwapBackupsFailedModal()
+        .pipe(finalize(() => this.backToForm()));
     }
   }
 
