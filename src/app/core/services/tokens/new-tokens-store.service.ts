@@ -37,6 +37,17 @@ export class NewTokensStoreService {
       chainObject._pageLoading$.next(true);
       const currentTokens = chainObject._tokensObject$;
 
+      tokens.list.forEach(token => {
+        if (!currentTokens.value[token.address]) {
+          // @TODO TOKENS MB REMOVE
+          currentTokens.value[token.address] = {
+            ...token,
+            favorite: false,
+            amount: new BigNumber(NaN)
+          };
+        }
+      });
+
       const newValues = tokens.list
         .sort((a, b) => {
           const aTotalRank = a.rank * (a?.networkRank || 1);
@@ -44,6 +55,7 @@ export class NewTokensStoreService {
           return aTotalRank > bTotalRank ? -1 : 1;
         })
         .reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
+
       currentTokens.next({ ...currentTokens.value, ...newValues });
       chainObject._pageLoading$.next(false);
       chainObject.page = chainObject.page + 1;

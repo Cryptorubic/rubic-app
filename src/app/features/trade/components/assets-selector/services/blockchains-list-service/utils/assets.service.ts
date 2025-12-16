@@ -141,11 +141,7 @@ export abstract class AssetsService {
   }
 
   public closeSelector(): void {
-    // @TODO TOKENS
-    // this.tokensFacade = '';
     this.blockchainSearchQuery = '';
-    this.tokensFacade.buildSearchedList('', this.assetListType);
-    // this.assetListType = 'allChains';
   }
 
   protected setAvailableBlockchains(): void {

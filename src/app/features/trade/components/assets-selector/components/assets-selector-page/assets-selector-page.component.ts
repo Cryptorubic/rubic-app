@@ -90,15 +90,12 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     private readonly fromAssetsService: FromAssetsService,
     private readonly toAssetsService: ToAssetsService,
     private readonly cdr: ChangeDetectorRef
-  ) {
-    this.subscribeOnAssetsSelect();
-  }
+  ) {}
 
   ngOnInit(): void {
     this.setWindowHeight();
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
       distinctUntilChanged(),
-      // share(),
       startWith('allChains' as AssetListType)
     );
 
@@ -118,15 +115,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     );
     this.tokensToShow$ = this.assetListType$.pipe(
       combineLatestWith(this.tokensSearchQuery$),
-      switchMap(
-        ([type, query]) =>
-          this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue)
-        //   .pipe(
-        //   debounceTime(50),
-        //   tap(el => {
-        //     this.tokensFacade.runFetchConditionally(type, query);
-        //   })
-        // )
+      switchMap(([type, query]) =>
+        this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue)
       )
     );
     this.pageLoading$ = this.assetListType$.pipe(
@@ -149,6 +139,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.resetWindowHeight();
+    this.assetsSelectorService.closeSelector();
   }
 
   public backToForm(): void {
@@ -175,18 +166,6 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public handleBlockchainFilterSelection(filter: BlockchainFilters): void {
     this.assetsSelectorService.filterQuery = filter;
-  }
-
-  private subscribeOnAssetsSelect(): void {
-    // @TODO TOKENS
-    // this.assetsSelectorStateService.assetSelected$
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe(selectedAsset => {
-    //     if (isMinimalToken(selectedAsset)) {
-    //       this.tokensFacade.addToken(selectedAsset);
-    //     }
-    //     this.tokenSelect.emit(selectedAsset);
-    //   });
   }
 
   public selectAssetList(item: BlockchainItem | AssetListType): void {

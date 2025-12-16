@@ -15,7 +15,8 @@ export class GainersUtilityStore extends BasicUtilityStore {
   }
 
   public override getTokenRefs(tokens: Token[]): TokenRef[] {
-    return tokens.sort(sorterForGainers).map(token => ({
+    const sorted = tokens.sort(sorterForGainers);
+    return sorted.map(token => ({
       address: token.address,
       blockchain: token.blockchain
     }));

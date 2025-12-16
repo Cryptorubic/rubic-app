@@ -1,5 +1,5 @@
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
-import { auditTime, BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { RatedToken, Token } from '@shared/models/tokens/token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
@@ -38,7 +38,7 @@ export abstract class CommonUtilityStore {
 
   public readonly tokens$ = this.refs$.pipe(
     combineLatestWith(this.tokensStore.allTokens$),
-    auditTime(0),
+    debounceTime(10),
     map(([refs, allTokens]) => {
       const tokens = refs
         .map(ref =>
@@ -89,9 +89,19 @@ export abstract class CommonUtilityStore {
         return;
       }
       const existingTokens = chainTokens._tokensObject$.value;
-      const missedTokens = blockchainTokens.filter(token => !existingTokens[token.address]);
+      const missedTokens = blockchainTokens.filter(token => {
+        const existedToken = existingTokens[token.address];
+        if (!existedToken) return true;
+
+        const tokenHasSecurity = !existedToken?.tokenSecurity && token.tokenSecurity;
+        const tokenHasPriceInfo =
+          !(existedToken as unknown as RatedToken)?.priceChange24h &&
+          'priceChange24h' in token &&
+          token.priceChange24h;
+
+        return tokenHasSecurity || tokenHasPriceInfo;
+      });
       if (missedTokens.length) {
-        console.log('added missed tokens: ', missedTokens);
         this.tokensStore.addNewBlockchainTokens(blockchain as BlockchainName, missedTokens);
       }
     });
