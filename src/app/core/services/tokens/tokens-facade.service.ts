@@ -5,7 +5,7 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
-import { BehaviorSubject, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -467,18 +467,20 @@ export class TokensFacadeService {
       .pipe(
         distinctUntilChanged((oldValue, newValue) =>
           compareAddresses(oldValue?.address, newValue?.address)
+        ),
+        combineLatestWith(
+          this.configService.balanceNetworks$.pipe(first(el => Boolean(el?.length)))
         )
       )
-      .subscribe(user => {
+      .subscribe(([user, balanceNetworks]) => {
         if (user?.address) {
           this.allTokens.setBalanceLoading(true);
           Promise.all([
-            this.fetchT1Balances(user.address, user.chainType),
-            firstValueFrom(this.configService.balanceNetworks$),
-            this.fetchT2Balances(user.address, user.chainType)
-          ]).then(([successT1request, networks]) => {
+            this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
+            this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
+          ]).then(([successT1request]) => {
             if (!successT1request) {
-              this.fetchListBalances(user.address, networks).then(() => {
+              this.fetchListBalances(user.address, balanceNetworks).then(() => {
                 this.allTokens.setBalanceLoading(false);
               });
             }
@@ -490,13 +492,15 @@ export class TokensFacadeService {
       });
   }
 
-  private async fetchT1Balances(address: string, chainType: ChainType): Promise<boolean> {
+  private async fetchT1Balances(
+    address: string,
+    chainType: ChainType,
+    chains: BlockchainName[]
+  ): Promise<boolean> {
     if (chainType !== CHAIN_TYPE.EVM) {
       return false;
     }
-    const availableNetworks = (await firstValueFrom(this.configService.balanceNetworks$)).filter(
-      chain => this.tokensStore.tokens?.[chain]
-    );
+    const availableNetworks = chains.filter(chain => this.tokensStore.tokens?.[chain]);
 
     availableNetworks.forEach(chain => this.tokensStore.tokens[chain]._balanceLoading$.next(true));
     return new Promise(resolve => {
@@ -598,9 +602,12 @@ export class TokensFacadeService {
     });
   }
 
-  private async fetchT2Balances(address: string, type: ChainType): Promise<void> {
+  private async fetchT2Balances(
+    address: string,
+    type: ChainType,
+    availableNetworks: BlockchainName[]
+  ): Promise<void> {
     const blChains: BlockchainName[] = Object.values(TEST_EVM_BLOCKCHAIN_NAME);
-    const availableNetworks = await firstValueFrom(this.configService.balanceNetworks$);
 
     const chains = Object.values(BLOCKCHAIN_NAME).filter(
       (chain: BlockchainName) =>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ENVIRONMENT } from 'src/environments/environment';
 
-import { BehaviorSubject, catchError, map, Observable, of, retry, Subject, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, retry, tap } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 import { BlockchainStatus } from '@core/services/backend/platform-configuration/models/blockchain-status';
 import {
@@ -18,7 +18,7 @@ import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/plat
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
-  private readonly _balanceNetworks$ = new Subject<BlockchainName[]>();
+  private readonly _balanceNetworks$ = new BehaviorSubject<BlockchainName[]>([]);
 
   public readonly balanceNetworks$ = this._balanceNetworks$.asObservable();
 
