@@ -480,7 +480,7 @@ export class TokensFacadeService {
             this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
           ]).then(([successT1request]) => {
             if (!successT1request) {
-              this.fetchListBalances(user.address, balanceNetworks).then(() => {
+              this.fetchListBalances(user.address, user.chainType, balanceNetworks).then(() => {
                 this.allTokens.setBalanceLoading(false);
               });
             }
@@ -567,9 +567,17 @@ export class TokensFacadeService {
     return tokensWithBalances.flat().sort(sorterByTokenRank);
   }
 
-  private async fetchListBalances(address: string, chains: BlockchainName[]): Promise<void> {
+  private async fetchListBalances(
+    address: string,
+    chainType: ChainType,
+    chains: BlockchainName[]
+  ): Promise<void> {
+    const resultChains = chains.filter(
+      (chain: BlockchainName) => chainType === BlockchainsInfo.getChainType(chain)
+    );
+
     return new Promise(resolve => {
-      chains.forEach((chain, index) => {
+      resultChains.forEach((chain, index) => {
         const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
         firstValueFrom(
           this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
@@ -593,7 +601,7 @@ export class TokensFacadeService {
               this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
               this.tokensStore.tokens[chain]._balanceLoading$.next(false);
 
-              if (chain.length === index) {
+              if (chains.length === index + 1) {
                 resolve();
               }
             });
@@ -616,7 +624,7 @@ export class TokensFacadeService {
         type === BlockchainsInfo.getChainType(chain)
     );
 
-    return this.fetchListBalances(address, chains);
+    return this.fetchListBalances(address, type, chains);
   }
 
   public async fetchTokenBalance(
