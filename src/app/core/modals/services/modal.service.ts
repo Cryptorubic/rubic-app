@@ -1,6 +1,6 @@
 import { Component, Inject, Injectable, Injector, Type } from '@angular/core';
 import { RubicMenuComponent } from '@app/core/header/components/header/components/rubic-menu/rubic-menu.component';
-import { BehaviorSubject, catchError, finalize, firstValueFrom, Observable, of } from 'rxjs';
+import { BehaviorSubject, catchError, finalize, first, firstValueFrom, Observable, of } from 'rxjs';
 import { PolymorpheusComponent } from '@tinkoff/ng-polymorpheus';
 import { AbstractModalService } from './abstract-modal.service';
 import { SettingsComponent } from '@app/core/header/components/header/components/settings/settings.component';
@@ -20,7 +20,6 @@ import { ArbitrumBridgeWarningModalComponent } from '@shared/components/arbitrum
 import { SettingsCcrComponent } from '@features/trade/components/settings-ccr/settings-ccr.component';
 import { SettingsItComponent } from '@features/trade/components/settings-it/settings-it.component';
 import { RateChangedModalComponent } from '@shared/components/rate-changed-modal/rate-changed-modal.component';
-import BigNumber from 'bignumber.js';
 import { ProvidersListComponent } from '@features/trade/components/providers-list/providers-list.component';
 import { TradeState } from '@features/trade/models/trade-state';
 import { TradeProvider } from '@features/trade/models/trade-provider';
@@ -39,6 +38,11 @@ import { WALLET_NAME } from '@core/wallets-modal/components/wallets-modal/models
 import { MetamaskModalComponent } from '@shared/components/metamask-modal/metamask-modal.component';
 import { BlockchainName } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { SwapRetryPendingModalComponent } from '@app/features/trade/components/swap-retry-pending-modal/swap-retry-pending-modal.component';
+import { SwapBackupRateChangedModalComponent } from '@app/features/trade/components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
+import { TradeInfo } from '@app/features/trade/models/trade-info';
+import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
+import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +67,11 @@ export class ModalService {
     this.openedModal.elRef.nativeElement.classList.add('hidden');
     this.openedModal.elRef.nativeElement.classList.remove('opened');
     this.openedModal.elRef.nativeElement.classList.remove('collapsed');
+    this.openedModal.context.completeWith(null);
+  }
+
+  public closeSwapRetryModal(): void {
+    if (!this.openedModal) return;
     this.openedModal.context.completeWith(null);
   }
 
@@ -233,6 +242,70 @@ export class ModalService {
   }
 
   /**
+   * Show All Swap Backups Failed dialog.
+   */
+  public openAllSwapBackupsFailedModal(): Observable<void> {
+    this.setOpenedModalName('all-swap-backups-failed');
+    return this.openClosableDialog(AllSwapBackupsFailedModalComponent, {
+      title: 'All Swap Backups Failed',
+      size: 's',
+      dismissible: true,
+      fitContent: true
+    });
+  }
+
+  /**
+   * Show Swap Retry dialog.
+   * @param backups$ Backup Trades observable
+   */
+  public openSwapRetryPendingModal(
+    backupsCount: number,
+    backupTradesCount$: Observable<number>,
+    injector: Injector
+  ): Observable<void> {
+    this.setOpenedModalName('swap-retry-pending');
+    return this.openClosableDialog(
+      SwapRetryPendingModalComponent,
+      {
+        title: 'Swap Retry Pending',
+        size: 's',
+        fitContent: true,
+        dismissible: true,
+        data: { backupsCount, backupTradesCount$ }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openSwapRetryProviderSelectModal(
+    trade: SelectedTrade,
+    tradeInfo$: Observable<TradeInfo>,
+    rateChangeInfo: RateChangeInfo,
+    injector: Injector
+  ): Promise<boolean> {
+    this.setOpenedModalName('swap-backup-rate-changed');
+    return firstValueFrom(
+      this.showDialog(
+        SwapBackupRateChangedModalComponent,
+        {
+          title: 'Swap Retry Provider Select',
+          size: 's',
+          fitContent: true,
+          data: { trade, tradeInfo$, rateChangeInfo }
+        },
+        injector
+      )
+    );
+  }
+
+  /**
    * Show Next Modal dialog.
    * @param component Next Modal component
    * @param options Next Modal data.
@@ -269,7 +342,22 @@ export class ModalService {
         currentComponent: component,
         ...options
       })
-      .pipe(finalize(() => this.setOpenedModalName(null)));
+      .pipe(
+        finalize(() => {
+          this.setOpenedModalName(null);
+        })
+      );
+  }
+
+  public openClosableDialog<Component, ClosableDialogOutput>(
+    component: Type<Component & object>,
+    options?: IMobileNativeOptions & Partial<TuiDialogOptions<object>>,
+    injector?: Injector
+  ): Observable<ClosableDialogOutput> {
+    return this.showDialog<Component, ClosableDialogOutput>(component, options, injector).pipe(
+      first(),
+      catchError(() => of(null))
+    );
   }
 
   /**
@@ -292,15 +380,11 @@ export class ModalService {
     );
   }
 
-  public openRateChangedModal(
-    oldAmount: BigNumber,
-    newAmount: BigNumber,
-    tokenSymbol: string
-  ): Observable<boolean> {
+  public openRateChangedModal(rateChangeInfo: RateChangeInfo): Observable<boolean> {
     this.setOpenedModalName('rate-change');
     return this.showDialog(RateChangedModalComponent, {
       size: 's',
-      data: { oldAmount, newAmount, tokenSymbol },
+      data: { ...rateChangeInfo },
       required: true
     });
   }

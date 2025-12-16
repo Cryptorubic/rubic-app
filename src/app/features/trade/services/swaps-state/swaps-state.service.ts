@@ -123,6 +123,22 @@ export class SwapsStateService {
 
   public readonly tradesStore$ = this._tradesStore$.asObservable();
 
+  private readonly _backupTrades$ = new BehaviorSubject<TradeState[]>([]);
+
+  private set backupTrades(trades: TradeState[]) {
+    this._backupTrades$.next(trades);
+  }
+
+  public get backupTrades(): TradeState[] {
+    return this._backupTrades$.getValue();
+  }
+
+  public readonly backupTradesCount$ = this._backupTrades$.pipe(
+    map(trades => {
+      return trades.length;
+    })
+  );
+
   private readonly _calculationProgress$ = new BehaviorSubject<CalculationProgress>({
     total: 0,
     current: 0
@@ -365,10 +381,47 @@ export class SwapsStateService {
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
     const trade = this._tradesStore$.value.find(el => el.tradeType === tradeType);
     this.currentTrade = { ...trade, selectedByUser: false, status: this.currentTrade.status };
+    this.setBackupsForTrade(trade);
     this.swapsFormService.outputControl.patchValue({
       toAmount: trade?.trade?.to?.tokenAmount || null
     });
     this.refundService.onTradeSelection(this.currentTrade);
+  }
+
+  public setBackupsForTrade(trade: TradeState): void {
+    this.backupTrades = [];
+    this.updateBackups(trade);
+  }
+
+  public updateBackups(tradeToExclude: TradeState): void {
+    const source = this.backupTrades.length > 0 ? this.backupTrades : this._tradesStore$.value;
+    this.backupTrades = source.filter(t => t.tradeType !== tradeToExclude.tradeType);
+  }
+
+  public selectNextBackupTrade(): SelectedTrade {
+    if (this.backupTrades.length === 0) {
+      return null;
+    }
+
+    const trade: SelectedTrade = {
+      ...this.backupTrades[0],
+      selectedByUser: false,
+      status: TRADE_STATUS.READY_TO_SWAP
+    };
+
+    if (trade.error) {
+      trade.status = TRADE_STATUS.DISABLED;
+    }
+
+    if (trade.needApprove) {
+      trade.status = TRADE_STATUS.READY_TO_APPROVE;
+    }
+
+    return trade;
+  }
+
+  public resetBackupTrades(): void {
+    this.backupTrades = [];
   }
 
   private subscribeOnTradeChange(): void {

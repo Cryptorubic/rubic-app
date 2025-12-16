@@ -160,6 +160,7 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.AETHON_SWAP]: 'aethon_swap',
   [ON_CHAIN_TRADE_TYPE.OCTO_SWAP]: 'octo_swap',
   [ON_CHAIN_TRADE_TYPE.ATLANTIS]: 'atlantis',
+  [ON_CHAIN_TRADE_TYPE.CLOBER]: 'clober',
   [ON_CHAIN_TRADE_TYPE.RUBIC_STELLAR_API]: 'rubic_stellar_api'
 } as const;
 

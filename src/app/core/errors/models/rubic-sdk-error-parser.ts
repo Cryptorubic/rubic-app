@@ -83,7 +83,7 @@ export class RubicSdkErrorParser {
       return new FailedToCheckForTransactionReceiptError();
     }
     if (err instanceof SdkUserRejectError) {
-      return new UserRejectError();
+      return new UserRejectError(err.message);
     }
     if (err instanceof SdkInsufficientFundsError) {
       return new InsufficientFundsError(err.symbol);
@@ -188,6 +188,10 @@ export class RubicSdkErrorParser {
       err.message.toLowerCase().includes('the user rejected this request')
     ) {
       return new UserRejectError();
+    }
+
+    if (err.message.toLowerCase().includes('manual swap reject')) {
+      return new UserRejectError(err.message);
     }
 
     return new ExecutionRevertedError(err.message);

@@ -353,10 +353,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://soneium.drpc.org',
     'https://x-api.rubic.exchange/drpc/soneium?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.UNICHAIN]: [
-    'https://mainnet.unichain.org/',
-    'https://x-api.rubic.exchange/drpc/unichain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
-  ],
+  [BLOCKCHAIN_NAME.UNICHAIN]: ['https://unichain-rpc.publicnode.com'],
   [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
   [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to'],
   [BLOCKCHAIN_NAME.MONAD]: [

@@ -179,6 +179,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}curve.svg`,
     color: '#19E0CE'
   },
+  [ON_CHAIN_TRADE_TYPE.CLOBER]: {
+    name: 'Clober',
+    image: `${imageBasePath}clober.svg`,
+    color: '#000000'
+  },
 
   //EEEEEEEEEEEEEEEEEEEE
   [ON_CHAIN_TRADE_TYPE.EDDY_FINANCE]: {

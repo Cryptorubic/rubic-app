@@ -18,7 +18,10 @@
     <div class="preview">
       <div
         class="preview__data-container"
-        [ngClass]="{ 'preview__data-container_with-line': state.transaction.step === 'idle' }"
+        [ngClass]="{
+          'preview__data-container_with-line':
+            state.transaction.step === 'idle' || state.transaction.step === 'swapBackupSelected'
+        }"
       >
         <ng-container *ngIf="(isMobile$ | async) === false; else mobileInputTokenContainer">
           <div class="preview__io-container">
@@ -100,13 +103,21 @@
         </ng-template>
 
         <app-route-element
-          *ngIf="state.transaction.step === 'idle'"
+          *ngIf="
+            state.transaction.step === 'idle' ||
+            state.transaction.step === 'swapBackupSelected' ||
+            state.transaction.step === 'success'
+          "
           [routes]="state.tradeState?.routes || []"
           [tradeType]="state.tradeState.tradeType"
         ></app-route-element>
 
         <app-transaction-state
-          *ngIf="state.transaction.step !== 'idle' && state.transaction.step !== 'success'"
+          *ngIf="
+            state.transaction.step !== 'idle' &&
+            state.transaction.step !== 'success' &&
+            state.transaction.step !== 'swapBackupSelected'
+          "
           [transactionData]="{
             type:
               state.tradeInfo.fromAsset.secondLabel === state.tradeInfo.toAsset.secondLabel

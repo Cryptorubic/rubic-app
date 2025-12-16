@@ -21,6 +21,11 @@ export interface SwapTransactionOptions {
   onWarning?: (warnings: ErrorInterface[]) => void;
 
   /**
+   * Callback to be called, when swap simulation complete successfully.
+   */
+  onSimulationSuccess?: () => Promise<boolean>;
+
+  /**
    * Tokens receiver address.
    */
   receiverAddress?: string;

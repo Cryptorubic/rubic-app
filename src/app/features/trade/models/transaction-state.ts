@@ -11,4 +11,5 @@ export interface TransactionState {
     points?: number;
     needTrustline?: boolean;
   };
+  level?: number;
 }

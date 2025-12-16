@@ -6,7 +6,6 @@ import { SdkService } from '@core/services/sdk/sdk.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
   TX_STATUS,
   UnnecessaryApproveError,
   UserRejectError,
@@ -46,8 +45,6 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token
 } from '@cryptorubic/core';
-import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
@@ -55,6 +52,7 @@ import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -133,6 +131,7 @@ export class OnChainService {
   public async swapTrade(
     trade: OnChainTrade,
     callback?: (hash: string) => void,
+    onSimulationSuccess?: () => Promise<boolean>,
     params: { useCacheData: boolean; skipAmountCheck: boolean } = {
       useCacheData: false,
       skipAmountCheck: false
@@ -187,6 +186,7 @@ export class OnChainService {
         this.postTrade(hash, trade, preTradeId);
       },
       onWarning,
+      onSimulationSuccess,
       ...(this.queryParamsService.testMode && { testMode: true }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(receiverAddress && { receiverAddress }),
@@ -257,11 +257,6 @@ export class OnChainService {
 
       if (!(err instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
-      }
-
-      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 3) {
-        const slippageErr = new LowSlippageError();
-        throw slippageErr;
       }
 
       throw parsedError;
@@ -426,7 +421,10 @@ export class OnChainService {
     );
 
     const settings = this.settingsService.instantTradeValue;
-    const slippageTolerance = settings.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(settings.slippageTolerance)
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
     const providerAddress = await this.proxyService.getIntegratorAddress(
       fromSdkToken,
       fromAmount,

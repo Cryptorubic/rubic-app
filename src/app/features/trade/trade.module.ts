@@ -78,6 +78,9 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
 import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
+import { SwapRetryPendingModalComponent } from './components/swap-retry-pending-modal/swap-retry-pending-modal.component';
+import { SwapBackupRateChangedModalComponent } from './components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
+import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 import { TrustlineService } from './services/trustline-service/trustline.service';
 import { TrustlineComponent } from './components/trustline/trustline.component';
 
@@ -115,6 +118,9 @@ import { TrustlineComponent } from './components/trustline/trustline.component';
     AlternativeRoutesListComponent,
     RefundAddressComponent,
     CryptoRateChartComponent,
+    SwapRetryPendingModalComponent,
+    SwapBackupRateChangedModalComponent,
+    AllSwapBackupsFailedModalComponent,
     TrustlineComponent
   ],
   exports: [ActionButtonComponent],
