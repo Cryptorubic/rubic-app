@@ -1,0 +1,37 @@
+<div
+  class="trustline-container"
+  *ngLet="{
+    showConnectWallet: showConnectWallet$ | async,
+    tokenSymbol: trustlineTokenSymbol$ | async,
+    truslineLoading: truslineLoading$ | async
+  } as state"
+>
+  <tui-notification status="warning">
+    To get the Asset {{ state.tokenSymbol }}, you need to add its support to your Stellar wallet
+    (trustline)
+  </tui-notification>
+
+  <div class="trustline-container__actions">
+    <button
+      *ngIf="state.showConnectWallet"
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="connectReceiver()"
+    >
+      Connect Wallet
+    </button>
+    <button
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="addTristline()"
+      [ngClass]="{ 'trustline-container__loading': state.truslineLoading }"
+      [disabled]="state.truslineLoading"
+    >
+      {{ state.truslineLoading ? 'Loading...' : 'Enable Asset' }}
+    </button>
+  </div>
+</div>

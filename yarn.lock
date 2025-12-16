@@ -2367,24 +2367,25 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.0.0.tgz#1b6dd6465825306da667df5b5d5001ba146d4e3c"
-  integrity sha512-uxBDfiiuPp/5vo8XxpbhRXH5UtK5sbYKBtgmVcA6cpKn9SWOsq0LuCF8b1KPzhaVGzrvAmJ3ZcvghKSf+G51ZA==
+"@cryptorubic/core@1.1.0-alpha-stellar.30":
+  version "1.1.0-alpha-stellar.30"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.1.0-alpha-stellar.30.tgz#d5fe7ff5c1a3912913b03af3c5169fb2a9beed88"
+  integrity sha512-sqpT5wpkXp5k+1HgPLDAHWbObtWbVC9Ev0LBZMrj/ppRb9Mei78s5w66ZZbfAjS8bhReWKNlpgoYZaozlS1brA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.0.0.tgz#a6e9fde9cae431b23d8cf0220aa05ff5c1034ac2"
-  integrity sha512-RXIW7/HQ8/tn+FhwsSiaU5OkJ8BNQKdf1p+xo7+WACOgy6ECBMheU2GsbdQpnH+HXy8FDjB28CG7GcNcWzo2uA==
+"@cryptorubic/web3@1.1.0-alpha-stellar.30":
+  version "1.1.0-alpha-stellar.30"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.1.0-alpha-stellar.30.tgz#47e0a4a9189a0a13c3e060affd87d21979b8ec22"
+  integrity sha512-ySCdIWX1Bwum757hRHHcj6AGKHOILtGLr0apPhfZuShhOMG+67nFaa3iyCEM9BFlfds/inGGKVMinihA0RreGQ==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
     "@solana/spl-token" "*"
     "@solana/web3.js" "1.95.3"
     "@solflare-wallet/utl-sdk" "^1.4.0"
+    "@stellar/stellar-sdk" "^14.3.3"
     "@suiet/wallet-sdk" "^0.3.3"
     "@ton/core" "^0.59.1"
     "@ton/ton" "^15.1.0"
@@ -3913,7 +3914,7 @@
   dependencies:
     "@noble/hashes" "1.8.0"
 
-"@noble/curves@1.9.7", "@noble/curves@^1.0.0", "@noble/curves@^1.2.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.8.1", "@noble/curves@^1.9.4", "@noble/curves@~1.9.0":
+"@noble/curves@1.9.7", "@noble/curves@^1.0.0", "@noble/curves@^1.2.0", "@noble/curves@^1.4.2", "@noble/curves@^1.6.0", "@noble/curves@^1.8.1", "@noble/curves@^1.9.4", "@noble/curves@^1.9.6", "@noble/curves@~1.9.0":
   version "1.9.7"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.9.7.tgz#79d04b4758a43e4bca2cbdc62e7771352fa6b951"
   integrity sha512-gbKGcRUYIjA3/zCCNaWDciTMFI0dCkvou3TL8Zmy5Nc7sJ47a0jtOeZoTaMxkuqRo9cRhjOdZJXegxYE5FN/xw==
@@ -5994,6 +5995,18 @@
   optionalDependencies:
     sodium-native "^4.3.3"
 
+"@stellar/stellar-base@^14.0.3":
+  version "14.0.3"
+  resolved "https://registry.yarnpkg.com/@stellar/stellar-base/-/stellar-base-14.0.3.tgz#a4983b6814c39b0efc84094c644b130ae7325c49"
+  integrity sha512-mBxNArxWq4wKNJATPJpXB2vIRQ3vUzIvjMCloSsGbfKRrSy96ie8yy7DWh9vSOHV6tNwe85hd3v+p/shlyosqA==
+  dependencies:
+    "@noble/curves" "^1.9.6"
+    "@stellar/js-xdr" "^3.1.2"
+    base32.js "^0.1.0"
+    bignumber.js "^9.3.1"
+    buffer "^6.0.3"
+    sha.js "^2.4.12"
+
 "@stellar/stellar-sdk@^13.3.0":
   version "13.3.0"
   resolved "https://registry.yarnpkg.com/@stellar/stellar-sdk/-/stellar-sdk-13.3.0.tgz#72bf3eea4797de053aaebb889bf4de342d0b6b54"
@@ -6002,6 +6015,20 @@
     "@stellar/stellar-base" "^13.1.0"
     axios "^1.8.4"
     bignumber.js "^9.3.0"
+    eventsource "^2.0.2"
+    feaxios "^0.0.23"
+    randombytes "^2.1.0"
+    toml "^3.0.0"
+    urijs "^1.19.1"
+
+"@stellar/stellar-sdk@^14.3.3":
+  version "14.4.2"
+  resolved "https://registry.yarnpkg.com/@stellar/stellar-sdk/-/stellar-sdk-14.4.2.tgz#94dbc0dc07214372477dfca3a9e1c10bedaf5a6b"
+  integrity sha512-CYEYEoVXKM/Sw1j/5lhG4FcVq5WkqmSB+OBiEYxdTiwTy7rBzjPoyzzmDvO+cAoFTSkEGFikjDOFUFbgm+ntlQ==
+  dependencies:
+    "@stellar/stellar-base" "^14.0.3"
+    axios "^1.12.2"
+    bignumber.js "^9.3.1"
     eventsource "^2.0.2"
     feaxios "^0.0.23"
     randombytes "^2.1.0"
@@ -8610,7 +8637,7 @@ axios@^0.27.2:
     follow-redirects "^1.14.9"
     form-data "^4.0.0"
 
-axios@^1.8.4:
+axios@^1.12.2, axios@^1.8.4:
   version "1.13.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.13.2.tgz#9ada120b7b5ab24509553ec3e40123521117f687"
   integrity sha512-VPk9ebNqPcy5lRGuSlKx752IlDatOjT9paPlm8A7yOuW2Fbvp4X3JznJtT4f0GzGLLiWE9W8onz51SqLYwzGaA==
@@ -8859,7 +8886,7 @@ bignumber.js@9.1.2:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.2.tgz#b7c4242259c008903b13707983b5f4bbd31eda0c"
   integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
 
-bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.0.2, bignumber.js@^9.1.2, bignumber.js@^9.3.0:
+bignumber.js@^9.0.0, bignumber.js@^9.0.1, bignumber.js@^9.0.2, bignumber.js@^9.1.2, bignumber.js@^9.3.0, bignumber.js@^9.3.1:
   version "9.3.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.3.1.tgz#759c5aaddf2ffdc4f154f7b493e1c8770f88c4d7"
   integrity sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==

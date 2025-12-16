@@ -242,29 +242,32 @@
       [trade]="state.tradeState?.trade"
     ></app-mev-bot>
 
-    <div class="preview__action-container">
-      <button
-        class="preview__action-button"
-        *ngLet="buttonState$ | async as buttonState"
-        tuiButton
-        appearance="primary"
-        type="button"
-        size="m"
-        (click)="buttonState?.action()"
-        [disabled]="buttonState?.disabled"
-      >
-        {{ buttonState?.label }}
-      </button>
-      <button
-        *ngIf="state.transaction.step === 'destinationPending'"
-        tuiButton
-        appearance="primary"
-        type="button"
-        size="m"
-        (click)="navigateToHistory()"
-      >
-        See Details >
-      </button>
-    </div>
+    <ng-container *ngLet="buttonState$ | async as buttonState">
+      <div class="preview__action-container" *ngIf="!buttonState.needTrustline; else trustline">
+        <button
+          class="preview__action-button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="buttonState?.action()"
+          [disabled]="buttonState?.disabled"
+        >
+          {{ buttonState?.label }}
+        </button>
+        <button
+          *ngIf="state.transaction.step === 'destinationPending'"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="navigateToHistory()"
+        >
+          See Details >
+        </button>
+      </div>
+    </ng-container>
   </ng-container>
 </app-window-container>
+
+<ng-template #trustline> <app-trustline></app-trustline></ng-template>

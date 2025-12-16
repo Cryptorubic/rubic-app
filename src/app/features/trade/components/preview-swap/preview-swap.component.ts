@@ -20,9 +20,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareAddresses } from '@shared/utils/utils';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
 import { TransactionState } from '@features/trade/models/transaction-state';
@@ -94,8 +92,6 @@ export class PreviewSwapComponent implements OnDestroy {
     @Inject(Injector) private injector: Injector,
     private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
-    private readonly platformConfigurationService: PlatformConfigurationService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
@@ -206,7 +202,7 @@ export class PreviewSwapComponent implements OnDestroy {
     el: TransactionState,
     tradeState: SelectedTrade,
     balanceError: boolean
-  ): Promise<{ action: () => void; label: string; disabled: boolean }> {
+  ): Promise<{ action: () => void; label: string; disabled: boolean; needTrustline: boolean }> {
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
       this.swapsFormService.inputValue.toBlockchain;
@@ -217,8 +213,12 @@ export class PreviewSwapComponent implements OnDestroy {
     const state = {
       action: (): void => {},
       label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
-      disabled: true
+      disabled: true,
+      needTrustline: false
     };
+    if (el.data.needTrustline) {
+      state.needTrustline = true;
+    }
     if (el.step === transactionStep.approveReady) {
       state.disabled = false;
       state.label = this.isTradeWithPermit2Approve(tradeState) ? 'Approve and Permit' : state.label;

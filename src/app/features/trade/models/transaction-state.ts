@@ -9,5 +9,6 @@ export interface TransactionState {
     wrongNetwork?: boolean;
     activeWallet?: boolean;
     points?: number;
+    needTrustline?: boolean;
   };
 }

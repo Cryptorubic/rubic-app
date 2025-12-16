@@ -155,7 +155,8 @@ export class SwapsStateService {
     wrappedTrade: WrappedSdkTrade,
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean,
-    needAuthWallet: boolean
+    needAuthWallet: boolean,
+    needTrusline: boolean
   ): void {
     const trade = wrappedTrade?.trade;
     const defaultState: TradeState = !trade
@@ -167,13 +168,15 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: [],
-          centralizationStatus: null
+          centralizationStatus: null,
+          needTrusline: false
         }
       : {
           error: wrappedTrade?.error,
           trade,
           needApprove,
           needAuthWallet,
+          needTrusline,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],

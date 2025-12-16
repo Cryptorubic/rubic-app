@@ -313,6 +313,13 @@ export class PreviewSwapService {
     this.setNextTxState(state);
   }
 
+  private checkTrustline(): void {
+    const selectedTrade = this._selectedTradeState$.value;
+    const state = this._transactionState$.getValue();
+    state.data.needTrustline = selectedTrade.needTrusline;
+    this.setNextTxState(state);
+  }
+
   private async loadRpcParams(useCustomRpc: boolean): Promise<boolean> {
     const tradeState = await firstValueFrom(this.selectedTradeState$);
     const fromBlockchain = tradeState.trade.from.blockchain as EvmBlockchainName;
@@ -453,6 +460,7 @@ export class PreviewSwapService {
     const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
       this.checkAddress();
       this.checkNetwork();
+      this.checkTrustline();
     });
     this.subscriptions$.push(validationSubscription$);
   }

@@ -78,6 +78,8 @@ import { RefundAddressComponent } from './components/refund-address/refund-addre
 import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-rate-chart.component';
 import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
+import { TrustlineService } from './services/trustline-service/trustline.service';
+import { TrustlineComponent } from './components/trustline/trustline.component';
 
 @NgModule({
   declarations: [
@@ -112,7 +114,8 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     AlternativeRouteElementComponent,
     AlternativeRoutesListComponent,
     RefundAddressComponent,
-    CryptoRateChartComponent
+    CryptoRateChartComponent,
+    TrustlineComponent
   ],
   exports: [ActionButtonComponent],
   imports: [
@@ -186,12 +189,8 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,
-    SolanaGaslessStateService
-    // SettingsService,
-    // RefreshService,
-    // TradeService,
-    // TargetNetworkAddressService,
-    // TonPromoService
+    SolanaGaslessStateService,
+    TrustlineService
   ]
 })
 export class TradeModule {}

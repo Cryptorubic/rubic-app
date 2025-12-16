@@ -184,7 +184,8 @@ export class RubicSdkErrorParser {
     // Backpack wallet tx errors
     if (
       err.message.toLowerCase().includes('approval denied') ||
-      err.message.toLowerCase().includes('plugin closed')
+      err.message.toLowerCase().includes('plugin closed') ||
+      err.message.toLowerCase().includes('the user rejected this request')
     ) {
       return new UserRejectError();
     }
