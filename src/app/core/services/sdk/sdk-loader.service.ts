@@ -35,7 +35,8 @@ export class SdkLoaderService {
       [CHAIN_TYPE.SOLANA]: provider.wallet,
       [CHAIN_TYPE.TON]: provider.wallet,
       [CHAIN_TYPE.BITCOIN]: provider.wallet,
-      [CHAIN_TYPE.SUI]: provider.wallet
+      [CHAIN_TYPE.SUI]: provider.wallet,
+      [CHAIN_TYPE.STELLAR]: provider.wallet
     } as const;
     const core = chainTypeMap?.[chainType as keyof typeof chainTypeMap];
     const walletProviderCore: WalletProviderCore = { address, core };

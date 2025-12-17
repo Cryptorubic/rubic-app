@@ -15,7 +15,8 @@ import {
   TokenAmount,
   TokenBaseStruct,
   TonBlockchainName,
-  TronBlockchainName
+  TronBlockchainName,
+  StellarBlockchainName
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { BlockchainAdapterFactoryService } from '../blockchain-adapter-factory/blockchain-adapter-factory.service';
@@ -78,6 +79,12 @@ export class TokenService {
     }
     if (chainType === CHAIN_TYPE.SUI) {
       const blockchain = tokenBaseStruct.blockchain as SuiBlockchainName;
+      const adapter = this.adaptersFactoryService.getAdapter(blockchain);
+      const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
+      return tokensInfo![0] as Token;
+    }
+    if (chainType === CHAIN_TYPE.STELLAR) {
+      const blockchain = tokenBaseStruct.blockchain as StellarBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
       const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
       return tokensInfo![0] as Token;

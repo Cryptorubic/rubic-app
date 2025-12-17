@@ -6,6 +6,7 @@ import {
   BlockchainName,
   EvmBlockchainName,
   SolanaBlockchainName,
+  StellarBlockchainName,
   SuiBlockchainName,
   TonBlockchainName,
   TronBlockchainName
@@ -20,6 +21,7 @@ import {
   TonAdapter,
   TronAdapter
 } from '@cryptorubic/web3';
+import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +49,7 @@ export class BlockchainAdapterFactoryService {
   public getAdapter(blockchain: TonBlockchainName): TonAdapter;
   public getAdapter(blockchain: SuiBlockchainName): SuiAdapter;
   public getAdapter(blockchain: BitcoinBlockchainName): BitcoinAdapter;
+  public getAdapter(blockchain: StellarBlockchainName): StellarAdapter;
   public getAdapter(blockchain: BlockchainName): AbstractAdapter<unknown, unknown, BlockchainName> {
     return this.adapterFactory.getAdapter(blockchain as RubicAny);
   }

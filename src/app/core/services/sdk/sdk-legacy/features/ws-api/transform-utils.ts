@@ -44,6 +44,10 @@ import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SdkLegacyService } from '../../sdk-legacy.service';
 import { RubicApiService } from '../../rubic-api/rubic-api.service';
 import { TransferTradeType } from '../cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
+import { StellarApiCrossChainTrade } from './chains/stellar/stellar-api-cross-chain-trade';
+import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cross-chain-constructor';
+import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
+import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -134,6 +138,12 @@ export class TransformUtils {
         sdkLegacyService,
         rubicApiService
       );
+    } else if (chainType === CHAIN_TYPE.STELLAR) {
+      trade = new StellarApiCrossChainTrade(
+        tradeParams as StellarApiCrossChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
     }
 
     return {
@@ -209,6 +219,12 @@ export class TransformUtils {
     } else if (chainType === CHAIN_TYPE.SUI) {
       trade = new SuiApiOnChainTrade(
         tradeParams as SuiApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
+    } else if (chainType === CHAIN_TYPE.STELLAR) {
+      trade = new StellarApiOnChainTrade(
+        tradeParams as StellarApiOnChainConstructor,
         sdkLegacyService,
         rubicApiService
       );

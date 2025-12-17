@@ -13,7 +13,7 @@ import { forkJoin, of } from 'rxjs';
 
 @Injectable()
 export class SwapTokensUpdaterService {
-  private intervalId: NodeJS.Timeout;
+  private intervalId: ReturnType<typeof setInterval>;
 
   constructor(
     private readonly swapsFormService: SwapsFormService,
