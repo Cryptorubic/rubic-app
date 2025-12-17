@@ -9,6 +9,7 @@ import {
   StellarBlockchainName
 } from '@cryptorubic/core';
 import { TronWebProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
+import { StellarRpcProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/models/stellar-rpc-provider';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
@@ -16,7 +17,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TonBlockchainName, string[]> &
   Record<BitcoinBlockchainName, string[]> &
   Record<SuiBlockchainName, string[]> &
-  Record<StellarBlockchainName, string[]> = {
+  Record<StellarBlockchainName, StellarRpcProvider[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca',
     'https://x-api.rubic.exchange/drpc/ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
@@ -362,5 +363,10 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc3.monad.xyz',
     'https://rpc-mainnet.monadinfra.com'
   ],
-  [BLOCKCHAIN_NAME.STELLAR]: ['https://rpc.lightsail.network']
+  [BLOCKCHAIN_NAME.STELLAR]: [
+    {
+      soroban: 'https://rpc.lightsail.network',
+      horizon: 'https://docs-demo.stellar-mainnet.quiknode.pro'
+    }
+  ]
 };
