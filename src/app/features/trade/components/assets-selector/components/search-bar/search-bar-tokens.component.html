@@ -1,7 +1,7 @@
 <ng-container>
   <tui-input
     *ngIf="!expandableField; else expandableInputTpl"
-    [ngModel]="searchQuery"
+    [ngModel]="localQuery"
     (ngModelChange)="onQueryChanges($event)"
     [tuiTextfieldIconLeft]="'tuiIconSearch'"
     [tuiTextfieldSize]="'m'"
@@ -14,7 +14,7 @@
   <ng-template #expandableInputTpl>
     <div class="expandable-input" [class.expandable-input_expanded]="isExpanded" (click)="expand()">
       <tui-input
-        [ngModel]="searchQuery"
+        [ngModel]="localQuery"
         (ngModelChange)="onQueryChanges($event)"
         [tuiTextfieldIcon]="'tuiIconSearch'"
         tuiTextfieldSize="l"
