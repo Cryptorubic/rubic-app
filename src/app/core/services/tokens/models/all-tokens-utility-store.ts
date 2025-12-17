@@ -6,6 +6,7 @@ import { Token } from '@shared/models/tokens/token';
 import { TokenRef } from '@core/services/tokens/models/new-token-types';
 import { tap } from 'rxjs/operators';
 import { BlockchainName } from '@cryptorubic/core';
+import { TokensSorter } from '@core/services/tokens/utils/token-sorter';
 
 export class AllTokensUtilityStore extends BasicUtilityStore {
   protected override readonly useLocalSearch = false;
@@ -25,11 +26,8 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
     this._pageLoading$.next(true);
 
     const refs: TokenRef[] = [];
-    const sortedTokens = tokens.sort((a, b) => {
-      const aTotalRank = a.rank * (a?.networkRank || 1);
-      const bTotalRank = b.rank * (b?.networkRank || 1);
-      return aTotalRank > bTotalRank ? -1 : 1;
-    });
+    const sorter = new TokensSorter();
+    const sortedTokens = sorter.sortTokensRankNetworkWithCooldown(tokens);
 
     sortedTokens.forEach(token => {
       refs.push({
