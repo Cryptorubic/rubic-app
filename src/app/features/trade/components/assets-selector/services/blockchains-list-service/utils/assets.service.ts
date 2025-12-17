@@ -22,9 +22,10 @@ import {
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, map } from 'rxjs/operators';
+import { debounceTime, first, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 export abstract class AssetsService {
   // Custom token
@@ -52,6 +53,7 @@ export abstract class AssetsService {
   public readonly assetListType$ = this._assetListType$.asObservable().pipe(debounceTime(20));
 
   public set assetListType(value: AssetListType) {
+    console.log(value);
     this._assetListType$.next(value);
   }
 
@@ -126,11 +128,11 @@ export abstract class AssetsService {
     this._blockchainsToShow$.next(value);
   }
 
-  protected constructor() {
+  protected constructor(private readonly type: 'from' | 'to') {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
     this.assetsBlockchainsToShow = this._availableBlockchains;
-
+    this.subscribeOnQueryParams();
     // this.subscribeOnTokensToShow();
   }
 
@@ -215,5 +217,20 @@ export abstract class AssetsService {
     } else {
       return chain.tags.includes(filter);
     }
+  }
+
+  private subscribeOnQueryParams(): void {
+    console.log(this.type);
+    this.queryParamsService.queryParams$
+      .pipe(
+        first(),
+        map(query => (this.type === 'from' ? query?.fromChain : query?.toChain))
+      )
+      .subscribe(queryChain => {
+        console.log('QQQ queryChain', queryChain);
+        if (queryChain && BlockchainsInfo.isBlockchainName(queryChain)) {
+          this.assetListType = queryChain;
+        }
+      });
   }
 }

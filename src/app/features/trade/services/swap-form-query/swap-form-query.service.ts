@@ -126,14 +126,6 @@ export class SwapFormQueryService {
       ...(toChain && { toChain: toChain as BlockchainName })
     };
 
-    // if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-    //   if (newParams.from === defaultFormParameters.swap.from[fromChain as DefaultParametersFrom]) {
-    //     newParams.from = defaultFormParameters.swap.to[fromChain as DefaultParametersTo];
-    //   } else {
-    //     newParams.to = defaultFormParameters.swap.from[fromChain as DefaultParametersFrom];
-    //   }
-    // }
-
     return newParams;
   }
 
