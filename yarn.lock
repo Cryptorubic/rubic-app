@@ -2327,18 +2327,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@0.8.16-alpha-usdt-zero-bridge.2":
-  version "0.8.16-alpha-usdt-zero-bridge.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.8.16-alpha-usdt-zero-bridge.2.tgz#2ae6f03e5648a90099770e82f12a22d54658e027"
-  integrity sha512-cYGG1MUaK4cwnUz/skEPHcTkT/2HrZ70hdnx2o6yxgXuFHQTDuzLR+lVEm/48kzpVS47shl2UL8Jw3Ig7tsbGA==
+"@cryptorubic/core@0.8.16-alpha-usdt-zero-bridge.4":
+  version "0.8.16-alpha-usdt-zero-bridge.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-0.8.16-alpha-usdt-zero-bridge.4.tgz#6dccd8632968e8fcadcf9c5e70f1b48728bbc411"
+  integrity sha512-+o5G19Ad2eRqtHY4oX+VE2GVNRWOPmypSDa8ACkqzb1HQeBI/OX4XV3CikLbsGBxcvtPXW9X+nEF8fOtluJYzQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@0.8.16-alpha-usdt-zero-bridge.2":
-  version "0.8.16-alpha-usdt-zero-bridge.2"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.8.16-alpha-usdt-zero-bridge.2.tgz#c1069d54572688b116d83ae8b5713c3bfa14527a"
-  integrity sha512-4IkQ6VmNH0/xMxf1YIF1/arQN6WNLNNhUoRPQtvrD5s/E1fjw+kD34PCmuvNku11pjJTrEYf/G7c3KzQ9bcVlA==
+"@cryptorubic/web3@0.8.16-alpha-usdt-zero-bridge.4":
+  version "0.8.16-alpha-usdt-zero-bridge.4"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-0.8.16-alpha-usdt-zero-bridge.4.tgz#36f8439d989a8017876c9017276d75a4c93cb61e"
+  integrity sha512-4tR/9QfB3axs8rDYPdtMSn2OBMh5a3LJICNq6lpvmRS6veok9twR+C96I6M+BFOP0IJKI/eSinxeJlSHjHX41Q==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
