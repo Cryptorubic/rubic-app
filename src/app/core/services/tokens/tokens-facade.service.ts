@@ -5,7 +5,15 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
-import { BehaviorSubject, combineLatestWith, firstValueFrom, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  firstValueFrom,
+  forkJoin,
+  from,
+  Observable,
+  of
+} from 'rxjs';
 import BigNumber from 'bignumber.js';
 import {
   catchError,
@@ -13,7 +21,8 @@ import {
   distinctUntilChanged,
   first,
   map,
-  switchMap
+  switchMap,
+  tap
 } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth/auth.service';
 import { List } from 'immutable';
@@ -41,6 +50,7 @@ import {
   BlockchainsInfo,
   CHAIN_TYPE,
   ChainType,
+  EvmBlockchainName,
   nativeTokensList,
   TEST_EVM_BLOCKCHAIN_NAME
 } from '@cryptorubic/core';
@@ -331,38 +341,37 @@ export class TokensFacadeService {
    * Adds new token to tokens list.
    * @param token Tokens to add.
    */
-  public addToken(_token: BalanceToken): void {
-    // @TODO TOKENS ADD TOKEN
-    // if (!this.tokens.find(t => compareTokens(t, token))) {
-    //   const tokens = this.tokens.push(token);
-    //   this.updateCommonTokensState(tokens);
-    // }
+  public addToken(token: BalanceToken): void {
+    this.tokensStore.addNewBlockchainTokens(token.blockchain, [token]);
   }
 
-  public addTokenByAddress(
-    _address: string,
-    _blockchain: BlockchainName
-  ): Observable<BalanceToken> {
-    // @TODO TOKENS
-    throw Error('Method not implemented.');
-    // return forkJoin([token$, balance$]).pipe(
-    //   map(([token, amount]) => ({
-    //     blockchain,
-    //     address,
-    //     name: token.name,
-    //     symbol: token.symbol,
-    //     decimals: token.decimals,
-    //     image: '',
-    //     rank: 1,
-    //     price: null as number | null,
-    //     amount: amount || new BigNumber(NaN)
-    //   })),
-    //   tap((_token: TokenAmount) => {
-    //     // @TODO TOKENS ADD TO STORE
-    //     // const tokens = this.tokens.push(token);
-    //     // this.updateCommonTokensState(tokens);
-    //   })
-    // );
+  public addTokenByAddress(address: string, blockchain: BlockchainName): Observable<BalanceToken> {
+    const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      blockchain as EvmBlockchainName
+    );
+    const chainType = BlockchainsInfo.getChainType(blockchain);
+    const balance$ =
+      this.userAddress && this.authService.userChainType === chainType
+        ? from(blockchainAdapter.getBalance(this.userAddress, address))
+        : of(null);
+    const token$ = this.sdkLegacyService.tokenService.createToken({ blockchain, address });
+
+    return forkJoin([token$, balance$]).pipe(
+      map(([token, amount]) => ({
+        blockchain,
+        address,
+        name: token.name,
+        symbol: token.symbol,
+        decimals: token.decimals,
+        image: '',
+        rank: 1,
+        price: null as number | null,
+        amount: amount || new BigNumber(NaN)
+      })),
+      tap((token: BalanceToken) => {
+        this.tokensStore.addNewBlockchainTokens(blockchain, [token]);
+      })
+    );
   }
 
   public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {

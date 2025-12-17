@@ -14,7 +14,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, first, map, share, startWith, switchMap, tap } from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -96,7 +96,18 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.setWindowHeight();
     this.assetListType$ = this.assetsSelectorService.assetListType$.pipe(
       distinctUntilChanged(),
-      startWith('allChains' as AssetListType)
+      startWith('allChains' as AssetListType),
+      combineLatestWith(
+        this.formService.inputValue$.pipe(
+          map(form => (this.type === 'from' ? form?.fromBlockchain : form?.toBlockchain)),
+          first(),
+          startWith(null)
+        )
+      ),
+      map(([assetListType, selectedChain]) => {
+        console.log('CHH', assetListType, selectedChain);
+        return (selectedChain || assetListType) as AssetListType;
+      })
     );
 
     this.tokensSearchQuery$ = this.assetListType$.pipe(

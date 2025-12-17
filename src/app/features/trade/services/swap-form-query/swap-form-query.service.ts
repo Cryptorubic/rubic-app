@@ -11,7 +11,6 @@ import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -114,18 +113,17 @@ export class SwapFormQueryService {
       fromChain = queryParams.fromChain;
     } else if (this.walletConnectorService.network) {
       fromChain = this.walletConnectorService.network;
-    } else {
-      fromChain = defaultFormParameters.swap.fromChain;
     }
 
-    const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
-      ? queryParams.toChain
-      : defaultFormParameters.swap.toChain;
+    let toChain: AssetListType;
+    if (BlockchainsInfo.isBlockchainName(queryParams?.toChain)) {
+      toChain = queryParams.toChain;
+    }
 
     const newParams = {
       ...queryParams,
-      fromChain,
-      toChain
+      ...(fromChain && { fromChain: fromChain as BlockchainName }),
+      ...(toChain && { toChain: toChain as BlockchainName })
     };
 
     // if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {

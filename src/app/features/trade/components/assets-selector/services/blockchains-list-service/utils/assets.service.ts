@@ -14,7 +14,6 @@ import { PlatformConfigurationService } from '@core/services/backend/platform-co
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Injector, inject } from '@angular/core';
 import { ModalService } from '@core/modals/services/modal.service';
-import { TuiDestroyService } from '@taiga-ui/cdk';
 import {
   blockchainsList,
   RankedBlockchain,
@@ -26,7 +25,6 @@ import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { debounceTime, map } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -98,10 +96,6 @@ export abstract class AssetsService {
   private readonly injector = inject(Injector);
 
   private readonly modalService = inject(ModalService);
-
-  private readonly destroy$ = inject(TuiDestroyService);
-
-  private readonly tokensFacade = inject(TokensFacadeService);
 
   public set filterQuery(value: BlockchainFilters) {
     if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
