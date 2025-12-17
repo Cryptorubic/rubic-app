@@ -4,7 +4,7 @@ import { Token } from '@shared/models/tokens/token';
 export class TokensSorter {
   public sortTokensRankNetworkWithCooldown(tokens: readonly Token[]): Token[] {
     const maxConsecutiveFromSameChain = 3;
-    const cooldownLength = 6;
+    const cooldownLength = 5;
 
     const tokensByChain = this.groupTokensByChain(tokens);
     this.sortTokensInsideEachChain(tokensByChain);
@@ -44,7 +44,7 @@ export class TokensSorter {
       }
 
       if (lastPickedChainRunLength >= maxConsecutiveFromSameChain) {
-        cooldownByChain.set(chain, Math.max(cooldownByChain.get(chain) ?? 0, cooldownLength));
+        cooldownByChain.set(chain, Math.max(cooldownByChain.get(chain) ?? 0, cooldownLength + 1));
       }
     }
 
