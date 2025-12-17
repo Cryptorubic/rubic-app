@@ -5,12 +5,18 @@ import {
   TokenRef,
   TokensState
 } from '@core/services/tokens/models/new-token-types';
-import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
-import { BehaviorSubject, combineLatest, combineLatestWith } from 'rxjs';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
+import { BehaviorSubject, combineLatest, combineLatestWith, firstValueFrom, of } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
+import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
+import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
+import { blockchainImageKey } from '@features/trade/components/assets-selector/services/tokens-list-service/constants/blockchain-image-key';
+import { EvmAdapter } from '@cryptorubic/web3';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +31,11 @@ export class NewTokensStoreService {
     })
   );
 
-  constructor(private readonly apiService: NewTokensApiService) {}
+  constructor(
+    private readonly apiService: NewTokensApiService,
+    private readonly httpClient: HttpClient,
+    private readonly sdkService: SdkLegacyService
+  ) {}
 
   public addInitialBlockchainTokens(
     blockchain: BlockchainName,
@@ -201,6 +211,9 @@ export class NewTokensStoreService {
     this.apiService
       .fetchQueryTokens(query, blockchain)
       .pipe(
+        switchMap(tokens =>
+          tokens?.length ? of(tokens) : this.fetchCustomToken(query, blockchain)
+        ),
         tap(tokens => {
           const refs = tokens.map(token => ({
             blockchain: token.blockchain,
@@ -225,5 +238,59 @@ export class NewTokensStoreService {
         })
       )
       .subscribe();
+  }
+
+  private async fetchCustomToken(
+    query: string,
+    blockchain: BlockchainName
+  ): Promise<Token[] | null> {
+    try {
+      if (query && blockchain) {
+        const address = blockchain === BLOCKCHAIN_NAME.SOLANA ? query : query.toLowerCase();
+        const token = await this.sdkService.tokenService.createToken({
+          blockchain: blockchain,
+          address
+        });
+
+        if (token?.name && token?.symbol && token?.decimals) {
+          let image: string;
+          if ('image' in token) image = token.image as string;
+          if (!image) image = await this.fetchTokenImage(token).catch(() => DEFAULT_TOKEN_IMAGE);
+
+          return [
+            {
+              ...token,
+              image: image,
+              rank: 0,
+              price: 0,
+              tokenSecurity: undefined
+            }
+          ];
+        }
+      }
+    } catch {
+      return [];
+    }
+    return [];
+  }
+
+  private async fetchTokenImage(token: BlockchainToken): Promise<string> {
+    const blockchainKey = blockchainImageKey[token.blockchain];
+    if (!blockchainKey) {
+      return DEFAULT_TOKEN_IMAGE;
+    }
+
+    const tokenAddress = BlockchainsInfo.isEvmBlockchainName(token.blockchain)
+      ? EvmAdapter.toChecksumAddress(token.address)
+      : token.address;
+    const image = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${blockchainKey}/assets/${tokenAddress}/logo.png`;
+
+    return firstValueFrom(
+      this.httpClient.get<string>(image).pipe(
+        catchError((err: unknown) => {
+          return (err as HttpErrorResponse)?.status === 200 ? of(image) : of(DEFAULT_TOKEN_IMAGE);
+        })
+      )
+    );
   }
 }

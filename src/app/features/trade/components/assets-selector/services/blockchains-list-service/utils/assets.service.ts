@@ -220,14 +220,12 @@ export abstract class AssetsService {
   }
 
   private subscribeOnQueryParams(): void {
-    console.log(this.type);
     this.queryParamsService.queryParams$
       .pipe(
         first(),
         map(query => (this.type === 'from' ? query?.fromChain : query?.toChain))
       )
       .subscribe(queryChain => {
-        console.log('QQQ queryChain', queryChain);
         if (queryChain && BlockchainsInfo.isBlockchainName(queryChain)) {
           this.assetListType = queryChain;
         }
