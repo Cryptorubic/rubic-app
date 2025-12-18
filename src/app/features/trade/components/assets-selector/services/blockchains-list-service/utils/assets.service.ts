@@ -22,10 +22,10 @@ import {
 import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { debounceTime, first, map } from 'rxjs/operators';
-import { BalanceToken } from '@shared/models/tokens/balance-token';
+import { debounceTime, first, map, startWith } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainsInfo } from '@cryptorubic/core';
+import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -99,6 +99,8 @@ export abstract class AssetsService {
 
   private readonly modalService = inject(ModalService);
 
+  private readonly formService = inject(SwapsFormService);
+
   public set filterQuery(value: BlockchainFilters) {
     if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
       this._blockchainFilter$.next(BlockchainTags.ALL);
@@ -112,12 +114,33 @@ export abstract class AssetsService {
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
   public readonly blockchainsToShow$ = this._blockchainsToShow$.asObservable().pipe(
-    combineLatestWith(this.blockchainSearchQuery$, this.blockchainFilter$),
-    map(([chains, query, filters]) =>
-      chains.filter(
+    combineLatestWith(
+      this.blockchainSearchQuery$,
+      this.blockchainFilter$,
+      this.walletConnectorService.networkChange$.pipe(startWith(null))
+    ),
+    map(([chains, query, filters, walletNetwork]) => {
+      const filteredChains = chains.filter(
         chain => this.filterQueryBlockchain(query, chain) && this.filterByType(filters, chain)
-      )
-    )
+      );
+      if (walletNetwork) {
+        const sortedChains = [...this.availableBlockchains].sort((a, b) => {
+          if (a.name === walletNetwork) return -1;
+          if (b.name === walletNetwork) return 1;
+          return 0;
+        });
+        if (this.type === 'to' && this.formService.inputValue?.fromToken) {
+          const fromTokenChain = this.formService.inputValue.fromToken.blockchain;
+          return sortedChains.sort((a, b) => {
+            if (a.name === fromTokenChain) return -1;
+            if (b.name === fromTokenChain) return 1;
+            return 0;
+          });
+        }
+        return sortedChains;
+      }
+      return filteredChains;
+    })
   );
 
   public get blockchainsToShow(): AvailableBlockchain[] {
@@ -133,7 +156,6 @@ export abstract class AssetsService {
     this.blockchainsToShow = this._availableBlockchains;
     this.assetsBlockchainsToShow = this._availableBlockchains;
     this.subscribeOnQueryParams();
-    // this.subscribeOnTokensToShow();
   }
 
   public closeSelector(): void {
@@ -163,25 +185,8 @@ export abstract class AssetsService {
         disabledFrom
       };
     });
-    const userBlockchain = this.walletConnectorService.network;
     const sortedAvailableBlockchains = availableBlockchains.sort((a, b) => b.rank - a.rank);
-    this._availableBlockchains = sortedAvailableBlockchains.sort((a, b) => {
-      if (a.name === userBlockchain) return -1;
-      if (b.name === userBlockchain) return 1;
-      return 0;
-    });
-  }
-
-  protected setChainInTopOfAssetsBlockchains(fromToken: BalanceToken, toToken: BalanceToken): void {
-    let firstSelectedChainName = fromToken?.blockchain;
-    const chainFromOppositeSelector = toToken?.blockchain;
-
-    if (!firstSelectedChainName) firstSelectedChainName = chainFromOppositeSelector;
-    const firstAssetIndex = this.assetsBlockchainsToShow.findIndex(
-      asset => asset?.name === firstSelectedChainName
-    );
-    const [firstAsset] = this.assetsBlockchainsToShow.splice(firstAssetIndex, 1);
-    this.assetsBlockchainsToShow.unshift(firstAsset);
+    this._availableBlockchains = sortedAvailableBlockchains;
   }
 
   public abstract isDisabledFrom(blockchain: AvailableBlockchain): boolean;

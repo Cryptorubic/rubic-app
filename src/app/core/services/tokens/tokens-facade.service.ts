@@ -71,7 +71,7 @@ export class TokensFacadeService {
     query: string;
   } | null>(null);
 
-  public readonly tokenQuery$ = this._tokenQuery$.asObservable().pipe(debounceTime(200));
+  public readonly tokenQuery$ = this._tokenQuery$.asObservable().pipe(debounceTime(10));
 
   public readonly allTokens = new AllTokensUtilityStore(this.tokensStore, this.apiService).init();
 

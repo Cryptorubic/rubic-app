@@ -140,6 +140,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.resetWindowHeight();
     this.assetsSelectorService.closeSelector();
+    this.tokensFacade.buildSearchedList('', this.assetsSelectorService.assetListType);
   }
 
   public backToForm(): void {

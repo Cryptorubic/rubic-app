@@ -11,7 +11,7 @@ import {
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiSizeS } from '@taiga-ui/core';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 
 @Component({
@@ -24,11 +24,15 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 export class SearchBarTokensComponent implements OnChanges {
   @Input() expandableField: boolean = false;
 
+  private _searchQuery: string = '';
+
   /**
    * Value controlled by parent.
    * Must NOT be bound directly to input to avoid value rollback.
    */
-  @Input({ required: true }) searchQuery: string;
+  @Input({ required: true }) set searchQuery(value: string) {
+    this._searchQuery = value;
+  }
 
   @Input({ required: true }) totalBlockchains = 100;
 
@@ -71,7 +75,7 @@ export class SearchBarTokensComponent implements OnChanges {
       return;
     }
 
-    const nextExternalValue = this.searchQuery ?? '';
+    const nextExternalValue = this._searchQuery ?? '';
 
     if (this.isTyping) {
       return;
@@ -96,12 +100,10 @@ export class SearchBarTokensComponent implements OnChanges {
   }
 
   private subscribeToQuery(): void {
-    this.query$
-      .pipe(debounceTime(100), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(value => {
-        // Typing finished, allow external sync again
-        this.isTyping = false;
-        this.queryChange.emit(value);
-      });
+    this.query$.pipe(debounceTime(100), takeUntil(this.destroy$)).subscribe(value => {
+      // Typing finished, allow external sync again
+      this.isTyping = false;
+      this.queryChange.emit(value);
+    });
   }
 }
