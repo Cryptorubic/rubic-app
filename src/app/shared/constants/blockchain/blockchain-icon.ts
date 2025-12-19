@@ -158,5 +158,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: `${basePath}monad-testnet.svg`,
   [BLOCKCHAIN_NAME.UNICHAIN]: '',
   [BLOCKCHAIN_NAME.SUI]: '',
-  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: `${basePath}megaeth-testnet.svg`
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: `${basePath}megaeth-testnet.svg`,
+  [BLOCKCHAIN_NAME.TEMPO_TESTNET]: `${basePath}tempo-testnet.svg`
 };
