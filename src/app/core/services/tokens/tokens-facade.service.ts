@@ -55,7 +55,7 @@ import {
   TEST_EVM_BLOCKCHAIN_NAME
 } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { Web3Pure } from '@cryptorubic/web3';
+import { AbstractAdapter, Web3Pure } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { Token as OldToken } from '@cryptorubic/core';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
@@ -545,7 +545,14 @@ export class TokensFacadeService {
       chainTokens[token.blockchain].push(token);
     });
     const promises = Object.entries(chainTokens).map(([chain]: [BlockchainName, Token[]]) => {
-      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
+      let adapter: AbstractAdapter<unknown, unknown, BlockchainName>;
+      try {
+        adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
+      } catch {
+        return Promise.resolve(
+          tokens.map(token => ({ ...token, favorite: false, amount: new BigNumber(NaN) }))
+        );
+      }
       return firstValueFrom(
         this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
       ).then(() => {

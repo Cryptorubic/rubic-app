@@ -53,7 +53,6 @@ export abstract class AssetsService {
   public readonly assetListType$ = this._assetListType$.asObservable().pipe(debounceTime(20));
 
   public set assetListType(value: AssetListType) {
-    console.log(value);
     this._assetListType$.next(value);
   }
 
@@ -119,27 +118,59 @@ export abstract class AssetsService {
       this.blockchainFilter$,
       this.walletConnectorService.networkChange$.pipe(startWith(null))
     ),
-    map(([chains, query, filters, walletNetwork]) => {
-      const filteredChains = chains.filter(
+    map(([sourceChains, query, filters, networkFromWallet]) => {
+      let chains = sourceChains.filter(
         chain => this.filterQueryBlockchain(query, chain) && this.filterByType(filters, chain)
       );
-      if (walletNetwork) {
-        const sortedChains = [...this.availableBlockchains].sort((a, b) => {
-          if (a.name === walletNetwork) return -1;
-          if (b.name === walletNetwork) return 1;
-          return 0;
-        });
-        if (this.type === 'to' && this.formService.inputValue?.fromToken) {
-          const fromTokenChain = this.formService.inputValue.fromToken.blockchain;
-          return sortedChains.sort((a, b) => {
-            if (a.name === fromTokenChain) return -1;
-            if (b.name === fromTokenChain) return 1;
-            return 0;
-          });
+
+      const input = this.formService.inputValue ?? null;
+      const walletNetwork = networkFromWallet ?? null;
+      const currentSelectedNetwork =
+        this.type === 'from'
+          ? input?.fromToken?.blockchain ?? null
+          : input?.toToken?.blockchain ?? null;
+      const fromTokenChain = input?.fromToken?.blockchain ?? null;
+      const toTokenChain = input?.toToken?.blockchain ?? null;
+
+      let pullUpNetwork: string | null = null;
+
+      // pullUp only when current selector network is not selected
+      if (!currentSelectedNetwork) {
+        if (this.type === 'from') {
+          pullUpNetwork = fromTokenChain ?? toTokenChain;
+        } else {
+          pullUpNetwork = toTokenChain ?? fromTokenChain;
         }
-        return sortedChains;
       }
-      return filteredChains;
+
+      chains.sort((a, b) => {
+        // 1) current selector selected network goes first
+        if (currentSelectedNetwork) {
+          if (a.name === currentSelectedNetwork && b.name !== currentSelectedNetwork) return -1;
+          if (b.name === currentSelectedNetwork && a.name !== currentSelectedNetwork) return 1;
+        }
+
+        // 2) wallet network goes next
+        if (walletNetwork && walletNetwork !== currentSelectedNetwork) {
+          if (a.name === walletNetwork && b.name !== walletNetwork) return -1;
+          if (b.name === walletNetwork && a.name !== walletNetwork) return 1;
+        }
+
+        // 3) pullUpNetwork goes after that (only when currentSelectedNetwork is null)
+        if (
+          pullUpNetwork &&
+          pullUpNetwork !== walletNetwork &&
+          pullUpNetwork !== currentSelectedNetwork
+        ) {
+          if (a.name === pullUpNetwork && b.name !== pullUpNetwork) return -1;
+          if (b.name === pullUpNetwork && a.name !== pullUpNetwork) return 1;
+        }
+
+        // 4) keep original order
+        return 0;
+      });
+
+      return chains;
     })
   );
 
