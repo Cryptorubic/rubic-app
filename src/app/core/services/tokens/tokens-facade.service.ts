@@ -144,9 +144,9 @@ export class TokensFacadeService {
     Promise.all([this.buildTier1List(), this.buildTier2List()]).then(
       ([tier1Tokens, tier2Tokens]) => {
         this.allTokens.updateTokenSync([...tier1Tokens, ...tier2Tokens]);
+        this.buildUtilityList();
       }
     );
-    this.buildUtilityList();
   }
 
   private async buildTier1List(): Promise<Token[]> {

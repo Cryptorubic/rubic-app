@@ -78,7 +78,9 @@ export class NewTokensStoreService {
 
   public addNewBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
     const currentTokens = this.tokens[blockchain]._tokensObject$;
-    const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
+    const newValues = tokens.reduce((acc, token) => {
+      return { ...acc, [token.address]: token };
+    }, {});
     currentTokens.next({ ...currentTokens.value, ...newValues });
   }
 
@@ -97,15 +99,6 @@ export class NewTokensStoreService {
     });
     tokens.next(tokens.value);
   }
-
-  // updateTokens(tokens: ReadonlyArray<Token>): void;
-  //
-  // clearBalances(): void {
-  //   return Object.values(BLOCKCHAIN_NAME).forEach(blockchain => {
-  //     const tokens = this.tokens[blockchain]._tokens$.value;
-  //     Object.values(tokens).forEach(token => (token.b = undefined)
-  //   });
-  // }
 
   private createBlockchainUtilityStore(): BlockchainUtilityState {
     return Object.values(BLOCKCHAIN_NAME).reduce((acc, blockchain) => {
