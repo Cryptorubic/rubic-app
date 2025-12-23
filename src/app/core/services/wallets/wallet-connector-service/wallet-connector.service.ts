@@ -239,7 +239,7 @@ export class WalletConnectorService {
     }
 
     if (walletName === WALLET_NAME.LOBSTR) {
-      return new LobstrWalletAdapter(...defaultConstructorParameters);
+      return new LobstrWalletAdapter(...defaultConstructorParameters, this.storeService);
     }
 
     if (walletName === WALLET_NAME.FREIGHTER) {

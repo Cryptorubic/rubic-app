@@ -185,7 +185,8 @@ export class RubicSdkErrorParser {
     if (
       err.message.toLowerCase().includes('approval denied') ||
       err.message.toLowerCase().includes('plugin closed') ||
-      err.message.toLowerCase().includes('the user rejected this request')
+      err.message.toLowerCase().includes('the user rejected this request') ||
+      err.message.toLowerCase().includes('user declined access')
     ) {
       return new UserRejectError();
     }
