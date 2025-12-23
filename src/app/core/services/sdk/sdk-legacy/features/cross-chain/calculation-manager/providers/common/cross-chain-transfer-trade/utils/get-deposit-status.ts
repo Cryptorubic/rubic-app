@@ -8,7 +8,7 @@ import {
   CrossChainDepositData,
   CrossChainDepositStatus
 } from '../models/cross-chain-deposit-statuses';
-import { RubicSdkError } from '@cryptorubic/web3';
+import { RubicSdkError, TX_STATUS } from '@cryptorubic/web3';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
@@ -119,6 +119,31 @@ async function getNearIntentsStatus(
   };
 }
 
+async function getQuickexStatus(
+  id: string,
+  _params: GetDepositStatusFnParams,
+  httpClient: HttpClient
+): Promise<CrossChainDepositData> {
+  const statusResp = await firstValueFrom(
+    httpClient.get<{
+      completed: boolean;
+      withdrawals: Array<{ txId: string }>;
+    }>(`https://quickex.io/api/v2/orders/info?orderId=${id}`)
+  );
+
+  if (!statusResp.completed) {
+    return {
+      status: TX_STATUS.PENDING,
+      dstHash: null
+    };
+  }
+
+  return {
+    status: CROSS_CHAIN_DEPOSIT_STATUS.FINISHED,
+    dstHash: statusResp.withdrawals[statusResp.withdrawals.length - 1].txId
+  };
+}
+
 export type GetDepositStatusFnParams = { depositMemo?: string };
 
 export type getDepositStatusFn = (
@@ -132,7 +157,8 @@ const _getDepositStatusFnMap = {
   [CROSS_CHAIN_TRADE_TYPE.SIMPLE_SWAP]: SimpleSwapApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.CHANGELLY]: ChangellyApiService.getTxStatus,
   [CROSS_CHAIN_TRADE_TYPE.EXOLIX]: getExolixStatus,
-  [CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS]: getNearIntentsStatus
+  [CROSS_CHAIN_TRADE_TYPE.NEAR_INTENTS]: getNearIntentsStatus,
+  [CROSS_CHAIN_TRADE_TYPE.QUICKEX]: getQuickexStatus
 } as const;
 
 export type TransferTradeType = keyof typeof _getDepositStatusFnMap;
