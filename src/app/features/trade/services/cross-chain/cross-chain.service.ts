@@ -6,7 +6,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import {
   EvmBasicTransactionOptions,
   NotWhitelistedProviderError,
-  SwapTransactionOptions,
   UnapprovedContractError,
   UnapprovedMethodError,
   UnnecessaryApproveError,
@@ -49,8 +48,6 @@ import {
   TO_BACKEND_BLOCKCHAINS,
   Token
 } from '@cryptorubic/core';
-import { LowSlippageError } from '@app/core/errors/models/common/low-slippage-error';
-import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 import { SOLANA_SPONSOR } from '@features/trade/constants/solana-sponsor';
 import { SolanaGaslessService } from '../solana-gasless/solana-gasless.service';
@@ -58,6 +55,7 @@ import { checkAmountGte100Usd } from '../solana-gasless/utils/solana-utils';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
@@ -145,7 +143,12 @@ export class CrossChainService {
     toSdkToken: PriceToken,
     fromAmount: BigNumber
   ): Promise<QuoteOptionsInterface> {
-    const slippageTolerance = this.settingsService.crossChainRoutingValue.slippageTolerance / 100;
+    const slippageTolerance = new BigNumber(
+      this.settingsService.crossChainRoutingValue.slippageTolerance
+    )
+      .div(100)
+      .dp(4, BigNumber.ROUND_DOWN)
+      .toNumber();
 
     const queryDisabledTradeTypes = this.queryParamsService.disabledCrossChainProviders || [];
     const disabledProvidersFromApiAndQuery = Array.from(
@@ -200,6 +203,7 @@ export class CrossChainService {
   public async swapTrade(
     trade: CrossChainTrade<unknown>,
     callbackOnHash?: (hash: string) => void,
+    onSimulationSuccess?: () => Promise<boolean>,
     params: { useCacheData: boolean; skipAmountCheck: boolean } = {
       useCacheData: false,
       skipAmountCheck: false
@@ -252,6 +256,7 @@ export class CrossChainService {
     const swapOptions: SwapTransactionOptions = {
       onConfirm: onTransactionHash,
       onWarning,
+      onSimulationSuccess,
       ...(receiverAddress && { receiverAddress }),
       ...(shouldCalculateGasPrice && { gasPriceOptions }),
       ...(this.queryParamsService.testMode && { testMode: true }),
@@ -292,11 +297,6 @@ export class CrossChainService {
       const parsedError = RubicSdkErrorParser.parseError(error);
       if (!(error instanceof UserRejectError)) {
         this.gtmService.fireSwapError(trade, this.authService.userAddress, parsedError);
-      }
-
-      if (parsedError instanceof SimulationFailedError && trade.getTradeInfo().slippage < 5) {
-        const slippageErr = new LowSlippageError();
-        throw slippageErr;
       }
 
       throw parsedError;

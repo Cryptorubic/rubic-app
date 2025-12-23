@@ -22,12 +22,22 @@
 
       <button
         tuiButton
+        [appearance]="formValue.slippageTolerance === 1 ? 'primary' : 'outline'"
+        type="button"
+        size="s"
+        (click)="onSlippageToleranceChange(1)"
+      >
+        1%
+      </button>
+
+      <button
+        tuiButton
         [appearance]="formValue.slippageTolerance === 1.5 ? 'primary' : 'outline'"
         type="button"
         size="s"
         (click)="onSlippageToleranceChange(1.5)"
       >
-        1.5%
+        1,5%
       </button>
 
       <button
@@ -40,46 +50,16 @@
         3%
       </button>
 
-      <tui-input-number
-        id="slippage"
-        class="settings__slippage-input"
-        tuiTextfieldSize="s"
-        tuiTextfieldPostfix="%"
-        [min]="0"
-        [max]="50"
-        [ngModel]="formValue.slippageTolerance"
-        [ngModelOptions]="{ standalone: true }"
-        [precision]="2"
-        [style.text-align]="'right'"
-        (ngModelChange)="onSlippageToleranceChange($event)"
-      >
-        {{ formValue.slippageTolerance }}%
-      </tui-input-number>
-
-      <!--      <div-->
-      <!--        (click)="toggleAutoSlippageTolerance()"-->
-      <!--        class="settings__button-auto"-->
-      <!--        [ngClass]="{-->
-      <!--          'settings__button-auto_active': crossChainRoutingForm.value.autoSlippageTolerance-->
-      <!--        }"-->
-      <!--      >-->
-      <!--        Auto-->
-      <!--      </div>-->
-      <!--      <button (click)="onSlippageToleranceChange(3)" class="settings__button-auto">3</button>-->
-      <!--      <button (click)="onSlippageToleranceChange(5)" class="settings__button-auto">5</button>-->
-      <!--      <div class="slippage-container">-->
-      <!--        <input-->
-      <!--          appCommaToPeriod-->
-      <!--          [ngModel]="slippageTolerance"-->
-      <!--          (amountChange)="onSlippageToleranceChange($event)"-->
-      <!--          [ngModelOptions]="{ standalone: true }"-->
-      <!--          [tuiTextfieldLabelOutside]="true"-->
-      <!--          [tuiTextfieldSize]="'s'"-->
-      <!--          [minAmount]="minimumSlippageTolerance"-->
-      <!--        />-->
-      <!--        <div>%</div>-->
-      <!--        <span></span>-->
-      <!--      </div>-->
+      <div class="settings__slippage-input">
+        <app-input-number
+          [min]="1"
+          [max]="50"
+          [value]="formValue.slippageTolerance"
+          [name]="'crosschain-slippage'"
+          [suffix]="'%'"
+          (inputChanged)="onSlippageToleranceChange($event)"
+        ></app-input-number>
+      </div>
     </div>
     <div class="settings__row" *ngIf="showReceiverAddressRadio$ | async">
       <div

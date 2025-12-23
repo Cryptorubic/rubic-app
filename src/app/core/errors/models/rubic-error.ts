@@ -20,7 +20,7 @@ export class RubicError<T extends ERROR_TYPE> extends Error {
 
   public isWarning: boolean = false;
 
-  public readonly showAlert: boolean = true;
+  public showAlert: boolean = true;
 
   constructor(
     contentProvider: T extends ERROR_TYPE.TEXT
