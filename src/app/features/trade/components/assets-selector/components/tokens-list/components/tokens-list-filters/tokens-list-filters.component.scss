@@ -71,6 +71,10 @@
     &__active {
       background: var(--tui-secondary-active);
     }
+
+    &__icon {
+      height: 15px;
+    }
   }
 
   .token-filter__text {

@@ -4,4 +4,6 @@ import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amou
 
 export type Asset = FiatAsset | AvailableTokenAmount;
 
-export type AssetType = 'allChains' | BlockchainName;
+export type UtilityAssetType = 'allChains' | 'gainers' | 'losers' | 'trending' | 'favorite';
+
+export type AssetListType = UtilityAssetType | BlockchainName;

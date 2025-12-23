@@ -18,6 +18,10 @@ import { PlatformConfigV3, PlatformConfigV3CcrProviderInfo } from './models/plat
   providedIn: 'root'
 })
 export class PlatformConfigurationService {
+  private readonly _balanceNetworks$ = new BehaviorSubject<BlockchainName[]>([]);
+
+  public readonly balanceNetworks$ = this._balanceNetworks$.asObservable();
+
   private readonly _ccrProvidersInfo$ = new BehaviorSubject<
     Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>
   >(undefined);
@@ -48,6 +52,7 @@ export class PlatformConfigurationService {
         tap(infoV3Response => {
           if (infoV3Response.appIsActive === true) {
             this.setBlockchainsInfo(infoV3Response.networks);
+            this.setBalanceNetworks(infoV3Response.balanceNetworks);
             this.setCcrProvidersInfo(infoV3Response.crosschainProviders);
           }
         }),
@@ -90,5 +95,9 @@ export class PlatformConfigurationService {
     ) as Record<CrossChainTradeType, PlatformConfigV3CcrProviderInfo>;
 
     this._ccrProvidersInfo$.next(info);
+  }
+
+  private setBalanceNetworks(balanceNetworks: BlockchainName[]) {
+    this._balanceNetworks$.next(balanceNetworks);
   }
 }

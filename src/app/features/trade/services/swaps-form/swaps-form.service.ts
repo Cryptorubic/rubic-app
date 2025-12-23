@@ -8,21 +8,22 @@ import {
   SwapFormOutputControl
 } from '../../models/swap-form-controls';
 import { BehaviorSubject, Observable, shareReplay } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { compareTokens } from '@shared/utils/utils';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
 import { BLOCKCHAIN_NAME, BlockchainName } from '@cryptorubic/core';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
 import BigNumber from 'bignumber.js';
 import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorSubject';
 import { compareAssets } from '@features/trade/utils/compare-assets';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { Web3Pure } from '@cryptorubic/web3';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SwapsFormService {
   public readonly form = new FormGroup<SwapForm>({
     input: new FormGroup<SwapFormInputControl>({
@@ -68,26 +69,19 @@ export class SwapsFormService {
     shareReplay(shareReplayConfig)
   );
 
-  public readonly nativeToken$ = this.fromBlockchain$.pipe(
-    switchMap(blockchain => {
-      const address = Web3Pure.getNativeTokenAddress(blockchain);
-      return this.tokensService.findToken({ address, blockchain });
-    })
-  );
-
   public readonly toBlockchain$: Observable<BlockchainName> = this.inputValue$.pipe(
     map(inputValue => inputValue.toBlockchain),
     distinctUntilChanged(),
     shareReplay(shareReplayConfig)
   );
 
-  public readonly fromToken$: Observable<TokenAmount | null> = this.inputValue$.pipe(
+  public readonly fromToken$: Observable<BalanceToken | null> = this.inputValue$.pipe(
     map(inputValue => inputValue.fromToken),
     distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)
   );
 
-  public readonly toToken$: Observable<TokenAmount> = this.inputValue$.pipe(
+  public readonly toToken$: Observable<BalanceToken> = this.inputValue$.pipe(
     map(inputValue => inputValue.toToken),
     distinctObjectUntilChanged(),
     shareReplay(shareReplayConfig)
@@ -146,7 +140,6 @@ export class SwapsFormService {
   }
 
   constructor(
-    private readonly tokensService: TokensService,
     @Inject(DOCUMENT) private document: Document,
     private readonly walletConnectorService: WalletConnectorService
   ) {

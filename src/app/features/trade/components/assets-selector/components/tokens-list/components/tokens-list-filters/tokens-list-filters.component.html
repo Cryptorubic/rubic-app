@@ -9,7 +9,7 @@
         *tuiItem
         [draggable]="false"
         class="token-filter"
-        [class.token-filter__active]="tokenFilter === item.value"
+        [class.token-filter__active]="assetListType === item.value"
         (click)="selectFilter(item)"
       >
         <p class="token-filter__text">{{ item.label }}</p>

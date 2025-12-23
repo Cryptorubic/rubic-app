@@ -23,10 +23,13 @@
       *ngSwitchCase="'fromSelector'"
       formType="from"
     ></app-token-selector-page>
+
     <app-token-selector-page *ngSwitchCase="'toSelector'" formType="to"> </app-token-selector-page>
+
     <app-swap-form-page
       [style]="{ display: state.content === 'form' ? 'block' : 'none' }"
     ></app-swap-form-page>
+
     <app-preview-swap *ngSwitchCase="'preview'"></app-preview-swap>
     <app-deposit-preview-swap *ngSwitchCase="'depositPreview'"></app-deposit-preview-swap>
 

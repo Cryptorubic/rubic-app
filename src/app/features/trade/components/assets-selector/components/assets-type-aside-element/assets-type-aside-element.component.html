@@ -1,4 +1,4 @@
-<ng-container *ngLet="blockchainItem | functionCall : isItemDisabled : this as isDisabled">
+<ng-container>
   <button
     class="asset-types-aside__list-element"
     [class.disabled]="isDisabled"
@@ -9,7 +9,7 @@
     type="button"
     appearance="secondary"
     [disabled]="isDisabled"
-    [tuiHint]="blockchainItem | functionCall : getHintText : this"
+    [tuiHint]="hintText"
     (click)="onItemClick(blockchainItem)"
   >
     <div class="icon">

@@ -1,18 +1,22 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy, Optional } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  Optional,
+  Output
+} from '@angular/core';
 import { BlockchainName } from '@cryptorubic/core';
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
-import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
-import { FormsTogglerService } from '@app/features/trade/services/forms-toggler/forms-toggler.service';
 import { FormType } from '@app/features/trade/models/form-type';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
-import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
 import { allChainsSelectorItem } from '../../constants/all-chains';
+import { AssetListType } from '@features/trade/models/asset';
+import { SelectorUtils } from '@features/trade/components/assets-selector/utils/selector-utils';
 
 @Component({
   selector: 'app-blockchains-list',
@@ -20,8 +24,22 @@ import { allChainsSelectorItem } from '../../constants/all-chains';
   styleUrls: ['./blockchains-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlockchainsListComponent implements OnDestroy {
-  public readonly blockchainsToShow$ = this.blockchainsListService.blockchainsToShow$;
+export class BlockchainsListComponent {
+  @Input({ required: true }) type: 'from' | 'to';
+
+  @Input({ required: true }) searchQuery: string;
+
+  @Input({ required: true }) isDisabled: boolean = false;
+
+  @Input({ required: true }) hintText: string;
+
+  @Input({ required: true }) totalBlockchains: number;
+
+  @Input({ required: true }) blockchainsToShow: AvailableBlockchain[];
+
+  @Output() handleSearchQuery = new EventEmitter<string>();
+
+  @Output() handleSelection = new EventEmitter<AssetListType>();
 
   public readonly isMobile = this.headerStore.isMobile;
 
@@ -31,46 +49,21 @@ export class BlockchainsListComponent implements OnDestroy {
     @Optional()
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<void, { formType: FormType }>,
-    private readonly blockchainsListService: BlockchainsListService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly mobileNativeService: MobileNativeModalService,
-    public readonly formsTogglerService: FormsTogglerService,
     private readonly headerStore: HeaderStore
   ) {}
 
-  public get formType(): FormType {
-    return this.context?.data?.formType || this.assetsSelectorStateService.formType;
-  }
+  public onItemClick(blockchainName: BlockchainName | null): void {
+    if (blockchainName === null) {
+      this.handleSelection.emit('allChains');
+    } else {
+      this.handleSelection.emit(blockchainName);
+    }
 
-  ngOnDestroy(): void {
-    this.closeBlockchainsList();
+    this.mobileNativeService.forceClose();
   }
 
   public getBlockchainTag(blockchain: AvailableBlockchain): string {
     return SelectorUtils.getBlockchainTag(blockchain);
   }
-
-  public isDisabled(blockchain: AvailableBlockchain): boolean {
-    return this.blockchainsListService.isDisabled(blockchain);
-  }
-
-  public getHintText(blockchain: AvailableBlockchain): string | null {
-    return this.blockchainsListService.getHintText(blockchain);
-  }
-
-  public closeBlockchainsList(): void {
-    if (!this.isMobile) {
-      this.assetsSelectorService.setSelectorListTypeByAssetType();
-    }
-  }
-
-  public onItemClick(blockchainName: BlockchainName | null): void {
-    if (blockchainName === null) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(blockchainName);
-
-    this.mobileNativeService.forceClose();
-  }
-
-  protected readonly SWAP_PROVIDER_TYPE = SWAP_PROVIDER_TYPE;
 }

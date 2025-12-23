@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
 import { DEFAULT_TOKEN_IMAGE } from '@app/shared/constants/tokens/default-token-image';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { compareAddresses, Token, TokenAmount } from '@cryptorubic/core';
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 interface TxStep {
   img: string;
@@ -29,7 +29,7 @@ export class TonSlippageWarnModalComponent {
   constructor(
     @Inject(POLYMORPHEUS_CONTEXT)
     private readonly context: TuiDialogContext<boolean, { trade: TonOnChainTrade }>,
-    private readonly tokensStoreService: TokensStoreService
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.slippagePercent = this.context.data.trade.slippageTolerance * 100;
     this.isChangedSlippage = this.context.data.trade.additionalInfo.isChangedSlippage;
@@ -72,7 +72,7 @@ export class TonSlippageWarnModalComponent {
   }
 
   private getTokenImage(token: Token): string {
-    const foundToken = this.tokensStoreService.tokens.find(
+    const foundToken = this.tokensFacade.tokens.find(
       t => compareAddresses(t.address, token.address) && t.blockchain === token.blockchain
     );
     const imgSrc = foundToken?.image ?? DEFAULT_TOKEN_IMAGE;
