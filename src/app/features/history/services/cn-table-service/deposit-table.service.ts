@@ -77,17 +77,17 @@ export class DepositTableService extends TableService<
     // @FIX after 24.02.2026 use const
     let data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
 
-    /** */
-    // @FIX remove after 24.02.2026
-    // Cause in prev versions RUBIC_DEPOSIT_RECENT_TRADE didn't contain field `rubicId`.
-    // It causes 404 response of `statusExtended` call
+    /**
+     * @FIX remove after 24.02.2026
+     * Cause in prev versions RUBIC_DEPOSIT_RECENT_TRADE didn't contain field `rubicId`.
+     * It causes 404 response of `statusExtended` call
+     */
     const dataLen = data.length;
     data = data.filter(deposit => !!deposit.rubicId);
     const filteredDataLen = data.length;
     if (dataLen !== filteredDataLen) {
       this.storeService.setItem('RUBIC_DEPOSIT_RECENT_TRADE', data);
     }
-    /** */
 
     const tradeStatuses = data.map(trade => {
       return this.getDepositStatus(trade);
