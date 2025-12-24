@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatestWith, forkJoin, from, Observable, of } from 'rxjs';
-import { filter, map, share, startWith, switchMap } from 'rxjs/operators';
+import { catchError, filter, map, share, startWith, switchMap } from 'rxjs/operators';
 import { tuiIsFalsy, tuiIsPresent } from '@taiga-ui/cdk';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { FormControl } from '@angular/forms';
@@ -16,14 +16,15 @@ import BigNumber from 'bignumber.js';
 import { DepositTableData } from '../../models/deposit-table-data';
 import { BRIDGE_PROVIDERS } from '@app/features/trade/constants/bridge-providers';
 import {
+  API_STATUS_TO_DEPOSIT_STATUS,
   CROSS_CHAIN_DEPOSIT_STATUS,
   CrossChainDepositStatus
 } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/models/cross-chain-deposit-statuses';
 import { RubicSdkError } from '@cryptorubic/web3';
-import { getDepositStatus } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
-import { HttpClient } from '@angular/common/http';
 import { CrossChainTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/cross-chain-trade-type';
 import { TokenAmountDirective } from '@app/shared/directives/token-amount/token-amount.directive';
+import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { CrossChainTxStatusConfig } from '@app/core/services/sdk/sdk-legacy/features/ws-api/models/cross-chain-tx-status-config';
 
 @Injectable()
 export class DepositTableService extends TableService<
@@ -64,7 +65,7 @@ export class DepositTableService extends TableService<
   constructor(
     protected readonly walletConnector: WalletConnectorService,
     private readonly storeService: StoreService,
-    private readonly httpClient: HttpClient
+    private readonly rubicApiService: RubicApiService
   ) {
     super('date');
   }
@@ -73,7 +74,21 @@ export class DepositTableService extends TableService<
     data: DepositTableData[];
     total: number;
   }> {
-    const data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
+    // @FIX after 24.02.2026 use const
+    let data = this.storeService.getItem('RUBIC_DEPOSIT_RECENT_TRADE') || [];
+
+    /** */
+    // @FIX remove after 24.02.2026
+    // Cause in prev versions RUBIC_DEPOSIT_RECENT_TRADE didn't contain field `rubicId`.
+    // It causes 404 response of `statusExtended` call
+    const dataLen = data.length;
+    data = data.filter(deposit => !!deposit.rubicId);
+    const filteredDataLen = data.length;
+    if (dataLen !== filteredDataLen) {
+      this.storeService.setItem('RUBIC_DEPOSIT_RECENT_TRADE', data);
+    }
+    /** */
+
     const tradeStatuses = data.map(trade => {
       return this.getDepositStatus(trade);
     });
@@ -144,19 +159,13 @@ export class DepositTableService extends TableService<
     maxAge: 13_000
   })
   public getDepositStatus(trade: CrossChainTransferTrade): Observable<CrossChainDepositStatus> {
-    if (!trade.id) {
-      throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
-    }
+    if (!trade.id) throw new RubicSdkError(`Must provide ${trade.tradeType} trade id`);
 
     try {
-      return from(
-        getDepositStatus(
-          trade.id,
-          trade.tradeType,
-          { depositMemo: trade.extraField.value },
-          this.httpClient
-        )
-      ).pipe(map(el => el.status as CrossChainDepositStatus));
+      return from(this.rubicApiService.fetchCrossChainTxStatusExtended(trade.rubicId)).pipe(
+        catchError(() => of({ status: 'PENDING' } as CrossChainTxStatusConfig)),
+        map(response => API_STATUS_TO_DEPOSIT_STATUS[response.status])
+      );
     } catch {
       return of(CROSS_CHAIN_DEPOSIT_STATUS.WAITING);
     }
@@ -172,7 +181,8 @@ export class DepositTableService extends TableService<
       finished: { appearance: 'success', label: 'Success' },
       failed: { appearance: 'error', label: 'Failed' },
       refunded: { appearance: 'success', label: 'Refunded' },
-      verifying: { appearance: 'info', label: 'Verifying' }
+      verifying: { appearance: 'info', label: 'Verifying' },
+      expired: { appearance: 'info', label: 'Expired' }
     };
     return txStatusMapping[originalStatus];
   }

@@ -45,7 +45,6 @@ export class SolanaApiOnChainTrade extends SolanaOnChainTrade {
         gasFeeInfo: null,
         withDeflation: { from: { isDeflation: false }, to: { isDeflation: false } }
       },
-      params.apiQuote.integratorAddress!,
       params.shouldCalculateConsumedParams,
       sdkLegacyService,
       rubicApiService

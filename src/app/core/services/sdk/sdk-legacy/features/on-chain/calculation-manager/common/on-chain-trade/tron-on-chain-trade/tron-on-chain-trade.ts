@@ -37,13 +37,12 @@ export abstract class TronOnChainTrade extends OnChainTrade {
   private readonly apiResponse: QuoteResponseInterface;
 
   constructor(
-    integratorAddress: string,
     apiQuote: QuoteRequestInterface,
     apiResponse: QuoteResponseInterface,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(integratorAddress, sdkLegacyService, rubicApiService);
+    super(apiResponse, sdkLegacyService, rubicApiService);
     this.apiQuote = apiQuote || null;
     this.apiResponse = apiResponse || null;
   }
