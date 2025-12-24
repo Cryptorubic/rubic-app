@@ -255,6 +255,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.5,
     tags: ['ETH', BlockchainTags.EVM]
   },
+  {
+    name: BLOCKCHAIN_NAME.HYPER_EVM,
+    rank: 0.5,
+    tags: ['HYPE', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+  },
   { name: BLOCKCHAIN_NAME.AVALANCHE, rank: 0.5, tags: ['AVAX', BlockchainTags.EVM] },
   {
     name: BLOCKCHAIN_NAME.SCROLL,

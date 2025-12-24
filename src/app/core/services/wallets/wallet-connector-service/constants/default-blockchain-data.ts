@@ -258,5 +258,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.MONAD]: {
     name: 'Monad',
     rpc: 'https://rpc.monad.xyz'
+  },
+  [BLOCKCHAIN_NAME.HYPER_EVM]: {
+    name: 'HyperEVM',
+    rpc: 'https://rpc.hyperliquid.xyz/evm'
   }
 };
