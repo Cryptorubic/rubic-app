@@ -86,8 +86,8 @@ export class TokenService {
     if (chainType === CHAIN_TYPE.STELLAR) {
       const blockchain = tokenBaseStruct.blockchain as StellarBlockchainName;
       const adapter = this.adaptersFactoryService.getAdapter(blockchain);
-      const tokensInfo = await adapter.callForTokensInfo([tokenBaseStruct.address]);
-      return tokensInfo![0] as Token;
+      const tokensInfo = await adapter.callForTokenInfo(tokenBaseStruct.address);
+      return tokensInfo;
     }
 
     if (Web3Pure.isNativeAddress(tokenBaseStruct.blockchain, tokenBaseStruct.address)) {
