@@ -42,7 +42,8 @@
     "compile": "npm run precompile && tsc",
     "install:local-sdk": "ng cache clean && yarn add --force file:../rubic-monorepo/dist/packages/core file:../rubic-monorepo/dist/packages/web3 file:../rubic-monorepo/dist/packages/sdk",
     "install:prod-sdk": "yarn add @cryptorubic/core @cryptorubic/web3 @cryptorubic/sdk",
-    "install:version": "sh -c 'ver=\"$1\"; yarn add @cryptorubic/core@\"$ver\" @cryptorubic/web3@\"$ver\" @cryptorubic/sdk@\"$ver\"' --"
+    "install:version": "sh -c 'ver=\"$1\"; yarn add @cryptorubic/core@\"$ver\" @cryptorubic/web3@\"$ver\" @cryptorubic/sdk@\"$ver\"' --",
+    "commit:safe": "npm run compile && npm run lint && git add . && git commit -m"
   },
   "private": true,
   "dependencies": {
