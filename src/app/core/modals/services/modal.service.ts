@@ -43,6 +43,7 @@ import { SwapBackupRateChangedModalComponent } from '@app/features/trade/compone
 import { TradeInfo } from '@app/features/trade/models/trade-info';
 import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
+import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
 
 @Injectable({
   providedIn: 'root'
@@ -299,6 +300,28 @@ export class ModalService {
           size: 's',
           fitContent: true,
           data: { trade, tradeInfo$, rateChangeInfo }
+        },
+        injector
+      )
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openTurnstileModal(injector: Injector): Promise<boolean> {
+    this.setOpenedModalName('swap-backup-rate-changed');
+    return firstValueFrom(
+      this.showDialog(
+        TurnstileCheckComponent,
+        {
+          title: 'Confirm you are not a robot',
+          size: 's',
+          fitContent: true
         },
         injector
       )

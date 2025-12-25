@@ -83,7 +83,6 @@ import { SmallBlockchainButtonComponent } from './components/small-blockchain-bu
 import { MobileMenuComponent } from './components/mobile-menu/mobile-menu.component';
 import { ChartTogglerComponent } from './components/chart-toggler/chart-toggler.component';
 import { InputNumberComponent } from './components/input-number/input-number.component';
-import { CfWidgetComponent } from './components/cf-widget/cf-widget.component';
 
 @NgModule({
   declarations: [
@@ -140,8 +139,7 @@ import { CfWidgetComponent } from './components/cf-widget/cf-widget.component';
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
     ChartTogglerComponent,
-    InputNumberComponent,
-    CfWidgetComponent
+    InputNumberComponent
   ],
   imports: [
     CommonModule,
@@ -225,8 +223,7 @@ import { CfWidgetComponent } from './components/cf-widget/cf-widget.component';
     SmallBlockchainButtonComponent,
     MobileMenuComponent,
     ChartTogglerComponent,
-    InputNumberComponent,
-    CfWidgetComponent
+    InputNumberComponent
   ],
   providers: [ScannerLinkPipe, WithRoundPipe, BigNumberFormatPipe, TimeGuard, SafeSanitizerPipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

@@ -35,30 +35,43 @@ import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { TurnstileService } from '@core/services/turnstile/turnstile.service';
+import { first, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
-  constructor(private readonly sdkLegacyService: SdkLegacyService) {}
-
   private get apiUrl(): string {
     const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
 
     return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
   }
 
-  private readonly client = this.getSocket();
+  private client: Socket | null = null;
 
   private latestQuoteParams: QuoteRequestInterface | null = null;
 
-  private getSocket(): Socket {
+  constructor(
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly turnstileService: TurnstileService
+  ) {
+    this.setSocket();
+  }
+
+  private async setSocket(): Promise<void> {
+    const token = await firstValueFrom(this.turnstileService.token$.pipe(first(el => el !== null)));
+    if (!token) {
+      throw new RubicSdkError('Turnstile token is not available');
+    }
     const ioClient = io(this.apiUrl, {
       reconnectionDelayMax: 10000,
-      path: '/api/routes/ws/',
-      transports: ['websocket']
+      path: `/api/routes/ws/`,
+      transports: ['websocket'],
+      query: { token }
     });
-    return ioClient;
+
+    this.client = ioClient;
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
@@ -66,7 +79,7 @@ export class RubicApiService {
     if (attempt > 2) {
       return;
     }
-    if (this.client.connected) {
+    if (this.client?.connected) {
       this.client.emit('calculate', params);
     } else {
       const repeatInterval = 3_000;
@@ -78,7 +91,7 @@ export class RubicApiService {
 
   public stopCalculation(): void {
     if (this.latestQuoteParams) {
-      this.client.emit('stopCalculation');
+      this.client?.emit('stopCalculation');
       this.latestQuoteParams = null;
     }
   }
@@ -148,61 +161,70 @@ export class RubicApiService {
   }
 
   public disconnectSocket(): void {
-    this.client.disconnect();
+    this.client?.disconnect();
   }
 
   public closetSocket(): void {
-    this.client.close();
+    this.client?.close();
   }
 
   public handleQuotesAsync(): Observable<WrappedAsyncTradeOrNull> {
-    return fromEvent<
-      WsQuoteResponseInterface & {
-        data: RubicApiErrorDto;
-        type: string;
-      }
-    >(this.client, 'events').pipe(
-      concatMap(wsResponse => {
-        const { trade, total, calculated, data } = wsResponse;
-        let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
-          Promise.resolve(null);
+    return this.turnstileService.token$.pipe(
+      first(el => el !== null),
+      switchMap(token => {
+        if (!token) {
+          return of(null);
+        }
+        return fromEvent<
+          WsQuoteResponseInterface & {
+            data: RubicApiErrorDto;
+            type: string;
+          }
+        >(this.client, 'events').pipe(
+          concatMap(wsResponse => {
+            const { trade, total, calculated, data } = wsResponse;
+            let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
+              Promise.resolve(null);
 
-        const rubicApiError = data
-          ? {
-              ...data,
-              type: wsResponse.type
-            }
-          : data;
+            const rubicApiError = data
+              ? {
+                  ...data,
+                  type: wsResponse.type
+                }
+              : data;
 
-        promise =
-          this.latestQuoteParams?.srcTokenBlockchain !== this.latestQuoteParams?.dstTokenBlockchain
-            ? TransformUtils.transformCrossChain(
-                trade!,
-                this.latestQuoteParams!,
-                this.latestQuoteParams!.integratorAddress!,
-                this.sdkLegacyService,
-                this,
-                rubicApiError as RubicAny
-              )
-            : TransformUtils.transformOnChain(
-                trade!,
-                this.latestQuoteParams!,
-                this.latestQuoteParams!.integratorAddress!,
-                this.sdkLegacyService,
-                this,
-                rubicApiError as RubicAny
-              );
-        return from(promise).pipe(
-          catchError(err => {
-            console.log(err);
-            return of(null);
-          }),
-          map(wrappedTrade => ({
-            total,
-            calculated,
-            wrappedTrade,
-            ...(data && { tradeType: wsResponse.type })
-          }))
+            promise =
+              this.latestQuoteParams?.srcTokenBlockchain !==
+              this.latestQuoteParams?.dstTokenBlockchain
+                ? TransformUtils.transformCrossChain(
+                    trade!,
+                    this.latestQuoteParams!,
+                    this.latestQuoteParams!.integratorAddress!,
+                    this.sdkLegacyService,
+                    this,
+                    rubicApiError as RubicAny
+                  )
+                : TransformUtils.transformOnChain(
+                    trade!,
+                    this.latestQuoteParams!,
+                    this.latestQuoteParams!.integratorAddress!,
+                    this.sdkLegacyService,
+                    this,
+                    rubicApiError as RubicAny
+                  );
+            return from(promise).pipe(
+              catchError(err => {
+                console.log(err);
+                return of(null);
+              }),
+              map(wrappedTrade => ({
+                total,
+                calculated,
+                wrappedTrade,
+                ...(data && { tradeType: wsResponse.type })
+              }))
+            );
+          })
         );
       })
     );

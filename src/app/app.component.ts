@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
+import { AfterViewInit, Component, Inject, Injector, INJECTOR, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, delay, first, map, tap } from 'rxjs/operators';
+import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -21,6 +21,8 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { TurnstileService } from '@core/services/turnstile/turnstile.service';
+import { ModalService } from '@core/modals/services/modal.service';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +43,7 @@ export class AppComponent implements AfterViewInit {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
+    @Inject(INJECTOR) private readonly injector: Injector,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
     private readonly spindlService: SpindlService,
@@ -48,7 +51,9 @@ export class AppComponent implements AfterViewInit {
     private readonly tradePageService: TradePageService,
     private readonly sdkLoaderService: SdkLoaderService,
     private readonly chartService: ChartService,
-    private readonly tokensFacadeService: TokensFacadeService
+    private readonly tokensFacadeService: TokensFacadeService,
+    private readonly turnstileService: TurnstileService,
+    private readonly modalService: ModalService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -140,11 +145,14 @@ export class AppComponent implements AfterViewInit {
     forkJoin([
       this.loadPlatformConfig(),
       this.initQueryParamsSubscription(),
-      this.tokensFacadeService.tier1TokensLoaded$.pipe(tap(console.log), first(Boolean))
+      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
+      setTimeout(() => {
+        this.initTurnStile();
+      }, 500);
     });
   }
 
@@ -186,5 +194,21 @@ export class AppComponent implements AfterViewInit {
    */
   private loadPlatformConfig(): Observable<boolean> {
     return this.platformConfigurationService.loadPlatformConfig();
+  }
+
+  private async initTurnStile(): Promise<void> {
+    try {
+      await this.turnstileService.createInvisibleWidget('#turnstile-container-invisible');
+    } catch (e) {
+      this.modalService
+        .openTurnstileModal(this.injector)
+        .then(() => {
+          console.log('Turnstile check passed');
+        })
+        .catch(err => {
+          this.turnstileService.stopProcess();
+          console.log('Turnstile check failed', err);
+        });
+    }
   }
 }
