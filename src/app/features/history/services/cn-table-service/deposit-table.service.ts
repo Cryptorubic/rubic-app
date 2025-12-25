@@ -80,7 +80,7 @@ export class DepositTableService extends TableService<
     /**
      * @FIX remove after 24.02.2026
      * Cause in prev versions RUBIC_DEPOSIT_RECENT_TRADE didn't contain field `rubicId`.
-     * It causes 404 response of `statusExtended` call
+     * It causes 404 response of `statusExtended` call.
      */
     const dataLen = data.length;
     data = data.filter(deposit => !!deposit.rubicId);
