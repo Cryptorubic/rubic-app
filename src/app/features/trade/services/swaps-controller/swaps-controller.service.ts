@@ -28,7 +28,8 @@ import {
   RubicSdkError,
   SimulationFailedError as SdkSimulationFailedError,
   UnsupportedReceiverAddressError,
-  UserRejectError as SdkUserRejectError
+  UserRejectError as SdkUserRejectError,
+  isApprovableAdapter
 } from '@cryptorubic/web3';
 import { RubicError } from '@core/errors/models/rubic-error';
 import { ERROR_TYPE } from '@core/errors/models/error-type';
@@ -65,6 +66,9 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { withRetryWhile } from '../../utils/with-retry';
 
 @Injectable()
 export class SwapsControllerService {
@@ -99,7 +103,8 @@ export class SwapsControllerService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -211,9 +216,22 @@ export class SwapsControllerService {
     }
   ): Promise<void> {
     const trade = tradeState.trade;
+    const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      trade.from.blockchain as RubicAny
+    );
+
     let txHash: string;
 
     try {
+      // waiting for update of allowance on ERC20 token contract
+      if (isApprovableAdapter(adapter)) {
+        await withRetryWhile(
+          () => trade.needApprove(),
+          needApprove => needApprove === true,
+          5
+        );
+      }
+
       const isEqulaFromAmount = this.checkIsEqualFromAmount(trade.from.tokenAmount);
       if (!isEqulaFromAmount) {
         throw new Error('Trade has invalid from amount');
