@@ -16,6 +16,10 @@ export interface RubicWindow extends Window {
   dataLayer?: unknown[];
   ga?: Function | { create: Function; loaded: boolean };
   chrome?: boolean;
+  turnstile?: {
+    render: (...unknownArgs: unknown[]) => unknown;
+    ready: (...unknownArgs: unknown[]) => unknown;
+  };
   tronLink?: {
     tronWeb: unknown;
     isBitKeepChrome: boolean;
