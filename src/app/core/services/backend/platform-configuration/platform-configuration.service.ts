@@ -97,7 +97,7 @@ export class PlatformConfigurationService {
     this._ccrProvidersInfo$.next(info);
   }
 
-  private setBalanceNetworks(balanceNetworks: BlockchainName[]) {
+  private setBalanceNetworks(balanceNetworks: BlockchainName[]): void {
     this._balanceNetworks$.next(balanceNetworks);
   }
 }

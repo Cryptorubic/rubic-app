@@ -77,11 +77,10 @@ export abstract class SuiOnChainTrade extends OnChainTrade {
 
   protected constructor(
     tradeStruct: SuiOnChainTradeStruct,
-    providerAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;

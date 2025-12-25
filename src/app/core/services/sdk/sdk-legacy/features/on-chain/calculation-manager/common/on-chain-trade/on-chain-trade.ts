@@ -4,6 +4,7 @@ import {
   Cache as Memo,
   OnChainTradeType,
   PriceTokenAmount,
+  QuoteResponseInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -115,11 +116,15 @@ export abstract class OnChainTrade<T = unknown> {
 
   public lastSwapResponse: SwapResponseInterface<T> | null = null;
 
+  public readonly rubicId: string;
+
   protected constructor(
-    protected readonly providerAddress: string,
+    apiResponse: QuoteResponseInterface,
     protected readonly sdkLegacyService: SdkLegacyService,
     private readonly rubicApiService: RubicApiService
-  ) {}
+  ) {
+    this.rubicId = apiResponse.id;
+  }
 
   /**
    * Returns true, if allowance is not enough.

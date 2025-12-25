@@ -251,6 +251,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `assets/images/icons/coins/pulsechain.svg`,
     name: 'Pulsechain bridge'
   },
+  //QQQQQQQQQQQQQQQQQQQQ
+  quickex: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}quickex.svg`,
+    name: 'Quickex'
+  },
   //RRRRRRRRRRRRRRRRRRRR
   rainbow: {
     averageTime: 5,
