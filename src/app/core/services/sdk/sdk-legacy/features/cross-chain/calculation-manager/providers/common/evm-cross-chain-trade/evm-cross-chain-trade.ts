@@ -19,10 +19,12 @@ import {
   EvmBasicTransactionOptions,
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
+  isApprovableAdapter,
   RubicSdkError,
   UnnecessaryApproveError,
   UserRejectError
 } from '@cryptorubic/web3';
+import { withRetryWhile } from '@app/features/trade/utils/with-retry';
 
 export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<EvmBlockchainName>;
@@ -196,6 +198,18 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
 
       return transactionHash!;
     } catch (err) {
+      // waiting for update of allowance on ERC20 token contract
+      if (err.message.includes('transfer amount exceeds allowance')) {
+        if (isApprovableAdapter(this.chainAdapter)) {
+          await withRetryWhile(
+            () => this.needApprove(),
+            needApprove => needApprove === true,
+            5
+          );
+        }
+        return this.swap({ ...options, useCacheData: true, skipAmountCheck: true });
+      }
+
       if (err instanceof FailedToCheckForTransactionReceiptError) {
         return transactionHash!;
       }
