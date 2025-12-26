@@ -82,7 +82,7 @@
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
     "querystring-es3": "^0.2.1",
-    "rubic-sdk": "../rubic-sdk",
+    "rubic-sdk": "npm:rubic-sdk-next@5.57.6-alpha.0",
     "rxjs": "7.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "^1.21.1",
