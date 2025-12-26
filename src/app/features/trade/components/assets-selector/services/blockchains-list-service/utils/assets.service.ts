@@ -1,4 +1,4 @@
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, Observable } from 'rxjs';
 import { AssetListType } from '@features/trade/models/asset';
 import {
   AvailableBlockchain,
@@ -99,15 +99,6 @@ export abstract class AssetsService {
   private readonly modalService = inject(ModalService);
 
   private readonly formService = inject(SwapsFormService);
-
-  public set filterQuery(value: BlockchainFilters) {
-    if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
-      this._blockchainFilter$.next(BlockchainTags.ALL);
-    } else {
-      this._blockchainFilter$.next(value);
-      this.modalService.openMobileBlockchainList(this.injector);
-    }
-  }
 
   // Blockchains to show
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
@@ -266,5 +257,31 @@ export abstract class AssetsService {
           this.assetListType = queryChain;
         }
       });
+  }
+
+  public setFilterQuery(
+    value: BlockchainFilters,
+    totalBlockchains: number,
+    // eslint-disable-next-line rxjs/finnish
+    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    handleSearchQuery?: (query: string) => void,
+    handleSelection?: (selection: AssetListType) => void
+  ): void {
+    if (value === this._blockchainFilter$.getValue() && value !== BlockchainTags.ALL) {
+      this._blockchainFilter$.next(BlockchainTags.ALL);
+    } else {
+      this._blockchainFilter$.next(value);
+      this.modalService.openMobileBlockchainList(
+        this.injector,
+        this.type,
+        this.blockchainSearchQuery,
+        false,
+        'Select blockchain',
+        totalBlockchains,
+        blockchainsToShow,
+        handleSearchQuery,
+        handleSelection
+      );
+    }
   }
 }
