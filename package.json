@@ -42,7 +42,8 @@
     "compile": "npm run precompile && tsc",
     "install:local-sdk": "ng cache clean && yarn add --force file:../rubic-monorepo/dist/packages/core file:../rubic-monorepo/dist/packages/web3 file:../rubic-monorepo/dist/packages/sdk",
     "install:prod-sdk": "yarn add @cryptorubic/core @cryptorubic/web3 @cryptorubic/sdk",
-    "install:version": "sh -c 'ver=\"$1\"; yarn add @cryptorubic/core@\"$ver\" @cryptorubic/web3@\"$ver\" @cryptorubic/sdk@\"$ver\"' --"
+    "install:version": "sh -c 'ver=\"$1\"; yarn add @cryptorubic/core@\"$ver\" @cryptorubic/web3@\"$ver\" @cryptorubic/sdk@\"$ver\"' --",
+    "commit:safe": "npm run compile && npm run lint && git add . && git commit -m"
   },
   "private": true,
   "dependencies": {
@@ -57,8 +58,8 @@
     "@angular/router": "^16.1.3",
     "@argent/login": "^0.1.0-beta.4",
     "@coinbase/wallet-sdk": "^4.0.3",
-    "@cryptorubic/core": "1.1.0",
-    "@cryptorubic/web3": "1.1.0",
+    "@cryptorubic/core": "1.1.1",
+    "@cryptorubic/web3": "1.1.1",
     "@hakimio/ngx-google-analytics": "^15.0.0",
     "@ng-web-apis/common": "^3.0.1",
     "@ng-web-apis/mutation-observer": "^3.0.1",
