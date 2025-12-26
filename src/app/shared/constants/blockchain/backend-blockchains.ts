@@ -156,7 +156,8 @@ const BLOCKCHAINS_MAPPING: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.MONAD_TESTNET]: 'monad-testnet',
   [BLOCKCHAIN_NAME.SUI]: 'sui',
   [BLOCKCHAIN_NAME.UNICHAIN]: 'unichain',
-  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: 'megaeth-testnet'
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: 'megaeth-testnet',
+  [BLOCKCHAIN_NAME.TEMPO_TESTNET]: 'tempo-testnet'
 } as const;
 
 export const TO_BACKEND_BLOCKCHAINS: Record<BlockchainName, BackendBlockchain> = {

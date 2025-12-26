@@ -371,5 +371,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://testnet-rpc.monad.xyz'
   ],
   [BLOCKCHAIN_NAME.UNICHAIN]: [],
-  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: ['https://carrot.megaeth.com/rpc']
+  [BLOCKCHAIN_NAME.MEGAETH_TESTNET]: ['https://carrot.megaeth.com/rpc'],
+  [BLOCKCHAIN_NAME.TEMPO_TESTNET]: ['https://rpc.testnet.tempo.xyz']
 };

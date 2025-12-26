@@ -202,5 +202,9 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
   [BLOCKCHAIN_NAME.BERACHAIN]: {
     name: 'Berachain Bartio',
     rpc: 'https://bartio.rpc.b-harvest.io'
+  },
+  [BLOCKCHAIN_NAME.TEMPO_TESTNET]: {
+    name: 'Tempo testnet',
+    rpc: 'https://rpc.testnet.tempo.xyz'
   }
 };
