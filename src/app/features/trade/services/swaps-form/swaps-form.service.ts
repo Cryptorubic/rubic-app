@@ -19,7 +19,6 @@ import { observableToBehaviorSubject } from '@shared/utils/observableToBehaviorS
 import { compareAssets } from '@features/trade/utils/compare-assets';
 import { DOCUMENT } from '@angular/common';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { Web3Pure } from '@cryptorubic/web3';
 
 @Injectable({
   providedIn: 'root'
