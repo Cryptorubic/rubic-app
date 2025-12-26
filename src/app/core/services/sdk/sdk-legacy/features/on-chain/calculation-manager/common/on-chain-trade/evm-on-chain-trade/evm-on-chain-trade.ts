@@ -25,7 +25,6 @@ import {
   EvmBasicTransactionOptions,
   EvmTransactionConfig,
   FailedToCheckForTransactionReceiptError,
-  isApprovableAdapter,
   parseError,
   UnnecessaryApproveError,
   UserRejectError
@@ -240,13 +239,11 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     } catch (err) {
       // waiting for update of allowance on ERC20 token contract
       if (err.message.includes('transfer amount exceeds allowance')) {
-        if (isApprovableAdapter(this.chainAdapter)) {
-          await withRetryWhile(
-            () => this.needApprove(),
-            needApprove => needApprove === true,
-            5
-          );
-        }
+        await withRetryWhile(
+          () => this.needApprove(),
+          needApprove => needApprove === true,
+          5
+        );
         return this.swap({ ...options, useCacheData: true, skipAmountCheck: true });
       }
 
