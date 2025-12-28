@@ -5,6 +5,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   map,
+  shareReplay,
   skip,
   tap
 } from 'rxjs';
@@ -21,7 +22,8 @@ export class TargetNetworkAddressService {
     tap(() => this.addressControl.clearAsyncValidators()),
     debounceTime(100),
     distinctUntilChanged(),
-    tap(() => this.setCorrectAddressValidator())
+    tap(() => this.setCorrectAddressValidator()),
+    shareReplay(1)
   );
 
   public get address(): string | null {

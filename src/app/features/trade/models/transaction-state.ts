@@ -1,5 +1,6 @@
 import { BlockchainName } from '@cryptorubic/core';
 import { TransactionStep } from '@features/trade/models/transaction-steps';
+import { NeedTrustlineOptions } from '../services/trustline-service/models/need-trustline-options';
 
 export interface TransactionState {
   readonly step: TransactionStep;
@@ -9,7 +10,7 @@ export interface TransactionState {
     wrongNetwork?: boolean;
     activeWallet?: boolean;
     points?: number;
-    needTrustline?: boolean;
+    needTrustlineOptions?: NeedTrustlineOptions;
   };
   level?: number;
 }

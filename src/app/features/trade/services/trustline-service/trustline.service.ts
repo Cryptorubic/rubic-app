@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
-import { BLOCKCHAIN_NAME, PriceTokenAmount } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, TokenAmount } from '@cryptorubic/core';
 import {
   FreighterModule,
   LobstrModule,
@@ -10,9 +10,14 @@ import {
   WalletNetwork,
   ModalThemes
 } from '@creit.tech/stellar-wallets-kit';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
-import { SwapsFormService } from '../swaps-form/swaps-form.service';
+import { NeedTrustlineOptions } from './models/need-trustline-options';
+import { TRUSTLINE_AFTER_SWAP_PROVIDERS } from './constants/trustline-after-swap-providers';
+import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
+import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
+import { SwapsStateService } from '../swaps-state/swaps-state.service';
 
 @Injectable()
 export class TrustlineService {
@@ -26,41 +31,58 @@ export class TrustlineService {
     BLOCKCHAIN_NAME.STELLAR
   );
 
-  public readonly truslineToken$ = this.swapsFormService.toToken$;
+  public readonly trustlineToken$ = this.swapsStateService.currentTrade$.pipe(
+    map(trade => {
+      if (trade instanceof StellarCrossChainTrade) {
+        return trade.getTrustlineTransitToken();
+      }
+
+      return trade.to;
+    })
+  );
 
   constructor(
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly swapsFormService: SwapsFormService,
+    private readonly swapsStateService: SwapsStateService,
     private readonly errorService: ErrorsService
   ) {}
 
-  public async connectReceiverAddress(): Promise<void> {
-    try {
+  public async connectReceiverAddress(): Promise<boolean> {
+    const promise = new Promise<boolean>((resolve, reject) => {
       this.walletKit.openModal({
         onWalletSelected: async option => {
           this.walletKit.setWallet(option.id);
-          const { address } = await this.walletKit.getAddress();
-          if (address !== this.targetAddressService.address) {
-            throw new Error('Connected wallet must be the same as receiver');
+          try {
+            const { address } = await this.walletKit.getAddress();
+            if (address !== this.targetAddressService.address) {
+              reject(new Error('Connected wallet must be the same as receiver'));
+            }
+            this.adapter.signer.setWalletAddress(address);
+            this.adapter.signer.setWallet(this.walletKit);
+
+            resolve(true);
+          } catch (err) {
+            reject(err);
           }
         },
-        modalTitle: 'Connect Receiver Wallet'
+        modalTitle: 'Connect Receiver Wallet',
+        onClosed: () => resolve(false)
       });
+    });
+
+    try {
+      const isWalletConnected = await promise;
+      return isWalletConnected;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
   public async addTrustline(): Promise<string | null> {
     try {
-      const toToken = await firstValueFrom(this.truslineToken$);
-
-      if (!this.adapter.connected) {
-        this.adapter.signer.setWalletAddress(this.targetAddressService.address);
-        this.adapter.signer.setWallet(this.walletKit);
-        this.adapter.initWeb3Client();
-      }
+      const toToken = await firstValueFrom(this.trustlineToken$);
 
       const hash = await this.adapter.addTrustline(toToken.address);
       return hash;
@@ -71,19 +93,54 @@ export class TrustlineService {
   }
 
   public async checkTrustline(
-    fromToken: PriceTokenAmount,
-    toToken: PriceTokenAmount,
+    trade: CrossChainTrade | OnChainTrade,
     fromAddress: string,
     receiver?: string
-  ): Promise<boolean> {
-    if (toToken.blockchain === BLOCKCHAIN_NAME.STELLAR) {
-      if (fromToken.blockchain === toToken.blockchain) {
-        return this.adapter.needTrustline(toToken, receiver || fromAddress);
-      } else if (receiver) {
-        return this.adapter.needTrustline(toToken, receiver);
-      }
-    }
+  ): Promise<NeedTrustlineOptions> {
+    const { from, to, type } = trade;
+    const defaultOptions: NeedTrustlineOptions = {
+      needTrustlineAfterSwap: false,
+      needTrustlineBeforeSwap: false
+    };
 
-    return false;
+    try {
+      if (to.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+        const address = from.blockchain === to.blockchain ? receiver || fromAddress : receiver;
+        if (address) {
+          if (!this.adapter.connected) {
+            this.adapter.initWeb3Client();
+          }
+
+          const needTrustline = await this.adapter.needTrustline(to, address);
+
+          return TRUSTLINE_AFTER_SWAP_PROVIDERS.includes(type)
+            ? { ...defaultOptions, needTrustlineAfterSwap: needTrustline }
+            : { ...defaultOptions, needTrustlineBeforeSwap: needTrustline };
+        }
+      }
+
+      if (trade instanceof StellarCrossChainTrade && fromAddress) {
+        const transitToken = trade.getTrustlineTransitToken();
+
+        if (transitToken) {
+          const needTransitTokenTrustline = await this.adapter.needTrustline(
+            new TokenAmount({
+              ...transitToken,
+              tokenAmount: '0'
+            }),
+            fromAddress
+          );
+
+          return {
+            ...defaultOptions,
+            needTrustlineBeforeSwap: needTransitTokenTrustline
+          };
+        }
+      }
+
+      return defaultOptions;
+    } catch {
+      return defaultOptions;
+    }
   }
 }

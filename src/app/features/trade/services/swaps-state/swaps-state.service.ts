@@ -52,6 +52,7 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
 import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
+import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
 
 @Injectable()
 export class SwapsStateService {
@@ -172,7 +173,7 @@ export class SwapsStateService {
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean,
     needAuthWallet: boolean,
-    needTrusline: boolean
+    needTrustlineOptions: NeedTrustlineOptions
   ): void {
     const trade = wrappedTrade?.trade;
     const defaultState: TradeState = !trade
@@ -185,14 +186,17 @@ export class SwapsStateService {
           tags: { isBest: false, cheap: false },
           routes: [],
           centralizationStatus: null,
-          needTrusline: false
+          needTrustlineOptions: {
+            needTrustlineAfterSwap: false,
+            needTrustlineBeforeSwap: false
+          }
         }
       : {
           error: wrappedTrade?.error,
           trade,
           needApprove,
           needAuthWallet,
-          needTrusline,
+          needTrustlineOptions,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],

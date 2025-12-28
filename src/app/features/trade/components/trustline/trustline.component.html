@@ -1,9 +1,8 @@
 <div
   class="trustline-container"
   *ngLet="{
-    showConnectWallet: showConnectWallet$ | async,
     tokenSymbol: trustlineTokenSymbol$ | async,
-    truslineLoading: truslineLoading$ | async
+    buttonState: buttonState$ | async
   } as state"
 >
   <tui-notification status="warning">
@@ -11,27 +10,16 @@
     (trustline)
   </tui-notification>
 
-  <div class="trustline-container__actions">
-    <button
-      *ngIf="state.showConnectWallet"
-      tuiButton
-      appearance="primary"
-      type="button"
-      size="m"
-      (click)="connectReceiver()"
-    >
-      Connect Wallet
-    </button>
+  <div class="trustline-container__actions" *ngIf="state.buttonState">
     <button
       tuiButton
       appearance="primary"
       type="button"
       size="m"
-      (click)="addTristline()"
-      [ngClass]="{ 'trustline-container__loading': state.truslineLoading }"
-      [disabled]="state.truslineLoading"
+      (click)="state.buttonState.action()"
+      [disabled]="state.buttonState.disabled"
     >
-      {{ state.truslineLoading ? 'Loading...' : 'Enable Asset' }}
+      {{ state.buttonState.label }}
     </button>
   </div>
 </div>

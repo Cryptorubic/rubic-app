@@ -124,7 +124,8 @@
                 ? 'swap'
                 : 'bridge',
             needApprove: state.tradeState?.needApprove,
-            needAuthWallet: state.tradeState.needAuthWallet
+            needAuthWallet: state.tradeState.needAuthWallet,
+            needTrustlineAfterSwap: state.tradeState.needTrustlineOptions?.needTrustlineAfterSwap
           }"
           [state]="state.transaction.step"
         ></app-transaction-state>

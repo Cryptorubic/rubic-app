@@ -48,6 +48,7 @@ import { StellarApiCrossChainTrade } from './chains/stellar/stellar-api-cross-ch
 import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cross-chain-constructor';
 import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
 import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
+import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -139,10 +140,13 @@ export class TransformUtils {
         rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.STELLAR) {
+      const trustlineTransitTokenAddress = NEED_TRUSTLINE_TRANSIT_TOKENS[tradeType] ?? null;
+
       trade = new StellarApiCrossChainTrade(
         tradeParams as StellarApiCrossChainConstructor,
         sdkLegacyService,
-        rubicApiService
+        rubicApiService,
+        trustlineTransitTokenAddress
       );
     }
 

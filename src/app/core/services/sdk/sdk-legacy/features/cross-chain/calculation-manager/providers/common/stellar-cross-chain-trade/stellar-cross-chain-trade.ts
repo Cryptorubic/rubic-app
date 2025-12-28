@@ -1,4 +1,11 @@
-import { PriceTokenAmount, StellarBlockchainName, SwapRequestInterface } from '@cryptorubic/core';
+import {
+  BLOCKCHAIN_NAME,
+  compareAddresses,
+  PriceTokenAmount,
+  StellarBlockchainName,
+  SwapRequestInterface,
+  Token
+} from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { SwapTransactionOptions } from '../../../../../common/models/swap-transaction-options';
 import { CrossChainTrade } from '../cross-chain-trade';
@@ -15,6 +22,8 @@ import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapt
 
 export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<StellarBlockchainName>;
+
+  public abstract trustlineTransitTokenAddress: string | null;
 
   protected get chainAdapter(): StellarAdapter {
     return this.sdkLegacyService.adaptersFactoryService.getAdapter(this.from.blockchain);
@@ -122,5 +131,26 @@ export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTran
 
   public authWallet(): Promise<string> {
     throw new RubicSdkError('Method not implemented.');
+  }
+
+  public getTrustlineTransitToken(): Token | null {
+    if (
+      !this.trustlineTransitTokenAddress ||
+      compareAddresses(this.trustlineTransitTokenAddress, this.from.address)
+    ) {
+      return null;
+    }
+
+    const transitToken = this.routePath.map(route => {
+      const token = route.path.find(
+        routeToken =>
+          compareAddresses(routeToken.address, this.trustlineTransitTokenAddress) &&
+          routeToken.blockchain === BLOCKCHAIN_NAME.STELLAR
+      );
+
+      return token ?? null;
+    })[0];
+
+    return transitToken;
   }
 }

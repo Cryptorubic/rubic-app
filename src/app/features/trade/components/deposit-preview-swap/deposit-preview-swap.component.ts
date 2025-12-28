@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  Self
+} from '@angular/core';
 import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -43,7 +50,7 @@ import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/co
     ])
   ]
 })
-export class DepositPreviewSwapComponent {
+export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly status$ = combineLatest([
     this.depositService.status$.pipe(startWith(CROSS_CHAIN_DEPOSIT_STATUS.WAITING)),
     this.depositService.depositTrade$.pipe(startWith(null))
@@ -124,6 +131,11 @@ export class DepositPreviewSwapComponent {
     )
   );
 
+  public readonly needTrustline$ = this.transactionState$.pipe(
+    map(state => state.data.needTrustlineOptions?.needTrustlineBeforeSwap),
+    filter(v => v !== undefined)
+  );
+
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
   public hintShown: boolean = false;
@@ -145,6 +157,11 @@ export class DepositPreviewSwapComponent {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
+    this.previewSwapService.activateDepositPage();
+  }
+
+  public ngOnDestroy(): void {
+    this.previewSwapService.deactivatePage();
   }
 
   public backToForm(): void {
@@ -249,8 +266,12 @@ export class DepositPreviewSwapComponent {
   }
 
   private setupTradeIfValidRefundAddress(): void {
-    this.refundService.isValidRefundAddress$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+    combineLatest([this.refundService.isValidRefundAddress$, this.needTrustline$])
+      .pipe(
+        map(([isValidRefund, needTrustline]) => isValidRefund && !needTrustline),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(isValid => {
         if (isValid) {
           this.setupTrade();

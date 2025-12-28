@@ -214,7 +214,7 @@ export class PreviewSwapComponent implements OnDestroy {
       disabled: true,
       needTrustline: false
     };
-    if (el.data.needTrustline) {
+    if (el.data.needTrustlineOptions?.needTrustlineBeforeSwap) {
       state.needTrustline = true;
     }
     if (el.step === transactionStep.approveReady) {
@@ -247,6 +247,9 @@ export class PreviewSwapComponent implements OnDestroy {
       state.disabled = false;
       state.label = 'Back to form';
       state.action = this.backToForm.bind(this);
+    } else if (el.step === transactionStep.trustlinePending) {
+      state.disabled = true;
+      state.needTrustline = true;
     }
 
     if (

@@ -15,5 +15,8 @@ export const defaultTradeState: SelectedTrade = {
   status: TRADE_STATUS.NOT_INITIATED,
   centralizationStatus: null,
   badges: [],
-  needTrusline: false
+  needTrustlineOptions: {
+    needTrustlineAfterSwap: false,
+    needTrustlineBeforeSwap: false
+  }
 };

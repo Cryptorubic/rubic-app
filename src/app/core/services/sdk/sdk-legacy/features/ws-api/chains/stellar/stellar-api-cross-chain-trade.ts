@@ -30,10 +30,13 @@ export class StellarApiCrossChainTrade extends StellarCrossChainTrade {
 
   public readonly isAggregator = false;
 
+  public readonly trustlineTransitTokenAddress: string | null;
+
   constructor(
     params: StellarApiCrossChainConstructor,
     sdkLegacyService: SdkLegacyService,
-    rubicApiService: RubicApiService
+    rubicApiService: RubicApiService,
+    trustlineTransitTokenAddress: string | null
   ) {
     super(
       params.apiQuote.integratorAddress!,
@@ -43,6 +46,8 @@ export class StellarApiCrossChainTrade extends StellarCrossChainTrade {
       sdkLegacyService,
       rubicApiService
     );
+
+    this.trustlineTransitTokenAddress = trustlineTransitTokenAddress;
 
     this.type = params.apiResponse.providerType as CrossChainTradeType;
     this.bridgeType = this.type;

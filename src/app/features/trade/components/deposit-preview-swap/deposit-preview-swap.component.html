@@ -9,7 +9,8 @@
     isValidRefundAddress: isValidRefundAddress$ | async,
     spesificStatusText: specificProviderStatusText$ | async,
     isRefundAddressRequired: isRefundAddressRequired$ | async,
-    isToAmountCalculated: isToAmountCalculated$ | async
+    isToAmountCalculated: isToAmountCalculated$ | async,
+    needTrustline: needTrustline$ | async
   } as state"
 >
   <ng-container header>
@@ -58,8 +59,11 @@
     <div class="refund-address" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
+    <div class="refund-address" *ngIf="state.needTrustline">
+      <app-trustline></app-trustline>
+    </div>
     <div
-      *ngIf="state.isValidRefundAddress"
+      *ngIf="state.isValidRefundAddress && !state.needTrustline"
       @showDepositAddressAnimation
       class="target-address"
       [ngClass]="{ 'target-address__disabled': state.status === 'expired' }"
@@ -82,16 +86,21 @@
       </div>
     </div>
 
-    <div class="status-wrapper" [class.status-wrapper__inactive]="!state.isValidRefundAddress">
+    <div
+      class="status-wrapper"
+      [class.status-wrapper__inactive]="!state.isValidRefundAddress || state.needTrustline"
+    >
       <div class="row row-status">
         <div class="row-item status-item">
           <div
             class="status-item__circle"
-            *ngIf="state.status === 'waiting' && !state.isValidRefundAddress"
+            *ngIf="
+              (state.status === 'waiting' && !state.isValidRefundAddress) || state.needTrustline
+            "
           ></div>
           <div
             class="status-item__spinner"
-            *ngIf="state.status === 'waiting' && state.isValidRefundAddress"
+            *ngIf="state.status === 'waiting' && state.isValidRefundAddress && !state.needTrustline"
           ></div>
           <div
             class="status-item__circle_complete"
@@ -111,8 +120,9 @@
             class="row-item__value status-item__value"
             [ngClass]="{
               'status-item__value_completed':
-                state.status !== 'expired' && state.isValidRefundAddress,
-              'status-item__value_failed': state.status === 'expired' && state.isValidRefundAddress
+                state.status !== 'expired' && state.isValidRefundAddress && !state.needTrustline,
+              'status-item__value_failed':
+                state.status === 'expired' && state.isValidRefundAddress && !state.needTrustline
             }"
           >
             {{ state.status === 'expired' ? 'Expired' : 'Awaiting deposit' }}

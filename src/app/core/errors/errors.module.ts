@@ -24,6 +24,7 @@ import { TokenPocketErrorComponent } from './components/token-pocket-error/token
 import { NoLinkedAccountErrorComponent } from './components/no-linked-account-error/no-linked-account-error.component';
 import { CoinbaseErrorComponent } from './components/coinbase-error/coinbase-error.component';
 import { SimulationFailedErrorComponent } from './components/simulation-failed-error/simulation-failed-error.component';
+import { WrongReceiverErrorComponent } from './components/wrong-receiver-error/wrong-receiver-error.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SimulationFailedErrorComponent } from './components/simulation-failed-e
     TokenPocketErrorComponent,
     NoLinkedAccountErrorComponent,
     CoinbaseErrorComponent,
-    SimulationFailedErrorComponent
+    SimulationFailedErrorComponent,
+    WrongReceiverErrorComponent
   ],
   imports: [CommonModule, SharedModule, TranslateModule, InlineSVGModule, TuiHintModule]
 })

@@ -204,6 +204,11 @@ export class PreviewSwapService {
     this.handleRetryModal();
   }
 
+  public activateDepositPage(): void {
+    this.resetTransactionState();
+    this.subscribeOnDepositValidation();
+  }
+
   public deactivatePage(): void {
     this.subscriptions$.forEach(sub => sub?.unsubscribe());
     this.subscriptions$.length = 0;
@@ -273,6 +278,14 @@ export class PreviewSwapService {
             retriesCount = txState.level;
             return this.tryRetrySwap(tradeState, txState.step);
           }
+
+          if (txState.step === 'trustlineReady') {
+            this.setNextTxState({
+              step: 'destinationPending',
+              data: { ...this.transactionState.data }
+            });
+          }
+
           return of(null);
         })
       )
@@ -373,7 +386,7 @@ export class PreviewSwapService {
   private checkTrustline(): void {
     const selectedTrade = this._selectedTradeState$.value;
     const state = this._transactionState$.getValue();
-    state.data.needTrustline = selectedTrade.needTrusline;
+    state.data.needTrustlineOptions = selectedTrade.needTrustlineOptions;
     this.setNextTxState(state);
   }
 
@@ -465,10 +478,18 @@ export class PreviewSwapService {
                 if (this.useCallback) {
                   this.closeRetryModal();
                   if (tradeState.trade instanceof CrossChainTrade) {
-                    this.setNextTxState({
-                      step: 'destinationPending',
-                      data: { ...this.transactionState.data }
-                    });
+                    if (tradeState.needTrustlineOptions?.needTrustlineAfterSwap) {
+                      this.setNextTxState({
+                        step: 'trustlinePending',
+                        data: { ...this.transactionState.data }
+                      });
+                    } else {
+                      this.setNextTxState({
+                        step: 'destinationPending',
+                        data: { ...this.transactionState.data }
+                      });
+                    }
+
                     this.initDstTxStatusPolling(txHash, tradeState.trade.to.blockchain);
                   } else {
                     this.setNextTxState({
@@ -572,6 +593,13 @@ export class PreviewSwapService {
     const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
       this.checkAddress();
       this.checkNetwork();
+      this.checkTrustline();
+    });
+    this.subscriptions$.push(validationSubscription$);
+  }
+
+  private subscribeOnDepositValidation(): void {
+    const validationSubscription$ = this.selectedTradeState$.pipe(startWith()).subscribe(() => {
       this.checkTrustline();
     });
     this.subscriptions$.push(validationSubscription$);

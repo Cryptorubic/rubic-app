@@ -56,6 +56,7 @@ import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import { nativeTokensList } from '@cryptorubic/core';
 import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
+import { WrongReceiverError } from './provider/wrong-receiver-error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -193,6 +194,10 @@ export class RubicSdkErrorParser {
 
     if (err.message.toLowerCase().includes('manual swap reject')) {
       return new UserRejectError(err.message);
+    }
+
+    if (err.message.toLowerCase().includes('connected wallet must be the same as receiver')) {
+      return new WrongReceiverError();
     }
 
     return new ExecutionRevertedError(err.message);

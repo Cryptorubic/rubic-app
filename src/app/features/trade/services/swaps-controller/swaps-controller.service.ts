@@ -468,7 +468,10 @@ export class SwapsControllerService {
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         false,
         false,
-        false
+        {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
       );
       this.swapsStateService.pickProvider(true);
     }
@@ -551,14 +554,11 @@ export class SwapsControllerService {
               wrappedTrade?.error
             );
 
-            const needAddTrustline = this.trustlineService
-              .checkTrustline(
-                wrappedTrade.trade.from,
-                wrappedTrade.trade.to,
-                this.authService.userAddress,
-                this.targetNetworkAddressService.address
-              )
-              .catch(() => false);
+            const needAddTrustline = this.trustlineService.checkTrustline(
+              wrappedTrade.trade,
+              this.authService.userAddress,
+              this.targetNetworkAddressService.address
+            );
 
             return forkJoin([
               of(wrappedTrade),
