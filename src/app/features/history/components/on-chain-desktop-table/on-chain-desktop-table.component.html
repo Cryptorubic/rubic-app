@@ -195,9 +195,7 @@
   </ng-template>
 </ng-container>
 
-<ng-container
-  *ngLet="totalPages$ | async as totalPages"
->
+<ng-container *ngLet="totalPages$ | async as totalPages">
   <tui-pagination
     *ngIf="totalPages > 0"
     [index]="(page$ | async) || 0"
