@@ -34,11 +34,7 @@ export class AssetTypesAsideComponent {
    * Returns amount of blockchains to show, depending on window width and height.
    */
   public readonly shownBlockchainsAmount$ = this.windowWidthService.windowSize$.pipe(
-    map(windowSize => {
-      if (windowSize >= WindowSize.MOBILE_MD && this.blockchainsAmount >= 11) {
-        return 11;
-      }
-
+    map(() => {
       return this.blockchainsAmount;
     })
   );
@@ -47,6 +43,13 @@ export class AssetTypesAsideComponent {
     return this.isSourceSelectorGasFormOpened()
       ? this.gasFormService.availableBlockchainsAmount
       : this.blockchainsListService.availableBlockchains.length;
+  }
+
+  public get showMoreBlockchainsText(): number {
+    if (this.windowWidthService.windowSize >= WindowSize.MOBILE_MD) {
+      return this.blockchainsAmount > 12 ? this.blockchainsAmount - 11 : 0;
+    }
+    return 0;
   }
 
   public get showFiats(): boolean {
@@ -110,7 +113,11 @@ export class AssetTypesAsideComponent {
     return assideChains;
   }
 
-  public getBlockchainsList(shownBlockchainsAmount: number): AvailableBlockchain[] {
+  public getBlockchainsList(chainsAmount: number): AvailableBlockchain[] {
+    const shownBlockchainsAmount =
+      chainsAmount > 12 && this.windowWidthService.windowSize >= WindowSize.MOBILE_MD
+        ? 11
+        : chainsAmount;
     const userBlockchainName = this.walletConnectorService.network;
     const userBlockchain = this.blockchainsListService.availableBlockchains.find(
       chain => chain.name === userBlockchainName
