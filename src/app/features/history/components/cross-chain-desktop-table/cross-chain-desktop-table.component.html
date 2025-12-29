@@ -193,11 +193,16 @@
   </ng-template>
 </ng-container>
 
-<tui-pagination
-  [index]="(page$ | async) || 0"
-  [length]="(totalPages$ | async) || 0"
-  (indexChange)="changePage($event)"
-></tui-pagination>
+<ng-container
+  *ngLet="totalPages$ | async as totalPages"
+>
+  <tui-pagination
+    *ngIf="totalPages > 0"
+    [index]="(page$ | async) || 0"
+    [length]="totalPages"
+    (indexChange)="changePage($event)"
+  ></tui-pagination>
+</ng-container>
 
 <ng-template #statusFromFieldContent let-item="item" let-isMobile="isMobile">
   <ng-container *ngIf="item.provider?.name !== 'ChangeNOW'; else dropdownOptions">
