@@ -64,30 +64,12 @@ export abstract class SolanaCrossChainTrade extends CrossChainTrade<{
     throw new Error('Method is not supported');
   }
 
-  protected async checkAllowanceAndApprove(
-    options?: Omit<SwapTransactionOptions, 'onConfirm' | 'gasLimit'>
-  ): Promise<void> {
-    const needApprove = await this.needApprove();
-    if (!needApprove) {
-      return;
-    }
-
-    const approveOptions: EvmBasicTransactionOptions = {
-      onTransactionHash: options?.onApprove,
-      gas: options?.approveGasLimit,
-      gasPriceOptions: options?.gasPriceOptions
-    };
-
-    await this.approve(approveOptions, false, this.from.weiAmount);
-  }
-
   /**
    *
    * @returns txHash(srcTxHash) | never
    */
   public async swap(options: SwapTransactionOptions = {}): Promise<string | never> {
     this.checkWalletConnected();
-    await this.checkAllowanceAndApprove(options);
     let transactionHash: string;
 
     try {

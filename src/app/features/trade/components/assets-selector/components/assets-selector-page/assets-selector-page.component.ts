@@ -14,11 +14,11 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, share, startWith, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { combineLatestWith, Observable, of } from 'rxjs';
+import { combineLatestWith, Observable, of, shareReplay } from 'rxjs';
 import { AssetsService } from '@features/trade/components/assets-selector/services/blockchains-list-service/utils/assets.service';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainFilters } from '@features/trade/components/assets-selector/components/blockchains-filter-list/models/BlockchainFilters';
@@ -106,7 +106,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.customToken$ = this.assetsSelectorService.customToken$;
     this.totalBlockchains = this.assetsSelectorService.availableBlockchains.length;
     this.blockchainFilter$ = this.assetsSelectorService.blockchainFilter$;
-    this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(share());
+    this.blockchainsToShow$ = this.assetsSelectorService.blockchainsToShow$.pipe(shareReplay(1));
 
     this.balanceLoading$ = this.assetListType$.pipe(
       switchMap(type => {
@@ -166,7 +166,17 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
   }
 
   public handleBlockchainFilterSelection(filter: BlockchainFilters): void {
-    this.assetsSelectorService.filterQuery = filter;
+    this.assetsSelectorService.setFilterQuery(
+      filter,
+      this.totalBlockchains,
+      this.blockchainsToShow$,
+      query => {
+        this.onBlockchainsQuery(query);
+      },
+      item => {
+        this.selectAssetList(item);
+      }
+    );
   }
 
   public selectAssetList(item: BlockchainItem | AssetListType): void {

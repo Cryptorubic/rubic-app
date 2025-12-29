@@ -159,10 +159,6 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
     refundAddress?: string
   ): Promise<CrossChainTransferData>;
 
-  public override async needApprove(): Promise<boolean> {
-    return false;
-  }
-
   public async swapDirect(options: SwapTransactionOptions = {}): Promise<string | never> {
     if (!BlockchainsInfo.isEvmBlockchainName(this.from.blockchain)) {
       throw new RubicSdkError("For non-evm chains use 'getTransferTrade' method");
