@@ -10,6 +10,7 @@ import {
   WalletNetwork,
   ModalThemes
 } from '@creit.tech/stellar-wallets-kit';
+import { WalletConnectModule } from '@creit.tech/stellar-wallets-kit/modules/walletconnect.module';
 import { firstValueFrom, map } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NeedTrustlineOptions } from './models/need-trustline-options';
@@ -18,12 +19,17 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 import { SwapsStateService } from '../swaps-state/swaps-state.service';
+import { WALLET_CONNECT_CONFIG } from './constants/wallet-connect-config';
 
 @Injectable()
 export class TrustlineService {
-  private walletKit = new StellarWalletsKit({
+  private readonly walletKit = new StellarWalletsKit({
     network: WalletNetwork.PUBLIC,
-    modules: [new LobstrModule(), new FreighterModule()],
+    modules: [
+      new FreighterModule(),
+      new LobstrModule(),
+      new WalletConnectModule(WALLET_CONNECT_CONFIG)
+    ],
     modalTheme: ModalThemes.DARK
   });
 
