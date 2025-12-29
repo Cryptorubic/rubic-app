@@ -9,7 +9,6 @@ import {
   CrossChainTradeType,
   LifiSubProvider,
   BLOCKCHAIN_NAME,
-  FROM_BACKEND_BLOCKCHAINS,
   BackendBlockchain,
   RangoTradeType
 } from 'rubic-sdk';
@@ -20,6 +19,7 @@ import { defaultConfig } from '@core/services/backend/platform-configuration/con
 import { ToBackendCrossChainProviders } from '@core/services/backend/cross-chain-routing-api/constants/to-backend-cross-chain-providers';
 import { timeout } from 'rxjs/operators';
 import { RANGO_CROSS_CHAIN_DISABLED_PROVIDERS } from './constants/rango-disabled-providers';
+import { FROM_BACKEND_BLOCKCHAINS } from '@shared/constants/blockchain/backend-blockchains';
 
 interface DisabledSubProvidersType {
   [CROSS_CHAIN_TRADE_TYPE.LIFI]: LifiSubProvider[];
