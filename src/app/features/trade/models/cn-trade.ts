@@ -1,8 +1,9 @@
+import { TransferTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/constans/transfer-trade-supported-providers';
 import { Token } from '@shared/models/tokens/token';
 import BigNumber from 'bignumber.js';
-import { TransferTradeType } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/utils/get-deposit-status';
 
 export interface CrossChainTransferTrade {
+  rubicId: string;
   id: string;
 
   fromToken: Token;

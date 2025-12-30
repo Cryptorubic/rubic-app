@@ -45,7 +45,6 @@ export class SuiApiOnChainTrade extends SuiOnChainTrade {
         gasFeeInfo: null,
         withDeflation: { from: { isDeflation: false }, to: { isDeflation: false } }
       },
-      params.apiQuote.integratorAddress!,
       sdkLegacyService,
       rubicApiService
     );

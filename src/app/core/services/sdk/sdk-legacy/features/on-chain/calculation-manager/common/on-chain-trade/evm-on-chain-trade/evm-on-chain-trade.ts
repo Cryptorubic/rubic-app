@@ -96,7 +96,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(evmOnChainTradeStruct.apiQuote!.integratorAddress!, sdkLegacyService, rubicApiService);
+    super(evmOnChainTradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = evmOnChainTradeStruct.from;
     this.to = evmOnChainTradeStruct.to;
