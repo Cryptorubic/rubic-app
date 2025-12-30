@@ -1054,5 +1054,8 @@ export const defaultTokens: Record<BlockchainName, Token[]> = {
   ],
   [BLOCKCHAIN_NAME.MONAD]: [
     { ...nativeTokensList[BLOCKCHAIN_NAME.MONAD], ...defaultTokenParams } as Token
+  ],
+  [BLOCKCHAIN_NAME.HYPER_EVM]: [
+    { ...nativeTokensList[BLOCKCHAIN_NAME.HYPER_EVM], ...defaultTokenParams } as Token
   ]
 };

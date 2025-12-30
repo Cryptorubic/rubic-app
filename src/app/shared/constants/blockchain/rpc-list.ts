@@ -347,6 +347,7 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   [BLOCKCHAIN_NAME.UNICHAIN]: ['https://unichain-rpc.publicnode.com'],
   [BLOCKCHAIN_NAME.HEMI]: ['https://rpc.hemi.network/rpc'],
   [BLOCKCHAIN_NAME.PLASMA]: ['https://rpc.plasma.to'],
+  [BLOCKCHAIN_NAME.HYPER_EVM]: ['https://rpc.hyperliquid.xyz/evm'],
   [BLOCKCHAIN_NAME.MONAD]: [
     'https://rpc.monad.xyz',
     'https://rpc1.monad.xyz',
