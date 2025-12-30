@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, Optional } from '@angular/core';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { DOCUMENT } from '@angular/common';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
@@ -33,7 +33,7 @@ export class TokenSelectorPageComponent {
   }
 
   public handleTokenSelect(asset: Asset): void {
-    const token = asset as TokenAmount;
+    const token = asset as BalanceToken;
     if (token) {
       const inputElement = this.document.getElementById('token-amount-input-element');
       const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.actualValue.isFinite();

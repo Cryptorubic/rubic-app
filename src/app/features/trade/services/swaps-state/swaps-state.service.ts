@@ -29,10 +29,9 @@ import { TradeProvider } from '@features/trade/models/trade-provider';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import BigNumber from 'bignumber.js';
 import { compareAddresses, compareObjects, compareTokens } from '@shared/utils/utils';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
 import { CalculationStatus } from '@features/trade/models/calculation-status';
 import { shareReplayConfig } from '@shared/constants/common/share-replay-config';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { defaultCalculationStatus } from '@features/trade/services/swaps-state/constants/default-calculation-status';
 import { defaultTradeState } from '@features/trade/services/swaps-state/constants/default-trade-state';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -52,6 +51,7 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
 import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Injectable()
 export class SwapsStateService {
@@ -85,7 +85,7 @@ export class SwapsStateService {
   public readonly notEnoughBalance$ = this.swapsFormService.fromToken$.pipe(
     filter(Boolean),
     combineLatestWith(
-      this.tokensStoreService.tokens$,
+      this.tokensFacade.tokens$,
       this.swapsFormService.fromAmount$,
       this.walletConnector.networkChange$,
       this.walletConnector.addressChange$
@@ -158,11 +158,11 @@ export class SwapsStateService {
     private readonly swapsFormService: SwapsFormService,
     private readonly walletConnector: WalletConnectorService,
     private readonly tradePageService: TradePageService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly headerStore: HeaderStore,
     private readonly alternativeRouteService: AlternativeRoutesService,
     private readonly refundService: RefundService,
-    private readonly solanaGaslessStateService: SolanaGaslessStateService
+    private readonly solanaGaslessStateService: SolanaGaslessStateService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnTradeChange();
   }
@@ -338,7 +338,7 @@ export class SwapsStateService {
 
   private getNativeTokenPrice(blockchain: BlockchainName): BigNumber {
     const nativeToken = nativeTokensList[blockchain];
-    const nativeTokenPrice = this.tokensStoreService.tokens.find(token =>
+    const nativeTokenPrice = this.tokensFacade.tokens.find(token =>
       compareTokens(token, { blockchain, address: nativeToken.address })
     ).price;
 
@@ -440,7 +440,7 @@ export class SwapsStateService {
     this._calculationProgress$.next({ total, current });
   }
 
-  private checkWrap(fromToken: TokenAmount | null, toToken: TokenAmount | null): boolean {
+  private checkWrap(fromToken: BalanceToken | null, toToken: BalanceToken | null): boolean {
     if (!fromToken?.address || !toToken?.address) {
       return false;
     }
@@ -528,7 +528,7 @@ export class SwapsStateService {
     return calculationResult;
   }
 
-  private shouldEmitToken(oldToken: TokenAmount, newToken: TokenAmount): boolean {
+  private shouldEmitToken(oldToken: BalanceToken, newToken: BalanceToken): boolean {
     return Boolean(oldToken && newToken) ?? compareTokens(oldToken, newToken);
   }
 

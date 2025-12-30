@@ -6,17 +6,15 @@ import { BlockchainName, BlockchainsInfo, CHAIN_TYPE } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { List } from 'immutable';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareAddresses, compareObjects, switchIif } from '@shared/utils/utils';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { TokensStoreService } from '@core/services/tokens/tokens-store.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { AssetType } from '@features/trade/models/asset';
-import { defaultFormParameters } from '@features/trade/services/swap-form-query/constants/default-tokens-params';
 import { tuiIsPresent } from '@taiga-ui/cdk';
 import { EvmAdapter, Web3Pure } from '@cryptorubic/web3';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Injectable()
 export class SwapFormQueryService {
@@ -31,10 +29,9 @@ export class SwapFormQueryService {
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
-    private readonly tokensStoreService: TokensStoreService,
     private readonly gtmService: GoogleTagManagerService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.subscribeOnSwapForm();
     this.subscribeOnQueryParams();
@@ -57,7 +54,7 @@ export class SwapFormQueryService {
   }
 
   private subscribeOnQueryParams(): void {
-    this.tokensStoreService.tokens$
+    this.tokensFacade.tokens$
       .pipe(first(tuiIsPresent))
       .pipe(
         switchMap(tokens => {
@@ -68,12 +65,12 @@ export class SwapFormQueryService {
           const toBlockchain = protectedParams.toChain;
 
           const findFromToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
+            List(tokens),
             protectedParams.from,
             fromBlockchain
           );
           const findToToken$ = this.getTokenBySymbolOrAddress(
-            tokens,
+            List(tokens),
             protectedParams.to,
             toBlockchain
           );
@@ -111,41 +108,32 @@ export class SwapFormQueryService {
   }
 
   private getProtectedSwapParams(queryParams: QueryParams): QueryParams {
-    let fromChain: AssetType;
+    let fromChain: AssetListType;
     if (BlockchainsInfo.isBlockchainName(queryParams.fromChain)) {
       fromChain = queryParams.fromChain;
     } else if (this.walletConnectorService.network) {
       fromChain = this.walletConnectorService.network;
-    } else {
-      fromChain = defaultFormParameters.swap.fromChain;
     }
 
-    const toChain = BlockchainsInfo.isBlockchainName(queryParams?.toChain)
-      ? queryParams.toChain
-      : defaultFormParameters.swap.toChain;
+    let toChain: AssetListType;
+    if (BlockchainsInfo.isBlockchainName(queryParams?.toChain)) {
+      toChain = queryParams.toChain;
+    }
 
     const newParams = {
       ...queryParams,
-      fromChain,
-      toChain
+      ...(fromChain && { fromChain: fromChain as BlockchainName }),
+      ...(toChain && { toChain: toChain as BlockchainName })
     };
-
-    // if (fromChain === toChain && newParams.from && newParams.from === newParams.to) {
-    //   if (newParams.from === defaultFormParameters.swap.from[fromChain as DefaultParametersFrom]) {
-    //     newParams.from = defaultFormParameters.swap.to[fromChain as DefaultParametersTo];
-    //   } else {
-    //     newParams.to = defaultFormParameters.swap.from[fromChain as DefaultParametersFrom];
-    //   }
-    // }
 
     return newParams;
   }
 
   private getTokenBySymbolOrAddress(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     token: string,
     chain: BlockchainName
-  ): Observable<TokenAmount> {
+  ): Observable<BalanceToken> {
     if (!token) {
       return of(null);
     }
@@ -169,7 +157,7 @@ export class SwapFormQueryService {
       switchMap(foundToken =>
         forkJoin([
           of(foundToken),
-          from(this.tokensService.getAndUpdateTokenBalance(foundToken)).pipe(
+          from(this.tokensFacade.getAndUpdateTokenBalance(foundToken)).pipe(
             catchError(() => of(new BigNumber(NaN)))
           )
         ])
@@ -182,27 +170,27 @@ export class SwapFormQueryService {
   }
 
   private searchTokenBySymbol(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     symbol: string,
     chain: BlockchainName
-  ): Observable<TokenAmount | null> {
+  ): Observable<BalanceToken | null> {
     const similarTokens = tokens.filter(
       token => token.symbol.toLowerCase() === symbol.toLowerCase() && token.blockchain === chain
     );
 
     if (!similarTokens.size) {
-      return this.tokensService.fetchQueryTokens(symbol, chain).pipe(
+      return this.tokensFacade.fetchQueryTokens(symbol, chain).pipe(
         map(foundTokens => {
-          if (foundTokens?.size) {
+          if (foundTokens?.length) {
             const token =
-              foundTokens?.size > 1
+              foundTokens?.length > 1
                 ? foundTokens.find(el => el.symbol.toLowerCase() === symbol.toLowerCase())
-                : foundTokens.first();
+                : foundTokens?.[0];
             if (!token) {
               return null;
             }
-            const newToken = { ...token, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
+            const newToken = { ...token, amount: new BigNumber(NaN) } as BalanceToken;
+            this.tokensFacade.addToken(newToken);
             return newToken;
           }
           return null;
@@ -214,25 +202,28 @@ export class SwapFormQueryService {
   }
 
   private searchTokenByAddress(
-    tokens: List<TokenAmount>,
+    tokens: List<BalanceToken>,
     address: string,
     chain: BlockchainName
-  ): Observable<TokenAmount> {
+  ): Observable<BalanceToken> {
     const searchingToken = tokens.find(
       token => compareAddresses(token.address, address) && token.blockchain === chain
     );
 
     return searchingToken
       ? of(searchingToken)
-      : this.tokensService.fetchQueryTokens(address, chain).pipe(
+      : this.tokensFacade.fetchQueryTokens(address, chain).pipe(
           switchIif(
-            backendTokens => Boolean(backendTokens?.size),
-            backendTokens => of(backendTokens.first()),
-            () => this.tokensStoreService.addTokenByAddress(address, chain).pipe(first())
+            backendTokens => Boolean(backendTokens?.length),
+            backendTokens => of(backendTokens?.[0]),
+            () => this.tokensFacade.addTokenByAddress(address, chain).pipe(first())
           ),
           map(fetchedToken => {
-            const newToken = { ...fetchedToken, amount: new BigNumber(NaN) };
-            this.tokensStoreService.addToken(newToken);
+            const newToken = {
+              ...fetchedToken,
+              amount: new BigNumber(NaN)
+            } as unknown as BalanceToken;
+            this.tokensFacade.addToken(newToken);
             return newToken;
           })
         );

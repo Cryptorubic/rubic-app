@@ -1,22 +1,26 @@
 <div class="list-container">
   <div class="list-container__search">
-    <app-search-bar [searchBarType]="'blockchains'"></app-search-bar>
+    <app-search-blockchains-bar
+      [type]="type"
+      [searchQuery]="searchQuery"
+      (handleSearchQuery)="handleSearchQueryFn($event)"
+      [totalBlockchains]="totalBlockchains"
+    ></app-search-blockchains-bar>
   </div>
-
   <tui-scrollbar class="scrollbar">
-    <div class="list" *ngLet="blockchainsToShow$ | async as blockchainsList">
+    <div class="list" *ngLet="blockchainsToShow as blockchainsList">
       <ng-container
         *ngTemplateOutlet="chainItem; context: { item: allChainsSelectorItem, disabled: false }"
       ></ng-container>
 
       <ng-container *ngFor="let blockchainItem of blockchainsList">
-        <ng-container *ngLet="blockchainItem | functionCall : isDisabled : this as disabled">
+        <ng-container *ngLet="isDisabled as disabled">
           <ng-container
             *ngTemplateOutlet="chainItem; context: { item: blockchainItem, disabled: false }"
           ></ng-container>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="blockchainsList.length === 0">
+      <ng-container *ngIf="blockchainsList?.length === 0">
         <app-no-result label="No blockchains found" description="Try another query"></app-no-result>
       </ng-container>
     </div>
@@ -31,7 +35,7 @@
     size="m"
     class="list__element"
     (click)="!disabled && onItemClick(blockchainItem.name)"
-    [tuiHint]="blockchainItem | functionCall : getHintText : this"
+    [tuiHint]="hintText"
     tuiHintAppearance="error"
     [disabled]="disabled"
   >

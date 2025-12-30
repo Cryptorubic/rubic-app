@@ -3,6 +3,7 @@ import { BlockchainName, ToBackendCrossChainProviders } from '@cryptorubic/core'
 
 export interface PlatformConfigV3 {
   appIsActive: boolean;
+  balanceNetworks: BlockchainName[];
   networks: {
     [key in BlockchainName]: PlatformConfigV3ChainInfo;
   };

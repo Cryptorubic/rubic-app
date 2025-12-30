@@ -216,13 +216,23 @@ export class RubicApiService {
     );
   }
 
+  /**
+   * @param rubicId Id of rubic-api trade
+   * @param {optional} srcTxHash  Hash of source transaction to use old search endpoint via hash on python api. Not needed for deposit providers.
+   * @returns
+   */
   public fetchCrossChainTxStatusExtended(
-    srcTxHash: string,
-    rubicId: string
+    rubicId: string,
+    srcTxHash?: string
   ): Promise<CrossChainTxStatusConfig> {
+    const params = new URLSearchParams({
+      rubicId,
+      ...(srcTxHash && { sourceTxHash: srcTxHash })
+    }).toString();
+
     return firstValueFrom(
       this.sdkLegacyService.httpClient.get<CrossChainTxStatusConfig>(
-        `${this.apiUrl}/api/info/statusExtended?srcTxHash=${srcTxHash}&rubicId=${rubicId}`
+        `${this.apiUrl}/api/info/statusExtended?${params}`
       )
     );
   }

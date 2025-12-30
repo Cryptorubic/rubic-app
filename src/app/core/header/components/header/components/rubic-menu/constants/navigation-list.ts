@@ -7,12 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'Swap & Earn',
-    type: 'internal',
-    link: ROUTE_PATH.AIRDROP,
-    imagePath: `assets/images/rbc.svg`
-  },
-  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,
@@ -51,24 +45,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Swap',
       type: 'internal',
       link: ROUTE_PATH.NONE,
-      active: false
-    },
-    {
-      translateKey: 'Staking',
-      type: 'internal',
-      link: ROUTE_PATH.STAKING,
-      active: false
-    },
-    {
-      translateKey: 'Swap to Earn',
-      type: 'internal',
-      link: ROUTE_PATH.AIRDROP,
-      active: false
-    },
-    {
-      translateKey: 'Retrodrop',
-      type: 'internal',
-      link: ROUTE_PATH.RETRODROP,
       active: false
     }
   ],

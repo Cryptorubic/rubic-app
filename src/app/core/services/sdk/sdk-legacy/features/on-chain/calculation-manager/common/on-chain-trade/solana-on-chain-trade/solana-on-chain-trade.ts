@@ -78,12 +78,11 @@ export abstract class SolanaOnChainTrade extends OnChainTrade {
 
   protected constructor(
     tradeStruct: SolanaOnChainTradeStruct,
-    providerAddress: string,
     shouldCalculateConsumedParams: boolean,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;

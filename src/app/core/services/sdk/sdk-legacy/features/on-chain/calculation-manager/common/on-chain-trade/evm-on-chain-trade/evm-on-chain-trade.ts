@@ -31,6 +31,7 @@ import {
 } from '@cryptorubic/web3';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { withRetryWhile } from '@app/features/trade/utils/with-retry';
 
 export abstract class EvmOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: EvmTransactionConfig | null = null;
@@ -95,7 +96,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(evmOnChainTradeStruct.apiQuote!.integratorAddress!, sdkLegacyService, rubicApiService);
+    super(evmOnChainTradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = evmOnChainTradeStruct.from;
     this.to = evmOnChainTradeStruct.to;
@@ -236,6 +237,16 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
 
       return transactionHash!;
     } catch (err) {
+      // waiting for update of allowance on ERC20 token contract
+      if (err.message.includes('transfer amount exceeds allowance')) {
+        await withRetryWhile(
+          () => this.needApprove(),
+          needApprove => needApprove === true,
+          5
+        );
+        return this.swap({ ...options, useCacheData: true, skipAmountCheck: true });
+      }
+
       if (err instanceof FailedToCheckForTransactionReceiptError) {
         return transactionHash!;
       }

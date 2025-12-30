@@ -43,6 +43,8 @@ import { SwapBackupRateChangedModalComponent } from '@app/features/trade/compone
 import { TradeInfo } from '@app/features/trade/models/trade-info';
 import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
+import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Injectable({
   providedIn: 'root'
@@ -215,16 +217,46 @@ export class ModalService {
 
   /**
    * Show Blockchain List dialog.
-   * @param _injector Injector.
+   * @param injector
+   * @param type
+   * @param searchQuery
+   * @param isDisabled
+   * @param hintText
+   * @param totalBlockchains
+   * @param blockchainsToShow
+   * @param handleSearchQuery
+   * @param handleSelection
    */
-  public openMobileBlockchainList(_injector: Injector): void {
+  public openMobileBlockchainList(
+    injector: Injector,
+    type: 'from' | 'to',
+    searchQuery: string,
+    isDisabled: boolean,
+    hintText: string,
+    totalBlockchains: number,
+    // eslint-disable-next-line rxjs/finnish
+    blockchainsToShow: Observable<AvailableBlockchain[]>,
+    handleSearchQuery?: (query: string) => void,
+    handleSelection?: (selection: AssetListType) => void
+  ): void {
     this.mobileModalService$.openNextModal(
       BlockchainsListComponent,
       {
         title: '',
-        scrollableContent: true
+        scrollableContent: true,
+        data: {
+          type,
+          searchQuery,
+          isDisabled,
+          hintText,
+          totalBlockchains,
+          // eslint-disable-next-line rxjs/finnish
+          blockchainsToShow,
+          handleSearchQuery,
+          handleSelection
+        }
       },
-      _injector
+      injector
     );
   }
 

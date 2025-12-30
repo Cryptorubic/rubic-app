@@ -57,11 +57,10 @@ export abstract class TonOnChainTrade extends OnChainTrade {
 
   constructor(
     tradeStruct: TonOnChainTradeStruct,
-    providerAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;
     this.slippageTolerance = tradeStruct.slippageTolerance;

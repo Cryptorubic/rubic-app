@@ -61,6 +61,10 @@ tui-loader {
   height: 100%;
 }
 
+.token-list-wrapper {
+  height: 100%;
+}
+
 .tokens-list {
   height: 100%;
   padding-right: 15px;
@@ -75,7 +79,7 @@ tui-loader {
 
     margin-bottom: 2px;
 
-    app-search-bar {
+    app-search-tokens-bar {
       flex: 1;
     }
 
