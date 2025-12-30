@@ -1,7 +1,7 @@
 import { BlockchainToken } from '@shared/models/tokens/blockchain-token';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { Token } from '@shared/models/tokens/token';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { TokenAmountWithPriceChange } from '../models/tokens/available-token-amount';
 
 export function isMinimalToken(asset: unknown): asset is MinimalToken {
@@ -16,12 +16,10 @@ export function isToken(asset: unknown): asset is Token {
   return isBlockchainToken(asset) && 'image' in asset && 'rank' in asset && 'price' in asset;
 }
 
-export function isTokenAmount(asset: unknown): asset is TokenAmount {
+export function isTokenAmount(asset: unknown): asset is BalanceToken {
   return isToken(asset) && 'amount' in asset && 'favorite' in asset;
 }
 
 export function isTokenAmountWithPriceChange(asset: unknown): asset is TokenAmountWithPriceChange {
-  return (
-    isToken(asset) && 'priceChange24h' in asset && 'priceChange7d' in asset && 'sourceRank' in asset
-  );
+  return isToken(asset) && ('priceChange24h' in asset || 'priceChange7d' in asset);
 }

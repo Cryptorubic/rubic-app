@@ -1,7 +1,6 @@
 import { Component, ChangeDetectorRef, Inject } from '@angular/core';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { UserInterface } from '@app/core/services/auth/models/user.interface';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
 import { NATIVE_TOKEN_ADDRESS } from '@app/shared/constants/blockchain/native-token-address';
@@ -15,6 +14,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { TradesHistory } from '@core/header/components/header/components/mobile-user-profile/models/tradeHistory';
 import { Router } from '@angular/router';
 import { BlockchainName, nativeTokensList } from '@cryptorubic/core';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 interface ContextData {
   tradesHistory: TradesHistory;
@@ -43,9 +43,9 @@ export class MobileUserProfileComponent {
     private readonly context: TuiDialogContext<void, ContextData>,
     private readonly authService: AuthService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokenService: TokensService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     const currentUser$ = this.authService.currentUser$;
 
@@ -66,7 +66,7 @@ export class MobileUserProfileComponent {
     this.currentBalance$ = this.walletConnectorService.networkChange$.pipe(
       switchMap(blockchain =>
         forkJoin([
-          this.tokenService.getAndUpdateTokenBalance({
+          this.tokensFacade.getAndUpdateTokenBalance({
             address: NATIVE_TOKEN_ADDRESS,
             blockchain
           }),

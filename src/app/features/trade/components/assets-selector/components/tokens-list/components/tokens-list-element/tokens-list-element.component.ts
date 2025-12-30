@@ -6,7 +6,6 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { DEFAULT_TOKEN_IMAGE } from '@shared/constants/tokens/default-token-image';
 import { TokenSecurityStatus, securityMessages } from '@shared/models/tokens/token-security';
 import { TUI_IS_MOBILE } from '@taiga-ui/cdk';
@@ -19,8 +18,8 @@ import {
 } from '@app/shared/constants/blockchain/platform-token-address';
 import { AvailableTokenAmount } from '@app/shared/models/tokens/available-token-amount';
 import { blockchainIcon } from '@app/shared/constants/blockchain/blockchain-icon';
-import { TokenFilter } from '../../../../models/token-filters';
-import { AssetType } from '@app/features/trade/models/asset';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-tokens-list-element',
@@ -29,15 +28,11 @@ import { AssetType } from '@app/features/trade/models/asset';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TokensListElementComponent {
-  @Input() token: AvailableTokenAmount;
+  @Input({ required: true }) token: AvailableTokenAmount;
 
-  @Input() balanceLoading = false;
+  @Input({ required: true }) balanceLoading = false;
 
-  @Input() showAll: boolean = false;
-
-  @Input({ required: true }) tokenFilter: TokenFilter;
-
-  @Input({ required: true }) assetType: AssetType;
+  @Input({ required: true }) listType: AssetListType;
 
   @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
 
@@ -98,12 +93,9 @@ export class TokensListElementComponent {
     return TokenSecurityStatus.LOW_RISK;
   }
 
-  constructor(
-    private readonly tokensService: TokensService,
-    @Inject(TUI_IS_MOBILE) public readonly isMobile: boolean
-  ) {}
+  constructor(@Inject(TUI_IS_MOBILE) public readonly isMobile: boolean) {}
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 }

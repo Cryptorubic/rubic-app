@@ -15,6 +15,7 @@ import {
 
 export const defaultInfoV3Config: PlatformConfigV3 = {
   appIsActive: true,
+  balanceNetworks: [],
   networks: Object.values(BLOCKCHAIN_NAME).reduce(
     (acc, chainName) => ({
       ...acc,

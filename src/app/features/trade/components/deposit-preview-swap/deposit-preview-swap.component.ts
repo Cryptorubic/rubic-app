@@ -27,6 +27,7 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { CROSS_CHAIN_TRADE_TYPE, nativeTokensList, Token } from '@cryptorubic/core';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-deposit-preview-swap',
@@ -94,7 +95,7 @@ export class DepositPreviewSwapComponent {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly tradeState$: Observable<SelectedTrade & { feeInfo: FeeInfo }> =
     this.previewSwapService.selectedTradeState$.pipe(
@@ -141,7 +142,8 @@ export class DepositPreviewSwapComponent {
     @Inject(NAVIGATOR) private readonly navigator: Navigator,
     private readonly cdr: ChangeDetectorRef,
     @Self() private readonly destroy$: TuiDestroyService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly tokensFacade: TokensFacadeService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();

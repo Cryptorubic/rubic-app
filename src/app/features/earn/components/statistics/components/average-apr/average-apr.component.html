@@ -1,8 +1,0 @@
-<div class="element">
-  <div class="element__label element__label-btn">
-    {{ 'staking.overview.apr' | translate }}
-  </div>
-  <div class="element__value" [class.tui-skeleton]="!value">
-    {{ value?.isFinite() ? (value | bigNumberFormat : 2 : true) + ' %' : '--.--' }}
-  </div>
-</div>

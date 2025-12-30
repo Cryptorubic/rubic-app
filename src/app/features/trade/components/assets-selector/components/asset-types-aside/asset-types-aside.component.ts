@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { BlockchainItem } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
-import { BlockchainsListService } from '@features/trade/components/assets-selector/services/blockchains-list-service/blockchains-list.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { BlockchainTags } from '../blockchains-filter-list/models/BlockchainFilters';
-import { FilterQueryService } from '../../services/filter-query-service/filter-query.service';
-import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
+import {
+  BlockchainFilters,
+  BlockchainTags
+} from '../blockchains-filter-list/models/BlockchainFilters';
 import { allChainsSelectorItem } from '../../constants/all-chains';
+import { AssetListType } from '@features/trade/models/asset';
 
 @Component({
   selector: 'app-asset-types-aside',
@@ -16,41 +16,40 @@ import { allChainsSelectorItem } from '../../constants/all-chains';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AssetTypesAsideComponent {
+  @Input({ required: true }) type: 'from' | 'to';
+
+  @Input({ required: true }) totalBlockchains: number;
+
+  @Input({ required: true }) searchQuery: string;
+
+  @Input({ required: true }) blockchainsToShow: BlockchainItem[];
+
+  @Input({ required: true }) blockchainFilter: BlockchainFilters;
+
+  @Input({ required: true }) assetListType: AssetListType;
+
+  @Output() handleBlockchainSelect = new EventEmitter<BlockchainItem>();
+
+  @Output() handleFilterSelect = new EventEmitter<BlockchainFilters>();
+
+  @Output() onSearchQuery = new EventEmitter<string>();
+
   public readonly allChainsSelectorItem = allChainsSelectorItem;
-
-  public readonly selectedAssetType$ = this.assetsSelectorStateService.assetType$;
-
-  public readonly formType = this.assetsSelectorStateService.formType;
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  public readonly blockchainTags = BlockchainTags;
-
-  public readonly selectedFilter$ = this.filterQueryService.filterQuery$;
-
-  public readonly blockchainsToShow$ = this.blockchainsListService.assetsBlockchainsToShow$;
-
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
-  public get blockchainsAmount(): number {
-    return this.blockchainsListService.availableBlockchains.length;
-  }
-
   constructor(
-    private readonly blockchainsListService: BlockchainsListService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly headerStore: HeaderStore,
-    private readonly filterQueryService: FilterQueryService
+    private readonly headerStore: HeaderStore
   ) {}
 
   public setBlockchainFilterAll(): void {
-    this.filterQueryService.filterQuery = BlockchainTags.ALL;
+    this.handleFilterSelect.emit(BlockchainTags.ALL);
   }
 
   public onBlockchainItemClick(item: BlockchainItem): void {
-    if (item.name === null) this.assetsSelectorService.onAllChainsSelect();
-    else this.assetsSelectorService.onBlockchainSelect(item.name);
+    this.handleBlockchainSelect.emit(item);
   }
 }
