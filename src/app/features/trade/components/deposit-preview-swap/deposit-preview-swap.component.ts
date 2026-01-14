@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Self } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Inject,
+  OnDestroy,
+  Self
+} from '@angular/core';
 import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
@@ -10,7 +17,6 @@ import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form
 import BigNumber from 'bignumber.js';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { NAVIGATOR } from '@ng-web-apis/common';
 import { DepositService } from '../../services/deposit/deposit.service';
@@ -44,7 +50,7 @@ import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service
     ])
   ]
 })
-export class DepositPreviewSwapComponent {
+export class DepositPreviewSwapComponent implements OnDestroy {
   public readonly status$ = combineLatest([
     this.depositService.status$.pipe(startWith(CROSS_CHAIN_DEPOSIT_STATUS.WAITING)),
     this.depositService.depositTrade$.pipe(startWith(null))
@@ -135,7 +141,6 @@ export class DepositPreviewSwapComponent {
     private readonly router: Router,
     private readonly swapsFormService: SwapsFormService,
     private readonly headerStore: HeaderStore,
-    private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly depositService: DepositService,
     private readonly targetAddressService: TargetNetworkAddressService,
     private readonly refundService: RefundService,
@@ -147,6 +152,10 @@ export class DepositPreviewSwapComponent {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
+  }
+
+  ngOnDestroy(): void {
+    this.depositService.subs.forEach(sub => sub.unsubscribe());
   }
 
   public backToForm(): void {

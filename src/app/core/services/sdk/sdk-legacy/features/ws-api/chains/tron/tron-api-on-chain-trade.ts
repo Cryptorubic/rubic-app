@@ -42,13 +42,7 @@ export class TronApiOnChainTrade extends TronOnChainTrade {
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(
-      params.apiQuote.integratorAddress!,
-      params.apiQuote,
-      params.apiResponse,
-      sdkLegacyService,
-      rubicApiService
-    );
+    super(params.apiQuote, params.apiResponse, sdkLegacyService, rubicApiService);
 
     this.type = params.apiResponse.providerType as OnChainTradeType;
     this._priceImpact = params.apiResponse.estimate.priceImpact;

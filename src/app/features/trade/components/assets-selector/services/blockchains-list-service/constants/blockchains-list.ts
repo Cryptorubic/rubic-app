@@ -241,6 +241,11 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['TRX', BlockchainTags.NON_EVM, BlockchainTags.POPULAR]
   },
   {
+    name: BLOCKCHAIN_NAME.HYPER_EVM,
+    rank: 0.73,
+    tags: ['HYPE', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+  },
+  {
     name: BLOCKCHAIN_NAME.OPTIMISM,
     rank: 0.73,
     tags: [BlockchainTags.EVM, BlockchainTags.POPULAR]

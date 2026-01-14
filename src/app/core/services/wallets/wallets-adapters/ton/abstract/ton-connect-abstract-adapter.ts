@@ -47,11 +47,11 @@ export abstract class TonConnectAbstractAdapter extends CommonWalletAdapter<TonC
       const isConnected = (await this.tonConnect.connectionRestored) && this.tonConnect.connected;
 
       if (!isConnected) {
-        const payload = await RetroBridgeApiService.getMessageToAuthWallet(this.httpService);
-        this.tonConnect.setConnectRequestParameters({
-          state: 'ready',
-          value: { tonProof: this.window.btoa(payload) }
-        });
+        // const payload = await RetroBridgeApiService.getMessageToAuthWallet(this.httpService);
+        // this.tonConnect.setConnectRequestParameters({
+        //   state: 'ready',
+        //   value: { tonProof: this.window.btoa(payload) }
+        // });
         await this.openWalletModal();
       }
 

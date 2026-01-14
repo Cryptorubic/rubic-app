@@ -45,7 +45,6 @@ export class TonApiOnChainTrade extends TonOnChainTrade {
         routingPath: params.routePath,
         isChangedSlippage: params.isChangedSlippage
       },
-      params.apiQuote.integratorAddress!,
       sdkLegacyService,
       rubicApiService
     );

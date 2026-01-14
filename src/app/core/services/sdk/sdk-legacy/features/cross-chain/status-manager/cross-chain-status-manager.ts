@@ -51,8 +51,8 @@ export class CrossChainStatusManager {
     }
 
     const txStatusData = await this.rubicApiService.fetchCrossChainTxStatusExtended(
-      srcHash,
-      rubicId
+      rubicId,
+      srcHash
     );
 
     if (txStatusData.status === TX_STATUS.SUCCESS) {

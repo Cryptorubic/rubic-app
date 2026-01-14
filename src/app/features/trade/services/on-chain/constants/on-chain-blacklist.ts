@@ -71,7 +71,8 @@ const onChainBlacklist: Record<SupportedOnChainNetworks, OnChainTradeType[]> = {
   [BLOCKCHAIN_NAME.UNICHAIN]: [],
   [BLOCKCHAIN_NAME.HEMI]: [],
   [BLOCKCHAIN_NAME.PLASMA]: [],
-  [BLOCKCHAIN_NAME.MONAD]: []
+  [BLOCKCHAIN_NAME.MONAD]: [],
+  [BLOCKCHAIN_NAME.HYPER_EVM]: []
   // [BLOCKCHAIN_NAME.MONAD_TESTNET]: []
 };
 
