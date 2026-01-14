@@ -2,7 +2,8 @@
   *ngLet="{
     tradeInfo: tradeInfo$ | async,
     tradeState: tradeState$ | async,
-    transaction: transactionState$ | async
+    transaction: transactionState$ | async,
+    trustlineInfo: trustlineInfo$ | async
   } as state"
 >
   <ng-container header>
@@ -279,7 +280,12 @@
         </button>
       </div>
     </ng-container>
+    <ng-template #trustline>
+      <app-trustline
+        *ngIf="state.trustlineInfo"
+        [options]="state.trustlineInfo"
+        (onTrustlineAdd)="onTrustlineAdd()"
+      ></app-trustline>
+    </ng-template>
   </ng-container>
 </app-window-container>
-
-<ng-template #trustline> <app-trustline></app-trustline></ng-template>

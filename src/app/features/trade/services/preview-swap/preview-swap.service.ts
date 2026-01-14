@@ -60,7 +60,7 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { ModalService } from '@app/core/modals/services/modal.service';
 import { TradeInfo } from '../../models/trade-info';
-import { TransactionStep } from '../../models/transaction-steps';
+import { transactionStep, TransactionStep } from '../../models/transaction-steps';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 
@@ -195,6 +195,25 @@ export class PreviewSwapService {
     this.tradePageService.setState('form');
   }
 
+  public handleTrustline(): void {
+    const currState = this.transactionState;
+
+    const nextState: TransactionState = {
+      ...currState,
+      data: {
+        ...currState.data,
+        needTrustlineOptions: {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
+      },
+      ...(currState.data.needTrustlineOptions?.needTrustlineAfterSwap && {
+        step: transactionStep.trustlineReady
+      })
+    };
+    this.setNextTxState(nextState);
+  }
+
   public activatePage(): void {
     this.resetTransactionState();
     this.subscribeOnNetworkChange();
@@ -321,6 +340,15 @@ export class PreviewSwapService {
           );
         }),
         tap(crossChainStatus => {
+          if (
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_TRUSTLINE &&
+            this.transactionState.step !== transactionStep.trustlineReady
+          ) {
+            this.setNextTxState({
+              step: 'trustlinePending',
+              data: { ...this.transactionState.data }
+            });
+          }
           if (crossChainStatus.dstTxStatus === TX_STATUS.SUCCESS) {
             this.setNextTxState({
               step: 'success',
@@ -478,12 +506,7 @@ export class PreviewSwapService {
                 if (this.useCallback) {
                   this.closeRetryModal();
                   if (tradeState.trade instanceof CrossChainTrade) {
-                    if (tradeState.needTrustlineOptions?.needTrustlineAfterSwap) {
-                      this.setNextTxState({
-                        step: 'trustlinePending',
-                        data: { ...this.transactionState.data }
-                      });
-                    } else {
+                    if (!tradeState.needTrustlineOptions?.needTrustlineAfterSwap) {
                       this.setNextTxState({
                         step: 'destinationPending',
                         data: { ...this.transactionState.data }

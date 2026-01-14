@@ -1,14 +1,10 @@
 <div
   class="trustline-container"
   *ngLet="{
-    tokenSymbol: trustlineTokenSymbol$ | async,
     buttonState: buttonState$ | async
   } as state"
 >
-  <tui-notification status="warning">
-    To get the Asset {{ state.tokenSymbol }}, you need to add its support to your Stellar wallet
-    (trustline)
-  </tui-notification>
+  <tui-notification status="warning">{{ trustlineText }}</tui-notification>
 
   <div class="trustline-container__actions" *ngIf="state.buttonState">
     <button

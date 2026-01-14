@@ -81,8 +81,6 @@ import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasl
 import { SwapRetryPendingModalComponent } from './components/swap-retry-pending-modal/swap-retry-pending-modal.component';
 import { SwapBackupRateChangedModalComponent } from './components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
 import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
-import { TrustlineService } from './services/trustline-service/trustline.service';
-import { TrustlineComponent } from './components/trustline/trustline.component';
 
 @NgModule({
   declarations: [
@@ -120,8 +118,7 @@ import { TrustlineComponent } from './components/trustline/trustline.component';
     CryptoRateChartComponent,
     SwapRetryPendingModalComponent,
     SwapBackupRateChangedModalComponent,
-    AllSwapBackupsFailedModalComponent,
-    TrustlineComponent
+    AllSwapBackupsFailedModalComponent
   ],
   exports: [ActionButtonComponent],
   imports: [
@@ -195,8 +192,7 @@ import { TrustlineComponent } from './components/trustline/trustline.component';
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,
-    SolanaGaslessStateService,
-    TrustlineService
+    SolanaGaslessStateService
   ]
 })
 export class TradeModule {}

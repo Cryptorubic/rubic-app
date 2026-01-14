@@ -136,6 +136,21 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     filter(v => v !== undefined)
   );
 
+  public readonly trustlineInfo$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(selectedTrade => {
+      const { trade } = selectedTrade;
+      return {
+        receiver: this.targetAddressService.address,
+        toBlockchain: trade.to.blockchain,
+        trustlineToken: {
+          address: trade.to.address,
+          symbol: trade.to.symbol
+        },
+        trustlineType: 'default'
+      };
+    })
+  );
+
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
   public hintShown: boolean = false;
@@ -279,5 +294,9 @@ export class DepositPreviewSwapComponent implements OnDestroy {
           this.depositService.removePrevDeposit();
         }
       });
+  }
+
+  public onTrustlineAdd(): void {
+    this.previewSwapService.handleTrustline();
   }
 }

@@ -6,4 +6,5 @@ export type DestinationTxStatus =
   | 'revert'
   | 'reverted'
   | 'long_pending'
-  | 'ready_to_claim';
+  | 'ready_to_claim'
+  | 'refund';

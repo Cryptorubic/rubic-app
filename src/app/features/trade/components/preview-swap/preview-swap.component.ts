@@ -34,6 +34,8 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
+import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 
 @Component({
   selector: 'app-preview-swap',
@@ -80,6 +82,24 @@ export class PreviewSwapComponent implements OnDestroy {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
+  public readonly trustlineInfo$ = this.swapsStateService.currentTrade$.pipe(
+    map(trade => {
+      const transitToken =
+        trade instanceof StellarCrossChainTrade && trade.getTrustlineTransitToken();
+      const trustlineToken = transitToken || trade.to;
+
+      return {
+        receiver: this.targetAddressService.address,
+        toBlockchain: trade.to.blockchain,
+        trustlineToken: {
+          address: trustlineToken?.address,
+          symbol: trustlineToken?.symbol
+        },
+        trustlineType: transitToken ? 'transit' : 'default'
+      };
+    })
+  );
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly previewSwapService: PreviewSwapService,
@@ -93,7 +113,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
-    private readonly tradeInfoManager: TradeInfoManager
+    private readonly tradeInfoManager: TradeInfoManager,
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
@@ -315,5 +336,9 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public onImageError($event: Event): void {
     this.tokensService.onTokenImageError($event);
+  }
+
+  public onTrustlineAdd(): void {
+    this.previewSwapService.handleTrustline();
   }
 }

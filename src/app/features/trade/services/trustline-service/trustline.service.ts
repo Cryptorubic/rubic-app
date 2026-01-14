@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { TargetNetworkAddressService } from '../target-network-address-service/target-network-address.service';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 import { BLOCKCHAIN_NAME, TokenAmount } from '@cryptorubic/core';
@@ -11,61 +10,54 @@ import {
   ModalThemes
 } from '@creit.tech/stellar-wallets-kit';
 import { WalletConnectModule } from '@creit.tech/stellar-wallets-kit/modules/walletconnect.module';
-import { firstValueFrom, map } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
 import { NeedTrustlineOptions } from './models/need-trustline-options';
 import { TRUSTLINE_AFTER_SWAP_PROVIDERS } from './constants/trustline-after-swap-providers';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
-import { SwapsStateService } from '../swaps-state/swaps-state.service';
 import { WALLET_CONNECT_CONFIG } from './constants/wallet-connect-config';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class TrustlineService {
-  private readonly walletKit = new StellarWalletsKit({
-    network: WalletNetwork.PUBLIC,
-    modules: [
-      new FreighterModule(),
-      new LobstrModule(),
-      new WalletConnectModule(WALLET_CONNECT_CONFIG)
-    ],
-    modalTheme: ModalThemes.DARK
-  });
-
   private readonly adapter: StellarAdapter = this.adapterFactory.getAdapter(
     BLOCKCHAIN_NAME.STELLAR
   );
 
-  public readonly trustlineToken$ = this.swapsStateService.currentTrade$.pipe(
-    map(trade => {
-      if (trade instanceof StellarCrossChainTrade) {
-        return trade.getTrustlineTransitToken();
-      }
-
-      return trade.to;
-    })
-  );
-
   constructor(
-    private readonly targetAddressService: TargetNetworkAddressService,
     private readonly adapterFactory: BlockchainAdapterFactoryService,
-    private readonly swapsStateService: SwapsStateService,
     private readonly errorService: ErrorsService
   ) {}
 
-  public async connectReceiverAddress(): Promise<boolean> {
+  public async connectReceiverWallet(receiverAddress: string): Promise<boolean> {
+    const wallet = new StellarWalletsKit({
+      network: WalletNetwork.PUBLIC,
+      modules: [
+        new FreighterModule(),
+        new LobstrModule(),
+        new WalletConnectModule(WALLET_CONNECT_CONFIG)
+      ],
+      modalTheme: ModalThemes.DARK
+    });
+
     const promise = new Promise<boolean>((resolve, reject) => {
-      this.walletKit.openModal({
+      wallet.openModal({
         onWalletSelected: async option => {
-          this.walletKit.setWallet(option.id);
+          wallet.setWallet(option.id);
           try {
-            const { address } = await this.walletKit.getAddress();
-            if (address !== this.targetAddressService.address) {
+            const { address } = await wallet.getAddress();
+            if (address !== receiverAddress) {
               reject(new Error('Connected wallet must be the same as receiver'));
             }
+
+            if (!this.adapter.connected) {
+              this.adapter.initWeb3Client();
+            }
+
             this.adapter.signer.setWalletAddress(address);
-            this.adapter.signer.setWallet(this.walletKit);
+            this.adapter.signer.setWallet(wallet);
 
             resolve(true);
           } catch (err) {
@@ -86,11 +78,9 @@ export class TrustlineService {
     }
   }
 
-  public async addTrustline(): Promise<string | null> {
+  public async addTrustline(tokenAddress: string): Promise<string | null> {
     try {
-      const toToken = await firstValueFrom(this.trustlineToken$);
-
-      const hash = await this.adapter.addTrustline(toToken.address);
+      const hash = await this.adapter.addTrustline(tokenAddress);
       return hash;
     } catch (err) {
       this.errorService.catch(err);

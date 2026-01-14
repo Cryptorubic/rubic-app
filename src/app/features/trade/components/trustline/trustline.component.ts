@@ -1,13 +1,17 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output
+} from '@angular/core';
 import { TrustlineService } from '../../services/trustline-service/trustline.service';
-import { BehaviorSubject, map } from 'rxjs';
-import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
-import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
+import { BehaviorSubject } from 'rxjs';
 import { TrustlineButtonState } from './models/trustline-button-state';
-import { transactionStep } from '../../models/transaction-steps';
-import { TransactionState } from '../../models/transaction-state';
-import { SwapsStateService } from '../../services/swaps-state/swaps-state.service';
 import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { TRUSTLINE_TYPE_TEXT } from './models/trustline-type';
+import { TrustlineComponentOptions } from './models/trustline-component-options';
 
 @Component({
   selector: 'app-trustline',
@@ -15,19 +19,20 @@ import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
   styleUrls: ['./trustline.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TrustlineComponent {
-  constructor(
-    private readonly trustlineService: TrustlineService,
-    private readonly targetAddressService: TargetNetworkAddressService,
-    private readonly previewSwapService: PreviewSwapService,
-    private readonly swapsStateService: SwapsStateService
-  ) {
+export class TrustlineComponent implements OnInit {
+  @Input({ required: true }) options: TrustlineComponentOptions;
+
+  @Output() onTrustlineAdd = new EventEmitter<void>();
+
+  constructor(private readonly trustlineService: TrustlineService) {}
+
+  ngOnInit(): void {
     this.setInitialState();
   }
 
-  public readonly trustlineTokenSymbol$ = this.trustlineService.trustlineToken$.pipe(
-    map(token => token.symbol)
-  );
+  public get trustlineText(): string {
+    return TRUSTLINE_TYPE_TEXT[this.options.trustlineType](this.options.trustlineToken.symbol);
+  }
 
   private readonly _buttonState$ = new BehaviorSubject<TrustlineButtonState | null>(null);
 
@@ -45,9 +50,7 @@ export class TrustlineComponent {
   }
 
   private setInitialState(): void {
-    const { trade } = this.swapsStateService.currentTrade;
-
-    if (this.targetAddressService.address && trade.to.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+    if (this.options.receiver && this.options.toBlockchain === BLOCKCHAIN_NAME.STELLAR) {
       this.setButtonState({
         label: 'Connect Receiver',
         action: () => this.connectReceiver(),
@@ -65,7 +68,7 @@ export class TrustlineComponent {
   private async connectReceiver(): Promise<void> {
     this.setLoadingState();
 
-    const isConnected = await this.trustlineService.connectReceiverAddress();
+    const isConnected = await this.trustlineService.connectReceiverWallet(this.options.receiver);
 
     if (isConnected) {
       this.setButtonState({
@@ -81,24 +84,9 @@ export class TrustlineComponent {
   private async addTrustline(): Promise<void> {
     this.setLoadingState();
 
-    const hash = await this.trustlineService.addTrustline();
+    const hash = await this.trustlineService.addTrustline(this.options.trustlineToken.address);
     if (hash) {
-      const currState = this.previewSwapService.transactionState;
-
-      const nextState: TransactionState = {
-        ...currState,
-        data: {
-          needTrustlineOptions: {
-            needTrustlineAfterSwap: false,
-            needTrustlineBeforeSwap: false
-          }
-        },
-        ...(currState.data.needTrustlineOptions?.needTrustlineAfterSwap && {
-          step: transactionStep.trustlineReady
-        })
-      };
-
-      this.previewSwapService.setNextTxState(nextState);
+      this.onTrustlineAdd.emit();
     } else {
       this.setPrevButtonState();
     }

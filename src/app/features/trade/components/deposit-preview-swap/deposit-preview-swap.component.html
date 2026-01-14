@@ -10,7 +10,8 @@
     spesificStatusText: specificProviderStatusText$ | async,
     isRefundAddressRequired: isRefundAddressRequired$ | async,
     isToAmountCalculated: isToAmountCalculated$ | async,
-    needTrustline: needTrustline$ | async
+    needTrustline: needTrustline$ | async,
+    trustlineInfo: trustlineInfo$ | async
   } as state"
 >
   <ng-container header>
@@ -56,11 +57,14 @@
       </div>
     </div>
 
-    <div class="refund-address" *ngIf="state.isRefundAddressRequired">
+    <div class="required-step" *ngIf="state.isRefundAddressRequired">
       <app-refund-address></app-refund-address>
     </div>
-    <div class="refund-address" *ngIf="state.needTrustline">
-      <app-trustline></app-trustline>
+    <div class="required-step" *ngIf="state.needTrustline && state.trustlineInfo">
+      <app-trustline
+        [options]="state.trustlineInfo"
+        (onTrustlineAdd)="onTrustlineAdd()"
+      ></app-trustline>
     </div>
     <div
       *ngIf="state.isValidRefundAddress && !state.needTrustline"
