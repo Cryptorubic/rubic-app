@@ -377,7 +377,11 @@ export class PreviewSwapService {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }
         }),
-        takeWhile(crossChainStatus => crossChainStatus.dstTxStatus === TX_STATUS.PENDING)
+        takeWhile(
+          crossChainStatus =>
+            crossChainStatus.dstTxStatus === TX_STATUS.PENDING ||
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_TRUSTLINE
+        )
       )
       .subscribe();
     this.subscriptions$.push(pollingSubscription$);
