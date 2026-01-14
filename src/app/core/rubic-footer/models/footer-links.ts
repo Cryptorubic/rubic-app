@@ -2,12 +2,6 @@ import { FooterLink } from 'src/app/core/rubic-footer/models/footer-link';
 
 export const FOOTER_LINKS: FooterLink[] = [
   {
-    dark: 'assets/images/contacts/fb.svg',
-    light: 'assets/images/contacts/fb_light.svg',
-    altText: 'Facebook',
-    link: 'https://www.facebook.com/RubicDEX/'
-  },
-  {
     dark: 'assets/images/contacts/twitter.svg',
     light: 'assets/images/contacts/twitter_light.svg',
     altText: 'Twitter',
@@ -66,11 +60,5 @@ export const FOOTER_LINKS: FooterLink[] = [
     light: 'assets/images/contacts/youtube_light.svg',
     altText: 'Youtube',
     link: 'https://www.youtube.com/c/RubicExchange'
-  },
-  {
-    dark: 'assets/images/contacts/defi-pulse.svg',
-    light: 'assets/images/contacts/defi-pulse_light.svg',
-    altText: 'DeFi Pulse',
-    link: 'https://www.defipulse.com/'
   }
 ];

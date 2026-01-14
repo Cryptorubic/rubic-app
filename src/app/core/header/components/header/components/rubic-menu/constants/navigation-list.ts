@@ -77,11 +77,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
   ],
   ['Social']: [
     {
-      translateKey: 'Facebook',
-      type: 'external',
-      link: 'https://www.facebook.com/RubicDEX/'
-    },
-    {
       translateKey: 'Twitter',
       type: 'external',
       link: 'https://twitter.com/CryptoRubic'
@@ -130,11 +125,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Youtube',
       type: 'external',
       link: 'https://www.youtube.com/c/RubicExchange'
-    },
-    {
-      translateKey: 'Coinmarketcap',
-      type: 'external',
-      link: 'https://www.defipulse.com/'
     }
   ],
   ['Legal & Privacy']: [
