@@ -17,7 +17,6 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { EvmAdapter } from '@cryptorubic/web3';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -76,27 +75,28 @@ export class NewTokensStoreService {
     }
   }
 
-  public addBlockchainBalanceTokens(blockchain: BlockchainName, tokens: BalanceToken[]): void {
-    const eth = tokens.find(
-      token => token.blockchain === BLOCKCHAIN_NAME.ETHEREUM && token.address === EMPTY_ADDRESS
-    );
-    if (eth) {
-      const balance = eth?.amount?.toFixed();
-      console.log(`ETH BALANCE: ${balance}`);
-      if (balance === '0') {
-        debugger;
+  public addBlockchainBalanceTokens(
+    blockchain: BlockchainName,
+    balanceTokens: BalanceToken[]
+  ): void {
+    const tokens = this.tokens[blockchain]._tokensObject$;
+    balanceTokens.forEach(token => {
+      if (tokens.value[token.address]) {
+        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      } else {
+        tokens.value[token.address] = token;
       }
-    }
-    const currentTokens = this.tokens[blockchain]._tokensObject$;
-    const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
-    currentTokens.next({ ...currentTokens.value, ...newValues });
+    });
+    tokens.next(tokens.value);
   }
 
   public updateBlockchainTokens(blockchain: BlockchainName, newTokens: ReadonlyArray<Token>): void {
     const tokens = this.tokens[blockchain]._tokensObject$;
     newTokens.forEach(token => {
       if (tokens.value[token.address]) {
-        tokens.value[token.address] = { ...tokens.value[token.address], ...token };
+        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      } else {
+        tokens.value[token.address] = { ...token, favorite: false, amount: new BigNumber(NaN) };
       }
     });
     tokens.next(tokens.value);
