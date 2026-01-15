@@ -17,6 +17,7 @@ import { blockchainImageKey } from '@features/trade/components/assets-selector/s
 import { EvmAdapter } from '@cryptorubic/web3';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { EMPTY_ADDRESS } from '@shared/constants/blockchain/empty-address';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,6 @@ export class NewTokensStoreService {
 
       tokens.list.forEach(token => {
         if (!currentTokens.value[token.address]) {
-          // @TODO TOKENS MB REMOVE
           currentTokens.value[token.address] = {
             ...token,
             favorite: false,
@@ -76,15 +76,17 @@ export class NewTokensStoreService {
     }
   }
 
-  public addNewBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
-    const currentTokens = this.tokens[blockchain]._tokensObject$;
-    const newValues = tokens.reduce((acc, token) => {
-      return { ...acc, [token.address]: token };
-    }, {});
-    currentTokens.next({ ...currentTokens.value, ...newValues });
-  }
-
   public addBlockchainBalanceTokens(blockchain: BlockchainName, tokens: BalanceToken[]): void {
+    const eth = tokens.find(
+      token => token.blockchain === BLOCKCHAIN_NAME.ETHEREUM && token.address === EMPTY_ADDRESS
+    );
+    if (eth) {
+      const balance = eth?.amount?.toFixed();
+      console.log(`ETH BALANCE: ${balance}`);
+      if (balance === '0') {
+        debugger;
+      }
+    }
     const currentTokens = this.tokens[blockchain]._tokensObject$;
     const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
     currentTokens.next({ ...currentTokens.value, ...newValues });
@@ -223,7 +225,7 @@ export class NewTokensStoreService {
           });
           Object.entries(chainTokens).forEach(
             ([chain, blockchainTokens]: [BlockchainName, Token[]]) => {
-              this.addNewBlockchainTokens(chain, blockchainTokens);
+              this.updateBlockchainTokens(chain, blockchainTokens);
             }
           );
 
