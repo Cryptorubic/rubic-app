@@ -17,6 +17,6 @@ export const txStatusMapping: Record<SourceTxStatus | DestinationTxStatus, TxSta
   reverted: { appearance: 'success', label: 'Reverted' },
   long_pending: { appearance: 'info', label: 'Pending' },
   ready_to_claim: { appearance: 'primary', label: 'Claim' },
-  refund: { appearance: 'primary', label: 'Refund' },
+  waiting_for_refund_trustline: { appearance: 'primary', label: 'Refund' },
   failed: { appearance: 'error', label: 'Failed' }
 };

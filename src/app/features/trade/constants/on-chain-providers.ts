@@ -80,6 +80,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}atlantis.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.AQUARIUS]: {
+    name: 'Aquarius',
+    image: `${imageBasePath}aquarius.svg`,
+    color: '#FFFFFF'
+  },
 
   //BBBBBBBBBBBBBBBBBBBBB
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: {
@@ -690,6 +695,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Spark Dex V3',
     image: `${imageBasePath}sparkdex.svg`,
     color: '#000000'
+  },
+  [ON_CHAIN_TRADE_TYPE.SOROSWAP]: {
+    name: 'SoroSwap',
+    image: `${imageBasePath}soroswap.svg`,
+    color: '#FFFFFF'
   },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT

@@ -56,6 +56,8 @@ export const TO_BACKEND_ON_CHAIN_PROVIDERS = {
   [ON_CHAIN_TRADE_TYPE.WYND]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ZIP_SWAP]: 'unknown',
   [ON_CHAIN_TRADE_TYPE.ROUTER_SWAP]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.AQUARIUS]: 'unknown',
+  [ON_CHAIN_TRADE_TYPE.SOROSWAP]: 'unknown',
   // Rubic integrated dexes
   [ON_CHAIN_TRADE_TYPE.ALGEBRA]: 'algebra',
   [ON_CHAIN_TRADE_TYPE.APE_SWAP]: 'apeswap',
