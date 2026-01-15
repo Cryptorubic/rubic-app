@@ -150,9 +150,7 @@ export class AppComponent implements AfterViewInit {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-      setTimeout(() => {
-        this.initTurnStile();
-      }, 500);
+      setTimeout(() => this.initTurnStile(), 500);
     });
   }
 

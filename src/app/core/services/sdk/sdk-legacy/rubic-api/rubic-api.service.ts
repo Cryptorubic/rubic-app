@@ -60,15 +60,17 @@ export class RubicApiService {
   }
 
   private async setSocket(): Promise<void> {
-    const token = await firstValueFrom(this.turnstileService.token$.pipe(first(el => el !== null)));
-    if (!token) {
+    const cloudflareToken = await firstValueFrom(
+      this.turnstileService.token$.pipe(first(el => el !== null))
+    );
+    if (!cloudflareToken) {
       throw new RubicSdkError('Turnstile token is not available');
     }
     const ioClient = io(this.apiUrl, {
       reconnectionDelayMax: 10000,
       path: `/api/routes/ws/`,
       transports: ['websocket'],
-      query: { token }
+      query: { cloudflareToken }
     });
 
     this.client = ioClient;
@@ -76,9 +78,7 @@ export class RubicApiService {
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
     this.latestQuoteParams = params;
-    if (attempt > 2) {
-      return;
-    }
+    if (attempt > 2) return;
     if (this.client?.connected) {
       this.client.emit('calculate', params);
     } else {
@@ -214,7 +214,7 @@ export class RubicApiService {
                   );
             return from(promise).pipe(
               catchError(err => {
-                console.log(err);
+                console.log('[RubicApiService_handleQuotesAsync] socket error:', err);
                 return of(null);
               }),
               map(wrappedTrade => ({

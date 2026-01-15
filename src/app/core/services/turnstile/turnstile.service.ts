@@ -1,4 +1,4 @@
-import { inject, Injectable, Injector, NgZone } from '@angular/core';
+import { inject, Injectable, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
@@ -23,8 +23,6 @@ export class TurnstileService {
 
   private readonly zone = inject(NgZone);
 
-  private readonly injector = inject(Injector);
-
   private get turnstile(): Turnstile {
     return this.window.turnstile;
   }
@@ -33,7 +31,6 @@ export class TurnstileService {
 
   public async createInvisibleWidget(containerId: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      console.log();
       this.turnstile.ready(() => {
         const widgetId = this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
