@@ -281,11 +281,7 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(
-            new SdkUserRejectError('manual transaction reject'),
-            tradeState,
-            callback?.onError
-          );
+          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
