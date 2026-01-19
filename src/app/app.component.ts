@@ -21,8 +21,6 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import { ModalService } from '@core/modals/services/modal.service';
 import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Component({
@@ -52,8 +50,6 @@ export class AppComponent implements AfterViewInit {
     private readonly sdkLoaderService: SdkLoaderService,
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService,
-    private readonly turnstileService: TurnstileService,
-    private readonly modalService: ModalService,
     private readonly rubicApiService: RubicApiService
   ) {
     this.printTimestamp();
@@ -150,8 +146,8 @@ export class AppComponent implements AfterViewInit {
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
+      setTimeout(() => this.rubicApiService.tryConnectSocket(), 0);
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-      setTimeout(() => this.rubicApiService.tryConnectSocket(), 500);
     });
   }
 

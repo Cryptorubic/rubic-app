@@ -4,7 +4,6 @@ import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@core/modals/services/modal.service';
-import { waitFor } from '@cryptorubic/web3';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +36,6 @@ export class TurnstileService {
     try {
       const success = await this.createInvisibleWidget();
       if (success) return true;
-      await waitFor(3_000);
 
       /**
        * calls createWidget() after component for cloudflare checkbox rendered
