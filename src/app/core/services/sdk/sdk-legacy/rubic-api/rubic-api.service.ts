@@ -80,17 +80,6 @@ export class RubicApiService {
     private readonly turnstileService: TurnstileService
   ) {}
 
-  public initSocket(): void {
-    const ioClient = io(this.apiUrl, {
-      reconnectionDelayMax: 10000,
-      path: `/api/routes/ws/`,
-      transports: ['websocket'],
-      reconnection: false
-    });
-
-    this.setClient(ioClient);
-  }
-
   public async tryConnectSocket(): Promise<boolean> {
     /**
      * @TODO FEATURE AFTER Python API updates:
