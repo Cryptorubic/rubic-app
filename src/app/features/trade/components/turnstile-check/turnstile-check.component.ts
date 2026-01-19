@@ -17,8 +17,8 @@ export class TurnstileCheckComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.turnstileService
-      .createWidget('#turnstile-widget')
-      .then(() => this.context.completeWith(true))
+      .createWidget()
+      .then(success => this.context.completeWith(success))
       .catch(() => this.context.completeWith(false));
   }
 }

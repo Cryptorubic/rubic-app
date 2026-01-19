@@ -2,7 +2,8 @@ import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
 
 export function initSentry(): void {
-  if (ENVIRONMENT.environmentName !== 'prod') {
+  // @FIX log only prod
+  if (ENVIRONMENT.environmentName !== 'local') {
     return;
   }
 

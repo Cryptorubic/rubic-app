@@ -1,0 +1,5 @@
+@use 'src/scss/core' as *;
+
+#turnstile-widget {
+  @include flex(row, center, center);
+}

@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import {
+  combineLatestWith,
+  concatMap,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -75,6 +84,8 @@ export class SwapsControllerService {
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
 
+  private readonly socketSubs: Array<Subscription> = [];
+
   /**
    * Contains trades types, which were disabled due to critical errors.
    */
@@ -101,6 +112,7 @@ export class SwapsControllerService {
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService
   ) {
+    this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
@@ -124,8 +136,16 @@ export class SwapsControllerService {
     this._calculateTrade$.next({ isForced });
   }
 
+  private subscribeOnSocketStatusChanges(): void {
+    this.rubicApiService.handleSocketConnectionError().subscribe();
+    this.rubicApiService.handleSocketDisconnected().subscribe();
+    this.rubicApiService.handleSocketConnected().subscribe(() => {
+      this.handleWs();
+      this.startRecalculation(true);
+    });
+  }
+
   private subscribeOnCalculation(): void {
-    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(220),
@@ -511,7 +531,16 @@ export class SwapsControllerService {
   }
 
   private handleWs(): void {
-    this.rubicApiService
+    this.socketSubs.forEach(sub => sub.unsubscribe());
+
+    const sub1 = this.rubicApiService.handleWsExceptions().subscribe(needRecalculate => {
+      if (needRecalculate) {
+        this.startRecalculation(true);
+        this.swapsStateService.clearProviders(false);
+      }
+    });
+
+    const sub2 = this.rubicApiService
       .handleQuotesAsync()
       .pipe(
         tap(() => this.refreshService.setRefreshing()),
@@ -611,6 +640,7 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+    this.socketSubs.push(sub1, sub2);
   }
 
   private subscribeOnSwapFormFilled(): void {

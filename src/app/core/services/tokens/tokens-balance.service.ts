@@ -96,7 +96,7 @@ export class TokensBalanceService {
       if (!token) return new BigNumber(NaN);
 
       const balance = OldToken.fromWei(balanceInWei, storedToken.decimals);
-      if (storedToken && !storedToken.amount.eq(balance)) {
+      if (storedToken && !storedToken.amount?.eq(balance)) {
         const tokensObject = this.tokensStore.tokens[token.blockchain]._tokensObject$;
         this.tokensStore.tokens[token.blockchain]._tokensObject$.next({
           ...tokensObject.getValue(),

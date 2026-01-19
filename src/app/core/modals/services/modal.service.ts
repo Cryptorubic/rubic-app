@@ -321,7 +321,9 @@ export class ModalService {
         {
           title: 'Confirm you are not a robot',
           size: 's',
-          fitContent: true
+          fitContent: true,
+          closeable: false,
+          dismissible: false
         },
         injector
       )

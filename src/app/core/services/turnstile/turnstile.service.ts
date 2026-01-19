@@ -1,4 +1,4 @@
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, Injectable, Injector, NgZone } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
@@ -9,13 +9,15 @@ import { ModalService } from '@core/modals/services/modal.service';
   providedIn: 'root'
 })
 export class TurnstileService {
-  private readonly _token$ = new BehaviorSubject<string | false | null>(null);
+  private readonly _token$ = new BehaviorSubject<string | null>(null);
 
   public readonly token$ = this._token$.asObservable();
 
-  private readonly widgets = new Map<string, string>();
+  // private readonly widgets = new Map<string, string>();
 
-  public get token(): string | false | null {
+  private widgetId: string | null = null;
+
+  public get token(): string | null {
     return this._token$.value;
   }
 
@@ -27,71 +29,97 @@ export class TurnstileService {
     return this.window.turnstile;
   }
 
-  constructor(private readonly modalService: ModalService) {}
+  constructor(private readonly modalService: ModalService, private readonly injector: Injector) {}
 
-  public async createInvisibleWidget(containerId: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  /**
+   * @returns whether token successfully updated or not
+   */
+  public async askForCloudflareToken(): Promise<boolean> {
+    try {
+      const success = await this.createInvisibleWidget();
+      if (success) return true;
+
+      /**
+       * calls createWidget() after component for cloudflare checkbox rendered
+       */
+      return this.modalService
+        .openTurnstileModal(this.injector)
+        .then(() => true)
+        .catch(() => false);
+    } catch (err) {
+      console.error('[TurnstileService_updateCloudflareToken] err:', err);
+      return false;
+    }
+  }
+
+  /**
+   * @returns whether token successfully updated or not
+   */
+  public async createInvisibleWidget(): Promise<boolean> {
+    /**
+     * @CHECK case when cloudflare token is invalid
+     */
+    const containerId = '#turnstile-container-invisible';
+    return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        const widgetId = this.turnstile.render(containerId, {
-          sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+        this.widgetId = this.turnstile.render(containerId, {
+          // sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+          // sitekey: '2x00000000000000000000AB',
+          sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
-            console.log(`Invisible Widget ${widgetId} completed:`, token);
             this.zone.run(() => {
               this._token$.next(token);
-              resolve(token);
+              // this._token$.next('1x00000000000000000000AA');
+              resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.error(error);
-            reject(error);
+            console.error('[TurnstileService_createInvisibleWidget] error-callback: ', error);
+            this.removeWidget();
+            resolve(false);
           }
         });
-
-        this.widgets.set(containerId, widgetId);
       });
     });
   }
 
-  public async createWidget(containerId: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  /**
+   * @returns whether token successfully updated or not
+   */
+  public async createWidget(): Promise<boolean> {
+    const containerId = '#turnstile-widget';
+    return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        const widgetId = this.turnstile.render(containerId, {
-          sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+        this.widgetId = this.turnstile.render(containerId, {
+          // sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+          // sitekey: '1x00000000000000000000BB',
+          sitekey: '3x00000000000000000000FF',
+          theme: 'dark',
+          size: 'normal',
           callback: (token: string) => {
-            console.log(`Widget ${widgetId} completed:`, token);
             this.zone.run(() => {
               this._token$.next(token);
-              resolve(token);
+              // this._token$.next('1x00000000000000000000AA');
+              // resolve(token);
+              resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.error(error);
-            this.stopProcess();
-            reject(error);
+            console.error('[TurnstileService_createWidget] error-callback: ', error);
+            this.removeWidget();
+            resolve(false);
           }
         });
-
-        this.widgets.set(containerId, widgetId);
       });
     });
   }
 
-  public stopProcess(): void {
-    this._token$.next(false);
+  public removeWidget(): void {
+    this.turnstile.remove(this.widgetId);
+    this.widgetId = null;
   }
 
-  public removeWidget(containerId: string): void {
-    const widgetId = this.widgets.get(containerId);
-    if (widgetId) {
-      this.turnstile.remove(widgetId);
-      this.widgets.delete(containerId);
-    }
-  }
-
-  public resetWidget(containerId: string): void {
-    const widgetId = this.widgets.get(containerId);
-    if (widgetId) {
-      this.turnstile.reset(widgetId);
-    }
+  public resetWidget(): void {
+    this.turnstile.reset(this.widgetId);
   }
 }

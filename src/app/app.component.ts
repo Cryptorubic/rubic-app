@@ -23,6 +23,7 @@ import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
 import { ModalService } from '@core/modals/services/modal.service';
+import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Component({
   selector: 'app-root',
@@ -53,7 +54,8 @@ export class AppComponent implements AfterViewInit {
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService,
     private readonly turnstileService: TurnstileService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly rubicApiService: RubicApiService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -150,7 +152,7 @@ export class AppComponent implements AfterViewInit {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-      setTimeout(() => this.initTurnStile(), 500);
+      setTimeout(() => this.rubicApiService.tryConnectSocket(true), 500);
     });
   }
 
@@ -194,19 +196,19 @@ export class AppComponent implements AfterViewInit {
     return this.platformConfigurationService.loadPlatformConfig();
   }
 
-  private async initTurnStile(): Promise<void> {
-    try {
-      await this.turnstileService.createInvisibleWidget('#turnstile-container-invisible');
-    } catch (e) {
-      this.modalService
-        .openTurnstileModal(this.injector)
-        .then(() => {
-          console.log('Turnstile check passed');
-        })
-        .catch(err => {
-          this.turnstileService.stopProcess();
-          console.log('Turnstile check failed', err);
-        });
-    }
-  }
+  // private async initTurnStile(): Promise<void> {
+  //   try {
+  //     await this.turnstileService.createInvisibleWidget();
+  //   } catch (e) {
+  //     this.modalService
+  //       .openTurnstileModal(this.injector)
+  //       .then(() => {
+  //         console.log('Turnstile check passed');
+  //       })
+  //       .catch(err => {
+  //         // this.turnstileService.stopProcess();
+  //         console.log('Turnstile check failed', err);
+  //       });
+  //   }
+  // }
 }

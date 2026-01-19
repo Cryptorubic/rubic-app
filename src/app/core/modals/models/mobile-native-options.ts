@@ -39,7 +39,8 @@ export type ModalName =
   | 'ton-slippage-warning'
   | 'swap-retry-pending'
   | 'swap-backup-rate-changed'
-  | 'all-swap-backups-failed';
+  | 'all-swap-backups-failed'
+  | 'cloudflare-validation';
 
 export interface ModalStruct {
   name: ModalName;

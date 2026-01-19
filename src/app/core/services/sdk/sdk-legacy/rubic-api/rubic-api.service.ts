@@ -18,9 +18,21 @@ import {
   UnapprovedContractError,
   UnapprovedMethodError,
   UnlistedError,
-  UnsupportedReceiverAddressError
+  UnsupportedReceiverAddressError,
+  waitFor
 } from '@cryptorubic/web3';
-import { catchError, concatMap, firstValueFrom, from, fromEvent, map, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  concatMap,
+  firstValueFrom,
+  from,
+  fromEvent,
+  map,
+  Observable,
+  of,
+  throwError
+} from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { SwapResponseInterface } from '../features/ws-api/models/swap-response-interface';
 import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
@@ -36,7 +48,8 @@ import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import { first, switchMap } from 'rxjs/operators';
+import { exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
+import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +61,17 @@ export class RubicApiService {
     return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
   }
 
-  private client: Socket | null = null;
+  private readonly _socket$ = new BehaviorSubject<Socket | null>(null);
+
+  public readonly socket$ = this._socket$.asObservable();
+
+  private get client(): Socket | null {
+    return this._socket$.value;
+  }
+
+  private setClient(socket: Socket): void {
+    this._socket$.next(socket);
+  }
 
   private latestQuoteParams: QuoteRequestInterface | null = null;
 
@@ -56,24 +79,74 @@ export class RubicApiService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly turnstileService: TurnstileService
   ) {
-    this.setSocket();
+    // this.setSocket();
   }
 
-  private async setSocket(): Promise<void> {
-    const cloudflareToken = await firstValueFrom(
-      this.turnstileService.token$.pipe(first(el => el !== null))
-    );
-    if (!cloudflareToken) {
-      throw new RubicSdkError('Turnstile token is not available');
-    }
+  // private async setSocket(): Promise<void> {
+  //   /**
+  //    * at this moment turnstileService.askForCloudflareToken() should be succeded
+  //    */
+  //   const cloudflareToken = await firstValueFrom(
+  //     this.turnstileService.token$.pipe(first(el => el !== null))
+  //   );
+
+  //   const ioClient = io(this.apiUrl, {
+  //     reconnectionDelayMax: 10000,
+  //     path: `/api/routes/ws/`,
+  //     transports: ['websocket'],
+  //     query: { cloudflareToken }
+  //   });
+
+  //   this.setClient(ioClient);
+  // }
+  //
+
+  public initSocket(): void {
     const ioClient = io(this.apiUrl, {
       reconnectionDelayMax: 10000,
       path: `/api/routes/ws/`,
       transports: ['websocket'],
-      query: { cloudflareToken }
+      reconnection: false
     });
 
-    this.client = ioClient;
+    this.setClient(ioClient);
+  }
+
+  public async tryConnectSocket(firstConnection: boolean): Promise<boolean> {
+    /**
+     * @TODO FEATURE AFTER Python API updates:
+     * Add optional cloudflare token requirement
+     * only when in admin's dashboard checklLoudflare is set to true
+     */
+    const sucess = await this.turnstileService.askForCloudflareToken().catch(() => false);
+    if (!sucess) {
+      await waitFor(2_000);
+      return this.tryConnectSocket(false);
+    }
+
+    const cloudflareToken = await firstValueFrom(
+      this.turnstileService.token$.pipe(first(el => el !== null))
+    );
+
+    if (firstConnection) {
+      const ioClient = io(this.apiUrl, {
+        path: `/api/routes/ws/`,
+        transports: ['websocket'],
+        query: { cloudflareToken },
+        reconnection: false,
+        autoConnect: false
+      });
+      this.setClient(ioClient);
+    } else {
+      this.client.io.opts.query = {
+        cloudflareToken
+      };
+      this.setClient(this.client);
+    }
+
+    this.client.connect();
+
+    return true;
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
@@ -153,28 +226,50 @@ export class RubicApiService {
     }
   }
 
-  public fetchCelerRefundData(): void {
-    // return Injector.httpClient.post<TransactionInterface>(
-    //     `${this.apiUrl}/api/routes/swap`,
-    //     body
-    // );
+  public handleSocketConnectionError(): Observable<boolean> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket =>
+        fromEvent(socket, 'connect_error').pipe(
+          throttleTime(3_000),
+          exhaustMap(err => {
+            console.debug('[RubicApiService_handleSocketConnectionError] connect_error:', err);
+            return this.tryConnectSocket(false);
+          })
+        )
+      )
+    );
   }
 
-  public disconnectSocket(): void {
-    this.client?.disconnect();
+  public handleSocketConnected(): Observable<void> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent(socket, 'connect'))
+    );
   }
 
-  public closetSocket(): void {
-    this.client?.close();
+  public handleSocketDisconnected(): Observable<boolean> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket =>
+        fromEvent<string[]>(socket, 'disconnect').pipe(
+          switchMap(reason => {
+            if (reason[0] !== 'io client disconnect') {
+              console.debug('[RubicApiService_handleSocketConnectionError] disconnect:', reason);
+              return this.tryConnectSocket(false);
+            }
+          })
+        )
+      )
+    );
   }
 
   public handleQuotesAsync(): Observable<WrappedAsyncTradeOrNull> {
     return this.turnstileService.token$.pipe(
       first(el => el !== null),
       switchMap(token => {
-        if (!token) {
-          return of(null);
-        }
+        if (!token) return throwError(() => 'cloudflare token is undefined');
+
         return fromEvent<
           WsQuoteResponseInterface & {
             data: RubicApiErrorDto;
@@ -214,7 +309,7 @@ export class RubicApiService {
                   );
             return from(promise).pipe(
               catchError(err => {
-                console.log('[RubicApiService_handleQuotesAsync] socket error:', err);
+                console.dir('[RubicApiService_handleQuotesAsync] socket error:', err);
                 return of(null);
               }),
               map(wrappedTrade => ({
@@ -226,6 +321,16 @@ export class RubicApiService {
             );
           })
         );
+      }),
+      retry({ delay: 1_000 })
+    );
+  }
+
+  public handleWsExceptions(): Observable<boolean> {
+    return fromEvent<WsErrorResponseInterface>(this.client, 'exception').pipe(
+      exhaustMap(wsError => {
+        console.debug('[RubicApiService_handleWsExceptions] err:', wsError);
+        return this.handleWsApiError(wsError);
       })
     );
   }
@@ -281,6 +386,21 @@ export class RubicApiService {
         }
       )
     );
+  }
+
+  /**
+   * @returns whether should recalculate quote after handling
+   */
+  private async handleWsApiError(err: WsErrorResponseInterface): Promise<boolean> {
+    const result = err.error;
+    switch (result.code) {
+      case 6001:
+      case 6002: {
+        return this.tryConnectSocket(false);
+      }
+      default:
+        return false;
+    }
   }
 
   private getApiError(err: SwapErrorResponseInterface): RubicSdkError {
