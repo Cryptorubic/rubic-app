@@ -78,28 +78,7 @@ export class RubicApiService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly turnstileService: TurnstileService
-  ) {
-    // this.setSocket();
-  }
-
-  // private async setSocket(): Promise<void> {
-  //   /**
-  //    * at this moment turnstileService.askForCloudflareToken() should be succeded
-  //    */
-  //   const cloudflareToken = await firstValueFrom(
-  //     this.turnstileService.token$.pipe(first(el => el !== null))
-  //   );
-
-  //   const ioClient = io(this.apiUrl, {
-  //     reconnectionDelayMax: 10000,
-  //     path: `/api/routes/ws/`,
-  //     transports: ['websocket'],
-  //     query: { cloudflareToken }
-  //   });
-
-  //   this.setClient(ioClient);
-  // }
-  //
+  ) {}
 
   public initSocket(): void {
     const ioClient = io(this.apiUrl, {
@@ -111,53 +90,6 @@ export class RubicApiService {
 
     this.setClient(ioClient);
   }
-
-  // public async tryConnectSocket(firstConnection: boolean): Promise<boolean> {
-  //   /**
-  //    * @TODO FEATURE AFTER Python API updates:
-  //    * Add optional cloudflare token requirement
-  //    * only when in admin's dashboard checklLoudflare is set to true
-  //    */
-  //   const sucess = await this.turnstileService.askForCloudflareToken().catch(() => false);
-  //   if (!sucess) {
-  //     await waitFor(5_000);
-  //     return this.tryConnectSocket(false);
-  //   }
-
-  //   const cloudflareToken = await firstValueFrom(
-  //     this.turnstileService.token$.pipe(first(el => el !== null))
-  //   );
-
-  //   const ioClient = io(this.apiUrl, {
-  //     path: `/api/routes/ws/`,
-  //     transports: ['websocket'],
-  //     query: { cloudflareToken },
-  //     reconnection: false,
-  //     autoConnect: false
-  //   });
-
-  //   // if (firstConnection) {
-  //   //   const ioClient = io(this.apiUrl, {
-  //   //     path: `/api/routes/ws/`,
-  //   //     transports: ['websocket'],
-  //   //     query: { cloudflareToken },
-  //   //     reconnection: false,
-  //   //     autoConnect: false
-  //   //   });
-  //   //   this.setClient(ioClient);
-  //   // } else {
-  //   //   this.client.io.opts.query = {
-  //   //     cloudflareToken
-  //   //   };
-  //   //   this.setClient(this.client);
-  //   // }
-  //   console.log('[RubicApiService_tryConnectSocket] new token:', ioClient.io.opts.query);
-
-  //   ioClient.connect();
-  //   this.setClient(ioClient);
-
-  //   return true;
-  // }
 
   public async tryConnectSocket(): Promise<boolean> {
     /**
@@ -178,15 +110,11 @@ export class RubicApiService {
     const ioClient = io(this.apiUrl, {
       path: `/api/routes/ws/`,
       transports: ['websocket'],
-      // query: { cloudflareToken },
       reconnection: false,
       autoConnect: true,
       auth: { cloudflareToken }
     });
     this.setClient(ioClient);
-
-    console.log('[RubicApiService_tryConnectSocket] auth:', this._socket$.value.auth);
-    // this.client.connect();
 
     return true;
   }
