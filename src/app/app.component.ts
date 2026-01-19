@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, Injector, INJECTOR, isDevMode } from '@angular/core';
+import { AfterViewInit, Component, Inject, isDevMode } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { CookieService } from 'ngx-cookie-service';
@@ -44,7 +44,6 @@ export class AppComponent implements AfterViewInit {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     @Inject(WINDOW) private window: RubicWindow,
-    @Inject(INJECTOR) private readonly injector: Injector,
     private readonly activatedRoute: ActivatedRoute,
     private readonly iframeService: IframeService,
     private readonly spindlService: SpindlService,
@@ -152,7 +151,7 @@ export class AppComponent implements AfterViewInit {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
-      setTimeout(() => this.rubicApiService.tryConnectSocket(true), 500);
+      setTimeout(() => this.rubicApiService.tryConnectSocket(), 500);
     });
   }
 
@@ -195,20 +194,4 @@ export class AppComponent implements AfterViewInit {
   private loadPlatformConfig(): Observable<boolean> {
     return this.platformConfigurationService.loadPlatformConfig();
   }
-
-  // private async initTurnStile(): Promise<void> {
-  //   try {
-  //     await this.turnstileService.createInvisibleWidget();
-  //   } catch (e) {
-  //     this.modalService
-  //       .openTurnstileModal(this.injector)
-  //       .then(() => {
-  //         console.log('Turnstile check passed');
-  //       })
-  //       .catch(err => {
-  //         // this.turnstileService.stopProcess();
-  //         console.log('Turnstile check failed', err);
-  //       });
-  //   }
-  // }
 }

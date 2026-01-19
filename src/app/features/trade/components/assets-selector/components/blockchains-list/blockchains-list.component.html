@@ -3,11 +3,10 @@
     <app-search-blockchains-bar
       [type]="type"
       [searchQuery]="searchQuery"
-      (handleSearchQuery)="handleSearchQuery.emit($event)"
+      (handleSearchQuery)="handleSearchQueryFn($event)"
       [totalBlockchains]="totalBlockchains"
     ></app-search-blockchains-bar>
   </div>
-
   <tui-scrollbar class="scrollbar">
     <div class="list" *ngLet="blockchainsToShow as blockchainsList">
       <ng-container
@@ -21,7 +20,7 @@
           ></ng-container>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="blockchainsList.length === 0">
+      <ng-container *ngIf="blockchainsList?.length === 0">
         <app-no-result label="No blockchains found" description="Try another query"></app-no-result>
       </ng-container>
     </div>

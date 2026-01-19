@@ -112,7 +112,54 @@ export class RubicApiService {
     this.setClient(ioClient);
   }
 
-  public async tryConnectSocket(firstConnection: boolean): Promise<boolean> {
+  // public async tryConnectSocket(firstConnection: boolean): Promise<boolean> {
+  //   /**
+  //    * @TODO FEATURE AFTER Python API updates:
+  //    * Add optional cloudflare token requirement
+  //    * only when in admin's dashboard checklLoudflare is set to true
+  //    */
+  //   const sucess = await this.turnstileService.askForCloudflareToken().catch(() => false);
+  //   if (!sucess) {
+  //     await waitFor(5_000);
+  //     return this.tryConnectSocket(false);
+  //   }
+
+  //   const cloudflareToken = await firstValueFrom(
+  //     this.turnstileService.token$.pipe(first(el => el !== null))
+  //   );
+
+  //   const ioClient = io(this.apiUrl, {
+  //     path: `/api/routes/ws/`,
+  //     transports: ['websocket'],
+  //     query: { cloudflareToken },
+  //     reconnection: false,
+  //     autoConnect: false
+  //   });
+
+  //   // if (firstConnection) {
+  //   //   const ioClient = io(this.apiUrl, {
+  //   //     path: `/api/routes/ws/`,
+  //   //     transports: ['websocket'],
+  //   //     query: { cloudflareToken },
+  //   //     reconnection: false,
+  //   //     autoConnect: false
+  //   //   });
+  //   //   this.setClient(ioClient);
+  //   // } else {
+  //   //   this.client.io.opts.query = {
+  //   //     cloudflareToken
+  //   //   };
+  //   //   this.setClient(this.client);
+  //   // }
+  //   console.log('[RubicApiService_tryConnectSocket] new token:', ioClient.io.opts.query);
+
+  //   ioClient.connect();
+  //   this.setClient(ioClient);
+
+  //   return true;
+  // }
+
+  public async tryConnectSocket(): Promise<boolean> {
     /**
      * @TODO FEATURE AFTER Python API updates:
      * Add optional cloudflare token requirement
@@ -120,31 +167,26 @@ export class RubicApiService {
      */
     const sucess = await this.turnstileService.askForCloudflareToken().catch(() => false);
     if (!sucess) {
-      await waitFor(2_000);
-      return this.tryConnectSocket(false);
+      await waitFor(5_000);
+      return this.tryConnectSocket();
     }
 
     const cloudflareToken = await firstValueFrom(
       this.turnstileService.token$.pipe(first(el => el !== null))
     );
 
-    if (firstConnection) {
-      const ioClient = io(this.apiUrl, {
-        path: `/api/routes/ws/`,
-        transports: ['websocket'],
-        query: { cloudflareToken },
-        reconnection: false,
-        autoConnect: false
-      });
-      this.setClient(ioClient);
-    } else {
-      this.client.io.opts.query = {
-        cloudflareToken
-      };
-      this.setClient(this.client);
-    }
+    const ioClient = io(this.apiUrl, {
+      path: `/api/routes/ws/`,
+      transports: ['websocket'],
+      // query: { cloudflareToken },
+      reconnection: false,
+      autoConnect: true,
+      auth: { cloudflareToken }
+    });
+    this.setClient(ioClient);
 
-    this.client.connect();
+    console.log('[RubicApiService_tryConnectSocket] auth:', this._socket$.value.auth);
+    // this.client.connect();
 
     return true;
   }
@@ -234,7 +276,7 @@ export class RubicApiService {
           throttleTime(3_000),
           exhaustMap(err => {
             console.debug('[RubicApiService_handleSocketConnectionError] connect_error:', err);
-            return this.tryConnectSocket(false);
+            return this.tryConnectSocket();
           })
         )
       )
@@ -256,7 +298,7 @@ export class RubicApiService {
           switchMap(reason => {
             if (reason[0] !== 'io client disconnect') {
               console.debug('[RubicApiService_handleSocketConnectionError] disconnect:', reason);
-              return this.tryConnectSocket(false);
+              return this.tryConnectSocket();
             }
           })
         )
@@ -343,13 +385,23 @@ export class RubicApiService {
     );
   }
 
+  /**
+   * @param rubicId Id of rubic-api trade
+   * @param {optional} srcTxHash  Hash of source transaction to use old search endpoint via hash on python api. Not needed for deposit providers.
+   * @returns
+   */
   public fetchCrossChainTxStatusExtended(
-    srcTxHash: string,
-    rubicId: string
+    rubicId: string,
+    srcTxHash?: string
   ): Promise<CrossChainTxStatusConfig> {
+    const params = new URLSearchParams({
+      rubicId,
+      ...(srcTxHash && { srcTxHash })
+    }).toString();
+
     return firstValueFrom(
       this.sdkLegacyService.httpClient.get<CrossChainTxStatusConfig>(
-        `${this.apiUrl}/api/info/statusExtended?srcTxHash=${srcTxHash}&rubicId=${rubicId}`
+        `${this.apiUrl}/api/info/statusExtended?${params}`
       )
     );
   }
@@ -396,7 +448,7 @@ export class RubicApiService {
     switch (result.code) {
       case 6001:
       case 6002: {
-        return this.tryConnectSocket(false);
+        return this.tryConnectSocket();
       }
       default:
         return false;

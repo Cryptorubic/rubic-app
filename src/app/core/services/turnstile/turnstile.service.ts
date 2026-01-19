@@ -4,6 +4,7 @@ import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@core/modals/services/modal.service';
+import { waitFor } from '@cryptorubic/web3';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,6 @@ export class TurnstileService {
   private readonly _token$ = new BehaviorSubject<string | null>(null);
 
   public readonly token$ = this._token$.asObservable();
-
-  // private readonly widgets = new Map<string, string>();
 
   private widgetId: string | null = null;
 
@@ -38,6 +37,7 @@ export class TurnstileService {
     try {
       const success = await this.createInvisibleWidget();
       if (success) return true;
+      await waitFor(3_000);
 
       /**
        * calls createWidget() after component for cloudflare checkbox rendered
@@ -56,20 +56,16 @@ export class TurnstileService {
    * @returns whether token successfully updated or not
    */
   public async createInvisibleWidget(): Promise<boolean> {
-    /**
-     * @CHECK case when cloudflare token is invalid
-     */
     const containerId = '#turnstile-container-invisible';
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
         this.widgetId = this.turnstile.render(containerId, {
-          // sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+          sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
           // sitekey: '2x00000000000000000000AB',
-          sitekey: '1x00000000000000000000BB',
+          // sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
             this.zone.run(() => {
               this._token$.next(token);
-              // this._token$.next('1x00000000000000000000AA');
               resolve(true);
             });
           },
@@ -91,16 +87,14 @@ export class TurnstileService {
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
         this.widgetId = this.turnstile.render(containerId, {
-          // sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+          sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
           // sitekey: '1x00000000000000000000BB',
-          sitekey: '3x00000000000000000000FF',
+          // sitekey: '3x00000000000000000000FF',
           theme: 'dark',
           size: 'normal',
           callback: (token: string) => {
             this.zone.run(() => {
               this._token$.next(token);
-              // this._token$.next('1x00000000000000000000AA');
-              // resolve(token);
               resolve(true);
             });
           },

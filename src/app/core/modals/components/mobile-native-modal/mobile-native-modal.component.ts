@@ -92,7 +92,8 @@ export class MobileNativeModalComponent implements OnInit, OnDestroy {
               title: nextModal.title,
               fitContent: nextModal.fitContent,
               scrollableContent: nextModal.scrollableContent,
-              previousComponent: true
+              previousComponent: true,
+              data: nextModal?.data
             },
             nextModal.injector
           )

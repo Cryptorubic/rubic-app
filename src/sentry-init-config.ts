@@ -7,7 +7,8 @@ export function initSentry(): void {
     return;
   }
 
-  const sentryAllowUrlRegexpString = `https:\\/\\/(${ENVIRONMENT.environmentName})(\\-app)?\\.rubic\\.exchange`;
+  const sentryAllowUrlRegexpString = /https:\/\/.*\.rubic\.exchange/;
+
   Sentry.init({
     dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
     sendDefaultPii: true,
@@ -41,7 +42,7 @@ export function initSentry(): void {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     enableLogs: true,
-    allowUrls: [new RegExp(sentryAllowUrlRegexpString)],
+    allowUrls: [sentryAllowUrlRegexpString],
     denyUrls: [
       //Chrome extensions
       /^chrome(-extension)?:\/\//i,
