@@ -214,7 +214,7 @@ export class RubicApiService {
         fromEvent<string[]>(socket, 'disconnect').pipe(
           switchMap(reason => {
             if (reason[0] !== 'io client disconnect') {
-              console.debug('[RubicApiService_handleSocketConnectionError] disconnect:', reason);
+              console.debug('[RubicApiService_handleSocketDisconnected] disconnect:', reason);
               return this.tryConnectSocket();
             }
           })
