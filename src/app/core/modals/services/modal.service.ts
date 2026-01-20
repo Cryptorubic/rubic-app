@@ -346,7 +346,7 @@ export class ModalService {
    * @param injector Injector
    */
   public openTurnstileModal(injector: Injector): Promise<boolean> {
-    this.setOpenedModalName('swap-backup-rate-changed');
+    this.setOpenedModalName('cloudflare-validation');
     return firstValueFrom(
       this.showDialog(
         TurnstileCheckComponent,
