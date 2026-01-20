@@ -381,9 +381,9 @@ export class SwapsStateService {
         /**
          * if houdini trade found and it's lower than 3 index - then we rise it to [3] position in provider's list
          */
-        if (tradeIdx > 1) {
-          const fourthTrade = currentTrades[1];
-          currentTrades[1] = trade;
+        if (tradeIdx > 3) {
+          const fourthTrade = currentTrades[3];
+          currentTrades[3] = trade;
           currentTrades[tradeIdx] = fourthTrade;
           break;
         }
