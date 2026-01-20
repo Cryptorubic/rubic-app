@@ -266,16 +266,15 @@ export class SwapsStateService {
 
     if (currentTrades.length) {
       const isCrossChain = currentTrades.some(el => el?.trade instanceof CrossChainTrade);
-      const isOnChain = currentTrades.some(el => el?.trade instanceof OnChainTrade);
       const isThereTokenWithoutPrice = currentTrades
         .filter(trade => trade?.trade?.to)
         .some(currentTrade => !currentTrade.trade.to?.price?.gt(0));
 
-      if (isCrossChain || isOnChain) {
-        currentTrades = isCrossChain
-          ? this.sortCrossChainTrades(currentTrades, isThereTokenWithoutPrice)
-          : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
-      }
+      currentTrades = isCrossChain
+        ? this.sortCrossChainTrades(currentTrades, isThereTokenWithoutPrice)
+        : this.sortOnChainTrades(currentTrades, isThereTokenWithoutPrice);
+
+      currentTrades = this.extraSortOptionally(currentTrades);
 
       const bestTrade = currentTrades[0];
 
@@ -361,7 +360,7 @@ export class SwapsStateService {
         bValue = (b.trade as OnChainTrade).to.price.multipliedBy(b.trade.to.tokenAmount);
       }
 
-      if (aValue.gt(bValue)) {
+      if (bValue.lt(aValue)) {
         return -1;
       } else if (bValue.gt(aValue)) {
         return 1;
@@ -373,6 +372,25 @@ export class SwapsStateService {
         return 0;
       }
     });
+  }
+
+  private extraSortOptionally(currentTrades: TradeState[]): TradeState[] {
+    for (let tradeIdx = 0; tradeIdx < currentTrades.length; tradeIdx++) {
+      const trade = currentTrades[tradeIdx];
+      if (trade.tradeType === CROSS_CHAIN_TRADE_TYPE.HOUDINI) {
+        /**
+         * if houdini trade found and it's lower than 3 index - then we rise it to [3] position in provider's list
+         */
+        if (tradeIdx > 1) {
+          const fourthTrade = currentTrades[1];
+          currentTrades[1] = trade;
+          currentTrades[tradeIdx] = fourthTrade;
+          break;
+        }
+      }
+    }
+
+    return currentTrades;
   }
 
   public async selectTrade(tradeType: TradeProvider): Promise<void> {
