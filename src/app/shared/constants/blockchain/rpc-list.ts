@@ -359,8 +359,12 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
   ],
   [BLOCKCHAIN_NAME.STELLAR]: [
     {
-      soroban: 'https://rpc.lightsail.network',
-      horizon: 'https://docs-demo.stellar-mainnet.quiknode.pro'
+      soroban:
+        'https://x-api.rubic.exchange/stellar_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+      horizon: 'https://x-api.rubic.exchange/stellar_http',
+      horizonHeaders: {
+        apiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+      }
     }
   ]
 };

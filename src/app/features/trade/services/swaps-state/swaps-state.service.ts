@@ -597,10 +597,9 @@ export class SwapsStateService {
   ): RubicSdkError | undefined {
     //@TODO remove after fix receiver connection on mobile
     if (
-      (type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
-        this.headerStore.isMobile &&
-        options.needTrustlineAfterSwap) ||
-      options.needTrustlineBeforeSwap
+      type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
+      this.headerStore.isMobile &&
+      (options.needTrustlineAfterSwap || options.needTrustlineBeforeSwap)
     ) {
       return new RubicSdkError(
         'Trustline not detected. Please open your wallet and add the trustline to enable this swap.'
