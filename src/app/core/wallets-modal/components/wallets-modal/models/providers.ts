@@ -190,5 +190,14 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     supportsMobile: true,
     display: true,
     disabled: false
+  },
+  {
+    name: 'Stellar WalletConnect',
+    value: WALLET_NAME.STELLAR_WALLET_CONNECT,
+    img: './assets/images/icons/wallets/walletconnect.svg',
+    supportsDesktop: true,
+    supportsMobile: true,
+    display: true,
+    disabled: false
   }
 ];

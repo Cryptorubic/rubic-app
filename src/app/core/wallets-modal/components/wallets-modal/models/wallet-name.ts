@@ -24,5 +24,6 @@ export enum WALLET_NAME {
   BINANCE_WALLET = 'binance_wallet',
   BACKPACK = 'backpack',
   LOBSTR = 'lobstr',
-  FREIGHTER = 'freighter'
+  FREIGHTER = 'freighter',
+  STELLAR_WALLET_CONNECT = 'stellar_wallectconnect'
 }

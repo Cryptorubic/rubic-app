@@ -8,6 +8,7 @@ import { ModuleInterface, StellarWalletsKit, WalletNetwork } from '@creit.tech/s
 import { StellarWallet } from '../models/stellar-wallet';
 import { SignRejectError } from '@app/core/errors/models/provider/sign-reject-error';
 import { WalletNotInstalledError } from '@app/core/errors/models/provider/wallet-not-installed-error';
+import { waitFor } from '@cryptorubic/web3';
 
 export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<StellarWallet> {
   public chainType = CHAIN_TYPE.STELLAR;
@@ -15,6 +16,8 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
   protected abstract walletId: string;
 
   protected abstract walletModule: ModuleInterface;
+
+  protected needDelayAfterModuleInit: boolean = false;
 
   constructor(
     onAddressChanges$: BehaviorSubject<string>,
@@ -34,6 +37,9 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
     });
 
     try {
+      // some modules have async init
+      if (this.needDelayAfterModuleInit) await waitFor(500);
+
       const { address } = await wallet.getAddress();
 
       this.selectedChain = BLOCKCHAIN_NAME.STELLAR;
