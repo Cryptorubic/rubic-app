@@ -7,12 +7,6 @@ type Section = 'Trade' | 'More' | 'Social' | 'Legal & Privacy';
 
 export const NAVIGATION_LIST = [
   {
-    translateKey: 'Swap & Earn',
-    type: 'internal',
-    link: ROUTE_PATH.AIRDROP,
-    imagePath: `assets/images/rbc.svg`
-  },
-  {
     translateKey: 'Token Claim',
     type: 'external',
     link: EXTERNAL_LINKS.AIRDROP,
@@ -52,24 +46,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       type: 'internal',
       link: ROUTE_PATH.NONE,
       active: false
-    },
-    {
-      translateKey: 'Staking',
-      type: 'internal',
-      link: ROUTE_PATH.STAKING,
-      active: false
-    },
-    {
-      translateKey: 'Swap to Earn',
-      type: 'internal',
-      link: ROUTE_PATH.AIRDROP,
-      active: false
-    },
-    {
-      translateKey: 'Retrodrop',
-      type: 'internal',
-      link: ROUTE_PATH.RETRODROP,
-      active: false
     }
   ],
   ['More']: [
@@ -100,11 +76,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     }
   ],
   ['Social']: [
-    {
-      translateKey: 'Facebook',
-      type: 'external',
-      link: 'https://www.facebook.com/RubicDEX/'
-    },
     {
       translateKey: 'Twitter',
       type: 'external',
@@ -154,11 +125,6 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Youtube',
       type: 'external',
       link: 'https://www.youtube.com/c/RubicExchange'
-    },
-    {
-      translateKey: 'Coinmarketcap',
-      type: 'external',
-      link: 'https://www.defipulse.com/'
     }
   ],
   ['Legal & Privacy']: [

@@ -4,11 +4,7 @@ export enum ROUTE_PATH {
   HISTORY = 'history',
   BYT_CRYPTO = 'buy-crypto',
   ABOUT = 'about',
-  REVOKE_APPROVAL = 'revoke-approval',
   CHANGENOW_RECENT_TRADES = 'changenow-recent-trades',
-  AIRDROP = 'airdrop',
-  RETRODROP = 'retrodrop',
-  STAKING = 'staking',
   TESTNET_PROMO = 'enter-the-chain',
   REST = '**'
 }

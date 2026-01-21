@@ -49,7 +49,7 @@ export class TokenService {
     return adapter.callForTokensInfo(addresses);
   }
 
-  @Memo({ maxAge: 60_000 })
+  // @Memo({ maxAge: 60_000 })
   public async createToken(tokenBaseStruct: TokenBaseStruct): Promise<Token> {
     const chainType = BlockchainsInfo.getChainType(tokenBaseStruct.blockchain);
 

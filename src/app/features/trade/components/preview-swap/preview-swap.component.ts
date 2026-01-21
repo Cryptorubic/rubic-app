@@ -17,7 +17,6 @@ import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { WalletConnectorService } from '@core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { ModalService } from '@core/modals/services/modal.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
 import { compareAddresses } from '@shared/utils/utils';
@@ -34,8 +33,10 @@ import { EvmOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -48,7 +49,7 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public readonly tradeInfo$ = this.previewSwapService.tradeInfo$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly isMevBotProtectedChains$: Observable<boolean> =
     this.swapsFormService.fromBlockchain$.pipe(
@@ -108,12 +109,13 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly walletConnector: WalletConnectorService,
     private readonly modalService: ModalService,
     @Inject(Injector) private injector: Injector,
-    private readonly tokensService: TokensService,
     private readonly headerStore: HeaderStore,
+    private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly authService: AuthService,
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
     private readonly tradeInfoManager: TradeInfoManager,
+    private readonly tokensFacade: TokensFacadeService,
     private readonly targetAddressService: TargetNetworkAddressService
   ) {
     this.previewSwapService.setSelectedProvider();
@@ -335,7 +337,7 @@ export class PreviewSwapComponent implements OnDestroy {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 
   public onTrustlineAdd(): void {

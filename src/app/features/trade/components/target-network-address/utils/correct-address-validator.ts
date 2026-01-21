@@ -1,10 +1,10 @@
 import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { AbstractControl, AsyncValidatorFn, ValidationErrors } from '@angular/forms';
-import { AssetType } from '@features/trade/models/asset';
+import { AssetListType } from '@features/trade/models/asset';
 import { Web3Pure } from '@cryptorubic/web3';
 
 export function correctAddressValidator(
-  fromAssetType: AssetType,
+  fromAssetType: AssetListType,
   validatedChain: BlockchainName
 ): AsyncValidatorFn {
   const validatedChainType = BlockchainsInfo.getChainType(validatedChain);

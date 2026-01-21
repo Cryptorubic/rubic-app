@@ -19,7 +19,7 @@ import { SharedModule } from '@shared/shared.module';
 import { TuiActiveZoneModule, TuiAutoFocusModule } from '@taiga-ui/cdk';
 import { EmptyListComponent } from './components/tokens-list/components/empty-list/empty-list.component';
 import { AssetTypesAsideComponent } from '@features/trade/components/assets-selector/components/asset-types-aside/asset-types-aside.component';
-import { SearchBarComponent } from '@features/trade/components/assets-selector/components/search-bar/search-bar.component';
+import { SearchBarTokensComponent } from '@features/trade/components/assets-selector/components/search-bar/search-bar-tokens.component';
 import { TokensListComponent } from '@features/trade/components/assets-selector/components/tokens-list/tokens-list.component';
 import { TokensListElementComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/tokens-list-element/tokens-list-element.component';
 import { CustomTokenComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token/custom-token.component';
@@ -27,21 +27,18 @@ import { CustomTokenWarningModalComponent } from '@features/trade/components/ass
 import { BlockchainsListComponent } from '@features/trade/components/assets-selector/components/blockchains-list/blockchains-list.component';
 import { SwitchTokensListTypeButtonComponent } from '@features/trade/components/assets-selector/components/switch-tokens-list-type-button/switch-tokens-list-type-button.component';
 import { AssetsSelectorPageComponent } from '@features/trade/components/assets-selector/components/assets-selector-page/assets-selector-page.component';
-import { SearchQueryService } from './services/search-query-service/search-query.service';
 import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
-import { AssetsSelectorService } from './services/assets-selector-service/assets-selector.service';
 import { BlockchainsFilterListComponent } from './components/blockchains-filter-list/blockchains-filter-list.component';
 import { FilterListElementComponent } from './components/blockchains-filter-list/components/filter-list-element/filter-list-element.component';
-import { FilterQueryService } from './services/filter-query-service/filter-query.service';
 import { BlockchainsPromoBadgeComponent } from './components/blockchains-promo-badge/blockchains-promo-badge.component';
-import { AssetsSearchQueryService } from './services/assets-search-query-service/assets-search-query.service';
 import { AssetsTypeAsideElementComponent } from './components/assets-type-aside-element/assets-type-aside-element.component';
 import { TokensListFiltersComponent } from './components/tokens-list/components/tokens-list-filters/tokens-list-filters.component';
+import { SearchBarBlockchainsComponent } from '@features/trade/components/assets-selector/components/search-bar-blockchains/search-bar-blockchains.component';
 
 @NgModule({
   declarations: [
     AssetTypesAsideComponent,
-    SearchBarComponent,
+    SearchBarTokensComponent,
     TokensListComponent,
     TokensListElementComponent,
     CustomTokenComponent,
@@ -54,7 +51,8 @@ import { TokensListFiltersComponent } from './components/tokens-list/components/
     FilterListElementComponent,
     BlockchainsPromoBadgeComponent,
     AssetsTypeAsideElementComponent,
-    TokensListFiltersComponent
+    TokensListFiltersComponent,
+    SearchBarBlockchainsComponent
   ],
   imports: [
     CommonModule,
@@ -79,12 +77,6 @@ import { TokensListFiltersComponent } from './components/tokens-list/components/
     TuiCarouselModule
   ],
   exports: [AssetsSelectorPageComponent],
-  providers: [
-    SearchQueryService,
-    FormsTogglerService,
-    AssetsSelectorService,
-    FilterQueryService,
-    AssetsSearchQueryService
-  ]
+  providers: [FormsTogglerService]
 })
 export class AssetsSelectorModule {}

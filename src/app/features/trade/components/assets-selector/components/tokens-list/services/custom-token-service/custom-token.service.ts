@@ -5,7 +5,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { AuthService } from '@core/services/auth/auth.service';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { AssetsSelectorService } from '@features/trade/components/assets-selector/services/assets-selector-service/assets-selector.service';
 import { CustomTokenWarningModalComponent } from '@features/trade/components/assets-selector/components/tokens-list/components/custom-token-warning-modal/custom-token-warning-modal.component';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
@@ -16,9 +15,8 @@ export class CustomTokenService {
     private readonly dialogService: ModalService,
     @Inject(Injector) private readonly injector: Injector,
     private readonly translateService: TranslateService,
-    private readonly authService: AuthService,
-    private readonly assetsSelectorService: AssetsSelectorService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly authService: AuthService
   ) {}
 
   public openModal(customToken: AvailableTokenAmount): void {
@@ -58,7 +56,8 @@ export class CustomTokenService {
       )
       .subscribe(token => {
         if (token) {
-          this.assetsSelectorService.onAssetSelect(token);
+          // @TODO TOKENS
+          // this.assetsSelectorFacade.getAssetsService(this.type).selectCustomToken();
         }
       });
   }

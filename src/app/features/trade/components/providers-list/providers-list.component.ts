@@ -11,13 +11,13 @@ import { TradeState } from '@features/trade/models/trade-state';
 import { CalculationProgress } from '@features/trade/models/calculationProgress';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { PolymorpheusInput } from '@shared/decorators/polymorpheus-input';
 import { ProviderHintService } from '../../services/provider-hint/provider-hint.service';
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-providers-list',
@@ -50,7 +50,7 @@ export class ProvidersListComponent {
 
   public readonly toToken$ = this.swapsFormService.toToken$;
 
-  public readonly nativeToken$ = this.swapsFormService.nativeToken$;
+  public readonly nativeToken$ = this.tokensFacade.nativeToken$;
 
   public readonly hideHint$ = this.providerHintService.hideProviderHint$;
 
@@ -89,7 +89,7 @@ export class ProvidersListComponent {
       }
     >,
     private readonly swapsFormService: SwapsFormService,
-    private readonly tokensService: TokensService,
-    private readonly providerHintService: ProviderHintService
+    private readonly providerHintService: ProviderHintService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 }

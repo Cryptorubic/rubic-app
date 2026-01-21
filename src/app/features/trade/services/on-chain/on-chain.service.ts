@@ -16,7 +16,6 @@ import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchai
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { GasService } from '@core/services/gas-service/gas.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BigNumber from 'bignumber.js';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
@@ -53,6 +52,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/ton-on-chain-trade/ton-on-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -72,7 +72,6 @@ export class OnChainService {
     private readonly swapFormService: SwapsFormService,
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly gasService: GasService,
-    private readonly tokensService: TokensService,
     private readonly authService: AuthService,
     private readonly settingsService: SettingsService,
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
@@ -85,14 +84,15 @@ export class OnChainService {
     private readonly modalService: ModalService,
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly tokensFacade: TokensFacadeService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount } = this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getTokenPrice(fromToken, true),
-      this.tokensService.getTokenPrice(toToken, true)
+      this.tokensFacade.getLatestPrice(fromToken),
+      this.tokensFacade.getLatestPrice(toToken)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -205,12 +205,12 @@ export class OnChainService {
       await trade.swap(options);
 
       const [fromToken, toToken] = await Promise.all([
-        this.tokensService.findToken(trade.from),
-        this.tokensService.findToken(trade.to)
+        this.tokensFacade.findToken(trade.from),
+        this.tokensFacade.findToken(trade.to)
       ]);
 
       await this.conditionalAwait(fromBlockchain);
-      await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
+      await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
@@ -247,13 +247,18 @@ export class OnChainService {
         if (txStatus.status !== TX_STATUS.SUCCESS) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
         } else {
-          await this.tokensService.updateTokenBalancesAfterItSwap(fromToken, toToken);
+          await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
         }
       }
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
+
+      // Update tokens prices after 3 sec
+      setTimeout(() => {
+        this.tokensFacade.updateParticipantTokens();
+      }, 3_000);
 
       return transactionHash;
     } catch (err) {

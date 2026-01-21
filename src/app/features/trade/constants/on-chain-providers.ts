@@ -303,6 +303,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}horixondex.png`,
     color: '#444391'
   },
+  [ON_CHAIN_TRADE_TYPE.HYPERCAT]: {
+    name: 'HyperCat',
+    image: `${imageBasePath}hypercat.svg`,
+    color: '#1a2833'
+  },
 
   //IIIIIIIIIIIIIIIIIIIIIIII
   [ON_CHAIN_TRADE_TYPE.IZUMI]: {

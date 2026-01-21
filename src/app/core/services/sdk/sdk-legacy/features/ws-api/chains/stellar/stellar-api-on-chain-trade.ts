@@ -41,7 +41,6 @@ export class StellarApiOnChainTrade extends StellarOnChainTrade {
         withDeflation: { from: { isDeflation: false }, to: { isDeflation: false } },
         path: params.routePath
       },
-      params.apiQuote.integratorAddress!,
       sdkLegacyService,
       rubicApiService
     );

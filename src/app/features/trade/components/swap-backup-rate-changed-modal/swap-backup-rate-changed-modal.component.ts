@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { HeaderStore } from '@app/core/header/services/header.store';
-import { TokensService } from '@app/core/services/tokens/tokens.service';
 import { SelectedTrade } from '@app/features/trade/models/selected-trade';
 import { TuiDialogContext } from '@taiga-ui/core';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
@@ -8,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import { Observable } from 'rxjs';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { TradeInfo } from '../../models/trade-info';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 
 @Component({
   selector: 'app-swap-backup-rate-changed-modal',
@@ -32,8 +32,7 @@ export class SwapBackupRateChangedModalComponent {
       boolean,
       { trade: SelectedTrade; tradeInfo$: Observable<TradeInfo>; rateChangeInfo: RateChangeInfo }
     >,
-    private readonly headerStore: HeaderStore,
-    private readonly tokensService: TokensService
+    private readonly headerStore: HeaderStore
   ) {
     this.tradeState = context.data.trade;
     this.tradeInfo$ = context.data.tradeInfo$;
@@ -55,6 +54,6 @@ export class SwapBackupRateChangedModalComponent {
   }
 
   public onImageError($event: Event): void {
-    this.tokensService.onTokenImageError($event);
+    TokensFacadeService.onTokenImageError($event);
   }
 }

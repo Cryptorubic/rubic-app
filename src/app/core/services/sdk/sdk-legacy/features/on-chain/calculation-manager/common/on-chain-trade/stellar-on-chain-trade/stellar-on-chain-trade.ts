@@ -75,11 +75,10 @@ export abstract class StellarOnChainTrade extends OnChainTrade {
 
   protected constructor(
     tradeStruct: StellarOnChainTradeStruct,
-    providerAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService
   ) {
-    super(providerAddress, sdkLegacyService, rubicApiService);
+    super(tradeStruct.apiResponse, sdkLegacyService, rubicApiService);
 
     this.from = tradeStruct.from;
     this.to = tradeStruct.to;

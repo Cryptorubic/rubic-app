@@ -13,7 +13,6 @@ import {
 } from '@cryptorubic/web3';
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
-import { TokensService } from '@core/services/tokens/tokens.service';
 import BigNumber from 'bignumber.js';
 import { CrossChainApiService } from '@features/trade/services/cross-chain-routing-api/cross-chain-api.service';
 
@@ -23,7 +22,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import BlockchainIsUnavailableWarning from '@core/errors/models/common/blockchain-is-unavailable.warning';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
-import { TokenAmount } from '@shared/models/tokens/token-amount';
+import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { GasService } from '@core/services/gas-service/gas.service';
 import { RubicSdkErrorParser } from '@core/errors/models/rubic-sdk-error-parser';
@@ -57,6 +56,8 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/evm-cross-chain-trade/evm-cross-chain-trade';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 @Injectable()
 export class CrossChainService {
@@ -77,7 +78,6 @@ export class CrossChainService {
     private readonly platformConfigurationService: PlatformConfigurationService,
     private readonly queryParamsService: QueryParamsService,
     private readonly sessionStorage: SessionStorageService,
-    private readonly tokensService: TokensService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly dialogService: ModalService,
@@ -90,15 +90,17 @@ export class CrossChainService {
     private readonly refundService: RefundService,
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
     const { fromToken, toToken, fromAmount, fromBlockchain, toBlockchain } =
       this.swapFormService.inputValue;
     const [fromPrice, toPrice] = await Promise.all([
-      this.tokensService.getTokenPrice(fromToken, true),
-      this.tokensService.getTokenPrice(toToken, true)
+      this.tokensFacade.getLatestPrice(fromToken),
+      this.tokensFacade.getLatestPrice(toToken)
     ]);
     const fromSdkCompatibleToken = new PriceToken({
       ...fromToken,
@@ -213,8 +215,8 @@ export class CrossChainService {
     this.checkBlockchainsAvailable(trade);
 
     const [fromToken, toToken] = await Promise.all([
-      this.tokensService.findToken(trade.from),
-      this.tokensService.findToken(trade.to)
+      this.tokensFacade.findToken(trade.from),
+      this.tokensFacade.findToken(trade.to)
     ]);
     await this.handlePreSwapModal(trade);
 
@@ -273,11 +275,16 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
-      await this.tokensService.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+      await this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
+
+      // Update tokens prices after 3 sec
+      setTimeout(() => {
+        this.tokensFacade.updateParticipantTokens();
+      }, 3_000);
 
       return transactionHash;
     } catch (error) {
@@ -389,8 +396,8 @@ export class CrossChainService {
 
   private notifyGtmAfterSignTx(
     txHash: string,
-    fromToken: TokenAmount,
-    toToken: TokenAmount,
+    fromToken: BalanceToken,
+    toToken: BalanceToken,
     fromAmount: BigNumber,
     useMevBotProtection: boolean
   ): void {

@@ -7,7 +7,6 @@ import { SwapFormQueryService } from '@features/trade/services/swap-form-query/s
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import { TradeProvider } from '@features/trade/models/trade-provider';
 import { ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
-import { SwapTokensUpdaterService } from '@features/trade/services/swap-tokens-updater-service/swap-tokens-updater.service';
 import { TradeState } from '@features/trade/models/trade-state';
 import { firstValueFrom } from 'rxjs';
 import { HeaderStore } from '@core/header/services/header.store';
@@ -78,7 +77,6 @@ export class TradeViewContainerComponent {
     private readonly tradePageService: TradePageService,
     public readonly swapFormQueryService: SwapFormQueryService,
     public readonly swapFormService: SwapsFormService,
-    public readonly swapTokensUpdaterService: SwapTokensUpdaterService,
     private readonly headerStore: HeaderStore,
     private readonly previewSwapService: PreviewSwapService,
     private readonly actionButtonService: ActionButtonService,

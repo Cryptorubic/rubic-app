@@ -251,6 +251,13 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `assets/images/icons/coins/pulsechain.svg`,
     name: 'Pulsechain bridge'
   },
+  //QQQQQQQQQQQQQQQQQQQQ
+  quickex: {
+    averageTime: 5,
+    color: '#fff',
+    image: `${imageBasePath}quickex.svg`,
+    name: 'Quickex'
+  },
   //RRRRRRRRRRRRRRRRRRRR
   rainbow: {
     averageTime: 5,
@@ -367,6 +374,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#33FF99',
     image: `${imageBasePath}unizen.png`,
     name: 'Unizen'
+  },
+  usdt_zero_bridge: {
+    averageTime: 5,
+    color: '#33FF99',
+    image: `${imageBasePath}usdt_zero_bridge.svg`,
+    name: 'USDT0 Bridge'
   },
   //VVVVVVVVVVVVVVVVVVVVV
   voyager: {

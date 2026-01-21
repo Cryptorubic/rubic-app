@@ -1,88 +1,115 @@
-import { ChangeDetectionStrategy, Component, Self, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  Self,
+  ViewChild,
+  OnInit,
+  ElementRef,
+  Inject
+} from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
-import { LIST_ANIMATION } from '@features/trade/components/assets-selector/animations/list-animation';
-import { TokensListService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list.service';
-import { TokensListStoreService } from '@features/trade/components/assets-selector/services/tokens-list-service/tokens-list-store.service';
+
 import { MobileNativeModalService } from '@app/core/modals/services/mobile-native-modal.service';
 import { HeaderStore } from '@app/core/header/services/header.store';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { AssetsSelectorStateService } from '../../services/assets-selector-state/assets-selector-state.service';
-import { AssetsSelectorService } from '../../services/assets-selector-service/assets-selector.service';
-import { BalanceLoadingStateService } from '@app/core/services/tokens/balance-loading-state.service';
-import { TokenFilter } from '../../models/token-filters';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { TokensStoreService } from '@app/core/services/tokens/tokens-store.service';
-import { TokensUpdaterService } from '@app/core/services/tokens/tokens-updater.service';
-import { AssetType } from '@app/features/trade/models/asset';
-import { SearchQueryService } from '../../services/search-query-service/search-query.service';
+import { AssetListType } from '@app/features/trade/models/asset';
+import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { AnimationBuilder } from '@angular/animations';
+import { DOCUMENT } from '@angular/common';
+import { BlockchainsInfo } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-tokens-list',
   templateUrl: './tokens-list.component.html',
   styleUrls: ['./tokens-list.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [LIST_ANIMATION],
+  // animations: [LIST_ANIMATION, LIST_ANIMATION_2, LIST_CHANGE_ANIMATION, containerAnim, innerAnim],
   providers: [TuiDestroyService]
 })
-export class TokensListComponent {
+export class TokensListComponent implements OnInit {
   @ViewChild(CdkVirtualScrollViewport) set virtualScroll(scroll: CdkVirtualScrollViewport) {
-    this.tokensListService.setListScrollSubject(scroll);
+    this.scrollSubject$.next(scroll);
   }
 
-  public readonly tokensLoading$ = this.tokensUpdaterService.tokensLoading$;
+  @ViewChild('listWrapper') set listWrapper(listWrapper: ElementRef) {
+    this._listWrapper = listWrapper;
+  }
 
-  public readonly listAnimationState$ = this.tokensListService.listAnimationType$;
+  private _listWrapper: ElementRef;
 
-  public readonly customToken$ = this.tokensListStoreService.customToken$;
+  private readonly scrollSubject$ = new BehaviorSubject<CdkVirtualScrollViewport | null>(null);
+
+  public _tokensToShow: AvailableTokenAmount[] = [];
+
+  @Input({ required: true }) set tokensToShow(value: AvailableTokenAmount[]) {
+    this._tokensToShow = value;
+  }
+
+  @Input({ required: true }) customToken: AvailableTokenAmount | null;
+
+  @Input({ required: true }) loading: boolean;
+
+  private _listType: AssetListType;
+
+  @Input({ required: true }) set listType(value: AssetListType) {
+    if (value !== this._listType) {
+      this.triggerAnimation();
+      this.resetScrollToTop();
+    }
+
+    this._listType = value;
+  }
+
+  public get listType(): AssetListType {
+    return this._listType;
+  }
+
+  @Input({ required: true }) balanceLoading: boolean;
+
+  @Input({ required: true }) tokensSearchQuery: string;
+
+  @Input({ required: true }) totalBlockchains: number = 100;
+
+  @Output() selectAssetList = new EventEmitter<AssetListType>();
+
+  @Output() selectToken = new EventEmitter<AvailableTokenAmount>();
+
+  @Output() switchMode = new EventEmitter<void>();
+
+  @Output() onTokenSearch = new EventEmitter<string>();
 
   public readonly isMobile = this.headerStore.isMobile;
 
-  public readonly isBalanceLoading$ = this.tokensListStoreService.tokensToShow$.pipe(
-    switchMap(() =>
-      this.balanceLoadingStateService.isBalanceLoading$({
-        assetType: this.assetsSelectorStateService.assetType,
-        tokenFilter: this.assetsSelectorStateService.tokenFilter
-      })
-    )
-  );
-
-  public get isAllChainsOpened(): boolean {
-    return this.assetsSelectorStateService.assetType === 'allChains';
+  public get isUtility(): boolean {
+    const isBlockchain = BlockchainsInfo.isBlockchainName(this.listType);
+    return !isBlockchain;
   }
-
-  public get assetType(): AssetType {
-    return this.assetsSelectorStateService.assetType;
-  }
-
-  public readonly tokensToShow$ = this.tokensListStoreService.tokensToShow$;
-
-  public readonly tokenFilter$ = this.assetsSelectorStateService.tokenFilter$;
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
   constructor(
-    private readonly tokensListService: TokensListService,
-    private readonly tokensListStoreService: TokensListStoreService,
     private readonly mobileNativeService: MobileNativeModalService,
-    private readonly assetsSelectorStateService: AssetsSelectorStateService,
-    private readonly assetsSelectorService: AssetsSelectorService,
     private readonly headerStore: HeaderStore,
     private readonly queryParamsService: QueryParamsService,
-    private readonly balanceLoadingStateService: BalanceLoadingStateService,
-    private readonly tokensStoreService: TokensStoreService,
-    private readonly tokensUpdaterService: TokensUpdaterService,
-    private readonly searchQueryService: SearchQueryService,
-    @Self() private readonly destroy$: TuiDestroyService
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly builder: AnimationBuilder,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
-    this.assetsSelectorStateService.tokenFilter$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.searchQueryService.setSearchQuery('');
-        this.tokensStoreService.startBalanceCalculating('allChains');
-        this.tokensUpdaterService.triggerUpdateTokens();
-      });
+    this.subscribeOnScroll();
+  }
+
+  ngOnInit() {
+    this.resetScrollToTop();
   }
 
   /**
@@ -99,11 +126,78 @@ export class TokensListComponent {
     this.mobileNativeService.forceClose();
 
     if (token.available) {
-      this.assetsSelectorService.onAssetSelect(token);
+      this.selectToken.emit(token);
     }
   }
 
-  public selectTokenFilter(filter: TokenFilter): void {
-    this.assetsSelectorStateService.setTokenFilter(filter);
+  public selectTokenFilter(assetFilter: AssetListType): void {
+    this.selectAssetList.emit(assetFilter);
+  }
+
+  private subscribeOnScroll(): void {
+    this.scrollSubject$
+      .pipe(
+        filter(value => Boolean(value)),
+        switchMap(sub => sub.renderedRangeStream),
+        filter(range => {
+          return !this.skipTokensFetching(range.end);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        const assetType = this.listType;
+        if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
+        const tokensNetworkStateByAsset = this.tokensFacade.blockchainTokens[assetType];
+        this.tokensFacade.fetchNewPage(tokensNetworkStateByAsset, false);
+        this.cdr.detectChanges();
+      });
+  }
+
+  private skipTokensFetching(currentIndex: number): boolean {
+    const assetType = this.listType;
+    if (!BlockchainsInfo.isBlockchainName(assetType)) return true;
+
+    const tokensNetworkStateByAsset = this.tokensFacade.blockchainTokens[assetType];
+
+    if (
+      Boolean(
+        tokensNetworkStateByAsset._pageLoading$.value ||
+          this.tokensSearchQuery ||
+          this.listType === 'favorite' ||
+          !tokensNetworkStateByAsset ||
+          !tokensNetworkStateByAsset.allowFetching
+      )
+    ) {
+      return true;
+    }
+
+    const maxBufferToEnd = 10;
+    const listSize = Object.values(tokensNetworkStateByAsset._tokensObject$.value).length;
+    const shouldSkip = listSize - currentIndex > maxBufferToEnd;
+
+    return shouldSkip;
+  }
+
+  private resetScrollToTop(): void {
+    if (this.scrollSubject$.value) {
+      this.scrollSubject$.value.scrollToIndex(0);
+    }
+  }
+
+  private triggerAnimation(): void {
+    const wrapper = this.document.getElementById('list-wrapper');
+    if (wrapper) {
+      wrapper.getAnimations().forEach(anim => anim.cancel());
+      wrapper.animate(
+        [
+          { opacity: 0, transform: 'scale(1.03)' },
+          { opacity: 1, transform: 'scale(1)' }
+        ],
+        {
+          duration: 1000,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)'
+        }
+      );
+    }
   }
 }
