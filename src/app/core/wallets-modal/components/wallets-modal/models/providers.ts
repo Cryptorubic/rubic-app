@@ -187,7 +187,7 @@ export const PROVIDERS_LIST: ReadonlyArray<WalletProvider> = [
     value: WALLET_NAME.FREIGHTER,
     img: './assets/images/icons/wallets/freighter.svg',
     supportsDesktop: true,
-    supportsMobile: false,
+    supportsMobile: true,
     display: true,
     disabled: false
   }

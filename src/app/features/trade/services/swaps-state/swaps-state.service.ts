@@ -53,6 +53,7 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
 import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
 import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
+import { RubicSdkError } from '@cryptorubic/web3';
 
 @Injectable()
 export class SwapsStateService {
@@ -192,7 +193,7 @@ export class SwapsStateService {
           }
         }
       : {
-          error: wrappedTrade?.error,
+          error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
           trade,
           needApprove,
           needAuthWallet,
@@ -588,5 +589,20 @@ export class SwapsStateService {
       return CENTRALIZATION_CONFIG[trade.type];
     }
     return null;
+  }
+
+  private setSpecificError(
+    type: SWAP_PROVIDER_TYPE,
+    options: NeedTrustlineOptions
+  ): RubicSdkError | undefined {
+    //@TODO remove after fix receiver connection on mobile
+    if (
+      (type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
+        this.headerStore.isMobile &&
+        options.needTrustlineAfterSwap) ||
+      options.needTrustlineBeforeSwap
+    ) {
+      return new RubicSdkError('Add trustline before swap');
+    }
   }
 }

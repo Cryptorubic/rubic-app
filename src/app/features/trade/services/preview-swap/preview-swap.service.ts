@@ -373,7 +373,10 @@ export class PreviewSwapService {
             if (crossChainStatus.extraInfo?.mesonSwapId) {
               this.ccrApiService.sendMesonSwapId(crossChainStatus, srcHash);
             }
-          } else if (crossChainStatus.dstTxStatus === TX_STATUS.FAIL) {
+          } else if (
+            crossChainStatus.dstTxStatus === TX_STATUS.FAIL ||
+            crossChainStatus.dstTxStatus === TX_STATUS.WAITING_FOR_REFUND_TRUSTLINE
+          ) {
             this.setNextTxState({ step: 'error', data: this.transactionState.data });
           }
         }),

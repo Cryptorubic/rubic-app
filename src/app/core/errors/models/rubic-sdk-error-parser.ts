@@ -57,6 +57,7 @@ import { SimulationFailedError } from '@core/errors/models/common/simulation-fai
 import { nativeTokensList } from '@cryptorubic/core';
 import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
 import { WrongReceiverError } from './provider/wrong-receiver-error';
+import InactiveWalletError from './common/inactive-wallet.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -198,6 +199,10 @@ export class RubicSdkErrorParser {
 
     if (err.message.toLowerCase().includes('connected wallet must be the same as receiver')) {
       return new WrongReceiverError();
+    }
+
+    if (err.message.toLowerCase().includes('account is not activated')) {
+      return new InactiveWalletError();
     }
 
     return new ExecutionRevertedError(err.message);
