@@ -101,7 +101,7 @@ export class TrustlineService {
 
     try {
       if (to.blockchain === BLOCKCHAIN_NAME.STELLAR) {
-        const address = from.blockchain === to.blockchain ? receiver || fromAddress : receiver;
+        const address = from.blockchain === to.blockchain ? fromAddress : receiver;
         if (address) {
           if (!this.adapter.connected) {
             this.adapter.initWeb3Client();

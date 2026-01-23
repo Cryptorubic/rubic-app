@@ -2367,18 +2367,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.1.0-alpha-stellar.55":
-  version "1.1.0-alpha-stellar.55"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.1.0-alpha-stellar.55.tgz#5404b6c9e1bd5c998ca48a4d88245ff45f51e29e"
-  integrity sha512-McNGrAK73yCsnskD6KYLkLJ/MRLVvRWe/rV71uYwKpbQjPN2gyRKD5pwQup3/Qk1vfMrt9k9kxKBdcDT+IRLFQ==
+"@cryptorubic/core@1.1.0-alpha-stellar.56":
+  version "1.1.0-alpha-stellar.56"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.1.0-alpha-stellar.56.tgz#3f2a1c2a0b4a785ec89b5ebb95b07f906780876e"
+  integrity sha512-P33Hv/crgeI0+BcFNu259XKjoJTHgKToqxEIuF134A6iB56KR8nnBxKWaLW5i6OfmATKx1NcOcujFGMLn9YbzQ==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.1.0-alpha-stellar.55":
-  version "1.1.0-alpha-stellar.55"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.1.0-alpha-stellar.55.tgz#739df8dcfeb1716414cf334e13bc35bbd78975f0"
-  integrity sha512-CM/Hfx6j1Zg9YvWvWDPDdtZoak3SOp6J/j58nAvm+rqhoR5FggSLHU4lqGfPCUzvPHl/LNdqEspGAHkRFc+ahQ==
+"@cryptorubic/web3@1.1.0-alpha-stellar.56":
+  version "1.1.0-alpha-stellar.56"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.1.0-alpha-stellar.56.tgz#9b9466c9551933df13626612f1b64f76d4b80043"
+  integrity sha512-Mr/7wg9fc3DaS7usQXMLj2imihhf5HEAzAZyMjCGNQyW9ow7Dlepyhc0xIsTrEt5JczFcdm4qtX5RWhP3Qv8Rg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
