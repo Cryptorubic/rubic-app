@@ -1259,7 +1259,7 @@ export const blockchainScanner: Record<BlockchainName, ScannerObject> = {
     [ADDRESS_TYPE.TRANSACTION]: 'tx/',
     [ADDRESS_TYPE.BLOCK]: 'block/'
   },
-  [BLOCKCHAIN_NAME.MEGA_ETH]: {
+  [BLOCKCHAIN_NAME.MEGAETH]: {
     baseUrl: 'https://megaeth.blockscout.com/',
     nativeCoinUrl: '',
     [ADDRESS_TYPE.WALLET]: 'address/',

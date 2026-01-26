@@ -2327,18 +2327,18 @@
     dot "^2.0.0-beta.1"
     fs-extra "^11.1.1"
 
-"@cryptorubic/core@1.1.1-alpha-megaeth.0":
-  version "1.1.1-alpha-megaeth.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.1.1-alpha-megaeth.0.tgz#d9d4428b9e5cce7490ab7f39ad62423a19b50c29"
-  integrity sha512-phkxGuemDD3hDJxCVIm3ZCZsj4I348LvS1Xauo3L1uU5dyc7dfuDIIi7UTMt3Mmmp/h1+IyUdGKTT0CNQNOQEQ==
+"@cryptorubic/core@1.1.1-alpha-megaeth.3":
+  version "1.1.1-alpha-megaeth.3"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.1.1-alpha-megaeth.3.tgz#c4ad8644b0e8c314a2b1ee8a8e69eb4b120e7d48"
+  integrity sha512-PzDO9k04pPZ8B2UsrEHtaADmotZqSUpyghuJhnTxpG13Or5y8p5H53sgEdYf+YtDM0ioF7ZzlkyM9GbGw9rFyA==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.1.1-alpha-megaeth.0":
-  version "1.1.1-alpha-megaeth.0"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.1.1-alpha-megaeth.0.tgz#cfb54b6cab2fb59bd6c1bd4aa248039e6e9fc507"
-  integrity sha512-F7e/scR0PKgS9rwOGg6ziX7WgFdmKiEVDH11FLYHtBJC+M89yFV6aYVulzeTrHtrLBTyqbh8hS8FCtDAIocOOg==
+"@cryptorubic/web3@1.1.1-alpha-megaeth.3":
+  version "1.1.1-alpha-megaeth.3"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.1.1-alpha-megaeth.3.tgz#e24fd3f01e6c554703ee949633f9cfd08baa391f"
+  integrity sha512-GYZvkmEzDf34+duX2p+MfyFPTouwXTCRFWLPh3W3LoEt3A9Bh2BSFFASxDX7ByXVg8AEiY0x09ozStPUNlMfzg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"

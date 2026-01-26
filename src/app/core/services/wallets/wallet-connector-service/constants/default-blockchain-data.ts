@@ -263,7 +263,7 @@ export const defaultBlockchainData: Partial<Record<EvmBlockchainName, DefaultBlo
     name: 'HyperEVM',
     rpc: 'https://rpc.hyperliquid.xyz/evm'
   },
-  [BLOCKCHAIN_NAME.MEGA_ETH]: {
+  [BLOCKCHAIN_NAME.MEGAETH]: {
     name: 'MegaETH',
     rpc: 'https://mainnet.megaeth.com/rpc'
   }

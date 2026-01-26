@@ -804,6 +804,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}wynd.svg`,
     color: '#7e8087'
   },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V2]: {
+    name: 'WarpX V2',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V3]: {
+    name: 'WarpX V3',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
+  },
 
   //XXXXXXXXXXXXXXXXXXXXXXXXXXX
   [ON_CHAIN_TRADE_TYPE.XY_DEX]: {

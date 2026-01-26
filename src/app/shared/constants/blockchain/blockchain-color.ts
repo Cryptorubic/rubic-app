@@ -157,5 +157,5 @@ export const blockchainColor: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.PLASMA]: '#162f29',
   [BLOCKCHAIN_NAME.MONAD]: '#FFFFFF',
   [BLOCKCHAIN_NAME.HYPER_EVM]: '#1e1e1e',
-  [BLOCKCHAIN_NAME.MEGA_ETH]: '#1e1e1e'
+  [BLOCKCHAIN_NAME.MEGAETH]: '#FFFFFF'
 };

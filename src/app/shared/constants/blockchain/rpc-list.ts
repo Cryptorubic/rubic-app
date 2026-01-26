@@ -354,5 +354,5 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc3.monad.xyz',
     'https://rpc-mainnet.monadinfra.com'
   ],
-  [BLOCKCHAIN_NAME.MEGA_ETH]: ['https://mainnet.megaeth.com/rpc']
+  [BLOCKCHAIN_NAME.MEGAETH]: ['https://mainnet.megaeth.com/rpc']
 };
