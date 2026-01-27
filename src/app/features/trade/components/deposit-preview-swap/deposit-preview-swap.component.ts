@@ -10,7 +10,7 @@ import { combineLatest, firstValueFrom, merge, Observable, timer } from 'rxjs';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { PreviewSwapService } from '@features/trade/services/preview-swap/preview-swap.service';
-import { distinctUntilChanged, first, map, startWith, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, startWith, takeUntil } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import ADDRESS_TYPE from '@shared/models/blockchain/address-type';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
@@ -131,6 +131,26 @@ export class DepositPreviewSwapComponent implements OnDestroy {
     )
   );
 
+  public readonly needTrustline$ = this.transactionState$.pipe(
+    map(state => state.data.needTrustlineOptions?.needTrustlineBeforeSwap),
+    filter(v => v !== undefined)
+  );
+
+  public readonly trustlineInfo$ = this.previewSwapService.selectedTradeState$.pipe(
+    map(selectedTrade => {
+      const { trade } = selectedTrade;
+      return {
+        receiver: this.targetAddressService.address,
+        toBlockchain: trade.to.blockchain,
+        trustlineToken: {
+          address: trade.to.address,
+          symbol: trade.to.symbol
+        },
+        trustlineType: 'default'
+      };
+    })
+  );
+
   public readonly isValidRefundAddress$ = this.refundService.isValidRefundAddress$;
 
   public hintShown: boolean = false;
@@ -152,10 +172,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   ) {
     this.previewSwapService.setSelectedProvider();
     this.setupTradeIfValidRefundAddress();
+    this.previewSwapService.activateDepositPage();
   }
 
   ngOnDestroy(): void {
     this.depositService.subs.forEach(sub => sub.unsubscribe());
+    this.previewSwapService.deactivatePage();
   }
 
   public backToForm(): void {
@@ -260,8 +282,12 @@ export class DepositPreviewSwapComponent implements OnDestroy {
   }
 
   private setupTradeIfValidRefundAddress(): void {
-    this.refundService.isValidRefundAddress$
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+    combineLatest([this.refundService.isValidRefundAddress$, this.needTrustline$])
+      .pipe(
+        map(([isValidRefund, needTrustline]) => isValidRefund && !needTrustline),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe(isValid => {
         if (isValid) {
           this.setupTrade();
@@ -269,5 +295,9 @@ export class DepositPreviewSwapComponent implements OnDestroy {
           this.depositService.removePrevDeposit();
         }
       });
+  }
+
+  public onTrustlineAdd(): void {
+    this.previewSwapService.handleTrustline();
   }
 }

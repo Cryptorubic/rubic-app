@@ -1,0 +1,9 @@
+@use 'src/scss/core' as *;
+
+.modal {
+  &__body {
+    @include b($mobile-md-minus) {
+      padding: 12px;
+    }
+  }
+}

@@ -114,7 +114,7 @@ export class TradeViewContainerComponent {
 
   private setProvidersVisibility(providers: TradeState[]): void {
     if (this.swapFormService.isFilled) {
-      let timeout: NodeJS.Timeout;
+      let timeout: ReturnType<typeof setTimeout>;
       if (providers.length === 0) {
         timeout = setTimeout(() => {
           this.tradePageService.setProvidersVisibility(true);

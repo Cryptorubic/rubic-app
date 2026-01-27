@@ -46,6 +46,11 @@ import { ArbitrumRbcBridgeTrade } from '../cross-chain/calculation-manager/provi
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SdkLegacyService } from '../../sdk-legacy.service';
 import { RubicApiService } from '../../rubic-api/rubic-api.service';
+import { StellarApiCrossChainTrade } from './chains/stellar/stellar-api-cross-chain-trade';
+import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cross-chain-constructor';
+import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
+import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
+import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -136,6 +141,15 @@ export class TransformUtils {
         sdkLegacyService,
         rubicApiService
       );
+    } else if (chainType === CHAIN_TYPE.STELLAR) {
+      const trustlineTransitTokenAddress = NEED_TRUSTLINE_TRANSIT_TOKENS[tradeType] ?? null;
+
+      trade = new StellarApiCrossChainTrade(
+        tradeParams as StellarApiCrossChainConstructor,
+        sdkLegacyService,
+        rubicApiService,
+        trustlineTransitTokenAddress
+      );
     }
 
     return {
@@ -211,6 +225,12 @@ export class TransformUtils {
     } else if (chainType === CHAIN_TYPE.SUI) {
       trade = new SuiApiOnChainTrade(
         tradeParams as SuiApiOnChainConstructor,
+        sdkLegacyService,
+        rubicApiService
+      );
+    } else if (chainType === CHAIN_TYPE.STELLAR) {
+      trade = new StellarApiOnChainTrade(
+        tradeParams as StellarApiOnChainConstructor,
         sdkLegacyService,
         rubicApiService
       );

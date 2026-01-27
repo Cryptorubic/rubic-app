@@ -12,6 +12,8 @@ import { TransactionReceipt } from 'viem';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { ModalService } from '@app/core/modals/services/modal.service';
+import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 
 @Injectable()
 export class CommonTableService {
@@ -30,8 +32,13 @@ export class CommonTableService {
     private readonly sdkService: SdkService,
     private readonly http: HttpService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly modalService: ModalService
   ) {}
+
+  public async openTrustline(options: TrustlineComponentOptions): Promise<void> {
+    await this.modalService.openTrustlineModal(options);
+  }
 
   public async claimArbitrumBridgeTokens(_srcTxHash: string): Promise<TransactionReceipt> {
     // @TODO API

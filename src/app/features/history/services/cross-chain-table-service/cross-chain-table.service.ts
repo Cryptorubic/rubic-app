@@ -168,6 +168,7 @@ export class CrossChainTableService extends TableService<
           toTx,
           date: backendData.created_at,
           provider,
+          receiver: backendData.receiver,
           ...(backendData.changenow_id && { changenowId: backendData.changenow_id })
         };
       }),

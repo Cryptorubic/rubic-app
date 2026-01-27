@@ -22,5 +22,8 @@ export enum WALLET_NAME {
   SUI_WALLET = 'sui_wallet',
   METAMASK_SOLANA = 'metamask_solana',
   BINANCE_WALLET = 'binance_wallet',
-  BACKPACK = 'backpack'
+  BACKPACK = 'backpack',
+  LOBSTR = 'lobstr',
+  FREIGHTER = 'freighter',
+  STELLAR_WALLET_CONNECT = 'stellar_wallectconnect'
 }

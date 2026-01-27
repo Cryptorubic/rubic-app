@@ -417,7 +417,7 @@ export class CrossChainService {
   }
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
-    if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
+    if (blockchain === BLOCKCHAIN_NAME.SOLANA || blockchain === BLOCKCHAIN_NAME.STELLAR) {
       const waitTime = 3_000;
       await firstValueFrom(timer(waitTime));
     }
