@@ -69,3 +69,21 @@ import { RubicWindow } from 'src/app/shared/utils/rubic-window'; // Included wit
 (window as RubicWindow).process = window.process || require('process');
 (window as RubicWindow).Buffer = (window as any).Buffer || require('buffer').Buffer;
 (window as RubicWindow).ga = (window as any)?.ga;
+// Internal railgun lib uses Promise.withResolvers() which is not a part of our ES
+(() => {
+  const P: any = Promise;
+  if (typeof P.withResolvers !== 'function') {
+    // eslint-disable-next-line angular-rubic/explicit-function-return-type
+    P.withResolvers = function <T>() {
+      let resolve!: (value: T | PromiseLike<T>) => void;
+      let reject!: (reason?: any) => void;
+
+      const promise = new P((res: any, rej: any) => {
+        resolve = res;
+        reject = rej;
+      });
+
+      return { promise, resolve, reject };
+    };
+  }
+})();
