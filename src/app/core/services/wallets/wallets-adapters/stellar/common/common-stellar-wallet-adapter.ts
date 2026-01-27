@@ -45,8 +45,9 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
       this.selectedChain = BLOCKCHAIN_NAME.STELLAR;
       this.selectedAddress = address;
       this.isEnabled = true;
-
       this.wallet = wallet;
+
+      this.handleEvents();
 
       this.onNetworkChanges$.next(this.selectedChain);
       this.onAddressChanges$.next(this.selectedAddress);
@@ -61,6 +62,8 @@ export abstract class CommonStellarWalletAdapter extends CommonWalletAdapter<Ste
       throw err;
     }
   }
+
+  protected handleEvents(): void {}
 
   public deactivate(): void {
     this.wallet?.disconnect();
