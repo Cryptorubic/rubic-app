@@ -43,9 +43,9 @@ export class RailgunService {
     await this.railgunEngineService.loadEngineProvider();
     console.log('[RAILGUN] Engine Provider loaded');
 
-    console.log('[RAILGUN] Initializing Broadcasters...');
-    await this.broadcasterService.initAllBroadcasters();
-    console.log('[RAILGUN] Broadcasters initialized');
+    console.log('[RAILGUN] Initializing Broadcaster for polygon...');
+    await this.broadcasterService.initBroadcaster({ type: 0, id: 137 });
+    console.log('[RAILGUN] Broadcaster  for polygon initialized');
 
     console.log('[RAILGUN] Setting up Node Groth16...');
     await this.proofService.initProver();

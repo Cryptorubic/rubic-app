@@ -1,17 +1,11 @@
 import { Injectable } from '@angular/core';
 import { WakuBroadcasterClient } from '@railgun-community/waku-broadcaster-client-web';
 import { Chain, SelectedBroadcaster } from '@railgun-community/shared-models';
-import { broadcasterChains } from '@features/privacy/constants/broadcaster-chains';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BroadcasterService {
-  public async initAllBroadcasters(): Promise<void> {
-    const initPromises = Object.values(broadcasterChains).map(chain => this.initBroadcaster(chain));
-    await Promise.all(initPromises);
-  }
-
   public async initBroadcaster(chain: Chain): Promise<void> {
     const config = {
       feeExpirationTimeout: 30_000,
@@ -19,10 +13,14 @@ export class BroadcasterService {
       useDNSDiscovery: true,
       trustedFeeSigner: ''
     };
-    const statusCallback = (status: unknown) => {
-      console.log('Connection status:', chain, status);
+    const statusCallback = (usedChain: Chain, status: string) => {
+      console.log('Connection status:', usedChain, status);
     };
     await WakuBroadcasterClient.start(chain, config, statusCallback);
+  }
+
+  public async changeBroadcasterChain(chain: Chain): Promise<void> {
+    await WakuBroadcasterClient.setChain(chain);
   }
 
   public async findBroadcaster(chain: Chain, tokenAddress: string): Promise<SelectedBroadcaster> {
