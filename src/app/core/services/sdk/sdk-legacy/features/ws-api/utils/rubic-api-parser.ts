@@ -73,7 +73,10 @@ export class RubicApiParser {
     };
   }
 
-  public static parseRubicApiErrors(err: RubicApiErrorDto): RubicSdkError {
+  public static parseRubicApiErrors(
+    err: RubicApiErrorDto,
+    throwError: boolean
+  ): RubicSdkError | null {
     if (err.code === 2005 || err.code === 2004) {
       const data = err.data as {
         tokenSymbol: string;
@@ -93,7 +96,9 @@ export class RubicApiParser {
       return new MaxDecimalsError(Number(decimals));
     }
 
-    throw new RubicSdkError(err.reason);
+    if (throwError) throw new RubicSdkError(err.reason);
+
+    return null;
   }
 
   public static parseRubicApiWarnings(warnings: RubicApiErrorDto[]): RubicApiWarnings {
@@ -105,7 +110,7 @@ export class RubicApiParser {
         continue;
       }
 
-      parsedWarnings.error = RubicApiParser.parseRubicApiErrors(warning);
+      parsedWarnings.error = RubicApiParser.parseRubicApiErrors(warning, false);
     }
 
     return parsedWarnings;

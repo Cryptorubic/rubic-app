@@ -33,26 +33,18 @@ export class RouteElementComponent {
   }
 
   public getSteps(routes: RubicStep[]): ProviderStep[] {
-    return routes.map(route => {
-      if (route.type === 'on-chain') {
-        const provider =
-          ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownDex();
+    const bnFormat = new BigNumberFormatPipe();
+    const amountFormat = new ShortenAmountPipe();
 
-        return {
-          provider: {
-            label: `Swap Via ${provider.name}`,
-            image: provider.image
-          },
-          amounts: route.path.map(el => el.symbol)
-        };
-      }
-      const provider = BRIDGE_PROVIDERS[route.provider as CrossChainTradeType];
-      const bnFormat = new BigNumberFormatPipe();
-      const amountFormat = new ShortenAmountPipe();
+    return routes.map(route => {
+      const isOnChain = route.type === 'on-chain';
+      const provider = isOnChain
+        ? ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownDex()
+        : BRIDGE_PROVIDERS[route.provider as CrossChainTradeType];
 
       return {
         provider: {
-          label: `Bridge Via ${provider.name}`,
+          label: `${isOnChain ? 'Swap Via' : 'Bridge Via'} ${provider.name}`,
           image: provider.image
         },
         amounts: route.path.map(el => {
