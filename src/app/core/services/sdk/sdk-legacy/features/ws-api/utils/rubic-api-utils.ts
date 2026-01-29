@@ -99,6 +99,8 @@ export class RubicApiUtils {
       apiResponse: response
     };
 
+    this.mutateTradeParamsOnWarning(tradeParams);
+
     return tradeParams;
   }
 
@@ -232,5 +234,19 @@ export class RubicApiUtils {
     };
 
     return emptyResponse;
+  }
+
+  /**
+   * @description Mutates apiResponse on specific warnings
+   */
+  private static mutateTradeParamsOnWarning(
+    tradeParams: ApiCrossChainConstructor<BlockchainName>
+  ): void {
+    const slippageChangedWarning = tradeParams.apiResponse.warnings.find(
+      warning => warning.code === 7001
+    ) as { data: { newSlippage: number } } | undefined;
+    if (slippageChangedWarning) {
+      tradeParams.apiResponse.estimate.slippage = slippageChangedWarning.data.newSlippage;
+    }
   }
 }
