@@ -102,7 +102,7 @@ export abstract class CommonUtilityStore {
         return tokenHasSecurity || tokenHasPriceInfo;
       });
       if (missedTokens.length) {
-        this.tokensStore.addNewBlockchainTokens(blockchain as BlockchainName, missedTokens);
+        this.tokensStore.updateBlockchainTokens(blockchain as BlockchainName, missedTokens);
       }
     });
   }
