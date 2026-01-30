@@ -18,8 +18,7 @@ import {
   UnapprovedContractError,
   UnapprovedMethodError,
   UnlistedError,
-  UnsupportedReceiverAddressError,
-  waitFor
+  UnsupportedReceiverAddressError
 } from '@cryptorubic/web3';
 import {
   BehaviorSubject,
@@ -28,6 +27,7 @@ import {
   firstValueFrom,
   from,
   fromEvent,
+  interval,
   map,
   Observable,
   of,
@@ -80,30 +80,45 @@ export class RubicApiService {
     private readonly turnstileService: TurnstileService
   ) {}
 
-  public async tryConnectSocket(): Promise<boolean> {
-    /**
-     * @TODO FEATURE AFTER Python API updates:
-     * Add optional cloudflare token requirement
-     * only when in admin's dashboard checklLoudflare is set to true
-     */
-    const sucess = await this.turnstileService.askForCloudflareToken().catch(() => false);
-    if (!sucess) {
-      await waitFor(5_000);
-      return this.tryConnectSocket();
-    }
-
-    const cloudflareToken = await firstValueFrom(
-      this.turnstileService.token$.pipe(first(el => el !== null))
-    );
-
+  public setSocket(): void {
     const ioClient = io(this.apiUrl, {
+      reconnectionDelayMax: 10000,
       path: `/api/routes/ws/`,
       transports: ['websocket'],
-      reconnection: false,
       autoConnect: true,
-      auth: { cloudflareToken }
+      reconnection: true
     });
+
     this.setClient(ioClient);
+  }
+
+  /**
+   * @description tries get token immediately after call
+   * and refresh CF token every 4.5 minutes  and send it to rubic-api
+   */
+  public initCfTokenAutoRefresh(): void {
+    this.refreshCloudflareToken(true);
+    interval(4.5 * 60 * 1_000)
+      .pipe(switchMap(() => this.refreshCloudflareToken(false)))
+      .subscribe();
+  }
+
+  /**
+   * @TODO FEATURE AFTER Python API updates:
+   * Add optional cloudflare token requirement
+   * only when in admin's dashboard checklLoudflare is set to true
+   */
+  public async refreshCloudflareToken(needRecalculation: boolean): Promise<boolean> {
+    const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
+    if (alreadyOpened) return false;
+
+    await this.turnstileService.askForCloudflareToken();
+
+    const token = await firstValueFrom(this.turnstileService.token$.pipe(first(el => el !== null)));
+
+    if (!this.client?.connected) return false;
+
+    this.client.emit('auth_cloudflare', { token, needRecalculation });
 
     return true;
   }
@@ -123,7 +138,7 @@ export class RubicApiService {
 
   public stopCalculation(): void {
     if (this.latestQuoteParams) {
-      this.client?.emit('stopCalculation');
+      this.client?.emit('stop_calculation');
       this.latestQuoteParams = null;
     }
   }
@@ -185,6 +200,18 @@ export class RubicApiService {
     }
   }
 
+  public handleCloudflareTokenResponse(): Observable<{
+    success: boolean;
+    needRecalculation: boolean;
+  }> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket =>
+        fromEvent<{ success: boolean; needRecalculation: boolean }>(socket, 'auth_cloudflare')
+      )
+    );
+  }
+
   public handleSocketConnectionError(): Observable<boolean> {
     return this.socket$.pipe(
       filter(socket => !!socket),
@@ -193,7 +220,7 @@ export class RubicApiService {
           throttleTime(3_000),
           exhaustMap(err => {
             console.debug('[RubicApiService_handleSocketConnectionError] connect_error:', err);
-            return this.tryConnectSocket();
+            return this.refreshCloudflareToken(true);
           })
         )
       )
@@ -215,7 +242,7 @@ export class RubicApiService {
           switchMap(reason => {
             if (reason[0] !== 'io client disconnect') {
               console.debug('[RubicApiService_handleSocketDisconnected] disconnect:', reason);
-              return this.tryConnectSocket();
+              return this.refreshCloudflareToken(true);
             }
           })
         )
@@ -268,7 +295,7 @@ export class RubicApiService {
                   );
             return from(promise).pipe(
               catchError(err => {
-                console.dir('[RubicApiService_handleQuotesAsync] socket error:', err);
+                console.debug('[RubicApiService_handleQuotesAsync] socket error:', err);
                 return of(null);
               }),
               map(wrappedTrade => ({
@@ -365,7 +392,8 @@ export class RubicApiService {
     switch (result.code) {
       case 6001:
       case 6002: {
-        return this.tryConnectSocket();
+        console.debug('[RubicApiService_handleWsApiError] 6001:');
+        return this.refreshCloudflareToken(true);
       }
       default:
         return false;

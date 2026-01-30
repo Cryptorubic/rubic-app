@@ -15,6 +15,7 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   pairwise,
   startWith,
@@ -74,6 +75,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -110,7 +112,8 @@ export class SwapsControllerService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly turnstileService: TurnstileService
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
@@ -123,10 +126,20 @@ export class SwapsControllerService {
   }
 
   /**
+   * @description Prevents calculation start when Cloudflare token is undefined
+   */
+  private waitForCfToken<T>(obs$: Observable<T>): Observable<T> {
+    return this.turnstileService.token$.pipe(
+      first(token => !!token),
+      switchMap(() => obs$)
+    );
+  }
+
+  /**
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.swapFormService.inputValueDistinct$.subscribe(() => {
+    this.waitForCfToken(this.swapFormService.inputValueDistinct$).subscribe(() => {
       this.startRecalculation(true);
       this.swapsStateService.clearProviders(false);
     });
@@ -136,11 +149,16 @@ export class SwapsControllerService {
     this._calculateTrade$.next({ isForced });
   }
 
-  private subscribeOnSocketStatusChanges(): void {
+  private async subscribeOnSocketStatusChanges(): Promise<void> {
     this.rubicApiService.handleSocketConnectionError().subscribe();
     this.rubicApiService.handleSocketDisconnected().subscribe();
-    this.rubicApiService.handleSocketConnected().subscribe(() => {
-      this.handleWs();
+    this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
+      if (res.success && res.needRecalculation) {
+        this.handleWs();
+        this.startRecalculation(true);
+      }
+    });
+    this.waitForCfToken(this.rubicApiService.handleSocketConnected()).subscribe(() => {
       this.startRecalculation(true);
     });
   }
@@ -206,7 +224,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnRefreshServiceCalls(): void {
-    this.refreshService.onRefresh$.subscribe(refreshState => {
+    this.waitForCfToken(this.refreshService.onRefresh$).subscribe(refreshState => {
       this.startRecalculation(refreshState.isForced);
     });
   }
@@ -361,15 +379,15 @@ export class SwapsControllerService {
   }
 
   private subscribeOnAddressChange(): void {
-    this.authService.currentUser$
-      .pipe(
+    this.waitForCfToken(
+      this.authService.currentUser$.pipe(
         distinctUntilChanged(),
         switchMap(() => this.swapFormService.isFilled$),
         filter(isFilled => isFilled)
       )
-      .subscribe(() => {
-        this.startRecalculation(true);
-      });
+    ).subscribe(() => {
+      this.startRecalculation(true);
+    });
   }
 
   private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
@@ -499,7 +517,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnSettings(): void {
-    this.settingsService.crossChainRoutingValueChanges
+    this.waitForCfToken(this.settingsService.crossChainRoutingValueChanges)
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
         distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
@@ -521,7 +539,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.address$
+    this.waitForCfToken(this.targetNetworkAddressService.address$)
       .pipe(combineLatestWith(this.targetNetworkAddressService.isAddressValid$), debounceTime(50))
       .subscribe(([address, isValid]) => {
         if (address === '' || (address && isValid)) {

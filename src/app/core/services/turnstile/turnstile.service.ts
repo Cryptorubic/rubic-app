@@ -9,6 +9,10 @@ import { ModalService } from '@core/modals/services/modal.service';
   providedIn: 'root'
 })
 export class TurnstileService {
+  private readonly _cfModalOpened$ = new BehaviorSubject<boolean>(false);
+
+  public readonly cfModalOpened$ = this._cfModalOpened$.asObservable();
+
   private readonly _token$ = new BehaviorSubject<string | null>(null);
 
   public readonly token$ = this._token$.asObservable();
@@ -34,7 +38,11 @@ export class TurnstileService {
    */
   public async askForCloudflareToken(): Promise<boolean> {
     try {
-      const success = await this.createInvisibleWidget();
+      this._cfModalOpened$.next(true);
+
+      const success = await this.createInvisibleWidget().finally(() =>
+        this._cfModalOpened$.next(false)
+      );
       if (success) return true;
 
       /**
@@ -43,9 +51,10 @@ export class TurnstileService {
       return this.modalService
         .openTurnstileModal(this.injector)
         .then(() => true)
-        .catch(() => false);
+        .catch(() => false)
+        .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
-      console.error('[TurnstileService_updateCloudflareToken] err:', err);
+      console.debug('[TurnstileService_updateCloudflareToken] err:', err);
       return false;
     }
   }
@@ -68,8 +77,7 @@ export class TurnstileService {
             });
           },
           'error-callback': (error: Error) => {
-            console.error('[TurnstileService_createInvisibleWidget] error-callback: ', error);
-            this.removeWidget();
+            console.debug('[TurnstileService_createInvisibleWidget] error-callback: ', error);
             resolve(false);
           }
         });
@@ -82,12 +90,13 @@ export class TurnstileService {
    */
   public async createWidget(): Promise<boolean> {
     const containerId = '#turnstile-widget';
+
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
         this.widgetId = this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
-          // sitekey: '1x00000000000000000000BB',
           // sitekey: '3x00000000000000000000FF',
+          appearance: 'interaction-only',
           theme: 'dark',
           size: 'normal',
           callback: (token: string) => {
@@ -97,21 +106,11 @@ export class TurnstileService {
             });
           },
           'error-callback': (error: Error) => {
-            console.error('[TurnstileService_createWidget] error-callback: ', error);
-            this.removeWidget();
+            console.debug('[TurnstileService_createWidget] error-callback: ', error);
             resolve(false);
           }
         });
       });
     });
-  }
-
-  public removeWidget(): void {
-    this.turnstile.remove(this.widgetId);
-    this.widgetId = null;
-  }
-
-  public resetWidget(): void {
-    this.turnstile.reset(this.widgetId);
   }
 }
