@@ -151,7 +151,6 @@ export class SwapsControllerService {
 
   private async subscribeOnSocketStatusChanges(): Promise<void> {
     this.rubicApiService.handleSocketConnectionError().subscribe();
-    this.rubicApiService.handleSocketDisconnected().subscribe();
     this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
       if (res.success && res.needRecalculation) {
         this.handleWs();

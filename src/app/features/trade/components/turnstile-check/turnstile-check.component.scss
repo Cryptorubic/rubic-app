@@ -1,5 +1,10 @@
 @use 'src/scss/core' as *;
 
-#turnstile-widget {
+.turnstile-widget-wrapper {
   @include flex(row, center, center);
+  gap: 5px;
+
+  #turnstile-widget {
+    @include flex(row, center, center);
+  }
 }

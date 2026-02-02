@@ -351,7 +351,7 @@ export class ModalService {
       this.showDialog(
         TurnstileCheckComponent,
         {
-          title: 'Confirm you are not a robot',
+          title: 'Verifying you are human...',
           size: 's',
           fitContent: true,
           closeable: false,

@@ -10,9 +10,12 @@ import { TuiDialogContext } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TurnstileCheckComponent implements AfterViewInit {
+  public readonly title: string = this.context.title;
+
   constructor(
     private readonly turnstileService: TurnstileService,
-    @Inject(POLYMORPHEUS_CONTEXT) private readonly context: TuiDialogContext<boolean>
+    @Inject(POLYMORPHEUS_CONTEXT)
+    private readonly context: TuiDialogContext<boolean> & { title: string }
   ) {}
 
   ngAfterViewInit(): void {

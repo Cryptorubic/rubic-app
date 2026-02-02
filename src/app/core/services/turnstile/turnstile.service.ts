@@ -17,8 +17,6 @@ export class TurnstileService {
 
   public readonly token$ = this._token$.asObservable();
 
-  private widgetId: string | null = null;
-
   public get token(): string | null {
     return this._token$.value;
   }
@@ -40,10 +38,11 @@ export class TurnstileService {
     try {
       this._cfModalOpened$.next(true);
 
-      const success = await this.createInvisibleWidget().finally(() =>
-        this._cfModalOpened$.next(false)
-      );
-      if (success) return true;
+      const success = await this.createInvisibleWidget();
+      if (success) {
+        this._cfModalOpened$.next(false);
+        return true;
+      }
 
       /**
        * calls createWidget() after component for cloudflare checkbox rendered
@@ -66,8 +65,9 @@ export class TurnstileService {
     const containerId = '#turnstile-container-invisible';
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        this.widgetId = this.turnstile.render(containerId, {
+        this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
+          appearance: 'interaction-only',
           // sitekey: '2x00000000000000000000AB',
           // sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
@@ -93,7 +93,7 @@ export class TurnstileService {
 
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        this.widgetId = this.turnstile.render(containerId, {
+        this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
           // sitekey: '3x00000000000000000000FF',
           appearance: 'interaction-only',

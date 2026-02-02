@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   EvmBlockchainName,
   QuoteAllInterface,
@@ -23,6 +23,7 @@ import {
 import {
   BehaviorSubject,
   catchError,
+  combineLatest,
   concatMap,
   firstValueFrom,
   from,
@@ -48,8 +49,9 @@ import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import { exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
+import { delay, filter, first, retry, switchMap } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
+import { NAVIGATOR } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
@@ -77,7 +79,8 @@ export class RubicApiService {
 
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly turnstileService: TurnstileService
+    private readonly turnstileService: TurnstileService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator
   ) {}
 
   public setSocket(): void {
@@ -216,11 +219,19 @@ export class RubicApiService {
     return this.socket$.pipe(
       filter(socket => !!socket),
       switchMap(socket =>
-        fromEvent(socket, 'connect_error').pipe(
-          throttleTime(3_000),
-          exhaustMap(err => {
-            console.debug('[RubicApiService_handleSocketConnectionError] connect_error:', err);
-            return this.refreshCloudflareToken(true);
+        combineLatest([
+          fromEvent(window, 'online'),
+          fromEvent(socket, 'connect_error'),
+          fromEvent<string[]>(socket, 'disconnect')
+        ]).pipe(
+          /* when Internet conn established, there is a small gap of time, when api requests still stay stucked */
+          delay(1_000),
+          switchMap(() => {
+            if (this.navigator.onLine) {
+              console.debug('[RubicApiService_handleSocketConnectionError] connect_error');
+              return this.refreshCloudflareToken(true);
+            }
+            return of(false);
           })
         )
       )
@@ -240,10 +251,11 @@ export class RubicApiService {
       switchMap(socket =>
         fromEvent<string[]>(socket, 'disconnect').pipe(
           switchMap(reason => {
-            if (reason[0] !== 'io client disconnect') {
+            if (reason[0] !== 'io client disconnect' && this.navigator.onLine) {
               console.debug('[RubicApiService_handleSocketDisconnected] disconnect:', reason);
               return this.refreshCloudflareToken(true);
             }
+            return of(false);
           })
         )
       )
@@ -314,7 +326,7 @@ export class RubicApiService {
 
   public handleWsExceptions(): Observable<boolean> {
     return fromEvent<WsErrorResponseInterface>(this.client, 'exception').pipe(
-      exhaustMap(wsError => {
+      switchMap(wsError => {
         console.debug('[RubicApiService_handleWsExceptions] err:', wsError);
         return this.handleWsApiError(wsError);
       })
