@@ -529,16 +529,19 @@ export class PreviewSwapService {
                   }
                 }
               },
-              onSimulationSuccess: () => {
-                if (txStep === 'swapRequest') return Promise.resolve(true);
-                this._continueSwapTrigger$ = new Subject<boolean>();
+              onSimulationSuccess: async () => {
+                if (txStep === 'swapRequest') return true;
+
+                this._continueSwapTrigger$ = new Subject();
                 this.isBackupProviderSelected = true;
-                return firstValueFrom(this._continueSwapTrigger$).then(allowedToContinue => {
+
+                try {
+                  const allowedToContinue = await firstValueFrom(this._continueSwapTrigger$);
+                  return allowedToContinue;
+                } finally {
                   this.closeRetryModal();
                   this.isBackupProviderSelected = false;
-
-                  return Promise.resolve(allowedToContinue);
-                });
+                }
               },
               onRateChange: (rateChangeInfo: RateChangeInfo) => {
                 this.isRateChanged = true;

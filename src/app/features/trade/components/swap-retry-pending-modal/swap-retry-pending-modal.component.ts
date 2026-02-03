@@ -48,18 +48,21 @@ export class SwapRetryPendingModalComponent implements OnDestroy {
       const route = routes[0];
       if (route.type === 'on-chain') {
         const provider =
-          ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownDex();
+          ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownProvider();
         return provider;
       } else {
-        const provider = BRIDGE_PROVIDERS[route.provider as CrossChainTradeType];
+        const provider =
+          BRIDGE_PROVIDERS[route.provider as CrossChainTradeType] || this.getUnknownProvider();
         return provider;
       }
     }
+
+    return this.getUnknownProvider();
   }
 
-  private getUnknownDex(): ProviderData {
+  private getUnknownProvider(): ProviderData {
     return {
-      name: 'Unknown dex',
+      name: 'Unknown',
       color: 'white',
       image: 'assets/images/icons/unknown.svg'
     };
