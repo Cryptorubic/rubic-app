@@ -1,1 +1,58 @@
-<p>privacy-main-page works!</p>
+<ng-container
+  *ngLet="{
+    account: account$ | async,
+    railgunAccount: railgunAccount$ | async,
+    balances: balances$ | async,
+    pendingBalances: pendingBalances$ | async,
+    step: currentStep$ | async
+  } as data"
+>
+  <app-page-navigation
+    [currentStep]="data.step"
+    [railgunAddress]="data.railgunAccount?.railgunAddress"
+    (handleStep)="onStepChange($event)"
+  ></app-page-navigation>
+
+  <div class="wrapper">
+    <app-railgun-form
+      *ngIf="data.step === 'connectWallet'"
+      [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
+      [railgunId]="data?.railgunAccount?.id"
+      (formSubmit)="onSubmit($event)"
+    ></app-railgun-form>
+
+    <app-account-info
+      *ngIf="data.step !== 'connectWallet' && data.railgunAccount?.railgunAddress"
+      [railgunAddress]="data.railgunAccount.railgunAddress"
+      [accountId]="data.railgunAccount.id"
+      (handleLogout)="logout()"
+    ></app-account-info>
+
+    <app-hide-tokens-page
+      *ngIf="data.step === 'hide'"
+      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [pendingBalances]="data.pendingBalances"
+    ></app-hide-tokens-page>
+
+    <app-private-swap-page
+      *ngIf="data.step === 'swap'"
+      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [balances]="data.balances"
+    ></app-private-swap-page>
+
+    <app-reveal
+      *ngIf="data.step === 'reveal'"
+      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [balances]="data.balances"
+    ></app-reveal>
+
+    <!--    <ng-container *ngIf="data.railgunAccount">-->
+    <!--      <app-window-container *ngIf="data.balances?.length">-->
+    <!--        <h4>Actual balances:</h4>-->
+    <!--        <div *ngFor="let token of data.balances">-->
+    <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
+    <!--        </div>-->
+    <!--      </app-window-container>-->
+    <!--    </ng-container>-->
+  </div>
+</ng-container>

@@ -76,7 +76,7 @@ import { SearchBarBlockchainsComponent } from '@features/trade/components/assets
     TuiDataListModule,
     TuiCarouselModule
   ],
-  exports: [AssetsSelectorPageComponent],
+  exports: [AssetsSelectorPageComponent, TokensListComponent],
   providers: [FormsTogglerService]
 })
 export class AssetsSelectorModule {}

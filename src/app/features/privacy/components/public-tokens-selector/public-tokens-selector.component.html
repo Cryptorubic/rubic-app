@@ -1,0 +1,13 @@
+<app-tokens-list
+  [balanceLoading]="false"
+  [customToken]="null"
+  [listType]="'POLYGON'"
+  [loading]="false"
+  [tokensSearchQuery]="''"
+  [tokensToShow]="tokensToShow"
+  [totalBlockchains]="10"
+  (selectAssetList)="selectAssetList($event)"
+  (selectToken)="selectToken($event)"
+  (switchMode)="switchMode()"
+  (onTokenSearch)="onTokensQuery($event)"
+></app-tokens-list>

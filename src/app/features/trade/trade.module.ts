@@ -117,7 +117,7 @@ import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backup
     SwapBackupRateChangedModalComponent,
     AllSwapBackupsFailedModalComponent
   ],
-  exports: [ActionButtonComponent],
+  exports: [ActionButtonComponent, UserBalanceContainerComponent],
   imports: [
     TradeRoutingModule,
     CommonModule,
