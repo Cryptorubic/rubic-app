@@ -158,6 +158,7 @@ export class SwapsControllerService {
       }
     });
     this.waitForCfToken(this.rubicApiService.handleSocketConnected()).subscribe(() => {
+      this.handleWs();
       this.startRecalculation(true);
     });
   }

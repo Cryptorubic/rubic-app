@@ -49,7 +49,16 @@ import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import { delay, filter, first, retry, switchMap } from 'rxjs/operators';
+import {
+  delay,
+  exhaustMap,
+  filter,
+  first,
+  retry,
+  switchMap,
+  tap,
+  throttleTime
+} from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR } from '@ng-web-apis/common';
 
@@ -111,19 +120,23 @@ export class RubicApiService {
    * Add optional cloudflare token requirement
    * only when in admin's dashboard checklLoudflare is set to true
    */
-  public async refreshCloudflareToken(needRecalculation: boolean): Promise<boolean> {
+  public async refreshCloudflareToken(
+    needRecalculation: boolean
+  ): Promise<{ success: boolean; alreadyOpened: boolean }> {
     const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
-    if (alreadyOpened) return false;
+    if (alreadyOpened) return { alreadyOpened: true, success: false };
 
     await this.turnstileService.askForCloudflareToken();
 
-    const token = await firstValueFrom(this.turnstileService.token$.pipe(first(el => el !== null)));
+    const token = await firstValueFrom(this.turnstileService.token$);
 
-    if (!this.client?.connected) return false;
+    if (!this.client?.connected) {
+      return { alreadyOpened: false, success: false };
+    }
 
     this.client.emit('auth_cloudflare', { token, needRecalculation });
 
-    return true;
+    return { alreadyOpened: false, success: true };
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
@@ -226,10 +239,22 @@ export class RubicApiService {
         ]).pipe(
           /* when Internet conn established, there is a small gap of time, when api requests still stay stucked */
           delay(1_000),
-          switchMap(() => {
+          switchMap(([_, connErrEvent, disconnEvent]) => {
             if (this.navigator.onLine) {
-              console.debug('[RubicApiService_handleSocketConnectionError] connect_error');
-              return this.refreshCloudflareToken(true);
+              return from(this.refreshCloudflareToken(true)).pipe(
+                tap(res => {
+                  if (!res.alreadyOpened) {
+                    console.debug('[RubicApiService_handleSocketConnectionError] connect_error', {
+                      connErrEvent,
+                      disconnEvent,
+                      success: res.success,
+                      socketId: this.client.id,
+                      date: new Date()
+                    });
+                  }
+                }),
+                map(res => res.success)
+              );
             }
             return of(false);
           })
@@ -242,23 +267,6 @@ export class RubicApiService {
     return this.socket$.pipe(
       filter(socket => !!socket),
       switchMap(socket => fromEvent(socket, 'connect'))
-    );
-  }
-
-  public handleSocketDisconnected(): Observable<boolean> {
-    return this.socket$.pipe(
-      filter(socket => !!socket),
-      switchMap(socket =>
-        fromEvent<string[]>(socket, 'disconnect').pipe(
-          switchMap(reason => {
-            if (reason[0] !== 'io client disconnect' && this.navigator.onLine) {
-              console.debug('[RubicApiService_handleSocketDisconnected] disconnect:', reason);
-              return this.refreshCloudflareToken(true);
-            }
-            return of(false);
-          })
-        )
-      )
     );
   }
 
@@ -326,8 +334,8 @@ export class RubicApiService {
 
   public handleWsExceptions(): Observable<boolean> {
     return fromEvent<WsErrorResponseInterface>(this.client, 'exception').pipe(
-      switchMap(wsError => {
-        console.debug('[RubicApiService_handleWsExceptions] err:', wsError);
+      throttleTime(3_000),
+      exhaustMap(wsError => {
         return this.handleWsApiError(wsError);
       })
     );
@@ -399,16 +407,27 @@ export class RubicApiService {
   /**
    * @returns whether should recalculate quote after handling
    */
-  private async handleWsApiError(err: WsErrorResponseInterface): Promise<boolean> {
+  private handleWsApiError(err: WsErrorResponseInterface): Observable<boolean> {
     const result = err.error;
     switch (result.code) {
       case 6001:
       case 6002: {
-        console.debug('[RubicApiService_handleWsApiError] 6001:');
-        return this.refreshCloudflareToken(true);
+        return from(this.refreshCloudflareToken(true)).pipe(
+          tap(res => {
+            if (!res.alreadyOpened) {
+              console.debug('[RubicApiService_handleWsApiError] 6001:', {
+                error: err,
+                success: res.success,
+                socketId: this.client.id,
+                date: new Date()
+              });
+            }
+          }),
+          map(res => res.success)
+        );
       }
       default:
-        return false;
+        return of(false);
     }
   }
 
