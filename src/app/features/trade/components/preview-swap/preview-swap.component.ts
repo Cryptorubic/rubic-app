@@ -109,10 +109,6 @@ export class PreviewSwapComponent implements OnDestroy {
     await this.previewSwapService.requestTxSign();
   }
 
-  public continueBackupSwap(allowedToContinue: boolean = true): void {
-    this.previewSwapService.continueBackupSwap(allowedToContinue);
-  }
-
   public async swap(): Promise<void> {
     this.previewSwapService.startSwap();
   }
@@ -225,9 +221,6 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.swapRetry) {
       state.disabled = true;
       state.action = () => {};
-    } else if (el.step === transactionStep.swapBackupSelected) {
-      state.disabled = false;
-      state.action = this.continueBackupSwap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);

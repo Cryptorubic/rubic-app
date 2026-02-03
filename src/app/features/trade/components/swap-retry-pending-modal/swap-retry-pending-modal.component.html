@@ -1,24 +1,60 @@
-<div class="modal" *ngLet="backupTradesCount$ | async as backupTradesCount">
+<div class="modal" *ngLet="swapRetryModalInput$ | async as state">
   <div class="modal__content">
     <main class="modal__body">
-      <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
-      <div class="modal__hints">
-        <div
-          class="modal__hint"
-          *ngIf="backupTradesCount === initialBackupsCount; else furtherRetries"
-        >
-          <p>Provider Unavailable</p>
-          <p>We’re switching to the next one with the best rate!</p>
-        </div>
-        <ng-template #furtherRetries>
-          <div class="modal__hint">
-            <span
-              >{{ initialBackupsCount - backupTradesCount }}/{{ initialBackupsCount }} providers
-              checked. Searching for the next best route.</span
-            >
+      <ng-container *ngIf="!state.isBackupProviderSelected; else retrySuccess">
+        <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
+        <div class="modal__hints">
+          <div
+            class="modal__hint"
+            *ngIf="state.backupTradesCount === state.initialBackupsCount; else furtherRetries"
+          >
+            <p>Provider Unavailable</p>
+            <p>We’re switching to the next one with the best rate!</p>
           </div>
-        </ng-template>
-      </div>
+          <ng-template #furtherRetries>
+            <div class="modal__hint">
+              <span
+                >{{ state.initialBackupsCount - state.backupTradesCount }}/{{
+                  state.initialBackupsCount
+                }}
+                providers checked. Searching for the next best route.</span
+              >
+            </div>
+          </ng-template>
+        </div>
+      </ng-container>
+      <ng-template #retrySuccess>
+        <img src="/assets/images/swaps/swaps-info/retry-success.svg" />
+        <div class="modal__hints">
+          <div class="modal__hint">
+            <p>
+              We’ve found the next best available route <br />
+              for you.
+            </p>
+          </div>
+        </div>
+        <div
+          class="modal__provider"
+          *ngLet="getProviderData(state.selectedTradeState?.routes || []) as provider"
+        >
+          <div class="modal__provider-icon">
+            <img [src]="provider.image" [style.background-color]="provider.color" />
+          </div>
+          <div class="modal__provider-label">{{ provider.name }}</div>
+        </div>
+        <div class="modal__hints" *ngIf="state.isBackupProviderSelected && !state.isRateChanged">
+          <div class="modal__hint">
+            <p>The rate remains the same</p>
+          </div>
+        </div>
+      </ng-template>
     </main>
+    <footer class="modal__footer" *ngIf="state.isBackupProviderSelected">
+      <div class="modal__footer-actions">
+        <button tuiButton appearance="primary" type="button" size="m" (click)="onSwap()">
+          {{ 'common.swap' | translate }}
+        </button>
+      </div>
+    </footer>
   </div>
 </div>
