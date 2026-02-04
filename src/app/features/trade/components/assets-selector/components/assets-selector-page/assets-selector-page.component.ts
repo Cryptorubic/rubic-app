@@ -14,7 +14,7 @@ import { DOCUMENT } from '@angular/common';
 
 import { HeaderStore } from '@core/header/services/header.store';
 import { TuiDestroyService } from '@taiga-ui/cdk';
-import { distinctUntilChanged, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { Asset, AssetListType } from '@features/trade/models/asset';
 import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
@@ -114,7 +114,10 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
       })
     );
     this.tokensToShow$ = this.assetListType$.pipe(
-      combineLatestWith(this.tokensSearchQuery$),
+      combineLatestWith(
+        this.tokensSearchQuery$,
+        this.balanceLoading$.pipe(filter(loading => !loading))
+      ),
       switchMap(([type, query]) =>
         this.tokensFacade.getTokensList(type, query, this.type, this.formService.inputValue)
       )
@@ -165,9 +168,9 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
     this.document.documentElement.classList.remove('is-locked');
   }
 
-  public handleBlockchainFilterSelection(filter: BlockchainFilters): void {
+  public handleBlockchainFilterSelection(chainFilter: BlockchainFilters): void {
     this.assetsSelectorService.setFilterQuery(
-      filter,
+      chainFilter,
       this.totalBlockchains,
       this.blockchainsToShow$,
       query => {
