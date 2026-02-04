@@ -8,6 +8,8 @@ import { Store } from '@core/services/store/models/store';
   providedIn: 'root'
 })
 export class EncryptionService {
+  public lastUsedPassword: string | null = null;
+
   // Storage key is intentionally versioned for future migrations
   private readonly storageKey: keyof Store = 'RAILGUN_ENCRYPTION_CREDS_V1';
 
@@ -32,6 +34,7 @@ export class EncryptionService {
    * Returns derived encryptionKey (do NOT store it).
    */
   public async setupFromPassword(password: string): Promise<string> {
+    this.lastUsedPassword = password;
     const salt = this.generateSaltHex(16);
 
     const [encryptionKey, passwordHashStored] = await Promise.all([
@@ -55,6 +58,7 @@ export class EncryptionService {
    * Throws if password is incorrect or creds are missing/corrupted.
    */
   public async unlockFromPassword(password: string): Promise<string> {
+    this.lastUsedPassword = password;
     const creds = this.readCreds();
     const salt = creds.salt;
 

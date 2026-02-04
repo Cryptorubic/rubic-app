@@ -42,7 +42,7 @@
 
     <app-reveal
       *ngIf="data.step === 'reveal'"
-      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [railgunId]="data.railgunAccount?.id"
       [balances]="data.balances"
     ></app-reveal>
 

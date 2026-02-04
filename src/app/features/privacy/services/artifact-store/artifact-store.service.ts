@@ -18,13 +18,18 @@ export class ArtifactStoreService {
     return store;
   }
 
-  private async getFile(path: string): Promise<Uint8Array> {
+  private async getFile(path: string): Promise<string | Uint8Array> {
     const root = await this.getRootDir();
     const { dir, fileName } = this.splitPath(path);
 
     const dirHandle = dir ? await this.ensureDir(root, dir) : root;
     const fileHandle = await dirHandle.getFileHandle(fileName);
     const file = await fileHandle.getFile();
+
+    // VKEY is JSON text
+    if (fileName.toLowerCase().includes('vkey')) {
+      return await file.text(); // <-- return string
+    }
 
     const buffer = await file.arrayBuffer();
     return new Uint8Array(buffer);

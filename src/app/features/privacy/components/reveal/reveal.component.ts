@@ -4,8 +4,8 @@ import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { ModalService } from '@core/modals/services/modal.service';
-import { HideService } from '@features/privacy/services/hide/hide.service';
 import { PrivateTokensSelectorComponent } from '@features/privacy/components/private-tokens-selector/private-tokens-selector.component';
+import { RevealService } from '@features/privacy/services/reveal/reveal.service';
 
 @Component({
   selector: 'app-reveal',
@@ -14,17 +14,15 @@ import { PrivateTokensSelectorComponent } from '@features/privacy/components/pri
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RevealComponent {
-  @Input({ required: true }) public readonly railgunWalletAddress: string;
+  @Input({ required: true }) public readonly railgunId: string;
 
-  @Input({ required: true }) set balances(
-    value:
-      | {
-          address: string;
-          amount: string;
-          blockchain: BlockchainName;
-        }[]
-      | null
-  ) {}
+  @Input({ required: true }) balances:
+    | {
+        address: string;
+        amount: string;
+        blockchain: BlockchainName;
+      }[]
+    | null;
 
   private readonly _revealAsset$ = new BehaviorSubject<BalanceToken | null>(null);
 
@@ -39,7 +37,7 @@ export class RevealComponent {
 
   private readonly modalService = inject(ModalService);
 
-  private readonly hideService = inject(HideService);
+  private readonly revealService = inject(RevealService);
 
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
@@ -72,10 +70,10 @@ export class RevealComponent {
       );
       const bigintAmount = BigInt(amount);
 
-      await this.hideService.shieldERC20(
-        this.railgunWalletAddress,
+      await this.revealService.unshieldTokens(
+        this.railgunId,
         this._revealAsset$.value.address,
-        bigintAmount
+        bigintAmount.toString()
       );
     } finally {
       this._loading$.next(false);

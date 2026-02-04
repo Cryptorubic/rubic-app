@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, compareAddresses, Token } from '@cryptorubic/core';
 import { timeout } from 'rxjs/operators';
-import BigNumber from 'bignumber.js';
 import { POLYMORPHEUS_CONTEXT } from '@tinkoff/ng-polymorpheus';
 
 @Component({
@@ -26,16 +25,32 @@ export class PrivateTokensSelectorComponent {
       .getTokensBasedOnType(BLOCKCHAIN_NAME.POLYGON)
       .tokens$.pipe(timeout(5_000))
       .subscribe(tokens => {
-        this.tokensToShow = this.context.data.balances
-          .filter((token: AvailableTokenAmount) => {
-            return tokens.some(t => t.address === token.address);
-          })
-          .map((token: AvailableTokenAmount) => ({
-            ...token,
-            available: true,
-            favorite: false,
-            amount: token?.amount?.isFinite() ? token.amount : new BigNumber(0)
-          }));
+        const balances = this.context.data;
+
+        this.tokensToShow = balances.reduce(
+          (
+            tokensWithBalances: AvailableTokenAmount[],
+            balanceToken: {
+              address: string;
+              amount: string;
+              blockchain: BlockchainName;
+            }
+          ) => {
+            const trueToken = tokens.find(t => compareAddresses(t.address, balanceToken.address));
+            if (trueToken) {
+              return [
+                ...tokensWithBalances,
+                {
+                  ...trueToken,
+                  amount: Token.fromWei(balanceToken.amount, trueToken.decimals),
+                  favorite: false,
+                  available: true
+                }
+              ];
+            }
+          },
+          [] as AvailableTokenAmount[]
+        );
         this.cdr.detectChanges();
       });
   }

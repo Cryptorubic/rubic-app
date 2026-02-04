@@ -95,22 +95,26 @@ export class PrivacyMainPageComponent {
       this.balanceController.balancesSnapshot$.subscribe(update => {
         if (update?.Spendable) {
           const blockchain = BlockchainsInfo.getBlockchainNameById(update?.Spendable.chain.id);
-          const tokens = update?.Spendable.erc20Amounts.map(token => ({
-            blockchain,
-            address: token.tokenAddress,
-            amount: new BigNumber(token.amount.toString()).toFixed()
-          }));
+          const tokens = update?.Spendable.erc20Amounts
+            .filter(el => el.amount !== BigInt(0))
+            .map(token => ({
+              blockchain,
+              address: token.tokenAddress,
+              amount: new BigNumber(token.amount.toString()).toFixed()
+            }));
           this._balances$.next(tokens);
         } else {
           this._balances$.next([]);
         }
         if (update?.ShieldPending) {
           const blockchain = BlockchainsInfo.getBlockchainNameById(update?.ShieldPending.chain.id);
-          const tokens = update?.ShieldPending.erc20Amounts.map(token => ({
-            blockchain,
-            address: token.tokenAddress,
-            amount: new BigNumber(token.amount.toString()).toFixed()
-          }));
+          const tokens = update?.ShieldPending.erc20Amounts
+            .filter(el => el.amount !== BigInt(0))
+            .map(token => ({
+              blockchain,
+              address: token.tokenAddress,
+              amount: new BigNumber(token.amount.toString()).toFixed()
+            }));
           this._pendingBalances$.next(tokens);
         }
       });
