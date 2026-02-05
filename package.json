@@ -17,7 +17,7 @@
     "start:sdk": "npm run start:base -- --configuration=sdk",
     "start:prod-api": "npm run start:base -- --configuration=prod-api",
     "prebuild": "node scripts/build-timestamp.js",
-    "build:base": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng build",
+    "build:base": "npm run prebuild && node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng build",
     "build": "npm run build:base -- --configuration=production",
     "build:dev": "npm run build:base",
     "build:dev2": "npm run build:base -- --configuration=dev2",
