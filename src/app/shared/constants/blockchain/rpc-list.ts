@@ -219,7 +219,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://zetachain-mainnet-archive.allthatnode.com:8545',
     'https://x-api.rubic.exchange/drpc/zetachain?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
   ],
-  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://l1rpc.jolnir.taiko.xyz'],
   [BLOCKCHAIN_NAME.MANTA_PACIFIC]: [
     'https://pacific-rpc.manta.network/http',
     'https://1rpc.io/manta',
@@ -353,5 +352,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc1.monad.xyz',
     'https://rpc3.monad.xyz',
     'https://rpc-mainnet.monadinfra.com'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.SEPOLIA]: ['https://ethereum-sepolia-rpc.publicnode.com']
 };

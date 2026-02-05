@@ -1,0 +1,42 @@
+@use 'src/scss/core' as *;
+
+.wrapper {
+  ::ng-deep.window-container {
+    @include flex(column, center, center);
+  }
+
+  ::ng-deep main {
+    width: 50%;
+
+    font-size: 14px;
+  }
+
+  &__main {
+    @include flex(column, normal, normal);
+    gap: 15px;
+
+    &-actions {
+      @include flex(row, center, center);
+      gap: 10px;
+      margin-top: 15px;
+
+      &_action {
+        @include flex(row, center, center);
+        gap: 10px;
+      }
+    }
+  }
+}
+
+.action-button {
+  display: block;
+  padding: 5px 20px;
+
+  font-size: 18px;
+  text-align: center;
+  text-wrap: nowrap;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+
+  background: var(--tui-primary);
+  border-radius: 8px;
+}

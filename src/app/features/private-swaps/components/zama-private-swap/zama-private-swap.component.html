@@ -1,0 +1,94 @@
+<app-window-container class="wrapper">
+  <ng-container header>Private Sepolia Swaps</ng-container>
+  <div class="wrapper__main">
+    <div class="wrapper__main-actions">
+      <a
+        class="action-button"
+        href="https://cloud.google.com/application/web3/faucet/ethereum/sepolia"
+        target="_blank"
+        >Claim Sepolia Eth</a
+      >
+      <button class="action-button" (click)="mintToken()">Claim TEST2 token</button>
+    </div>
+    <div>
+      <form class="b-form">
+        <tui-select class="token__select" tuiTextfieldSize="m" [formControl]="selectedToken">
+          Select Token
+          <input [tuiTextfieldLabelOutside]="true" tuiTextfield />
+          <tui-data-list-wrapper *tuiDataList [items]="visibleTokens"></tui-data-list-wrapper>
+        </tui-select>
+      </form>
+    </div>
+    <ng-container
+      *ngLet="{
+        tokenState: state$ | async,
+        decryptedBalance: decryptedBalance$ | async,
+        isLoading: isLoading$ | async
+      } as state"
+    >
+      <div *ngIf="state.tokenState">
+        <div>
+          <span
+            >Balance:
+            {{
+              state.tokenState.isConfidential
+                ? state.decryptedBalance || state.tokenState.balance
+                : state.tokenState.balance
+            }}</span
+          >
+        </div>
+        <button
+          class="action-button"
+          *ngIf="state.tokenState.isConfidential && !state.decryptedBalance"
+          [disabled]="state.isLoading"
+          (click)="decryptBalance(state.tokenState.token, state.tokenState.balance)"
+        >
+          {{ state.isLoading ? 'Loading...' : 'Decrypt balance' }}
+        </button>
+        <div class="wrapper__main-actions">
+          <ng-container *ngIf="state.tokenState.isConfidential">
+            <div class="wrapper__main-actions_action">
+              <tui-input inputmode="decimal" [formControl]="transferAmount"
+                >Enter amount for transfer
+              </tui-input>
+              <tui-input inputmode="decimal" [formControl]="transferReceiver"
+                >Transfer Receiver</tui-input
+              >
+              <button
+                class="action-button"
+                [disabled]="state.isLoading"
+                (click)="confidentialTransfer(state.tokenState.token)"
+              >
+                {{ state.isLoading ? 'Loading...' : 'Confidential Transfer' }}
+              </button>
+            </div>
+            <div class="wrapper__main-actions_action">
+              <tui-input inputmode="decimal" [formControl]="unwrapAmount"
+                >Enter amount for unwrap</tui-input
+              >
+              <button
+                class="action-button"
+                [disabled]="state.isLoading"
+                (click)="unwrap(state.tokenState.token)"
+              >
+                {{ state.isLoading ? 'Loading...' : 'Unwrap' }}
+              </button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!state.tokenState.isConfidential">
+            <tui-input inputmode="decimal" [formControl]="wrapAmount"
+              >Enter amount for wrap</tui-input
+            >
+            <button
+              class="action-button"
+              (click)="wrap(state.tokenState.token)"
+              [disabled]="state.isLoading"
+            >
+              {{ state.isLoading ? 'Loading...' : 'Wrap' }}
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</app-window-container>
