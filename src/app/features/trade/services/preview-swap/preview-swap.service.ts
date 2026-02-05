@@ -475,8 +475,9 @@ export class PreviewSwapService {
     return from(this.loadRpcParams(useMevProtection)).pipe(
       debounceTime(50),
       switchMap(rpcChanged => {
+        const isSwapRetry = txStep === 'swapRetry';
         return rpcChanged
-          ? this.swapsControllerService.swap(tradeState, {
+          ? this.swapsControllerService.swap(tradeState, !isSwapRetry, {
               onHash: (hash: string) => {
                 if (this.useCallback) {
                   this.closeRetryModal();
