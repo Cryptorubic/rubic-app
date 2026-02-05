@@ -4,23 +4,15 @@
       <ng-container *ngIf="!state.isBackupProviderSelected; else retrySuccess">
         <img class="modal__spinner" src="/assets/images/swaps/swaps-info/green-spinner.svg" />
         <div class="modal__hints">
-          <div
-            class="modal__hint"
-            *ngIf="state.backupTradesCount === state.initialBackupsCount; else furtherRetries"
-          >
+          <div class="modal__hint">
             <p>Provider Unavailable</p>
-            <p>We’re switching to the next one with the best rate!</p>
+            <p>
+              {{ state.initialBackupsCount - state.backupTradesCount + 1 }}/{{
+                state.initialBackupsCount + 1
+              }}
+              providers checked. Searching for the next best route.
+            </p>
           </div>
-          <ng-template #furtherRetries>
-            <div class="modal__hint">
-              <span
-                >{{ state.initialBackupsCount - state.backupTradesCount }}/{{
-                  state.initialBackupsCount
-                }}
-                providers checked. Searching for the next best route.</span
-              >
-            </div>
-          </ng-template>
         </div>
       </ng-container>
       <ng-template #retrySuccess>
