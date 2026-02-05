@@ -1,0 +1,13 @@
+diff --git a/node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm/curve25519_scalarmult_wasm.js b/node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm/curve25519_scalarmult_wasm.js
+index f68a2e7..4fea372 100644
+--- a/node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm/curve25519_scalarmult_wasm.js
++++ b/node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm/curve25519_scalarmult_wasm.js
+@@ -179,7 +179,7 @@ async function __wbg_init(input) {
+     if (wasm !== undefined) return wasm;
+ 
+     if (typeof input === 'undefined') {
+-        input = new URL('curve25519_scalarmult_wasm_bg.wasm', import.meta.url);
++        input = new URL('assets/railgun/curve25519_scalarmult_wasm_bg.wasm', document.baseURI);
+     }
+     const imports = __wbg_get_imports();
+ 

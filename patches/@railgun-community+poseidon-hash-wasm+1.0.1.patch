@@ -1,0 +1,13 @@
+diff --git a/node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm/poseidon_hash_wasm.js b/node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm/poseidon_hash_wasm.js
+index ef90d62..15792b5 100644
+--- a/node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm/poseidon_hash_wasm.js
++++ b/node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm/poseidon_hash_wasm.js
+@@ -258,7 +258,7 @@ async function __wbg_init(input) {
+     if (wasm !== undefined) return wasm;
+ 
+     if (typeof input === 'undefined') {
+-        input = new URL('poseidon_hash_wasm_bg.wasm', import.meta.url);
++        input = new URL('assets/railgun/poseidon_hash_wasm_bg.wasm', document.baseURI);
+     }
+     const imports = __wbg_get_imports();
+ 

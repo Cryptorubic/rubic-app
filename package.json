@@ -2,7 +2,7 @@
   "name": "rubic",
   "version": "1.0.3",
   "scripts": {
-    "postinstall": "node scripts/patch-webpack.js",
+    "postinstall": "node scripts/patch-webpack.js && patch-package",
     "start:base": "npm run prebuild && node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all",
     "start": "npm run start:base --",
     "start:local": "npm run start:base -- --configuration=local",
@@ -165,6 +165,7 @@
     "lodash": "^4.17.21",
     "ngx-unused-css": "^3.0.0",
     "os-browserify": "^0.3.0",
+    "patch-package": "^8.0.1",
     "path-browserify": "^1.0.1",
     "prettier": "^2.4.1",
     "protractor": "~7.0.0",
