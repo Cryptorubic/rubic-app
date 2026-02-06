@@ -58,7 +58,6 @@ export class TransactionStateComponent {
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
       swapRetry: 'Swap Retry',
-      swapBackupSelected: 'Swap',
       sourcePending:
         type === 'swap' ? 'Waiting for transaction' : 'Waiting for complete in source chain',
       destinationPending: 'Waiting for complete in target chain',
@@ -69,6 +68,7 @@ export class TransactionStateComponent {
   }
 
   private setStepStates(value: TransactionStep): void {
+    value = value === transactionStep.swapRetry ? transactionStep.swapRequest : value;
     const stateIdx = this.steps.findIndex(el => el.key === value);
 
     const isSrcChainLastStep = (el: StepsType): boolean => {
