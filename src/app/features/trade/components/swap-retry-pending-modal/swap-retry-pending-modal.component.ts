@@ -46,15 +46,13 @@ export class SwapRetryPendingModalComponent implements OnDestroy {
   public getProviderData(routes: RubicStep[]): ProviderData {
     if (routes && routes.length > 0) {
       const route = routes[0];
-      if (route.type === 'on-chain') {
-        const provider =
-          ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType] || this.getUnknownProvider();
-        return provider;
-      } else {
-        const provider =
-          BRIDGE_PROVIDERS[route.provider as CrossChainTradeType] || this.getUnknownProvider();
-        return provider;
-      }
+
+      const provider =
+        route.type === 'on-chain'
+          ? ON_CHAIN_PROVIDERS[route.provider as OnChainTradeType]
+          : BRIDGE_PROVIDERS[route.provider as CrossChainTradeType];
+
+      return provider || this.getUnknownProvider();
     }
 
     return this.getUnknownProvider();
