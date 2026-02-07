@@ -86,20 +86,24 @@ export class TokensBalanceService {
       return null;
     }
 
+    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
+    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
+
     try {
+      _balanceLoading$.next(true);
+
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
       const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 
       const storedToken = this.findTokenSync(token);
-      if (!token) return new BigNumber(NaN);
+      if (!storedToken) return new BigNumber(NaN);
 
       const balance = OldToken.fromWei(balanceInWei, storedToken.decimals);
       if (storedToken && !storedToken.amount?.eq(balance)) {
-        const tokensObject = this.tokensStore.tokens[token.blockchain]._tokensObject$;
-        this.tokensStore.tokens[token.blockchain]._tokensObject$.next({
-          ...tokensObject.getValue(),
+        _tokensObject$.next({
+          ..._tokensObject$.getValue(),
           [token.address]: { ...storedToken, amount: balance }
         });
       }
@@ -109,6 +113,8 @@ export class TokensBalanceService {
       console.debug(err);
       const storedToken = this.findTokenSync(token);
       return storedToken?.amount;
+    } finally {
+      _balanceLoading$.next(false);
     }
   }
 
@@ -257,8 +263,16 @@ export class TokensBalanceService {
     chainType: ChainType,
     chains: BlockchainName[]
   ): Promise<void> {
+    const getChainTypeSafe = (chain: BlockchainName): ChainType | null => {
+      try {
+        return BlockchainsInfo.getChainType(chain);
+      } catch {
+        return null;
+      }
+    };
+
     const resultChains = chains.filter(
-      (chain: BlockchainName) => chainType === BlockchainsInfo.getChainType(chain)
+      (chain: BlockchainName) => chainType === getChainTypeSafe(chain)
     );
 
     return new Promise(resolve => {

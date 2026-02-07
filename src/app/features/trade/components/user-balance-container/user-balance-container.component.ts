@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { HeaderStore } from '@core/header/services/header.store';
-import { debounceTime, distinctUntilChanged, filter, map, startWith, tap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { BehaviorSubject, combineLatestWith } from 'rxjs';
+import { combineLatestWith } from 'rxjs';
 import { compareTokens } from '@shared/utils/utils';
-import { PreviewSwapService } from '../../services/preview-swap/preview-swap.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-changed';
+import { FromAssetsService } from '../assets-selector/services/from-assets.service';
 
 @Component({
   selector: 'app-user-balance-container',
@@ -16,12 +14,13 @@ import { distinctObjectUntilChanged } from '@shared/utils/distinct-object-until-
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserBalanceContainerComponent {
-  private readonly _triggerRefresh$ = new BehaviorSubject(null);
-
   public readonly token$ = this.swapsFormService.fromToken$.pipe(
     combineLatestWith(
-      this._triggerRefresh$.pipe(startWith(), distinctObjectUntilChanged()),
-      this.tokensFacade.tokens$
+      this.tokensFacade.tokens$,
+      this.fromAssetsService.assetListType$.pipe(
+        switchMap(type => this.tokensFacade.getTokensBasedOnType(type).balanceLoading$),
+        filter(loading => !loading)
+      )
     ),
     filter(() => !!this.tokensFacade.tokens),
     map(([fromToken]) => {
@@ -38,22 +37,7 @@ export class UserBalanceContainerComponent {
   constructor(
     private readonly headerStore: HeaderStore,
     private readonly swapsFormService: SwapsFormService,
-    private readonly previewSwapService: PreviewSwapService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly tokensFacade: TokensFacadeService
-  ) {
-    this.tokensFacade.tokens$
-      .pipe(
-        combineLatestWith(this.previewSwapService.transactionState$),
-        distinctUntilChanged(),
-        debounceTime(20),
-        filter(([_, state]) => state.step === 'success' || state.step === 'inactive'),
-        tap(([, state]) => {
-          if (state.step === 'success') {
-            this._triggerRefresh$.next(null);
-          }
-        })
-      )
-      .subscribe();
-  }
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly fromAssetsService: FromAssetsService
+  ) {}
 }

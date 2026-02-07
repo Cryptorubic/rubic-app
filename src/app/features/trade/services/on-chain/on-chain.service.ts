@@ -210,7 +210,7 @@ export class OnChainService {
       ]);
 
       await this.conditionalAwait(fromBlockchain);
-      await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
+      this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
@@ -242,11 +242,6 @@ export class OnChainService {
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
-
-      // Update tokens prices after 3 sec
-      setTimeout(() => {
-        this.tokensFacade.updateParticipantTokens();
-      }, 3_000);
 
       return transactionHash;
     } catch (err) {
@@ -368,7 +363,7 @@ export class OnChainService {
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
     if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const waitTime = 3_000;
+      const waitTime = 5_000;
       await firstValueFrom(timer(waitTime));
     }
   }
