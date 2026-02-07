@@ -67,7 +67,7 @@ export class TransformUtils {
       sdkLegacyService.tokenService
     );
 
-    const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
+    const parsedError = err ? RubicApiParser.parseRubicApiErrors(err, true) : null;
     const parsedWarnings = RubicApiParser.parseRubicApiWarnings(res?.warnings || []);
 
     const error = parsedError || parsedWarnings.error;
@@ -164,7 +164,7 @@ export class TransformUtils {
       sdkLegacyService.tokenService
     );
 
-    const parsedError = err ? RubicApiParser.parseRubicApiErrors(err) : null;
+    const parsedError = err ? RubicApiParser.parseRubicApiErrors(err, true) : null;
     const parsedWarningsError = RubicApiParser.parseRubicApiWarnings(
       response?.warnings || []
     ).error;

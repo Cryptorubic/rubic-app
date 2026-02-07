@@ -1,6 +1,6 @@
 import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-trade';
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, CROSS_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 
 export function showNoSlippageLabelArbitrumBridge(trade: CrossChainTrade | OnChainTrade): boolean {
   return trade.from.symbol.toLowerCase() === 'rbc' && trade.to.symbol.toLowerCase() === 'rbc';
@@ -23,4 +23,8 @@ export function showBerachainLabel(trade: CrossChainTrade): boolean {
     trade.from.blockchain === BLOCKCHAIN_NAME.BERACHAIN;
 
   return withBerachain && trade.from.tokenAmount.multipliedBy(trade.from.price).gt(20);
+}
+
+export function showHoudiniLabel(trade: CrossChainTrade): boolean {
+  return trade.type === CROSS_CHAIN_TRADE_TYPE.HOUDINI;
 }

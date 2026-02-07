@@ -304,4 +304,8 @@ export class PreviewSwapComponent implements OnDestroy {
   public onImageError($event: Event): void {
     TokensFacadeService.onTokenImageError($event);
   }
+
+  public getWarningMessages(tradeState?: SelectedTrade): string[] {
+    return tradeState?.trade.warnings.filter(w => w.code === 7001).map(el => el.reason) || [];
+  }
 }

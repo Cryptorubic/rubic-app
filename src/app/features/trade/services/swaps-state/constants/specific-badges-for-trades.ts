@@ -5,10 +5,17 @@ import {
   ON_CHAIN_TRADE_TYPE,
   OnChainTradeType
 } from '@cryptorubic/core';
-import { INFO_COLOR, PINK_COLOR, POSITIVE_COLOR, WARNING_COLOR } from './common/badges-ui';
+import {
+  INFO_COLOR,
+  PINK_COLOR,
+  POSITIVE_COLOR,
+  PURPLE_COLOR,
+  WARNING_COLOR
+} from './common/badges-ui';
 import {
   showAttentionLabelArbitrumBridge,
   showBerachainLabel,
+  showHoudiniLabel,
   showNoSlippageLabelArbitrumBridge
 } from './common/badges-for-providers-conditions';
 import { BRIDGE_TYPE } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/bridge-type';
@@ -82,7 +89,7 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       fromSdk: false,
       getBgColor: () => INFO_COLOR,
       getLabel: () => 'INFO',
-      getHint: () => `Meson Provider allows swaps only for amounts with 6 or fewer decimal places. 
+      getHint: () => `Meson Provider allows swaps only for amounts with 6 or fewer decimal places.
       If your transaction amount has more than 6 decimals, only the first 6 digits after the decimal point will be considered during the transaction.
       Example: 0.99999999999 ETH -> 0.999999 ETH`,
       showLabel: () => true
@@ -120,6 +127,16 @@ export const SPECIFIC_BADGES_FOR_PROVIDERS: Partial<
       getLabel: () => 'Reward',
       getUrl: () => 'https://www.orbiter.finance/quest/41',
       showLabel: showBerachainLabel
+    }
+  ],
+  [CROSS_CHAIN_TRADE_TYPE.HOUDINI]: [
+    {
+      fromSdk: false,
+      getBgColor: () => PURPLE_COLOR,
+      getLabel: () => 'Private',
+      getHint: () =>
+        'Breaks the on-chain link between sender and receiver. No tracking by recipients, exchanges, or explorers. Real privacy, no wallet connection needed, at the lowest cost.',
+      showLabel: showHoudiniLabel
     }
   ]
 };

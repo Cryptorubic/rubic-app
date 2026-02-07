@@ -14,6 +14,7 @@
       <ng-container *ngSwitchDefault>Swap</ng-container>
     </span>
   </ng-container>
+
   <ng-container>
     <div class="preview">
       <div
@@ -196,6 +197,7 @@
           </div>
         </ng-template>
       </div>
+
       <div
         *ngIf="state.transaction.step !== 'success' && state.transaction.step !== 'error'"
         class="preview__swap-info"
@@ -233,6 +235,16 @@
       <div *ngIf="state.transaction.step !== 'success'" class="preview__transaction-details">
         <app-transaction-details></app-transaction-details>
       </div>
+
+      <ng-container *ngIf="state.transaction.step !== 'success'">
+        <tui-notification
+          *ngFor="let warningMsg of getWarningMessages(state?.tradeState)"
+          status="warning"
+          size="l"
+        >
+          {{ warningMsg }}
+        </tui-notification>
+      </ng-container>
 
       <div *ngIf="state.transaction.step === 'success'" class="preview__success-info">
         <app-success-swap-info></app-success-swap-info>

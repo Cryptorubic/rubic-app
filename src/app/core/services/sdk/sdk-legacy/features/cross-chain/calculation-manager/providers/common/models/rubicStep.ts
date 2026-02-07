@@ -7,7 +7,7 @@ export interface CrossChainStep {
 }
 
 interface OnChainStep {
-  path: Token[];
+  path: (TokenAmount | Token)[];
   provider: string;
   type: 'on-chain';
 }
