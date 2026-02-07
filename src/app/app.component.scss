@@ -8,12 +8,16 @@
   }
 }
 
+#turnstile-container-invisible {
+  visibility: hidden;
+}
+
 .wrapper {
   position: relative;
 
   display: flex;
   flex-direction: column;
-  
+
   min-height: 100vh;
 
   > :first-child {

@@ -1,11 +1,21 @@
 import { Injectable } from '@angular/core';
-import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import {
+  combineLatestWith,
+  concatMap,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
   debounceTime,
   distinctUntilChanged,
   filter,
+  first,
   map,
   pairwise,
   startWith,
@@ -65,6 +75,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -74,6 +85,8 @@ export class SwapsControllerService {
   }>();
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
+
+  private readonly socketSubs: Array<Subscription> = [];
 
   /**
    * Contains trades types, which were disabled due to critical errors.
@@ -99,8 +112,10 @@ export class SwapsControllerService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly turnstileService: TurnstileService
   ) {
+    this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
@@ -111,10 +126,20 @@ export class SwapsControllerService {
   }
 
   /**
+   * @description Prevents calculation start when Cloudflare token is undefined
+   */
+  private waitForCfToken<T>(obs$: Observable<T>): Observable<T> {
+    return this.turnstileService.token$.pipe(
+      first(token => !!token),
+      switchMap(() => obs$)
+    );
+  }
+
+  /**
    * Subscribes on input form changes and controls recalculation after it.
    */
   private subscribeOnFormChanges(): void {
-    this.swapFormService.inputValueDistinct$.subscribe(() => {
+    this.waitForCfToken(this.swapFormService.inputValueDistinct$).subscribe(() => {
       this.startRecalculation(true);
       this.swapsStateService.clearProviders(false);
     });
@@ -124,8 +149,21 @@ export class SwapsControllerService {
     this._calculateTrade$.next({ isForced });
   }
 
+  private async subscribeOnSocketStatusChanges(): Promise<void> {
+    this.rubicApiService.handleSocketConnectionError().subscribe();
+    this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
+      if (res.success && res.needRecalculation) {
+        this.handleWs();
+        this.startRecalculation(true);
+      }
+    });
+    this.waitForCfToken(this.rubicApiService.handleSocketConnected()).subscribe(() => {
+      this.handleWs();
+      this.startRecalculation(true);
+    });
+  }
+
   private subscribeOnCalculation(): void {
-    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(220),
@@ -186,7 +224,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnRefreshServiceCalls(): void {
-    this.refreshService.onRefresh$.subscribe(refreshState => {
+    this.waitForCfToken(this.refreshService.onRefresh$).subscribe(refreshState => {
       this.startRecalculation(refreshState.isForced);
     });
   }
@@ -345,15 +383,15 @@ export class SwapsControllerService {
   }
 
   private subscribeOnAddressChange(): void {
-    this.authService.currentUser$
-      .pipe(
+    this.waitForCfToken(
+      this.authService.currentUser$.pipe(
         distinctUntilChanged(),
         switchMap(() => this.swapFormService.isFilled$),
         filter(isFilled => isFilled)
       )
-      .subscribe(() => {
-        this.startRecalculation(true);
-      });
+    ).subscribe(() => {
+      this.startRecalculation(true);
+    });
   }
 
   private parseCalculationError(error: RubicSdkError): RubicError<ERROR_TYPE> {
@@ -483,7 +521,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnSettings(): void {
-    this.settingsService.crossChainRoutingValueChanges
+    this.waitForCfToken(this.settingsService.crossChainRoutingValueChanges)
       .pipe(
         startWith(this.settingsService.crossChainRoutingValue),
         distinctUntilChanged((prev, next) => prev.useMevBotProtection !== next.useMevBotProtection),
@@ -505,7 +543,7 @@ export class SwapsControllerService {
   }
 
   private subscribeOnReceiverChange(): void {
-    this.targetNetworkAddressService.address$
+    this.waitForCfToken(this.targetNetworkAddressService.address$)
       .pipe(combineLatestWith(this.targetNetworkAddressService.isAddressValid$), debounceTime(50))
       .subscribe(([address, isValid]) => {
         if (address === '' || (address && isValid)) {
@@ -515,7 +553,16 @@ export class SwapsControllerService {
   }
 
   private handleWs(): void {
-    this.rubicApiService
+    this.socketSubs.forEach(sub => sub.unsubscribe());
+
+    const sub1 = this.rubicApiService.handleWsExceptions().subscribe(needRecalculate => {
+      if (needRecalculate) {
+        this.startRecalculation(true);
+        this.swapsStateService.clearProviders(false);
+      }
+    });
+
+    const sub2 = this.rubicApiService
       .handleQuotesAsync()
       .pipe(
         tap(() => this.refreshService.setRefreshing()),
@@ -615,6 +662,7 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+    this.socketSubs.push(sub1, sub2);
   }
 
   private subscribeOnSwapFormFilled(): void {

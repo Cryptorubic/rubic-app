@@ -6,22 +6,25 @@ import * as webpack from 'webpack';
 export default (
   config: webpack.Configuration,
   _: CustomWebpackBrowserSchema,
-  __: TargetOptions
+  targetOptions: TargetOptions
 ) => {
-  config.devtool = 'source-map';
-  config.plugins.push(
-    sentryWebpackPlugin({
-      org: 'rubic', //process.env.SENTRY_ORG,
-      project: 'rubic-app-prod', //process.env.SENTRY_PROJECT,
-      authToken:
-        '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', //process.env.SENTRY_AUTH_TOKEN,
-      bundleSizeOptimizations: {
-        excludeReplayIframe: true,
-        excludeReplayShadowDom: true,
-        excludeReplayWorker: true
-      }
-    })
-  );
+  // Only enable Sentry for production env
+  if (targetOptions.configuration === 'production') {
+    config.devtool = 'source-map';
+    config.plugins.push(
+      sentryWebpackPlugin({
+        org: 'rubic', //process.env.SENTRY_ORG,
+        project: 'rubic-app-prod', //process.env.SENTRY_PROJECT,
+        authToken:
+          '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', //process.env.SENTRY_AUTH_TOKEN,
+        bundleSizeOptimizations: {
+          excludeReplayIframe: true,
+          excludeReplayShadowDom: true,
+          excludeReplayWorker: true
+        }
+      })
+    );
+  }
 
   return config;
 };

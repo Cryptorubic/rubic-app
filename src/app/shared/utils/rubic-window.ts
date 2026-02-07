@@ -3,6 +3,7 @@ import { WalletLinkProvider } from 'walletlink';
 import { PhantomWallet } from '@core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { BtcWallet } from '@core/services/wallets/wallets-adapters/solana/models/btc-wallet';
+import { Turnstile } from '@core/services/turnstile/turnstile.models';
 
 // Included with Angular CLI.
 
@@ -16,6 +17,7 @@ export interface RubicWindow extends Window {
   dataLayer?: unknown[];
   ga?: Function | { create: Function; loaded: boolean };
   chrome?: boolean;
+  turnstile?: Turnstile;
   tronLink?: {
     tronWeb: unknown;
     isBitKeepChrome: boolean;
