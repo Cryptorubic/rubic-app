@@ -97,6 +97,7 @@ export class CrossChainTableService extends TableService<
       page: page + 1,
       pageSize: pageSze,
       ordering: direction === -1 ? `-${key}` : key,
+      integrator: 'rubic',
       ...(filterField && activeIndex === 0 && { trade_status: filterField })
     };
 

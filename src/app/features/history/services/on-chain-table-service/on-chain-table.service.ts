@@ -85,7 +85,8 @@ export class OnChainTableService extends TableService<
       address,
       page: page + 1,
       pageSize: pageSze,
-      ordering: direction === -1 ? `-${key}` : key
+      ordering: direction === -1 ? `-${key}` : key,
+      integrator: 'rubic'
     };
 
     return this.httpService

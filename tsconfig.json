@@ -36,5 +36,8 @@
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true
   },
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  },
   "exclude": ["rubic-sdk/*"]
 }
