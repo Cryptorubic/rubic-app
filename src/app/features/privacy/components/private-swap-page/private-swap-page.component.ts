@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
-import { BlockchainName } from '@cryptorubic/core';
+import { BlockchainName, Token } from '@cryptorubic/core';
 import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
@@ -7,6 +7,8 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { HideService } from '@features/privacy/services/hide/hide.service';
 import { PrivateTokensSelectorComponent } from '@features/privacy/components/private-tokens-selector/private-tokens-selector.component';
 import { PublicTokensSelectorComponent } from '@features/privacy/components/public-tokens-selector/public-tokens-selector.component';
+import { PrivateSwapService } from '@features/privacy/services/private-swap/private-swap.service';
+import { RailgunWalletInfo } from '@railgun-community/shared-models';
 
 @Component({
   selector: 'app-private-swap-page',
@@ -15,7 +17,7 @@ import { PublicTokensSelectorComponent } from '@features/privacy/components/publ
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PrivateSwapPageComponent {
-  @Input({ required: true }) public readonly railgunWalletAddress: string;
+  @Input({ required: true }) public readonly railgunWalletInfo: RailgunWalletInfo;
 
   @Input({ required: true }) public readonly balances:
     | {
@@ -50,6 +52,8 @@ export class PrivateSwapPageComponent {
   private readonly modalService = inject(ModalService);
 
   private readonly hideService = inject(HideService);
+
+  private readonly swapService = inject(PrivateSwapService);
 
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
@@ -87,8 +91,31 @@ export class PrivateSwapPageComponent {
   public async swap(): Promise<void> {
     try {
       this._loading$.next(true);
+      await this.swapService.crossContractCall(
+        '',
+        this.railgunWalletInfo,
+        this._fromAsset$.value.address,
+        Token.toWei(this._fromAmount$.value.actualValue.toFixed(), this._fromAsset$.value.decimals),
+        this._toAsset$.value.address
+      );
     } finally {
       this._loading$.next(false);
     }
+  }
+
+  public async calculate(): Promise<void> {
+    this._toAmount$.next(null);
+    this._loading$.next(true);
+    const amountOut = await this.swapService.getRates(
+      this._fromAsset$.value.address,
+      Token.toWei(this._fromAmount$.value.actualValue.toFixed(), this._fromAsset$.value.decimals),
+      this._toAsset$.value.address
+    );
+    const amountOutFormatted = Token.fromWei(amountOut, this._toAsset$.value.decimals).toFixed();
+    this._toAmount$.next({
+      visibleValue: amountOutFormatted,
+      actualValue: new BigNumber(amountOutFormatted)
+    });
+    this._loading$.next(false);
   }
 }

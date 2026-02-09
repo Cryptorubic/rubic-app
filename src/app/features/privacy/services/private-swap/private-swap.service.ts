@@ -20,6 +20,28 @@ export class PrivateSwapService {
 
   private readonly apiService = inject(RubicApiService);
 
+  public async getRates(
+    tokenFromAddress: string,
+    tokenFromAmount: string,
+    tokenToAddress: string
+  ): Promise<string> {
+    const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
+    const { wallet } = this.mnemonicService.getProviderWallet();
+
+    const swapData = await this.apiService.fetchBestSwapData<EvmTransactionConfig>({
+      srcTokenAddress: tokenFromAddress,
+      dstTokenAddress: tokenToAddress,
+      srcTokenAmount: amountAfterFee.toString(),
+      srcTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
+      dstTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
+      receiver: wallet.address,
+      fromAddress: wallet.address,
+      enableChecks: false
+    });
+
+    return swapData.estimate.destinationTokenAmount;
+  }
+
   public async crossContractCall(
     _encryptionKey: string,
     railgunWalletInfo: RailgunWalletInfo,

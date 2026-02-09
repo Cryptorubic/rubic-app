@@ -55,6 +55,18 @@
     appearance="primary"
     type="button"
     size="m"
+    (click)="calculate()"
+  >
+    Calculate
+  </button>
+
+  <button
+    [showLoader]="state.loading"
+    [disabled]="!state.toAmount"
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
     (click)="swap()"
   >
     Swap tokens

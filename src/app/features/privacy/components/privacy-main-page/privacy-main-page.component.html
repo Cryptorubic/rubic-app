@@ -36,7 +36,7 @@
 
     <app-private-swap-page
       *ngIf="data.step === 'swap'"
-      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [railgunWalletInfo]="data.railgunAccount"
       [balances]="data.balances"
     ></app-private-swap-page>
 
