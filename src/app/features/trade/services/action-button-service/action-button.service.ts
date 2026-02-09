@@ -83,7 +83,7 @@ export class ActionButtonService {
     if (currentTrade.error) {
       return {
         type: 'error',
-        text: currentTrade.error.message,
+        text: this.getShortErrorMessage(currentTrade.error.message),
         action: () => {}
       };
     }
@@ -165,6 +165,13 @@ export class ActionButtonService {
       text: 'Trade is not available',
       action: () => {}
     };
+  }
+
+  private getShortErrorMessage(errorMessage: string): string {
+    if (errorMessage.toLowerCase().includes('trustline not detected'))
+      return 'Will be available soon';
+
+    return errorMessage;
   }
 
   private getDefaultParams(): [SelectedTrade, boolean, boolean, string, boolean, boolean, string] {

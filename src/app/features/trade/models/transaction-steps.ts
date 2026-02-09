@@ -9,6 +9,9 @@ export const transactionStep = {
   authWalletPending: 'authWalletPending',
   authWalletReady: 'authWalletReady',
 
+  trustlinePending: 'trustlinePending',
+  trustlineReady: 'trustlineReady',
+
   swapReady: 'swapReady',
   swapRequest: 'swapRequest',
   swapRetry: 'swapRetry',
