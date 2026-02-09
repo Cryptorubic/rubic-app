@@ -366,5 +366,6 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
         apiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
       }
     }
-  ]
+  ],
+  [BLOCKCHAIN_NAME.MEGAETH]: ['https://mainnet.megaeth.com/rpc']
 };

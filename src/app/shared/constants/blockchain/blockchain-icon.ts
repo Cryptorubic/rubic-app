@@ -158,5 +158,6 @@ export const blockchainIcon: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HEMI]: `${basePath}hemi.svg`,
   [BLOCKCHAIN_NAME.HYPER_EVM]: `${basePath}hype.svg`,
   [BLOCKCHAIN_NAME.PLASMA]: `${basePath}plasma.svg`,
-  [BLOCKCHAIN_NAME.MONAD]: `${basePath}monad.svg`
+  [BLOCKCHAIN_NAME.MONAD]: `${basePath}monad.svg`,
+  [BLOCKCHAIN_NAME.MEGAETH]: `${basePath}mega-eth.svg`
 };

@@ -231,6 +231,17 @@ export const blockchainsList: RankedBlockchain[] = [
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
   },
   {
+    name: BLOCKCHAIN_NAME.MEGAETH,
+    rank: 0.73,
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW
+    ]
+  },
+  {
     name: BLOCKCHAIN_NAME.PLASMA,
     rank: 0.73,
     tags: ['XPL', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
