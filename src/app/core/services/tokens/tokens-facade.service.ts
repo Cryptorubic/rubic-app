@@ -169,9 +169,16 @@ export class TokensFacadeService {
     toToken: {
       address: string;
       blockchain: BlockchainName;
-    }
+    },
+    fromTokenPrevBalanceWei: BigNumber,
+    toTokenPrevBalanceWei: BigNumber
   ): Promise<void> {
-    return this.tokensBalanceService.updateTokenBalancesAfterItSwap(fromToken, toToken);
+    return this.tokensBalanceService.updateTokenBalancesAfterItSwap(
+      fromToken,
+      toToken,
+      fromTokenPrevBalanceWei,
+      toTokenPrevBalanceWei
+    );
   }
 
   public async getLatestPrice(token: {

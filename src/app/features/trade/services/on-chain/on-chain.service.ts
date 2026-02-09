@@ -53,6 +53,8 @@ import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -85,7 +87,8 @@ export class OnChainService {
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -202,15 +205,32 @@ export class OnChainService {
     };
 
     try {
-      await trade.swap(options);
-
       const [fromToken, toToken] = await Promise.all([
         this.tokensFacade.findToken(trade.from),
         this.tokensFacade.findToken(trade.to)
       ]);
+      const fromChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const toChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const [fromTokenPrevBalanceWei, toTokenPrevBalanceWei] = await Promise.all([
+        fromChainAdapter.getBalance(this.walletConnectorService.address, fromToken.address),
+        toChainAdapter.getBalance(this.walletConnectorService.address, toToken.address)
+      ]);
 
+      await trade.swap(options);
       await this.conditionalAwait(fromBlockchain);
-      this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
+
+      setTimeout(() => {
+        this.tokensFacade.updateTokenBalancesAfterItSwap(
+          fromToken,
+          toToken,
+          fromTokenPrevBalanceWei,
+          toTokenPrevBalanceWei
+        );
+      }, 3_000);
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
