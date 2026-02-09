@@ -5,7 +5,7 @@
 
 [Read more about us](https://rubic.exchange/)
 
-![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/docs/Banner.jpg "")
+![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/docs/Banner.png "")
 
 ## Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE.
 We already provide multichain services for creating and managing tokens (airdrop, crowdsale, pools) powered by MyWish.
