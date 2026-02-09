@@ -10,11 +10,8 @@
   }
 
   &__body {
-    display: flex;
-    flex-direction: column;
+    @include flex(column, center, center);
     gap: 20px;
-    align-items: center;
-    justify-content: center;
     height: 100%;
   }
 
@@ -24,10 +21,33 @@
 
   &__hints,
   &__hint {
+    @include flex(column, center, unset);
     display: flex;
-    flex-direction: column;
     gap: 20px;
-    align-items: center;
+  }
+
+  &__provider {
+    @include flex(row, center, center);
+    gap: 8px;
+
+    img {
+      width: 24px;
+      height: 24px;
+      padding: 4px;
+
+      border-radius: 100%;
+      
+      box-shadow: 
+        -4px 0 0 0 rgba(255, 255, 255, 0.8),
+        -8px 0 0 0 rgba(255, 255, 255, 0.4),
+        -12px 0 0 0 rgba(255, 255, 255, 0.2),
+        -16px 0 0 0 rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  &__footer button {
+    width: 100%;
+    margin-top: 16px;
   }
 
   p,

@@ -49,7 +49,6 @@ export class NewTokensStoreService {
 
       tokens.list.forEach(token => {
         if (!currentTokens.value[token.address]) {
-          // @TODO TOKENS MB REMOVE
           currentTokens.value[token.address] = {
             ...token,
             favorite: false,
@@ -76,25 +75,28 @@ export class NewTokensStoreService {
     }
   }
 
-  public addNewBlockchainTokens(blockchain: BlockchainName, tokens: ReadonlyArray<Token>): void {
-    const currentTokens = this.tokens[blockchain]._tokensObject$;
-    const newValues = tokens.reduce((acc, token) => {
-      return { ...acc, [token.address]: token };
-    }, {});
-    currentTokens.next({ ...currentTokens.value, ...newValues });
-  }
-
-  public addBlockchainBalanceTokens(blockchain: BlockchainName, tokens: BalanceToken[]): void {
-    const currentTokens = this.tokens[blockchain]._tokensObject$;
-    const newValues = tokens.reduce((acc, token) => ({ ...acc, [token.address]: token }), {});
-    currentTokens.next({ ...currentTokens.value, ...newValues });
+  public addBlockchainBalanceTokens(
+    blockchain: BlockchainName,
+    balanceTokens: BalanceToken[]
+  ): void {
+    const tokens = this.tokens[blockchain]._tokensObject$;
+    balanceTokens.forEach(token => {
+      if (tokens.value[token.address]) {
+        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      } else {
+        tokens.value[token.address] = token;
+      }
+    });
+    tokens.next(tokens.value);
   }
 
   public updateBlockchainTokens(blockchain: BlockchainName, newTokens: ReadonlyArray<Token>): void {
     const tokens = this.tokens[blockchain]._tokensObject$;
     newTokens.forEach(token => {
       if (tokens.value[token.address]) {
-        tokens.value[token.address] = { ...tokens.value[token.address], ...token };
+        tokens.value[token.address] = { ...tokens.value?.[token.address], ...token };
+      } else {
+        tokens.value[token.address] = { ...token, favorite: false, amount: new BigNumber(NaN) };
       }
     });
     tokens.next(tokens.value);
@@ -223,7 +225,7 @@ export class NewTokensStoreService {
           });
           Object.entries(chainTokens).forEach(
             ([chain, blockchainTokens]: [BlockchainName, Token[]]) => {
-              this.addNewBlockchainTokens(chain, blockchainTokens);
+              this.updateBlockchainTokens(chain, blockchainTokens);
             }
           );
 

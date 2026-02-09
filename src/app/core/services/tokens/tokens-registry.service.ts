@@ -65,7 +65,7 @@ export class TokensRegistryService {
    * @param token Tokens to add.
    */
   public addToken(token: BalanceToken): void {
-    this.tokensStore.addNewBlockchainTokens(token.blockchain, [token]);
+    this.tokensStore.updateBlockchainTokens(token.blockchain, [token]);
   }
 
   public addTokenByAddress(address: string, blockchain: BlockchainName): Observable<BalanceToken> {
@@ -92,7 +92,7 @@ export class TokensRegistryService {
         amount: amount || new BigNumber(NaN)
       })),
       tap((token: BalanceToken) => {
-        this.tokensStore.addNewBlockchainTokens(blockchain, [token]);
+        this.tokensStore.updateBlockchainTokens(blockchain, [token]);
       })
     );
   }
