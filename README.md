@@ -5,7 +5,6 @@
 
 [Read more about us](https://rubic.exchange/)
 
-<!--![alt text](https://github.com/Cryptorubic/rubic-frontend/blob/master/docs/Banner.png "")-->
 ![alt text](./docs/Banner.png "")
 
 ## Rubic organizes defi services to enable a project to create, manage and trade tokens decentralized in ONE PLACE.
