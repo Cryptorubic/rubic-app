@@ -239,6 +239,18 @@ export class OnChainService {
         }
       }
 
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
+          transactionHash
+        );
+
+        if (txStatus.status !== TX_STATUS.SUCCESS) {
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
+        } else {
+          await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
+        }
+      }
+
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }

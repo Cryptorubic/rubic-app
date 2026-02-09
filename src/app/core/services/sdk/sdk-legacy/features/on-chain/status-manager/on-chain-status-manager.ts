@@ -54,4 +54,24 @@ export class OnChainStatusManager {
 
     return this.getSrcStatusRecursive(srcTxHash, blockchain, timeoutMs);
   }
+
+  public async getStellarSwapStatus(srcTxHash: string): Promise<TxStatusData> {
+    try {
+      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        BLOCKCHAIN_NAME.STELLAR
+      );
+      const status = await adapter.getTransactionStatus(srcTxHash);
+
+      if (status === TX_STATUS.SUCCESS || status === TX_STATUS.FAIL) {
+        return {
+          status,
+          hash: srcTxHash
+        };
+      }
+
+      return { hash: null, status: TX_STATUS.PENDING };
+    } catch {
+      return { hash: null, status: TX_STATUS.PENDING };
+    }
+  }
 }

@@ -131,6 +131,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}hop.svg`,
     name: 'Hop'
   },
+  houdini: {
+    averageTime: 5,
+    color: '#a919d1',
+    image: `${imageBasePath}houdini.svg`,
+    name: 'Privacy Routing'
+  },
   hyphen: {
     averageTime: 5,
     color: '#353392',
@@ -294,6 +300,11 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     color: '#000000',
     image: `${imageBasePath}router.svg`,
     name: 'Router'
+  },
+  rubic_stellar_api: {
+    color: '#00ff73',
+    image: 'assets/images/icons/providers/on-chain/rubic-stellar-api.svg',
+    name: `Rubic's Stellar API`
   },
   //SSSSSSSSSSSSSSSSSSS
   satellite: {

@@ -72,12 +72,16 @@ export class CrossChainDesktopTableComponent {
   }
 
   public shouldShowActionButton(item: CrossChainTableData): boolean {
-    const shouldShow = tableRowsWithActionButtons.some(
-      actionCase =>
-        item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
-        item.toTx.status.label === actionCase.status &&
-        actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]
-    );
+    const shouldShow = tableRowsWithActionButtons.some(actionCase => {
+      if (
+        (item.fromBlockchain.name === BLOCKCHAIN_NAME.ARBITRUM &&
+          actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.ARBITRUM]) ||
+        (item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR &&
+          actionCase.provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API])
+      ) {
+        return item.toTx.status.label === actionCase.status;
+      }
+    });
     return shouldShow;
   }
 
@@ -96,6 +100,20 @@ export class CrossChainDesktopTableComponent {
       if (isSwitched) await this.commonTableService.claimArbitrumBridgeTokens(item.fromTx.hash);
     }
 
+    if (
+      provider === BRIDGE_PROVIDERS[BRIDGE_TYPE.RUBIC_STELLAR_API] &&
+      item.toBlockchain.name === BLOCKCHAIN_NAME.STELLAR
+    ) {
+      await this.commonTableService.openTrustline({
+        toBlockchain: BLOCKCHAIN_NAME.STELLAR,
+        receiver: item.receiver,
+        trustlineToken: {
+          address: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+          symbol: 'USDC'
+        },
+        trustlineType: 'refund'
+      });
+    }
     status.isLoading = false;
     this.cdr.markForCheck();
   }

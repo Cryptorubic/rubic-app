@@ -77,6 +77,8 @@ export type Store = {
   RUBIC_DEPOSIT_RECENT_TRADE: CrossChainTransferTrade[];
 
   IS_RUSSIAN_IP: boolean;
+
+  LOBSTR_WALLET_ADDRESS: string;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -96,5 +98,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_TRADES_INSTANT_TRADE: null,
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
   RUBIC_TOTAL_VALUES: null,
-  IS_RUSSIAN_IP: null
+  IS_RUSSIAN_IP: null,
+  LOBSTR_WALLET_ADDRESS: null
 };

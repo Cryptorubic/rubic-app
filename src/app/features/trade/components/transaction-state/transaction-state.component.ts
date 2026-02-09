@@ -21,6 +21,7 @@ export class TransactionStateComponent {
     type: 'bridge' | 'swap';
     needApprove: boolean;
     needAuthWallet: boolean;
+    needTrustlineAfterSwap: boolean;
   }) {
     const steps: TransactionStep[] = [];
     this.type = value.type;
@@ -36,7 +37,9 @@ export class TransactionStateComponent {
       steps.push(
         transactionStep.swapRequest,
         transactionStep.sourcePending,
-        transactionStep.destinationPending
+        ...(value.needTrustlineAfterSwap
+          ? [transactionStep.trustlinePending, transactionStep.destinationPending]
+          : [transactionStep.destinationPending])
       );
     }
     steps.push(transactionStep.success);
@@ -55,6 +58,8 @@ export class TransactionStateComponent {
       approvePending: 'Manage allowance',
       authWalletPending: 'Signing message',
       authWalletReady: 'Wallet authorized',
+      trustlinePending: 'Waiting for trustline',
+      trustlineReady: 'Trustline added',
       swapReady: 'Swap',
       swapRequest: 'Transaction Sign',
       swapRetry: 'Swap Retry',
