@@ -1,6 +1,7 @@
 import { Inject, Injectable, Injector } from '@angular/core';
 import {
   BehaviorSubject,
+  combineLatest,
   firstValueFrom,
   forkJoin,
   from,
@@ -63,6 +64,7 @@ import { TradeInfo } from '../../models/trade-info';
 import { TransactionStep } from '../../models/transaction-steps';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { SwapRetryModalInput } from '../../components/swap-retry-pending-modal/models/swap-retry-modal-input';
 
 @Injectable()
 export class PreviewSwapService {
@@ -93,12 +95,24 @@ export class PreviewSwapService {
 
   private _continueSwapTrigger$: Subject<boolean>;
 
+  private _isBackupProviderSelected$ = new BehaviorSubject<boolean>(false);
+
+  private _isRateChanged$ = new BehaviorSubject<boolean>(false);
+
   private get isRetryModalOpen(): boolean {
     return this._isRetryModalOpen$.getValue();
   }
 
   private set isRetryModalOpen(isOpen: boolean) {
     this._isRetryModalOpen$.next(isOpen);
+  }
+
+  private set isBackupProviderSelected(isSelected: boolean) {
+    this._isBackupProviderSelected$.next(isSelected);
+  }
+
+  private set isRateChanged(isChanged: boolean) {
+    this._isRateChanged$.next(isChanged);
   }
 
   public tradeInfo$: Observable<TradeInfo> = forkJoin([
@@ -218,12 +232,11 @@ export class PreviewSwapService {
         distinctUntilChanged(),
         switchMap(isOpen => {
           if (isOpen) {
+            this.isRateChanged = false;
+            const swapRetryModalInput$ = this.getSwapRetryModalInput();
+
             return this.modalService
-              .openSwapRetryPendingModal(
-                this.swapsStateService.backupTrades.length,
-                this.swapsStateService.backupTradesCount$,
-                this.injector
-              )
+              .openSwapRetryPendingModal(swapRetryModalInput$, this.injector)
               .pipe(map(() => of(true)));
           }
           return of(false);
@@ -418,6 +431,27 @@ export class PreviewSwapService {
     }
   }
 
+  private getSwapRetryModalInput(): Observable<SwapRetryModalInput> {
+    const initialBackupsCount = this.swapsStateService.backupTrades.length;
+
+    return combineLatest([
+      this.swapsStateService.backupTradesCount$,
+      this._isBackupProviderSelected$,
+      this._isRateChanged$,
+      this._selectedTradeState$
+    ]).pipe(
+      map(([backupTradesCount, isBackupProviderSelected, isRateChanged, selectedTradeState]) => {
+        return {
+          initialBackupsCount,
+          backupTradesCount,
+          isBackupProviderSelected,
+          isRateChanged,
+          selectedTradeState
+        };
+      })
+    );
+  }
+
   private async catchSwitchCancel(): Promise<void> {
     const warningText = this.translateService.instant('notifications.cancelRpcSwitch');
     this.notificationsService.show(warningText, {
@@ -441,8 +475,9 @@ export class PreviewSwapService {
     return from(this.loadRpcParams(useMevProtection)).pipe(
       debounceTime(50),
       switchMap(rpcChanged => {
+        const isSwapRetry = txStep === 'swapRetry';
         return rpcChanged
-          ? this.swapsControllerService.swap(tradeState, {
+          ? this.swapsControllerService.swap(tradeState, !isSwapRetry, {
               onHash: (hash: string) => {
                 if (this.useCallback) {
                   this.closeRetryModal();
@@ -495,19 +530,22 @@ export class PreviewSwapService {
                   }
                 }
               },
-              onSimulationSuccess: () => {
-                if (txStep === 'swapRequest') return Promise.resolve(true);
+              onSimulationSuccess: async () => {
+                if (txStep === 'swapRequest') return true;
 
-                this._continueSwapTrigger$ = new Subject<boolean>();
-                this.setNextTxState({
-                  step: 'swapBackupSelected',
-                  data: this.transactionState.data
-                });
-                this.closeRetryModal();
+                this._continueSwapTrigger$ = new Subject();
+                this.isBackupProviderSelected = true;
 
-                return firstValueFrom(this._continueSwapTrigger$);
+                try {
+                  const allowedToContinue = await firstValueFrom(this._continueSwapTrigger$);
+                  return allowedToContinue;
+                } finally {
+                  this.closeRetryModal();
+                  this.isBackupProviderSelected = false;
+                }
               },
               onRateChange: (rateChangeInfo: RateChangeInfo) => {
+                this.isRateChanged = true;
                 return txStep === 'swapRequest'
                   ? firstValueFrom(this.modalService.openRateChangedModal(rateChangeInfo))
                   : this.modalService.openSwapRetryProviderSelectModal(
