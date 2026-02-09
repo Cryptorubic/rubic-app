@@ -45,6 +45,7 @@ import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetListType } from '@features/trade/models/asset';
+import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 
@@ -293,8 +294,7 @@ export class ModalService {
    * @param backups$ Backup Trades observable
    */
   public openSwapRetryPendingModal(
-    backupsCount: number,
-    backupTradesCount$: Observable<number>,
+    swapRetryModalInput$: Observable<SwapRetryModalInput>,
     injector: Injector
   ): Observable<void> {
     this.setOpenedModalName('swap-retry-pending');
@@ -305,7 +305,7 @@ export class ModalService {
         size: 's',
         fitContent: true,
         dismissible: true,
-        data: { backupsCount, backupTradesCount$ }
+        data: { swapRetryModalInput$ }
       },
       injector
     );

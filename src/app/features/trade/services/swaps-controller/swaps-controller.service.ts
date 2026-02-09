@@ -204,6 +204,7 @@ export class SwapsControllerService {
 
   public async swap(
     tradeState: SelectedTrade,
+    checkSlippageAndPI?: boolean,
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
@@ -220,12 +221,15 @@ export class SwapsControllerService {
       if (!isEqulaFromAmount) {
         throw new Error('Trade has invalid from amount');
       }
-      const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
-        trade instanceof CrossChainTrade
-          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-        trade
-      );
+
+      const allowSlippageAndPI = checkSlippageAndPI
+        ? await this.settingsService.checkSlippageAndPriceImpact(
+            trade instanceof CrossChainTrade
+              ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+              : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+            trade
+          )
+        : true;
 
       if (!allowSlippageAndPI) {
         callback.onError?.(null);
