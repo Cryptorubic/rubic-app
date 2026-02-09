@@ -131,6 +131,12 @@ export const BRIDGE_PROVIDERS: Record<BridgeType, ProviderInfo> = {
     image: `${imageBasePath}hop.svg`,
     name: 'Hop'
   },
+  houdini: {
+    averageTime: 5,
+    color: '#a919d1',
+    image: `${imageBasePath}houdini.svg`,
+    name: 'Privacy Routing'
+  },
   hyphen: {
     averageTime: 5,
     color: '#353392',
