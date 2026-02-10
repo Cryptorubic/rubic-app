@@ -275,16 +275,14 @@ export class CrossChainService {
     try {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
-      await this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+
+      setTimeout(() => {
+        this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
+      }, 3_000);
 
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
-
-      // Update tokens prices after 3 sec
-      setTimeout(() => {
-        this.tokensFacade.updateParticipantTokens();
-      }, 3_000);
 
       return transactionHash;
     } catch (error) {

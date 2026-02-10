@@ -10,7 +10,7 @@ import {
   Token as OldToken
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { AbstractAdapter, Web3Pure } from '@cryptorubic/web3';
+import { AbstractAdapter, waitFor, Web3Pure } from '@cryptorubic/web3';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { catchError, debounceTime, distinctUntilChanged, first, switchMap } from 'rxjs/operators';
 import { combineLatestWith, firstValueFrom, of } from 'rxjs';
@@ -67,6 +67,42 @@ export class TokensBalanceService {
     return this.authService.userAddress;
   }
 
+  public async waitForBalanceChangeAndCall<T>(
+    token: {
+      address: string;
+      blockchain: BlockchainName;
+    },
+    prevBalanceWei: BigNumber,
+    callback: () => Promise<T>,
+    retryCount: number = 0,
+    maxRetries: number = 5
+  ): Promise<T> {
+    try {
+      const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        token.blockchain as RubicAny
+      );
+      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
+
+      if (balanceInWei.eq(prevBalanceWei)) {
+        if (retryCount <= maxRetries) {
+          await waitFor(3_000);
+          return this.waitForBalanceChangeAndCall(
+            token,
+            prevBalanceWei,
+            callback,
+            retryCount + 1,
+            maxRetries
+          );
+        }
+      }
+
+      return callback();
+    } catch (err) {
+      console.error('[TokensBalanceService_waitForBalanceChangeAndCall] error: ', err);
+      throw err;
+    }
+  }
+
   public async getAndUpdateTokenBalance(token: {
     address: string;
     blockchain: BlockchainName;
@@ -86,20 +122,24 @@ export class TokensBalanceService {
       return null;
     }
 
+    const _balanceLoading$ = this.tokensStore.tokens[token.blockchain]._balanceLoading$;
+    const _tokensObject$ = this.tokensStore.tokens[token.blockchain]._tokensObject$;
+
     try {
+      _balanceLoading$.next(true);
+
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
       const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
 
       const storedToken = this.findTokenSync(token);
-      if (!token) return new BigNumber(NaN);
+      if (!storedToken) return new BigNumber(NaN);
 
       const balance = OldToken.fromWei(balanceInWei, storedToken.decimals);
       if (storedToken && !storedToken.amount?.eq(balance)) {
-        const tokensObject = this.tokensStore.tokens[token.blockchain]._tokensObject$;
-        this.tokensStore.tokens[token.blockchain]._tokensObject$.next({
-          ...tokensObject.getValue(),
+        _tokensObject$.next({
+          ..._tokensObject$.getValue(),
           [token.address]: { ...storedToken, amount: balance }
         });
       }
@@ -109,6 +149,8 @@ export class TokensBalanceService {
       console.debug(err);
       const storedToken = this.findTokenSync(token);
       return storedToken?.amount;
+    } finally {
+      _balanceLoading$.next(false);
     }
   }
 
@@ -123,6 +165,12 @@ export class TokensBalanceService {
     }
   ): Promise<void> {
     const chainType = BlockchainsInfo.getChainType(fromToken.blockchain);
+    const balancePromises: Promise<BigNumber>[] = [];
+
+    balancePromises.push(
+      this.getAndUpdateTokenBalance(fromToken),
+      this.getAndUpdateTokenBalance(toToken)
+    );
 
     if (Web3Pure.isNativeAddress(chainType, fromToken.address)) {
       await this.getAndUpdateTokenBalance(fromToken);
@@ -147,11 +195,17 @@ export class TokensBalanceService {
     toToken: {
       address: string;
       blockchain: BlockchainName;
-    }
+    },
+    fromTokenPrevBalanceWei: BigNumber,
+    toTokenPrevBalanceWei: BigNumber
   ): Promise<void> {
     const balancePromises = [
-      this.getAndUpdateTokenBalance(fromToken),
-      this.getAndUpdateTokenBalance(toToken)
+      this.waitForBalanceChangeAndCall(fromToken, fromTokenPrevBalanceWei, () =>
+        this.getAndUpdateTokenBalance(fromToken)
+      ),
+      this.waitForBalanceChangeAndCall(toToken, toTokenPrevBalanceWei, () =>
+        this.getAndUpdateTokenBalance(toToken)
+      )
     ];
     const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
     const web3Pure = Web3Pure.getInstance(fromChainType);
@@ -167,6 +221,7 @@ export class TokensBalanceService {
         })
       );
     }
+
     await Promise.all(balancePromises);
   }
 
@@ -257,8 +312,16 @@ export class TokensBalanceService {
     chainType: ChainType,
     chains: BlockchainName[]
   ): Promise<void> {
+    const getChainTypeSafe = (chain: BlockchainName): ChainType | null => {
+      try {
+        return BlockchainsInfo.getChainType(chain);
+      } catch {
+        return null;
+      }
+    };
+
     const resultChains = chains.filter(
-      (chain: BlockchainName) => chainType === BlockchainsInfo.getChainType(chain)
+      (chain: BlockchainName) => chainType === getChainTypeSafe(chain)
     );
 
     return new Promise(resolve => {
