@@ -85,7 +85,7 @@ export class TokensBalanceService {
 
       if (balanceInWei.eq(prevBalanceWei)) {
         if (retryCount <= maxRetries) {
-          await waitFor(2_000);
+          await waitFor(3_000);
           return this.waitForBalanceChangeAndCall(
             token,
             prevBalanceWei,
@@ -459,8 +459,8 @@ export class TokensBalanceService {
   }
 
   private subscribeOnFormTokens(): void {
-    let fromInterval: NodeJS.Timeout;
-    let toInterval: NodeJS.Timeout;
+    let fromInterval: ReturnType<typeof setTimeout>;
+    let toInterval: ReturnType<typeof setTimeout>;
 
     this.formService.fromToken$
       .pipe(debounceTime(200), distinctObjectUntilChanged())

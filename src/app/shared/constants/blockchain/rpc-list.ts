@@ -5,16 +5,19 @@ import {
   SolanaBlockchainName,
   TonBlockchainName,
   BitcoinBlockchainName,
-  SuiBlockchainName
+  SuiBlockchainName,
+  StellarBlockchainName
 } from '@cryptorubic/core';
 import { TronWebProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
+import { StellarRpcProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/models/stellar-rpc-provider';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
   Record<SolanaBlockchainName, string[]> &
   Record<TonBlockchainName, string[]> &
   Record<BitcoinBlockchainName, string[]> &
-  Record<SuiBlockchainName, string[]> = {
+  Record<SuiBlockchainName, string[]> &
+  Record<StellarBlockchainName, StellarRpcProvider[]> = {
   [BLOCKCHAIN_NAME.ETHEREUM]: [
     'https://x-api.rubic.exchange/drpc/ethereum?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
     'https://rpc.ankr.com/eth/cdb5678d9797006c10fa86c3ea17d7f3f1ead96554d393fa427112462e891eca'
@@ -353,5 +356,16 @@ export const rpcList: Record<EvmBlockchainName, string[]> &
     'https://rpc1.monad.xyz',
     'https://rpc3.monad.xyz',
     'https://rpc-mainnet.monadinfra.com'
-  ]
+  ],
+  [BLOCKCHAIN_NAME.STELLAR]: [
+    {
+      soroban:
+        'https://x-api.rubic.exchange/stellar_rpc?apikey=sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4',
+      horizon: 'https://x-api.rubic.exchange/stellar_http',
+      horizonHeaders: {
+        apiKey: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+      }
+    }
+  ],
+  [BLOCKCHAIN_NAME.MEGAETH]: ['https://mainnet.megaeth.com/rpc']
 };

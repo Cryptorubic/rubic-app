@@ -80,6 +80,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}atlantis.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.AQUARIUS]: {
+    name: 'Aquarius',
+    image: `${imageBasePath}aquarius.svg`,
+    color: '#FFFFFF'
+  },
 
   //BBBBBBBBBBBBBBBBBBBBB
   [ON_CHAIN_TRADE_TYPE.BABY_SWAP]: {
@@ -573,6 +578,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: 'assets/images/icons/providers/bridge/router.svg',
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.RUBIC_STELLAR_API]: {
+    name: `Rubic's Stellar API`,
+    color: '#00ff73',
+    image: `${imageBasePath}rubic-stellar-api.svg`
+  },
 
   //SSSSSSSSSSSSSSSSSSSSSSSSSS
   [ON_CHAIN_TRADE_TYPE.SABER_STABLE_SWAP]: {
@@ -691,6 +701,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}sparkdex.svg`,
     color: '#000000'
   },
+  [ON_CHAIN_TRADE_TYPE.SOROSWAP]: {
+    name: 'SoroSwap',
+    image: `${imageBasePath}soroswap.svg`,
+    color: '#FFFFFF'
+  },
 
   //TTTTTTTTTTTTTTTTTTTTTTTTTTT
   [ON_CHAIN_TRADE_TYPE.TONCO_DEX]: {
@@ -803,6 +818,16 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'WyndDex',
     image: `${imageBasePath}wynd.svg`,
     color: '#7e8087'
+  },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V2]: {
+    name: 'WarpX V2',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
+  },
+  [ON_CHAIN_TRADE_TYPE.WARPX_V3]: {
+    name: 'WarpX V3',
+    image: `${imageBasePath}warpx.svg`,
+    color: '#FFFFFF'
   },
 
   //XXXXXXXXXXXXXXXXXXXXXXXXXXX

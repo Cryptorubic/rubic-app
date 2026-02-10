@@ -223,14 +223,12 @@ export class OnChainService {
       await trade.swap(options);
       await this.conditionalAwait(fromBlockchain);
 
-      setTimeout(() => {
-        this.tokensFacade.updateTokenBalancesAfterItSwap(
-          fromToken,
-          toToken,
-          fromTokenPrevBalanceWei,
-          toTokenPrevBalanceWei
-        );
-      }, 3_000);
+      this.tokensFacade.updateTokenBalancesAfterItSwap(
+        fromToken,
+        toToken,
+        fromTokenPrevBalanceWei,
+        toTokenPrevBalanceWei
+      );
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
@@ -256,6 +254,15 @@ export class OnChainService {
         );
         if (txStatusData.status !== TX_STATUS.SUCCESS) {
           throw new TransactionFailedError(BLOCKCHAIN_NAME.TRON, txStatusData.hash);
+        }
+      }
+
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
+          transactionHash
+        );
+        if (txStatus.status !== TX_STATUS.SUCCESS) {
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
         }
       }
 

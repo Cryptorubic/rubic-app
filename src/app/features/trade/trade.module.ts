@@ -187,11 +187,6 @@ import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backup
     RefundService,
     SolanaGaslessService,
     SolanaGaslessStateService
-    // SettingsService,
-    // RefreshService,
-    // TradeService,
-    // TargetNetworkAddressService,
-    // TonPromoService
   ]
 })
 export class TradeModule {}
