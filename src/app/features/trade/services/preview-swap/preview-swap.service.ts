@@ -65,6 +65,7 @@ import { transactionStep, TransactionStep } from '../../models/transaction-steps
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 import { SwapRetryModalInput } from '../../components/swap-retry-pending-modal/models/swap-retry-modal-input';
+import { checkAmountChange } from '../../utils/check-amount-change';
 
 @Injectable()
 export class PreviewSwapService {
@@ -89,6 +90,8 @@ export class PreviewSwapService {
 
   private readonly _selectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
 
+  private readonly _initialSelectedTradeState$ = new BehaviorSubject<SelectedTrade | null>(null);
+
   public readonly selectedTradeState$ = this._selectedTradeState$.asObservable();
 
   private readonly _isRetryModalOpen$ = new BehaviorSubject<boolean>(false);
@@ -101,6 +104,10 @@ export class PreviewSwapService {
 
   private get isRetryModalOpen(): boolean {
     return this._isRetryModalOpen$.getValue();
+  }
+
+  private get initialSelectedTradeState(): SelectedTrade | null {
+    return this._initialSelectedTradeState$.getValue();
   }
 
   private set isRetryModalOpen(isOpen: boolean) {
@@ -486,6 +493,30 @@ export class PreviewSwapService {
     }
   }
 
+  private async checkBackupProviderRate(tradeState: SelectedTrade): Promise<boolean> {
+    const oldWeiAmount = this.initialSelectedTradeState.trade.to.weiAmount;
+    const newWeiAmount = tradeState.trade.to.weiAmount;
+    const isRateChanged = checkAmountChange(newWeiAmount, oldWeiAmount);
+
+    if (isRateChanged) {
+      this.isRateChanged = true;
+      const rateChangeInfo = {
+        oldAmount: this.initialSelectedTradeState.trade.to.tokenAmount,
+        newAmount: tradeState.trade.to.tokenAmount,
+        tokenSymbol: tradeState.trade.to.symbol
+      };
+
+      return await this.modalService.openSwapRetryProviderSelectModal(
+        tradeState,
+        this.tradeInfo$,
+        rateChangeInfo,
+        this.injector
+      );
+    }
+
+    return true;
+  }
+
   private getSwapRetryModalInput(): Observable<SwapRetryModalInput> {
     const initialBackupsCount = this.swapsStateService.backupTrades.length;
 
@@ -526,6 +557,10 @@ export class PreviewSwapService {
       tradeState.trade.from.blockchain === tradeState.trade.to.blockchain
         ? this.settingsService.instantTradeValue.useMevBotProtection
         : this.settingsService.crossChainRoutingValue.useMevBotProtection;
+
+    if (txStep === 'swapRequest') {
+      this._initialSelectedTradeState$.next(tradeState);
+    }
 
     return from(this.loadRpcParams(useMevProtection)).pipe(
       debounceTime(50),
@@ -595,7 +630,13 @@ export class PreviewSwapService {
                 this.isBackupProviderSelected = true;
 
                 try {
-                  const allowedToContinue = await firstValueFrom(this._continueSwapTrigger$);
+                  let allowedToContinue = await this.checkBackupProviderRate(tradeState);
+
+                  if (!allowedToContinue) {
+                    return false;
+                  }
+
+                  allowedToContinue = await firstValueFrom(this._continueSwapTrigger$);
                   return allowedToContinue;
                 } finally {
                   this.closeRetryModal();
@@ -604,14 +645,7 @@ export class PreviewSwapService {
               },
               onRateChange: (rateChangeInfo: RateChangeInfo) => {
                 this.isRateChanged = true;
-                return txStep === 'swapRequest'
-                  ? firstValueFrom(this.modalService.openRateChangedModal(rateChangeInfo))
-                  : this.modalService.openSwapRetryProviderSelectModal(
-                      tradeState,
-                      this.tradeInfo$,
-                      rateChangeInfo,
-                      this.injector
-                    );
+                return firstValueFrom(this.modalService.openRateChangedModal(rateChangeInfo));
               }
             })
           : this.catchSwitchCancel();
