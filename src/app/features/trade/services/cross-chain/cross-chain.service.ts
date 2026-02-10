@@ -276,7 +276,7 @@ export class CrossChainService {
       await trade.swap(swapOptions);
       await this.conditionalAwait(fromToken.blockchain);
 
-      setTimeout(async () => {
+      setTimeout(() => {
         this.tokensFacade.updateTokenBalanceAfterCcrSwap(fromToken, toToken);
       }, 3_000);
 

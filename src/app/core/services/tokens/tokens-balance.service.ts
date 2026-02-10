@@ -200,15 +200,11 @@ export class TokensBalanceService {
     toTokenPrevBalanceWei: BigNumber
   ): Promise<void> {
     const balancePromises = [
-      this.waitForBalanceChangeAndCall(
-        fromToken,
-        fromTokenPrevBalanceWei,
-        this.getAndUpdateTokenBalance.bind(this, fromToken)
+      this.waitForBalanceChangeAndCall(fromToken, fromTokenPrevBalanceWei, () =>
+        this.getAndUpdateTokenBalance(fromToken)
       ),
-      this.waitForBalanceChangeAndCall(
-        toToken,
-        toTokenPrevBalanceWei,
-        this.getAndUpdateTokenBalance.bind(this, toToken)
+      this.waitForBalanceChangeAndCall(toToken, toTokenPrevBalanceWei, () =>
+        this.getAndUpdateTokenBalance(toToken)
       )
     ];
     const fromChainType = BlockchainsInfo.getChainType(fromToken.blockchain);
