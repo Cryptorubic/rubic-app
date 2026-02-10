@@ -633,6 +633,7 @@ export class PreviewSwapService {
                   let allowedToContinue = await this.checkBackupProviderRate(tradeState);
 
                   if (!allowedToContinue) {
+                    this.backToForm();
                     return false;
                   }
 
