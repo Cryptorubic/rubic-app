@@ -2367,18 +2367,18 @@
     tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.1"
 
-"@cryptorubic/core@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.4.1.tgz#7089eb5244a98d0f7006630785d8e679c567b074"
-  integrity sha512-YT8+ddnuH4ZJzoxMGDqhuqmuKxdimUr5oW8g6AdsP0BVEqX7o8ULl+IvG5Tg7h8Buz+gm5Ka1BG8amtFRMbbaA==
+"@cryptorubic/core@1.4.1-alpha-rhino-provider.0":
+  version "1.4.1-alpha-rhino-provider.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/core/-/core-1.4.1-alpha-rhino-provider.0.tgz#04c23bd49113916a7883bdad9a88daaf3a0c7f80"
+  integrity sha512-dxNZWFnSHOmyON8fTNq1sOVaKDJV3By+XaxPZ9O6SZO9DP2hYq/iOimiYqqad/Ly1seAioRgb8X8OAoQlZCRbg==
   dependencies:
     bignumber.js "9.1.2"
     tslib "*"
 
-"@cryptorubic/web3@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.4.1.tgz#caaf7d7da26786d62dd30e847f1525bceb786cba"
-  integrity sha512-biICO4dJhyugEHYu01YxvMSVqKejwXSzhj0HuDpXKcs2BhguIOftmIstl6VLyR57VR3ZXd+l6B68JMt6MDbZFA==
+"@cryptorubic/web3@1.4.1-alpha-rhino-provider.0":
+  version "1.4.1-alpha-rhino-provider.0"
+  resolved "https://registry.yarnpkg.com/@cryptorubic/web3/-/web3-1.4.1-alpha-rhino-provider.0.tgz#eff8c0bfbb78c0c2327ca38cabbadee41fc2e811"
+  integrity sha512-XAlPE33CnbZOjYRbILnesTogNwgjKuUqo0sxgxsk9i8JfkAoYHRH1Q2OKOR5Q7tnElLtEFfBNWqy7UyGIlFheg==
   dependencies:
     "@ethersproject/bignumber" "^5.8.0"
     "@mysten/sui" "^1.24.0"
