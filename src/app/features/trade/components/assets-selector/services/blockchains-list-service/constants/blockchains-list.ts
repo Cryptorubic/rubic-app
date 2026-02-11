@@ -314,11 +314,11 @@ export const blockchainsList: RankedBlockchain[] = [
   //   rank: 0.5,
   //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR, BlockchainTags.NEW]
   // },
-  {
-    name: BLOCKCHAIN_NAME.GRAVITY,
-    rank: 0.5,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.GRAVITY,
+  //   rank: 0.5,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
+  // },
   {
     name: BLOCKCHAIN_NAME.MODE,
     rank: 0.5,
@@ -393,11 +393,11 @@ export const blockchainsList: RankedBlockchain[] = [
     rank: 0.4,
     tags: ['OKB', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   },
-  {
-    name: BLOCKCHAIN_NAME.SEI,
-    rank: 0.4,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.SEI,
+  //   rank: 0.4,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.POPULAR]
+  // },
   // {
   //   name: BLOCKCHAIN_NAME.ZK_LINK,
   //   rank: 0.4,
@@ -425,17 +425,17 @@ export const blockchainsList: RankedBlockchain[] = [
   },
   // { name: BLOCKCHAIN_NAME.MOONBEAM, rank: 0.4, tags: ['GLMR', BlockchainTags.EVM] },
   // { name: BLOCKCHAIN_NAME.MOONRIVER, rank: 0.4, tags: ['MOVR', BlockchainTags.EVM] },
-  { name: BLOCKCHAIN_NAME.CELO, rank: 0.4, tags: [BlockchainTags.EVM] },
+  // { name: BLOCKCHAIN_NAME.CELO, rank: 0.4, tags: [BlockchainTags.EVM] },
   // {
   //   name: BLOCKCHAIN_NAME.ASTAR_EVM,
   //   rank: 0.35,
   //   tags: ['ASTR', BlockchainTags.EVM, BlockchainTags.LAYER_2]
   // },
-  {
-    name: BLOCKCHAIN_NAME.AURORA,
-    rank: 0.35,
-    tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
-  },
+  // {
+  //   name: BLOCKCHAIN_NAME.AURORA,
+  //   rank: 0.35,
+  //   tags: ['ETH', BlockchainTags.EVM, BlockchainTags.LAYER_2]
+  // },
   // {
   //   name: BLOCKCHAIN_NAME.BOBA,
   //   rank: 0.35,
