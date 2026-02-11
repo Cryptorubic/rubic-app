@@ -19,7 +19,10 @@ import {
   RankedBlockchain,
   temporarelyDisabledBlockchains
 } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/blockchains-list';
-import { disabledFromBlockchains } from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
+import {
+  DISABLED_BLOCKCHAINS_MAP,
+  disabledFromBlockchains
+} from '@features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 import { blockchainIcon } from '@shared/constants/blockchain/blockchain-icon';
 import { blockchainLabel } from '@shared/constants/blockchain/blockchain-label';
 import { debounceTime, first, map, startWith } from 'rxjs/operators';
@@ -111,7 +114,10 @@ export abstract class AssetsService {
     ),
     map(([sourceChains, query, filters, networkFromWallet]) => {
       let chains = sourceChains.filter(
-        chain => this.filterQueryBlockchain(query, chain) && this.filterByType(filters, chain)
+        chain =>
+          this.filterQueryBlockchain(query, chain) &&
+          this.filterByType(filters, chain) &&
+          !DISABLED_BLOCKCHAINS_MAP[chain.name]
       );
 
       const input = this.formService.inputValue ?? null;
