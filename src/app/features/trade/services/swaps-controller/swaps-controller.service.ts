@@ -65,6 +65,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { TrustlineService } from '../trustline-service/trustline.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -99,7 +100,8 @@ export class SwapsControllerService {
     private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly trustlineService: TrustlineService
   ) {
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
@@ -283,11 +285,7 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(
-            new SdkUserRejectError('manual transaction reject'),
-            tradeState,
-            callback?.onError
-          );
+          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -469,7 +467,11 @@ export class SwapsControllerService {
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         false,
-        false
+        false,
+        {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
       );
       this.swapsStateService.pickProvider(true);
     }
@@ -538,12 +540,6 @@ export class SwapsControllerService {
           const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade && this.swapFormService.isFilled) {
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-              wrappedTrade.trade,
-              wrappedTrade?.error
-            );
-
             const isEqualFromAmount = this.checkIsEqualFromAmount(
               wrappedTrade.trade.from.tokenAmount
             );
@@ -552,14 +548,27 @@ export class SwapsControllerService {
               wrappedTrade.trade = null;
             }
 
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
+            );
+
+            const needAddTrustline = this.trustlineService.checkTrustline(
+              wrappedTrade.trade,
+              this.authService.userAddress,
+              this.targetNetworkAddressService.address
+            );
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$
+              isNotLinkedAccount$,
+              needAddTrustline
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount, needTrustline]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
@@ -568,7 +577,13 @@ export class SwapsControllerService {
 
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
-                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
+                    this.swapsStateService.updateTrade(
+                      trade,
+                      type,
+                      needApprove,
+                      needAuthWallet,
+                      needTrustline
+                    );
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,

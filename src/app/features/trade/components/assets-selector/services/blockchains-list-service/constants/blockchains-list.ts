@@ -57,7 +57,7 @@ const notEvmChangeNowBlockchainsTagsList: Record<NotEvmChangeNowBlockchainsList,
   [BLOCKCHAIN_NAME.DASH]: ['DASH'],
   [BLOCKCHAIN_NAME.TEZOS]: ['XTZ'],
   // [BLOCKCHAIN_NAME.ASTAR]: ['ASTR'],
-  [BLOCKCHAIN_NAME.STELLAR]: ['XLM'],
+  [BLOCKCHAIN_NAME.STELLAR]: ['XLM', BlockchainTags.POPULAR],
   [BLOCKCHAIN_NAME.NEO]: ['NEO'],
   [BLOCKCHAIN_NAME.NEAR]: ['NEAR'],
   [BLOCKCHAIN_NAME.SOLANA]: ['SOL', BlockchainTags.POPULAR],
@@ -229,6 +229,17 @@ export const blockchainsList: RankedBlockchain[] = [
     name: BLOCKCHAIN_NAME.MONAD,
     rank: 0.73,
     tags: ['ETH', BlockchainTags.POPULAR, BlockchainTags.EVM, BlockchainTags.NEW]
+  },
+  {
+    name: BLOCKCHAIN_NAME.MEGAETH,
+    rank: 0.73,
+    tags: [
+      'ETH',
+      BlockchainTags.POPULAR,
+      BlockchainTags.EVM,
+      BlockchainTags.LAYER_2,
+      BlockchainTags.NEW
+    ]
   },
   {
     name: BLOCKCHAIN_NAME.PLASMA,

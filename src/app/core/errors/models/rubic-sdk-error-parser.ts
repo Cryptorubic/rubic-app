@@ -56,6 +56,8 @@ import { MaxFeePerGasError } from './common/max-fee-per-gas-error';
 import { SimulationFailedError } from '@core/errors/models/common/simulation-failed.error';
 import { nativeTokensList } from '@cryptorubic/core';
 import { TxRevertedInBlockchainError } from './common/tx-reverted-in-blockchain.error';
+import { WrongReceiverError } from './provider/wrong-receiver-error';
+import InactiveWalletError from './common/inactive-wallet.error';
 
 export class RubicSdkErrorParser {
   private static parseErrorByType(
@@ -184,13 +186,23 @@ export class RubicSdkErrorParser {
     // Backpack wallet tx errors
     if (
       err.message.toLowerCase().includes('approval denied') ||
-      err.message.toLowerCase().includes('plugin closed')
+      err.message.toLowerCase().includes('plugin closed') ||
+      err.message.toLowerCase().includes('the user rejected this request') ||
+      err.message.toLowerCase().includes('user declined access')
     ) {
       return new UserRejectError();
     }
 
     if (err.message.toLowerCase().includes('manual swap reject')) {
       return new UserRejectError(err.message);
+    }
+
+    if (err.message.toLowerCase().includes('connected wallet must be the same as receiver')) {
+      return new WrongReceiverError();
+    }
+
+    if (err.message.toLowerCase().includes('account is not activated')) {
+      return new InactiveWalletError();
     }
 
     return new ExecutionRevertedError(err.message);

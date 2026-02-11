@@ -2,7 +2,8 @@
   *ngLet="{
     tradeInfo: tradeInfo$ | async,
     tradeState: tradeState$ | async,
-    transaction: transactionState$ | async
+    transaction: transactionState$ | async,
+    trustlineInfo: trustlineInfo$ | async
   } as state"
 >
   <ng-container header>
@@ -115,7 +116,8 @@
                 ? 'swap'
                 : 'bridge',
             needApprove: state.tradeState?.needApprove,
-            needAuthWallet: state.tradeState.needAuthWallet
+            needAuthWallet: state.tradeState.needAuthWallet,
+            needTrustlineAfterSwap: state.tradeState.needTrustlineOptions?.needTrustlineAfterSwap
           }"
           [state]="state.transaction.step"
         ></app-transaction-state>
@@ -244,29 +246,37 @@
       [trade]="state.tradeState?.trade"
     ></app-mev-bot>
 
-    <div class="preview__action-container">
-      <button
-        class="preview__action-button"
-        *ngLet="buttonState$ | async as buttonState"
-        tuiButton
-        appearance="primary"
-        type="button"
-        size="m"
-        (click)="buttonState?.action()"
-        [disabled]="buttonState?.disabled"
-      >
-        {{ buttonState?.label }}
-      </button>
-      <button
-        *ngIf="state.transaction.step === 'destinationPending'"
-        tuiButton
-        appearance="primary"
-        type="button"
-        size="m"
-        (click)="navigateToHistory()"
-      >
-        See Details >
-      </button>
-    </div>
+    <ng-container *ngLet="buttonState$ | async as buttonState">
+      <div class="preview__action-container" *ngIf="!buttonState.needTrustline; else trustline">
+        <button
+          class="preview__action-button"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="buttonState?.action()"
+          [disabled]="buttonState?.disabled"
+        >
+          {{ buttonState?.label }}
+        </button>
+        <button
+          *ngIf="state.transaction.step === 'destinationPending'"
+          tuiButton
+          appearance="primary"
+          type="button"
+          size="m"
+          (click)="navigateToHistory()"
+        >
+          See Details >
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #trustline>
+      <app-trustline
+        *ngIf="state.trustlineInfo"
+        [options]="state.trustlineInfo"
+        (onTrustlineAdd)="onTrustlineAdd()"
+      ></app-trustline>
+    </ng-template>
   </ng-container>
 </app-window-container>

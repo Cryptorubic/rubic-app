@@ -1,10 +1,11 @@
 import { ProviderInfo } from '@app/features/trade/models/provider-info';
-import { EvmBlockchainName } from '@cryptorubic/core';
+import { ChainType, EvmBlockchainName } from '@cryptorubic/core';
 
 export interface TableRowWithActionButton {
   provider: ProviderInfo;
   status: string;
   fromBlockchain: EvmBlockchainName;
+  toChainType: ChainType;
 }
 
 export interface ActionButtonLoadingStatus {
