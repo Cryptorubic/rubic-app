@@ -135,6 +135,10 @@ export class HeaderComponent {
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
+  public navigateToPrivateSwaps(): void {
+    this.router.navigate(['/private-swaps']);
+  }
+
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }

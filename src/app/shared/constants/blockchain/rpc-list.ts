@@ -8,8 +8,8 @@ import {
   SuiBlockchainName,
   StellarBlockchainName
 } from '@cryptorubic/core';
-import { TronWebProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
-import { StellarRpcProvider } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/models/stellar-rpc-provider';
+import { StellarRpcProvider } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/models/stellar-rpc-provider';
+import { TronWebProvider } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-tron/models/tron-web-provider';
 
 export const rpcList: Record<EvmBlockchainName, string[]> &
   Record<TronBlockchainName, TronWebProvider[]> &
