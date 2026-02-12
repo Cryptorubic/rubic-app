@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { BLOCKCHAIN_NAME, Token, nativeTokensList } from '@cryptorubic/core';
 import {
-  NATIVE_SOL_ADDRESS,
+  WRAP_SOL_ADDRESS,
   addr_to_symbol_map,
   swap_reserved_rent_fee
 } from '../constants/privacycash-consts';
@@ -21,16 +21,28 @@ import {
 import { Connection, Keypair, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { waitFor } from '@cryptorubic/web3';
+import { WalletNotConnectedError, waitFor } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
 import { JupiterSwapService } from './jupiter-swap.service';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { toRubicTokenAddr } from '../utils/converter';
 
 @Injectable()
 export class PrivacyCashSwapService {
   private readonly encryptionService: EncryptionService;
+
+  private readonly _signature$ = new BehaviorSubject<Uint8Array | null>(null);
+
+  public readonly signature$ = this._signature$.asObservable();
+
+  private get signature(): Uint8Array | null {
+    return this._signature$.value;
+  }
 
   private lightWasm: LightWasm;
 
@@ -38,10 +50,20 @@ export class PrivacyCashSwapService {
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly tokensFacadeService: TokensFacadeService,
     private readonly jupiterSwapService: JupiterSwapService,
-    private readonly walletConnectorService: WalletConnectorService
+    private readonly walletConnectorService: WalletConnectorService,
+    private readonly notificationsService: NotificationsService,
+    private readonly destroy$: TuiDestroyService
   ) {
     this.encryptionService = new EncryptionService();
     WasmFactory.getInstance().then(wasmFactory => (this.lightWasm = wasmFactory));
+
+    this.subscribeOnWalletChange();
+  }
+
+  private subscribeOnWalletChange(): void {
+    this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this._signature$.next(null);
+    });
   }
 
   public async makeSwapOrTransfer(
@@ -50,10 +72,10 @@ export class PrivacyCashSwapService {
     dstTokenAddr: string,
     receiverAddr: string
   ): Promise<void> {
-    this.checkRequirements();
+    await this.checkRequirements();
 
     const srcToken = this.tokensFacadeService.findTokenSync({
-      address: srcTokenAddr === NATIVE_SOL_ADDRESS ? nativeTokensList.SOLANA.address : srcTokenAddr,
+      address: srcTokenAddr === WRAP_SOL_ADDRESS ? nativeTokensList.SOLANA.address : srcTokenAddr,
       blockchain: BLOCKCHAIN_NAME.SOLANA
     });
     if (!srcToken) {
@@ -62,7 +84,7 @@ export class PrivacyCashSwapService {
       );
     }
     const dstToken = this.tokensFacadeService.findTokenSync({
-      address: dstTokenAddr === NATIVE_SOL_ADDRESS ? nativeTokensList.SOLANA.address : dstTokenAddr,
+      address: dstTokenAddr === WRAP_SOL_ADDRESS ? nativeTokensList.SOLANA.address : dstTokenAddr,
       blockchain: BLOCKCHAIN_NAME.SOLANA
     });
     if (!dstToken) {
@@ -82,55 +104,53 @@ export class PrivacyCashSwapService {
 
     console.debug('[RUBIC] srcTokenUsdAmount ==>', srcTokenUsdAmount);
 
-    if (!compareAddresses(srcTokenAddr, dstTokenAddr) && srcTokenUsdAmount < 10) {
+    if (
+      !compareAddresses(srcTokenAddr, dstTokenAddr) &&
+      srcAmountWei.gt(0) &&
+      srcTokenUsdAmount < 10
+    ) {
       throw new Error('Amount should be more than 10$ for swap.');
     }
-
-    console.debug('[RUBIC] Signing message...');
-    const signature = await this.signMessage();
-    console.debug('[RUBIC] Successfull sign!');
-
-    // const encryptionService = new EncryptionService();
-    this.encryptionService.deriveEncryptionKeyFromSignature(signature);
 
     const wallet = this.walletConnectorService.provider.wallet;
     const walletPK = new PublicKey(wallet.publicKey.toBytes());
 
-    await this.makeDeposit(
-      srcTokenAddr,
-      srcAmountWei.toNumber(),
-      // encryptionService,
-      // connection,
-      walletPK,
-      async (tx: VersionedTransaction) => {
-        return await wallet.signTransaction(tx);
-      }
-    );
-    if (compareAddresses(srcTokenAddr, dstTokenAddr)) {
-      await this.makeWithdraw(
+    this.notificationsService.showInfo(`Hiding tokens...`);
+
+    /**
+     * If srcAmount passed as 0 => allow user to swap existing balance without new deposit
+     */
+    if (srcAmountWei.gt(0)) {
+      await this.makeDeposit(
         srcTokenAddr,
-        srcToken.decimals,
-        // encryptionService,
-        // connection,
+        srcAmountWei.toNumber(),
         walletPK,
-        new PublicKey(receiverAddr)
+        async (tx: VersionedTransaction) => {
+          return await wallet.signTransaction(tx);
+        }
       );
+    }
+
+    if (compareAddresses(srcTokenAddr, dstTokenAddr)) {
+      await this.makeFullWithdraw(srcTokenAddr, walletPK, new PublicKey(receiverAddr));
     } else {
-      await this.makeSwapAndWithdraw(srcToken, dstToken, receiverAddr, signature);
+      await this.makeSwapAndWithdraw(
+        { ...srcToken, address: srcTokenAddr },
+        { ...dstToken, address: dstTokenAddr },
+        receiverAddr,
+        this.signature
+      );
     }
   }
 
   public async makeDeposit(
     tokenAddr: string,
     depositAmountWei: number,
-    // encryptionService: EncryptionService,
-    // connection: Connection,
     depositorWalletPK: PublicKey,
     transactionSignerFn: (tx: VersionedTransaction) => Promise<VersionedTransaction>
   ): Promise<void> {
-    this.checkRequirements();
+    await this.checkRequirements();
 
-    // const lightWasm = await WasmFactory.getInstance();
     const lightWasm = this.lightWasm;
     const encryptionService = this.encryptionService;
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
@@ -140,7 +160,7 @@ export class PrivacyCashSwapService {
 
     try {
       console.debug(`[RUBIC] Start deposit ${tokenAddr}...`);
-      if (tokenAddr === NATIVE_SOL_ADDRESS) {
+      if (tokenAddr === WRAP_SOL_ADDRESS) {
         await deposit({
           lightWasm,
           amount_in_lamports: depositAmountWei,
@@ -173,46 +193,32 @@ export class PrivacyCashSwapService {
     }
   }
 
-  public async makeWithdraw(
+  public async makePartialWithdraw(
     tokenAddr: string,
-    tokenDecimals: number,
-    // encryptionService: EncryptionService,
-    // connection: Connection,
+    withdrawAmountWei: number,
     srcWalletPK: PublicKey,
     recipientPK: PublicKey
   ): Promise<void> {
-    this.checkRequirements();
-
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SOLANA
     ).public;
     const encryptionService = this.encryptionService;
 
-    const tokenPrivateBalanceWei = await this.getPrivacyCashBalance(
-      tokenAddr,
-      encryptionService,
-      connection,
-      srcWalletPK
-    );
-    const tokenPrivateBalance = Token.fromWei(tokenPrivateBalanceWei, Number(tokenDecimals));
-
     console.debug(`[RUBIC] ${tokenAddr} private balance to withdraw:`, {
-      tokenPrivateBalanceWei,
-      tokenPrivateBalance,
+      withdrawAmountWei,
       srcWallet: srcWalletPK.toBase58(),
       recipientWallet: recipientPK.toBase58()
     });
 
-    // const lightWasm = await WasmFactory.getInstance();
     const lightWasm = this.lightWasm;
     const pathToZkProof = 'assets/circuit2/transaction2';
 
     try {
       console.debug('[RUBIC] Start withdraw...');
-      if (tokenAddr === NATIVE_SOL_ADDRESS) {
+      if (tokenAddr === WRAP_SOL_ADDRESS) {
         await withdraw({
           lightWasm,
-          amount_in_lamports: tokenPrivateBalanceWei,
+          amount_in_lamports: withdrawAmountWei,
           connection,
           encryptionService,
           publicKey: srcWalletPK,
@@ -223,7 +229,7 @@ export class PrivacyCashSwapService {
       } else {
         await withdrawSPL({
           lightWasm,
-          base_units: tokenPrivateBalanceWei,
+          base_units: withdrawAmountWei,
           connection,
           encryptionService,
           publicKey: srcWalletPK,
@@ -240,26 +246,30 @@ export class PrivacyCashSwapService {
     }
   }
 
+  public async makeFullWithdraw(
+    tokenAddr: string,
+    srcWalletPK: PublicKey,
+    recipientPK: PublicKey
+  ): Promise<void> {
+    await this.checkRequirements();
+
+    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(tokenAddr, srcWalletPK);
+
+    return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, srcWalletPK, recipientPK);
+  }
+
   public async makeSwapAndWithdraw(
     srcToken: BalanceToken,
     dstToken: BalanceToken,
     receiverAddr: string,
-    // encryptionService: EncryptionService,
-    // connection: Connection,
     signature: Uint8Array
   ): Promise<void> {
-    this.checkRequirements();
+    await this.checkRequirements();
 
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SOLANA
     ).public;
-    // const encryptionService = this.encryptionService;
 
-    // const srcTokenAddr = document.querySelectorAll('input')[0].value;
-    // const dstTokenAddr = document.querySelectorAll('input')[1].value;
-    // const srcDecimals = document.querySelectorAll('input')[3].value;
-    // const dstDecimals = document.querySelectorAll('input')[4].value;
-    // const receiver = document.querySelectorAll('input')[5].value;
     const walletAddr = this.walletConnectorService.address;
     const userWalletPK = new PublicKey(walletAddr);
     const receiverPK = new PublicKey(receiverAddr);
@@ -274,7 +284,8 @@ export class PrivacyCashSwapService {
       secretKey: burnerKeypair.secretKey.toString(),
       secretBuffer: JSON.stringify(burnerKeypair.secretKey.buffer)
     });
-    localStorage.setItem('PRIVATE_KEY', burnerKeypair.secretKey.toString());
+    localStorage.setItem('PRIVACYCASH_PRIVATE_KEY', burnerKeypair.secretKey.toString());
+    localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', burnerKeypair.publicKey.toBase58());
 
     const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
       srcToken.address,
@@ -287,21 +298,14 @@ export class PrivacyCashSwapService {
     );
 
     // withdraw src coin to burner wallet
-    await this.makeWithdraw(
-      srcToken.address,
-      srcToken.decimals,
-      // encryptionService,
-      // connection,
-      userWalletPK,
-      burnerKeypair.publicKey
-    );
+    await this.makeFullWithdraw(srcToken.address, userWalletPK, burnerKeypair.publicKey);
     console.debug('[RUBIC] after withdraw ==>', {
       from: userWalletPK.toBase58(),
       to: burnerKeypair.publicKey.toBase58()
     });
 
     const srcTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
-      srcToken.address,
+      toRubicTokenAddr(srcToken.address),
       srcTokenBurnerBalanceBeforeWithdraw,
       burnerKeypair,
       connection
@@ -327,6 +331,7 @@ export class PrivacyCashSwapService {
       srcWallet: burnerKeypair.publicKey.toBase58(),
       recepientWallet: burnerKeypair.publicKey.toBase58()
     });
+    this.notificationsService.showInfo(`Swapping tokens...`);
     // swap on burner wallet srcToken -> dstToken
     const swapResp = await this.jupiterSwapService.jupSwap(
       new PublicKey(srcToken.address),
@@ -336,8 +341,9 @@ export class PrivacyCashSwapService {
     );
     console.debug('[RUBIC] after jupSwap ==>', swapResp);
 
+    this.notificationsService.showInfo(`Waiting for network state updating...`);
     const newDstTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
-      dstToken.address,
+      toRubicTokenAddr(dstToken.address),
       dstTokenBurnerBalance,
       burnerKeypair,
       connection
@@ -350,14 +356,11 @@ export class PrivacyCashSwapService {
     );
     console.debug('[RUBIC] dstTokenDepositAmount ==>', dstTokenDepositAmount);
 
-    await new Promise(res => setTimeout(res, 15_000));
-
     // deposit destination token from burner wallet
+    this.notificationsService.showInfo(`Depositing target tokens to private wallet...`);
     await this.makeDeposit(
       dstToken.address,
       dstTokenDepositAmount.toNumber(),
-      // encryptionService,
-      // connection,
       burnerKeypair.publicKey,
       (tx: VersionedTransaction) => {
         tx.sign([burnerKeypair]);
@@ -367,28 +370,24 @@ export class PrivacyCashSwapService {
     console.debug('[RUBIC] after deposit from ==>', burnerKeypair.publicKey.toBase58());
 
     // withdraw from burner to target receiver address
-    await this.makeWithdraw(
-      dstToken.address,
-      dstToken.decimals,
-      // encryptionService,
-      // connection,
-      burnerKeypair.publicKey,
-      receiverPK
-    );
-    console.debug('[RUBIC] after final makeWithdraw ==>');
+    this.notificationsService.showInfo(`Final withdrawal to receiver wallet...`);
+    await this.makeFullWithdraw(dstToken.address, burnerKeypair.publicKey, receiverPK);
+    console.debug('[RUBIC] after final makeFullWithdraw ==>');
   }
 
   /**
    * @returns wei balance on PrivacyCash relayer
    */
-  public async getPrivacyCashBalance(
-    tokenAddr: string,
-    encryptionService: EncryptionService,
-    connection: Connection,
-    walletPK: PublicKey
-  ): Promise<number> {
+  public async getPrivacyCashBalance(tokenAddr: string, walletPK: PublicKey): Promise<number> {
     try {
-      if (tokenAddr === NATIVE_SOL_ADDRESS) {
+      await this.checkRequirements();
+
+      const encryptionService = this.encryptionService;
+      const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        BLOCKCHAIN_NAME.SOLANA
+      ).public;
+
+      if (tokenAddr === WRAP_SOL_ADDRESS) {
         const utxos = await getUtxos({
           publicKey: walletPK,
           connection,
@@ -418,13 +417,22 @@ export class PrivacyCashSwapService {
     }
   }
 
-  private async signMessage(): Promise<Uint8Array> {
-    const wallet = this.walletConnectorService.provider.wallet;
+  public async makeSignature(): Promise<Uint8Array> {
+    const wallet = this.walletConnectorService.provider?.wallet;
+    const userAddr = this.walletConnectorService.address;
 
+    if (!userAddr || !wallet) {
+      this.notificationsService.showWarning('Connect wallet to sign.');
+      throw new WalletNotConnectedError();
+    }
     const encodedMessage = new TextEncoder().encode(`Privacy Money account sign in`);
 
     try {
       const resp = await wallet.signMessage(encodedMessage, 'utf8');
+
+      this._signature$.next(resp.signature);
+      this.encryptionService.deriveEncryptionKeyFromSignature(resp.signature);
+
       return resp.signature;
     } catch (err) {
       throw new Error('Failed to sign message: ' + err.message);
@@ -458,7 +466,7 @@ export class PrivacyCashSwapService {
     tokenAddr: string,
     tokenBurnerWalletBalanceWei: BigNumber
   ): BigNumber {
-    if (tokenAddr === NATIVE_SOL_ADDRESS) {
+    if (tokenAddr === WRAP_SOL_ADDRESS) {
       const swapAmount = tokenBurnerWalletBalanceWei.minus(
         new BigNumber(swap_reserved_rent_fee + 0.002).multipliedBy(1e9)
       );
@@ -475,14 +483,23 @@ export class PrivacyCashSwapService {
     tokenAddr: string,
     prevBurnerBalance: BigNumber,
     burnerKeypair: Keypair,
-    connection: Connection
+    connection: Connection,
+    retryCount: number = 0
   ): Promise<BigNumber> {
-    while (true) {
-      console.debug('[RUBIC] WAIT FOR BALANCE UPDATED');
+    let newBurnerBalance = prevBurnerBalance;
+    while (retryCount < 10) {
       await waitFor(5_000);
-      const newBurnerBalance = await this.getBurnerBalance(tokenAddr, burnerKeypair, connection);
+      newBurnerBalance = await this.getBurnerBalance(tokenAddr, burnerKeypair, connection);
+      console.debug('[RUBIC] WAIT FOR BALANCE UPDATED', {
+        tokenAddr,
+        prevBurnerBalance,
+        newBurnerBalance
+      });
+      // @TODO эта проверка не срабатывает даже если новый баланс стал больше старого
       if (newBurnerBalance.gt(prevBurnerBalance)) return newBurnerBalance;
+      retryCount++;
     }
+    return newBurnerBalance;
   }
 
   private async getBurnerBalance(
@@ -524,7 +541,7 @@ export class PrivacyCashSwapService {
     return new Uint8Array(derivedBits);
   }
 
-  public checkRequirements(): void {
+  public async checkRequirements(): Promise<void> {
     const wallet = this.walletConnectorService.provider.wallet;
     const userAddr = this.walletConnectorService.address;
     const connectedChain = this.walletConnectorService.network;
@@ -535,5 +552,7 @@ export class PrivacyCashSwapService {
     if (connectedChain !== BLOCKCHAIN_NAME.SOLANA) {
       throw new Error('SOLANA network not connected');
     }
+
+    if (!this.signature) await this.makeSignature();
   }
 }

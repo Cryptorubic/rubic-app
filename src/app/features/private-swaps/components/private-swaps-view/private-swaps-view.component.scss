@@ -20,6 +20,17 @@ app-window-container {
   }
 }
 
+.unauthorized {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+
+  font-size: 16px;
+}
+
 .tab-content {
   display: flex;
   flex-direction: column;

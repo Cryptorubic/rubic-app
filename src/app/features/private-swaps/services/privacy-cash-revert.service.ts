@@ -1,33 +1,34 @@
 import { Injectable } from '@angular/core';
 import { getOrCreateAssociatedTokenAccount, transfer } from '@solana/spl-token';
-import { NATIVE_SOL_ADDRESS } from '../constants/privacycash-consts';
+import { WRAP_SOL_ADDRESS } from '../constants/privacycash-consts';
 import {
   Keypair,
-  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
   Transaction,
   sendAndConfirmTransaction
 } from '@solana/web3.js';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, Token } from '@cryptorubic/core';
+import BigNumber from 'bignumber.js';
 
 @Injectable()
 export class PrivacyCashRevertService {
   constructor(private readonly sdkLegacyService: SdkLegacyService) {}
 
-  public async revertTokens(): Promise<void> {
-    const tokenAddr: string = document.querySelectorAll('input')[6].value;
-    const amount: string = document.querySelectorAll('input')[8].value;
-    const receiverAddr: string = document.querySelectorAll('input')[9].value;
-
-    if (tokenAddr === NATIVE_SOL_ADDRESS) {
-      return this.revertNative(Number(amount), receiverAddr);
+  public async refundTokens(
+    tokenAddr: string,
+    amountNonWei: number,
+    decimals: number,
+    receiverAddr: string
+  ): Promise<void> {
+    if (tokenAddr === WRAP_SOL_ADDRESS) {
+      return this.revertNative(amountNonWei, receiverAddr);
     }
-    return this.revertSPL(tokenAddr, receiverAddr);
+    return this.revertSPL(tokenAddr, amountNonWei, decimals, receiverAddr);
   }
 
-  public async revertNative(amount: number, receiverAddr: string): Promise<void> {
+  public async revertNative(amountNonWei: number, receiverAddr: string): Promise<void> {
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SOLANA
     ).public;
@@ -41,7 +42,7 @@ export class PrivacyCashRevertService {
       SystemProgram.transfer({
         fromPubkey: burnerKeypair.publicKey,
         toPubkey: recipientAddress,
-        lamports: amount * LAMPORTS_PER_SOL // Amount in SOL
+        lamports: new BigNumber(Token.toWei(amountNonWei, 9)).toNumber() // Amount in SOL
       })
     );
 
@@ -51,7 +52,12 @@ export class PrivacyCashRevertService {
     console.debug('Transaction signature:', signature);
   }
 
-  public async revertSPL(tokenAddr: string, receiverAddr: string): Promise<void> {
+  public async revertSPL(
+    tokenAddr: string,
+    amountNonWei: number,
+    decimals: number,
+    receiverAddr: string
+  ): Promise<void> {
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SOLANA
     ).public;
@@ -60,11 +66,11 @@ export class PrivacyCashRevertService {
     const recipientAddress = new PublicKey(receiverAddr);
     const mintAddress = new PublicKey(tokenAddr);
 
-    const decimals: string = document.querySelectorAll('input')[7].value;
-    const revertAmount: string = document.querySelectorAll('input')[8].value;
+    // const decimals: string = document.querySelectorAll('input')[7].value;
+    // const revertAmount: string = document.querySelectorAll('input')[8].value;
 
-    const transferAmount = Number(revertAmount);
-    const tokenDecimals = Number(decimals);
+    // const transferAmount = Number(revertAmount);
+    // const tokenDecimals = Number(decimals);
 
     console.debug('START');
 
@@ -98,7 +104,9 @@ export class PrivacyCashRevertService {
         fromTokenAccount.address, // Source ATA
         toTokenAccount.address, // Destination ATA
         senderKeypair.publicKey, // Owner of the source ATA (must sign)
-        transferAmount * Math.pow(10, tokenDecimals) // Amount in raw integers (accounting for decimals)
+        new BigNumber(Token.toWei(amountNonWei, decimals)).toNumber(), // Amount in raw integers (accounting for decimals)
+        [],
+        { skipPreflight: true }
       );
 
       console.debug('Token Transfer successful!');
@@ -110,7 +118,7 @@ export class PrivacyCashRevertService {
   }
 
   private getKeypairFromSecret(): Keypair | null {
-    const burnerSecretKey = localStorage.getItem('PRIVATE_KEY');
+    const burnerSecretKey = localStorage.getItem('PRIVACYCASH_PRIVATE_KEY');
     const array = burnerSecretKey.split(',').map(s => parseInt(s));
     const secretKey = Uint8Array.from(array);
 

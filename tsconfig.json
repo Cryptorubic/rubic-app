@@ -13,7 +13,6 @@
     "declaration": false,
     "module": "es2020",
     "moduleResolution": "bundler",
-    // "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
