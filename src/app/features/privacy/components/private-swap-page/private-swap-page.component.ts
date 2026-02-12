@@ -88,11 +88,26 @@ export class PrivateSwapPageComponent {
 
   public handleMaxButton(): void {}
 
+  public async swapCookbook(): Promise<void> {
+    try {
+      this._loading$.next(true);
+      await this.swapService.swapWithZeroX(
+        this.railgunWalletInfo,
+        this._fromAsset$.value.address,
+        this._fromAsset$.value.decimals,
+        Token.toWei(this._fromAmount$.value.actualValue.toFixed(), this._fromAsset$.value.decimals),
+        this._toAsset$.value.address,
+        this._toAsset$.value.decimals
+      );
+    } finally {
+      this._loading$.next(false);
+    }
+  }
+
   public async swap(): Promise<void> {
     try {
       this._loading$.next(true);
       await this.swapService.crossContractCall(
-        '',
         this.railgunWalletInfo,
         this._fromAsset$.value.address,
         Token.toWei(this._fromAmount$.value.actualValue.toFixed(), this._fromAsset$.value.decimals),

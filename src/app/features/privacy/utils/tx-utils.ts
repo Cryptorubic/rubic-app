@@ -108,17 +108,6 @@ export const serializeERC721Transfer = (
   };
 };
 
-export const getOriginalGasDetailsForTransaction = async (
-  _network: NetworkName,
-  _sendWithPublicWallet: boolean
-): Promise<TransactionGasDetails> => {
-  throw new Error('Not implemented - getOriginalGasDetailsForTransaction');
-  // MOCK HANDLE WALLET MANAGEMENT AND GAS ESTIMATES
-  // const { wallet } = getProviderWallet();
-  // const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
-  // return gasDetails;
-};
-
 /**
  * Retrieves gas details for a transaction based on network and wallet information.
  *
@@ -182,5 +171,14 @@ export const getGasDetailsForTransaction = async (
       };
       break;
   }
+  return gasDetails;
+};
+
+export const getOriginalGasDetailsForTransaction = async (
+  wallet: Wallet | HDNodeWallet,
+  network: NetworkName,
+  sendWithPublicWallet: boolean
+): Promise<TransactionGasDetails> => {
+  const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
   return gasDetails;
 };
