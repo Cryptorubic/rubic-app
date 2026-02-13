@@ -164,8 +164,15 @@ export class RubicApiService {
     >(this.client, 'events').pipe(
       concatMap(wsResponse => {
         const { trade, total, calculated, data } = wsResponse;
-        let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
-          Promise.resolve(null);
+
+        if (!this.latestQuoteParams) {
+          return of({
+            total,
+            calculated,
+            wrappedTrade: null,
+            ...(data && { tradeType: wsResponse.type })
+          });
+        }
 
         const rubicApiError = data
           ? {
@@ -173,8 +180,7 @@ export class RubicApiService {
               type: wsResponse.type
             }
           : data;
-
-        promise =
+        const promise: Promise<WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
           this.latestQuoteParams?.srcTokenBlockchain !== this.latestQuoteParams?.dstTokenBlockchain
             ? TransformUtils.transformCrossChain(
                 trade!,
