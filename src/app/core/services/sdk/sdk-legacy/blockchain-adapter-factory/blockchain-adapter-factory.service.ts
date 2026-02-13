@@ -21,7 +21,7 @@ import {
   TonAdapter,
   TronAdapter
 } from '@cryptorubic/web3';
-import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
+import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 
 @Injectable({
   providedIn: 'root'

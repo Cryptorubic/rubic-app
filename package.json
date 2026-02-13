@@ -103,6 +103,7 @@
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
+    "privacycash": "^1.1.15",
     "querystring-es3": "^0.2.1",
     "rpc-websockets": "7.9.0",
     "rxjs": "7.8.1",
