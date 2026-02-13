@@ -13,11 +13,11 @@ import { PrivateSwapsRoutingModule } from './private-swaps-routing.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { PrivacyCashRevertService } from './services/privacy-cash-revert.service';
 import { PrivacyCashSwapService } from './services/privacy-cash-swap.service';
-import { JupiterSwapService } from './services/jupiter-swap.service';
+import { PrivacyCashApiService } from './services/privacy-cash-api.service';
 
 @NgModule({
   declarations: [PrivateSwapsViewComponent],
-  providers: [PrivacyCashRevertService, PrivacyCashSwapService, JupiterSwapService],
+  providers: [PrivacyCashRevertService, PrivacyCashSwapService, PrivacyCashApiService],
   imports: [
     CommonModule,
     SharedModule,

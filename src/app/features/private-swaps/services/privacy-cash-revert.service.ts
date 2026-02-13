@@ -8,6 +8,7 @@ import {
   Transaction,
   sendAndConfirmTransaction
 } from '@solana/web3.js';
+
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { BLOCKCHAIN_NAME, Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -28,7 +29,7 @@ export class PrivacyCashRevertService {
     return this.revertSPL(tokenAddr, amountNonWei, decimals, receiverAddr);
   }
 
-  public async revertNative(amountNonWei: number, receiverAddr: string): Promise<void> {
+  private async revertNative(amountNonWei: number, receiverAddr: string): Promise<void> {
     const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
       BLOCKCHAIN_NAME.SOLANA
     ).public;
@@ -47,12 +48,14 @@ export class PrivacyCashRevertService {
     );
 
     // 4. Sign, send and confirm
-    const signature = await sendAndConfirmTransaction(connection, transaction, [burnerKeypair]);
+    const signature = await sendAndConfirmTransaction(connection, transaction, [burnerKeypair], {
+      commitment: 'processed'
+    });
 
     console.debug('Transaction signature:', signature);
   }
 
-  public async revertSPL(
+  private async revertSPL(
     tokenAddr: string,
     amountNonWei: number,
     decimals: number,
@@ -66,17 +69,10 @@ export class PrivacyCashRevertService {
     const recipientAddress = new PublicKey(receiverAddr);
     const mintAddress = new PublicKey(tokenAddr);
 
-    // const decimals: string = document.querySelectorAll('input')[7].value;
-    // const revertAmount: string = document.querySelectorAll('input')[8].value;
-
-    // const transferAmount = Number(revertAmount);
-    // const tokenDecimals = Number(decimals);
-
     console.debug('START');
 
     try {
       console.debug("Get or create the sender's Associated Token Account (ATA)");
-      // 1. Get or create the sender's Associated Token Account (ATA)
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
         senderKeypair, // Payer for potential ATA creation
@@ -85,7 +81,6 @@ export class PrivacyCashRevertService {
       );
 
       console.debug("Get or create the recipient's Associated Token Account (ATA)");
-      // 2. Get or create the recipient's Associated Token Account (ATA)
       // The sender's keypair will pay for the creation if the recipient's ATA doesn't exist
       const toTokenAccount = await getOrCreateAssociatedTokenAccount(
         connection,
@@ -106,7 +101,7 @@ export class PrivacyCashRevertService {
         senderKeypair.publicKey, // Owner of the source ATA (must sign)
         new BigNumber(Token.toWei(amountNonWei, decimals)).toNumber(), // Amount in raw integers (accounting for decimals)
         [],
-        { skipPreflight: true }
+        { skipPreflight: true, commitment: 'processed' }
       );
 
       console.debug('Token Transfer successful!');

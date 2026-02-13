@@ -1,5 +1,9 @@
 <app-window-container
-  *ngLet="{ privateBalance: privateBalanceNonWei$ | async, signature: signature$ | async } as state"
+  *ngLet="{
+    privateBalance: privateBalanceNonWei$ | async,
+    signature: signature$ | async,
+    dstAmount: dstAmount$ | async
+  } as state"
 >
   <ng-container header> Private swaps </ng-container>
 
@@ -23,8 +27,8 @@
     <!-- Deposit Tab -->
     <div *ngIf="activeTabIndex === 0" class="tab-content">
       <div class="row">
-        <tui-input class="field" [formControl]="amountCtrl" tuiTextfieldSize="m">
-          Amount
+        <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
+          Deposit amount
         </tui-input>
         <tui-select
           class="field"
@@ -46,6 +50,17 @@
         {{ findTokenNameById(privacyCashFormValue.srcToken) }}
       </div>
 
+      <div class="row">
+        <tui-input
+          class="field"
+          [formControl]="dstAmountCtrl"
+          tuiTextfieldSize="m"
+          [disabled]="true"
+        >
+          Estimated private balance
+        </tui-input>
+      </div>
+
       <div class="row row-center">
         <button tuiButton type="button" appearance="primary" size="m" (click)="makeDeposit()">
           Deposit
@@ -56,8 +71,8 @@
     <!-- Withdraw Tab -->
     <div *ngIf="activeTabIndex === 1" class="tab-content">
       <div class="row">
-        <tui-input class="field" [formControl]="amountCtrl" tuiTextfieldSize="m">
-          Amount
+        <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
+          Withdraw amount
         </tui-input>
         <tui-select
           class="field"
@@ -132,8 +147,8 @@
       </div>
 
       <div class="row">
-        <tui-input class="field" [formControl]="amountCtrl" tuiTextfieldSize="m">
-          Amount
+        <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
+          Input amount
         </tui-input>
       </div>
 
@@ -143,8 +158,19 @@
         </tui-input>
       </div>
 
+      <div class="row">
+        <tui-input
+          class="field"
+          [formControl]="dstAmountCtrl"
+          tuiTextfieldSize="m"
+          [disabled]="true"
+        >
+          Estimated output amount
+        </tui-input>
+      </div>
+
       <div class="row row-center">
-        <button tuiButton type="button" appearance="primary" size="m" (click)="makeTransfer()">
+        <button tuiButton type="button" appearance="primary" size="m" (click)="makeSwap()">
           {{
             privacyCashFormValue.srcToken === privacyCashFormValue.dstToken ? 'Transfer' : 'Swap'
           }}
@@ -155,8 +181,8 @@
     <!-- Refund Tab -->
     <div *ngIf="activeTabIndex === 3" class="tab-content">
       <div class="row">
-        <tui-input class="field" [formControl]="amountCtrl" tuiTextfieldSize="m">
-          Amount
+        <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
+          Refund amount
         </tui-input>
         <tui-select
           class="field"
