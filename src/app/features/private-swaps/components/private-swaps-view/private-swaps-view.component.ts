@@ -13,6 +13,7 @@ import { NotificationsService } from '@app/core/services/notifications/notificat
 import {
   BehaviorSubject,
   combineLatestWith,
+  debounceTime,
   filter,
   map,
   of,
@@ -74,6 +75,7 @@ export class PrivateSwapsViewComponent {
   public readonly privateBalanceNonWei$ = this._updatePrivateBalance$.pipe(
     combineLatestWith(this.srcTokenCtrl.valueChanges, this.walletConnectorService.addressChange$),
     filter(([_, srcTokenAddr]: [void, string, string]) => srcTokenAddr !== null),
+    debounceTime(1_000),
     switchMap(([_, srcTokenAddr, userAddr]: [void, string, string]) =>
       userAddr
         ? this.privacyCashSwapService.getPrivacyCashBalance(srcTokenAddr, new PublicKey(userAddr))
