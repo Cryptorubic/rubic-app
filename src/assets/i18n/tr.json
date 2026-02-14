@@ -57,6 +57,7 @@
     "OverQueryLimit": "Kısa bir süre içinde çok fazla işlem gerçekleştirmeye çalıştınız ve 30 dakika içinde maksimum 3 işlem olan Binance köprü kısıtlamalarını aştınız.\nLütfen bekleyin ve tekrar deneyin, hala sorun yaşıyorsanız lütfen bizimle iletişime geçin.",
     "userReject": "İşlemin yürütülmesini reddettiniz. Lütfen işlemi tamamlamak için önce onaylayın.",
     "rubicError": "Lütfen daha sonra tekrar deneyin veya başka bir cihaz kullanmayı deneyin. Hala sorun yaşıyorsanız, lütfen bize ulaşın",
+    "genericInsufficientGasFundsError": "Insufficient funds for gas fee. Decrease swap amount or increase native tokens balance.",
     "insufficientFunds": "Yeterli {{ tokenSymbol }} yok.",
     "insufficientFunds1inch": "Transfer ve gaz ücreti için yeterli miktarda {{ nativeToken }} yok. İşlem için daha az miktar girin veya {{ nativeToken }} bakiyenizi doldurun.",
     "noQrCode": "Lütfen QR kodunu taradığınızdan emin olun.",
