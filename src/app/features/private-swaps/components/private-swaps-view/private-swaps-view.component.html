@@ -50,17 +50,6 @@
         {{ findTokenNameById(privacyCashFormValue.srcToken) }}
       </div>
 
-      <div class="row">
-        <tui-input
-          class="field"
-          [formControl]="dstAmountCtrl"
-          tuiTextfieldSize="m"
-          [disabled]="true"
-        >
-          Estimated private balance
-        </tui-input>
-      </div>
-
       <div class="row row-center">
         <button tuiButton type="button" appearance="primary" size="m" (click)="makeDeposit()">
           Deposit
@@ -97,6 +86,17 @@
       <div class="row">
         <tui-input class="field" [formControl]="receiverCtrl" tuiTextfieldSize="m">
           Receiver address
+        </tui-input>
+      </div>
+
+      <div class="row">
+        <tui-input
+          class="field"
+          [formControl]="dstAmountCtrl"
+          tuiTextfieldSize="m"
+          [disabled]="true"
+        >
+          Estimated amount
         </tui-input>
       </div>
 

@@ -112,7 +112,7 @@ export class PrivateSwapsViewComponent {
     ),
     filter(
       (value: PrivacyCashFormValue) =>
-        value.amount && !!value.srcToken && (this.activeTabIndex !== 2 || !!value.dstToken)
+        value.amount !== null && !!value.srcToken && (this.activeTabIndex !== 2 || !!value.dstToken)
     ),
     debounceTime(300),
     switchMap(formValue =>
