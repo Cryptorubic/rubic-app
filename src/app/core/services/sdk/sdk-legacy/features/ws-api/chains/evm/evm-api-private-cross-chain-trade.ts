@@ -145,7 +145,7 @@ export class EvmApiPrivateCrossChainTrade extends EvmCrossChainTrade {
       const { data, value, to } = await this.encode({
         ...options,
         fromAddress: emporiumAddress,
-        receiverAddress: this.walletAddress || emporiumAddress
+        receiverAddress: options.receiverAddress || this.walletAddress
       });
 
       const subAccount: SubAccount = {
