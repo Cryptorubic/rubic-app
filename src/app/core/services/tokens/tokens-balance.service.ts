@@ -260,7 +260,10 @@ export class TokensBalanceService {
     });
   }
 
-  public async fetchDifferentChainsBalances(tokens: Token[]): Promise<BalanceToken[]> {
+  public async fetchDifferentChainsBalances(
+    tokens: Token[],
+    setBalanceLoading = true
+  ): Promise<BalanceToken[]> {
     const chainTokens: Partial<Record<BlockchainName, Token[]>> = {};
     tokens.forEach(token => {
       if (!chainTokens[token.blockchain]) {
@@ -280,7 +283,9 @@ export class TokensBalanceService {
       return firstValueFrom(
         this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
       ).then(() => {
-        this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+        if (setBalanceLoading) {
+          this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+        }
         const tokensObject = this.collectionsFacade.blockchainTokens[chain].getTokens();
         const tokensState = Object.values(tokensObject).map(token => token.address);
 
@@ -297,7 +302,9 @@ export class TokensBalanceService {
             const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
 
             this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
-            this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+            if (setBalanceLoading) {
+              this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+            }
 
             return tokensWithBalances;
           });
