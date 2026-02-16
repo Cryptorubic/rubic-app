@@ -58,6 +58,7 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 
 @Injectable()
 export class CrossChainService {
@@ -92,7 +93,8 @@ export class CrossChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly themeService: ThemeService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -131,12 +133,17 @@ export class CrossChainService {
       dstTokenAddress: toToken.address
     };
 
-    this.rubicApiService.calculateAsync({
-      calculationTimeout: 60,
-      showDangerousRoutes: true,
-      ...tradeParams,
-      ...options
-    });
+    const isPrivateMode = this.themeService.theme === 'private';
+
+    this.rubicApiService.calculateAsync(
+      {
+        calculationTimeout: 60,
+        showDangerousRoutes: true,
+        ...tradeParams,
+        ...options
+      },
+      isPrivateMode
+    );
   }
 
   private async getOptions(

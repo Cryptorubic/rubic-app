@@ -1,31 +1,17 @@
 @use 'src/scss/vars' as *;
 
-html.light {
-  --app-background: #fff; // done
+html.private {
+  --app-background: #0c0f0c; // done
   --dropdpwn-background: rgba(60, 61, 68, 0.85);
 
-  --io-background: #fff;
+  --io-background: #141414;
 
-  --tui-primary: #00e28d;
+  --tui-primary: #05cc81;
   --tui-primary-hover: #02b774;
   --tui-primary-active: #02b774;
   --tui-primary-text: #14141d;
 
-  --tui-secondary: #f4f4f4; // done
-  --tui-secondary-hover: #eae9e9ff;
-  --tui-secondary-active: #eae9e9ff;
-
-  --tui-link: black; // done
-  --tui-link-hover: black; // done
-
-  --tui-base-01: #fff; // done
-  --tui-base-03: #fff; // done
-  --tui-base-04: #4d4d59;
-
-  --tui-text-01: black;
-  --tui-text-02: #9b9ba9;
-  --tui-text-03: #9b9ba9;
-
-  --tui-padding-xs: 0.25rem;
-  --tui-padding-s: 0.5rem;
+  --tui-secondary: #272727; // done
+  --primary-background: #141414;
+  --tui-base-01: #141414;
 }

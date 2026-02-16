@@ -46,6 +46,9 @@ import { ArbitrumRbcBridgeTrade } from '../cross-chain/calculation-manager/provi
 import { RubicError } from '@app/core/errors/models/rubic-error';
 import { SdkLegacyService } from '../../sdk-legacy.service';
 import { RubicApiService } from '../../rubic-api/rubic-api.service';
+import { EvmApiPrivateOnChainTrade } from './chains/evm/evm-api-private-on-chain-trade';
+import { EvmApiPrivateCrossChainTrade } from './chains/evm/evm-api-private-cross-chain-trade';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -54,6 +57,8 @@ export class TransformUtils {
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    hinkalSdk: HinkalSDKService,
+    isPrivateMode: boolean,
     err?: RubicApiError
   ): Promise<WrappedCrossChainTrade> {
     if (!res && !err) {
@@ -94,13 +99,17 @@ export class TransformUtils {
       } else if (tradeType === CROSS_CHAIN_TRADE_TYPE.EDDY_BRIDGE) {
         trade = new EddyBridgeTrade(params, sdkLegacyService, rubicApiService);
       } else {
-        trade = new EvmApiCrossChainTrade(
+        const crossChainTrade = isPrivateMode
+          ? EvmApiPrivateCrossChainTrade
+          : EvmApiCrossChainTrade;
+        trade = new crossChainTrade(
           {
             ...params,
             needAuthWallet: parsedWarnings.needAuthWallet
           },
           sdkLegacyService,
-          rubicApiService
+          rubicApiService,
+          hinkalSdk
         );
       }
     } else if (chainType === CHAIN_TYPE.TON) {
@@ -151,6 +160,8 @@ export class TransformUtils {
     _integratorAddress: string,
     sdkLegacyService: SdkLegacyService,
     rubicApiService: RubicApiService,
+    hinkalSdk: HinkalSDKService,
+    isPrivateMode: boolean,
     err?: RubicApiError
   ): Promise<WrappedOnChainTradeOrNull> {
     if (!response && !err) {
@@ -176,10 +187,12 @@ export class TransformUtils {
     let trade: OnChainTrade | null = null;
 
     if (chainType === CHAIN_TYPE.EVM) {
-      trade = new EvmApiOnChainTrade(
+      const onChainTrade = isPrivateMode ? EvmApiPrivateOnChainTrade : EvmApiOnChainTrade;
+      trade = new onChainTrade(
         tradeParams as EvmApiOnChainConstructor,
         sdkLegacyService,
-        rubicApiService
+        rubicApiService,
+        hinkalSdk
       );
     } else if (chainType === CHAIN_TYPE.TRON) {
       trade = new TronApiOnChainTrade(

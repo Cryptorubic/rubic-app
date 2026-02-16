@@ -15,7 +15,8 @@ export class RubicVolumeComponent {
 
   public readonly icon = {
     dark: 'assets/images/total-values/accumulated-icon.svg',
-    light: 'assets/images/total-values/accumulated-icon_light.svg'
+    light: 'assets/images/total-values/accumulated-icon_light.svg',
+    private: 'assets/images/total-values/accumulated-icon.svg'
   };
 
   constructor(

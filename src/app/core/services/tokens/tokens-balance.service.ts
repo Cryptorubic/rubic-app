@@ -7,7 +7,8 @@ import {
   ChainType,
   nativeTokensList,
   TEST_EVM_BLOCKCHAIN_NAME,
-  Token as OldToken
+  Token as OldToken,
+  blockchainId
 } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { AbstractAdapter, Web3Pure } from '@cryptorubic/web3';
@@ -28,6 +29,7 @@ import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.servi
 import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-collections-facade.service';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
+import { HinkalSDKService } from '../hinkal-sdk/hinkal-sdk.service';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +48,8 @@ export class TokensBalanceService {
   private readonly configService = inject(PlatformConfigurationService);
 
   private readonly collectionsFacade = inject(TokensCollectionsFacadeService);
+
+  private readonly hinkalSdk = inject(HinkalSDKService);
 
   public initSubscribes(): void {
     this.subscribeOnWallet();
@@ -90,7 +94,11 @@ export class TokensBalanceService {
       const blockchainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
         token.blockchain as RubicAny
       );
-      const balanceInWei = await blockchainAdapter.getBalance(this.userAddress, token.address);
+
+      const promise = this.hinkalSdk.isPrivateMode()
+        ? this.hinkalSdk.getPrivateBalance(blockchainId[token.blockchain], token.address)
+        : blockchainAdapter.getBalance(this.userAddress, token.address);
+      const balanceInWei = await promise;
 
       const storedToken = this.findTokenSync(token);
       if (!token) return new BigNumber(NaN);
@@ -229,8 +237,11 @@ export class TokensBalanceService {
         const tokensObject = this.collectionsFacade.blockchainTokens[chain].getTokens();
         const tokensState = Object.values(tokensObject).map(token => token.address);
 
-        return adapter
-          .getTokensBalances(this.authService.userAddress, tokensState)
+        const promise = this.hinkalSdk.isPrivateMode()
+          ? this.hinkalSdk.getPrivateBalances(blockchainId[chain], tokensState)
+          : adapter.getTokensBalances(this.authService.userAddress, tokensState);
+
+        return promise
           .catch(() => tokensState.map(() => new BigNumber(NaN)))
           .then(balances => {
             const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
@@ -257,9 +268,13 @@ export class TokensBalanceService {
     chainType: ChainType,
     chains: BlockchainName[]
   ): Promise<void> {
-    const resultChains = chains.filter(
-      (chain: BlockchainName) => chainType === BlockchainsInfo.getChainType(chain)
-    );
+    const resultChains = chains.filter((chain: BlockchainName) => {
+      try {
+        return chainType === BlockchainsInfo.getChainType(chain);
+      } catch {
+        return false;
+      }
+    });
 
     return new Promise(resolve => {
       resultChains.forEach((chain, index) => {
@@ -271,8 +286,10 @@ export class TokensBalanceService {
           const tokensObject = this.collectionsFacade.blockchainTokens[chain].getTokens();
           const tokens = Object.values(tokensObject).map(token => token.address);
 
-          adapter
-            .getTokensBalances(address, tokens)
+          const promise = this.hinkalSdk.isPrivateMode()
+            ? this.hinkalSdk.getPrivateBalances(blockchainId[chain], tokens)
+            : adapter.getTokensBalances(address, tokens);
+          promise
             .catch(() => tokens.map(() => new BigNumber(NaN)))
             .then(balances => {
               const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
@@ -357,17 +374,23 @@ export class TokensBalanceService {
       .subscribe(([user, balanceNetworks]) => {
         if (user?.address) {
           this.collectionsFacade.allTokens.setBalanceLoading(true);
-          Promise.all([
-            this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
-            this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
-          ]).then(([successT1request]) => {
-            if (!successT1request) {
-              this.fetchListBalances(user.address, user.chainType, balanceNetworks).then(() => {
-                this.collectionsFacade.allTokens.setBalanceLoading(false);
-              });
-            }
-            this.collectionsFacade.allTokens.setBalanceLoading(false);
-          });
+          if (this.hinkalSdk.isPrivateMode()) {
+            this.fetchListBalances(user.address, user.chainType, balanceNetworks).then(() => {
+              this.collectionsFacade.allTokens.setBalanceLoading(false);
+            });
+          } else {
+            Promise.all([
+              this.fetchT1Balances(user.address, user.chainType, balanceNetworks),
+              this.fetchT2Balances(user.address, user.chainType, balanceNetworks)
+            ]).then(([successT1request]) => {
+              if (!successT1request) {
+                this.fetchListBalances(user.address, user.chainType, balanceNetworks).then(() => {
+                  this.collectionsFacade.allTokens.setBalanceLoading(false);
+                });
+              }
+              this.collectionsFacade.allTokens.setBalanceLoading(false);
+            });
+          }
         } else {
           this.tokensStore.clearAllBalances();
         }

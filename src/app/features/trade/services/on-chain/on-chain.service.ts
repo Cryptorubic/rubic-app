@@ -53,6 +53,7 @@ import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -85,7 +86,8 @@ export class OnChainService {
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly themeService: ThemeService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -117,12 +119,17 @@ export class OnChainService {
       dstTokenAddress: toToken.address
     };
 
-    this.rubicApiService.calculateAsync({
-      calculationTimeout: 60,
-      showDangerousRoutes: true,
-      ...tradeParams,
-      ...options
-    });
+    const isPrivateMode = this.themeService.theme === 'private';
+
+    this.rubicApiService.calculateAsync(
+      {
+        calculationTimeout: 60,
+        showDangerousRoutes: true,
+        ...tradeParams,
+        ...options
+      },
+      isPrivateMode
+    );
   }
 
   /**

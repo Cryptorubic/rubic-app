@@ -5,7 +5,10 @@
     fromAsset: fromAsset$ | async,
     fromAmount: fromAmount$ | async,
     toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async
+    toAmount: toAmount$ | async,
+    isSwapForm: isSwapForm$ | async,
+    formType: formType$ | async,
+    isLoading: isLoading$ | async
   } as state"
 >
   <app-form-header></app-form-header>
@@ -34,8 +37,11 @@
         ></app-user-balance-container>
       </div>
     </app-input-output-container>
-    <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
-    <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
+    <app-form-switcher (switcherClick)="revert()" *ngIf="state.isSwapForm"></app-form-switcher>
+    <app-input-output-container
+      *ngIf="state.isSwapForm"
+      [round]="state.displayReceiver ? 'none' : 'bottom'"
+    >
       <app-asset-selector
         left
         selectorType="to"
@@ -61,8 +67,22 @@
 
   <ng-container footer>
     <div class="buttons-container">
-      <app-action-button></app-action-button>
+      <app-action-button *ngIf="state.isSwapForm; else privateAction"></app-action-button>
       <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
     </div>
+
+    <ng-template #privateAction>
+      <button
+        [disabled]="state.isLoading"
+        (click)="invokeAction(state.formType.formType)"
+        class="private-action"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+      >
+        {{ state.isLoading ? 'Loading...' : state.formType.text }}
+      </button>
+    </ng-template>
   </ng-container>
 </app-window-container>

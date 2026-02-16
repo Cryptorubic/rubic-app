@@ -18,8 +18,6 @@ export class TradePageService {
     return this._formContent$.value;
   }
 
-  constructor() {}
-
   public setState(value: FormType): void {
     this._formContent$.next(value);
   }

@@ -35,12 +35,16 @@ import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
-  constructor(private readonly sdkLegacyService: SdkLegacyService) {}
+  constructor(
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly hinkalSdkService: HinkalSDKService
+  ) {}
 
   private get apiUrl(): string {
     const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
@@ -52,6 +56,8 @@ export class RubicApiService {
 
   private latestQuoteParams: QuoteRequestInterface | null = null;
 
+  private isPrivateMode: boolean = false;
+
   private getSocket(): Socket {
     const ioClient = io(this.apiUrl, {
       reconnectionDelayMax: 10000,
@@ -61,8 +67,13 @@ export class RubicApiService {
     return ioClient;
   }
 
-  public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
+  public calculateAsync(
+    params: WsQuoteRequestInterface,
+    isPrivateMode: boolean,
+    attempt = 0
+  ): void {
     this.latestQuoteParams = params;
+    this.isPrivateMode = isPrivateMode;
     if (attempt > 2) {
       return;
     }
@@ -71,7 +82,7 @@ export class RubicApiService {
     } else {
       const repeatInterval = 3_000;
       setTimeout(() => {
-        this.calculateAsync(params, attempt + 1);
+        this.calculateAsync(params, isPrivateMode, attempt + 1);
       }, repeatInterval);
     }
   }
@@ -182,6 +193,8 @@ export class RubicApiService {
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
                 this,
+                this.hinkalSdkService,
+                this.isPrivateMode,
                 rubicApiError as RubicAny
               )
             : TransformUtils.transformOnChain(
@@ -190,6 +203,8 @@ export class RubicApiService {
                 this.latestQuoteParams!.integratorAddress!,
                 this.sdkLegacyService,
                 this,
+                this.hinkalSdkService,
+                this.isPrivateMode,
                 rubicApiError as RubicAny
               );
         return from(promise).pipe(

@@ -11,6 +11,7 @@ import {
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { CrossChainTransferTrade } from '@features/trade/models/cn-trade';
 import BigNumber from 'bignumber.js';
+import { Theme } from '../../theme/theme.service';
 
 export type Store = {
   [key in `RUBIC_OPTIONS_${SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING}`]: CcrSettingsForm;
@@ -29,7 +30,7 @@ export type Store = {
   /**
    * Current user theme.
    */
-  RUBIC_THEME: 'dark' | 'light';
+  RUBIC_THEME: Theme;
 
   /**
    * Current wallet chain id.

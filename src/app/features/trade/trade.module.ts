@@ -182,7 +182,6 @@ import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backup
     ActionButtonService,
     FormsTogglerService,
     TradeInfoManager,
-    FormsTogglerService,
     AlternativeRoutesService,
     RefundService,
     SolanaGaslessService,

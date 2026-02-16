@@ -87,9 +87,9 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
       : this.dexContractAddress;
   }
 
-  private readonly apiQuote: QuoteRequestInterface | null = null;
+  protected readonly apiQuote: QuoteRequestInterface | null = null;
 
-  private readonly apiResponse: QuoteResponseInterface | null = null;
+  protected readonly apiResponse: QuoteResponseInterface | null = null;
 
   protected constructor(
     evmOnChainTradeStruct: EvmOnChainTradeStruct,

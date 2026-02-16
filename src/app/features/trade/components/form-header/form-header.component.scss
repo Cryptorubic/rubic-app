@@ -37,6 +37,11 @@
 
       pointer-events: none;
     }
+
+    &-selected {
+      color: var(--tui-primary-active);
+    }
+
   }
 
   &__actions {

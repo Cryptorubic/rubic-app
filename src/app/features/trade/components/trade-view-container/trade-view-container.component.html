@@ -8,7 +8,9 @@
     transactionState: transactionState$ | async,
     showSpindl: showSpindl$ | async,
     chartInfo: chartInfo$ | async,
-    mobile: mobile$ | async
+    mobile: mobile$ | async,
+    isSwapForm: isSwapForm$ | async,
+    isPrivateMode: isPrivateMode$ | async
   } as state"
 >
   <div
@@ -19,6 +21,12 @@
     }"
     [ngSwitch]="state.content"
   >
+    <ng-container *ngIf="state.isPrivateMode">
+      <span
+        >{{ 'Shielded private key, pass it as a receiver in private transfers: '
+        }}{{ getShieldedPrivateKey() }}</span
+      >
+    </ng-container>
     <app-token-selector-page
       *ngSwitchCase="'fromSelector'"
       formType="from"
@@ -39,7 +47,8 @@
         state.calculationStatus &&
         state.calculationStatus.showSidebar &&
         state.content === 'form' &&
-        !useLargeIframe
+        !useLargeIframe &&
+        state.isSwapForm
       "
       @inOutAnimation
       [states]="state.providers"
@@ -71,7 +80,8 @@
       state.calculationStatus &&
       state.calculationStatus.showSidebar &&
       state.content === 'form' &&
-      !useLargeIframe
+      !useLargeIframe &&
+      state.isSwapForm
     "
     @inOutAnimation
     [states]="state.providers"

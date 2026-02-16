@@ -3,7 +3,7 @@
   "version": "1.0.3",
   "scripts": {
     "postinstall": "node scripts/patch-webpack.js",
-    "start:base": "npm run prebuild && node --max_old_space_size=5048 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all",
+    "start:base": "npm run prebuild && node --max_old_space_size=8080 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all",
     "start": "npm run start:base --",
     "start:local": "npm run start:base -- --configuration=local",
     "start:dev": "npm run start:base -- --configuration=dev",
@@ -66,6 +66,7 @@
     "@ng-web-apis/resize-observer": "^3.0.1",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
+    "@hinkal/common": "0.2.17",
     "@safe-global/safe-apps-provider": "^0.18.2",
     "@safe-global/safe-apps-sdk": "^9.0.0",
     "@sentry/angular": "^10.22.0",
@@ -99,6 +100,7 @@
     "ethers": "5.8.0",
     "global": "^4.4.0",
     "immutable": "^4.1.0",
+    "libsodium-wrappers-sumo": "0.7.11",
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
@@ -177,5 +179,8 @@
     "typescript": "~5.1.6",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.4.2"
+  },
+  "resolutions": {
+    "libsodium-wrappers": "npm:libsodium-wrappers-sumo@0.7.11"
   }
 }

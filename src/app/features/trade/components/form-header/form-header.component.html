@@ -1,8 +1,13 @@
 <div *ngLet="chartInfo$ | async as chartInfo" class="form-header">
   <div class="form-header__links">
-    <ng-container
-      *ngTemplateOutlet="formTypeSelector; context: { type: 'swapForm', text: 'Swap' }"
-    ></ng-container>
+    <ng-container *ngFor="let form of forms">
+      <ng-container
+        *ngTemplateOutlet="
+          formTypeSelector;
+          context: { type: form.formType, text: form.text, selectedForm$ }
+        "
+      ></ng-container>
+    </ng-container>
   </div>
 
   <div class="form-header__actions">
@@ -17,11 +22,15 @@
     <app-settings-container></app-settings-container>
   </div>
 
-  <ng-template #formTypeSelector let-type="type" let-text="text">
+  <ng-template #formTypeSelector let-type="type" let-text="text" let-selected="selectedForm$">
     <div class="form-header__link">
-      <span class="form-header__link-title">
+      <button
+        class="form-header__link-title"
+        [ngClass]="{ 'form-header__link-selected': (selectedForm$ | async) === type }"
+        (click)="toogleForm(type)"
+      >
         {{ text }}
-      </span>
+      </button>
     </div>
   </ng-template>
 </div>

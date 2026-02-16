@@ -85,7 +85,7 @@ export class SettingsService {
       deadline: 20,
       disableMultihops: false,
       autoRefresh: Boolean(this.authService?.user?.address),
-      showReceiverAddress: false,
+      showReceiverAddress: true,
       useMevBotProtection: false
     };
   }
@@ -95,7 +95,7 @@ export class SettingsService {
       autoSlippageTolerance: true,
       slippageTolerance:
         this.parseSlippage(slippageCcr) ?? this.defaultSlippageTolerance.crossChain,
-      showReceiverAddress: false,
+      showReceiverAddress: true,
       useMevBotProtection: false
     };
   }

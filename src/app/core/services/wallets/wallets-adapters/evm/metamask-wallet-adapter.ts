@@ -9,6 +9,7 @@ import { RubicWindow } from '@shared/utils/rubic-window';
 import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/common/evm-wallet-adapter';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { RubicError } from '@core/errors/models/rubic-error';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
 export class MetamaskWalletAdapter extends EvmWalletAdapter {
   public readonly walletName = WALLET_NAME.METAMASK;
 
@@ -17,7 +18,8 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
     onNetworkChanges$: BehaviorSubject<BlockchainName | null>,
     errorsService: ErrorsService,
     zone: NgZone,
-    window: RubicWindow
+    window: RubicWindow,
+    private readonly hinkalSDK: HinkalSDKService
   ) {
     super(onAddressChanges$, onNetworkChanges$, errorsService, zone, window);
   }
@@ -51,6 +53,11 @@ export class MetamaskWalletAdapter extends EvmWalletAdapter {
 
       const chain = await this.wallet.request({ method: 'eth_chainId' });
       this.isEnabled = true;
+
+      await this.hinkalSDK.prepareHinkalSDK(
+        BlockchainsInfo.getBlockchainNameById(chain),
+        this.wallet
+      );
 
       [this.selectedAddress] = accounts;
       this.selectedChain =

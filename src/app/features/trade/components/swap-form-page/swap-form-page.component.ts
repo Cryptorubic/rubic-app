@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, Injector } from '@angular/core';
 import { TradePageService } from '@features/trade/services/trade-page/trade-page.service';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { combineLatestWith } from 'rxjs';
+import { BehaviorSubject, combineLatestWith } from 'rxjs';
 import { distinctUntilChanged, first, map, startWith, tap } from 'rxjs/operators';
 import { SettingsService } from '@features/trade/services/settings-service/settings.service';
 import BigNumber from 'bignumber.js';
@@ -16,6 +16,12 @@ import { RefundService } from '../../services/refund-service/refund.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from '../../services/solana-gasless/solana-gasless-state.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE, MainFormType } from '../../services/forms-toggler/models';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
+import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
+import { FORMS_TYPE } from '../form-header/form-header.component';
+import { Token } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-swap-form-page',
@@ -85,13 +91,28 @@ export class SwapFormPageComponent {
     private readonly refundService: RefundService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly solanaGaslessStateService: SolanaGaslessStateService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly formsTogglerService: FormsTogglerService,
+    private readonly hinkalSdkService: HinkalSDKService,
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {
     this.swapFormService.inputValueDistinct$.subscribe(inputValue => {
       this.refundService.onSwapFormInputChanged(inputValue);
       this.solanaGaslessService.onSwapFormInputChanged(inputValue);
     });
   }
+
+  private readonly _isLoading$ = new BehaviorSubject<boolean>(false);
+
+  public readonly isLoading$ = this._isLoading$.asObservable();
+
+  public readonly isSwapForm$ = this.formsTogglerService.selectedForm$.pipe(
+    map(form => form === MAIN_FORM_TYPE.PRIVATE_SWAP_FORM || form === MAIN_FORM_TYPE.SWAP_FORM)
+  );
+
+  public readonly formType$ = this.formsTogglerService.selectedForm$.pipe(
+    map(form => FORMS_TYPE.find(formType => formType.formType === form))
+  );
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
     if (isMobile) {
@@ -164,5 +185,30 @@ export class SwapFormPageComponent {
         })
       )
       .subscribe();
+  }
+
+  public async invokeAction(formType: MainFormType): Promise<void> {
+    this._isLoading$.next(true);
+    const token = this.swapFormService.form.value.input.fromToken;
+    const weiAmount = Token.toWei(
+      this.swapFormService.form.value.input.fromAmount.actualValue,
+      token.decimals
+    );
+
+    const receiver = this.targetAddressService.address || this.authService.userAddress;
+
+    try {
+      if (formType === MAIN_FORM_TYPE.DEPOSIT) {
+        await this.hinkalSdkService.deposit(token, receiver, weiAmount);
+      } else if (formType === MAIN_FORM_TYPE.WITHDRAW) {
+        await this.hinkalSdkService.withdraw(token, receiver, weiAmount);
+      } else {
+        await this.hinkalSdkService.transfer(token, receiver, weiAmount);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      this._isLoading$.next(false);
+    }
   }
 }

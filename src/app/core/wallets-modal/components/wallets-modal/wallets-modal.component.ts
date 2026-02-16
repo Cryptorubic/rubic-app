@@ -26,6 +26,7 @@ import { StoreService } from '@core/services/store/store.service';
 import { IframeService } from '@app/core/services/iframe-service/iframe.service';
 import { ModalService } from '@core/modals/services/modal.service';
 import { WALLETS_DEEP_LINK_MAPPING } from './constants/wallets-deep-link-mapping';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
 
 @Component({
   selector: 'app-wallets-modal',
@@ -54,9 +55,13 @@ export class WalletsModalComponent implements OnInit {
       ? this.allProviders
       : this.allProviders.filter(provider => provider.value !== WALLET_NAME.BITGET);
 
-    return this.isMobile
+    const filteredProviders = this.isMobile
       ? isChromiumProviders.filter(provider => provider.supportsMobile)
       : isChromiumProviders.filter(provider => provider.supportsDesktop);
+
+    return this.hinkalSdkService.isPrivateMode()
+      ? filteredProviders.filter(provider => provider.value === WALLET_NAME.METAMASK)
+      : filteredProviders;
   }
 
   public get isMobile(): boolean {
@@ -88,7 +93,8 @@ export class WalletsModalComponent implements OnInit {
     private readonly gtmService: GoogleTagManagerService,
     private readonly storeService: StoreService,
     private readonly iframeService: IframeService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly hinkalSdkService: HinkalSDKService
   ) {}
 
   ngOnInit() {

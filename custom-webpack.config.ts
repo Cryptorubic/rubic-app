@@ -44,6 +44,11 @@ export default (
     '@walletconnect/ethereum-provider': path.resolve(
       __dirname,
       'node_modules/@walletconnect/ethereum-provider/dist/index.umd.js'
+    ),
+    'libsodium-wrappers': require.resolve('libsodium-wrappers-sumo'),
+    '../../node_modules/ethers/lib/utils.mjs': path.resolve(
+      __dirname,
+      'node_modules/ethers/lib.esm/utils.js'
     )
   };
 

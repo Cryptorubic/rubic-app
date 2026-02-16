@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { StoreService } from 'src/app/core/services/store/store.service';
 import { DOCUMENT } from '@angular/common';
 
-export type Theme = 'dark' | 'light';
+export type Theme = 'dark' | 'light' | 'private';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,7 @@ export class ThemeService {
   }
 
   private processSwitch(isCurrentThemeDark: boolean): void {
-    const nextTheme = isCurrentThemeDark ? 'light' : 'dark';
+    const nextTheme = isCurrentThemeDark ? 'private' : 'dark';
     this._theme$.next(nextTheme);
     this.store.setItem('RUBIC_THEME', nextTheme);
     this.switchDomClass();
@@ -55,6 +55,11 @@ export class ThemeService {
 
   private switchDomClass(): void {
     this.document.documentElement.classList.toggle('dark');
-    this.document.documentElement.classList.toggle('light');
+    this.document.documentElement.classList.toggle('private');
   }
 }
+
+// this.document.documentElement.style.setProperty('--app-background', '#0c0f0c');
+// this.document.documentElement.style.setProperty('--io-background', '#101010');
+// this.document.documentElement.style.setProperty('--tui-primary', '#05cc81');
+// this.document.documentElement.style.setProperty('--tui-secondary', '#191919');

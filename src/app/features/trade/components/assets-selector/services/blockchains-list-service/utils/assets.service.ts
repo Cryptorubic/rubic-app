@@ -26,6 +26,8 @@ import { debounceTime, first, map, startWith } from 'rxjs/operators';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { BlockchainsInfo } from '@cryptorubic/core';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
+import { PRIVATE_SWAP_SUPPORTED_CHAIN } from '@app/features/trade/constants/private-swap-supported-chains';
+import { ThemeService } from '@app/core/services/theme/theme.service';
 
 export abstract class AssetsService {
   // Custom token
@@ -100,6 +102,8 @@ export abstract class AssetsService {
 
   private readonly formService = inject(SwapsFormService);
 
+  private readonly themeService = inject(ThemeService);
+
   // Blockchains to show
   protected readonly _blockchainsToShow$ = new BehaviorSubject<AvailableBlockchain[]>([]);
 
@@ -111,7 +115,10 @@ export abstract class AssetsService {
     ),
     map(([sourceChains, query, filters, networkFromWallet]) => {
       let chains = sourceChains.filter(
-        chain => this.filterQueryBlockchain(query, chain) && this.filterByType(filters, chain)
+        chain =>
+          this.filterQueryBlockchain(query, chain) &&
+          this.filterByType(filters, chain) &&
+          this.filterByForm(chain)
       );
 
       const input = this.formService.inputValue ?? null;
@@ -244,6 +251,12 @@ export abstract class AssetsService {
     } else {
       return chain.tags.includes(filter);
     }
+  }
+
+  private filterByForm(chain: AvailableBlockchain): boolean {
+    if (this.themeService.theme !== 'private') return true;
+
+    return PRIVATE_SWAP_SUPPORTED_CHAIN.includes(chain.name);
   }
 
   private subscribeOnQueryParams(): void {

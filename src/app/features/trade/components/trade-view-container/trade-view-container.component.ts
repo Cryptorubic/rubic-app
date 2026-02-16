@@ -19,6 +19,9 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
+import { FormsTogglerService } from '../../services/forms-toggler/forms-toggler.service';
+import { MAIN_FORM_TYPE } from '../../services/forms-toggler/models';
+import { HinkalSDKService } from '@app/core/services/hinkal-sdk/hinkal-sdk.service';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -72,6 +75,17 @@ export class TradeViewContainerComponent {
 
   public readonly chartInfo$ = this.chartService.chartInfo$;
 
+  public readonly isSwapForm$ = this.formsTogglerService.selectedForm$.pipe(
+    map(
+      formType =>
+        formType === MAIN_FORM_TYPE.PRIVATE_SWAP_FORM || formType === MAIN_FORM_TYPE.SWAP_FORM
+    )
+  );
+
+  public readonly isPrivateMode$ = this.formsTogglerService.selectedForm$.pipe(
+    map(() => this.hinkalSdkService.isPrivateMode() && this.hinkalSdkService.hinkalSDK)
+  );
+
   constructor(
     private readonly swapsState: SwapsStateService,
     private readonly tradePageService: TradePageService,
@@ -86,7 +100,9 @@ export class TradeViewContainerComponent {
     private readonly authService: AuthService,
     private readonly chartService: ChartService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    renderer2: Renderer2
+    private readonly formsTogglerService: FormsTogglerService,
+    renderer2: Renderer2,
+    private readonly hinkalSdkService: HinkalSDKService
   ) {
     this.chartService.setRenderer(renderer2);
     this.chartService.initSubscriptions(swapFormService);
@@ -136,5 +152,11 @@ export class TradeViewContainerComponent {
         }
       }
     }
+  }
+
+  public getShieldedPrivateKey(): string {
+    return this.hinkalSdkService.hinkalSDK
+      ? this.hinkalSdkService.hinkalSDK.userKeys.getShieldedPrivateKey()
+      : '';
   }
 }

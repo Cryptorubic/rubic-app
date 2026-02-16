@@ -51,6 +51,7 @@ import {
   nativeTokensList
 } from '@cryptorubic/core';
 import { BackpackSolanaWalletAdapter } from '../wallets-adapters/solana/backpack-solana-wallet-adapter';
+import { HinkalSDKService } from '../../hinkal-sdk/hinkal-sdk.service';
 
 @Injectable({
   providedIn: 'root'
@@ -98,7 +99,8 @@ export class WalletConnectorService {
     @Inject(WINDOW) private readonly window: RubicWindow,
     @Inject(TUI_IS_IOS) private readonly isIos: boolean,
     private readonly zone: NgZone,
-    private readonly modalsService: ModalService
+    private readonly modalsService: ModalService,
+    private readonly hinkalSDK: HinkalSDKService
   ) {}
 
   public checkIfSafeEnv(): boolean {
@@ -134,7 +136,7 @@ export class WalletConnectorService {
     ] as const;
 
     if (walletName === WALLET_NAME.METAMASK) {
-      return new MetamaskWalletAdapter(...defaultConstructorParameters);
+      return new MetamaskWalletAdapter(...defaultConstructorParameters, this.hinkalSDK);
     }
 
     if (walletName === WALLET_NAME.METAMASK_SOLANA) {
