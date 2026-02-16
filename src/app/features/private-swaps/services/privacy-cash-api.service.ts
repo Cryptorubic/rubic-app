@@ -106,7 +106,7 @@ export class PrivacyCashApiService {
   ): Promise<JupiterSwapBuildTxSuccessResp> {
     try {
       let retryCount = 0;
-      while (retryCount < 3) {
+      while (true) {
         const buildTxResp = await firstValueFrom(
           this.httpService.post<JupiterSwapBuildTxResp>(
             '',
@@ -125,7 +125,7 @@ export class PrivacyCashApiService {
         }
 
         console.debug('[PrivacyCashApiService_buildSwapTx] error', buildTxResp);
-        if (retryCount < 3) {
+        if (retryCount < 2) {
           retryCount++;
         } else {
           throw new Error();

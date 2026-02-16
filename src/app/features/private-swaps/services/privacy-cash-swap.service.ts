@@ -404,7 +404,7 @@ export class PrivacyCashSwapService {
   }
 
   /**
-   * @description Starts swap for user specified amount
+   * @description Starts swap for user's specified amount
    * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    * @param srcAmountWei

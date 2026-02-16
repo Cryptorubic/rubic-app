@@ -104,20 +104,24 @@ export class PrivateSwapsViewComponent {
   );
 
   public readonly dstAmount$: Observable<PriceTokenAmount> = this.privacyCashForm.valueChanges.pipe(
-    tap(() => console.debug('dstAmount$ before')),
     distinctUntilChanged(
       (prev: PrivacyCashFormValue, curr: PrivacyCashFormValue) =>
         prev.amount === curr.amount &&
-        prev.dstToken === curr.dstToken &&
+        (this.activeTabIndex !== 2 || prev.dstToken === curr.dstToken) &&
         prev.srcToken === curr.srcToken
     ),
-    filter((value: PrivacyCashFormValue) => value.amount && !!value.dstToken && !!value.srcToken),
+    filter(
+      (value: PrivacyCashFormValue) =>
+        value.amount && !!value.srcToken && (this.activeTabIndex !== 2 || !!value.dstToken)
+    ),
     debounceTime(300),
-    tap(() => console.debug('dstAmount$ after')),
     switchMap(formValue =>
       this.privacyCashSwapService.makeQuote(
         findPrivacyCashCompatibleToken(this.tokensFacadeService, formValue.srcToken),
-        findPrivacyCashCompatibleToken(this.tokensFacadeService, formValue.dstToken),
+        findPrivacyCashCompatibleToken(
+          this.tokensFacadeService,
+          formValue.dstToken || formValue.srcToken
+        ),
         new BigNumber(formValue.amount || 0)
       )
     ),
@@ -251,7 +255,7 @@ export class PrivateSwapsViewComponent {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const srcToken = findPrivacyCashCompatibleToken(this.tokensFacadeService, srcTokenAddr);
     const dstToken = findPrivacyCashCompatibleToken(this.tokensFacadeService, dstTokenAddr);
-    const amountWei = Token.toWei(amountNonWei);
+    const amountWei = Token.toWei(amountNonWei, srcToken.decimals);
 
     const privacyCashBalanceWei = await this.privacyCashSwapService.getPrivacyCashBalance(
       srcTokenAddr,
