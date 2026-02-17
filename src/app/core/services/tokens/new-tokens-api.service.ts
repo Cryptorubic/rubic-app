@@ -27,6 +27,7 @@ import { ENVIRONMENT } from '../../../../environments/environment';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
+import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +109,9 @@ export class NewTokensApiService {
         ...('balance' in token && { amount: OldToken.fromWei(token.balance, token.decimals) })
       } as K;
     });
-    return tokenModel.filter(token => token.address && token.blockchain);
+    return tokenModel.filter(
+      token => token.address && token.blockchain && !DISABLED_BLOCKCHAINS_MAP[token.blockchain]
+    );
   }
 
   public getNewPage(

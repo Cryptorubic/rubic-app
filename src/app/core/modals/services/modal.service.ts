@@ -46,6 +46,9 @@ import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/componen
 import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetListType } from '@features/trade/models/asset';
+import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
+import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
+import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
 
 @Injectable({
   providedIn: 'root'
@@ -292,8 +295,7 @@ export class ModalService {
    * @param backups$ Backup Trades observable
    */
   public openSwapRetryPendingModal(
-    backupsCount: number,
-    backupTradesCount$: Observable<number>,
+    swapRetryModalInput$: Observable<SwapRetryModalInput>,
     injector: Injector
   ): Observable<void> {
     this.setOpenedModalName('swap-retry-pending');
@@ -304,7 +306,7 @@ export class ModalService {
         size: 's',
         fitContent: true,
         dismissible: true,
-        data: { backupsCount, backupTradesCount$ }
+        data: { swapRetryModalInput$ }
       },
       injector
     );
@@ -433,6 +435,19 @@ export class ModalService {
         closeable: false,
         required: true,
         data: { trade }
+      }).pipe(catchError(() => of(false))) as Observable<boolean>
+    );
+  }
+
+  public openTrustlineModal(options: TrustlineComponentOptions): Promise<boolean> {
+    this.setOpenedModalName('trustline-modal');
+    return firstValueFrom(
+      this.showDialog(TrustlineModalComponent, {
+        size: 's',
+        closeable: true,
+        dismissible: false,
+        fitContent: true,
+        data: options
       }).pipe(catchError(() => of(false))) as Observable<boolean>
     );
   }

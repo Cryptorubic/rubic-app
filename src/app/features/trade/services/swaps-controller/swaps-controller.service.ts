@@ -76,6 +76,7 @@ import { SimulationFailedError } from '@app/core/errors/models/common/simulation
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
+import { TrustlineService } from '../trustline-service/trustline.service';
 
 @Injectable()
 export class SwapsControllerService {
@@ -113,7 +114,8 @@ export class SwapsControllerService {
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService,
-    private readonly turnstileService: TurnstileService
+    private readonly turnstileService: TurnstileService,
+    private readonly trustlineService: TrustlineService
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
@@ -240,6 +242,7 @@ export class SwapsControllerService {
 
   public async swap(
     tradeState: SelectedTrade,
+    checkSlippageAndPI?: boolean,
     callback?: {
       onHash?: (hash: string) => void;
       onSwap?: () => void;
@@ -256,12 +259,15 @@ export class SwapsControllerService {
       if (!isEqulaFromAmount) {
         throw new Error('Trade has invalid from amount');
       }
-      const allowSlippageAndPI = await this.settingsService.checkSlippageAndPriceImpact(
-        trade instanceof CrossChainTrade
-          ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
-          : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
-        trade
-      );
+
+      const allowSlippageAndPI = checkSlippageAndPI
+        ? await this.settingsService.checkSlippageAndPriceImpact(
+            trade instanceof CrossChainTrade
+              ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
+              : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
+            trade
+          )
+        : true;
 
       if (!allowSlippageAndPI) {
         callback.onError?.(null);
@@ -317,11 +323,7 @@ export class SwapsControllerService {
             this.catchSwapError(innerErr, tradeState, callback?.onError);
           }
         } else {
-          this.catchSwapError(
-            new SdkUserRejectError('manual transaction reject'),
-            tradeState,
-            callback?.onError
-          );
+          this.catchSwapError(new SdkUserRejectError(), tradeState, callback?.onError);
         }
       } else {
         this.catchSwapError(err, tradeState, callback?.onError);
@@ -503,7 +505,11 @@ export class SwapsControllerService {
           ? SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING
           : SWAP_PROVIDER_TYPE.INSTANT_TRADE,
         false,
-        false
+        false,
+        {
+          needTrustlineAfterSwap: false,
+          needTrustlineBeforeSwap: false
+        }
       );
       this.swapsStateService.pickProvider(true);
     }
@@ -581,12 +587,6 @@ export class SwapsControllerService {
           const isCalculationEnd = container.value.total === container.value.calculated;
 
           if (wrappedTrade && this.swapFormService.isFilled) {
-            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
-            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
-              wrappedTrade.trade,
-              wrappedTrade?.error
-            );
-
             const isEqualFromAmount = this.checkIsEqualFromAmount(
               wrappedTrade.trade.from.tokenAmount
             );
@@ -595,14 +595,27 @@ export class SwapsControllerService {
               wrappedTrade.trade = null;
             }
 
+            const needApprove$ = wrappedTrade?.trade?.needApprove().catch(() => false) || of(false);
+            const isNotLinkedAccount$ = this.checkIsNotLinkedAccount(
+              wrappedTrade.trade,
+              wrappedTrade?.error
+            );
+
+            const needAddTrustline = this.trustlineService.checkTrustline(
+              wrappedTrade.trade,
+              this.authService.userAddress,
+              this.targetNetworkAddressService.address
+            );
+
             return forkJoin([
               of(wrappedTrade),
               needApprove$,
               of(container.type),
-              isNotLinkedAccount$
+              isNotLinkedAccount$,
+              needAddTrustline
             ])
               .pipe(
-                tap(([trade, needApprove, type, isNotLinkedAccount]) => {
+                tap(([trade, needApprove, type, isNotLinkedAccount, needTrustline]) => {
                   try {
                     if (isNotLinkedAccount) {
                       this.errorsService.catch(new NoLinkedAccountError());
@@ -611,7 +624,13 @@ export class SwapsControllerService {
 
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
-                    this.swapsStateService.updateTrade(trade, type, needApprove, needAuthWallet);
+                    this.swapsStateService.updateTrade(
+                      trade,
+                      type,
+                      needApprove,
+                      needAuthWallet,
+                      needTrustline
+                    );
                     this.swapsStateService.pickProvider(isCalculationEnd);
                     this.swapsStateService.setCalculationProgress(
                       container.value.total,

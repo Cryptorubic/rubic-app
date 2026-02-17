@@ -19,7 +19,6 @@ import { WalletConnectorService } from '@core/services/wallets/wallet-connector-
 import { ModalService } from '@core/modals/services/modal.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
 import { HeaderStore } from '@core/header/services/header.store';
-import { PlatformConfigurationService } from '@core/services/backend/platform-configuration/platform-configuration.service';
 import { compareAddresses } from '@shared/utils/utils';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { GoogleTagManagerService } from '@app/core/services/google-tag-manager/google-tag-manager.service';
@@ -35,6 +34,9 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { isNearIntentsTrade } from '../../utils/is-near-intents-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { TargetNetworkAddressService } from '../../services/target-network-address-service/target-network-address.service';
+import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
+import { PlatformConfigurationService } from '@app/core/services/backend/platform-configuration/platform-configuration.service';
 
 @Component({
   selector: 'app-preview-swap',
@@ -81,6 +83,24 @@ export class PreviewSwapComponent implements OnDestroy {
 
   protected readonly ADDRESS_TYPE = ADDRESS_TYPE;
 
+  public readonly trustlineInfo$ = this.swapsStateService.currentTrade$.pipe(
+    map(trade => {
+      const transitToken =
+        trade instanceof StellarCrossChainTrade && trade.getTrustlineTransitToken();
+      const trustlineToken = transitToken || trade.to;
+
+      return {
+        receiver: this.targetAddressService.address,
+        toBlockchain: trade.to.blockchain,
+        trustlineToken: {
+          address: trustlineToken?.address,
+          symbol: trustlineToken?.symbol
+        },
+        trustlineType: transitToken ? 'transit' : 'default'
+      };
+    })
+  );
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly previewSwapService: PreviewSwapService,
@@ -95,7 +115,8 @@ export class PreviewSwapComponent implements OnDestroy {
     private readonly gtmService: GoogleTagManagerService,
     private readonly swapsStateService: SwapsStateService,
     private readonly tradeInfoManager: TradeInfoManager,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {
     this.previewSwapService.setSelectedProvider();
     this.previewSwapService.activatePage();
@@ -107,10 +128,6 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public async startTrade(): Promise<void> {
     await this.previewSwapService.requestTxSign();
-  }
-
-  public continueBackupSwap(allowedToContinue: boolean = true): void {
-    this.previewSwapService.continueBackupSwap(allowedToContinue);
   }
 
   public async swap(): Promise<void> {
@@ -202,7 +219,7 @@ export class PreviewSwapComponent implements OnDestroy {
     el: TransactionState,
     tradeState: SelectedTrade,
     balanceError: boolean
-  ): Promise<{ action: () => void; label: string; disabled: boolean }> {
+  ): Promise<{ action: () => void; label: string; disabled: boolean; needTrustline: boolean }> {
     const isCrossChain =
       this.swapsFormService.inputValue.fromBlockchain !==
       this.swapsFormService.inputValue.toBlockchain;
@@ -213,8 +230,12 @@ export class PreviewSwapComponent implements OnDestroy {
     const state = {
       action: (): void => {},
       label: TransactionStateComponent.getLabel(el.step, isCrossChain ? 'bridge' : 'swap'),
-      disabled: true
+      disabled: true,
+      needTrustline: false
     };
+    if (el.data.needTrustlineOptions?.needTrustlineBeforeSwap) {
+      state.needTrustline = true;
+    }
     if (el.step === transactionStep.approveReady) {
       state.disabled = false;
       state.label = this.isTradeWithPermit2Approve(tradeState) ? 'Approve and Permit' : state.label;
@@ -225,9 +246,6 @@ export class PreviewSwapComponent implements OnDestroy {
     } else if (el.step === transactionStep.swapRetry) {
       state.disabled = true;
       state.action = () => {};
-    } else if (el.step === transactionStep.swapBackupSelected) {
-      state.disabled = false;
-      state.action = this.continueBackupSwap.bind(this);
     } else if (el.step === transactionStep.idle) {
       state.disabled = false;
       state.action = this.startTrade.bind(this);
@@ -245,6 +263,9 @@ export class PreviewSwapComponent implements OnDestroy {
       state.disabled = false;
       state.label = 'Back to form';
       state.action = this.backToForm.bind(this);
+    } else if (el.step === transactionStep.trustlinePending) {
+      state.disabled = true;
+      state.needTrustline = true;
     }
 
     if (
@@ -310,5 +331,9 @@ export class PreviewSwapComponent implements OnDestroy {
 
   public onImageError($event: Event): void {
     TokensFacadeService.onTokenImageError($event);
+  }
+
+  public onTrustlineAdd(): void {
+    this.previewSwapService.handleTrustline();
   }
 }

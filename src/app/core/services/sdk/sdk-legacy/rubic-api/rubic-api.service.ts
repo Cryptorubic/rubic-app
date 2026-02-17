@@ -40,8 +40,6 @@ import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer
 import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error-response-interface';
 import { WrappedAsyncTradeOrNull } from '../features/ws-api/models/wrapped-async-trade-or-null';
 import { RubicApiErrorDto } from '../features/ws-api/models/rubic-api-error';
-import { WrappedCrossChainTradeOrNull } from '../features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
-import { WrappedOnChainTradeOrNull } from '../features/on-chain/calculation-manager/models/wrapped-on-chain-trade-or-null';
 import { TransformUtils } from '../features/ws-api/transform-utils';
 import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-tx-status-config';
 import { io, Socket } from 'socket.io-client';
@@ -284,8 +282,14 @@ export class RubicApiService {
         >(this.client, 'events').pipe(
           concatMap(wsResponse => {
             const { trade, total, calculated, data } = wsResponse;
-            let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
-              Promise.resolve(null);
+            if (!this.latestQuoteParams) {
+              return of({
+                total,
+                calculated,
+                wrappedTrade: null,
+                ...(data && { tradeType: wsResponse.type })
+              });
+            }
 
             const rubicApiError = data
               ? {
@@ -294,7 +298,7 @@ export class RubicApiService {
                 }
               : data;
 
-            promise =
+            const promise =
               this.latestQuoteParams?.srcTokenBlockchain !==
               this.latestQuoteParams?.dstTokenBlockchain
                 ? TransformUtils.transformCrossChain(

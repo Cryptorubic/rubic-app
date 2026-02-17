@@ -52,6 +52,8 @@ import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chai
 import { WrappedCrossChainTradeOrNull } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
 import { EvmWrapTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/evm-wrap-trade/evm-wrap-trade';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { NeedTrustlineOptions } from '../trustline-service/models/need-trustline-options';
+import { RubicSdkError } from '@cryptorubic/web3';
 
 @Injectable()
 export class SwapsStateService {
@@ -171,7 +173,8 @@ export class SwapsStateService {
     wrappedTrade: WrappedSdkTrade,
     type: SWAP_PROVIDER_TYPE,
     needApprove: boolean,
-    needAuthWallet: boolean
+    needAuthWallet: boolean,
+    needTrustlineOptions: NeedTrustlineOptions
   ): void {
     const trade = wrappedTrade?.trade;
     const defaultState: TradeState = !trade
@@ -183,13 +186,18 @@ export class SwapsStateService {
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: [],
-          centralizationStatus: null
+          centralizationStatus: null,
+          needTrustlineOptions: {
+            needTrustlineAfterSwap: false,
+            needTrustlineBeforeSwap: false
+          }
         }
       : {
-          error: wrappedTrade?.error,
+          error: wrappedTrade?.error || this.setSpecificError(type, needTrustlineOptions),
           trade,
           needApprove,
           needAuthWallet,
+          needTrustlineOptions,
           tradeType: wrappedTrade.tradeType,
           tags: { isBest: false, cheap: false },
           routes: trade.getTradeInfo().routePath || [],
@@ -581,5 +589,21 @@ export class SwapsStateService {
       return CENTRALIZATION_CONFIG[trade.type];
     }
     return null;
+  }
+
+  private setSpecificError(
+    type: SWAP_PROVIDER_TYPE,
+    options: NeedTrustlineOptions
+  ): RubicSdkError | undefined {
+    //@TODO remove after fix receiver connection on mobile
+    if (
+      type === SWAP_PROVIDER_TYPE.CROSS_CHAIN_ROUTING &&
+      this.headerStore.isMobile &&
+      (options.needTrustlineAfterSwap || options.needTrustlineBeforeSwap)
+    ) {
+      return new RubicSdkError(
+        'Trustline not detected. Please open your wallet and add the trustline to enable this swap.'
+      );
+    }
   }
 }

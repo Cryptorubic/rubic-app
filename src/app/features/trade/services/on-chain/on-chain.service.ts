@@ -53,6 +53,8 @@ import { TonOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 
 type NotWhitelistedProviderErrors =
   | UnapprovedContractError
@@ -85,7 +87,8 @@ export class OnChainService {
     private readonly notificationsService: NotificationsService,
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
-    private readonly tokensFacade: TokensFacadeService
+    private readonly tokensFacade: TokensFacadeService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public async calculateTrades(disabledProviders: OnChainTradeType[]): Promise<void> {
@@ -202,15 +205,30 @@ export class OnChainService {
     };
 
     try {
-      await trade.swap(options);
-
       const [fromToken, toToken] = await Promise.all([
         this.tokensFacade.findToken(trade.from),
         this.tokensFacade.findToken(trade.to)
       ]);
+      const fromChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const toChainAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        fromToken.blockchain as RubicAny
+      );
+      const [fromTokenPrevBalanceWei, toTokenPrevBalanceWei] = await Promise.all([
+        fromChainAdapter.getBalance(this.walletConnectorService.address, fromToken.address),
+        toChainAdapter.getBalance(this.walletConnectorService.address, toToken.address)
+      ]);
 
+      await trade.swap(options);
       await this.conditionalAwait(fromBlockchain);
-      await this.tokensFacade.updateTokenBalancesAfterItSwap(fromToken, toToken);
+
+      this.tokensFacade.updateTokenBalancesAfterItSwap(
+        fromToken,
+        toToken,
+        fromTokenPrevBalanceWei,
+        toTokenPrevBalanceWei
+      );
 
       if (
         trade.from.blockchain === BLOCKCHAIN_NAME.TRON &&
@@ -239,14 +257,18 @@ export class OnChainService {
         }
       }
 
+      if (trade.from.blockchain === BLOCKCHAIN_NAME.STELLAR) {
+        const txStatus = await this.sdkService.onChainStatusManager.getStellarSwapStatus(
+          transactionHash
+        );
+        if (txStatus.status !== TX_STATUS.SUCCESS) {
+          throw new TransactionFailedError(BLOCKCHAIN_NAME.STELLAR, txStatus.hash);
+        }
+      }
+
       if (trade.from.blockchain === BLOCKCHAIN_NAME.SOLANA && checkAmountGte100Usd(trade)) {
         this.solanaGaslessService.updateGaslessTxCount24Hrs(this.walletConnectorService.address);
       }
-
-      // Update tokens prices after 3 sec
-      setTimeout(() => {
-        this.tokensFacade.updateParticipantTokens();
-      }, 3_000);
 
       return transactionHash;
     } catch (err) {
@@ -368,7 +390,7 @@ export class OnChainService {
 
   private async conditionalAwait(blockchain: BlockchainName): Promise<void> {
     if (blockchain === BLOCKCHAIN_NAME.SOLANA) {
-      const waitTime = 3_000;
+      const waitTime = 5_000;
       await firstValueFrom(timer(waitTime));
     }
   }

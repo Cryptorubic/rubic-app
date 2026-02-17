@@ -7,7 +7,7 @@ import { TokensCollectionsFacadeService } from '@core/services/tokens/tokens-col
 import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 import { Observable } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
@@ -15,12 +15,16 @@ import {
   sorterByBalance,
   sorterByChain
 } from '@features/trade/components/assets-selector/services/tokens-list-service/utils/sorters';
+import { TokensBalanceService } from '@app/core/services/tokens/tokens-balance.service';
+import { distinctObjectUntilChanged } from '@app/shared/utils/distinct-object-until-changed';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokensBuilderService {
   private readonly tokensCollectionsFacade = inject(TokensCollectionsFacadeService);
+
+  private readonly balanceService = inject(TokensBalanceService);
 
   public getTokensBasedOnType(type: AssetListType): BlockchainTokenState | CommonUtilityStore {
     if (BlockchainsInfo.isBlockchainName(type)) {
@@ -42,11 +46,17 @@ export class TokensBuilderService {
 
   public getTokensList(
     type: AssetListType,
-    _query: string,
+    query: string,
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
     return this.getTokensBasedOnType(type).tokens$.pipe(
+      distinctObjectUntilChanged(),
+      tap((tokens: BalanceToken[]) => {
+        if (query) {
+          this.balanceService.fetchDifferentChainsBalances(tokens, false);
+        }
+      }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {
           const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;

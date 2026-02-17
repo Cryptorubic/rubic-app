@@ -189,11 +189,6 @@ import { TurnstileCheckComponent } from './components/turnstile-check/turnstile-
     RefundService,
     SolanaGaslessService,
     SolanaGaslessStateService
-    // SettingsService,
-    // RefreshService,
-    // TradeService,
-    // TargetNetworkAddressService,
-    // TonPromoService
   ]
 })
 export class TradeModule {}

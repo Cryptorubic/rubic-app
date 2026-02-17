@@ -156,5 +156,6 @@ export const blockchainLabel: Record<BlockchainName, string> = {
   [BLOCKCHAIN_NAME.HEMI]: 'Hemi',
   [BLOCKCHAIN_NAME.PLASMA]: 'Plasma',
   [BLOCKCHAIN_NAME.MONAD]: 'Monad',
-  [BLOCKCHAIN_NAME.HYPER_EVM]: 'HyperEVM'
+  [BLOCKCHAIN_NAME.HYPER_EVM]: 'HyperEVM',
+  [BLOCKCHAIN_NAME.MEGAETH]: 'MegaETH'
 };

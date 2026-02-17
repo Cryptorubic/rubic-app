@@ -40,7 +40,8 @@ export type ModalName =
   | 'swap-retry-pending'
   | 'swap-backup-rate-changed'
   | 'all-swap-backups-failed'
-  | 'cloudflare-validation';
+  | 'cloudflare-validation'
+  | 'trustline-modal';
 
 export interface ModalStruct {
   name: ModalName;
