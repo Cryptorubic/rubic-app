@@ -27,6 +27,7 @@ import { TuiStringHandler } from '@taiga-ui/cdk';
 import { PrivacyCashRevertService } from '../../services/privacy-cash-revert.service';
 import { findPrivacyCashCompatibleToken, toRubicTokenAddr } from '../../utils/converter';
 import { PrivacyCashSignatureService } from '../../services/privacy-cash-signature.service';
+import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 
 interface TokenItem {
   id: string;
@@ -132,12 +133,6 @@ export class PrivateSwapsViewComponent {
 
   public readonly signature$ = this.privacyCashSignatureService.signature$;
 
-  public get filteredDestinationTokens(): TokenItem[] {
-    if (!this.srcTokenCtrl.value || this.srcTokenCtrl.value === WRAP_SOL_ADDRESS)
-      return this.tokens;
-    return this.tokens.filter(t => t.id === WRAP_SOL_ADDRESS || t.id === this.srcTokenCtrl.value);
-  }
-
   readonly stringifyTokenId: TuiStringHandler<string> = (id: string) => {
     const token = this.tokens.find(t => t.id === id);
     return token ? token.name : id;
@@ -149,7 +144,8 @@ export class PrivateSwapsViewComponent {
     private readonly privacyCashRevertService: PrivacyCashRevertService,
     private readonly privacyCashSignatureService: PrivacyCashSignatureService,
     private readonly tokensFacadeService: TokensFacadeService,
-    private readonly notificationsService: NotificationsService
+    private readonly notificationsService: NotificationsService,
+    private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
   public makeSignature(): void {
@@ -161,18 +157,11 @@ export class PrivateSwapsViewComponent {
     return token ? token.name : id;
   }
 
-  public makeRefund(): void {
+  public async makeRefund(): Promise<void> {
     const srcTokenAddr = this.privacyCashFormValue.srcToken;
     const receiverAddr = this.privacyCashFormValue.receiver;
-    const withdrawAmountNonWei = this.privacyCashFormValue.amount;
-    const srcToken = findPrivacyCashCompatibleToken(this.tokensFacadeService, srcTokenAddr);
 
-    this.privacyCashRevertService.refundTokens(
-      srcTokenAddr,
-      withdrawAmountNonWei,
-      srcToken.decimals,
-      receiverAddr
-    );
+    await this.privacyCashRevertService.refundTokens(toRubicTokenAddr(srcTokenAddr), receiverAddr);
   }
 
   public async makeDeposit(): Promise<void> {
@@ -231,8 +220,23 @@ export class PrivateSwapsViewComponent {
   }
 
   public async makeSwap(): Promise<void> {
-    if (!this.privacyCashForm.valid) {
-      this.notificationsService.showWarning('Transfer required fields are empty');
+    if (
+      !this.privacyCashFormValue.amount ||
+      !this.privacyCashFormValue.srcToken ||
+      !this.privacyCashFormValue.dstToken
+    ) {
+      this.notificationsService.showWarning('Swap required fields are empty');
+      return;
+    }
+    if (this.privacyCashFormValue.srcToken === this.privacyCashFormValue.dstToken) {
+      this.notificationsService.showWarning('Source and destination token must be different.');
+      return;
+    }
+    if (
+      this.privacyCashFormValue.srcToken !== WRAP_SOL_ADDRESS &&
+      this.privacyCashFormValue.dstToken !== WRAP_SOL_ADDRESS
+    ) {
+      this.notificationsService.showWarning('Currently only SOL<->Mint routes are supported.');
       return;
     }
 
@@ -247,7 +251,7 @@ export class PrivateSwapsViewComponent {
     const privacyCashBalanceWei = await this.privacyCashSwapService.getPrivacyCashBalance(
       srcTokenAddr,
       senderPK,
-      false
+      true
     );
     const privacyCashBalanceNonWei = Token.fromWei(
       privacyCashBalanceWei,
@@ -255,12 +259,21 @@ export class PrivateSwapsViewComponent {
     ).toNumber();
 
     if (new BigNumber(amountWei).gt(privacyCashBalanceWei)) {
-      const msg = `You don't have ${amountNonWei} on private balance. Your private balance is ${privacyCashBalanceNonWei}. Starting deposit...`;
-      this.notificationsService.showWarning(msg);
-
       const userAddr = this.walletConnectorService.address;
       const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
       const depositAmountWei = new BigNumber(amountWei).minus(privacyCashBalanceWei);
+      const adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+        BLOCKCHAIN_NAME.SOLANA
+      );
+      const balanceWei = await adapter.getBalance(userAddr, toRubicTokenAddr(srcTokenAddr));
+      if (balanceWei.lt(depositAmountWei)) {
+        const msg = `You don't have ${amountNonWei} ${srcToken.symbol} on private balance. Your private balance is ${privacyCashBalanceNonWei}.`;
+        this.notificationsService.showWarning(msg);
+        return;
+      }
+
+      const msg = `You don't have ${amountNonWei} ${srcToken.symbol} on private balance. Your private balance is ${privacyCashBalanceNonWei}. Starting deposit...`;
+      this.notificationsService.showWarning(msg);
 
       await this.privacyCashSwapService.makeDeposit(
         srcToken.address,

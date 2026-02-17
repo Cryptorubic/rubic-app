@@ -21,7 +21,7 @@ import {
 import { Keypair, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { Web3Pure, waitFor } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
-import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
+import { compareAddresses, compareTokens, isNil } from '@app/shared/utils/utils';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { toRubicTokenAddr } from '../utils/converter';
@@ -281,6 +281,7 @@ export class PrivacyCashSwapService {
       `[PrivacyCashSwapService_swapPartialPrivateBalance] burner wallet:`,
       burnerKeypair.publicKey.toBase58()
     );
+    localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', burnerKeypair.publicKey.toBase58());
 
     const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
       toRubicTokenAddr(srcToken.address),
@@ -360,13 +361,7 @@ export class PrivacyCashSwapService {
     ): Promise<number> => {
       const cacheKey = getCacheKey(tokenAddr, walletPK);
       const cachedValue = cache[cacheKey];
-      if (useCache && cachedValue) {
-        console.debug(
-          '[PrivacyCashSwapService_getPrivacyCashBalanceFnFactory] found cached value',
-          cachedValue
-        );
-        return cachedValue;
-      }
+      if (useCache && !isNil(cachedValue)) return cachedValue;
 
       const privacyCashBalanceWei = await this.fetchPrivacyCashBalance(tokenAddr, walletPK);
       cache[cacheKey] = privacyCashBalanceWei;

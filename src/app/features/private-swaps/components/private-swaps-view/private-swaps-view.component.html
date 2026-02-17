@@ -20,7 +20,7 @@
     <tui-tabs [(activeItemIndex)]="activeTabIndex">
       <button tuiTab>Deposit</button>
       <button tuiTab>Withdraw</button>
-      <button tuiTab>Transfer/Swap</button>
+      <button tuiTab>Swap</button>
       <button tuiTab>Refund</button>
     </tui-tabs>
 
@@ -107,7 +107,7 @@
       </div>
     </div>
 
-    <!-- Transfer Tab -->
+    <!-- Swap Tab -->
     <div *ngIf="activeTabIndex === 2" class="tab-content">
       <div class="row">
         <tui-select
@@ -139,7 +139,7 @@
         >
           Destination token
           <tui-data-list *tuiDataList>
-            <button *ngFor="let token of filteredDestinationTokens" tuiOption [value]="token.id">
+            <button *ngFor="let token of tokens" tuiOption [value]="token.id">
               {{ token.name }}
             </button>
           </tui-data-list>
@@ -149,12 +149,6 @@
       <div class="row">
         <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
           Input amount
-        </tui-input>
-      </div>
-
-      <div class="row">
-        <tui-input class="field" [formControl]="receiverCtrl" tuiTextfieldSize="m">
-          Receiver address
         </tui-input>
       </div>
 
@@ -171,9 +165,7 @@
 
       <div class="row row-center">
         <button tuiButton type="button" appearance="primary" size="m" (click)="makeSwap()">
-          {{
-            privacyCashFormValue.srcToken === privacyCashFormValue.dstToken ? 'Transfer' : 'Swap'
-          }}
+          Swap
         </button>
       </div>
     </div>
@@ -181,9 +173,6 @@
     <!-- Refund Tab -->
     <div *ngIf="activeTabIndex === 3" class="tab-content">
       <div class="row">
-        <tui-input class="field" [formControl]="srcAmountCtrl" tuiTextfieldSize="m">
-          Refund amount
-        </tui-input>
         <tui-select
           class="field"
           [formControl]="srcTokenCtrl"
