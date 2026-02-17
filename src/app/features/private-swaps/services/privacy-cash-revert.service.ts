@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { getOrCreateAssociatedTokenAccount, transfer } from '@solana/spl-token';
-import { PublicKey, SystemProgram, Transaction, sendAndConfirmTransaction } from '@solana/web3.js';
+import {
+  getOrCreateAssociatedTokenAccount,
+  createTransferInstruction,
+  TOKEN_PROGRAM_ID
+} from '@solana/spl-token';
+import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { BLOCKCHAIN_NAME, Token, nativeTokensList } from '@cryptorubic/core';
@@ -47,17 +51,23 @@ export class PrivacyCashRevertService {
       return;
     }
 
-    const transaction = new Transaction().add(
+    const transferBlockhash = await adapter.public.getLatestBlockhash();
+    const transaction = new Transaction({
+      feePayer: burnerKeypair.publicKey,
+      blockhash: transferBlockhash.blockhash,
+      lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
+    }).add(
       SystemProgram.transfer({
         fromPubkey: burnerKeypair.publicKey,
         toPubkey: receiverPK,
         lamports: availableBalanceToRefundWei.toNumber()
       })
     );
+    transaction.sign(burnerKeypair);
 
-    await sendAndConfirmTransaction(adapter.public, transaction, [burnerKeypair], {
-      commitment: 'processed'
-    });
+    const signature = await adapter.public.sendRawTransaction(transaction.serialize());
+
+    console.debug('[PrivacyCashRevertService_revertNative] signature:', signature);
     this.notificationsService.showInfo('Successfull refund.');
   }
 
@@ -82,28 +92,38 @@ export class PrivacyCashRevertService {
       return;
     }
 
-    const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+    const burnerATA = await getOrCreateAssociatedTokenAccount(
       adapter.public,
       burnerKeypair,
       mintPK,
       burnerKeypair.publicKey
     );
-    const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+    const recipientATA = await getOrCreateAssociatedTokenAccount(
       adapter.public,
       burnerKeypair,
       mintPK,
       receiverPK
     );
-    await transfer(
-      adapter.public,
-      burnerKeypair,
-      fromTokenAccount.address,
-      toTokenAccount.address,
+    const transferInstruction = createTransferInstruction(
+      burnerATA.address,
+      recipientATA.address,
       burnerKeypair.publicKey,
       burnerWalletBalanceWei.toNumber(),
       [],
-      { skipPreflight: true, commitment: 'processed' }
+      TOKEN_PROGRAM_ID
     );
+
+    const transferBlockhash = await adapter.public.getLatestBlockhash();
+    let transaction = new Transaction({
+      feePayer: burnerKeypair.publicKey,
+      blockhash: transferBlockhash.blockhash,
+      lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
+    }).add(transferInstruction);
+    transaction.sign(burnerKeypair);
+
+    const signature = await adapter.public.sendRawTransaction(transaction.serialize());
+
+    console.debug('[PrivacyCashRevertService_revertSPL] signature:', signature);
     this.notificationsService.showInfo('Successfull refund.');
   }
 }

@@ -291,8 +291,7 @@ export class PrivateSwapsViewComponent {
       new BigNumber(amountWei)
     );
 
-    const msg = `Successfull ${srcTokenAddr === dstTokenAddr ? 'transfer' : 'swap'}.`;
-    this.notificationsService.showInfo(msg);
+    this.notificationsService.showInfo('Successfull swap');
     this._updatePrivateBalance$.next();
   }
 }

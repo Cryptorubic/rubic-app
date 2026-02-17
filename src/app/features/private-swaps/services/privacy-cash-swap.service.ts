@@ -339,7 +339,6 @@ export class PrivacyCashSwapService {
         return Promise.resolve(tx);
       }
     );
-    this.notificationsService.showInfo('Successfull deposit.');
   }
 
   /**
