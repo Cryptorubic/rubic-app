@@ -14,10 +14,16 @@ import { SharedModule } from '@app/shared/shared.module';
 import { PrivacyCashRevertService } from './services/privacy-cash-revert.service';
 import { PrivacyCashSwapService } from './services/privacy-cash-swap.service';
 import { PrivacyCashApiService } from './services/privacy-cash-api.service';
+import { PrivacyCashSignatureService } from './services/privacy-cash-signature.service';
 
 @NgModule({
   declarations: [PrivateSwapsViewComponent],
-  providers: [PrivacyCashRevertService, PrivacyCashSwapService, PrivacyCashApiService],
+  providers: [
+    PrivacyCashRevertService,
+    PrivacyCashSwapService,
+    PrivacyCashApiService,
+    PrivacyCashSignatureService
+  ],
   imports: [
     CommonModule,
     SharedModule,

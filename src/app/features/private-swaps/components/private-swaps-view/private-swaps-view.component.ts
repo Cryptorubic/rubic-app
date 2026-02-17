@@ -26,6 +26,7 @@ import {
 import { TuiStringHandler } from '@taiga-ui/cdk';
 import { PrivacyCashRevertService } from '../../services/privacy-cash-revert.service';
 import { findPrivacyCashCompatibleToken, toRubicTokenAddr } from '../../utils/converter';
+import { PrivacyCashSignatureService } from '../../services/privacy-cash-signature.service';
 
 interface TokenItem {
   id: string;
@@ -92,7 +93,6 @@ export class PrivateSwapsViewComponent {
           )
         : of(0)
     ),
-    tap(balanceWei => console.debug('Private balance in wei: ', balanceWei)),
     map(balanceWei => {
       const srcToken = this.tokensFacadeService.findTokenSync({
         address: toRubicTokenAddr(this.privacyCashFormValue.srcToken),
@@ -130,7 +130,7 @@ export class PrivateSwapsViewComponent {
     })
   );
 
-  public readonly signature$ = this.privacyCashSwapService.signature$;
+  public readonly signature$ = this.privacyCashSignatureService.signature$;
 
   public get filteredDestinationTokens(): TokenItem[] {
     if (!this.srcTokenCtrl.value || this.srcTokenCtrl.value === WRAP_SOL_ADDRESS)
@@ -147,12 +147,13 @@ export class PrivateSwapsViewComponent {
     private readonly walletConnectorService: WalletConnectorService,
     private readonly privacyCashSwapService: PrivacyCashSwapService,
     private readonly privacyCashRevertService: PrivacyCashRevertService,
+    private readonly privacyCashSignatureService: PrivacyCashSignatureService,
     private readonly tokensFacadeService: TokensFacadeService,
     private readonly notificationsService: NotificationsService
   ) {}
 
   public makeSignature(): void {
-    this.privacyCashSwapService.makeSignature();
+    this.privacyCashSignatureService.makeSignature();
   }
 
   public findTokenNameById(id: string): string {
@@ -164,24 +165,20 @@ export class PrivateSwapsViewComponent {
     const srcTokenAddr = this.privacyCashFormValue.srcToken;
     const receiverAddr = this.privacyCashFormValue.receiver;
     const withdrawAmountNonWei = this.privacyCashFormValue.amount;
-    // @TODO use real decimals
-    const decimals = srcTokenAddr === WRAP_SOL_ADDRESS ? 9 : 6;
+    const srcToken = findPrivacyCashCompatibleToken(this.tokensFacadeService, srcTokenAddr);
+
     this.privacyCashRevertService.refundTokens(
       srcTokenAddr,
       withdrawAmountNonWei,
-      decimals,
+      srcToken.decimals,
       receiverAddr
     );
   }
 
   public async makeDeposit(): Promise<void> {
-    console.debug('MAKE_DEPOSIT ==>', this.privacyCashFormValue);
-
-    await this.privacyCashSwapService.checkRequirements();
     if (!this.privacyCashFormValue.amount || !this.privacyCashFormValue.srcToken) {
-      const msg = 'amount and token fields are empty';
-      this.notificationsService.showWarning(msg);
-      throw new Error(msg);
+      this.notificationsService.showWarning('amount and token fields are empty');
+      return;
     }
 
     const depositTokenAddr = this.privacyCashFormValue.srcToken;
@@ -190,7 +187,6 @@ export class PrivateSwapsViewComponent {
       Token.toWei(this.privacyCashFormValue.amount, depositToken.decimals)
     );
     const userAddr = this.walletConnectorService.address;
-
     const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
     await this.privacyCashSwapService.makeDeposit(
@@ -207,17 +203,13 @@ export class PrivateSwapsViewComponent {
   }
 
   public async makeWithdraw(): Promise<void> {
-    console.debug('MAKE_WITHDRAW ==>', this.privacyCashFormValue);
-
-    await this.privacyCashSwapService.checkRequirements();
     if (
       !this.privacyCashFormValue.receiver ||
       !this.privacyCashFormValue.srcToken ||
       !this.privacyCashFormValue.amount
     ) {
-      const msg = 'receiver or token or amount fields are empty';
-      this.notificationsService.showWarning(msg);
-      throw new Error(msg);
+      this.notificationsService.showWarning('receiver or token or amount fields are empty');
+      return;
     }
 
     const srcWalletAddr = this.walletConnectorService.address;
@@ -239,16 +231,11 @@ export class PrivateSwapsViewComponent {
   }
 
   public async makeSwap(): Promise<void> {
-    console.debug('MAKE_TRANSFER ==>', this.privacyCashFormValue);
-
-    await this.privacyCashSwapService.checkRequirements();
     if (!this.privacyCashForm.valid) {
-      const msg = 'Transfer required fields are empty';
-      this.notificationsService.showWarning(msg);
-      throw new Error(msg);
+      this.notificationsService.showWarning('Transfer required fields are empty');
+      return;
     }
 
-    const receiverAddr = this.privacyCashFormValue.receiver;
     const amountNonWei = this.privacyCashFormValue.amount;
     const srcTokenAddr = this.privacyCashFormValue.srcToken;
     const dstTokenAddr = this.privacyCashFormValue.dstToken;
@@ -268,21 +255,31 @@ export class PrivateSwapsViewComponent {
     ).toNumber();
 
     if (new BigNumber(amountWei).gt(privacyCashBalanceWei)) {
-      const msg = `You don't have ${amountNonWei} on private balance. Your private balance is ${privacyCashBalanceNonWei}`;
+      const msg = `You don't have ${amountNonWei} on private balance. Your private balance is ${privacyCashBalanceNonWei}. Starting deposit...`;
       this.notificationsService.showWarning(msg);
-      throw new Error(msg);
+
+      const userAddr = this.walletConnectorService.address;
+      const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
+      const depositAmountWei = new BigNumber(amountWei).minus(privacyCashBalanceWei);
+
+      await this.privacyCashSwapService.makeDeposit(
+        srcToken.address,
+        depositAmountWei.toNumber(),
+        new PublicKey(userAddr),
+        async (tx: VersionedTransaction) => {
+          return await wallet.signTransaction(tx);
+        }
+      );
     }
 
-    await this.privacyCashSwapService.makeSwapOrTransfer(
+    await this.privacyCashSwapService.swapPartialPrivateBalance(
       srcToken,
       dstToken,
-      new BigNumber(amountNonWei),
-      receiverAddr
+      new BigNumber(amountWei)
     );
 
-    this.notificationsService.showInfo(
-      `Successfull ${srcTokenAddr === dstTokenAddr ? 'transfer' : 'swap'}.`
-    );
+    const msg = `Successfull ${srcTokenAddr === dstTokenAddr ? 'transfer' : 'swap'}.`;
+    this.notificationsService.showInfo(msg);
     this._updatePrivateBalance$.next();
   }
 }
