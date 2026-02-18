@@ -29,6 +29,16 @@ import { AuthService } from '@core/services/auth/auth.service';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { DISABLED_BLOCKCHAINS_MAP } from '@app/features/trade/components/assets-selector/services/blockchains-list-service/constants/disabled-from-blockchains';
 
+export type QueryTokenParams =
+  | {
+      query: string;
+      blockchain: BlockchainName | null;
+    }
+  | {
+      symbol: string;
+      blockchain: BlockchainName | null;
+    };
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,10 +65,11 @@ export class NewTokensApiService {
     private readonly authService: AuthService
   ) {}
 
-  public fetchQueryTokens(query: string, blockchain: BlockchainName | null): Observable<Token[]> {
+  public fetchQueryTokens(params: QueryTokenParams): Observable<Token[]> {
     const options = {
-      query,
-      ...(blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[blockchain] })
+      ...('query' in params && { query: params.query }),
+      ...('symbol' in params && { symbol: params.symbol }),
+      ...(params.blockchain !== null && { network: TO_BACKEND_BLOCKCHAINS[params.blockchain] })
     };
 
     return this.httpService.get<TokensBackendResponse>(ENDPOINTS.TOKENS, options).pipe(

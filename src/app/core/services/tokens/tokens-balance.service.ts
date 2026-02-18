@@ -264,52 +264,52 @@ export class TokensBalanceService {
     tokens: Token[],
     setBalanceLoading = true
   ): Promise<BalanceToken[]> {
-    const chainTokens: Partial<Record<BlockchainName, Token[]>> = {};
+    const chainTokensMap: Partial<Record<BlockchainName, Token[]>> = {};
     tokens.forEach(token => {
-      if (!chainTokens[token.blockchain]) {
-        chainTokens[token.blockchain] = [];
+      if (!chainTokensMap[token.blockchain]) {
+        chainTokensMap[token.blockchain] = [];
       }
-      chainTokens[token.blockchain].push(token);
+      chainTokensMap[token.blockchain].push(token);
     });
-    const promises = Object.entries(chainTokens).map(([chain]: [BlockchainName, Token[]]) => {
-      let adapter: AbstractAdapter<unknown, unknown, BlockchainName>;
-      try {
-        adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
-      } catch {
-        return Promise.resolve(
-          tokens.map(token => ({ ...token, favorite: false, amount: new BigNumber(NaN) }))
-        );
-      }
-      return firstValueFrom(
-        this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
-      ).then(() => {
-        if (setBalanceLoading) {
-          this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+    const promises = Object.entries(chainTokensMap).map(
+      ([chain, chainTokens]: [BlockchainName, Token[]]) => {
+        let adapter: AbstractAdapter<unknown, unknown, BlockchainName>;
+        try {
+          adapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(chain as RubicAny);
+        } catch {
+          return Promise.resolve(
+            tokens.map(token => ({ ...token, favorite: false, amount: new BigNumber(NaN) }))
+          );
         }
-        const tokensObject = this.collectionsFacade.blockchainTokens[chain].getTokens();
-        const tokensState = Object.values(tokensObject).map(token => token.address);
+        return firstValueFrom(
+          this.tokensStore.tokens[chain].pageLoading$.pipe(first(loading => loading === false))
+        ).then(() => {
+          if (setBalanceLoading) {
+            this.tokensStore.tokens[chain]._balanceLoading$.next(true);
+          }
+          const tokensAddresses = chainTokens.map(token => token.address);
+          return adapter
+            .getTokensBalances(this.authService.userAddress, tokensAddresses)
+            .catch(() => tokensAddresses.map(() => new BigNumber(NaN)))
+            .then(balances => {
+              const tokensWithBalances = chainTokens.map((token, idx) => ({
+                ...token,
+                amount: balances?.[idx]?.gt(0)
+                  ? OldToken.fromWei(balances[idx], token.decimals)
+                  : new BigNumber(NaN)
+              })) as BalanceToken[];
+              const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
 
-        return adapter
-          .getTokensBalances(this.authService.userAddress, tokensState)
-          .catch(() => tokensState.map(() => new BigNumber(NaN)))
-          .then(balances => {
-            const tokensWithBalances = Object.values(tokensObject).map((token, idx) => ({
-              ...token,
-              amount: balances?.[idx]?.gt(0)
-                ? OldToken.fromWei(balances[idx], token.decimals)
-                : new BigNumber(NaN)
-            })) as BalanceToken[];
-            const tokensWithNotNullBalance = tokensWithBalances.filter(t => !t.amount.isNaN());
+              this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
+              if (setBalanceLoading) {
+                this.tokensStore.tokens[chain]._balanceLoading$.next(false);
+              }
 
-            this.tokensStore.addBlockchainBalanceTokens(chain, tokensWithNotNullBalance);
-            if (setBalanceLoading) {
-              this.tokensStore.tokens[chain]._balanceLoading$.next(false);
-            }
-
-            return tokensWithBalances;
-          });
-      });
-    });
+              return tokensWithBalances;
+            });
+        });
+      }
+    );
     const tokensWithBalances = await Promise.all(promises);
     return tokensWithBalances.flat().sort(sorterByTokenRank);
   }

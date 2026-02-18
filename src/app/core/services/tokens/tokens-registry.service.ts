@@ -8,7 +8,10 @@ import { BlockchainName, BlockchainsInfo, EvmBlockchainName } from '@cryptorubic
 import { NewTokensStoreService } from '@core/services/tokens/new-tokens-store.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { SdkLegacyService } from '@core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { NewTokensApiService } from '@core/services/tokens/new-tokens-api.service';
+import {
+  NewTokensApiService,
+  QueryTokenParams
+} from '@core/services/tokens/new-tokens-api.service';
 import { Token } from '@shared/models/tokens/token';
 import { TokensBalanceService } from '@core/services/tokens/tokens-balance.service';
 import { Web3Pure } from '@cryptorubic/web3';
@@ -55,7 +58,7 @@ export class TokensRegistryService {
   }): Promise<BigNumber | null> {
     return firstValueFrom(
       this.apiService
-        .fetchQueryTokens(token.address, token.blockchain)
+        .fetchQueryTokens({ query: token.address, blockchain: token.blockchain })
         .pipe(map(backendTokens => new BigNumber(backendTokens?.[0]?.price)))
     );
   }
@@ -105,7 +108,7 @@ export class TokensRegistryService {
 
     if (searchBackend) {
       return firstValueFrom(
-        this.fetchQueryTokens(token.address, token.blockchain).pipe(
+        this.fetchQueryTokens({ query: token.address, blockchain: token.blockchain }).pipe(
           map(backendTokens => {
             return backendTokens.length
               ? { ...backendTokens[0], amount: new BigNumber(NaN), favorite: false }
@@ -118,12 +121,16 @@ export class TokensRegistryService {
     return null;
   }
 
-  public fetchQueryTokens(query: string, blockchain: BlockchainName | null): Observable<Token[]> {
-    return this.apiService.fetchQueryTokens(query, blockchain).pipe(
+  public fetchQueryTokens(params: QueryTokenParams): Observable<Token[]> {
+    return this.apiService.fetchQueryTokens(params).pipe(
       switchMap(backendTokens => {
         const tokensWithoutBalance = backendTokens.filter(
           token =>
-            !(token.name.toLowerCase().includes('tether') && query.toLowerCase().includes('eth'))
+            !(
+              token.name.toLowerCase().includes('tether') &&
+              (('query' in params && params.query.toLowerCase().includes('eth')) ||
+                ('symbol' in params && params.symbol.toLowerCase().includes('eth')))
+            )
         );
         return this.balanceService.fetchDifferentChainsBalances(tokensWithoutBalance);
       })
