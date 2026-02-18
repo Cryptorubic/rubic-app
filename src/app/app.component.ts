@@ -146,10 +146,7 @@ export class AppComponent implements AfterViewInit {
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
-      setTimeout(() => {
-        this.rubicApiService.setSocket();
-        this.rubicApiService.initCfTokenAutoRefresh();
-      }, 0);
+      setTimeout(() => this.rubicApiService.setSocket(), 0);
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
   }

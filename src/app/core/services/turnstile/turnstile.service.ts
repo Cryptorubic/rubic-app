@@ -37,23 +37,19 @@ export class TurnstileService {
   public async askForCloudflareToken(): Promise<boolean> {
     try {
       this._cfModalOpened$.next(true);
-
       const success = await this.createInvisibleWidget();
       if (success) {
         this._cfModalOpened$.next(false);
         return true;
       }
-
-      /**
-       * calls createWidget() after component for cloudflare checkbox rendered
-       */
+      // calls this.createWidget() after rendering component for cloudflare checkbox
       return this.modalService
         .openTurnstileModal(this.injector)
         .then(() => true)
         .catch(() => false)
         .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
-      console.debug('[TurnstileService_updateCloudflareToken] err:', err);
+      console.error('[TurnstileService_updateCloudflareToken] err:', err);
       return false;
     }
   }
@@ -65,7 +61,7 @@ export class TurnstileService {
     const containerId = '#turnstile-container-invisible';
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        this.turnstile.render(containerId, {
+        const widgetId = this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
           appearance: 'interaction-only',
           // sitekey: '2x00000000000000000000AB',
@@ -78,6 +74,8 @@ export class TurnstileService {
           },
           'error-callback': (error: Error) => {
             console.debug('[TurnstileService_createInvisibleWidget] error-callback: ', error);
+            this._token$.next(null);
+            this.turnstile.remove(widgetId);
             resolve(false);
           }
         });
@@ -93,9 +91,10 @@ export class TurnstileService {
 
     return new Promise<boolean>(resolve => {
       this.turnstile.ready(() => {
-        this.turnstile.render(containerId, {
+        const widgetId = this.turnstile.render(containerId, {
           sitekey: '0x4AAAAAACHJ5X5WghmT8crG',
           // sitekey: '3x00000000000000000000FF',
+          // sitekey: '2x00000000000000000000AB',
           appearance: 'interaction-only',
           theme: 'dark',
           size: 'normal',
@@ -107,6 +106,8 @@ export class TurnstileService {
           },
           'error-callback': (error: Error) => {
             console.debug('[TurnstileService_createWidget] error-callback: ', error);
+            this._token$.next(null);
+            this.turnstile.remove(widgetId);
             resolve(false);
           }
         });

@@ -32,6 +32,7 @@ import {
   map,
   Observable,
   of,
+  Subscription,
   throwError
 } from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
@@ -58,7 +59,8 @@ import {
   throttleTime
 } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
-import { NAVIGATOR } from '@ng-web-apis/common';
+import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
+import { withLimitedRepeats } from '@app/shared/utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -87,7 +89,8 @@ export class RubicApiService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly turnstileService: TurnstileService,
-    @Inject(NAVIGATOR) private readonly navigator: Navigator
+    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WINDOW) private readonly window: Window
   ) {}
 
   public setSocket(): void {
@@ -106,19 +109,23 @@ export class RubicApiService {
    * @description tries get token immediately after call
    * and refresh CF token every 4.5 minutes  and send it to rubic-api
    */
-  public initCfTokenAutoRefresh(): void {
+  public initCfTokenAutoRefresh(): Subscription {
     this.refreshCloudflareToken(true);
-    interval(4.5 * 60 * 1_000)
+    return interval(4.5 * 60 * 1_000)
       .pipe(switchMap(() => this.refreshCloudflareToken(false)))
       .subscribe();
   }
 
-  /**
-   * @TODO FEATURE AFTER Python API updates:
-   * Add optional cloudflare token requirement
-   * only when in admin's dashboard checklLoudflare is set to true
-   */
-  public async refreshCloudflareToken(
+  public refreshCloudflareToken: (
+    needRecalculation: boolean
+  ) => Promise<{ success: boolean; alreadyOpened: boolean }> = withLimitedRepeats(
+    (needRecalculation: boolean) => this._refreshCloudflareToken(needRecalculation),
+    { success: false, alreadyOpened: false },
+    3,
+    20 * 1_000
+  );
+
+  public async _refreshCloudflareToken(
     needRecalculation: boolean
   ): Promise<{ success: boolean; alreadyOpened: boolean }> {
     const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
@@ -134,7 +141,7 @@ export class RubicApiService {
 
     this.client.emit('auth_cloudflare', { token, needRecalculation });
 
-    return { alreadyOpened: false, success: true };
+    return { alreadyOpened: false, success: token !== null };
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
@@ -231,7 +238,7 @@ export class RubicApiService {
       filter(socket => !!socket),
       switchMap(socket =>
         combineLatest([
-          fromEvent(window, 'online'),
+          fromEvent(this.window, 'online'),
           fromEvent(socket, 'connect_error'),
           fromEvent<string[]>(socket, 'disconnect')
         ]).pipe(

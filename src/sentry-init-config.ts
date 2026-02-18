@@ -10,7 +10,7 @@ export function initSentry(): void {
   const sentryAllowUrlRegexpString = /https:\/\/.*\.rubic\.exchange/;
 
   Sentry.init({
-    dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
+    dsn: 'https://b281c2a8f1bae4aa11a308d01fa61fb7@sentry.rubic.exchange/2',
     sendDefaultPii: true,
     integrations: [
       Sentry.browserTracingIntegration(),
