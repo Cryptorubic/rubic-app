@@ -80,7 +80,7 @@ import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { WINDOW } from '@ng-web-apis/common';
 
-var SENTRY_CF_STATUS = {
+const SENTRY_CF_STATUS = {
   hadFilledForm: false,
   didntReachQuoteEnd: true,
   wasAllowedCalculate: false

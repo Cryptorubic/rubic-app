@@ -4,7 +4,6 @@ import { iif, Observable, of, OperatorFunction, defer } from 'rxjs';
 import { MinimalToken } from '@shared/models/tokens/minimal-token';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 import { GasPrice, EIP1559Gas } from '@cryptorubic/web3';
-import { RubicAny } from '../models/utility-types/rubic-any';
 
 /**
  * Compares two objects for equality.
@@ -173,30 +172,3 @@ export const formatEIP1559Gas = ({
   maxFeePerGas: new BigNumber(maxFeePerGas).dividedBy(10 ** 9).toFixed(),
   maxPriorityFeePerGas: new BigNumber(maxPriorityFeePerGas).dividedBy(10 ** 9).toFixed()
 });
-
-/**
- * Allow to invoke <promiseFn> <retryLimit> times, than on every next call returns default value.
- * If refreshRepeatsAfterMs providen - resets retries after specified period of times
- */
-export function withLimitedRepeats<T, P extends RubicAny[]>(
-  promiseFn: (...args: P) => Promise<T>,
-  defaultRes: T,
-  retryLimit: number,
-  refreshRepeatsAfterMs?: number
-): () => Promise<T> {
-  let retryCount = 0;
-  let timerId: number | null = null;
-  return async (...args: P) => {
-    if (retryCount > retryLimit - 1) return defaultRes;
-    if (!isNil(refreshRepeatsAfterMs)) {
-      if (timerId) clearTimeout(timerId);
-      timerId = setTimeout(() => {
-        retryCount = 0;
-        timerId = null;
-      }, refreshRepeatsAfterMs) as RubicAny;
-    }
-    const res = await promiseFn(...args);
-    retryCount++;
-    return res;
-  };
-}

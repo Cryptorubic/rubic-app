@@ -102,15 +102,6 @@ export class RubicApiService {
     return interval(4.5 * 60 * 1_000).pipe(switchMap(() => this.refreshCloudflareToken(false)));
   }
 
-  // public refreshCloudflareToken: (
-  //   needRecalculation: boolean
-  // ) => Promise<{ success: boolean; alreadyOpened: boolean }> = withLimitedRepeats(
-  //   (needRecalculation: boolean) => this._refreshCloudflareToken(needRecalculation),
-  //   { success: false, alreadyOpened: false },
-  //   3,
-  //   20 * 1_000
-  // );
-
   public async refreshCloudflareToken(
     needRecalculation: boolean
   ): Promise<{ success: boolean; alreadyOpened: boolean }> {
