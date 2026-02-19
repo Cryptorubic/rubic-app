@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 import { ApiSocketManager } from './socket-manager';
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
@@ -20,8 +20,19 @@ export class CloudflareSocketManager extends ApiSocketManager {
   }
 
   public initSubs(): void {
-    const autoRefreshSub = this.rubicApiService.initCfTokenAutoRefresh();
-    const connErrSub = this.rubicApiService.handleSocketConnectionError().subscribe();
+    const onlineSub = this.rubicApiService
+      .handleOnlineChange()
+      .pipe(switchMap(() => this.rubicApiService.refreshCloudflareToken(true)))
+      .subscribe();
+    const disconnSub = this.rubicApiService
+      .handleSocketDisconnect()
+      .pipe(switchMap(() => this.rubicApiService.refreshCloudflareToken(true)))
+      .subscribe();
+    const connErrSub = this.rubicApiService
+      .handleSocketConnectError()
+      .pipe(switchMap(() => this.rubicApiService.refreshCloudflareToken(true)))
+      .subscribe();
+    const autoRefreshSub = this.rubicApiService.initCfTokenAutoRefresh().subscribe();
     const cfTokenRespSub = this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
       if (res.success) {
         console.debug('[CloudflareSocketManager_initSubs] CF_SUCCESS');
@@ -33,10 +44,12 @@ export class CloudflareSocketManager extends ApiSocketManager {
         this.rubicApiService.refreshCloudflareToken(true);
       }
     });
-    const connSub = this.rubicApiService.handleSocketConnected().subscribe(() => {
-      this.swapsControllerService.handleWs();
-      this.swapsControllerService.startRecalculation(true);
-    });
-    this.subs.push(autoRefreshSub, connErrSub, cfTokenRespSub, connSub);
+    const connSub = this.rubicApiService
+      .handleSocketConnected()
+      .pipe(switchMap(() => this.rubicApiService.refreshCloudflareToken(true)))
+      .subscribe(() => {
+        this.swapsControllerService.handleWs();
+      });
+    this.subs.push(onlineSub, disconnSub, autoRefreshSub, connErrSub, cfTokenRespSub, connSub);
   }
 }

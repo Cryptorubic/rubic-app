@@ -23,7 +23,6 @@ import {
 import {
   BehaviorSubject,
   catchError,
-  combineLatest,
   concatMap,
   firstValueFrom,
   from,
@@ -32,7 +31,6 @@ import {
   map,
   Observable,
   of,
-  Subscription,
   throwError
 } from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
@@ -60,7 +58,6 @@ import {
 } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
-import { withLimitedRepeats } from '@app/shared/utils/utils';
 
 @Injectable({
   providedIn: 'root'
@@ -109,23 +106,21 @@ export class RubicApiService {
    * @description tries get token immediately after call
    * and refresh CF token every 4.5 minutes  and send it to rubic-api
    */
-  public initCfTokenAutoRefresh(): Subscription {
+  public initCfTokenAutoRefresh(): Observable<{ success: boolean; alreadyOpened: boolean }> {
     this.refreshCloudflareToken(true);
-    return interval(4.5 * 60 * 1_000)
-      .pipe(switchMap(() => this.refreshCloudflareToken(false)))
-      .subscribe();
+    return interval(4.5 * 60 * 1_000).pipe(switchMap(() => this.refreshCloudflareToken(false)));
   }
 
-  public refreshCloudflareToken: (
-    needRecalculation: boolean
-  ) => Promise<{ success: boolean; alreadyOpened: boolean }> = withLimitedRepeats(
-    (needRecalculation: boolean) => this._refreshCloudflareToken(needRecalculation),
-    { success: false, alreadyOpened: false },
-    3,
-    20 * 1_000
-  );
+  // public refreshCloudflareToken: (
+  //   needRecalculation: boolean
+  // ) => Promise<{ success: boolean; alreadyOpened: boolean }> = withLimitedRepeats(
+  //   (needRecalculation: boolean) => this._refreshCloudflareToken(needRecalculation),
+  //   { success: false, alreadyOpened: false },
+  //   3,
+  //   20 * 1_000
+  // );
 
-  public async _refreshCloudflareToken(
+  public async refreshCloudflareToken(
     needRecalculation: boolean
   ): Promise<{ success: boolean; alreadyOpened: boolean }> {
     const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
@@ -233,38 +228,27 @@ export class RubicApiService {
     );
   }
 
-  public handleSocketConnectionError(): Observable<boolean> {
+  public handleOnlineChange(): Observable<Event> {
     return this.socket$.pipe(
       filter(socket => !!socket),
-      switchMap(socket =>
-        combineLatest([
-          fromEvent(this.window, 'online'),
-          fromEvent(socket, 'connect_error'),
-          fromEvent<string[]>(socket, 'disconnect')
-        ]).pipe(
-          /* when Internet conn established, there is a small gap of time, when api requests still stay stucked */
-          delay(1_000),
-          switchMap(([_, connErrEvent, disconnEvent]) => {
-            if (this.navigator.onLine) {
-              return from(this.refreshCloudflareToken(true)).pipe(
-                tap(res => {
-                  if (!res.alreadyOpened) {
-                    console.debug('[RubicApiService_handleSocketConnectionError] CF_ERROR', {
-                      connErrEvent,
-                      disconnEvent,
-                      success: res.success,
-                      socketId: this.client.id,
-                      date: new Date()
-                    });
-                  }
-                }),
-                map(res => res.success)
-              );
-            }
-            return of(false);
-          })
-        )
-      )
+      switchMap(() => fromEvent(this.window, 'online').pipe(delay(1_000))),
+      tap(() => console.log('%cRubicApiService_handleOnlineChange', 'color: yellow;'))
+    );
+  }
+
+  public handleSocketConnectError(): Observable<Event> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent(socket, 'connect_error')),
+      tap(() => console.log('%cRubicApiService_handleSocketConnectError', 'color: yellow;'))
+    );
+  }
+
+  public handleSocketDisconnect(): Observable<string[]> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent<string[]>(socket, 'disconnect')),
+      tap(() => console.log('%cRubicApiService_handleSocketDisconnect', 'color: yellow;'))
     );
   }
 

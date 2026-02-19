@@ -50,6 +50,7 @@ export class TurnstileService {
         .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
       console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', err);
+      this._cfModalOpened$.next(false);
       return false;
     }
   }

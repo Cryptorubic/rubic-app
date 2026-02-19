@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   combineLatestWith,
   concatMap,
@@ -78,13 +78,12 @@ import { TurnstileService } from '@app/core/services/turnstile/turnstile.service
 import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
+import { WINDOW } from '@ng-web-apis/common';
 
-/**
- * @REMOVE
- */
-var QUOTE_STATUS = {
+var SENTRY_CF_STATUS = {
   hadFilledForm: false,
-  didntReachQuoteEnd: true
+  didntReachQuoteEnd: true,
+  wasAllowedCalculate: false
 };
 
 @Injectable()
@@ -130,7 +129,8 @@ export class SwapsControllerService {
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
-    private readonly trustlineService: TrustlineService
+    private readonly trustlineService: TrustlineService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
@@ -144,14 +144,13 @@ export class SwapsControllerService {
     this.addSentryEvent();
   }
 
-  /**
-   * @REMOVE
-   */
   private addSentryEvent(): void {
-    window.addEventListener('beforeunload', () => {
-      if (QUOTE_STATUS.didntReachQuoteEnd && QUOTE_STATUS.hadFilledForm) {
+    setInterval(() => console.log('SENTRY_CF_STATUS', SENTRY_CF_STATUS), 2_000);
+    this.window.addEventListener('beforeunload', () => {
+      if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
         console.debug(
-          '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers'
+          '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers',
+          SENTRY_CF_STATUS
         );
       }
     });
@@ -195,9 +194,8 @@ export class SwapsControllerService {
             !this.swapFormService.isFilled ||
             !this.socketManager.allowCalculation()
           ) {
-            if (!this.socketManager.allowCalculation() && this.swapFormService.isFilled) {
-              QUOTE_STATUS.hadFilledForm = true;
-            }
+            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled;
+            SENTRY_CF_STATUS.wasAllowedCalculate = this.socketManager.allowCalculation();
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };
           }
@@ -224,7 +222,6 @@ export class SwapsControllerService {
 
           // @TODO API
           const isAlgebraWrap = false;
-          QUOTE_STATUS.didntReachQuoteEnd = false;
 
           if (isAlgebraWrap) {
             this.disabledTradesTypes.crossChain = [
@@ -649,7 +646,7 @@ export class SwapsControllerService {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-
+                    SENTRY_CF_STATUS.didntReachQuoteEnd = false;
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     this.swapsStateService.updateTrade(

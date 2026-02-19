@@ -12,10 +12,19 @@ export class DefaultSocketManager extends ApiSocketManager {
   }
 
   public initSubs(): void {
+    const onlineSub = this.rubicApiService.handleOnlineChange().subscribe(() => {
+      this.swapsControllerService.startRecalculation(true);
+    });
+    const disconnSub = this.rubicApiService.handleSocketDisconnect().subscribe(() => {
+      this.swapsControllerService.startRecalculation(true);
+    });
+    const connErrSub = this.rubicApiService.handleSocketConnectError().subscribe(() => {
+      this.swapsControllerService.startRecalculation(true);
+    });
     const connSub = this.rubicApiService.handleSocketConnected().subscribe(() => {
       this.swapsControllerService.handleWs();
       this.swapsControllerService.startRecalculation(true);
     });
-    this.subs.push(connSub);
+    this.subs.push(onlineSub, disconnSub, connErrSub, connSub);
   }
 }
