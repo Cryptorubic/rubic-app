@@ -1,11 +1,13 @@
 import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
+import { EnvType } from '@app/core/services/sdk/sdk-legacy/features/common/models/sdk-models/env-type';
 
 export function initSentry(): void {
   /**
-   * send logs to sentry only in production env
+   * send logs to sentry only in production
    */
-  if (ENVIRONMENT.environmentName !== 'prod') {
+  const prodDomains: EnvType[] = ['prod', 'prod-api', 'rubic'];
+  if (!prodDomains.includes(ENVIRONMENT.environmentName)) {
     return;
   }
 
