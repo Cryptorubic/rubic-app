@@ -249,7 +249,7 @@ export class RubicApiService {
               return from(this.refreshCloudflareToken(true)).pipe(
                 tap(res => {
                   if (!res.alreadyOpened) {
-                    console.debug('[RubicApiService_handleSocketConnectionError] connect_error', {
+                    console.debug('[RubicApiService_handleSocketConnectionError] CF_ERROR', {
                       connErrEvent,
                       disconnEvent,
                       success: res.success,
@@ -325,10 +325,7 @@ export class RubicApiService {
                     rubicApiError as RubicAny
                   );
             return from(promise).pipe(
-              catchError(err => {
-                console.debug('[RubicApiService_handleQuotesAsync] socket error:', err);
-                return of(null);
-              }),
+              catchError(() => of(null)),
               map(wrappedTrade => ({
                 total,
                 calculated,
@@ -423,19 +420,7 @@ export class RubicApiService {
     switch (result.code) {
       case 6001:
       case 6002: {
-        return from(this.refreshCloudflareToken(true)).pipe(
-          tap(res => {
-            if (!res.alreadyOpened) {
-              console.debug('[RubicApiService_handleWsApiError] 6001:', {
-                error: err,
-                success: res.success,
-                socketId: this.client.id,
-                date: new Date()
-              });
-            }
-          }),
-          map(res => res.success)
-        );
+        return from(this.refreshCloudflareToken(true)).pipe(map(res => res.success));
       }
       default:
         return of(false);

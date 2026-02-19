@@ -79,6 +79,14 @@ import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 
+/**
+ * @REMOVE
+ */
+var QUOTE_STATUS = {
+  hadFilledForm: false,
+  didntReachQuoteEnd: true
+};
+
 @Injectable()
 export class SwapsControllerService {
   private readonly _calculateTrade$ = new Subject<{
@@ -132,6 +140,21 @@ export class SwapsControllerService {
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
     this.subscribeOnSwapFormFilled();
+
+    this.addSentryEvent();
+  }
+
+  /**
+   * @REMOVE
+   */
+  private addSentryEvent(): void {
+    window.addEventListener('beforeunload', () => {
+      if (QUOTE_STATUS.didntReachQuoteEnd && QUOTE_STATUS.hadFilledForm) {
+        console.debug(
+          '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers'
+        );
+      }
+    });
   }
 
   /**
@@ -172,6 +195,9 @@ export class SwapsControllerService {
             !this.swapFormService.isFilled ||
             !this.socketManager.allowCalculation()
           ) {
+            if (!this.socketManager.allowCalculation() && this.swapFormService.isFilled) {
+              QUOTE_STATUS.hadFilledForm = true;
+            }
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };
           }
@@ -198,6 +224,7 @@ export class SwapsControllerService {
 
           // @TODO API
           const isAlgebraWrap = false;
+          QUOTE_STATUS.didntReachQuoteEnd = false;
 
           if (isAlgebraWrap) {
             this.disabledTradesTypes.crossChain = [

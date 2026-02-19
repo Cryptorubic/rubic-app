@@ -24,10 +24,12 @@ export class CloudflareSocketManager extends ApiSocketManager {
     const connErrSub = this.rubicApiService.handleSocketConnectionError().subscribe();
     const cfTokenRespSub = this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
       if (res.success) {
+        console.debug('[CloudflareSocketManager_initSubs] CF_SUCCESS');
         if (res.needRecalculation) {
           this.swapsControllerService.startRecalculation(true);
         }
       } else {
+        console.debug('[CloudflareSocketManager_initSubs] CF_ERROR');
         this.rubicApiService.refreshCloudflareToken(true);
       }
     });

@@ -49,7 +49,7 @@ export class TurnstileService {
         .catch(() => false)
         .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
-      console.error('[TurnstileService_updateCloudflareToken] err:', err);
+      console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', err);
       return false;
     }
   }
@@ -68,12 +68,13 @@ export class TurnstileService {
           // sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
             this.zone.run(() => {
+              console.debug('[TurnstileService_createInvisibleWidget] CF_SUCCESS', { widgetId });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createInvisibleWidget] error-callback: ', error);
+            console.debug('[TurnstileService_createInvisibleWidget] CF_ERROR', { error, widgetId });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);
@@ -100,12 +101,13 @@ export class TurnstileService {
           size: 'normal',
           callback: (token: string) => {
             this.zone.run(() => {
+              console.debug('[TurnstileService_createWidget] CF_SUCCESS', { widgetId });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createWidget] error-callback: ', error);
+            console.debug('[TurnstileService_createWidget] CF_ERROR', { error, widgetId });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);
