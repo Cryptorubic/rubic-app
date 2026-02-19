@@ -2,7 +2,10 @@ import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
 
 export function initSentry(): void {
-  if (ENVIRONMENT.environmentName === 'local') {
+  /**
+   * send logs to sentry only in production env
+   */
+  if (ENVIRONMENT.environmentName !== 'prod') {
     return;
   }
 

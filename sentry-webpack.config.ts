@@ -8,7 +8,7 @@ export default (
   _: CustomWebpackBrowserSchema,
   targetOptions: TargetOptions
 ) => {
-  if (targetOptions.configuration !== 'local') {
+  if (targetOptions.configuration === 'production') {
     config.devtool = 'source-map';
     config.plugins.push(
       sentryWebpackPlugin({
