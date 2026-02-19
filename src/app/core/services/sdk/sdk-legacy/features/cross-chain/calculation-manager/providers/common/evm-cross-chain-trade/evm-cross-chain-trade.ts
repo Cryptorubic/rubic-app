@@ -197,7 +197,9 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
 
       return transactionHash!;
     } catch (err) {
-      // waiting for update of allowance on ERC20 token contract
+      /**
+       * waiting for update of allowance on ERC20 token contract
+       */
       if (err.message.includes('transfer amount exceeds allowance')) {
         await withRetryWhile(
           () => this.needApprove(),

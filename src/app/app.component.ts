@@ -7,7 +7,7 @@ import { PlatformConfigurationService } from '@app/core/services/backend/platfor
 import { QueryParams } from '@core/services/query-params/models/query-params';
 import { QueryParamsService } from '@core/services/query-params/query-params.service';
 import { isSupportedLanguage } from '@shared/models/languages/supported-languages';
-import { catchError, delay, first, map, tap } from 'rxjs/operators';
+import { catchError, delay, first, map } from 'rxjs/operators';
 import { forkJoin, Observable, of } from 'rxjs';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
@@ -21,6 +21,7 @@ import { CHAIN_TYPE } from '@cryptorubic/core';
 import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/models/wallet-name';
 import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
+import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 
 @Component({
   selector: 'app-root',
@@ -48,7 +49,8 @@ export class AppComponent implements AfterViewInit {
     private readonly tradePageService: TradePageService,
     private readonly sdkLoaderService: SdkLoaderService,
     private readonly chartService: ChartService,
-    private readonly tokensFacadeService: TokensFacadeService
+    private readonly tokensFacadeService: TokensFacadeService,
+    private readonly rubicApiService: RubicApiService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -140,10 +142,11 @@ export class AppComponent implements AfterViewInit {
     forkJoin([
       this.loadPlatformConfig(),
       this.initQueryParamsSubscription(),
-      this.tokensFacadeService.tier1TokensLoaded$.pipe(tap(console.log), first(Boolean))
+      this.tokensFacadeService.tier1TokensLoaded$.pipe(first(Boolean))
     ]).subscribe(([isBackendAvailable]) => {
       this.isBackendAvailable = isBackendAvailable;
       document.getElementById('loader')?.classList.add('disabled');
+      setTimeout(() => this.rubicApiService.setSocket(), 0);
       setTimeout(() => document.getElementById('loader')?.remove(), 400); /* ios safari */
     });
   }
