@@ -145,7 +145,6 @@ export class SwapsControllerService {
   }
 
   private addSentryEvent(): void {
-    setInterval(() => console.log('SENTRY_CF_STATUS', SENTRY_CF_STATUS), 2_000);
     this.window.addEventListener('beforeunload', () => {
       if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
         console.debug(

@@ -46,16 +46,7 @@ import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { TurnstileService } from '@core/services/turnstile/turnstile.service';
-import {
-  delay,
-  exhaustMap,
-  filter,
-  first,
-  retry,
-  switchMap,
-  tap,
-  throttleTime
-} from 'rxjs/operators';
+import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 
@@ -231,24 +222,21 @@ export class RubicApiService {
   public handleOnlineChange(): Observable<Event> {
     return this.socket$.pipe(
       filter(socket => !!socket),
-      switchMap(() => fromEvent(this.window, 'online').pipe(delay(1_000))),
-      tap(() => console.log('%cRubicApiService_handleOnlineChange', 'color: yellow;'))
+      switchMap(() => fromEvent(this.window, 'online').pipe(delay(1_000)))
     );
   }
 
   public handleSocketConnectError(): Observable<Event> {
     return this.socket$.pipe(
       filter(socket => !!socket),
-      switchMap(socket => fromEvent(socket, 'connect_error')),
-      tap(() => console.log('%cRubicApiService_handleSocketConnectError', 'color: yellow;'))
+      switchMap(socket => fromEvent(socket, 'connect_error'))
     );
   }
 
   public handleSocketDisconnect(): Observable<string[]> {
     return this.socket$.pipe(
       filter(socket => !!socket),
-      switchMap(socket => fromEvent<string[]>(socket, 'disconnect')),
-      tap(() => console.log('%cRubicApiService_handleSocketDisconnect', 'color: yellow;'))
+      switchMap(socket => fromEvent<string[]>(socket, 'disconnect'))
     );
   }
 
