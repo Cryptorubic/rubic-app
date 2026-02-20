@@ -38,14 +38,14 @@ export class CloudflareSocketManager extends ApiSocketManager {
     const cfTokenRespSub = this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
       if (res.success) {
         console.debug('[CloudflareSocketManager_initSubs] CF_SUCCESS', {
-          sessionID: this.sessionStorageService.sessionID
+          sessionID: this.turnstileService.sessionID
         });
         if (res.needRecalculation) {
           this.swapsControllerService.startRecalculation(true);
         }
       } else {
         console.debug('[CloudflareSocketManager_initSubs] CF_ERROR', {
-          sessionID: this.sessionStorageService.sessionID
+          sessionID: this.turnstileService.sessionID
         });
         this.rubicApiService.refreshCloudflareToken(true);
       }

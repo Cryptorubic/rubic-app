@@ -5,12 +5,6 @@ import { SESSION_STORAGE } from '@ng-web-apis/common';
   providedIn: 'root'
 })
 export class SessionStorageService {
-  private _sessionID: string | null = null;
-
-  public get sessionID(): string {
-    return this._sessionID;
-  }
-
   constructor(@Inject(SESSION_STORAGE) private sessionStorage: Storage) {}
 
   public setItem(key: string, value: string): void {
@@ -36,20 +30,5 @@ export class SessionStorageService {
     } catch (err: unknown) {
       console.debug(err);
     }
-  }
-
-  public loadSessionID(): string {
-    const sessionID = this.getItem('SESSION_ID');
-    if (sessionID) {
-      console.log('%csessionID', 'color: aqua;', sessionID);
-      this._sessionID = sessionID;
-      return sessionID;
-    }
-    const newSessionID = `user-${Math.random().toString(36).slice(2)}`;
-    this._sessionID = newSessionID;
-    queueMicrotask(() => {
-      this.setItem('SESSION_ID', newSessionID);
-    });
-    return newSessionID;
   }
 }
