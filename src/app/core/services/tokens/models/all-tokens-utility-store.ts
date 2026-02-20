@@ -43,7 +43,7 @@ export class AllTokensUtilityStore extends BasicUtilityStore {
   public fetchQueryTokens(query: string, blockchain: BlockchainName | null): void {
     this._pageLoading$.next(true);
     this.apiService
-      .fetchQueryTokens(query, blockchain)
+      .fetchQueryTokens({ query, blockchain })
       .pipe(
         tap(tokens => {
           const refs = tokens.map(token => ({

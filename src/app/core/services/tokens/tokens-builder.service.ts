@@ -53,9 +53,7 @@ export class TokensBuilderService {
     return this.getTokensBasedOnType(type).tokens$.pipe(
       distinctObjectUntilChanged(),
       tap((tokens: BalanceToken[]) => {
-        if (query) {
-          this.balanceService.fetchDifferentChainsBalances(tokens, false);
-        }
+        if (query) this.balanceService.fetchDifferentChainsBalances(tokens, false);
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {

@@ -20,7 +20,7 @@ export class SearchQueryUtilityStore extends BasicUtilityStore {
 
   public handleSearchQuery(query: string, blockchain: BlockchainName | null): void {
     this._pageLoading$.next(true);
-    this.apiService.fetchQueryTokens(query, blockchain).subscribe(tokens => {
+    this.apiService.fetchQueryTokens({ query, blockchain }).subscribe(tokens => {
       this.addMissedUtilityTokens(tokens);
       const searchedTokens: TokenRef[] = tokens.map(token => ({
         address: token.address,

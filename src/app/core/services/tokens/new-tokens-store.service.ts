@@ -204,7 +204,7 @@ export class NewTokensStoreService {
 
     tokensObject._pageLoading$.next(true);
     this.apiService
-      .fetchQueryTokens(query, blockchain)
+      .fetchQueryTokens({ query, blockchain })
       .pipe(
         switchMap(tokens =>
           tokens?.length ? of(tokens) : this.fetchCustomToken(query, blockchain)
