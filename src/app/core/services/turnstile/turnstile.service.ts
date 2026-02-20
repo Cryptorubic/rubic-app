@@ -4,11 +4,30 @@ import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@core/modals/services/modal.service';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TurnstileService {
+  private _sessionID: string | null = null;
+
+  public get sessionID(): string {
+    return this._sessionID;
+  }
+
+  public loadSessionID(): string {
+    const sessionID = this.sessionStorageService.getItem('SESSION_ID');
+    if (sessionID) {
+      this._sessionID = sessionID;
+      return sessionID;
+    }
+    const newSessionID = `user-${Math.random().toString(36).slice(2)}`;
+    this._sessionID = newSessionID;
+    queueMicrotask(() => this.sessionStorageService.setItem('SESSION_ID', newSessionID));
+    return newSessionID;
+  }
+
   private readonly _cfModalOpened$ = new BehaviorSubject<boolean>(false);
 
   public readonly cfModalOpened$ = this._cfModalOpened$.asObservable();
@@ -29,7 +48,11 @@ export class TurnstileService {
     return this.window.turnstile;
   }
 
-  constructor(private readonly modalService: ModalService, private readonly injector: Injector) {}
+  constructor(
+    private readonly modalService: ModalService,
+    private readonly injector: Injector,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   /**
    * @returns whether token successfully updated or not
@@ -49,7 +72,10 @@ export class TurnstileService {
         .catch(() => false)
         .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
-      console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', err);
+      console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', {
+        err,
+        sessionID: this.sessionID
+      });
       this._cfModalOpened$.next(false);
       return false;
     }
@@ -69,13 +95,18 @@ export class TurnstileService {
           // sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
             this.zone.run(() => {
-              console.debug('[TurnstileService_createInvisibleWidget] CF_SUCCESS', { widgetId });
+              console.debug('[TurnstileService_createInvisibleWidget] CF_SUCCESS', {
+                sessionID: this.sessionID
+              });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createInvisibleWidget] CF_ERROR', { error, widgetId });
+            console.debug('[TurnstileService_createInvisibleWidget] CF_ERROR', {
+              error,
+              sessionID: this.sessionID
+            });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);
@@ -102,13 +133,18 @@ export class TurnstileService {
           size: 'normal',
           callback: (token: string) => {
             this.zone.run(() => {
-              console.debug('[TurnstileService_createWidget] CF_SUCCESS', { widgetId });
+              console.debug('[TurnstileService_createWidget] CF_SUCCESS', {
+                sessionID: this.sessionID
+              });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createWidget] CF_ERROR', { error, widgetId });
+            console.debug('[TurnstileService_createWidget] CF_ERROR', {
+              error,
+              sessionID: this.sessionID
+            });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);

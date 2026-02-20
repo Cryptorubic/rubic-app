@@ -149,7 +149,7 @@ export class SwapsControllerService {
       if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
         console.debug(
           '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers',
-          SENTRY_CF_STATUS
+          { ...SENTRY_CF_STATUS, sessionID: this.turnstileService.sessionID }
         );
       }
     });
