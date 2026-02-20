@@ -3,6 +3,7 @@ import { ApiSocketManager } from './socket-manager';
 import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 import { SwapsControllerService } from '@app/features/trade/services/swaps-controller/swaps-controller.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 
 export class CloudflareSocketManager extends ApiSocketManager {
   protected subs: Subscription[];
@@ -14,7 +15,8 @@ export class CloudflareSocketManager extends ApiSocketManager {
   constructor(
     rubicApiService: RubicApiService,
     swapsControllerService: SwapsControllerService,
-    private readonly turnstileService: TurnstileService
+    private readonly turnstileService: TurnstileService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     super(rubicApiService, swapsControllerService);
   }
@@ -35,12 +37,16 @@ export class CloudflareSocketManager extends ApiSocketManager {
     const autoRefreshSub = this.rubicApiService.initCfTokenAutoRefresh().subscribe();
     const cfTokenRespSub = this.rubicApiService.handleCloudflareTokenResponse().subscribe(res => {
       if (res.success) {
-        console.debug('[CloudflareSocketManager_initSubs] CF_SUCCESS');
+        console.debug('[CloudflareSocketManager_initSubs] CF_SUCCESS', {
+          sessionID: this.sessionStorageService.sessionID
+        });
         if (res.needRecalculation) {
           this.swapsControllerService.startRecalculation(true);
         }
       } else {
-        console.debug('[CloudflareSocketManager_initSubs] CF_ERROR');
+        console.debug('[CloudflareSocketManager_initSubs] CF_ERROR', {
+          sessionID: this.sessionStorageService.sessionID
+        });
         this.rubicApiService.refreshCloudflareToken(true);
       }
     });

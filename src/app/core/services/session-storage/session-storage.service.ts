@@ -41,16 +41,14 @@ export class SessionStorageService {
   public loadClientID(): string {
     const sessionID = this.getItem('SESSION_ID');
     if (sessionID) {
+      console.log('%csessionID', 'color: aqua;', sessionID);
       this._sessionID = sessionID;
       return sessionID;
     }
     const newSessionID = `user-${Math.random().toString(36).slice(2)}`;
     this._sessionID = newSessionID;
-    new Promise(res => {
-      queueMicrotask(() => {
-        this.setItem('SESSION_ID', newSessionID);
-        res(newSessionID);
-      });
+    queueMicrotask(() => {
+      this.setItem('SESSION_ID', newSessionID);
     });
     return newSessionID;
   }

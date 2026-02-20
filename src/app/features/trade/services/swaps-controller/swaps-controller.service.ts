@@ -101,7 +101,8 @@ export class SwapsControllerService {
   private socketManager: ApiSocketManager = new CloudflareSocketManager(
     this.rubicApiService,
     this,
-    this.turnstileService
+    this.turnstileService,
+    this.sessionStorageService
   );
 
   /**

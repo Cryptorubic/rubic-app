@@ -54,7 +54,10 @@ export class TurnstileService {
         .catch(() => false)
         .finally(() => this._cfModalOpened$.next(false));
     } catch (err) {
-      console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', err);
+      console.error('[TurnstileService_updateCloudflareToken] CF_ERROR', {
+        err,
+        sessionID: this.sessionStorageService.sessionID
+      });
       this._cfModalOpened$.next(false);
       return false;
     }
