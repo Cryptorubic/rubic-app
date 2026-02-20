@@ -1,5 +1,14 @@
-import { Injectable } from '@angular/core';
-import { combineLatestWith, concatMap, forkJoin, from, Observable, of, Subject } from 'rxjs';
+import { Inject, Injectable } from '@angular/core';
+import {
+  combineLatestWith,
+  concatMap,
+  forkJoin,
+  from,
+  Observable,
+  of,
+  Subject,
+  Subscription
+} from 'rxjs';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
 import {
   catchError,
@@ -65,7 +74,17 @@ import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rub
 import { SimulationFailedError } from '@app/core/errors/models/common/simulation-failed.error';
 import { RateChangeInfo } from '../../models/rate-change-info';
 import { UserRejectError } from '@app/core/errors/models/provider/user-reject-error';
+import { TurnstileService } from '@app/core/services/turnstile/turnstile.service';
 import { TrustlineService } from '../trustline-service/trustline.service';
+import { ApiSocketManager } from './socket-managers/socket-manager';
+import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
+import { WINDOW } from '@ng-web-apis/common';
+
+const SENTRY_CF_STATUS = {
+  hadFilledForm: false,
+  didntReachQuoteEnd: true,
+  wasAllowedCalculate: false
+};
 
 @Injectable()
 export class SwapsControllerService {
@@ -75,6 +94,14 @@ export class SwapsControllerService {
   }>();
 
   public readonly calculateTrade$ = this._calculateTrade$.asObservable().pipe(debounceTime(20));
+
+  private readonly socketSubs: Array<Subscription> = [];
+
+  private socketManager: ApiSocketManager = new CloudflareSocketManager(
+    this.rubicApiService,
+    this,
+    this.turnstileService
+  );
 
   /**
    * Contains trades types, which were disabled due to critical errors.
@@ -101,8 +128,11 @@ export class SwapsControllerService {
     private readonly crossChainApiService: CrossChainApiService,
     private readonly onChainApiService: OnChainApiService,
     private readonly rubicApiService: RubicApiService,
-    private readonly trustlineService: TrustlineService
+    private readonly turnstileService: TurnstileService,
+    private readonly trustlineService: TrustlineService,
+    @Inject(WINDOW) private readonly window: Window
   ) {
+    this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
     this.subscribeOnCalculation();
     this.subscribeOnRefreshServiceCalls();
@@ -110,6 +140,19 @@ export class SwapsControllerService {
     this.subscribeOnSettings();
     this.subscribeOnReceiverChange();
     this.subscribeOnSwapFormFilled();
+
+    this.addSentryEvent();
+  }
+
+  private addSentryEvent(): void {
+    this.window.addEventListener('beforeunload', () => {
+      if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
+        console.debug(
+          '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers',
+          { ...SENTRY_CF_STATUS, sessionID: this.turnstileService.sessionID }
+        );
+      }
+    });
   }
 
   /**
@@ -122,17 +165,36 @@ export class SwapsControllerService {
     });
   }
 
-  private startRecalculation(isForced = false): void {
+  public startRecalculation(isForced = false): void {
     this._calculateTrade$.next({ isForced });
   }
 
+  private async subscribeOnSocketStatusChanges(): Promise<void> {
+    this.socketManager.initSubs();
+    /**
+     * @TODO
+     * this.plarformConfigSrv.useCF$.subscribe((useCloudflare) => {
+     *    this.socketManager.close()
+     *    this.socketManager = useCloudflare
+     *        ? new CloudflareSocketManager(this.rubicApiService)
+     *        : new DefaultSocketManager(this.rubicApiService)
+     *    this.socketManager.initialize();
+     * })
+     */
+  }
+
   private subscribeOnCalculation(): void {
-    this.handleWs();
     this.calculateTrade$
       .pipe(
         debounceTime(220),
         map(calculateData => {
-          if (calculateData.stop || !this.swapFormService.isFilled) {
+          if (
+            calculateData.stop ||
+            !this.swapFormService.isFilled ||
+            !this.socketManager.allowCalculation()
+          ) {
+            SENTRY_CF_STATUS.hadFilledForm = this.swapFormService.isFilled;
+            SENTRY_CF_STATUS.wasAllowedCalculate = this.socketManager.allowCalculation();
             this.refreshService.setStopped();
             return { ...calculateData, stop: true };
           }
@@ -516,8 +578,17 @@ export class SwapsControllerService {
       });
   }
 
-  private handleWs(): void {
-    this.rubicApiService
+  public handleWs(): Subscription[] {
+    this.socketSubs.forEach(sub => sub.unsubscribe());
+
+    const sub1 = this.rubicApiService.handleWsExceptions().subscribe(needRecalculate => {
+      if (needRecalculate) {
+        this.startRecalculation(true);
+        this.swapsStateService.clearProviders(false);
+      }
+    });
+
+    const sub2 = this.rubicApiService
       .handleQuotesAsync()
       .pipe(
         tap(() => this.refreshService.setRefreshing()),
@@ -574,7 +645,7 @@ export class SwapsControllerService {
                       this.errorsService.catch(new NoLinkedAccountError());
                       trade.trade = null;
                     }
-
+                    SENTRY_CF_STATUS.didntReachQuoteEnd = false;
                     // @TODO API
                     const needAuthWallet = this.needAuthWallet(trade.trade);
                     this.swapsStateService.updateTrade(
@@ -630,6 +701,8 @@ export class SwapsControllerService {
         })
       )
       .subscribe();
+    this.socketSubs.push(sub1, sub2);
+    return [sub1, sub2];
   }
 
   private subscribeOnSwapFormFilled(): void {

@@ -1,14 +1,20 @@
 import * as Sentry from '@sentry/angular';
 import { ENVIRONMENT } from './environments/environment';
+import { EnvType } from '@app/core/services/sdk/sdk-legacy/features/common/models/sdk-models/env-type';
 
 export function initSentry(): void {
-  if (ENVIRONMENT.environmentName !== 'prod') {
+  /**
+   * send logs to sentry only in production
+   */
+  const prodDomains: EnvType[] = ['prod', 'prod-api', 'rubic'];
+  if (!prodDomains.includes(ENVIRONMENT.environmentName)) {
     return;
   }
 
-  const sentryAllowUrlRegexpString = `https:\\/\\/(${ENVIRONMENT.environmentName})(\\-app)?\\.rubic\\.exchange`;
+  const sentryAllowUrlRegexpString = /https:\/\/.*\.rubic\.exchange/;
+
   Sentry.init({
-    dsn: 'https://28830c940f3cd986b5bc9662943aeaa5@sentry.rubic.exchange/1',
+    dsn: 'https://b281c2a8f1bae4aa11a308d01fa61fb7@sentry.rubic.exchange/2',
     sendDefaultPii: true,
     integrations: [
       Sentry.browserTracingIntegration(),
@@ -40,7 +46,7 @@ export function initSentry(): void {
     replaysSessionSampleRate: 0.1,
     replaysOnErrorSampleRate: 1.0,
     enableLogs: true,
-    allowUrls: [new RegExp(sentryAllowUrlRegexpString)],
+    allowUrls: [sentryAllowUrlRegexpString],
     denyUrls: [
       //Chrome extensions
       /^chrome(-extension)?:\/\//i,
