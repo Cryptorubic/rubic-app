@@ -79,7 +79,6 @@ import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { WINDOW } from '@ng-web-apis/common';
-import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -101,8 +100,7 @@ export class SwapsControllerService {
   private socketManager: ApiSocketManager = new CloudflareSocketManager(
     this.rubicApiService,
     this,
-    this.turnstileService,
-    this.sessionStorageService
+    this.turnstileService
   );
 
   /**
@@ -132,8 +130,7 @@ export class SwapsControllerService {
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
     private readonly trustlineService: TrustlineService,
-    @Inject(WINDOW) private readonly window: Window,
-    private readonly sessionStorageService: SessionStorageService
+    @Inject(WINDOW) private readonly window: Window
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
