@@ -22,6 +22,7 @@ import { WALLET_NAME } from './core/wallets-modal/components/wallets-modal/model
 import { SdkLoaderService } from './core/services/sdk/sdk-loader.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { RubicApiService } from './core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
+import { SessionStorageService } from './core/services/session-storage/session-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +51,8 @@ export class AppComponent implements AfterViewInit {
     private readonly sdkLoaderService: SdkLoaderService,
     private readonly chartService: ChartService,
     private readonly tokensFacadeService: TokensFacadeService,
-    private readonly rubicApiService: RubicApiService
+    private readonly rubicApiService: RubicApiService,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     this.printTimestamp();
     this.setupLanguage();
@@ -61,6 +63,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
+    this.sessionStorageService.loadClientID();
   }
 
   private subscribeOnWalletChanges(): void {

@@ -79,6 +79,7 @@ import { TrustlineService } from '../trustline-service/trustline.service';
 import { ApiSocketManager } from './socket-managers/socket-manager';
 import { CloudflareSocketManager } from './socket-managers/cloudflare-socket-manager';
 import { WINDOW } from '@ng-web-apis/common';
+import { SessionStorageService } from '@app/core/services/session-storage/session-storage.service';
 
 const SENTRY_CF_STATUS = {
   hadFilledForm: false,
@@ -130,7 +131,8 @@ export class SwapsControllerService {
     private readonly rubicApiService: RubicApiService,
     private readonly turnstileService: TurnstileService,
     private readonly trustlineService: TrustlineService,
-    @Inject(WINDOW) private readonly window: Window
+    @Inject(WINDOW) private readonly window: Window,
+    private readonly sessionStorageService: SessionStorageService
   ) {
     this.subscribeOnSocketStatusChanges();
     this.subscribeOnFormChanges();
@@ -149,7 +151,7 @@ export class SwapsControllerService {
       if (SENTRY_CF_STATUS.didntReachQuoteEnd && SENTRY_CF_STATUS.hadFilledForm) {
         console.debug(
           '[SwapsControllerService_subscribeOnCalculation] CF_ERROR: user did not reach providers',
-          SENTRY_CF_STATUS
+          { ...SENTRY_CF_STATUS, sessionID: this.sessionStorageService.sessionID }
         );
       }
     });

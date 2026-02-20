@@ -4,6 +4,7 @@ import { Turnstile } from '@core/services/turnstile/turnstile.models';
 import { WINDOW } from '@ng-web-apis/common';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { ModalService } from '@core/modals/services/modal.service';
+import { SessionStorageService } from '../session-storage/session-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +30,11 @@ export class TurnstileService {
     return this.window.turnstile;
   }
 
-  constructor(private readonly modalService: ModalService, private readonly injector: Injector) {}
+  constructor(
+    private readonly modalService: ModalService,
+    private readonly injector: Injector,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   /**
    * @returns whether token successfully updated or not
@@ -69,13 +74,18 @@ export class TurnstileService {
           // sitekey: '1x00000000000000000000BB',
           callback: (token: string) => {
             this.zone.run(() => {
-              console.debug('[TurnstileService_createInvisibleWidget] CF_SUCCESS', { widgetId });
+              console.debug('[TurnstileService_createInvisibleWidget] CF_SUCCESS', {
+                sessionID: this.sessionStorageService.sessionID
+              });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createInvisibleWidget] CF_ERROR', { error, widgetId });
+            console.debug('[TurnstileService_createInvisibleWidget] CF_ERROR', {
+              error,
+              sessionID: this.sessionStorageService.sessionID
+            });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);
@@ -102,13 +112,18 @@ export class TurnstileService {
           size: 'normal',
           callback: (token: string) => {
             this.zone.run(() => {
-              console.debug('[TurnstileService_createWidget] CF_SUCCESS', { widgetId });
+              console.debug('[TurnstileService_createWidget] CF_SUCCESS', {
+                sessionID: this.sessionStorageService.sessionID
+              });
               this._token$.next(token);
               resolve(true);
             });
           },
           'error-callback': (error: Error) => {
-            console.debug('[TurnstileService_createWidget] CF_ERROR', { error, widgetId });
+            console.debug('[TurnstileService_createWidget] CF_ERROR', {
+              error,
+              sessionID: this.sessionStorageService.sessionID
+            });
             this._token$.next(null);
             this.turnstile.remove(widgetId);
             resolve(false);
