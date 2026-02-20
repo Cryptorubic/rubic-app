@@ -63,7 +63,7 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     this.setupIframeSettings();
-    this.sessionStorageService.loadClientID();
+    this.sessionStorageService.loadSessionID();
   }
 
   private subscribeOnWalletChanges(): void {

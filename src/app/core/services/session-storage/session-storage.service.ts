@@ -38,7 +38,7 @@ export class SessionStorageService {
     }
   }
 
-  public loadClientID(): string {
+  public loadSessionID(): string {
     const sessionID = this.getItem('SESSION_ID');
     if (sessionID) {
       console.log('%csessionID', 'color: aqua;', sessionID);
