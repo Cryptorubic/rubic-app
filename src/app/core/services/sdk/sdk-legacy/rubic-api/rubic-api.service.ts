@@ -330,7 +330,7 @@ export class RubicApiService {
     srcTxHash?: string
   ): Promise<CrossChainTxStatusConfig> {
     const params = new URLSearchParams({
-      rubicId,
+      id: rubicId,
       ...(srcTxHash && { srcTxHash })
     }).toString();
 
