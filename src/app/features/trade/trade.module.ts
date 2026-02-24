@@ -119,7 +119,12 @@ import { TurnstileCheckComponent } from './components/turnstile-check/turnstile-
     AllSwapBackupsFailedModalComponent,
     TurnstileCheckComponent
   ],
-  exports: [ActionButtonComponent],
+  exports: [
+    ActionButtonComponent,
+    TokenSelectorPageComponent,
+    ProvidersListGeneralComponent,
+    SwapFormPageComponent
+  ],
   imports: [
     TradeRoutingModule,
     CommonModule,

@@ -53,6 +53,23 @@ export class SwapFormQueryService {
       });
   }
 
+  // @TODO_1712 обновлять квери параметры на ввод данных в форму приватных свапов
+  private subscribeOnPrivateModeForm(): void {
+    // this.swapsFormService.inputValue$
+    //   .pipe(distinctUntilChanged((prev, curr) => compareObjects(prev, curr)))
+    //   .subscribe(inputValue => {
+    //     this.queryParamsService.patchQueryParams({
+    //       ...(inputValue.fromToken?.symbol && { from: inputValue.fromToken.symbol }),
+    //       ...(inputValue.toToken?.symbol && { to: inputValue.toToken.symbol }),
+    //       ...(inputValue.fromBlockchain && { fromChain: inputValue.fromBlockchain }),
+    //       ...(inputValue.toBlockchain && { toChain: inputValue.toBlockchain }),
+    //       ...(inputValue.fromAmount?.actualValue.gt(0) && {
+    //         amount: inputValue.fromAmount.actualValue.toFixed()
+    //       })
+    //     });
+    //   });
+  }
+
   private subscribeOnQueryParams(): void {
     this.tokensFacade.tokens$
       .pipe(first(tuiIsPresent))

@@ -1,0 +1,127 @@
+@use 'src/scss/core' as *;
+
+$mobile-width: 360px;
+
+:host {
+  display: flex;
+
+  ::ng-deep {
+    .back-button {
+      display: flex;
+      gap: var(--tui-padding-s);
+      align-items: center;
+      padding: 0 5px;
+
+      cursor: pointer;
+
+      &__text {
+        display: block;
+        margin-right: auto;
+        margin-left: auto;
+        padding-right: 14px;
+      }
+
+      &__image {
+        height: 12px;
+      }
+    }
+  }
+}
+
+.swap-container {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 auto;
+
+  app-token-selector-page {
+    width: 600px;
+  }
+
+  .form-and-activity {
+    @include flex(column, center, center);
+
+    position: relative;
+
+    gap: 12px;
+
+    width: 600px;
+    margin-right: 10px;
+    margin-left: 10px;
+
+    transition: 0.2s ease-in-out;
+
+    &_small {
+      width: $mobile-width;
+    }
+
+    app-tab-bar {
+      width: 100%;
+    }
+  }
+
+  app-token-selector-page {
+    width: 100%;
+  }
+
+  app-swap-form-page {
+    width: 100%;
+  }
+
+  app-input-output-container:first-child {
+    display: block;
+    margin-bottom: 1px;
+  }
+
+  app-private-providers-list-general {
+    display: block;
+    width: $mobile-width;
+    height: 510px;
+
+    background: var(--secondary-background);
+    border-radius: 17px;
+  }
+}
+
+.large-iframe-swap-container {
+  flex-direction: column;
+  gap: 10px;
+
+  app-cn-trade-info {
+    width: 600px;
+    margin: 0 10px;
+  }
+}
+
+@include b($mobile-md) {
+  .swap-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--tui-padding-l);
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+
+    .form-and-activity {
+      width: $mobile-width;
+      overflow: hidden;
+    }
+
+    app-private-providers-list-general {
+      width: $mobile-width;
+      height: auto;
+      margin-bottom: 10px;
+      overflow: hidden;
+
+      background: none;
+      border-radius: 0;
+    }
+
+    .chart-container {
+      width: $mobile-width;
+
+      app-crypto-rate-chart {
+        width: 100%;
+      }
+    }
+  }
+}

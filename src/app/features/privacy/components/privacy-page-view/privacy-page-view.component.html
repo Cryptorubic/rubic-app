@@ -1,0 +1,55 @@
+<div
+  class="swap-container"
+  [class.large-iframe-swap-container]="useLargeIframe"
+  *ngLet="{
+    content: formContent$ | async,
+    providers: privateProviders$ | async,
+    selectedTradeType: selectedTradeType$ | async
+  } as state"
+>
+  <ng-container [ngSwitch]="state.content">
+    <app-token-selector-page
+      *ngSwitchCase="'fromSelector'"
+      formType="from"
+      (tokenSelected)="handleTokenSelect($event, 'from')"
+    ></app-token-selector-page>
+
+    <app-token-selector-page
+      *ngSwitchCase="'toSelector'"
+      formType="to"
+      (tokenSelected)="handleTokenSelect($event, 'to')"
+    ></app-token-selector-page>
+
+    <div
+      class="form-and-activity"
+      [ngClass]="{
+        'left-part': state.content === 'fromSelector' || state.content === 'toSelector'
+      }"
+    >
+      <app-tab-bar
+        [tabs]="['Swap', 'Transfer', 'Bridge']"
+        (tabClicked)="handleActionSelected($event)"
+      ></app-tab-bar>
+      <app-swap-form-page></app-swap-form-page>
+    </div>
+
+    <app-private-providers-list-general
+      *ngIf="state.content === 'form' && !useLargeIframe"
+      @inOutAnimation
+      [states]="state.providers"
+      [selectedTradeType]="state.selectedTradeType"
+      (selectTrade)="selectProvider($event)"
+    >
+    </app-private-providers-list-general>
+
+    <!--<app-providers-list-general
+      *ngIf="state.content === 'form' && !useLargeIframe"
+      @inOutAnimation
+      [states]="state.providers"
+      [selectedTradeType]="'LIFI'"
+      (selectTrade)="selectProvider($event)"
+      [calculationStatus]="state.calculationStatus"
+      [showCalculation]="true"
+    ></app-providers-list-general>-->
+  </ng-container>
+</div>

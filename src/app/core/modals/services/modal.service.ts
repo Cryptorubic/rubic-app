@@ -49,6 +49,9 @@ import { AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
+import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
+import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
 
 @Injectable({
   providedIn: 'root'
@@ -132,6 +135,31 @@ export class ModalService {
           isModal,
           shortedInfo: false,
           noRoutes
+        }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Other private providers list dialog.
+   */
+  public openOtherPrivateProvidersList(
+    states: PrivateProviderInfoUI[],
+    selectedTradeType: PrivateTradeType,
+    isModal: true,
+    injector: Injector
+  ): Observable<PrivateTradeType> {
+    this.setOpenedModalName('other-provider-list');
+    return this.showDialog<PrivateProvidersListComponent, PrivateTradeType>(
+      PrivateProvidersListComponent,
+      {
+        title: 'Available Cross-Chain Providers',
+        scrollableContent: true,
+        data: {
+          states,
+          selectedTradeType,
+          isModal
         }
       },
       injector

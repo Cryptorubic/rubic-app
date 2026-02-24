@@ -1,0 +1,72 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .provider-element {
+    @include flex(column, start, start);
+    gap: 2px;
+    width: 100%;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition: all 0.1s;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    .top,
+    .bottom {
+      width: 100%;
+      padding: 15px 16px;
+
+      background-color: var(--tui-base-02);
+    }
+
+    .top {
+      @include flex(column, start, start);
+      gap: 14px;
+
+      border-radius: var(--tui-radius-m) var(--tui-radius-m) 0 0;
+
+      .top-layer-1,
+      .top-layer-2 {
+        @include flex(row, center, space-between);
+        width: 100%;
+      }
+
+      .top-layer-1 {
+        .provider-name {
+          @include flex(row, center, start);
+          gap: 8px;
+
+          font-size: 18px;
+        }
+
+        .shielding-duration {
+          @include flex(row, center, start);
+          gap: 8px;
+        }
+      }
+
+      .top-layer-2 {
+        .privacy-type {
+          @include flex(row, center, start);
+          gap: 10px;
+        }
+      }
+    }
+
+    .bottom {
+      @include flex(row, center, space-between);
+      border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
+
+      .fee-size,
+      .security-percent {
+        @include flex(row, center, start);
+        gap: 4px;
+      }
+    }
+  }
+}
