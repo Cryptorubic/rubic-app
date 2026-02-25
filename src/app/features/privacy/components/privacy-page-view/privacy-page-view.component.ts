@@ -9,6 +9,15 @@ import { PrivateProviderInfoUI } from '../../models/provider-info';
 import { PRIVATE_PROVIDERS_UI } from '../../constants/private-providers-ui';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
+import { PrivateActivityItem, PrivateActivityStorageItem } from '../../models/activity-item';
+import { PRIVATE_PROVIDERS_ICONS } from '../../constants/private-providers-icons';
+
+const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
+  { providerName: 'HINKAL', type: 'swap' },
+  { providerName: 'ZAMA', type: 'transfer' },
+  { providerName: 'HINKAL', type: 'transfer' },
+  { providerName: 'RAILGUN', type: 'swap' }
+];
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -31,6 +40,13 @@ import { PrivateTradeType } from '../../constants/private-trade-types';
 export class PrivacyPageViewComponent {
   // @TODO_1712 фильтровать провайдеров при изменении таба/токенов/сетей/количества
   public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(PRIVATE_PROVIDERS_UI);
+
+  // @TODO_1712 использовать реальную активность из локал стора
+  public readonly lastActivity$: Observable<PrivateActivityItem[]> = of(FAKE_ACTIVITY).pipe(
+    map(activity =>
+      activity.slice(-4).map(el => ({ ...el, icon: PRIVATE_PROVIDERS_ICONS[el.providerName] }))
+    )
+  );
 
   public readonly selectedTradeType$ = this.privateProviders$.pipe(map(providers => providers[0]));
 
@@ -59,5 +75,12 @@ export class PrivacyPageViewComponent {
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {
     console.debug('[PrivacyPageViewComponent_selectProvider] provider selected', { tradeType });
     // @TODO_1712 переадресовывать на урл провайдера
+  }
+
+  public async handleLastActivityClicked(activityItem: PrivateActivityItem): Promise<void> {
+    console.debug('[PrivacyPageViewComponent_handleLastActivityClicked] provider selected', {
+      activityItem
+    });
+    // @TODO_1712 переадресовывать на урл провайдера с выбранным типом активности
   }
 }

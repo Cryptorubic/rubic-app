@@ -4,46 +4,17 @@ $mobile-width: 360px;
 
 :host {
   display: flex;
-
-  ::ng-deep {
-    .back-button {
-      display: flex;
-      gap: var(--tui-padding-s);
-      align-items: center;
-      padding: 0 5px;
-
-      cursor: pointer;
-
-      &__text {
-        display: block;
-        margin-right: auto;
-        margin-left: auto;
-        padding-right: 14px;
-      }
-
-      &__image {
-        height: 12px;
-      }
-    }
-  }
 }
 
 .swap-container {
-  display: flex;
-  align-items: flex-start;
+  @include flex(row, flex-start, start);
   margin: 0 auto;
-
-  app-token-selector-page {
-    width: 600px;
-  }
 
   .form-and-activity {
     @include flex(column, center, center);
-
     position: relative;
 
     gap: 12px;
-
     width: 600px;
     margin-right: 10px;
     margin-left: 10px;
@@ -59,11 +30,9 @@ $mobile-width: 360px;
     }
   }
 
-  app-token-selector-page {
-    width: 100%;
-  }
-
-  app-swap-form-page {
+  app-token-selector-page,
+  app-swap-form-page,
+  app-last-private-activity {
     width: 100%;
   }
 
@@ -79,16 +48,6 @@ $mobile-width: 360px;
 
     background: var(--secondary-background);
     border-radius: 17px;
-  }
-}
-
-.large-iframe-swap-container {
-  flex-direction: column;
-  gap: 10px;
-
-  app-cn-trade-info {
-    width: 600px;
-    margin: 0 10px;
   }
 }
 
@@ -114,14 +73,6 @@ $mobile-width: 360px;
 
       background: none;
       border-radius: 0;
-    }
-
-    .chart-container {
-      width: $mobile-width;
-
-      app-crypto-rate-chart {
-        width: 100%;
-      }
     }
   }
 }

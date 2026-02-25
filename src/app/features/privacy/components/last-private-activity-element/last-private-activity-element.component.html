@@ -1,0 +1,16 @@
+<div class="private-activity-element">
+  <div class="left">
+    <div class="name">
+      <img [src]="activityItem.icon" width="16" height="16" [alt]="'provider-icon'" />
+      <b>{{ activityItem.providerName | titlecase }}</b>
+    </div>
+    <div class="type">
+      <b>{{ activityItem.type }}</b>
+    </div>
+  </div>
+  <div class="right">
+    <app-rubic-button appearance="primary" (click)="openClicked.emit()" size="s"
+      >Open</app-rubic-button
+    >
+  </div>
+</div>

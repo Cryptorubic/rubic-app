@@ -1,0 +1,20 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .main {
+    @include flex(row, center, start);
+    flex-wrap: wrap;
+    gap: 8px;
+
+    @include b($tablet) {
+      app-last-private-activity-element {
+        width: 100%;
+        min-width: 100%;
+      }
+    }
+
+    app-last-private-activity-element {
+      min-width: 284px;
+    }
+  }
+}

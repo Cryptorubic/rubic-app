@@ -11,6 +11,8 @@ import { PrivateProvidersListComponent } from './components/private-providers-li
 import { PrivateProviderElementComponent } from './components/private-provider-element/private-provider-element.component';
 import { TuiScrollbarModule } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
+import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
     TabBarComponent,
     PrivateProvidersListGeneralComponent,
     PrivateProvidersListComponent,
-    PrivateProviderElementComponent
+    PrivateProviderElementComponent,
+    LastPrivateActivityComponent,
+    LastPrivateActivityElementComponent
   ],
   imports: [
     CommonModule,

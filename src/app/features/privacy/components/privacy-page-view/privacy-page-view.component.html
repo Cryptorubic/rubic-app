@@ -4,7 +4,8 @@
   *ngLet="{
     content: formContent$ | async,
     providers: privateProviders$ | async,
-    selectedTradeType: selectedTradeType$ | async
+    selectedTradeType: selectedTradeType$ | async,
+    lastActivity: lastActivity$ | async
   } as state"
 >
   <ng-container [ngSwitch]="state.content">
@@ -27,10 +28,14 @@
       }"
     >
       <app-tab-bar
-        [tabs]="['Swap', 'Transfer', 'Bridge']"
+        [tabs]="['Swap', 'Transfer']"
         (tabClicked)="handleActionSelected($event)"
       ></app-tab-bar>
       <app-swap-form-page></app-swap-form-page>
+      <app-last-private-activity
+        [activityList]="state.lastActivity"
+        (itemClicked)="handleLastActivityClicked($event)"
+      ></app-last-private-activity>
     </div>
 
     <app-private-providers-list-general
