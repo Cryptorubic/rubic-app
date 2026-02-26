@@ -1,0 +1,26 @@
+<div class="token-card-container">
+  <div class="token-card">
+    <div class="token-card__image-container">
+      <img
+        class="token-card__image-container-token"
+        [src]="token.image || DEFAULT_TOKEN_IMAGE"
+        [alt]="token.name"
+        (error)="onImageError($event)"
+      />
+    </div>
+
+    <div class="token-card__symbol-name-container">
+      <div class="token-card__symbol-container">
+        <span class="token-card__symbol"
+          >{{ token.amount | bigNumberFormat }} {{ token.symbol | shortenText : 10 }}</span
+        >
+      </div>
+
+      <span class="token-card__name">{{ token.name | shortenText : 15 }}</span>
+    </div>
+
+    <div class="token-card__right"></div>
+  </div>
+
+  <app-dropdown-options-shielded-token [token]="token"></app-dropdown-options-shielded-token>
+</div>
