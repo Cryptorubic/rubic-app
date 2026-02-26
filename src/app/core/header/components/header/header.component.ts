@@ -137,7 +137,7 @@ export class HeaderComponent {
   }
 
   public navigateToPrivateSwaps(): void {
-    this.router.navigate(['/' + ROUTE_PATH.PRIVATE_SWAPS], { queryParamsHandling: 'merge' });
+    this.router.navigate(['/' + ROUTE_PATH.PRIVACY], { queryParamsHandling: '' });
   }
 
   public handleMenuButtonClick(): void {
