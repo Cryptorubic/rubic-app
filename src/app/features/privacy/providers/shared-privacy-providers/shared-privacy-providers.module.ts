@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AssetsSelectorModule } from '@features/trade/components/assets-selector/assets-selector.module';
 import { SharedModule } from '@shared/shared.module';
-import { TuiButtonModule } from '@taiga-ui/core';
+import {
+  TuiButtonModule,
+  TuiDataListModule,
+  TuiHintModule,
+  TuiHostedDropdownModule,
+  TuiScrollbarModule,
+  TuiTextfieldControllerModule
+} from '@taiga-ui/core';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
 import { HideTokensWindowComponent } from '@features/privacy/providers/shared-privacy-providers/components/hide-tokens-window/hide-tokens-window.component';
@@ -30,6 +37,15 @@ import { SolanaGaslessStateService } from '@features/trade/services/solana-gasle
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { SwapWindowComponent } from './components/swap-window/swap-window.component';
 import { RevealWindowComponent } from './components/reveal-window/reveal-window.component';
+import { PageNavigationComponent } from './components/page-navigation/page-navigation.component';
+import { ShieldedTokensListComponent } from './components/shielded-tokens-list/shielded-tokens-list.component';
+import { ShieldedTokensListElementComponent } from './components/shielded-tokens-list/components/shielded-tokens-list-element/shielded-tokens-list-element.component';
+import { DropdownOptionsShieldedTokenComponent } from './components/shielded-tokens-list/components/dropdown-options-shielded-token/dropdown-options-shielded-token.component';
+import { PasswordVerificationModalComponent } from './components/password-verification-modal/password-verification-modal.component';
+import { InlineSVGModule } from 'ng-inline-svg-2';
+import { TuiActiveZoneModule } from '@taiga-ui/cdk';
+import { TuiInputModule } from '@taiga-ui/kit';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -37,15 +53,38 @@ import { RevealWindowComponent } from './components/reveal-window/reveal-window.
     PrivateTokensSelectorComponent,
     HideTokensWindowComponent,
     SwapWindowComponent,
-    RevealWindowComponent
+    RevealWindowComponent,
+    PageNavigationComponent,
+    ShieldedTokensListComponent,
+    ShieldedTokensListElementComponent,
+    DropdownOptionsShieldedTokenComponent,
+    PasswordVerificationModalComponent
   ],
-  imports: [CommonModule, AssetsSelectorModule, SharedTradeModule, SharedModule, TuiButtonModule],
+  imports: [
+    CommonModule,
+    AssetsSelectorModule,
+    SharedTradeModule,
+    SharedModule,
+    TuiButtonModule,
+    TuiScrollbarModule,
+    TuiHostedDropdownModule,
+    TuiDataListModule,
+    InlineSVGModule,
+    TuiHintModule,
+    TuiActiveZoneModule,
+    TuiInputModule,
+    ReactiveFormsModule,
+    TuiTextfieldControllerModule
+  ],
   exports: [
     PublicTokensSelectorComponent,
     PrivateTokensSelectorComponent,
     SharedTradeModule,
     HideTokensWindowComponent,
-    RevealWindowComponent
+    RevealWindowComponent,
+    PageNavigationComponent,
+    ShieldedTokensListComponent,
+    PasswordVerificationModalComponent
   ],
   providers: [
     [

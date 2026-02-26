@@ -1,0 +1,35 @@
+@use 'src/scss/core' as *;
+
+.wrapper {
+  display: block;
+  width: 600px;
+
+  @include b($mobile-md) {
+    width: 100%;
+  }
+
+  &__container {
+    height: 116px;
+    padding: var(--tui-padding-s);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-m);
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      height: 100px;
+    }
+  }
+}
+
+.empty-list {
+  display: block;
+  padding: var(--tui-padding-l);
+
+  font-size: 16px;
+  text-align: center;
+
+  opacity: 0.6;
+}
