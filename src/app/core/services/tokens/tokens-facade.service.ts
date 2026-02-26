@@ -28,6 +28,7 @@ import { TokensRegistryService } from '@core/services/tokens/tokens-registry.ser
 import { TokensQueryService } from '@core/services/tokens/tokens-query.service';
 import { TokensBuilderService } from '@core/services/tokens/tokens-builder.service';
 import { TokensPaginationService } from '@core/services/tokens/tokens-pagination.service';
+import { QueryTokenParams } from './new-tokens-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -112,8 +113,8 @@ export class TokensFacadeService {
     return this.tokensRegistryService.findToken(token, searchBackend);
   }
 
-  public fetchQueryTokens(query: string, blockchain: BlockchainName | null): Observable<Token[]> {
-    return this.tokensRegistryService.fetchQueryTokens(query, blockchain);
+  public fetchQueryTokens(params: QueryTokenParams): Observable<Token[]> {
+    return this.tokensRegistryService.fetchQueryTokens(params);
   }
 
   public addFavoriteToken(favoriteToken: BalanceToken): Observable<unknown> {
