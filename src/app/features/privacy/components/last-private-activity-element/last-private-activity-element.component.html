@@ -9,8 +9,12 @@
     </div>
   </div>
   <div class="right">
-    <app-rubic-button appearance="primary" (click)="openClicked.emit()" size="s"
-      >Open</app-rubic-button
+    <app-rubic-button
+      appearance="primary"
+      (click)="openClicked.emit()"
+      [size]="isMobile ? 'm' : 's'"
     >
+      Open
+    </app-rubic-button>
   </div>
 </div>

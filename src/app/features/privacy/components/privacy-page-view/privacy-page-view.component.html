@@ -21,12 +21,7 @@
       (tokenSelected)="handleTokenSelect($event, 'to')"
     ></app-token-selector-page>
 
-    <div
-      class="form-and-activity"
-      [ngClass]="{
-        'left-part': state.content === 'fromSelector' || state.content === 'toSelector'
-      }"
-    >
+    <div class="form-and-activity" *ngIf="state.content === 'form'">
       <app-tab-bar
         [tabs]="['Swap', 'Transfer']"
         (tabClicked)="handleActionSelected($event)"

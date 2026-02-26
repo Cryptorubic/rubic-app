@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { PrivateActivityItem } from '../../models/activity-item';
+import { HeaderStore } from '@app/core/header/services/header.store';
 
 @Component({
   selector: 'app-last-private-activity-element',
@@ -11,4 +12,8 @@ export class LastPrivateActivityElementComponent {
   @Input({ required: true }) activityItem: PrivateActivityItem;
 
   @Output() openClicked = new EventEmitter();
+
+  public readonly isMobile = this.headerStore.isMobile;
+
+  constructor(private readonly headerStore: HeaderStore) {}
 }
