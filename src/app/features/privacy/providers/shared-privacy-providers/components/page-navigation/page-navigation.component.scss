@@ -1,0 +1,37 @@
+@use 'src/scss/core' as *;
+
+.nav {
+  @include flex(column, normal, center);
+  gap: var(--tui-padding-s);
+
+  padding: var(--tui-padding-m);
+
+  background: var(--secondary-background);
+  border-radius: var(--tui-radius-m);
+ 
+  &__item {
+    ::ng-deep {
+      .t-wrapper {
+        background: var(--tui-secondary-active);
+
+        &:hover {
+          background: var(--app-background);
+        }
+      }
+    }
+
+    &-active {
+      ::ng-deep {
+        .t-wrapper {
+          color: var(--tui-primary-text);
+
+          background: var(--tui-primary);
+
+          &:hover {
+            background: var(--tui-primary);
+          }
+        }
+      }
+    }
+  }
+}
