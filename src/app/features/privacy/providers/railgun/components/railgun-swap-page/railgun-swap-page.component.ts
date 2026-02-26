@@ -6,12 +6,12 @@ import BigNumber from 'bignumber.js';
 import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
 import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
 import { RailgunWalletInfo } from '@railgun-community/shared-models';
-import { PrivateModalService } from '@features/privacy/shared/services/private-modal/private-modal.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { FromAssetsService } from '@features/trade/components/assets-selector/services/from-assets.service';
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RailgunTokensFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-swap-tokens-facade.service';
+import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 
 @Component({
   selector: 'app-railgun-swap-page',
@@ -65,7 +65,7 @@ export class RailgunSwapPageComponent {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  public readonly modalService = inject(PrivateModalService);
+  public readonly modalService = inject(PrivateModalsService);
 
   private readonly injector = inject(Injector);
 

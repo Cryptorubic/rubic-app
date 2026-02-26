@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { getRandomBytes, pbkdf2 } from '@railgun-community/wallet';
-import { StoredCreds } from '@features/privacy/providers/railgun/models/encryption-types';
-import { StoreService } from '@core/services/store/store.service';
 import { Store } from '@core/services/store/models/store';
+import { StoreService } from '@core/services/store/store.service';
+import { StoredCreds } from '@features/privacy/providers/railgun/models/encryption-types';
 
 @Injectable({
   providedIn: 'root'

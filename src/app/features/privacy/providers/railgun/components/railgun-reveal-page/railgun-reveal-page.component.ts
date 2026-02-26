@@ -4,11 +4,11 @@ import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { PrivateModalService } from '@features/privacy/shared/services/private-modal/private-modal.service';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-reveal-facade.service';
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
+import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -48,7 +48,7 @@ export class RailgunRevealPageComponent {
 
   private readonly injector = inject(Injector);
 
-  private readonly modalService = inject(PrivateModalService);
+  private readonly modalService = inject(PrivateModalsService);
 
   private readonly revealService = inject(RevealService);
 

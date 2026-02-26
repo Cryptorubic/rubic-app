@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
-import { PrivacyAssetsService } from '@features/privacy/shared/services/private-assets-service/privacy-assets.service';
+import { PrivateAssetsService } from '@features/privacy/providers/shared-privacy-providers/services/private-assets/private-assets.service';
 
 @Injectable()
-export class RailgunPrivateAssetsService extends PrivacyAssetsService {
+export class RailgunPrivateAssetsService extends PrivateAssetsService {
   constructor() {
     super('to', Object.values(fromPrivateToRubicChainMap));
   }

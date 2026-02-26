@@ -13,6 +13,7 @@ import { TuiScrollbarModule } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
 import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
+import { SharedTradeModule } from '@features/trade/shared-trade.module';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { LastPrivateActivityElementComponent } from './components/last-private-a
     PrivacyRoutingModule,
     TradeModule,
     TuiScrollbarModule,
-    InlineSVGModule
+    InlineSVGModule,
+    SharedTradeModule
   ],
   providers: [PrivacyFormService]
 })
