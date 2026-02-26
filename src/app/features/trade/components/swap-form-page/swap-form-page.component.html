@@ -17,9 +17,8 @@
       <app-asset-selector
         left
         selectorType="from"
-        (handleAssetSelection)="openSelector('from', state.isMobile)"
         [asset]="state.fromAsset"
-        [isDisabled]="state.isDisabledFromSelector"
+        (handleAssetSelection)="openSelector('from', state.isMobile)"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput
@@ -39,8 +38,8 @@
       <app-asset-selector
         left
         selectorType="to"
-        (handleAssetSelection)="openSelector('to', state.isMobile)"
         [asset]="state.toAsset"
+        (handleAssetSelection)="openSelector('to', state.isMobile)"
       ></app-asset-selector>
       <div right class="input-container">
         <app-amount-transput

@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
-import { PrivacySharedModule } from '../shared/privacy-shared.module';
+import { CommonModule } from '@angular/common';
+
+import { HinkalRoutingModule } from './hinkal-routing.module';
+import { HinkalViewComponent } from './components/hinkal-view/hinkal-view.component';
 
 @NgModule({
-  imports: [PrivacySharedModule],
-  declarations: []
+  declarations: [HinkalViewComponent],
+  imports: [CommonModule, HinkalRoutingModule]
 })
 export class HinkalModule {}

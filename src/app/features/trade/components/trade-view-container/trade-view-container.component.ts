@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Renderer2 } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Renderer2 } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { SwapsStateService } from '@features/trade/services/swaps-state/swaps-state.service';
 import { combineLatestWith, map, tap } from 'rxjs/operators';
@@ -19,6 +19,10 @@ import { SpindlService } from '@app/core/services/spindl-ads/spindl.service';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { ChartService } from '../../services/chart-service/chart.service';
 import { SolanaGaslessService } from '../../services/solana-gasless/solana-gasless.service';
+import { Asset } from '../../models/asset';
+import { FormType } from '../../models/form-type';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-trade-view-container',
@@ -86,7 +90,8 @@ export class TradeViewContainerComponent {
     private readonly authService: AuthService,
     private readonly chartService: ChartService,
     private readonly solanaGaslessService: SolanaGaslessService,
-    renderer2: Renderer2
+    renderer2: Renderer2,
+    @Inject(DOCUMENT) private readonly document: Document
   ) {
     this.chartService.setRenderer(renderer2);
     this.chartService.initSubscriptions(swapFormService);
@@ -110,6 +115,33 @@ export class TradeViewContainerComponent {
         defaultAutoCloseTime: 0
       });
     }
+  }
+
+  public handleTokenSelect(asset: Asset, formType: FormType): void {
+    const token = asset as BalanceToken;
+    if (token) {
+      const inputElement = this.document.getElementById('token-amount-input-element');
+      const isFromAmountEmpty = !this.swapFormService.inputValue.fromAmount?.actualValue.isFinite();
+
+      if (inputElement && isFromAmountEmpty) {
+        setTimeout(() => {
+          inputElement.focus();
+        }, 0);
+      }
+
+      if (formType === 'from') {
+        this.swapFormService.inputControl.patchValue({
+          fromBlockchain: token.blockchain,
+          fromToken: token
+        });
+      } else {
+        this.swapFormService.inputControl.patchValue({
+          toToken: token,
+          toBlockchain: token.blockchain
+        });
+      }
+    }
+    this.tradePageService.setState('form');
   }
 
   private setProvidersVisibility(providers: TradeState[]): void {

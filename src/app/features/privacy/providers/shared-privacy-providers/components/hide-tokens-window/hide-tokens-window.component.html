@@ -1,0 +1,49 @@
+<app-window-container
+  *ngLet="{
+    hideAsset: hideAsset$ | async,
+    hideAmount: hideAmount$ | async,
+    loading: loading$ | async,
+    displayReceiver: displayReceiver$ | async
+  } as state"
+>
+  <app-input-output-container [round]="'all'" [marginTop]="false">
+    <app-asset-selector
+      left
+      selectorType="from"
+      (handleAssetSelection)="openSelector()"
+      [asset]="state.hideAsset"
+      [isDisabled]="state.loading"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        formType="from"
+        [selectedToken]="state.hideAsset"
+        inputMode="input"
+        (amountUpdated)="updateInputValue($event)"
+        [amountValue]="state.hideAmount"
+      ></app-amount-transput>
+      <app-user-balance-container
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+
+  <app-target-network-address
+    *ngIf="state.displayReceiver"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <div class="buttons-container">
+    <button
+      [showLoader]="state.loading"
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="hide()"
+    >
+      Hide tokens
+    </button>
+    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+  </div>
+</app-window-container>
