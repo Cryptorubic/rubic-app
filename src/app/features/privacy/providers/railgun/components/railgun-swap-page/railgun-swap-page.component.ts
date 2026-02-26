@@ -79,7 +79,7 @@ export class RailgunSwapPageComponent {
 
   public openToSelector(): void {
     this.modalService
-      .openPrivateTokensModal(this.injector, {})
+      .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
         this._toAsset$.next(selectedToken);
       });

@@ -28,19 +28,24 @@ import { RefundService } from '@features/trade/services/refund-service/refund.se
 import { SolanaGaslessService } from '@features/trade/services/solana-gasless/solana-gasless.service';
 import { SolanaGaslessStateService } from '@features/trade/services/solana-gasless/solana-gasless-state.service';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
+import { SwapWindowComponent } from './components/swap-window/swap-window.component';
+import { RevealWindowComponent } from './components/reveal-window/reveal-window.component';
 
 @NgModule({
   declarations: [
     PublicTokensSelectorComponent,
     PrivateTokensSelectorComponent,
-    HideTokensWindowComponent
+    HideTokensWindowComponent,
+    SwapWindowComponent,
+    RevealWindowComponent
   ],
   imports: [CommonModule, AssetsSelectorModule, SharedTradeModule, SharedModule, TuiButtonModule],
   exports: [
     PublicTokensSelectorComponent,
     PrivateTokensSelectorComponent,
     SharedTradeModule,
-    HideTokensWindowComponent
+    HideTokensWindowComponent,
+    RevealWindowComponent
   ],
   providers: [
     [

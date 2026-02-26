@@ -57,27 +57,8 @@ export class RailgunTransferPageComponent {
   public readonly loading$ = this._loading$.asObservable();
 
   public openSelector(): void {
-    const balanceObject: Partial<Record<BlockchainName, BalanceToken[]>> = {};
-    this.balances.forEach(balance => {
-      if (!balanceObject[balance.blockchain]) {
-        balanceObject[balance.blockchain] = [];
-      }
-      balanceObject[balance.blockchain].push({
-        // @TODO PRIVATE
-        decimals: 0,
-        favorite: false,
-        image: '',
-        name: '',
-        price: 0,
-        rank: 0,
-        symbol: '',
-        address: balance.address,
-        amount: new BigNumber(balance.amount),
-        blockchain: balance.blockchain
-      });
-    });
     this.modalService
-      .openPrivateTokensModal(this.injector, balanceObject)
+      .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
         this._revealAsset$.next(selectedToken);
       });

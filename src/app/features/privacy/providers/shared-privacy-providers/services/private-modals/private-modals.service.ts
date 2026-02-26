@@ -3,7 +3,6 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { Observable } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
-import { BlockchainName } from '@cryptorubic/core';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
 
 @Injectable({
@@ -30,10 +29,7 @@ export class PrivateModalsService {
     );
   }
 
-  public openPrivateTokensModal(
-    injector: Injector,
-    _tokensWithBalance: Partial<Record<BlockchainName, BalanceToken[]>>
-  ): Observable<BalanceToken> {
+  public openPrivateTokensModal(injector: Injector): Observable<BalanceToken> {
     return this.modalService.showDialog(
       PrivateTokensSelectorComponent,
       {
