@@ -5,6 +5,7 @@ import { BroadcasterService } from '@features/privacy/providers/railgun/services
 import { ProofService } from '@features/privacy/providers/railgun/services/proof/proof.service';
 import { LevelDownService } from '@features/privacy/providers/railgun/services/level-down/level-down.service';
 import { ArtifactStoreService } from '@features/privacy/providers/railgun/services/artifact-store/artifact-store.service';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class RailgunService {
 
   private readonly artifactStoreService = inject(ArtifactStoreService);
 
+  @OutsideZone
   public async initServices(): Promise<void> {
     // console.log('[RAILGUN] Initializing Poseidon WASM...');
     // await this.railgunEngineService.initPoseidonWasm();

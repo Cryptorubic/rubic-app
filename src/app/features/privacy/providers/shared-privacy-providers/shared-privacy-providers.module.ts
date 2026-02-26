@@ -45,7 +45,8 @@ import { RevealWindowComponent } from './components/reveal-window/reveal-window.
     PrivateTokensSelectorComponent,
     SharedTradeModule,
     HideTokensWindowComponent,
-    RevealWindowComponent
+    RevealWindowComponent,
+    SwapWindowComponent
   ],
   providers: [
     [

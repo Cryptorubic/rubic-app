@@ -13,6 +13,7 @@ import {
   setOnUTXOMerkletreeScanCallback,
   refreshBalances
 } from '@railgun-community/wallet';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +62,7 @@ export class BalanceControllerService {
    * Install callbacks right after Engine initialization.
    * Safe to call multiple times (idempotent).
    */
+  @OutsideZone
   public installCallbacks(): void {
     if (this.callbacksInstalled) return;
 
@@ -90,6 +92,7 @@ export class BalanceControllerService {
    * Triggers a private balance refresh (scan) for provided wallet IDs on a chain.
    * This is the core "Updating Balances" operation.
    */
+  @OutsideZone
   public async refreshBalances(chain: Chain, walletIds: string[]): Promise<void> {
     // refreshBalances triggers scans and then balance callback events.
     await refreshBalances(chain, walletIds);
@@ -99,6 +102,7 @@ export class BalanceControllerService {
    * Optional: start a polling loop (e.g. every 60s) that calls refreshBalances.
    * Mirrors the idea from docs where refreshBalances can run repeatedly.
    */
+  @OutsideZone
   public startPolling(params: {
     chain: Chain;
     walletIds: string[];

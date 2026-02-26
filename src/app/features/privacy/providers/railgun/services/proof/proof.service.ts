@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { getProver, type SnarkJSGroth16 } from '@railgun-community/wallet';
 // @ts-ignore
 import { groth16 } from 'snarkjs';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({ providedIn: 'root' })
 export class ProofService {
@@ -13,6 +14,7 @@ export class ProofService {
    * Call AFTER startRailgunEngine() and BEFORE any private tx proof generation.
    * Safe to call multiple times - will run once.
    */
+  @OutsideZone
   public async initProver(): Promise<void> {
     if (this.initialized) return Promise.resolve();
     if (this.initPromise) return this.initPromise;

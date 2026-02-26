@@ -42,6 +42,16 @@
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
                 "output": "assets/taiga-ui/icons"
+              },
+              {
+                "glob": "poseidon_hash_wasm_bg.wasm",
+                "input": "node_modules/@railgun-community/poseidon-hash-wasm/pkg-esm",
+                "output": "assets/railgun"
+              },
+              {
+                "glob": "curve25519_scalarmult_wasm_bg.wasm",
+                "input": "node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm",
+                "output": "assets/railgun"
               }
             ],
             "styles": [

@@ -57,7 +57,7 @@ export class PrivateSwapService {
     const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
     const { wallet } = this.mnemonicService.getProviderWallet();
 
-    const swapData = await this.apiService.fetchBestSwapData<EvmTransactionConfig>({
+    const swapData = await this.apiService.quoteBestSwapData({
       srcTokenAddress: tokenFromAddress,
       dstTokenAddress: tokenToAddress,
       srcTokenAmount: amountAfterFee.toString(),

@@ -12,6 +12,7 @@ import {
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import initPoseidonWasm from '@railgun-community/poseidon-hash-wasm';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,7 @@ export class RailgunEngineService {
    * - If called twice concurrently, second call waits for the first.
    * - If already started, returns immediately.
    */
+  @OutsideZone
   public async start(args: RailgunEngineInitArgs): Promise<void> {
     if (this.started) return;
     if (this.startingPromise) return this.startingPromise;
@@ -42,6 +44,7 @@ export class RailgunEngineService {
   /**
    * Stop the engine (idempotent).
    */
+  @OutsideZone
   public async stop(): Promise<void> {
     // If start is in-flight, wait for it to finish then stop.
     if (this.startingPromise) {
@@ -58,6 +61,7 @@ export class RailgunEngineService {
     return this.started;
   }
 
+  @OutsideZone
   private async startInternal(args: RailgunEngineInitArgs): Promise<void> {
     const walletSource = this.normalizeWalletSource(args.walletSource ?? 'quickstartdemo');
 
@@ -94,6 +98,7 @@ export class RailgunEngineService {
     );
   }
 
+  @OutsideZone
   public async loadEngineProvider(): Promise<void> {
     const loadPromises = Object.values(fromPrivateToRubicChainMap).map(
       (network: EvmBlockchainName) => {
@@ -129,6 +134,7 @@ export class RailgunEngineService {
     };
   }
 
+  @OutsideZone
   public async initPoseidonWasm(): Promise<void> {
     // @ts-ignore
     await initPoseidonWasm('/assets/railgun/poseidon_hash_wasm_bg.wasm');
