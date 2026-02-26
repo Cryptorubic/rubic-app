@@ -9,6 +9,7 @@ import { AvailableBlockchain } from '@features/trade/components/assets-selector/
 export class ToAssetsService extends AssetsService {
   constructor() {
     super('to');
+    this.postConstructorInit();
   }
 
   public isDisabledFrom(_blockchain: AvailableBlockchain): boolean {

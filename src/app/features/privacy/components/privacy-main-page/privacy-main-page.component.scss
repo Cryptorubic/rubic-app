@@ -1,16 +1,10 @@
 :host {
-  position: relative;
+  --tui-base-01: var(--tui-secondary);
+}
 
-  ::ng-deep app-window-container {
-    display: block;
-    margin-bottom: 12px;
+.card {
+  &:hover {
+    --tui-base-01: var(--tui-secondary-hover);
+    cursor: pointer;
   }
 }
-
-.wrapper {
-  gap: 12px;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-

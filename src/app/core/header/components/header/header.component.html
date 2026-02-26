@@ -51,6 +51,18 @@
     Testnets
   </button>
 
+  <button
+    *ngIf="!useLargeIframe && !isMobile"
+    class="privacy-button"
+    tuiButton
+    appearance="secondary"
+    type="button"
+    size="m"
+    (click)="navigateToPrivacy()"
+  >
+    Private Hub
+  </button>
+
   <!--  <button tuiButton appearance="secondary" type="button" [pseudoActive]="isRevokePage" size="m">-->
   <!--    <div routerLink="/revoke-approval">Revoke Approval</div>-->
   <!--  </button>-->

@@ -44,6 +44,8 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   @Output() public readonly tokenSelect = new EventEmitter<Asset>();
 
+  @Output() public readonly handleBack = new EventEmitter<void>();
+
   public readonly selectorListType$ = of('tokens');
 
   public readonly headerText$ = this.selectorListType$.pipe(
@@ -145,6 +147,7 @@ export class AssetsSelectorPageComponent implements OnInit, OnDestroy {
 
   public backToForm(): void {
     this.tradePageService.setState('form');
+    this.handleBack.emit();
   }
 
   /**

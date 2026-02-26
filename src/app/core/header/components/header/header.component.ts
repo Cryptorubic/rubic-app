@@ -135,6 +135,10 @@ export class HeaderComponent {
     this.window.open('https://testnet.rubic.exchange', '_blank');
   }
 
+  public navigateToPrivacy(): void {
+    this.router.navigate(['./privacy']);
+  }
+
   public handleMenuButtonClick(): void {
     this.gtmService.reloadGtmSession();
   }

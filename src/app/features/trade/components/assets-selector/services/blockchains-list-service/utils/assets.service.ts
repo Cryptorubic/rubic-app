@@ -88,9 +88,9 @@ export abstract class AssetsService {
 
   // Services
 
-  private readonly queryParamsService = inject(QueryParamsService);
+  protected readonly queryParamsService = inject(QueryParamsService);
 
-  private readonly platformConfigurationService = inject(PlatformConfigurationService);
+  protected readonly platformConfigurationService = inject(PlatformConfigurationService);
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
@@ -173,15 +173,17 @@ export abstract class AssetsService {
     this._blockchainsToShow$.next(value);
   }
 
-  protected constructor(private readonly type: 'from' | 'to') {
+  protected constructor(private readonly type: 'from' | 'to') {}
+
+  public closeSelector(): void {
+    this.blockchainSearchQuery = '';
+  }
+
+  protected postConstructorInit(): void {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
     this.assetsBlockchainsToShow = this._availableBlockchains;
     this.subscribeOnQueryParams();
-  }
-
-  public closeSelector(): void {
-    this.blockchainSearchQuery = '';
   }
 
   protected setAvailableBlockchains(): void {

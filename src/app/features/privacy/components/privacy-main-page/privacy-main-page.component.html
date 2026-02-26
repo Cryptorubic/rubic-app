@@ -1,58 +1,16 @@
-<ng-container
-  *ngLet="{
-    account: account$ | async,
-    railgunAccount: railgunAccount$ | async,
-    balances: balances$ | async,
-    pendingBalances: pendingBalances$ | async,
-    step: currentStep$ | async
-  } as data"
->
-  <app-page-navigation
-    [currentStep]="data.step"
-    [railgunAddress]="data.railgunAccount?.railgunAddress"
-    (handleStep)="onStepChange($event)"
-  ></app-page-navigation>
-
-  <div class="wrapper">
-    <app-railgun-form
-      *ngIf="data.step === 'connectWallet'"
-      [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
-      [railgunId]="data?.railgunAccount?.id"
-      (formSubmit)="onSubmit($event)"
-    ></app-railgun-form>
-
-    <app-account-info
-      *ngIf="data.step !== 'connectWallet' && data.railgunAccount?.railgunAddress"
-      [railgunAddress]="data.railgunAccount.railgunAddress"
-      [accountId]="data.railgunAccount.id"
-      (handleLogout)="logout()"
-    ></app-account-info>
-
-    <app-hide-tokens-page
-      *ngIf="data.step === 'hide'"
-      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
-      [pendingBalances]="data.pendingBalances"
-    ></app-hide-tokens-page>
-
-    <app-private-swap-page
-      *ngIf="data.step === 'swap'"
-      [railgunWalletInfo]="data.railgunAccount"
-      [balances]="data.balances"
-    ></app-private-swap-page>
-
-    <app-reveal
-      *ngIf="data.step === 'reveal'"
-      [railgunId]="data.railgunAccount?.id"
-      [balances]="data.balances"
-    ></app-reveal>
-
-    <!--    <ng-container *ngIf="data.railgunAccount">-->
-    <!--      <app-window-container *ngIf="data.balances?.length">-->
-    <!--        <h4>Actual balances:</h4>-->
-    <!--        <div *ngFor="let token of data.balances">-->
-    <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
-    <!--        </div>-->
-    <!--      </app-window-container>-->
-    <!--    </ng-container>-->
+<div class="container">
+  <div class="tui-row">
+    <div class="tui-col_md-12">
+      <h1>Privacy solutions</h1>
+      <p>Choose a private crypto service</p>
+    </div>
+    <div *ngFor="let card of cards" class="tui-col_md-4">
+      <tui-island class="card" [routerLink]="card.link">
+        <h3 class="tui-island__title">{{ card.title }}</h3>
+        <p class="tui-island__paragraph">
+          {{ card.description }}
+        </p>
+      </tui-island>
+    </div>
   </div>
-</ng-container>
+</div>

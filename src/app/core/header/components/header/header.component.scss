@@ -22,8 +22,14 @@
   --tui-secondary-hover: linear-gradient(90deg, rgba(193, 9, 255, 1) 6%, rgba(4, 200, 133, 1) 100%);
 }
 
-.testnets-button,
-.birthday-button {
+.privacy-button {
+  --tui-secondary: linear-gradient(90deg, rgba(71, 26, 68, 1) 0%, rgba(140, 30, 199, 1) 100%);
+  --tui-secondary-hover: linear-gradient(90deg, rgb(117, 46, 113) 0%, rgb(184, 69, 252) 100%);
+  transition: 0.2s ease-in-out;
+}
+
+.birthday-button,
+.privacy-button {
   margin-right: auto;
 }
 
