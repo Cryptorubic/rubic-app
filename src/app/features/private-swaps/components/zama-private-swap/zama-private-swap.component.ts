@@ -5,7 +5,11 @@ import { EvmAdapter } from '@cryptorubic/web3';
 import { ERC7984_TOKEN_ABI } from '../../constants/erc7984-token-abi';
 import { createInstance, initSDK } from '@zama-fhe/relayer-sdk/bundle';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/web';
-import { SEPOLIA_TEST2_TOKEN, TOKENS } from '../../constants/sepolia-test-tokens';
+import {
+  SEPOLIA_CTEST2_TOKEN,
+  SEPOLIA_TEST2_TOKEN,
+  TOKENS
+} from '../../constants/sepolia-test-tokens';
 import { AuthService } from '@app/core/services/auth/auth.service';
 import { FormControl } from '@angular/forms';
 import { ErrorsService } from '@app/core/errors/errors.service';
@@ -89,28 +93,25 @@ export class ZamaPrivateSwapComponent {
       this.setLoading(true);
       await initSDK();
       const instance = await createInstance({
-        // ACL_CONTRACT_ADDRESS (FHEVM Host chain)
-        aclContractAddress: '0xf0Ffdc93b7E186bC2f8CB3dAA75D86d1930A433D',
-        // KMS_VERIFIER_CONTRACT_ADDRESS (FHEVM Host chain)
-        kmsContractAddress: '0xbE0E383937d564D7FF0BC3b46c51f0bF8d5C311A',
-        // INPUT_VERIFIER_CONTRACT_ADDRESS (FHEVM Host chain)
-        inputVerifierContractAddress: '0xBBC1fFCdc7C316aAAd72E807D9b0272BE8F84DA0',
-        // DECRYPTION_ADDRESS (Gateway chain)
-        verifyingContractAddressDecryption: '0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478',
-        // INPUT_VERIFICATION_ADDRESS (Gateway chain)
-        verifyingContractAddressInputVerification: '0x483b9dE06E4E4C7D35CCf5837A1668487406D955',
-        // FHEVM Host chain id
-        chainId: 11155111,
-        // Gateway chain id
-        gatewayChainId: 10901,
-        // Optional RPC provider to host chain
-        network: 'https://ethereum-sepolia-rpc.publicnode.com',
-        // Relayer URL
-        relayerUrl: 'https://relayer.testnet.zama.org'
+        aclContractAddress: '0xcA2E8f1F656CD25C01F05d0b243Ab1ecd4a8ffb6',
+        kmsContractAddress: '0x77627828a55156b04Ac0DC0eb30467f1a552BB03',
+        inputVerifierContractAddress: '0xCe0FC2e05CFff1B719EFF7169f7D80Af770c8EA2',
+        verifyingContractAddressDecryption: '0x0f6024a97684f7d90ddb0fAAD79cB15F2C888D24',
+        verifyingContractAddressInputVerification: '0xcB1bB072f38bdAF0F328CdEf1Fc6eDa1DF029287',
+        chainId: 1,
+        gatewayChainId: 261131,
+        network:
+          'https://lb.drpc.org/ogrpc?network=ethereum&dkey=AuU5r20j6ECLgozoeJVc3wsB-MZsFSUR8K7gQszWOGuW',
+        relayerUrl: 'https://x-api.rubic.exchange/zm/v2',
+        auth: {
+          __type: 'ApiKeyHeader',
+          header: 'apiKey',
+          value: 'sndfje3u4b3fnNSDNFUSDNVSunw345842hrnfd3b4nt4'
+        }
       });
       this.sdk = instance;
+
       this.setLoading(false);
-      await this.walletConnectorService.switchChain(BLOCKCHAIN_NAME.SEPOLIA);
     } catch (err) {
       this.errorService.catch(err);
       console.log('FAILED TO INIT SDK', err);
@@ -149,7 +150,7 @@ export class ZamaPrivateSwapComponent {
   }
 
   public get evmAdapter(): EvmAdapter {
-    return this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SEPOLIA);
+    return this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.ETHEREUM);
   }
 
   private async fetchConfidentialBalance(tokenAddress: string): Promise<string> {
@@ -172,17 +173,14 @@ export class ZamaPrivateSwapComponent {
     try {
       const needApprove = await this.evmAdapter.needApprove(
         SEPOLIA_TEST2_TOKEN,
-        '0x9942aBbEAb7f5BcefbA3d9865B148aA79B2E82eB',
+        SEPOLIA_CTEST2_TOKEN.address,
         this.authService.userAddress,
         '1'
       );
 
       if (!needApprove) return true;
 
-      const resp = await this.evmAdapter.approveTokens(
-        token.address, // TEST2 token
-        '0x9942aBbEAb7f5BcefbA3d9865B148aA79B2E82eB' // cTest2
-      );
+      const resp = await this.evmAdapter.approveTokens(token.address, SEPOLIA_CTEST2_TOKEN.address);
       return !!resp;
     } catch (err) {
       this.errorService.catch(err);
@@ -199,7 +197,7 @@ export class ZamaPrivateSwapComponent {
       if (!isApproved || !wrapAmount) return;
 
       const tx = EvmAdapter.encodeMethodCall(
-        '0x9942aBbEAb7f5BcefbA3d9865B148aA79B2E82eB',
+        SEPOLIA_CTEST2_TOKEN.address,
         ERC7984_TOKEN_ABI,
         'wrap',
         [this.authService.userAddress, Token.toWei(wrapAmount, token.decimals)]
@@ -218,6 +216,7 @@ export class ZamaPrivateSwapComponent {
   public async decryptBalance(token: TokenAmount, encryptedBalance: string): Promise<void> {
     this.setLoading(true);
     const keyPair = this.sdk.generateKeypair();
+    //sthis.sdk.createDelegatedUserDecryptEIP712
 
     const contractAddress = token.address;
     const userAddress = getAddress(this.authService.userAddress);

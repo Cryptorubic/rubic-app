@@ -6759,10 +6759,10 @@
     js-yaml "^3.10.0"
     tslib "^2.4.0"
 
-"@zama-fhe/relayer-sdk@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@zama-fhe/relayer-sdk/-/relayer-sdk-0.4.0.tgz#2a2477a48c9a403d3f828f5bbc15aaf098396f02"
-  integrity sha512-gWk9lubkL1UFVuaZcjtKmGUzed9ki+s/lfUpp4MoHDjhmRnpos04fk1xjpEfCTJo9fu4/FpkQ8dw/RqySzotkg==
+"@zama-fhe/relayer-sdk@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@zama-fhe/relayer-sdk/-/relayer-sdk-0.4.1.tgz#981a7059ba53d29c0ca16790771f8aff2b2e9043"
+  integrity sha512-bS7tVQbXnsPFgiqm5R4pJ8hbPMYZuRh/Pv89S+jxO60y0mD296F4qIKEO7dgiHjC87V5GFM9DqCLNejjCNVw2Q==
   dependencies:
     commander "^14.0.0"
     ethers "^6.15.0"
