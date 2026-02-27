@@ -47,6 +47,16 @@ export class NotificationsService {
     );
   }
 
+  public showInvalidPrivacyCodeWarning(): Subscription {
+    return this.show('Your referral code is invalid.', {
+      status: 'warning',
+      autoClose: 10_000,
+      data: null,
+      icon: '',
+      defaultAutoCloseTime: 0
+    });
+  }
+
   public showWithoutSubscribe<I = unknown, O = undefined>(
     content: PolymorpheusContent<I & TuiBaseDialogContext<O>>,
     options: DialogOptions<I>

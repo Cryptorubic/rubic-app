@@ -29,13 +29,6 @@ export const NAVIGATION_LIST = [
     type: 'external',
     link: EXTERNAL_LINKS.LANDING,
     imagePath: `${defaultSrc}team.svg`
-  },
-  {
-    translateKey: 'navigation.retrodrop',
-    type: 'internal',
-    link: 'retrodrop',
-    target: '_blank',
-    imagePath: `${defaultSrc}retrodrop.svg`
   }
 ] as NavigationItem[];
 
@@ -45,6 +38,12 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
       translateKey: 'Swap',
       type: 'internal',
       link: ROUTE_PATH.NONE,
+      active: false
+    },
+    {
+      translateKey: 'Private Mode',
+      type: 'internal',
+      link: ROUTE_PATH.PRIVATE_SWAPS,
       active: false
     }
   ],

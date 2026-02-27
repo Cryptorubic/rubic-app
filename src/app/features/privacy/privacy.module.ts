@@ -9,10 +9,13 @@ import { SharedModule } from '@app/shared/shared.module';
 import { PrivateProvidersListGeneralComponent } from './components/private-providers-list-general/private-providers-list-general.component';
 import { PrivateProvidersListComponent } from './components/private-providers-list/private-providers-list.component';
 import { PrivateProviderElementComponent } from './components/private-provider-element/private-provider-element.component';
-import { TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
 import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
+import { PrivacyAuthWindowComponent } from './components/privacy-auth-window/privacy-auth-window.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HeaderModule } from '@app/core/header/header.module';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,8 @@ import { LastPrivateActivityElementComponent } from './components/last-private-a
     PrivateProvidersListComponent,
     PrivateProviderElementComponent,
     LastPrivateActivityComponent,
-    LastPrivateActivityElementComponent
+    LastPrivateActivityElementComponent,
+    PrivacyAuthWindowComponent
   ],
   imports: [
     CommonModule,
@@ -30,7 +34,11 @@ import { LastPrivateActivityElementComponent } from './components/last-private-a
     PrivacyRoutingModule,
     TradeModule,
     TuiScrollbarModule,
-    InlineSVGModule
+    InlineSVGModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HeaderModule,
+    TuiButtonModule
   ],
   providers: [PrivacyFormService]
 })

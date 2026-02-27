@@ -1,0 +1,26 @@
+<div class="private-auth-window">
+  <button
+    tuiButton
+    class="close-btn"
+    appearance="secondary"
+    type="button"
+    size="s"
+    (click)="closeWindow()"
+  >
+    Close
+  </button>
+
+  <div *ngIf="!(validationSuccess$ | async)" class="form" [@inOutAnimation]>
+    <b class="first-row">EXPLORE RUBIC’S PRIVATE MODE</b>
+    <b class="second-row">
+      Get early access to the
+      <span class="green">market’s first privacy-focused aggregator</span>
+    </b>
+    <b class="third-row">Check Rubic's Socials To Get The Code</b>
+    <input #inputRef class="fourth-row" [formControl]="refCodeCtrl" maxlength="20" type="text" />
+  </div>
+
+  <div class="overlay">
+    <img src="assets/images/private-swaps/modals/david.svg" />
+  </div>
+</div>

@@ -80,6 +80,8 @@ export interface SwapTransactionOptions {
    */
   refundAddress?: string;
 
+  privacyRefCode?: string;
+
   solanaSponsorParams?: {
     tradeId: string;
     feePayer: string; // Public key of the fee payer
