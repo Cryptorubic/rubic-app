@@ -21,7 +21,6 @@ import { SuiApiOnChainConstructor } from './chains/sui/sui-api-on-chain-trade-co
 import { TonApiCrossChainTrade } from './chains/ton/ton-api-cross-chain-trade';
 import { TonApiOnChainTrade } from './chains/ton/ton-api-on-chain-trade';
 import { TronApiCrossChainTrade } from './chains/tron/tron-api-cross-chain-trade';
-import { TronApiOnChainTrade } from './chains/tron/tron-api-on-chain-trade';
 
 import {
   transferTradeSupportedProviders,
@@ -37,7 +36,6 @@ import { TonApiCrossChainConstructor } from './chains/ton/ton-api-cross-chain-co
 import { TonApiOnChainConstructor } from './chains/ton/ton-api-on-chain-constructor';
 import { ApiCrossChainTransferTrade } from './chains/transfer-trade/api-cross-chain-transfer-trade';
 import { TronApiCrossChainConstructor } from './chains/tron/tron-api-cross-chain-constructor';
-import { TronApiOnChainConstructor } from './chains/tron/tron-api-on-chain-constructor';
 import { RubicApiError } from './models/rubic-api-error';
 import { RubicApiParser } from './utils/rubic-api-parser';
 import { RubicApiUtils } from './utils/rubic-api-utils';
@@ -51,6 +49,7 @@ import { StellarApiCrossChainConstructor } from './chains/stellar/stellar-api-cr
 import { StellarApiOnChainTrade } from './chains/stellar/stellar-api-on-chain-trade';
 import { StellarApiOnChainConstructor } from './chains/stellar/stellar-api-on-chain-constructor';
 import { NEED_TRUSTLINE_TRANSIT_TOKENS } from './chains/stellar/constants/need-trustline-transit-tokens';
+import { TronApiOnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/ws-api/chains/tron/tron-api-on-chain-trade';
 
 export class TransformUtils {
   public static async transformCrossChain(
@@ -196,11 +195,16 @@ export class TransformUtils {
         rubicApiService
       );
     } else if (chainType === CHAIN_TYPE.TRON) {
-      trade = new TronApiOnChainTrade(
-        tradeParams as TronApiOnChainConstructor,
+      // trade = new TronApiOnChainTrade(
+      //   tradeParams as TronApiOnChainConstructor,
+      //   sdkLegacyService,
+      //   rubicApiService
+      // );
+      trade = new ApiCrossChainTransferTrade(
+        tradeParams,
         sdkLegacyService,
         rubicApiService
-      );
+      ) as unknown as TronApiOnChainTrade;
     } else if (chainType === CHAIN_TYPE.SOLANA) {
       const shouldCalculateConsumedParams =
         shouldCalculateConsumedParamsProviders.includes(tradeType);

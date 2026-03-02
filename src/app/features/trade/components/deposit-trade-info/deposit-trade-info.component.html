@@ -16,6 +16,16 @@
         <app-copy-container [text]="state.trade.id"></app-copy-container>
       </div>
     </app-transaction-details-element>
+    <app-transaction-details-element
+      *ngIf="state.trade.intermidiateId"
+      [title]="'Changelly transaction id'"
+      [description]="text.transactionId.description"
+    >
+      <div class="row">
+        {{ state.trade.intermidiateId }}
+        <app-copy-container [text]="state.trade.intermidiateId"></app-copy-container>
+      </div>
+    </app-transaction-details-element>
 
     <app-transaction-details-element
       *ngIf="state.wallet && state.trade?.toToken.blockchain"

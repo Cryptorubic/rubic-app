@@ -879,6 +879,11 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     name: 'Cetus',
     image: `${imageBasePath}cetus.png`,
     color: '#61e0af'
+  },
+  [ON_CHAIN_TRADE_TYPE.RUBIC_PRIVATE_TRANSFER]: {
+    name: 'Rubic private',
+    image: `${imageBasePath}cetus.png`,
+    color: '#61e0af'
   }
 };
 

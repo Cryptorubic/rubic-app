@@ -85,6 +85,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
     return {
       toAmount: amount,
       id: transaction.exchangeId,
+      intermidiateId: transaction.intermidiateExchangeId,
       depositAddress: transaction.depositAddress,
       depositExtraId: transaction.extraFields?.value,
       depositExtraIdName: transaction.extraFields?.name

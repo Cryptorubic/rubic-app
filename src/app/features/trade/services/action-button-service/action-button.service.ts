@@ -8,7 +8,7 @@ import { ModalService } from '@core/modals/services/modal.service';
 import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { SelectedTrade } from '@features/trade/models/selected-trade';
 import { FormsTogglerService } from '../forms-toggler/forms-toggler.service';
-import { BlockchainsInfo } from '@cryptorubic/core';
+import { BlockchainsInfo, ON_CHAIN_TRADE_TYPE } from '@cryptorubic/core';
 import { CrossChainTransferTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/cross-chain-transfer-trade/cross-chain-transfer-trade';
 
 type StateOptions = [SelectedTrade, boolean, boolean, string, boolean, boolean, string];
@@ -69,6 +69,7 @@ export class ActionButtonService {
     text: string;
     action: () => void;
   } {
+    console.log(currentTrade);
     if (!currentTrade) {
       return {
         type: 'error',
@@ -77,8 +78,9 @@ export class ActionButtonService {
       };
     }
     const isTransferFromNonEvm =
-      currentTrade.trade instanceof CrossChainTransferTrade &&
-      !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain);
+      (currentTrade.trade instanceof CrossChainTransferTrade &&
+        !BlockchainsInfo.isEvmBlockchainName(currentTrade.trade.from.blockchain)) ||
+      currentTrade.tradeType === ON_CHAIN_TRADE_TYPE.RUBIC_PRIVATE_TRANSFER;
 
     if (currentTrade.error) {
       return {
@@ -109,7 +111,10 @@ export class ActionButtonService {
       (currentTrade.trade && wrongBlockchain)
     ) {
       // Handle Non EVM trade
-      if (isAddressRequired) {
+      if (
+        isAddressRequired ||
+        currentTrade.tradeType === ON_CHAIN_TRADE_TYPE.RUBIC_PRIVATE_TRANSFER
+      ) {
         const trulyAddress = Boolean(receiverAddress);
 
         if (isReceiverValid && trulyAddress) {

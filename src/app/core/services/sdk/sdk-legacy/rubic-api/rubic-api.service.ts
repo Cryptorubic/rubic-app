@@ -11,7 +11,6 @@ import {
   EvmTransactionConfig,
   InsufficientFundsError,
   InsufficientFundsGasPriceValueError,
-  rubicApiLinkMapping,
   RubicSdkError,
   SimulationFailedError,
   TradeExpiredError,
@@ -33,7 +32,6 @@ import {
   of,
   throwError
 } from 'rxjs';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { SwapResponseInterface } from '../features/ws-api/models/swap-response-interface';
 import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
 import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error-response-interface';
@@ -55,9 +53,9 @@ import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 })
 export class RubicApiService {
   private get apiUrl(): string {
-    const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
+    // const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
 
-    return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
+    return 'http://localhost:3000';
   }
 
   private readonly _socket$ = new BehaviorSubject<Socket | null>(null);
@@ -125,7 +123,10 @@ export class RubicApiService {
     this.latestQuoteParams = params;
     if (attempt > 2) return;
     if (this.client?.connected) {
-      this.client.emit('calculate', params);
+      this.client.emit('calculate', {
+        ...params,
+        preferredProvider: 'RUBIC_PRIVATE_TRANSFER'
+      });
     } else {
       const repeatInterval = 3_000;
       setTimeout(() => {

@@ -52,6 +52,7 @@ export class DepositService {
     const trade = {
       rubicId: selectedTrade.trade.rubicId,
       id: paymentInfo.id,
+      intermidiateId: paymentInfo.intermidiateId,
 
       fromToken,
       toToken,

@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 import { AvailableTokenAmount } from '@shared/models/tokens/available-token-amount';
 import { map, tap } from 'rxjs/operators';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
-import { compareTokens } from '@shared/utils/utils';
 import BigNumber from 'bignumber.js';
 import {
   sorterByBalance,
@@ -57,8 +56,9 @@ export class TokensBuilderService {
       }),
       map((tokens: BalanceToken[]) => {
         const mappedTokens = tokens.map(token => {
-          const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
-          const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+          // const oppositeToken = direction === 'from' ? inputValue.toToken : inputValue.fromToken;
+          // const isAvailable = oppositeToken ? !compareTokens(token, oppositeToken) : true;
+          const isAvailable = true;
           return {
             ...token,
             available: isAvailable,

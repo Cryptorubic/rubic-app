@@ -112,6 +112,7 @@ export abstract class CrossChainTransferTrade extends CrossChainTrade<CrossChain
 
     return {
       id: this.paymentInfo.id,
+      intermidiateId: this.paymentInfo.intermidiateId,
       depositAddress: this.paymentInfo.depositAddress,
       toAmount: this.actualTokenAmount,
       ...(extraField && { extraField })

@@ -253,6 +253,7 @@ export class DepositPreviewSwapComponent implements OnDestroy {
       this.depositService.updateTrade(paymentInfo, receiverAddress);
       this.depositService.setupUpdate();
     } catch (err) {
+      console.error(err);
       console.error(`DepositPreviewSwapComponent_setupTrade_error ===> ${err}`);
       const backToForm = await this.modalService.openDepositTradeRateChangedModal(selectedTrade);
 
