@@ -11,12 +11,25 @@ import { TokenAmount } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-hide-tokens-window',
   templateUrl: './hide-tokens-window.component.html',
   styleUrls: ['./hide-tokens-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('receiverAnimation', [
+      transition(':enter', [
+        style({ height: '0px', opacity: 0.5 }),
+        animate('0.2s ease-out', style({ height: '56px', opacity: 1 }))
+      ]),
+      transition(':leave', [
+        style({ opacity: 1, height: '56px' }),
+        animate('0.2s ease-in', style({ height: '0px', opacity: 0 }))
+      ])
+    ])
+  ]
 })
 export class HideTokensWindowComponent {
   @Output() public handleHide = new EventEmitter<{
@@ -87,7 +100,6 @@ export class HideTokensWindowComponent {
   }
 
   public toggleReceiver(): void {
-    debugger;
     this._displayReceiver$.next(!this._displayReceiver$.value);
   }
 }

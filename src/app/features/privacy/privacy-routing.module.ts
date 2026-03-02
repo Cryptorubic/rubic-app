@@ -15,7 +15,7 @@ const routes: Routes = [
   {
     path: PRIVATE_MODE_URLS.PRIVACY_CASH,
     loadChildren: () =>
-      import('./providers/privacy-cash/privacy-cash.module').then(m => m.PrivacyCashModule)
+      import('./providers/privacycash/privacycash.module').then(m => m.PrivacyCashModule)
   },
   {
     path: PRIVATE_MODE_URLS.RAILGUN,

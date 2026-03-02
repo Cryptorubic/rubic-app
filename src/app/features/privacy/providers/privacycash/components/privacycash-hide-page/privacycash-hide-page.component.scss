@@ -1,0 +1,8 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .hide-page-wrapper {
+    @include flex(row, start, center);
+    gap: 12px;
+  }
+}
