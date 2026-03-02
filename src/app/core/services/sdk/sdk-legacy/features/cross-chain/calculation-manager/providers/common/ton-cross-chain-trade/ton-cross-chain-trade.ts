@@ -70,6 +70,7 @@ export abstract class TonCrossChainTrade extends CrossChainTrade<TonTransactionC
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
+      privacyRefCode: this.privacyRefCode,
       enableChecks: !testMode
     };
 

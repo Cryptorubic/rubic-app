@@ -52,6 +52,8 @@ import { TrustlineComponentOptions } from '@app/features/trade/components/trustl
 import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
+import { PrivacyAuthWindowComponent } from '@app/features/privacy/components/privacy-auth-window/privacy-auth-window.component';
+import { NavigationItem } from '@app/core/header/components/header/components/rubic-menu/models/navigation-item';
 
 @Injectable({
   providedIn: 'root'
@@ -169,9 +171,9 @@ export class ModalService {
   /**
    * Show Rubic Menu dialog.
    */
-  public openRubicMenu(): Observable<void> {
+  public openRubicMenu(): Observable<NavigationItem> {
     this.setOpenedModalName('rubic-menu');
-    return this.showDialog<RubicMenuComponent, void>(RubicMenuComponent, {
+    return this.showDialog<RubicMenuComponent, NavigationItem>(RubicMenuComponent, {
       title: 'Menu',
       scrollableContent: true
     });
@@ -529,6 +531,15 @@ export class ModalService {
         closeable: true,
         fitContent: true
       })
+    );
+  }
+
+  public async openPrivacyAuthModal(): Promise<{ valid: boolean; forceClosed: boolean }> {
+    return firstValueFrom(
+      this.showDialog<PrivacyAuthWindowComponent, { valid: boolean; forceClosed: boolean }>(
+        PrivacyAuthWindowComponent,
+        { size: 'page' }
+      )
     );
   }
 }

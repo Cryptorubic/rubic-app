@@ -61,6 +61,8 @@ export abstract class OnChainTrade<T = unknown> {
 
   protected _lastTo: PriceTokenAmount | null = null;
 
+  protected privacyRefCode: string = '';
+
   /*
    * use to check latest recalculated output-token amount
    */

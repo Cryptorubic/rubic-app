@@ -272,6 +272,7 @@ export abstract class EvmOnChainTrade extends OnChainTrade {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: options?.receiverAddress || this.walletAddress,
+      privacyRefCode: this.privacyRefCode,
       id: this.apiResponse.id
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);

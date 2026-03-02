@@ -118,6 +118,7 @@ export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTran
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
+      privacyRefCode: this.privacyRefCode,
       enableChecks: !testMode
     };
 

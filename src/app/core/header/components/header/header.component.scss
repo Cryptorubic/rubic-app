@@ -1,11 +1,9 @@
 @use 'src/scss/core' as *;
 
 .rubic-header {
+  @include flex(row, center, space-between);
   position: relative;
 
-  display: flex;
-  gap: 15px;
-  align-items: center;
   padding: 30px;
 
   &__logo {
@@ -16,15 +14,42 @@
       display: block;
     }
   }
+
+  &__left {
+    @include flex(row, center, start);
+    gap: 12px;
+  }
+
+  &__right {
+    @include flex(row, center, start);
+    gap: 12px;
+  }
 }
 
-.birthday-button {
-  --tui-secondary-hover: linear-gradient(90deg, rgba(193, 9, 255, 1) 6%, rgba(4, 200, 133, 1) 100%);
+.private-mode-button {
+  &__content {
+    @include flex(row, center, center);
+    gap: 8px;
+
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
-.testnets-button,
-.birthday-button {
-  margin-right: auto;
+.active-router-link {
+  ::ng-deep .t-wrapper {
+    color: black;
+
+    background: var(--tui-primary);
+  }
+
+  .icon {
+    ::ng-deep svg path {
+      fill: black;
+    }
+  }
 }
 
 .image {
@@ -35,9 +60,8 @@
   height: 100%;
 }
 
-@include b($mobile-md) {
+@include b($tablet) {
   .rubic-header {
-    justify-content: space-between;
     padding: var(--tui-radius-m) var(--tui-radius-l);
   }
 

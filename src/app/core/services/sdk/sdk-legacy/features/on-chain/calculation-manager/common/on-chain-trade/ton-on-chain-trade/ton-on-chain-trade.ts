@@ -145,6 +145,7 @@ export abstract class TonOnChainTrade extends OnChainTrade {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: receiverAddress || this.walletAddress,
+      privacyRefCode: this.privacyRefCode,
       id: this.apiResponse.id
     };
 

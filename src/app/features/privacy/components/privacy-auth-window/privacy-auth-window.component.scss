@@ -1,0 +1,78 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .private-auth-window {
+    position: fixed;
+    z-index: 1;
+
+    width: 100vw;
+
+    font-weight: bold;
+
+    background-color: var(--app-background);
+    inset: 0;
+
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    app-header {
+      position: absolute;
+      top: 0;
+
+      height: 0;
+    }
+
+    .overlay {
+      @include flex(row, end, center);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .form {
+      @include flex(column, center, center);
+      position: absolute;
+      top: 217px;
+      left: 50%;
+
+      gap: 10px;
+      width: 100%;
+      max-width: 679px;
+      height: 158px;
+      padding: 15px;
+
+      background-color: var(--app-background);
+      transform: translate(-50%, 0);
+
+      .first-row {
+        font-size: 21px;
+      }
+
+      .second-row {
+        font-size: 15px;
+      }
+
+      .third-row {
+        font-size: 15px;
+
+        background: url('../../../../../assets/images/private-swaps/modals/rounded-rectangle.svg');
+      }
+
+      .fourth-row {
+        width: 147px;
+
+        font-size: 15px;
+
+        background-color: var(--tui-primary-text);
+        border: 0;
+        border-radius: 4px;
+      }
+
+      .green {
+        color: var(--tui-primary);
+      }
+    }
+  }
+}

@@ -242,6 +242,7 @@ export abstract class EvmCrossChainTrade extends CrossChainTrade<EvmTransactionC
       receiver: receiverAddress,
       id: this.apiResponse.id,
       enableChecks: !testMode,
+      privacyRefCode: this.privacyRefCode,
       ...(this.signature && { signature: this.signature })
     };
     const swapData = await this.fetchSwapData<EvmTransactionConfig>(swapRequestData);
