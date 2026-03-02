@@ -61,7 +61,11 @@
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,
-            "sourceMap": true,
+            "sourceMap": {
+              "scripts": true,
+              "styles": false,
+              "vendor": false
+            },
             "optimization": false,
             "namedChunks": true
           },
@@ -84,6 +88,14 @@
               "customWebpackConfig": {
                 "path": "./custom-webpack.config.ts"
               }
+            },
+            "dev": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
             },
             "dev2": {
               "fileReplacements": [
@@ -205,6 +217,9 @@
             },
             "sdk": {
               "browserTarget": "rubic:build:sdk"
+            },
+            "dev": {
+              "browserTarget": "rubic:build:dev"
             },
             "dev2": {
               "browserTarget": "rubic:build:dev2"

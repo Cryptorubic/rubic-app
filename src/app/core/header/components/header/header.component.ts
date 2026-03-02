@@ -22,6 +22,7 @@ import { HeaderStore } from '../../services/header.store';
 import { GoogleTagManagerService } from '@core/services/google-tag-manager/google-tag-manager.service';
 import { ThemeService } from '@core/services/theme/theme.service';
 import { SWAP_PROVIDER_TYPE } from '@features/trade/models/swap-provider-type';
+import { ROUTE_PATH } from '@app/shared/constants/common/links';
 
 @Component({
   selector: 'app-header',
@@ -136,7 +137,7 @@ export class HeaderComponent {
   }
 
   public navigateToPrivateSwaps(): void {
-    this.router.navigate(['/private-swaps']);
+    this.router.navigate(['/' + ROUTE_PATH.PRIVACY], { queryParamsHandling: '' });
   }
 
   public handleMenuButtonClick(): void {

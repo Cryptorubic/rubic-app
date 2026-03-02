@@ -43,11 +43,15 @@ import { SwapBackupRateChangedModalComponent } from '@app/features/trade/compone
 import { TradeInfo } from '@app/features/trade/models/trade-info';
 import { RateChangeInfo } from '@app/features/trade/models/rate-change-info';
 import { AllSwapBackupsFailedModalComponent } from '@app/features/trade/components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
+import { TurnstileCheckComponent } from '@features/trade/components/turnstile-check/turnstile-check.component';
 import { AvailableBlockchain } from '@features/trade/components/assets-selector/services/blockchains-list-service/models/available-blockchain';
 import { AssetListType } from '@features/trade/models/asset';
 import { SwapRetryModalInput } from '@app/features/trade/components/swap-retry-pending-modal/models/swap-retry-modal-input';
 import { TrustlineModalComponent } from '@app/shared/components/trustline-modal/trustline-modal.component';
 import { TrustlineComponentOptions } from '@app/features/trade/components/trustline/models/trustline-component-options';
+import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
+import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
+import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
 
 @Injectable({
   providedIn: 'root'
@@ -131,6 +135,31 @@ export class ModalService {
           isModal,
           shortedInfo: false,
           noRoutes
+        }
+      },
+      injector
+    );
+  }
+
+  /**
+   * Show Other private providers list dialog.
+   */
+  public openOtherPrivateProvidersList(
+    states: PrivateProviderInfoUI[],
+    selectedTradeType: PrivateTradeType,
+    isModal: true,
+    injector: Injector
+  ): Observable<PrivateTradeType> {
+    this.setOpenedModalName('other-provider-list');
+    return this.showDialog<PrivateProvidersListComponent, PrivateTradeType>(
+      PrivateProvidersListComponent,
+      {
+        title: 'Available Cross-Chain Providers',
+        scrollableContent: true,
+        data: {
+          states,
+          selectedTradeType,
+          isModal
         }
       },
       injector
@@ -333,6 +362,30 @@ export class ModalService {
           size: 's',
           fitContent: true,
           data: { trade, tradeInfo$, rateChangeInfo }
+        },
+        injector
+      )
+    );
+  }
+
+  /**
+   * Show Backup Swap Rate Changed dialog.
+   * @param trade Selected Backup Trade
+   * @param tradeInfo$ Trade Info
+   * @param rateChangeInfo Rate Change Info
+   * @param injector Injector
+   */
+  public openTurnstileModal(injector: Injector): Promise<boolean> {
+    this.setOpenedModalName('cloudflare-validation');
+    return firstValueFrom(
+      this.showDialog(
+        TurnstileCheckComponent,
+        {
+          title: 'Verifying you are human...',
+          size: 's',
+          fitContent: true,
+          closeable: false,
+          dismissible: false
         },
         injector
       )

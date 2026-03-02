@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   EvmBlockchainName,
   QuoteAllInterface,
@@ -20,53 +20,111 @@ import {
   UnlistedError,
   UnsupportedReceiverAddressError
 } from '@cryptorubic/web3';
-import { catchError, concatMap, firstValueFrom, from, fromEvent, map, Observable, of } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  concatMap,
+  firstValueFrom,
+  from,
+  fromEvent,
+  interval,
+  map,
+  Observable,
+  of,
+  throwError
+} from 'rxjs';
 import { ENVIRONMENT } from 'src/environments/environment';
 import { SwapResponseInterface } from '../features/ws-api/models/swap-response-interface';
 import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
 import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error-response-interface';
 import { WrappedAsyncTradeOrNull } from '../features/ws-api/models/wrapped-async-trade-or-null';
 import { RubicApiErrorDto } from '../features/ws-api/models/rubic-api-error';
-import { WrappedCrossChainTradeOrNull } from '../features/cross-chain/calculation-manager/models/wrapped-cross-chain-trade-or-null';
-import { WrappedOnChainTradeOrNull } from '../features/on-chain/calculation-manager/models/wrapped-on-chain-trade-or-null';
 import { TransformUtils } from '../features/ws-api/transform-utils';
 import { CrossChainTxStatusConfig } from '../features/ws-api/models/cross-chain-tx-status-config';
 import { io, Socket } from 'socket.io-client';
 import { SdkLegacyService } from '../sdk-legacy.service';
 import { DeflationTokenLowSlippageError } from '@app/core/errors/models/common/deflation-token-low-slippage.error';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { TurnstileService } from '@core/services/turnstile/turnstile.service';
+import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
+import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
+import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
-  constructor(private readonly sdkLegacyService: SdkLegacyService) {}
-
   private get apiUrl(): string {
     const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
 
     return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
   }
 
-  private readonly client = this.getSocket();
+  private readonly _socket$ = new BehaviorSubject<Socket | null>(null);
+
+  public readonly socket$ = this._socket$.asObservable();
+
+  private get client(): Socket | null {
+    return this._socket$.value;
+  }
+
+  private setClient(socket: Socket): void {
+    this._socket$.next(socket);
+  }
 
   private latestQuoteParams: QuoteRequestInterface | null = null;
 
-  private getSocket(): Socket {
+  constructor(
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly turnstileService: TurnstileService,
+    @Inject(NAVIGATOR) private readonly navigator: Navigator,
+    @Inject(WINDOW) private readonly window: Window
+  ) {}
+
+  public setSocket(): void {
     const ioClient = io(this.apiUrl, {
       reconnectionDelayMax: 10000,
-      path: '/api/routes/ws/',
-      transports: ['websocket']
+      path: `/api/routes/ws/`,
+      transports: ['websocket'],
+      autoConnect: true,
+      reconnection: true
     });
-    return ioClient;
+
+    this.setClient(ioClient);
+  }
+
+  /**
+   * @description tries get token immediately after call
+   * and refresh CF token every 4.5 minutes  and send it to rubic-api
+   */
+  public initCfTokenAutoRefresh(): Observable<{ success: boolean; alreadyOpened: boolean }> {
+    this.refreshCloudflareToken(true);
+    return interval(4.5 * 60 * 1_000).pipe(switchMap(() => this.refreshCloudflareToken(false)));
+  }
+
+  public async refreshCloudflareToken(
+    needRecalculation: boolean
+  ): Promise<{ success: boolean; alreadyOpened: boolean }> {
+    const alreadyOpened = await firstValueFrom(this.turnstileService.cfModalOpened$);
+    if (alreadyOpened) return { alreadyOpened: true, success: false };
+
+    await this.turnstileService.askForCloudflareToken();
+
+    const token = await firstValueFrom(this.turnstileService.token$);
+
+    if (!this.client?.connected) {
+      return { alreadyOpened: false, success: false };
+    }
+
+    this.client.emit('auth_cloudflare', { token, needRecalculation });
+
+    return { alreadyOpened: false, success: token !== null };
   }
 
   public calculateAsync(params: WsQuoteRequestInterface, attempt = 0): void {
     this.latestQuoteParams = params;
-    if (attempt > 2) {
-      return;
-    }
-    if (this.client.connected) {
+    if (attempt > 2) return;
+    if (this.client?.connected) {
       this.client.emit('calculate', params);
     } else {
       const repeatInterval = 3_000;
@@ -78,7 +136,7 @@ export class RubicApiService {
 
   public stopCalculation(): void {
     if (this.latestQuoteParams) {
-      this.client.emit('stopCalculation');
+      this.client?.emit('stop_calculation');
       this.latestQuoteParams = null;
     }
   }
@@ -117,7 +175,7 @@ export class RubicApiService {
   }
 
   public async fetchBestSwapData<T>(
-    body: SwapRequestInterface | TransferSwapRequestInterface
+    body: Partial<SwapRequestInterface> | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
     try {
       const result = await firstValueFrom(
@@ -140,70 +198,116 @@ export class RubicApiService {
     }
   }
 
-  public fetchCelerRefundData(): void {
-    // return Injector.httpClient.post<TransactionInterface>(
-    //     `${this.apiUrl}/api/routes/swap`,
-    //     body
-    // );
+  public handleCloudflareTokenResponse(): Observable<{
+    success: boolean;
+    needRecalculation: boolean;
+  }> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket =>
+        fromEvent<{ success: boolean; needRecalculation: boolean }>(socket, 'auth_cloudflare')
+      )
+    );
   }
 
-  public disconnectSocket(): void {
-    this.client.disconnect();
+  public handleOnlineChange(): Observable<Event> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(() => fromEvent(this.window, 'online').pipe(delay(1_000)))
+    );
   }
 
-  public closetSocket(): void {
-    this.client.close();
+  public handleSocketConnectError(): Observable<Event> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent(socket, 'connect_error'))
+    );
+  }
+
+  public handleSocketDisconnect(): Observable<string[]> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent<string[]>(socket, 'disconnect'))
+    );
+  }
+
+  public handleSocketConnected(): Observable<void> {
+    return this.socket$.pipe(
+      filter(socket => !!socket),
+      switchMap(socket => fromEvent(socket, 'connect'))
+    );
   }
 
   public handleQuotesAsync(): Observable<WrappedAsyncTradeOrNull> {
-    return fromEvent<
-      WsQuoteResponseInterface & {
-        data: RubicApiErrorDto;
-        type: string;
-      }
-    >(this.client, 'events').pipe(
-      concatMap(wsResponse => {
-        const { trade, total, calculated, data } = wsResponse;
-        let promise: Promise<null | WrappedCrossChainTradeOrNull | WrappedOnChainTradeOrNull> =
-          Promise.resolve(null);
+    return this.turnstileService.token$.pipe(
+      first(el => el !== null),
+      switchMap(token => {
+        if (!token) return throwError(() => 'cloudflare token is undefined');
 
-        const rubicApiError = data
-          ? {
-              ...data,
-              type: wsResponse.type
+        return fromEvent<
+          WsQuoteResponseInterface & {
+            data: RubicApiErrorDto;
+            type: string;
+          }
+        >(this.client, 'events').pipe(
+          concatMap(wsResponse => {
+            const { trade, total, calculated, data } = wsResponse;
+            if (!this.latestQuoteParams) {
+              return of({
+                total,
+                calculated,
+                wrappedTrade: null,
+                ...(data && { tradeType: wsResponse.type })
+              });
             }
-          : data;
 
-        promise =
-          this.latestQuoteParams?.srcTokenBlockchain !== this.latestQuoteParams?.dstTokenBlockchain
-            ? TransformUtils.transformCrossChain(
-                trade!,
-                this.latestQuoteParams!,
-                this.latestQuoteParams!.integratorAddress!,
-                this.sdkLegacyService,
-                this,
-                rubicApiError as RubicAny
-              )
-            : TransformUtils.transformOnChain(
-                trade!,
-                this.latestQuoteParams!,
-                this.latestQuoteParams!.integratorAddress!,
-                this.sdkLegacyService,
-                this,
-                rubicApiError as RubicAny
-              );
-        return from(promise).pipe(
-          catchError(err => {
-            console.log(err);
-            return of(null);
-          }),
-          map(wrappedTrade => ({
-            total,
-            calculated,
-            wrappedTrade,
-            ...(data && { tradeType: wsResponse.type })
-          }))
+            const rubicApiError = data
+              ? {
+                  ...data,
+                  type: wsResponse.type
+                }
+              : data;
+
+            const promise =
+              this.latestQuoteParams?.srcTokenBlockchain !==
+              this.latestQuoteParams?.dstTokenBlockchain
+                ? TransformUtils.transformCrossChain(
+                    trade!,
+                    this.latestQuoteParams!,
+                    this.latestQuoteParams!.integratorAddress!,
+                    this.sdkLegacyService,
+                    this,
+                    rubicApiError as RubicAny
+                  )
+                : TransformUtils.transformOnChain(
+                    trade!,
+                    this.latestQuoteParams!,
+                    this.latestQuoteParams!.integratorAddress!,
+                    this.sdkLegacyService,
+                    this,
+                    rubicApiError as RubicAny
+                  );
+            return from(promise).pipe(
+              catchError(() => of(null)),
+              map(wrappedTrade => ({
+                total,
+                calculated,
+                wrappedTrade,
+                ...(data && { tradeType: wsResponse.type })
+              }))
+            );
+          })
         );
+      }),
+      retry({ delay: 1_000 })
+    );
+  }
+
+  public handleWsExceptions(): Observable<boolean> {
+    return fromEvent<WsErrorResponseInterface>(this.client, 'exception').pipe(
+      throttleTime(3_000),
+      exhaustMap(wsError => {
+        return this.handleWsApiError(wsError);
       })
     );
   }
@@ -269,6 +373,21 @@ export class RubicApiService {
         }
       )
     );
+  }
+
+  /**
+   * @returns whether should recalculate quote after handling
+   */
+  private handleWsApiError(err: WsErrorResponseInterface): Observable<boolean> {
+    const result = err.error;
+    switch (result.code) {
+      case 6001:
+      case 6002: {
+        return from(this.refreshCloudflareToken(true)).pipe(map(res => res.success));
+      }
+      default:
+        return of(false);
+    }
   }
 
   private getApiError(err: SwapErrorResponseInterface): RubicSdkError {

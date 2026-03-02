@@ -1,0 +1,11 @@
+<app-window-container>
+  <ng-container header>Last private activity</ng-container>
+
+  <div class="main">
+    <app-last-private-activity-element
+      *ngFor="let activityItem of activityList"
+      [activityItem]="activityItem"
+      (openClicked)="handleItemClicked(activityItem)"
+    ></app-last-private-activity-element>
+  </div>
+</app-window-container>
