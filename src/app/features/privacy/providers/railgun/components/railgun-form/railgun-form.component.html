@@ -1,0 +1,28 @@
+<app-window-container *ngIf="!railgunId && !railgunAddress">
+  <form [formGroup]="secretForm" (ngSubmit)="onSubmit()">
+    <div class="tui-row tui-row_sme">
+      <div class="tui-col_12">
+        <h4 class="tui-form__header tui-form__header_margin-top_none">
+          Enter account details (it’s safe, honest)
+        </h4>
+        <div class="tui-form__row">
+          <tui-input formControlName="phrase" tuiHintContent="A tooltip">
+            Secret phrase
+            <input placeholder="My seed phrase is definitely not this" tuiTextfield />
+            <span class="tui-required"></span>
+          </tui-input>
+        </div>
+        <div class="tui-form__row">
+          <tui-input-password formControlName="password">
+            Input password
+            <span class="tui-required"></span>
+          </tui-input-password>
+          <tui-error formControlName="password" [error]="[] | tuiFieldError | async"></tui-error>
+        </div>
+        <div class="tui-form__buttons">
+          <button size="l" tuiButton type="submit" class="tui-form__button">Submit</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</app-window-container>

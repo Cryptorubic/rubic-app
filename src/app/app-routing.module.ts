@@ -14,7 +14,7 @@ const routes: Routes = [
       import('./features/testnet-promo/testnet-promo.module').then(m => m.TestnetPromoModule)
   },
   {
-    path: ROUTE_PATH.PRIVATE_SWAPS,
+    path: ROUTE_PATH.PRIVACY,
     canActivate: [privacyAuthGuard],
     canActivateChild: [privacyAuthGuard],
     loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)

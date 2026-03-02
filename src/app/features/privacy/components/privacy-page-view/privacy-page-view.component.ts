@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
 import { Asset } from '@app/features/trade/models/asset';
 import { FormType } from '@app/features/trade/models/form-type';
@@ -12,6 +12,8 @@ import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../../models/activity-item';
 import { PRIVATE_PROVIDERS_ICONS } from '../../constants/private-providers-icons';
 import { PrivacyAuthService } from '../../services/privacy-auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
 
 const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   { providerName: 'HINKAL', type: 'swap' },
@@ -55,6 +57,10 @@ export class PrivacyPageViewComponent {
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
+  private readonly router = inject(Router);
+
+  private readonly activatedRoute = inject(ActivatedRoute);
+
   constructor(
     private readonly tradePageService: TradePageService,
     private readonly queryParamsService: QueryParamsService,
@@ -80,9 +86,7 @@ export class PrivacyPageViewComponent {
   }
 
   public async handleLastActivityClicked(activityItem: PrivateActivityItem): Promise<void> {
-    console.debug('[PrivacyPageViewComponent_handleLastActivityClicked] provider selected', {
-      activityItem
-    });
-    // @TODO_1712 переадресовывать на урл провайдера с выбранным типом активности
+    const url = PRIVATE_MODE_URLS[activityItem.providerName as PrivateTradeType];
+    await this.router.navigate([url], { relativeTo: this.activatedRoute });
   }
 }

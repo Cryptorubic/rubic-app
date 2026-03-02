@@ -24,10 +24,6 @@ const routes: Routes = [
   {
     path: PRIVATE_MODE_URLS.ZAMA,
     loadChildren: () => import('./providers/zama/zama.module').then(m => m.ZamaModule)
-  },
-  {
-    path: '**',
-    redirectTo: '/'
   }
 ];
 

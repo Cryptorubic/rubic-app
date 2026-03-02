@@ -43,7 +43,7 @@ export const MOBILE_NAVIGATION_LIST: { [key in Section]: NavigationItem[] } = {
     {
       translateKey: 'Private Mode',
       type: 'internal',
-      link: ROUTE_PATH.PRIVATE_SWAPS,
+      link: ROUTE_PATH.PRIVACY,
       active: false
     }
   ],

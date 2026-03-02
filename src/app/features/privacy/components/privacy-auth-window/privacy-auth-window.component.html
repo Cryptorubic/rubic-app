@@ -10,7 +10,7 @@
     Close
   </button>
 
-  <div *ngIf="!(validationSuccess$ | async)" class="form" [@inOutAnimation]>
+  <div *ngIf="(validationSuccess$ | async) !== true" class="form" [@inOutAnimation]>
     <b class="first-row">EXPLORE RUBIC’S PRIVATE MODE</b>
     <b class="second-row">
       Get early access to the

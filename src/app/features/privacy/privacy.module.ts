@@ -16,6 +16,7 @@ import { LastPrivateActivityElementComponent } from './components/last-private-a
 import { PrivacyAuthWindowComponent } from './components/privacy-auth-window/privacy-auth-window.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderModule } from '@app/core/header/header.module';
+import { SharedTradeModule } from '@features/trade/shared-trade.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { HeaderModule } from '@app/core/header/header.module';
     FormsModule,
     ReactiveFormsModule,
     HeaderModule,
-    TuiButtonModule
+    TuiButtonModule,
+    SharedTradeModule
   ],
   providers: [PrivacyFormService]
 })
