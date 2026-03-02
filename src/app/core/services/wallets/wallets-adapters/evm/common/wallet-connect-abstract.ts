@@ -6,8 +6,6 @@ import { EvmWalletAdapter } from '@core/services/wallets/wallets-adapters/evm/co
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { RubicWindow } from '@shared/utils/rubic-window';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
-import { IEthereumProvider } from '@walletconnect/ethereum-provider/dist/types/types';
-import { EthereumProviderOptions } from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import {
   blockchainId,
   BlockchainName,
@@ -15,6 +13,10 @@ import {
   EVM_BLOCKCHAIN_NAME,
   EvmBlockchainName
 } from '@cryptorubic/core';
+import {
+  EthereumProviderOptions,
+  IEthereumProvider
+} from 'node_modules/@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 
 export abstract class WalletConnectAbstractAdapter extends EvmWalletAdapter<IEthereumProvider> {
   protected providerConfig: EthereumProviderOptions;

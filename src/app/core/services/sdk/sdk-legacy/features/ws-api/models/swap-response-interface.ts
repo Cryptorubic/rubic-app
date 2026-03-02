@@ -8,7 +8,7 @@ import {
   SwapRequestInterface,
   SwapType
 } from '@cryptorubic/core';
-import { UniqueProviderInfoInterface } from '@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
+import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 
 export interface SwapResponseInterface<T> {
   quote: SwapRequestInterface;

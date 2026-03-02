@@ -22,8 +22,8 @@ import {
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { StellarOnChainTradeStruct } from './models/stellar-on-chain-trade-struct';
-import { StellarTransactionConfig } from '@cryptorubic/web3/src/lib/utils/models/stellar-transaction-config';
-import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
+import { StellarTransactionConfig } from 'node_modules/@cryptorubic/web3/src/lib/utils/models/stellar-transaction-config';
+import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 
 export abstract class StellarOnChainTrade extends OnChainTrade {
   protected lastTransactionConfig: StellarTransactionConfig | null = null;

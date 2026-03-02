@@ -44,7 +44,7 @@ export class TokensFacadeService {
 
   private readonly tokensQueryService = inject(TokensQueryService);
 
-  private readonly tokensBuilderService = inject(TokensBuilderService);
+  protected readonly tokensBuilderService = inject(TokensBuilderService);
 
   private readonly tokensPaginationService = inject(TokensPaginationService);
 

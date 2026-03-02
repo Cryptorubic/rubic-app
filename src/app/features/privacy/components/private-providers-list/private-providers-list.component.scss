@@ -1,0 +1,45 @@
+@use 'src/scss/core' as *;
+
+:host ::ng-deep {
+  app-private-provider-element {
+    display: block;
+    margin-right: 10px;
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
+
+  .t-bar {
+    max-height: 455px;
+    margin-right: -2px;
+  }
+}
+
+/* .empty-list {
+  &__content {
+    margin-right: 10px;
+    padding: var(--tui-padding-l);
+
+    background: var(--primary-background);
+    border-radius: var(--tui-radius-m);
+  }
+} */
+
+@include b($mobile-md) {
+  :host ::ng-deep {
+    app-private-provider-element {
+      margin-right: 0;
+    }
+  }
+
+  .waiting {
+    padding: var(--tui-padding-m);
+  }
+
+  .list {
+    &_padding {
+      padding: 0 var(--tui-padding-m);
+    }
+  }
+}

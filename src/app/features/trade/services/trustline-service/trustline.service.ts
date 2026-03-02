@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 import { BLOCKCHAIN_NAME, TokenAmount } from '@cryptorubic/core';
 import {
   FreighterModule,
@@ -17,6 +16,7 @@ import { CrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cros
 import { OnChainTrade } from '@app/core/services/sdk/sdk-legacy/features/on-chain/calculation-manager/common/on-chain-trade/on-chain-trade';
 import { StellarCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/stellar-cross-chain-trade/stellar-cross-chain-trade';
 import { WALLET_CONNECT_CONFIG } from './constants/wallet-connect-config';
+import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 
 @Injectable({
   providedIn: 'root'

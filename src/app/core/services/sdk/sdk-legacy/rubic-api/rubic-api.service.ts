@@ -175,7 +175,7 @@ export class RubicApiService {
   }
 
   public async fetchBestSwapData<T>(
-    body: SwapRequestInterface | TransferSwapRequestInterface
+    body: Partial<SwapRequestInterface> | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
     try {
       const result = await firstValueFrom(

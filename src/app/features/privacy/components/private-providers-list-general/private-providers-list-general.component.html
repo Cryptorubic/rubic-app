@@ -1,0 +1,39 @@
+<app-window-container *ngIf="!isMobile; else mobileProviders">
+  <ng-container header>Providers list</ng-container>
+  <!--<ng-container *ngTemplateOutlet="waiting"></ng-container>-->
+  <!-- Providers list -->
+  <tui-scrollbar class="providers-list" #tuiScrollBar>
+    <app-private-providers-list
+      [states]="states"
+      [selectedTradeType]="selectedTradeType"
+      [isModal]="false"
+      (tradeSelected)="handleTradeSelection($event)"
+    ></app-private-providers-list>
+  </tui-scrollbar>
+</app-window-container>
+
+<ng-template #mobileProviders>
+  <!--<ng-container *ngTemplateOutlet="waiting"></ng-container>-->
+  <app-private-providers-list
+    [states]="states.slice(0, 1)"
+    [selectedTradeType]="selectedTradeType"
+    [isModal]="false"
+    (tradeSelected)="handleTradeSelection($event)"
+  ></app-private-providers-list>
+
+  <div class="other-providers" *ngIf="states?.length > 1" (click)="openOtherProvidersList()">
+    <span class="other-providers__text">Other Providers</span>
+    <span class="other-providers__arrow" [inlineSVG]="'assets/images/icons/arrow-down.svg'"></span>
+  </div>
+</ng-template>
+
+<ng-template #waiting>
+  <!--<div *ngIf="calculationStatus.activeCalculation" class="waiting" @progress>
+    <h5>{{ calculationText$ | async }}</h5>
+    <app-progress-bar
+      *ngIf="calculationProcess$ | async as progress"
+      [max]="100"
+      [value]="progress"
+    ></app-progress-bar>
+  </div>-->
+</ng-template>
