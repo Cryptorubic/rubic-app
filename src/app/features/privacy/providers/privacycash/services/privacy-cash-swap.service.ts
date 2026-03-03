@@ -24,17 +24,17 @@ import { compareAddresses, compareTokens, isNil } from '@app/shared/utils/utils'
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { BlockchainToken } from '@app/shared/models/tokens/blockchain-token';
-import { PrivacyCashApiService } from './privacy-cash-api.service';
+import { PrivacycashApiService } from './privacy-cash-api.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
-import { PrivacyCashSignatureService } from './privacy-cash-signature.service';
+import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { toRubicTokenAddr } from '../utils/converter';
 
 @Injectable()
-export class PrivacyCashSwapService {
+export class PrivacycashSwapService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
-    private readonly privacycashApiService: PrivacyCashApiService,
-    private readonly privacycashSignatureService: PrivacyCashSignatureService,
+    private readonly privacycashApiService: PrivacycashApiService,
+    private readonly privacycashSignatureService: PrivacycashSignatureService,
     private readonly walletConnectorService: WalletConnectorService,
     private readonly notificationsService: NotificationsService
   ) {}
@@ -407,7 +407,7 @@ export class PrivacyCashSwapService {
       return res.base_units;
     } catch (err) {
       console.debug('❌ Failed getBalance!');
-      throw err;
+      return 0;
     }
   }
 

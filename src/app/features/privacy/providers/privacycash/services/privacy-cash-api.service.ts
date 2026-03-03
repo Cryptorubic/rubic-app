@@ -45,7 +45,7 @@ export interface PrivacyCashFeesResp {
 }
 
 @Injectable()
-export class PrivacyCashApiService {
+export class PrivacycashApiService {
   private readonly apiUrl: string = 'https://api3.privacycash.org/swap';
 
   constructor(private readonly httpService: HttpService) {}

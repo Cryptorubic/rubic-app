@@ -2,13 +2,18 @@ import { BLOCKCHAIN_NAME, BlockchainName, nativeTokensList } from '@cryptorubic/
 import { WRAP_SOL_ADDRESS } from '../constants/privacycash-consts';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { compareAddresses } from '@app/shared/utils/utils';
 
 export function toRubicTokenAddr(tokenAddr: string): string {
-  return tokenAddr === WRAP_SOL_ADDRESS ? nativeTokensList.SOLANA.address : tokenAddr;
+  return compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)
+    ? nativeTokensList.SOLANA.address
+    : tokenAddr;
 }
 
 export function toPrivacyCashTokenAddr(tokenAddr: string): string {
-  return tokenAddr === nativeTokensList.SOLANA.address ? WRAP_SOL_ADDRESS : tokenAddr;
+  return compareAddresses(tokenAddr, nativeTokensList.SOLANA.address)
+    ? WRAP_SOL_ADDRESS
+    : tokenAddr;
 }
 
 export function findPrivacyCashCompatibleToken(

@@ -9,8 +9,8 @@ import { EncryptionService } from 'privacycash/utils';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { WasmFactory, LightWasm } from '@lightprotocol/hasher.rs';
 
-@Injectable()
-export class PrivacyCashSignatureService {
+@Injectable({ providedIn: 'root' })
+export class PrivacycashSignatureService {
   private readonly _encryptionService: EncryptionService;
 
   private _lightWasm: LightWasm;
@@ -23,7 +23,7 @@ export class PrivacyCashSignatureService {
     return this._signature$.value;
   }
 
-  public setSignature(signature: Uint8Array): void {
+  private setSignature(signature: Uint8Array): void {
     this._signature$.next(signature);
   }
 
@@ -66,10 +66,8 @@ export class PrivacyCashSignatureService {
 
     try {
       const resp = await wallet.signMessage(encodedMessage, 'utf8');
-
       this.setSignature(resp.signature);
       this.encryptionService.deriveEncryptionKeyFromSignature(resp.signature);
-
       return resp.signature;
     } catch (err) {
       throw new Error('Failed to sign message: ' + err.message);
@@ -111,7 +109,6 @@ export class PrivacyCashSignatureService {
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
     const salt = new Uint8Array(hashBuffer);
     const info = new TextEncoder().encode(`privacycash:solana:wallet:v1:${index}`);
-
     const seed = await this.hkdf(ikm, salt, info, 32);
 
     return Keypair.fromSeed(new Uint8Array(seed));
@@ -130,7 +127,6 @@ export class PrivacyCashSignatureService {
     const baseKey = await crypto.subtle.importKey('raw', ikmArrayBuffer, { name: 'HKDF' }, false, [
       'deriveBits'
     ]);
-
     const derivedBits = await crypto.subtle.deriveBits(
       {
         name: 'HKDF',

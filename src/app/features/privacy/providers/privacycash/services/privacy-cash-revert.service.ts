@@ -9,16 +9,16 @@ import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { BLOCKCHAIN_NAME, Token, nativeTokensList } from '@cryptorubic/core';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { PrivacyCashSignatureService } from './privacy-cash-signature.service';
+import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { compareAddresses } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Injectable()
-export class PrivacyCashRevertService {
+export class PrivacycashRevertService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly walletConnectorService: WalletConnectorService,
-    private readonly privacycashSignatureService: PrivacyCashSignatureService,
+    private readonly privacycashSignatureService: PrivacycashSignatureService,
     private readonly notificationsService: NotificationsService
   ) {}
 

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { PrivacyCashRoutingModule } from './privacycash-routing.module';
 import { PrivacycashMainPageComponent } from './components/privacycash-main-page/privacycash-main-page.component';
 import { PrivacycashHidePageComponent } from './components/privacycash-hide-page/privacycash-hide-page.component';
@@ -10,13 +9,15 @@ import { PrivacycashTransferPageComponent } from './components/privacycash-trans
 import { PrivacycashRefundPageComponent } from './components/privacycash-refund-page/privacycash-refund-page.component';
 import { SharedPrivacyProvidersModule } from '../shared-privacy-providers/shared-privacy-providers.module';
 import { SharedModule } from '@app/shared/shared.module';
-import { PrivacyCashRevertService } from './services/privacy-cash-revert.service';
-import { PrivacyCashSwapService } from './services/privacy-cash-swap.service';
-import { PrivacyCashApiService } from './services/privacy-cash-api.service';
-import { PrivacyCashSignatureService } from './services/privacy-cash-signature.service';
-import { PrivacycashPublicAssetsService } from './services/common/privacycash-public-assets.service';
-import { PrivacycashPrivateAssetsService } from './services/common/privacycash-private-assets.service';
-import { PrivacycashTokensFacadeService } from './services/common/privacycash-tokens-facade.service';
+import { PrivacycashRevertService } from './services/privacy-cash-revert.service';
+import { PrivacycashSwapService } from './services/privacy-cash-swap.service';
+import { PrivacycashApiService } from './services/privacy-cash-api.service';
+import { PrivacycashPublicAssetsService } from './services/common/assets-services/privacycash-public-assets.service';
+import { PrivacycashPrivateAssetsService } from './services/common/assets-services/privacycash-private-assets.service';
+import { PrivacycashSignatureModalComponent } from './components/privacycash-signature-modal/privacycash-signature-modal.component';
+import { TuiButtonModule } from '@taiga-ui/core';
+import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
+import { PrivacycashPrivateTokensFacadeService } from './services/common/token-facades/privacycash-private-tokens-facade.service';
 
 @NgModule({
   declarations: [
@@ -25,17 +26,25 @@ import { PrivacycashTokensFacadeService } from './services/common/privacycash-to
     PrivacycashRevealPageComponent,
     PrivacycashSwapPageComponent,
     PrivacycashTransferPageComponent,
-    PrivacycashRefundPageComponent
+    PrivacycashRefundPageComponent,
+    PrivacycashSignatureModalComponent
   ],
-  imports: [CommonModule, PrivacyCashRoutingModule, SharedModule, SharedPrivacyProvidersModule],
+  imports: [
+    CommonModule,
+    PrivacyCashRoutingModule,
+    SharedModule,
+    TuiButtonModule,
+    SharedPrivacyProvidersModule
+  ],
   providers: [
-    PrivacyCashRevertService,
-    PrivacyCashSwapService,
-    PrivacyCashApiService,
-    PrivacyCashSignatureService,
+    PrivacycashRevertService,
+    PrivacycashSwapService,
+    PrivacycashApiService,
     PrivacycashPublicAssetsService,
     PrivacycashPrivateAssetsService,
-    PrivacycashTokensFacadeService
-  ]
+    PrivacycashPublicTokensFacadeService,
+    PrivacycashPrivateTokensFacadeService
+  ],
+  exports: [PrivacycashSignatureModalComponent]
 })
 export class PrivacyCashModule {}
