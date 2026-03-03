@@ -63,12 +63,16 @@ export class ZamaFacadeService {
       .then(() => this.refreshBalancesAfterAction());
   }
 
-  public unwrap(unwrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
-    return this.zamaSwapService.unwrap(unwrapToken).then(() => this.refreshBalancesAfterAction());
+  public unwrap(unwrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
+    return this.zamaSwapService
+      .unwrap(unwrapToken, receiver)
+      .then(() => this.refreshBalancesAfterAction());
   }
 
-  public wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
-    return this.zamaSwapService.wrap(wrapToken).then(() => this.refreshBalancesAfterAction());
+  public wrap(wrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
+    return this.zamaSwapService
+      .wrap(wrapToken, receiver)
+      .then(() => this.refreshBalancesAfterAction());
   }
 
   private async refreshBalancesAfterAction(): Promise<void> {

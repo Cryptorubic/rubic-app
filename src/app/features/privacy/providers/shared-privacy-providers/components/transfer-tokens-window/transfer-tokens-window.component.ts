@@ -11,7 +11,7 @@ import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
-import { TokenAmount } from '@cryptorubic/core';
+import { Token, TokenAmount } from '@cryptorubic/core';
 
 @Component({
   selector: 'app-transfer-tokens-window',
@@ -59,7 +59,10 @@ export class TransferTokensWindowComponent {
     this._loading$.next(true);
     const token = new TokenAmount({
       ...this._transferAsset$.value,
-      weiAmount: this._transferAmount$.value?.actualValue
+      weiAmount: Token.toWei(
+        this._transferAmount$.value?.actualValue,
+        this._transferAsset$.value?.decimals
+      )
     });
     this.handleTransfer.emit({ token, loadingCallback: () => this._loading$.next(false) });
   }

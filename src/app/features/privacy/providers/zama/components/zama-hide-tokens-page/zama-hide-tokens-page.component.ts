@@ -9,6 +9,7 @@ import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-
 import { map } from 'rxjs';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-zama-hide-tokens-page',
@@ -34,12 +35,16 @@ export class ZamaHideTokensPageComponent {
   constructor(
     private readonly zamaRevealFacade: ZamaRevealFacadeService,
     private readonly formService: SwapsFormService,
-    private readonly zamaFacadeService: ZamaFacadeService
+    private readonly zamaFacadeService: ZamaFacadeService,
+    private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
   public async hide({ token, loadingCallback }: PrivateEvent): Promise<void> {
     try {
-      await this.zamaFacadeService.wrap(token as TokenAmount<EvmBlockchainName>);
+      await this.zamaFacadeService.wrap(
+        token as TokenAmount<EvmBlockchainName>,
+        this.targetAddressService.address
+      );
     } finally {
       loadingCallback();
     }

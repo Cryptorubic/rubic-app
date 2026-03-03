@@ -58,17 +58,17 @@ export class ZamaSwapService {
     }
   }
 
-  public async wrap(wrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
+  public async wrap(wrapToken: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
     try {
       const isApproved = await this.approveBeforeWrap(wrapToken);
       const adapter = this.getEvmAdapter(wrapToken.blockchain);
 
-      const userAddress = adapter.signer.walletAddress;
+      const receiverAddress = receiver || adapter.signer.walletAddress;
       const shieldedTokenAddress = this.getErc7984Token(wrapToken.blockchain, wrapToken.address);
       if (!isApproved) return;
 
       const tx = EvmAdapter.encodeMethodCall(shieldedTokenAddress, ERC7984_TOKEN_ABI, 'wrap', [
-        userAddress,
+        receiverAddress,
         wrapToken.stringWeiAmount
       ]);
 
@@ -118,11 +118,16 @@ export class ZamaSwapService {
     }
   }
 
-  public async unwrap(unwrapToken: TokenAmount<EvmBlockchainName>): Promise<void> {
+  public async unwrap(
+    unwrapToken: TokenAmount<EvmBlockchainName>,
+    receiver?: string
+  ): Promise<void> {
     try {
       const adapter = this.getEvmAdapter(unwrapToken.blockchain);
 
       const userAddress = getAddress(adapter.signer.walletAddress);
+      const receiverAddress = receiver ? getAddress(receiver) : userAddress;
+
       const zamaInstance = this.getZamaInstance(unwrapToken.blockchain);
 
       const shieldedTokenAddress = this.getErc7984Token(
@@ -140,7 +145,7 @@ export class ZamaSwapService {
 
       const tx = EvmAdapter.encodeMethodCall(shieldedTokenAddress, ERC7984_TOKEN_ABI, 'unwrap', [
         userAddress,
-        userAddress,
+        receiverAddress,
         encryptedAmount,
         inputProof
       ]);

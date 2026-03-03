@@ -7,7 +7,7 @@ import {
   Output
 } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { TokenAmount } from '@cryptorubic/core';
+import { Token, TokenAmount } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
@@ -65,23 +65,9 @@ export class HideTokensWindowComponent {
     this._loading$.next(true);
     const token = new TokenAmount({
       ...this._hideAsset$.value,
-      weiAmount: this._hideAmount$.value?.actualValue
+      weiAmount: Token.toWei(this._hideAmount$.value?.actualValue, this._hideAsset$.value?.decimals)
     });
     this.handleHide.emit({ token, loadingCallback: () => this._loading$.next(false) });
-    // try {
-    //   const amount = Token.toWei(
-    //     this._hideAmount$.value?.actualValue.toFixed(),
-    //     this._hideAsset$.value?.decimals
-    //   );
-    //   const bigintAmount = BigInt(amount);
-    //   await this.hideService.shieldERC20(
-    //     this.railgunWalletAddress,
-    //     this._hideAsset$.value.address,
-    //     bigintAmount
-    //   );
-    // } finally {
-    //   this._loading$.next(false);
-    // }
   }
 
   public toggleReceiver(): void {
