@@ -11,6 +11,7 @@ import { TokenAmount } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
+import { PrivateEvent } from '../../models/private-event';
 
 @Component({
   selector: 'app-hide-tokens-window',
@@ -19,10 +20,7 @@ import { PrivateModalsService } from '@features/privacy/providers/shared-privacy
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HideTokensWindowComponent {
-  @Output() public handleHide = new EventEmitter<{
-    token: TokenAmount;
-    loadingCallback: () => void;
-  }>();
+  @Output() public handleHide = new EventEmitter<PrivateEvent>();
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 

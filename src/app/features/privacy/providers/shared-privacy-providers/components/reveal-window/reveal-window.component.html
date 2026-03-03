@@ -31,15 +31,17 @@
     *ngIf="state.displayReceiver"
     @receiverAnimation
   ></app-target-network-address>
-  <button
-    [showLoader]="state.loading"
-    tuiButton
-    appearance="primary"
-    type="button"
-    size="m"
-    (click)="reveal()"
-  >
-    Reveal tokens
-  </button>
-  <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+  <div class="buttons-container">
+    <button
+      [showLoader]="state.loading"
+      tuiButton
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="reveal()"
+    >
+      Reveal tokens
+    </button>
+    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+  </div>
 </app-window-container>

@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
 import { TokenAmount } from '@cryptorubic/core';
+import { PrivateEvent } from '../../models/private-event';
 
 @Component({
   selector: 'app-reveal-window',
@@ -20,10 +21,7 @@ import { TokenAmount } from '@cryptorubic/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RevealWindowComponent {
-  @Output() public handleReveal = new EventEmitter<{
-    token: TokenAmount;
-    loadingCallback: () => void;
-  }>();
+  @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
