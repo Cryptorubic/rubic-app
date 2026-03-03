@@ -6,10 +6,11 @@ import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { BlockchainName, BlockchainsInfo, compareAddresses, Token } from '@cryptorubic/core';
 import { BalanceControllerService } from '@features/privacy/providers/railgun/services/balance-controller/balance-controller.service';
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
 import BigNumber from 'bignumber.js';
 
+@Injectable()
 export class RailgunTokensFacadeService extends TokensFacadeService {
   private readonly balanceController = inject(BalanceControllerService);
 

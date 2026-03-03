@@ -5,6 +5,7 @@ import { createRailgunWallet, loadWalletByID } from '@railgun-community/wallet';
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 import { EncryptionService } from '@features/privacy/providers/railgun/services/encryption/encryption.service';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,7 @@ export class MnemonicService {
     return walletInfo;
   }
 
+  @OutsideZone
   public getProviderWallet(): { provider: JsonRpcProvider; wallet: HDNodeWallet } {
     const provider = new JsonRpcProvider(rpcList.POLYGON[0]);
     const wallet = Wallet.fromPhrase(this.lastMnemonic, provider);

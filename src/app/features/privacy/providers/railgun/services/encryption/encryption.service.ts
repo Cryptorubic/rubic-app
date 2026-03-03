@@ -3,6 +3,7 @@ import { getRandomBytes, pbkdf2 } from '@railgun-community/wallet';
 import { Store } from '@core/services/store/models/store';
 import { StoreService } from '@core/services/store/store.service';
 import { StoredCreds } from '@features/privacy/providers/railgun/models/encryption-types';
+import { OutsideZone } from '@shared/decorators/outside-zone';
 
 @Injectable({
   providedIn: 'root'
@@ -57,6 +58,7 @@ export class EncryptionService {
    * Validates password against stored hash and returns derived encryptionKey.
    * Throws if password is incorrect or creds are missing/corrupted.
    */
+  @OutsideZone
   public async unlockFromPassword(password: string): Promise<string> {
     this.lastUsedPassword = password;
     const creds = this.readCreds();

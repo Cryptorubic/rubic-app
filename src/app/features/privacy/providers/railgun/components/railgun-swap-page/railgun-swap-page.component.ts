@@ -56,7 +56,10 @@ export class RailgunSwapPageComponent {
         this.railgunWalletInfo,
         from.address,
         from.stringWeiAmount,
-        to.address
+        to.address,
+        from.decimals,
+        from.blockchain,
+        to.blockchain
       );
     } finally {
       loadingCallback();

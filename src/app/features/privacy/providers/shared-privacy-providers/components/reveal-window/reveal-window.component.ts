@@ -71,22 +71,6 @@ export class RevealWindowComponent {
       weiAmount: this._revealAmount$.value?.actualValue
     });
     this.handleReveal.emit({ token, loadingCallback: () => this._loading$.next(false) });
-
-    //   this._loading$.next(true);
-    //   const amount = Token.toWei(
-    //     this._revealAmount$.value?.actualValue.toFixed(),
-    //     this._revealAsset$.value?.decimals
-    //   );
-    //   const bigintAmount = BigInt(amount);
-    //
-    //   await this.revealService.unshieldTokens(
-    //     this.railgunId,
-    //     this._revealAsset$.value.address,
-    //     bigintAmount.toString()
-    //   );
-    // } finally {
-    //   this._loading$.next(false);
-    // }
   }
 
   public toggleReceiver(): void {

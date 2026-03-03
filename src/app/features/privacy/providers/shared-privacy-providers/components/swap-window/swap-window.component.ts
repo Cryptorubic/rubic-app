@@ -115,12 +115,14 @@ export class SwapWindowComponent {
       const amountOut = await this.swapService.getRates(
         this._fromAsset$.value.address,
         fromWeiAmount,
-        this._toAsset$.value.address
+        this._toAsset$.value.address,
+        this._fromAsset$.value.decimals,
+        this._fromAsset$.value.blockchain,
+        this._toAsset$.value.blockchain
       );
-      const amountOutFormatted = Token.fromWei(amountOut, this._toAsset$.value.decimals).toFixed();
       this._toAmount$.next({
-        visibleValue: amountOutFormatted,
-        actualValue: new BigNumber(amountOutFormatted)
+        visibleValue: amountOut,
+        actualValue: new BigNumber(amountOut)
       });
     } catch (e) {
       this._toAmount$.next(null);

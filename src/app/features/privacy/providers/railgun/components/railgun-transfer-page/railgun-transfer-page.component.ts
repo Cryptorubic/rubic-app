@@ -11,7 +11,7 @@ import { ToAssetsService } from '@features/trade/components/assets-selector/serv
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 
 @Component({
-  selector: 'app-railgun-reveal-page',
+  selector: 'app-railgun-transfer-page',
   templateUrl: './railgun-transfer-page.component.html',
   styleUrls: ['./railgun-transfer-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,

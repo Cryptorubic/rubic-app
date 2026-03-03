@@ -24,7 +24,7 @@ import {
 import { Contract, ContractTransaction, HDNodeWallet, Wallet } from 'ethers';
 import { encodeFunctionData, erc20Abi } from 'viem';
 import { RubicApiService } from '@core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BlockchainName, Token } from '@cryptorubic/core';
 import { EvmTransactionConfig } from '@cryptorubic/web3';
 import {
   gasEstimateForUnprovenCrossContractCalls,
@@ -38,6 +38,8 @@ import {
   setRailgunFees,
   ZeroXSwapRecipe
 } from '@railgun-community/cookbook';
+import { OutsideZone } from '@shared/decorators/outside-zone';
+import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 
 @Injectable({
   providedIn: 'root'
@@ -49,10 +51,18 @@ export class PrivateSwapService {
 
   private readonly apiService = inject(RubicApiService);
 
+  // private readonly worker = new Worker(new URL('./workersrailgun-worker', import.meta.url), {
+  //   type: 'module'
+  // });
+
   public async getRates(
     tokenFromAddress: string,
     tokenFromAmount: string,
-    tokenToAddress: string
+    tokenToAddress: string,
+    fromTokenDecimals: number,
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    receiverAddress?: string
   ): Promise<string> {
     const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
     const { wallet } = this.mnemonicService.getProviderWallet();
@@ -60,10 +70,10 @@ export class PrivateSwapService {
     const swapData = await this.apiService.quoteBestSwapData({
       srcTokenAddress: tokenFromAddress,
       dstTokenAddress: tokenToAddress,
-      srcTokenAmount: amountAfterFee.toString(),
-      srcTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
-      dstTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
-      receiver: wallet.address,
+      srcTokenAmount: Token.fromWei(amountAfterFee.toString(), fromTokenDecimals).toFixed(),
+      srcTokenBlockchain: fromBlockchain,
+      dstTokenBlockchain: toBlockchain,
+      receiver: receiverAddress || wallet.address,
       fromAddress: wallet.address,
       enableChecks: false
     });
@@ -71,18 +81,21 @@ export class PrivateSwapService {
     return swapData.estimate.destinationTokenAmount;
   }
 
+  @OutsideZone
   public async crossContractCall(
     railgunWalletInfo: RailgunWalletInfo,
     tokenFromAddress: string,
     tokenFromAmount: string,
-    tokenToAddress: string
+    tokenToAddress: string,
+    fromTokenDecimals: number,
+    fromBlockchain: BlockchainName,
+    toBlockchain: BlockchainName,
+    receiverAddress?: string
   ): Promise<void> {
     const { wallet } = this.mnemonicService.getProviderWallet();
     const encryptionKey = await this.encryptionService.unlockFromPassword(
       this.encryptionService.lastUsedPassword
     );
-    const networkName = 'Polygon' as NetworkName;
-
     const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
 
     const swapData = await this.apiService.fetchBestSwapData<
@@ -90,13 +103,14 @@ export class PrivateSwapService {
     >({
       srcTokenAddress: tokenFromAddress,
       dstTokenAddress: tokenToAddress,
-      srcTokenAmount: amountAfterFee.toString(),
-      srcTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
-      dstTokenBlockchain: BLOCKCHAIN_NAME.POLYGON,
-      receiver: RelayAdaptContract.Polygon,
-      fromAddress: RelayAdaptContract.Polygon,
+      srcTokenAmount: Token.fromWei(amountAfterFee.toString(), fromTokenDecimals).toFixed(),
+      srcTokenBlockchain: fromBlockchain,
+      dstTokenBlockchain: toBlockchain,
+      receiver: receiverAddress || RelayAdaptContract.Polygon,
+      fromAddress: wallet.address,
       enableChecks: false,
-      integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4'
+      integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4',
+      slippage: 0.05
     });
 
     const amountAfterFeeString = amountAfterFee.toString();
@@ -150,11 +164,11 @@ export class PrivateSwapService {
     ];
 
     const relayAdaptShieldERC20Recipients: RailgunERC20Recipient[] = [
-      serializeERC20Transfer(tokenFromAddress, 1n, railgunWalletInfo.railgunAddress),
       serializeERC20Transfer(tokenToAddress, 1n, railgunWalletInfo.railgunAddress)
     ];
 
-    const minGasLimit = 2_500_000n; // high estimate but should be enough.
+    const networkName = fromRubicToPrivateChainMap[fromBlockchain];
+    const minGasLimit = 5_000_000n; // high estimate but should be enough.
     // const overallBatchMinGasPrice = 1n;
     const gasEstimate = await this.crossContractGasEstimate(
       encryptionKey,
@@ -162,13 +176,12 @@ export class PrivateSwapService {
       railgunWalletInfo.id,
       relayAdaptUnshieldERC20Amounts,
       [],
-      relayAdaptShieldERC20Recipients,
+      [],
       [],
       crossContractCalls,
       minGasLimit,
       true
     );
-    console.log('Private CrossContract TX gasEstimate: ', gasEstimate);
 
     const transactionGasDetails = await getGasDetailsForTransaction(
       NetworkName.Polygon,
@@ -177,6 +190,35 @@ export class PrivateSwapService {
       wallet
     );
     const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);
+
+    // await new Promise((resolve, reject) => {
+    //   // Слушаем ответ от воркера
+    //   this.worker.onmessage = ({ data }) => {
+    //     if (data.type === 'PROOF_GENERATED') {
+    //       resolve(data.payload);
+    //     } else if (data.type === 'ERROR') {
+    //       reject(data.payload);
+    //     }
+    //   };
+    //
+    //   // Отправляем команду воркеру
+    //   this.worker.postMessage({
+    //     type: 'GENERATE_PROOF',
+    //     payload: [
+    //       encryptionKey,
+    //       NetworkName.Polygon,
+    //       railgunWalletInfo.id,
+    //       relayAdaptUnshieldERC20Amounts,
+    //       [],
+    //       relayAdaptShieldERC20Recipients,
+    //       [],
+    //       crossContractCalls,
+    //       overallBatchMinGasPrice,
+    //       minGasLimit,
+    //       true
+    //     ]
+    //   });
+    // });
 
     // generate proof
     await this.crossContractGenerateProof(
@@ -252,6 +294,7 @@ export class PrivateSwapService {
     return gasEstimate;
   }
 
+  @OutsideZone
   private async crossContractGenerateProof(
     encryptionKey: string,
     network: NetworkName,

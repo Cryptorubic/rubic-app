@@ -27,6 +27,7 @@
             "customWebpackConfig": {
               "path": "./sentry-webpack.config.ts"
             },
+            "webWorkerTsConfig": "tsconfig.worker.json",
             "outputPath": "dist/rubic",
             "index": "src/index.html",
             "main": "src/main.ts",
