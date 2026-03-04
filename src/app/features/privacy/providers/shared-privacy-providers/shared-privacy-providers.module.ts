@@ -87,7 +87,8 @@ import { TransferTokensWindowComponent } from './components/transfer-tokens-wind
     PageNavigationComponent,
     ShieldedTokensListComponent,
     PasswordVerificationModalComponent,
-    TransferTokensWindowComponent
+    TransferTokensWindowComponent,
+    SwapWindowComponent
   ],
   providers: [
     [

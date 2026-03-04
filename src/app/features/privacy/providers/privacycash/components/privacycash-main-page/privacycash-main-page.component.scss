@@ -4,5 +4,10 @@
   .container {
     @include flex(row, start, center);
     gap: 12px;
+
+    .main {
+      width: 100%;
+      max-width: 600px;
+    }
   }
 }

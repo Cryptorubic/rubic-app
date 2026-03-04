@@ -1,9 +1,68 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { PrivacycashQuoteAdapter } from '../../utils/privacycash-quote-adapter';
+import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/private-event';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { toPrivacyCashTokenAddr } from '../../utils/converter';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
+import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
+import { Token } from '@cryptorubic/core';
+import BigNumber from 'bignumber.js';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-privacycash-swap-page',
   templateUrl: './privacycash-swap-page.component.html',
   styleUrls: ['./privacycash-swap-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
+  ]
 })
-export class PrivacycashSwapPageComponent {}
+export class PrivacycashSwapPageComponent {
+  private readonly privacycashSwapService = inject(PrivacycashSwapService);
+
+  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
+  private readonly notificationsService = inject(NotificationsService);
+
+  public readonly quoteAdapter = new PrivacycashQuoteAdapter(
+    this.privacycashSwapService,
+    this.notificationsService
+  );
+
+  public async swap({ swapInfo, loadingCallback }: PrivateSwapEvent): Promise<void> {
+    try {
+      const pcSupportedSrcToken = {
+        ...swapInfo.fromAsset,
+        address: toPrivacyCashTokenAddr(swapInfo.fromAsset.address)
+      };
+      const pcSupportedDstToken = {
+        ...swapInfo.toAsset,
+        address: toPrivacyCashTokenAddr(swapInfo.toAsset.address)
+      };
+      const srcAmountWei = Token.toWei(
+        swapInfo.fromAmount.actualValue,
+        swapInfo.fromAsset.decimals
+      );
+      const receiverAddr = this.targetNetworkAddressService.address
+        ? this.targetNetworkAddressService.address
+        : this.walletConnectorService.address;
+
+      await this.privacycashSwapService.swapPartialPrivateBalance(
+        pcSupportedSrcToken,
+        pcSupportedDstToken,
+        new BigNumber(srcAmountWei),
+        receiverAddr
+      );
+    } finally {
+      loadingCallback();
+    }
+  }
+}

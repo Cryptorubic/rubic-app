@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
-import { BLOCKCHAIN_NAME, PriceTokenAmount, Token } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import {
   WRAP_SOL_ADDRESS,
   addr_to_symbol_map,
@@ -27,7 +27,8 @@ import { BlockchainToken } from '@app/shared/models/tokens/blockchain-token';
 import { PrivacycashApiService } from './privacy-cash-api.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivacycashSignatureService } from './privacy-cash-signature.service';
-import { toRubicTokenAddr } from '../utils/converter';
+import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../utils/converter';
+import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -51,7 +52,7 @@ export class PrivacycashSwapService {
    * @param srcAmountNonWei ex. 0.002
    * @returns dstToken PriceTokenAmount where native address is So11111111111111111111111111111111111111111
    */
-  public async makeQuote(
+  public async quote(
     srcToken: BalanceToken,
     dstToken: BalanceToken,
     srcAmountNonWei: BigNumber
@@ -107,141 +108,50 @@ export class PrivacycashSwapService {
     });
   }
 
-  /**
-   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   */
-  public async makeDeposit(
-    tokenAddr: string,
-    depositAmountWei: number,
-    depositorWalletPK: PublicKey,
-    transactionSignerFn: (tx: VersionedTransaction) => Promise<VersionedTransaction>
-  ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
-
-    const lightWasm = this.privacycashSignatureService.lightWasm;
-    const encryptionService = this.privacycashSignatureService.encryptionService;
-    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.SOLANA
-    ).public;
-    const pathToZkProof = 'assets/circuit2/transaction2';
-
-    try {
-      console.debug(`[RUBIC] Start deposit ${tokenAddr}...`);
-      if (tokenAddr === WRAP_SOL_ADDRESS) {
-        await deposit({
-          lightWasm,
-          amount_in_lamports: depositAmountWei,
-          connection,
-          encryptionService,
-          publicKey: depositorWalletPK,
-          signer: depositorWalletPK,
-          transactionSigner: transactionSignerFn,
-          keyBasePath: pathToZkProof,
-          storage: localStorage
-        });
-      } else {
-        await depositSPL({
-          lightWasm,
-          base_units: depositAmountWei,
-          connection,
-          encryptionService,
-          publicKey: depositorWalletPK,
-          signer: depositorWalletPK,
-          transactionSigner: transactionSignerFn,
-          keyBasePath: pathToZkProof,
-          storage: localStorage,
-          mintAddress: tokenAddr
-        });
-      }
-      console.debug('[PrivacyCashSwapService_makeDeposit] ✅ Successfull deposit!');
-    } catch (err) {
-      console.debug('[PrivacyCashSwapService_makeDeposit] ❌ Failed deposit!');
-      throw err;
-    }
-  }
-
-  /**
-   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   */
-  public async makePartialWithdraw(
-    tokenAddr: string,
-    withdrawAmountWei: number,
-    senderPK: PublicKey,
-    recipientPK: PublicKey
-  ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
-
-    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.SOLANA
-    ).public;
-    const encryptionService = this.privacycashSignatureService.encryptionService;
-    const lightWasm = this.privacycashSignatureService.lightWasm;
-    const pathToZkProof = 'assets/circuit2/transaction2';
-
-    try {
-      if (tokenAddr === WRAP_SOL_ADDRESS) {
-        await withdraw({
-          lightWasm,
-          amount_in_lamports: withdrawAmountWei,
-          connection,
-          encryptionService,
-          publicKey: senderPK,
-          recipient: recipientPK,
-          keyBasePath: pathToZkProof,
-          storage: localStorage
-        });
-      } else {
-        await withdrawSPL({
-          lightWasm,
-          base_units: withdrawAmountWei,
-          connection,
-          encryptionService,
-          publicKey: senderPK,
-          recipient: recipientPK,
-          keyBasePath: pathToZkProof,
-          storage: localStorage,
-          mintAddress: tokenAddr
-        });
-      }
-      console.debug('[PrivacyCashSwapService_makePartialWithdraw] ✅ Successfull withdrawal!');
-    } catch (err) {
-      console.debug('[PrivacyCashSwapService_makePartialWithdraw] ❌ Failed withdrawal!');
-      throw err;
-    }
-  }
-
-  public async makeFullWithdraw(
-    tokenAddr: string,
-    senderPK: PublicKey,
-    recipientPK: PublicKey
-  ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
-
-    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(tokenAddr, senderPK, true);
-
-    return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, senderPK, recipientPK);
-  }
-
-  /**
-   * @description Starts swap for full amount stored on user's PrivacyCash balance
-   * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   * @param receiverAddr
-   */
-  private async swapFullPrivateBalance(
-    srcToken: BlockchainToken,
-    dstToken: BlockchainToken
-  ): Promise<void> {
+  // deposit public-private -> withdraw private-receiver
+  public async transfer(srcToken: TokenAmount, receiverAddr: string): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
 
     const senderPK = new PublicKey(this.walletConnectorService.address);
-    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(
-      srcToken.address,
-      senderPK,
-      true
-    );
+    const receiverPK = new PublicKey(receiverAddr);
+    const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
-    return this.swapPartialPrivateBalance(srcToken, dstToken, new BigNumber(fullPrivateBalanceWei));
+    await this.makeDeposit(
+      srcToken.address,
+      srcToken.weiAmount.toNumber(),
+      senderPK,
+      senderPK,
+      (tx: VersionedTransaction) => wallet.signTransaction(tx)
+    );
+    await this.makeFullWithdraw(srcToken.address, senderPK, receiverPK);
+    this.notificationsService.showInfo(`Successfull transfer. Check receiver wallet balance.`);
+  }
+
+  public async shield(token: TokenAmount): Promise<void> {
+    const userPK = new PublicKey(this.walletConnectorService.address);
+    const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
+
+    await this.makeDeposit(
+      toPrivacyCashTokenAddr(token.address),
+      token.weiAmount.toNumber(),
+      userPK,
+      userPK,
+      (tx: VersionedTransaction) => wallet.signTransaction(tx)
+    );
+    this.notificationsService.showInfo(`Successfull shileding. Check your private balance.`);
+  }
+
+  public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
+    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const recipientPK = new PublicKey(receiverAddr);
+
+    await this.makePartialWithdraw(
+      toPrivacyCashTokenAddr(token.address),
+      token.weiAmount.toNumber(),
+      senderPK,
+      recipientPK
+    );
+    this.notificationsService.showInfo(`Successfull unshileding. Check receiver wallet balance.`);
   }
 
   /**
@@ -249,11 +159,13 @@ export class PrivacycashSwapService {
    * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    * @param srcAmountWei
+   * @param receiverAddr
    */
   public async swapPartialPrivateBalance(
     srcToken: BlockchainToken,
     dstToken: BlockchainToken,
-    srcAmountWei: BigNumber
+    srcAmountWei: BigNumber,
+    privateBalanceReceiverAddr: string
   ): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
 
@@ -269,6 +181,7 @@ export class PrivacycashSwapService {
     }
 
     const senderPK = new PublicKey(this.walletConnectorService.address);
+    const receiverPK = new PublicKey(privateBalanceReceiverAddr);
 
     const burnerKeypair =
       await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
@@ -333,10 +246,156 @@ export class PrivacycashSwapService {
       dstToken.address,
       dstTokenDepositAmount.toNumber(),
       burnerKeypair.publicKey,
+      receiverPK,
       (tx: VersionedTransaction) => {
         tx.sign([burnerKeypair]);
         return Promise.resolve(tx);
       }
+    );
+    this.notificationsService.showInfo(`Successfull swap. Check receiver's private balance.`);
+  }
+
+  // @TODO_1767 был добавлен параметр privateBalanceReceiverPK, чекнуть,
+  // что это возможно - пополнить приватный баланс для другого кошелька
+  /**
+   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   */
+  private async makeDeposit(
+    tokenAddr: string,
+    depositAmountWei: number,
+    depositorWalletPK: PublicKey,
+    privateBalanceReceiverPK: PublicKey,
+    transactionSignerFn: (tx: VersionedTransaction) => Promise<VersionedTransaction>
+  ): Promise<void> {
+    await this.privacycashSignatureService.checkRequirements();
+
+    const lightWasm = this.privacycashSignatureService.lightWasm;
+    const encryptionService = this.privacycashSignatureService.encryptionService;
+    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.SOLANA
+    ).public;
+    const pathToZkProof = 'assets/circuit2/transaction2';
+
+    try {
+      console.debug(`[RUBIC] Start deposit ${tokenAddr}...`);
+      if (tokenAddr === WRAP_SOL_ADDRESS) {
+        await deposit({
+          lightWasm,
+          amount_in_lamports: depositAmountWei,
+          connection,
+          encryptionService,
+          publicKey: privateBalanceReceiverPK,
+          signer: depositorWalletPK,
+          transactionSigner: transactionSignerFn,
+          keyBasePath: pathToZkProof,
+          storage: localStorage
+        });
+      } else {
+        await depositSPL({
+          lightWasm,
+          base_units: depositAmountWei,
+          connection,
+          encryptionService,
+          publicKey: privateBalanceReceiverPK,
+          signer: depositorWalletPK,
+          transactionSigner: transactionSignerFn,
+          keyBasePath: pathToZkProof,
+          storage: localStorage,
+          mintAddress: tokenAddr
+        });
+      }
+      console.debug('[PrivacyCashSwapService_makeDeposit] ✅ Successfull deposit!');
+    } catch (err) {
+      console.debug('[PrivacyCashSwapService_makeDeposit] ❌ Failed deposit!');
+      throw err;
+    }
+  }
+
+  /**
+   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   */
+  private async makePartialWithdraw(
+    tokenAddr: string,
+    withdrawAmountWei: number,
+    senderPK: PublicKey,
+    recipientPK: PublicKey
+  ): Promise<void> {
+    await this.privacycashSignatureService.checkRequirements();
+
+    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
+      BLOCKCHAIN_NAME.SOLANA
+    ).public;
+    const encryptionService = this.privacycashSignatureService.encryptionService;
+    const lightWasm = this.privacycashSignatureService.lightWasm;
+    const pathToZkProof = 'assets/circuit2/transaction2';
+
+    try {
+      if (tokenAddr === WRAP_SOL_ADDRESS) {
+        await withdraw({
+          lightWasm,
+          amount_in_lamports: withdrawAmountWei,
+          connection,
+          encryptionService,
+          publicKey: senderPK,
+          recipient: recipientPK,
+          keyBasePath: pathToZkProof,
+          storage: localStorage
+        });
+      } else {
+        await withdrawSPL({
+          lightWasm,
+          base_units: withdrawAmountWei,
+          connection,
+          encryptionService,
+          publicKey: senderPK,
+          recipient: recipientPK,
+          keyBasePath: pathToZkProof,
+          storage: localStorage,
+          mintAddress: tokenAddr
+        });
+      }
+      console.debug('[PrivacyCashSwapService_makePartialWithdraw] ✅ Successfull withdrawal!');
+    } catch (err) {
+      console.debug('[PrivacyCashSwapService_makePartialWithdraw] ❌ Failed withdrawal!');
+      throw err;
+    }
+  }
+
+  private async makeFullWithdraw(
+    tokenAddr: string,
+    senderPK: PublicKey,
+    recipientPK: PublicKey
+  ): Promise<void> {
+    await this.privacycashSignatureService.checkRequirements();
+    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(tokenAddr, senderPK, true);
+    return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, senderPK, recipientPK);
+  }
+
+  /**
+   * @description Starts swap for full amount stored on user's PrivacyCash balance
+   * @param srcToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   * @param dstToken PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
+   * @param receiverAddr
+   */
+  private async swapFullPrivateBalance(
+    srcToken: BlockchainToken,
+    dstToken: BlockchainToken,
+    receiverAddr: string
+  ): Promise<void> {
+    await this.privacycashSignatureService.checkRequirements();
+
+    const senderPK = new PublicKey(this.walletConnectorService.address);
+    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(
+      srcToken.address,
+      senderPK,
+      true
+    );
+
+    return this.swapPartialPrivateBalance(
+      srcToken,
+      dstToken,
+      new BigNumber(fullPrivateBalanceWei),
+      receiverAddr
     );
   }
 
@@ -442,7 +501,7 @@ export class PrivacycashSwapService {
     while (retryCount < 10) {
       await waitFor(5_000);
       newBurnerBalance = await this.getBurnerBalance(tokenAddr, burnerKeypair);
-      console.debug('[RUBIC] WAIT FOR BALANCE UPDATED', {
+      console.debug('[PrivacyCashSwapService_waitForUpdatedBurnerWalletBalance]', {
         tokenAddr,
         prevBurnerBalance,
         newBurnerBalance
