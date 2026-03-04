@@ -12,7 +12,7 @@ export class PageNavigationComponent {
 
   @Input({ required: true }) public readonly activePage: PageType;
 
-  @Output() onSelect = new EventEmitter<PageType['type']>();
+  @Output() onSelect = new EventEmitter<PageType>();
 
   get activePageIndex(): number {
     return this.pages.findIndex(p => p.type === this.activePage.type);
@@ -21,6 +21,6 @@ export class PageNavigationComponent {
   public onPageSelect(selectedPage: PageType): void {
     if (this.activePage.type === selectedPage.type) return;
 
-    this.onSelect.emit(selectedPage.type);
+    this.onSelect.emit(selectedPage);
   }
 }

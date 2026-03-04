@@ -46,6 +46,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ShieldedTokensListComponent,
     ShieldedTokensListElementComponent,
     DropdownOptionsShieldedTokenComponent,
-    PasswordVerificationModalComponent
+    PasswordVerificationModalComponent,
+    TransferTokensWindowComponent
   ],
   imports: [
     CommonModule,
@@ -84,7 +86,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     RevealWindowComponent,
     PageNavigationComponent,
     ShieldedTokensListComponent,
-    PasswordVerificationModalComponent
+    PasswordVerificationModalComponent,
+    TransferTokensWindowComponent
   ],
   providers: [
     [
