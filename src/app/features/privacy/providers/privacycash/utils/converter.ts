@@ -1,7 +1,5 @@
-import { BLOCKCHAIN_NAME, BlockchainName, nativeTokensList } from '@cryptorubic/core';
+import { nativeTokensList } from '@cryptorubic/core';
 import { WRAP_SOL_ADDRESS } from '../constants/privacycash-consts';
-import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { compareAddresses } from '@app/shared/utils/utils';
 
 export function toRubicTokenAddr(tokenAddr: string): string {
@@ -14,19 +12,4 @@ export function toPrivacyCashTokenAddr(tokenAddr: string): string {
   return compareAddresses(tokenAddr, nativeTokensList.SOLANA.address)
     ? WRAP_SOL_ADDRESS
     : tokenAddr;
-}
-
-export function findPrivacyCashCompatibleToken(
-  tokensFacade: TokensFacadeService,
-  tokenAddr: string,
-  chain: BlockchainName = BLOCKCHAIN_NAME.SOLANA
-): BalanceToken {
-  const rubicToken = tokensFacade.findTokenSync({
-    address: toRubicTokenAddr(tokenAddr),
-    blockchain: chain
-  });
-  if (!rubicToken) {
-    throw new Error(`[findPrivacyCashCompatibleToken] token ${tokenAddr} not found in store.`);
-  }
-  return { ...rubicToken, address: toPrivacyCashTokenAddr(tokenAddr) };
 }

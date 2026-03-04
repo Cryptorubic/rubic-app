@@ -60,7 +60,9 @@ export class SwapWindowComponent implements OnInit {
       !form.fromAsset ||
       !form.toAsset ||
       isNaN(form.fromAmount?.actualValue.toNumber()) ||
-      isNaN(form.toAmount?.actualValue.toNumber())
+      isNaN(form.toAmount?.actualValue.toNumber()) ||
+      form.fromAmount?.actualValue.isZero() ||
+      form.toAmount?.actualValue.isZero()
     );
   }
 
@@ -85,7 +87,7 @@ export class SwapWindowComponent implements OnInit {
         takeUntil(this.destroy$)
       )
       .subscribe(swapInfo => {
-        if (this.assetsNotSeelected()) return;
+        if (this.assetsNotSelected()) return;
         if (this.amountNotSet()) {
           this.patchSwapInfo({ toAmount: null });
           return;
@@ -94,7 +96,7 @@ export class SwapWindowComponent implements OnInit {
       });
   }
 
-  private assetsNotSeelected(): boolean {
+  private assetsNotSelected(): boolean {
     const form = this._swapInfo$.value;
     return !form.fromAsset || !form.toAsset;
   }
