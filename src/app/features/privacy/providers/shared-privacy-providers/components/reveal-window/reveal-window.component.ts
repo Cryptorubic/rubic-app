@@ -11,7 +11,8 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
-import { TokenAmount } from '@cryptorubic/core';
+import { Token, TokenAmount } from '@cryptorubic/core';
+import { PrivateEvent } from '../../models/private-event';
 
 @Component({
   selector: 'app-reveal-window',
@@ -20,10 +21,7 @@ import { TokenAmount } from '@cryptorubic/core';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RevealWindowComponent {
-  @Output() public handleReveal = new EventEmitter<{
-    token: TokenAmount;
-    loadingCallback: () => void;
-  }>();
+  @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
@@ -68,25 +66,12 @@ export class RevealWindowComponent {
     this._loading$.next(true);
     const token = new TokenAmount({
       ...this._revealAsset$.value,
-      weiAmount: this._revealAmount$.value?.actualValue
+      weiAmount: Token.toWei(
+        this._revealAmount$.value?.actualValue,
+        this._revealAsset$.value?.decimals
+      )
     });
     this.handleReveal.emit({ token, loadingCallback: () => this._loading$.next(false) });
-
-    //   this._loading$.next(true);
-    //   const amount = Token.toWei(
-    //     this._revealAmount$.value?.actualValue.toFixed(),
-    //     this._revealAsset$.value?.decimals
-    //   );
-    //   const bigintAmount = BigInt(amount);
-    //
-    //   await this.revealService.unshieldTokens(
-    //     this.railgunId,
-    //     this._revealAsset$.value.address,
-    //     bigintAmount.toString()
-    //   );
-    // } finally {
-    //   this._loading$.next(false);
-    // }
   }
 
   public toggleReceiver(): void {

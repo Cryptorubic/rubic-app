@@ -1,0 +1,6 @@
+<app-hide-tokens-window (handleHide)="hide($event)">
+  <tui-notification class="notification" status="warning"
+    >Wrap amount must have no more than 6 digits after the decimal point</tui-notification
+  >
+</app-hide-tokens-window>
+<app-shielded-tokens-list [tokens]="(shieldedTokens$ | async) || []"></app-shielded-tokens-list>
