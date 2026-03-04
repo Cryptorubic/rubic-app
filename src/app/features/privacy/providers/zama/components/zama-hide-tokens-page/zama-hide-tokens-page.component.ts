@@ -6,7 +6,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { ZamaHideTokensFacadeService } from '../../services/zama-hide-tokens-facade.service';
 import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facade.service';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
-import { map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
@@ -39,12 +39,22 @@ export class ZamaHideTokensPageComponent {
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
-  public async hide({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.zamaFacadeService.wrap(
-        token as TokenAmount<EvmBlockchainName>,
-        this.targetAddressService.address
-      );
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Hide Tokens',
+            action: () =>
+              this.zamaFacadeService.wrap(
+                token as TokenAmount<EvmBlockchainName>,
+                this.targetAddressService.address
+              )
+          }
+        ]
+      });
+
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }
