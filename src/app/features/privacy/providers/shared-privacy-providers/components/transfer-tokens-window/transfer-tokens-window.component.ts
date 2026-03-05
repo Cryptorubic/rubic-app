@@ -12,6 +12,8 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
 import { Token, TokenAmount } from '@cryptorubic/core';
+import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 
 @Component({
   selector: 'app-transfer-tokens-window',
@@ -55,6 +57,22 @@ export class TransferTokensWindowComponent {
 
   public handleMaxButton(): void {}
 
+  private createPreviewModal(transferAsset: BalanceToken): PreviewSwapModalFactory {
+    const injector = this.injector;
+    const modalService = this.modalService;
+
+    return (options: PrivateSwapOptions) => {
+      return modalService.openPrivatePreviewSwap(injector, {
+        fromToken: transferAsset,
+        toToken: transferAsset,
+        fromAmount: this._transferAmount$.value,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
+        swapType: 'transfer',
+        swapOptions: options
+      });
+    };
+  }
+
   public async transfer(): Promise<void> {
     this._loading$.next(true);
     const token = new TokenAmount({
@@ -64,6 +82,10 @@ export class TransferTokensWindowComponent {
         this._transferAsset$.value?.decimals
       )
     });
-    this.handleTransfer.emit({ token, loadingCallback: () => this._loading$.next(false) });
+    this.handleTransfer.emit({
+      token,
+      loadingCallback: () => this._loading$.next(false),
+      openPreview: this.createPreviewModal(this._transferAsset$.value)
+    });
   }
 }

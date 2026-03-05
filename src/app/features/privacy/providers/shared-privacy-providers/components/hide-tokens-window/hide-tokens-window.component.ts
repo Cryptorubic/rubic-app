@@ -13,6 +13,9 @@ import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { PrivateEvent } from '../../models/private-event';
 import { receiverAnimation } from '../../animations/receiver-animation';
+import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { SwapAmount } from '../../models/swap-info';
 
 @Component({
   selector: 'app-hide-tokens-window',
@@ -63,13 +66,37 @@ export class HideTokensWindowComponent {
 
   public handleMaxButton(): void {}
 
+  private createPreviewModal(
+    hideAsset: BalanceToken,
+    fromAmount: SwapAmount
+  ): PreviewSwapModalFactory {
+    const injector = this.injector;
+    const modalService = this.modalService;
+
+    return (options: PrivateSwapOptions) => {
+      return modalService.openPrivatePreviewSwap(injector, {
+        fromToken: hideAsset,
+        toToken: hideAsset,
+        fromAmount,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
+        swapType: 'shield',
+        swapOptions: options
+      });
+    };
+  }
+
   public async hide(): Promise<void> {
     this._loading$.next(true);
     const token = new TokenAmount({
       ...this._hideAsset$.value,
       weiAmount: Token.toWei(this._hideAmount$.value?.actualValue, this._hideAsset$.value?.decimals)
     });
-    this.handleHide.emit({ token, loadingCallback: () => this._loading$.next(false) });
+
+    this.handleHide.emit({
+      token,
+      loadingCallback: () => this._loading$.next(false),
+      openPreview: this.createPreviewModal(this._hideAsset$.value, this._hideAmount$.value)
+    });
   }
 
   public toggleReceiver(): void {

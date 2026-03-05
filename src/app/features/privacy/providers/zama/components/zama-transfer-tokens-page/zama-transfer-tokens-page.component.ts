@@ -7,6 +7,7 @@ import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facad
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-zama-transfer-tokens-page',
@@ -24,12 +25,22 @@ export class ZamaTransferTokensPageComponent {
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
-  public async transfer({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.zamaFacadeService.transfer(
-        token as TokenAmount<EvmBlockchainName>,
-        this.targetAddressService.address
-      );
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Transfer tokens',
+            action: () =>
+              this.zamaFacadeService.transfer(
+                token as TokenAmount<EvmBlockchainName>,
+                this.targetAddressService.address
+              )
+          }
+        ]
+      });
+
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

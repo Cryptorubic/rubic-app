@@ -9,7 +9,7 @@ import {
   Self,
   inject
 } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, skip, takeUntil } from 'rxjs';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
@@ -19,6 +19,8 @@ import { TuiDestroyService } from '@taiga-ui/cdk';
 import { PrivateQuoteAdapter } from '../../models/quote-adapter';
 import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
+import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 
 @Component({
   selector: 'app-swap-window',
@@ -46,6 +48,10 @@ export class SwapWindowComponent implements OnInit {
 
   public readonly swapInfo$ = this._swapInfo$.asObservable();
 
+  public get swapInfo(): PrivateSwapInfo {
+    return this._swapInfo$.value;
+  }
+
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
@@ -55,15 +61,34 @@ export class SwapWindowComponent implements OnInit {
   public readonly loading$ = this._loading$.asObservable();
 
   public get swapInfoNotFilled(): boolean {
-    const form = this._swapInfo$.value;
     return (
-      !form.fromAsset ||
-      !form.toAsset ||
-      isNaN(form.fromAmount?.actualValue.toNumber()) ||
-      isNaN(form.toAmount?.actualValue.toNumber()) ||
-      form.fromAmount?.actualValue.isZero() ||
-      form.toAmount?.actualValue.isZero()
+      !this.swapInfo.fromAsset ||
+      !this.swapInfo.toAsset ||
+      isNaN(this.swapInfo.fromAmount?.actualValue.toNumber()) ||
+      isNaN(this.swapInfo.toAmount?.actualValue.toNumber()) ||
+      this.swapInfo.fromAmount?.actualValue.isZero() ||
+      this.swapInfo.toAmount?.actualValue.isZero()
     );
+  }
+
+  public get notEnoughBalance(): boolean {
+    return this.swapInfo.fromAmount.actualValue.gt(this.swapInfo.fromAsset.amount);
+  }
+
+  private createPreviewModal(): PreviewSwapModalFactory {
+    const injector = this.injector;
+    const modalService = this.modalService;
+
+    return (options: PrivateSwapOptions) => {
+      return modalService.openPrivatePreviewSwap(injector, {
+        fromToken: this.swapInfo.fromAsset,
+        toToken: this.swapInfo.toAsset,
+        fromAmount: this.swapInfo.fromAmount,
+        toAmount: this.swapInfo.toAmount,
+        swapType: 'swap',
+        swapOptions: options
+      });
+    };
   }
 
   constructor(@Self() private readonly destroy$: TuiDestroyService) {}
@@ -75,7 +100,6 @@ export class SwapWindowComponent implements OnInit {
   private subscribeOnFormInputChanged(): void {
     this._swapInfo$
       .pipe(
-        skip(1),
         debounceTime(500),
         distinctUntilChanged((prev, curr) => {
           const inputNotChanged =
@@ -97,16 +121,14 @@ export class SwapWindowComponent implements OnInit {
   }
 
   private assetsNotSelected(): boolean {
-    const form = this._swapInfo$.value;
-    return !form.fromAsset || !form.toAsset;
+    return !this.swapInfo.fromAsset || !this.swapInfo.toAsset;
   }
 
   private amountNotSet(): boolean {
-    const form = this._swapInfo$.value;
     return (
-      isNil(form.fromAmount) ||
-      form.fromAmount?.actualValue.isNaN() ||
-      form.fromAmount?.actualValue.isZero()
+      isNil(this.swapInfo.fromAmount) ||
+      this.swapInfo.fromAmount?.actualValue.isNaN() ||
+      this.swapInfo.fromAmount?.actualValue.isZero()
     );
   }
 
@@ -120,7 +142,7 @@ export class SwapWindowComponent implements OnInit {
       );
       this.patchSwapInfo({
         toAmount: {
-          actualValue: outAmountWei,
+          actualValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals),
           visibleValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals).toFixed()
         }
       });
@@ -166,7 +188,8 @@ export class SwapWindowComponent implements OnInit {
     this._loading$.next(true);
     this.swapClicked.emit({
       swapInfo: this._swapInfo$.value,
-      loadingCallback: () => this._loading$.next(false)
+      loadingCallback: () => this._loading$.next(false),
+      openPreview: this.createPreviewModal()
     });
   }
 
@@ -176,9 +199,9 @@ export class SwapWindowComponent implements OnInit {
 
   public async revert(): Promise<void> {
     this.patchSwapInfo({
-      fromAsset: this._swapInfo$.value.toAsset,
-      toAsset: this._swapInfo$.value.fromAsset,
-      fromAmount: this._swapInfo$.value.toAmount,
+      fromAsset: this.swapInfo.toAsset,
+      toAsset: this.swapInfo.fromAsset,
+      fromAmount: this.swapInfo.toAmount,
       toAmount: null
     });
   }

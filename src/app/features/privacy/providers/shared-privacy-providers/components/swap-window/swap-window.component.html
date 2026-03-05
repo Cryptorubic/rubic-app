@@ -56,7 +56,7 @@
     <button
       tuiButton
       [showLoader]="state.loading"
-      [disabled]="state.loading || swapInfoNotFilled"
+      [disabled]="state.loading || swapInfoNotFilled || notEnoughBalance"
       appearance="primary"
       type="button"
       size="m"

@@ -12,6 +12,7 @@ import { PrivacycashPrivateAssetsService } from '../../services/common/assets-se
 import { Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -37,7 +38,7 @@ export class PrivacycashSwapPageComponent {
     this.notificationsService
   );
 
-  public async swap({ swapInfo, loadingCallback }: PrivateSwapEvent): Promise<void> {
+  public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {
       const pcSupportedSrcToken = {
         ...swapInfo.fromAsset,
@@ -55,12 +56,21 @@ export class PrivacycashSwapPageComponent {
         ? this.targetNetworkAddressService.address
         : this.walletConnectorService.address;
 
-      await this.privacycashSwapService.swapPartialPrivateBalance(
-        pcSupportedSrcToken,
-        pcSupportedDstToken,
-        new BigNumber(srcAmountWei),
-        receiverAddr
-      );
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Swap',
+            action: () =>
+              this.privacycashSwapService.swapPartialPrivateBalance(
+                pcSupportedSrcToken,
+                pcSupportedDstToken,
+                new BigNumber(srcAmountWei),
+                receiverAddr
+              )
+          }
+        ]
+      });
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }
