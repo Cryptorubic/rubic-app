@@ -2,148 +2,207 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
-  inject,
   Injector,
-  Output
+  Input,
+  OnInit,
+  Output,
+  Self,
+  inject
 } from '@angular/core';
-import { Token, TokenAmount } from '@cryptorubic/core';
-import { BehaviorSubject, debounceTime, of } from 'rxjs';
-import { BalanceToken } from '@shared/models/tokens/balance-token';
-import BigNumber from 'bignumber.js';
-import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
-import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
-import { combineLatestWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
+import { BalanceToken } from '@app/shared/models/tokens/balance-token';
+import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
+import { PrivateSwapEvent } from '../../models/private-event';
+import { compareTokens, isNil } from '@app/shared/utils/utils';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { PrivateQuoteAdapter } from '../../models/quote-adapter';
+import { Token } from '@cryptorubic/core';
+import { receiverAnimation } from '../../animations/receiver-animation';
+import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 
 @Component({
   selector: 'app-swap-window',
   templateUrl: './swap-window.component.html',
   styleUrls: ['./swap-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService],
+  animations: [receiverAnimation()]
 })
-export class SwapWindowComponent {
-  @Output() public readonly handleSwap = new EventEmitter<{
-    from: TokenAmount;
-    to: TokenAmount;
-    loadingCallback: () => void;
-  }>();
+export class SwapWindowComponent implements OnInit {
+  @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
-  private readonly _fromAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
 
-  public readonly fromAsset$ = this._fromAsset$.asObservable();
+  private readonly modalService = inject(PrivateModalsService);
 
-  private readonly _toAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  private readonly injector = inject(Injector);
 
-  public readonly toAsset$ = this._toAsset$.asObservable();
+  private readonly _swapInfo$ = new BehaviorSubject<PrivateSwapInfo>({
+    fromAsset: null,
+    fromAmount: null,
+    toAsset: null,
+    toAmount: null
+  });
 
-  private readonly _fromAmount$ = new BehaviorSubject<{
-    visibleValue: string;
-    actualValue: BigNumber;
-  } | null>(null);
+  public readonly swapInfo$ = this._swapInfo$.asObservable();
 
-  public readonly fromAmount$ = this._fromAmount$.asObservable();
+  public get swapInfo(): PrivateSwapInfo {
+    return this._swapInfo$.value;
+  }
 
-  private readonly _toAmount$ = new BehaviorSubject<{
-    visibleValue: string;
-    actualValue: BigNumber;
-  } | null>(null);
+  private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
-  public readonly toAmount$ = this._toAmount$.asObservable();
-
-  private readonly swapService = inject(PrivateSwapService);
+  public readonly displayReceiver$ = this._displayReceiver$.asObservable();
 
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 
   public readonly loading$ = this._loading$.asObservable();
 
-  public readonly modalService = inject(PrivateModalsService);
-
-  private readonly injector = inject(Injector);
-
-  constructor() {
-    this.initSubscribes();
+  public get swapInfoNotFilled(): boolean {
+    return (
+      !this.swapInfo.fromAsset ||
+      !this.swapInfo.toAsset ||
+      isNaN(this.swapInfo.fromAmount?.actualValue.toNumber()) ||
+      isNaN(this.swapInfo.toAmount?.actualValue.toNumber()) ||
+      this.swapInfo.fromAmount?.actualValue.isZero() ||
+      this.swapInfo.toAmount?.actualValue.isZero()
+    );
   }
 
-  public openFromSelector(): void {
-    this.modalService
-      .openPublicTokensModal(this.injector)
-      .subscribe((selectedToken: BalanceToken) => {
-        this._fromAsset$.next(selectedToken);
+  public get notEnoughBalance(): boolean {
+    return this.swapInfo.fromAmount.actualValue.gt(this.swapInfo.fromAsset.amount);
+  }
+
+  private createPreviewModal(): PreviewSwapModalFactory {
+    const injector = this.injector;
+    const modalService = this.modalService;
+
+    return (options: PrivateSwapOptions) => {
+      return modalService.openPrivatePreviewSwap(injector, {
+        fromToken: this.swapInfo.fromAsset,
+        toToken: this.swapInfo.toAsset,
+        fromAmount: this.swapInfo.fromAmount,
+        toAmount: this.swapInfo.toAmount,
+        swapType: 'swap',
+        swapOptions: options
+      });
+    };
+  }
+
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+
+  ngOnInit(): void {
+    this.subscribeOnFormInputChanged();
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this._swapInfo$
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged((prev, curr) => {
+          const inputNotChanged =
+            prev.fromAmount === curr.fromAmount &&
+            compareTokens(prev.fromAsset, curr.fromAsset) &&
+            compareTokens(prev.toAsset, curr.toAsset);
+          return inputNotChanged;
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(swapInfo => {
+        if (this.assetsNotSelected()) return;
+        if (this.amountNotSet()) {
+          this.patchSwapInfo({ toAmount: null });
+          return;
+        }
+        this.calculate(swapInfo);
       });
   }
 
-  public openToSelector(): void {
+  private assetsNotSelected(): boolean {
+    return !this.swapInfo.fromAsset || !this.swapInfo.toAsset;
+  }
+
+  private amountNotSet(): boolean {
+    return (
+      isNil(this.swapInfo.fromAmount) ||
+      this.swapInfo.fromAmount?.actualValue.isNaN() ||
+      this.swapInfo.fromAmount?.actualValue.isZero()
+    );
+  }
+
+  private async calculate(swapInfo: PrivateSwapInfo): Promise<void> {
+    try {
+      this._loading$.next(true);
+      const outAmountWei = await this.quoteAdapter.quoteCallback(
+        swapInfo.fromAsset,
+        swapInfo.toAsset,
+        swapInfo.fromAmount
+      );
+      this.patchSwapInfo({
+        toAmount: {
+          actualValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals),
+          visibleValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals).toFixed()
+        }
+      });
+    } catch (err) {
+      await this.quoteAdapter.quoteFallback(
+        swapInfo.fromAsset,
+        swapInfo.toAsset,
+        swapInfo.fromAmount,
+        err
+      );
+    } finally {
+      this._loading$.next(false);
+    }
+  }
+
+  private patchSwapInfo(partialSwapInfo: Partial<PrivateSwapInfo>): void {
+    this._swapInfo$.next({ ...this._swapInfo$.value, ...partialSwapInfo });
+  }
+
+  public openInputSelector(): void {
     this.modalService
       .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
-        this._toAsset$.next(selectedToken);
+        this.patchSwapInfo({ fromAsset: selectedToken });
       });
   }
 
-  public updateFromInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
-    this._fromAmount$.next(value);
+  public openOutputSelector(): void {
+    this.modalService
+      .openPrivateTokensModal(this.injector)
+      .subscribe((selectedToken: BalanceToken) => {
+        this.patchSwapInfo({ toAsset: selectedToken });
+      });
+  }
+
+  public updateInputValue(value: SwapAmount): void {
+    this.patchSwapInfo({ fromAmount: value });
   }
 
   public handleMaxButton(): void {}
 
   public async swap(): Promise<void> {
     this._loading$.next(true);
-
-    const fromToken = new TokenAmount({
-      ...this._fromAsset$.value,
-      tokenAmount: this._fromAmount$.value.actualValue
-    });
-    const toToken = new TokenAmount({
-      ...this._toAsset$.value,
-      tokenAmount: this._toAmount$.value.actualValue
-    });
-
-    this.handleSwap.emit({
-      from: fromToken,
-      to: toToken,
-      loadingCallback: () => this._loading$.next(false)
+    this.swapClicked.emit({
+      swapInfo: this._swapInfo$.value,
+      loadingCallback: () => this._loading$.next(false),
+      openPreview: this.createPreviewModal()
     });
   }
 
-  public async calculate(): Promise<void> {
-    this._toAmount$.next(null);
-    this._loading$.next(true);
-    const fromWeiAmount = Token.toWei(
-      this._fromAmount$.value.actualValue.toFixed(),
-      this._fromAsset$.value.decimals
-    );
-    try {
-      const amountOut = await this.swapService.getRates(
-        this._fromAsset$.value.address,
-        fromWeiAmount,
-        this._toAsset$.value.address,
-        this._fromAsset$.value.decimals,
-        this._fromAsset$.value.blockchain,
-        this._toAsset$.value.blockchain
-      );
-      this._toAmount$.next({
-        visibleValue: amountOut,
-        actualValue: new BigNumber(amountOut)
-      });
-    } catch (e) {
-      this._toAmount$.next(null);
-      console.error(e);
-    }
-
-    this._loading$.next(false);
+  public toggleReceiver(): void {
+    this._displayReceiver$.next(!this._displayReceiver$.value);
   }
 
-  private initSubscribes(): void {
-    this.fromAmount$
-      .pipe(
-        combineLatestWith(this.fromAsset$, this.toAsset$),
-        debounceTime(100),
-        switchMap(([fromAmount, fromAsset, toAsset]) => {
-          if (fromAmount?.actualValue?.gt(0) && fromAsset && toAsset) {
-            return this.calculate();
-          }
-          return of(null);
-        })
-      )
-      .subscribe();
+  public async revert(): Promise<void> {
+    this.patchSwapInfo({
+      fromAsset: this.swapInfo.toAsset,
+      toAsset: this.swapInfo.fromAsset,
+      fromAmount: this.swapInfo.toAmount,
+      toAmount: null
+    });
   }
 }

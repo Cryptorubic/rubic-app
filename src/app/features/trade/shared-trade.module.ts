@@ -58,6 +58,25 @@ import { CryptoRateChartComponent } from './components/crypto-rate-chart/crypto-
 import { SwapRetryPendingModalComponent } from './components/swap-retry-pending-modal/swap-retry-pending-modal.component';
 import { SwapBackupRateChangedModalComponent } from './components/swap-backup-rate-changed-modal/swap-backup-rate-changed-modal.component';
 import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backups-failed-modal/all-swap-backups-failed-modal.component';
+import { SettingsService } from './services/settings-service/settings.service';
+import { TargetNetworkAddressService } from './services/target-network-address-service/target-network-address.service';
+import { SwapsStateService } from './services/swaps-state/swaps-state.service';
+import { AlternativeRoutesService } from './services/alternative-route-api-service/alternative-routes.service';
+import { RefundService } from './services/refund-service/refund.service';
+import { SolanaGaslessStateService } from './services/solana-gasless/solana-gasless-state.service';
+import { SwapsControllerService } from './services/swaps-controller/swaps-controller.service';
+import { SwapFormQueryService } from './services/swap-form-query/swap-form-query.service';
+import { CrossChainService } from './services/cross-chain/cross-chain.service';
+import { OnChainService } from './services/on-chain/on-chain.service';
+import { CrossChainApiService } from './services/cross-chain-routing-api/cross-chain-api.service';
+import { RefreshService } from './services/refresh-service/refresh.service';
+import { PreviewSwapService } from './services/preview-swap/preview-swap.service';
+import { OnChainApiService } from './services/on-chain-api/on-chain-api.service';
+import { DepositService } from './services/deposit/deposit.service';
+import { ActionButtonService } from './services/action-button-service/action-button.service';
+import { FormsTogglerService } from './services/forms-toggler/forms-toggler.service';
+import { TradeInfoManager } from './services/trade-info-manager/trade-info-manager.service';
+import { SolanaGaslessService } from './services/solana-gasless/solana-gasless.service';
 
 @NgModule({
   declarations: [
@@ -157,6 +176,27 @@ import { AllSwapBackupsFailedModalComponent } from './components/all-swap-backup
     TuiModeModule,
     TuiCarouselModule
   ],
-  providers: []
+  providers: [
+    SwapsStateService,
+    SwapsControllerService,
+    SwapFormQueryService,
+    CrossChainService,
+    OnChainService,
+    CrossChainApiService,
+    SettingsService,
+    TargetNetworkAddressService,
+    RefreshService,
+    PreviewSwapService,
+    OnChainApiService,
+    DepositService,
+    ActionButtonService,
+    FormsTogglerService,
+    TradeInfoManager,
+    FormsTogglerService,
+    AlternativeRoutesService,
+    RefundService,
+    SolanaGaslessService,
+    SolanaGaslessStateService
+  ]
 })
 export class SharedTradeModule {}

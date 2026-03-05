@@ -6,7 +6,6 @@ import {
   QuoteResponseInterface,
   SwapRequestInterface
 } from '@cryptorubic/core';
-import { UniqueProviderInfoInterface } from '@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 import BigNumber from 'bignumber.js';
 import { EncodeTransactionOptions } from '../../../../common/models/encode-transaction-options';
 import { SwapTransactionOptions } from '../../../../common/models/swap-transaction-options';
@@ -33,6 +32,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
+import { UniqueProviderInfoInterface } from 'node_modules/@cryptorubic/core/src/lib/models/api/unique-provider-info.interface';
 
 /**
  * Abstract class for all cross-chain providers' trades.

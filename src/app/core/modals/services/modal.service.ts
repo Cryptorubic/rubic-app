@@ -52,6 +52,7 @@ import { TrustlineComponentOptions } from '@app/features/trade/components/trustl
 import { PrivateTradeType } from '@app/features/privacy/constants/private-trade-types';
 import { PrivateProvidersListComponent } from '@app/features/privacy/components/private-providers-list/private-providers-list.component';
 import { PrivateProviderInfoUI } from '@app/features/privacy/models/provider-info';
+import { PrivacycashSignatureModalComponent } from '@app/features/privacy/providers/privacycash/components/privacycash-signature-modal/privacycash-signature-modal.component';
 
 @Injectable({
   providedIn: 'root'
@@ -526,6 +527,16 @@ export class ModalService {
     return firstValueFrom(
       this.showDialog(MetamaskModalComponent, {
         size: 'auto',
+        closeable: true,
+        fitContent: true
+      })
+    );
+  }
+
+  public openPrivacycashSignatureModal(): Promise<boolean> {
+    return firstValueFrom(
+      this.showDialog(PrivacycashSignatureModalComponent, {
+        size: 's',
         closeable: true,
         fitContent: true
       })

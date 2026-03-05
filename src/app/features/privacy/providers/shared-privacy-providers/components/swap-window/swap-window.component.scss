@@ -1,4 +1,25 @@
-button {
-  width: 100%;
-  margin-top: 12px;
+@use 'src/scss/core' as *;
+
+:host {
+  app-form-switcher {
+    display: flex;
+    justify-content: center;
+    height: 2px;
+
+    background: linear-gradient(90deg,
+    var(--io-background) 0%,
+    rgba(0, 0, 0, 0) 50%,
+    var(--io-background) 100%);
+  }
+
+  .buttons-container {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    margin-top: 12px;
+
+    button {
+      flex-grow: 1;
+    }
+  }
 }

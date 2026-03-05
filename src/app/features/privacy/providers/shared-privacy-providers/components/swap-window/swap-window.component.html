@@ -1,45 +1,25 @@
 <app-window-container
   *ngLet="{
-    fromAsset: fromAsset$ | async,
-    fromAmount: fromAmount$ | async,
-    toAsset: toAsset$ | async,
-    toAmount: toAmount$ | async,
-    loading: loading$ | async
+    swapInfo: swapInfo$ | async,
+    loading: loading$ | async,
+    displayReceiver: displayReceiver$ | async
   } as state"
 >
-  <app-input-output-container [round]="'top'" [marginTop]="false">
-    <app-asset-selector
-      left
-      selectorType="to"
-      (handleAssetSelection)="openFromSelector()"
-      [asset]="state.fromAsset"
-      [isDisabled]="state.loading"
-    ></app-asset-selector>
-    <div right class="input-container">
-      <app-amount-transput
-        [selectedToken]="state.fromAsset"
-        inputMode="input"
-        (amountUpdated)="updateFromInputValue($event)"
-        [amountValue]="state.fromAmount"
-      ></app-amount-transput>
-      <app-user-balance-container
-        (maxButtonClickEvent)="handleMaxButton()"
-      ></app-user-balance-container>
-    </div>
-  </app-input-output-container>
-  <app-input-output-container [round]="'bottom'" [marginTop]="false">
+  <app-input-output-container [round]="'top'" [marginTop]="true">
     <app-asset-selector
       left
       selectorType="from"
-      (handleAssetSelection)="openToSelector()"
-      [asset]="state.toAsset"
+      [asset]="state.swapInfo.fromAsset"
       [isDisabled]="state.loading"
+      (handleAssetSelection)="openInputSelector()"
     ></app-asset-selector>
     <div right class="input-container">
       <app-amount-transput
-        [selectedToken]="state.toAsset"
+        formType="from"
+        [selectedToken]="state.swapInfo.fromAsset"
         inputMode="input"
-        [amountValue]="state.toAmount"
+        (amountUpdated)="updateInputValue($event)"
+        [amountValue]="state.swapInfo.fromAmount"
       ></app-amount-transput>
       <app-user-balance-container
         (maxButtonClickEvent)="handleMaxButton()"
@@ -47,15 +27,43 @@
     </div>
   </app-input-output-container>
 
-  <button
-    [showLoader]="state.loading"
-    [disabled]="!state.toAmount"
-    tuiButton
-    appearance="primary"
-    type="button"
-    size="m"
-    (click)="swap()"
-  >
-    Swap tokens
-  </button>
+  <app-form-switcher (switcherClick)="revert()"></app-form-switcher>
+
+  <app-input-output-container [round]="state.displayReceiver ? 'none' : 'bottom'">
+    <app-asset-selector
+      left
+      selectorType="to"
+      [asset]="state.swapInfo.toAsset"
+      (handleAssetSelection)="openOutputSelector()"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        formType="to"
+        [selectedToken]="state.swapInfo.toAsset"
+        inputMode="output"
+        [amountValue]="state.swapInfo.toAmount"
+      ></app-amount-transput>
+      <app-tokens-rate></app-tokens-rate>
+    </div>
+  </app-input-output-container>
+
+  <app-target-network-address
+    *ngIf="state.displayReceiver"
+    @receiverAnimation
+  ></app-target-network-address>
+
+  <div class="buttons-container">
+    <button
+      tuiButton
+      [showLoader]="state.loading"
+      [disabled]="state.loading || swapInfoNotFilled || notEnoughBalance"
+      appearance="primary"
+      type="button"
+      size="m"
+      (click)="swap()"
+    >
+      Review Order
+    </button>
+    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+  </div>
 </app-window-container>

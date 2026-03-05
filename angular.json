@@ -53,6 +53,16 @@
                 "glob": "curve25519_scalarmult_wasm_bg.wasm",
                 "input": "node_modules/@railgun-community/curve25519-scalarmult-wasm/pkg-esm",
                 "output": "assets/railgun"
+              },
+              {
+                "glob": "kms_lib_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
+              },
+              {
+                "glob": "tfhe_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
               }
             ],
             "styles": [
