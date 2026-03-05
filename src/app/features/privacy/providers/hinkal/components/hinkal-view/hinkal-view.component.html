@@ -1,1 +1,23 @@
-<p>hinkal-view works!</p>
+<ng-container
+  *ngLet="{
+    activePage: activePage$ | async
+  } as data"
+>
+  <div class="wrapper">
+    <app-page-navigation
+      [activePage]="data.activePage"
+      [pages]="pages"
+      (onSelect)="onPageSelect($event)"
+    ></app-page-navigation>
+
+    <app-hinkal-hide-tokens-page
+      *ngIf="data.activePage.type === 'hide'"
+    ></app-hinkal-hide-tokens-page>
+    <app-hinkal-reveal-tokens-page
+      *ngIf="data.activePage.type === 'reveal'"
+    ></app-hinkal-reveal-tokens-page>
+    <!-- <app-hinkal-transfer-tokens-page
+      *ngIf="data.activePage.type === 'transfer'"
+    ></app-hinkal-transfer-tokens-page> -->
+  </div>
+</ng-container>

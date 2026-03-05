@@ -2,7 +2,7 @@
   "name": "rubic",
   "version": "1.0.3",
   "scripts": {
-    "postinstall": "node scripts/patch-webpack.js",
+    "postinstall": "node scripts/patch-webpack.js && patch-package",
     "start:base": "npm run prebuild && node --max_old_space_size=8196 ./node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.js --host local.rubic.exchange --port 4224 --ssl true --ssl-cert ssl/server.crt --ssl-key ssl/server.key --allowed-hosts all",
     "start": "npm run start:base --",
     "start:local": "npm run start:base -- --configuration=local",
@@ -106,6 +106,7 @@
     "global": "^4.4.0",
     "immutable": "^4.1.0",
     "level-js": "^6.1.0",
+    "libsodium-wrappers-sumo": "0.8.2",
     "near-api-js": "^0.44.2",
     "ng-inline-svg-2": "^15.0.1",
     "ngx-cookie-service": "^16.0.0",
@@ -116,6 +117,7 @@
     "socket.io-client": "^4.8.1",
     "ts-cacheable": "^1.0.5",
     "viem": "2.7.6",
+    "@hinkal/common": "0.2.25",
     "walletlink": "^2.1.0",
     "zone.js": "~0.13.1"
   },
@@ -133,6 +135,7 @@
     "@angular/language-service": "^16.1.3",
     "@compodoc/compodoc": "^1.1.15",
     "@sentry/webpack-plugin": "^4.6.0",
+    "patch-package": "^8.0.1",
     "@types/date-and-time": "^0.13.0",
     "@types/jasmine": "^3.6.11",
     "@types/jasminewd2": "^2.0.9",
@@ -185,5 +188,8 @@
     "typescript": "~5.1.6",
     "url": "^0.11.0",
     "webpack-bundle-analyzer": "^4.4.2"
+  },
+  "resolutions": {
+    "libsodium-wrappers": "npm:libsodium-wrappers-sumo@0.8.2"
   }
 }
