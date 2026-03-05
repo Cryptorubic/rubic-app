@@ -1,0 +1,38 @@
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
+import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
+import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
+import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+
+@Component({
+  selector: 'app-privacycash-reveal-page',
+  templateUrl: './privacycash-reveal-page.component.html',
+  styleUrls: ['./privacycash-reveal-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
+  ]
+})
+export class PrivacycashRevealPageComponent {
+  private readonly privacycashSwapService = inject(PrivacycashSwapService);
+
+  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
+  public async reveal({ token, loadingCallback }: PrivateEvent): Promise<void> {
+    try {
+      const receiverAddr = this.targetNetworkAddressService.address
+        ? this.targetNetworkAddressService.address
+        : this.walletConnectorService.address;
+      await this.privacycashSwapService.unshield(token, receiverAddr);
+    } finally {
+      loadingCallback();
+    }
+  }
+}

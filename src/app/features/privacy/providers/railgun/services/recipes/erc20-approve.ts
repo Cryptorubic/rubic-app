@@ -19,9 +19,9 @@ import {
 } from '@railgun-community/cookbook';
 import { ContractTransaction } from 'ethers';
 import {
-  maxBigNumberForTransaction,
-  minBigNumber
-} from '@railgun-community/cookbook/dist/utils/big-number';
+  minBigNumber,
+  maxBigNumberForTransaction
+} from 'node_modules/@railgun-community/cookbook/dist/utils/big-number';
 
 export class ApproveERC20SpenderStep extends Step {
   // Name and description, which appear in the recipe's stepOutputs for clarity.

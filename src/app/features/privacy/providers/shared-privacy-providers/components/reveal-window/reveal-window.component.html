@@ -27,10 +27,12 @@
       ></app-user-balance-container>
     </div>
   </app-input-output-container>
+
   <app-target-network-address
     *ngIf="state.displayReceiver"
     @receiverAnimation
   ></app-target-network-address>
+
   <div class="buttons-container">
     <button
       [showLoader]="state.loading"

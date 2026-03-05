@@ -91,7 +91,8 @@ import { PrivatePreviewSwapComponent } from './components/private-preview-swap/p
     PageNavigationComponent,
     ShieldedTokensListComponent,
     PasswordVerificationModalComponent,
-    TransferTokensWindowComponent
+    TransferTokensWindowComponent,
+    SwapWindowComponent
   ],
   providers: [
     [

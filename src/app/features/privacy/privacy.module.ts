@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PrivacyRoutingModule } from './privacy-routing.module';
 import { PrivacyPageViewComponent } from './components/privacy-page-view/privacy-page-view.component';
-import { TradeModule } from '../trade/trade.module';
 import { PrivacyFormService } from './services/privacy-form.service';
 import { TabBarComponent } from './components/tab-bar/tab-bar.component';
 import { SharedModule } from '@app/shared/shared.module';
@@ -29,7 +28,6 @@ import { SharedTradeModule } from '@features/trade/shared-trade.module';
     CommonModule,
     SharedModule,
     PrivacyRoutingModule,
-    TradeModule,
     TuiScrollbarModule,
     InlineSVGModule,
     SharedTradeModule

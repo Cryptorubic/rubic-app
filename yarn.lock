@@ -2399,7 +2399,7 @@
   resolved "https://registry.yarnpkg.com/@coral-xyz/anchor-errors/-/anchor-errors-0.31.1.tgz#d635cbac2533973ae6bfb5d3ba1de89ce5aece2d"
   integrity sha512-NhNEku4F3zzUSBtrYz84FzYWm48+9OvmT1Hhnwr6GnPQry2dsEqH/ti/7ASjjpoFTWRnPXrjAIT1qM6Isop+LQ==
 
-"@coral-xyz/anchor@^0.31.0":
+"@coral-xyz/anchor@^0.31.0", "@coral-xyz/anchor@^0.31.1":
   version "0.31.1"
   resolved "https://registry.yarnpkg.com/@coral-xyz/anchor/-/anchor-0.31.1.tgz#0fdeebf45a3cb2e47e8ebbb815ca98542152962c"
   integrity sha512-QUqpoEK+gi2S6nlYc2atgT2r41TT3caWr/cPUEL8n8Md9437trZ68STknq897b82p5mW0XrTBNOzRbmIRJtfsA==
@@ -4303,6 +4303,11 @@
     progress-events "^1.0.1"
     race-signal "^1.1.3"
     ws "^8.18.2"
+
+"@lightprotocol/hasher.rs@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@lightprotocol/hasher.rs/-/hasher.rs-0.2.1.tgz#74191d8b35c092d800fbafe5b5fa035bbe1af6a9"
+  integrity sha512-uslXM+t8kIOeQKccS8eJIPhVglnaIrz06AUVYJjeR9RHM/26KFEKK431a5mBxvaAwVhRLM0s9ZFN+C9wKgNAjA==
 
 "@lit-labs/ssr-dom-shim@^1.0.0", "@lit-labs/ssr-dom-shim@^1.1.0", "@lit-labs/ssr-dom-shim@^1.4.0":
   version "1.4.0"
@@ -8017,7 +8022,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/bn.js@^5.1.0", "@types/bn.js@^5.1.1":
+"@types/bn.js@^5.1.0", "@types/bn.js@^5.1.1", "@types/bn.js@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-5.2.0.tgz#4349b9710e98f9ab3cdc50f1c5e4dcbd8ef29c80"
   integrity sha512-DLbJ1BPqxvQhIGbeu8VbUC1DiAiahHtAYvA0ZEAa4P31F7IaArc8z3C3BRQdWX4mtLQuABG4yzp76ZrS02Ui1Q==
@@ -8359,6 +8364,11 @@
     "@types/http-errors" "*"
     "@types/node" "*"
     "@types/send" "<1"
+
+"@types/snarkjs@^0.7.9":
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/@types/snarkjs/-/snarkjs-0.7.9.tgz#7a3b99bd86009133a74dcb215a475382c772c37c"
+  integrity sha512-pb4Bq3GI2YQOQOG0dR/YuQs/mqcuL6k/vnz68LIPtpA2frrUL3twf69a3AUK9eUmNNeW0RIKkq6scDlC75Is+g==
 
 "@types/sockjs@^0.3.33":
   version "0.3.36"
@@ -12977,6 +12987,11 @@ dotenv@^16.3.1, dotenv@^16.4.5:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.6.1.tgz#773f0e69527a8315c7285d5ee73c4459d20a8020"
   integrity sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==
 
+dotenv@^17.2.2:
+  version "17.2.4"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-17.2.4.tgz#b5a0e2f015e0be287a5330a90bf0e804606504c2"
+  integrity sha512-mudtfb4zRB4bVvdj0xRo+e6duH1csJRM8IukBqfTRvHotn9+LBXB8ynAidP9zHqoRC/fsllXgk4kCKlR21fIhw==
+
 dotenv@~10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
@@ -14584,7 +14599,7 @@ ffjavascript@0.3.0:
     wasmcurves "0.2.2"
     web-worker "1.2.0"
 
-ffjavascript@0.3.1, ffjavascript@^0.3.0:
+ffjavascript@0.3.1, ffjavascript@^0.3.0, ffjavascript@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/ffjavascript/-/ffjavascript-0.3.1.tgz#3761bbb3f4a67b58a94a463080272bf6b5877b03"
   integrity sha512-4PbK1WYodQtuF47D4pRI5KUg3Q392vuP5WjE1THSnceHdXwU3ijaoS0OqxTzLknCtz4Z2TtABzkBdBdMn3B/Aw==
@@ -19348,6 +19363,13 @@ node-gyp@^9.0.0:
     tar "^6.1.2"
     which "^2.0.2"
 
+node-localstorage@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/node-localstorage/-/node-localstorage-3.0.5.tgz#4acda05bb7d3fffaa477f13c028d105866bb43ad"
+  integrity sha512-GCwtK33iwVXboZWYcqQHu3aRvXEBwmPkAMRBLeaX86ufhqslyUkLGsi4aW3INEfdQYpUB5M9qtYf3eHvAk2VBg==
+  dependencies:
+    write-file-atomic "^5.0.1"
+
 node-mock-http@^1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/node-mock-http/-/node-mock-http-1.0.3.tgz#4e55e093267a3b910cded7354389ce2d02c89e77"
@@ -20756,6 +20778,30 @@ prismjs@^1.30.0:
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.30.0.tgz#d9709969d9d4e16403f6f348c63553b19f0975a9"
   integrity sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==
+
+privacycash@^1.1.15:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/privacycash/-/privacycash-1.1.15.tgz#39f6ad90e5f1987eea10e9719c6d5973ba9a4bb2"
+  integrity sha512-XeX1Kz6WteahpXhNi+qfUCzRnJjBwHS21RhxN0nCSbM9nTgG11iSpj4uxHXrofDdHBVufB7WNIw8rfcs4NSXjQ==
+  dependencies:
+    "@coral-xyz/anchor" "^0.31.1"
+    "@ethersproject/keccak256" "^5.8.0"
+    "@ethersproject/sha2" "^5.8.0"
+    "@lightprotocol/hasher.rs" "^0.2.1"
+    "@solana/spl-token" "^0.4.14"
+    "@solana/web3.js" "^1.98.4"
+    "@types/bn.js" "^5.2.0"
+    "@types/snarkjs" "^0.7.9"
+    bn.js "^5.2.2"
+    borsh "^2.0.0"
+    bs58 "^6.0.0"
+    dotenv "^17.2.2"
+    ethers "^6.15.0"
+    ffjavascript "^0.3.1"
+    node-localstorage "^3.0.5"
+    snarkjs "^0.7.5"
+    tmp-promise "^3.0.3"
+    tweetnacl "^1.0.3"
 
 proc-log@^3.0.0:
   version "3.0.0"
@@ -22476,7 +22522,7 @@ snarkjs@0.7.5:
     logplease "^1.2.15"
     r1csfile "0.0.48"
 
-snarkjs@^0.7.6:
+snarkjs@^0.7.5, snarkjs@^0.7.6:
   version "0.7.6"
   resolved "https://registry.yarnpkg.com/snarkjs/-/snarkjs-0.7.6.tgz#632f38d5090ac2042dd24566bd973c79c7fa075b"
   integrity sha512-4uH1xA5JzVU5jaaWS2fXej3+RC6L5Erhr6INTJtUA27du4Elbh4VXCeeRjB4QiwL6N6y7SNKePw5prTxyEf4Zg==
@@ -23603,7 +23649,7 @@ tkms@^0.12.0:
   resolved "https://registry.yarnpkg.com/tkms/-/tkms-0.12.8.tgz#9d108d03b3b23efa1ae4bd48be4a41b97d53aa1f"
   integrity sha512-iXS8wxz3jhx3JlKVJiBZUOibGtP69lC2H9I120EfhAI5amc/4xW/HCM7tmMtBJEuqdCoN5ssnHvfGog8gZ6UKg==
 
-tmp-promise@^3.0.2:
+tmp-promise@^3.0.2, tmp-promise@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/tmp-promise/-/tmp-promise-3.0.3.tgz#60a1a1cc98c988674fcbfd23b6e3367bdeac4ce7"
   integrity sha512-RwM7MoPojPxsOBYnyd2hy0bxtIlVrihNs9pj5SUvY8Zz1sQcQG2tG1hSr8PDxfgEB8RNKDhqbIlroIarSNDNsQ==
@@ -25578,6 +25624,14 @@ write-file-atomic@^3.0.3:
     is-typedarray "^1.0.0"
     signal-exit "^3.0.2"
     typedarray-to-buffer "^3.1.5"
+
+write-file-atomic@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/write-file-atomic/-/write-file-atomic-5.0.1.tgz#68df4717c55c6fa4281a7860b4c2ba0a6d2b11e7"
+  integrity sha512-+QU2zd6OTD8XWIJCbffaiQeH9U73qIqafo1x6V1snCWYGJf6cVE0cDR4D8xRzcEnfI21IFrUPzPGtcPf8AC+Rw==
+  dependencies:
+    imurmurhash "^0.1.4"
+    signal-exit "^4.0.1"
 
 write@1.0.3:
   version "1.0.3"

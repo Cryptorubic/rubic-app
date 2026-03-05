@@ -1,5 +1,8 @@
-import { StandardConnectFeature, StandardDisconnectFeature } from '@wallet-standard/features';
-import { StandardEventsFeature } from '@wallet-standard/features/src/events';
+import {
+  StandardConnectFeature,
+  StandardDisconnectFeature,
+  StandardEventsFeature
+} from '@wallet-standard/features';
 
 export type StandardFeatures = StandardConnectFeature &
   StandardDisconnectFeature &

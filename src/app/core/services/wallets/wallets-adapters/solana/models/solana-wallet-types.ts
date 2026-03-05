@@ -1,5 +1,10 @@
 import { EventEmitter } from '@angular/core';
-import { Connection, Transaction, TransactionSignature } from '@solana/web3.js';
+import {
+  Connection,
+  Transaction,
+  TransactionSignature,
+  VersionedTransaction
+} from '@solana/web3.js';
 
 interface SolanaWalletEvents {
   connect(...args: unknown[]): unknown;
@@ -10,8 +15,8 @@ export interface SolanaWallet extends EventEmitter<SolanaWalletEvents> {
   publicKey?: { toBytes(): Uint8Array };
   isConnected: boolean;
   isXDEFI?: boolean;
-  signTransaction(transaction: Transaction): Promise<Transaction>;
-  signAllTransactions(transactions: Transaction[]): Promise<Transaction[]>;
+  signTransaction(transaction: VersionedTransaction): Promise<VersionedTransaction>;
+  signAllTransactions(transactions: VersionedTransaction[]): Promise<VersionedTransaction[]>;
   signMessage(message: Uint8Array, encoding: string): Promise<{ signature: Uint8Array }>;
   sendTransaction(
     transaction: Transaction,

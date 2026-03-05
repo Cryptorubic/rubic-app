@@ -65,6 +65,8 @@ export class TransferTokensWindowComponent {
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: transferAsset,
         toToken: transferAsset,
+        fromAmount: this._transferAmount$.value,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
         swapType: 'transfer',
         swapOptions: options
       });

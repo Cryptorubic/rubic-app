@@ -12,14 +12,17 @@ import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { PrivateEvent } from '../../models/private-event';
+import { receiverAnimation } from '../../animations/receiver-animation';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { SwapAmount } from '../../models/swap-info';
 
 @Component({
   selector: 'app-hide-tokens-window',
   templateUrl: './hide-tokens-window.component.html',
   styleUrls: ['./hide-tokens-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [receiverAnimation()]
 })
 export class HideTokensWindowComponent {
   @Output() public handleHide = new EventEmitter<PrivateEvent>();
@@ -63,7 +66,10 @@ export class HideTokensWindowComponent {
 
   public handleMaxButton(): void {}
 
-  private createPreviewModal(hideAsset: BalanceToken): PreviewSwapModalFactory {
+  private createPreviewModal(
+    hideAsset: BalanceToken,
+    fromAmount: SwapAmount
+  ): PreviewSwapModalFactory {
     const injector = this.injector;
     const modalService = this.modalService;
 
@@ -71,6 +77,8 @@ export class HideTokensWindowComponent {
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: hideAsset,
         toToken: hideAsset,
+        fromAmount,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
         swapType: 'shield',
         swapOptions: options
       });
@@ -87,12 +95,11 @@ export class HideTokensWindowComponent {
     this.handleHide.emit({
       token,
       loadingCallback: () => this._loading$.next(false),
-      openPreview: this.createPreviewModal(this._hideAsset$.value)
+      openPreview: this.createPreviewModal(this._hideAsset$.value, this._hideAmount$.value)
     });
   }
 
   public toggleReceiver(): void {
-    debugger;
     this._displayReceiver$.next(!this._displayReceiver$.value);
   }
 }

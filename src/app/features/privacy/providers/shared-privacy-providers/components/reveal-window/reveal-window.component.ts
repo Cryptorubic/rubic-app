@@ -72,6 +72,8 @@ export class RevealWindowComponent {
       return modalService.openPrivatePreviewSwap(injector, {
         fromToken: revealAsset,
         toToken: revealAsset,
+        fromAmount: this._revealAmount$.value,
+        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
         swapType: 'transfer',
         swapOptions: options
       });

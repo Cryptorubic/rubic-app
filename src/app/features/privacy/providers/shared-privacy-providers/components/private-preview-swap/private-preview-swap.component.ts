@@ -19,6 +19,7 @@ import { AppGasData } from '@app/features/trade/models/provider-info';
 import { FeeInfo } from '@app/core/services/sdk/sdk-legacy/features/cross-chain/calculation-manager/providers/common/models/fee-info';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorsService } from '@app/core/errors/errors.service';
+import { SwapAmount } from '../../models/swap-info';
 
 @Component({
   selector: 'app-private-preview-swap',
@@ -67,8 +68,8 @@ export class PrivatePreviewSwapComponent {
     this.fromAsset = this.getTokenAsset(context.data.fromToken);
     this.toAsset = this.getTokenAsset(context.data.toToken);
 
-    this.fromValue = this.getTokenValue(context.data.fromToken);
-    this.toValue = this.getTokenValue(context.data.toToken);
+    this.fromValue = this.getTokenValue(context.data.fromToken, context.data.fromAmount);
+    this.toValue = this.getTokenValue(context.data.toToken, context.data.toAmount);
 
     const [initialStep, ...steps] = context.data.swapOptions.steps;
     this._currentStep$.next(initialStep);
@@ -93,12 +94,15 @@ export class PrivatePreviewSwapComponent {
     };
   }
 
-  private getTokenValue(token: BalanceToken): { tokenAmount: BigNumber; fiatAmount: string } {
+  private getTokenValue(
+    token: BalanceToken,
+    amount: SwapAmount
+  ): { tokenAmount: BigNumber; fiatAmount: string } {
     return {
-      tokenAmount: token.amount,
+      tokenAmount: amount.actualValue,
       fiatAmount:
-        token.amount.gt(0) && token.price
-          ? token.amount.multipliedBy(token.price || 0).toFixed(2)
+        amount.actualValue.gt(0) && token.price
+          ? amount.actualValue.multipliedBy(token.price || 0).toFixed(2)
           : null
     };
   }

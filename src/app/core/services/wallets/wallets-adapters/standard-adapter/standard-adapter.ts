@@ -1,6 +1,6 @@
 import { FeaturesWallet } from '@core/services/wallets/wallets-adapters/standard-adapter/models/features-wallet';
 import { StandardFeatures } from '@core/services/wallets/wallets-adapters/standard-adapter/models/standard-features';
-import { Wallet } from '@wallet-standard/base/src/wallet';
+import { Wallet } from '@wallet-standard/base';
 
 export abstract class StandardAdapter<SpecificFeatures extends Wallet['features']> {
   protected wallet: FeaturesWallet<SpecificFeatures>;
