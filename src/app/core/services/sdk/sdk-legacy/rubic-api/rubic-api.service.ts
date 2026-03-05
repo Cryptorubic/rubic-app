@@ -3,6 +3,7 @@ import {
   EvmBlockchainName,
   QuoteAllInterface,
   QuoteRequestInterface,
+  QuoteResponseInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -11,7 +12,6 @@ import {
   EvmTransactionConfig,
   InsufficientFundsError,
   InsufficientFundsGasPriceValueError,
-  rubicApiLinkMapping,
   RubicSdkError,
   SimulationFailedError,
   TradeExpiredError,
@@ -33,7 +33,6 @@ import {
   of,
   throwError
 } from 'rxjs';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { SwapResponseInterface } from '../features/ws-api/models/swap-response-interface';
 import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
 import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error-response-interface';
@@ -55,9 +54,9 @@ import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 })
 export class RubicApiService {
   private get apiUrl(): string {
-    const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
-
-    return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
+    return 'http://localhost:3000';
+    // const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
+    // return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
   }
 
   private readonly _socket$ = new BehaviorSubject<Socket | null>(null);
@@ -138,6 +137,30 @@ export class RubicApiService {
     if (this.latestQuoteParams) {
       this.client?.emit('stop_calculation');
       this.latestQuoteParams = null;
+    }
+  }
+
+  public async quoteAllRoutes(body: QuoteRequestInterface): Promise<QuoteResponseInterface> {
+    try {
+      const result = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteResponseInterface | SwapErrorResponseInterface>(
+          `${this.apiUrl}/api/routes/quoteAll`,
+          body
+        )
+      );
+      console.log(result);
+      if ('error' in result) {
+        throw this.getApiError(result);
+      }
+      return result;
+    } catch (err: RubicAny) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+      if ('error' in err) {
+        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
+      }
+      throw this.getApiError(err);
     }
   }
 
