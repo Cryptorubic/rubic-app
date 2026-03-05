@@ -8,7 +8,8 @@ import {
   TuiHintModule,
   TuiHostedDropdownModule,
   TuiScrollbarModule,
-  TuiTextfieldControllerModule
+  TuiTextfieldControllerModule,
+  TuiNotificationModule
 } from '@taiga-ui/core';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
@@ -47,6 +48,7 @@ import { TuiActiveZoneModule } from '@taiga-ui/cdk';
 import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
+import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,8 @@ import { TransferTokensWindowComponent } from './components/transfer-tokens-wind
     ShieldedTokensListElementComponent,
     DropdownOptionsShieldedTokenComponent,
     PasswordVerificationModalComponent,
-    TransferTokensWindowComponent
+    TransferTokensWindowComponent,
+    PrivatePreviewSwapComponent
   ],
   imports: [
     CommonModule,
@@ -76,7 +79,8 @@ import { TransferTokensWindowComponent } from './components/transfer-tokens-wind
     TuiActiveZoneModule,
     TuiInputModule,
     ReactiveFormsModule,
-    TuiTextfieldControllerModule
+    TuiTextfieldControllerModule,
+    TuiNotificationModule
   ],
   exports: [
     PublicTokensSelectorComponent,

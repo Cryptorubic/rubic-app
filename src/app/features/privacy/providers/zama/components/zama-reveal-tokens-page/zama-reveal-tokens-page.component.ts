@@ -7,6 +7,7 @@ import { ZamaRevealFacadeService } from '../../services/zama-reveal-tokens-facad
 import { ZamaFacadeService } from '../../services/zama-sdk/zama-facade.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-zama-reveal-tokens-page',
@@ -24,12 +25,22 @@ export class ZamaRevealTokensPageComponent {
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
-  public async reveal({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async reveal({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.zamaFacadeService.unwrap(
-        token as TokenAmount<EvmBlockchainName>,
-        this.targetAddressService.address
-      );
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Reveal Tokens',
+            action: () =>
+              this.zamaFacadeService.unwrap(
+                token as TokenAmount<EvmBlockchainName>,
+                this.targetAddressService.address
+              )
+          }
+        ]
+      });
+
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

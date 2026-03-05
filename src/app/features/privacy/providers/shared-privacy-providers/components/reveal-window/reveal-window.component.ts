@@ -13,6 +13,8 @@ import { PrivateModalsService } from '@features/privacy/providers/shared-privacy
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
 import { Token, TokenAmount } from '@cryptorubic/core';
 import { PrivateEvent } from '../../models/private-event';
+import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
+import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 
 @Component({
   selector: 'app-reveal-window',
@@ -62,6 +64,20 @@ export class RevealWindowComponent {
 
   public handleMaxButton(): void {}
 
+  private createPreviewModal(revealAsset: BalanceToken): PreviewSwapModalFactory {
+    const injector = this.injector;
+    const modalService = this.modalService;
+
+    return (options: PrivateSwapOptions) => {
+      return modalService.openPrivatePreviewSwap(injector, {
+        fromToken: revealAsset,
+        toToken: revealAsset,
+        swapType: 'transfer',
+        swapOptions: options
+      });
+    };
+  }
+
   public async reveal(): Promise<void> {
     this._loading$.next(true);
     const token = new TokenAmount({
@@ -71,7 +87,11 @@ export class RevealWindowComponent {
         this._revealAsset$.value?.decimals
       )
     });
-    this.handleReveal.emit({ token, loadingCallback: () => this._loading$.next(false) });
+    this.handleReveal.emit({
+      token,
+      loadingCallback: () => this._loading$.next(false),
+      openPreview: this.createPreviewModal(this._revealAsset$.value)
+    });
   }
 
   public toggleReceiver(): void {
