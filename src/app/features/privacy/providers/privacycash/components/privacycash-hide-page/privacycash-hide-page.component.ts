@@ -5,6 +5,9 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
+import { firstValueFrom } from 'rxjs';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -19,11 +22,26 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 export class PrivacycashHidePageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
+  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
   constructor() {}
 
-  public async hide({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.privacycashSwapService.shield(token);
+      const receiverAddr = this.targetNetworkAddressService.address
+        ? this.targetNetworkAddressService.address
+        : this.walletConnectorService.address;
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Hide Tokens',
+            action: () => this.privacycashSwapService.shield(token, receiverAddr)
+          }
+        ]
+      });
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

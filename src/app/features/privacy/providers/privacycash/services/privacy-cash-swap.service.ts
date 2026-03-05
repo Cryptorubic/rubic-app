@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { Injectable, inject } from '@angular/core';
 import { BLOCKCHAIN_NAME, PriceTokenAmount, Token, TokenAmount } from '@cryptorubic/core';
 import {
   WRAP_SOL_ADDRESS,
@@ -7,20 +6,11 @@ import {
   deposit_rent_fee,
   swap_reserved_rent_fee
 } from '../constants/privacycash-consts';
-import {
-  deposit,
-  depositSPL,
-  withdraw,
-  withdrawSPL,
-  getUtxos,
-  getBalanceFromUtxos,
-  getUtxosSPL,
-  getBalanceFromUtxosSPL
-} from 'privacycash/utils';
+import { deposit, depositSPL, withdraw, withdrawSPL } from 'privacycash/utils';
 import { Keypair, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import { Web3Pure, waitFor } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
-import { compareAddresses, compareTokens, isNil } from '@app/shared/utils/utils';
+import { compareAddresses, compareTokens } from '@app/shared/utils/utils';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { BlockchainToken } from '@app/shared/models/tokens/blockchain-token';
@@ -29,22 +19,22 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivacycashSignatureService } from './privacy-cash-signature.service';
 import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../utils/converter';
 import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
+import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
+import { PrivacycashTokensService } from './common/token-facades/privacycash-tokens.service';
 
 @Injectable()
 export class PrivacycashSwapService {
-  constructor(
-    private readonly sdkLegacyService: SdkLegacyService,
-    private readonly privacycashApiService: PrivacycashApiService,
-    private readonly privacycashSignatureService: PrivacycashSignatureService,
-    private readonly walletConnectorService: WalletConnectorService,
-    private readonly notificationsService: NotificationsService
-  ) {}
+  private readonly adapterFactory = inject(BlockchainAdapterFactoryService);
 
-  public getPrivacyCashBalance: (
-    tokenAddr: string,
-    walletPK: PublicKey,
-    useCache: boolean
-  ) => Promise<number> = this.getPrivacyCashBalanceFnFactory();
+  private readonly privacycashApiService = inject(PrivacycashApiService);
+
+  private readonly privacycashSignatureService = inject(PrivacycashSignatureService);
+
+  private readonly walletConnectorService = inject(WalletConnectorService);
+
+  private readonly notificationsService = inject(NotificationsService);
+
+  private readonly privacycashTokensService = inject(PrivacycashTokensService);
 
   /**
    * @param srcToken token with PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
@@ -125,20 +115,23 @@ export class PrivacycashSwapService {
     );
     await this.makeFullWithdraw(srcToken.address, senderPK, receiverPK);
     this.notificationsService.showInfo(`Successfull transfer. Check receiver wallet balance.`);
+    this.privacycashTokensService.updatePrivateBalances();
   }
 
-  public async shield(token: TokenAmount): Promise<void> {
+  public async shield(token: TokenAmount, receiverAddr: string): Promise<void> {
     const userPK = new PublicKey(this.walletConnectorService.address);
+    const receiverPK = new PublicKey(receiverAddr);
     const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
     await this.makeDeposit(
       toPrivacyCashTokenAddr(token.address),
       token.weiAmount.toNumber(),
       userPK,
-      userPK,
+      receiverPK,
       (tx: VersionedTransaction) => wallet.signTransaction(tx)
     );
     this.notificationsService.showInfo(`Successfull shileding. Check your private balance.`);
+    this.privacycashTokensService.updatePrivateBalances();
   }
 
   public async unshield(token: TokenAmount, receiverAddr: string): Promise<void> {
@@ -152,6 +145,7 @@ export class PrivacycashSwapService {
       recipientPK
     );
     this.notificationsService.showInfo(`Successfull unshileding. Check receiver wallet balance.`);
+    this.privacycashTokensService.updatePrivateBalances();
   }
 
   /**
@@ -253,6 +247,7 @@ export class PrivacycashSwapService {
       }
     );
     this.notificationsService.showInfo(`Successfull swap. Check receiver's private balance.`);
+    this.privacycashTokensService.updatePrivateBalances();
   }
 
   // @TODO_1767 был добавлен параметр privateBalanceReceiverPK, чекнуть,
@@ -271,14 +266,12 @@ export class PrivacycashSwapService {
 
     const lightWasm = this.privacycashSignatureService.lightWasm;
     const encryptionService = this.privacycashSignatureService.encryptionService;
-    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.SOLANA
-    ).public;
+    const connection = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA).public;
     const pathToZkProof = 'assets/circuit2/transaction2';
 
     try {
       console.debug(`[RUBIC] Start deposit ${tokenAddr}...`);
-      if (tokenAddr === WRAP_SOL_ADDRESS) {
+      if (compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)) {
         await deposit({
           lightWasm,
           amount_in_lamports: depositAmountWei,
@@ -322,15 +315,13 @@ export class PrivacycashSwapService {
   ): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
 
-    const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.SOLANA
-    ).public;
+    const connection = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA).public;
     const encryptionService = this.privacycashSignatureService.encryptionService;
     const lightWasm = this.privacycashSignatureService.lightWasm;
     const pathToZkProof = 'assets/circuit2/transaction2';
 
     try {
-      if (tokenAddr === WRAP_SOL_ADDRESS) {
+      if (compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)) {
         await withdraw({
           lightWasm,
           amount_in_lamports: withdrawAmountWei,
@@ -367,7 +358,11 @@ export class PrivacycashSwapService {
     recipientPK: PublicKey
   ): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
-    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(tokenAddr, senderPK, true);
+    const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
+      tokenAddr,
+      senderPK,
+      true
+    );
     return this.makePartialWithdraw(tokenAddr, fullPrivateBalanceWei, senderPK, recipientPK);
   }
 
@@ -385,7 +380,7 @@ export class PrivacycashSwapService {
     await this.privacycashSignatureService.checkRequirements();
 
     const senderPK = new PublicKey(this.walletConnectorService.address);
-    const fullPrivateBalanceWei = await this.getPrivacyCashBalance(
+    const fullPrivateBalanceWei = await this.privacycashTokensService.getPrivacyCashBalance(
       srcToken.address,
       senderPK,
       true
@@ -401,84 +396,13 @@ export class PrivacycashSwapService {
 
   /**
    * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   */
-  private getPrivacyCashBalanceFnFactory(): (
-    tokenAddr: string,
-    walletPK: PublicKey,
-    useCache: boolean
-  ) => Promise<number> {
-    const cache = {} as Record<string, number>;
-    const getCacheKey = (tokenAddr: string, walletPK: PublicKey): string => {
-      return `${walletPK.toBase58()}::${tokenAddr}`;
-    };
-    return async (
-      tokenAddr: string,
-      walletPK: PublicKey,
-      useCache: boolean = true
-    ): Promise<number> => {
-      const cacheKey = getCacheKey(tokenAddr, walletPK);
-      const cachedValue = cache[cacheKey];
-      if (useCache && !isNil(cachedValue)) return cachedValue;
-
-      const privacyCashBalanceWei = await this.fetchPrivacyCashBalance(tokenAddr, walletPK);
-      cache[cacheKey] = privacyCashBalanceWei;
-
-      return privacyCashBalanceWei;
-    };
-  }
-
-  /**
-   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
-   * @returns wei balance on PrivacyCash relayer
-   */
-  private async fetchPrivacyCashBalance(tokenAddr: string, walletPK: PublicKey): Promise<number> {
-    try {
-      await this.privacycashSignatureService.checkRequirements();
-
-      const encryptionService = this.privacycashSignatureService.encryptionService;
-      const connection = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-        BLOCKCHAIN_NAME.SOLANA
-      ).public;
-
-      if (tokenAddr === WRAP_SOL_ADDRESS) {
-        const utxos = await getUtxos({
-          publicKey: walletPK,
-          connection,
-          encryptionService,
-          storage: localStorage
-        });
-        const res = getBalanceFromUtxos(utxos);
-        console.debug('✅ Successfull getBalance!');
-
-        return res.lamports;
-      }
-
-      const utxos = await getUtxosSPL({
-        publicKey: walletPK,
-        connection,
-        encryptionService,
-        storage: localStorage,
-        mintAddress: tokenAddr
-      });
-      const res = getBalanceFromUtxosSPL(utxos);
-      console.debug('✅ Successfull getBalance!');
-
-      return res.base_units;
-    } catch (err) {
-      console.debug('❌ Failed getBalance!');
-      return 0;
-    }
-  }
-
-  /**
-   * @param tokenAddr PrivacyCash compatible (WRAP_SOL_ADDRESS instead of native)
    * @param tokenBurnerWalletBalanceWei wei balance of burner wallet
    */
   private getAmountWithoutFees(
     tokenAddr: string,
     tokenBurnerWalletBalanceWei: BigNumber
   ): BigNumber {
-    if (tokenAddr === WRAP_SOL_ADDRESS) {
+    if (compareAddresses(tokenAddr, WRAP_SOL_ADDRESS)) {
       const swapAmount = tokenBurnerWalletBalanceWei.minus(
         new BigNumber(swap_reserved_rent_fee + deposit_rent_fee).multipliedBy(1e9)
       );
@@ -516,9 +440,7 @@ export class PrivacycashSwapService {
    * @param tokenAddr common solana address
    */
   private async getBurnerBalance(tokenAddr: string, burnerKeypair: Keypair): Promise<BigNumber> {
-    const solanaAdapter = this.sdkLegacyService.adaptersFactoryService.getAdapter(
-      BLOCKCHAIN_NAME.SOLANA
-    );
+    const solanaAdapter = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA);
     return solanaAdapter.getBalance(burnerKeypair.publicKey.toBase58(), tokenAddr);
   }
 }

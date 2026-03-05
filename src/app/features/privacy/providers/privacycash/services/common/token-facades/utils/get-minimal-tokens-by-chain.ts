@@ -20,3 +20,15 @@ export function getMinimalTokensByChain(type: AssetListType): MinimalToken[] {
         )
         .flat();
 }
+
+export function convertAddressesConfigToMinimalTokenMap(): Record<
+  PrivacycashSupportedChain,
+  MinimalToken[]
+> {
+  return Object.entries(PRIVACYCASH_SUPPORTED_TOKENS).reduce((acc, [chain, tokenAddresses]) => {
+    acc[chain as PrivacycashSupportedChain] = tokenAddresses.map(
+      tokenAddr => ({ address: tokenAddr, blockchain: chain } as MinimalToken)
+    );
+    return acc;
+  }, {} as Record<PrivacycashSupportedChain, MinimalToken[]>);
+}

@@ -11,7 +11,7 @@ import {
   UtilityBackendResponse
 } from '@core/services/backend/tokens-api/models/tokens';
 import { RatedToken, Token } from '@shared/models/tokens/token';
-import { Token as OldToken } from '@cryptorubic/core';
+import { Cache as Memo, Token as OldToken } from '@cryptorubic/core';
 import {
   BackendBlockchain,
   BLOCKCHAIN_NAME,
@@ -149,6 +149,7 @@ export class NewTokensApiService {
       );
   }
 
+  @Memo({ maxAge: 60 * 60 * 1_000 })
   public getTopTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {
@@ -179,6 +180,7 @@ export class NewTokensApiService {
       );
   }
 
+  @Memo({ maxAge: 60 * 60 * 1_000 })
   public getRestTokens(): Observable<
     Partial<Record<BlockchainName, { list: Token[]; total: number; haveMore: boolean }>>
   > {

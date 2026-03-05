@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
@@ -14,10 +15,18 @@ export class PrivacycashTransferPageComponent {
 
   private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
 
-  public async transfer({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
       const receiverAddr = this.targetNetworkAddressService.address;
-      await this.privacycashSwapService.transfer(token, receiverAddr);
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Transfer tokens',
+            action: () => this.privacycashSwapService.transfer(token, receiverAddr)
+          }
+        ]
+      });
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

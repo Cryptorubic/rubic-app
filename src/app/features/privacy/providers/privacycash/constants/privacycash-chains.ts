@@ -6,9 +6,8 @@ export type PrivacycashSupportedChain = (typeof PRIVACYCASH_SUPPORTED_CHAINS)[nu
 
 export const PRIVACYCASH_SUPPORTED_TOKENS: Record<PrivacycashSupportedChain, string[]> = {
   [BLOCKCHAIN_NAME.SOLANA]: [
-    nativeTokensList.SOLANA.address.toLowerCase(),
-    'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'.toLowerCase(),
-    'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'.toLowerCase(),
-    'FLJYGHpCCcfYUdzhcfHSeSd2peb5SMajNWaCsRnhpump'.toLowerCase()
+    nativeTokensList.SOLANA.address,
+    'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+    'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
   ]
 };
