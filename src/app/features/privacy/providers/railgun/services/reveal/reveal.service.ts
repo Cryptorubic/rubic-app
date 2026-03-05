@@ -7,7 +7,6 @@ import {
   TransactionGasDetails,
   TXIDVersion
 } from '@railgun-community/shared-models';
-import { MnemonicService } from '@features/privacy/providers/railgun/services/mnemonic/mnemonic.service';
 import {
   getGasDetailsForTransaction,
   serializeERC20Transfer
@@ -17,39 +16,44 @@ import {
   generateUnshieldProof,
   populateProvedUnshield
 } from '@railgun-community/wallet';
-import { EncryptionService } from '@features/privacy/providers/railgun/services/encryption/encryption.service';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { fromRubicToPrivateChainMap } from '@features/privacy/providers/railgun/constants/network-map';
+import { PublicClient } from 'viem';
+import { BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RevealService {
-  private readonly mnemonicService = inject(MnemonicService);
-
-  private readonly encryptionService = inject(EncryptionService);
-
   private readonly ngZone = inject(NgZone);
+
+  private readonly railgunFacade = inject(RailgunFacadeService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
   constructor() {}
 
   public async unshieldTokens(
     railginId: string,
     tokenAddress: string,
-    tokenAmount: string
+    tokenAmount: string,
+    fromBlockchain: BlockchainName
   ): Promise<void> {
-    const { wallet } = this.mnemonicService.getProviderWallet();
-    const keys = await this.encryptionService.unlockFromPassword(
-      this.encryptionService.lastUsedPassword
-    );
+    const password = 'password123';
+    const keys = await this.railgunFacade.unlockFromPassword(password);
 
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), wallet.address)
+      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
     ];
 
     const gasEstimate = await this.erc20UnshieldGasEstimate(
-      NetworkName.Polygon,
+      fromRubicToPrivateChainMap[fromBlockchain],
       railginId,
       keys,
-      erc20AmountRecipients
+      erc20AmountRecipients,
+      fromBlockchain
     );
 
     console.log('ERC20 UNSHIELD gasEstimate: ', gasEstimate);
@@ -63,11 +67,16 @@ export class RevealService {
       1n
     );
 
+    const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
+
+    // @ts-ignore
+    const publicClient = adapter.public as PublicClient;
+
     const transactionGasDetails = await getGasDetailsForTransaction(
       NetworkName.Polygon,
       gasEstimate,
       true,
-      wallet
+      publicClient
     );
 
     const overallBatchMinGasPrice = await calculateGasPrice(transactionGasDetails);
@@ -82,25 +91,33 @@ export class RevealService {
       transactionGasDetails
     );
 
-    const sentTx = await wallet.sendTransaction(transaction);
-    console.log(sentTx);
-    await sentTx.wait();
+    await adapter.signer.sendTransaction({
+      txOptions: {
+        to: transaction.to,
+        data: transaction.data,
+        value: transaction.value
+      }
+    });
   }
 
   private async erc20UnshieldGasEstimate(
     network: NetworkName,
     railgunWalletID: string,
     encryptionKey: string,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    fromBlockchain: BlockchainName
   ): Promise<bigint> {
     const sendWithPublicWallet = true;
-    const { wallet } = this.mnemonicService.getProviderWallet();
+    const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
+
+    // @ts-ignore
+    const publicClient = adapter.public as PublicClient;
 
     const originalGasDetails = await getGasDetailsForTransaction(
       network,
       0n,
       sendWithPublicWallet,
-      wallet
+      publicClient
     );
     // dont setup broadcaster connection for simplicity.
     const feeTokenDetails: unknown = undefined;

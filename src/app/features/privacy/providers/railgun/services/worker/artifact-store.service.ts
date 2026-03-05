@@ -1,9 +1,5 @@
-import { Injectable } from '@angular/core';
 import { ArtifactStore } from '@railgun-community/wallet';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class ArtifactStoreService {
   private get rootDir(): Promise<FileSystemDirectoryHandle> {
     return navigator.storage.getDirectory();

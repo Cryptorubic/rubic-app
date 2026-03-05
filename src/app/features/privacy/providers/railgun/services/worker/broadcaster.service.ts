@@ -1,13 +1,7 @@
-import { Injectable } from '@angular/core';
 import { WakuBroadcasterClient } from '@railgun-community/waku-broadcaster-client-web';
 import { Chain, SelectedBroadcaster } from '@railgun-community/shared-models';
-import { OutsideZone } from '@shared/decorators/outside-zone';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class BroadcasterService {
-  @OutsideZone
   public async initBroadcaster(chain: Chain): Promise<void> {
     const config = {
       feeExpirationTimeout: 30_000,
@@ -21,12 +15,10 @@ export class BroadcasterService {
     await WakuBroadcasterClient.start(chain, config, statusCallback);
   }
 
-  @OutsideZone
   public async changeBroadcasterChain(chain: Chain): Promise<void> {
     await WakuBroadcasterClient.setChain(chain);
   }
 
-  @OutsideZone
   public async findBroadcaster(chain: Chain, tokenAddress: string): Promise<SelectedBroadcaster> {
     const selectedBroadcaster = await WakuBroadcasterClient.findBestBroadcaster(
       chain,

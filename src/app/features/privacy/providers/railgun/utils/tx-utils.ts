@@ -11,7 +11,8 @@ import {
   type TransactionGasDetails
 } from '@railgun-community/shared-models';
 import { getShieldPrivateKeySignatureMessage, NFTTokenType } from '@railgun-community/wallet';
-import { keccak256, type HDNodeWallet, type Wallet } from 'ethers';
+import { keccak256 } from 'ethers';
+import { PublicClient, WalletClient } from 'viem';
 
 /**
  * Generates a shield private key signature by signing a predefined message with the provided wallet
@@ -20,9 +21,16 @@ import { keccak256, type HDNodeWallet, type Wallet } from 'ethers';
  * @param wallet - The wallet (Wallet or HDNodeWallet) used to sign the shield signature message
  * @returns A Promise that resolves to the shield private key signature as a hex string
  */
-export const getShieldSignature = async (wallet: Wallet | HDNodeWallet): Promise<string> => {
+export const getShieldSignature = async (
+  client: WalletClient,
+  walletAddress: string
+): Promise<string> => {
   const shieldSignatureMessage = getShieldPrivateKeySignatureMessage();
-  const shieldPrivateKey = keccak256(await wallet.signMessage(shieldSignatureMessage));
+  const signedMessage = await client.signMessage({
+    account: walletAddress as `0x${string}`,
+    message: { raw: shieldSignatureMessage as `0x${string}` }
+  });
+  const shieldPrivateKey = keccak256(signedMessage);
   return shieldPrivateKey;
 };
 
@@ -136,20 +144,13 @@ export const getGasDetailsForTransaction = async (
   network: NetworkName,
   gasEstimate: bigint,
   sendWithPublicWallet: boolean,
-  wallet: Wallet | HDNodeWallet
+  client: PublicClient
 ) => {
   const evmGasType: EVMGasType = getEVMGasTypeForTransaction(network, sendWithPublicWallet);
 
   let gasDetails: TransactionGasDetails;
 
-  // populate tx
-  // send 1 wei to self. get gas details
-  // THIS IS AN INSECURE WAY TO GET GAS ESTIMATE
-  // DO NOT USE IN PRODUCTION
-  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.populateTransaction({
-    to: wallet.address,
-    value: 1n
-  });
+  const { maxFeePerGas, maxPriorityFeePerGas } = await client.estimateFeesPerGas();
 
   switch (evmGasType) {
     case EVMGasType.Type0:
@@ -175,10 +176,9 @@ export const getGasDetailsForTransaction = async (
 };
 
 export const getOriginalGasDetailsForTransaction = async (
-  wallet: Wallet | HDNodeWallet,
   network: NetworkName,
-  sendWithPublicWallet: boolean
+  client: PublicClient
 ): Promise<TransactionGasDetails> => {
-  const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
+  const gasDetails = await getGasDetailsForTransaction(network, 0n, true, client);
   return gasDetails;
 };

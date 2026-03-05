@@ -41,7 +41,8 @@ export class RailgunRevealPageComponent {
       await this.revealService.unshieldTokens(
         this.railgunId,
         token.address,
-        bigintAmount.toString()
+        bigintAmount.toString(),
+        token.blockchain
       );
     } finally {
       loadingCallback();

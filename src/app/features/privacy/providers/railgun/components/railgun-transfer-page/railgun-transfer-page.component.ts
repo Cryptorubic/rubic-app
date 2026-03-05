@@ -82,7 +82,8 @@ export class RailgunTransferPageComponent {
       await this.revealService.unshieldTokens(
         this.railgunId,
         this._revealAsset$.value.address,
-        bigintAmount.toString()
+        bigintAmount.toString(),
+        this._revealAsset$.value.blockchain
       );
     } finally {
       this._loading$.next(false);

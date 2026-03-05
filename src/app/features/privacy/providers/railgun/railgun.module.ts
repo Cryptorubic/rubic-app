@@ -19,6 +19,10 @@ import { RailgunRevealPageComponent } from '@features/privacy/providers/railgun/
 import { RailgunAccountInfoComponent } from '@features/privacy/providers/railgun/components/railgun-account-info/railgun-account-info.component';
 import { RailgunTransferPageComponent } from '@features/privacy/providers/railgun/components/railgun-transfer-page/railgun-transfer-page.component';
 import { SharedPrivacyProvidersModule } from '@features/privacy/providers/shared-privacy-providers/shared-privacy-providers.module';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
+import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
+import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
 
 @NgModule({
   declarations: [
@@ -43,6 +47,7 @@ import { SharedPrivacyProvidersModule } from '@features/privacy/providers/shared
     TuiButtonModule,
     TuiStepperModule,
     SharedPrivacyProvidersModule
-  ]
+  ],
+  providers: [RailgunFacadeService, HideService, RevealService, PrivateSwapService]
 })
 export class RailgunModule {}

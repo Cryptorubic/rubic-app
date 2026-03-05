@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import {
   Chain,
   MerkletreeScanUpdateEvent,
@@ -13,11 +12,8 @@ import {
   setOnUTXOMerkletreeScanCallback,
   refreshBalances
 } from '@railgun-community/wallet';
-import { OutsideZone } from '@shared/decorators/outside-zone';
+import { postWorkerMessage } from '@features/privacy/providers/railgun/services/worker/utils';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class BalanceControllerService {
   private readonly destroy$ = new Subject<void>();
 
@@ -52,37 +48,31 @@ export class BalanceControllerService {
 
   private pollSub?: Subscription;
 
-  public ngOnDestroy(): void {
-    this.stopPolling();
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   /**
    * Install callbacks right after Engine initialization.
    * Safe to call multiple times (idempotent).
    */
-  @OutsideZone
   public installCallbacks(): void {
     if (this.callbacksInstalled) return;
 
     // Will get called throughout a private balance scan.
     setOnUTXOMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
-      this._utxoScan$.next(eventData);
+      postWorkerMessage({ method: 'utxoScanUpdate', response: eventData.progress });
     });
 
     // Will get called throughout a private balance scan.
     setOnTXIDMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
-      this._txIdScan$.next(eventData);
+      postWorkerMessage({ method: 'txidScanUpdate', response: eventData });
     });
 
     // Will get called at end of scan per txidVersion + balanceBucket.
-    setOnBalanceUpdateCallback((event: RailgunBalancesEvent) => {
-      const prev = this._balancesByBucket$.value;
-      this._balancesByBucket$.next({
-        ...prev,
-        [event.balanceBucket]: event
-      });
+    setOnBalanceUpdateCallback((eventData: RailgunBalancesEvent) => {
+      postWorkerMessage({ method: 'balanceUpdate', response: eventData });
+      // const prev = this._balancesByBucket$.value;
+      // this._balancesByBucket$.next({
+      //   ...prev,
+      //   [event.balanceBucket]: event
+      // });
     });
 
     this.callbacksInstalled = true;
@@ -92,7 +82,6 @@ export class BalanceControllerService {
    * Triggers a private balance refresh (scan) for provided wallet IDs on a chain.
    * This is the core "Updating Balances" operation.
    */
-  @OutsideZone
   public async refreshBalances(chain: Chain, walletIds: string[]): Promise<void> {
     // refreshBalances triggers scans and then balance callback events.
     await refreshBalances(chain, walletIds);
@@ -102,7 +91,6 @@ export class BalanceControllerService {
    * Optional: start a polling loop (e.g. every 60s) that calls refreshBalances.
    * Mirrors the idea from docs where refreshBalances can run repeatedly.
    */
-  @OutsideZone
   public startPolling(params: {
     chain: Chain;
     walletIds: string[];

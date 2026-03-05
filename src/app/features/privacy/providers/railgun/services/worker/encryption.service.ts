@@ -1,16 +1,8 @@
-import { inject, Injectable } from '@angular/core';
 import { getRandomBytes, pbkdf2 } from '@railgun-community/wallet';
 import { Store } from '@core/services/store/models/store';
-import { StoreService } from '@core/services/store/store.service';
 import { StoredCreds } from '@features/privacy/providers/railgun/models/encryption-types';
-import { OutsideZone } from '@shared/decorators/outside-zone';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class EncryptionService {
-  public lastUsedPassword: string | null = null;
-
   // Storage key is intentionally versioned for future migrations
   private readonly storageKey: keyof Store = 'RAILGUN_ENCRYPTION_CREDS_V1';
 
@@ -21,13 +13,11 @@ export class EncryptionService {
 
   private readonly storedHashIterations = 1_000_000;
 
-  private readonly storeService = inject(StoreService);
-
   /**
    * Returns true if credentials exist in storage.
    */
-  public hasCreds(): boolean {
-    return !!this.readCredsSafe();
+  public hasCreds(storedCreds: string): boolean {
+    return !!this.readCredsSafe(storedCreds);
   }
 
   /**
@@ -35,7 +25,6 @@ export class EncryptionService {
    * Returns derived encryptionKey (do NOT store it).
    */
   public async setupFromPassword(password: string): Promise<string> {
-    this.lastUsedPassword = password;
     const salt = this.generateSaltHex(16);
 
     const [encryptionKey, passwordHashStored] = await Promise.all([
@@ -50,7 +39,8 @@ export class EncryptionService {
       createdAt: new Date().toISOString()
     };
 
-    this.storeService.setItem(this.storageKey, JSON.stringify(creds));
+    this.saveStoredCreds(JSON.stringify(creds));
+
     return encryptionKey;
   }
 
@@ -58,10 +48,8 @@ export class EncryptionService {
    * Validates password against stored hash and returns derived encryptionKey.
    * Throws if password is incorrect or creds are missing/corrupted.
    */
-  @OutsideZone
-  public async unlockFromPassword(password: string): Promise<string> {
-    this.lastUsedPassword = password;
-    const creds = this.readCreds();
+  public async unlockFromPassword(password: string, storedCreds: string): Promise<string> {
+    const creds = this.readCreds(storedCreds);
     const salt = creds.salt;
 
     const [encryptionKey, passwordHash] = await Promise.all([
@@ -77,19 +65,16 @@ export class EncryptionService {
   }
 
   /**
-   * Deletes stored creds (user will lose access unless they remember/export mnemonic elsewhere).
-   */
-  public clear(): void {
-    this.storeService.deleteItem(this.storageKey);
-  }
-
-  /**
    * Optional helper: rotate password (requires old password to prove ownership).
    * Returns new encryptionKey derived from new password.
    */
-  public async rotatePassword(oldPassword: string, newPassword: string): Promise<string> {
+  public async rotatePassword(
+    oldPassword: string,
+    newPassword: string,
+    storedCreds: string
+  ): Promise<string> {
     // Validate old password first (throws if incorrect)
-    await this.unlockFromPassword(oldPassword);
+    await this.unlockFromPassword(oldPassword, storedCreds);
 
     // Re-setup with new password (new salt)
     return this.setupFromPassword(newPassword);
@@ -109,20 +94,20 @@ export class EncryptionService {
     return getRandomBytes(bytes);
   }
 
-  private readCreds(): StoredCreds {
-    const creds = this.readCredsSafe();
+  private readCreds(storedCreds: string): StoredCreds {
+    const creds = this.readCredsSafe(storedCreds);
     if (!creds) {
       throw new Error('No stored encryption credentials found.');
     }
     return creds;
   }
 
-  private readCredsSafe(): StoredCreds | null {
-    const raw = this.storeService.getItem(this.storageKey);
-    if (!raw) return null;
+  private readCredsSafe(storedCreds: string): StoredCreds | null {
+    // const raw = this.storeService.getItem(this.storageKey);
+    if (!storedCreds) return null;
 
     try {
-      const parsed = JSON.parse(String(raw)) as StoredCreds;
+      const parsed = JSON.parse(String(storedCreds)) as StoredCreds;
       if (parsed?.version !== 1 || !parsed?.salt || !parsed?.passwordHashStored) {
         return null;
       }
@@ -130,5 +115,9 @@ export class EncryptionService {
     } catch {
       return null;
     }
+  }
+
+  private saveStoredCreds(creds: string): void {
+    postMessage({ method: 'saveCreds', response: { storageKey: this.storageKey, creds: creds } });
   }
 }

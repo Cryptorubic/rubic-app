@@ -5,12 +5,12 @@ import { SwapFormInput } from '@features/trade/models/swap-form-controls';
 
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { BlockchainName, BlockchainsInfo, compareAddresses, Token } from '@cryptorubic/core';
-import { BalanceControllerService } from '@features/privacy/providers/railgun/services/balance-controller/balance-controller.service';
 import { inject } from '@angular/core';
 import { switchMap } from 'rxjs/operators';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 
 export class RailgunRevealFacadeService extends TokensFacadeService {
-  private readonly balanceController = inject(BalanceControllerService);
+  private readonly railgunFacade = inject(RailgunFacadeService);
 
   public override getTokensList(
     type: AssetListType,
@@ -18,7 +18,7 @@ export class RailgunRevealFacadeService extends TokensFacadeService {
     direction: 'from' | 'to',
     inputValue: SwapFormInput
   ): Observable<AvailableTokenAmount[]> {
-    return this.balanceController.balancesSnapshot$.pipe(
+    return this.railgunFacade.balancesSnapshot$.pipe(
       switchMap(snapshot => {
         const availableTokensForBlockchains = snapshot.Spendable.erc20Amounts;
         const blockchainName = BlockchainsInfo.getBlockchainNameById(snapshot.Spendable.chain.id);

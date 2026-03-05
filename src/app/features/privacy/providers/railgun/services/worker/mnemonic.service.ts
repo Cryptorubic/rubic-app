@@ -1,0 +1,39 @@
+import { Mnemonic, randomBytes } from 'ethers';
+import { NETWORK_CONFIG, RailgunWalletInfo } from '@railgun-community/shared-models';
+import { createRailgunWallet, loadWalletByID } from '@railgun-community/wallet';
+import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
+
+export class MnemonicService {
+  private createMnemonic(): string {
+    const mnemonic = Mnemonic.fromEntropy(randomBytes(16)).phrase.trim();
+    return mnemonic;
+  }
+
+  public async createPrivateWallet(
+    // password: string,
+    mnemonic: string,
+    chain: PrivacySupportedNetworks,
+    encryptionKey: string
+  ): Promise<RailgunWalletInfo> {
+    // const encryptionKey = await this.getEncryptionKey(password);
+
+    const { deploymentBlock } = NETWORK_CONFIG[chain];
+    const creationBlockMap = {
+      [chain]: deploymentBlock
+    };
+
+    const railgunWalletInfo = await createRailgunWallet(encryptionKey, mnemonic, creationBlockMap);
+    const walletInfo = await loadWalletByID(encryptionKey, railgunWalletInfo.id, false);
+    return walletInfo;
+  }
+
+  public async loadPrivateWallet(
+    // password: string,
+    walletId: string,
+    encryptionKey: string
+  ): Promise<RailgunWalletInfo> {
+    // const encryptionKey = await this.getEncryptionKey(password);
+    const walletInfo = await loadWalletByID(encryptionKey, walletId, false);
+    return walletInfo;
+  }
+}
