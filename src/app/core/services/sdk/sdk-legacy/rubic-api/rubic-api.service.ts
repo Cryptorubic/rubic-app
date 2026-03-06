@@ -11,6 +11,7 @@ import {
   EvmTransactionConfig,
   InsufficientFundsError,
   InsufficientFundsGasPriceValueError,
+  rubicApiLinkMapping,
   RubicSdkError,
   SimulationFailedError,
   TradeExpiredError,
@@ -47,15 +48,16 @@ import { TurnstileService } from '@core/services/turnstile/turnstile.service';
 import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RubicApiService {
   private get apiUrl(): string {
-    return 'http://localhost:3000';
-    // const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
-    // return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
+    const rubicApiLink = rubicApiLinkMapping[ENVIRONMENT.environmentName];
+
+    return rubicApiLink ? rubicApiLink : 'https://dev1-api-v2.rubic.exchange';
   }
 
   private readonly _socket$ = new BehaviorSubject<Socket | null>(null);
