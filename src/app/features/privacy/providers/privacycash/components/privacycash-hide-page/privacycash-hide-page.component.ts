@@ -6,8 +6,6 @@ import { PrivacycashPublicTokensFacadeService } from '../../services/common/toke
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { firstValueFrom } from 'rxjs';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
-import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -22,22 +20,15 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 export class PrivacycashHidePageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
 
-  private readonly targetNetworkAddressService = inject(TargetNetworkAddressService);
-
-  private readonly walletConnectorService = inject(WalletConnectorService);
-
   constructor() {}
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      const receiverAddr = this.targetNetworkAddressService.address
-        ? this.targetNetworkAddressService.address
-        : this.walletConnectorService.address;
       const preview$ = openPreview({
         steps: [
           {
             label: 'Hide Tokens',
-            action: () => this.privacycashSwapService.shield(token, receiverAddr)
+            action: () => this.privacycashSwapService.shield(token)
           }
         ]
       });

@@ -110,27 +110,24 @@ export class PrivacycashSwapService {
       srcToken.address,
       srcToken.weiAmount.toNumber(),
       senderPK,
-      senderPK,
       (tx: VersionedTransaction) => wallet.signTransaction(tx)
     );
     await this.makeFullWithdraw(srcToken.address, senderPK, receiverPK);
-    this.notificationsService.showInfo(`Successfull transfer. Check receiver wallet balance.`);
+    this.notificationsService.showInfo(`Transfer successful. Check the receiver’s wallet balance.`);
     this.privacycashTokensService.updatePrivateBalances();
   }
 
-  public async shield(token: TokenAmount, receiverAddr: string): Promise<void> {
+  public async shield(token: TokenAmount): Promise<void> {
     const userPK = new PublicKey(this.walletConnectorService.address);
-    const receiverPK = new PublicKey(receiverAddr);
     const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
 
     await this.makeDeposit(
       toPrivacyCashTokenAddr(token.address),
       token.weiAmount.toNumber(),
       userPK,
-      receiverPK,
       (tx: VersionedTransaction) => wallet.signTransaction(tx)
     );
-    this.notificationsService.showInfo(`Successfull shileding. Check your private balance.`);
+    this.notificationsService.showInfo(`Shielding successful. Check your private balance.`);
     this.privacycashTokensService.updatePrivateBalances();
   }
 
@@ -144,7 +141,9 @@ export class PrivacycashSwapService {
       senderPK,
       recipientPK
     );
-    this.notificationsService.showInfo(`Successfull unshileding. Check receiver wallet balance.`);
+    this.notificationsService.showInfo(
+      'Unshielding successful. Check the receiver’s wallet balance.'
+    );
     this.privacycashTokensService.updatePrivateBalances();
   }
 
@@ -170,7 +169,7 @@ export class PrivacycashSwapService {
     const srcTokenUsdAmount = srcTokenUsdPricePerOne * Number(srcAmountNonWei);
 
     if (!compareAddresses(srcToken.address, dstToken.address) && srcTokenUsdAmount < 10) {
-      this.notificationsService.showWarning(`Amount should be more than 10$ for swap.`);
+      this.notificationsService.showWarning(`Amount must be more than $10 to perform a swap.`);
       return;
     }
 
@@ -235,18 +234,25 @@ export class PrivacycashSwapService {
     );
 
     // deposit destination token from burner wallet
-    this.notificationsService.showInfo(`Depositing target tokens to private wallet...`);
+    this.notificationsService.showInfo(`Shielding target tokens...`);
     await this.makeDeposit(
       dstToken.address,
       dstTokenDepositAmount.toNumber(),
       burnerKeypair.publicKey,
-      receiverPK,
       (tx: VersionedTransaction) => {
         tx.sign([burnerKeypair]);
         return Promise.resolve(tx);
       }
     );
-    this.notificationsService.showInfo(`Successfull swap. Check receiver's private balance.`);
+
+    // withdraw destination token from burner wallet to receiver's public balance
+    this.notificationsService.showInfo(`Unshielding target tokens...`);
+    await this.makeFullWithdraw(
+      toPrivacyCashTokenAddr(dstToken.address),
+      burnerKeypair.publicKey,
+      receiverPK
+    );
+    this.notificationsService.showInfo('Swap successful. Check the receiver’s wallet balance.');
     this.privacycashTokensService.updatePrivateBalances();
   }
 
@@ -259,7 +265,6 @@ export class PrivacycashSwapService {
     tokenAddr: string,
     depositAmountWei: number,
     depositorWalletPK: PublicKey,
-    privateBalanceReceiverPK: PublicKey,
     transactionSignerFn: (tx: VersionedTransaction) => Promise<VersionedTransaction>
   ): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
@@ -277,7 +282,7 @@ export class PrivacycashSwapService {
           amount_in_lamports: depositAmountWei,
           connection,
           encryptionService,
-          publicKey: privateBalanceReceiverPK,
+          publicKey: depositorWalletPK,
           signer: depositorWalletPK,
           transactionSigner: transactionSignerFn,
           keyBasePath: pathToZkProof,
@@ -289,7 +294,7 @@ export class PrivacycashSwapService {
           base_units: depositAmountWei,
           connection,
           encryptionService,
-          publicKey: privateBalanceReceiverPK,
+          publicKey: depositorWalletPK,
           signer: depositorWalletPK,
           transactionSigner: transactionSignerFn,
           keyBasePath: pathToZkProof,
