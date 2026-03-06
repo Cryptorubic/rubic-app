@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
-import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
+import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -23,7 +23,7 @@ import { PrivacycashPublicTokensFacadeService } from '../../services/common/toke
   providers: [
     { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
+    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
   ]
 })
 export class PrivacycashSwapPageComponent {

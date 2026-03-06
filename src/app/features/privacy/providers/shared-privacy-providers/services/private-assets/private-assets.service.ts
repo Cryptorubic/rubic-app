@@ -17,6 +17,7 @@ export class PrivateAssetsService extends AssetsService {
     private readonly supportedBlockchains: Readonly<BlockchainName[]>
   ) {
     super(type);
+    this.postConstructorInit();
   }
 
   public isDisabledFrom(blockchain: AvailableBlockchain): boolean {
