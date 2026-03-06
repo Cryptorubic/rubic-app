@@ -66,7 +66,10 @@ export class TransferTokensWindowComponent {
         fromToken: transferAsset,
         toToken: transferAsset,
         fromAmount: this._transferAmount$.value,
-        toAmount: { actualValue: new BigNumber(0), visibleValue: '0' },
+        toAmount: {
+          actualValue: new BigNumber(options.dstTokenAmount || 0),
+          visibleValue: options.dstTokenAmount || '0'
+        },
         swapType: 'transfer',
         swapOptions: options
       });

@@ -131,6 +131,7 @@ export abstract class BitcoinCrossChainTrade extends CrossChainTrade<
       receiver: receiverAddress,
       id: this.apiResponse.id,
       enableChecks: !testMode,
+      privacyRefCode: this.privacyRefCode,
       ...(publicKey && { publicKey })
     };
 
