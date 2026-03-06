@@ -6,7 +6,6 @@ import { PrivateSwapEvent } from '../../../shared-privacy-providers/models/priva
 import { toPrivacyCashTokenAddr } from '../../utils/converter';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
-import { PrivacycashPrivateTokensFacadeService } from '../../services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 import { Token } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
@@ -14,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
+import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 
 @Component({
   selector: 'app-privacycash-swap-page',
@@ -23,7 +23,7 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
   providers: [
     { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
     { provide: FromAssetsService, useClass: PrivacycashPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: PrivacycashPrivateTokensFacadeService }
+    { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
   ]
 })
 export class PrivacycashSwapPageComponent {

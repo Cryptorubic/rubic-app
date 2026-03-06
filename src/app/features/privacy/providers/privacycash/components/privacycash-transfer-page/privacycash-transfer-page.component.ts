@@ -3,12 +3,20 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { firstValueFrom } from 'rxjs';
+import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
+import { PrivacycashPrivateAssetsService } from '../../services/common/assets-services/privacycash-private-assets.service';
 
 @Component({
   selector: 'app-privacycash-transfer-page',
   templateUrl: './privacycash-transfer-page.component.html',
   styleUrls: ['./privacycash-transfer-page.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: ToAssetsService, useClass: PrivacycashPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: PrivacycashPublicTokensFacadeService }
+  ]
 })
 export class PrivacycashTransferPageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);

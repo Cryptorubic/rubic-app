@@ -113,6 +113,7 @@ export abstract class AssetsService {
       this.walletConnectorService.networkChange$.pipe(startWith(null))
     ),
     map(([sourceChains, query, filters, networkFromWallet]) => {
+      console.log('sourceChains ==>', sourceChains);
       let chains = sourceChains.filter(
         chain =>
           this.filterQueryBlockchain(query, chain) &&
@@ -185,6 +186,7 @@ export abstract class AssetsService {
     this.setAvailableBlockchains();
     this.blockchainsToShow = this._availableBlockchains;
     this.assetsBlockchainsToShow = this._availableBlockchains;
+    console.log('this._availableBlockchains ==> ', this._availableBlockchains);
     this.subscribeOnQueryParams();
   }
 

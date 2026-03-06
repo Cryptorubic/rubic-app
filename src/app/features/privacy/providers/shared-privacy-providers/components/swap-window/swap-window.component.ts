@@ -21,6 +21,7 @@ import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { PrivateSwapFormConfig } from '../../models/swap-form-types';
 
 @Component({
   selector: 'app-swap-window',
@@ -33,7 +34,16 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 export class SwapWindowComponent implements OnInit {
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() creationConfig: PrivateSwapFormConfig = {
+    withActionButton: true,
+    withDstAmount: true,
+    withReceiver: true,
+    withSrcAmount: true
+  };
+
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
+
+  @Output() formChanged = new EventEmitter<PrivateSwapInfo>();
 
   private readonly modalService = inject(PrivateModalsService);
 
@@ -95,10 +105,11 @@ export class SwapWindowComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+    this.subscribeForCalculation();
   }
 
-  private subscribeOnFormInputChanged(): void {
-    this._swapInfo$
+  private subscribeForCalculation(): void {
+    this.swapInfo$
       .pipe(
         debounceTime(500),
         distinctUntilChanged((prev, curr) => {
@@ -118,6 +129,12 @@ export class SwapWindowComponent implements OnInit {
         }
         this.calculate(swapInfo);
       });
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this.swapInfo$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
   private assetsNotSelected(): boolean {

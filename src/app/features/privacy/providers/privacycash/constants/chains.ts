@@ -1,6 +1,6 @@
 import { BLOCKCHAIN_NAME, nativeTokensList } from '@cryptorubic/core';
 
-export const PRIVACYCASH_SUPPORTED_CHAINS = [BLOCKCHAIN_NAME.SOLANA];
+export const PRIVACYCASH_SUPPORTED_CHAINS = [BLOCKCHAIN_NAME.SOLANA] as const;
 
 export type PrivacycashSupportedChain = (typeof PRIVACYCASH_SUPPORTED_CHAINS)[number];
 

@@ -15,3 +15,7 @@ export const fromRubicToPrivateChainMap = Object.fromEntries(
     privateChain
   ])
 ) as Record<BlockchainName, PrivacySupportedNetworks>;
+
+export const RAILGUN_SUPPORTED_CHAINS = Object.values(fromPrivateToRubicChainMap);
+
+export type RailgunSupportedChain = (typeof RAILGUN_SUPPORTED_CHAINS)[number];

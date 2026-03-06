@@ -3,7 +3,7 @@ import { MinimalToken } from '@app/shared/models/tokens/minimal-token';
 import {
   PRIVACYCASH_SUPPORTED_TOKENS,
   PrivacycashSupportedChain
-} from '../../../../constants/privacycash-chains';
+} from '../../../../constants/chains';
 import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 
 export function getMinimalTokensByChain(type: AssetListType): MinimalToken[] {

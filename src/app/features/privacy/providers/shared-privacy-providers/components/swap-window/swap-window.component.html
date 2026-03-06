@@ -15,6 +15,7 @@
     ></app-asset-selector>
     <div right class="input-container">
       <app-amount-transput
+        *ngIf="creationConfig.withSrcAmount"
         formType="from"
         [selectedToken]="state.swapInfo.fromAsset"
         inputMode="input"
@@ -38,6 +39,7 @@
     ></app-asset-selector>
     <div right class="input-container">
       <app-amount-transput
+        *ngIf="creationConfig.withDstAmount"
         formType="to"
         [selectedToken]="state.swapInfo.toAsset"
         inputMode="output"
@@ -48,12 +50,16 @@
   </app-input-output-container>
 
   <app-target-network-address
-    *ngIf="state.displayReceiver"
+    *ngIf="creationConfig.withReceiver && state.displayReceiver"
     @receiverAnimation
   ></app-target-network-address>
 
-  <div class="buttons-container">
+  <div
+    *ngIf="creationConfig.withActionButton || creationConfig.withReceiver"
+    class="buttons-container"
+  >
     <button
+      *ngIf="creationConfig.withActionButton"
       tuiButton
       [showLoader]="state.loading"
       [disabled]="state.loading || swapInfoNotFilled || notEnoughBalance"
@@ -64,6 +70,9 @@
     >
       Review Order
     </button>
-    <app-receiver-address-button (handleClick)="toggleReceiver()"></app-receiver-address-button>
+    <app-receiver-address-button
+      *ngIf="creationConfig.withReceiver"
+      (handleClick)="toggleReceiver()"
+    ></app-receiver-address-button>
   </div>
 </app-window-container>
