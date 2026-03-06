@@ -5,6 +5,7 @@ import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.ser
 import { PrivacycashPublicTokensFacadeService } from '../../services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPublicAssetsService } from '../../services/common/assets-services/privacycash-public-assets.service';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-privacycash-hide-page',
@@ -21,9 +22,17 @@ export class PrivacycashHidePageComponent {
 
   constructor() {}
 
-  public async hide({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.privacycashSwapService.shield(token);
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Hide Tokens',
+            action: () => this.privacycashSwapService.shield(token)
+          }
+        ]
+      });
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

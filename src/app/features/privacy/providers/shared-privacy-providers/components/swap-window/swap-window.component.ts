@@ -9,7 +9,14 @@ import {
   Self,
   inject
 } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  startWith,
+  takeUntil
+} from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
@@ -21,6 +28,8 @@ import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { PrivateSwapFormConfig } from '../../models/swap-form-types';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-swap-window',
@@ -33,7 +42,22 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 export class SwapWindowComponent implements OnInit {
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() creationConfig: PrivateSwapFormConfig = {
+    withActionButton: true,
+    withDstAmount: true,
+    withReceiver: true,
+    withSrcAmount: true
+  };
+
+  @Input() set receiverAddressRequired(value: boolean) {
+    if (value) {
+      this._displayReceiver$.next(true);
+    }
+  }
+
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
+
+  @Output() formChanged = new EventEmitter<PrivateSwapInfo>();
 
   private readonly modalService = inject(PrivateModalsService);
 
@@ -91,26 +115,31 @@ export class SwapWindowComponent implements OnInit {
     };
   }
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly targetAddressService: TargetNetworkAddressService
+  ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+    this.subscribeForCalculation();
   }
 
-  private subscribeOnFormInputChanged(): void {
-    this._swapInfo$
-      .pipe(
-        debounceTime(500),
+  private subscribeForCalculation(): void {
+    combineLatest([
+      this._swapInfo$.pipe(
         distinctUntilChanged((prev, curr) => {
           const inputNotChanged =
             prev.fromAmount === curr.fromAmount &&
             compareTokens(prev.fromAsset, curr.fromAsset) &&
             compareTokens(prev.toAsset, curr.toAsset);
           return inputNotChanged;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(swapInfo => {
+        })
+      ),
+      this.targetAddressService.address$.pipe(startWith(''))
+    ])
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(([swapInfo]) => {
         if (this.assetsNotSelected()) return;
         if (this.amountNotSet()) {
           this.patchSwapInfo({ toAmount: null });
@@ -118,6 +147,12 @@ export class SwapWindowComponent implements OnInit {
         }
         this.calculate(swapInfo);
       });
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this.swapInfo$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
   private assetsNotSelected(): boolean {
@@ -135,16 +170,17 @@ export class SwapWindowComponent implements OnInit {
   private async calculate(swapInfo: PrivateSwapInfo): Promise<void> {
     try {
       this._loading$.next(true);
-      const outAmountWei = await this.quoteAdapter.quoteCallback(
+      const { toAmountWei, tradeId } = await this.quoteAdapter.quoteCallback(
         swapInfo.fromAsset,
         swapInfo.toAsset,
         swapInfo.fromAmount
       );
       this.patchSwapInfo({
         toAmount: {
-          actualValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals),
-          visibleValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals).toFixed()
-        }
+          actualValue: Token.fromWei(toAmountWei, swapInfo.toAsset.decimals),
+          visibleValue: Token.fromWei(toAmountWei, swapInfo.toAsset.decimals).toFixed()
+        },
+        tradeId
       });
     } catch (err) {
       await this.quoteAdapter.quoteFallback(

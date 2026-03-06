@@ -11,4 +11,5 @@ export interface PrivateSwapInfo {
   toAsset: BalanceToken | null;
   fromAmount: SwapAmount | null;
   toAmount: SwapAmount | null;
+  tradeId?: string;
 }

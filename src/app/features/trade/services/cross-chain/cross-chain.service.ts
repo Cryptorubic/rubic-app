@@ -57,7 +57,7 @@ import { EvmCrossChainTrade } from '@app/core/services/sdk/sdk-legacy/features/c
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SwapTransactionOptions } from '@app/core/services/sdk/sdk-legacy/features/common/models/swap-transaction-options';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
-import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { PrivacyAuthService } from '@app/features/privacy/services/privacy-auth.service';
 
 @Injectable()
 export class CrossChainService {
@@ -92,7 +92,7 @@ export class CrossChainService {
     private readonly solanaGaslessService: SolanaGaslessService,
     private readonly rubicApiService: RubicApiService,
     private readonly tokensFacade: TokensFacadeService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly privacyAuthService: PrivacyAuthService
   ) {}
 
   public async calculateTrades(disabledTradeTypes: CrossChainTradeType[]): Promise<void> {
@@ -269,7 +269,8 @@ export class CrossChainService {
       solanaSponsorParams: {
         feePayer: SOLANA_SPONSOR,
         tradeId: trade.rubicId
-      }
+      },
+      privacyRefCode: this.privacyAuthService.refCode
     };
 
     try {
