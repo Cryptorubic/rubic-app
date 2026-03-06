@@ -1,0 +1,72 @@
+<app-window-container
+  *ngLet="{
+    fromAsset: fromAsset$ | async,
+    fromAmount: fromAmount$ | async,
+    toAsset: toAsset$ | async,
+    toAmount: toAmount$ | async,
+    loading: loading$ | async
+  } as state"
+>
+  <app-input-output-container [round]="'top'" [marginTop]="false">
+    <app-asset-selector
+      left
+      selectorType="to"
+      (handleAssetSelection)="openFromSelector()"
+      [asset]="state.fromAsset"
+      [isDisabled]="state.loading"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        [selectedToken]="state.fromAsset"
+        inputMode="input"
+        (amountUpdated)="updateFromInputValue($event)"
+        [amountValue]="state.fromAmount"
+      ></app-amount-transput>
+      <app-user-balance-container
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+  <app-input-output-container [round]="'bottom'" [marginTop]="false">
+    <app-asset-selector
+      left
+      selectorType="from"
+      (handleAssetSelection)="openToSelector()"
+      [asset]="state.toAsset"
+      [isDisabled]="state.loading"
+    ></app-asset-selector>
+    <div right class="input-container">
+      <app-amount-transput
+        [selectedToken]="state.toAsset"
+        inputMode="input"
+        [amountValue]="state.toAmount"
+      ></app-amount-transput>
+      <app-user-balance-container
+        (maxButtonClickEvent)="handleMaxButton()"
+      ></app-user-balance-container>
+    </div>
+  </app-input-output-container>
+
+  <button
+    [showLoader]="state.loading"
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    (click)="calculate()"
+  >
+    Calculate
+  </button>
+
+  <button
+    [showLoader]="state.loading"
+    [disabled]="!state.toAmount"
+    tuiButton
+    appearance="primary"
+    type="button"
+    size="m"
+    (click)="swap()"
+  >
+    Swap tokens
+  </button>
+</app-window-container>

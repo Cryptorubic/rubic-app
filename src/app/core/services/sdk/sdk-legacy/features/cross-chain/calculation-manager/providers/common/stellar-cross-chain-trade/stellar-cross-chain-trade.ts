@@ -17,8 +17,8 @@ import {
   TooLowAmountError,
   UserRejectError
 } from '@cryptorubic/web3';
-import { StellarTransactionConfig } from '@cryptorubic/web3/src/lib/utils/models/stellar-transaction-config';
-import { StellarAdapter } from '@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
+import { StellarTransactionConfig } from 'node_modules/@cryptorubic/web3/src/lib/utils/models/stellar-transaction-config';
+import { StellarAdapter } from 'node_modules/@cryptorubic/web3/src/lib/adapter/adapters/adapter-stellar/stellar-adapter';
 
 export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTransactionConfig> {
   public abstract override readonly from: PriceTokenAmount<StellarBlockchainName>;
@@ -118,6 +118,7 @@ export abstract class StellarCrossChainTrade extends CrossChainTrade<StellarTran
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
+      privacyRefCode: this.privacyRefCode,
       enableChecks: !testMode
     };
 

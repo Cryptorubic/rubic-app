@@ -1,0 +1,36 @@
+<div class="provider-element" (click)="handleClick()">
+  <div class="top">
+    <div class="top-layer-1">
+      <div class="provider-name">
+        <img [src]="providerInfo.icon" width="16" height="16" [alt]="'provider-icon'" />
+        <b>{{ providerInfo.name | titlecase }}</b>
+      </div>
+      <div *ngIf="providerInfo.shieldingDurationSecs" class="shielding-duration">
+        <b>{{ providerInfo.shieldingDurationSecs }} seconds shielding</b>
+        <img
+          src="assets/images/private-swaps/common/hint.svg"
+          width="16"
+          height="16"
+          [alt]="'hint-icon'"
+        />
+      </div>
+    </div>
+    <div class="top-layer-2">
+      <div class="privacy-type">
+        <img src="assets/images/private-swaps/common/shield.svg" width="15" height="15" />
+        <b>{{ providerInfo.privacyType }}</b>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="fee-size">
+      <img src="assets/images/private-swaps/common/fee.svg" width="15" height="15" />
+      <b>{{ providerInfo.feeSize }}</b>
+    </div>
+    <div class="security-percent">
+      <img src="assets/images/private-swaps/common/lock.svg" width="15" height="15" />
+      <b>{{ providerInfo.securityPercent }}%</b>
+    </div>
+  </div>
+</div>

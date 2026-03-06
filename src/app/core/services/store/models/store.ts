@@ -79,6 +79,8 @@ export type Store = {
   IS_RUSSIAN_IP: boolean;
 
   LOBSTR_WALLET_ADDRESS: string;
+
+  RAILGUN_ENCRYPTION_CREDS_V1: string;
 };
 
 export const storeRecord: Record<keyof Store, null> = {
@@ -99,5 +101,6 @@ export const storeRecord: Record<keyof Store, null> = {
   RUBIC_AGREEMENT_WITH_RULES_V1: null,
   RUBIC_TOTAL_VALUES: null,
   IS_RUSSIAN_IP: null,
-  LOBSTR_WALLET_ADDRESS: null
+  LOBSTR_WALLET_ADDRESS: null,
+  RAILGUN_ENCRYPTION_CREDS_V1: null
 };

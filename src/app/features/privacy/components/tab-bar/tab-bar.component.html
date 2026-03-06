@@ -1,0 +1,10 @@
+<div class="tab-bar">
+  <div
+    *ngFor="let tab of tabs"
+    class="tab-item"
+    [class.tab-item-selected]="tab === selectedTab"
+    (click)="handleTabClick(tab)"
+  >
+    {{ tab }}
+  </div>
+</div>

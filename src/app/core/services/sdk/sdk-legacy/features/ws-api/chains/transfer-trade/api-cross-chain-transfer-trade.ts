@@ -71,6 +71,7 @@ export class ApiCrossChainTransferTrade extends CrossChainTransferTrade {
       receiver: receiverAddress,
       id: this.apiResponse.id,
       enableChecks: !testMode,
+      privacyRefCode: this.privacyRefCode,
       ...(fromAddress && { fromAddress }),
       ...(refundAddress && { refundAddress })
     };
