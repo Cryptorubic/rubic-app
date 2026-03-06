@@ -95,6 +95,7 @@ export class SwapFormPageComponent {
 
   public openSelector(inputType: FormType, isMobile: boolean): void {
     if (isMobile) {
+      // @TODO получить выбранный в модалке токен внутри subcribe и перезаписать this.swapFormService.inputControl.patchValue
       this.modalService.openAssetsSelector(inputType, this.injector).subscribe();
     } else {
       this.tradePageService.setState(inputType === 'from' ? 'fromSelector' : 'toSelector');

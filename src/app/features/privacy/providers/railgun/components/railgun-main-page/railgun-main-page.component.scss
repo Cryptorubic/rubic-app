@@ -1,0 +1,16 @@
+:host {
+  position: relative;
+
+  ::ng-deep app-window-container {
+    display: block;
+    margin-bottom: 12px;
+  }
+}
+
+.wrapper {
+  gap: 12px;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+

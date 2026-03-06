@@ -1,0 +1,64 @@
+<ng-container
+  *ngLet="{
+    account: account$ | async,
+    railgunAccount: railgunAccount$ | async,
+    balances: balances$ | async,
+    pendingBalances: pendingBalances$ | async,
+    step: currentStep$ | async
+  } as data"
+>
+  <app-railgun-page-navigation
+    [currentStep]="data.step"
+    [railgunAddress]="data.railgunAccount?.railgunAddress"
+    (handleStep)="onStepChange($event)"
+  ></app-railgun-page-navigation>
+
+  <div class="wrapper">
+    <app-railgun-form
+      *ngIf="data.step === 'connectWallet'"
+      [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
+      [railgunId]="data?.railgunAccount?.id"
+      (formSubmit)="onSubmit($event)"
+    ></app-railgun-form>
+
+    <app-railgun-account-info
+      *ngIf="data.step !== 'connectWallet' && data.railgunAccount?.railgunAddress"
+      [railgunAddress]="data.railgunAccount.railgunAddress"
+      [accountId]="data.railgunAccount.id"
+      (handleLogout)="logout()"
+    ></app-railgun-account-info>
+
+    <app-railgun-reveal-page
+      *ngIf="data.step === 'transfer'"
+      [railgunId]="data.railgunAccount?.id"
+      [balances]="data.balances"
+    ></app-railgun-reveal-page>
+
+    <app-railgun-hide-tokens-page
+      *ngIf="data.step === 'hide'"
+      [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
+      [pendingBalances]="data.pendingBalances"
+    ></app-railgun-hide-tokens-page>
+
+    <app-railgun-swap-page
+      *ngIf="data.step === 'swap'"
+      [railgunWalletInfo]="data.railgunAccount"
+      [balances]="data.balances"
+    ></app-railgun-swap-page>
+
+    <app-railgun-reveal-page
+      *ngIf="data.step === 'reveal'"
+      [railgunId]="data.railgunAccount?.id"
+      [balances]="data.balances"
+    ></app-railgun-reveal-page>
+
+    <!--    <ng-container *ngIf="data.railgunAccount">-->
+    <!--      <app-window-container *ngIf="data.balances?.length">-->
+    <!--        <h4>Actual balances:</h4>-->
+    <!--        <div *ngFor="let token of data.balances">-->
+    <!--          {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}-->
+    <!--        </div>-->
+    <!--      </app-window-container>-->
+    <!--    </ng-container>-->
+  </div>
+</ng-container>

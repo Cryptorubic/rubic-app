@@ -1,0 +1,8 @@
+<app-hide-tokens-window (handleHide)="hide($event)"></app-hide-tokens-window>
+
+<app-window-container *ngIf="pendingBalances?.length">
+  <h4>Pending balance:</h4>
+  <div *ngFor="let token of pendingBalances">
+    {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}
+  </div>
+</app-window-container>

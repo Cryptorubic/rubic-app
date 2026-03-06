@@ -3,6 +3,7 @@ import {
   EvmBlockchainName,
   QuoteAllInterface,
   QuoteRequestInterface,
+  QuoteResponseInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -33,7 +34,6 @@ import {
   of,
   throwError
 } from 'rxjs';
-import { ENVIRONMENT } from 'src/environments/environment';
 import { SwapResponseInterface } from '../features/ws-api/models/swap-response-interface';
 import { TransferSwapRequestInterface } from '../features/ws-api/chains/transfer-trade/models/transfer-swap-request-interface';
 import { SwapErrorResponseInterface } from '../features/ws-api/models/swap-error-response-interface';
@@ -49,6 +49,7 @@ import { TurnstileService } from '@core/services/turnstile/turnstile.service';
 import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from 'rxjs/operators';
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
+import { ENVIRONMENT } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -141,6 +142,29 @@ export class RubicApiService {
     }
   }
 
+  public async quoteAllRoutes(body: QuoteRequestInterface): Promise<QuoteAllInterface> {
+    try {
+      const result = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteAllInterface | SwapErrorResponseInterface>(
+          `${this.apiUrl}/api/routes/quoteAll`,
+          body
+        )
+      );
+      if ('error' in result) {
+        throw this.getApiError(result);
+      }
+      return result;
+    } catch (err: RubicAny) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+      if ('error' in err) {
+        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
+      }
+      throw this.getApiError(err);
+    }
+  }
+
   public async fetchSwapData<T>(
     body: SwapRequestInterface | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
@@ -174,8 +198,30 @@ export class RubicApiService {
     );
   }
 
+  public async fetchBestQuote(body: QuoteRequestInterface): Promise<QuoteResponseInterface> {
+    try {
+      const resp = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteResponseInterface>(
+          `${this.apiUrl}/api/routes/quoteBest`,
+          body
+        )
+      );
+
+      if ('error' in resp) {
+        throw this.getApiError((resp as { error: SwapErrorResponseInterface }).error);
+      }
+      return resp;
+    } catch (err) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+
+      throw this.getApiError(err);
+    }
+  }
+
   public async fetchBestSwapData<T>(
-    body: SwapRequestInterface | TransferSwapRequestInterface
+    body: Partial<SwapRequestInterface> | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
     try {
       const result = await firstValueFrom(

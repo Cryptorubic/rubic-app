@@ -171,6 +171,7 @@ export abstract class TronOnChainTrade extends OnChainTrade {
       ...this.apiQuote,
       fromAddress: this.walletAddress,
       receiver: receiverAddress || this.walletAddress,
+      privacyRefCode: this.privacyRefCode,
       id: this.apiResponse.id
     };
     const { transaction, estimate } = await this.fetchSwapData<TronTransactionConfig>(
