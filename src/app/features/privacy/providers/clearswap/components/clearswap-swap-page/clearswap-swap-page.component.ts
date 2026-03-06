@@ -34,9 +34,7 @@ export class ClearswapSwapPageComponent {
     private readonly clearswapSwapService: ClearswapSwapService,
     private readonly notificationsService: NotificationsService,
     private readonly targetAddressService: TargetNetworkAddressService
-  ) {
-    this.clearswapSwapService.checkStatus();
-  }
+  ) {}
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
     try {

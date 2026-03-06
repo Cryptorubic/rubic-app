@@ -5,7 +5,6 @@ import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
-import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -18,14 +17,13 @@ export class ClearswapSwapService {
     private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
-  public async checkStatus(): Promise<void> {
-    const res = await firstValueFrom(
-      this.sdkLegacyService.httpClient.get(
-        'https://dev-api.rubic.exchange/api/v3/tmp/statuses/clearswap/status?rubic_id=29677fe8-3957-4477-95cf-d11c9bc60326'
-      )
-    );
-    console.log(res);
-  }
+  // public async checkStatus(): Promise<void> {
+  //   await firstValueFrom(
+  //     this.sdkLegacyService.httpClient.get(
+  //       'https://dev-api.rubic.exchange/api/v3/tmp/statuses/clearswap/status?rubic_id=29677fe8-3957-4477-95cf-d11c9bc60326'
+  //     )
+  //   );
+  // }
 
   public async quote(
     fromToken: TokenAmount<BlockchainName>,

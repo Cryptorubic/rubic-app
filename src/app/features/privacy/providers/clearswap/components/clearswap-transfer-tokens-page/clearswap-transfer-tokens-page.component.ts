@@ -24,9 +24,7 @@ export class ClearswapTransferTokensPageComponent {
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
     private readonly targetAddressService: TargetNetworkAddressService
-  ) {
-    this.clearswapSwapService.checkStatus();
-  }
+  ) {}
 
   public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
