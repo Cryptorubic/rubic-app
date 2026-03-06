@@ -18,15 +18,13 @@ import { ZamaSignatureService } from './services/zama-sdk/zama-signature.service
 import { ZamaRevealFacadeService } from './services/zama-reveal-tokens-facade.service';
 import { TuiButtonModule, TuiLoaderModule, TuiNotificationModule } from '@taiga-ui/core';
 import { ZamaTransferTokensPageComponent } from './components/zama-transfer-tokens-page/zama-transfer-tokens-page.component';
-import { SignMessageModalComponent } from './components/sign-message-modal/sign-message-modal.component';
 
 @NgModule({
   declarations: [
     ZamaViewComponent,
     ZamaHideTokensPageComponent,
     ZamaRevealTokensPageComponent,
-    ZamaTransferTokensPageComponent,
-    SignMessageModalComponent
+    ZamaTransferTokensPageComponent
   ],
   imports: [
     CommonModule,

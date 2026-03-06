@@ -24,6 +24,11 @@ const routes: Routes = [
   {
     path: PRIVATE_MODE_URLS.ZAMA,
     loadChildren: () => import('./providers/zama/zama.module').then(m => m.ZamaModule)
+  },
+  {
+    path: PRIVATE_MODE_URLS.CLEARSWAP,
+    loadChildren: () =>
+      import('./providers/clearswap/clearswap.module').then(m => m.ClearswapModule)
   }
 ];
 

@@ -14,6 +14,7 @@ export interface PrivateStep {
 }
 
 export interface PrivateSwapOptions {
+  dstTokenAmount?: string;
   gasInfo?: AppGasData;
   feeInfo?: FeeInfo;
   warnings?: PreviewSwapWarning[];
