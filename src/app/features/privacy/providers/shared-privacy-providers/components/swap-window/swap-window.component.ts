@@ -33,6 +33,12 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 export class SwapWindowComponent implements OnInit {
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() set receiverAddressRequired(value: boolean) {
+    if (value) {
+      this._displayReceiver$.next(true);
+    }
+  }
+
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
 
   private readonly modalService = inject(PrivateModalsService);
@@ -135,16 +141,17 @@ export class SwapWindowComponent implements OnInit {
   private async calculate(swapInfo: PrivateSwapInfo): Promise<void> {
     try {
       this._loading$.next(true);
-      const outAmountWei = await this.quoteAdapter.quoteCallback(
+      const { toAmountWei, tradeId } = await this.quoteAdapter.quoteCallback(
         swapInfo.fromAsset,
         swapInfo.toAsset,
         swapInfo.fromAmount
       );
       this.patchSwapInfo({
         toAmount: {
-          actualValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals),
-          visibleValue: Token.fromWei(outAmountWei, swapInfo.toAsset.decimals).toFixed()
-        }
+          actualValue: Token.fromWei(toAmountWei, swapInfo.toAsset.decimals),
+          visibleValue: Token.fromWei(toAmountWei, swapInfo.toAsset.decimals).toFixed()
+        },
+        tradeId
       });
     } catch (err) {
       await this.quoteAdapter.quoteFallback(

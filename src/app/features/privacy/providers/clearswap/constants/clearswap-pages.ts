@@ -4,5 +4,9 @@ export const CLEARSWAP_PAGES: PageType[] = [
   {
     type: 'transfer',
     label: 'Transfer'
+  },
+  {
+    type: 'swap',
+    label: 'Swap'
   }
 ];

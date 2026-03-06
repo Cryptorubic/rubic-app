@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TronAdapter } from '@cryptorubic/web3';
+import BigNumber from 'bignumber.js';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -15,20 +18,31 @@ export class ClearswapSwapService {
     private readonly sdkLegacyService: SdkLegacyService
   ) {}
 
+  public async checkStatus(): Promise<void> {
+    const res = await firstValueFrom(
+      this.sdkLegacyService.httpClient.get(
+        'https://dev-api.rubic.exchange/api/v3/tmp/statuses/clearswap/status?rubic_id=29677fe8-3957-4477-95cf-d11c9bc60326'
+      )
+    );
+    console.log(res);
+  }
+
   public async quote(
-    token: TokenAmount<BlockchainName>,
+    fromToken: TokenAmount<BlockchainName>,
+    toToken: Token,
     receiver: string
   ): Promise<{
     tradeId: string;
     tokenAmount: string;
+    tokenAmountWei: BigNumber;
   }> {
     try {
       const quoteResponse = await this.rubicApiService.quoteAllRoutes({
-        srcTokenBlockchain: token.blockchain,
-        srcTokenAddress: token.address,
-        srcTokenAmount: token.tokenAmount.toString(),
-        dstTokenBlockchain: token.blockchain,
-        dstTokenAddress: token.address,
+        srcTokenBlockchain: fromToken.blockchain,
+        srcTokenAddress: fromToken.address,
+        srcTokenAmount: fromToken.tokenAmount.toString(),
+        dstTokenBlockchain: toToken.blockchain,
+        dstTokenAddress: toToken.address,
         preferredProvider: 'CLEARSWAP',
         receiver,
         showDangerousRoutes: true
@@ -36,7 +50,8 @@ export class ClearswapSwapService {
       const route = quoteResponse.routes[0];
       return {
         tradeId: route.id,
-        tokenAmount: route.estimate.destinationTokenAmount
+        tokenAmount: route.estimate.destinationTokenAmount,
+        tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
       };
     } catch (err) {
       console.error(err);
@@ -45,17 +60,18 @@ export class ClearswapSwapService {
 
   public async transfer(
     id: string,
-    token: TokenAmount<BlockchainName>,
+    fromToken: TokenAmount<BlockchainName>,
+    toToken: Token,
     receiver: string
   ): Promise<void> {
     try {
       const swapResponse = await this.rubicApiService.fetchSwapData<{ depositAddress: string }>({
         id,
-        srcTokenBlockchain: token.blockchain,
-        srcTokenAddress: token.address,
-        srcTokenAmount: token.tokenAmount.toString(),
-        dstTokenBlockchain: token.blockchain,
-        dstTokenAddress: token.address,
+        srcTokenBlockchain: fromToken.blockchain,
+        srcTokenAddress: fromToken.address,
+        srcTokenAmount: fromToken.tokenAmount.toString(),
+        dstTokenBlockchain: toToken.blockchain,
+        dstTokenAddress: toToken.address,
         preferredProvider: 'CLEARSWAP',
         receiver
       });
@@ -63,8 +79,8 @@ export class ClearswapSwapService {
 
       await this.chainAdapter.signer.transfer({
         receiver: depositAddress,
-        tokenWeiAmount: token.stringWeiAmount,
-        tokenAddress: token.address,
+        tokenWeiAmount: fromToken.stringWeiAmount,
+        tokenAddress: fromToken.address,
         txOptions: {}
       });
     } catch (err) {

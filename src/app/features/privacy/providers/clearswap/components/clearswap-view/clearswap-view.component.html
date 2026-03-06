@@ -13,5 +13,6 @@
     <app-clearswap-transfer-tokens-page
       *ngIf="data.activePage.type === 'transfer'"
     ></app-clearswap-transfer-tokens-page>
+    <app-clearswap-swap-page *ngIf="data.activePage.type === 'swap'"></app-clearswap-swap-page>
   </div>
 </ng-container>
