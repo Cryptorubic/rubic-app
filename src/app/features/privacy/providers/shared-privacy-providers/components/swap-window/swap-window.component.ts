@@ -9,7 +9,14 @@ import {
   Self,
   inject
 } from '@angular/core';
-import { BehaviorSubject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  debounceTime,
+  distinctUntilChanged,
+  startWith,
+  takeUntil
+} from 'rxjs';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import { PrivateSwapInfo, SwapAmount } from '../../models/swap-info';
@@ -21,6 +28,7 @@ import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
   selector: 'app-swap-window',
@@ -97,26 +105,30 @@ export class SwapWindowComponent implements OnInit {
     };
   }
 
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly targetAddressService: TargetNetworkAddressService
+  ) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
   }
 
   private subscribeOnFormInputChanged(): void {
-    this._swapInfo$
-      .pipe(
-        debounceTime(500),
+    combineLatest([
+      this._swapInfo$.pipe(
         distinctUntilChanged((prev, curr) => {
           const inputNotChanged =
             prev.fromAmount === curr.fromAmount &&
             compareTokens(prev.fromAsset, curr.fromAsset) &&
             compareTokens(prev.toAsset, curr.toAsset);
           return inputNotChanged;
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(swapInfo => {
+        })
+      ),
+      this.targetAddressService.address$.pipe(startWith(''))
+    ])
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(([swapInfo]) => {
         if (this.assetsNotSelected()) return;
         if (this.amountNotSet()) {
           this.patchSwapInfo({ toAmount: null });
