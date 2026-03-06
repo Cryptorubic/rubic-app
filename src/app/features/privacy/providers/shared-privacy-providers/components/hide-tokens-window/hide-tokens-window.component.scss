@@ -8,3 +8,7 @@ button {
   width: 100%;
   margin-top: 12px;
 }
+
+::ng-deep .notification {
+  margin-top: 12px;
+}

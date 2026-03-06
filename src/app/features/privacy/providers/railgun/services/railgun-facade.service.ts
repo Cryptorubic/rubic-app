@@ -1,21 +1,30 @@
 import { inject, Injectable } from '@angular/core';
 import { StoreService } from '@core/services/store/store.service';
 import { Store } from '@core/services/store/models/store';
-import { BehaviorSubject, from, of } from 'rxjs';
-import { StepType } from '@features/privacy/providers/railgun/models/step';
+import { BehaviorSubject, firstValueFrom, from, of } from 'rxjs';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
 import { switchTap } from '@shared/utils/utils';
 import {
   Chain,
+  NetworkName,
   RailgunBalancesEvent,
+  RailgunERC20AmountRecipient,
   RailgunWalletBalanceBucket,
-  RailgunWalletInfo
+  RailgunWalletInfo,
+  TransactionGasDetails,
+  TXIDVersion
 } from '@railgun-community/shared-models';
-import { BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, BlockchainName, BlockchainsInfo } from '@cryptorubic/core';
 import { RubicAny } from '@shared/models/utility-types/rubic-any';
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 import { RailgunResponse } from '@features/privacy/providers/railgun/services/worker/models';
 import BigNumber from 'bignumber.js';
+import { HDNodeWallet, Wallet, ContractTransaction } from 'ethers';
+import {
+  getGasDetailsForTransaction,
+  getProviderWallet,
+  getShieldSignature
+} from '@features/privacy/providers/railgun/utils/tx-utils';
 
 @Injectable()
 export class RailgunFacadeService {
@@ -32,10 +41,6 @@ export class RailgunFacadeService {
   >({});
 
   public readonly balancesSnapshot$ = this._balancesByBucket$.asObservable();
-
-  private readonly _currentStep$ = new BehaviorSubject<StepType>('connectWallet');
-
-  public readonly currentStep$ = this._currentStep$.asObservable();
 
   private readonly _account$ = new BehaviorSubject<PublicAccount | null>(null);
 
@@ -78,17 +83,6 @@ export class RailgunFacadeService {
     type: 'module'
   });
 
-  public unlockFromPassword(_password: string): Promise<string> {
-    throw new Error();
-    // const storedCreds = this.storeService.getItem(this.storageKey);
-    // if (storedCreds) {
-    //   return this.railgunAdapter.encryptionService.unlockFromPassword(
-    //     password,
-    //     storedCreds as string
-    //   );
-    // }
-  }
-
   public initService(): void {
     this.railgunWorker.postMessage({ method: 'init', params: null });
     this.railgunWorker.onmessage = ({ data }) => {
@@ -99,11 +93,14 @@ export class RailgunFacadeService {
     };
   }
 
-  private async setupFromPassword(account: string): Promise<string> {
-    this.railgunWorker.postMessage({ method: 'setupFromPassword', params: account });
+  public lastUsedPassword = '';
+
+  public async setupFromPassword(password: string): Promise<string> {
+    this.railgunWorker.postMessage({ method: 'setupFromPassword', params: password });
     return new Promise(resolve => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'setupFromPassword') {
+          this.lastUsedPassword = password;
           resolve(data.response);
         }
       };
@@ -122,6 +119,23 @@ export class RailgunFacadeService {
     return new Promise(resolve => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
         if (data.method === 'createPrivateWallet') {
+          this.storeService.setItem(this.storageKey, data.response.id);
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  private loadWallet(password: string): Promise<RailgunWalletInfo> {
+    const railgunId = this.storeService.getItem(this.storageKey);
+
+    this.railgunWorker.postMessage({
+      method: 'loadWallet',
+      params: { railgunId, password }
+    });
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
+        if (data.method === 'loadWallet') {
           resolve(data.response);
         }
       };
@@ -156,13 +170,14 @@ export class RailgunFacadeService {
   private async handleAccount(account: PublicAccount): Promise<void> {
     try {
       const encryptionKeys = await this.setupFromPassword(account.password);
-      const walletInfo = await this.createPrivateWallet(
-        account.phrase,
-        'Polygon' as RubicAny,
-        encryptionKeys
-      );
+      const hasWallet = !!this.storeService.getItem(this.storageKey);
+
+      const walletInfo = hasWallet
+        ? await this.loadWallet(account.password)
+        : await this.createPrivateWallet(account.phrase, 'Polygon' as RubicAny, encryptionKeys);
       console.log('[RAILGUN] Wallet info: ', walletInfo);
       this._railgunAccount$.next(walletInfo);
+      this.lastUsedPassword = account.password;
 
       await this.refreshBalances({ type: 0, id: 137 }, [walletInfo.id]);
 
@@ -199,5 +214,181 @@ export class RailgunFacadeService {
 
   public setAccount(account: PublicAccount): void {
     this._account$.next(account);
+  }
+
+  public getMnemonic(): Promise<string> {
+    this.railgunWorker.postMessage({ method: 'getMnemonic', params: {} });
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
+        if (data.method === 'getMnemonic') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async gasEstimateForShield(
+    network: NetworkName,
+    wallet: Wallet | HDNodeWallet,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const shieldPrivateKey = await getShieldSignature(wallet);
+    // Address of public wallet we are shielding from
+    const fromWalletAddress = wallet.address;
+
+    this.railgunWorker.postMessage({
+      method: 'gasEstimateForShield',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        shieldPrivateKey,
+        erc20AmountRecipients,
+        nftAmountRecipients: [], // nftAmountRecipients
+        fromWalletAddress
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'gasEstimateForShield') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async populateShield(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    shieldPrivateKey: string,
+    gasDetails: TransactionGasDetails
+  ): Promise<{ transaction: ContractTransaction; nullifiers: string[] }> {
+    this.railgunWorker.postMessage({
+      method: 'populateShield',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        shieldPrivateKey,
+        erc20AmountRecipients,
+        nftAmountRecipients: [],
+        gasDetails: gasDetails
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
+      }) => {
+        if (data.method === 'populateShield') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async gasEstimateForUnshield(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+    const mnemonic = await this.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
+
+    this.railgunWorker.postMessage({
+      method: 'gasEstimateForUnshield',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        gasDetails,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'gasEstimateForUnshield') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async generateUnshieldProof(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'generateUnshieldProof',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'generateUnshieldProofProgress') {
+          console.log('Proof generation progress... ', data.response);
+        }
+        if (data.method === 'generateUnshieldProof') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async populateUnshield(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    gasDetails: TransactionGasDetails,
+    overallBatchMinGasPrice: bigint
+  ): Promise<{ transaction: ContractTransaction; nullifiers: string[] }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'populateUnshield',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        erc20AmountRecipients,
+        gasDetails: gasDetails,
+        overallBatchMinGasPrice
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
+      }) => {
+        if (data.method === 'populateUnshield') {
+          resolve(data.response);
+        }
+      };
+    });
   }
 }

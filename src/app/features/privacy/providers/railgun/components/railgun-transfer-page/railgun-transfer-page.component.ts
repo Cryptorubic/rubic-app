@@ -77,12 +77,10 @@ export class RailgunTransferPageComponent {
         this._revealAmount$.value?.actualValue.toFixed(),
         this._revealAsset$.value?.decimals
       );
-      const bigintAmount = BigInt(amount);
+      const _bigintAmount = BigInt(amount);
 
       await this.revealService.unshieldTokens(
-        this.railgunId,
         this._revealAsset$.value.address,
-        bigintAmount.toString(),
         this._revealAsset$.value.blockchain
       );
     } finally {

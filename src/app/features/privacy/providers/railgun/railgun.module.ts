@@ -9,7 +9,7 @@ import {
   TuiInputPasswordModule,
   TuiStepperModule
 } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiErrorModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunPageNavigationComponent } from '@features/privacy/providers/railgun/components/railgun-page-navigation/railgun-page-navigation.component';
@@ -46,7 +46,8 @@ import { PrivateSwapService } from '@features/privacy/providers/railgun/services
     TuiFieldErrorPipeModule,
     TuiButtonModule,
     TuiStepperModule,
-    SharedPrivacyProvidersModule
+    SharedPrivacyProvidersModule,
+    TuiNotificationModule
   ],
   providers: [RailgunFacadeService, HideService, RevealService, PrivateSwapService]
 })

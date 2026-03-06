@@ -11,8 +11,10 @@ import {
   type TransactionGasDetails
 } from '@railgun-community/shared-models';
 import { getShieldPrivateKeySignatureMessage, NFTTokenType } from '@railgun-community/wallet';
-import { keccak256 } from 'ethers';
-import { PublicClient, WalletClient } from 'viem';
+import { HDNodeWallet, keccak256, Wallet } from 'ethers';
+import { EvmBlockchainName } from '@cryptorubic/core';
+import { JsonRpcProvider } from 'ethers';
+import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
 /**
  * Generates a shield private key signature by signing a predefined message with the provided wallet
@@ -21,16 +23,9 @@ import { PublicClient, WalletClient } from 'viem';
  * @param wallet - The wallet (Wallet or HDNodeWallet) used to sign the shield signature message
  * @returns A Promise that resolves to the shield private key signature as a hex string
  */
-export const getShieldSignature = async (
-  client: WalletClient,
-  walletAddress: string
-): Promise<string> => {
+export const getShieldSignature = async (wallet: Wallet | HDNodeWallet): Promise<string> => {
   const shieldSignatureMessage = getShieldPrivateKeySignatureMessage();
-  const signedMessage = await client.signMessage({
-    account: walletAddress as `0x${string}`,
-    message: { raw: shieldSignatureMessage as `0x${string}` }
-  });
-  const shieldPrivateKey = keccak256(signedMessage);
+  const shieldPrivateKey = keccak256(await wallet.signMessage(shieldSignatureMessage));
   return shieldPrivateKey;
 };
 
@@ -144,13 +139,20 @@ export const getGasDetailsForTransaction = async (
   network: NetworkName,
   gasEstimate: bigint,
   sendWithPublicWallet: boolean,
-  client: PublicClient
+  wallet: Wallet | HDNodeWallet
 ) => {
   const evmGasType: EVMGasType = getEVMGasTypeForTransaction(network, sendWithPublicWallet);
 
   let gasDetails: TransactionGasDetails;
 
-  const { maxFeePerGas, maxPriorityFeePerGas } = await client.estimateFeesPerGas();
+  // populate tx
+  // send 1 wei to self. get gas details
+  // THIS IS AN INSECURE WAY TO GET GAS ESTIMATE
+  // DO NOT USE IN PRODUCTION
+  const { maxFeePerGas, maxPriorityFeePerGas } = await wallet.populateTransaction({
+    to: wallet.address,
+    value: 1n
+  });
 
   switch (evmGasType) {
     case EVMGasType.Type0:
@@ -176,9 +178,27 @@ export const getGasDetailsForTransaction = async (
 };
 
 export const getOriginalGasDetailsForTransaction = async (
+  wallet: Wallet | HDNodeWallet,
   network: NetworkName,
-  client: PublicClient
+  sendWithPublicWallet: boolean
 ): Promise<TransactionGasDetails> => {
-  const gasDetails = await getGasDetailsForTransaction(network, 0n, true, client);
+  const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
   return gasDetails;
+};
+
+export const getProviderWallet = (
+  blockchain: EvmBlockchainName,
+  mnemonic: string
+): {
+  provider: JsonRpcProvider;
+  wallet: HDNodeWallet;
+} => {
+  const rpc = rpcList[blockchain][0];
+  const provider = new JsonRpcProvider(rpc);
+  const wallet = Wallet.fromPhrase(mnemonic, provider);
+
+  return {
+    provider,
+    wallet
+  };
 };

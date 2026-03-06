@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import {
-  calculateGasPrice,
   NETWORK_CONFIG,
   NetworkName,
   RailgunERC20Amount,
@@ -10,31 +9,21 @@ import {
   RailgunNFTAmountRecipient,
   RailgunPopulateTransactionResponse,
   RailgunWalletInfo,
-  RelayAdaptContract,
   TransactionGasDetails,
   TXIDVersion
 } from '@railgun-community/shared-models';
-import {
-  getGasDetailsForTransaction,
-  getOriginalGasDetailsForTransaction,
-  serializeERC20RelayAdaptUnshield,
-  serializeERC20Transfer
-} from '@features/privacy/providers/railgun/utils/tx-utils';
+import { getOriginalGasDetailsForTransaction } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { Contract, ContractTransaction, HDNodeWallet, Wallet } from 'ethers';
-import { encodeFunctionData, erc20Abi, PublicClient } from 'viem';
+import { PublicClient } from 'viem';
 import { RubicApiService } from '@core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
-import { BlockchainName, EvmBlockchainName, Token } from '@cryptorubic/core';
-import { EvmTransactionConfig } from '@cryptorubic/web3';
+import { BlockchainName, Token } from '@cryptorubic/core';
 import {
   gasEstimateForUnprovenCrossContractCalls,
   generateCrossContractCallsProof,
   populateProvedCrossContractCalls
 } from '@railgun-community/wallet';
 import { OutsideZone } from '@shared/decorators/outside-zone';
-import {
-  fromPrivateToRubicChainMap,
-  fromRubicToPrivateChainMap
-} from '@features/privacy/providers/railgun/constants/network-map';
+import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
@@ -82,188 +71,159 @@ export class PrivateSwapService {
   }
 
   public async crossContractCall(
-    railgunWalletInfo: RailgunWalletInfo,
-    tokenFromAddress: string,
-    tokenFromAmount: string,
-    tokenToAddress: string,
-    fromTokenDecimals: number,
-    fromBlockchain: BlockchainName,
-    toBlockchain: BlockchainName,
-    receiverAddress?: string
+    _railgunWalletInfo: RailgunWalletInfo,
+    _tokenFromAddress: string,
+    _tokenFromAmount: string,
+    _tokenToAddress: string,
+    _fromTokenDecimals: number,
+    _fromBlockchain: BlockchainName,
+    _toBlockchain: BlockchainName,
+    _receiverAddress?: string
   ): Promise<void> {
-    const password = 'password';
-    const encryptionKey = await this.railgunFacade.unlockFromPassword(password);
-    const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
-    const walletAddress = this.authService.userAddress;
-
-    const swapData = await this.apiService.fetchBestSwapData<
-      EvmTransactionConfig & { approvalAddress: string }
-    >({
-      srcTokenAddress: tokenFromAddress,
-      dstTokenAddress: tokenToAddress,
-      srcTokenAmount: Token.fromWei(amountAfterFee.toString(), fromTokenDecimals).toFixed(),
-      srcTokenBlockchain: fromBlockchain,
-      dstTokenBlockchain: toBlockchain,
-      receiver: receiverAddress || RelayAdaptContract.Polygon,
-      fromAddress: walletAddress,
-      enableChecks: false,
-      integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4',
-      slippage: 0.05
-    });
-
-    const amountAfterFeeString = amountAfterFee.toString();
-    const erc20data = encodeFunctionData({
-      abi: erc20Abi,
-      functionName: 'approve',
-      // @ts-ignore
-      args: [swapData.transaction.approvalAddress, amountAfterFeeString]
-    });
-    // @ts-ignore
-    const transactionApprove0x = {
-      data: erc20data,
-      to: tokenFromAddress,
-      value: 0n
-    };
-
-    const swapTx = { ...swapData.transaction };
-
-    if (swapTx.gas) {
-      // @ts-ignore
-      swapTx.gas = BigInt(swapTx.gas);
-    }
-
-    if (swapTx.gasPrice) {
-      // @ts-ignore
-      swapTx.gasPrice = BigInt(swapTx.gasPrice);
-    }
-
-    if (swapTx.maxFeePerGas) {
-      // @ts-ignore
-      swapTx.maxFeePerGas = BigInt(swapTx.maxFeePerGas);
-    }
-
-    if (swapTx.maxPriorityFeePerGas) {
-      // @ts-ignore
-      swapTx.maxPriorityFeePerGas = BigInt(swapTx.maxPriorityFeePerGas);
-    }
-
-    if (swapTx.value) {
-      // @ts-ignore
-      swapTx.value = BigInt(swapTx.value);
-    }
-
-    delete swapTx.approvalAddress;
-
-    // @ts-ignore
-    const crossContractCalls: ContractTransaction[] = [transactionApprove0x, swapTx];
-
-    const relayAdaptUnshieldERC20Amounts: RailgunERC20Amount[] = [
-      serializeERC20RelayAdaptUnshield(tokenFromAddress, BigInt(tokenFromAmount))
-    ];
-
-    const relayAdaptShieldERC20Recipients: RailgunERC20Recipient[] = [
-      serializeERC20Transfer(tokenToAddress, 1n, railgunWalletInfo.railgunAddress)
-    ];
-
-    const networkName = fromRubicToPrivateChainMap[fromBlockchain];
-    const minGasLimit = 5_000_000n; // high estimate but should be enough.
-    // const overallBatchMinGasPrice = 1n;
-    const gasEstimate = await this.crossContractGasEstimate(
-      encryptionKey,
-      networkName,
-      railgunWalletInfo.id,
-      relayAdaptUnshieldERC20Amounts,
-      [],
-      [],
-      [],
-      crossContractCalls,
-      minGasLimit,
-      true
-    );
-
-    const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
-
-    const transactionGasDetails = await getGasDetailsForTransaction(
-      NetworkName.Polygon,
-      gasEstimate,
-      true,
-      walletAddress,
-      // @ts-ignore
-      adapter.public as PublicClient
-    );
-    const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);
-
-    // await new Promise((resolve, reject) => {
-    //   // Слушаем ответ от воркера
-    //   this.worker.onmessage = ({ data }) => {
-    //     if (data.type === 'PROOF_GENERATED') {
-    //       resolve(data.payload);
-    //     } else if (data.type === 'ERROR') {
-    //       reject(data.payload);
-    //     }
-    //   };
+    // const password = 'password';
+    // const encryptionKey = await this.railgunFacade.unlockFromPassword(password);
+    // const amountAfterFee = (BigInt(tokenFromAmount) * 9975n) / 10_000n;
+    // const walletAddress = this.authService.userAddress;
     //
-    //   // Отправляем команду воркеру
-    //   this.worker.postMessage({
-    //     type: 'GENERATE_PROOF',
-    //     payload: [
-    //       encryptionKey,
-    //       NetworkName.Polygon,
-    //       railgunWalletInfo.id,
-    //       relayAdaptUnshieldERC20Amounts,
-    //       [],
-    //       relayAdaptShieldERC20Recipients,
-    //       [],
-    //       crossContractCalls,
-    //       overallBatchMinGasPrice,
-    //       minGasLimit,
-    //       true
-    //     ]
-    //   });
+    // const swapData = await this.apiService.fetchBestSwapData<
+    //   EvmTransactionConfig & { approvalAddress: string }
+    // >({
+    //   srcTokenAddress: tokenFromAddress,
+    //   dstTokenAddress: tokenToAddress,
+    //   srcTokenAmount: Token.fromWei(amountAfterFee.toString(), fromTokenDecimals).toFixed(),
+    //   srcTokenBlockchain: fromBlockchain,
+    //   dstTokenBlockchain: toBlockchain,
+    //   receiver: receiverAddress || RelayAdaptContract.Polygon,
+    //   fromAddress: walletAddress,
+    //   enableChecks: false,
+    //   integratorAddress: '0x51c276f1392E87D4De6203BdD80c83f5F62724d4',
+    //   slippage: 0.05
     // });
-
-    // generate proof
-    await this.crossContractGenerateProof(
-      encryptionKey,
-      NetworkName.Polygon,
-      railgunWalletInfo.id,
-      relayAdaptUnshieldERC20Amounts,
-      [],
-      relayAdaptShieldERC20Recipients,
-      [],
-      crossContractCalls,
-      overallBatchMinGasPrice,
-      minGasLimit,
-      true
-    );
-
-    // populate tx
-    const { transaction } = await this.crossContractCallsPopulateTransaction(
-      NetworkName.Polygon,
-      railgunWalletInfo.id,
-      relayAdaptUnshieldERC20Amounts,
-      [],
-      relayAdaptShieldERC20Recipients,
-      [],
-      crossContractCalls,
-      transactionGasDetails,
-      overallBatchMinGasPrice,
-      true
-    );
-
-    const sentTx = await adapter.signer.sendTransaction({
-      txOptions: {
-        to: transaction.to,
-        data: transaction.data,
-        value: transaction.value
-        // gasLimit: transaction.gasLimit.toString(),
-        // maxFeePerGas: transaction.maxFeePerGas,
-        // maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
-        // gasPrice: transaction.gasPrice
-      }
-    });
-
-    console.log(sentTx);
+    //
+    // const amountAfterFeeString = amountAfterFee.toString();
+    // const erc20data = encodeFunctionData({
+    //   abi: erc20Abi,
+    //   functionName: 'approve',
+    //   // @ts-ignore
+    //   args: [swapData.transaction.approvalAddress, amountAfterFeeString]
+    // });
+    // // @ts-ignore
+    // const transactionApprove0x = {
+    //   data: erc20data,
+    //   to: tokenFromAddress,
+    //   value: 0n
+    // };
+    //
+    // const swapTx = { ...swapData.transaction };
+    //
+    // if (swapTx.gas) {
+    //   // @ts-ignore
+    //   swapTx.gas = BigInt(swapTx.gas);
+    // }
+    //
+    // if (swapTx.gasPrice) {
+    //   // @ts-ignore
+    //   swapTx.gasPrice = BigInt(swapTx.gasPrice);
+    // }
+    //
+    // if (swapTx.maxFeePerGas) {
+    //   // @ts-ignore
+    //   swapTx.maxFeePerGas = BigInt(swapTx.maxFeePerGas);
+    // }
+    //
+    // if (swapTx.maxPriorityFeePerGas) {
+    //   // @ts-ignore
+    //   swapTx.maxPriorityFeePerGas = BigInt(swapTx.maxPriorityFeePerGas);
+    // }
+    //
+    // if (swapTx.value) {
+    //   // @ts-ignore
+    //   swapTx.value = BigInt(swapTx.value);
+    // }
+    //
+    // delete swapTx.approvalAddress;
+    //
+    // // @ts-ignore
+    // const crossContractCalls: ContractTransaction[] = [transactionApprove0x, swapTx];
+    //
+    // const relayAdaptUnshieldERC20Amounts: RailgunERC20Amount[] = [
+    //   serializeERC20RelayAdaptUnshield(tokenFromAddress, BigInt(tokenFromAmount))
+    // ];
+    //
+    // const relayAdaptShieldERC20Recipients: RailgunERC20Recipient[] = [
+    //   serializeERC20Transfer(tokenToAddress, 1n, railgunWalletInfo.railgunAddress)
+    // ];
+    //
+    // const networkName = fromRubicToPrivateChainMap[fromBlockchain];
+    // const minGasLimit = 5_000_000n; // high estimate but should be enough.
+    // // const overallBatchMinGasPrice = 1n;
+    // const gasEstimate = await this.crossContractGasEstimate(
+    //   encryptionKey,
+    //   networkName,
+    //   railgunWalletInfo.id,
+    //   relayAdaptUnshieldERC20Amounts,
+    //   [],
+    //   [],
+    //   [],
+    //   crossContractCalls,
+    //   minGasLimit,
+    //   true
+    // );
+    //
+    // const adapter = this.adaptersFactory.getAdapter(fromBlockchain as EvmBlockchainName);
+    //
+    // const transactionGasDetails = await getGasDetailsForTransaction(
+    //   NetworkName.Polygon,
+    //   gasEstimate,
+    //   true,
+    //   walletAddress,
+    //   // @ts-ignore
+    //   adapter.public as PublicClient
+    // );
+    // const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);
+    //
+    // // generate proof
+    // await this.crossContractGenerateProof(
+    //   encryptionKey,
+    //   NetworkName.Polygon,
+    //   railgunWalletInfo.id,
+    //   relayAdaptUnshieldERC20Amounts,
+    //   [],
+    //   relayAdaptShieldERC20Recipients,
+    //   [],
+    //   crossContractCalls,
+    //   overallBatchMinGasPrice,
+    //   minGasLimit,
+    //   true
+    // );
+    //
+    // // populate tx
+    // const { transaction } = await this.crossContractCallsPopulateTransaction(
+    //   NetworkName.Polygon,
+    //   railgunWalletInfo.id,
+    //   relayAdaptUnshieldERC20Amounts,
+    //   [],
+    //   relayAdaptShieldERC20Recipients,
+    //   [],
+    //   crossContractCalls,
+    //   transactionGasDetails,
+    //   overallBatchMinGasPrice,
+    //   true
+    // );
+    //
+    // const sentTx = await adapter.signer.sendTransaction({
+    //   txOptions: {
+    //     to: transaction.to,
+    //     data: transaction.data,
+    //     value: transaction.value
+    //     // gasLimit: transaction.gasLimit.toString(),
+    //     // maxFeePerGas: transaction.maxFeePerGas,
+    //     // maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
+    //     // gasPrice: transaction.gasPrice
+    //   }
+    // });
+    //
+    // console.log(sentTx);
   }
 
   private async crossContractGasEstimate(
@@ -287,6 +247,7 @@ export class PrivateSwapService {
     // @ts-ignore
     const client = adapter.public as PublicClient;
 
+    // @ts-ignore
     const originalGasDetails = await getOriginalGasDetailsForTransaction(network, client);
     console.log('CrossContract: originalGasDetails: ', originalGasDetails);
     const { gasEstimate } = await gasEstimateForUnprovenCrossContractCalls(

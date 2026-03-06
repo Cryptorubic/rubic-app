@@ -2,13 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import {
   NETWORK_CONFIG,
   NetworkName,
-  RailgunERC20AmountRecipient,
-  TXIDVersion
+  RailgunERC20AmountRecipient
 } from '@railgun-community/shared-models';
-import { HDNodeWallet, Wallet } from 'ethers';
-import { gasEstimateForShield, populateShield } from '@railgun-community/wallet';
+import { Contract, HDNodeWallet, Wallet } from 'ethers';
 import {
   getGasDetailsForTransaction,
+  getProviderWallet,
   getShieldSignature,
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
@@ -16,9 +15,7 @@ import { PopulateShieldResult } from '@features/privacy/providers/railgun/models
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
 import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
-import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
-import { fromPrivateToRubicChainMap } from '@features/privacy/providers/railgun/constants/network-map';
-import { erc20Abi, PublicClient, WalletClient } from 'viem';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
 @Injectable()
 export class HideService {
@@ -29,70 +26,35 @@ export class HideService {
   private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
   /**
-   * Estimates gas for an ERC-20 shield transaction.
-   */
-  public async erc20ShieldGasEstimate(
-    network: PrivacySupportedNetworks,
-    walletAddress: string,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
-  ): Promise<bigint> {
-    const blockchain = fromPrivateToRubicChainMap[network];
-    const adapter = this.adaptersFactory.getAdapter(blockchain);
-    // @ts-ignore
-    const client = adapter.signer.wallet as WalletClient;
-
-    const shieldPrivateKey = await getShieldSignature(client, this.authService.userAddress);
-
-    // Address of public wallet we are shielding from
-
-    const { gasEstimate } = await gasEstimateForShield(
-      TXIDVersion.V2_PoseidonMerkle,
-      network,
-      shieldPrivateKey,
-      erc20AmountRecipients,
-      [], // nftAmountRecipients
-      walletAddress
-    );
-
-    return gasEstimate;
-  }
-
-  /**
    * Ensures allowances for all ERC-20 transfers in the shield request.
    * Approves spender for the exact amount if current allowance is insufficient.
    */
   public async ensureErc20Allowances(
-    network: PrivacySupportedNetworks,
-    walletAddress: string,
+    network: NetworkName,
+    wallet: Wallet | HDNodeWallet,
     erc20AmountRecipients: RailgunERC20AmountRecipient[]
   ): Promise<void> {
     const spender = NETWORK_CONFIG[network].proxyContract;
-    const adapter = this.adaptersFactory.getAdapter(fromPrivateToRubicChainMap[network]);
-
-    // @ts-ignore
-    const publicClient = adapter.public as PublicClient;
-    const walletClient = adapter.signer;
 
     for (const amountRecipient of erc20AmountRecipients) {
+      const contract = new Contract(
+        amountRecipient.tokenAddress,
+        [
+          'function allowance(address owner, address spender) view returns (uint256)',
+          'function approve(address spender, uint256 amount) external returns (bool)'
+        ],
+        wallet
+      );
+
       // Ethers returns bigint in v6 for uint256
-      const allowance = await publicClient.readContract({
-        address: amountRecipient.tokenAddress as `0x${string}`,
-        abi: erc20Abi,
-        functionName: 'allowance',
-        args: [walletAddress as `0x${string}`, spender as `0x${string}`]
-      });
+      const allowance: bigint = await contract.allowance(wallet.address, spender);
 
       if (allowance >= amountRecipient.amount) {
         continue;
       }
 
-      await walletClient.writeContract(
-        amountRecipient.tokenAddress as `0x${string}`,
-        erc20Abi,
-        'approve',
-        '0x',
-        [spender as `0x${string}`, amountRecipient.amount]
-      );
+      const tx = await contract.approve(spender, amountRecipient.amount);
+      await tx.wait();
     }
   }
 
@@ -100,39 +62,36 @@ export class HideService {
    * Populates the actual transaction data for shielding, including gas details.
    */
   public async erc20PopulateShieldTransaction(
-    network: PrivacySupportedNetworks,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+    network: NetworkName,
+    wallet: Wallet | HDNodeWallet,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    sendWithPublicWallet: boolean
   ): Promise<PopulateShieldResult> {
-    const blockchain = fromPrivateToRubicChainMap[network];
-    const adapter = this.adaptersFactory.getAdapter(blockchain);
-    // @ts-ignore
-    const client = adapter.public as PublicClient;
-
-    // @ts-ignore
-    const walletClient = adapter.signer.wallet as WalletClient;
-
     // 1) Ensure token approvals
-    await this.ensureErc20Allowances(network, this.authService.userAddress, erc20AmountRecipients);
+    await this.ensureErc20Allowances(network, wallet, erc20AmountRecipients);
 
     // 2) Estimate gas for shield
-    const gasEstimate = await this.erc20ShieldGasEstimate(
+    const { gasEstimate } = await this.railgunFacade.gasEstimateForShield(
       network,
-      this.authService.userAddress,
+      wallet,
       erc20AmountRecipients
     );
 
     // 3) Get shield private key and gas details
-    const shieldPrivateKey = await getShieldSignature(walletClient, this.authService.userAddress);
+    const shieldPrivateKey = await getShieldSignature(wallet);
 
-    const gasDetails = await getGasDetailsForTransaction(network, gasEstimate, true, client);
+    const gasDetails = await getGasDetailsForTransaction(
+      network,
+      gasEstimate,
+      sendWithPublicWallet,
+      wallet
+    );
 
     // 4) Populate shield transaction
-    const { transaction, nullifiers } = await populateShield(
-      TXIDVersion.V2_PoseidonMerkle,
+    const { transaction, nullifiers } = await this.railgunFacade.populateShield(
       network,
-      shieldPrivateKey,
       erc20AmountRecipients,
-      [],
+      shieldPrivateKey,
       gasDetails
     );
 
@@ -152,7 +111,7 @@ export class HideService {
     tokenAddress: string,
     tokenAmount: bigint,
     opts?: {
-      network?: PrivacySupportedNetworks;
+      network?: NetworkName;
       sendWithPublicWallet?: boolean;
       wallet?: Wallet | HDNodeWallet;
     }
@@ -163,25 +122,28 @@ export class HideService {
     nullifiers: unknown;
   }> {
     const network = opts?.network || NetworkName.Polygon;
+    const sendWithPublicWallet = opts?.sendWithPublicWallet ?? true;
 
-    const blockchain = fromPrivateToRubicChainMap[network];
-    const adapter = this.adaptersFactory.getAdapter(blockchain);
-
-    // const wallet = opts?.wallet ?? this.railgunFacade.getProviderWallet();
+    const mnemonic = await this.railgunFacade.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
 
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, tokenAmount, railgunWalletAddress)
     ];
 
     const { gasEstimate, gasDetails, transaction, nullifiers } =
-      await this.erc20PopulateShieldTransaction(network, erc20AmountRecipients);
+      await this.erc20PopulateShieldTransaction(
+        network,
+        wallet,
+        erc20AmountRecipients,
+        sendWithPublicWallet
+      );
 
-    const sentTx = await adapter.signer.sendTransaction({
-      txOptions: transaction
-    });
+    const sentTx = await wallet.sendTransaction(transaction);
+    await sentTx.wait();
 
     return {
-      txHash: sentTx.transactionHash,
+      txHash: sentTx.hash,
       gasEstimate,
       gasDetails,
       nullifiers

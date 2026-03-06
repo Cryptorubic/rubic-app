@@ -1,10 +1,10 @@
 import { getRandomBytes, pbkdf2 } from '@railgun-community/wallet';
-import { Store } from '@core/services/store/models/store';
 import { StoredCreds } from '@features/privacy/providers/railgun/models/encryption-types';
+import { get, set } from 'idb-keyval';
 
 export class EncryptionService {
   // Storage key is intentionally versioned for future migrations
-  private readonly storageKey: keyof Store = 'RAILGUN_ENCRYPTION_CREDS_V1';
+  private readonly storageKey = 'RAILGUN_ENCRYPTION_CREDS_V1';
 
   // Iterations follow the doc example:
   // - 100k for deriving encryptionKey
@@ -39,7 +39,7 @@ export class EncryptionService {
       createdAt: new Date().toISOString()
     };
 
-    this.saveStoredCreds(JSON.stringify(creds));
+    await set(this.storageKey, JSON.stringify(creds));
 
     return encryptionKey;
   }
@@ -48,8 +48,17 @@ export class EncryptionService {
    * Validates password against stored hash and returns derived encryptionKey.
    * Throws if password is incorrect or creds are missing/corrupted.
    */
-  public async unlockFromPassword(password: string, storedCreds: string): Promise<string> {
-    const creds = this.readCreds(storedCreds);
+  public async unlockFromPassword(password: string): Promise<string> {
+    const credsRaw = await this.getStoredCredsFromDB();
+
+    if (!credsRaw) {
+      throw new Error('No stored encryption credentials found.');
+    }
+
+    const creds = this.readCredsSafe(credsRaw);
+    if (!creds) {
+      throw new Error('Encryption credentials are corrupted or invalid version.');
+    }
     const salt = creds.salt;
 
     const [encryptionKey, passwordHash] = await Promise.all([
@@ -68,14 +77,9 @@ export class EncryptionService {
    * Optional helper: rotate password (requires old password to prove ownership).
    * Returns new encryptionKey derived from new password.
    */
-  public async rotatePassword(
-    oldPassword: string,
-    newPassword: string,
-    storedCreds: string
-  ): Promise<string> {
+  public async rotatePassword(oldPassword: string, newPassword: string): Promise<string> {
     // Validate old password first (throws if incorrect)
-    await this.unlockFromPassword(oldPassword, storedCreds);
-
+    await this.unlockFromPassword(oldPassword);
     // Re-setup with new password (new salt)
     return this.setupFromPassword(newPassword);
   }
@@ -94,30 +98,17 @@ export class EncryptionService {
     return getRandomBytes(bytes);
   }
 
-  private readCreds(storedCreds: string): StoredCreds {
-    const creds = this.readCredsSafe(storedCreds);
-    if (!creds) {
-      throw new Error('No stored encryption credentials found.');
-    }
-    return creds;
+  public async getStoredCredsFromDB(): Promise<string | null> {
+    const raw = await get(this.storageKey);
+    return raw || null;
   }
 
   private readCredsSafe(storedCreds: string): StoredCreds | null {
-    // const raw = this.storeService.getItem(this.storageKey);
-    if (!storedCreds) return null;
-
     try {
-      const parsed = JSON.parse(String(storedCreds)) as StoredCreds;
-      if (parsed?.version !== 1 || !parsed?.salt || !parsed?.passwordHashStored) {
-        return null;
-      }
-      return parsed;
+      const parsed = JSON.parse(storedCreds) as StoredCreds;
+      return parsed?.version === 1 && parsed?.salt ? parsed : null;
     } catch {
       return null;
     }
-  }
-
-  private saveStoredCreds(creds: string): void {
-    postMessage({ method: 'saveCreds', response: { storageKey: this.storageKey, creds: creds } });
   }
 }
