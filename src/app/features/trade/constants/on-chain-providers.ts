@@ -880,10 +880,10 @@ const onChainTradeProviders: Record<OnChainTradeType, ProviderInfo> = {
     image: `${imageBasePath}cetus.png`,
     color: '#61e0af'
   },
-  [ON_CHAIN_TRADE_TYPE.RUBIC_PRIVATE_TRANSFER]: {
+  [ON_CHAIN_TRADE_TYPE.CLEARSWAP]: {
     name: 'Clearswap',
-    image: `${imageBasePath}cetus.png`,
-    color: '#61e0af'
+    image: `${imageBasePath}clearswap.svg`,
+    color: '#ffffff'
   }
 };
 

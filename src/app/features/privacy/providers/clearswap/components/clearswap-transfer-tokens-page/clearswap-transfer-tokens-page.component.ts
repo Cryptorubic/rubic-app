@@ -7,6 +7,7 @@ import { PrivateEvent } from '@app/features/privacy/providers/shared-privacy-pro
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-clearswap-transfer-tokens-page',
@@ -24,12 +25,28 @@ export class ClearswapTransferTokensPageComponent {
     private readonly targetAddressService: TargetNetworkAddressService
   ) {}
 
-  public async transfer({ token, loadingCallback }: PrivateEvent): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      await this.clearswapSwapService.transfer(
+      const { tradeId, tokenAmount: dstTokenAmount } = await this.clearswapSwapService.quote(
         token as TokenAmount<BlockchainName>,
         this.targetAddressService.address
       );
+      const preview$ = openPreview({
+        dstTokenAmount,
+        steps: [
+          {
+            label: 'Transfer tokens',
+            action: () =>
+              this.clearswapSwapService.transfer(
+                tradeId,
+                token as TokenAmount<BlockchainName>,
+                this.targetAddressService.address
+              )
+          }
+        ]
+      });
+
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

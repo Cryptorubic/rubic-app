@@ -3,7 +3,6 @@ import {
   EvmBlockchainName,
   QuoteAllInterface,
   QuoteRequestInterface,
-  QuoteResponseInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -140,15 +139,14 @@ export class RubicApiService {
     }
   }
 
-  public async quoteAllRoutes(body: QuoteRequestInterface): Promise<QuoteResponseInterface> {
+  public async quoteAllRoutes(body: QuoteRequestInterface): Promise<QuoteAllInterface> {
     try {
       const result = await firstValueFrom(
-        this.sdkLegacyService.httpClient.post<QuoteResponseInterface | SwapErrorResponseInterface>(
+        this.sdkLegacyService.httpClient.post<QuoteAllInterface | SwapErrorResponseInterface>(
           `${this.apiUrl}/api/routes/quoteAll`,
           body
         )
       );
-      console.log(result);
       if ('error' in result) {
         throw this.getApiError(result);
       }
