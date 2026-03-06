@@ -1,4 +1,4 @@
-import { inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ZamaTokensService } from './zama-sdk/zama-tokens.service';
 import { AssetListType } from '@app/features/trade/models/asset';
@@ -9,6 +9,7 @@ import { compareAddresses, EvmBlockchainName, Token } from '@cryptorubic/core';
 import { ZamaBalanceService } from './zama-sdk/zama-balance.service';
 import BigNumber from 'bignumber.js';
 
+@Injectable()
 export class ZamaRevealFacadeService extends TokensFacadeService {
   private readonly tokensService = inject(ZamaTokensService);
 

@@ -1,0 +1,27 @@
+@use 'src/scss/core' as *;
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+
+  &__text {
+    padding: var(--tui-padding-m);
+
+    background: var(--io-background);
+    border-radius: 12px;
+
+    span {
+      word-break: break-all; 
+    }
+  }
+
+  button {
+    width: 210px;
+  }
+
+  tui-notification {
+    font-size: 15px;
+  }
+}

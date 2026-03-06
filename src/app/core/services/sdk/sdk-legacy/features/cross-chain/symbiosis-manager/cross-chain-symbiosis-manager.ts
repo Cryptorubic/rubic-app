@@ -1,4 +1,3 @@
-import { TransactionRequest } from '@ethersproject/providers';
 import { SwapTransactionOptions } from '../../common/models/swap-transaction-options';
 import { SymbiosisRevertResponse } from './models/symbiosis-revert-api';
 import { SymbiosisStuckedResponse } from './models/symbiosis-stucked-api';
@@ -7,6 +6,7 @@ import { RubicSdkError } from '@cryptorubic/web3';
 import { SdkLegacyService } from '../../../sdk-legacy.service';
 import { firstValueFrom } from 'rxjs';
 import { blockchainId, BlockchainName, EvmBlockchainName } from '@cryptorubic/core';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 
 export class CrossChainSymbiosisManager {
   constructor(private readonly sdkLegacyService: SdkLegacyService) {}
