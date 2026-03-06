@@ -16,7 +16,10 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ): Promise<BigNumber> {
+  ): Promise<{
+    toAmountWei: BigNumber;
+    tradeId?: string;
+  }> {
     const pcSupportedSrcToken = {
       ...fromAsset,
       address: toPrivacyCashTokenAddr(fromAsset.address)
@@ -32,7 +35,7 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
       fromAmount.actualValue
     );
 
-    return dstToken.weiAmount;
+    return { toAmountWei: dstToken.weiAmount };
   }
 
   public async quoteFallback(
