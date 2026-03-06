@@ -1,8 +1,4 @@
-<ng-container
-  *ngLet="{
-    activePage: activePage$ | async
-  } as data"
->
+<ng-container *ngLet="{ activePage: activePage$ | async } as data">
   <div class="wrapper">
     <app-page-navigation
       [activePage]="data.activePage"
@@ -10,14 +6,19 @@
       (onSelect)="onPageSelect($event)"
     ></app-page-navigation>
 
+    <app-hinkal-wallet-info *ngIf="data.activePage.type === 'info'"></app-hinkal-wallet-info>
+
     <app-hinkal-hide-tokens-page
       *ngIf="data.activePage.type === 'hide'"
     ></app-hinkal-hide-tokens-page>
     <app-hinkal-reveal-tokens-page
       *ngIf="data.activePage.type === 'reveal'"
     ></app-hinkal-reveal-tokens-page>
-    <!-- <app-hinkal-transfer-tokens-page
+    <app-hinkal-transfer-tokens-page
       *ngIf="data.activePage.type === 'transfer'"
-    ></app-hinkal-transfer-tokens-page> -->
+    ></app-hinkal-transfer-tokens-page>
+    <app-hinkal-swap-tokens-page
+      *ngIf="data.activePage.type === 'swap'"
+    ></app-hinkal-swap-tokens-page>
   </div>
 </ng-container>

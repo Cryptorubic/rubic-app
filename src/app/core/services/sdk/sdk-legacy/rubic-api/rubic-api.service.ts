@@ -3,6 +3,7 @@ import {
   EvmBlockchainName,
   QuoteAllInterface,
   QuoteRequestInterface,
+  QuoteResponseInterface,
   SwapRequestInterface,
   WsQuoteRequestInterface,
   WsQuoteResponseInterface
@@ -172,6 +173,28 @@ export class RubicApiService {
         body
       )
     );
+  }
+
+  public async fetchBestQuote(body: QuoteRequestInterface): Promise<QuoteResponseInterface> {
+    try {
+      const resp = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteResponseInterface>(
+          `${this.apiUrl}/api/routes/quoteBest`,
+          body
+        )
+      );
+
+      if ('error' in resp) {
+        throw this.getApiError((resp as { error: SwapErrorResponseInterface }).error);
+      }
+      return resp;
+    } catch (err) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+
+      throw this.getApiError(err);
+    }
   }
 
   public async fetchBestSwapData<T>(

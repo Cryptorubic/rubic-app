@@ -1,17 +1,28 @@
 import { Injectable } from '@angular/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { HinkalInstanceService } from './hinkal-instance.service';
-import { networkRegistry } from '@hinkal/common';
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import {
+  emporiumOp,
+  generateFundApproveAndTransactOps,
+  getNecessaryAssetsForFunding,
+  networkRegistry,
+  SubAccount,
+  TokenChanges,
+  UserKeys,
+  WRAPPER_TOKEN_EXCHANGE_ADDRESSES
+} from '@hinkal/common';
+import { blockchainId, EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { HinkalUtils } from './utils/hinkal-utils';
 import { ErrorsService } from '@app/core/errors/errors.service';
+import { HinkalQuoteService } from '../hinkal-quote.service';
 
 @Injectable()
 export class HinkalSwapService {
   constructor(
     private readonly adapterFactory: BlockchainAdapterFactoryService,
     private readonly hinkalInstanceService: HinkalInstanceService,
-    private readonly errorService: ErrorsService
+    private readonly errorService: ErrorsService,
+    private readonly hinkalQuoteService: HinkalQuoteService
   ) {}
 
   private getPrivateTxContract(chainId: number): string {
@@ -25,6 +36,8 @@ export class HinkalSwapService {
     try {
       const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(tokenAmount);
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
+
+      await hinkalInstance.resetMerkleTreesIfNecessary();
 
       const deposit = await (receiverPrivateShieldedKey
         ? hinkalInstance.depositForOther(
@@ -54,6 +67,8 @@ export class HinkalSwapService {
       const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
 
+      await hinkalInstance.resetMerkleTreesIfNecessary();
+
       await hinkalInstance.withdraw(
         [withdrawToken],
         [-BigInt(token.stringWeiAmount)],
@@ -78,6 +93,8 @@ export class HinkalSwapService {
       const privateRecipientAddress = HinkalUtils.getPrivateAddress(receiverPrivateShieldedKey);
       const transferToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
 
+      await hinkalInstance.resetMerkleTreesIfNecessary();
+
       await hinkalInstance.transfer(
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
@@ -92,81 +109,111 @@ export class HinkalSwapService {
     }
   }
 
-  // public async privateSwap(
-  //   fromToken: TokenAmount<EvmBlockchainName>,
-  //   toToken: TokenAmount<EvmBlockchainName>,
-  // ): Promise<string> {
-  //   try {
+  public async privateSwap(
+    fromToken: TokenAmount<EvmBlockchainName>,
+    toToken: TokenAmount<EvmBlockchainName>
+  ): Promise<void> {
+    try {
+      if (fromToken.blockchain !== toToken.blockchain)
+        throw new Error('Cross-chain swaps not supported');
 
-  //     const fromChainId = blockchainId[fromToken.blockchain];
+      const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
+      const fromChainId = blockchainId[fromToken.blockchain];
 
-  //     const keys = hinkalSdk.userKeys;
+      const keys = hinkalInstance.userKeys;
 
-  //     const fromHinkalToken = HinkalUtils.convertRubicTokenToHinkalToken(fromToken);
-  //     const toHinkalToken = HinkalUtils.convertRubicTokenToHinkalToken(toToken);
+      const fromHinkalToken = HinkalUtils.convertRubicTokenToHinkalToken(fromToken);
+      const toHinkalToken = HinkalUtils.convertRubicTokenToHinkalToken(toToken);
 
-  //     const fromTokenChanges: TokenChanges<bigint> = {
-  //       token: fromHinkalToken,
-  //       amount: -BigInt(fromToken.stringWeiAmount)
-  //     };
+      const fromTokenChanges: TokenChanges<bigint> = {
+        token: fromHinkalToken,
+        amount: -BigInt(fromToken.stringWeiAmount)
+      };
 
-  //     const toTokenChanges: TokenChanges<bigint> = {
-  //       token: toHinkalToken,
-  //       amount: BigInt(toToken.stringWeiAmount)
-  //     };
+      const toTokenChanges: TokenChanges<bigint> = {
+        token: toHinkalToken,
+        amount: BigInt(toToken.stringWeiAmount)
+      };
 
-  //     const subAccount: SubAccount = {
-  //       index: 0,
-  //       ethAddress: this.walletConnectorService.address,
-  //       privateKey: keys.getShieldedPrivateKey(),
-  //       name: 'User',
-  //       createdAt: new Date().toISOString(),
-  //       isHidden: false,
-  //       isImported: false
-  //     };
+      const fromAddress = this.getPrivateTxContract(fromChainId);
+      const receiver = fromAddress;
 
-  //     await this.hinkalSDK.resetMerkleTreesIfNecessary();
+      const rubicSwapData = await this.hinkalQuoteService.fetchSwapData(fromAddress, receiver);
 
-  //     const necessaryAssets = await getNecessaryAssetsForFunding(hinkalSdk, subAccount, [
-  //       fromTokenChanges,
-  //       toTokenChanges
-  //     ]);
+      const ethAddress = await hinkalInstance.getEthereumAddress();
+      const subAccount: SubAccount = {
+        index: 0,
+        ethAddress: ethAddress,
+        privateKey: keys.getShieldedPrivateKey(),
+        name: 'user',
+        createdAt: new Date().toISOString(),
+        isHidden: false,
+        isImported: false
+      };
 
-  //     const emporiumOps = generateFundApproveAndTransactOps(
-  //       hinkalSdk,
-  //       necessaryAssets.tokensToFund.map(token => token.erc20TokenAddress),
-  //       necessaryAssets.fundAmounts,
-  //       necessaryAssets.approveTokenAddresses,
-  //       necessaryAssets.approvedTokenAmounts,
-  //       UserKeys.getSignerAddressFromPrivateKey(fromChainId, keys.getShieldedPrivateKey()),
-  //       rubicSwapData.to,
-  //       rubicSwapData.to,
-  //       rubicSwapData.data,
-  //       BigInt(rubicSwapData.value)
-  //     );
+      await hinkalInstance.resetMerkleTreesIfNecessary();
 
-  //     const txResult = (await hinkalSdk.actionPrivateWallet(
-  //       [fromHinkalToken.erc20TokenAddress, toHinkalToken.erc20TokenAddress],
-  //       [fromTokenChanges.amount, toTokenChanges.amount],
-  //       [false, true],
-  //       emporiumOps,
-  //       [fromTokenChanges, toTokenChanges],
-  //       subAccount,
-  //       undefined,
-  //       undefined,
-  //       undefined,
-  //       true,
-  //       undefined,
-  //       undefined,
-  //       undefined,
-  //       false
-  //     )) as RelayerTransaction;
+      // await hinkalInstance.actionFundApproveAndTransact(
+      //   [fromTokenChanges, toTokenChanges],
+      //   subAccount,
+      //   rubicSwapData.to,
+      //   rubicSwapData.to,
+      //   rubicSwapData.data,
+      //   BigInt(rubicSwapData.value),
+      //   undefined,
+      //   undefined,
+      //   true,
+      //   undefined,
+      //   undefined,
+      //   false
+      // );
 
-  //     return txResult.transactionHash;
-  //   } catch (err) {
-  //     console.log('FAILED TO SWAP', err);
-  //     this.errorService.catch(err);
-  //     return '';
-  //   }
-  // }
+      const necessaryAssets = await getNecessaryAssetsForFunding(hinkalInstance, subAccount, [
+        fromTokenChanges,
+        toTokenChanges
+      ]);
+
+      const ops = generateFundApproveAndTransactOps(
+        hinkalInstance,
+        necessaryAssets.tokensToFund.map(token => token.erc20TokenAddress),
+        necessaryAssets.fundAmounts,
+        necessaryAssets.approveTokenAddresses,
+        necessaryAssets.approvedTokenAmounts,
+        UserKeys.getSignerAddressFromPrivateKey(fromChainId, keys.getShieldedPrivateKey()),
+        rubicSwapData.to,
+        rubicSwapData.to,
+        rubicSwapData.data,
+        BigInt(rubicSwapData.value)
+      );
+
+      ops.push(
+        emporiumOp({
+          contract: WRAPPER_TOKEN_EXCHANGE_ADDRESSES[fromChainId],
+          func: 'withdrawBalanceDifference',
+          args: [0n],
+          invokeWallet: true
+        })
+      );
+
+      await hinkalInstance.actionPrivateWallet(
+        [fromHinkalToken.erc20TokenAddress, toHinkalToken.erc20TokenAddress],
+        [fromTokenChanges.amount, toTokenChanges.amount],
+        [false, true],
+        ops,
+        [fromTokenChanges, toTokenChanges],
+        subAccount,
+        undefined,
+        undefined,
+        undefined,
+        true,
+        undefined,
+        undefined,
+        undefined,
+        false
+      );
+    } catch (err) {
+      console.log('FAILED TO SWAP', err);
+      this.errorService.catch(err);
+    }
+  }
 }

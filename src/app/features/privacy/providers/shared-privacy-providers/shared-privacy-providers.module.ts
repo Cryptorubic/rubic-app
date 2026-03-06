@@ -49,6 +49,7 @@ import { TuiInputModule } from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
+import { SignMessageModalComponent } from './components/sign-message-modal/sign-message-modal.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import { PrivatePreviewSwapComponent } from './components/private-preview-swap/p
     DropdownOptionsShieldedTokenComponent,
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
-    PrivatePreviewSwapComponent
+    PrivatePreviewSwapComponent,
+    SignMessageModalComponent
   ],
   imports: [
     CommonModule,

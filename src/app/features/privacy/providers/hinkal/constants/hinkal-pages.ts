@@ -2,6 +2,10 @@ import { PageType } from '../../shared-privacy-providers/components/page-navigat
 
 export const HINKAL_PAGES: PageType[] = [
   {
+    type: 'info',
+    label: 'Wallet Info'
+  },
+  {
     type: 'hide',
     label: 'Hide Tokens'
   },

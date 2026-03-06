@@ -6,13 +6,18 @@ import { PrivateEvent } from '../../../shared-privacy-providers/models/private-e
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
+import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 
 @Component({
   selector: 'app-hinkal-transfer-tokens-page',
   templateUrl: './hinkal-transfer-tokens-page.component.html',
   styleUrls: ['./hinkal-transfer-tokens-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [{ provide: ToAssetsService, useClass: HinkalPrivateAssetsService }]
+  providers: [
+    { provide: ToAssetsService, useClass: HinkalPrivateAssetsService },
+    { provide: TokensFacadeService, useClass: HinkalRevealFacadeService }
+  ]
 })
 export class HinkalTransferTokensPageComponent {
   constructor(

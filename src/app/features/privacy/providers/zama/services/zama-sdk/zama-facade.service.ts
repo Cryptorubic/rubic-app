@@ -18,7 +18,7 @@ import { ZamaBalanceService } from './zama-balance.service';
 import { ZamaSignatureService } from './zama-signature.service';
 import { waitFor } from '@cryptorubic/web3';
 import { ModalService } from '@app/core/modals/services/modal.service';
-import { SignMessageModalComponent } from '../../components/sign-message-modal/sign-message-modal.component';
+import { SignMessageModalComponent } from '../../../shared-privacy-providers/components/sign-message-modal/sign-message-modal.component';
 import { ZAMA_SUPPORTED_CHAINS } from '../../constants/zama-supported-chains';
 
 @Injectable()

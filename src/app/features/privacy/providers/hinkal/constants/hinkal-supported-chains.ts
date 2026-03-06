@@ -1,6 +1,6 @@
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BLOCKCHAIN_NAME, EvmBlockchainName } from '@cryptorubic/core';
 
-export const HINKAL_SUPPORTED_CHAINS = [
+export const HINKAL_SUPPORTED_CHAINS: EvmBlockchainName[] = [
   BLOCKCHAIN_NAME.ETHEREUM,
   BLOCKCHAIN_NAME.ARBITRUM,
   BLOCKCHAIN_NAME.BASE,
