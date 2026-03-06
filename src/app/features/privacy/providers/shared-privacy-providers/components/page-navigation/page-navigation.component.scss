@@ -8,6 +8,14 @@
 
   background: var(--secondary-background);
   border-radius: var(--tui-radius-m);
+
+  @include b($mobile-md) {
+    flex-direction: row;
+
+    &__item {
+      font-size: var(--tui-font-text-s);
+    }
+  }
  
   &__item {
     ::ng-deep {

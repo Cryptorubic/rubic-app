@@ -81,8 +81,8 @@ export class PrivacyPageViewComponent {
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {
-    console.debug('[PrivacyPageViewComponent_selectProvider] provider selected', { tradeType });
-    // @TODO_1712 переадресовывать на урл провайдера
+    const url = PRIVATE_MODE_URLS[tradeType];
+    await this.router.navigate([url], { relativeTo: this.activatedRoute });
   }
 
   public async handleLastActivityClicked(activityItem: PrivateActivityItem): Promise<void> {

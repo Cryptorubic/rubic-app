@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import { PublicTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/public-tokens-selector/public-tokens-selector.component';
 import { PrivateTokensSelectorComponent } from '@features/privacy/providers/shared-privacy-providers/components/private-tokens-selector/private-tokens-selector.component';
+import { PrivatePreviewSwapComponent } from '../../components/private-preview-swap/private-preview-swap.component';
+import { PreviewPrivateSwapOptions } from '../../components/private-preview-swap/models/preview-swap-options';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +42,23 @@ export class PrivateModalsService {
           formType: 'to'
         },
         fitContent: true
+      },
+      injector
+    );
+  }
+
+  public openPrivatePreviewSwap(
+    injector: Injector,
+    options: PreviewPrivateSwapOptions
+  ): Observable<void> {
+    return this.modalService.showDialog(
+      PrivatePreviewSwapComponent,
+      {
+        size: 's',
+        fitContent: true,
+        closeable: false,
+        dismissible: false,
+        data: options
       },
       injector
     );

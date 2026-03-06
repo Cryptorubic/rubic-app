@@ -1,0 +1,16 @@
+@use 'src/scss/core' as *;
+
+:host {
+  .signature-modal-wrapper {
+    @include flex(column, center, center);
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+  }
+}

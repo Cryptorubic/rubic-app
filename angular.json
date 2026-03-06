@@ -42,6 +42,16 @@
                 "glob": "**/*",
                 "input": "node_modules/@taiga-ui/icons/src",
                 "output": "assets/taiga-ui/icons"
+              },
+              {
+                "glob": "kms_lib_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
+              },
+              {
+                "glob": "tfhe_bg.wasm",
+                "input": "node_modules/@zama-fhe/relayer-sdk/lib",
+                "output": "/assets/zama"
               }
             ],
             "styles": [

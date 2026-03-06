@@ -2,16 +2,13 @@ import { Injectable } from '@angular/core';
 import { RailgunEngineInitArgs } from '@features/privacy/providers/railgun/models/railgun-engine-init-args';
 import { loadProvider, startRailgunEngine, stopRailgunEngine } from '@railgun-community/wallet';
 import {
-  FallbackProviderJsonConfig,
-  ProviderJson
-} from '@railgun-community/shared-models/dist/utils/fallback-provider';
-import {
   fromPrivateToRubicChainMap,
   fromRubicToPrivateChainMap
 } from '@features/privacy/providers/railgun/constants/network-map';
 import { rpcList } from '@shared/constants/blockchain/rpc-list';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import initPoseidonWasm from '@railgun-community/poseidon-hash-wasm';
+import { FallbackProviderJsonConfig, ProviderJson } from '@railgun-community/shared-models';
 
 @Injectable({
   providedIn: 'root'
