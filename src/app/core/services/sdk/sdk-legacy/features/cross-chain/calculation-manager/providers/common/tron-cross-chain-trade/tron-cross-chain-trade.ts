@@ -165,6 +165,7 @@ export abstract class TronCrossChainTrade extends CrossChainTrade<TronTransactio
       fromAddress: this.walletAddress,
       receiver: receiverAddress,
       id: this.apiResponse.id,
+      privacyRefCode: this.privacyRefCode,
       enableChecks: !testMode
     };
 

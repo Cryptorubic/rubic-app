@@ -14,6 +14,8 @@ const routes: Routes = [
   },
   {
     path: ROUTE_PATH.PRIVACY,
+    // canActivate: [privacyAuthGuard],
+    // canActivateChild: [privacyAuthGuard],
     loadChildren: () => import('./features/privacy/privacy.module').then(m => m.PrivacyModule)
   },
   {
