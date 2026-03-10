@@ -24,6 +24,34 @@ export class NotificationsService {
     private readonly translateService: TranslateService
   ) {}
 
+  public showSuccess(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'success',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
+  public showError(msg: string): Subscription {
+    return this.ngZone.run(() =>
+      this.tuiNotificationsService
+        .open(msg, {
+          status: 'error',
+          autoClose: 10_000,
+          data: null,
+          icon: '',
+          defaultAutoCloseTime: 0
+        })
+        .subscribe()
+    );
+  }
+
   public showWarning(msg: string): Subscription {
     return this.ngZone.run(() =>
       this.tuiNotificationsService

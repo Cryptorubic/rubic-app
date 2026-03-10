@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
+import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { RubicApiService } from '@app/core/services/sdk/sdk-legacy/rubic-api/rubic-api.service';
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 import { Token } from '@app/shared/models/tokens/token';
 import { BLOCKCHAIN_NAME, BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { TronAdapter } from '@cryptorubic/web3';
 import BigNumber from 'bignumber.js';
+import { lastValueFrom, timer, switchMap, takeWhile } from 'rxjs';
 
 @Injectable()
 export class ClearswapSwapService {
@@ -14,16 +17,9 @@ export class ClearswapSwapService {
 
   constructor(
     private readonly rubicApiService: RubicApiService,
-    private readonly sdkLegacyService: SdkLegacyService
+    private readonly sdkLegacyService: SdkLegacyService,
+    private readonly notificationsService: NotificationsService
   ) {}
-
-  // public async checkStatus(): Promise<void> {
-  //   await firstValueFrom(
-  //     this.sdkLegacyService.httpClient.get(
-  //       'https://dev-api.rubic.exchange/api/v3/tmp/statuses/clearswap/status?rubic_id=29677fe8-3957-4477-95cf-d11c9bc60326'
-  //     )
-  //   );
-  // }
 
   public async quote(
     fromToken: TokenAmount<BlockchainName>,
@@ -79,8 +75,29 @@ export class ClearswapSwapService {
         receiver: depositAddress,
         tokenWeiAmount: fromToken.stringWeiAmount,
         tokenAddress: fromToken.address,
-        txOptions: {}
+        txOptions: {
+          onTransactionHash: () => {
+            this.notificationsService.showInfo(
+              'Transaction has started. Please wait 3–5 minutes until the operation is complete.'
+            );
+          }
+        }
       });
+
+      const { status } = await lastValueFrom(
+        timer(30_000, 30_000).pipe(
+          switchMap(() => this.rubicApiService.getClearswapStatus(id)),
+          takeWhile(
+            res => res.status !== CLEARSWAP_STATUS.SUCCESS && res.status !== CLEARSWAP_STATUS.FAIL,
+            true
+          )
+        )
+      );
+      if (status === CLEARSWAP_STATUS.SUCCESS) {
+        this.notificationsService.showSuccess('The operation was successful.');
+      } else {
+        this.notificationsService.showError('The operation has failed.');
+      }
     } catch (err) {
       console.error(err);
     }
