@@ -409,4 +409,104 @@ export class RailgunFacadeService {
       };
     });
   }
+
+  public async gasEstimateForTransfer(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+    const mnemonic = await this.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
+
+    this.railgunWorker.postMessage({
+      method: 'gasEstimateForTransfer',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        gasDetails,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'gasEstimateForTransfer') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async generateTransferProof(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'generateTransferProof',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'generateTransferProofProgress') {
+          console.log('Proof generation progress... ', data.response);
+        }
+        if (data.method === 'generateTransferProof') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
+  public async populateTransfer(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    gasDetails: TransactionGasDetails,
+    overallBatchMinGasPrice: bigint
+  ): Promise<{ transaction: ContractTransaction; nullifiers: string[] }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'populateTransfer',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        erc20AmountRecipients,
+        gasDetails: gasDetails,
+        overallBatchMinGasPrice
+      }
+    });
+
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
+      }) => {
+        if (data.method === 'populateTransfer') {
+          resolve(data.response);
+        }
+      };
+    });
+  }
 }

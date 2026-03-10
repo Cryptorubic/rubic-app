@@ -29,11 +29,11 @@
       (handleLogout)="logout()"
     ></app-railgun-account-info>
 
-    <app-railgun-reveal-page
+    <app-railgun-transfer-page
       *ngIf="data.activePage.type === 'transfer'"
       [railgunId]="data.railgunAccount?.id"
       [balances]="data.balances"
-    ></app-railgun-reveal-page>
+    ></app-railgun-transfer-page>
 
     <app-railgun-hide-tokens-page
       *ngIf="data.activePage.type === 'hide'"

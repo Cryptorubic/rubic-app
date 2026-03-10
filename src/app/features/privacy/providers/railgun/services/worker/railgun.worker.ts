@@ -20,8 +20,11 @@ import {
 } from '@railgun-community/shared-models';
 import {
   gasEstimateForShield,
+  gasEstimateForUnprovenTransfer,
   gasEstimateForUnprovenUnshield,
+  generateTransferProof,
   generateUnshieldProof,
+  populateProvedTransfer,
   populateProvedUnshield,
   populateShield
 } from '@railgun-community/wallet';
@@ -264,6 +267,101 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
       postWorkerMessage({
         method: 'loadWallet',
         response: wallet
+      });
+      break;
+    }
+    case 'gasEstimateForTransfer': {
+      const { txIdVersion, network, walletId, password, gasDetails, erc20AmountRecipients } =
+        data.params as {
+          txIdVersion: TXIDVersion;
+          network: NetworkName;
+          walletId: string;
+          password: string;
+          gasDetails: TransactionGasDetails;
+          erc20AmountRecipients: RailgunERC20AmountRecipient[];
+        };
+      const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+      const estimates = await gasEstimateForUnprovenTransfer(
+        txIdVersion,
+        network,
+        walletId,
+        encryptionKey,
+        undefined,
+        erc20AmountRecipients,
+        [], // nft amount recipients
+        gasDetails,
+        undefined,
+        true
+      );
+
+      postWorkerMessage({ method: 'gasEstimateForTransfer', response: estimates });
+      break;
+    }
+    case 'generateTransferProof': {
+      const { txIdVersion, network, walletId, password, erc20AmountRecipients } = data.params as {
+        txIdVersion: TXIDVersion;
+        network: NetworkName;
+        walletId: string;
+        password: string;
+        erc20AmountRecipients: RailgunERC20AmountRecipient[];
+      };
+
+      const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+      const esimates = await generateTransferProof(
+        txIdVersion,
+        network,
+        walletId,
+        encryptionKey,
+        false,
+        undefined,
+        erc20AmountRecipients,
+        [], // nft amount recipients
+        undefined,
+        true,
+        1n,
+        progress => {
+          postWorkerMessage({
+            method: 'generateTransferProofProgress',
+            response: progress
+          });
+        }
+      );
+
+      postWorkerMessage({ method: 'generateTransferProof', response: esimates });
+      break;
+    }
+    case 'populateTransfer': {
+      const {
+        txIdVersion,
+        network,
+        walletId,
+        erc20AmountRecipients,
+        gasDetails,
+        overallBatchMinGasPrice
+      } = data.params as {
+        txIdVersion: TXIDVersion;
+        network: NetworkName;
+        walletId: string;
+        erc20AmountRecipients: RailgunERC20AmountRecipient[];
+        gasDetails: TransactionGasDetails;
+        overallBatchMinGasPrice: bigint;
+      };
+      const { transaction, nullifiers } = await populateProvedTransfer(
+        txIdVersion,
+        network,
+        walletId,
+        false,
+        undefined,
+        erc20AmountRecipients,
+        [],
+        undefined,
+        true,
+        overallBatchMinGasPrice,
+        gasDetails
+      );
+      postWorkerMessage({
+        method: 'populateTransfer',
+        response: { transaction, nullifiers }
       });
       break;
     }

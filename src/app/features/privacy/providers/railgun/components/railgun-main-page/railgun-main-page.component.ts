@@ -59,7 +59,7 @@ export class RailgunMainPageComponent {
   }
 
   private handleLogin(): void {
-    this._disabledPages$.next([RAILGUN_PAGES[0], RAILGUN_PAGES[3], RAILGUN_PAGES[4]]);
+    this._disabledPages$.next([RAILGUN_PAGES[0], RAILGUN_PAGES[4]]);
     this._activePage$.next(RAILGUN_PAGES[1]);
   }
 
