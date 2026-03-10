@@ -36,5 +36,13 @@ export const PRIVATE_PROVIDERS_UI: PrivateProviderInfoUI[] = [
     name: PRIVATE_TRADE_TYPE.PRIVACY_CASH,
     privacyType: 'Zero-Knowledge Proof',
     securityPercent: 100
+  },
+  {
+    feeSize: 'high',
+    url: PRIVATE_MODE_URLS.CLEARSWAP,
+    icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.CLEARSWAP],
+    name: PRIVATE_TRADE_TYPE.CLEARSWAP,
+    privacyType: 'Dual exchange system',
+    securityPercent: 100
   }
 ];
