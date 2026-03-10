@@ -5,7 +5,8 @@ export const PRIVATE_MODE_URLS: Record<PrivateTradeType, string> = {
   PRIVACY_CASH: 'privacy-cash',
   RAILGUN: 'railgun',
   ZAMA: 'zama',
-  CLEARSWAP: 'clearswap'
+  CLEARSWAP: 'clearswap',
+  HOUDINI: 'houdini'
 } as const;
 
 export type PrivareProviderUrl = (typeof PRIVATE_MODE_URLS)[keyof typeof PRIVATE_MODE_URLS];

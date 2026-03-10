@@ -3,7 +3,8 @@ export const PRIVATE_TRADE_TYPE = {
   HINKAL: 'HINKAL',
   PRIVACY_CASH: 'PRIVACY_CASH',
   RAILGUN: 'RAILGUN',
-  CLEARSWAP: 'CLEARSWAP'
+  CLEARSWAP: 'CLEARSWAP',
+  HOUDINI: 'HOUDINI'
 } as const;
 
 export type PrivateTradeType = (typeof PRIVATE_TRADE_TYPE)[keyof typeof PRIVATE_TRADE_TYPE];

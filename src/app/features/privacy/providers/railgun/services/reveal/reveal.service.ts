@@ -2,66 +2,45 @@ import { inject, Injectable, NgZone } from '@angular/core';
 import {
   calculateGasPrice,
   NetworkName,
-  RailgunERC20AmountRecipient,
-  RailgunPopulateTransactionResponse,
-  TransactionGasDetails,
-  TXIDVersion
+  RailgunERC20AmountRecipient
 } from '@railgun-community/shared-models';
-import { MnemonicService } from '@features/privacy/providers/railgun/services/mnemonic/mnemonic.service';
 import {
   getGasDetailsForTransaction,
+  getProviderWallet,
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
-import {
-  gasEstimateForUnprovenUnshield,
-  generateUnshieldProof,
-  populateProvedUnshield
-} from '@railgun-community/wallet';
-import { EncryptionService } from '@features/privacy/providers/railgun/services/encryption/encryption.service';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
+import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class RevealService {
-  private readonly mnemonicService = inject(MnemonicService);
-
-  private readonly encryptionService = inject(EncryptionService);
-
   private readonly ngZone = inject(NgZone);
+
+  private readonly railgunFacade = inject(RailgunFacadeService);
+
+  private readonly authService = inject(AuthService);
+
+  private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
   constructor() {}
 
-  public async unshieldTokens(
-    railginId: string,
-    tokenAddress: string,
-    tokenAmount: string
-  ): Promise<void> {
-    const { wallet } = this.mnemonicService.getProviderWallet();
-    const keys = await this.encryptionService.unlockFromPassword(
-      this.encryptionService.lastUsedPassword
-    );
-
+  public async unshieldTokens(tokenAddress: string, tokenAmount: string): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), wallet.address)
+      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
     ];
 
-    const gasEstimate = await this.erc20UnshieldGasEstimate(
+    const { gasEstimate } = await this.railgunFacade.gasEstimateForUnshield(
       NetworkName.Polygon,
-      railginId,
-      keys,
       erc20AmountRecipients
     );
 
-    console.log('ERC20 UNSHIELD gasEstimate: ', gasEstimate);
-
     // generate unshield proof
-    await this.erc20UnshieldGenerateProof(
-      keys,
-      NetworkName.Polygon,
-      railginId,
-      erc20AmountRecipients,
-      1n
-    );
+    await this.railgunFacade.generateUnshieldProof(NetworkName.Polygon, erc20AmountRecipients);
+
+    const mnemonic = await this.railgunFacade.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
 
     const transactionGasDetails = await getGasDetailsForTransaction(
       NetworkName.Polygon,
@@ -74,104 +53,13 @@ export class RevealService {
 
     // populate tx
 
-    const { transaction } = await this.erc20UnshieldPopulateTransaction(
+    const { transaction } = await this.railgunFacade.populateUnshield(
       NetworkName.Polygon,
-      railginId,
       erc20AmountRecipients,
-      overallBatchMinGasPrice,
-      transactionGasDetails
+      transactionGasDetails,
+      overallBatchMinGasPrice
     );
 
-    const sentTx = await wallet.sendTransaction(transaction);
-    console.log(sentTx);
-    await sentTx.wait();
-  }
-
-  private async erc20UnshieldGasEstimate(
-    network: NetworkName,
-    railgunWalletID: string,
-    encryptionKey: string,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
-  ): Promise<bigint> {
-    const sendWithPublicWallet = true;
-    const { wallet } = this.mnemonicService.getProviderWallet();
-
-    const originalGasDetails = await getGasDetailsForTransaction(
-      network,
-      0n,
-      sendWithPublicWallet,
-      wallet
-    );
-    // dont setup broadcaster connection for simplicity.
-    const feeTokenDetails: unknown = undefined;
-    console.log('unshield originalGasDetails: ', originalGasDetails);
-
-    const { gasEstimate } = await gasEstimateForUnprovenUnshield(
-      TXIDVersion.V2_PoseidonMerkle,
-      network,
-      railgunWalletID,
-      encryptionKey,
-      erc20AmountRecipients,
-      [], // nft amount recipients
-      originalGasDetails,
-      feeTokenDetails,
-      sendWithPublicWallet
-    );
-
-    return gasEstimate;
-  }
-
-  private async erc20UnshieldGenerateProof(
-    encryptionKey: string,
-    network: NetworkName,
-    railgunWalletID: string,
-    tokenAmountRecipients: RailgunERC20AmountRecipient[],
-    overallBatchMinGasPrice: bigint,
-    sendWithPublicWallet: boolean = true,
-    broadcasterFeeERC20AmountRecipient: RailgunERC20AmountRecipient | undefined = undefined
-  ): Promise<void> {
-    const progressCallback = (progress: number) => {
-      // Handle proof progress (show in UI).
-      // Proofs can take 20-30 seconds on slower devices.
-      console.log('Unshield ERC20 Proof progress: ', progress);
-    };
-    await this.ngZone.runOutsideAngular(async () => {
-      await generateUnshieldProof(
-        TXIDVersion.V2_PoseidonMerkle,
-        network,
-        railgunWalletID,
-        encryptionKey,
-        tokenAmountRecipients,
-        [], // nft amount recipients
-        broadcasterFeeERC20AmountRecipient,
-        sendWithPublicWallet,
-        overallBatchMinGasPrice,
-        progressCallback
-      );
-    });
-  }
-
-  private async erc20UnshieldPopulateTransaction(
-    network: NetworkName,
-    railgunWalletID: string,
-    tokenAmountRecipients: RailgunERC20AmountRecipient[],
-    overallBatchMinGasPrice: bigint,
-    transactionGasDetails: TransactionGasDetails,
-    sendWithPublicWallet: boolean = true,
-    broadcasterFeeERC20AmountRecipient: RailgunERC20AmountRecipient | undefined = undefined
-  ): Promise<RailgunPopulateTransactionResponse> {
-    const populateResponse = await populateProvedUnshield(
-      TXIDVersion.V2_PoseidonMerkle,
-      network,
-      railgunWalletID,
-      tokenAmountRecipients,
-      [], // nftAmountRecipients
-      broadcasterFeeERC20AmountRecipient,
-      sendWithPublicWallet,
-      overallBatchMinGasPrice,
-      transactionGasDetails
-    );
-
-    return populateResponse;
+    await wallet.sendTransaction(transaction);
   }
 }

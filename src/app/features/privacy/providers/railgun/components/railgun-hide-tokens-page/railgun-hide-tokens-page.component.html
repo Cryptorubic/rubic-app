@@ -1,8 +1,7 @@
-<app-hide-tokens-window (handleHide)="hide($event)"></app-hide-tokens-window>
+<app-hide-tokens-window (handleHide)="hide($event)">
+  <tui-notification class="notification" status="warning">
+    The shielding process take 1 hour due to an AML check.
+  </tui-notification>
+</app-hide-tokens-window>
 
-<app-window-container *ngIf="pendingBalances?.length">
-  <h4>Pending balance:</h4>
-  <div *ngFor="let token of pendingBalances">
-    {{ token.address }}, {{ token.amount }}, {{ token.blockchain }}
-  </div>
-</app-window-container>
+<app-shielded-tokens-list [tokens]="[]"></app-shielded-tokens-list>

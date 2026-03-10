@@ -1,15 +1,16 @@
-:host {
-  position: relative;
-
-  ::ng-deep app-window-container {
-    display: block;
-    margin-bottom: 12px;
-  }
-}
+//:host {
+//  position: relative;
+//
+//  ::ng-deep app-window-container {
+//    display: block;
+//    margin-bottom: 12px;
+//  }
+//}
 
 .wrapper {
+  display: flex;
   gap: 12px;
-  max-width: 520px;
+  justify-content: center;
   margin: 0 auto;
 }
 

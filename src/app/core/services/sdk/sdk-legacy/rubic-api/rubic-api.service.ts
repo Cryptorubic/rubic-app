@@ -221,6 +221,31 @@ export class RubicApiService {
     }
   }
 
+  public async quoteBestSwapData(
+    body: Partial<QuoteRequestInterface>
+  ): Promise<QuoteResponseInterface> {
+    try {
+      const result = await firstValueFrom(
+        this.sdkLegacyService.httpClient.post<QuoteResponseInterface>(
+          `${this.apiUrl}/api/routes/quoteBest`,
+          body
+        )
+      );
+      // if ('error' in result) {
+      //   throw this.getApiError(result);
+      // }
+      return result;
+    } catch (err: RubicAny) {
+      if (err instanceof RubicSdkError) {
+        throw err;
+      }
+      if ('error' in err) {
+        throw this.getApiError((err as { error: SwapErrorResponseInterface }).error);
+      }
+      throw this.getApiError(err);
+    }
+  }
+
   public async fetchBestSwapData<T>(
     body: Partial<SwapRequestInterface> | TransferSwapRequestInterface
   ): Promise<SwapResponseInterface<T>> {
