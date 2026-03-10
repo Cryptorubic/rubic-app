@@ -98,21 +98,17 @@ export class PrivacycashSwapService {
     });
   }
 
-  // deposit public-private -> withdraw private-receiver
+  // withdraw private-public
   public async transfer(srcToken: TokenAmount, receiverAddr: string): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
-
     const senderPK = new PublicKey(this.walletConnectorService.address);
-    const receiverPK = new PublicKey(receiverAddr);
-    const wallet: SolanaWallet = this.walletConnectorService.provider.wallet;
+    const recipientPK = new PublicKey(receiverAddr);
 
-    await this.makeDeposit(
-      srcToken.address,
+    await this.makePartialWithdraw(
+      toPrivacyCashTokenAddr(srcToken.address),
       srcToken.weiAmount.toNumber(),
       senderPK,
-      (tx: VersionedTransaction) => wallet.signTransaction(tx)
+      recipientPK
     );
-    await this.makeFullWithdraw(srcToken.address, senderPK, receiverPK);
     this.notificationsService.showInfo(`Transfer successful. Check the receiver’s wallet balance.`);
     this.privacycashTokensService.updatePrivateBalances();
   }

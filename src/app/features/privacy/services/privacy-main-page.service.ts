@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PrivacyForm, PrivacyFormValue } from './models/privacy-form';
-import { BehaviorSubject, Observable, combineLatestWith, map, of, startWith } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatestWith, forkJoin, map, of, switchMap } from 'rxjs';
 import { PrivateProviderInfoUI } from '../models/provider-info';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../models/activity-item';
-import { PRIVATE_PROVIDERS_ICONS } from '../constants/private-providers-icons';
-import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
 import { PRIVATE_PROVIDERS_CHAINS_MAP } from '../constants/private-providers-chains-map';
 import { PrivateAction } from '../constants/private-mode-tx-types';
 import { PRIVATE_PROVIDERS_ACTIONS_MAP } from '../constants/private-providers-actions-map';
+import { PRIVATE_PROVIDERS_UI } from '../constants/private-providers-ui';
+import { PrivacyApiService } from './privacy-api.service';
 
 const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   { providerName: 'HINKAL', type: 'swap' },
@@ -32,20 +32,32 @@ export class PrivacyMainPageService {
     PRIVATE_PROVIDERS_UI
   ).pipe(
     combineLatestWith(this.form.valueChanges, this.selectedTab$),
+    switchMap(([privateProvidersRaw, formValue, selectedTab]) => {
+      const privateProviders$ = Promise.all(
+        privateProvidersRaw.map(providerInfo => {
+          return providerInfo.getFeeSize(selectedTab, this.privacyApiService).then(
+            feeMsg =>
+              ({
+                ...providerInfo,
+                feeSize: feeMsg,
+                minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
+              } as PrivateProviderInfoUI)
+          );
+        })
+      );
+      return forkJoin([privateProviders$, of(formValue), of(selectedTab)]);
+    }),
     map(([privateProviders, formValue, selectedTab]) => {
       return this.filterProviders(privateProviders, formValue, selectedTab);
-    }),
-    startWith(PRIVATE_PROVIDERS_UI)
+    })
   );
 
   // @TODO_1712 использовать реальную активность из локал стора
   public readonly lastActivity$: Observable<PrivateActivityItem[]> = of(FAKE_ACTIVITY).pipe(
-    map(activity =>
-      activity.slice(-4).map(el => ({ ...el, icon: PRIVATE_PROVIDERS_ICONS[el.providerName] }))
-    )
+    map(() => [])
   );
 
-  constructor() {}
+  constructor(private readonly privacyApiService: PrivacyApiService) {}
 
   public setSelectedTab(tab: PrivateAction): void {
     this._selectedTab$.next(tab);

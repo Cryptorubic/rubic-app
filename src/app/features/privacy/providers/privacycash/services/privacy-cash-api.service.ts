@@ -17,7 +17,7 @@ export class PrivacycashApiService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  @Memo({ maxAge: 10 * 60_000 })
+  @Memo({ maxAge: 60 * 60_000 })
   public async fetchFees(): Promise<PrivacyCashFeesResp> {
     return firstValueFrom(
       this.httpService.get<PrivacyCashFeesResp>('', {}, 'https://api3.privacycash.org/config')
