@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import {
   Chain,
   MerkletreeScanUpdateEvent,
@@ -13,10 +12,8 @@ import {
   setOnUTXOMerkletreeScanCallback,
   refreshBalances
 } from '@railgun-community/wallet';
+import { postWorkerMessage } from '@features/privacy/providers/railgun/services/worker/utils';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class BalanceControllerService {
   private readonly destroy$ = new Subject<void>();
 
@@ -51,12 +48,6 @@ export class BalanceControllerService {
 
   private pollSub?: Subscription;
 
-  public ngOnDestroy(): void {
-    this.stopPolling();
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
   /**
    * Install callbacks right after Engine initialization.
    * Safe to call multiple times (idempotent).
@@ -66,21 +57,22 @@ export class BalanceControllerService {
 
     // Will get called throughout a private balance scan.
     setOnUTXOMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
-      this._utxoScan$.next(eventData);
+      postWorkerMessage({ method: 'utxoScanUpdate', response: eventData.progress });
     });
 
     // Will get called throughout a private balance scan.
     setOnTXIDMerkletreeScanCallback((eventData: MerkletreeScanUpdateEvent) => {
-      this._txIdScan$.next(eventData);
+      postWorkerMessage({ method: 'txidScanUpdate', response: eventData });
     });
 
     // Will get called at end of scan per txidVersion + balanceBucket.
-    setOnBalanceUpdateCallback((event: RailgunBalancesEvent) => {
-      const prev = this._balancesByBucket$.value;
-      this._balancesByBucket$.next({
-        ...prev,
-        [event.balanceBucket]: event
-      });
+    setOnBalanceUpdateCallback((eventData: RailgunBalancesEvent) => {
+      postWorkerMessage({ method: 'balanceUpdate', response: eventData });
+      // const prev = this._balancesByBucket$.value;
+      // this._balancesByBucket$.next({
+      //   ...prev,
+      //   [event.balanceBucket]: event
+      // });
     });
 
     this.callbacksInstalled = true;

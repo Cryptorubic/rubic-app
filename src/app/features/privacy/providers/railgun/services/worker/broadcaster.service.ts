@@ -1,10 +1,6 @@
-import { Injectable } from '@angular/core';
 import { WakuBroadcasterClient } from '@railgun-community/waku-broadcaster-client-web';
 import { Chain, SelectedBroadcaster } from '@railgun-community/shared-models';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class BroadcasterService {
   public async initBroadcaster(chain: Chain): Promise<void> {
     const config = {

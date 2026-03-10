@@ -8,6 +8,7 @@
     class="nav__item"
     [class.nav__item-active]="i === activePageIndex"
     (click)="onPageSelect(page)"
+    [disabled]="isPageDisabled(page)"
   >
     {{ page.label }}
   </button>

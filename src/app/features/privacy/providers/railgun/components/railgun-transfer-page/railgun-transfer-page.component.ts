@@ -11,7 +11,7 @@ import { ToAssetsService } from '@features/trade/components/assets-selector/serv
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 
 @Component({
-  selector: 'app-railgun-reveal-page',
+  selector: 'app-railgun-transfer-page',
   templateUrl: './railgun-transfer-page.component.html',
   styleUrls: ['./railgun-transfer-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,12 +77,11 @@ export class RailgunTransferPageComponent {
         this._revealAmount$.value?.actualValue.toFixed(),
         this._revealAsset$.value?.decimals
       );
-      const bigintAmount = BigInt(amount);
+      const _bigintAmount = BigInt(amount);
 
       await this.revealService.unshieldTokens(
-        this.railgunId,
         this._revealAsset$.value.address,
-        bigintAmount.toString()
+        this._revealAsset$.value.blockchain
       );
     } finally {
       this._loading$.next(false);

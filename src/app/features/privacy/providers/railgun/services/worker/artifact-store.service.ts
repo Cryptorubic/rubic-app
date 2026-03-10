@@ -1,13 +1,9 @@
-import { Injectable } from '@angular/core';
 import { ArtifactStore } from '@railgun-community/wallet';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class ArtifactStoreService {
-  private rootDirPromise: Promise<FileSystemDirectoryHandle> | null = null;
-
-  constructor() {}
+  private get rootDir(): Promise<FileSystemDirectoryHandle> {
+    return navigator.storage.getDirectory();
+  }
 
   public createArtifactStore(): ArtifactStore {
     const store = new ArtifactStore(
@@ -19,7 +15,7 @@ export class ArtifactStoreService {
   }
 
   private async getFile(path: string): Promise<string | Uint8Array> {
-    const root = await this.getRootDir();
+    const root = await this.rootDir;
     const { dir, fileName } = this.splitPath(path);
 
     const dirHandle = dir ? await this.ensureDir(root, dir) : root;
@@ -36,7 +32,7 @@ export class ArtifactStoreService {
   }
 
   private async storeFile(dir: string, path: string, item: string | Uint8Array): Promise<void> {
-    const root = await this.getRootDir();
+    const root = await this.rootDir;
 
     if (dir) {
       await this.ensureDir(root, dir);
@@ -56,7 +52,7 @@ export class ArtifactStoreService {
 
   private async fileExists(path: string): Promise<boolean> {
     try {
-      const root = await this.getRootDir();
+      const root = await this.rootDir;
       const { dir, fileName } = this.splitPath(path);
       const dirHandle = dir ? await this.ensureDir(root, dir) : root;
       await dirHandle.getFileHandle(fileName);
@@ -64,13 +60,6 @@ export class ArtifactStoreService {
     } catch {
       return false;
     }
-  }
-
-  private async getRootDir(): Promise<FileSystemDirectoryHandle> {
-    if (!this.rootDirPromise) {
-      this.rootDirPromise = navigator.storage.getDirectory();
-    }
-    return this.rootDirPromise;
   }
 
   private async ensureDir(

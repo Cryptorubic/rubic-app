@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { RailgunEngineInitArgs } from '@features/privacy/providers/railgun/models/railgun-engine-init-args';
 import { loadProvider, startRailgunEngine, stopRailgunEngine } from '@railgun-community/wallet';
 import {
@@ -10,29 +9,12 @@ import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import initPoseidonWasm from '@railgun-community/poseidon-hash-wasm';
 import { FallbackProviderJsonConfig, ProviderJson } from '@railgun-community/shared-models';
 
-@Injectable({
-  providedIn: 'root'
-})
 export class RailgunEngineService {
-  private started = false;
-
-  private startingPromise: Promise<void> | null = null;
-
-  /**
-   * Start the engine (idempotent).
-   * - If called twice concurrently, second call waits for the first.
-   * - If already started, returns immediately.
-   */
   public async start(args: RailgunEngineInitArgs): Promise<void> {
-    if (this.started) return;
-    if (this.startingPromise) return this.startingPromise;
-
-    this.startingPromise = this.startInternal(args);
     try {
-      await this.startingPromise;
-      this.started = true;
-    } finally {
-      this.startingPromise = null;
+      await this.startInternal(args);
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -40,19 +22,7 @@ export class RailgunEngineService {
    * Stop the engine (idempotent).
    */
   public async stop(): Promise<void> {
-    // If start is in-flight, wait for it to finish then stop.
-    if (this.startingPromise) {
-      await this.startingPromise.catch(() => undefined);
-    }
-
-    if (!this.started) return;
-
     await stopRailgunEngine();
-    this.started = false;
-  }
-
-  public isStarted(): boolean {
-    return this.started;
   }
 
   private async startInternal(args: RailgunEngineInitArgs): Promise<void> {

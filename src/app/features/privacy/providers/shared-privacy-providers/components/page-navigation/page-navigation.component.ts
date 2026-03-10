@@ -10,6 +10,8 @@ import { PageType } from './models/page-type';
 export class PageNavigationComponent {
   @Input({ required: true }) public readonly pages: PageType[];
 
+  @Input() public readonly disabledPages: PageType[] = [];
+
   @Input({ required: true }) public readonly activePage: PageType;
 
   @Output() onSelect = new EventEmitter<PageType>();
@@ -22,5 +24,9 @@ export class PageNavigationComponent {
     if (this.activePage.type === selectedPage.type) return;
 
     this.onSelect.emit(selectedPage);
+  }
+
+  public isPageDisabled(page: PageType): boolean {
+    return this.disabledPages.some(disabledPage => disabledPage.type === page.type);
   }
 }
