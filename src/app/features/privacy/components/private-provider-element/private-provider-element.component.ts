@@ -13,6 +13,8 @@ export class PrivateProviderElementComponent {
 
   @Output() providerSelected: EventEmitter<PrivateTradeType> = new EventEmitter();
 
+  public readonly starsCount = Array.from({ length: 4 }, (_, i) => i + 1);
+
   public handleClick(): void {
     this.providerSelected.emit(this.providerInfo.name);
   }

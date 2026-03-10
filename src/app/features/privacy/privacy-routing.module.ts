@@ -29,6 +29,10 @@ const routes: Routes = [
     path: PRIVATE_MODE_URLS.CLEARSWAP,
     loadChildren: () =>
       import('./providers/clearswap/clearswap.module').then(m => m.ClearswapModule)
+  },
+  {
+    path: PRIVATE_MODE_URLS.HOUDINI,
+    loadChildren: () => import('./providers/houdini/houdini.module').then(m => m.HoudiniModule)
   }
 ];
 

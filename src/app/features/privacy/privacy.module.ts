@@ -8,7 +8,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { PrivateProvidersListGeneralComponent } from './components/private-providers-list-general/private-providers-list-general.component';
 import { PrivateProvidersListComponent } from './components/private-providers-list/private-providers-list.component';
 import { PrivateProviderElementComponent } from './components/private-provider-element/private-provider-element.component';
-import { TuiButtonModule, TuiScrollbarModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiHintModule, TuiScrollbarModule } from '@taiga-ui/core';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { LastPrivateActivityComponent } from './components/last-private-activity/last-private-activity.component';
 import { LastPrivateActivityElementComponent } from './components/last-private-activity-element/last-private-activity-element.component';
@@ -17,6 +17,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderModule } from '@app/core/header/header.module';
 import { SharedTradeModule } from '@features/trade/shared-trade.module';
 import { SharedPrivacyProvidersModule } from './providers/shared-privacy-providers/shared-privacy-providers.module';
+import { PrivacyApiService } from './services/privacy-api.service';
 
 @NgModule({
   declarations: [
@@ -40,8 +41,9 @@ import { SharedPrivacyProvidersModule } from './providers/shared-privacy-provide
     HeaderModule,
     TuiButtonModule,
     SharedTradeModule,
-    SharedPrivacyProvidersModule
+    SharedPrivacyProvidersModule,
+    TuiHintModule
   ],
-  providers: [PrivacyMainPageService]
+  providers: [PrivacyMainPageService, PrivacyApiService]
 })
 export class PrivacyModule {}

@@ -28,6 +28,11 @@ $mobile-width: 360px;
     app-tab-bar {
       width: 100%;
     }
+
+    app-swap-window {
+      width: 100%;
+      max-width: 600px;
+    }
   }
 
   app-token-selector-page,
@@ -63,6 +68,12 @@ $mobile-width: 360px;
     .form-and-activity {
       width: $mobile-width;
       overflow: hidden;
+
+      app-swap-window {
+        .window-container {
+          padding: var(--tui-padding-m) !important;
+        }
+      }
     }
 
     app-private-providers-list-general {
