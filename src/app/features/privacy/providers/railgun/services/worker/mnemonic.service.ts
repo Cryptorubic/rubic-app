@@ -1,10 +1,10 @@
 import { Mnemonic, randomBytes } from 'ethers';
 import { NETWORK_CONFIG, RailgunWalletInfo } from '@railgun-community/shared-models';
-import { createRailgunWallet, loadWalletByID } from '@railgun-community/wallet';
+import { createRailgunWallet, getWalletMnemonic, loadWalletByID } from '@railgun-community/wallet';
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
 
 export class MnemonicService {
-  public lastMnemonic: string = '';
+  private lastMnemonic: string = '';
 
   private createMnemonic(): string {
     const mnemonic = Mnemonic.fromEntropy(randomBytes(16)).phrase.trim();
@@ -35,7 +35,8 @@ export class MnemonicService {
     return walletInfo;
   }
 
-  public getLastMnemonic(): string {
-    return this.lastMnemonic;
+  public async getLastMnemonic(encryptionKey: string, walletId: string): Promise<string> {
+    const mnemonic = await getWalletMnemonic(encryptionKey, walletId);
+    return mnemonic;
   }
 }

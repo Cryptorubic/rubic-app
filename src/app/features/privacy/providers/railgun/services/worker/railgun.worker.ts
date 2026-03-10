@@ -90,7 +90,13 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
       break;
     }
     case 'getMnemonic': {
-      postWorkerMessage({ method: 'getMnemonic', response: adapter.mnemonicService.lastMnemonic });
+      const { password, walletId } = data.params as { walletId: string; password: string };
+      const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+      const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
+      postWorkerMessage({
+        method: 'getMnemonic',
+        response: mnemonic
+      });
       break;
     }
     case 'gasEstimateForShield': {

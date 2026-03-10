@@ -232,7 +232,10 @@ export class RailgunFacadeService {
   }
 
   public getMnemonic(): Promise<string> {
-    this.railgunWorker.postMessage({ method: 'getMnemonic', params: {} });
+    const password = this.lastUsedPassword;
+    const walletId = this.storeService.getItem(this.storageKey);
+
+    this.railgunWorker.postMessage({ method: 'getMnemonic', params: { password, walletId } });
     return new Promise(resolve => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'getMnemonic') {
