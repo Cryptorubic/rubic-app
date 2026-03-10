@@ -107,6 +107,18 @@ export class RailgunFacadeService {
     });
   }
 
+  public async unlockFromPassword(password: string): Promise<string> {
+    this.railgunWorker.postMessage({ method: 'unlockFromPassword', params: { password } });
+    return new Promise(resolve => {
+      this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
+        if (data.method === 'unlockFromPassword') {
+          this.lastUsedPassword = password;
+          resolve(data.response);
+        }
+      };
+    });
+  }
+
   private createPrivateWallet(
     phrase: string,
     blockchain: PrivacySupportedNetworks,
@@ -169,8 +181,11 @@ export class RailgunFacadeService {
 
   private async handleAccount(account: PublicAccount): Promise<void> {
     try {
-      const encryptionKeys = await this.setupFromPassword(account.password);
       const hasWallet = !!this.storeService.getItem(this.storageKey);
+
+      const encryptionKeys = hasWallet
+        ? await this.unlockFromPassword(account.password)
+        : await this.setupFromPassword(account.password);
 
       const walletInfo = hasWallet
         ? await this.loadWallet(account.password)

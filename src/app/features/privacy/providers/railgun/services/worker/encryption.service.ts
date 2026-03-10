@@ -56,6 +56,7 @@ export class EncryptionService {
     }
 
     const creds = this.readCredsSafe(credsRaw);
+    console.log('creds: ', creds);
     if (!creds) {
       throw new Error('Encryption credentials are corrupted or invalid version.');
     }

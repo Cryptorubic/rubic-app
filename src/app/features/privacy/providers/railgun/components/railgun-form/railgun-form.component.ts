@@ -1,7 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  Output
+} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { validateSecretPhrase } from '@features/privacy/providers/railgun/utils/secret-phrase-validator';
 import { PublicAccount } from '@features/privacy/providers/railgun/models/public-account';
+import { StoreService } from '@core/services/store/store.service';
 
 @Component({
   selector: 'app-railgun-form',
@@ -16,10 +25,31 @@ export class RailgunFormComponent {
 
   @Output() public readonly formSubmit = new EventEmitter<PublicAccount>();
 
+  private readonly storeService = inject(StoreService);
+
+  private readonly storeKey = 'RAILGUN_ENCRYPTION_CREDS_V1';
+
+  protected hasAccount = false;
+
+  protected readonly cdr = inject(ChangeDetectorRef);
+
   public readonly secretForm = new FormGroup({
-    phrase: new FormControl('', [Validators.required, validateSecretPhrase]),
+    phrase: new FormControl('', [
+      ...(this.hasAccount ? [] : [Validators.required]),
+      validateSecretPhrase
+    ]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)])
   });
+
+  constructor() {
+    const storedCreds = this.storeService.getItem(this.storeKey);
+    this.hasAccount = !!storedCreds;
+    // this.cdr.detectChanges();
+  }
+
+  ngOnInit(): void {
+    console.log(this.hasAccount, this.secretForm);
+  }
 
   public onSubmit(): void {
     this.formSubmit.emit(this.secretForm.value as PublicAccount);
