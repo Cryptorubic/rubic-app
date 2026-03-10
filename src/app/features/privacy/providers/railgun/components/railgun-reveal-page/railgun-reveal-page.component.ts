@@ -50,7 +50,11 @@ export class RailgunRevealPageComponent {
                 icon: '',
                 defaultAutoCloseTime: 0
               });
-              await this.revealService.unshieldTokens(token.address, bigintAmount.toString());
+              await this.revealService.unshieldTokens(
+                token.address,
+                bigintAmount.toString(),
+                () => {}
+              );
               this.notificationService.show(
                 'Tokens were successfully unshielded to public wallet',
                 {

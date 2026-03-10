@@ -28,6 +28,7 @@ import {
   populateProvedUnshield,
   populateShield
 } from '@railgun-community/wallet';
+import { Wallet } from 'ethers';
 
 export class RailgunAdapter {
   public readonly artifactService = new ArtifactStoreService();
@@ -362,6 +363,18 @@ addEventListener('message', async ({ data }: { data: RailgunRequest<unknown> }) 
       postWorkerMessage({
         method: 'populateTransfer',
         response: { transaction, nullifiers }
+      });
+      break;
+    }
+    case 'getEvmWallet': {
+      const { password, walletId } = data.params as { walletId: string; password: string };
+      const encryptionKey = await adapter.encryptionService.unlockFromPassword(password);
+      const mnemonic = await adapter.mnemonicService.getLastMnemonic(encryptionKey, walletId);
+      const evmWallet = Wallet.fromPhrase(mnemonic).address;
+
+      postWorkerMessage({
+        method: 'getEvmWallet',
+        response: evmWallet
       });
       break;
     }

@@ -1,13 +1,33 @@
 <div class="wrapper">
   <app-window-container>
-    <div class="railgin">
-      <h3>Account ID:</h3>
-      <p class="railgun-p">{{ accountId }}</p>
-      <h3>Railgun Address:</h3>
-      <p class="railgun-p">{{ railgunAddress }}</p>
-      <button tuiButton appearance="primary" type="button" size="m" (click)="logout()">
-        Log out
+    <ng-container header> Wallet details</ng-container>
+    <ng-container>
+      <div class="account-info">
+        <div class="account-info__wrapper">
+          <h3 class="account-info__label">Address 0zk:</h3>
+          <p class="account-info__text">{{ railgunAddress }}</p>
+        </div>
+
+        <div class="account-info__wrapper">
+          <h3 class="account-info__label">Account ID:</h3>
+          <p class="account-info__text">{{ accountId }}</p>
+        </div>
+
+        <div class="account-info__wrapper">
+          <h3 class="account-info__label">Public EVM Address:</h3>
+          <p class="account-info__text">{{ evmAddress }}</p>
+        </div>
+      </div>
+      <button
+        class="account-info__button"
+        tuiButton
+        appearance="primary"
+        type="button"
+        size="m"
+        (click)="logout()"
+      >
+        Sign Out
       </button>
-    </div>
+    </ng-container>
   </app-window-container>
 </div>

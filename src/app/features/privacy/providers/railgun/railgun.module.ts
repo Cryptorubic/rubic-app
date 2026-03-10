@@ -7,6 +7,7 @@ import {
   TuiFieldErrorPipeModule,
   TuiInputModule,
   TuiInputPasswordModule,
+  TuiProgressModule,
   TuiStepperModule
 } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
@@ -49,7 +50,8 @@ import { TargetNetworkAddressService } from '@features/trade/services/target-net
     TuiButtonModule,
     TuiStepperModule,
     SharedPrivacyProvidersModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiProgressModule
   ],
   providers: [
     RailgunFacadeService,

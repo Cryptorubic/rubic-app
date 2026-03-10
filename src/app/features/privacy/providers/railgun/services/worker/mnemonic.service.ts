@@ -1,7 +1,13 @@
 import { Mnemonic, randomBytes } from 'ethers';
 import { NETWORK_CONFIG, RailgunWalletInfo } from '@railgun-community/shared-models';
-import { createRailgunWallet, getWalletMnemonic, loadWalletByID } from '@railgun-community/wallet';
+import {
+  createRailgunWallet,
+  getWalletMnemonic,
+  loadWalletByID,
+  walletForID
+} from '@railgun-community/wallet';
 import { PrivacySupportedNetworks } from '@features/privacy/providers/railgun/models/supported-networks';
+import { AbstractWallet } from '@railgun-community/engine';
 
 export class MnemonicService {
   private lastMnemonic: string = '';
@@ -38,5 +44,10 @@ export class MnemonicService {
   public async getLastMnemonic(encryptionKey: string, walletId: string): Promise<string> {
     const mnemonic = await getWalletMnemonic(encryptionKey, walletId);
     return mnemonic;
+  }
+
+  public async walletForID(railgunId: string): Promise<AbstractWallet> {
+    const walletInfo = await walletForID(railgunId);
+    return walletInfo;
   }
 }

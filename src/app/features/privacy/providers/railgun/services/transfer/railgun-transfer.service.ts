@@ -24,7 +24,8 @@ export class RailgunTransferService {
   public async transferTokens(
     tokenAddress: string,
     tokenAmount: string,
-    receiver: string
+    receiver: string,
+    proofProgress: (progress: string) => void
   ): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiver)
@@ -36,7 +37,11 @@ export class RailgunTransferService {
     );
 
     // generate proof
-    await this.railgunFacade.generateTransferProof(NetworkName.Polygon, erc20AmountRecipients);
+    await this.railgunFacade.generateTransferProof(
+      NetworkName.Polygon,
+      erc20AmountRecipients,
+      proofProgress
+    );
 
     const mnemonic = await this.railgunFacade.getMnemonic();
     const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);

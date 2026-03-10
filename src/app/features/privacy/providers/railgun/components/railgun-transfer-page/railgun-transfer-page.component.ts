@@ -100,7 +100,8 @@ export class RailgunTransferPageComponent {
               await this.transferService.transferTokens(
                 token.address,
                 token.stringWeiAmount,
-                this.targetAddressService.address
+                this.targetAddressService.address,
+                () => {}
               );
               this.notificationService.show('Transfer successful.', {
                 status: 'success',

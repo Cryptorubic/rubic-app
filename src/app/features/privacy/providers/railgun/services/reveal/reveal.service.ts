@@ -26,7 +26,11 @@ export class RevealService {
 
   constructor() {}
 
-  public async unshieldTokens(tokenAddress: string, tokenAmount: string): Promise<void> {
+  public async unshieldTokens(
+    tokenAddress: string,
+    tokenAmount: string,
+    proofProgress: (progress: string) => void
+  ): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
     ];
@@ -37,7 +41,11 @@ export class RevealService {
     );
 
     // generate unshield proof
-    await this.railgunFacade.generateUnshieldProof(NetworkName.Polygon, erc20AmountRecipients);
+    await this.railgunFacade.generateUnshieldProof(
+      NetworkName.Polygon,
+      erc20AmountRecipients,
+      proofProgress
+    );
 
     const mnemonic = await this.railgunFacade.getMnemonic();
     const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
