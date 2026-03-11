@@ -9,7 +9,7 @@ import { PrivacycashTransferPageComponent } from './components/privacycash-trans
 import { PrivacycashRefundPageComponent } from './components/privacycash-refund-page/privacycash-refund-page.component';
 import { SharedPrivacyProvidersModule } from '../shared-privacy-providers/shared-privacy-providers.module';
 import { SharedModule } from '@app/shared/shared.module';
-import { PrivacycashRevertService } from './services/privacy-cash-revert.service';
+import { PrivacycashRefundService } from './services/privacy-cash-revert.service';
 import { PrivacycashSwapService } from './services/privacy-cash-swap.service';
 import { PrivacycashApiService } from './services/privacy-cash-api.service';
 import { PrivacycashPublicAssetsService } from './services/common/assets-services/privacycash-public-assets.service';
@@ -38,7 +38,7 @@ import { PrivacycashTokensService } from './services/common/token-facades/privac
     SharedPrivacyProvidersModule
   ],
   providers: [
-    PrivacycashRevertService,
+    PrivacycashRefundService,
     PrivacycashSwapService,
     PrivacycashApiService,
     PrivacycashPublicAssetsService,

@@ -183,6 +183,8 @@ export class PrivacycashSwapService {
       burnerKeypair.publicKey.toBase58()
     );
     localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', burnerKeypair.publicKey.toBase58());
+    // @TODO_1712 удалить перед релизом
+    localStorage.setItem('PRIVACYCASH_PRIVATE_KEY', burnerKeypair.secretKey.toString());
 
     const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
       toRubicTokenAddr(srcToken.address),

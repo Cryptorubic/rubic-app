@@ -5,7 +5,6 @@ import {
   TOKEN_PROGRAM_ID
 } from '@solana/spl-token';
 import { PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
-
 import { SdkLegacyService } from '@app/core/services/sdk/sdk-legacy/sdk-legacy.service';
 import { BLOCKCHAIN_NAME, Token, nativeTokensList } from '@cryptorubic/core';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
@@ -14,7 +13,7 @@ import { compareAddresses } from '@app/shared/utils/utils';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 
 @Injectable()
-export class PrivacycashRevertService {
+export class PrivacycashRefundService {
   constructor(
     private readonly sdkLegacyService: SdkLegacyService,
     private readonly walletConnectorService: WalletConnectorService,
@@ -67,7 +66,7 @@ export class PrivacycashRevertService {
 
     const signature = await adapter.public.sendRawTransaction(transaction.serialize());
 
-    console.debug('[PrivacyCashRevertService_revertNative] signature:', signature);
+    console.debug('[PrivacycashRefundService_revertNative] signature:', signature);
     this.notificationsService.showInfo('Successfull refund.');
   }
 
@@ -123,7 +122,7 @@ export class PrivacycashRevertService {
 
     const signature = await adapter.public.sendRawTransaction(transaction.serialize());
 
-    console.debug('[PrivacyCashRevertService_revertSPL] signature:', signature);
+    console.debug('[PrivacycashRefundService_revertSPL] signature:', signature);
     this.notificationsService.showInfo('Successfull refund.');
   }
 }

@@ -42,6 +42,6 @@
     size="m"
     (click)="transfer()"
   >
-    Transfer Tokens
+    {{ creationConfig.buttonText ? creationConfig.buttonText : 'Transfer Tokens' }}
   </button>
 </app-window-container>

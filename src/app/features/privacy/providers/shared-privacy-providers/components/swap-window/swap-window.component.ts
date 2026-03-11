@@ -85,13 +85,17 @@ export class SwapWindowComponent implements OnInit {
   public readonly loading$ = this._loading$.asObservable();
 
   public get swapInfoNotFilled(): boolean {
+    const fromAmountNotSet =
+      isNaN(this.swapInfo.fromAmount?.actualValue.toNumber()) ||
+      this.swapInfo.fromAmount?.actualValue.isZero();
+    const toAmountNotSet =
+      isNaN(this.swapInfo.toAmount?.actualValue.toNumber()) ||
+      this.swapInfo.toAmount?.actualValue.isZero();
     return (
       !this.swapInfo.fromAsset ||
       !this.swapInfo.toAsset ||
-      isNaN(this.swapInfo.fromAmount?.actualValue.toNumber()) ||
-      isNaN(this.swapInfo.toAmount?.actualValue.toNumber()) ||
-      this.swapInfo.fromAmount?.actualValue.isZero() ||
-      this.swapInfo.toAmount?.actualValue.isZero()
+      (fromAmountNotSet && this.creationConfig.withSrcAmount) ||
+      (toAmountNotSet && this.creationConfig.withDstAmount)
     );
   }
 

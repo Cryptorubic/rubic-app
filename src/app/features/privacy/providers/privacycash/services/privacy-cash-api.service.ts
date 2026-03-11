@@ -95,10 +95,11 @@ export class PrivacycashApiService {
         if (retryCount < 2) {
           retryCount++;
         } else {
-          throw new Error();
+          throw new Error('Timeout');
         }
       }
     } catch (err) {
+      console.debug('[PrivacycashApiService_buildSwapTx] Error:', err);
       return { requestId: '', transaction: '', outAmount: '0' };
     }
   }

@@ -68,7 +68,7 @@
       size="m"
       (click)="swap()"
     >
-      Review Order
+      {{ creationConfig.buttonText ? creationConfig.buttonText : 'Review Order' }}
     </button>
     <app-receiver-address-button
       *ngIf="creationConfig.withReceiver"
