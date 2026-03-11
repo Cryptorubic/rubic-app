@@ -7,10 +7,14 @@ import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
-import { PrivateSwapFormConfig } from '../../providers/shared-privacy-providers/models/swap-form-types';
+import {
+  PrivateSwapFormConfig,
+  PrivateTransferFormConfig
+} from '../../providers/shared-privacy-providers/models/swap-form-types';
 import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
 import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
 import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
+import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/models/transfer-info';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -38,6 +42,12 @@ export class PrivacyPageViewComponent {
     withSrcAmount: false
   };
 
+  public readonly transferWindowCreationConfig: PrivateTransferFormConfig = {
+    withActionButton: false,
+    withReceiver: false,
+    withSrcAmount: false
+  };
+
   public readonly quoteAdapter = new EmptyQuoteAdapter();
 
   public readonly privateProviders$ = this.privacyMainPageService.privateProviders$;
@@ -52,6 +62,8 @@ export class PrivacyPageViewComponent {
 
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
+
   constructor(
     private readonly queryParamsService: QueryParamsService,
     private readonly privacyMainPageService: PrivacyMainPageService
@@ -65,6 +77,13 @@ export class PrivacyPageViewComponent {
     this.privacyMainPageService.patchFormValue({
       fromAsset: swapInfo.fromAsset,
       toAsset: swapInfo.toAsset
+    });
+  }
+
+  public handleTransferWindowChanged(transferInfo: PrivateTransferInfo): void {
+    this.privacyMainPageService.patchFormValue({
+      fromAsset: transferInfo.fromAsset,
+      toAsset: transferInfo.fromAsset
     });
   }
 

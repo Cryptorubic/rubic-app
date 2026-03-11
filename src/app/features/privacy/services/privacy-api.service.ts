@@ -11,7 +11,11 @@ export class PrivacyApiService {
   @Memo({ maxAge: 60 * 60_000 })
   public async fetchPrivacyCashFees(): Promise<PrivacyCashFeesResp> {
     return firstValueFrom(
-      this.httpService.get<PrivacyCashFeesResp>('', {}, 'https://api3.privacycash.org/config')
+      this.httpService.get<PrivacyCashFeesResp>('', {}, 'https://api3.privacycash.org/config', {
+        timeoutMs: 2_000,
+        retry: 0,
+        external: true
+      })
     );
   }
 }

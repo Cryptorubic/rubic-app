@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PrivacyForm, PrivacyFormValue } from './models/privacy-form';
 import { BehaviorSubject, Observable, combineLatestWith, forkJoin, map, of, switchMap } from 'rxjs';
-import { PrivateProviderInfoUI } from '../models/provider-info';
+import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../models/activity-item';
 import { PRIVATE_PROVIDERS_CHAINS_MAP } from '../constants/private-providers-chains-map';
 import { PrivateAction } from '../constants/private-mode-tx-types';
@@ -33,18 +33,7 @@ export class PrivacyMainPageService {
   ).pipe(
     combineLatestWith(this.form.valueChanges, this.selectedTab$),
     switchMap(([privateProvidersRaw, formValue, selectedTab]) => {
-      const privateProviders$ = Promise.all(
-        privateProvidersRaw.map(providerInfo => {
-          return providerInfo.getFeeSize(selectedTab, this.privacyApiService).then(
-            feeMsg =>
-              ({
-                ...providerInfo,
-                feeSize: feeMsg,
-                minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
-              } as PrivateProviderInfoUI)
-          );
-        })
-      );
+      const privateProviders$ = this.loadDynamicParams(privateProvidersRaw, formValue, selectedTab);
       return forkJoin([privateProviders$, of(formValue), of(selectedTab)]);
     }),
     map(([privateProviders, formValue, selectedTab]) => {
@@ -65,6 +54,25 @@ export class PrivacyMainPageService {
 
   public patchFormValue(value: Partial<PrivacyFormValue>): void {
     this.form.patchValue(value);
+  }
+
+  private loadDynamicParams(
+    privateProvidersRaw: PrivateProviderRawInfo[],
+    formValue: Partial<PrivacyFormValue>,
+    selectedTab: PrivateAction
+  ): Promise<PrivateProviderInfoUI[]> {
+    return Promise.all(
+      privateProvidersRaw.map(providerInfo => {
+        return providerInfo.getFeeSize(selectedTab, formValue, this.privacyApiService).then(
+          feeMsg =>
+            ({
+              ...providerInfo,
+              feeSize: feeMsg,
+              minAmountUsd: providerInfo.getMinAmountUsd(selectedTab)
+            } as PrivateProviderInfoUI)
+        );
+      })
+    );
   }
 
   private filterProviders(
