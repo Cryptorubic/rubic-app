@@ -1,4 +1,4 @@
-import { inject, Injectable, NgZone } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   calculateGasPrice,
   NetworkName,
@@ -9,39 +9,35 @@ import {
   getProviderWallet,
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
 import { AuthService } from '@core/services/auth/auth.service';
-import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
-import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 
 @Injectable()
-export class RevealService {
-  private readonly ngZone = inject(NgZone);
-
+export class RailgunTransferService {
   private readonly railgunFacade = inject(RailgunFacadeService);
 
   private readonly authService = inject(AuthService);
 
-  private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
-
   constructor() {}
 
-  public async unshieldTokens(
+  public async transferTokens(
     tokenAddress: string,
     tokenAmount: string,
+    receiver: string,
     proofProgress: (progress: string) => void
   ): Promise<void> {
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
-      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), this.authService.userAddress)
+      serializeERC20Transfer(tokenAddress, BigInt(tokenAmount), receiver)
     ];
 
-    const { gasEstimate } = await this.railgunFacade.gasEstimateForUnshield(
+    const { gasEstimate } = await this.railgunFacade.gasEstimateForTransfer(
       NetworkName.Polygon,
       erc20AmountRecipients
     );
 
-    // generate unshield proof
-    await this.railgunFacade.generateUnshieldProof(
+    // generate proof
+    await this.railgunFacade.generateTransferProof(
       NetworkName.Polygon,
       erc20AmountRecipients,
       proofProgress
@@ -57,11 +53,11 @@ export class RevealService {
       wallet
     );
 
-    const overallBatchMinGasPrice = await calculateGasPrice(transactionGasDetails);
+    const overallBatchMinGasPrice = calculateGasPrice(transactionGasDetails);
 
     // populate tx
 
-    const { transaction } = await this.railgunFacade.populateUnshield(
+    const { transaction } = await this.railgunFacade.populateTransfer(
       NetworkName.Polygon,
       erc20AmountRecipients,
       transactionGasDetails,

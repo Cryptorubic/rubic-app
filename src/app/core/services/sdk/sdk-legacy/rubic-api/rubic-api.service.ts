@@ -50,6 +50,7 @@ import { delay, exhaustMap, filter, first, retry, switchMap, throttleTime } from
 import { WsErrorResponseInterface } from '../features/ws-api/models/ws-error-response-interface';
 import { NAVIGATOR, WINDOW } from '@ng-web-apis/common';
 import { ENVIRONMENT } from 'src/environments/environment';
+import { CLEARSWAP_STATUS } from '@app/features/privacy/providers/clearswap/models/status';
 
 @Injectable({
   providedIn: 'root'
@@ -442,6 +443,14 @@ export class RubicApiService {
         {
           params: { sourceTransactionHash: srcTxHash, fromBlockchain: srcBlockchain }
         }
+      )
+    );
+  }
+
+  public getClearswapStatus(id: string): Promise<{ status: CLEARSWAP_STATUS }> {
+    return firstValueFrom(
+      this.sdkLegacyService.httpClient.get<{ status: CLEARSWAP_STATUS }>(
+        `https://dev-api.rubic.exchange/api/v3/tmp/statuses/clearswap/status?rubic_id=${id}`
       )
     );
   }

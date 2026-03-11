@@ -7,6 +7,7 @@ import {
   TuiFieldErrorPipeModule,
   TuiInputModule,
   TuiInputPasswordModule,
+  TuiProgressModule,
   TuiStepperModule
 } from '@taiga-ui/kit';
 import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
@@ -23,6 +24,8 @@ import { RailgunFacadeService } from '@features/privacy/providers/railgun/servic
 import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
 import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
+import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 
 @NgModule({
   declarations: [
@@ -47,8 +50,16 @@ import { PrivateSwapService } from '@features/privacy/providers/railgun/services
     TuiButtonModule,
     TuiStepperModule,
     SharedPrivacyProvidersModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiProgressModule
   ],
-  providers: [RailgunFacadeService, HideService, RevealService, PrivateSwapService]
+  providers: [
+    RailgunFacadeService,
+    HideService,
+    RevealService,
+    PrivateSwapService,
+    RailgunTransferService,
+    TargetNetworkAddressService
+  ]
 })
 export class RailgunModule {}

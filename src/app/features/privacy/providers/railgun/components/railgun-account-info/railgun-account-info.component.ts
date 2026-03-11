@@ -9,6 +9,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from 
 export class RailgunAccountInfoComponent {
   @Input({ required: true }) accountId: string;
 
+  @Input({ required: true }) evmAddress: string;
+
   @Input({ required: true }) railgunAddress: string;
 
   @Output() handleLogout = new EventEmitter<void>();
