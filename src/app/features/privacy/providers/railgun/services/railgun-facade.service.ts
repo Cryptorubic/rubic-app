@@ -93,8 +93,12 @@ export class RailgunFacadeService {
     this.railgunWorker.postMessage({ method: 'init', params: null });
     this.railgunWorker.onmessage = ({ data }) => {
       if (data === 'initialized') {
-        console.log('Railgun service initialized');
-        this._railgunInitialised$.next(true);
+        if ('error' in data) {
+          console.error('Error initializing Railgun service: ', data.error);
+        } else {
+          console.log('Railgun service initialized');
+          this._railgunInitialised$.next(true);
+        }
       }
     };
   }
@@ -103,11 +107,15 @@ export class RailgunFacadeService {
 
   public async setupFromPassword(password: string): Promise<string> {
     this.railgunWorker.postMessage({ method: 'setupFromPassword', params: password });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'setupFromPassword') {
-          this.lastUsedPassword = password;
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.lastUsedPassword = password;
+            resolve(data.response);
+          }
         }
       };
     });
@@ -115,11 +123,15 @@ export class RailgunFacadeService {
 
   public async unlockFromPassword(password: string): Promise<string> {
     this.railgunWorker.postMessage({ method: 'unlockFromPassword', params: { password } });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'unlockFromPassword') {
-          this.lastUsedPassword = password;
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.lastUsedPassword = password;
+            resolve(data.response);
+          }
         }
       };
     });
@@ -134,11 +146,15 @@ export class RailgunFacadeService {
       method: 'createPrivateWallet',
       params: { phrase, blockchain, encryptionKey }
     });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
         if (data.method === 'createPrivateWallet') {
-          this.storeService.setItem(this.storageKey, data.response.id);
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.storeService.setItem(this.storageKey, data.response.id);
+            resolve(data.response);
+          }
         }
       };
     });
@@ -151,10 +167,14 @@ export class RailgunFacadeService {
       method: 'loadWallet',
       params: { railgunId, password }
     });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
         if (data.method === 'loadWallet') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -165,10 +185,14 @@ export class RailgunFacadeService {
       method: 'getEvmWallet',
       params: { password, walletId }
     });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'getEvmWallet') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -185,6 +209,10 @@ export class RailgunFacadeService {
       data: RailgunResponse<RailgunBalancesEvent | string>;
     }) => {
       if (data.method === 'balanceUpdate') {
+        if ('error' in data) {
+          console.error('Error refreshing balances: ', data.error);
+          return;
+        }
         const eventData = data.response as RailgunBalancesEvent;
         const prev = this._balancesByBucket$.value;
         this._balancesByBucket$.next({
@@ -193,6 +221,10 @@ export class RailgunFacadeService {
         });
       }
       if (data.method === 'utxoScanUpdate') {
+        if ('error' in data) {
+          console.error('Error during UTXO scan: ', data.error);
+          return;
+        }
         const eventData = data.response as string;
         const bigNumber = new BigNumber(eventData);
         const progress = bigNumber.multipliedBy(100).toFixed(2);
@@ -261,10 +293,14 @@ export class RailgunFacadeService {
     const walletId = this.storeService.getItem(this.storageKey);
 
     this.railgunWorker.postMessage({ method: 'getMnemonic', params: { password, walletId } });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'getMnemonic') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -291,14 +327,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint }>;
       }) => {
         if (data.method === 'gasEstimateForShield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -322,14 +362,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
       }) => {
         if (data.method === 'populateShield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -356,14 +400,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint }>;
       }) => {
         if (data.method === 'gasEstimateForUnshield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -388,17 +436,25 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint } | string>;
       }) => {
         if (data.method === 'generateUnshieldProofProgress') {
-          proofProgress(data.response as string);
+          if ('error' in data) {
+            console.error('Error during unshield proof generation: ', data.error);
+          } else {
+            proofProgress(data.response as string);
+          }
         }
         if (data.method === 'generateUnshieldProof') {
-          resolve(data.response as { gasEstimate: bigint });
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response as { gasEstimate: bigint });
+          }
         }
       };
     });
@@ -424,14 +480,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
       }) => {
         if (data.method === 'populateUnshield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -458,14 +518,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint }>;
       }) => {
         if (data.method === 'gasEstimateForTransfer') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -490,17 +554,25 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint } | string>;
       }) => {
         if (data.method === 'generateTransferProofProgress') {
-          proofProgress(data.response as string);
+          if ('error' in data) {
+            console.error('Error during transfer proof generation: ', data.error);
+          } else {
+            proofProgress(data.response as string);
+          }
         }
         if (data.method === 'generateTransferProof') {
-          resolve(data.response as { gasEstimate: bigint });
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response as { gasEstimate: bigint });
+          }
         }
       };
     });
@@ -526,16 +598,27 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
       }) => {
         if (data.method === 'populateTransfer') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
+  }
+
+  public logout(): void {
+    this.storeService.deleteItem(this.storageKey);
+    this._account$.next(null);
+    this._railgunAccount$.next(null);
+    this._balances$.next([]);
   }
 }
