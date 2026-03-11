@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
+import { ClearswapPrivateActionButtonService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-action-button.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { ClearswapTokensFacadeService } from '@app/features/privacy/providers/clearswap/services/clearswap-tokens-facade.service';
 import { PrivateEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
+import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { Token } from '@app/shared/models/tokens/token';
@@ -17,7 +19,8 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: ToAssetsService, useClass: ClearswapPrivateAssetsService },
-    { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService }
+    { provide: TokensFacadeService, useClass: ClearswapTokensFacadeService },
+    { provide: PrivateActionButtonService, useClass: ClearswapPrivateActionButtonService }
   ]
 })
 export class ClearswapTransferTokensPageComponent {

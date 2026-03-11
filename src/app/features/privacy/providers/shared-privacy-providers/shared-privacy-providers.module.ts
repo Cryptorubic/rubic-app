@@ -50,6 +50,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
 import { SignMessageModalComponent } from './components/sign-message-modal/sign-message-modal.component';
+import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
+import { PrivateActionButtonComponent } from '@app/features/privacy/providers/shared-privacy-providers/components/action-button/private-action-button.component';
+import { PrivateTransferService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer/private-transfer.service';
 
 @NgModule({
   declarations: [
@@ -65,7 +68,8 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
     PrivatePreviewSwapComponent,
-    SignMessageModalComponent
+    SignMessageModalComponent,
+    PrivateActionButtonComponent
   ],
   imports: [
     CommonModule,
@@ -120,7 +124,9 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
       RefundService,
       SolanaGaslessService,
       SolanaGaslessStateService,
-      PrivateModalsService
+      PrivateModalsService,
+      PrivateActionButtonService,
+      PrivateTransferService
     ]
   ]
 })
