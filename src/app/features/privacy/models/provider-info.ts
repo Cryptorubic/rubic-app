@@ -1,5 +1,6 @@
 import { PrivateAction } from '../constants/private-mode-tx-types';
 import { PrivateTradeType } from '../constants/private-trade-types';
+import { PrivacyFormValue } from '../services/models/privacy-form';
 import { PrivacyApiService } from '../services/privacy-api.service';
 import { PrivareProviderUrl } from './routes';
 
@@ -24,5 +25,9 @@ export interface PrivateProviderRawInfo {
   url: PrivareProviderUrl;
   warning?: { message: string; hint: string };
   getMinAmountUsd: (action: PrivateAction) => number;
-  getFeeSize: (action: PrivateAction, privacyApiService: PrivacyApiService) => Promise<string>;
+  getFeeSize: (
+    action: PrivateAction,
+    formValue: Partial<PrivacyFormValue>,
+    privacyApiService: PrivacyApiService
+  ) => Promise<string>;
 }

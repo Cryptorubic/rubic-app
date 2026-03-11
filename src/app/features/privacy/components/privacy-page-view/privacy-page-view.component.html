@@ -4,20 +4,29 @@
   *ngLet="{
     providers: privateProviders$ | async,
     selectedTradeType: selectedTradeType$ | async,
-    lastActivity: lastActivity$ | async
+    lastActivity: lastActivity$ | async,
+    selectedTab: selectedTab$ | async
   } as state"
 >
   <div class="form-and-activity">
     <app-tab-bar
-      [tabs]="['Swap', 'Transfer']"
+      [tabs]="['Swap', 'Bridge', 'Transfer']"
       (tabClicked)="handleTabSelected($event)"
     ></app-tab-bar>
 
-    <app-swap-window
-      [quoteAdapter]="quoteAdapter"
-      [creationConfig]="swapWindowCreationConfig"
-      (formChanged)="handleSwapWindowChanged($event)"
-    ></app-swap-window>
+    <app-transfer-tokens-window
+      *ngIf="state.selectedTab === 'Transfer'; else swapWindow"
+      [creationConfig]="transferWindowCreationConfig"
+      (formChanged)="handleTransferWindowChanged($event)"
+    >
+    </app-transfer-tokens-window>
+    <ng-template #swapWindow>
+      <app-swap-window
+        [quoteAdapter]="quoteAdapter"
+        [creationConfig]="swapWindowCreationConfig"
+        (formChanged)="handleSwapWindowChanged($event)"
+      ></app-swap-window>
+    </ng-template>
 
     <app-last-private-activity
       [activityList]="state.lastActivity"
