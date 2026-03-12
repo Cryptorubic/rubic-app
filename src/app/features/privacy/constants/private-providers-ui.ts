@@ -81,7 +81,7 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
   },
   HOUDINI: {
     getMinAmountUsd: () => 50,
-    getFeeSize: (action: PrivateAction) => Promise.resolve(action === 'Swap' ? '0.8%' : '0%'),
+    getFeeSize: () => Promise.resolve('0.8%'),
     url: PRIVATE_MODE_URLS.HOUDINI,
     icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.HOUDINI],
     name: PRIVATE_TRADE_TYPE.HOUDINI,
