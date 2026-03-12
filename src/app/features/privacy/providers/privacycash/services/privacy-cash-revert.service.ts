@@ -36,13 +36,13 @@ export class PrivacycashRefundService {
     const senderPK = new PublicKey(this.walletConnectorService.address);
     const receiverPK = new PublicKey(receiverAddr);
 
-    const burnerKeypair =
+    const ephemeralKeypair =
       await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
         this.privacycashSignatureService.signature,
         senderPK,
         0
       );
-    const burnerWalletBalanceWei = await adapter.getBalance(burnerKeypair.publicKey.toBase58());
+    const burnerWalletBalanceWei = await adapter.getBalance(ephemeralKeypair.publicKey.toBase58());
     const amountLeftForGasWei = Token.toWei(0.0033, nativeTokensList.SOLANA.decimals);
     const availableBalanceToRefundWei = burnerWalletBalanceWei.minus(amountLeftForGasWei);
     if (availableBalanceToRefundWei.lte(0)) {
@@ -52,17 +52,17 @@ export class PrivacycashRefundService {
 
     const transferBlockhash = await adapter.public.getLatestBlockhash();
     const transaction = new Transaction({
-      feePayer: burnerKeypair.publicKey,
+      feePayer: ephemeralKeypair.publicKey,
       blockhash: transferBlockhash.blockhash,
       lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
     }).add(
       SystemProgram.transfer({
-        fromPubkey: burnerKeypair.publicKey,
+        fromPubkey: ephemeralKeypair.publicKey,
         toPubkey: receiverPK,
         lamports: availableBalanceToRefundWei.toNumber()
       })
     );
-    transaction.sign(burnerKeypair);
+    transaction.sign(ephemeralKeypair);
 
     const signature = await adapter.public.sendRawTransaction(transaction.serialize());
 
@@ -76,14 +76,14 @@ export class PrivacycashRefundService {
     const receiverPK = new PublicKey(receiverAddr);
     const mintPK = new PublicKey(tokenAddr);
 
-    const burnerKeypair =
+    const ephemeralKeypair =
       await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
         this.privacycashSignatureService.signature,
         userPK,
         0
       );
     const burnerWalletBalanceWei = await adapter.getBalance(
-      burnerKeypair.publicKey.toBase58(),
+      ephemeralKeypair.publicKey.toBase58(),
       tokenAddr
     );
     if (burnerWalletBalanceWei.lte(0)) {
@@ -93,20 +93,20 @@ export class PrivacycashRefundService {
 
     const burnerATA = await getOrCreateAssociatedTokenAccount(
       adapter.public,
-      burnerKeypair,
+      ephemeralKeypair,
       mintPK,
-      burnerKeypair.publicKey
+      ephemeralKeypair.publicKey
     );
     const recipientATA = await getOrCreateAssociatedTokenAccount(
       adapter.public,
-      burnerKeypair,
+      ephemeralKeypair,
       mintPK,
       receiverPK
     );
     const transferInstruction = createTransferInstruction(
       burnerATA.address,
       recipientATA.address,
-      burnerKeypair.publicKey,
+      ephemeralKeypair.publicKey,
       burnerWalletBalanceWei.toNumber(),
       [],
       TOKEN_PROGRAM_ID
@@ -114,11 +114,11 @@ export class PrivacycashRefundService {
 
     const transferBlockhash = await adapter.public.getLatestBlockhash();
     let transaction = new Transaction({
-      feePayer: burnerKeypair.publicKey,
+      feePayer: ephemeralKeypair.publicKey,
       blockhash: transferBlockhash.blockhash,
       lastValidBlockHeight: transferBlockhash.lastValidBlockHeight
     }).add(transferInstruction);
-    transaction.sign(burnerKeypair);
+    transaction.sign(ephemeralKeypair);
 
     const signature = await adapter.public.sendRawTransaction(transaction.serialize());
 

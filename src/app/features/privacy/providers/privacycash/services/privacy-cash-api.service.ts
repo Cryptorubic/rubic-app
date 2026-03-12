@@ -28,37 +28,37 @@ export class PrivacycashApiService {
     inputMint: PublicKey,
     outputMint: PublicKey,
     base_unites: number,
-    burnerKeypair: Keypair
+    ephemeralKeypair: Keypair
   ): Promise<JupiterSwapBuildTxSuccessResp> {
     console.debug('[RUBIC] buildSwapTx params', {
       inputMint: inputMint.toString(),
       outputMint: outputMint.toString(),
       base_unites,
-      burnerKeypair: burnerKeypair.publicKey.toString()
+      ephemeralKeypair: ephemeralKeypair.publicKey.toString()
     });
     const orderResponse: JupiterSwapBuildTxSuccessResp = await this.buildSwapTx(
       base_unites,
       inputMint.toString(),
       outputMint.toString(),
-      burnerKeypair.publicKey.toString()
+      ephemeralKeypair.publicKey.toString()
     );
 
     const transaction = VersionedTransaction.deserialize(
       Buffer.from(orderResponse.transaction, 'base64')
     );
 
-    transaction.sign([burnerKeypair]);
+    transaction.sign([ephemeralKeypair]);
     const signedTxBase64 = Buffer.from(transaction.serialize()).toString('base64');
 
     console.debug('[RUBIC] makeSwapTx params', {
       signedTxBase64,
       requestId: orderResponse.requestId,
-      burnerKeypair: burnerKeypair.publicKey.toString()
+      ephemeralKeypair: ephemeralKeypair.publicKey.toString()
     });
     const makeSwapResp = await this.makeSwapTx(
       signedTxBase64,
       orderResponse.requestId,
-      burnerKeypair
+      ephemeralKeypair
     );
     console.debug('[RUBIC] jupSwap_makeSwapTx resp', makeSwapResp);
 
@@ -107,7 +107,7 @@ export class PrivacycashApiService {
   public async makeSwapTx(
     signedTransaction: string,
     requestId: string,
-    burnerKeypair: Keypair
+    ephemeralKeypair: Keypair
   ): Promise<string> {
     const sendTxResp = await firstValueFrom(
       this.httpService.post<JupiterSwapSendTxResp>(
@@ -116,7 +116,7 @@ export class PrivacycashApiService {
           step: 'send_tx',
           requestId,
           signedTransaction,
-          taker: burnerKeypair.publicKey.toString()
+          taker: ephemeralKeypair.publicKey.toString()
         },
         this.apiUrl
       )
@@ -125,7 +125,7 @@ export class PrivacycashApiService {
     if (!sendTxResp.success) {
       await waitFor(1_000);
       console.debug('[RUBIC] RETRYING sendTxResp...');
-      return this.makeSwapTx(signedTransaction, requestId, burnerKeypair);
+      return this.makeSwapTx(signedTransaction, requestId, ephemeralKeypair);
     }
 
     console.debug('[RUBIC] sendTxResp success', sendTxResp);

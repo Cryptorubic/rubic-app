@@ -19,6 +19,8 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPrivateTokensFacadeService } from './services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashTokensService } from './services/common/token-facades/privacycash-tokens.service';
+import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
+import { EphemeralWalletTokensService } from './services/common/token-facades/ephemeral-wallet-tokens.service';
 
 @NgModule({
   declarations: [
@@ -45,8 +47,9 @@ import { PrivacycashTokensService } from './services/common/token-facades/privac
     PrivacycashPrivateAssetsService,
     PrivacycashPublicTokensFacadeService,
     PrivacycashPrivateTokensFacadeService,
-    PrivacycashTokensService
+    PrivacycashTokensService,
+    EphemeralWalletTokensFacadeService,
+    EphemeralWalletTokensService
   ]
-  // exports: [PrivacycashSignatureModalComponent]
 })
 export class PrivacyCashModule {}
