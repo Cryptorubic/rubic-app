@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, Self, inject } from '@angular/core';
-import { BehaviorSubject, takeUntil } from 'rxjs';
-import { PRIVACYCASH_STEPS } from '../../constants/privacycash-steps';
-import { Step, StepType } from '../../models/step';
+import { takeUntil } from 'rxjs';
+import { PRIVACYCASH_PAGES } from '../../constants/privacycash-steps';
 import { PageType } from '../../../shared-privacy-providers/components/page-navigation/models/page-type';
 import { PrivacycashTokensService } from '../../services/common/token-facades/privacycash-tokens.service';
 import { WalletConnectorService } from '@app/core/services/wallets/wallet-connector-service/wallet-connector.service';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { EphemeralWalletTokensService } from '../../services/common/token-facades/ephemeral-wallet-tokens.service';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
 
 @Component({
   selector: 'app-privacy-cash-view',
@@ -22,13 +22,16 @@ export class PrivacycashMainPageComponent implements OnInit {
 
   private readonly walletConnectorService = inject(WalletConnectorService);
 
-  public readonly steps = PRIVACYCASH_STEPS;
+  public readonly activePage$ = this.privatePageTypeService.activePage$;
 
-  private readonly _currentStep$ = new BehaviorSubject<Step>(this.steps[0]);
+  public readonly pages = PRIVACYCASH_PAGES;
 
-  public readonly currentStep$ = this._currentStep$.asObservable();
-
-  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privatePageTypeService: PrivatePageTypeService
+  ) {
+    this.privatePageTypeService.activePage = this.pages[0];
+  }
 
   ngOnInit(): void {
     this.walletConnectorService.addressChange$.pipe(takeUntil(this.destroy$)).subscribe(() => {
@@ -44,9 +47,7 @@ export class PrivacycashMainPageComponent implements OnInit {
       });
   }
 
-  public onStepChange(value: PageType): void {
-    const stepType = value.type as StepType;
-    const currentStep = this.steps.find(s => s.type === stepType) || this.steps[0];
-    this._currentStep$.next(currentStep);
+  public onPageSelect(page: PageType): void {
+    this.privatePageTypeService.activePage = page;
   }
 }
