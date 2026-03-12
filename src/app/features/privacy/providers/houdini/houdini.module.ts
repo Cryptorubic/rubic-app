@@ -1,11 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { HoudiniRoutingModule } from './houdini-routing.module';
 import { HoudiniMainPageComponent } from './components/houdini-main-page/houdini-main-page.component';
+import { SharedPrivacyProvidersModule } from '../shared-privacy-providers/shared-privacy-providers.module';
+import { SharedModule } from '@app/shared/shared.module';
+import { TuiButtonModule } from '@taiga-ui/core';
+import { HoudiniPrivateAssetsService } from './services/houdini-private-assets.service';
+import { HoudiniTokensFacadeService } from './services/houdini-tokens-facade.service';
+import { HoudiniSwapService } from './services/houdini-swap.service';
 
 @NgModule({
   declarations: [HoudiniMainPageComponent],
-  imports: [CommonModule, HoudiniRoutingModule]
+  imports: [
+    CommonModule,
+    HoudiniRoutingModule,
+    SharedPrivacyProvidersModule,
+    SharedModule,
+    TuiButtonModule
+  ],
+  providers: [HoudiniPrivateAssetsService, HoudiniTokensFacadeService, HoudiniSwapService]
 })
 export class HoudiniModule {}
