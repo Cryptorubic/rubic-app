@@ -1,5 +1,5 @@
-export type AssetsSelectorLayoutParams = {
-  showChainsFilter: boolean;
-  showTokensFilter: boolean;
-  showFavoriteTokens: boolean;
+export type AssetsSelectorConfig = {
+  withChainsFilter: boolean;
+  withTokensFilter: boolean;
+  withFavoriteTokens: boolean;
 };

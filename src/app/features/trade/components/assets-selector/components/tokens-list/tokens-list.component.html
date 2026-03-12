@@ -1,7 +1,7 @@
 <div
   *ngIf="!isMobile"
   class="tokens-list__search-bar-container"
-  [ngClass]="{ 'tokens-list__hide-favorites': !layoutParams.showFavoriteTokens }"
+  [ngClass]="{ 'tokens-list__hide-favorites': !assetsSelectorConfig.withFavoriteTokens }"
 >
   <app-search-tokens-bar
     [searchQuery]="tokensSearchQuery"
@@ -9,14 +9,14 @@
     (queryChange)="onTokenSearch.emit($event)"
   ></app-search-tokens-bar>
   <app-switch-list-type-button
-    *ngIf="layoutParams.showFavoriteTokens"
+    *ngIf="assetsSelectorConfig.withFavoriteTokens"
     [assetListType]="listType"
     (switchListType)="switchMode.emit()"
   ></app-switch-list-type-button>
 </div>
 
 <app-tokens-list-filters
-  *ngIf="isUtility && layoutParams.showTokensFilter"
+  *ngIf="isUtility && assetsSelectorConfig.withTokensFilter"
   [assetListType]="listType"
   (onSelect)="selectTokenFilter($event)"
 >
@@ -26,7 +26,7 @@
   class="tokens-container"
   [ngClass]="{
     'large-iframe-token-container': useLargeIframe,
-    'tokens-container__all-chains': isUtility && layoutParams.showTokensFilter
+    'tokens-container__all-chains': isUtility && assetsSelectorConfig.withTokensFilter
   }"
 >
   <tui-loader [showLoader]="loading" [overlay]="true">

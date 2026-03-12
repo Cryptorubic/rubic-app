@@ -1,11 +1,7 @@
 <div class="wrapper">
   <app-assets-selector-page
     [type]="'to'"
-    [layoutParams]="{
-      showChainsFilter: false,
-      showTokensFilter: false,
-      showFavoriteTokens: false
-    }"
+    [assetsSelectorConfig]="assetsSelectorConfig"
     (tokenSelect)="selectToken($event)"
     (handleBack)="handleBack()"
   ></app-assets-selector-page>
