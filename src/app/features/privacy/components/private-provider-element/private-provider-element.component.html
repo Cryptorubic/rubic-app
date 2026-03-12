@@ -31,7 +31,10 @@
   <div class="bottom">
     <div
       class="security-percent"
-      [tuiHint]="'The protocol or provider commission for certain private actions.'"
+      [tuiHint]="
+        'Privacy metric based on data from the Web3Privacy Explorer:
+https://explorer.web3privacy.info/'
+      "
     >
       <img src="assets/images/private-swaps/common/lock.svg" width="15" height="15" />
       <div class="stars">
@@ -47,10 +50,7 @@
 
     <div
       class="fee-size"
-      [tuiHint]="
-        'Privacy metric based on data from the Web3Privacy Explorer:
-  https://explorer.web3privacy.info/'
-      "
+      [tuiHint]="'The protocol or provider commission for certain private actions.'"
     >
       <img src="assets/images/private-swaps/common/dollar.svg" width="9" height="16" />
       <b>{{ providerInfo.feeSize }}</b>

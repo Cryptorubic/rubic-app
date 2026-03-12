@@ -53,7 +53,9 @@ export class RailgunFacadeService {
     })
   );
 
-  private readonly _railgunAccount$ = new BehaviorSubject<RailgunWalletInfo | null>(null);
+  private readonly _railgunAccount$ = new BehaviorSubject<
+    (RailgunWalletInfo & { evmWalletAddress: string }) | null
+  >(null);
 
   public readonly railgunAccount$ = this._railgunAccount$.asObservable();
 
@@ -65,6 +67,10 @@ export class RailgunFacadeService {
       }[]
     | null
   >(null);
+
+  private readonly _utxoScan$ = new BehaviorSubject<number>(0);
+
+  public readonly utxoScan$ = this._utxoScan$.asObservable();
 
   public readonly balances$ = this._balances$.asObservable();
 
@@ -87,8 +93,12 @@ export class RailgunFacadeService {
     this.railgunWorker.postMessage({ method: 'init', params: null });
     this.railgunWorker.onmessage = ({ data }) => {
       if (data === 'initialized') {
-        console.log('Railgun service initialized');
-        this._railgunInitialised$.next(true);
+        if ('error' in data) {
+          console.error('Error initializing Railgun service: ', data.error);
+        } else {
+          console.log('Railgun service initialized');
+          this._railgunInitialised$.next(true);
+        }
       }
     };
   }
@@ -97,11 +107,15 @@ export class RailgunFacadeService {
 
   public async setupFromPassword(password: string): Promise<string> {
     this.railgunWorker.postMessage({ method: 'setupFromPassword', params: password });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'setupFromPassword') {
-          this.lastUsedPassword = password;
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.lastUsedPassword = password;
+            resolve(data.response);
+          }
         }
       };
     });
@@ -109,11 +123,15 @@ export class RailgunFacadeService {
 
   public async unlockFromPassword(password: string): Promise<string> {
     this.railgunWorker.postMessage({ method: 'unlockFromPassword', params: { password } });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'unlockFromPassword') {
-          this.lastUsedPassword = password;
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.lastUsedPassword = password;
+            resolve(data.response);
+          }
         }
       };
     });
@@ -128,11 +146,15 @@ export class RailgunFacadeService {
       method: 'createPrivateWallet',
       params: { phrase, blockchain, encryptionKey }
     });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
         if (data.method === 'createPrivateWallet') {
-          this.storeService.setItem(this.storageKey, data.response.id);
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            this.storeService.setItem(this.storageKey, data.response.id);
+            resolve(data.response);
+          }
         }
       };
     });
@@ -145,10 +167,32 @@ export class RailgunFacadeService {
       method: 'loadWallet',
       params: { railgunId, password }
     });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<RailgunWalletInfo> }) => {
         if (data.method === 'loadWallet') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
+        }
+      };
+    });
+  }
+
+  public getEvmWallet(password: string, walletId: string): Promise<string> {
+    this.railgunWorker.postMessage({
+      method: 'getEvmWallet',
+      params: { password, walletId }
+    });
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
+        if (data.method === 'getEvmWallet') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -165,6 +209,10 @@ export class RailgunFacadeService {
       data: RailgunResponse<RailgunBalancesEvent | string>;
     }) => {
       if (data.method === 'balanceUpdate') {
+        if ('error' in data) {
+          console.error('Error refreshing balances: ', data.error);
+          return;
+        }
         const eventData = data.response as RailgunBalancesEvent;
         const prev = this._balancesByBucket$.value;
         this._balancesByBucket$.next({
@@ -173,8 +221,15 @@ export class RailgunFacadeService {
         });
       }
       if (data.method === 'utxoScanUpdate') {
+        if ('error' in data) {
+          console.error('Error during UTXO scan: ', data.error);
+          return;
+        }
         const eventData = data.response as string;
-        console.log('Scan progress...: ', eventData);
+        const bigNumber = new BigNumber(eventData);
+        const progress = bigNumber.multipliedBy(100).toFixed(2);
+        const number = Number(progress);
+        this._utxoScan$.next(number);
       }
     };
   }
@@ -190,8 +245,10 @@ export class RailgunFacadeService {
       const walletInfo = hasWallet
         ? await this.loadWallet(account.password)
         : await this.createPrivateWallet(account.phrase, 'Polygon' as RubicAny, encryptionKeys);
-      console.log('[RAILGUN] Wallet info: ', walletInfo);
-      this._railgunAccount$.next(walletInfo);
+
+      const evmWallet = await this.getEvmWallet(account.password, walletInfo.id);
+
+      this._railgunAccount$.next({ ...walletInfo, evmWalletAddress: evmWallet });
       this.lastUsedPassword = account.password;
 
       await this.refreshBalances({ type: 0, id: 137 }, [walletInfo.id]);
@@ -236,10 +293,14 @@ export class RailgunFacadeService {
     const walletId = this.storeService.getItem(this.storageKey);
 
     this.railgunWorker.postMessage({ method: 'getMnemonic', params: { password, walletId } });
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({ data }: { data: RailgunResponse<string> }) => {
         if (data.method === 'getMnemonic') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -266,14 +327,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint }>;
       }) => {
         if (data.method === 'gasEstimateForShield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -297,14 +362,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
       }) => {
         if (data.method === 'populateShield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -331,14 +400,18 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ gasEstimate: bigint }>;
       }) => {
         if (data.method === 'gasEstimateForUnshield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
@@ -346,7 +419,9 @@ export class RailgunFacadeService {
 
   public async generateUnshieldProof(
     network: NetworkName,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    proofProgress: (progress: string) => void = progress =>
+      console.log('Proof generation progress... ', progress)
   ): Promise<{ gasEstimate: bigint }> {
     const walletId = (await firstValueFrom(this.railgunAccount$)).id;
 
@@ -361,17 +436,25 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
-        data: RailgunResponse<{ gasEstimate: bigint }>;
+        data: RailgunResponse<{ gasEstimate: bigint } | string>;
       }) => {
         if (data.method === 'generateUnshieldProofProgress') {
-          console.log('Proof generation progress... ', data.response);
+          if ('error' in data) {
+            console.error('Error during unshield proof generation: ', data.error);
+          } else {
+            proofProgress(data.response as string);
+          }
         }
         if (data.method === 'generateUnshieldProof') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response as { gasEstimate: bigint });
+          }
         }
       };
     });
@@ -397,16 +480,145 @@ export class RailgunFacadeService {
       }
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       this.railgunWorker.onmessage = ({
         data
       }: {
         data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
       }) => {
         if (data.method === 'populateUnshield') {
-          resolve(data.response);
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
         }
       };
     });
+  }
+
+  public async gasEstimateForTransfer(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[]
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+    const mnemonic = await this.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
+    const gasDetails = await getGasDetailsForTransaction(network, 0n, true, wallet);
+
+    this.railgunWorker.postMessage({
+      method: 'gasEstimateForTransfer',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        gasDetails,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint }>;
+      }) => {
+        if (data.method === 'gasEstimateForTransfer') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
+        }
+      };
+    });
+  }
+
+  public async generateTransferProof(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    proofProgress: (progress: string) => void = progress =>
+      console.log('Proof generation progress... ', progress)
+  ): Promise<{ gasEstimate: bigint }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'generateTransferProof',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        password: this.lastUsedPassword,
+        erc20AmountRecipients
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ gasEstimate: bigint } | string>;
+      }) => {
+        if (data.method === 'generateTransferProofProgress') {
+          if ('error' in data) {
+            console.error('Error during transfer proof generation: ', data.error);
+          } else {
+            proofProgress(data.response as string);
+          }
+        }
+        if (data.method === 'generateTransferProof') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response as { gasEstimate: bigint });
+          }
+        }
+      };
+    });
+  }
+
+  public async populateTransfer(
+    network: NetworkName,
+    erc20AmountRecipients: RailgunERC20AmountRecipient[],
+    gasDetails: TransactionGasDetails,
+    overallBatchMinGasPrice: bigint
+  ): Promise<{ transaction: ContractTransaction; nullifiers: string[] }> {
+    const walletId = (await firstValueFrom(this.railgunAccount$)).id;
+
+    this.railgunWorker.postMessage({
+      method: 'populateTransfer',
+      params: {
+        txIdVersion: TXIDVersion.V2_PoseidonMerkle,
+        network,
+        walletId,
+        erc20AmountRecipients,
+        gasDetails: gasDetails,
+        overallBatchMinGasPrice
+      }
+    });
+
+    return new Promise((resolve, reject) => {
+      this.railgunWorker.onmessage = ({
+        data
+      }: {
+        data: RailgunResponse<{ transaction: ContractTransaction; nullifiers: string[] }>;
+      }) => {
+        if (data.method === 'populateTransfer') {
+          if ('error' in data) {
+            reject(data.error);
+          } else {
+            resolve(data.response);
+          }
+        }
+      };
+    });
+  }
+
+  public logout(): void {
+    this.storeService.deleteItem(this.storageKey);
+    this._account$.next(null);
+    this._railgunAccount$.next(null);
+    this._balances$.next([]);
   }
 }

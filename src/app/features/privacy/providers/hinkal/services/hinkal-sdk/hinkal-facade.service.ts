@@ -3,37 +3,64 @@ import { WalletConnectorService } from '@app/core/services/wallets/wallet-connec
 import { HinkalInstanceService } from './hinkal-instance.service';
 import { HinkalSwapService } from './hinkal-swap.service';
 import { HinkalBalanceService } from './hinkal-balance.service';
-import { distinctUntilChanged, firstValueFrom, Observable, Subscription, switchMap } from 'rxjs';
-import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  firstValueFrom,
+  Observable,
+  skip,
+  Subscription,
+  switchMap,
+  tap,
+  withLatestFrom
+} from 'rxjs';
+import {
+  BLOCKCHAIN_NAME,
+  blockchainId,
+  BlockchainName,
+  EvmBlockchainName,
+  TokenAmount
+} from '@cryptorubic/core';
 import { waitFor } from '@cryptorubic/web3';
 import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
 import { SignMessageModalComponent } from '../../../shared-privacy-providers/components/sign-message-modal/sign-message-modal.component';
 import { ModalService } from '@app/core/modals/services/modal.service';
+import { HinkalWorkerService } from './hinkal-worker.service';
 
 @Injectable()
 export class HinkalFacadeService {
   private readonly subs: Subscription[] = [];
+
+  private readonly _activeChain$ = new BehaviorSubject<BlockchainName>(BLOCKCHAIN_NAME.BASE);
+
+  public switchChain(chain: BlockchainName): void {
+    this._activeChain$.next(chain);
+  }
+
+  public readonly activeChain$ = this._activeChain$.asObservable();
 
   constructor(
     private readonly walletConnectorService: WalletConnectorService,
     private readonly hinkalInstanceService: HinkalInstanceService,
     private readonly hinkalSwapService: HinkalSwapService,
     private readonly hinkalBalanceService: HinkalBalanceService,
-    private readonly modalService: ModalService
+    private readonly modalService: ModalService,
+    private readonly hinkalWorkerService: HinkalWorkerService
   ) {
     this.initSubs();
   }
 
   private initSubs(): void {
     const walletSub = this.subscribeOnAddressChanged().subscribe();
-    const networkSub = this.subscribeOnNetworkChanged().subscribe();
+    const activeNetworkSub = this.subscribeOnActiveNetworkChanged().subscribe();
+    const walletNetworkSub = this.subscribeOnWalletNetworkChanged().subscribe();
 
-    this.subs.push(walletSub, networkSub);
+    this.subs.push(walletSub, activeNetworkSub, walletNetworkSub);
   }
 
-  private async refreshBalancesAfterAction(): Promise<void> {
+  private async refreshBalancesAfterAction(chain: EvmBlockchainName): Promise<void> {
     await waitFor(2000);
-    this.hinkalBalanceService.refreshBalances();
+    this.hinkalBalanceService.refreshBalances([chain]);
   }
 
   public async deposit(
@@ -46,7 +73,7 @@ export class HinkalFacadeService {
 
     return this.hinkalSwapService
       .deposit(tokenAmount, receiverPrivateShieldedKey)
-      .then(() => this.refreshBalancesAfterAction());
+      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(tokenAmount.blockchain));
   }
 
   public async withdraw(token: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
@@ -56,7 +83,7 @@ export class HinkalFacadeService {
 
     return this.hinkalSwapService
       .withdraw(token, receiver)
-      .then(() => this.refreshBalancesAfterAction());
+      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(token.blockchain));
   }
 
   public async transfer(
@@ -69,7 +96,7 @@ export class HinkalFacadeService {
 
     return this.hinkalSwapService
       .privateTransfer(token, receiverPrivateShieldedKey)
-      .then(() => this.refreshBalancesAfterAction());
+      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(token.blockchain));
   }
 
   public async swap(
@@ -82,7 +109,7 @@ export class HinkalFacadeService {
 
     return this.hinkalSwapService
       .privateSwap(fromToken, toToken)
-      .then(() => this.refreshBalancesAfterAction());
+      .then(isSuccess => isSuccess && this.refreshBalancesAfterAction(fromToken.blockchain));
   }
 
   private async updateInstance(
@@ -122,22 +149,39 @@ export class HinkalFacadeService {
         }
       })
     );
-
-    await this.hinkalInstanceService.hinkalInstance.resetMerkleTreesIfNecessary();
   }
 
   private subscribeOnAddressChanged(): Observable<void> {
     return this.walletConnectorService.addressChange$.pipe(
+      withLatestFrom(this.activeChain$),
       distinctUntilChanged(),
-      switchMap(address =>
-        this.updateInstance(address, this.walletConnectorService.network as EvmBlockchainName).then(
-          () => this.hinkalBalanceService.refreshBalances()
-        )
+      switchMap(([address, network]) => {
+        const chain = network as EvmBlockchainName;
+        return this.updateInstance(address, chain).then(() =>
+          this.refreshBalancesAfterAction(chain)
+        );
+      })
+    );
+  }
+
+  private subscribeOnActiveNetworkChanged(): Observable<void> {
+    return this.activeChain$.pipe(
+      tap(chain => console.log('CHAIN SWITCHED', chain)),
+      skip(1),
+      distinctUntilChanged(),
+      switchMap(chain =>
+        this.hinkalWorkerService
+          .request({
+            chainId: blockchainId[chain],
+            type: 'switchNetwork',
+            address: this.walletConnectorService.address
+          })
+          .then(() => this.refreshBalancesAfterAction(chain as EvmBlockchainName))
       )
     );
   }
 
-  private subscribeOnNetworkChanged(): Observable<void> {
+  private subscribeOnWalletNetworkChanged(): Observable<void> {
     return this.walletConnectorService.networkChange$.pipe(
       distinctUntilChanged(),
       switchMap(() =>

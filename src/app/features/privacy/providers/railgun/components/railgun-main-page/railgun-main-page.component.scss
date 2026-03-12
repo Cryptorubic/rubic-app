@@ -14,4 +14,40 @@
   margin: 0 auto;
 }
 
+.sidebar {
+  width: 134px;
+}
 
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: normal;
+  justify-content: center;
+  margin-top: 12px;
+  padding: var(--tui-padding-m);
+
+  background: var(--secondary-background);
+  border-radius: var(--tui-radius-m);
+
+  &__text {
+    margin-top: 0;
+
+    text-align: center;
+  }
+
+  &__wrapper {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    color: var(--tui-text-01);
+  }
+
+  &__percent {
+    position: absolute;
+  }
+}

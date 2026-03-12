@@ -43,14 +43,28 @@ export class RailgunRevealPageComponent {
             label: 'Reveal Tokens',
             action: async () => {
               const bigintAmount = BigInt(token.stringWeiAmount);
-              await this.revealService.unshieldTokens(token.address, bigintAmount.toString());
               this.notificationService.show('This may take a moment. Please keep Rubic App open', {
                 status: 'info',
-                autoClose: 15_000,
+                autoClose: 10_000,
                 data: null,
                 icon: '',
                 defaultAutoCloseTime: 0
               });
+              await this.revealService.unshieldTokens(
+                token.address,
+                bigintAmount.toString(),
+                () => {}
+              );
+              this.notificationService.show(
+                'Tokens were successfully unshielded to public wallet',
+                {
+                  status: 'success',
+                  autoClose: 5_000,
+                  data: null,
+                  icon: '',
+                  defaultAutoCloseTime: 0
+                }
+              );
             }
           }
         ]

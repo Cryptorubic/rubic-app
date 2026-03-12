@@ -45,7 +45,12 @@ import { DropdownOptionsShieldedTokenComponent } from './components/shielded-tok
 import { PasswordVerificationModalComponent } from './components/password-verification-modal/password-verification-modal.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { TuiActiveZoneModule } from '@taiga-ui/cdk';
-import { TuiInputModule } from '@taiga-ui/kit';
+import {
+  TuiAvatarModule,
+  TuiDataListWrapperModule,
+  TuiInputModule,
+  TuiSelectModule
+} from '@taiga-ui/kit';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TransferTokensWindowComponent } from './components/transfer-tokens-window/transfer-tokens-window.component';
 import { PrivatePreviewSwapComponent } from './components/private-preview-swap/private-preview-swap.component';
@@ -53,6 +58,7 @@ import { SignMessageModalComponent } from './components/sign-message-modal/sign-
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateActionButtonComponent } from '@app/features/privacy/providers/shared-privacy-providers/components/action-button/private-action-button.component';
 import { PrivateTransferService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer/private-transfer.service';
+import { SwitchNetworkPageComponent } from './components/switch-network-page/switch-network-page.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +75,8 @@ import { PrivateTransferService } from '@app/features/privacy/providers/shared-p
     TransferTokensWindowComponent,
     PrivatePreviewSwapComponent,
     SignMessageModalComponent,
-    PrivateActionButtonComponent
+    PrivateActionButtonComponent,
+    SwitchNetworkPageComponent
   ],
   imports: [
     CommonModule,
@@ -86,7 +93,10 @@ import { PrivateTransferService } from '@app/features/privacy/providers/shared-p
     TuiInputModule,
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
-    TuiNotificationModule
+    TuiNotificationModule,
+    TuiDataListWrapperModule,
+    TuiAvatarModule,
+    TuiSelectModule
   ],
   exports: [
     PublicTokensSelectorComponent,
@@ -98,7 +108,8 @@ import { PrivateTransferService } from '@app/features/privacy/providers/shared-p
     ShieldedTokensListComponent,
     PasswordVerificationModalComponent,
     TransferTokensWindowComponent,
-    SwapWindowComponent
+    SwapWindowComponent,
+    SwitchNetworkPageComponent
   ],
   providers: [
     [

@@ -1,5 +1,9 @@
 import { PrivateProviderRawInfo } from '../models/provider-info';
 import { PRIVATE_MODE_URLS } from '../models/routes';
+import { addr_to_symbol_map } from '../providers/privacycash/constants/privacycash-consts';
+import { toPrivacyCashTokenAddr } from '../providers/privacycash/utils/converter';
+import { PrivateSwapInfo } from '../providers/shared-privacy-providers/models/swap-info';
+import { PrivacyApiService } from '../services/privacy-api.service';
 import { PrivateAction } from './private-mode-tx-types';
 import { PRIVATE_PROVIDERS_ICONS } from './private-providers-icons';
 import { PRIVATE_TRADE_TYPE, PrivateTradeType } from './private-trade-types';
@@ -41,13 +45,22 @@ const PRIVATE_PROVIDERS_DEFAULT_CONFIG: Record<PrivateTradeType, PrivateProvider
   },
   PRIVACY_CASH: {
     getMinAmountUsd: (action: PrivateAction) => (action === 'Swap' ? 10 : 0),
-    // @TODO_1767 слать запросы к апи прайваси кэша чтобы получить фи
-    getFeeSize: async () => {
-      // const resp = await privacyApiService.fetchPrivacyCashFees();
-      // const symbol = addr_to_symbol_map[toPrivacyCashTokenAddr(privacyFormValue.fromAsset.address)];
-      // const rentFee = resp.rent_fees[symbol];
-      // const fixedFee = `${rentFee}${symbol}`;
-      return Promise.resolve('0.35%+0.6$');
+    getFeeSize: async (
+      _action: PrivateAction,
+      formValue: PrivateSwapInfo,
+      privacyApiService: PrivacyApiService
+    ) => {
+      if (!formValue.fromAsset) return Promise.resolve('0.35%+0.6$');
+      try {
+        const resp = await privacyApiService.fetchPrivacyCashFees();
+        const symbol =
+          addr_to_symbol_map[toPrivacyCashTokenAddr(formValue.fromAsset.address).toLowerCase()];
+        const rentFee = resp.rent_fees[symbol].toFixed(3);
+        const fullFee = `0.35%+${rentFee}${symbol}`;
+        return fullFee;
+      } catch (err) {
+        return Promise.resolve('0.35%+0.6$');
+      }
     },
     url: PRIVATE_MODE_URLS.PRIVACY_CASH,
     icon: PRIVATE_PROVIDERS_ICONS[PRIVATE_TRADE_TYPE.PRIVACY_CASH],

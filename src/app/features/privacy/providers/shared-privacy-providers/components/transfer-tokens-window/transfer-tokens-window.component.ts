@@ -4,10 +4,13 @@ import {
   EventEmitter,
   inject,
   Injector,
-  Output
+  Input,
+  OnInit,
+  Output,
+  Self
 } from '@angular/core';
 import { PrivateEvent } from '../../models/private-event';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatestWith, takeUntil } from 'rxjs';
 import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '../../services/private-modals/private-modals.service';
@@ -15,15 +18,28 @@ import { Token, TokenAmount } from '@cryptorubic/core';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { PrivateTransferService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer/private-transfer.service';
+import { PrivateTransferInfo } from '../../models/transfer-info';
+import { TuiDestroyService } from '@taiga-ui/cdk';
+import { SwapAmount } from '../../models/swap-info';
+import { PrivateTransferFormConfig } from '../../models/swap-form-types';
 
 @Component({
   selector: 'app-transfer-tokens-window',
   templateUrl: './transfer-tokens-window.component.html',
   styleUrls: ['./transfer-tokens-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TuiDestroyService]
 })
-export class TransferTokensWindowComponent {
+export class TransferTokensWindowComponent implements OnInit {
+  @Input() creationConfig: PrivateTransferFormConfig = {
+    withActionButton: true,
+    withReceiver: true,
+    withSrcAmount: true
+  };
+
   @Output() public handleTransfer = new EventEmitter<PrivateEvent>();
+
+  @Output() public formChanged = new EventEmitter<PrivateTransferInfo>();
 
   public readonly transferAsset$ = this.privateTransferService.transferAsset$;
 
@@ -37,7 +53,22 @@ export class TransferTokensWindowComponent {
 
   public readonly loading$ = this._loading$.asObservable();
 
-  constructor(private readonly privateTransferService: PrivateTransferService) {}
+  constructor(
+    @Self() private readonly destroy$: TuiDestroyService,
+    private readonly privateTransferService: PrivateTransferService
+  ) {}
+
+  ngOnInit(): void {
+    this.subscribeOnFormInputChanged();
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this.transferAsset$
+      .pipe(combineLatestWith(this.transferAmount$), takeUntil(this.destroy$))
+      .subscribe(([fromAsset, fromAmount]) =>
+        this.formChanged.emit({ fromAsset, fromAmount, toAmount: null })
+      );
+  }
 
   public openSelector(): void {
     this.modalService
@@ -47,7 +78,7 @@ export class TransferTokensWindowComponent {
       });
   }
 
-  public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
+  public updateInputValue(value: SwapAmount): void {
     this.privateTransferService.transferAmount = value;
   }
 
