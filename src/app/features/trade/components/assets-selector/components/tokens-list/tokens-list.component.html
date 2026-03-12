@@ -1,7 +1,7 @@
 <div
   *ngIf="!isMobile"
   class="tokens-list__search-bar-container"
-  [ngClass]="{ 'tokens-list__hide-favorites': !layoutParams.showFavoriteTokens }"  
+  [ngClass]="{ 'tokens-list__hide-favorites': !layoutParams.showFavoriteTokens }"
 >
   <app-search-tokens-bar
     [searchQuery]="tokensSearchQuery"

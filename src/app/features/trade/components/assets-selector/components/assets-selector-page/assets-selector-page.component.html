@@ -23,7 +23,9 @@
 
     <ng-container>
       <app-blockchains-filter-list
-        *ngIf="!isMobile && state.selectorListType !== 'blockchains' && layoutParams.showChainsFilter"
+        *ngIf="
+          !isMobile && state.selectorListType !== 'blockchains' && layoutParams.showChainsFilter
+        "
         [selectedFilter]="state.blockchainFilter"
         (selectFilter)="handleBlockchainFilterSelection($event)"
       ></app-blockchains-filter-list>
