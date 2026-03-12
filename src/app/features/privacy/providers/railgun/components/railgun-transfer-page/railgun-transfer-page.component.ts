@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, Injector, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { BlockchainName } from '@cryptorubic/core';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -11,7 +12,7 @@ import { ToAssetsService } from '@features/trade/components/assets-selector/serv
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
 import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
 import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
-import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+
 import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Component({
@@ -25,11 +26,11 @@ import { NotificationsService } from '@core/services/notifications/notifications
   ]
 })
 export class RailgunTransferPageComponent {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   private readonly notificationService = inject(NotificationsService);
 
   private readonly transferService = inject(RailgunTransferService);
-
-  private readonly targetAddressService = inject(TargetNetworkAddressService);
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
@@ -100,7 +101,7 @@ export class RailgunTransferPageComponent {
               await this.transferService.transferTokens(
                 token.address,
                 token.stringWeiAmount,
-                this.targetAddressService.address,
+                this.receiverCtrl.value,
                 () => {}
               );
               this.notificationService.show('Transfer successful.', {

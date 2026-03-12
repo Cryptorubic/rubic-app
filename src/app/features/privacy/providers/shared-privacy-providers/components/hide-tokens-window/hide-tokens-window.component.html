@@ -30,6 +30,7 @@
   <ng-content></ng-content>
   <app-target-network-address
     *ngIf="state.displayReceiver"
+    [addressCtrl]="receiverCtrl"
     @receiverAnimation
   ></app-target-network-address>
 

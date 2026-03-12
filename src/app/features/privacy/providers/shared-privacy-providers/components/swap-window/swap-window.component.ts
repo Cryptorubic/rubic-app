@@ -29,7 +29,8 @@ import { receiverAnimation } from '../../animations/receiver-animation';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
 import { PrivateSwapFormConfig } from '../../models/swap-form-types';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
+import { FormControl } from '@angular/forms';
 import BigNumber from 'bignumber.js';
 
 @Component({
@@ -41,6 +42,8 @@ import BigNumber from 'bignumber.js';
   animations: [receiverAnimation()]
 })
 export class SwapWindowComponent implements OnInit {
+  @Input() receiverCtrl: FormControl<string>;
+
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
   @Input() creationConfig: PrivateSwapFormConfig = {
@@ -141,10 +144,7 @@ export class SwapWindowComponent implements OnInit {
     };
   }
 
-  constructor(
-    @Self() private readonly destroy$: TuiDestroyService,
-    private readonly targetAddressService: TargetNetworkAddressService
-  ) {}
+  constructor(@Self() private readonly destroy$: TuiDestroyService) {}
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
@@ -162,7 +162,7 @@ export class SwapWindowComponent implements OnInit {
           return inputNotChanged;
         })
       ),
-      this.targetAddressService.address$.pipe(startWith(''))
+      this.receiverCtrl.valueChanges.pipe(startWith(''))
     ])
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(([swapInfo]) => {

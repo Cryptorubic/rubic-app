@@ -4,8 +4,10 @@ import {
   EventEmitter,
   inject,
   Injector,
+  Input,
   Output
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
@@ -24,6 +26,8 @@ import { receiverAnimation } from '../../animations/receiver-animation';
   animations: [receiverAnimation()]
 })
 export class RevealWindowComponent {
+  @Input() receiverCtrl: FormControl<string>;
+
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);

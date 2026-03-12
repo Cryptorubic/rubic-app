@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivateEvent } from '../../../shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
@@ -6,7 +7,7 @@ import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.s
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
 import { firstValueFrom, map, switchMap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
 
 @Component({
@@ -22,6 +23,8 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
   ]
 })
 export class HinkalHideTokensPageComponent {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   public readonly shieldedTokens$ = this.hinkalFacadeService.activeChain$.pipe(
     switchMap(chain =>
       this.hinkalRevealFacade
@@ -33,8 +36,7 @@ export class HinkalHideTokensPageComponent {
   constructor(
     private readonly hinkalRevealFacade: HinkalRevealFacadeService,
     private readonly formService: SwapsFormService,
-    private readonly hinkalFacadeService: HinkalFacadeService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly hinkalFacadeService: HinkalFacadeService
   ) {}
 
   public async hide({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
@@ -46,7 +48,7 @@ export class HinkalHideTokensPageComponent {
             action: () =>
               this.hinkalFacadeService.deposit(
                 token as TokenAmount<EvmBlockchainName>,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]

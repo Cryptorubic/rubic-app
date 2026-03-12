@@ -5,13 +5,13 @@ import BigNumber from 'bignumber.js';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { ClearswapSwapService } from '@app/features/privacy/providers/clearswap/services/clearswap-swap.service';
 import { TokenAmount } from '@cryptorubic/core';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+import { FormControl } from '@angular/forms';
 
 export class ClearswapQuoteAdapter implements PrivateQuoteAdapter {
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
     private readonly notificationsService: NotificationsService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly receiverCtrl: FormControl<string>
   ) {}
 
   public async quoteCallback(
@@ -28,7 +28,7 @@ export class ClearswapQuoteAdapter implements PrivateQuoteAdapter {
         tokenAmount: fromAmount.actualValue
       }),
       toAsset,
-      this.targetAddressService.address
+      this.receiverCtrl.value
     );
     return {
       toAmountWei: quoteResponse.tokenAmountWei,

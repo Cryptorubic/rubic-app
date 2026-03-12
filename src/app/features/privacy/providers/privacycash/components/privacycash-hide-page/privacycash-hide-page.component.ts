@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { PrivacycashSwapService } from '../../services/privacy-cash-swap.service';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
@@ -19,6 +20,8 @@ import { firstValueFrom } from 'rxjs';
 })
 export class PrivacycashHidePageComponent {
   private readonly privacycashSwapService = inject(PrivacycashSwapService);
+
+  public readonly receiverCtrl = new FormControl<string>('');
 
   constructor() {}
 

@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TuiDestroyService } from '@taiga-ui/cdk';
 import { SwapsFormService } from '@features/trade/services/swaps-form/swaps-form.service';
-import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-target-network-address',
@@ -20,7 +20,7 @@ import { QueryParamsService } from '@app/core/services/query-params/query-params
   ]
 })
 export class TargetNetworkAddressComponent {
-  public readonly address = this.targetNetworkAddressService.addressControl;
+  @Input({ required: true }) addressCtrl: FormControl<string>;
 
   public toBlockchain$ = this.swapFormService.toBlockchain$;
 
@@ -30,12 +30,11 @@ export class TargetNetworkAddressComponent {
     this.queryParamsService.hideBranding && this.queryParamsService.useLargeIframe;
 
   constructor(
-    private readonly targetNetworkAddressService: TargetNetworkAddressService,
     private readonly swapFormService: SwapsFormService,
     private readonly queryParamsService: QueryParamsService
   ) {}
 
   public onFocusChange(isFocused: boolean): void {
-    this.isActiveInput = isFocused || !!this.address.value;
+    this.isActiveInput = isFocused || !!this.addressCtrl.value;
   }
 }

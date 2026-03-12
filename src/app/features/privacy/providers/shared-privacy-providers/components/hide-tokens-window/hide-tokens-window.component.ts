@@ -4,8 +4,10 @@ import {
   EventEmitter,
   inject,
   Injector,
+  Input,
   Output
 } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Token, TokenAmount } from '@cryptorubic/core';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
@@ -25,6 +27,8 @@ import { SwapAmount } from '../../models/swap-info';
   animations: [receiverAnimation()]
 })
 export class HideTokensWindowComponent {
+  @Input() receiverCtrl: FormControl<string>;
+
   @Output() public handleHide = new EventEmitter<PrivateEvent>();
 
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
@@ -41,8 +45,6 @@ export class HideTokensWindowComponent {
   } | null>(null);
 
   public readonly hideAmount$ = this._hideAmount$.asObservable();
-
-  // private readonly hideService = inject(HideService);
 
   private readonly injector = inject(Injector);
 

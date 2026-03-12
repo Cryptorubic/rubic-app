@@ -31,7 +31,10 @@
     </div>
   </app-input-output-container>
 
-  <app-target-network-address *ngIf="creationConfig.withReceiver"></app-target-network-address>
+  <app-target-network-address
+    *ngIf="creationConfig.withReceiver"
+    [addressCtrl]="receiverCtrl"
+  ></app-target-network-address>
 
   <button
     *ngIf="creationConfig.withActionButton"

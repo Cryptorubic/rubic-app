@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { TokensFacadeService } from '@app/core/services/tokens/tokens-facade.service';
 import { ClearswapPrivateAssetsService } from '@app/features/privacy/providers/clearswap/services/clearswap-private-assets.service';
@@ -8,7 +9,7 @@ import { ClearswapQuoteAdapter } from '@app/features/privacy/providers/clearswap
 import { PrivateSwapEvent } from '@app/features/privacy/providers/shared-privacy-providers/models/private-event';
 import { FromAssetsService } from '@app/features/trade/components/assets-selector/services/from-assets.service';
 import { ToAssetsService } from '@app/features/trade/components/assets-selector/services/to-assets.service';
-import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
+
 import { BlockchainName, TokenAmount } from '@cryptorubic/core';
 import { firstValueFrom } from 'rxjs';
 
@@ -24,16 +25,17 @@ import { firstValueFrom } from 'rxjs';
   ]
 })
 export class ClearswapSwapPageComponent {
+  public readonly receiverCtrl = new FormControl<string>('');
+
   public readonly quoteAdapter = new ClearswapQuoteAdapter(
     this.clearswapSwapService,
     this.notificationsService,
-    this.targetAddressService
+    this.receiverCtrl
   );
 
   constructor(
     private readonly clearswapSwapService: ClearswapSwapService,
-    private readonly notificationsService: NotificationsService,
-    private readonly targetAddressService: TargetNetworkAddressService
+    private readonly notificationsService: NotificationsService
   ) {}
 
   public async swap({ swapInfo, loadingCallback, openPreview }: PrivateSwapEvent): Promise<void> {
@@ -52,7 +54,7 @@ export class ClearswapSwapPageComponent {
                 swapInfo.tradeId,
                 fromToken as TokenAmount<BlockchainName>,
                 swapInfo.toAsset,
-                this.targetAddressService.address
+                this.receiverCtrl.value
               )
           }
         ]
