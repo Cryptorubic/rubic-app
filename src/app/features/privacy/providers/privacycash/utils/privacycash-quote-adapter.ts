@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js';
 import { PrivacycashSwapService } from '../services/privacy-cash-swap.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
 import { toPrivacyCashTokenAddr } from './converter';
+import { from, map, Observable } from 'rxjs';
 
 export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
   constructor(
@@ -12,11 +13,11 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
     private readonly notificationsService: NotificationsService
   ) {}
 
-  public async quoteCallback(
+  public quoteCallback(
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ): Promise<{
+  ): Observable<{
     toAmountWei: BigNumber;
     tradeId?: string;
   }> {
@@ -29,13 +30,13 @@ export class PrivacycashQuoteAdapter implements PrivateQuoteAdapter {
       address: toPrivacyCashTokenAddr(toAsset.address)
     };
 
-    const dstToken = await this.privacycashSwapService.quote(
-      pcSupportedSrcToken,
-      pcSupportedDstToken,
-      fromAmount.actualValue
-    );
-
-    return { toAmountWei: dstToken.weiAmount };
+    return from(
+      this.privacycashSwapService.quote(
+        pcSupportedSrcToken,
+        pcSupportedDstToken,
+        fromAmount.actualValue
+      )
+    ).pipe(map(dstToken => ({ toAmountWei: dstToken.weiAmount })));
   }
 
   public async quoteFallback(

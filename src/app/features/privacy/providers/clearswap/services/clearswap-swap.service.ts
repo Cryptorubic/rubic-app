@@ -30,26 +30,22 @@ export class ClearswapSwapService {
     tokenAmount: string;
     tokenAmountWei: BigNumber;
   }> {
-    try {
-      const quoteResponse = await this.rubicApiService.quoteAllRoutes({
-        srcTokenBlockchain: fromToken.blockchain,
-        srcTokenAddress: fromToken.address,
-        srcTokenAmount: fromToken.tokenAmount.toString(),
-        dstTokenBlockchain: toToken.blockchain,
-        dstTokenAddress: toToken.address,
-        preferredProvider: 'CLEARSWAP',
-        receiver,
-        showDangerousRoutes: true
-      });
-      const route = quoteResponse.routes[0];
-      return {
-        tradeId: route.id,
-        tokenAmount: route.estimate.destinationTokenAmount,
-        tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
-      };
-    } catch (err) {
-      console.error(err);
-    }
+    const quoteResponse = await this.rubicApiService.quoteAllRoutes({
+      srcTokenBlockchain: fromToken.blockchain,
+      srcTokenAddress: fromToken.address,
+      srcTokenAmount: fromToken.tokenAmount.toString(),
+      dstTokenBlockchain: toToken.blockchain,
+      dstTokenAddress: toToken.address,
+      preferredProvider: 'CLEARSWAP',
+      receiver,
+      showDangerousRoutes: true
+    });
+    const route = quoteResponse.routes[0];
+    return {
+      tradeId: route.id,
+      tokenAmount: route.estimate.destinationTokenAmount,
+      tokenAmountWei: new BigNumber(route.estimate.destinationWeiAmount)
+    };
   }
 
   public async transfer(

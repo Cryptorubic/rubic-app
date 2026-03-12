@@ -57,8 +57,10 @@ import { PrivatePreviewSwapComponent } from './components/private-preview-swap/p
 import { SignMessageModalComponent } from './components/sign-message-modal/sign-message-modal.component';
 import { PrivateActionButtonService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-action-button/private-action-button.service';
 import { PrivateActionButtonComponent } from '@app/features/privacy/providers/shared-privacy-providers/components/action-button/private-action-button.component';
-import { PrivateTransferService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer/private-transfer.service';
 import { SwitchNetworkPageComponent } from './components/switch-network-page/switch-network-page.component';
+import { PrivatePageTypeService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-page-type/private-page-type.service';
+import { PrivateTransferWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-transfer-window/private-transfer-window.service';
+import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
 
 @NgModule({
   declarations: [
@@ -112,33 +114,33 @@ import { SwitchNetworkPageComponent } from './components/switch-network-page/swi
     SwitchNetworkPageComponent
   ],
   providers: [
-    [
-      SwapsFormService,
-      PreviewSwapService,
-      SwapsStateService,
-      SwapsControllerService,
-      SwapFormQueryService,
-      CrossChainService,
-      OnChainService,
-      CrossChainApiService,
-      SettingsService,
-      TargetNetworkAddressService,
-      RefreshService,
-      PreviewSwapService,
-      OnChainApiService,
-      DepositService,
-      ActionButtonService,
-      FormsTogglerService,
-      TradeInfoManager,
-      FormsTogglerService,
-      AlternativeRoutesService,
-      RefundService,
-      SolanaGaslessService,
-      SolanaGaslessStateService,
-      PrivateModalsService,
-      PrivateActionButtonService,
-      PrivateTransferService
-    ]
+    SwapsFormService,
+    PreviewSwapService,
+    SwapsStateService,
+    SwapsControllerService,
+    SwapFormQueryService,
+    CrossChainService,
+    OnChainService,
+    CrossChainApiService,
+    SettingsService,
+    TargetNetworkAddressService,
+    RefreshService,
+    PreviewSwapService,
+    OnChainApiService,
+    DepositService,
+    ActionButtonService,
+    FormsTogglerService,
+    TradeInfoManager,
+    FormsTogglerService,
+    AlternativeRoutesService,
+    RefundService,
+    SolanaGaslessService,
+    SolanaGaslessStateService,
+    PrivateModalsService,
+    PrivateActionButtonService,
+    PrivatePageTypeService,
+    PrivateTransferWindowService,
+    PrivateSwapWindowService
   ]
 })
 export class SharedPrivacyProvidersModule {}

@@ -4,6 +4,7 @@ import { BalanceToken } from '@app/shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { HinkalQuoteService } from '../../hinkal-quote.service';
 import { NotificationsService } from '@app/core/services/notifications/notifications.service';
+import { from, map, Observable } from 'rxjs';
 
 export class HinkalQuoteAdapter implements PrivateQuoteAdapter {
   constructor(
@@ -11,18 +12,14 @@ export class HinkalQuoteAdapter implements PrivateQuoteAdapter {
     private readonly notificationsService: NotificationsService
   ) {}
 
-  public async quoteCallback(
+  public quoteCallback(
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ): Promise<{ toAmountWei: BigNumber }> {
-    const toTokenAmount = await this.hinkalQuoteService.fetchQuote(
-      fromAsset,
-      toAsset,
-      fromAmount.visibleValue
-    );
-
-    return { toAmountWei: toTokenAmount.weiAmount };
+  ): Observable<{ toAmountWei: BigNumber }> {
+    return from(
+      this.hinkalQuoteService.fetchQuote(fromAsset, toAsset, fromAmount.visibleValue)
+    ).pipe(map(toTokenAmount => ({ toAmountWei: toTokenAmount.weiAmount })));
   }
 
   public async quoteFallback(

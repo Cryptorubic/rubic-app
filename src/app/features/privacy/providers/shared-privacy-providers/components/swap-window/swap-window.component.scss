@@ -18,7 +18,8 @@
     width: 100%;
     margin-top: 12px;
 
-    button {
+    app-private-action-button {
+      display: block;
       flex-grow: 1;
     }
   }
