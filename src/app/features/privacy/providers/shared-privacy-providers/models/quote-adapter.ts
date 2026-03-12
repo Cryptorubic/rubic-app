@@ -10,7 +10,10 @@ export interface PrivateQuoteAdapter {
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ) => Promise<BigNumber>;
+  ) => Promise<{
+    toAmountWei: BigNumber;
+    tradeId?: string;
+  }>;
 
   /**
    * Fallback invoked if quoteCallback failed

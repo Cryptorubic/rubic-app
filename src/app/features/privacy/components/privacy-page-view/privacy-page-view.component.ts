@@ -11,6 +11,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../../models/activity-item';
 import { PRIVATE_PROVIDERS_ICONS } from '../../constants/private-providers-icons';
+import { PrivacyAuthService } from '../../services/privacy-auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
 
@@ -62,7 +63,8 @@ export class PrivacyPageViewComponent {
 
   constructor(
     private readonly tradePageService: TradePageService,
-    private readonly queryParamsService: QueryParamsService
+    private readonly queryParamsService: QueryParamsService,
+    private readonly privacyAuthService: PrivacyAuthService
   ) {}
 
   public handleActionSelected(value: string): void {
