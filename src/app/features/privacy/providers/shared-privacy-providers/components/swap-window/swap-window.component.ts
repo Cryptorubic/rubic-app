@@ -38,6 +38,7 @@ import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-
 import { PrivateSwapFormConfig } from '../../models/swap-form-types';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { PrivateSwapWindowService } from '@app/features/privacy/providers/shared-privacy-providers/services/private-swap-window/private-swap-window.service';
+import BigNumber from 'bignumber.js';
 
 @Component({
   selector: 'app-swap-window',
@@ -52,6 +53,7 @@ export class SwapWindowComponent implements OnInit {
 
   @Input() creationConfig: PrivateSwapFormConfig = {
     withActionButton: true,
+    withDstSelector: true,
     withDstAmount: true,
     withReceiver: true,
     withSrcAmount: true
@@ -61,6 +63,13 @@ export class SwapWindowComponent implements OnInit {
     if (value) {
       this._displayReceiver$.next(true);
     }
+  }
+
+  @Input() set clearOutput(value: object) {
+    this.patchSwapInfo({
+      toAsset: null,
+      toAmount: { actualValue: new BigNumber(0), visibleValue: '0' }
+    });
   }
 
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
@@ -87,6 +96,19 @@ export class SwapWindowComponent implements OnInit {
 
   public get notEnoughBalance(): boolean {
     return this.swapInfo.fromAmount.actualValue.gt(this.swapInfo.fromAsset.amount);
+  }
+
+  public get hasOutputContainer(): boolean {
+    return this.creationConfig.withDstAmount || this.creationConfig.withDstSelector;
+  }
+
+  public get inputContainerRounding(): 'top' | 'bottom' | 'all' {
+    const receiverOpened = this.creationConfig.withReceiver && this._displayReceiver$.value;
+    if (this.hasOutputContainer) return 'top';
+    else {
+      if (receiverOpened) return 'top';
+      return 'all';
+    }
   }
 
   constructor(

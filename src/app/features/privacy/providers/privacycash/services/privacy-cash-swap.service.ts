@@ -21,6 +21,7 @@ import { toPrivacyCashTokenAddr, toRubicTokenAddr } from '../utils/converter';
 import { SolanaWallet } from '@app/core/services/wallets/wallets-adapters/solana/models/solana-wallet-types';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { PrivacycashTokensService } from './common/token-facades/privacycash-tokens.service';
+import { EphemeralWalletTokensService } from './common/token-facades/ephemeral-wallet-tokens.service';
 
 @Injectable()
 export class PrivacycashSwapService {
@@ -35,6 +36,8 @@ export class PrivacycashSwapService {
   private readonly notificationsService = inject(NotificationsService);
 
   private readonly privacycashTokensService = inject(PrivacycashTokensService);
+
+  private readonly ephemeralWalletTokensService = inject(EphemeralWalletTokensService);
 
   /**
    * @param srcToken token with PrivacyCash compatible address(WRAP_SOL_ADDRESS instead of native)
@@ -153,103 +156,98 @@ export class PrivacycashSwapService {
   public async swapPartialPrivateBalance(
     srcToken: BlockchainToken,
     dstToken: BlockchainToken,
-    srcAmountWei: BigNumber,
-    privateBalanceReceiverAddr: string
+    srcAmountWei: BigNumber
   ): Promise<void> {
-    await this.privacycashSignatureService.checkRequirements();
+    try {
+      await this.privacycashSignatureService.checkRequirements();
 
-    const srcAmountNonWei = Token.fromWei(srcAmountWei, srcToken.decimals);
-    const feesResp = await this.privacycashApiService.fetchFees();
-    const srcTokenUsdPricePerOne =
-      feesResp.prices[addr_to_symbol_map[srcToken.address.toLowerCase()]];
-    const srcTokenUsdAmount = srcTokenUsdPricePerOne * Number(srcAmountNonWei);
+      const srcAmountNonWei = Token.fromWei(srcAmountWei, srcToken.decimals);
+      const feesResp = await this.privacycashApiService.fetchFees();
+      const srcTokenUsdPricePerOne =
+        feesResp.prices[addr_to_symbol_map[srcToken.address.toLowerCase()]];
+      const srcTokenUsdAmount = srcTokenUsdPricePerOne * Number(srcAmountNonWei);
 
-    if (!compareAddresses(srcToken.address, dstToken.address) && srcTokenUsdAmount < 10) {
-      this.notificationsService.showWarning(`Amount must be more than $10 to perform a swap.`);
-      return;
-    }
-
-    const senderPK = new PublicKey(this.walletConnectorService.address);
-    const receiverPK = new PublicKey(privateBalanceReceiverAddr);
-
-    const burnerKeypair =
-      await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
-        this.privacycashSignatureService.signature,
-        senderPK,
-        0
-      );
-    console.debug(
-      `[PrivacyCashSwapService_swapPartialPrivateBalance] burner wallet:`,
-      burnerKeypair.publicKey.toBase58()
-    );
-    localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', burnerKeypair.publicKey.toBase58());
-
-    const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
-      toRubicTokenAddr(srcToken.address),
-      burnerKeypair
-    );
-
-    // withdraw src coin from user private balance to burner wallet
-    await this.makePartialWithdraw(
-      srcToken.address,
-      srcAmountWei.toNumber(),
-      senderPK,
-      burnerKeypair.publicKey
-    );
-
-    const srcTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
-      toRubicTokenAddr(srcToken.address),
-      srcTokenBurnerBalanceBeforeWithdraw,
-      burnerKeypair
-    );
-    const dstTokenPrevBurnerBalance = await this.getBurnerBalance(
-      toRubicTokenAddr(dstToken.address),
-      burnerKeypair
-    );
-    const swapAmountWei = this.getAmountWithoutFees(srcToken.address, srcTokenBurnerBalance);
-
-    // swap on burner wallet srcToken -> dstToken
-    this.notificationsService.showInfo(`Swapping tokens...`);
-    const swapResp = await this.privacycashApiService.jupSwap(
-      new PublicKey(srcToken.address),
-      new PublicKey(dstToken.address),
-      swapAmountWei.toNumber(),
-      burnerKeypair
-    );
-    console.debug('[PrivacyCashSwapService_swapPartialPrivateBalance] jupSwap resp:', swapResp);
-
-    this.notificationsService.showInfo(`Waiting for network state update...`);
-    const newDstTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
-      toRubicTokenAddr(dstToken.address),
-      dstTokenPrevBurnerBalance,
-      burnerKeypair
-    );
-    const dstTokenDepositAmount = this.getAmountWithoutFees(
-      dstToken.address,
-      newDstTokenBurnerBalance
-    );
-
-    // deposit destination token from burner wallet
-    this.notificationsService.showInfo(`Shielding target tokens...`);
-    await this.makeDeposit(
-      dstToken.address,
-      dstTokenDepositAmount.toNumber(),
-      burnerKeypair.publicKey,
-      (tx: VersionedTransaction) => {
-        tx.sign([burnerKeypair]);
-        return Promise.resolve(tx);
+      if (!compareAddresses(srcToken.address, dstToken.address) && srcTokenUsdAmount < 10) {
+        this.notificationsService.showWarning(`Amount must be more than $10 to perform a swap.`);
+        return;
       }
-    );
 
-    // withdraw destination token from burner wallet to receiver's public balance
-    this.notificationsService.showInfo(`Unshielding target tokens...`);
-    await this.makeFullWithdraw(
-      toPrivacyCashTokenAddr(dstToken.address),
-      burnerKeypair.publicKey,
-      receiverPK
-    );
-    this.notificationsService.showInfo('Swap successful. Check the receiver’s wallet balance.');
-    this.privacycashTokensService.updatePrivateBalances();
+      const senderPK = new PublicKey(this.walletConnectorService.address);
+      const ephemeralKeypair =
+        await this.privacycashSignatureService.deriveSolanaKeypairFromEncryptionKeyBase58(
+          this.privacycashSignatureService.signature,
+          senderPK,
+          0
+        );
+      console.debug(
+        `[PrivacyCashSwapService_swapPartialPrivateBalance] burner wallet:`,
+        ephemeralKeypair.publicKey.toBase58()
+      );
+      localStorage.setItem('PRIVACYCASH_PUBLIC_KEY', ephemeralKeypair.publicKey.toBase58());
+      // @TODO_1712 удалить перед релизом
+      localStorage.setItem('PRIVACYCASH_PRIVATE_KEY', ephemeralKeypair.secretKey.toString());
+
+      const srcTokenBurnerBalanceBeforeWithdraw = await this.getBurnerBalance(
+        toRubicTokenAddr(srcToken.address),
+        ephemeralKeypair
+      );
+
+      // withdraw src coin from user private balance to burner wallet
+      await this.makePartialWithdraw(
+        srcToken.address,
+        srcAmountWei.toNumber(),
+        senderPK,
+        ephemeralKeypair.publicKey
+      );
+
+      const srcTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
+        toRubicTokenAddr(srcToken.address),
+        srcTokenBurnerBalanceBeforeWithdraw,
+        ephemeralKeypair
+      );
+      const dstTokenPrevBurnerBalance = await this.getBurnerBalance(
+        toRubicTokenAddr(dstToken.address),
+        ephemeralKeypair
+      );
+      const swapAmountWei = this.getAmountWithoutFees(srcToken.address, srcTokenBurnerBalance);
+
+      // swap on burner wallet srcToken -> dstToken
+      this.notificationsService.showInfo(`Swapping tokens...`);
+      const swapResp = await this.privacycashApiService.jupSwap(
+        new PublicKey(srcToken.address),
+        new PublicKey(dstToken.address),
+        swapAmountWei.toNumber(),
+        ephemeralKeypair
+      );
+      console.debug('[PrivacyCashSwapService_swapPartialPrivateBalance] jupSwap resp:', swapResp);
+
+      this.notificationsService.showInfo(`Waiting for network state update...`);
+      const newDstTokenBurnerBalance = await this.waitForUpdatedBurnerWalletBalance(
+        toRubicTokenAddr(dstToken.address),
+        dstTokenPrevBurnerBalance,
+        ephemeralKeypair
+      );
+      const dstTokenDepositAmount = this.getAmountWithoutFees(
+        dstToken.address,
+        newDstTokenBurnerBalance
+      );
+
+      // deposit destination token from burner wallet
+      this.notificationsService.showInfo(`Shielding target tokens...`);
+      await this.makeDeposit(
+        dstToken.address,
+        dstTokenDepositAmount.toNumber(),
+        ephemeralKeypair.publicKey,
+        (tx: VersionedTransaction) => {
+          tx.sign([ephemeralKeypair]);
+          return Promise.resolve(tx);
+        }
+      );
+      this.notificationsService.showInfo('Swap successful. Check the receiver’s wallet balance.');
+    } finally {
+      this.ephemeralWalletTokensService.updateBalances();
+      this.privacycashTokensService.updatePrivateBalances();
+    }
   }
 
   // @TODO_1767 был добавлен параметр privateBalanceReceiverPK, чекнуть,
@@ -375,8 +373,7 @@ export class PrivacycashSwapService {
    */
   private async swapFullPrivateBalance(
     srcToken: BlockchainToken,
-    dstToken: BlockchainToken,
-    receiverAddr: string
+    dstToken: BlockchainToken
   ): Promise<void> {
     await this.privacycashSignatureService.checkRequirements();
 
@@ -387,12 +384,7 @@ export class PrivacycashSwapService {
       true
     );
 
-    return this.swapPartialPrivateBalance(
-      srcToken,
-      dstToken,
-      new BigNumber(fullPrivateBalanceWei),
-      receiverAddr
-    );
+    return this.swapPartialPrivateBalance(srcToken, dstToken, new BigNumber(fullPrivateBalanceWei));
   }
 
   /**
@@ -419,13 +411,13 @@ export class PrivacycashSwapService {
   private async waitForUpdatedBurnerWalletBalance(
     tokenAddr: string,
     prevBurnerBalance: BigNumber,
-    burnerKeypair: Keypair
+    ephemeralKeypair: Keypair
   ): Promise<BigNumber> {
     let newBurnerBalance = prevBurnerBalance;
     let retryCount = 0;
     while (retryCount < 10) {
       await waitFor(5_000);
-      newBurnerBalance = await this.getBurnerBalance(tokenAddr, burnerKeypair);
+      newBurnerBalance = await this.getBurnerBalance(tokenAddr, ephemeralKeypair);
       console.debug('[PrivacyCashSwapService_waitForUpdatedBurnerWalletBalance]', {
         tokenAddr,
         prevBurnerBalance,
@@ -440,8 +432,8 @@ export class PrivacycashSwapService {
   /**
    * @param tokenAddr common solana address
    */
-  private async getBurnerBalance(tokenAddr: string, burnerKeypair: Keypair): Promise<BigNumber> {
+  private async getBurnerBalance(tokenAddr: string, ephemeralKeypair: Keypair): Promise<BigNumber> {
     const solanaAdapter = this.adapterFactory.getAdapter(BLOCKCHAIN_NAME.SOLANA);
-    return solanaAdapter.getBalance(burnerKeypair.publicKey.toBase58(), tokenAddr);
+    return solanaAdapter.getBalance(ephemeralKeypair.publicKey.toBase58(), tokenAddr);
   }
 }

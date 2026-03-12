@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { PrivacyForm, PrivacyFormValue } from './models/privacy-form';
-import { BehaviorSubject, Observable, combineLatestWith, forkJoin, map, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  combineLatestWith,
+  distinctUntilChanged,
+  forkJoin,
+  map,
+  of,
+  switchMap
+} from 'rxjs';
 import { PrivateProviderInfoUI, PrivateProviderRawInfo } from '../models/provider-info';
 import { PrivateActivityItem, PrivateActivityStorageItem } from '../models/activity-item';
 import { PRIVATE_PROVIDERS_CHAINS_MAP } from '../constants/private-providers-chains-map';
@@ -23,6 +32,15 @@ export class PrivacyMainPageService {
     fromAsset: new FormControl(null),
     toAsset: new FormControl(null)
   });
+
+  public get formValue(): PrivacyFormValue {
+    return this.form.value as PrivacyFormValue;
+  }
+
+  public readonly swapInfo$ = this.form.valueChanges.pipe(
+    distinctUntilChanged(),
+    map(swapInfo => swapInfo as PrivacyFormValue)
+  );
 
   private readonly _selectedTab$ = new BehaviorSubject<PrivateAction>('Swap');
 
@@ -80,21 +98,27 @@ export class PrivacyMainPageService {
     formValue: Partial<PrivacyFormValue>,
     selectedTab: PrivateAction
   ): PrivateProviderInfoUI[] {
-    if (!formValue.fromAsset || !formValue.toAsset) return privateProviders;
+    if (!formValue.fromAsset && !formValue.toAsset) return privateProviders;
 
-    const srcChain = formValue.fromAsset.blockchain;
-    const dstChain = formValue.toAsset.blockchain;
+    const srcChain = formValue.fromAsset?.blockchain;
+    const dstChain = formValue.toAsset?.blockchain;
 
     return privateProviders.filter(provider => {
       const supportedChains = PRIVATE_PROVIDERS_CHAINS_MAP[provider.name];
-      if (!supportedChains.includes(srcChain) || !supportedChains.includes(dstChain)) {
+      if (
+        (srcChain && !supportedChains.includes(srcChain)) ||
+        (dstChain && !supportedChains.includes(dstChain))
+      ) {
         return false;
       }
       const srcChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.fromAsset.blockchain];
+        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.fromAsset?.blockchain];
       const dstChainActions =
-        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.toAsset.blockchain];
-      if (!srcChainActions.includes(selectedTab) || !dstChainActions.includes(selectedTab)) {
+        PRIVATE_PROVIDERS_ACTIONS_MAP[provider.name][formValue.toAsset?.blockchain];
+      if (
+        (srcChainActions && !srcChainActions.includes(selectedTab)) ||
+        (dstChainActions && !dstChainActions.includes(selectedTab))
+      ) {
         return false;
       }
       return true;

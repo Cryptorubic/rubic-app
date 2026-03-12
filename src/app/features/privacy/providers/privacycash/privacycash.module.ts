@@ -9,7 +9,7 @@ import { PrivacycashTransferPageComponent } from './components/privacycash-trans
 import { PrivacycashRefundPageComponent } from './components/privacycash-refund-page/privacycash-refund-page.component';
 import { SharedPrivacyProvidersModule } from '../shared-privacy-providers/shared-privacy-providers.module';
 import { SharedModule } from '@app/shared/shared.module';
-import { PrivacycashRevertService } from './services/privacy-cash-revert.service';
+import { PrivacycashRefundService } from './services/privacy-cash-revert.service';
 import { PrivacycashSwapService } from './services/privacy-cash-swap.service';
 import { PrivacycashApiService } from './services/privacy-cash-api.service';
 import { PrivacycashPublicAssetsService } from './services/common/assets-services/privacycash-public-assets.service';
@@ -19,6 +19,8 @@ import { TuiButtonModule } from '@taiga-ui/core';
 import { PrivacycashPublicTokensFacadeService } from './services/common/token-facades/privacycash-public-tokens-facade.service';
 import { PrivacycashPrivateTokensFacadeService } from './services/common/token-facades/privacycash-private-tokens-facade.service';
 import { PrivacycashTokensService } from './services/common/token-facades/privacycash-tokens.service';
+import { EphemeralWalletTokensFacadeService } from './services/common/token-facades/ephemeral-wallet-tokens-facade.service';
+import { EphemeralWalletTokensService } from './services/common/token-facades/ephemeral-wallet-tokens.service';
 
 @NgModule({
   declarations: [
@@ -38,15 +40,16 @@ import { PrivacycashTokensService } from './services/common/token-facades/privac
     SharedPrivacyProvidersModule
   ],
   providers: [
-    PrivacycashRevertService,
+    PrivacycashRefundService,
     PrivacycashSwapService,
     PrivacycashApiService,
     PrivacycashPublicAssetsService,
     PrivacycashPrivateAssetsService,
     PrivacycashPublicTokensFacadeService,
     PrivacycashPrivateTokensFacadeService,
-    PrivacycashTokensService
+    PrivacycashTokensService,
+    EphemeralWalletTokensFacadeService,
+    EphemeralWalletTokensService
   ]
-  // exports: [PrivacycashSignatureModalComponent]
 })
 export class PrivacyCashModule {}
