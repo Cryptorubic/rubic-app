@@ -77,7 +77,8 @@
               "vendor": false
             },
             "optimization": false,
-            "namedChunks": true
+            "namedChunks": true,
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "local": {
@@ -270,7 +271,11 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "assets": ["src/favicon.ico", "src/assets"]
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "webWorkerTsConfig": "tsconfig.worker.json"
           }
         },
         "lint": {

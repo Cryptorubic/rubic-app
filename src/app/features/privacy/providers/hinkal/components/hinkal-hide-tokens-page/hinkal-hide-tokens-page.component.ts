@@ -4,7 +4,7 @@ import { FromAssetsService } from '@app/features/trade/components/assets-selecto
 import { HinkalPrivateAssetsService } from '../../services/hinkal-private-assets.service';
 import { HinkalRevealFacadeService } from '../../services/hinkal-reveal-facade.service';
 import { SwapsFormService } from '@app/features/trade/services/swaps-form/swaps-form.service';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, map, switchMap } from 'rxjs';
 import { HinkalFacadeService } from '../../services/hinkal-sdk/hinkal-facade.service';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
@@ -22,9 +22,13 @@ import { EvmBlockchainName, TokenAmount } from '@cryptorubic/core';
   ]
 })
 export class HinkalHideTokensPageComponent {
-  public readonly shieldedTokens$ = this.hinkalRevealFacade
-    .getTokensList('allChains', '', 'from', this.formService.inputValue)
-    .pipe(map(tokens => tokens.filter(token => token.amount.gt(0))));
+  public readonly shieldedTokens$ = this.hinkalFacadeService.activeChain$.pipe(
+    switchMap(chain =>
+      this.hinkalRevealFacade
+        .getTokensList(chain, '', 'from', this.formService.inputValue)
+        .pipe(map(tokens => tokens.filter(token => token.amount.gt(0))))
+    )
+  );
 
   constructor(
     private readonly hinkalRevealFacade: HinkalRevealFacadeService,
