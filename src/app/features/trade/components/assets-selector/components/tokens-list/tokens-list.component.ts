@@ -25,6 +25,7 @@ import { BehaviorSubject } from 'rxjs';
 import { AnimationBuilder } from '@angular/animations';
 import { DOCUMENT } from '@angular/common';
 import { BlockchainsInfo } from '@cryptorubic/core';
+import { AssetsSelectorLayoutParams } from '../../models/assets-selector-layout';
 
 @Component({
   selector: 'app-tokens-list',
@@ -56,6 +57,8 @@ export class TokensListComponent implements OnInit {
   @Input({ required: true }) customToken: AvailableTokenAmount | null;
 
   @Input({ required: true }) loading: boolean;
+
+  @Input({ required: true }) layoutParams: AssetsSelectorLayoutParams;
 
   private _listType: AssetListType;
 
