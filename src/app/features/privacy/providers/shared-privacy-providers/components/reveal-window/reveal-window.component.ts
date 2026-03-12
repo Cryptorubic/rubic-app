@@ -10,17 +10,18 @@ import { BehaviorSubject } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
-import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
 import { Token, TokenAmount } from '@cryptorubic/core';
 import { PrivateEvent } from '../../models/private-event';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { receiverAnimation } from '../../animations/receiver-animation';
 
 @Component({
   selector: 'app-reveal-window',
   templateUrl: './reveal-window.component.html',
   styleUrls: ['./reveal-window.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [receiverAnimation()]
 })
 export class RevealWindowComponent {
   @Output() public handleReveal = new EventEmitter<PrivateEvent>();
@@ -43,8 +44,6 @@ export class RevealWindowComponent {
   private readonly injector = inject(Injector);
 
   private readonly modalService = inject(PrivateModalsService);
-
-  private readonly revealService = inject(RevealService);
 
   private readonly _loading$ = new BehaviorSubject<boolean>(false);
 

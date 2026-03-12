@@ -1,26 +1,20 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { QueryParamsService } from '@app/core/services/query-params/query-params.service';
-import { Asset } from '@app/features/trade/models/asset';
-import { FormType } from '@app/features/trade/models/form-type';
-import { TradePageService } from '@app/features/trade/services/trade-page/trade-page.service';
 import { PrivateAction } from '../../constants/private-mode-tx-types';
-import { Observable, map, of } from 'rxjs';
-import { PrivateProviderInfoUI } from '../../models/provider-info';
-import { PRIVATE_PROVIDERS_UI } from '../../constants/private-providers-ui';
+import { map } from 'rxjs';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { PrivateTradeType } from '../../constants/private-trade-types';
-import { PrivateActivityItem, PrivateActivityStorageItem } from '../../models/activity-item';
-import { PRIVATE_PROVIDERS_ICONS } from '../../constants/private-providers-icons';
-import { PrivacyAuthService } from '../../services/privacy-auth.service';
+import { PrivateActivityItem } from '../../models/activity-item';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PRIVATE_MODE_URLS } from '@features/privacy/models/routes';
-
-const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
-  { providerName: 'HINKAL', type: 'swap' },
-  { providerName: 'ZAMA', type: 'transfer' },
-  { providerName: 'HINKAL', type: 'transfer' },
-  { providerName: 'RAILGUN', type: 'swap' }
-];
+import {
+  PrivateSwapFormConfig,
+  PrivateTransferFormConfig
+} from '../../providers/shared-privacy-providers/models/swap-form-types';
+import { PrivateSwapInfo } from '../../providers/shared-privacy-providers/models/swap-info';
+import { PrivacyMainPageService } from '../../services/privacy-main-page.service';
+import { EmptyQuoteAdapter } from '../../providers/shared-privacy-providers/utils/empty-quote-adapter';
+import { PrivateTransferInfo } from '../../providers/shared-privacy-providers/models/transfer-info';
 
 @Component({
   selector: 'app-privacy-page-view',
@@ -41,19 +35,26 @@ const FAKE_ACTIVITY: PrivateActivityStorageItem[] = [
   ]
 })
 export class PrivacyPageViewComponent {
-  // @TODO_1712 фильтровать провайдеров при изменении таба/токенов/сетей/количества
-  public readonly privateProviders$: Observable<PrivateProviderInfoUI[]> = of(PRIVATE_PROVIDERS_UI);
+  public readonly swapWindowCreationConfig: PrivateSwapFormConfig = {
+    withActionButton: false,
+    withDstAmount: false,
+    withReceiver: false,
+    withSrcAmount: false
+  };
 
-  // @TODO_1712 использовать реальную активность из локал стора
-  public readonly lastActivity$: Observable<PrivateActivityItem[]> = of(FAKE_ACTIVITY).pipe(
-    map(activity =>
-      activity.slice(-4).map(el => ({ ...el, icon: PRIVATE_PROVIDERS_ICONS[el.providerName] }))
-    )
-  );
+  public readonly transferWindowCreationConfig: PrivateTransferFormConfig = {
+    withActionButton: false,
+    withReceiver: false,
+    withSrcAmount: false
+  };
+
+  public readonly quoteAdapter = new EmptyQuoteAdapter();
+
+  public readonly privateProviders$ = this.privacyMainPageService.privateProviders$;
+
+  public readonly lastActivity$ = this.privacyMainPageService.lastActivity$;
 
   public readonly selectedTradeType$ = this.privateProviders$.pipe(map(providers => providers[0]));
-
-  public readonly formContent$ = this.tradePageService.formContent$;
 
   public readonly useLargeIframe = this.queryParamsService.useLargeIframe;
 
@@ -61,23 +62,29 @@ export class PrivacyPageViewComponent {
 
   private readonly activatedRoute = inject(ActivatedRoute);
 
+  public readonly selectedTab$ = this.privacyMainPageService.selectedTab$;
+
   constructor(
-    private readonly tradePageService: TradePageService,
     private readonly queryParamsService: QueryParamsService,
-    private readonly privacyAuthService: PrivacyAuthService
+    private readonly privacyMainPageService: PrivacyMainPageService
   ) {}
 
-  public handleActionSelected(value: string): void {
-    const action = value as PrivateAction;
-    console.debug('[PrivacyPageViewComponent_handleActionSelected] action selected', action);
+  public handleTabSelected(action: string): void {
+    this.privacyMainPageService.setSelectedTab(action as PrivateAction);
   }
 
-  public handleTokenSelect(asset: Asset, formType: FormType): void {
-    console.debug('[PrivacyPageViewComponent_handleTokenSelect] token selected', {
-      asset,
-      formType
+  public handleSwapWindowChanged(swapInfo: PrivateSwapInfo): void {
+    this.privacyMainPageService.patchFormValue({
+      fromAsset: swapInfo.fromAsset,
+      toAsset: swapInfo.toAsset
     });
-    // @TODO_1712 патчить значения в форму private свапов
+  }
+
+  public handleTransferWindowChanged(transferInfo: PrivateTransferInfo): void {
+    this.privacyMainPageService.patchFormValue({
+      fromAsset: transferInfo.fromAsset,
+      toAsset: transferInfo.fromAsset
+    });
   }
 
   public async selectProvider(tradeType: PrivateTradeType): Promise<void> {

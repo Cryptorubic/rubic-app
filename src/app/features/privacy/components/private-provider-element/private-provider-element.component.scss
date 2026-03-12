@@ -67,9 +67,23 @@
       border-radius: 0 0 var(--tui-radius-m) var(--tui-radius-m);
 
       .fee-size,
-      .security-percent {
+      .security-percent,
+      .min-amount {
         @include flex(row, center, start);
-        gap: 4px;
+        gap: 2px;
+      }
+
+      .security-percent {
+        .stars {
+          @include flex(row, center, start);
+          gap: 2px;
+
+          .active {
+            ::ng-deep svg path {
+              fill: var(--tui-primary);
+            }
+          }
+        }
       }
     }
   }

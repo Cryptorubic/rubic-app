@@ -28,6 +28,7 @@ import { Token } from '@cryptorubic/core';
 import { receiverAnimation } from '../../animations/receiver-animation';
 import { PreviewSwapModalFactory } from '../private-preview-swap/models/preview-swap-modal-factory';
 import { PrivateSwapOptions } from '../private-preview-swap/models/preview-swap-options';
+import { PrivateSwapFormConfig } from '../../models/swap-form-types';
 import { TargetNetworkAddressService } from '@app/features/trade/services/target-network-address-service/target-network-address.service';
 
 @Component({
@@ -41,6 +42,13 @@ import { TargetNetworkAddressService } from '@app/features/trade/services/target
 export class SwapWindowComponent implements OnInit {
   @Input({ required: true }) quoteAdapter: PrivateQuoteAdapter;
 
+  @Input() creationConfig: PrivateSwapFormConfig = {
+    withActionButton: true,
+    withDstAmount: true,
+    withReceiver: true,
+    withSrcAmount: true
+  };
+
   @Input() set receiverAddressRequired(value: boolean) {
     if (value) {
       this._displayReceiver$.next(true);
@@ -48,6 +56,8 @@ export class SwapWindowComponent implements OnInit {
   }
 
   @Output() swapClicked = new EventEmitter<PrivateSwapEvent>();
+
+  @Output() formChanged = new EventEmitter<PrivateSwapInfo>();
 
   private readonly modalService = inject(PrivateModalsService);
 
@@ -112,9 +122,10 @@ export class SwapWindowComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscribeOnFormInputChanged();
+    this.subscribeForCalculation();
   }
 
-  private subscribeOnFormInputChanged(): void {
+  private subscribeForCalculation(): void {
     combineLatest([
       this._swapInfo$.pipe(
         distinctUntilChanged((prev, curr) => {
@@ -136,6 +147,12 @@ export class SwapWindowComponent implements OnInit {
         }
         this.calculate(swapInfo);
       });
+  }
+
+  private subscribeOnFormInputChanged(): void {
+    this.swapInfo$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(swapInfo => this.formChanged.emit(swapInfo));
   }
 
   private assetsNotSelected(): boolean {

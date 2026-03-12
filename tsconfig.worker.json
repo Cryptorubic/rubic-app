@@ -3,8 +3,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/worker",
-    "lib": ["es2020", "webworker"],
+    "lib": [
+      "es2018",
+      "esnext",
+      "webworker"
+    ],
     "types": []
   },
-  "include": ["src/**/*.worker.ts"]
+  "include": [
+    "src/**/*.worker.ts"
+  ]
 }

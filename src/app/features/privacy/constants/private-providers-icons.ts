@@ -8,5 +8,6 @@ export const PRIVATE_PROVIDERS_ICONS: Record<
   PRIVACY_CASH: 'assets/images/private-swaps/common/privacy-cash.svg',
   RAILGUN: 'assets/images/private-swaps/common/railgun.svg',
   ZAMA: 'assets/images/private-swaps/common/zama.svg',
-  CLEARSWAP: 'assets/images/private-swaps/common/clearswap.svg'
+  CLEARSWAP: 'assets/images/private-swaps/common/clearswap.svg',
+  HOUDINI: 'assets/images/private-swaps/common/houdini.svg'
 } as const;

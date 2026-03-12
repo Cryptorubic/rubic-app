@@ -1,3 +1,38 @@
-.railgun-p {
-  word-wrap: break-word;
+.wrapper {
+  width: 520px;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__wrapper {
+    padding: var(--tui-padding-m);
+
+    background: var(--io-background);
+    border-radius: var(--tui-radius-s);
+  }
+
+  &__label {
+    margin-top: 0;
+    margin-bottom: var(--tui-padding-xs);
+
+    color: var(--tui-primary);
+    font-size: 12px;
+  }
+
+  &__text {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    color: var(--tui-text-01);
+    font-size: 16px;
+    word-wrap: break-word;
+  }
+
+  &__button {
+    width: 100%;
+    margin-top: var(--tui-padding-m);
+  }
 }

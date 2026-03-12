@@ -1,0 +1,5 @@
+export enum CLEARSWAP_STATUS {
+  PENDING = 'PENDING',
+  SUCCESS = 'SUCCESS',
+  FAIL = 'FAIL'
+}

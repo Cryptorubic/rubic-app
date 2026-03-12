@@ -5,7 +5,10 @@
     loading: loading$ | async,
   } as state"
 >
-  <app-input-output-container [round]="'top'" [marginTop]="true">
+  <app-input-output-container
+    [round]="creationConfig.withReceiver ? 'top' : 'all'"
+    [marginTop]="true"
+  >
     <app-asset-selector
       left
       selectorType="from"
@@ -15,6 +18,7 @@
     ></app-asset-selector>
     <div right class="input-container">
       <app-amount-transput
+        *ngIf="creationConfig.withSrcAmount"
         formType="from"
         [selectedToken]="state.transferAsset"
         inputMode="input"
@@ -27,9 +31,10 @@
     </div>
   </app-input-output-container>
 
-  <app-target-network-address></app-target-network-address>
+  <app-target-network-address *ngIf="creationConfig.withReceiver"></app-target-network-address>
 
   <button
+    *ngIf="creationConfig.withActionButton"
     [showLoader]="state.loading"
     tuiButton
     appearance="primary"

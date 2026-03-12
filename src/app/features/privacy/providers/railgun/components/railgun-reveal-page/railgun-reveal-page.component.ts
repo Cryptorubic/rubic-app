@@ -1,10 +1,13 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { BlockchainName, TokenAmount } from '@cryptorubic/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { BlockchainName } from '@cryptorubic/core';
 import { TokensFacadeService } from '@core/services/tokens/tokens-facade.service';
 import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/services/common/railgun-reveal-facade.service';
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
+import { firstValueFrom } from 'rxjs';
+import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Component({
   selector: 'app-railgun-reveal-page',
@@ -27,22 +30,47 @@ export class RailgunRevealPageComponent {
       }[]
     | null;
 
-  private readonly revealService: RevealService;
+  private readonly revealService = inject(RevealService);
 
-  public async reveal({
-    token,
-    loadingCallback
-  }: {
-    token: TokenAmount;
-    loadingCallback: () => void;
-  }): Promise<void> {
+  private readonly notificationService = inject(NotificationsService);
+
+  public async reveal(params: PrivateEvent): Promise<void> {
+    const { token, loadingCallback, openPreview } = params;
     try {
-      const bigintAmount = BigInt(token.stringWeiAmount);
-      await this.revealService.unshieldTokens(
-        this.railgunId,
-        token.address,
-        bigintAmount.toString()
-      );
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Reveal Tokens',
+            action: async () => {
+              const bigintAmount = BigInt(token.stringWeiAmount);
+              this.notificationService.show('This may take a moment. Please keep Rubic App open', {
+                status: 'info',
+                autoClose: 10_000,
+                data: null,
+                icon: '',
+                defaultAutoCloseTime: 0
+              });
+              await this.revealService.unshieldTokens(
+                token.address,
+                bigintAmount.toString(),
+                () => {}
+              );
+              this.notificationService.show(
+                'Tokens were successfully unshielded to public wallet',
+                {
+                  status: 'success',
+                  autoClose: 5_000,
+                  data: null,
+                  icon: '',
+                  defaultAutoCloseTime: 0
+                }
+              );
+            }
+          }
+        ]
+      });
+
+      await firstValueFrom(preview$);
     } finally {
       loadingCallback();
     }

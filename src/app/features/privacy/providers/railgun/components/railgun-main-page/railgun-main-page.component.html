@@ -4,50 +4,64 @@
     railgunAccount: railgunAccount$ | async,
     balances: balances$ | async,
     pendingBalances: pendingBalances$ | async,
-    step: currentStep$ | async
+    activePage: activePage$ | async,
+    disabledPages: disabledPages$ | async,
+    utxoScan: utxoScan$ | async
   } as data"
 >
-  <app-railgun-page-navigation
-    [currentStep]="data.step"
-    [railgunAddress]="data.railgunAccount?.railgunAddress"
-    (handleStep)="onStepChange($event)"
-  ></app-railgun-page-navigation>
-
   <div class="wrapper">
-    <app-railgun-form
-      *ngIf="data.step === 'connectWallet'"
+    <div class="sidebar">
+      <app-page-navigation
+        [activePage]="data.activePage"
+        [pages]="pages"
+        [disabledPages]="data.disabledPages"
+        (onSelect)="onPageSelect($event)"
+      ></app-page-navigation>
+
+      <div [@fadeAnimation] *ngIf="data.utxoScan > 0" class="progress">
+        <h3 class="progress__text">Loading...</h3>
+        <label tuiProgressLabel class="progress__wrapper">
+          {{ data.utxoScan }}%
+          <progress new tuiProgressBar size="l" [max]="100" [value]="data.utxoScan"></progress>
+        </label>
+      </div>
+    </div>
+
+    <app-railgun-login-page
+      *ngIf="data.activePage.type === 'login'"
       [railgunAddress]="data?.railgunAccount?.railgunAddress || null"
       [railgunId]="data?.railgunAccount?.id"
       (formSubmit)="onSubmit($event)"
-    ></app-railgun-form>
+    ></app-railgun-login-page>
 
     <app-railgun-account-info
-      *ngIf="data.step !== 'connectWallet' && data.railgunAccount?.railgunAddress"
+      *ngIf="data.activePage.type === 'wallet' && data.railgunAccount?.railgunAddress"
       [railgunAddress]="data.railgunAccount.railgunAddress"
       [accountId]="data.railgunAccount.id"
+      [evmAddress]="data.railgunAccount.evmWalletAddress"
       (handleLogout)="logout()"
     ></app-railgun-account-info>
 
-    <app-railgun-reveal-page
-      *ngIf="data.step === 'transfer'"
+    <app-railgun-transfer-page
+      *ngIf="data.activePage.type === 'transfer'"
       [railgunId]="data.railgunAccount?.id"
       [balances]="data.balances"
-    ></app-railgun-reveal-page>
+    ></app-railgun-transfer-page>
 
     <app-railgun-hide-tokens-page
-      *ngIf="data.step === 'hide'"
+      *ngIf="data.activePage.type === 'hide'"
       [railgunWalletAddress]="data.railgunAccount?.railgunAddress"
       [pendingBalances]="data.pendingBalances"
     ></app-railgun-hide-tokens-page>
 
     <app-railgun-swap-page
-      *ngIf="data.step === 'swap'"
+      *ngIf="data.activePage.type === 'swap'"
       [railgunWalletInfo]="data.railgunAccount"
       [balances]="data.balances"
     ></app-railgun-swap-page>
 
     <app-railgun-reveal-page
-      *ngIf="data.step === 'reveal'"
+      *ngIf="data.activePage.type === 'reveal'"
       [railgunId]="data.railgunAccount?.id"
       [balances]="data.balances"
     ></app-railgun-reveal-page>

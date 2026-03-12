@@ -4,12 +4,15 @@ import { RailgunFormComponent } from '@features/privacy/providers/railgun/compon
 import { SharedModule } from '@shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  TuiCheckboxLabeledModule,
   TuiFieldErrorPipeModule,
   TuiInputModule,
   TuiInputPasswordModule,
-  TuiStepperModule
+  TuiProgressModule,
+  TuiStepperModule,
+  TuiToggleModule
 } from '@taiga-ui/kit';
-import { TuiButtonModule, TuiErrorModule } from '@taiga-ui/core';
+import { TuiButtonModule, TuiErrorModule, TuiNotificationModule } from '@taiga-ui/core';
 import { RouterModule } from '@angular/router';
 import { RailgunMainPageComponent } from '@features/privacy/providers/railgun/components/railgun-main-page/railgun-main-page.component';
 import { RailgunPageNavigationComponent } from '@features/privacy/providers/railgun/components/railgun-page-navigation/railgun-page-navigation.component';
@@ -19,6 +22,15 @@ import { RailgunRevealPageComponent } from '@features/privacy/providers/railgun/
 import { RailgunAccountInfoComponent } from '@features/privacy/providers/railgun/components/railgun-account-info/railgun-account-info.component';
 import { RailgunTransferPageComponent } from '@features/privacy/providers/railgun/components/railgun-transfer-page/railgun-transfer-page.component';
 import { SharedPrivacyProvidersModule } from '@features/privacy/providers/shared-privacy-providers/shared-privacy-providers.module';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { HideService } from '@features/privacy/providers/railgun/services/hide/hide.service';
+import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
+import { PrivateSwapService } from '@features/privacy/providers/railgun/services/private-swap/private-swap.service';
+import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { RailgunLoginPageComponent } from './components/railgun-login-page/railgun-login-page.component';
+import { RailgunWalletImportComponent } from './components/railgun-wallet-import/railgun-wallet-import.component';
+import { RailgunWalletCreateComponent } from './components/railgun-wallet-create/railgun-wallet-create.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +41,10 @@ import { SharedPrivacyProvidersModule } from '@features/privacy/providers/shared
     RailgunHideTokensPageComponent,
     RailgunSwapPageComponent,
     RailgunRevealPageComponent,
-    RailgunTransferPageComponent
+    RailgunTransferPageComponent,
+    RailgunLoginPageComponent,
+    RailgunWalletImportComponent,
+    RailgunWalletCreateComponent
   ],
   imports: [
     CommonModule,
@@ -42,7 +57,19 @@ import { SharedPrivacyProvidersModule } from '@features/privacy/providers/shared
     TuiFieldErrorPipeModule,
     TuiButtonModule,
     TuiStepperModule,
-    SharedPrivacyProvidersModule
+    SharedPrivacyProvidersModule,
+    TuiNotificationModule,
+    TuiProgressModule,
+    TuiCheckboxLabeledModule,
+    TuiToggleModule
+  ],
+  providers: [
+    RailgunFacadeService,
+    HideService,
+    RevealService,
+    PrivateSwapService,
+    RailgunTransferService,
+    TargetNetworkAddressService
   ]
 })
 export class RailgunModule {}

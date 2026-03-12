@@ -15,14 +15,14 @@ export class HinkalQuoteAdapter implements PrivateQuoteAdapter {
     fromAsset: BalanceToken,
     toAsset: BalanceToken,
     fromAmount: SwapAmount
-  ): Promise<BigNumber> {
+  ): Promise<{ toAmountWei: BigNumber }> {
     const toTokenAmount = await this.hinkalQuoteService.fetchQuote(
       fromAsset,
       toAsset,
       fromAmount.visibleValue
     );
 
-    return toTokenAmount.weiAmount;
+    return { toAmountWei: toTokenAmount.weiAmount };
   }
 
   public async quoteFallback(

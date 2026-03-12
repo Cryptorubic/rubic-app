@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, Injector, Input } from '@angular/core';
-import { BlockchainName, Token } from '@cryptorubic/core';
-import { BehaviorSubject } from 'rxjs';
+import { BlockchainName } from '@cryptorubic/core';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { BalanceToken } from '@shared/models/tokens/balance-token';
 import BigNumber from 'bignumber.js';
 import { RevealService } from '@features/privacy/providers/railgun/services/reveal/reveal.service';
@@ -9,9 +9,13 @@ import { RailgunRevealFacadeService } from '@features/privacy/providers/railgun/
 import { RailgunPrivateAssetsService } from '@features/privacy/providers/railgun/services/common/railgun-private-assets.service';
 import { ToAssetsService } from '@features/trade/components/assets-selector/services/to-assets.service';
 import { PrivateModalsService } from '@features/privacy/providers/shared-privacy-providers/services/private-modals/private-modals.service';
+import { PrivateEvent } from '@features/privacy/providers/shared-privacy-providers/models/private-event';
+import { RailgunTransferService } from '@features/privacy/providers/railgun/services/transfer/railgun-transfer.service';
+import { TargetNetworkAddressService } from '@features/trade/services/target-network-address-service/target-network-address.service';
+import { NotificationsService } from '@core/services/notifications/notifications.service';
 
 @Component({
-  selector: 'app-railgun-reveal-page',
+  selector: 'app-railgun-transfer-page',
   templateUrl: './railgun-transfer-page.component.html',
   styleUrls: ['./railgun-transfer-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,6 +25,12 @@ import { PrivateModalsService } from '@features/privacy/providers/shared-privacy
   ]
 })
 export class RailgunTransferPageComponent {
+  private readonly notificationService = inject(NotificationsService);
+
+  private readonly transferService = inject(RailgunTransferService);
+
+  private readonly targetAddressService = inject(TargetNetworkAddressService);
+
   private readonly _displayReceiver$ = new BehaviorSubject<boolean>(false);
 
   public readonly displayReceiver$ = this._displayReceiver$.asObservable();
@@ -35,16 +45,16 @@ export class RailgunTransferPageComponent {
       }[]
     | null;
 
-  private readonly _revealAsset$ = new BehaviorSubject<BalanceToken | null>(null);
+  private readonly _transferAsset$ = new BehaviorSubject<BalanceToken | null>(null);
 
-  public readonly revealAsset$ = this._revealAsset$.asObservable();
+  public readonly transferAsset$ = this._transferAsset$.asObservable();
 
-  private readonly _revealAmount$ = new BehaviorSubject<{
+  private readonly _transferAmount$ = new BehaviorSubject<{
     visibleValue: string;
     actualValue: BigNumber;
   } | null>(null);
 
-  public readonly revealAmount$ = this._revealAmount$.asObservable();
+  public readonly transferAmount$ = this._transferAmount$.asObservable();
 
   private readonly injector = inject(Injector);
 
@@ -60,32 +70,54 @@ export class RailgunTransferPageComponent {
     this.modalService
       .openPrivateTokensModal(this.injector)
       .subscribe((selectedToken: BalanceToken) => {
-        this._revealAsset$.next(selectedToken);
+        this._transferAsset$.next(selectedToken);
       });
   }
 
   public updateInputValue(value: { visibleValue: string; actualValue: BigNumber }): void {
-    this._revealAmount$.next(value);
+    this._transferAmount$.next(value);
   }
 
   public handleMaxButton(): void {}
 
-  public async reveal(): Promise<void> {
+  public async transfer({ token, loadingCallback, openPreview }: PrivateEvent): Promise<void> {
     try {
-      this._loading$.next(true);
-      const amount = Token.toWei(
-        this._revealAmount$.value?.actualValue.toFixed(),
-        this._revealAsset$.value?.decimals
-      );
-      const bigintAmount = BigInt(amount);
+      const preview$ = openPreview({
+        steps: [
+          {
+            label: 'Transfer tokens',
+            action: async () => {
+              this.notificationService.show(
+                'Transfer in progress. This may take a moment. Please keep Rubic App open',
+                {
+                  status: 'info',
+                  autoClose: 10_000,
+                  data: null,
+                  icon: '',
+                  defaultAutoCloseTime: 0
+                }
+              );
+              await this.transferService.transferTokens(
+                token.address,
+                token.stringWeiAmount,
+                this.targetAddressService.address,
+                () => {}
+              );
+              this.notificationService.show('Transfer successful.', {
+                status: 'success',
+                autoClose: 5_000,
+                data: null,
+                icon: '',
+                defaultAutoCloseTime: 0
+              });
+            }
+          }
+        ]
+      });
 
-      await this.revealService.unshieldTokens(
-        this.railgunId,
-        this._revealAsset$.value.address,
-        bigintAmount.toString()
-      );
+      await firstValueFrom(preview$);
     } finally {
-      this._loading$.next(false);
+      loadingCallback();
     }
   }
 

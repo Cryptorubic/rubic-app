@@ -9,7 +9,7 @@ import { RubicAny } from '@app/shared/models/utility-types/rubic-any';
 import { isNil } from '@app/shared/utils/utils';
 import { getAddress } from 'ethers';
 import { ZamaInstanceService } from './zama-instance.service';
-import { ZAMA_SUPPORTED_CHAINS } from '../../constants/zama-supported-chains';
+import { ZAMA_SUPPORTED_CHAINS } from '../../constants/chains';
 import { FhevmInstance } from '@zama-fhe/relayer-sdk/bundle';
 import { ZamaTokensService } from './zama-tokens.service';
 import { ZamaSignatureService } from './zama-signature.service';

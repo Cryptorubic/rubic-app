@@ -28,10 +28,15 @@ $mobile-width: 360px;
     app-tab-bar {
       width: 100%;
     }
+
+    app-swap-window,
+    app-transfer-tokens-window {
+      width: 100%;
+      max-width: 600px;
+    }
   }
 
   app-token-selector-page,
-  app-swap-form-page,
   app-last-private-activity {
     width: 100%;
   }

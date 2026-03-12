@@ -5,7 +5,7 @@ import { FhevmInstance } from '@zama-fhe/relayer-sdk/web';
 import { BehaviorSubject } from 'rxjs';
 import { ZAMA_INIT_CONFIG } from './constants/zama-init-config';
 import { rpcList } from '@app/shared/constants/blockchain/rpc-list';
-import { ZAMA_SUPPORTED_CHAINS } from '../../constants/zama-supported-chains';
+import { ZAMA_SUPPORTED_CHAINS } from '../../constants/chains';
 
 @Injectable()
 export class ZamaInstanceService {

@@ -11,7 +11,10 @@ import {
   type TransactionGasDetails
 } from '@railgun-community/shared-models';
 import { getShieldPrivateKeySignatureMessage, NFTTokenType } from '@railgun-community/wallet';
-import { keccak256, type HDNodeWallet, type Wallet } from 'ethers';
+import { HDNodeWallet, keccak256, Wallet } from 'ethers';
+import { EvmBlockchainName } from '@cryptorubic/core';
+import { JsonRpcProvider } from 'ethers';
+import { rpcList } from '@shared/constants/blockchain/rpc-list';
 
 /**
  * Generates a shield private key signature by signing a predefined message with the provided wallet
@@ -181,4 +184,21 @@ export const getOriginalGasDetailsForTransaction = async (
 ): Promise<TransactionGasDetails> => {
   const gasDetails = await getGasDetailsForTransaction(network, 0n, sendWithPublicWallet, wallet);
   return gasDetails;
+};
+
+export const getProviderWallet = (
+  blockchain: EvmBlockchainName,
+  mnemonic: string
+): {
+  provider: JsonRpcProvider;
+  wallet: HDNodeWallet;
+} => {
+  const rpc = rpcList[blockchain][0];
+  const provider = new JsonRpcProvider(rpc);
+  const wallet = Wallet.fromPhrase(mnemonic, provider);
+
+  return {
+    provider,
+    wallet
+  };
 };

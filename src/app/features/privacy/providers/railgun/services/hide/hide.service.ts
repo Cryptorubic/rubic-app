@@ -2,49 +2,28 @@ import { inject, Injectable } from '@angular/core';
 import {
   NETWORK_CONFIG,
   NetworkName,
-  RailgunERC20AmountRecipient,
-  TXIDVersion
+  RailgunERC20AmountRecipient
 } from '@railgun-community/shared-models';
 import { Contract, HDNodeWallet, Wallet } from 'ethers';
-import { gasEstimateForShield, populateShield } from '@railgun-community/wallet';
 import {
   getGasDetailsForTransaction,
+  getProviderWallet,
   getShieldSignature,
   serializeERC20Transfer
 } from '@features/privacy/providers/railgun/utils/tx-utils';
 import { PopulateShieldResult } from '@features/privacy/providers/railgun/models/shield';
-import { MnemonicService } from '@features/privacy/providers/railgun/services/mnemonic/mnemonic.service';
+import { RailgunFacadeService } from '@features/privacy/providers/railgun/services/railgun-facade.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { BlockchainAdapterFactoryService } from '@core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
+import { BLOCKCHAIN_NAME } from '@cryptorubic/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class HideService {
-  private readonly mnemonicService = inject(MnemonicService);
+  private readonly railgunFacade = inject(RailgunFacadeService);
 
-  /**
-   * Estimates gas for an ERC-20 shield transaction.
-   */
-  public async erc20ShieldGasEstimate(
-    network: NetworkName,
-    wallet: Wallet | HDNodeWallet,
-    erc20AmountRecipients: RailgunERC20AmountRecipient[]
-  ): Promise<bigint> {
-    const shieldPrivateKey = await getShieldSignature(wallet);
+  private readonly authService = inject(AuthService);
 
-    // Address of public wallet we are shielding from
-    const fromWalletAddress = wallet.address;
-
-    const { gasEstimate } = await gasEstimateForShield(
-      TXIDVersion.V2_PoseidonMerkle,
-      network,
-      shieldPrivateKey,
-      erc20AmountRecipients,
-      [], // nftAmountRecipients
-      fromWalletAddress
-    );
-
-    return gasEstimate;
-  }
+  private readonly adaptersFactory = inject(BlockchainAdapterFactoryService);
 
   /**
    * Ensures allowances for all ERC-20 transfers in the shield request.
@@ -92,7 +71,11 @@ export class HideService {
     await this.ensureErc20Allowances(network, wallet, erc20AmountRecipients);
 
     // 2) Estimate gas for shield
-    const gasEstimate = await this.erc20ShieldGasEstimate(network, wallet, erc20AmountRecipients);
+    const { gasEstimate } = await this.railgunFacade.gasEstimateForShield(
+      network,
+      wallet,
+      erc20AmountRecipients
+    );
 
     // 3) Get shield private key and gas details
     const shieldPrivateKey = await getShieldSignature(wallet);
@@ -105,12 +88,10 @@ export class HideService {
     );
 
     // 4) Populate shield transaction
-    const { transaction, nullifiers } = await populateShield(
-      TXIDVersion.V2_PoseidonMerkle,
+    const { transaction, nullifiers } = await this.railgunFacade.populateShield(
       network,
-      shieldPrivateKey,
       erc20AmountRecipients,
-      [],
+      shieldPrivateKey,
       gasDetails
     );
 
@@ -143,7 +124,8 @@ export class HideService {
     const network = opts?.network || NetworkName.Polygon;
     const sendWithPublicWallet = opts?.sendWithPublicWallet ?? true;
 
-    const wallet = opts?.wallet ?? this.mnemonicService.getProviderWallet().wallet;
+    const mnemonic = await this.railgunFacade.getMnemonic();
+    const { wallet } = getProviderWallet(BLOCKCHAIN_NAME.POLYGON, mnemonic);
 
     const erc20AmountRecipients: RailgunERC20AmountRecipient[] = [
       serializeERC20Transfer(tokenAddress, tokenAmount, railgunWalletAddress)

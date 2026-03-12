@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ZamaSupportedTokens } from './models/zama-supported-tokens';
-import { ZAMA_SUPPORTED_CHAINS } from '../../constants/zama-supported-chains';
+import { ZAMA_SUPPORTED_CHAINS } from '../../constants/chains';
 import { EvmBlockchainName } from '@cryptorubic/core';
 import { BlockchainAdapterFactoryService } from '@app/core/services/sdk/sdk-legacy/blockchain-adapter-factory/blockchain-adapter-factory.service';
 import { EvmAdapter } from '@cryptorubic/web3';
