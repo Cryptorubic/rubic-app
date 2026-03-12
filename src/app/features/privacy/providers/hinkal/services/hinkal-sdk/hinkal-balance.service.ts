@@ -1,33 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HinkalInstanceService } from './hinkal-instance.service';
 import { BehaviorSubject } from 'rxjs';
 import { HinkalPrivateBalance } from '../../models/hinkal-private-balances';
 import { blockchainId, EvmBlockchainName } from '@cryptorubic/core';
 import BigNumber from 'bignumber.js';
-import { getInputUtxoAndBalance } from '@hinkal/common';
-import { HINKAL_SUPPORTED_CHAINS } from '../../constants/hinkal-supported-chains';
+import { HinkalWorkerService } from './hinkal-worker.service';
+import { AuthService } from '@app/core/services/auth/auth.service';
+import { WorkerParams } from './workers/models/worker-params';
 
 @Injectable()
 export class HinkalBalanceService {
-  constructor(private readonly hinkalInstanceService: HinkalInstanceService) {}
+  constructor(
+    private readonly workerService: HinkalWorkerService,
+    private readonly authService: AuthService
+  ) {}
 
   private readonly _balances$ = new BehaviorSubject<HinkalPrivateBalance>({});
 
   public readonly balances$ = this._balances$.asObservable();
 
-  public async refreshBalances(): Promise<void> {
+  public async refreshBalances(chains: EvmBlockchainName[]): Promise<void> {
     try {
-      const ethAddress = await this.hinkalInstanceService.hinkalInstance.getEthereumAddress();
+      const ethAddress = this.authService.userAddress;
 
-      const promises = HINKAL_SUPPORTED_CHAINS.map(chain => {
+      if (!ethAddress) {
+        this._balances$.next({});
+        return;
+      }
+
+      const promises = chains.map(chain => {
         return this.fetcPrivateBalances(chain, ethAddress);
       });
 
       const balances = await Promise.all(promises);
 
-      this._balances$.next(
-        Object.fromEntries(HINKAL_SUPPORTED_CHAINS.map((chain, i) => [chain, balances[i]]))
-      );
+      this._balances$.next(Object.fromEntries(chains.map((chain, i) => [chain, balances[i]])));
     } catch (err) {
       console.error('FAILED TO REFRESH HINKAL BALANCES', err);
     }
@@ -38,31 +44,17 @@ export class HinkalBalanceService {
     address: string
   ): Promise<{ tokenAddress: string; amount: BigNumber }[]> {
     try {
-      const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
-
-      const { inputUtxos } = await getInputUtxoAndBalance({
-        hinkal: hinkalInstance,
+      const workerParams: WorkerParams = {
         chainId: blockchainId[blockchain],
-        resetCacheBefore: true,
-        allowRemoteDecryption: true,
-        ethAddress: address,
-        passedShieldedPrivateKey: hinkalInstance.userKeys.getShieldedPrivateKey(),
-        passedShieldedPublicKey: hinkalInstance.userKeys.getShieldedPublicKey()
-      });
-      const fetchedBalances = inputUtxos.reduce((acc, val) => {
-        const balance = acc[val.erc20TokenAddress.toLowerCase()];
-        const currAmount = new BigNumber(val.amount.toString());
+        address,
+        type: 'fetchBalance'
+      };
 
-        return {
-          ...acc,
-          [val.erc20TokenAddress.toLowerCase()]: balance ? balance.plus(currAmount) : currAmount
-        };
-      }, {} as Record<string, BigNumber>);
+      const resp = await this.workerService.request<{ tokenAddress: string; amount: BigNumber }[]>(
+        workerParams
+      );
 
-      return Object.entries(fetchedBalances).map(([token, amount]) => ({
-        tokenAddress: token,
-        amount
-      }));
+      return resp;
     } catch (err) {
       console.error('FAILED TO FETCH HINKAL BALANCE', err);
       return [];
