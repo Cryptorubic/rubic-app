@@ -6,6 +6,7 @@ import { Hinkal, prepareHinkalWithSignature, UserKeys } from '@hinkal/common';
 import { ethers } from 'ethers';
 import { EthersProviderAdapter } from '@hinkal/common/providers/EthersProviderAdapter';
 import { BehaviorSubject } from 'rxjs';
+import { HinkalWorkerService } from './hinkal-worker.service';
 
 @Injectable()
 export class HinkalInstanceService {
@@ -21,7 +22,10 @@ export class HinkalInstanceService {
 
   public readonly currSignature$ = this._currSignature$.asObservable();
 
-  constructor(private readonly adapterFactory: BlockchainAdapterFactoryService) {
+  constructor(
+    private readonly adapterFactory: BlockchainAdapterFactoryService,
+    private readonly workerService: HinkalWorkerService
+  ) {
     this._hinkalInstance = new Hinkal({
       generateProofRemotely: true,
       disableCaching: false
@@ -63,6 +67,12 @@ export class HinkalInstanceService {
       this._currSignature$.next(signature);
 
       await this.updateAdapter(wallet);
+      this.workerService.request({
+        chainId: blockchainId[blockchain],
+        address,
+        signature,
+        type: 'init'
+      });
 
       return true;
     } catch (err) {

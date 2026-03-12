@@ -30,7 +30,7 @@ export class ZamaRevealTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Reveal Tokens',
+            label: 'Unshield Tokens',
             action: () =>
               this.zamaFacadeService.unwrap(
                 token as TokenAmount<EvmBlockchainName>,

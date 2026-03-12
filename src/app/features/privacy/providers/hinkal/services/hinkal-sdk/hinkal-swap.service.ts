@@ -30,44 +30,40 @@ export class HinkalSwapService {
   }
 
   public async deposit(
-    tokenAmount: TokenAmount<EvmBlockchainName>,
-    receiverPrivateShieldedKey?: string
-  ): Promise<void> {
+    token: TokenAmount<EvmBlockchainName>,
+    stealthAddress?: string
+  ): Promise<boolean> {
     try {
-      const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(tokenAmount);
+      const depositToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
 
-      await hinkalInstance.resetMerkleTreesIfNecessary();
+      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
-      const deposit = await (receiverPrivateShieldedKey
+      await (stealthAddress
         ? hinkalInstance.depositForOther(
             [depositToken],
-            [BigInt(tokenAmount.stringWeiAmount)],
-            HinkalUtils.getPrivateAddress(receiverPrivateShieldedKey)
+            [BigInt(token.stringWeiAmount)],
+            stealthAddress
           )
-        : hinkalInstance.deposit([depositToken], [BigInt(tokenAmount.stringWeiAmount)]));
+        : hinkalInstance.deposit([depositToken], [BigInt(token.stringWeiAmount)]));
 
-      const adapter = this.adapterFactory.getAdapter(tokenAmount.blockchain);
-
-      await adapter.signer.trySendTransaction({
-        txOptions: {
-          data: deposit.data,
-          to: deposit.to,
-          value: deposit.value
-        }
-      });
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
-  public async withdraw(token: TokenAmount<EvmBlockchainName>, receiver?: string): Promise<void> {
+  public async withdraw(
+    token: TokenAmount<EvmBlockchainName>,
+    receiver?: string
+  ): Promise<boolean> {
     try {
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
       const withdrawToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
       const receiverAddress = receiver || (await hinkalInstance.getEthereumAddress());
 
-      await hinkalInstance.resetMerkleTreesIfNecessary();
+      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
       await hinkalInstance.withdraw(
         [withdrawToken],
@@ -79,40 +75,44 @@ export class HinkalSwapService {
         undefined,
         false
       );
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
   public async privateTransfer(
     token: TokenAmount<EvmBlockchainName>,
-    receiverPrivateShieldedKey: string
-  ): Promise<void> {
+    recipientStealthAddress: string
+  ): Promise<boolean> {
     try {
       const hinkalInstance = this.hinkalInstanceService.hinkalInstance;
-      const privateRecipientAddress = HinkalUtils.getPrivateAddress(receiverPrivateShieldedKey);
       const transferToken = HinkalUtils.convertRubicTokenToHinkalToken(token);
 
-      await hinkalInstance.resetMerkleTreesIfNecessary();
+      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[token.blockchain]);
 
       await hinkalInstance.transfer(
         [transferToken],
         [-BigInt(token.stringWeiAmount)],
-        privateRecipientAddress,
+        recipientStealthAddress,
         undefined,
         undefined,
         undefined,
         false
       );
+
+      return true;
     } catch (err) {
       this.errorService.catch(err);
+      return false;
     }
   }
 
   public async privateSwap(
     fromToken: TokenAmount<EvmBlockchainName>,
     toToken: TokenAmount<EvmBlockchainName>
-  ): Promise<void> {
+  ): Promise<boolean> {
     try {
       if (fromToken.blockchain !== toToken.blockchain)
         throw new Error('Cross-chain swaps not supported');
@@ -151,7 +151,7 @@ export class HinkalSwapService {
         isImported: false
       };
 
-      await hinkalInstance.resetMerkleTreesIfNecessary();
+      await HinkalUtils.updateSnapshot(hinkalInstance, blockchainId[fromToken.blockchain]);
 
       // await hinkalInstance.actionFundApproveAndTransact(
       //   [fromTokenChanges, toTokenChanges],
@@ -211,9 +211,12 @@ export class HinkalSwapService {
         undefined,
         false
       );
+
+      return true;
     } catch (err) {
       console.log('FAILED TO SWAP', err);
       this.errorService.catch(err);
+      return false;
     }
   }
 }

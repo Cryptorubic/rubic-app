@@ -47,10 +47,6 @@ export class RailgunFormComponent {
     // this.cdr.detectChanges();
   }
 
-  ngOnInit(): void {
-    console.log(this.hasAccount, this.secretForm);
-  }
-
   public onSubmit(): void {
     this.formSubmit.emit(this.secretForm.value as PublicAccount);
   }

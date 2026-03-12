@@ -89,10 +89,9 @@ export class RailgunMainPageComponent {
   }
 
   public logout(): void {
-    // this._account$.next(null);
-    // this._railgunAccount$.next(null);
-    // this._balances$.next([]);
-    // this._currentStep$.next('connectWallet');
+    this.railgunFacade.logout();
+    this._activePage$.next(RAILGUN_PAGES[0]);
+    this._disabledPages$.next(RAILGUN_PAGES.slice(1));
   }
 
   public onPageSelect(page: PageType): void {
