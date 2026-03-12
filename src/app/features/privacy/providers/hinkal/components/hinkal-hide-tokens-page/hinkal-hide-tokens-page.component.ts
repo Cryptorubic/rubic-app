@@ -42,7 +42,7 @@ export class HinkalHideTokensPageComponent {
       const preview$ = openPreview({
         steps: [
           {
-            label: 'Hide Tokens',
+            label: 'Shield Tokens',
             action: () =>
               this.hinkalFacadeService.deposit(
                 token as TokenAmount<EvmBlockchainName>,
